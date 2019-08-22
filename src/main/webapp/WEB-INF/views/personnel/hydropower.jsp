@@ -22,21 +22,20 @@
 				<div class="layui-form-item">
 					<table>
 						<tr>
+							<td><select class="layui-input" id="selectone">
+									<option name="beginTime" value="beginTime">缴费开始日期</option>
+									<option name="endTime" value="endTime">缴费结束日期</option>
+							</select></td>
+							<td>&nbsp;&nbsp;</td>
 							<td>日期:</td>
-							<td><input id="startTime"  name="time" placeholder="请输入开始时间" class="layui-input laydate-icon">
+							<td><input id="startTime" style="width: 310px;"  name="time" placeholder="请输入开始时间" class="layui-input laydate-icon">
 							</td>
 							<td>&nbsp;&nbsp;</td>
-							<td>物料:</td>
-							<td><select class="form-control" id="singleMealConsumptionId" lay-search="true"  name="singleMealConsumptionId"></select></td>
+							<td>公司所在地:</td>
+							<td><select class="form-control" id="siteTypeId" lay-search="true"  name="siteTypeId"></select></td>
 							<td>&nbsp;&nbsp;</td>
-							<td>报餐类型:</td>
-							<td><select class="form-control" name="type">
-									<option value="">请选择</option>
-									<option value="1">早餐</option>
-									<option value="2">中餐</option>
-									<option value="3">晚餐</option>
-									<option value="4">夜宵</option>
-							</select></td>
+							<td>费用类型:</td>
+							<td><select class="form-control" id="costTypeId" lay-search="true"  name="costTypeId"></select></td>
 							<td>&nbsp;&nbsp;</td>
 							<td>
 								<div class="layui-inline">
@@ -56,43 +55,6 @@
 		</div>
 	</div>
 	
-	<!-- <form action="" id="layuiadmin-form-admin"
-		style="padding: 20px 30px 0 60px; display:none;  text-align:">
-		<div class="layui-form layui-card-header layuiadmin-card-header-auto">
-				<div class="layui-form-item">
-					<table>
-						<tr>
-							<td>查询时间:</td>
-							<td><input id="monthDate9" style="width: 320px;" name="orderTimeBegin" placeholder="请输入开始时间" class="layui-input laydate-icon">
-							</td>
-							<td>&nbsp;&nbsp;</td>
-							<td>
-								<div class="layui-inline">
-									<button class="layui-btn layuiadmin-btn-admin" type="button"  lay-submit lay-filter="LAY-searchsumday">
-										<i class="layui-icon layui-icon-search layuiadmin-button-btn"></i>
-									</button>
-								</div>
-							</td>
-						</tr>
-					</table>
-				</div>
-			</div>
-		<div class="layui-form" lay-filter="layuiadmin-form-admin">
-			<div class="layui-form-item">
-				<div class="layui-input-inline">
-					<table><tr><td>
-					<input type="text" style="width: 150px;"  name="keyValue" id="keyValue"
-						value="物料分类"
-						class="layui-input laydate-icon">
-						</td><td>
-					<input type="text" style="width: 150px;"  name="keyValue" id="keyValue"
-						 
-						class="layui-input laydate-icon">	
-					</td></tr></table>	
-				</div>
-			</div>
-		</div>
-	</form>	 -->
 
 <div style="display: none;" id="layuiShare">
 			<div class="layui-form layui-card-header layuiadmin-card-header-auto">
@@ -162,13 +124,9 @@
 					});
 					laydate.render({
 						elem: '#startTime',
-						type : 'datetime',
+						type: 'datetime',
+						range: '~',
 					});
-					laydate.render({
-						elem: '#monthDate9',
-						type: 'date',
-						
-					}); 
 					
 					var getdataa={type:"siteType",}
 					var htmls= '<option value="">请选择</option>';
@@ -186,7 +144,7 @@
 			      			  $(result.data).each(function(k,j){
 			      				htmls +='<option value="'+j.id+'">'+j.name+'</option>'
 			      			  });
-			      			  $("#singleMealConsumptionId").html(htmlfrn)
+			      			  $("#siteTypeId").html(htmls)
 			      			layer.close(indextwo);
 					      }
 					  });
@@ -207,7 +165,7 @@
 			      			  $(result.data).each(function(k,j){
 			      				htmlfrn +='<option value="'+j.id+'">'+j.name+'</option>'
 			      			  });
-			      			  $("#singleMealConsumptionId").html(htmlfrn)
+			      			 $("#costTypeId").html(htmlfrn)
 			      			layer.close(indextwo);
 					      }
 					  });
@@ -304,11 +262,6 @@
 								title: "备注",
 								align: 'center',
 								edit: 'text',
-							},{
-								field: "averageCost",
-								title: "平均每天费用",
-								align: 'center',
-								 edit: false,
 							}]
 						],
 						done: function() {
@@ -566,115 +519,24 @@
 							mainJs.fUpdate(postData);
 					});
 					
-					
-				var data="";
-					form.on('submit(LAY-search2)', function(obj) {
-						var field = obj.field;
-						field.orderTimeBegin=field.time+' 00:00:00';
-						field.orderTimeEnd=field.time+' 23:59:59';
-						eventd(field);
-					})
-					
-					var eventd=function(data){
-						var datae = [],error = false,msg = '';
-						var china = ['物料采购和数据跟进费','房（自动生成）','电（自动生成）','煤气（自动生成）','人工绩效','人工工资','水（自动生成）']
-						var size;
-						var sumPrice;
-						$.ajax({
-							url:'${ctx}/personnel/getSummaryWage',
-							data:{
-								orderTimeBegin:data.orderTimeBegin,
-								orderTimeEnd:data.orderTimeEnd
-							},
-							async:false,
-							success:function(r){
-								if(r.code==0){
-									var i =0;
-									size=r.data[0].size	
-									sumPrice=r.data[0].sumPrice	
-									for(var val in r.data[0]){
-										if(val == 'size' || val == 'sumPrice')
-											continue;
-										datae.push({
-											type:'',
-											content: china[i++],
-											price: r.data[0][val]
-										})
-									}
-								}else{
-									error = true;
-									msg = r.message;
-								}
-							}
-						})
-						if(!error){
-							$.ajax({
-								url:'${ctx}/personnel/getSingle',
-								data:{
-									orderTimeBegin:data.orderTimeBegin,
-									orderTimeEnd:data.orderTimeEnd
-								},
-								async:false,
-								success:function(r){
-									if(0==r.code){
-										$(r.data).each(function(j,k){
-											datae.push({
-												type:k.singleMealConsumption.name,
-												content:k.content,
-												price:k.price,
-											})
-										})
-									}else{
-										msg = r.message;
-										datae = [];
-									}
-								}
-							})
-						}
-						table.reload("layuiShare2", {
-							data:datae,
-							text:{
-								none:msg
-							},
-							done:function(){
-								$("#start").val(size);
-								$("#price").val(sumPrice);
-							}
-			              })
-					};
-					table.render({
-						elem: '#layuiShare2',
-						data:[],
-						toolbar: '#toolbar2', //开启工具栏，此处显示默认图标，可以自定义模板，详见文档
-						totalRow: true,		 //开启合计行 */
-						colFilterRecord: true,
-						loading: true,
-						smartReloadModel: true,// 开启智能重载
-						cols: [
-							[{
-								field: "type",
-								title: "物料分类",
-								align: 'center',
-								totalRowText: '合计'
-							},{
-								field: "content",
-								title: "组成项目",
-								align: 'center',
-							},{
-								field: "price",
-								title: "每天花费",
-								align: 'center',
-								totalRow: true
-							}
-							]
-						],
-					
-					});
-					
-					
 					//监听搜索
 					form.on('submit(LAY-search)', function(obj) {		//修改此处
 						var field = obj.field;
+						var a="";
+						var b="";
+						if($("#selectone").val()=="beginTime"){
+							a="2019-05-08 00:00:00"
+						}else{
+							b="2019-05-08 00:00:00"
+						}
+						var orderTime=field.time.split('~');
+						field.orderTimeBegin=orderTime[0];
+						field.orderTimeEnd=orderTime[1];
+						if(field.orderTimeEnd){
+							field.orderTimeEnd = field.orderTimeEnd.split(' ')[1]+' 23:59:59';
+						}
+						field.beginTime=a;
+						field.endTime=b;
 						table.reload('tableData', {
 							where: field,
 							 page: { curr : 1 }
