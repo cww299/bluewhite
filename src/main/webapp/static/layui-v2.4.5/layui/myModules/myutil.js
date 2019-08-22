@@ -269,7 +269,7 @@ layui.define(['jquery','layer','form','table'],function(exports){
 		}  
 	};
 	myutil.getLastData = function(){	//用于记录表格单元格修改前的数据
-		$(document).on('mousedown','td[data-edit="true"],td[data-edit="text"]',function(obj){
+		$(document).on('mouseup','td[data-edit="true"],td[data-edit="text"]',function(obj){
 			if($(obj.toElement).parent().find('input').length>0)
 				return;
 			myutil.lastData = obj.toElement.innerHTML;
