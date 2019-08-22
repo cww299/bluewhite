@@ -17,7 +17,7 @@
  *							saveFun： function(data){}  覆盖默认的保存函数，data为临时行的值
  *							deleFun: function(ids){}  覆盖默认的删除函数
  *						},
- * 增加字段验证规则：verify:{ notNull:[ 非空的字段集合 ], price:[ 价格的字段集合 ], count:[ 数量的字段集合]   }
+ * 增加字段验证规则：verify:{ notNull:[ 非空的字段集合 ], price:[ 价格的字段集合 ], count:[ 数量的字段集合] ,otherVerify:function(trData){ 其他验证.返回msg }  }
  * 增加列宽度字段： colsWidth:[0,10,0,20,1,对应的各个字段宽度] 0为自适应，只填数字默认百分比。开启checkbox时，第一个数字应为0保留复选框自适应
  * 增加默认导出假字段 exportField: true, //true为关闭、默认开启
  */
@@ -129,6 +129,7 @@ layui.extend({
 			})
 		})
 		if(opt.autoUpdate){		//开启自动修改
+			myutil.getLastData();	//开启记录表格编辑单元前的数据、用于数据回滚
 			opt.autoUpdate.field = opt.autoUpdate.field || [] ;		//没有给field时，默认空
 		}
 		if(opt.verify){					//设置验证
@@ -231,19 +232,23 @@ layui.extend({
 			if(opt.autoUpdate)
 				table.on('edit('+tableId+')',function(obj){
 					var val = obj.value, trData = obj.data, data = { id : trData.id },field = obj.field,msg = '';
+					var t = opt.autoUpdate.field[field] || field;	//查找对应的虚拟字段
 					if(data.id && data.id!=''){
 						if(notNull.indexOf(field)>=0 && isNull(val))
 							msg = '修改失败，该值不能为空';
-						if(price.indexOf(field)>=0 && !isPrice(val))
+						else if(price.indexOf(field)>=0 && !isPrice(val))
 							msg = '修改失败，请正确填写'+china[field];
-						if(count.indexOf(field)>=0 && !isCount(val))
+						else if(count.indexOf(field)>=0 && !isCount(val))
 							msg = '修改失败，请正确填写'+china[field];
+						else if(opt.verify.otherVerify)
+							msg = opt.verify.otherVerify(trData) || '';
 						if(msg!=''){
-							table.reload(tableId);
+							$(this).val(myutil.lastData);   //回滚数据
+							var index = $(obj.tr).data('index');
+							table.cache[tableId][index][t] = myutil.lastData;	//修改缓存值。确保存在模板时，获取正确的缓存值！！！
 							return myutil.emsg(msg);
 						}
 					}
-					var t = opt.autoUpdate.field[field] || field;
 					data[t] = val;
 					if(opt.autoUpdate && trData.id>0){
 						myutil.saveAjax({
