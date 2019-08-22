@@ -161,6 +161,7 @@ layui.define(['jquery','layer','form','table'],function(exports){
 			msgOffset : '',
 			ctx:'',
 		},
+		lastData:'', //用于记录表格修改前的数据。主要用于表格修改非法时的数据回滚
 	}
 
 	myutil.saveAjax = function(options,callback,error){
@@ -266,7 +267,14 @@ layui.define(['jquery','layer','form','table'],function(exports){
 		     }
 		    return fmt; 
 		}  
-	}
+	};
+	myutil.getLastData = function(){	//用于记录表格单元格修改前的数据
+		$(document).on('mousedown','td[data-edit="true"],td[data-edit="text"]',function(obj){
+			if($(obj.toElement).parent().find('input').length>0)
+				return;
+			myutil.lastData = obj.toElement.innerHTML;
+		})
+	};
 	
 	exports('myutil',myutil);
 })
