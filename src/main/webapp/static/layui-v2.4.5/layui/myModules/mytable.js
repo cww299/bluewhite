@@ -36,7 +36,7 @@ layui.extend({
 
 	var REQ = { pageName: 'page' ,limitName: 'size'};	//请求分页
 	var COLOR = ['red','green','orange','cyan','blue','black','gray'];
-	var TOOLTPL = [
+	var TOOLTPL = [		//工具栏模板
 			'<div class="layui-btn-container layui-inline">',
 				'<span class="layui-btn layui-btn-sm" lay-event="addTempData">新增一行</span>',
 				'<span class="layui-btn layui-btn-sm layui-btn-danger" lay-event="cleanTempData">清空新增行</span>',
@@ -48,27 +48,35 @@ layui.extend({
 	mytable.render = function(opt,ob){
 		var obj = ob || { parseData:parseDataPage(), request:REQ,page:true, };
 		var totalRow = opt.totalRow || [];
-		var dateField = [], dateTimeField = [], selectLay = [], allField = [], price = [], count = [], notNull = [], china = [], exportCols = [];
+		var dateField = [], 	//日期字段
+			dateTimeField = [], //日期时间字段
+			selectLay = [], 	//下拉框对应的lay-filter，用于下拉框监听
+			allField = [],		//所有的字段
+			price = [], 		//价格验证
+			count = [], 		//数量验证
+			notNull = [], 		//非空验证
+			china = [], 		//字段对应的中文名
+			exportCols = [];	//导出字段
 		var tableId = opt.elem.split('#')[1];
 		layui.each(opt.cols,function(index1,item1){					//表头模板设置------------------------------------------------
 			layui.each(item1,function(index2,item2){
-				item2.field && (allField.push(item2.field));
-				if(index2==0 && totalRow.length>0)//开启合计行
+				if(index2==0 && totalRow.length>0)	//开启合计行
 					(item2.totalRowText = '合计');
 				layui.each(totalRow,function(index,item){			
 					item == item2.field && (item2.totalRow = true);
 				});
 				if(opt.colsWidth)			//设置列宽度
 					!item2.width && opt.colsWidth[index2] && opt.colsWidth[index2]!=0 && (item2.width = (opt.colsWidth[index2]+'%'));
-				(!item2.align) && (item2.align = 'center');			//行内元素居中
-				china[item2.field] = item2.title;					//记录字段对应的中文名
+				item2.align = item2.align || 'center';			//行内元素默认居中
 				switch(item2.type){
 				case 'select': break;
 				case 'date': 	 dateField.indexOf(item2.field)<0 && item2.edit && dateField.push(item2.field); (!item2.edit) && (item2.edit = false);	break;
 				case 'dateTime': dateTimeField.indexOf(item2.field)<0 && item2.edit && dateTimeField.push(item2.field); (!item2.edit) && (item2.edit = false); break;//开启日期时间
 				}
 				if(item2.field){
-					if(item2.field.split('_').length>1) //记录假字段、用于导出
+					allField.push(item2.field);			//记录字段和对应的中文名
+					china[item2.field] = item2.title;
+					if(item2.field.split('_').length>1 && exportCols.indexOf(item2.field)<0 ) //记录假字段、用于导出
 						exportCols.push(item2.field);
 					var tep = function(d){								//默认模板
 						var fie = item2.field.split('_');				
