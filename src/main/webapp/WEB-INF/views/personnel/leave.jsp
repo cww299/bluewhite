@@ -642,11 +642,12 @@
 						        			userIds:userIds,
 						        			writeTime:data.field.applytime,
 						        			holidayType:holidayType,
-						        			overtimeType:overtime_type,
 						        			content:content,
 						        			time: JSON.stringify(myArray),
-						        			[variable]:'true',
-						        	} 
+						        	};
+						        	postData[variable] = 'true';
+						        	if(variable=='applyOvertime')	//如果是加班类型
+						        		postData['overtimeType'] = overtime_type;
 						        	mainJs.fAdd(postData);
 						        	timeAll=""; 
 								})
@@ -868,29 +869,24 @@
 										})
 									})
 				        		}
-				        	var postData={
+				        		var postData={
 				        			id:id,
 				        			userId:data.field.userId,
 				        			writeTime:data.field.applytime,
-				        			[variable]:'true',
 				        			holidayType:holidayType,
 				        			overtime_type:overtime_type,
 				        			content:content,
 				        			time:JSON.stringify(myArray)
-				        	}	
-				        	 mainJs.fAdd(postData); 
-				        	
+				        		};
+				        		postData[variable] = 'true';
+				        		mainJs.fAdd(postData); 
 							})
-
 				        },end:function(){
 				        	document.getElementById("layuiadmin-form-admin").reset();
 				        	layui.form.render();
 				        	timeAll=""
-						  } 
-				       
+						  }
 				      });
-			    	
-			    	
 			    }
 			});
 
