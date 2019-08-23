@@ -577,7 +577,7 @@
 					 var arr=new Array();
 						var html="";
 						$.ajax({
-							url:"${ctx}/production/getGroupOne",
+							url:"${ctx}/production/allGroup",
 							data:postData,
 							type:"GET",
 							beforeSend:function(){
