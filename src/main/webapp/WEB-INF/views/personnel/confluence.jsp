@@ -78,23 +78,25 @@
 				</table>
 			</div>
 		</div>
-		<table class="layui-hide" lay-filter="test3" id="test"></table>
+		<table class="layui-hide" lay-filter="test3" id="test3"></table>
 	</div>
 </div>
  
 <script>
 layui.config({
-	base : '${ctx}/static/layui-v2.4.5/'
+	base : '${ctx}/static/layui-v2.4.5/',
 }).extend({
-	tablePlug : 'tablePlug/tablePlug'
+	tablePlug : 'tablePlug/tablePlug',
+	myutil: 'layui/myModules/myutil',
 }).define(
-	[ 'table', 'laydate', 'element', 'form','colorpicker' ],
+	[ 'table', 'laydate', 'element', 'form','colorpicker' ,'myutil'],
 	function() {
 		var $ = layui.jquery, layer = layui.layer 
 		, form = layui.form 
 		, colorpicker = layui.colorpicker
 		, table = layui.table
 		, laydate = layui.laydate 
+		, myutil = layui.myutil
 		, tablePlug = layui.tablePlug 
 		, element = layui.element;
 		
@@ -117,9 +119,11 @@ layui.config({
 				})
 		    }
 	  	});
+		myutil.timeFormat();
 		laydate.render({
 			elem : '#startTime',
 			type : 'month',
+			value : new Date().format('yyyy-MM'),	//默认显示当月
 		});
 		//如果存在部门和人员选择下拉框
 		var isAttend = true,orgId = '';	  //是否是考情记录员,和所在部门
@@ -262,8 +266,6 @@ layui.config({
 				})
 			}
 		})();
-		
-		
 		form.on('submit(LAY-role-search)', function(data) {
 			var field=data.field
 			if(!field.userId && !field.orgNameId && !isAttend){			
@@ -290,10 +292,12 @@ layui.config({
 			var postUrl='${ctx}/personnel/addAttendanceTime'
 			even(postUrl,d)
 		})
+		var tipWin = '';//补签提示窗
+		var lastDay = '', lastIndex = '';	//用于记录上次弹窗的td位置、防止移入同一个td时重复弹窗。
 		var even = function(url, data) {
 			LOAD = layer.load(1,{shade: [0.1,'black'] });
 			table.render({
-				elem : '#test',
+				elem : '#test3',
 				size:'sm',
 				url : url,
 				loading:false,
@@ -461,7 +465,59 @@ layui.config({
 						loading:false,
 						height: '700px',
 					});
+					layui.each($('td[data-field="0"]'),function(i,item){
+						$(item).unbind().on('mouseover',function(){
+							var elem = $(item);
+							var index = elem.closest('tr').data('index');
+							var day = parseInt(elem.attr('data-key').split('-')[2]/4);
+							if(day == lastDay && index == lastIndex)	//判断本次移入是否与上一次位置一致
+								return;
+							lastDay = day;
+							lastIndex = index;
+							var trData = table.cache['test3'][index];
+							var dayData = trData.attendanceTimeData[day];
+							var html = ['<div>',
+							            	'<p style="text-align:center;">当日打卡记录</p>',
+							            	'签入时间：'+(dayData.checkIn || '----')+'<br>',
+							            	'签出时间：'+(dayData.checkIn || '----')+'<br>',
+							            	'<span class="layui-badge" data-id="'+dayData.userId+'" data-type="true" data-day="'+dayData.time+'">补签入</span>',
+							            	'&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;',
+							            	'<span class="layui-badge layui-bg-green" data-id="'+dayData.userId+'" ',
+							            			'data-type="false" data-day="'+dayData.time+'">补签出</span>',
+							            '</div>',
+							            ].join(' ');
+							tipWin = layer.tips(html, elem, {
+								tips: [4, '#78BA32'],
+			                	time:0,
+				            }); 
+							$('.layui-layer-tips .layui-badge').unbind().on('click',function(event){
+								layui.stope(event);
+								lastDay = ''; lastIndex = '';
+								var userId = $(event.target).data('id')
+								   ,type = $(event.target).data('type')
+								   ,day = $(event.target).data('day');
+								myutil.saveAjax({
+									url:"${ctx}/personnel/defaultRetroactive",
+									data:{
+										userId: userId,
+										writeTime: day+' 00:00:00',
+										addSignIn: type,
+									}
+								})
+							}).mouseover(function(){
+					    		$(this).css("cursor","pointer");								
+					    	}).mouseout(function (){  
+					    		$(this).css("cursor","default");
+					        });
+						});
+					})
 				},
+			});
+			$(document).on('mousedown', '', function (event) { //关闭提示窗
+				if($('.layui-layer-tips').length>0 && !$(event.target).data('day')){
+					lastDay = ''; lastIndex = '';
+					layer.close(tipWin);
+				}
 			});
 			table.on('tool(test3)', function(obj){			//自定义事件名  tdClick-0123(代表出勤、加班、缺勤..)-i  (代表的是第几个)
 				//自定义事件名主要用于计算点击的td的 data-key值（对应点击的列数）  2-2-() 

@@ -206,16 +206,9 @@
 				</div>
 			</div>
 		</div>
-	
-		<!-- 作用？回车引起404报错 -->
-		<!-- <div class="layui-form-item layui-hide">
-			<button type="submit" class="layui-btn layui-btn-primary">重置</button>
-		</div> -->
 		</div>
 	<div id="orgAndPersonDiv"></div>
 </form>
-
-	
 <script type="text/html" id="toolbar">
 	<div class="layui-btn-container layui-inline">
 	<span class="layui-btn layui-btn-sm" lay-event="notice">新增</span>
@@ -324,11 +317,6 @@
 					},
 				});
 			})();
-			
-			
-			
-			
-			
 			form.on('checkbox(moren)',function (data) {
 				moren = data.elem.checked;
 			})
@@ -401,59 +389,46 @@
 				url: '${ctx}/personnel/getApplicationLeavePage'+(isAttend?'?orgNameId='+orgId:'') ,
 				request:{ pageName: 'page' , limitName: 'size'  },
 				page: {},
-				loading: true,
 				toolbar: '#toolbar', 
 				cellMinWidth: 90,
 				colFilterRecord: true,
 				smartReloadModel: true,
 				parseData: function(ret) { return { code: ret.code, msg: ret.message, count:ret.data.total, data: ret.data.rows } },
 				cols: [
-					[{
-						type: 'checkbox',
-						align: 'center',
-						fixed: 'left'
-					}, {
-						field: "userId",
-						title: "申请人",
-						align: 'center',
-						search: true,
-						edit: false,
-						type: 'normal',
+					[{ type: 'checkbox', align: 'center', fixed: 'left', },
+					 { field: "userId", title: "申请人", align: 'center', type: 'normal', width: '10%',
 						templet: function(d){
-							
 							return d.user.userName
 						}
-					}, {
-						field: "writeTime",
-						title: "申请时间",
-						align: 'center',
-					}, {
-						field: "expenseDate",
-						title: "申请项",
-						align: 'center',
+					}, 
+					{ field: "writeTime", title: "申请时间", align: 'center', width: '12%', }, 
+					{ field: "expenseDate", title: "申请项", align: 'center', width: '8%',
 						templet: function(d){
-							if(d.addSignIn==true){
-							return "补签"
-							}
-							if(d.applyOvertime==true){
+							if(d.addSignIn)
+								return "补签"
+							if(d.applyOvertime)
 								return "加班"
-							}
-							if(d.holiday==true){
+							if(d.holiday)
 								return "请假"
-							}
-							if(d.tradeDays==true){
+							if(d.tradeDays)
 								return "调休"
-							}
 						}
-					}, {
-						field: "holidayDetail",
-						align: 'center',
-						title: "详情",
-					},{fixed:'right', title:'操作', align: 'center', toolbar: '#barDemo'}]
+					}, 
+					{
+						field: "holidayDetail", align: 'center', title: "详情",
+						templet:function(d){
+							var arr = d.holidayDetail.split(',');
+							var html = '';
+							for(i in arr){
+								if(arr[i]!='')
+									html+='<span class="layui-badge layui-bg-blue">'+arr[i]+'</span>&nbsp;&nbsp;';
+							}
+							return html;
+						}
+					},
+					{fixed:'right', title:'操作', align: 'center', width: '10%',toolbar: '#barDemo'}]
 				],
 			});
-
-			
 			form.on("radio(variable)", function(data) {
 				if(data.value==0){
 					$("#leave").css("display","block")
@@ -481,7 +456,6 @@
 					$("#repair").css("display","none")
 				}
 			});	
-			
 			
 			//监听头工具栏事件
 			table.on('toolbar(tableData)', function(obj) {
@@ -642,11 +616,12 @@
 						        			userIds:userIds,
 						        			writeTime:data.field.applytime,
 						        			holidayType:holidayType,
-						        			overtimeType:overtime_type,
 						        			content:content,
 						        			time: JSON.stringify(myArray),
-						        			[variable]:'true',
-						        	} 
+						        	};
+						        	postData[variable] = 'true';
+						        	if(variable=='applyOvertime')	//如果是加班类型
+						        		postData['overtimeType'] = overtime_type;
 						        	mainJs.fAdd(postData);
 						        	timeAll=""; 
 								})
@@ -868,29 +843,24 @@
 										})
 									})
 				        		}
-				        	var postData={
+				        		var postData={
 				        			id:id,
 				        			userId:data.field.userId,
 				        			writeTime:data.field.applytime,
-				        			[variable]:'true',
 				        			holidayType:holidayType,
 				        			overtime_type:overtime_type,
 				        			content:content,
 				        			time:JSON.stringify(myArray)
-				        	}	
-				        	 mainJs.fAdd(postData); 
-				        	
+				        		};
+				        		postData[variable] = 'true';
+				        		mainJs.fAdd(postData); 
 							})
-
 				        },end:function(){
 				        	document.getElementById("layuiadmin-form-admin").reset();
 				        	layui.form.render();
 				        	timeAll=""
-						  } 
-				       
+						  }
 				      });
-			    	
-			    	
 			    }
 			});
 
@@ -910,8 +880,6 @@
 					}
 				});
 			});
-			
-			
 			//封装ajax主方法
 			var mainJs = {
 				//新增							

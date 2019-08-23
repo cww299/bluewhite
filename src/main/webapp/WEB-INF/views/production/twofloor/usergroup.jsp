@@ -571,7 +571,7 @@
 					 var arr=new Array();
 					var html="";
 					$.ajax({
-						url:"${ctx}/production/getGroupOne",
+						url:"${ctx}/production/allGroup",
 						data:postData,
 						type:"GET",
 						beforeSend:function(){
@@ -581,7 +581,7 @@
 						},
 						
 						success:function(result){
-							$(result.data.users).each(function(i,o){
+							$(result.data[0].users).each(function(i,o){
 							html+=o.userName+"&nbsp&nbsp&nbsp&nbsp"
 							})
 							$('.modal-body').html(html);
@@ -903,7 +903,7 @@
 					//ajax 拿way数据
 					source : function(query, process) {
 							return $.ajax({
-								url : '${ctx}/system/user/findUserList?foreigns='+$('#isLocalFactory').val(),
+								url : '${ctx}/system/user/findUserList?foreigns='+$('#isLocalFactory').val()+'&quit=0',
 								type : 'GET',
 								data : {
 							  		temporarilyName:$.trim(query),

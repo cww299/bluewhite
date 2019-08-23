@@ -256,7 +256,7 @@
 					 var arr=new Array();
 					var html="";
 					$.ajax({
-						url:"${ctx}/production/getGroupOne",
+						url:"${ctx}/production/allGroup",
 						data:postData,
 						type:"GET",
 						beforeSend:function(){
@@ -266,7 +266,7 @@
 						},
 						
 						success:function(result){
-							$(result.data.users).each(function(i,o){
+							$(result.data[0].users).each(function(i,o){
 							html+=o.userName+"&nbsp&nbsp&nbsp&nbsp"
 							})
 							$('.modal-body').html(html);
