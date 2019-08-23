@@ -183,6 +183,7 @@
 				<div class="layui-input-inline">
 					<select name="overtime_type" lay-filter="overtime_type" id="overtime_type" lay-search="true" value="1">
 						<option value="1">正常加班</option>
+						<option value="3">生产加班</option>
 						<option value="2">撤销加班</option></select>
 				</div>
 			</div>
