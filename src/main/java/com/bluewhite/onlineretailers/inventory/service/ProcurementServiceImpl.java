@@ -595,27 +595,35 @@ public class ProcurementServiceImpl extends BaseServiceImpl<Procurement, Long> i
 				}
 				if (procurement.getProcurementChilds().size() > 0) {
 					procurement.getProcurementChilds().stream().forEach(p -> {
-						if (p.getBatchNumber() == null) {
-							throw new ServiceException("出库单批次为空，无法转换");
-						}
-						// 分隔批次号
-						String[] batchNumber = p.getBatchNumber().split(",");
-						for (String bc : batchNumber) {
-							// 分割出批次号和数量
-							String[] bnStrings = bc.split(":");
-							if (bnStrings.length > 1) {
-								// 新增发货清单
-								PackingChild packingChild = new PackingChild();
-								packingChild.setWarehouseTypeDeliveryId(warehouseTypeDeliveryId);
-								packingChild.setBacthNumber(bnStrings[0]);
-								packingChild.setCount(Integer.parseInt(bnStrings[1]));
-								packingChild.setCustomerId(procurement.getOnlineCustomerId());
-								packingChild.setProductId(p.getCommodity().getProductId());
-								packingChild.setType(1);
-								packingChild.setFlag(0);
-								packingChild.setSendDate(p.getCreatedAt());
-								packingChildDao.save(packingChild);
+						if (p.getBatchNumber() != null) {
+							// 分隔批次号
+							String[] batchNumber = p.getBatchNumber().split(",");
+							for (String bc : batchNumber) {
+								// 分割出批次号和数量
+								String[] bnStrings = bc.split(":");
+								if (bnStrings.length > 1) {
+									// 新增发货清单
+									PackingChild packingChild = new PackingChild();
+									packingChild.setWarehouseTypeDeliveryId(warehouseTypeDeliveryId);
+									packingChild.setBacthNumber(bnStrings[0]);
+									packingChild.setCount(Integer.parseInt(bnStrings[1]));
+									packingChild.setCustomerId(procurement.getOnlineCustomerId());
+									packingChild.setProductId(p.getCommodity().getProductId());
+									packingChild.setType(1);
+									packingChild.setFlag(0);
+									packingChild.setSendDate(p.getCreatedAt());
+									packingChildDao.save(packingChild);
+								}
 							}
+						}else{
+							PackingChild packingChild = new PackingChild();
+							packingChild.setWarehouseTypeDeliveryId(warehouseTypeDeliveryId);
+							packingChild.setCustomerId(procurement.getOnlineCustomerId());
+							packingChild.setProductId(p.getCommodity().getProductId());
+							packingChild.setType(1);
+							packingChild.setFlag(0);
+							packingChild.setSendDate(p.getCreatedAt());
+							packingChildDao.save(packingChild);
 						}
 					});
 				}
