@@ -20,6 +20,9 @@
 	<div class="layui-card-body">
 		<table class="layui-form">
 			<tr><td>&nbsp;&nbsp;&nbsp;</td>
+				<td>发货日期:</td>
+				<td><input type="text" class="layui-input" id="sendDateSearch"></td>
+				<td>&nbsp;&nbsp;&nbsp;</td>
 				<td>批次号:</td>
 				<td><input type="text" class="layui-input" name="bacthNumber"></td>
 				<td>&nbsp;&nbsp;&nbsp;</td>
@@ -50,17 +53,29 @@ layui.config({
 }).extend({
 	mytable : 'layui/myModules/mytable' ,
 }).define(
-	['mytable'],
+	['mytable','laydate'],
 	function(){
 		var $ = layui.jquery
 		, layer = layui.layer 				
 		, form = layui.form			 		
 		, table = layui.table 
 		, myutil = layui.myutil
+		, laydate = layui.laydate
 		, mytable = layui.mytable;
 		myutil.config.ctx = '${ctx}';
 		myutil.clickTr();
+		laydate.render({
+			elem:'#sendDateSearch',
+			range:'~'
+		})
 		form.on('submit(search)',function(obj){
+			var val = $('#sendDateSearch').val(),beg = '',end = '';
+			if(val!=''){
+				beg = val.split('~')[0].trim()+' 00:00:00';
+				end = val.split('~')[1].trim()+' 23:59:59';
+			}
+			obj.field.orderTimeBegin = beg;
+			obj.field.orderTimeEnd = end;
 			table.reload('tableData',{
 				where: obj.field
 			})
@@ -74,6 +89,7 @@ layui.config({
 			verify:{ count:['count'],notNull:['count']  },
 			cols:[[
 			       { type:'checkbox',},
+			       { title:'发货日期',   field:'sendDate',	},
 			       { title:'批次号',   field:'bacthNumber',	},
 			       { title:'客户',   field:'customer_name',	},
 			       { title:'产品',   field:'product_name',	},
