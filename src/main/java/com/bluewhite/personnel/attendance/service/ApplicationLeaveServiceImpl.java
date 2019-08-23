@@ -4,7 +4,6 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
@@ -278,8 +277,19 @@ public class ApplicationLeaveServiceImpl extends BaseServiceImpl<ApplicationLeav
 						throw new ServiceException("根据"+date+"的签到时间该员工加班时间为" + actualOverTime + "小时，加班申请时间有误请重新核对");
 					}
 				}
-				holidayDetail = holidayDetail.equals("") ? (date + (applicationLeave.getOvertimeType()==1? "申请加班" : "撤销加班") + time + "小时")
-						: (holidayDetail+"," + date + (applicationLeave.getOvertimeType()==1? "申请加班" : "撤销加班") + time + "小时");
+				String overString = "";
+				switch (applicationLeave.getOvertimeType()) {
+				case 1:
+					overString = "申请加班";
+					break;
+				case 2:
+					overString =  "撤销加班";
+					break;
+				case 3:
+					overString =  "生产加班";
+					break;
+				}
+				holidayDetail = holidayDetail.equals("") ? (date + overString + time + "小时") : (holidayDetail+"," + date + overString + time + "小时");
 			}
 			if (applicationLeave.isTradeDays()) {
 				holidayDetail =  holidayDetail.equals("") ? (date + "调休" + time + "小时") : holidayDetail+","+date + "调休" + time + "小时";

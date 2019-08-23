@@ -84,10 +84,10 @@ public class ApplicationLeave extends BaseEntity<Long>  {
 	private boolean applyOvertime;
 	
 	/**
-	 * 加班类型(默认1=正常加班，2=撤销加班)
+	 * 加班类型(默认1=正常加班，2=撤销加班,3=生产加班)
 	 */
 	@Column(name = "overtime_type")
-	private Double overtimeType;
+	private Integer overtimeType;
 	
 	/**
 	 * （请假，调休，补签，加班）时间(json格式传递（日期+时长）)
@@ -139,11 +139,11 @@ public class ApplicationLeave extends BaseEntity<Long>  {
 		this.sign = sign;
 	}
 
-	public Double getOvertimeType() {
+	public Integer getOvertimeType() {
 		return overtimeType;
 	}
 
-	public void setOvertimeType(Double overtimeType) {
+	public void setOvertimeType(Integer overtimeType) {
 		this.overtimeType = overtimeType;
 	}
 
