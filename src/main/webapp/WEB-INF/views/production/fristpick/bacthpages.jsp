@@ -1117,8 +1117,8 @@
 											htmltwo +='<div class="input-group"><input type="checkbox" class="stuCheckBox"   value="'+o.id+'" data-groupid="'+k.id+'"><label style="width:70px;text-align:center;color:gray;">'+o.userName+'</label>-<input style="width:100px;" class="time2" data-id="'+o.adjustTimeId+'" data-temporarily="'+o.temporarily+'" value="'+(o.adjustTime!=null ? o.adjustTime : "")+'" /></div>'
 										})
 										})
-										/* var s="<div class='input-group'><input type='checkbox' class='checkall'>全选</input></div>" */
-										$('.select').html(htmltwo)
+										 var s="<div class='input-group'><input type='checkbox' class='checkedAll'><label style='width:70px;text-align:center;color:gray;'>全选</label></input></div>" 
+										$('.select').html(s+htmltwo)
 										$(".time2").blur(function(){
 											var a=$(this).data('temporarily')
 											var id=$(this).data('id')
@@ -1178,7 +1178,7 @@
 														});
 											}
 										}) 
-										/* $(".checkall").on('click',function(){
+										 $(".checkedAll").on('click',function(){
 							                    if($(this).is(':checked')){ 
 										 			$('.stuCheckBox').each(function(){  
 							                    //此处如果用attr，会出现第三次失效的情况  
@@ -1190,7 +1190,7 @@
 							                    		
 							                    	})
 							                    }
-							                }); */
+							                }); 
 										layer.close(index);
 									},error:function(){
 										layer.msg("操作失败！", {icon: 2});
