@@ -71,12 +71,6 @@ public class AttendancePay extends BaseEntity<Long> {
 	private Double overTime;
 
 	/**
-	 * 所在组工作时长(当员工不是全部在一个组工作，可以修改他在单个组上的工作时间)
-	 */
-	@Column(name = "group_work_time")
-	private Double groupWorkTime;
-
-	/**
 	 * 当天考勤工资（A工资）
 	 */
 	@Column(name = "pay_number")
@@ -187,14 +181,6 @@ public class AttendancePay extends BaseEntity<Long> {
 
 	public void setTurnWorkTime(Double turnWorkTime) {
 		this.turnWorkTime = turnWorkTime;
-	}
-
-	public Double getGroupWorkTime() {
-		return groupWorkTime;
-	}
-
-	public void setGroupWorkTime(Double groupWorkTime) {
-		this.groupWorkTime = groupWorkTime;
 	}
 
 	public Integer getSign() {

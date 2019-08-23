@@ -34,8 +34,10 @@ import com.bluewhite.common.utils.DatesUtil;
 import com.bluewhite.finance.attendance.dao.AttendancePayDao;
 import com.bluewhite.finance.attendance.entity.AttendancePay;
 import com.bluewhite.finance.attendance.service.AttendancePayService;
+import com.bluewhite.production.group.dao.GroupTimeDao;
 import com.bluewhite.production.group.dao.TemporarilyDao;
 import com.bluewhite.production.group.entity.Group;
+import com.bluewhite.production.group.entity.GroupTime;
 import com.bluewhite.production.group.entity.Temporarily;
 import com.bluewhite.production.group.service.GroupService;
 import com.bluewhite.production.productionutils.constant.ProTypeUtils;
@@ -61,6 +63,9 @@ public class GroupAction {
 	
 	@Autowired
 	private AttendancePayService attendancePayService;
+	
+	@Autowired
+	private GroupTimeDao groupTimeDao;
 
 	private ClearCascadeJSON clearCascadeJSON;
 
@@ -104,7 +109,7 @@ public class GroupAction {
 	}
 
 	/**
-	 * 查询单个分组(同时将所在组工作时长查出)
+	 * 查询单个分组
 	 * 
 	 * @param request
 	 *            请求
@@ -115,20 +120,7 @@ public class GroupAction {
 	public CommonResponse getGroupOne(HttpServletRequest request, Long id, Date temporarilyDate) {
 		CommonResponse cr = new CommonResponse();
 		if (id != null) {
-			Group group = groupService.findOne(id);
-			Set<User> users = group.getUsers().stream().filter(u -> u != null && u.getStatus() != null && u.getStatus() != 1).collect(Collectors.toSet());
-			for (User u : users) {
-				List<AttendancePay> attendancePay = attendancePayDao.findByUserIdAndTypeAndAllotTimeBetween(u.getId(),
-						group.getType(), DatesUtil.getfristDayOftime(ProTypeUtils.countAllotTime(temporarilyDate)),
-						DatesUtil.getLastDayOftime(ProTypeUtils.countAllotTime(temporarilyDate)));
-				//提供所在组工作时长
-				if (attendancePay.size() > 0) {
-					u.setAdjustTime(attendancePay.get(0).getGroupWorkTime() != null ? attendancePay.get(0).getGroupWorkTime() : 0);
-					u.setAdjustTimeId(attendancePay.get(0).getId());
-				}
-			}
-			group.setUsers(users);
-			cr.setData(clearCascadeJSON.format(group).toJSON());
+			cr.setData(clearCascadeJSON.format(groupService.findOne(id)).toJSON());
 			cr.setMessage("查询成功");
 		} else {
 			cr.setCode(ErrorCode.ILLEGAL_ARGUMENT.getCode());
@@ -150,8 +142,16 @@ public class GroupAction {
 		CommonResponse cr = new CommonResponse();
 		if (adjustId!=null) {
 			AttendancePay attendancePay = attendancePayService.findOne(adjustId);
-			attendancePay.setGroupWorkTime(adjustTime);
-			attendancePayService.save(attendancePay);
+			GroupTime groupTime = groupTimeDao.findByUserIdAndTypeAndGroupIdAndAllotTime(
+					attendancePay.getUserId(),attendancePay.getType(),adjustId,attendancePay.getAllotTime());
+			if(groupTime == null){
+				groupTime = new GroupTime();
+				groupTime.setGroupId(attendancePay.getUser().getGroupId());
+				groupTime.setType(attendancePay.getType());
+				groupTime.setAllotTime(attendancePay.getAllotTime());
+			}
+			groupTime.setGroupWorkTime(adjustTime);
+			groupTimeDao.save(groupTime);
 			cr.setMessage("修改成功");
 		} else {
 			cr.setCode(ErrorCode.ILLEGAL_ARGUMENT.getCode());
@@ -183,12 +183,13 @@ public class GroupAction {
 			groupAll.add(group);
 		} else {
 			// 查询所有的分组员工
-			groupAll = groupService.findList(group);
+			Group gp = groupService.findOne(group.getId());
+			groupAll.add(gp);
 			//查询拥有外调人员的部门
-			if (group.getType() == 1 || group.getType() == 2 || group.getType() == 3) {
+			if (gp.getType() == 1 || gp.getType() == 2 || gp.getType() == 3) {
 				List<Temporarily> temporarilyList = temporarilyDao.findByTypeAndTemporarilyDateAndGroupId(
-						group.getType(), DatesUtil.getfristDayOftime(ProTypeUtils.countAllotTime(temporarilyDate)),
-						group.getId());
+						gp.getType(), DatesUtil.getfristDayOftime(ProTypeUtils.countAllotTime(temporarilyDate)),
+						gp.getId());
 				if (temporarilyList.size() > 0) {
 					Set<User> userlist = groupAll.get(0).getUsers();
 					for (Temporarily temporarily : temporarilyList) {
@@ -205,11 +206,12 @@ public class GroupAction {
 			Set<User> users = gr.getUsers().stream().filter(u -> u != null && u.getStatus() != null && u.getStatus() != 1).collect(Collectors.toSet());
 			for (User u : users) {
 				List<AttendancePay> attendancePay = attendancePayDao.findByUserIdAndTypeAndAllotTimeBetween(u.getId(),
-						group.getType(), DatesUtil.getfristDayOftime(ProTypeUtils.countAllotTime(temporarilyDate)),
+						gr.getType(), DatesUtil.getfristDayOftime(ProTypeUtils.countAllotTime(temporarilyDate)),
 						DatesUtil.getLastDayOftime(ProTypeUtils.countAllotTime(temporarilyDate)));
 				//提供所在组工作时长
 				if (attendancePay.size() > 0) {
-					u.setAdjustTime(attendancePay.get(0).getGroupWorkTime() != null ? attendancePay.get(0).getGroupWorkTime() : attendancePay.get(0).getWorkTime());
+					GroupTime groupWorkTime = groupTimeDao.findByUserIdAndTypeAndGroupIdAndAllotTime(u.getId(), gr.getType(), gr.getId(), DatesUtil.getfristDayOftime(ProTypeUtils.countAllotTime(temporarilyDate)));
+					u.setAdjustTime(groupWorkTime != null ? groupWorkTime.getGroupWorkTime() : attendancePay.get(0).getWorkTime());
 					u.setAdjustTimeId(attendancePay.get(0).getId());
 					u.setTemporarily(0);
 				}
@@ -337,7 +339,6 @@ public class GroupAction {
 		}
 		for (Date date : dateList) {
 			temporarily.setTemporarilyDate(DatesUtil.getfristDayOftime(date));
-			// 当类型为针工时，按当日当前分组
 			if (temporarilyDao.findByUserIdAndTemporarilyDateAndTypeAndGroupId(temporarily.getUserId(),
 					temporarily.getTemporarilyDate(), temporarily.getType(), temporarily.getGroupId()) != null) {
 				cr.setMessage("当天当前分组已添加过借调人员的工作时间,不必再次添加");

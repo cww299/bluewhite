@@ -444,6 +444,23 @@ public class AttendanceAction {
 	}
 
 	/**
+	 * 默认补签
+	 * @param request
+	 * @param ids
+	 * @return
+	 * @throws ParseException
+	 */
+	@RequestMapping(value = "/personnel/defaultRetroactive", method = RequestMethod.GET)
+	@ResponseBody
+	public CommonResponse defaultRetroactive(HttpServletRequest request, ApplicationLeave applicationLeave){
+		CommonResponse cr = new CommonResponse();
+//		applicationLeaveService.defaultRetroactive(applicationLeave);
+		
+		
+		return cr;
+	}
+	
+	/**
 	 * 分页查看请假事项
 	 * 
 	 * @param request

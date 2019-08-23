@@ -165,12 +165,17 @@ public class Task  extends BaseEntity<Long>{
 	@Column(name = "flag")
 	private Integer flag ;
 	
-	
 	/**
 	 * 备注
 	 */
 	@Column(name = "remark")
 	private String  remark;
+	
+	/**
+	 * 完成任务的分组id 
+	 */
+	@Column(name = "group_id")
+	private Long  groupId;
 	
 	/**
 	 * 查询字段
@@ -224,7 +229,6 @@ public class Task  extends BaseEntity<Long>{
 	@Transient
 	private Integer holeNumber;
 	
-	
 	/**
 	 * ac5
 	 */
@@ -236,13 +240,6 @@ public class Task  extends BaseEntity<Long>{
      */
 	@Transient
     private Integer machinist;
-	
-	/**
-	 * 分组id
-	 */
-	@Transient
-    private Long groupId;
-	
 	
 
 	public Long getGroupId() {

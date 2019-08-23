@@ -52,8 +52,7 @@ public class Constants {
     /**
      * 包装部
      */
-    public final static String  BAGABOARD = "大包上车";   
-    public final static String  BOXBOARD= "箱上车";
+    public final static String  BAGABOARD = "上车";   
     /**
      *  试制部 
      */

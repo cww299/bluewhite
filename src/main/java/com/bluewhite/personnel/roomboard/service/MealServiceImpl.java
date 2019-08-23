@@ -1,7 +1,5 @@
 package com.bluewhite.personnel.roomboard.service;
 
-import static org.hamcrest.CoreMatchers.nullValue;
-
 import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -26,7 +24,6 @@ import com.bluewhite.common.entity.PageResult;
 import com.bluewhite.common.utils.DatesUtil;
 import com.bluewhite.common.utils.NumUtils;
 import com.bluewhite.finance.consumption.dao.ConsumptionDao;
-import com.bluewhite.finance.consumption.entity.Consumption;
 import com.bluewhite.finance.wage.dao.WageDao;
 import com.bluewhite.finance.wage.entity.Wage;
 import com.bluewhite.personnel.attendance.dao.AttendanceInitDao;
