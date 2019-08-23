@@ -587,7 +587,7 @@
 							},
 							
 							success:function(result){
-								$(result.data.users).each(function(i,o){
+								$(result.data[0].users).each(function(i,o){
 									html +='<tr>'
 				      				+'<td class="text-center">'+o.userName+'</td>'
 				      				+'<td class="text-center"><input  class="adjustTime" style="background:none;outline:none;border:0px;text-align:center;" data-id="'+o.id+'" data-ajid="'+o.adjustTimeId+'" value='+(o.adjustTime!=null ? o.adjustTime :0)+' /></td>'

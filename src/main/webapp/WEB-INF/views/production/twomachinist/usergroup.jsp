@@ -291,7 +291,7 @@
 						},
 						
 						success:function(result){
-							$(result.data.users).each(function(i,o){
+							$(result.data[0].users).each(function(i,o){
 							html+=o.userName+"&nbsp&nbsp&nbsp&nbsp"
 							})
 							$('.modal-body').html(html);
