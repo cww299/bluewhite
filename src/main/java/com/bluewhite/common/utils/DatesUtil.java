@@ -584,5 +584,20 @@ public class DatesUtil {
 		}
 		return null;
 	}
+	
+	/**
+	 * 判断时间时分秒是否为0
+	 * @param time
+	 * @return
+	 */
+	public static boolean timeIsZero(Date time) {
+		boolean flag = false;
+		Calendar date = Calendar.getInstance();
+		date.setTime(time);
+		if(date.get(Calendar.HOUR_OF_DAY)==0 && date.get(Calendar.MINUTE)==0 && date.get(Calendar.SECOND)==0){
+			flag = true;
+		}
+		return flag;
+	}
 
 }

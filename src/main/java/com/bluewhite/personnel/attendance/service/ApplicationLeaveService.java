@@ -31,7 +31,12 @@ public interface ApplicationLeaveService  extends BaseCRUDService<ApplicationLea
 	 * @return
 	 */
 	public int deleteApplicationLeave(String ids) throws ParseException;
-
+	
+	/**
+	 * 默认补签
+	 * @param applicationLeave
+	 * @throws ParseException
+	 */
 	public void defaultRetroactive(ApplicationLeave applicationLeave)  throws ParseException ;
 ;
 
