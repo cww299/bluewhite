@@ -216,7 +216,7 @@
 </div>
 </script>
 <script type="text/html" id="barDemo">
-	<a class="layui-btn layui-btn-trans layui-btn-xs"  lay-event="update">编辑</a>
+	<a class="layui-btn layui-btn-trans layui-btn-xs layui-bg-blue"  lay-event="update">编辑</a>
 </script>
 <script>
 	layui.config({
@@ -435,7 +435,7 @@
 							var html = '';
 							for(i in arr){
 								if(arr[i]!='')
-									html+='<span class="layui-badge layui-bg-blue">'+arr[i]+'</span>&nbsp;&nbsp;';
+									html+='<span class="layui-badge layui-bg-green">'+arr[i]+'</span>&nbsp;&nbsp;';
 							}
 							return html;
 						}
