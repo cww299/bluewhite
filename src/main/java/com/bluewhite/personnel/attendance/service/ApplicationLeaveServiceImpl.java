@@ -210,23 +210,16 @@ public class ApplicationLeaveServiceImpl extends BaseServiceImpl<ApplicationLeav
 			}
 			//补签
 			if (applicationLeave.isAddSignIn()) {
-				holidayDetail += date + (time.equals("0") ? "补签入," : "补签出,");
-				// 获取时间区间
-				String[] addDate = date.split(",");
-				if (addDate.length > 0) {
-					for (String ad : addDate) {
-						Date tm = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").parse(ad);
-						Attendance attendance = new Attendance();
-						if(DatesUtil.timeIsZero(tm)){
-							attendance.setTime(time.equals("0") ? workTime : workTimeEnd);
-						}else{
-							attendance.setTime(tm);
-						}
-						attendance.setUserId(applicationLeave.getUserId());
-						attendance.setInOutMode(2);
-						attendanceDao.save(attendance);
-					}
+				Attendance attendance = new Attendance();
+				Date tm = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").parse(date);
+				if(DatesUtil.timeIsZero(tm)){
+					tm = time.equals("0") ? workTime : workTimeEnd;
 				}
+				attendance.setTime(tm);
+				attendance.setUserId(applicationLeave.getUserId());
+				attendance.setInOutMode(2);
+				attendanceDao.save(attendance);
+				holidayDetail += tm + (time.equals("0") ? "补签入," : "补签出,");
 			}
 			
 			if (applicationLeave.isApplyOvertime()) {
@@ -337,7 +330,7 @@ public class ApplicationLeaveServiceImpl extends BaseServiceImpl<ApplicationLeav
 		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 		JSONArray jsonArray = new JSONArray();
 		JSONObject jsonObject = new JSONObject(); 
-		jsonObject.put("date", applicationLeave.getWriteTime());
+		jsonObject.put("date", sdf.format(applicationLeave.getWriteTime()));
 		jsonObject.put("time", applicationLeave.getSign());
 		jsonArray.add(jsonObject);
 		applicationLeave.setTime(JSONArray.toJSONString(jsonArray));
