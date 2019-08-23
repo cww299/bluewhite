@@ -322,14 +322,28 @@
 			})
 			$('#inputapplytime').on('click',function(){
 				var val=$("#repairtime").val();	
+				var title = val;
 				if(val!=''){
-					if(moren){
-						if($("#qianru").get(0).checked==true)
-							val = val.split(' ')[0] + ' 08:00:00'
-						if($("#qianchu").get(0).checked==true)
-							val = val.split(' ')[0] + ' 18:00:00'
+					var time = 0;
+					if(moren){	//如果默认补签
+						if($("#qianru").get(0).checked==true){
+							title = val.split(' ')[0] + ' 补签入';
+							val = val.split(' ')[0] + ' 00:00:00';
+						}
+						if($("#qianchu").get(0).checked==true){
+							time = 1;
+							title = val.split(' ')[0] + ' 补签出';
+							val = val.split(' ')[0] + ' 00:00:00'
+						}
+					}else{	//如果是0点，默认加1秒
+						if(val.split(' ')[1]=='00:00:00')
+							val = val.split(' ')[0]+' 00:00:01';
 					}
-					var html = '<p><span class="layui-badge layui-bg-green" data-value="'+val+'">'+val+'<i class="layui-icon layui-icon-close"></i></span></p>';
+					var html = ['<p>',
+									'<span class="layui-badge layui-bg-green" data-value="'+val+'" data-time="'+time+'">',
+									title,
+						            '<i class="layui-icon layui-icon-close"></i></span>',
+						         '</p>',].join(' ');
 					$("#repairtime").val("");		//清空内容
 					$("#inputapplytime").append(html)
 					$('#inputapplytime').find('.layui-icon-close').on('click',function(){	//删除节点
@@ -580,9 +594,10 @@
 					        			//新增
 					        			layui.each($('#inputapplytime').find('span'),function(index,item){
 											var val = $(item).attr('data-value');
+											var time = $(item).attr('data-time');
 											myArray.push({
 												"date": val,
-												"time": data.field.Sign,
+												"time": time,
 											})
 										})
 					        		}
