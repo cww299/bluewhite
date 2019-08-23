@@ -452,11 +452,10 @@ public class AttendanceAction {
 	 */
 	@RequestMapping(value = "/personnel/defaultRetroactive", method = RequestMethod.GET)
 	@ResponseBody
-	public CommonResponse defaultRetroactive(HttpServletRequest request, ApplicationLeave applicationLeave){
+	public CommonResponse defaultRetroactive(HttpServletRequest request, ApplicationLeave applicationLeave) throws ParseException{
 		CommonResponse cr = new CommonResponse();
-//		applicationLeaveService.defaultRetroactive(applicationLeave);
-		
-		
+		applicationLeaveService.defaultRetroactive(applicationLeave);
+		cr.setMessage("补签成功");
 		return cr;
 	}
 	

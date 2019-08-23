@@ -146,6 +146,7 @@ public class GroupAction {
 					attendancePay.getUserId(),attendancePay.getType(),adjustId,attendancePay.getAllotTime());
 			if(groupTime == null){
 				groupTime = new GroupTime();
+				groupTime.setUserId(attendancePay.getUserId());
 				groupTime.setGroupId(attendancePay.getUser().getGroupId());
 				groupTime.setType(attendancePay.getType());
 				groupTime.setAllotTime(attendancePay.getAllotTime());

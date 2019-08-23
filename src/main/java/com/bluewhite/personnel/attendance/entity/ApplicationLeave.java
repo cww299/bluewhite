@@ -114,12 +114,6 @@ public class ApplicationLeave extends BaseEntity<Long>  {
 	private Long orgNameId;
 	
 	/**
-	 * 1=签入，2=签出
-	 */
-	@Transient
-	private Integer sign;
-	
-	/**
 	 * 查询字段
 	 */
 	@Transient
@@ -130,10 +124,13 @@ public class ApplicationLeave extends BaseEntity<Long>  {
 	@Transient
 	private Date orderTimeEnd;
 	
+	/**
+	 * 0=签入 1=签出
+	 */
+	@Transient
+	private Integer sign;
 	
 	
-	
-
 	public Integer getSign() {
 		return sign;
 	}
