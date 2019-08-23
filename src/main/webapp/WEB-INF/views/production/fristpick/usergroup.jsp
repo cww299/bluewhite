@@ -833,7 +833,7 @@
 					//ajax 拿way数据
 					source : function(query, process) {
 							return $.ajax({
-								url : '${ctx}/system/user/findUserList?foreigns='+$('#isLocalFactory').val(),
+								url : '${ctx}/system/user/findUserList?foreigns='+$('#isLocalFactory').val()+'&quit=0',
 								type : 'GET',
 								data : {
 									temporarilyName:$.trim(query),
