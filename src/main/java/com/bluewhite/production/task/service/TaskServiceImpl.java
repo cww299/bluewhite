@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.CopyOnWriteArraySet;
 import java.util.stream.Collectors;
 
@@ -27,6 +28,7 @@ import com.bluewhite.common.utils.NumUtils;
 import com.bluewhite.common.utils.SalesUtils;
 import com.bluewhite.finance.attendance.dao.AttendancePayDao;
 import com.bluewhite.finance.attendance.entity.AttendancePay;
+import com.bluewhite.onlineretailers.inventory.entity.ProcurementChild;
 import com.bluewhite.production.bacth.dao.BacthDao;
 import com.bluewhite.production.bacth.entity.Bacth;
 import com.bluewhite.production.finance.dao.PayBDao;
@@ -91,6 +93,10 @@ public class TaskServiceImpl extends BaseServiceImpl<Task, Long> implements Task
 		List<Temporarily> temporarilyList = null;
 		List<AttendancePay> attendancePayList = null;
 		List<User> userList = userDao.findByIdIn(userIdList);
+		Map<Long, List<User>> userGroupList = userList.stream().collect(Collectors.groupingBy(User::getGroupId, Collectors.toList()));
+		if(userGroupList.size()==1){
+			task.setGroupId(userList.get(0).getGroupId());
+		}
 		if(task.getType() == 2) {
 			 temporarilyList = temporarilyDao.findByUserIdInAndTemporarilyDateAndType(userIdList,orderTimeBegin,task.getType());
 			 attendancePayList = attendancePayDao.findByUserIdInAndTypeAndAllotTimeBetween(userIdList, task.getType(), orderTimeBegin, orderTimeEnd);

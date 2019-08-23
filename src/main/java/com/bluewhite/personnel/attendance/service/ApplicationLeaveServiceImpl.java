@@ -283,10 +283,10 @@ public class ApplicationLeaveServiceImpl extends BaseServiceImpl<ApplicationLeav
 					overString = "申请加班";
 					break;
 				case 2:
-					overString =  "撤销加班";
+					overString = "撤销加班";
 					break;
 				case 3:
-					overString =  "生产加班";
+					overString = "生产加班";
 					break;
 				}
 				holidayDetail = holidayDetail.equals("") ? (date + overString + time + "小时") : (holidayDetail+"," + date + overString + time + "小时");
