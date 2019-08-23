@@ -474,8 +474,8 @@ layui.config({
 		})
 		
 		
-		$('#sure').on('click',function(){								
-			sureChoosed();											//确定商品选择
+		$('#sure').on('click',function(){
+			sureChoosed();				//确定商品选择
 		})
 		
 		addNew.render({		//新增商品
@@ -814,7 +814,6 @@ layui.config({
 						price : price,			
 						id : choosedId++,
 				}
-				console.log(orderChild)
 				list.push(orderChild);
 			}
 			layui.each(list,function(index,item){ 
@@ -822,8 +821,10 @@ layui.config({
 				choosedProduct.push(item); 
 			})
 			table.reload('productTable',{ data:choosedProduct });
+			checkData = []; //清空选中的、防止卡顿多点
 			layer.msg('添加成功',{icon:1});
-			layer.close(chooseProductWin);	
+			layer.close(chooseProductWin);
+			return true;
 		}
 		
 		form.on('select', function(data){					//监听地址下拉框的选择
