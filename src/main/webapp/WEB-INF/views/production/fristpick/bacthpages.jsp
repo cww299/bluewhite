@@ -144,10 +144,10 @@
 						<div class="col-sm-2 working"></div>
 						<div class="col-sm-2 checkworking"></div>
 						<label class="col-sm-1 control-label">完成人:</label>
-						<div class="col-sm-2 complete">
+						<div class="col-sm-1 complete">
 							<input type="text" class="form-control">
 						</div>
-						<div class="col-sm-3 select"></div>
+						<div class="col-sm-3 select" id="showB"></div>
 					</div>
 				</div>
 		</div>
@@ -1083,13 +1083,19 @@
 					      type:"GET",
 			      		  success: function (result) {
 			      			  $(result.data).each(function(k,j){
-			      				htmlth +='<option value="'+j.id+'">'+j.name+'</option>'
+			      				htmlth +='<div class="input-group"><input type="checkbox" class="checkall" value="'+j.id+'" ><a href="javascript:void(0)" class="showA" data-id='+j.id+'><span style="font-size:18px;color:#5480f0">'+j.name+'</span></a></input></div>'
 			      			  });  
-			      			 $('.complete').html("<select class='form-control selectcomplete'><option value="+0+">请选择</option>"+htmlth+"</select>") 
+			      			 $('.complete').html(htmlth)
+			      			
 							//改变事件
-			      			 $(".selectcomplete").change(function(){
+			      			 $('.showA').on('click',function(){
+			      				$('.checkall').each(function(){ 
+		                    		$(this).prop("checked",false);
+		                    		
+		                    	})
+			      				var checked=$(this).is(':checked')
 			      				var htmltwo = "";
-			      				var	id=$(this).val()
+			      				var	id=$(this).data('id')
 								   var data={
 										  id:id,
 										  type:2,
@@ -1104,17 +1110,15 @@
 											  shade: [0.1,'#fff'] //0.1透明度的白色背景
 											});
 									},
-									
 									success:function(result){
-										$(result.data).each(function(i,o){
+										$(result.data).each(function(j,k){
 										
-										$(o.users).each(function(i,o){
-											htmltwo +='<div class="input-group"><input type="checkbox" class="stuCheckBox" value="'+o.id+'" data-username="'+o.userName+'"><label style="width:70px;text-align:center;color:gray;">'+o.userName+'</label>-<input style="width:100px;" class="time2" data-id="'+o.adjustTimeId+'" data-temporarily="'+o.temporarily+'" value="'+(o.adjustTime!=null ? o.adjustTime : "")+'" /></div>'
+										$(k.users).each(function(i,o){
+											htmltwo +='<div class="input-group"><input type="checkbox" class="stuCheckBox"   value="'+o.id+'" data-groupid="'+k.id+'"><label style="width:70px;text-align:center;color:gray;">'+o.userName+'</label>-<input style="width:100px;" class="time2" data-id="'+o.adjustTimeId+'" data-temporarily="'+o.temporarily+'" value="'+(o.adjustTime!=null ? o.adjustTime : "")+'" /></div>'
 										})
 										})
-										var s="<div class='input-group'><input type='checkbox' class='checkall'>全选</input></div>"
-										$('.select').html(s+htmltwo)
-										
+										/* var s="<div class='input-group'><input type='checkbox' class='checkall'>全选</input></div>" */
+										$('.select').html(htmltwo)
 										$(".time2").blur(function(){
 											var a=$(this).data('temporarily')
 											var id=$(this).data('id')
@@ -1174,8 +1178,7 @@
 														});
 											}
 										}) 
-										
-										$(".checkall").on('click',function(){
+										/* $(".checkall").on('click',function(){
 							                    if($(this).is(':checked')){ 
 										 			$('.stuCheckBox').each(function(){  
 							                    //此处如果用attr，会出现第三次失效的情况  
@@ -1187,7 +1190,7 @@
 							                    		
 							                    	})
 							                    }
-							                });
+							                }); */
 										layer.close(index);
 									},error:function(){
 										layer.msg("操作失败！", {icon: 2});
@@ -1241,20 +1244,65 @@
 									values.push($(this).val());
 									numberr.push($(this).data('residualnumber'));
 								}); 
+							  var check=new Array()
+							  $(".checkall:checked").each(function() {   
+								  check.push($(this).val());  
+								});
+							 
 							  var arr=new Array()
+							  var groupId;
+							  if(check.length<=0){
 								$(".stuCheckBox:checked").each(function() {   
+									groupId=$(this).data('groupid');
 								    arr.push($(this).val());   
 								}); 
-							  var username=new Array()
-							  $(".stuCheckBox:checked").each(function() {   
-								  username.push($(this).data('username'));   
-								});
+							  }else{
+								  $(".stuCheckBox:checked").each(function() {   
+									    arr.push($(this).val());   
+									});
+								  if(arr.length>0){
+									  return layer.msg("选组后不能单独选择员工", {icon: 2});
+								  }
+								  for (var i = 0; i < check.length; i++) {
+									   var data={
+										  id:check[i],
+										  type:2,
+								  		 }
+									$.ajax({
+										url:"${ctx}/production/allGroup",
+										data:data,
+							            traditional: true,
+							            async:false,
+										type:"GET",
+										beforeSend:function(){
+											index = layer.load(1, {
+												  shade: [0.1,'#fff'] //0.1透明度的白色背景
+												});
+										},
+										success:function(result){
+											if(0==result.code){
+												$(result.data).each(function(i,o){
+													$(o.users).each(function(i,o){
+														  arr.push(o.id);   
+													})
+													})
+											}else{
+												layer.msg(result.message, {icon: 2});
+											}
+											layer.close(index);
+										},error:function(){
+											layer.msg(result.message, {icon: 2});
+											layer.close(index);
+										}
+									});
+								} 
+							  }
 							  if(values.length<=0){
 									return layer.msg("至少选择一个工序！", {icon: 2});
 								}
-								if(arr.length<=0){
+								 if(arr.length<=0){
 									return layer.msg("至少选择一个员工！", {icon: 2});
-								}
+								} 
 								 number=$(".sumnumber").val();
 								 if(number==""){
 									 number=0;
@@ -1277,7 +1325,6 @@
 										procedureIds:values,
 										userIds:arr,
 										number:number,
-										userNames:username,
 										performance:performance,
 										performanceNumber:performanceNumber,
 										productName:productName,
@@ -1285,7 +1332,7 @@
 										bacthNumber:bacthNumber,
 										allotTime:$('#Time').val(),
 										productId:productId,
-										groupId:$(".selectcomplete").val()
+										groupId:groupId
 								}
 								
 							    $.ajax({
@@ -1321,7 +1368,8 @@
 							  $('.addDictDivTypeForm')[0].reset(); 
 							  $("#addDictDivType").hide();
 							  $('.checkworking').text(""); 
-							
+							  $('#showB').text(""); 
+							  
 						  } 
 					});
 					
