@@ -31,8 +31,8 @@
 							<td><input type="text" name="money" class="layui-input" /></td>
 							<td>&nbsp;&nbsp;</td>
 							<td><select class="layui-input" name="selectone" id="selectone">
-									<option name="expenseDate" value="2018-10-08 00:00:00">申请日期</option>
-									<option name="paymentDate" value="2018-11-08 00:00:00">付款日期</option>
+									<option name="beginTime" value="2018-10-08 00:00:00">申请日期</option>
+									<option name="endTime" value="2018-11-08 00:00:00">付款日期</option>
 							</select></td>
 							<td>&nbsp;&nbsp;</td>
 							<td><input id="startTime" style="width: 300px;" name="orderTimeBegin" placeholder="请输入开始时间" class="layui-input">
