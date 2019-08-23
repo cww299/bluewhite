@@ -144,10 +144,10 @@
 						<div class="col-sm-2 working"></div>
 						<div class="col-sm-2 checkworking"></div>
 						<label class="col-sm-1 control-label">完成人:</label>
-						<div class="col-sm-2 complete">
+						<div class="col-sm-1 complete">
 							<input type="text" class="form-control">
 						</div>
-						<div class="col-sm-3 select"></div>
+						<div class="col-sm-3 select" id="showB"></div>
 					</div>
 				</div>
 		</div>
@@ -1083,7 +1083,7 @@
 					      type:"GET",
 			      		  success: function (result) {
 			      			  $(result.data).each(function(k,j){
-			      				htmlth +='<div class="input-group"><input type="checkbox" class="checkall" value="'+j.id+'" ><a class="showA" data-id='+j.id+'>'+j.name+'</a></input></div>'
+			      				htmlth +='<div class="input-group"><input type="checkbox" class="checkall" value="'+j.id+'" ><a href="javascript:void(0)" class="showA" data-id='+j.id+'><span style="font-size:18px;color:#5480f0">'+j.name+'</span></a></input></div>'
 			      			  });  
 			      			 $('.complete').html(htmlth)
 			      			
@@ -1368,7 +1368,8 @@
 							  $('.addDictDivTypeForm')[0].reset(); 
 							  $("#addDictDivType").hide();
 							  $('.checkworking').text(""); 
-							
+							  $('#showB').text(""); 
+							  
 						  } 
 					});
 					
