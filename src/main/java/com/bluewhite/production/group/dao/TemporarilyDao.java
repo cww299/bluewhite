@@ -30,7 +30,7 @@ public interface TemporarilyDao extends BaseRepository<Temporarily, Long>{
 	 * @param orderTimeEnd
 	 * @return
 	 */
-	List<Temporarily> findByUserIdInAndTemporarilyDateAndTypeAndGroupId(List<Long> userIds, Date orderTimeBegin, Integer type,Long groupId);
+	List<Temporarily> findByUserIdInAndTemporarilyDateAndType(List<Long> userIds, Date orderTimeBegin, Integer type);
 	
 	/**
 	 * 根据分组id，员工id，日期查询

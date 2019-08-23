@@ -139,7 +139,7 @@ public class AttendanceTimeServiceImpl extends BaseServiceImpl<AttendanceTime, L
 							&& (at.getTime().before(endTimes) || at.getTime().compareTo(endTimes) == 0)) {
 						attUserList.add(at);
 					}
-				}
+				} 
 				List<Attendance> attList = attUserList.stream().sorted(Comparator.comparing(Attendance::getTime))
 						.collect(Collectors.toList());
 				// 获取每个人当天的考勤记录

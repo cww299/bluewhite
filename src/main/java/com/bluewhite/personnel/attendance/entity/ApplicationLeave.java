@@ -114,6 +114,12 @@ public class ApplicationLeave extends BaseEntity<Long>  {
 	private Long orgNameId;
 	
 	/**
+	 * 1=签入，2=签出
+	 */
+	@Transient
+	private Integer sign;
+	
+	/**
 	 * 查询字段
 	 */
 	@Transient
@@ -127,6 +133,14 @@ public class ApplicationLeave extends BaseEntity<Long>  {
 	
 	
 	
+
+	public Integer getSign() {
+		return sign;
+	}
+
+	public void setSign(Integer sign) {
+		this.sign = sign;
+	}
 
 	public Double getOvertimeType() {
 		return overtimeType;

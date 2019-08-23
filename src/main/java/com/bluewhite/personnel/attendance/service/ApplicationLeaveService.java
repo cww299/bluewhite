@@ -1,6 +1,7 @@
 package com.bluewhite.personnel.attendance.service;
 
 import java.text.ParseException;
+import java.util.Date;
 import java.util.List;
 
 import com.bluewhite.base.BaseCRUDService;
@@ -30,6 +31,8 @@ public interface ApplicationLeaveService  extends BaseCRUDService<ApplicationLea
 	 * @return
 	 */
 	public int deleteApplicationLeave(String ids) throws ParseException;
+
+	public void defaultRetroactive(ApplicationLeave applicationLeave)  throws ParseException ;
 ;
 
 }

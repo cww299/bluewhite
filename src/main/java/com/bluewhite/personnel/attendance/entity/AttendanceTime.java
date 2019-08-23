@@ -57,13 +57,15 @@ public class AttendanceTime extends BaseEntity<Long> {
 	 * 上班签到时间  0—Check-In 
 	 * 
 	 */
+	@JsonFormat(pattern="yyyy-MM-dd HH:mm:ss",timezone="GMT+8")
 	@Column(name = "check_in")	
-	private Date checkIn ;
+	private Date checkIn;
 	
 	/**
 	 * 下班签到时间 1—Check-Out
 	 * 
 	 */
+	@JsonFormat(pattern="yyyy-MM-dd HH:mm:ss",timezone="GMT+8")
 	@Column(name = "check_out")	
 	private Date checkOut;
 	

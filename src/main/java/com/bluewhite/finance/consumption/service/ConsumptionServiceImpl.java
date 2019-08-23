@@ -84,11 +84,6 @@ public class ConsumptionServiceImpl extends BaseServiceImpl<Consumption, Long> i
 			}
 
 			// 按报销类型过滤
-			if (param.getApplyTypeId() != null) {
-				predicate.add(cb.equal(root.get("applyTypeId").as(Integer.class), param.getApplyTypeId()));
-			}
-
-			// 按报销类型过滤
 			if (param.getDeleteFlag() != null) {
 				predicate.add(cb.equal(root.get("deleteFlag").as(Integer.class), param.getDeleteFlag()));
 			}
