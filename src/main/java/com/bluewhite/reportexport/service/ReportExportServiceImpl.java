@@ -145,63 +145,10 @@ public class ReportExportServiceImpl implements ReportExportService {
 	public int importUserExcel(List<UserPoi> excelUser) {
 		int count = 0;
 		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
-
 		if (excelUser.size() > 0) {
 			List<User> userList = new ArrayList<User>();
 			for (UserPoi proPoi : excelUser) {
-				// User user = userDao.findByUserName(proPoi.getLogin_name());
-				// UserContract userContract =null;
-				// if(user==null){
-				// user = new User();
-				// user.setUserName(proPoi.getLogin_name());
-				// user.setForeigns(0);
-				// }
-				//
-				// Date entry = null;
-				// Date quitDate = null;
-				// Date contractDate =null;
-				// Date estimate =null;
-				// try {
-				// if(!StringUtils.isEmpty(proPoi.getEntry())){
-				//// entry = sdf.parse(proPoi.getEntry());
-				// }
-				// if(!StringUtils.isEmpty(proPoi.getQuit_date())){
-				//// quitDate = sdf.parse(proPoi.getQuit_date());
-				// }
-				// if(!StringUtils.isEmpty(proPoi.getContract_date())){
-				//// contractDate = sdf.parse(proPoi.getContract_date());
-				// }
-				// if(!StringUtils.isEmpty(proPoi.getEstimate())){
-				//// estimate = sdf.parse(proPoi.getEstimate());
-				// }
-				//
-				// } catch (ParseException e) {
-				// e.printStackTrace();
-				// }
-				// user.setGender(proPoi.getGender());
-				// user.setQuit(proPoi.getQuit());
-				// user.setQuitDate(proPoi.getQuit_date());
-				// user.setContractDate(proPoi.getContract_date());
-				// user.setPhone(proPoi.getPhone());
-				// user.setIdCard(proPoi.getId_card());
-				// user.setBankCard1(proPoi.getBank_card1());
-				// user.setEstimate(proPoi.getEstimate());
-				// user.setInformation(proPoi.getInformation());
-				// user.setCompany(proPoi.getCompany());
-				// user.setNexus(proPoi.getNexus());
-				// user.setSafe(proPoi.getSafe());
-				// user.setCommitment(proPoi.getCommitment());
-				// user.setContacts(proPoi.getContacts());
-				// user.setUserContract(userContract);
-				// user.setPermanentAddress(proPoi.getPermanent_address());
-				// user.setLivingAddress(proPoi.getLiving_address());
-				// user.setEntry(proPoi.getEntry());
-				// userContract =
-				// userContractDao.findByUsername(proPoi.getLogin_name());
-				// if(userContract!=null){
-				// user.setUserContract(userContract);
-				// }
-				// userList.add(user);
+		
 				count++;
 			}
 			userDao.save(userList);
@@ -211,19 +158,7 @@ public class ReportExportServiceImpl implements ReportExportService {
 
 	@Override
 	public int importImportUserContract(List<UserContract> excelUser) {
-
 		int count = 0;
-		// if(excelUser.size()>0){
-		// for(UserContract proPoi :excelUser){
-		// UserContract user =
-		// userContractDao.findByUsername(proPoi.getUsername());
-		// if(user!=null){
-		// user.setNumber(proPoi.getNumber());
-		// userContractDao.save(user);
-		// count++;
-		// }
-		// }
-		// }
 		return count;
 	}
 
@@ -314,16 +249,6 @@ public class ReportExportServiceImpl implements ReportExportService {
 				count++;
 			}
 		}
-
-		// for(Materiel materiel : excelMateriel){
-		// Materiel mt = materielDao.findByName(materiel.getName());
-		// mt.setConvertPrice(mt.getPrice()/materiel.getConvertNumber());
-		// mt.setConvertNumber(materiel.getConvertNumber());
-		// mt.setConvertUnit(materiel.getConvertUnit());
-		// materielDao.save(mt);
-		// count++;
-		// System.out.println(count);
-		// }
 		return count;
 	}
 
