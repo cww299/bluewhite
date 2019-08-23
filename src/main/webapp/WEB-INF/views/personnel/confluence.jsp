@@ -479,11 +479,11 @@ layui.config({
 							var html = ['<div>',
 							            	'<p style="text-align:center;">当日打卡记录</p>',
 							            	'签入时间：'+(dayData.checkIn || '----')+'<br>',
-							            	'签出时间：'+(dayData.checkIn || '----')+'<br>',
-							            	'<span class="layui-badge" data-id="'+dayData.userId+'" data-type="true" data-day="'+dayData.time+'">补签入</span>',
-							            	'&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;',
+							            	'签出时间：'+(dayData.checkOut || '----')+'<br>',
+							            	'<span class="layui-badge" data-id="'+dayData.userId+'" data-type="0" data-day="'+dayData.time+'">补签入</span>',
+							            	'&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;',
 							            	'<span class="layui-badge layui-bg-green" data-id="'+dayData.userId+'" ',
-							            			'data-type="false" data-day="'+dayData.time+'">补签出</span>',
+							            			'data-type="1" data-day="'+dayData.time+'">补签出</span>',
 							            '</div>',
 							            ].join(' ');
 							tipWin = layer.tips(html, elem, {
@@ -498,10 +498,11 @@ layui.config({
 								   ,day = $(event.target).data('day');
 								myutil.saveAjax({
 									url:"${ctx}/personnel/defaultRetroactive",
+									type:'get',
 									data:{
 										userId: userId,
 										writeTime: day+' 00:00:00',
-										addSignIn: type,
+										sign: type,
 									}
 								})
 							}).mouseover(function(){
