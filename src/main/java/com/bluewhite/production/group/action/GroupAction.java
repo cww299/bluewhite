@@ -7,6 +7,8 @@ import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 import javax.servlet.http.HttpServletRequest;
@@ -31,6 +33,7 @@ import com.bluewhite.common.Log;
 import com.bluewhite.common.entity.CommonResponse;
 import com.bluewhite.common.entity.ErrorCode;
 import com.bluewhite.common.utils.DatesUtil;
+import com.bluewhite.common.utils.StringUtil;
 import com.bluewhite.finance.attendance.dao.AttendancePayDao;
 import com.bluewhite.finance.attendance.entity.AttendancePay;
 import com.bluewhite.finance.attendance.service.AttendancePayService;
@@ -313,6 +316,11 @@ public class GroupAction {
 			return cr;
 		}
 		if (StringUtils.isEmpty(temporarily.getUserId())) {
+			if(temporarily.getUserName().indexOf("特急")!=-1 || StringUtil.HasDigit(temporarily.getUserName())){
+				cr.setMessage("该人员名称不合法，请检查后添加");
+				cr.setCode(ErrorCode.ILLEGAL_ARGUMENT.getCode());
+				return cr;
+			}
 			User u = userService.findByUserName(temporarily.getUserName());
 			if (u != null) {
 				cr.setMessage("系统已有该员工，请确认是否本厂，再次添加");
@@ -329,7 +337,6 @@ public class GroupAction {
 			userService.save(user);
 			temporarily.setUserId(user.getId());
 		}
-
 		List<Date> dateList = new ArrayList<>();
 		if (!StringUtils.isEmpty(temporarily.getTemporarilyDates())) {
 			String[] dateArr = temporarily.getTemporarilyDates().split(" ~ ");
@@ -338,32 +345,33 @@ public class GroupAction {
 		} else {
 			dateList.add(ProTypeUtils.countAllotTime(temporarily.getTemporarilyDate()));
 		}
+		List<Temporarily> temporarilyList = new ArrayList<>();
 		for (Date date : dateList) {
-			temporarily.setTemporarilyDate(DatesUtil.getfristDayOftime(date));
-			if (temporarilyDao.findByUserIdAndTemporarilyDateAndTypeAndGroupId(temporarily.getUserId(),
-					temporarily.getTemporarilyDate(), temporarily.getType(), temporarily.getGroupId()) != null) {
+			Temporarily temporarilyNew = new Temporarily();
+			BeanCopyUtils.copyNotEmpty(temporarily, temporarilyNew, "");
+			temporarilyNew.setTemporarilyDate(DatesUtil.getfristDayOftime(date));
+			if (temporarilyDao.findByUserIdAndTemporarilyDateAndTypeAndGroupId(temporarily.getUserId(), temporarily.getTemporarilyDate(), temporarily.getType(), temporarily.getGroupId()) != null) {
 				cr.setMessage("当天当前分组已添加过借调人员的工作时间,不必再次添加");
 				cr.setCode(ErrorCode.ILLEGAL_ARGUMENT.getCode());
 				return cr;
 			}
-			temporarilyDao.save(temporarily);
-			cr.setMessage("添加成功");
+			temporarilyList.add(temporarilyNew);
 		}
+		temporarilyDao.save(temporarilyList);
+		cr.setMessage("添加成功");
 		return cr;
 	}
 
+	
 	/**
 	 * 修改借调人员
 	 * 
 	 * (1=一楼质检,2=一楼包装)
-	 * 
-	 * @param request
-	 *            请求
 	 * @return cr
 	 */
 	@RequestMapping(value = "/production/updateTemporarily", method = RequestMethod.POST)
 	@ResponseBody
-	public CommonResponse updateTemporarily(HttpServletRequest request, Temporarily temporarily) {
+	public CommonResponse updateTemporarily(Temporarily temporarily) {
 		CommonResponse cr = new CommonResponse();
 		if (temporarily.getId() == null) {
 			cr.setCode(ErrorCode.ILLEGAL_ARGUMENT.getCode());
@@ -423,8 +431,7 @@ public class GroupAction {
 				}
 			}
 		}
-		cr.setData(
-				ClearCascadeJSON.get()
+		cr.setData(ClearCascadeJSON.get()
 						.addRetainTerm(Temporarily.class, "id", "userId", "workTime", "temporarilyDate", "groupName",
 								"groupId", "user")
 						.addRetainTerm(User.class, "userName").format(temporarilyList).toJSON());
