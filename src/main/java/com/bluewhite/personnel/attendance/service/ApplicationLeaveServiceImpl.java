@@ -213,13 +213,13 @@ public class ApplicationLeaveServiceImpl extends BaseServiceImpl<ApplicationLeav
 				Attendance attendance = new Attendance();
 				Date tm = sdft.parse(date);
 				if(DatesUtil.timeIsZero(tm)){
-					tm = time.equals("0") ? sdft.parse(sdft.format(workTimeEnd)) : sdft.parse(sdft.format(workTimeEnd));
+					tm = time.equals("0") ? workTime : workTimeEnd;  
 				}
 				attendance.setTime(tm);
 				attendance.setUserId(applicationLeave.getUserId());
 				attendance.setInOutMode(2);
 				attendanceDao.save(attendance);
-				holidayDetail += tm + (time.equals("0") ? "补签入," : "补签出,");
+				holidayDetail += date + (time.equals("0") ? "补签入," : "补签出,");
 			}
 			
 			if (applicationLeave.isApplyOvertime()) {
