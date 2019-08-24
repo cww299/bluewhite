@@ -209,10 +209,11 @@ public class ApplicationLeaveServiceImpl extends BaseServiceImpl<ApplicationLeav
 			}
 			//补签
 			if (applicationLeave.isAddSignIn()) {
+				SimpleDateFormat sdft = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 				Attendance attendance = new Attendance();
-				Date tm = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").parse(date);
+				Date tm = sdft.parse(date);
 				if(DatesUtil.timeIsZero(tm)){
-					tm = time.equals("0") ? workTime : workTimeEnd;
+					tm = time.equals("0") ? sdft.parse(sdft.format(workTimeEnd)) : sdft.parse(sdft.format(workTimeEnd));
 				}
 				attendance.setTime(tm);
 				attendance.setUserId(applicationLeave.getUserId());
