@@ -453,7 +453,10 @@ layui.config({
 			choosedProduct = [];
 			rederSelect();
 			renderUserSelect('userIdSelect');
-			table.reload('productTable',{ data : choosedProduct, });
+			table.reload('productTable',{ 
+				data : choosedProduct, 
+				page : { curr: 1 },
+			});
 			form.render();
 			layer.msg('清空成功',{icon:1});
 		})
