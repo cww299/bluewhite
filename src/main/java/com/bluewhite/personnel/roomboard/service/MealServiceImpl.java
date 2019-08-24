@@ -1,6 +1,5 @@
 package com.bluewhite.personnel.roomboard.service;
 
-import java.sql.Timestamp;
 import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -207,13 +206,15 @@ public class MealServiceImpl extends BaseServiceImpl<Meal, Long> implements Meal
 		double sum6 = 0;// 上个月面料主食等汇总
 		double sum9 = 0;// 人工工资总和
 		double sum10 = 0;// 当月所有的报销物料
+		Long day = DatesUtil.getDaySub(DatesUtil.getFirstDayOfMonth(meal.getOrderTimeBegin()),
+				DatesUtil.getLastDayOfMonth(meal.getOrderTimeBegin()));// 当月天数
+
 		// 蓝白总部
 		Long siteTypeId = (long) 288;
 		// 当月开始日期
 		Date timeBegin = DatesUtil.getFirstDayOfMonth(meal.getOrderTimeBegin());
 		// 当月结束日期
 		Date timeEnd = DatesUtil.getLastDayOfMonth(meal.getOrderTimeBegin());
-		Long day = DatesUtil.getDaySub(timeBegin,timeEnd);
 		// 水费
 		CostLiving costLivingWater = costLivingDao.findByCostTypeIdAndSiteTypeIdAndBeginTimeAndEndTime((long) 290,
 				siteTypeId, timeBegin, timeEnd);
@@ -264,7 +265,7 @@ public class MealServiceImpl extends BaseServiceImpl<Meal, Long> implements Meal
 		}
 		// 上月煤气
 		CostLiving costLivingGasLast = costLivingDao.findByCostTypeIdAndSiteTypeIdAndBeginTimeAndEndTime((long) 292,
-				siteTypeId, DatesUtil.getFristDayOfLastMonth(timeBegin), DatesUtil.getLastDayOLastMonth(timeEnd));
+				siteTypeId, DatesUtil.getFristDayOfLastMonth(timeBegin), DatesUtil.getFristDayOfLastMonth(timeEnd));
 		if (costLivingGasLast != null) {
 			sum5 = NumUtils.mul(costLivingGasLast.getAverageCost(), day);
 		} else {
@@ -610,13 +611,14 @@ public class MealServiceImpl extends BaseServiceImpl<Meal, Long> implements Meal
 		double sum6 = 0;// 上个月面料主食等汇总
 		double sum9 = 0;// 人工工资总和
 		double sum10 = 0;// 当月所有的报销物料
+		Long day = DatesUtil.getDaySub(DatesUtil.getFirstDayOfMonth(meal.getOrderTimeBegin()),
+				DatesUtil.getLastDayOfMonth(meal.getOrderTimeBegin()));// 当月天数
 		// 蓝白总部
 		Long siteTypeId = (long) 288;
 		// 当月开始日期
 		Date timeBegin = DatesUtil.getFirstDayOfMonth(meal.getOrderTimeBegin());
 		// 当月结束日期
 		Date timeEnd = DatesUtil.getLastDayOfMonth(meal.getOrderTimeBegin());
-		Long day = DatesUtil.getDaySub(timeBegin,timeEnd);
 		// 水费
 		CostLiving costLivingWater = costLivingDao.findByCostTypeIdAndSiteTypeIdAndBeginTimeAndEndTime((long) 290,
 				siteTypeId, timeBegin, timeEnd);
@@ -667,7 +669,7 @@ public class MealServiceImpl extends BaseServiceImpl<Meal, Long> implements Meal
 		}
 		// 上月煤气
 		CostLiving costLivingGasLast = costLivingDao.findByCostTypeIdAndSiteTypeIdAndBeginTimeAndEndTime((long) 292,
-				siteTypeId, DatesUtil.getFristDayOfLastMonth(timeBegin), DatesUtil.getFristDayOfLastMonth(timeEnd));
+				siteTypeId, DatesUtil.getFristDayOfLastMonth(timeBegin), DatesUtil.getLastDayOLastMonth(timeEnd));
 		if (costLivingGasLast != null) {
 			sum5 = NumUtils.mul(costLivingGasLast.getAverageCost(), day);
 		} else {
@@ -786,16 +788,15 @@ public class MealServiceImpl extends BaseServiceImpl<Meal, Long> implements Meal
 		Long siteTypeId = (long) 288;
 		PersonVariable restType = personVariableDao.findByType(5);
 		// 当月开始日期
-		Date timeBegin = new Timestamp(DatesUtil.getFirstDayOfMonth(meal.getOrderTimeBegin()).getTime());
+		Date timeBegin = DatesUtil.getFirstDayOfMonth(meal.getOrderTimeBegin());
 		// 当月结束日期
-		Date timeEnd = new Timestamp(DatesUtil.getLastDayOfMonth(meal.getOrderTimeBegin()).getTime());
+		Date timeEnd = DatesUtil.getLastDayOfMonth(meal.getOrderTimeBegin());
 		// 当月天数
-		Long day = DatesUtil.getDaySub(timeBegin,timeEnd);
+		Long day = DatesUtil.getDaySub(DatesUtil.getFirstDayOfMonth(meal.getOrderTimeBegin()),
+				DatesUtil.getLastDayOfMonth(meal.getOrderTimeBegin()));
 		// 水费
-		List<CostLiving> costLivingWater = costLivingDao.findByCostTypeIdAndSiteTypeId((long) 290,
-				siteTypeId);
-		costLivingWater = costLivingWater.stream().filter(CostLiving -> CostLiving.getBeginTime().compareTo(timeBegin) == 0
-				&& CostLiving.getEndTime().compareTo(timeEnd) == 0).collect(Collectors.toList());
+		CostLiving costLivingWater = costLivingDao.findByCostTypeIdAndSiteTypeIdAndBeginTimeAndEndTime((long) 290,
+				siteTypeId, timeBegin, timeEnd);
 		// 电费
 		CostLiving costLivingElectricity = costLivingDao.findByCostTypeIdAndSiteTypeIdAndBeginTimeAndEndTime((long) 291,
 				siteTypeId, timeBegin, timeEnd);
@@ -829,14 +830,14 @@ public class MealServiceImpl extends BaseServiceImpl<Meal, Long> implements Meal
 			allMap.put("sumday1", NumUtils.mul(averageCost, Double.parseDouble(restType.getKeyValueThree())));
 			allList.add(allMap);
 		}
-		if (costLivingWater.size() >0) {
+		if (costLivingWater != null) {
 			Map<String, Object> allMap = new HashMap<>();
 			allMap.put("name", "水费");
 			allMap.put("modify", "keyValue");
-			allMap.put("sum1", costLivingWater.get(0).getTotalCost());
+			allMap.put("sum1", costLivingWater.getTotalCost());
 			allMap.put("valPrice1", restType.getKeyValue());
-			allMap.put("val", NumUtils.mul(costLivingWater.get(0).getTotalCost(), Double.parseDouble(restType.getKeyValue())));
-			allMap.put("sumday1", costLivingWater.get(0).getAverageCost());
+			allMap.put("val", NumUtils.mul(costLivingWater.getTotalCost(), Double.parseDouble(restType.getKeyValue())));
+			allMap.put("sumday1", costLivingWater.getAverageCost());
 			allList.add(allMap);
 		}
 		if (costLivingElectricity != null) {
