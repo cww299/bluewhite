@@ -93,14 +93,14 @@ public class TaskServiceImpl extends BaseServiceImpl<Task, Long> implements Task
 		List<Temporarily> temporarilyList = null;
 		List<AttendancePay> attendancePayList = null;
 		List<User> userList = userDao.findByIdIn(userIdList);
-		Map<Long, List<User>> userGroupList = userList.stream().collect(Collectors.groupingBy(User::getGroupId, Collectors.toList()));
-		if(userGroupList.size()==1){
-			task.setGroupId(userList.get(0).getGroupId());
-		}
 		if(task.getType() == 2) {
 			 temporarilyList = temporarilyDao.findByUserIdInAndTemporarilyDateAndType(userIdList,orderTimeBegin,task.getType());
+			 Map<Long, List<Temporarily>> temporarilyMapList = temporarilyList.stream().collect(Collectors.groupingBy(Temporarily::getGroupId, Collectors.toList()));
 			 attendancePayList = attendancePayDao.findByUserIdInAndTypeAndAllotTimeBetween(userIdList, task.getType(), orderTimeBegin, orderTimeEnd);
-			 
+			 Map<Long, List<AttendancePay>> attendancePayMapList = attendancePayList.stream().collect(Collectors.groupingBy(AttendancePay::getGroupId, Collectors.toList()));
+			 if(temporarilyMapList.size()==1 && attendancePayMapList.size()==1){
+				 task.setGroupId(temporarilyList.get(0).getGroupId());
+			 }
 		}
 		Double sumTaskPrice = 0.0;
 		// 将工序ids分成多个任务
@@ -116,7 +116,7 @@ public class TaskServiceImpl extends BaseServiceImpl<Task, Long> implements Task
 				}
 				newTask.setProcedureId(id);
 				newTask.setProcedureName(procedure.getName());
-				// 二楼特殊业务，当存在实际不为null的时候，先计算出任务数量
+				// 二楼特殊业务，当存在实际不为null的时候，先  计算出任务数量
 				if (task.getTaskTime() != null && task.getType() == 3) {
 					newTask.setNumber(NumUtils.roundTwo(ProTypeUtils.getTaskNumber(newTask.getTaskTime(),
 							newTask.getType(), procedure.getWorkingTime())));
