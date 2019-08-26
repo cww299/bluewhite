@@ -33,7 +33,7 @@ public class WageAction {
 	private ClearCascadeJSON clearCascadeJSON;
 	{
 		clearCascadeJSON = ClearCascadeJSON.get()
-				.addRetainTerm(Wage.class,"id","userId","user", "time","wage","type")
+				.addRetainTerm(Wage.class,"id","userId","user", "time","wage","type","wages")
 				.addRetainTerm(User.class, "id", "userName","orgName","orgNameId");
 	}
 	/**

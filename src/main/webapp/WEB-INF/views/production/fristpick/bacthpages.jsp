@@ -1250,10 +1250,8 @@
 								});
 							 
 							  var arr=new Array()
-							  var groupId;
 							  if(check.length<=0){
 								$(".stuCheckBox:checked").each(function() {   
-									groupId=$(this).data('groupid');
 								    arr.push($(this).val());   
 								}); 
 							  }else{
@@ -1332,7 +1330,6 @@
 										bacthNumber:bacthNumber,
 										allotTime:$('#Time').val(),
 										productId:productId,
-										groupId:groupId
 								}
 								
 							    $.ajax({

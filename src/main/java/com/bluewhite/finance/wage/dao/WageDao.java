@@ -12,7 +12,7 @@ public interface WageDao extends BaseRepository<Wage, Long>{
 	 * 按时间 类型查询
 	 * @return
 	 */
-	public List<Wage> findByTypeAndTimeBetween(Integer type,Date orderTimeBegin, Date orderTimeEnd);
+	public List<Wage> findByTypeAndTimeBetween(Long type,Date orderTimeBegin, Date orderTimeEnd);
 	
 	/**
 	 * 按员工 时间查询

@@ -11,6 +11,7 @@ import javax.persistence.Table;
 import javax.persistence.Transient;
 
 import com.bluewhite.base.BaseEntity;
+import com.bluewhite.basedata.entity.BaseData;
 import com.bluewhite.system.user.entity.User;
 
 /**
@@ -52,8 +53,15 @@ public class Wage  extends BaseEntity<Long>{
 	 * 类型
 	 */
 	@Column(name = "type")
-	private Integer type;
+	private Long type;
 
+	/**
+	 * 工资类型
+	 */
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "type", referencedColumnName = "id", insertable = false, updatable = false)
+	private BaseData wages;
+	
 	/**
 	 * 查询字段
 	 */
@@ -81,12 +89,22 @@ public class Wage  extends BaseEntity<Long>{
 		this.orderTimeEnd = orderTimeEnd;
 	}
 
-	public Integer getType() {
+	
+
+	public Long getType() {
 		return type;
 	}
 
-	public void setType(Integer type) {
+	public void setType(Long type) {
 		this.type = type;
+	}
+
+	public BaseData getWages() {
+		return wages;
+	}
+
+	public void setWages(BaseData wages) {
+		this.wages = wages;
 	}
 
 	public Long getUserId() {

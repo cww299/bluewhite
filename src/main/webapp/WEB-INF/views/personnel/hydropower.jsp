@@ -315,7 +315,6 @@
 								laydate.render({
 									elem: tdElem.children[0],
 									format: 'yyyy-MM-dd HH:mm:ss',
-									type:'datetime',
 									done: function(value, date) {
 											var id = table.cache[tableView.attr('lay-id')][index].id
 											var postData = {
@@ -390,7 +389,7 @@
 									};
 									laydate.render({
 										elem: tdElem.children[0],
-										format: 'yyyy-MM-dd 23:59:59',
+										format: 'yyyy-MM-dd HH:mm:ss',
 										done: function(value, date) {
 											var trElem = $(this.elem[0]).closest('tr');
 											var tableView = trElem.closest('.layui-table-view');
@@ -398,7 +397,7 @@
 											var id = table.cache[tableView.attr('lay-id')][trElem.data('index')].id
 											var postData = {
 												id: id,
-												time:value,
+												time:value.split(' ')[0]+' 23:59:59',
 											}
 											mainJs.fUpdate(postData);
 										}
@@ -418,7 +417,7 @@
 									})
 								if(flag==true){
 								data.forEach(function(postData,i){
-									/* postData.time=$('#startTime').val() */
+									 postData.endTime=postData.endTime.split(' ')[0]+' 23:59:59',
 									 mainJs.fAdd(postData);
 									table.cleanTemp(tableId);
 									})	
@@ -432,10 +431,10 @@
 										ids: checkedIds,
 									}
 									$.ajax({
-										url: "${ctx}/personnel/deleteSingleMeal",
+										url: "${ctx}/personnel/deleteCostLiving",
 										data: postData,
 										traditional: true,
-										type: "GET",
+										type: "POST",
 										beforeSend: function() {
 											index;
 										},
@@ -474,6 +473,9 @@
 									layer.close(index);
 								});
 								break;
+							case '': 
+								table.cleanTemp('tableData');
+							break;
 						}
 					});
 	
