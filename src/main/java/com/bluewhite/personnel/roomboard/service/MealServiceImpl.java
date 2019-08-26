@@ -295,7 +295,7 @@ public class MealServiceImpl extends BaseServiceImpl<Meal, Long> implements Meal
 		double valday = NumUtils.div((valA > valB ? valA : valB), day, 2);// 采购员当天收入
 		PersonVariable personVariable2 = personVariableDao.findByType(5);
 		double valPrice = NumUtils.mul(valday, Double.parseDouble(personVariable2.getKeyValue()));// 第一个含管理采购收入
-		List<Wage> wage = wageDao.findByTypeAndTimeBetween(281, DatesUtil.getFirstDayOfMonth(meal.getOrderTimeBegin()),
+		List<Wage> wage = wageDao.findByTypeAndTimeBetween((long) 281, DatesUtil.getFirstDayOfMonth(meal.getOrderTimeBegin()),
 				DatesUtil.getLastDayOfMonth(meal.getOrderTimeBegin()));
 		if (wage.size() == 0) {
 			throw new ServiceException("当月数据员工资未查询到");
@@ -320,7 +320,7 @@ public class MealServiceImpl extends BaseServiceImpl<Meal, Long> implements Meal
 				Double.parseDouble(personVariable1.getKeyValueThree()));// 第二个含管理收入
 		double valPrice3 = NumUtils.sum(valPrice, valPrice2);// 物料采购和数据跟进费
 		double valPrice4 = NumUtils.div(valwage, day, 2);// 人工工资
-		List<Wage> wages = wageDao.findByTypeAndTimeBetween(282,
+		List<Wage> wages = wageDao.findByTypeAndTimeBetween((long)282,
 				DatesUtil.getFristDayOfLastMonth(meal.getOrderTimeBegin()),
 				DatesUtil.getLastDayOLastMonth(meal.getOrderTimeBegin()));
 		if (wages.size() == 0) {
@@ -699,7 +699,7 @@ public class MealServiceImpl extends BaseServiceImpl<Meal, Long> implements Meal
 		double valday = NumUtils.div((valA > valB ? valA : valB), day, 2);// 采购员当天收入
 		PersonVariable personVariable2 = personVariableDao.findByType(5);
 		double valPrice = NumUtils.mul(valday, Double.parseDouble(personVariable2.getKeyValue()));// 第一个含管理采购收入
-		List<Wage> wage = wageDao.findByTypeAndTimeBetween(281, DatesUtil.getFirstDayOfMonth(meal.getOrderTimeBegin()),
+		List<Wage> wage = wageDao.findByTypeAndTimeBetween((long)281, DatesUtil.getFirstDayOfMonth(meal.getOrderTimeBegin()),
 				DatesUtil.getLastDayOfMonth(meal.getOrderTimeBegin()));
 		if (wage.size() == 0) {
 			throw new ServiceException("当月数据员工资未查询到");
@@ -725,7 +725,7 @@ public class MealServiceImpl extends BaseServiceImpl<Meal, Long> implements Meal
 				Double.parseDouble(personVariable1.getKeyValueThree()));// 第二个含管理收入
 		double valPrice3 = NumUtils.sum(valPrice, valPrice2);// 物料采购和数据跟进费
 		double valPrice4 = NumUtils.div(valwage, day, 2);// 人工工资
-		List<Wage> wages = wageDao.findByTypeAndTimeBetween(282,
+		List<Wage> wages = wageDao.findByTypeAndTimeBetween((long)282,
 				DatesUtil.getFristDayOfLastMonth(meal.getOrderTimeBegin()),
 				DatesUtil.getLastDayOLastMonth(meal.getOrderTimeBegin()));
 		if (wages.size() == 0) {

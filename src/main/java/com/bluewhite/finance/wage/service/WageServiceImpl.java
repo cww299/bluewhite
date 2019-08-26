@@ -35,7 +35,7 @@ public class WageServiceImpl extends BaseServiceImpl<Wage, Long> implements Wage
 			}
 			// 按类型
 			if (param.getType() != null) {
-				predicate.add(cb.equal(root.get("type").as(Integer.class), param.getType()));
+				predicate.add(cb.equal(root.get("type").as(Long.class), param.getType()));
 			}
 			// 按日期
 			if (!StringUtils.isEmpty(param.getOrderTimeBegin()) && !StringUtils.isEmpty(param.getOrderTimeEnd())) {
