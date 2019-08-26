@@ -590,11 +590,40 @@
 								$(result.data[0].users).each(function(i,o){
 									html +='<tr>'
 				      				+'<td class="text-center">'+o.userName+'</td>'
-				      				+'<td class="text-center"><input  class="adjustTime" style="background:none;outline:none;border:0px;text-align:center;" data-id="'+o.id+'" data-ajid="'+o.adjustTimeId+'" value='+(o.adjustTime!=null ? o.adjustTime :0)+' /></td>'
+				      				+'<td class="text-center"><input  class="adjustTime" style="background:none;outline:none;border:0px;text-align:center;" data-id="'+o.id+'" data-temporarily='+o.temporarily+' data-ajid="'+o.adjustTimeId+'" value='+(o.adjustTime!=null ? o.adjustTime :0)+' /></td>'
 								})
 								$('#tableUserTime').html(html);
 								layer.close(index);
 								$(".adjustTime").blur(function(){
+									var a=$(this).data('temporarily')
+									if(a==1){
+										var postData={
+												id:$(this).data('ajid'),
+												workTime:$(this).val()
+											}
+										$.ajax({
+											url:"${ctx}/production/updateTemporarily",
+											data:postData,
+								            traditional: true,
+											type:"post",
+											beforeSend:function(){
+												index = layer.load(1, {
+													  shade: [0.1,'#fff'] //0.1透明度的白色背景
+													});
+											},
+											success:function(result){
+												if(0==result.code){
+													layer.msg(result.message, {icon: 1});
+												}else{
+													layer.msg(result.message, {icon: 2});
+												}
+												layer.close(index);
+											},error:function(){
+												layer.msg(result.message, {icon: 2});
+												layer.close(index);
+											}
+										});
+									}else{
 									var postData={
 											adjustTime:$(this).val(),
 											adjustId:$(this).data('ajid'),
@@ -621,6 +650,7 @@
 											layer.close(index);
 										}
 									});
+									}
 								})
 							},error:function(){
 								layer.msg("操作失败！", {icon: 2});
