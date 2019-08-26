@@ -30,6 +30,17 @@ public interface AttendancePayDao extends BaseRepository<AttendancePay, Long>{
 	 * @param orderTimeEnd
 	 * @return
 	 */
+	List<AttendancePay> findByGroupIdAndTypeAndAllotTimeBetween(Long GroupId, Integer type, Date orderTimeBegin,
+			Date orderTimeEnd);
+	
+	/**
+	 * 根据条件查询
+	 * @param userId
+	 * @param type
+	 * @param orderTimeBegin
+	 * @param orderTimeEnd
+	 * @return
+	 */
 	List<AttendancePay> findByUserIdInAndTypeAndAllotTimeBetween(List<Long> userIds, Integer type, Date orderTimeBegin,
 			Date orderTimeEnd);
 

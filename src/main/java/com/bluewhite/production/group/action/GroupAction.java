@@ -145,12 +145,11 @@ public class GroupAction {
 		CommonResponse cr = new CommonResponse();
 		if (adjustId!=null) {
 			AttendancePay attendancePay = attendancePayService.findOne(adjustId);
-			GroupTime groupTime = groupTimeDao.findByUserIdAndTypeAndGroupIdAndAllotTime(
-					attendancePay.getUserId(),attendancePay.getType(),adjustId,attendancePay.getAllotTime());
+			GroupTime groupTime = groupTimeDao.findByUserIdAndTypeAndGroupIdAndAllotTime(attendancePay.getUserId(),attendancePay.getType(),attendancePay.getGroupId(),attendancePay.getAllotTime());
 			if(groupTime == null){
 				groupTime = new GroupTime();
 				groupTime.setUserId(attendancePay.getUserId());
-				groupTime.setGroupId(attendancePay.getUser().getGroupId());
+				groupTime.setGroupId(attendancePay.getGroupId());
 				groupTime.setType(attendancePay.getType());
 				groupTime.setAllotTime(attendancePay.getAllotTime());
 			}
@@ -175,7 +174,7 @@ public class GroupAction {
 	@RequestMapping(value = "/production/allGroup", method = RequestMethod.GET)
 	@ResponseBody
 	public CommonResponse allGroup(HttpServletRequest request, Group group, Date temporarilyDate) {
-		CommonResponse cr = new CommonResponse();
+ 		CommonResponse cr = new CommonResponse();
 		List<Group> groupAll = new ArrayList<Group>();
 		if (group.getId() == null) {
 			Set<User> userlist = new HashSet<User>();
