@@ -141,11 +141,11 @@ public class GroupAction {
 	 */
 	@RequestMapping(value = "/production/updateAdjustTime", method = RequestMethod.GET)
 	@ResponseBody
-	public CommonResponse updateAttendance(HttpServletRequest request, Long adjustId, Double adjustTime) {
+	public CommonResponse updateAttendance(HttpServletRequest request, Long adjustId, Double adjustTime,Long groupId) {
 		CommonResponse cr = new CommonResponse();
 		if (adjustId!=null) {
 			AttendancePay attendancePay = attendancePayService.findOne(adjustId);
-			GroupTime groupTime = groupTimeDao.findByUserIdAndTypeAndGroupIdAndAllotTime(attendancePay.getUserId(),attendancePay.getType(),attendancePay.getGroupId(),attendancePay.getAllotTime());
+			GroupTime groupTime = groupTimeDao.findByUserIdAndTypeAndGroupIdAndAllotTime(attendancePay.getUserId(),attendancePay.getType(),groupId,attendancePay.getAllotTime());
 			if(groupTime == null){
 				groupTime = new GroupTime();
 				groupTime.setUserId(attendancePay.getUserId());
@@ -175,6 +175,8 @@ public class GroupAction {
 	@ResponseBody
 	public CommonResponse allGroup(HttpServletRequest request, Group group, Date temporarilyDate) {
  		CommonResponse cr = new CommonResponse();
+ 		Date startTime = DatesUtil.getfristDayOftime(ProTypeUtils.countAllotTime(temporarilyDate));
+ 		Date endTime = DatesUtil.getLastDayOftime(ProTypeUtils.countAllotTime(temporarilyDate));
 		List<Group> groupAll = new ArrayList<Group>();
 		if (group.getId() == null) {
 			Set<User> userlist = new HashSet<User>();
@@ -208,12 +210,10 @@ public class GroupAction {
 		for (Group gr : groupAll) {
 			Set<User> users = gr.getUsers().stream().filter(u -> u != null && u.getStatus() != null && u.getStatus() != 1).collect(Collectors.toSet());
 			for (User u : users) {
-				List<AttendancePay> attendancePay = attendancePayDao.findByUserIdAndTypeAndAllotTimeBetween(u.getId(),
-						gr.getType(), DatesUtil.getfristDayOftime(ProTypeUtils.countAllotTime(temporarilyDate)),
-						DatesUtil.getLastDayOftime(ProTypeUtils.countAllotTime(temporarilyDate)));
+				List<AttendancePay> attendancePay = attendancePayDao.findByUserIdAndTypeAndAllotTimeBetween(u.getId(),gr.getType(),startTime,endTime);
 				//提供所在组工作时长
 				if (attendancePay.size() > 0) {
-					GroupTime groupWorkTime = groupTimeDao.findByUserIdAndTypeAndGroupIdAndAllotTime(u.getId(), gr.getType(), gr.getId(), DatesUtil.getfristDayOftime(ProTypeUtils.countAllotTime(temporarilyDate)));
+					GroupTime groupWorkTime = groupTimeDao.findByUserIdAndTypeAndGroupIdAndAllotTime(u.getId(), gr.getType(), gr.getId(),startTime);
 					u.setAdjustTime(groupWorkTime != null ? groupWorkTime.getGroupWorkTime() : attendancePay.get(0).getWorkTime());
 					u.setAdjustTimeId(attendancePay.get(0).getId());
 					u.setTemporarily(0);
