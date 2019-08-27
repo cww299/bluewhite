@@ -149,7 +149,7 @@ public class GroupAction {
 			if(groupTime == null){
 				groupTime = new GroupTime();
 				groupTime.setUserId(attendancePay.getUserId());
-				groupTime.setGroupId(attendancePay.getGroupId());
+				groupTime.setGroupId(groupId);
 				groupTime.setType(attendancePay.getType());
 				groupTime.setAllotTime(attendancePay.getAllotTime());
 			}
