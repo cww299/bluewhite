@@ -265,7 +265,7 @@ public class MealServiceImpl extends BaseServiceImpl<Meal, Long> implements Meal
 		}
 		// 上月煤气
 		CostLiving costLivingGasLast = costLivingDao.findByCostTypeIdAndSiteTypeIdAndBeginTimeAndEndTime((long) 292,
-				siteTypeId, DatesUtil.getFristDayOfLastMonth(timeBegin), DatesUtil.getFristDayOfLastMonth(timeEnd));
+				siteTypeId, DatesUtil.getFristDayOfLastMonth(timeBegin), DatesUtil.getLastDayOLastMonth(timeEnd));
 		if (costLivingGasLast != null) {
 			sum5 = NumUtils.mul(costLivingGasLast.getAverageCost(), day);
 		} else {
@@ -295,8 +295,7 @@ public class MealServiceImpl extends BaseServiceImpl<Meal, Long> implements Meal
 		double valday = NumUtils.div((valA > valB ? valA : valB), day, 2);// 采购员当天收入
 		PersonVariable personVariable2 = personVariableDao.findByType(5);
 		double valPrice = NumUtils.mul(valday, Double.parseDouble(personVariable2.getKeyValue()));// 第一个含管理采购收入
-		List<Wage> wage = wageDao.findByTypeAndTimeBetween((long) 281, DatesUtil.getFirstDayOfMonth(meal.getOrderTimeBegin()),
-				DatesUtil.getLastDayOfMonth(meal.getOrderTimeBegin()));
+		List<Wage> wage = wageDao.findByTypeAndTimeBetween((long) 281, timeBegin,timeEnd);
 		if (wage.size() == 0) {
 			throw new ServiceException("当月数据员工资未查询到");
 		}
@@ -748,8 +747,7 @@ public class MealServiceImpl extends BaseServiceImpl<Meal, Long> implements Meal
 		if (meals.size() == 0) {
 			throw new ServiceException("选择时间内 没有用餐次数");
 		}
-		int size1 = meals.size();// 选择时间的内的 餐数
-		double merits = NumUtils.mul((double) size1, than, (double) 0.5);// 人工绩效
+		double merits = NumUtils.mul((double) meals.size(), than, 0.5);// 人工绩效
 		PersonVariable restType = personVariableDao.findByType(5);
 		double water = NumUtils.div(NumUtils.mul(sum1, Double.parseDouble(restType.getKeyValue())), day, 2);// 每天水费
 		double electric = NumUtils.div(NumUtils.mul(sum2, Double.parseDouble(restType.getKeyValueThree())), day, 2);// 每天电费
@@ -757,9 +755,8 @@ public class MealServiceImpl extends BaseServiceImpl<Meal, Long> implements Meal
 		double coal = NumUtils.div(NumUtils.mul(sum4, Double.parseDouble(restType.getKeyValueTwo())), day, 2);// 每天煤气费
 		double budget = 0;
 		List<SingleMeal> list1 = singleMealDao.findByTimeBetween(meal.getOrderTimeBegin(), meal.getOrderTimeEnd());
-
 		if (list1.size() == 0) {
-			throw new ServiceException("选择时间内 没有物料");
+			throw new ServiceException("选择时间内，没有添加食材记录，请先添加");
 		}
 		if (list1.size() > 0) {
 			for (SingleMeal singleMeal : list1) {
@@ -767,7 +764,7 @@ public class MealServiceImpl extends BaseServiceImpl<Meal, Long> implements Meal
 			}
 		}
 		double sum = NumUtils.sum(water, electric, rent, coal, valPrice3, valPrice4, merits, budget);// 总数
-		double sumPrice = NumUtils.div(sum, size1, 2);
+		double sumPrice = NumUtils.div(sum, meals.size(), 2);
 		allMap.put("rent", rent);
 		allMap.put("water", water);
 		allMap.put("electric", electric);
@@ -775,7 +772,7 @@ public class MealServiceImpl extends BaseServiceImpl<Meal, Long> implements Meal
 		allMap.put("valPrice3", valPrice3);
 		allMap.put("valPrice4", valPrice4);
 		allMap.put("merits", merits);
-		allMap.put("size", size1);
+		allMap.put("size", meals.size());
 		allMap.put("sumPrice", sumPrice);
 		allList.add(allMap);
 		return allList;

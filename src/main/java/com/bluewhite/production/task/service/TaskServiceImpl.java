@@ -94,11 +94,21 @@ public class TaskServiceImpl extends BaseServiceImpl<Task, Long> implements Task
 		List<AttendancePay> attendancePayList = null;
 		List<User> userList = userDao.findByIdIn(userIdList);
 		if(task.getType() == 2) {
+			 Map<Long, List<Temporarily>> temporarilyMapList = null;
 			 temporarilyList = temporarilyDao.findByUserIdInAndTemporarilyDateAndType(userIdList,orderTimeBegin,task.getType());
-			 Map<Long, List<Temporarily>> temporarilyMapList = temporarilyList.stream().collect(Collectors.groupingBy(Temporarily::getGroupId, Collectors.toList()));
+			 if(temporarilyList.size()>0){
+				 temporarilyMapList = temporarilyList.stream().collect(Collectors.groupingBy(Temporarily::getGroupId, Collectors.toList()));
+			 }
 			 attendancePayList = attendancePayDao.findByUserIdInAndTypeAndAllotTimeBetween(userIdList, task.getType(), orderTimeBegin, orderTimeEnd);
-			 Map<Long, List<AttendancePay>> attendancePayMapList = attendancePayList.stream().collect(Collectors.groupingBy(AttendancePay::getGroupId, Collectors.toList()));
-			 if(temporarilyMapList.size()==1 && attendancePayMapList.size()==1){
+			 Map<Long, List<AttendancePay>> attendancePayMapList = null;
+			 if(attendancePayList.size()>0){
+				 attendancePayMapList = attendancePayList.stream().collect(Collectors.groupingBy(AttendancePay::getGroupId, Collectors.toList()));
+			 }
+			 if((task.getGroupId()== null && temporarilyMapList.size()==1 && attendancePayMapList.size()==1) 
+					 || (task.getGroupId()== null && temporarilyMapList == null && attendancePayMapList.size()==1)){
+				 task.setGroupId(attendancePayList.get(0).getGroupId());
+			 }
+			 if(task.getGroupId()== null && temporarilyMapList.size()==1 && attendancePayMapList == null){
 				 task.setGroupId(temporarilyList.get(0).getGroupId());
 			 }
 		}
