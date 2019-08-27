@@ -590,12 +590,13 @@
 								$(result.data[0].users).each(function(i,o){
 									html +='<tr>'
 				      				+'<td class="text-center">'+o.userName+'</td>'
-				      				+'<td class="text-center"><input  class="adjustTime" style="background:none;outline:none;border:0px;text-align:center;" data-id="'+o.id+'" data-temporarily='+o.temporarily+' data-ajid="'+o.adjustTimeId+'" value='+(o.adjustTime!=null ? o.adjustTime :0)+' /></td>'
+				      				+'<td class="text-center"><input  class="adjustTime" style="background:none;outline:none;border:0px;text-align:center;" data-id="'+o.id+'" data-temporarily='+o.temporarily+' data-groupid='+result.data[0].id+' data-ajid="'+o.adjustTimeId+'" value='+(o.adjustTime!=null ? o.adjustTime :0)+' /></td>'
 								})
 								$('#tableUserTime').html(html);
 								layer.close(index);
 								$(".adjustTime").blur(function(){
 									var a=$(this).data('temporarily')
+									var groupId=$(this).data('groupid')
 									if(a==1){
 										var postData={
 												id:$(this).data('ajid'),
@@ -627,6 +628,7 @@
 									var postData={
 											adjustTime:$(this).val(),
 											adjustId:$(this).data('ajid'),
+											groupId:groupId,
 										}
 									$.ajax({
 										url:"${ctx}/production/updateAdjustTime",
