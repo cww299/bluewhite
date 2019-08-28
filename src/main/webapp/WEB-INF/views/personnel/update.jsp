@@ -458,9 +458,11 @@ layui.config({
 					},{ field: "belateDetails", title: "迟到详情", align: 'center',
 					},{ field: "leaveTime", title: "请假时长", align: 'center',
 					},{ field: "turnWork", title: "出勤时长", align: 'center',
-					}, { field: "overtime", title: "加班时长", align: 'center',
-					}, { field: "remarks", title: "备注", align: 'center', edit:'text'
-					}, { field: "sign", title: "签字", align: 'center',
+					},{ field: "ordinaryOvertime", title: "普通加班时长", align: 'center',
+					},{ field: "productionOvertime", title: "生产加班时长", align: 'center',
+					},{ field: "overtime", title: "总加班时长", align: 'center',
+					},{ field: "remarks", title: "备注", align: 'center', edit:'text'
+					},{ field: "sign", title: "签字", align: 'center',
 					}]
 				],
 				done: function() {
