@@ -740,16 +740,16 @@ public class AttendanceTimeServiceImpl extends BaseServiceImpl<AttendanceTime, L
 						// 加班
 						if (al.isApplyOvertime() && at.getTime().compareTo(dateLeave) == 0) {
 							if (al.getOvertimeType() == 2) {
-								at.setOvertime(NumUtils.sub(at.getOvertime(), time));
+								at.setOvertime(NumUtils.sub(NumUtils.setzro(at.getOvertime()), time));
 							} else {
-								at.setOvertime(NumUtils.sum(at.getOvertime(), time));
+								at.setOvertime(NumUtils.sum(NumUtils.setzro(at.getOvertime()), time));
 							}
 							
 							if(al.getOvertimeType() == 1){
-								at.setOrdinaryOvertime(NumUtils.sum(at.getOrdinaryOvertime(), time));
+								at.setOrdinaryOvertime(NumUtils.sum(NumUtils.setzro(at.getOrdinaryOvertime()), time));
 							}
 							if(al.getOvertimeType() == 3){
-								at.setProductionOvertime(NumUtils.sum(at.getProductionOvertime(), time));
+								at.setProductionOvertime(NumUtils.sum(NumUtils.setzro(at.getProductionOvertime()), time));
 							}
 						}
 						// 调休且员工出勤时间等于调休到的那一天

@@ -3,9 +3,12 @@ package com.bluewhite.production.task.service;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.concurrent.CopyOnWriteArraySet;
 import java.util.stream.Collectors;
 
@@ -28,7 +31,6 @@ import com.bluewhite.common.utils.NumUtils;
 import com.bluewhite.common.utils.SalesUtils;
 import com.bluewhite.finance.attendance.dao.AttendancePayDao;
 import com.bluewhite.finance.attendance.entity.AttendancePay;
-import com.bluewhite.onlineretailers.inventory.entity.ProcurementChild;
 import com.bluewhite.production.bacth.dao.BacthDao;
 import com.bluewhite.production.bacth.entity.Bacth;
 import com.bluewhite.production.finance.dao.PayBDao;
@@ -93,35 +95,29 @@ public class TaskServiceImpl extends BaseServiceImpl<Task, Long> implements Task
 		List<Temporarily> temporarilyList = null;
 		List<AttendancePay> attendancePayList = null;
 		List<User> userList = userDao.findByIdIn(userIdList);
-		if(task.getType() == 2) {
-			 Map<Long, List<Temporarily>> temporarilyMapList = null;
+		if(task.getType() == 2) {  
 			 Map<Long, List<AttendancePay>> attendancePayMapList = null;
-			 //将所有外调的员工id组成list
-			 List<Long> temporarilyLongId =  userList.stream().filter(User->User.getForeigns()!=null && User.getForeigns()==1)
-					 .map(User->User.getId()).collect(Collectors.toList());
-			 //获取当前外调员工
-			 temporarilyList = temporarilyDao.findByUserIdInAndTemporarilyDateAndType(userIdList,orderTimeBegin,task.getType());
-			 if(temporarilyList.size()>0){ 
-				 temporarilyMapList = temporarilyList.stream().collect(Collectors.groupingBy(Temporarily::getGroupId, Collectors.toList()));
-			 }
-			 
-			 //将员工id组成list
-			 List<Long> userLongId =  userList.stream().filter(User->User.getForeigns()!=null && User.getForeigns()==0)
-					 .map(User->User.getId()).collect(Collectors.toList());
+			 temporarilyList = temporarilyDao.findByUserIdInAndTemporarilyDateAndType(userIdList, orderTimeBegin,  task.getType());
 			 //获取当前员工
 			 attendancePayList = attendancePayDao.findByUserIdInAndTypeAndAllotTimeBetween(userIdList, task.getType(), orderTimeBegin, orderTimeEnd);
-		
 			 if(attendancePayList.size()>0){
 				 attendancePayMapList = attendancePayList.stream().collect(Collectors.groupingBy(AttendancePay::getGroupId, Collectors.toList()));
 			 }
-			 
-//			 if((task.getGroupId()== null && temporarilyMapList.size()==1 && attendancePayMapList.size()==1) 
-//					 || (task.getGroupId()== null && temporarilyMapList == null && attendancePayMapList.size()==1)){
-//				 task.setGroupId(attendancePayList.get(0).getGroupId());
-//			 }
-//			 if(task.getGroupId()== null && temporarilyMapList.size()==1 && attendancePayMapList == null){
-//				 task.setGroupId(temporarilyList.get(0).getGroupId());
-//			 }
+			 //当分组id为空，且员工只有一组
+			 if(task.getGroupId() == null  && attendancePayMapList.size()==1){
+				 task.setGroupId(attendancePayList.get(0).getGroupId());
+			 }
+			 //当分组id为空，且员工有多组，去人数较多的一组
+			 if(task.getGroupId() == null  && attendancePayMapList.size()>1){
+				Map<Long, Integer> groupMap = new HashMap<>();
+				for (Entry<Long, List<AttendancePay>> entry  : attendancePayMapList.entrySet()) {
+					List<AttendancePay> psList1 = entry.getValue();
+					groupMap.put(psList1.get(0).getGroupId(), psList1.size());
+				}
+				 List<Map.Entry<Long,Integer>> list = new ArrayList(groupMap.entrySet());
+				 Collections.sort(list, (o1, o2) -> (o1.getValue() - o2.getValue()));
+				 task.setGroupId(list.get(list.size()-1).getKey());
+			 }
 		}
 		Double sumTaskPrice = 0.0;
 		// 将工序ids分成多个任务
