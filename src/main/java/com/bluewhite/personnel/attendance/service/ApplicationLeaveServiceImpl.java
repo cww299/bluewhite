@@ -46,6 +46,8 @@ public class ApplicationLeaveServiceImpl extends BaseServiceImpl<ApplicationLeav
 	@Autowired
 	private AttendanceTimeDao attendanceTimeDao;
 	@Autowired
+	private AttendanceTimeService attendanceTimeService;
+	@Autowired
 	private AttendanceInitDao attendanceInitDao;
 	@Autowired
 	private AttendanceDao attendanceDao;
@@ -145,7 +147,18 @@ public class ApplicationLeaveServiceImpl extends BaseServiceImpl<ApplicationLeav
 			AttendanceInit attendanceInit = attendanceInitService.findByUserId(applicationLeave.getUserId());
 			if (dateArr.length < 2) {
 				dateLeave = sdf.parse(date);
-				attendanceTime = attendanceTimeDao.findByUserIdAndTime(applicationLeave.getUserId(), dateLeave);
+				AttendanceTime attendanceTimeParme = new AttendanceTime();
+				attendanceTimeParme.setUserId(applicationLeave.getUserId());
+				attendanceTimeParme.setOrderTimeBegin(DatesUtil.getFirstDayOfMonth(dateLeave));
+				//获取到当前员工统计一个月的考勤详细
+				List<AttendanceTime> attendanceTimeList = attendanceTimeService.attendanceTimeByApplication(attendanceTimeService.findAttendanceTime(attendanceTimeParme));
+				//过滤出选择日期的考勤详细
+				for(AttendanceTime at : attendanceTimeList ){
+					if(at.getTime().compareTo(dateLeave)==0){
+						attendanceTime = at;
+						break;
+					}
+				}
 				flag = DatesUtil.belongCalendar(dateLeave);
 				if (attendanceInit == null) {
 					throw new ServiceException("该员工没有考勤设定数据，无法申请，请先添加考勤设定数据");
@@ -277,6 +290,8 @@ public class ApplicationLeaveServiceImpl extends BaseServiceImpl<ApplicationLeav
 					if (actualOverTime < Double.valueOf(time)) {
 						throw new ServiceException("根据"+date+"的签到时间该员工加班时间为" + actualOverTime + "小时，加班申请时间有误请重新核对");
 					}
+				}else{
+					throw new ServiceException("无签入签出时间，无法申请加班，请先检查或补签");
 				}
 				String overString = "";
 				switch (applicationLeave.getOvertimeType()) {
