@@ -53,7 +53,12 @@
 						<td>&nbsp;&nbsp;</td>
 						<td>部门:</td>
 						<td><select  id="orgNameId" class="layui-input" lay-search="true" name="orgNameId">
-							<option value="">请选择</select></td>
+							<option value="">请选择</option></select></td>
+						<td>&nbsp;&nbsp;</td>
+						<td>在离职状态:</td>
+						<td><select  id="quit" class="layui-input" lay-search="true" name="quit">
+							<option value="0">在职</option><option value="1">离职</option></select></td>
+						<td>&nbsp;&nbsp;</td>			
 						<td>&nbsp;&nbsp;</td>
 						<td><button class="layui-btn layuiadmin-btn-admin" lay-submit lay-filter="LAY-role-search">
 									<i class="layui-icon layui-icon-search layuiadmin-button-btn"></i></button></td>
@@ -435,12 +440,15 @@ layui.config({
 
 		
 		
-		
+			var	quit= $("#quit").val()
 	 	/* tablePlug.smartReload.enable(true);  */
 		table.render({
 			elem: '#tableData',
 			size: 'lg',
 			height:'700px',
+			where:{
+				quit:quit
+			},
 			url: '${ctx}/personnel/findAttendanceInit',
 			request:{
 				pageName: 'page' ,//页码的参数名称，默认：page
