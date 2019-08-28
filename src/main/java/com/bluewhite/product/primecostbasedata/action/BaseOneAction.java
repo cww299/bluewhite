@@ -172,7 +172,7 @@ public class BaseOneAction {
 		cr.setData(ClearCascadeJSON
 				.get()
 				.addRetainTerm(Materiel.class,"id","number","name","price","type","unit","changePrice","count","convertUnit","convertPrice")
-				.format(materielService.findPages(materiel)).toJSON());
+				.format(materielService.findList(materiel)).toJSON());
 		cr.setMessage("成功");
 		return cr;
 	}

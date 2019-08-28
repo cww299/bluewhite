@@ -256,7 +256,7 @@ public class AttendanceAction {
 	 */
 	@RequestMapping(value = "/personnel/addAttendanceTime", method = RequestMethod.POST)
 	@ResponseBody
-	public CommonResponse addAttendanceTime( AttendanceTime attendanceTime)
+	public CommonResponse addAttendanceTime(AttendanceTime attendanceTime)
 			throws ParseException {
 		CommonResponse cr = new CommonResponse();
 		//同步锁，批量新增

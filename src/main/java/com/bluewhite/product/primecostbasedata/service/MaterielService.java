@@ -19,7 +19,7 @@ public interface MaterielService extends BaseCRUDService<Materiel,Long>{
 	 * 分页查询产品列表
 	 * @return
 	 */
-	public List<Materiel>  findPages(Materiel materiel);
+	public List<Materiel> findList(Materiel materiel);
 	
 	/**
 	 * 分页查询产品列表

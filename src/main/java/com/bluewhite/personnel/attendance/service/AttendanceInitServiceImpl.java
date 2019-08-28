@@ -40,6 +40,9 @@ public class AttendanceInitServiceImpl extends BaseServiceImpl< AttendanceInit, 
 			if (!StringUtils.isEmpty(param.getOrgNameId())) {
 				predicate.add(cb.equal(root.get("user").get("orgNameId").as(Long.class), param.getOrgNameId()));
 			}
+			if (param.getQuit()!=null) {
+				predicate.add(cb.equal(root.get("user").get("quit").as(Integer.class), param.getQuit()));
+			}
 			// 按日期
 			if (!StringUtils.isEmpty(param.getOrderTimeBegin()) && !StringUtils.isEmpty(param.getOrderTimeEnd())) {
 				predicate.add(cb.between(root.get("writeTime").as(Date.class), param.getOrderTimeBegin(),

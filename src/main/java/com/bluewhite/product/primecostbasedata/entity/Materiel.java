@@ -7,7 +7,7 @@ import javax.persistence.Table;
 import com.bluewhite.base.BaseEntity;
 import com.bluewhite.common.utils.excel.Poi;
 /**
- * 基础数据3(成本计算)
+ * 基础数据3(成本计算,面料)
  * @author zhangliang
  *
  */
@@ -16,35 +16,35 @@ import com.bluewhite.common.utils.excel.Poi;
 public class Materiel extends BaseEntity<Long>{
 	
 	/**
-     * 物料编号
+     * 面料编号
      */
 	@Column(name = "number")
 	@Poi(name = "", column = "A")
     private String number;
 	
 	/**
-     * 物料名
+     * 面料名
      */
 	@Column(name = "name")
 	@Poi(name = "", column = "B")
     private String name;
 	
 	/**
-     * 物料最新价格
+     * 面料最新价格
      */
 	@Column(name = "price")
 	@Poi(name = "", column = "C")
     private Double price;
 	
 	/**
-     * 物料克重等备注
+     * 面料克重等备注
      */
 	@Column(name = "unit")
 	@Poi(name = "", column = "D")
     private String unit;
 	
 	/**
-     * 物料类型
+     * 面料类型
      */
 	@Column(name = "type")
     private String type;

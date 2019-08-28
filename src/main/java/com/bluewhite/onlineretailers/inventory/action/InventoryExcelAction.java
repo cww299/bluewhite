@@ -110,7 +110,7 @@ public class InventoryExcelAction {
         		SalesDetailPoi salesDetailPoi = new SalesDetailPoi();
         		salesDetailPoi.setTime(onlineOrder.getCreatedAt());
         		salesDetailPoi.setCustomer(onlineOrder.getBuyerName());
-        		salesDetailPoi.setName(onlineOrderChild.getCommodity().getName());
+        		salesDetailPoi.setName(onlineOrderChild.getCommodity().getSkuCode());
         		salesDetailPoi.setPrice(onlineOrderChild.getPrice());
         		salesDetailPoi.setNumber(onlineOrderChild.getNumber());
         		salesDetailPoi.setMoney(onlineOrderChild.getSumPrice());
