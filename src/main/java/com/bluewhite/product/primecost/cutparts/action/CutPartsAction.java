@@ -3,7 +3,6 @@ package com.bluewhite.product.primecost.cutparts.action;
 import java.text.SimpleDateFormat;
 
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpSession;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.propertyeditors.CustomDateEditor;
@@ -26,7 +25,6 @@ import com.bluewhite.common.entity.PageResult;
 import com.bluewhite.product.primecost.cutparts.entity.CutParts;
 import com.bluewhite.product.primecost.cutparts.service.CutPartsService;
 import com.bluewhite.product.primecost.primecost.entity.PrimeCost;
-import com.bluewhite.product.product.entity.Product;
 import com.bluewhite.product.product.service.ProductService;
 
 @Controller

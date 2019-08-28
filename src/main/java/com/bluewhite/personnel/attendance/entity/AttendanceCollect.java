@@ -59,7 +59,7 @@ public class AttendanceCollect extends BaseEntity<Long>{
 	
 	/**
 	 * 
-	 * 普通加班时长
+	 * 总加班时长
 	 */
 	@Column(name = "over_time")
 	private Double overtime;
@@ -180,7 +180,9 @@ public class AttendanceCollect extends BaseEntity<Long>{
 	@Transient
 	private Date orderTimeEnd;
 	
-	
+	public AttendanceCollect() {
+
+	}
     
 	//有参构造，直接传入AttendanceTime的list，计算出汇总后的数据
     public AttendanceCollect (List<AttendanceTime> list){
@@ -211,7 +213,10 @@ public class AttendanceCollect extends BaseEntity<Long>{
     	manDay = manDayList.stream().filter(AttendanceTime->AttendanceTime.getTurnWorkTime()!=null).mapToDouble(AttendanceTime::getTurnWorkTime).sum();
     	manDayOvertime =  manDayList.stream().filter(AttendanceTime->AttendanceTime.getOvertime()!=null).mapToDouble(AttendanceTime::getOvertime).sum();
     	weekendTurnWork = weekendTurnWorkList.stream().filter(AttendanceTime->AttendanceTime.getTurnWorkTime()!=null).mapToDouble(AttendanceTime::getTurnWorkTime).sum();
-    	overtime = NumUtils.sub(overtime, takeWork);
+    	//调休完的加班时长
+    	ordinaryOvertime = NumUtils.sub(ordinaryOvertime, takeWork) <0 ? 0 : NumUtils.sub(ordinaryOvertime, takeWork);
+    	productionOvertime = NumUtils.sub(ordinaryOvertime, takeWork) <0 ?  NumUtils.sum(productionOvertime, NumUtils.sub(ordinaryOvertime, takeWork)) : productionOvertime;
+    	overtime = NumUtils.sum(productionOvertime, NumUtils.sub(ordinaryOvertime, takeWork));
     	
     	List<AttendanceTime> belateAttendanceTime = list.stream().filter(AttendanceTime->AttendanceTime.getBelate()==1).collect(Collectors.toList());
     	belateAttendanceTime.forEach(at->{

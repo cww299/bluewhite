@@ -324,7 +324,7 @@ public class AttendanceAction {
 		cr.setData(ClearCascadeJSON.get()
 				.addRetainTerm(AttendanceCollect.class, "id", "time", "turnWork", "overtime", "dutyWork", "allWork",
 						"manDay", "manDayOvertime", "weekendTurnWork", "leaveTime", "takeWork", "leaveDetails",
-						"remarks", "userName", "sign", "belateDetails")
+						"remarks", "userName", "sign", "belateDetails","ordinaryOvertime","productionOvertime")
 				.format(attendanceCollectService.findAttendanceCollect(attendanceCollect)).toJSON());
 		cr.setMessage("查找成功");
 		return cr;

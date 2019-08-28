@@ -17,7 +17,7 @@ import com.bluewhite.system.user.entity.User;
  *
  */
 @Entity
-@Table(name = "pro_cutparts")
+@Table(name = "pro_product_cutparts")
 public class CutParts extends BaseEntity<Long>{
 	
 	/**
@@ -37,7 +37,6 @@ public class CutParts extends BaseEntity<Long>{
 	 */
 	@Column(name = "tailor_id")
     private Long tailorId;
-	
 	
 	/**
 	 * 压货环节id
