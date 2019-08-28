@@ -431,12 +431,12 @@ public class AttendanceTimeServiceImpl extends BaseServiceImpl<AttendanceTime, L
 
 	@Override
 	public List<Map<String, Object>> findAttendanceTimeCollectAdd(AttendanceTime attendanceTime) throws ParseException {
-		return attendanceCollect(attendanceTimeByApplication(findAttendanceTime(attendanceTime)), true);
+		return attendanceCollect(saveAttendanceTimeList(attendanceTimeByApplication(findAttendanceTime(attendanceTime))), true);
 	}
 
 	@Override
 	public List<Map<String, Object>> findAttendanceTimeCollect(AttendanceTime attendanceTime) throws ParseException {
-		return attendanceCollect(findAttendanceTime(attendanceTime), false);
+		return attendanceCollect(attendanceTimeByApplication(findAttendanceTime(attendanceTime)), false);
 	}
 
 	@Override
@@ -550,11 +550,10 @@ public class AttendanceTimeServiceImpl extends BaseServiceImpl<AttendanceTime, L
 	@Override
 	public void checkAttendanceTime(AttendanceTime attendanceTime) {
 		String exTwo = "";
+		List<User> userList = new ArrayList<>();
 		if (new Date().before(DatesUtil.getLastDayOfMonth(attendanceTime.getOrderTimeBegin()))) {
 			throw new ServiceException("选择日期的签到记录未完成,无法统计");
-		}
-		;
-		List<User> userList = new ArrayList<>();
+		};
 		if (!StringUtils.isEmpty(attendanceTime.getOrgNameId())) {
 			userList = userService.findByOrgNameId(attendanceTime.getOrgNameId());
 		}
@@ -745,6 +744,13 @@ public class AttendanceTimeServiceImpl extends BaseServiceImpl<AttendanceTime, L
 							} else {
 								at.setOvertime(NumUtils.sum(at.getOvertime(), time));
 							}
+							
+							if(al.getOvertimeType() == 1){
+								at.setOrdinaryOvertime(NumUtils.sum(at.getOrdinaryOvertime(), time));
+							}
+							if(al.getOvertimeType() == 3){
+								at.setProductionOvertime(NumUtils.sum(at.getProductionOvertime(), time));
+							}
 						}
 						// 调休且员工出勤时间等于调休到的那一天
 						if (al.isTradeDays() && at.getTime().compareTo(dateLeave) == 0) {
@@ -766,9 +772,13 @@ public class AttendanceTimeServiceImpl extends BaseServiceImpl<AttendanceTime, L
 				}
 			}
 		}
-		return dao.save(attendanceTimeList);
+		return attendanceTimeList;
 	}
 
+	private  List<AttendanceTime> saveAttendanceTimeList(List<AttendanceTime> attendanceTimeList){
+		return dao.save(attendanceTimeList);
+	}
+	
 	@Override
 	public List<Map<String, Object>> syncAttendanceTimeCollect(AttendanceTime attendanceTime) throws ParseException {
 		checkAttendanceTime(attendanceTime);

@@ -90,6 +90,20 @@ public class AttendanceTime extends BaseEntity<Long> {
 	@Column(name = "overtime")
 	private Double overtime;
 	
+	/**
+	 * 普通加班时长
+	 * 
+	 */
+	@Column(name = "ordinary_overtime")
+	private Double ordinaryOvertime;
+	
+	/**
+	 * 生产加班时长
+	 * 
+	 */
+	@Column(name = "production_overtime")
+	private Double productionOvertime;
+	
 	
 	/**
 	 * 缺勤时长
@@ -206,6 +220,22 @@ public class AttendanceTime extends BaseEntity<Long> {
 	
 
 	
+
+	public Double getOrdinaryOvertime() {
+		return ordinaryOvertime;
+	}
+
+	public void setOrdinaryOvertime(Double ordinaryOvertime) {
+		this.ordinaryOvertime = ordinaryOvertime;
+	}
+
+	public Double getProductionOvertime() {
+		return productionOvertime;
+	}
+
+	public void setProductionOvertime(Double productionOvertime) {
+		this.productionOvertime = productionOvertime;
+	}
 
 	public AttendanceInit getAttendanceInit() {
 		return AttendanceInit;

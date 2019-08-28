@@ -95,22 +95,33 @@ public class TaskServiceImpl extends BaseServiceImpl<Task, Long> implements Task
 		List<User> userList = userDao.findByIdIn(userIdList);
 		if(task.getType() == 2) {
 			 Map<Long, List<Temporarily>> temporarilyMapList = null;
+			 Map<Long, List<AttendancePay>> attendancePayMapList = null;
+			 //将所有外调的员工id组成list
+			 List<Long> temporarilyLongId =  userList.stream().filter(User->User.getForeigns()!=null && User.getForeigns()==1)
+					 .map(User->User.getId()).collect(Collectors.toList());
+			 //获取当前外调员工
 			 temporarilyList = temporarilyDao.findByUserIdInAndTemporarilyDateAndType(userIdList,orderTimeBegin,task.getType());
-			 if(temporarilyList.size()>0){
+			 if(temporarilyList.size()>0){ 
 				 temporarilyMapList = temporarilyList.stream().collect(Collectors.groupingBy(Temporarily::getGroupId, Collectors.toList()));
 			 }
+			 
+			 //将员工id组成list
+			 List<Long> userLongId =  userList.stream().filter(User->User.getForeigns()!=null && User.getForeigns()==0)
+					 .map(User->User.getId()).collect(Collectors.toList());
+			 //获取当前员工
 			 attendancePayList = attendancePayDao.findByUserIdInAndTypeAndAllotTimeBetween(userIdList, task.getType(), orderTimeBegin, orderTimeEnd);
-			 Map<Long, List<AttendancePay>> attendancePayMapList = null;
+		
 			 if(attendancePayList.size()>0){
 				 attendancePayMapList = attendancePayList.stream().collect(Collectors.groupingBy(AttendancePay::getGroupId, Collectors.toList()));
 			 }
-			 if((task.getGroupId()== null && temporarilyMapList.size()==1 && attendancePayMapList.size()==1) 
-					 || (task.getGroupId()== null && temporarilyMapList == null && attendancePayMapList.size()==1)){
-				 task.setGroupId(attendancePayList.get(0).getGroupId());
-			 }
-			 if(task.getGroupId()== null && temporarilyMapList.size()==1 && attendancePayMapList == null){
-				 task.setGroupId(temporarilyList.get(0).getGroupId());
-			 }
+			 
+//			 if((task.getGroupId()== null && temporarilyMapList.size()==1 && attendancePayMapList.size()==1) 
+//					 || (task.getGroupId()== null && temporarilyMapList == null && attendancePayMapList.size()==1)){
+//				 task.setGroupId(attendancePayList.get(0).getGroupId());
+//			 }
+//			 if(task.getGroupId()== null && temporarilyMapList.size()==1 && attendancePayMapList == null){
+//				 task.setGroupId(temporarilyList.get(0).getGroupId());
+//			 }
 		}
 		Double sumTaskPrice = 0.0;
 		// 将工序ids分成多个任务

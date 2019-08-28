@@ -2,10 +2,15 @@ package com.bluewhite.product.primecost.cutparts.entity;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 
 import com.bluewhite.base.BaseEntity;
+import com.bluewhite.product.primecostbasedata.entity.Materiel;
+import com.bluewhite.system.user.entity.User;
 /**
  * cc裁片填写
  * @author zhangliang
@@ -22,16 +27,17 @@ public class CutParts extends BaseEntity<Long>{
     private Long productId;
 	
 	/**
+	 * 批量产品数量或模拟批量数
+	 */
+	@Column(name = "number")
+	private Integer number;
+	
+	/**
 	 * 裁剪页面id
 	 */
 	@Column(name = "tailor_id")
     private Long tailorId;
 	
-	/**
-	 * 批量产品数量或模拟批量数
-	 */
-	@Column(name = "number")
-	private Integer number;
 	
 	/**
 	 * 压货环节id
@@ -40,7 +46,7 @@ public class CutParts extends BaseEntity<Long>{
 	private Long overstockId;
 	
 	/**
-	 * 压货环节↓
+	 * 压货环节
 	 */
 	@Column(name = "overstock")
 	private String overstock;
@@ -67,8 +73,7 @@ public class CutParts extends BaseEntity<Long>{
 	 * 手填单个使用片数，不填默认1片
 	 */
 	@Column(name = "cutparts_number")
-    private Integer cutPartsNumber;
-	
+    private Integer cutPartsNumber=1;
 	
 	/**
 	 * 使用片数周长
@@ -89,16 +94,11 @@ public class CutParts extends BaseEntity<Long>{
     private Long materielId;
 	
 	/**
-	 * 面料产品编号
+	 * 面料
 	 */
-	@Column(name = "materiel_number")
-    private String materielNumber;
-	
-	/**
-	 * 面料产品名字
-	 */
-	@Column(name = "materiel_name")
-    private String materielName;
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "materiel_id", referencedColumnName = "id", insertable = false, updatable = false)
+	private Materiel materiel;
 	
 	/**
 	 * 需要复合选(0=否，1=是)
@@ -136,7 +136,6 @@ public class CutParts extends BaseEntity<Long>{
 	 */
 	@Column(name = "unit_id")
     private Long unitId;
-	
 	
 	/**
 	 * 单位填写选择
@@ -233,8 +232,6 @@ public class CutParts extends BaseEntity<Long>{
 	 */
 	@Transient
 	private Double oneCutPartsPrice;
-
-	
 
 
 	
@@ -417,22 +414,6 @@ public class CutParts extends BaseEntity<Long>{
 
 	public void setPerimeter(Double perimeter) {
 		this.perimeter = perimeter;
-	}
-
-	public String getMaterielNumber() {
-		return materielNumber;
-	}
-
-	public void setMaterielNumber(String materielNumber) {
-		this.materielNumber = materielNumber;
-	}
-
-	public String getMaterielName() {
-		return materielName;
-	}
-
-	public void setMaterielName(String materielName) {
-		this.materielName = materielName;
 	}
 
 	public Integer getComposite() {

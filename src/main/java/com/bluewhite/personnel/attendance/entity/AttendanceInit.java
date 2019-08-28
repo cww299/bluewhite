@@ -159,6 +159,12 @@ public class AttendanceInit extends BaseEntity<Long> {
 	private Long orgNameId;
 	
 	/**
+	 * 是否离职
+	 */
+	@Transient
+	private Integer quit;
+	
+	/**
 	 * 查询字段（部门）
 	 */
 	@Transient
@@ -180,6 +186,16 @@ public class AttendanceInit extends BaseEntity<Long> {
 
 	
 	
+
+
+	public Integer getQuit() {
+		return quit;
+	}
+
+
+	public void setQuit(Integer quit) {
+		this.quit = quit;
+	}
 
 
 	public Integer getFail() {

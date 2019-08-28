@@ -48,29 +48,24 @@ public class CutPartsServiceImpl  extends BaseServiceImpl<CutParts, Long> implem
 	public CutParts saveCutParts(CutParts cutParts) {
 		NumUtils.setzro(cutParts);
 		//该片在这个货中的单只用料（累加处）
-		cutParts.setAddMaterial(cutParts.getCutPartsNumber()*cutParts.getOneMaterial());
+		cutParts.setAddMaterial(NumUtils.mul(cutParts.getCutPartsNumber(), cutParts.getOneMaterial()));
 		//当批各单片用料
 		if(cutParts.getComposite()==0){
-			cutParts.setBatchMaterial(cutParts.getAddMaterial()*(cutParts.getManualLoss()+1)*cutParts.getCutPartsNumber()/cutParts.getCutPartsNumber()*cutParts.getNumber());
-		}else{
-			cutParts.setBatchMaterial(0.0);
+			cutParts.setBatchMaterial(NumUtils.div(NumUtils.mul(cutParts.getAddMaterial(), 
+					NumUtils.sum(cutParts.getManualLoss(),1),(double)cutParts.getCutPartsNumber()), 
+					NumUtils.mul(cutParts.getCutPartsNumber(),cutParts.getNumber()),3));
+			//当批各单片价格
+			cutParts.setBatchMaterialPrice(NumUtils.mul(cutParts.getBatchMaterial(),cutParts.getProductCost()));
 		}
-		//当批各单片价格
-		if(cutParts.getComposite()==0){
-			cutParts.setBatchMaterialPrice(cutParts.getBatchMaterial()*cutParts.getProductCost());
-		}else{
-			cutParts.setBatchMaterialPrice(0.0);
-		}
-		
 		if(cutParts.getComposite()==1){
-			cutParts.setComplexBatchMaterial(cutParts.getAddMaterial()*(cutParts.getCompositeManualLoss()+1)*cutParts.getNumber());
-			cutParts.setBatchComplexMaterialPrice(cutParts.getComplexBatchMaterial()*cutParts.getProductCost());
-			cutParts.setBatchComplexAddPrice(cutParts.getComplexBatchMaterial()*cutParts.getComplexProductCost());
+			cutParts.setComplexBatchMaterial(NumUtils.mul(cutParts.getAddMaterial(), 
+					NumUtils.sum(cutParts.getCompositeManualLoss(),1),(double)cutParts.getNumber()));
+			cutParts.setBatchComplexMaterialPrice(NumUtils.mul(cutParts.getComplexBatchMaterial(),cutParts.getProductCost()));
+			cutParts.setBatchComplexAddPrice(NumUtils.mul(cutParts.getComplexBatchMaterial(),cutParts.getComplexProductCost()));
 		}
 		//使用片数周长
-		cutParts.setAllPerimeter(cutParts.getPerimeter()*cutParts.getCutPartsNumber());
-		
-		dao.save((CutParts)NumUtils.setzro(cutParts));
+		cutParts.setAllPerimeter(NumUtils.mul(cutParts.getPerimeter(),cutParts.getCutPartsNumber()));
+		dao.save(cutParts);
 		
 		//从cc裁片填写后，自动增加到裁剪页面
 		Tailor tailor =  new Tailor();
@@ -92,9 +87,9 @@ public class CutPartsServiceImpl  extends BaseServiceImpl<CutParts, Long> implem
 		tailor.setPriceDown((cutParts.getBatchMaterialPrice()==null ? 0.0 : cutParts.getBatchMaterialPrice())
 				+(cutParts.getBatchComplexAddPrice()==null ? 0.0 :cutParts.getBatchComplexAddPrice()));
 
-		if(cutParts.getTailorId()==null){
+		if(cutParts.getTailorId()==null){ 
 			tailor.setTailorTypeId((long)71);
-			tailor.setTailorSize(0.01);
+			tailor.setTailorSize(0.01); 
 			tailorDao.save(tailor);
 			OrdinaryLaser prams = new OrdinaryLaser();
 			prams.setSave(0);
@@ -109,8 +104,8 @@ public class CutPartsServiceImpl  extends BaseServiceImpl<CutParts, Long> implem
 			tailor.setOrdinaryLaserId(prams.getId());
 		}else{
 			Tailor oldtailor = tailorDao.findOne(cutParts.getTailorId());
-			BeanCopyUtils.copyNullProperties(oldtailor,tailor);
-			tailor.setCreatedAt(oldtailor.getCreatedAt());
+			BeanCopyUtils.copyNotEmpty(tailor,oldtailor);
+			tailorDao.save(oldtailor);
 		}
 		tailorDao.save(tailor);
 		
@@ -123,7 +118,7 @@ public class CutPartsServiceImpl  extends BaseServiceImpl<CutParts, Long> implem
 			scaleMaterial =  cutPartsList.stream().mapToDouble(CutParts::getAddMaterial).sum();
 		}
 		for(CutParts cp : cutPartsList){
-			cp.setScaleMaterial(NumUtils.division(cp.getAddMaterial()/scaleMaterial));
+			cp.setScaleMaterial(NumUtils.div(cp.getAddMaterial(), scaleMaterial, 3));
 		}
 		dao.save(cutPartsList);
 		return cutParts;

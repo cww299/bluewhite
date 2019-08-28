@@ -4,10 +4,6 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.function.Function;
-import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
 import javax.persistence.Column;
@@ -63,10 +59,24 @@ public class AttendanceCollect extends BaseEntity<Long>{
 	
 	/**
 	 * 
-	 * 加班时长
+	 * 普通加班时长
 	 */
 	@Column(name = "over_time")
 	private Double overtime;
+	
+	/**
+	 * 普通加班时长
+	 * 
+	 */
+	@Column(name = "ordinary_overtime")
+	private Double ordinaryOvertime;
+	
+	/**
+	 * 生产加班时长
+	 * 
+	 */
+	@Column(name = "production_overtime")
+	private Double productionOvertime;
 	
 	/**
 	 * 
@@ -171,14 +181,6 @@ public class AttendanceCollect extends BaseEntity<Long>{
 	private Date orderTimeEnd;
 	
 	
-	
-	
-    public  AttendanceCollect (){
-    	
-    }
-	
-	
-
     
 	//有参构造，直接传入AttendanceTime的list，计算出汇总后的数据
     public AttendanceCollect (List<AttendanceTime> list){
@@ -187,6 +189,8 @@ public class AttendanceCollect extends BaseEntity<Long>{
     	userId = list.get(0).getUserId();
     	turnWork =  list.stream().filter(AttendanceTime->AttendanceTime.getTurnWorkTime()!=null).mapToDouble(AttendanceTime::getTurnWorkTime).sum();
     	overtime =  list.stream().filter(AttendanceTime->AttendanceTime.getOvertime()!=null).mapToDouble(AttendanceTime::getOvertime).sum();
+    	ordinaryOvertime = list.stream().filter(AttendanceTime->AttendanceTime.getOrdinaryOvertime()!=null).mapToDouble(AttendanceTime::getOrdinaryOvertime).sum();
+    	productionOvertime =  list.stream().filter(AttendanceTime->AttendanceTime.getProductionOvertime()!=null).mapToDouble(AttendanceTime::getProductionOvertime).sum();
     	dutyWork = list.stream().filter(AttendanceTime->AttendanceTime.getDutytime()!=null).mapToDouble(AttendanceTime::getDutytime).sum();
     	leaveTime = list.stream().filter(AttendanceTime->AttendanceTime.getLeaveTime()!=null).mapToDouble(AttendanceTime::getLeaveTime).sum();
     	takeWork =  list.stream().filter(AttendanceTime->AttendanceTime.getTakeWork()!=null).mapToDouble(AttendanceTime::getTakeWork).sum();
@@ -225,6 +229,22 @@ public class AttendanceCollect extends BaseEntity<Long>{
     
     
     
+
+	public Double getOrdinaryOvertime() {
+		return ordinaryOvertime;
+	}
+	
+	public void setOrdinaryOvertime(Double ordinaryOvertime) {
+		this.ordinaryOvertime = ordinaryOvertime;
+	}
+
+	public Double getProductionOvertime() {
+		return productionOvertime;
+	}
+
+	public void setProductionOvertime(Double productionOvertime) {
+		this.productionOvertime = productionOvertime;
+	}
 
 	public Integer getSeal() {
 		return seal;
