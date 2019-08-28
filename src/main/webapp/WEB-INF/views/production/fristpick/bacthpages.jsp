@@ -1250,9 +1250,11 @@
 								});
 							 
 							  var arr=new Array()
+							  var groupId;
 							  if(check.length<=0){
 								$(".stuCheckBox:checked").each(function() {   
-								    arr.push($(this).val());   
+								    arr.push($(this).val());
+								    groupId=$(this).data('groupid');
 								}); 
 							  }else{
 								  $(".stuCheckBox:checked").each(function() {   
@@ -1260,6 +1262,11 @@
 									});
 								  if(arr.length>0){
 									  return layer.msg("选组后不能单独选择员工", {icon: 2});
+								  }
+								  if(check.length==1){
+									  for (var i = 0; i < check.length; i++) {
+										 groupId=check[0]
+									  }
 								  }
 								  for (var i = 0; i < check.length; i++) {
 									   var data={
@@ -1330,6 +1337,7 @@
 										bacthNumber:bacthNumber,
 										allotTime:$('#Time').val(),
 										productId:productId,
+										groupId:groupId
 								}
 								
 							    $.ajax({
