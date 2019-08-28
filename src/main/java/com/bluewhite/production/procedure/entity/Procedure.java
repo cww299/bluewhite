@@ -11,7 +11,6 @@ import javax.persistence.Transient;
 
 import com.bluewhite.base.BaseEntity;
 import com.bluewhite.basedata.entity.BaseData;
-import com.bluewhite.product.product.entity.Product;
 
 /**
  * 工序实体
@@ -97,7 +96,7 @@ public class Procedure extends BaseEntity<Long> {
 	 * 是否是返工标识符（0=不是，1=是）
 	 */
 	@Column(name = "flag")
-	private Integer flag ;
+	private Integer flag;
 	
 	
 	/**
