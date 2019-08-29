@@ -29,6 +29,7 @@ import com.bluewhite.common.entity.PageResult;
 import com.bluewhite.common.utils.DatesUtil;
 import com.bluewhite.common.utils.NumUtils;
 import com.bluewhite.common.utils.SalesUtils;
+import com.bluewhite.common.utils.StringUtil;
 import com.bluewhite.finance.attendance.dao.AttendancePayDao;
 import com.bluewhite.finance.attendance.entity.AttendancePay;
 import com.bluewhite.production.bacth.dao.BacthDao;
@@ -209,7 +210,7 @@ public class TaskServiceImpl extends BaseServiceImpl<Task, Long> implements Task
 						// 给予每个员工b工资
 						PayB payB = new PayB();
 						payB.setUserId(userId);
-						payB.setGroupId(user.getGroupId());
+						payB.setGroupId(task.getGroupId());
 						payB.setUserName(user.getUserName());
 						payB.setBacth(newTask.getBacthNumber());
 						payB.setBacthId(newTask.getBacthId());
@@ -235,10 +236,11 @@ public class TaskServiceImpl extends BaseServiceImpl<Task, Long> implements Task
 									GroupTime groupTime = groupTimeDao.findByUserIdAndTypeAndGroupIdAndAllotTime(
 											userId, task.getType(), task.getGroupId(), DatesUtil.getfristDayOftime(task.getAllotTime()));
 									if(groupTime != null){
-										groupWorkTime = groupTime.getGroupWorkTime();
+										workTime = groupTime.getGroupWorkTime();
+									}else{
+										workTime = attendancePayNewList.get(0).getWorkTime();
 									}
 								}
-								workTime = groupWorkTime != null ? groupWorkTime : attendancePayNewList.get(0).getWorkTime();
 							}
 							if (temporarilyNewList.size() == 0 && attendancePayNewList.size() == 0) {
 								throw new ServiceException("员工" + user.getUserName() + "没有" + new SimpleDateFormat("yyyy-MM-dd").format(task.getAllotTime()) + "的考勤记录，无法分配任务");
@@ -312,12 +314,11 @@ public class TaskServiceImpl extends BaseServiceImpl<Task, Long> implements Task
 			}
 			// 按产品名称
 			if (!StringUtils.isEmpty(param.getProductName())) {
-				predicate.add(cb.like(root.get("productName").as(String.class), "%" + param.getProductName() + "%"));
+				predicate.add(cb.like(root.get("productName").as(String.class), "%"+StringUtil.specialStrKeyword(param.getProductName())+"%"));
 			}
-			// 按产品名称
+			// 按工序名称
 			if (!StringUtils.isEmpty(param.getProcedureName())) {
-				predicate
-						.add(cb.like(root.get("procedureName").as(String.class), "%" + param.getProcedureName() + "%"));
+				predicate.add(cb.like(root.get("procedureName").as(String.class), "%" + param.getProcedureName() + "%"));
 			}
 			// 按工序类型
 			if (!StringUtils.isEmpty(param.getProcedureTypeId())) {

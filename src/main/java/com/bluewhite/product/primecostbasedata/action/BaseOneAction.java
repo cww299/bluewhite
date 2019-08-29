@@ -371,10 +371,7 @@ public class BaseOneAction {
 		cutPartsList = 	cutPartsList.stream().filter(CutParts->CutParts.getMaterielId()!=null).collect(Collectors.toList());
 		for(CutParts cp : cutPartsList){	
 			Materiel materiel = materielService.findOne(cp.getMaterielId());
-			if(materiel.getPrice()!=cp.getProductCost()){
-				cp.setProductCost(materiel.getPrice());
-				cutPartsService.saveCutParts(cp);
-				}
+			cutPartsService.saveCutParts(cp);
 			}
 		
 		//除裁片
@@ -382,11 +379,11 @@ public class BaseOneAction {
 		for(ProductMaterials pm: productMaterialsList){	
 			Materiel materiel = materielService.findOne(pm.getMaterielId());
 			Double unitCost = null;
-			if(pm.getUnit().equals(pm.getProductUnit())){
-				unitCost=materiel.getPrice();
-			}else{
-				unitCost=materiel.getConvertPrice();
-			}
+//			if(pm.getUnit().equals(pm.getProductUnit())){
+//				unitCost=materiel.getPrice();
+//			}else{
+//				unitCost=materiel.getConvertPrice();
+//			}
 			if(unitCost!=pm.getUnitCost()){
 				pm.setUnitCost(unitCost);
 				productMaterialsService.saveProductMaterials(pm);

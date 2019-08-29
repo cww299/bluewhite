@@ -9,160 +9,145 @@ import com.bluewhite.base.BaseEntity;
 
 /**
  * 裁剪页面
+ * 
  * @author zhangliang
  *
  */
 @Entity
 @Table(name = "pro_product_tailor")
-public class Tailor extends BaseEntity<Long>{
-	
+public class Tailor extends BaseEntity<Long> {
 
 	/**
 	 * 产品id
 	 */
 	@Column(name = "product_id")
-    private Long productId;
-	
-	
+	private Long productId;
+
 	/**
 	 * 裁片id
 	 */
 	@Column(name = "cutParts_id")
-    private Long cutPartsId;
-	
+	private Long cutPartsId;
+
 	/**
 	 * 裁剪类型页面id
 	 */
 	@Column(name = "ordinaryLaser_id")
-    private Long ordinaryLaserId;
-	
+	private Long ordinaryLaserId;
+
 	/**
 	 * 绣花id
 	 */
 	@Column(name = "embroidery_id")
-    private Long embroideryId;
-	
-	
+	private Long embroideryId;
+
 	/**
 	 * 批量产品数量或模拟批量数
 	 */
 	@Column(name = "number")
 	private Integer number;
-	
-	
-	
-	/**
-	 * 选择该样品的裁片id
-	 */
-	@Column(name = "base_id")
-    private Long baseId;
-	
+
 	/**
 	 * 裁剪部位
 	 */
 	@Column(name = "tailor_name")
-    private String tailorName;
+	private String tailorName;
 
 	/**
 	 * 裁剪片数
 	 */
 	@Column(name = "tailor_number")
-    private Integer tailorNumber;
-	
-	
+	private Integer tailorNumber;
+
 	/**
 	 * 当批片数
 	 */
 	@Column(name = "bacth_tailor_number")
-    private Integer bacthTailorNumber;
-	
+	private Integer bacthTailorNumber;
+
 	/**
 	 * 手选该裁片的平方M
 	 */
 	@Column(name = "tailor_size")
-    private Double tailorSize;
-	
+	private Double tailorSize;
+
 	/**
 	 * 手选裁剪方式id
 	 */
 	@Column(name = "tailor_Type_id")
-    private Long tailorTypeId;
-	
-	
+	private Long tailorTypeId;
+
 	/**
 	 * 手选裁剪方式
 	 */
 	@Column(name = "tailor_Type")
-    private String tailorType;
-	
+	private String tailorType;
+
 	/**
 	 * 得到理论(市场反馈）含管理价值
 	 */
 	@Column(name = "manage_price")
-    private Double managePrice;
-	
+	private Double managePrice;
+
 	/**
 	 * 得到实验推算价格
 	 */
 	@Column(name = "experiment_price")
-    private Double experimentPrice;
-	
+	private Double experimentPrice;
+
 	/**
 	 * 市场价与实推价比
 	 */
 	@Column(name = "rate_price")
-    private Double ratePrice;
-	
+	private Double ratePrice;
+
 	/**
 	 * 选择单个入成本价格
 	 */
 	@Column(name = "cost_price")
-    private Double costPrice;
-	
+	private Double costPrice;
+
 	/**
 	 * 总入成本价格
 	 */
 	@Column(name = "all_cost_price")
-    private Double allCostPrice;
-	
+	private Double allCostPrice;
+
 	/**
 	 * 各单片比全套工价
 	 */
 	@Column(name = "scale_material")
-    private Double scaleMaterial;
-	
+	private Double scaleMaterial;
+
 	/**
 	 * 物料压价
 	 */
 	@Column(name = "price_down")
-    private Double priceDown;
-	
+	private Double priceDown;
+
 	/**
 	 * 不含绣花环节的为机工压价
 	 */
 	@Column(name = "no_embroider_price_down")
-    private Double noeMbroiderPriceDown;
-	
+	private Double noeMbroiderPriceDown;
+
 	/**
 	 * 含绣花环节的为机工压价
 	 */
 	@Column(name = "embroider_price_down")
-    private Double embroiderPriceDown;
-	
+	private Double embroiderPriceDown;
+
 	/**
 	 * 为机工准备的压价
 	 */
 	@Column(name = "machinist_price_down")
-    private Double machinistPriceDown;
-	
+	private Double machinistPriceDown;
+
 	/**
 	 * 单只裁剪价格
 	 */
 	@Transient
-    private Double oneCutPrice;
-	
-
-
+	private Double oneCutPrice;
 
 	public Long getEmbroideryId() {
 		return embroideryId;
@@ -186,14 +171,6 @@ public class Tailor extends BaseEntity<Long>{
 
 	public void setCutPartsId(Long cutPartsId) {
 		this.cutPartsId = cutPartsId;
-	}
-
-	public Long getBaseId() {
-		return baseId;
-	}
-
-	public void setBaseId(Long baseId) {
-		this.baseId = baseId;
 	}
 
 	public Long getOrdinaryLaserId() {
@@ -347,8 +324,5 @@ public class Tailor extends BaseEntity<Long>{
 	public void setTailorTypeId(Long tailorTypeId) {
 		this.tailorTypeId = tailorTypeId;
 	}
-	
-	
-	
 
 }

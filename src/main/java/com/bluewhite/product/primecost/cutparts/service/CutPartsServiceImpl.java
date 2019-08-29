@@ -55,13 +55,13 @@ public class CutPartsServiceImpl  extends BaseServiceImpl<CutParts, Long> implem
 					NumUtils.sum(cutParts.getManualLoss(),1),(double)cutParts.getCutPartsNumber()), 
 					NumUtils.mul(cutParts.getCutPartsNumber(),cutParts.getNumber()),3));
 			//当批各单片价格
-			cutParts.setBatchMaterialPrice(NumUtils.mul(cutParts.getBatchMaterial(),cutParts.getProductCost()));
+			cutParts.setBatchMaterialPrice(NumUtils.mul(cutParts.getBatchMaterial(),cutParts.getMateriel().getPrice()));
 		}
 		if(cutParts.getComposite()==1){
 			cutParts.setComplexBatchMaterial(NumUtils.mul(cutParts.getAddMaterial(), 
 					NumUtils.sum(cutParts.getCompositeManualLoss(),1),(double)cutParts.getNumber()));
-			cutParts.setBatchComplexMaterialPrice(NumUtils.mul(cutParts.getComplexBatchMaterial(),cutParts.getProductCost()));
-			cutParts.setBatchComplexAddPrice(NumUtils.mul(cutParts.getComplexBatchMaterial(),cutParts.getComplexProductCost()));
+			cutParts.setBatchComplexMaterialPrice(NumUtils.mul(cutParts.getComplexBatchMaterial(),cutParts.getMateriel().getPrice()));
+			cutParts.setBatchComplexAddPrice(NumUtils.mul(cutParts.getComplexBatchMaterial(),cutParts.getComplexMateriel().getPrice()));
 		}
 		//使用片数周长
 		cutParts.setAllPerimeter(NumUtils.mul(cutParts.getPerimeter(),cutParts.getCutPartsNumber()));
@@ -75,8 +75,6 @@ public class CutPartsServiceImpl  extends BaseServiceImpl<CutParts, Long> implem
 		tailor.setCutPartsId(cutParts.getId());
 		//批量产品数量或模拟批量数
 		tailor.setNumber(cutParts.getNumber());
-		//裁片id
-		tailor.setBaseId(cutParts.getBaseId());
 		//裁剪部位名称
 		tailor.setTailorName(cutParts.getCutPartsName());
 		//裁剪片数

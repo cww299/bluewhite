@@ -2,10 +2,15 @@ package com.bluewhite.product.primecost.materials.entity;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 
 import com.bluewhite.base.BaseEntity;
+import com.bluewhite.product.primecostbasedata.entity.BaseOne;
+import com.bluewhite.product.primecostbasedata.entity.Materiel;
 /**
  * dd除裁片以外的所有生产用料填写
  * @author zhangliang
@@ -28,28 +33,23 @@ public class ProductMaterials extends BaseEntity<Long>{
 	private Integer number;
 	
 	/**
-	 * 物料名
-	 */
-	@Column(name = "materials_name")
-    private String materialsName;
-	
-	/**
 	 * 物料名id
 	 */
 	@Column(name = "materiel_id")
     private Long materielId;
 	
 	/**
+	 *  物料
+	 */
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "materiel_id", referencedColumnName = "id", insertable = false, updatable = false)
+	private Materiel materiel;
+	
+	/**
 	 * 压货环节id
 	 */
 	@Column(name = "overstock_id")
 	private Long overstockId;
-	
-	/**
-	 * 压货环节↓
-	 */
-	@Column(name = "overstock")
-	private String overstock;
 	
 	/**
 	 * 填写单片用料（单片的用料）
@@ -62,13 +62,13 @@ public class ProductMaterials extends BaseEntity<Long>{
 	 */
 	@Column(name = "unit_id")
     private Long unitId;
-	
+
 	/**
-	 * 单位填写选择
+	 * 单位
 	 */
-	@Column(name = "unit")
-    private String unit;
-	
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "unit_id", referencedColumnName = "id", insertable = false, updatable = false)
+	private BaseOne unit;
 	
 	/**
 	 * 按选定单位产品单价
@@ -82,18 +82,6 @@ public class ProductMaterials extends BaseEntity<Long>{
 	 */
 	@Column(name = "manual_loss")
     private Double manualLoss;
-	
-	/**
-	 * 产品单价
-	 */
-	@Column(name = "product_cost")
-    private Double productCost;
-	
-	/**
-	 * 产品单位
-	 */
-	@Column(name = "product_unit")
-    private String productUnit;
 	
 	
 	/**
@@ -117,6 +105,22 @@ public class ProductMaterials extends BaseEntity<Long>{
 	
 	
 	
+	public Materiel getMateriel() {
+		return materiel;
+	}
+
+	public void setMateriel(Materiel materiel) {
+		this.materiel = materiel;
+	}
+
+	public BaseOne getUnit() {
+		return unit;
+	}
+
+	public void setUnit(BaseOne unit) {
+		this.unit = unit;
+	}
+
 	public Double getOneOtherCutPartsPrice() {
 		return oneOtherCutPartsPrice;
 	}
@@ -139,14 +143,6 @@ public class ProductMaterials extends BaseEntity<Long>{
 
 	public void setOverstockId(Long overstockId) {
 		this.overstockId = overstockId;
-	}
-
-	public String getOverstock() {
-		return overstock;
-	}
-
-	public void setOverstock(String overstock) {
-		this.overstock = overstock;
 	}
 
 	public Long getUnitId() {
@@ -173,28 +169,12 @@ public class ProductMaterials extends BaseEntity<Long>{
 		this.number = number;
 	}
 
-	public String getMaterialsName() {
-		return materialsName;
-	}
-
-	public void setMaterialsName(String materialsName) {
-		this.materialsName = materialsName;
-	}
-
 	public Double getOneMaterial() {
 		return oneMaterial;
 	}
 
 	public void setOneMaterial(Double oneMaterial) {
 		this.oneMaterial = oneMaterial;
-	}
-
-	public String getUnit() {
-		return unit;
-	}
-
-	public void setUnit(String unit) {
-		this.unit = unit;
 	}
 
 	public Double getUnitCost() {
@@ -211,23 +191,6 @@ public class ProductMaterials extends BaseEntity<Long>{
 
 	public void setManualLoss(Double manualLoss) {
 		this.manualLoss = manualLoss;
-	}
-
-	public Double getProductCost() {
-		return productCost;
-	}
-
-	public void setProductCost(Double productCost) {
-		this.productCost = productCost;
-	}
-
-
-	public String getProductUnit() {
-		return productUnit;
-	}
-
-	public void setProductUnit(String productUnit) {
-		this.productUnit = productUnit;
 	}
 
 	public Double getBatchMaterial() {

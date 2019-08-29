@@ -192,7 +192,7 @@ private final static Log log = Log.getLog(NeedleworkAction.class);
 		}
 		for(ProductMaterials pm : productMaterialsList){
 			map = new HashMap<>();
-			map.put("name", pm.getMaterialsName());
+			map.put("name", pm.getMateriel().getName());
 			overStock.add(map);
 		}
 		cr.setData(overStock);
