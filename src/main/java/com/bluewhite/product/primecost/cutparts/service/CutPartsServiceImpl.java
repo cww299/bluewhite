@@ -68,7 +68,7 @@ public class CutPartsServiceImpl  extends BaseServiceImpl<CutParts, Long> implem
 		dao.save(cutParts);
 		
 		//从cc裁片填写后，自动增加到裁剪页面
-		Tailor tailor =  new Tailor();
+		Tailor tailor = new Tailor();
 		//增加和产品关联关系
 		tailor.setProductId(cutParts.getProductId());
 		//裁片和裁剪页面关联关系
@@ -82,8 +82,7 @@ public class CutPartsServiceImpl  extends BaseServiceImpl<CutParts, Long> implem
 		//当批片数
 		tailor.setBacthTailorNumber(cutParts.getCutPartsNumber()*cutParts.getNumber());
 		//物料压价,通过cc裁片填写中该裁片该面料的价值 得到
-		tailor.setPriceDown((cutParts.getBatchMaterialPrice()==null ? 0.0 : cutParts.getBatchMaterialPrice())
-				+(cutParts.getBatchComplexAddPrice()==null ? 0.0 :cutParts.getBatchComplexAddPrice()));
+		tailor.setPriceDown(NumUtils.sum(cutParts.getBatchMaterialPrice(),cutParts.getBatchComplexAddPrice()));
 
 		if(cutParts.getTailorId()==null){ 
 			tailor.setTailorTypeId((long)71);
@@ -106,7 +105,6 @@ public class CutPartsServiceImpl  extends BaseServiceImpl<CutParts, Long> implem
 			tailorDao.save(oldtailor);
 		}
 		tailorDao.save(tailor);
-		
 		//更新裁剪页面id到裁片中
 		cutParts.setTailorId(tailor.getId());
 		//各单片比全套用料

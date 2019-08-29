@@ -29,10 +29,10 @@ public class CutParts extends BaseEntity<Long> {
 	private Long productId;
 
 	/**
-	 * 批量产品数量或模拟批量数
+	 * 批量产品数量或模拟批量数(默认2000)
 	 */
 	@Column(name = "number")
-	private Integer number;
+	private Integer number = 2000;
 
 	/**
 	 * 裁剪页面id
@@ -46,6 +46,13 @@ public class CutParts extends BaseEntity<Long> {
 	@Column(name = "overstock_id")
 	private Long overstockId;
 
+	/**
+	 * 压货环节
+	 */
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "overstock_id", referencedColumnName = "id", insertable = false, updatable = false)
+	private BaseOne overstock;
+	
 	/**
 	 * 面料产品id
 	 */
@@ -151,8 +158,6 @@ public class CutParts extends BaseEntity<Long> {
 	@JoinColumn(name = "complex_materiel_id", referencedColumnName = "id", insertable = false, updatable = false)
 	private Materiel complexMateriel;
 
-
-
 	/**
 	 * 复合物手动损耗选择
 	 */
@@ -198,8 +203,6 @@ public class CutParts extends BaseEntity<Long> {
 	private Double oneCutPartsPrice;
 	
 	
-	
-
 	public Materiel getMateriel() {
 		return materiel;
 	}

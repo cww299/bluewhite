@@ -52,6 +52,13 @@ public class ProductMaterials extends BaseEntity<Long>{
 	private Long overstockId;
 	
 	/**
+	 * 压货环节
+	 */
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "overstock_id", referencedColumnName = "id", insertable = false, updatable = false)
+	private BaseOne overstock;
+	
+	/**
 	 * 填写单片用料（单片的用料）
 	 */
 	@Column(name = "one_material")
@@ -75,7 +82,6 @@ public class ProductMaterials extends BaseEntity<Long>{
 	 */
 	@Column(name = "unit_cost")
     private Double unitCost;
-	
 	
 	/**
 	 * 手动损耗选择

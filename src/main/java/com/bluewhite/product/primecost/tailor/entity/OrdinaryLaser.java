@@ -2,10 +2,14 @@ package com.bluewhite.product.primecost.tailor.entity;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 
 import com.bluewhite.base.BaseEntity;
+import com.bluewhite.product.primecostbasedata.entity.BaseOne;
 /**
  * (裁剪普通激光,绣花定位激光，冲床，电烫，电推，手工剪刀）
  * 不同的裁剪方式，获取不同的成本价格
@@ -62,15 +66,15 @@ public class OrdinaryLaser extends BaseEntity<Long>{
 	/**
 	 * 裁剪方式
 	 */
-	@Column(name = "tailor_Type")
-    private String tailorType;
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "tailor_Type_id", referencedColumnName = "id", insertable = false, updatable = false)
+	private BaseOne tailorType;
 	
 	/**
 	 *得到理论(市场反馈）含管理价值
 	 */
 	@Column(name = "manage_price")
     private Double managePrice;	
-	
 	
 	/**
 	 * 裁片周长/CM(≈)
