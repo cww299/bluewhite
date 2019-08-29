@@ -12,14 +12,12 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
 
 import com.bluewhite.base.BaseServiceImpl;
-import com.bluewhite.common.ServiceException;
 import com.bluewhite.common.entity.PageParameter;
 import com.bluewhite.common.entity.PageResult;
 import com.bluewhite.common.utils.NumUtils;
 import com.bluewhite.product.primecost.materials.dao.ProductMaterialsDao;
 import com.bluewhite.product.primecost.materials.entity.ProductMaterials;
 import com.bluewhite.product.product.dao.ProductDao;
-import com.bluewhite.product.product.entity.Product;
 
 @Service
 public class ProductMaterialsServiceImpl extends BaseServiceImpl<ProductMaterials, Long> implements ProductMaterialsService {
@@ -39,8 +37,7 @@ public class ProductMaterialsServiceImpl extends BaseServiceImpl<ProductMaterial
 			productMaterials.setBatchMaterial(productMaterials.getManualLoss()*productMaterials.getOneMaterial()*productMaterials.getNumber());
 		}
 		productMaterials.setBatchMaterialPrice(productMaterials.getBatchMaterial()*productMaterials.getUnitCost());
-		dao.save((ProductMaterials)NumUtils.setzro(productMaterials));
-		return productMaterials;
+		return dao.save(productMaterials);
 	}
 
 
@@ -56,10 +53,10 @@ public class ProductMaterialsServiceImpl extends BaseServiceImpl<ProductMaterial
 	        	if (param.getProductId() != null) {
 					predicate.add(cb.equal(root.get("productId").as(Long.class),param.getProductId()));
 				}
-	        	//按裁片名称过滤
-	        	if (!StringUtils.isEmpty(param.getMaterialsName())) {
-					predicate.add(cb.like(root.get("cutPartsName").as(String.class),"%"+param.getMaterialsName()+"%"));
-				}
+//	        	//按裁片名称过滤
+//	        	if (!StringUtils.isEmpty(param.getMaterialsName())) {
+//					predicate.add(cb.like(root.get("cutPartsName").as(String.class),"%"+param.getMaterialsName()+"%"));
+//				}
 				Predicate[] pre = new Predicate[predicate.size()];
 				query.where(predicate.toArray(pre));
 	        	return null;
@@ -80,7 +77,6 @@ public class ProductMaterialsServiceImpl extends BaseServiceImpl<ProductMaterial
 
 	@Override
 	public List<ProductMaterials> findByProductIdAndOverstockId(Long productId, Long id) {
-		
 		return dao.findByProductIdAndOverstockId(productId,id);
 	}
 
