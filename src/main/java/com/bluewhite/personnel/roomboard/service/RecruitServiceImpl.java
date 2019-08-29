@@ -141,10 +141,17 @@ public class RecruitServiceImpl extends BaseServiceImpl<Recruit, Long>
 			Long e=psList1.stream().filter(Recruit->Recruit.getOrgNameId().equals(Recruit.getOrgNameId()) && Recruit.getState()!=null && Recruit.getState().equals(2)).count();//拒绝入职
 			Long f=psList1.stream().filter(Recruit->Recruit.getOrgNameId().equals(Recruit.getOrgNameId()) && Recruit.getState()!=null && Recruit.getUserId()!=null && Recruit.getState().equals(1) && Recruit.getUser().getQuit().equals(0)).count();//已入职且在职
 			Long g=psList1.stream().filter(Recruit->Recruit.getOrgNameId().equals(Recruit.getOrgNameId()) && Recruit.getState()!=null &&  Recruit.getState().equals(3)).count();//即将入职
-			//短期入职离职
-			Long h=psList1.stream().filter(Recruit->Recruit.getOrgNameId().equals(Recruit.getOrgNameId()) && Recruit.getUserId()!=null && Recruit.getUser().getQuit().equals(1) && DatesUtil.getDaySub(date, Recruit.getUser().getQuitDate())<32).count();
+			
+			Long h=psList1.stream().filter(Recruit->Recruit.getOrgNameId().equals(Recruit.getOrgNameId()) && Recruit.getUserId()!=null && Recruit.getUser().getQuit().equals(1) && DatesUtil.getDaySub(date, Recruit.getUser().getQuitDate())<32).count();//短期入职离职
 			Long k=psList1.stream().filter(Recruit->Recruit.getOrgNameId().equals(Recruit.getOrgNameId()) && Recruit.getState()!=null && Recruit.getState().equals(1)).count();//已入职
 			Long l=psList1.stream().filter(Recruit->Recruit.getOrgNameId().equals(Recruit.getOrgNameId()) && Recruit.getState()!=null && Recruit.getUserId()!=null && Recruit.getState().equals(1) && Recruit.getUser().getQuit().equals(1)).count();//已入职且离职
+			List<Recruit> list2= psList1.stream().filter(Recruit->Recruit.getOrgNameId().equals(Recruit.getOrgNameId())).collect(Collectors.toList());
+			List<Recruit> list3= psList1.stream().filter(Recruit->Recruit.getOrgNameId().equals(Recruit.getOrgNameId()) && Recruit.getType()!=null && Recruit.getType().equals(1)).collect(Collectors.toList());//应邀面试
+			List<Recruit> list4=psList1.stream().filter(Recruit->Recruit.getOrgNameId().equals(Recruit.getOrgNameId()) && Recruit.getAdopt()!=null && Recruit.getAdopt().equals(1)).collect(Collectors.toList());//面试合格
+			List<Recruit> list5=psList1.stream().filter(Recruit->Recruit.getOrgNameId().equals(Recruit.getOrgNameId()) && Recruit.getState()!=null && Recruit.getState().equals(2)).collect(Collectors.toList());//拒绝入职
+			List<Recruit> list6=psList1.stream().filter(Recruit->Recruit.getOrgNameId().equals(Recruit.getOrgNameId()) && Recruit.getState()!=null && Recruit.getUserId()!=null && Recruit.getState().equals(1) && Recruit.getUser().getQuit().equals(0)).collect(Collectors.toList());//已入职且在职
+			List<Recruit> list7=psList1.stream().filter(Recruit->Recruit.getOrgNameId().equals(Recruit.getOrgNameId()) && Recruit.getState()!=null &&  Recruit.getState().equals(3)).collect(Collectors.toList());//即将入职
+			List<Recruit> list8=psList1.stream().filter(Recruit->Recruit.getOrgNameId().equals(Recruit.getOrgNameId()) && Recruit.getUserId()!=null && Recruit.getUser().getQuit().equals(1) && DatesUtil.getDaySub(date, Recruit.getUser().getQuitDate())<32).collect(Collectors.toList());//短期入职离职
 			BaseData baseData=baseDataDao.findOne(ps1);
 			String string= baseData.getName();
 			allMap.put("username", string);
@@ -157,6 +164,13 @@ public class RecruitServiceImpl extends BaseServiceImpl<Recruit, Long>
 			allMap.put("mod7",h);
 			allMap.put("mod8",k);
 			allMap.put("mod9",l);
+			allMap.put("mod10",list2);
+			allMap.put("mod11",list3);
+			allMap.put("mod12",list4);
+			allMap.put("mod13",list5);
+			allMap.put("mod14",list6);
+			allMap.put("mod15",list7);
+			allMap.put("mod16",list8);
 			allList.add(allMap);
 			}
 		return allList;

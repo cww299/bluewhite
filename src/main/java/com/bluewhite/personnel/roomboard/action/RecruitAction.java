@@ -50,7 +50,9 @@ public class RecruitAction {
 	private ClearCascadeJSON clearCascadeJSON;
 	{
 		clearCascadeJSON = ClearCascadeJSON.get()
-				.addRetainTerm(Recruit.class,"id","user","remarksThree", "platformId","testTime","platformName","position","positionId","time","position","orgNameId","orgName","name","gender","phone","livingAddress","entry","type","remarks","typeOne","remarksOne","typeTwo","remarksTwo","state","adopt","platform","recruitId","recruitName");
+				.addRetainTerm(Recruit.class,"id","user","remarksThree", "platformId","testTime","platformName","position","positionId","time","position","orgNameId","orgName","name","gender","phone","livingAddress","entry","type","remarks","typeOne","remarksOne","typeTwo","remarksTwo","state","adopt","platform","recruitId","recruitName")
+				.addRetainTerm(User.class, "id","name", "delFlag","userName","quit","entry","quitDate","reason")
+				.addRetainTerm(BaseData.class, "id","name", "type");
 	}
 	
 	private ClearCascadeJSON clearCascadeJSONRecruit;

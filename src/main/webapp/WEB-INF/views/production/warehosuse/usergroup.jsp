@@ -259,28 +259,18 @@
 	<!--人员分组详情 -->
 	</section> --%>
 
-
-<div class="layui-card">
-		<div class="layui-card-body">
+<div style="display: none;" id="layuiShare">
 			<div class="layui-form layui-card-header layuiadmin-card-header-auto">
 				<div class="layui-form-item">
 					<table>
 						<tr>
-							<td>日期:</td>
-							<td><input id="startTime"  name="time" placeholder="请输入开始时间" class="layui-input laydate-icon">
+							<td>查询月份:</td>
+							<td><input id="monthDate3" style="width: 180px;" name="time" placeholder="请输入开始时间" class="layui-input laydate-icon">
 							</td>
-							<td>&nbsp;&nbsp;</td>
-							<td>人员:</td>
-							<td><select class="form-control" id="singleMealConsumptionId" lay-search="true"  name="userId"></select></td>
-							<td>&nbsp;&nbsp;</td>
-							<td>类型:</td>
-							<td><select class="form-control" name="type" id="selectType">
-									
-							</select></td>
 							<td>&nbsp;&nbsp;</td>
 							<td>
 								<div class="layui-inline">
-									<button class="layui-btn layuiadmin-btn-admin" id="LAY-search5" lay-submit lay-filter="LAY-search">
+									<button class="layui-btn layuiadmin-btn-admin"  lay-submit lay-filter="LAY-search2">
 										<i class="layui-icon layui-icon-search layuiadmin-button-btn"></i>
 									</button>
 								</div>
@@ -289,10 +279,13 @@
 					</table>
 				</div>
 			</div>
+			<table id="layuiShare2"  class="table_th_search" lay-filter="layuiShare"></table>
+</div>
+
+
+<div class="layui-card">
+		<div class="layui-card-body">
 			<table id="tableData" class="table_th_search" lay-filter="tableData"></table>
-			
-			
-			
 		</div>
 	</div>
 	<script type="text/html" id="toolbar">
@@ -303,7 +296,7 @@
 	</script>
 	
 	<script type="text/html" id="barDemo">
-  		 <a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="query">查看人员</a>
+		<button type="button" class="layui-btn layui-btn-normal" lay-event="query">查看人员</button>
 	</script>
 	
 	<script>
@@ -482,6 +475,43 @@
 						//调用新增修改
 						mainJs.fUpdate(postData);
 					});
+					//监听工具事件
+					table.on('tool(tableData)', function(obj){
+						 var data = obj.data;
+						 console.log(data)
+						switch(obj.event) {
+						case 'query':
+							var dicDiv=$('#layuiShare');
+							table.reload("layuiShare2");
+							layer.open({
+						         type: 1
+						        ,title: '招聘汇总' //不显示标题栏
+						        ,closeBtn: false
+						        ,zindex:-1
+						        ,area:['50%', '90%']
+						        ,shade: 0.5
+						        ,id: 'LAY_layuipro2' //设定一个id，防止重复弹出
+						        ,btn: ['取消']
+						        ,btnAlign: 'c'
+						        ,moveType: 1 //拖拽模式，0或者1
+						        ,content:dicDiv
+						        ,success : function(layero, index) {
+						        	layero.addClass('layui-form');
+									// 将保存按钮改变成提交按钮
+									layero.find('.layui-layer-btn0').attr({
+										'lay-filter' : 'addRole2',
+										'lay-submit' : ''
+									})
+						        }
+						        ,end:function(){
+						        	$("#layuiShare").hide();
+								  } 
+						      });
+							break;
+						}
+					})
+					
+					
 					//监听头工具栏事件
 					table.on('toolbar(tableData)', function(obj) {
 						var config = obj.config;
@@ -494,26 +524,6 @@
 								// 进入回调的时候this是当前的表格的config
 								var that = this;
 								// 初始化laydate
-								layui.each(trElem.find('td[data-field="time"]'), function(index, tdElem) {
-									tdElem.onclick = function(event) {
-										layui.stope(event)
-									};
-									laydate.render({
-										elem: tdElem.children[0],
-										format: 'yyyy-MM-dd HH:mm:ss',
-										done: function(value, date) {
-											var trElem = $(this.elem[0]).closest('tr');
-											var tableView = trElem.closest('.layui-table-view');
-											table.cache[that.id][trElem.data('index')]['time'] = value;
-											var id = table.cache[tableView.attr('lay-id')][trElem.data('index')].id
-											var postData = {
-												id: id,
-												time:value,
-											}
-											mainJs.fUpdate(postData);
-										}
-									})
-								})
 							});
 							break;
 							case 'saveTempData':
@@ -584,6 +594,7 @@
 									layer.close(index);
 								});
 								break;
+							
 						}
 					});
 	

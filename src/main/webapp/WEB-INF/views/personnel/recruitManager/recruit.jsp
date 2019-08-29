@@ -221,6 +221,28 @@
 			<table id="analysisRecuitsumday"  class="table_th_search" lay-filter="layuiShare10"></table>
 </div>
 
+<div style="display: none;" id="userSum">
+			<div class="layui-form layui-card-header layuiadmin-card-header-auto">
+				<div class="layui-form-item">
+					<table class="table table-hover">
+							<thead>
+								<tr>
+									<th class="text-center">人名</th>
+									<th class="text-center">职位</th>
+									<th class="text-center">面试时间</th>
+									<th class="text-center">平台</th>
+									<th class="text-center">招聘人</th>
+									<th class="text-center">备注</th>
+								</tr>
+							</thead>
+							<tbody id="tableUserSum">
+									
+							</tbody>
+						</table>
+				</div>
+			</div>
+</div>
+
 	<script type="text/html" id="addEditTpl">
 	<form action="" id="layuiadmin-form-admin"
 		style="padding: 20px 30px 0 60px; text-align:">
@@ -1301,43 +1323,168 @@
 								field: "mod1",
 								title: "邀约面试",
 								align: 'center',
-								totalRow: true
+								totalRow: true,
+								event:'mod10'
 							},{
 								field: "mod2",
 								title: "应邀面试",
 								align: 'center',
-								totalRow: true
+								totalRow: true,
+								event:'mod11'
 							},{
 								field: "mod3",
 								title: "面试合格",
 								align: 'center',
-								totalRow: true
+								totalRow: true,
+								event:'mod12'
 							},{
 								field: "mod4",
 								title: "拒绝入职",
 								align: 'center',
-								totalRow: true
+								totalRow: true,
+								event:'mod13'
 							},{
 								field: "mod5",
 								title: "已入职且在职",
 								align: 'center',
-								totalRow: true
+								totalRow: true,
+								event:'mod14'
 							},{
 								field: "mod6",
 								title: "即将入职",
 								align: 'center',
-								totalRow: true
+								totalRow: true,
+								event:'mod15'
 							},{
 								field: "mod7",
 								title: "短期入职离职",
 								align: 'center',
-								totalRow: true
+								totalRow: true,
+								event:'mod16'
 							}
 							]
 						],
-					
 								});
-					
+					table.on('tool(layuiShare)', function(obj) {
+						var html="";
+						var dicDiv="";
+						if(obj.event=='mod10'){
+							$(obj.data.mod10).each(function(i,o){
+								html +='<tr>'
+			      				+'<td class="text-center">'+o.name+'</td>'
+			      				+'<td class="text-center"><input style="background:none;outline:none;border:0px;text-align:center;" value='+o.position.name+' /></td>'
+			      				+'<td class="text-center"><input style="background:none;outline:none;border:0px;text-align:center;" value='+o.time+' /></td>'
+			      				+'<td class="text-center"><input style="background:none;outline:none;border:0px;text-align:center;" value='+o.platform.name+' /></td>'
+			      				+'<td class="text-center"><input style="background:none;outline:none;border:0px;text-align:center;" value='+o.recruitName+' /></td>'
+			      				+'<td class="text-center"><input style="background:none;outline:none;border:0px;text-align:center;" value='+o.remarksOne+' /></td><tr>'
+							})
+							$('#tableUserSum').html(html);
+							 dicDiv=$('#userSum');
+						}
+						if(obj.event=='mod11'){
+							$(obj.data.mod11).each(function(i,o){
+								html +='<tr>'
+			      				+'<td class="text-center">'+o.name+'</td>'
+			      				+'<td class="text-center"><input style="background:none;outline:none;border:0px;text-align:center;" value='+o.position.name+' /></td>'
+			      				+'<td class="text-center"><input style="background:none;outline:none;border:0px;text-align:center;" value='+o.time+' /></td>'
+			      				+'<td class="text-center"><input style="background:none;outline:none;border:0px;text-align:center;" value='+o.platform.name+' /></td>'
+			      				+'<td class="text-center"><input style="background:none;outline:none;border:0px;text-align:center;" value='+o.recruitName+' /></td>'
+			      				+'<td class="text-center"><input style="background:none;outline:none;border:0px;text-align:center;" value='+o.remarksOne+' /></td><tr>'
+							})
+							$('#tableUserSum').html(html);
+							 dicDiv=$('#userSum');
+						}
+						if(obj.event=='mod12'){
+							$(obj.data.mod12).each(function(i,o){
+								html +='<tr>'
+			      				+'<td class="text-center">'+o.name+'</td>'
+			      				+'<td class="text-center"><input style="background:none;outline:none;border:0px;text-align:center;" value='+o.position.name+' /></td>'
+			      				+'<td class="text-center"><input style="background:none;outline:none;border:0px;text-align:center;" value='+o.time+' /></td>'
+			      				+'<td class="text-center"><input style="background:none;outline:none;border:0px;text-align:center;" value='+o.platform.name+' /></td>'
+			      				+'<td class="text-center"><input style="background:none;outline:none;border:0px;text-align:center;" value='+o.recruitName+' /></td>'
+			      				+'<td class="text-center"><input style="background:none;outline:none;border:0px;text-align:center;" value='+o.remarksOne+' /></td><tr>'
+							})
+							$('#tableUserSum').html(html);
+							 dicDiv=$('#userSum');
+						}
+						if(obj.event=='mod13'){
+							$(obj.data.mod13).each(function(i,o){
+								html +='<tr>'
+			      				+'<td class="text-center">'+o.name+'</td>'
+			      				+'<td class="text-center"><input style="background:none;outline:none;border:0px;text-align:center;" value='+o.position.name+' /></td>'
+			      				+'<td class="text-center"><input style="background:none;outline:none;border:0px;text-align:center;" value='+o.time+' /></td>'
+			      				+'<td class="text-center"><input style="background:none;outline:none;border:0px;text-align:center;" value='+o.platform.name+' /></td>'
+			      				+'<td class="text-center"><input style="background:none;outline:none;border:0px;text-align:center;" value='+o.recruitName+' /></td>'
+			      				+'<td class="text-center"><input style="background:none;outline:none;border:0px;text-align:center;" value='+o.remarksOne+' /></td><tr>'
+							})
+							$('#tableUserSum').html(html);
+							 dicDiv=$('#userSum');
+						}
+						if(obj.event=='mod14'){
+							$(obj.data.mod14).each(function(i,o){
+								html +='<tr>'
+			      				+'<td class="text-center">'+o.name+'</td>'
+			      				+'<td class="text-center"><input style="background:none;outline:none;border:0px;text-align:center;" value='+o.position.name+' /></td>'
+			      				+'<td class="text-center"><input style="background:none;outline:none;border:0px;text-align:center;" value='+o.time+' /></td>'
+			      				+'<td class="text-center"><input style="background:none;outline:none;border:0px;text-align:center;" value='+o.platform.name+' /></td>'
+			      				+'<td class="text-center"><input style="background:none;outline:none;border:0px;text-align:center;" value='+o.recruitName+' /></td>'
+			      				+'<td class="text-center"><input style="background:none;outline:none;border:0px;text-align:center;" value='+o.remarksOne+' /></td><tr>'
+							})
+							$('#tableUserSum').html(html);
+							 dicDiv=$('#userSum');
+						}
+						if(obj.event=='mod15'){
+							$(obj.data.mod15).each(function(i,o){
+								html +='<tr>'
+			      				+'<td class="text-center">'+o.name+'</td>'
+			      				+'<td class="text-center"><input style="background:none;outline:none;border:0px;text-align:center;" value='+o.position.name+' /></td>'
+			      				+'<td class="text-center"><input style="background:none;outline:none;border:0px;text-align:center;" value='+o.time+' /></td>'
+			      				+'<td class="text-center"><input style="background:none;outline:none;border:0px;text-align:center;" value='+o.platform.name+' /></td>'
+			      				+'<td class="text-center"><input style="background:none;outline:none;border:0px;text-align:center;" value='+o.recruitName+' /></td>'
+			      				+'<td class="text-center"><input style="background:none;outline:none;border:0px;text-align:center;" value='+o.remarksOne+' /></td><tr>'
+							})
+							$('#tableUserSum').html(html);
+							 dicDiv=$('#userSum');
+						}
+						if(obj.event=='mod116'){
+							$(obj.data.mod116).each(function(i,o){
+								html +='<tr>'
+			      				+'<td class="text-center">'+o.name+'</td>'
+			      				+'<td class="text-center"><input style="background:none;outline:none;border:0px;text-align:center;" value='+o.position.name+' /></td>'
+			      				+'<td class="text-center"><input style="background:none;outline:none;border:0px;text-align:center;" value='+o.time+' /></td>'
+			      				+'<td class="text-center"><input style="background:none;outline:none;border:0px;text-align:center;" value='+o.platform.name+' /></td>'
+			      				+'<td class="text-center"><input style="background:none;outline:none;border:0px;text-align:center;" value='+o.recruitName+' /></td>'
+			      				+'<td class="text-center"><input style="background:none;outline:none;border:0px;text-align:center;" value='+o.remarksOne+' /></td><tr>'
+							})
+							$('#tableUserSum').html(html);
+							 dicDiv=$('#userSum');
+						}
+						layer.open({
+					         type: 1
+					        ,title: '人员详情' //不显示标题栏
+					        ,closeBtn: false
+					        ,zindex:-1
+					        ,area:['58%', '90%']
+					        ,shade: 0.5
+					        ,id: 'LAY_layuipro10' //设定一个id，防止重复弹出
+					        ,btn: ['取消']
+					        ,btnAlign: 'c'
+					        ,moveType: 1 //拖拽模式，0或者1
+					        ,content:dicDiv
+					        ,success : function(layero, index) {
+					        	layero.addClass('layui-form');
+								// 将保存按钮改变成提交按钮
+								layero.find('.layui-layer-btn0').attr({
+									'lay-filter' : 'addRole2',
+									'lay-submit' : ''
+								})
+					        }
+					        ,end:function(){
+					        	$("#userSum").hide();
+							  } 
+					      });
+						
+					})
 					var eventd2=function(data){
 						table.reload("layuiShare6", {
 							url: '${ctx}/personnel/soon' ,
@@ -1378,9 +1525,7 @@
 								title: "部门",
 								align: 'center',
 								templet:  function(d){ 
-									if(d.user!=null){
-									return d.user.orgName.name	
-									}
+									return d.orgName.name	
 								}
 							},{
 								field: "position",
@@ -1388,7 +1533,7 @@
 								align: 'center',
 								templet:  function(d){ 
 									if(d.user!=null){
-									return d.user.position.name		
+									return d.position.name		
 									}
 								}
 							},{
