@@ -425,14 +425,6 @@ public class OrdinaryLaser extends BaseEntity<Long>{
 		this.tailorSize = tailorSize;
 	}
 
-	public String getTailorType() {
-		return tailorType;
-	}
-
-	public void setTailorType(String tailorType) {
-		this.tailorType = tailorType;
-	}
-
 	public Double getManagePrice() {
 		return managePrice;
 	}
