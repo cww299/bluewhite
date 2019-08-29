@@ -27,247 +27,245 @@ import com.bluewhite.product.primecostbasedata.service.MaterielService;
 import com.bluewhite.product.product.dao.ProductDao;
 
 @Service
-public class TailorServiceImpl extends BaseServiceImpl<Tailor, Long>  implements TailorService {
-	
+public class TailorServiceImpl extends BaseServiceImpl<Tailor, Long> implements TailorService {
+
 	@Autowired
 	private TailorDao dao;
 	@Autowired
 	private ProductDao productdao;
 	@Autowired
-	private CutPartsDao  cutPartsDao;
+	private CutPartsDao cutPartsDao;
 	@Autowired
 	private OrdinaryLaserDao ordinaryLaserDao;
 	@Autowired
 	private PrimeCoefficientDao primeCoefficientDao;
 	@Autowired
 	private MaterielService materielService;
-	
-	
+
 	@Override
 	@Transactional
-	public Tailor saveTailor(Tailor tailor){
-		//当同一个裁剪页面实体，改变了类型，进行保存操作。同时删除之前关联的类型实体
-		OrdinaryLaser  prams = ordinaryLaserDao.findByTailorId(tailor.getId());
-		//不含绣花环节的为机工压价	
-		tailor.setNoeMbroiderPriceDown(NumUtils.setzro(tailor.getAllCostPrice())+tailor.getPriceDown());
-		//含绣花环节的为机工压价
-		
-		//为机工准备的压价
-		double MachinistPriceDown = tailor.getNoeMbroiderPriceDown() >= NumUtils.setzro(tailor.getEmbroiderPriceDown()) ? tailor.getNoeMbroiderPriceDown() :NumUtils.setzro(tailor.getEmbroiderPriceDown());
+	public Tailor saveTailor(Tailor tailor) {
+		// 当同一个裁剪页面实体，改变了类型，进行保存操作。同时删除之前关联的类型实体
+		OrdinaryLaser prams = ordinaryLaserDao.findByTailorId(tailor.getId());
+		// 不含绣花环节的为机工压价
+		tailor.setNoeMbroiderPriceDown(NumUtils.setzro(tailor.getAllCostPrice()) + tailor.getPriceDown());
+		// 含绣花环节的为机工压价
+
+		// 为机工准备的压价
+		double MachinistPriceDown = tailor.getNoeMbroiderPriceDown() >= NumUtils.setzro(tailor.getEmbroiderPriceDown())
+				? tailor.getNoeMbroiderPriceDown() : NumUtils.setzro(tailor.getEmbroiderPriceDown());
 		tailor.setMachinistPriceDown(MachinistPriceDown);
-		
-		
-		if(prams!=null && !prams.getId().equals(tailor.getOrdinaryLaserId())){
+
+		if (prams != null && !prams.getId().equals(tailor.getOrdinaryLaserId())) {
 			ordinaryLaserDao.delete(prams);
 		}
-		//根据裁剪类型进行新增
-		OrdinaryLaser  prams1 = null;
-		if(tailor.getOrdinaryLaserId()!=null){
+		// 根据裁剪类型进行新增
+		OrdinaryLaser prams1 = null;
+		if (tailor.getOrdinaryLaserId() != null) {
 			prams1 = ordinaryLaserDao.findOne(tailor.getOrdinaryLaserId());
-			//当裁减类型实体种没有数据
-			if(prams1==null){
+			// 当裁减类型实体种没有数据
+			if (prams1 == null) {
 				prams1 = new OrdinaryLaser();
 			}
-			
+
 		}
-		this.getOrdinaryLaserDate(tailor,prams1);
+		this.getOrdinaryLaserDate(tailor, prams1);
 		return tailor;
 	}
 
-	
-	//根据裁剪类型进行计算出不同的价格,获取裁剪页面所需要的数据
+	// 根据裁剪类型进行计算出不同的价格,获取裁剪页面所需要的数据
 	@Override
-	public OrdinaryLaser getOrdinaryLaserDate(Tailor tailor,OrdinaryLaser  prams) {
+	public OrdinaryLaser getOrdinaryLaserDate(Tailor tailor, OrdinaryLaser prams) {
 		PrimeCoefficient primeCoefficient = null;
 		String type = null;
 		CutParts cutParts = cutPartsDao.findOne(tailor.getCutPartsId());
-		 prams.setProductId(tailor.getProductId());
-		 prams.setTailorTypeId(tailor.getTailorTypeId());
-		 prams.setTailorName(tailor.getTailorName());
-		 prams.setNumber(tailor.getNumber());
-		 prams.setTailorNumber(tailor.getTailorNumber());
-		 prams.setTailorSize(tailor.getTailorSize());
-		 prams.setTailorId(tailor.getId());
-		 prams.setPerimeter(NumUtils.setzro(cutParts.getPerimeter()));
-		 prams.setSingleDouble(prams.getSingleDouble()!=null ? NumUtils.setzro(prams.getSingleDouble()) : 2);
-		 prams.setStallPoint( prams.getStallPoint() !=null ?NumUtils.setzro(prams.getStallPoint()) :1) ;	
-		 prams.setTime(prams.getTime()!=null ? NumUtils.setzro(prams.getTime()) : 0.5);
-		
+		prams.setProductId(tailor.getProductId());
+		prams.setTailorTypeId(tailor.getTailorTypeId());
+		prams.setTailorName(tailor.getTailorName());
+		prams.setNumber(tailor.getNumber());
+		prams.setTailorNumber(tailor.getTailorNumber());
+		prams.setTailorSize(tailor.getTailorSize());
+		prams.setTailorId(tailor.getId());
+		prams.setPerimeter(NumUtils.setzro(cutParts.getPerimeter()));
+		prams.setSingleDouble(prams.getSingleDouble() != null ? NumUtils.setzro(prams.getSingleDouble()) : 2);
+		prams.setStallPoint(prams.getStallPoint() != null ? NumUtils.setzro(prams.getStallPoint()) : 1);
+		prams.setTime(prams.getTime() != null ? NumUtils.setzro(prams.getTime()) : 0.5);
+		double singleLaserTime = NumUtils.mul(prams.getPerimeter(), primeCoefficient.getTime(),
+				prams.getStallPoint(), primeCoefficient.getPauseTime());
 		switch (tailor.getTailorTypeId().intValue()) {
-		case 71://普通激光切割
+		case 71:// 普通激光切割
 			type = "ordinarylaser";
 			primeCoefficient = primeCoefficientDao.findByType(type);
 			prams.setTailorType(type);
 			tailor.setTailorType(type);
-			//拉布时间
-			prams.setRabbTime(prams.getTailorSize()/primeCoefficient.getQuilt()*primeCoefficient.getRabbTime());
-			//单片激光需要用净时
-			if(prams.getSingleDouble()==2){
-				prams.setSingleLaserTime((prams.getPerimeter()*primeCoefficient.getTime()*prams.getStallPoint()*primeCoefficient.getPauseTime()/2)
-						+ prams.getRabbTime());
-			}else{
-				prams.setSingleLaserTime((prams.getPerimeter()*primeCoefficient.getTime()*prams.getStallPoint()*primeCoefficient.getPauseTime())
-						+ prams.getRabbTime());
+			// 拉布时间
+			prams.setRabbTime(NumUtils.mul(NumUtils.div(prams.getTailorSize(), primeCoefficient.getQuilt(), 3),
+					primeCoefficient.getRabbTime()));
+			
+			// 单片激光需要用净时
+			if (prams.getSingleDouble() == 2) {
+				prams.setSingleLaserTime(NumUtils.sum(NumUtils.div(singleLaserTime, 2, 3), prams.getRabbTime()));
+			} else {
+				prams.setSingleLaserTime(NumUtils.sum(singleLaserTime, prams.getRabbTime()));
 			}
-			//单片激光放快手时间
-			prams.setSingleLaserHandTime(prams.getSingleLaserTime()*1.08*primeCoefficient.getQuickWorker());
-			//工价（含快手)
-			prams.setLabourCost(prams.getSingleLaserHandTime()*primeCoefficient.getPerSecondMachinist());
-			//设备折旧和房水电费
-			prams.setEquipmentPrice((primeCoefficient.getDepreciation()+primeCoefficient.getLaserTubePriceSecond()+
-					primeCoefficient.getMaintenanceChargeSecond()+primeCoefficient.getPerSecondPrice())*prams.getSingleLaserHandTime());
-			//管理人员费用
-			prams.setAdministrativeAtaff(primeCoefficient.getPerSecondManage()*prams.getSingleLaserHandTime());
-			//普通激光切割该裁片费用
-			prams.setStallPrice((prams.getLabourCost()+prams.getEquipmentPrice()+prams.getAdministrativeAtaff())*primeCoefficient.getEquipmentProfit());
-			
-			
-			
+			// 单片激光放快手时间
+			prams.setSingleLaserHandTime(
+					NumUtils.mul(prams.getSingleLaserTime(), 1.08, primeCoefficient.getQuickWorker()));
+			// 工价（含快手)
+			prams.setLabourCost(NumUtils.mul(prams.getSingleLaserHandTime(), primeCoefficient.getPerSecondMachinist()));
+			// 设备折旧和房水电费
+			prams.setEquipmentPrice(NumUtils.mul(
+					NumUtils.sum(primeCoefficient.getDepreciation(), primeCoefficient.getLaserTubePriceSecond(),
+							primeCoefficient.getMaintenanceChargeSecond(), primeCoefficient.getPerSecondPrice()),
+					prams.getSingleLaserHandTime()));
+			// 管理人员费用
+			prams.setAdministrativeAtaff(
+					NumUtils.mul(primeCoefficient.getPerSecondManage(), prams.getSingleLaserHandTime()));
+			// 普通激光切割该裁片费用
+			prams.setStallPrice(NumUtils.mul(
+					NumUtils.sum(prams.getLabourCost(), prams.getEquipmentPrice(), prams.getAdministrativeAtaff()),
+					primeCoefficient.getEquipmentProfit()));
+
 			break;
-		case 72://绣花激光切割
+		case 72:// 绣花激光切割
 			type = "embroideryLaser";
 			primeCoefficient = primeCoefficientDao.findByType(type);
 			prams.setTailorType(type);
 			tailor.setTailorType(type);
-			//得到理论(市场反馈）含管理价值
-			if(prams.getPerimeter()<primeCoefficient.getPerimeterLess()){
-				prams.setManagePrice(primeCoefficient.getPerimeterLessNumber()+primeCoefficient.getPerimeterLessNumber());
-			}else{
-				prams.setManagePrice(primeCoefficient.getPeripheralLaser()*100*prams.getPerimeter()+primeCoefficient.getEmbroideryLaserNumber());
+			// 得到理论(市场反馈）含管理价值
+			if (prams.getPerimeter() < primeCoefficient.getPerimeterLess()) {
+				prams.setManagePrice(
+						primeCoefficient.getPerimeterLessNumber() + primeCoefficient.getPerimeterLessNumber());
+			} else {
+				prams.setManagePrice(primeCoefficient.getPeripheralLaser() * 100 * prams.getPerimeter()
+						+ primeCoefficient.getEmbroideryLaserNumber());
 			}
-			//拉布时间
-			prams.setRabbTime(prams.getTailorSize()/primeCoefficient.getQuilt()*primeCoefficient.getRabbTime());
-			//单片激光需要用净时
-			if(prams.getSingleDouble()==2){
-				prams.setSingleLaserTime((prams.getPerimeter()*primeCoefficient.getTime()*prams.getStallPoint()*primeCoefficient.getPauseTime()/2)
-						+ prams.getRabbTime());
-			}else {
-				prams.setSingleLaserTime((prams.getPerimeter()*primeCoefficient.getTime()*prams.getStallPoint()*primeCoefficient.getPauseTime())
-						+ prams.getRabbTime());
+			// 拉布时间
+			prams.setRabbTime(NumUtils.mul(NumUtils.div(prams.getTailorSize(), primeCoefficient.getQuilt(), 3),
+					primeCoefficient.getRabbTime()));
+			// 单片激光需要用净时
+			if (prams.getSingleDouble() == 2) {
+				prams.setSingleLaserTime(NumUtils.sum(NumUtils.div(singleLaserTime, 2, 3), prams.getRabbTime()));
+			} else {
+				prams.setSingleLaserTime(NumUtils.sum(singleLaserTime, prams.getRabbTime()));
 			}
-			//单片激光放快手时间
-			prams.setSingleLaserHandTime(prams.getSingleLaserTime()*1.08*primeCoefficient.getQuickWorker());
-			//工价（含快手)
-			prams.setLabourCost(prams.getSingleLaserHandTime()*primeCoefficient.getPerSecondMachinist());
-			//设备折旧和房水电费
-			prams.setEquipmentPrice((primeCoefficient.getDepreciation()+primeCoefficient.getLaserTubePriceSecond()+
-					primeCoefficient.getMaintenanceChargeSecond()+primeCoefficient.getPerSecondPrice())*prams.getSingleLaserHandTime());
-			//管理人员费用
-			prams.setAdministrativeAtaff(primeCoefficient.getPerSecondManage()*prams.getSingleLaserHandTime());
-			//普通激光切割该裁片费用
-			prams.setStallPrice((prams.getLabourCost()+prams.getEquipmentPrice()+prams.getAdministrativeAtaff())*primeCoefficient.getEquipmentProfit());
-			
-			
+			// 单片激光放快手时间
+			prams.setSingleLaserHandTime(
+					NumUtils.mul(prams.getSingleLaserTime(), 1.08, primeCoefficient.getQuickWorker()));
+			// 工价（含快手)
+			prams.setLabourCost(NumUtils.mul(prams.getSingleLaserHandTime(), primeCoefficient.getPerSecondMachinist()));
+			// 设备折旧和房水电费
+			prams.setEquipmentPrice(NumUtils.mul(
+					NumUtils.sum(primeCoefficient.getDepreciation(), primeCoefficient.getLaserTubePriceSecond(),
+							primeCoefficient.getMaintenanceChargeSecond(), primeCoefficient.getPerSecondPrice()),
+					prams.getSingleLaserHandTime()));
+			// 管理人员费用
+			prams.setAdministrativeAtaff(
+					NumUtils.mul(primeCoefficient.getPerSecondManage(), prams.getSingleLaserHandTime()));
+			// 普通激光切割该裁片费用
+			prams.setStallPrice(NumUtils.mul(
+					NumUtils.sum(prams.getLabourCost(), prams.getEquipmentPrice(), prams.getAdministrativeAtaff()),
+					primeCoefficient.getEquipmentProfit()));
 			break;
-		case 73://手工电烫
+		case 73:// 手工电烫
 			type = "perm";
 			primeCoefficient = primeCoefficientDao.findByType(type);
 			prams.setTailorType(type);
 			tailor.setTailorType(type);
-			//拉布秒数（含快手)
-			prams.setRabbTime((primeCoefficient.getPermOne()/1.5/prams.getTailorSize())*primeCoefficient.getQuickWorker());
-			
+			// 拉布秒数（含快手)
+			prams.setRabbTime(NumUtils.mul(NumUtils.div(NumUtils.div(primeCoefficient.getPermOne(), 1.5 , 3) , prams.getTailorSize(),3) 
+					, primeCoefficient.getQuickWorker()));
 			break;
-		case 74://设备电烫
-			
+		case 74:// 设备电烫
+
 			break;
-		case 75://冲床
+		case 75:// 冲床
 			type = "puncher";
 			prams.setTailorType(type);
 			tailor.setTailorType(type);
-			//得到理论(市场反馈）含管理价值
+			// 得到理论(市场反馈）含管理价值
 			prams.setManagePrice(materielService.getBaseThreeOne(prams.getTailorTypeId(), prams.getTailorSize()));
 			break;
-		case 76://电推
+		case 76:// 电推
 			type = "electricPush";
 			prams.setTailorType(type);
 			tailor.setTailorType(type);
-			//得到理论(市场反馈）含管理价值
+			// 得到理论(市场反馈）含管理价值
 			prams.setManagePrice(materielService.getBaseThreeOne(prams.getTailorTypeId(), prams.getTailorSize()));
 			break;
-		case 77://手工剪刀
+		case 77:// 手工剪刀
 			type = "manual";
 			prams.setTailorType(type);
 			tailor.setTailorType(type);
-			//得到理论(市场反馈）含管理价值
+			// 得到理论(市场反馈）含管理价值
 			prams.setManagePrice(materielService.getBaseThreeOne(prams.getTailorTypeId(), prams.getTailorSize()));
 			break;
-		case 78://绣花领取
-			
+		case 78:// 绣花领取
+
 			break;
 		default:
 			break;
 		}
-		if(prams.getSave()==null){
+		if (prams.getSave() == null) {
 			ordinaryLaserDao.save(prams);
-			//将裁剪方式和裁剪页面数据进行关联，实现一对一的同步更新
+			// 将裁剪方式和裁剪页面数据进行关联，实现一对一的同步更新
 			tailor.setOrdinaryLaserId(prams.getId());
-			dao.save((Tailor)NumUtils.setzro(tailor));
+			dao.save((Tailor) NumUtils.setzro(tailor));
 		}
 		return prams;
 	}
 
-
-
 	@Override
 	public PageResult<Tailor> findPages(Tailor param, PageParameter page) {
-		Page<Tailor> pages = dao.findAll((root,query,cb) -> {
-        	List<Predicate> predicate = new ArrayList<>();
-        	//按id过滤
-        	if (param.getId() != null) {
-				predicate.add(cb.equal(root.get("id").as(Long.class),param.getId()));
+		Page<Tailor> pages = dao.findAll((root, query, cb) -> {
+			List<Predicate> predicate = new ArrayList<>();
+			// 按id过滤
+			if (param.getId() != null) {
+				predicate.add(cb.equal(root.get("id").as(Long.class), param.getId()));
 			}
-        	//按产品id过滤
-        	if (param.getProductId() != null) {
-				predicate.add(cb.equal(root.get("productId").as(Long.class),param.getProductId()));
+			// 按产品id过滤
+			if (param.getProductId() != null) {
+				predicate.add(cb.equal(root.get("productId").as(Long.class), param.getProductId()));
 			}
-        	//按裁片名称过滤
-        	if (!StringUtils.isEmpty(param.getTailorName())) {
-				predicate.add(cb.like(root.get("tailorName").as(String.class),"%"+param.getTailorName()+"%"));
+			// 按裁片名称过滤
+			if (!StringUtils.isEmpty(param.getTailorName())) {
+				predicate.add(cb.like(root.get("tailorName").as(String.class), "%" + param.getTailorName() + "%"));
 			}
 			Predicate[] pre = new Predicate[predicate.size()];
 			query.where(predicate.toArray(pre));
-        	return null;
-        }, page);
-	 PageResult<Tailor> result = new PageResult<Tailor>(pages,page);
-	return result;
+			return null;
+		}, page);
+		PageResult<Tailor> result = new PageResult<Tailor>(pages, page);
+		return result;
 	}
-
 
 	@Override
-	public Tailor getTailorDate(Tailor tailor,OrdinaryLaser ordinaryLaser) {
-		
-		//得到理论(市场反馈）含管理价值
-		Double managePrice = materielService.getBaseThreeOne(tailor.getTailorTypeId(),tailor.getTailorSize());
+	public Tailor getTailorDate(Tailor tailor, OrdinaryLaser ordinaryLaser) {
+		// 得到理论(市场反馈）含管理价值
+		Double managePrice = materielService.getBaseThreeOne(tailor.getTailorTypeId(), tailor.getTailorSize());
 		tailor.setManagePrice(managePrice);
 		tailor.setCostPrice(managePrice);
-		//得到实验推算价格
+		// 得到实验推算价格
 		tailor.setExperimentPrice(ordinaryLaser.getStallPrice());
-		//入成本价格
-		tailor.setAllCostPrice(tailor.getBacthTailorNumber()*NumUtils.setzro(tailor.getCostPrice()));
-		//得到市场价与实推价比
-		if(!StringUtils.isEmpty(tailor.getExperimentPrice())){
-			tailor.setRatePrice(NumUtils.division(tailor.getExperimentPrice()/NumUtils.setzro(tailor.getCostPrice())));
+		// 入成本价格
+		tailor.setAllCostPrice(NumUtils.mul(tailor.getBacthTailorNumber() , NumUtils.setzro(tailor.getCostPrice())));
+		// 得到市场价与实推价比
+		if (!StringUtils.isEmpty(tailor.getExperimentPrice())) {
+			tailor.setRatePrice(NumUtils.division( NumUtils.div(tailor.getExperimentPrice(), NumUtils.setzro(tailor.getCostPrice()), 3)));
 		}
-		//各单道比全套工价
+		// 各单道比全套工价
 		List<Tailor> tailorList = dao.findByProductId(tailor.getProductId());
 		tailorList.add(tailor);
-		double scaleMaterial = tailor.getAllCostPrice()/(tailorList.stream().filter(Tailor->Tailor.getAllCostPrice()!=null).mapToDouble(Tailor::getAllCostPrice).sum());
-		tailor.setScaleMaterial(NumUtils.division(scaleMaterial));
-		//不含绣花环节的为机工压价	
-		tailor.setNoeMbroiderPriceDown(tailor.getAllCostPrice()+tailor.getPriceDown());
+		double sumAllCostPrice = tailorList.stream().filter(Tailor -> Tailor.getAllCostPrice() != null).mapToDouble(Tailor::getAllCostPrice).sum();
+		tailor.setScaleMaterial(NumUtils.division(NumUtils.div(tailor.getAllCostPrice(),sumAllCostPrice,3)));
+		// 不含绣花环节的为机工压价
+		tailor.setNoeMbroiderPriceDown(NumUtils.sum(tailor.getAllCostPrice() , tailor.getPriceDown()));
 		return tailor;
 	}
-
 
 	@Override
 	public List<Tailor> findByProductId(Long productId) {
 		return dao.findByProductId(productId);
 	}
 
-	
-	
-	
-	
-	
 }
