@@ -97,9 +97,11 @@ public class CutPartsServiceImpl  extends BaseServiceImpl<CutParts, Long> implem
 		tailor.setPriceDown(NumUtils.sum(cutParts.getBatchMaterialPrice(),cutParts.getBatchComplexAddPrice()));
 		tailorDao.save(tailor);
 		//裁剪方式
-		OrdinaryLaser prams = ordinaryLaserDao.findOne(tailor.getOrdinaryLaserId());
-		if(prams==null){
+		OrdinaryLaser prams = null;
+		if(tailor.getOrdinaryLaserId()==null){
 			prams = new OrdinaryLaser();
+		}else{
+			 prams = ordinaryLaserDao.findOne(tailor.getOrdinaryLaserId());
 		}
 		NumUtils.setzro(prams);
 		prams.setTailorId(tailor.getId());

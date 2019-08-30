@@ -13,6 +13,7 @@ layui.extend({
 	            '<table id="cutPartTable" lay-filter="cutPartTable"></table>'
 	            ].join(' ');
 	var allUnit = myutil.getDataSync({ url:'/product/getBaseOne?type=unit', });
+	var allOverstock = myutil.getDataSync({ url:'/product/getBaseOne?type=overstock', });
 	var cutParts = {	//模块
 			
 	};
@@ -22,7 +23,38 @@ layui.extend({
 		$('#'+elem).html(html);	//填充真正的html内容
 		var tableId = 'cutPartTable';
 		var noneHtml = '<dd style="color:#999;">无数据</dd>';
-		var updateData = { }, inputElem = null;
+		var updateTrData = { }, inputElem = null;
+		var renderSelectSearch = function(){		//自定义下拉框搜索
+			 layui.each($('td[data-field="materielId"]').find('.layui-form-select'),function(index,item){	//遍历表格物料名称下拉框
+				 $(item).on('click',function(event){
+					 layui.stope(event);					//阻止事件冒泡、去除下拉框原本的点击事件、阻止点击事件自动隐藏
+					 var width = $(this).width();			
+					 var tdElem = $(this).closest('td');
+					 var val = $(this).find('input').val();
+					 var X = tdElem.offset().top;
+					 var Y = tdElem.offset().left;
+					 $('#searchTipDiv').css("top",X+45);	//定位搜索提示框位置并显示提示框
+					 $('#searchTipDiv').css("left",Y+15);
+					 $('#searchTipDiv').css("width",width);
+					 $('#searchTipDiv').show();
+					 getSearchMateriael(val);				//获取初始搜索值
+					 var i = $(this).closest('tr').data('index');
+					 var trData = layui.table.cache[tableId][i];
+					 updateTrData = trData;				//记录点击的当行数据和输入框、用于修改和修改成功后修改相应的输入框值
+					 inputElem = $(this).find('input');
+				 })
+			 })
+			 layui.each($('td[data-field="materielId"]').find('.layui-form-select').find('input'),function(index,item){
+				 $(item).bind("input propertychange",function(event){	//监听输入框内容改变
+					 getSearchMateriael($(this).val());
+				 });
+			 })
+			 $(document).on('click',function(obj){		//监听其他点击事件、用于隐藏提示框
+				 if($(obj).closest('#searchTipDiv').length==0){
+					 $('#searchTipDiv').hide();
+				 } 
+			 })
+		}
 		mytable.render({			//裁片表格
 			elem:'#'+tableId,
 			data:[],
@@ -32,9 +64,26 @@ layui.extend({
 				deleUrl:'/product/deleteCutParts',
 			}, 
 			curd:{
-				addTemp:{cutPartsName:'',cutPartsNumber:1,perimeter:'',allPerimeter:'',materielName:'',composite:'',oneMaterial:'',unit:'',perimeter:'',
-					scaleMaterial:'', manualLoss:'',productCost:'',productRemark:'',batchMaterial:'',batchMaterialPrice:'',addMaterial:'',id:'',
+				addTemp:{
+					id:'',
+					cutPartsName:'',
+					cutPartsNumber:1,
+					perimeter:'',
+					allPerimeter:'',
+					materielId:'',
+					oneMaterial:'',
+					unitId: allUnit[0].id,
+					scaleMaterial:'',
+					addMaterial:'',
+					manualLoss:'',
+					productCost:'',
+					productRemark:'',
+					batchMaterial:'',
+					batchMaterialPrice:'',
+					composite: '',
+					overstockId:allOverstock[0].id,
 				},
+				addTempAfter: renderSelectSearch,
 				saveFun:function(data){
 					for(var i=0;i<data.length;i++){
 						var check = table.checkStatus('productTable').data;
@@ -47,19 +96,21 @@ layui.extend({
 					table.reload(tableId);
 				}
 			},
-			//verify:{ count:[''], notNull:[''],price:[] },
-			colsWidth:[0,6,6,6,5,20,6,6,6,6,6,6,6,4,6,7,7],
+			verify:{ 
+				count:['cutPartsNumber',], 
+				price:['perimeter','oneMaterial','manualLoss',], 
+				notNull:['cutPartsName','materielId','perimeter','oneMaterial','manualLoss','cutPartsNumber','scaleMaterial'],
+			},
+			colsWidth:[0,6,6,6,5,20,6,6,6,6,6,6,6,7,6,7,7,20,7,7,7,7,7,7],
 			cols:[[
-			       { type:'checkbox',},
+			       { type:'checkbox', 		fixed:'left'},
 			       { title:'裁片名字',   	field:'cutPartsName',	},
-			       { title:'使用片数',   	field:'cutPartsNumber',	},
+			       { title:'使用片数',   	field:'cutPartsNumber',},
 			       { title:'单片周长',   	field:'perimeter',	},
-			       { title:'总周长',   		field:'allPerimeter',	},
+			       { title:'总周长',   		field:'allPerimeter',	edit:false, },
 			       { title:'物料编号/名称',  field:'materielId',  type:'select', select:{data:[] }  },
-			       { title:'是否复合',   	field:'composite',	},
 			       { title:'单片用料',   	field:'oneMaterial',	},
 			       { title:'单位',   		field:'unitId',		 type:'select', select:{ data: allUnit }  },
-			       { title:'单片周长',   	field:'perimeter',	},
 			       { title:'用料占比',   	field:'scaleMaterial',  },
 			       { title:'总用料',   		field:'addMaterial',  },
 			       { title:'手动损耗', 		field:'manualLoss',  },
@@ -67,37 +118,17 @@ layui.extend({
 			       { title:'备注',  	 		field:'productRemark',  },
 			       { title:'当批单片用料',   field:'batchMaterial',  },
 			       { title:'当批单片价格',   field:'batchMaterialPrice',  },
+			       { title:'是否复合',   	field:'composite',	},
+			       { title:'请选择复合物',   field:'complexMateriel',	},
+			       { title:'是否双层对复',   field:'',	},
+			       { title:'手动耗损（必填）',   field:'',	},
+			       { title:'当批复合物用料',   	field:'',	},
+			       { title:'当批复合物单片价格', field:'',	},
+			       { title:'当批复合物加工费',   field:'',	},
+			       { title:'压货环节',   	field:'overstockId', type:'select', select:{ data: allOverstock } ,},
 			       ]],
 			 done:function(){
-				 layui.each($('td[data-field="materielId"]').find('.layui-form-select'),function(index,item){	//遍历表格物料名称下拉框
-					 $(item).on('click',function(event){
-						 layui.stope(event);					//阻止事件冒泡、去除下拉框原本的点击事件、阻止点击事件自动隐藏
-						 var width = $(this).width();			
-						 var tdElem = $(this).closest('td');
-						 var val = $(this).find('input').val();
-						 var X = tdElem.offset().top;
-						 var Y = tdElem.offset().left;
-						 $('#searchTipDiv').css("top",X+45);	//定位搜索提示框位置并显示提示框
-						 $('#searchTipDiv').css("left",Y+15);
-						 $('#searchTipDiv').css("width",width);
-						 $('#searchTipDiv').show();
-						 getSearchMateriael(val);				//获取初始搜索值
-						 var i = $(this).closest('tr').data('index');
-						 var trData = layui.table.cache[tableId][i];
-						 updateData.id = trData.id;				//记录点击的当行数据id和输入框、用于修改和修改成功后修改相应的输入框值
-						 inputElem = $(this).find('input');
-					 })
-				 })
-				 layui.each($('td[data-field="materielId"]').find('.layui-form-select').find('input'),function(index,item){
-					 $(item).bind("input propertychange",function(event){	//监听输入框内容改变
-						 getSearchMateriael($(this).val());
-					 });
-				 })
-				 $(document).on('click',function(obj){		//监听其他点击事件、用于隐藏提示框
-					if($(obj).closest('#searchTipDiv').length==0){
-						$('#searchTipDiv').hide();
-					} 
-				 })
+				 renderSelectSearch();
 			 }
 		})
 		function getSearchMateriael(name){	//根据输入的内容进行搜索、填充选择项
@@ -112,17 +143,21 @@ layui.extend({
 					})
 					$('#searchTipDiv').html(html);
 					$('#searchTipDiv').find('dd').on('click',function(obj){		//监听选择事件、如果选中某一个选项
-						 if(!$(this).data('value'))
+						var text = $(this).html();
+						var val = $(this).data('value');
+						if(!val)
 							return;
-						 var text = $(this).html();
-						 updateData['materielId'] = $(this).data('value');
-						 myutil.saveAjax({
-							 url:'/product/updateCutParts',
-							 data: updateData,
-							 success: function(){	//修改下拉框显示的值
-								 $(inputElem).attr('placeholder',text);
-							 }
-						 })
+						$(inputElem).attr('placeholder',text);		//修改下拉框显示的值、缓存值
+						updateTrData['materielId'] = val;
+						if(!updateTrData.id)
+							return;
+						myutil.saveAjax({
+							url:'/product/updateCutParts',
+							data: {
+								id: updateTrData.id,
+								materielId: val,
+							},
+						})
 					 })
 				}
 			})
