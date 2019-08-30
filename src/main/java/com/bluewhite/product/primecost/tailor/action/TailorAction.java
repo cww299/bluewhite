@@ -25,6 +25,7 @@ import com.bluewhite.common.entity.PageParameter;
 import com.bluewhite.common.entity.PageResult;
 import com.bluewhite.product.primecost.cutparts.entity.CutParts;
 import com.bluewhite.product.primecost.embroidery.entity.Embroidery;
+import com.bluewhite.product.primecost.primecost.dao.PrimeCostDao;
 import com.bluewhite.product.primecost.primecost.entity.PrimeCost;
 import com.bluewhite.product.primecost.tailor.entity.OrdinaryLaser;
 import com.bluewhite.product.primecost.tailor.entity.Tailor;
@@ -36,8 +37,6 @@ import com.bluewhite.product.product.service.ProductService;
 
 @Controller
 public class TailorAction {
-	
-	
 	private final static Log log = Log.getLog(TailorAction.class);
 	
 	
@@ -47,6 +46,8 @@ public class TailorAction {
 	private OrdinaryLaserService  ordinaryLaserService;
 	@Autowired
 	private ProductService productService;
+	@Autowired
+	private PrimeCostDao primeCostDao;
 	
 
 	/**
@@ -65,11 +66,9 @@ public class TailorAction {
 			cr.setMessage("裁剪不能为空");
 		}else{
 				Tailor oldTailor = tailorService.findOne(tailor.getId());
-				BeanCopyUtils.copyNullProperties(oldTailor,tailor);
-				tailor.setCreatedAt(oldTailor.getCreatedAt());
-				tailorService.saveTailor(tailor);
-				PrimeCost primeCost = new PrimeCost();
-				primeCost.setProductId(tailor.getProductId());
+				BeanCopyUtils.copyNotEmpty(tailor,oldTailor,"");
+				tailorService.saveTailor(oldTailor);
+				PrimeCost primeCost = primeCostDao.findByProductId(oldTailor.getProductId());
 				productService.getPrimeCost(primeCost, request);
 				tailor.setOneCutPrice(primeCost.getOneCutPrice());
 				cr.setData(tailor);

@@ -12,7 +12,6 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
 
 import com.bluewhite.base.BaseServiceImpl;
-import com.bluewhite.common.BeanCopyUtils;
 import com.bluewhite.common.entity.PageParameter;
 import com.bluewhite.common.entity.PageResult;
 import com.bluewhite.common.entity.PageResultStat;
@@ -68,11 +67,17 @@ public class CutPartsServiceImpl  extends BaseServiceImpl<CutParts, Long> implem
 		dao.save(cutParts);
 		
 		//从cc裁片填写后，自动增加到裁剪页面
-		Tailor tailor = new Tailor();
-		//增加和产品关联关系
-		tailor.setProductId(cutParts.getProductId());
-		//裁片和裁剪页面关联关系
-		tailor.setCutPartsId(cutParts.getId());
+		Tailor tailor = tailorDao.findOne(cutParts.getTailorId());
+		if(tailor==null){
+			tailor = new Tailor();
+			//增加和产品关联关系
+			tailor.setProductId(cutParts.getProductId());
+			//裁片和裁剪页面关联关系
+			tailor.setCutPartsId(cutParts.getId());
+			tailor.setTailorTypeId((long)71);
+			tailor.setTailorSize(0.01);
+		}
+		NumUtils.setzro(tailor);
 		//批量产品数量或模拟批量数
 		tailor.setNumber(cutParts.getNumber());
 		//裁剪部位名称
@@ -83,28 +88,19 @@ public class CutPartsServiceImpl  extends BaseServiceImpl<CutParts, Long> implem
 		tailor.setBacthTailorNumber(cutParts.getCutPartsNumber()*cutParts.getNumber());
 		//物料压价,通过cc裁片填写中该裁片该面料的价值 得到
 		tailor.setPriceDown(NumUtils.sum(cutParts.getBatchMaterialPrice(),cutParts.getBatchComplexAddPrice()));
-
-		if(cutParts.getTailorId()==null){ 
-			tailor.setTailorTypeId((long)71);
-			tailor.setTailorSize(0.01); 
-			tailorDao.save(tailor);
-			OrdinaryLaser prams = new OrdinaryLaser();
-			prams.setSave(0);
-			prams.setTailorId(tailor.getId());
-			tailorService.getOrdinaryLaserDate(tailor, prams);
-			//不含绣花环节的为机工压价	
-			//含绣花环节的为机工压价
-			//为机工准备的压价
-			tailorService.getTailorDate(tailor,prams);
-			ordinaryLaserDao.save(prams);
-			//将裁剪方式和裁剪页面数据进行关联，实现一对一的同步更新
-			tailor.setOrdinaryLaserId(prams.getId());
-		}else{
-			Tailor oldtailor = tailorDao.findOne(cutParts.getTailorId());
-			BeanCopyUtils.copyNotEmpty(tailor,oldtailor);
-			tailorDao.save(oldtailor);
-		}
 		tailorDao.save(tailor);
+		//裁剪方式
+		OrdinaryLaser prams = ordinaryLaserDao.findOne(tailor.getOrdinaryLaserId());
+		if(prams==null){
+			prams = new OrdinaryLaser();
+		}
+		NumUtils.setzro(prams);
+		prams.setTailorId(tailor.getId());
+		tailorService.getOrdinaryLaserDate(tailor, prams);
+		//不含绣花环节的为机工压价	
+		//含绣花环节的为机工压价
+		//为机工准备的压价
+		tailorService.getTailorDate(tailor,prams);
 		//更新裁剪页面id到裁片中
 		cutParts.setTailorId(tailor.getId());
 		//各单片比全套用料
@@ -170,7 +166,7 @@ public class CutPartsServiceImpl  extends BaseServiceImpl<CutParts, Long> implem
 			scaleMaterial =  cutPartsList.stream().mapToDouble(CutParts::getAddMaterial).sum();
 		}
 		for(CutParts cp : cutPartsList){
-			cp.setScaleMaterial(cp.getAddMaterial()/scaleMaterial);
+			cp.setScaleMaterial(NumUtils.div(cp.getAddMaterial(), scaleMaterial, 3));
 		}
 		dao.save(cutPartsList);
 	}

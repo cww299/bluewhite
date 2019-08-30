@@ -50,7 +50,7 @@ public class TailorServiceImpl extends BaseServiceImpl<Tailor, Long> implements 
 		// 不含绣花环节的为机工压价
 		tailor.setNoeMbroiderPriceDown(NumUtils.setzro(tailor.getAllCostPrice()) + tailor.getPriceDown());
 		// 含绣花环节的为机工压价
-
+		tailor.setEmbroiderPriceDown(0.0);
 		// 为机工准备的压价
 		double MachinistPriceDown = tailor.getNoeMbroiderPriceDown() >= NumUtils.setzro(tailor.getEmbroiderPriceDown())
 				? tailor.getNoeMbroiderPriceDown() : NumUtils.setzro(tailor.getEmbroiderPriceDown());
@@ -87,21 +87,20 @@ public class TailorServiceImpl extends BaseServiceImpl<Tailor, Long> implements 
 		prams.setTailorSize(tailor.getTailorSize());
 		prams.setTailorId(tailor.getId());
 		prams.setPerimeter(NumUtils.setzro(cutParts.getPerimeter()));
-		prams.setSingleDouble(prams.getSingleDouble() != null ? NumUtils.setzro(prams.getSingleDouble()) : 2);
-		prams.setStallPoint(prams.getStallPoint() != null ? NumUtils.setzro(prams.getStallPoint()) : 1);
 		prams.setTime(prams.getTime() != null ? NumUtils.setzro(prams.getTime()) : 0.5);
 		double singleLaserTime = NumUtils.mul(prams.getPerimeter(), primeCoefficient.getTime(),
-				prams.getStallPoint(), primeCoefficient.getPauseTime());
+				(double)prams.getStallPoint(), primeCoefficient.getPauseTime());
 		switch (tailor.getTailorTypeId().intValue()) {
 		case 71:// 普通激光切割
 			type = "ordinarylaser";
 			primeCoefficient = primeCoefficientDao.findByType(type);
 			prams.setTailorType(type);
 			tailor.setTailorType(type);
+			prams.setSingleDouble(2);
+			prams.setStallPoint(1);
 			// 拉布时间
 			prams.setRabbTime(NumUtils.mul(NumUtils.div(prams.getTailorSize(), primeCoefficient.getQuilt(), 3),
 					primeCoefficient.getRabbTime()));
-			
 			// 单片激光需要用净时
 			if (prams.getSingleDouble() == 2) {
 				prams.setSingleLaserTime(NumUtils.sum(NumUtils.div(singleLaserTime, 2, 3), prams.getRabbTime()));
@@ -132,6 +131,8 @@ public class TailorServiceImpl extends BaseServiceImpl<Tailor, Long> implements 
 			primeCoefficient = primeCoefficientDao.findByType(type);
 			prams.setTailorType(type);
 			tailor.setTailorType(type);
+			prams.setSingleDouble(2);
+			prams.setStallPoint(1);
 			// 得到理论(市场反馈）含管理价值
 			if (prams.getPerimeter() < primeCoefficient.getPerimeterLess()) {
 				prams.setManagePrice(
@@ -206,12 +207,10 @@ public class TailorServiceImpl extends BaseServiceImpl<Tailor, Long> implements 
 		default:
 			break;
 		}
-		if (prams.getSave() == null) {
-			ordinaryLaserDao.save(prams);
-			// 将裁剪方式和裁剪页面数据进行关联，实现一对一的同步更新
-			tailor.setOrdinaryLaserId(prams.getId());
-			dao.save((Tailor) NumUtils.setzro(tailor));
-		}
+		ordinaryLaserDao.save(prams);
+		// 将裁剪方式和裁剪页面数据进行关联，实现一对一的同步更新
+		tailor.setOrdinaryLaserId(prams.getId());
+		dao.save(tailor);
 		return prams;
 	}
 
@@ -250,7 +249,7 @@ public class TailorServiceImpl extends BaseServiceImpl<Tailor, Long> implements 
 		// 入成本价格
 		tailor.setAllCostPrice(NumUtils.mul(tailor.getBacthTailorNumber() , NumUtils.setzro(tailor.getCostPrice())));
 		// 得到市场价与实推价比
-		if (!StringUtils.isEmpty(tailor.getExperimentPrice())) {
+		if (tailor.getExperimentPrice()!=null) {
 			tailor.setRatePrice(NumUtils.division( NumUtils.div(tailor.getExperimentPrice(), NumUtils.setzro(tailor.getCostPrice()), 3)));
 		}
 		// 各单道比全套工价

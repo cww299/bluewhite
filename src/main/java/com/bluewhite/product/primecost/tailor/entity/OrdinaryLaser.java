@@ -98,7 +98,7 @@ public class OrdinaryLaser extends BaseEntity<Long>{
 	 * 激光停顿点
 	 */
 	@Column(name = "stall_point")
-    private Double stallPoint;	
+    private Integer stallPoint;	
 	
 	/**
 	 * 单双激光头(单 = 1，双 =2)
@@ -242,13 +242,6 @@ public class OrdinaryLaser extends BaseEntity<Long>{
 	
 	
 	/**
-	 * 是否保存
-	 * @return
-	 */
-	@Transient
-    private Integer save;
-	
-	/**
 	 * 单只裁剪价格
 	 */
 	@Transient
@@ -270,14 +263,6 @@ public class OrdinaryLaser extends BaseEntity<Long>{
 
 	public void setOneCutPrice(Double oneCutPrice) {
 		this.oneCutPrice = oneCutPrice;
-	}
-
-	public Integer getSave() {
-		return save;
-	}
-
-	public void setSave(Integer save) {
-		this.save = save;
 	}
 
 	public Double getManualSeconds() {
@@ -448,11 +433,11 @@ public class OrdinaryLaser extends BaseEntity<Long>{
 		this.perimeter = perimeter;
 	}
 
-	public Double getStallPoint() {
+	public Integer getStallPoint() {
 		return stallPoint;
 	}
 
-	public void setStallPoint(Double stallPoint) {
+	public void setStallPoint(Integer stallPoint) {
 		this.stallPoint = stallPoint;
 	}
 

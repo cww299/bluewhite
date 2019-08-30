@@ -29,30 +29,30 @@ import com.bluewhite.product.product.service.ProductService;
 
 @Controller
 public class CutPartsAction {
-	
-private final static Log log = Log.getLog(CutPartsAction.class);
-	
+
+	private final static Log log = Log.getLog(CutPartsAction.class);
+
 	@Autowired
 	private CutPartsService cutPartsService;
 	@Autowired
 	private ProductService productService;
-	
-	
+
 	/**
 	 * cc裁片填写
 	 * 
-	 * @param request 请求
+	 * @param request
+	 *            请求
 	 * @return cr
 	 * @throws Exception
 	 */
 	@RequestMapping(value = "/product/addCutParts", method = RequestMethod.POST)
 	@ResponseBody
-	public CommonResponse addCutParts(HttpServletRequest request,CutParts cutParts) {
+	public CommonResponse addCutParts(HttpServletRequest request, CutParts cutParts) {
 		CommonResponse cr = new CommonResponse();
-		if(StringUtils.isEmpty(cutParts.getProductId())){
+		if (StringUtils.isEmpty(cutParts.getProductId())) {
 			cr.setCode(ErrorCode.ILLEGAL_ARGUMENT.getCode());
 			cr.setMessage("产品不能为空");
-		}else{
+		} else {
 			cutPartsService.saveCutParts(cutParts);
 			PrimeCost primeCost = new PrimeCost();
 			primeCost.setProductId(cutParts.getProductId());
@@ -62,52 +62,50 @@ private final static Log log = Log.getLog(CutPartsAction.class);
 		}
 		return cr;
 	}
-		
-	
+
 	/**
 	 * cc裁片修改
 	 * 
-	 * @param request 请求
+	 * @param request
+	 *            请求
 	 * @return cr
 	 * @throws Exception
 	 */
 	@RequestMapping(value = "/product/updateCutParts", method = RequestMethod.POST)
 	@ResponseBody
-	public CommonResponse updateCutParts(HttpServletRequest request,CutParts cutParts) {
+	public CommonResponse updateCutParts(HttpServletRequest request, CutParts cutParts) {
 		CommonResponse cr = new CommonResponse();
-		if(StringUtils.isEmpty(cutParts.getId())){
+		if (StringUtils.isEmpty(cutParts.getId())) {
 			cr.setCode(ErrorCode.ILLEGAL_ARGUMENT.getCode());
 			cr.setMessage("裁片不能为空");
-		}else{
+		} else {
 			CutParts oldCutParts = cutPartsService.findOne(cutParts.getId());
-			BeanCopyUtils.copyNullProperties(oldCutParts,cutParts);
-			cutParts.setCreatedAt(oldCutParts.getCreatedAt());
-			cutPartsService.saveCutParts(cutParts);
+			BeanCopyUtils.copyNotEmpty(cutParts, oldCutParts, "");
+			cutPartsService.saveCutParts(oldCutParts);
 			cr.setMessage("修改成功");
 		}
 		return cr;
 	}
-	
-	
-	
+
 	/**
 	 * 分页查看cc裁片
 	 * 
-	 * @param request 请求
+	 * @param request
+	 *            请求
 	 * @return cr
 	 * @throws Exception
 	 */
 	@RequestMapping(value = "/product/getCutParts", method = RequestMethod.GET)
 	@ResponseBody
-	public CommonResponse getCutParts(HttpServletRequest request,PageParameter page,CutParts cutParts) {
+	public CommonResponse getCutParts(HttpServletRequest request, PageParameter page, CutParts cutParts) {
 		CommonResponse cr = new CommonResponse();
-		PageResult<CutParts>  cutPartsList= new PageResult<>(); 
-		if(cutParts.getProductId()!=null){
-			cutPartsList = cutPartsService.findPages(cutParts,page);
+		PageResult<CutParts> cutPartsList = new PageResult<>();
+		if (cutParts.getProductId() != null) {
+			cutPartsList = cutPartsService.findPages(cutParts, page);
 			PrimeCost primeCost = new PrimeCost();
 			primeCost.setProductId(cutParts.getProductId());
 			productService.getPrimeCost(primeCost, request);
-			for(CutParts cp : cutPartsList.getRows()){
+			for (CutParts cp : cutPartsList.getRows()) {
 				cp.setOneCutPartsPrice(primeCost.getOneCutPartsPrice());
 			}
 		}
@@ -115,42 +113,36 @@ private final static Log log = Log.getLog(CutPartsAction.class);
 		cr.setMessage("查询成功");
 		return cr;
 	}
-	
-	
-	
+
 	/**
 	 * 删除cc裁片
 	 * 
 	 */
 	@RequestMapping(value = "/product/deleteCutParts", method = RequestMethod.GET)
 	@ResponseBody
-	public CommonResponse deleteCutParts(HttpServletRequest request,String ids) {
+	public CommonResponse deleteCutParts(HttpServletRequest request, String ids) {
 		CommonResponse cr = new CommonResponse();
 		if (!StringUtils.isEmpty(ids)) {
 			String[] idArr = ids.split(",");
-			if (idArr.length>0) {
+			if (idArr.length > 0) {
 				for (int i = 0; i < idArr.length; i++) {
 					Long id = Long.parseLong(idArr[i]);
 					cutPartsService.deleteCutParts(id);
 				}
 			}
-				cr.setMessage("删除成功");
-			}else{
-				cr.setCode(ErrorCode.ILLEGAL_ARGUMENT.getCode());
-				cr.setMessage("裁片id不能为空");
-			}
+			cr.setMessage("删除成功");
+		} else {
+			cr.setCode(ErrorCode.ILLEGAL_ARGUMENT.getCode());
+			cr.setMessage("裁片id不能为空");
+		}
 		return cr;
 	}
-	
+
 	@InitBinder
 	protected void initBinder(WebDataBinder binder) {
-		SimpleDateFormat dateTimeFormat = new SimpleDateFormat(
-				DateTimePattern.DATEHMS.getPattern());
-		binder.registerCustomEditor(java.util.Date.class, null,
-				new CustomDateEditor(dateTimeFormat, true));
-		binder.registerCustomEditor(byte[].class,
-				new ByteArrayMultipartFileEditor());
+		SimpleDateFormat dateTimeFormat = new SimpleDateFormat(DateTimePattern.DATEHMS.getPattern());
+		binder.registerCustomEditor(java.util.Date.class, null, new CustomDateEditor(dateTimeFormat, true));
+		binder.registerCustomEditor(byte[].class, new ByteArrayMultipartFileEditor());
 	}
-	
 
 }
