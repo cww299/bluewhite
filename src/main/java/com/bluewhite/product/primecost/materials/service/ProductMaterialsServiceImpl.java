@@ -32,11 +32,11 @@ public class ProductMaterialsServiceImpl extends BaseServiceImpl<ProductMaterial
 	public ProductMaterials saveProductMaterials(ProductMaterials productMaterials) {
 		NumUtils.setzro(productMaterials);
 		if(StringUtils.isEmpty(productMaterials.getManualLoss())){
-			productMaterials.setBatchMaterial(productMaterials.getOneMaterial()*productMaterials.getNumber());
+			productMaterials.setBatchMaterial(NumUtils.mul(productMaterials.getOneMaterial(),productMaterials.getNumber()));
 		}else{
-			productMaterials.setBatchMaterial(productMaterials.getManualLoss()*productMaterials.getOneMaterial()*productMaterials.getNumber());
+			productMaterials.setBatchMaterial(NumUtils.mul(productMaterials.getManualLoss(),productMaterials.getOneMaterial(),(double)productMaterials.getNumber()));
 		}
-		productMaterials.setBatchMaterialPrice(productMaterials.getBatchMaterial()*productMaterials.getUnitCost());
+		productMaterials.setBatchMaterialPrice(NumUtils.mul(productMaterials.getBatchMaterial(),productMaterials.getUnitCost()));
 		return dao.save(productMaterials);
 	}
 
