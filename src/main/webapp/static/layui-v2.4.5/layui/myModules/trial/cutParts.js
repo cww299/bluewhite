@@ -64,9 +64,26 @@ layui.extend({
 				deleUrl:'/product/deleteCutParts',
 			}, 
 			curd:{
-				addTemp:{cutPartsName:'',cutPartsNumber:1,perimeter:'',allPerimeter:'',materielName:'',composite:'',oneMaterial:'',perimeter:'',unitId:'',
-					scaleMaterial:'', manualLoss:'',productCost:'',productRemark:'',batchMaterial:'',batchMaterialPrice:'',addMaterial:'',id:'',overstockId:'',
-					complexMateriel:'',
+				addTemp:{
+					id:'',
+					cutPartsName:'',
+					cutPartsNumber:1,
+					perimeter:'',
+					allPerimeter:'',
+					materielId:'',
+					oneMaterial:'',
+					unitId: allUnit[0].id,
+					scaleMaterial:'',
+					addMaterial:'',
+					manualLoss:'',
+					productCost:'',
+					productRemark:'',
+					batchMaterial:'',
+					batchMaterialPrice:'',
+					composite: allOverstock[0].id,
+					
+					
+					overstockId:'',
 				},
 				addTempAfter: renderSelectSearch,
 				saveFun:function(data){
@@ -84,9 +101,9 @@ layui.extend({
 			verify:{ 
 				count:['cutPartsNumber',], 
 				price:['perimeter','oneMaterial','manualLoss',], 
-				notNull:['cutPartsName','materielId','perimeter','oneMaterial','manualLoss','cutPartsNumber',],
+				notNull:['cutPartsName','materielId','perimeter','oneMaterial','manualLoss','cutPartsNumber','scaleMaterial'],
 			},
-			colsWidth:[0,6,6,6,5,20,6,6,6,6,6,6,6,4,6,7,7,20,7,7,7,7,7,7],
+			colsWidth:[0,6,6,6,5,20,6,6,6,6,6,6,6,7,6,7,7,20,7,7,7,7,7,7],
 			cols:[[
 			       { type:'checkbox', 		fixed:'left'},
 			       { title:'裁片名字',   	field:'cutPartsName',	},
@@ -96,7 +113,6 @@ layui.extend({
 			       { title:'物料编号/名称',  field:'materielId',  type:'select', select:{data:[] }  },
 			       { title:'单片用料',   	field:'oneMaterial',	},
 			       { title:'单位',   		field:'unitId',		 type:'select', select:{ data: allUnit }  },
-			       { title:'单片周长',   	field:'perimeter',	},
 			       { title:'用料占比',   	field:'scaleMaterial',  },
 			       { title:'总用料',   		field:'addMaterial',  },
 			       { title:'手动损耗', 		field:'manualLoss',  },
