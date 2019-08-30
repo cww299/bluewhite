@@ -87,9 +87,7 @@ public class TailorServiceImpl extends BaseServiceImpl<Tailor, Long> implements 
 		prams.setTailorSize(tailor.getTailorSize());
 		prams.setTailorId(tailor.getId());
 		prams.setPerimeter(NumUtils.setzro(cutParts.getPerimeter()));
-		prams.setTime(prams.getTime() != null ? NumUtils.setzro(prams.getTime()) : 0.5);
-		double singleLaserTime = NumUtils.mul(prams.getPerimeter(), primeCoefficient.getTime(),
-				(double)prams.getStallPoint(), primeCoefficient.getPauseTime());
+		prams.setTime(prams.getTime() != null ? prams.getTime() : 0.5);
 		switch (tailor.getTailorTypeId().intValue()) {
 		case 71:// 普通激光切割
 			type = "ordinarylaser";
@@ -98,6 +96,8 @@ public class TailorServiceImpl extends BaseServiceImpl<Tailor, Long> implements 
 			tailor.setTailorType(type);
 			prams.setSingleDouble(2);
 			prams.setStallPoint(1);
+			double singleLaserTime = NumUtils.mul(prams.getPerimeter(), primeCoefficient.getTime(),
+					(double)prams.getStallPoint(), primeCoefficient.getPauseTime());
 			// 拉布时间
 			prams.setRabbTime(NumUtils.mul(NumUtils.div(prams.getTailorSize(), primeCoefficient.getQuilt(), 3),
 					primeCoefficient.getRabbTime()));
@@ -144,11 +144,13 @@ public class TailorServiceImpl extends BaseServiceImpl<Tailor, Long> implements 
 			// 拉布时间
 			prams.setRabbTime(NumUtils.mul(NumUtils.div(prams.getTailorSize(), primeCoefficient.getQuilt(), 3),
 					primeCoefficient.getRabbTime()));
+			double singleLaserTimeOne = NumUtils.mul(prams.getPerimeter(), primeCoefficient.getTime(),
+					(double)prams.getStallPoint(), primeCoefficient.getPauseTime());
 			// 单片激光需要用净时
 			if (prams.getSingleDouble() == 2) {
-				prams.setSingleLaserTime(NumUtils.sum(NumUtils.div(singleLaserTime, 2, 3), prams.getRabbTime()));
+				prams.setSingleLaserTime(NumUtils.sum(NumUtils.div(singleLaserTimeOne, 2, 3), prams.getRabbTime()));
 			} else {
-				prams.setSingleLaserTime(NumUtils.sum(singleLaserTime, prams.getRabbTime()));
+				prams.setSingleLaserTime(NumUtils.sum(singleLaserTimeOne, prams.getRabbTime()));
 			}
 			// 单片激光放快手时间
 			prams.setSingleLaserHandTime(
