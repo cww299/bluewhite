@@ -20,7 +20,6 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import com.bluewhite.common.BeanCopyUtils;
 import com.bluewhite.common.ClearCascadeJSON;
 import com.bluewhite.common.Constants;
-import com.bluewhite.common.Log;
 import com.bluewhite.common.SessionManager;
 import com.bluewhite.common.annotation.SysLogAspectAnnotation;
 import com.bluewhite.common.entity.CommonResponse;
@@ -165,9 +164,9 @@ public class ProductAction {
 	 */
 	@RequestMapping(value = "/getPrimeCost", method = RequestMethod.POST)
 	@ResponseBody
-	public CommonResponse getPrimeCost(HttpServletRequest request,PrimeCost primeCost) {
+	public CommonResponse getPrimeCost(PrimeCost primeCost) {
 		CommonResponse cr = new CommonResponse();
-		cr.setData(productService.getPrimeCost(primeCost,request));
+		cr.setData(productService.getPrimeCost(primeCost));
 		cr.setMessage("查询成功");
 		return cr;
 	}

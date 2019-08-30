@@ -66,7 +66,7 @@ private final static Log log = Log.getLog(PackAction.class);
 			packService.savePack(pack);
 			PrimeCost primeCost = new PrimeCost();
 			primeCost.setProductId(pack.getProductId());
-			productService.getPrimeCost(primeCost, request);
+			productService.getPrimeCost(primeCost);
 			pack.setOnePackPrice(primeCost.getOnePackPrice());
 			cr.setData(pack);
 			cr.setMessage("添加成功");
@@ -91,7 +91,7 @@ private final static Log log = Log.getLog(PackAction.class);
 			packList = packService.findPages(pack,page);
 			PrimeCost primeCost = new PrimeCost();
 			primeCost.setProductId(pack.getProductId());
-			productService.getPrimeCost(primeCost, request);
+			productService.getPrimeCost(primeCost);
 			for(Pack pk: packList.getRows()){
 				pk.setOnePackPrice(primeCost.getOnePackPrice());
 			}

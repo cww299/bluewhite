@@ -73,7 +73,7 @@ public class MachinistAction {
 			machinistService.saveMachinist(machinist);
 			PrimeCost primeCost = new PrimeCost();
 			primeCost.setProductId(machinist.getProductId());
-			productService.getPrimeCost(primeCost, request);
+			productService.getPrimeCost(primeCost);
 			machinist.setOneMachinistPrice(primeCost.getOneMachinistPrice());
 			cr.setData(machinist);
 			cr.setMessage("添加成功");
@@ -98,7 +98,7 @@ public class MachinistAction {
 			machinistList = machinistService.findPages(machinist,page);
 			PrimeCost primeCost = new PrimeCost();
 			primeCost.setProductId(machinist.getProductId());
-			productService.getPrimeCost(primeCost, request);
+			productService.getPrimeCost(primeCost);
 			for(Machinist mt : machinistList.getRows()){
 				mt.setOneMachinistPrice(primeCost.getOneMachinistPrice());
 			}

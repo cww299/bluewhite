@@ -69,7 +69,7 @@ public class EmbroideryAction {
 			embroideryService.saveEmbroidery(embroidery);
 			PrimeCost primeCost = new PrimeCost();
 			primeCost.setProductId(embroidery.getProductId());
-			productService.getPrimeCost(primeCost, request);
+			productService.getPrimeCost(primeCost);
 			embroidery.setOneEmbroiderPrice(primeCost.getOneEmbroiderPrice());
 			cr.setData(embroidery);
 			cr.setMessage("添加成功");
@@ -94,7 +94,7 @@ public class EmbroideryAction {
 			embroideryList = embroideryService.findPages(embroidery,page);
 			PrimeCost primeCost = new PrimeCost();
 			primeCost.setProductId(embroidery.getProductId());
-			productService.getPrimeCost(primeCost, request);
+			productService.getPrimeCost(primeCost);
 			for(Embroidery ey : embroideryList.getRows()){
 				ey.setOneEmbroiderPrice(primeCost.getOneEmbroiderPrice());
 			}

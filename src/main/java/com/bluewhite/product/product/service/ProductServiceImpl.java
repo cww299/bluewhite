@@ -5,8 +5,6 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import javax.persistence.criteria.Predicate;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpSession;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -163,7 +161,7 @@ public class ProductServiceImpl  extends BaseServiceImpl<Product, Long> implemen
 	    }
 
 	@Override
-	public PrimeCost getPrimeCost(PrimeCost primeCost,HttpServletRequest request) {
+	public PrimeCost getPrimeCost(PrimeCost primeCost) {
 		Product product = productDao.findOne(primeCost.getProductId());
 		if(product.getPrimeCost()!=null){
 			PrimeCost oldPrimeCost = product.getPrimeCost();
@@ -272,10 +270,6 @@ public class ProductServiceImpl  extends BaseServiceImpl<Product, Long> implemen
 		primeCost.setActualCombatRate(NumUtils.division(primeCost.getSurplus()/primeCost.getActualCombat()));
 		product.setPrimeCost(primeCost);
 		productDao.save(product);
-		HttpSession session = request.getSession();
-		session.setAttribute("productId", product.getId());
-		session.setAttribute("number", primeCost.getNumber());
-		session.setAttribute("productName", product.getName());
 		return primeCost;
 	}
 

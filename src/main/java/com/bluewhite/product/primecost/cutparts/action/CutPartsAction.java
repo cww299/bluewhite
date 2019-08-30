@@ -16,16 +16,23 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.support.ByteArrayMultipartFileEditor;
 
 import com.bluewhite.common.BeanCopyUtils;
+import com.bluewhite.common.ClearCascadeJSON;
 import com.bluewhite.common.DateTimePattern;
 import com.bluewhite.common.Log;
 import com.bluewhite.common.entity.CommonResponse;
 import com.bluewhite.common.entity.ErrorCode;
 import com.bluewhite.common.entity.PageParameter;
 import com.bluewhite.common.entity.PageResult;
+import com.bluewhite.ledger.entity.Customer;
 import com.bluewhite.product.primecost.cutparts.entity.CutParts;
 import com.bluewhite.product.primecost.cutparts.service.CutPartsService;
+import com.bluewhite.product.primecost.primecost.dao.PrimeCostDao;
 import com.bluewhite.product.primecost.primecost.entity.PrimeCost;
+import com.bluewhite.product.primecostbasedata.entity.BaseOne;
+import com.bluewhite.product.primecostbasedata.entity.Materiel;
 import com.bluewhite.product.product.service.ProductService;
+import com.bluewhite.system.sys.entity.RegionAddress;
+import com.bluewhite.system.user.entity.User;
 
 @Controller
 public class CutPartsAction {
@@ -36,27 +43,41 @@ public class CutPartsAction {
 	private CutPartsService cutPartsService;
 	@Autowired
 	private ProductService productService;
+	@Autowired
+	private PrimeCostDao primeCostDao;
+	
+
+	private ClearCascadeJSON clearCascadeJSON;
+	{
+		clearCascadeJSON = ClearCascadeJSON
+				.get().addRetainTerm(CutParts.class, "id", "productId", "number", "tailorId", "overstock", 
+						"materiel", "cutPartsName","loss","cutPartsNumber","perimeter","allPerimeter","oneMaterial"
+						,"unit","scaleMaterial","addMaterial","manualLoss","composite","doubleComposite","complexMateriel"
+						,"compositeManualLoss","batchMaterial","batchMaterialPrice","complexBatchMaterial","batchComplexMaterialPrice"
+						,"batchComplexAddPrice","oneCutPartsPrice")
+				.addRetainTerm(BaseOne.class, "name","type")
+				.addRetainTerm(Materiel.class,"id","number","name","price","unit");
+	}
 
 	/**
 	 * cc裁片填写
 	 * 
-	 * @param request
-	 *            请求
-	 * @return cr
-	 * @throws Exception
 	 */
 	@RequestMapping(value = "/product/addCutParts", method = RequestMethod.POST)
 	@ResponseBody
-	public CommonResponse addCutParts(HttpServletRequest request, CutParts cutParts) {
+	public CommonResponse addCutParts( CutParts cutParts) {
 		CommonResponse cr = new CommonResponse();
 		if (StringUtils.isEmpty(cutParts.getProductId())) {
 			cr.setCode(ErrorCode.ILLEGAL_ARGUMENT.getCode());
 			cr.setMessage("产品不能为空");
 		} else {
 			cutPartsService.saveCutParts(cutParts);
-			PrimeCost primeCost = new PrimeCost();
-			primeCost.setProductId(cutParts.getProductId());
-			productService.getPrimeCost(primeCost, request);
+			PrimeCost primeCost = primeCostDao.findByProductId(cutParts.getProductId());
+			if(primeCost == null){
+				 primeCost = new PrimeCost();
+				 primeCost.setProductId(cutParts.getProductId());
+			}
+			productService.getPrimeCost(primeCost);
 			cutParts.setOneCutPartsPrice(primeCost.getOneCutPartsPrice());
 			cr.setMessage("添加成功");
 		}
@@ -97,19 +118,9 @@ public class CutPartsAction {
 	 */
 	@RequestMapping(value = "/product/getCutParts", method = RequestMethod.GET)
 	@ResponseBody
-	public CommonResponse getCutParts(HttpServletRequest request, PageParameter page, CutParts cutParts) {
+	public CommonResponse getCutParts(PageParameter page, CutParts cutParts) {
 		CommonResponse cr = new CommonResponse();
-		PageResult<CutParts> cutPartsList = new PageResult<>();
-		if (cutParts.getProductId() != null) {
-			cutPartsList = cutPartsService.findPages(cutParts, page);
-			PrimeCost primeCost = new PrimeCost();
-			primeCost.setProductId(cutParts.getProductId());
-			productService.getPrimeCost(primeCost, request);
-			for (CutParts cp : cutPartsList.getRows()) {
-				cp.setOneCutPartsPrice(primeCost.getOneCutPartsPrice());
-			}
-		}
-		cr.setData(cutPartsList);
+		cr.setData(cutPartsService.findPages(cutParts, page));
 		cr.setMessage("查询成功");
 		return cr;
 	}
