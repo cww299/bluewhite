@@ -94,7 +94,8 @@ layui.extend({
 						})
 					}
 					table.reload(tableId);
-				}
+				},
+				field:{ unit_id:'unitId', }
 			},
 			verify:{ 
 				count:['cutPartsNumber',], 
@@ -110,7 +111,7 @@ layui.extend({
 			       { title:'总周长',   		field:'allPerimeter',	edit:false, },
 			       { title:'物料编号/名称',  field:'materielId',  type:'select', select:{data:[] }  },
 			       { title:'单片用料',   	field:'oneMaterial',	},
-			       { title:'单位',   		field:'unitId',		 type:'select', select:{ data: allUnit }  },
+			       { title:'单位',   		field:'unit_id',		 type:'select', select:{ data: allUnit }  },
 			       { title:'用料占比',   	field:'scaleMaterial',  },
 			       { title:'总用料',   		field:'addMaterial',  },
 			       { title:'手动损耗', 		field:'manualLoss',  },
