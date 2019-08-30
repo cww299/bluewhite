@@ -80,10 +80,8 @@ layui.extend({
 					productRemark:'',
 					batchMaterial:'',
 					batchMaterialPrice:'',
-					composite: allOverstock[0].id,
-					
-					
-					overstockId:'',
+					composite: '',
+					overstockId:allOverstock[0].id,
 				},
 				addTempAfter: renderSelectSearch,
 				saveFun:function(data){
