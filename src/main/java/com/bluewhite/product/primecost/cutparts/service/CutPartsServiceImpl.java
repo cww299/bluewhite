@@ -67,8 +67,8 @@ public class CutPartsServiceImpl  extends BaseServiceImpl<CutParts, Long> implem
 		dao.save(cutParts);
 		
 		//从cc裁片填写后，自动增加到裁剪页面
-		Tailor tailor = tailorDao.findOne(cutParts.getTailorId());
-		if(tailor==null){
+		Tailor tailor = null;
+		if(cutParts.getTailorId()==null){
 			tailor = new Tailor();
 			//增加和产品关联关系
 			tailor.setProductId(cutParts.getProductId());
@@ -76,6 +76,8 @@ public class CutPartsServiceImpl  extends BaseServiceImpl<CutParts, Long> implem
 			tailor.setCutPartsId(cutParts.getId());
 			tailor.setTailorTypeId((long)71);
 			tailor.setTailorSize(0.01);
+		}else{
+			tailor = tailorDao.findOne(cutParts.getTailorId());
 		}
 		NumUtils.setzro(tailor);
 		//批量产品数量或模拟批量数

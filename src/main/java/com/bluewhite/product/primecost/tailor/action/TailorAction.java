@@ -204,6 +204,6 @@ public class TailorAction {
 				new CustomDateEditor(dateTimeFormat, true));
 		binder.registerCustomEditor(byte[].class,
 				new ByteArrayMultipartFileEditor());
-	}
+	} 
 
 }
