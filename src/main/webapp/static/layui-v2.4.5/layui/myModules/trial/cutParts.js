@@ -22,7 +22,38 @@ layui.extend({
 		$('#'+elem).html(html);	//填充真正的html内容
 		var tableId = 'cutPartTable';
 		var noneHtml = '<dd style="color:#999;">无数据</dd>';
-		var updateData = { }, inputElem = null;
+		var updateTrData = { }, inputElem = null;
+		var renderSelectSearch = function(){		//自定义下拉框搜索
+			 layui.each($('td[data-field="materielId"]').find('.layui-form-select'),function(index,item){	//遍历表格物料名称下拉框
+				 $(item).on('click',function(event){
+					 layui.stope(event);					//阻止事件冒泡、去除下拉框原本的点击事件、阻止点击事件自动隐藏
+					 var width = $(this).width();			
+					 var tdElem = $(this).closest('td');
+					 var val = $(this).find('input').val();
+					 var X = tdElem.offset().top;
+					 var Y = tdElem.offset().left;
+					 $('#searchTipDiv').css("top",X+45);	//定位搜索提示框位置并显示提示框
+					 $('#searchTipDiv').css("left",Y+15);
+					 $('#searchTipDiv').css("width",width);
+					 $('#searchTipDiv').show();
+					 getSearchMateriael(val);				//获取初始搜索值
+					 var i = $(this).closest('tr').data('index');
+					 var trData = layui.table.cache[tableId][i];
+					 updateTrData = trData;				//记录点击的当行数据和输入框、用于修改和修改成功后修改相应的输入框值
+					 inputElem = $(this).find('input');
+				 })
+			 })
+			 layui.each($('td[data-field="materielId"]').find('.layui-form-select').find('input'),function(index,item){
+				 $(item).bind("input propertychange",function(event){	//监听输入框内容改变
+					 getSearchMateriael($(this).val());
+				 });
+			 })
+			 $(document).on('click',function(obj){		//监听其他点击事件、用于隐藏提示框
+				 if($(obj).closest('#searchTipDiv').length==0){
+					 $('#searchTipDiv').hide();
+				 } 
+			 })
+		}
 		mytable.render({			//裁片表格
 			elem:'#'+tableId,
 			data:[],
@@ -35,6 +66,7 @@ layui.extend({
 				addTemp:{cutPartsName:'',cutPartsNumber:1,perimeter:'',allPerimeter:'',materielName:'',composite:'',oneMaterial:'',unit:'',perimeter:'',
 					scaleMaterial:'', manualLoss:'',productCost:'',productRemark:'',batchMaterial:'',batchMaterialPrice:'',addMaterial:'',id:'',
 				},
+				addTempAfter: renderSelectSearch,
 				saveFun:function(data){
 					for(var i=0;i<data.length;i++){
 						var check = table.checkStatus('productTable').data;
@@ -69,35 +101,7 @@ layui.extend({
 			       { title:'当批单片价格',   field:'batchMaterialPrice',  },
 			       ]],
 			 done:function(){
-				 layui.each($('td[data-field="materielId"]').find('.layui-form-select'),function(index,item){	//遍历表格物料名称下拉框
-					 $(item).on('click',function(event){
-						 layui.stope(event);					//阻止事件冒泡、去除下拉框原本的点击事件、阻止点击事件自动隐藏
-						 var width = $(this).width();			
-						 var tdElem = $(this).closest('td');
-						 var val = $(this).find('input').val();
-						 var X = tdElem.offset().top;
-						 var Y = tdElem.offset().left;
-						 $('#searchTipDiv').css("top",X+45);	//定位搜索提示框位置并显示提示框
-						 $('#searchTipDiv').css("left",Y+15);
-						 $('#searchTipDiv').css("width",width);
-						 $('#searchTipDiv').show();
-						 getSearchMateriael(val);				//获取初始搜索值
-						 var i = $(this).closest('tr').data('index');
-						 var trData = layui.table.cache[tableId][i];
-						 updateData.id = trData.id;				//记录点击的当行数据id和输入框、用于修改和修改成功后修改相应的输入框值
-						 inputElem = $(this).find('input');
-					 })
-				 })
-				 layui.each($('td[data-field="materielId"]').find('.layui-form-select').find('input'),function(index,item){
-					 $(item).bind("input propertychange",function(event){	//监听输入框内容改变
-						 getSearchMateriael($(this).val());
-					 });
-				 })
-				 $(document).on('click',function(obj){		//监听其他点击事件、用于隐藏提示框
-					if($(obj).closest('#searchTipDiv').length==0){
-						$('#searchTipDiv').hide();
-					} 
-				 })
+				 renderSelectSearch();
 			 }
 		})
 		function getSearchMateriael(name){	//根据输入的内容进行搜索、填充选择项
@@ -112,17 +116,21 @@ layui.extend({
 					})
 					$('#searchTipDiv').html(html);
 					$('#searchTipDiv').find('dd').on('click',function(obj){		//监听选择事件、如果选中某一个选项
-						 if(!$(this).data('value'))
+						var text = $(this).html();
+						var val = $(this).data('value');
+						if(!val)
 							return;
-						 var text = $(this).html();
-						 updateData['materielId'] = $(this).data('value');
-						 myutil.saveAjax({
-							 url:'/product/updateCutParts',
-							 data: updateData,
-							 success: function(){	//修改下拉框显示的值
-								 $(inputElem).attr('placeholder',text);
-							 }
-						 })
+						$(inputElem).attr('placeholder',text);		//修改下拉框显示的值、缓存值
+						updateTrData['materielId'] = val;
+						if(!updateTrData.id)
+							return;
+						myutil.saveAjax({
+							url:'/product/updateCutParts',
+							data: {
+								id: updateTrData.id,
+								materielId: val,
+							},
+						})
 					 })
 				}
 			})
