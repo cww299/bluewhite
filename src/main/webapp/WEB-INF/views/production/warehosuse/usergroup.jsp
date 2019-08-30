@@ -264,8 +264,9 @@
 				<div class="layui-form-item">
 					<table>
 						<tr>
-							<td>查询月份:</td>
-							<td><input id="monthDate3" style="width: 180px;" name="time" placeholder="请输入开始时间" class="layui-input laydate-icon">
+							<td>查询时间:</td>
+							<td><input id="startTime" style="width: 180px;" name="startTime" placeholder="请输入开始时间" class="layui-input laydate-icon">
+							<input id="queryId" style="display: none;" name="id">
 							</td>
 							<td>&nbsp;&nbsp;</td>
 							<td>
@@ -277,11 +278,21 @@
 							</td>
 						</tr>
 					</table>
+					<div style="">
+						<table class="table table-hover" style="margin:auto;width:100%;">
+								<thead>
+									<tr>
+										<th class="text-center" style="width:50%;">人名</th>
+										<th class="text-center" style="width:50%;">所在组工作时长</th>
+									</tr>
+								</thead>
+								<tbody id="tableUserTime">
+								</tbody>
+						</table>
+					</div>
 				</div>
 			</div>
-			<table id="layuiShare2"  class="table_th_search" lay-filter="layuiShare"></table>
 </div>
-
 
 <div class="layui-card">
 		<div class="layui-card-body">
@@ -290,13 +301,18 @@
 	</div>
 	<script type="text/html" id="toolbar">
 			<div class="layui-btn-container layui-inline">
-				<span class="layui-btn layui-btn-sm" lay-event="addTempData">新增一行</span>
+				<span class="layui-btn layui-btn-sm" lay-event="addTempData">新增</span>
 				<span class="layui-btn layui-btn-sm layui-btn-warm" lay-event="saveTempData">批量保存</span>
 			</div>
 	</script>
 	
 	<script type="text/html" id="barDemo">
-		<button type="button" class="layui-btn layui-btn-normal" lay-event="query">查看人员</button>
+		{{#  if(d.isType != 1){ }}
+			<button type="button" class="layui-btn layui-btn-normal" lay-event="query">查看人员</button>
+  		{{#  } }}
+		{{#  if(d.isType == 1){ }}
+			<button type="button" class="layui-btn layui-btn-normal" lay-event="queryOut">查看人员</button>
+  		{{#  } }}
 	</script>
 	
 	<script>
@@ -333,9 +349,26 @@
 					laydate.render({
 						elem: '#startTime',
 						type: 'datetime',
-						range: '~',
 					});
 				
+					var myDate = new Date(new Date().getTime() - 86400000);
+					//获取当前年
+					var year=myDate.getFullYear();
+					//获取当前月
+					var month=myDate.getMonth()+1;
+					//获取当前日
+					var date=myDate.getDate(); 
+					
+					var h=myDate.getHours();       //获取当前小时数(0-23)
+					var m=myDate.getMinutes();     //获取当前分钟数(0-59)
+					var s=myDate.getSeconds(); 
+					var day = new Date(year,month,0);  
+					var firstdate = year + '-' + '0'+month + '-01'+' '+'00:00:00';
+					var getday = year + '-' + '0'+month + date+' '+'00:00:00';
+					var lastdate = year + '-' + '0'+month + '-' + day.getDate() +' '+'23:59:59';
+					var a=year + '-' + '0'+month + '-' + date+' '+'00:00:00'
+					var b=year + '-' + '0'+month + '-' + date+' '+'23:59:59'
+					$('#startTime').val(a);
 					
 					var htmlfrn= '<option value="">请选择</option>';
 					var htmlth= '<option value="">请选择</option>';
@@ -424,11 +457,16 @@
 						colFilterRecord: true,
 						smartReloadModel: true,// 开启智能重载
 						parseData: function(ret) {
+							var data = ret.data;
+							data.push({
+								name:"外调组",
+								isType:1
+							})
 							return {
 								code: ret.code,
 								msg: ret.message,
 								count:ret.data.total,
-								data: ret.data
+								data: data
 							}
 						},
 						cols: [
@@ -448,14 +486,6 @@
 								edit: false,
 								align: 'center',
 								toolbar: '#barDemo',
-							},{
-								field: "type",
-								title: "状态",
-								align: 'center',
-								search: true,
-								edit: false,
-								type: 'normal',
-								templet: fn2('selectTwo')
 							}]
 						],
 								});
@@ -478,9 +508,14 @@
 					//监听工具事件
 					table.on('tool(tableData)', function(obj){
 						 var data = obj.data;
-						 console.log(data)
 						switch(obj.event) {
 						case 'query':
+							$("#queryId").val(data.id)//把组ID放进查询  方便查询调用
+							var data={
+								id:data.id,
+								temporarilyDate:$("#startTime").val()
+							}
+							mainJs.loadworkingTable(data);
 							var dicDiv=$('#layuiShare');
 							table.reload("layuiShare2");
 							layer.open({
@@ -488,9 +523,9 @@
 						        ,title: '招聘汇总' //不显示标题栏
 						        ,closeBtn: false
 						        ,zindex:-1
-						        ,area:['50%', '90%']
+						        ,area:['40%', '90%']
 						        ,shade: 0.5
-						        ,id: 'LAY_layuipro2' //设定一个id，防止重复弹出
+						        ,id: 'LAY_layuipro29' //设定一个id，防止重复弹出
 						        ,btn: ['取消']
 						        ,btnAlign: 'c'
 						        ,moveType: 1 //拖拽模式，0或者1
@@ -507,6 +542,9 @@
 						        	$("#layuiShare").hide();
 								  } 
 						      });
+							break;
+						case 'queryOut':
+							alert(1)	
 							break;
 						}
 					})
@@ -544,57 +582,6 @@
 									})	
 								}
 						          break;
-							case 'deleteSome':
-								// 获得当前选中的
-								var checkedIds = tablePlug.tableCheck.getChecked(tableId);
-								layer.confirm('您是否确定要删除选中的' + checkedIds.length + '条记录？', function() {
-									var postData = {
-										ids: checkedIds,
-									}
-									$.ajax({
-										url: "${ctx}/personnel/deleteWage",
-										data: postData,
-										traditional: true,
-										type: "GET",
-										beforeSend: function() {
-											index;
-										},
-										success: function(result) {
-											if(0 == result.code) {
-												var configTemp = tablePlug.getConfig("tableData");
-									            if (configTemp.page && configTemp.page.curr > 1) {
-									              table.reload("tableData", {
-									                page: {
-									                  curr: configTemp.page.curr - 1
-									                }
-									              })
-									            }else{
-									            	table.reload("tableData", {
-										                page: {
-										                }
-										              })
-									            };
-												layer.msg(result.message, {
-													icon: 1,
-													time:800
-												});
-											} else {
-												layer.msg(result.message, {
-													icon: 2,
-													time:800
-												});
-											}
-										},
-										error: function() {
-											layer.msg("操作失败！", {
-												icon: 2
-											});
-										}
-									});
-									layer.close(index);
-								});
-								break;
-							
 						}
 					});
 	
@@ -618,7 +605,13 @@
 						　   $("#LAY-search5").click();
 						　　}
 						}); */
-					
+						form.on('submit(LAY-search2)', function(obj) {
+							var data={
+									id:obj.field.id,
+									temporarilyDate:$("#startTime").val()
+							}
+							mainJs.loadworkingTable(data);
+					});
 					//监听搜索
 					form.on('submit(LAY-search)', function(obj) {		//修改此处
 						var field = obj.field;
@@ -680,7 +673,7 @@
 				    		return;
 				    	}
 				    	$.ajax({
-							url: "${ctx}/personnel/addWage",
+							url: "${ctx}/production/addGroup",
 							data: data,
 							type: "POST",
 							beforeSend: function() {
@@ -711,7 +704,63 @@
 							},
 						});
 						layer.close(index);
-				    }
+				    },
+				    loadworkingTable:function(data){
+							 var arr=new Array();
+								var html="";
+								$.ajax({
+									url:"${ctx}/production/allGroup",
+									data:data,
+									type:"GET",
+									beforeSend:function(){
+										index = layer.load(1, {
+											  shade: [0.1,'#fff'] //0.1透明度的白色背景
+											});
+									},
+									success:function(result){
+										$(result.data[0].users).each(function(i,o){
+											html +='<tr>'
+						      				+'<td  style="text-align: center;">'+o.userName+'</td>'
+						      				+'<td  style="text-align: center;"><input  class="adjustTime" style="background:none;outline:none;border:0px;text-align:center;" data-id="'+o.id+'" data-ajid="'+o.adjustTimeId+'" value='+(o.adjustTime!=null ? o.adjustTime :0)+' /></td>'
+										})
+										$('#tableUserTime').html(html);
+										layer.close(index);
+										$(".adjustTime").blur(function(){
+											var postData={
+													adjustTime:$(this).val(),
+													adjustId:$(this).data('ajid'),
+												}
+											$.ajax({
+												url:"${ctx}/production/updateAdjustTime",
+												data:postData,
+									            traditional: true,
+												type:"GET",
+												beforeSend:function(){
+													index = layer.load(1, {
+														  shade: [0.1,'#fff'] //0.1透明度的白色背景
+														});
+												},
+												success:function(result){
+													if(0==result.code){
+														layer.msg("修改成功", {icon: 1});
+													}else{
+														layer.msg(result.message, {icon: 2});
+													}
+													layer.close(index);
+												},error:function(){
+													layer.msg(result.message, {icon: 2});
+													layer.close(index);
+												}
+											});
+										})
+									},error:function(){
+										layer.msg("操作失败！", {icon: 2});
+										layer.close(index);
+									}
+								});
+						}
+					    
+					    
 					}
 
 				}
