@@ -59,7 +59,7 @@ public class CutPartsAction {
 				.addRetainTerm(Materiel.class,"id","number","name","price","unit");
 	}
 
-	/**
+	/** 
 	 * cc裁片填写
 	 * 
 	 */
@@ -120,7 +120,7 @@ public class CutPartsAction {
 	@ResponseBody
 	public CommonResponse getCutParts(PageParameter page, CutParts cutParts) {
 		CommonResponse cr = new CommonResponse();
-		cr.setData(cutPartsService.findPages(cutParts, page));
+		cr.setData(clearCascadeJSON.format(cutPartsService.findPages(cutParts, page)).toJSON());
 		cr.setMessage("查询成功");
 		return cr;
 	}
