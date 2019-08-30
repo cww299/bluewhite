@@ -13,6 +13,7 @@ layui.extend({
 	            '<table id="cutPartTable" lay-filter="cutPartTable"></table>'
 	            ].join(' ');
 	var allUnit = myutil.getDataSync({ url:'/product/getBaseOne?type=unit', });
+	var allOverstock = myutil.getDataSync({ url:'/product/getBaseOne?type=overstock', });
 	var cutParts = {	//模块
 			
 	};
@@ -63,8 +64,9 @@ layui.extend({
 				deleUrl:'/product/deleteCutParts',
 			}, 
 			curd:{
-				addTemp:{cutPartsName:'',cutPartsNumber:1,perimeter:'',allPerimeter:'',materielName:'',composite:'',oneMaterial:'',unit:'',perimeter:'',
-					scaleMaterial:'', manualLoss:'',productCost:'',productRemark:'',batchMaterial:'',batchMaterialPrice:'',addMaterial:'',id:'',
+				addTemp:{cutPartsName:'',cutPartsNumber:1,perimeter:'',allPerimeter:'',materielName:'',composite:'',oneMaterial:'',perimeter:'',unitId:'',
+					scaleMaterial:'', manualLoss:'',productCost:'',productRemark:'',batchMaterial:'',batchMaterialPrice:'',addMaterial:'',id:'',overstockId:'',
+					complexMateriel:'',
 				},
 				addTempAfter: renderSelectSearch,
 				saveFun:function(data){
@@ -79,16 +81,19 @@ layui.extend({
 					table.reload(tableId);
 				}
 			},
-			//verify:{ count:[''], notNull:[''],price:[] },
-			colsWidth:[0,6,6,6,5,20,6,6,6,6,6,6,6,4,6,7,7],
+			verify:{ 
+				count:['cutPartsNumber',], 
+				price:['perimeter','oneMaterial','manualLoss',], 
+				notNull:['cutPartsName','materielId','perimeter','oneMaterial','manualLoss','cutPartsNumber',],
+			},
+			colsWidth:[0,6,6,6,5,20,6,6,6,6,6,6,6,4,6,7,7,20,7,7,7,7,7,7],
 			cols:[[
-			       { type:'checkbox',},
+			       { type:'checkbox', 		fixed:'left'},
 			       { title:'裁片名字',   	field:'cutPartsName',	},
-			       { title:'使用片数',   	field:'cutPartsNumber',	},
+			       { title:'使用片数',   	field:'cutPartsNumber',},
 			       { title:'单片周长',   	field:'perimeter',	},
-			       { title:'总周长',   		field:'allPerimeter',	},
+			       { title:'总周长',   		field:'allPerimeter',	edit:false, },
 			       { title:'物料编号/名称',  field:'materielId',  type:'select', select:{data:[] }  },
-			       { title:'是否复合',   	field:'composite',	},
 			       { title:'单片用料',   	field:'oneMaterial',	},
 			       { title:'单位',   		field:'unitId',		 type:'select', select:{ data: allUnit }  },
 			       { title:'单片周长',   	field:'perimeter',	},
@@ -99,6 +104,14 @@ layui.extend({
 			       { title:'备注',  	 		field:'productRemark',  },
 			       { title:'当批单片用料',   field:'batchMaterial',  },
 			       { title:'当批单片价格',   field:'batchMaterialPrice',  },
+			       { title:'是否复合',   	field:'composite',	},
+			       { title:'请选择复合物',   field:'complexMateriel',	},
+			       { title:'是否双层对复',   field:'',	},
+			       { title:'手动耗损（必填）',   field:'',	},
+			       { title:'当批复合物用料',   	field:'',	},
+			       { title:'当批复合物单片价格', field:'',	},
+			       { title:'当批复合物加工费',   field:'',	},
+			       { title:'压货环节',   	field:'overstockId', type:'select', select:{ data: allOverstock } ,},
 			       ]],
 			 done:function(){
 				 renderSelectSearch();
