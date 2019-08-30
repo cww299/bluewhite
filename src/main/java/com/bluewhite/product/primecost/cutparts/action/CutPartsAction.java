@@ -55,7 +55,7 @@ public class CutPartsAction {
 						,"unit","scaleMaterial","addMaterial","manualLoss","composite","doubleComposite","complexMateriel"
 						,"compositeManualLoss","batchMaterial","batchMaterialPrice","complexBatchMaterial","batchComplexMaterialPrice"
 						,"batchComplexAddPrice","oneCutPartsPrice")
-				.addRetainTerm(BaseOne.class, "name","type")
+				.addRetainTerm(BaseOne.class, "id" ,"name","type")
 				.addRetainTerm(Materiel.class,"id","number","name","price","unit");
 	}
 
