@@ -66,9 +66,8 @@ public class OrdinaryLaser extends BaseEntity<Long>{
 	/**
 	 * 裁剪方式
 	 */
-	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "tailor_Type_id", referencedColumnName = "id", insertable = false, updatable = false)
-	private BaseOne tailorType;
+	@Column(name = "tailorType")
+	private String tailorType;
 	
 	/**
 	 *得到理论(市场反馈）含管理价值
@@ -256,6 +255,14 @@ public class OrdinaryLaser extends BaseEntity<Long>{
     private Double oneCutPrice;
 	
 	
+
+	public String getTailorType() {
+		return tailorType;
+	}
+
+	public void setTailorType(String tailorType) {
+		this.tailorType = tailorType;
+	}
 
 	public Double getOneCutPrice() {
 		return oneCutPrice;
