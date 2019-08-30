@@ -95,7 +95,7 @@ public class CutPartsAction {
 	@RequestMapping(value = "/product/updateCutParts", method = RequestMethod.POST)
 	@ResponseBody
 	public CommonResponse updateCutParts(HttpServletRequest request, CutParts cutParts) {
-		CommonResponse cr = new CommonResponse();
+		CommonResponse cr = new CommonResponse();      
 		if (StringUtils.isEmpty(cutParts.getId())) {
 			cr.setCode(ErrorCode.ILLEGAL_ARGUMENT.getCode());
 			cr.setMessage("裁片不能为空");

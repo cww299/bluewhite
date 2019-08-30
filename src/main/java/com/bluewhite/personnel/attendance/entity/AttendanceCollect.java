@@ -213,10 +213,13 @@ public class AttendanceCollect extends BaseEntity<Long>{
     	manDay = manDayList.stream().filter(AttendanceTime->AttendanceTime.getTurnWorkTime()!=null).mapToDouble(AttendanceTime::getTurnWorkTime).sum();
     	manDayOvertime =  manDayList.stream().filter(AttendanceTime->AttendanceTime.getOvertime()!=null).mapToDouble(AttendanceTime::getOvertime).sum();
     	weekendTurnWork = weekendTurnWorkList.stream().filter(AttendanceTime->AttendanceTime.getTurnWorkTime()!=null).mapToDouble(AttendanceTime::getTurnWorkTime).sum();
+    	double ot = NumUtils.sub(ordinaryOvertime, takeWork);
     	//调休完的加班时长
-    	ordinaryOvertime = NumUtils.sub(ordinaryOvertime, takeWork) <0 ? 0 : NumUtils.sub(ordinaryOvertime, takeWork);
-    	productionOvertime = NumUtils.sub(ordinaryOvertime, takeWork) <0 ?  NumUtils.sum(productionOvertime, NumUtils.sub(ordinaryOvertime, takeWork)) : productionOvertime;
-    	overtime = NumUtils.sum(productionOvertime, NumUtils.sub(ordinaryOvertime, takeWork));
+    	ordinaryOvertime = ot < 0 ? 0 : ot;
+    	if(ot<0 && productionOvertime != 0){
+    		productionOvertime = NumUtils.sum(productionOvertime, ot);
+    	}
+    	overtime = NumUtils.sum(productionOvertime,ordinaryOvertime);
     	
     	List<AttendanceTime> belateAttendanceTime = list.stream().filter(AttendanceTime->AttendanceTime.getBelate()==1).collect(Collectors.toList());
     	belateAttendanceTime.forEach(at->{

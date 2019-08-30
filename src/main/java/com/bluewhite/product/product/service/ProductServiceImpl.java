@@ -12,7 +12,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
 import com.bluewhite.base.BaseServiceImpl;
-import com.bluewhite.common.BeanCopyUtils;
 import com.bluewhite.common.Constants;
 import com.bluewhite.common.SessionManager;
 import com.bluewhite.common.entity.CurrentUser;
@@ -162,15 +161,8 @@ public class ProductServiceImpl  extends BaseServiceImpl<Product, Long> implemen
 
 	@Override
 	public PrimeCost getPrimeCost(PrimeCost primeCost) {
-		Product product = productDao.findOne(primeCost.getProductId());
-		if(product.getPrimeCost()!=null){
-			PrimeCost oldPrimeCost = product.getPrimeCost();
-			BeanCopyUtils.copyNullProperties(oldPrimeCost,primeCost);
-			primeCost.setCreatedAt(oldPrimeCost.getCreatedAt());
-		}
 		//自动将类型为null的属性赋值为0
 		NumUtils.setzro(primeCost);
-		
 		//面料价格(含复合物料和加工费)
 		List<CutParts> cutPartsList = cutPartsDao.findByProductId(primeCost.getProductId());
 		double batchMaterialPrice = cutPartsList.stream().filter(CutParts->CutParts.getBatchMaterialPrice()!=null).mapToDouble(CutParts::getBatchMaterialPrice).sum();
@@ -179,8 +171,7 @@ public class ProductServiceImpl  extends BaseServiceImpl<Product, Long> implemen
 		primeCost.setCutPartsPrice(batchMaterialPrice+batchComplexMaterialPrice+batchComplexAddPrice);
 		//单只
 		primeCost.setOneCutPartsPrice(NumUtils.division(primeCost.getCutPartsPrice()/primeCost.getNumber()));
-		
-		double cutPartsPriceInvoice = primeCost.getCutPartsInvoice() == 1 ? (primeCost.getCutPartsPriceInvoice()* primeCost.getOneCutPartsPrice()) : 0;
+		double cutPartsPriceInvoice = primeCost.getCutPartsInvoice() == 1 ? (primeCost.getCutPartsPriceInvoice() * primeCost.getOneCutPartsPrice()) : 0;
 		
 		//除面料以外的其他物料价格
 		List<ProductMaterials> productMaterialsList = productMaterialsDao.findByProductId(primeCost.getProductId());
@@ -268,9 +259,7 @@ public class ProductServiceImpl  extends BaseServiceImpl<Product, Long> implemen
 		primeCost.setActualCombat(primeCost.getOneaAtualPrimeCost()-primeCost.getFreight());
 		//实战成本加价率
 		primeCost.setActualCombatRate(NumUtils.division(primeCost.getSurplus()/primeCost.getActualCombat()));
-		product.setPrimeCost(primeCost);
-		productDao.save(product);
-		return primeCost;
+		return primeCostDao.save(primeCost);
 	}
 
 	@Override
