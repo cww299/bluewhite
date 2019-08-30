@@ -277,12 +277,18 @@ layui.extend({
 					}
 					opt.curd.otherBtn && opt.curd.otherBtn(obj);	//如果有其他按钮操作
 					function addTempData(){
-						var field = opt.curd.addTemp || (function(){	//如果没有给出默认值
+						var field = (function(){	
 							var field = {};
-							layui.each(allField,function(index,item){
-								var t = opt.autoUpdate.field[item] || item;
-								field[t] = '';
-							})
+							if(opt.curd.addTemp){	//如果给出默认值,进行深拷贝
+								for(var key in opt.curd.addTemp){
+									field[key] = opt.curd.addTemp[key];
+								}
+							}
+							else
+								layui.each(allField,function(index,item){
+									var t = opt.autoUpdate.field[item] || item;
+									field[t] = '';
+								})
 							return field;
 						})();
 						table.addTemp(tableId,field,function(trElem){
