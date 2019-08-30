@@ -13,6 +13,7 @@
  * 增加自动curd工具模板：curd: {
  * 							btn:[1,2,3,4],  需要显示的按钮，按顺序，默认全显
  *							addTemp:{ },  新增一行给定的默认值。不给的时候、默认为空值
+ *							addTempAfter：function(),  新增一行后的后调，其他相关的监听操作等
  *							otherBtn: function(obj){} 其他扩展按钮监听事件,可增加额外的工具栏按钮直接给定<span class="layui-btn" lay-event="cleanTempData">额外按钮</span>'
  *							saveFun： function(data){}  覆盖默认的保存函数，data为临时行的值
  *							deleFun: function(ids){}  覆盖默认的删除函数
@@ -284,7 +285,8 @@ layui.extend({
 							})
 							return field;
 						})();
-						table.addTemp(tableId,field,function(trElem){ 
+						table.addTemp(tableId,field,function(trElem){
+							opt.curd.addTempAfter && opt.curd.addTempAfter();
 							renderData(dateField,'date');
 							renderData(dateTimeField,'datetime');
 							function renderData(data,type){
