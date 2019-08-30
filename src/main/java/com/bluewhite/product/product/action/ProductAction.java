@@ -165,9 +165,9 @@ public class ProductAction {
 	 */
 	@RequestMapping(value = "/getPrimeCost", method = RequestMethod.POST)
 	@ResponseBody
-	public CommonResponse getPrimeCost(HttpServletRequest request,PrimeCost primeCost) {
+	public CommonResponse getPrimeCost(PrimeCost primeCost) {
 		CommonResponse cr = new CommonResponse();
-		cr.setData(productService.getPrimeCost(primeCost,request));
+		cr.setData(productService.getPrimeCost(primeCost));
 		cr.setMessage("查询成功");
 		return cr;
 	}

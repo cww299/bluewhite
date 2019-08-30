@@ -29,7 +29,7 @@ public interface ProductService extends BaseCRUDService<Product,Long>{
 	 * @param page
 	 * @return
 	 */
-	public PrimeCost getPrimeCost(PrimeCost primeCost,HttpServletRequest request);
+	public PrimeCost getPrimeCost(PrimeCost primeCost);
 
 
 	/**

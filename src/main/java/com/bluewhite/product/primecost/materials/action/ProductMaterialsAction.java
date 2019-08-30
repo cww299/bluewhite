@@ -88,7 +88,7 @@ public class ProductMaterialsAction {
 			productMaterialsService.saveProductMaterials(productMaterials);
 			PrimeCost primeCost = new PrimeCost();
 			primeCost.setProductId(productMaterials.getProductId());
-			productService.getPrimeCost(primeCost, request);
+			productService.getPrimeCost(primeCost);
 			productMaterials.setOneOtherCutPartsPrice(primeCost.getOneOtherCutPartsPrice());
 			cr.setMessage("修改成功");
 		}
@@ -112,7 +112,7 @@ public class ProductMaterialsAction {
 			productMaterialsList = productMaterialsService.findPages(productMaterials,page);
 			PrimeCost primeCost = new PrimeCost();
 			primeCost.setProductId(productMaterials.getProductId());
-			productService.getPrimeCost(primeCost, request);
+			productService.getPrimeCost(primeCost);
 			for(ProductMaterials ps : productMaterialsList.getRows()){
 				ps.setOneOtherCutPartsPrice(primeCost.getOneOtherCutPartsPrice());
 			}

@@ -74,7 +74,7 @@ private final static Log log = Log.getLog(NeedleworkAction.class);
 			needleworkService.saveNeedlework(needlework);
 			PrimeCost primeCost = new PrimeCost();
 			primeCost.setProductId(needlework.getProductId());
-			productService.getPrimeCost(primeCost, request);
+			productService.getPrimeCost(primeCost);
 			needlework.setOneNeedleworkPrice(primeCost.getOneNeedleworkPrice());
 			cr.setData(needlework);
 			cr.setMessage("添加成功");
@@ -98,7 +98,7 @@ private final static Log log = Log.getLog(NeedleworkAction.class);
 			needleworkList = needleworkService.findPages(needlework,page);
 			PrimeCost primeCost = new PrimeCost();
 			primeCost.setProductId(needlework.getProductId());
-			productService.getPrimeCost(primeCost, request);
+			productService.getPrimeCost(primeCost);
 			for(Needlework nw : needleworkList.getRows()){
 				nw.setOneNeedleworkPrice(primeCost.getOneNeedleworkPrice());
 			}
