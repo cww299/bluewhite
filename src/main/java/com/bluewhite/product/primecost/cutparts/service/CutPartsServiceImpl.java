@@ -79,7 +79,7 @@ public class CutPartsServiceImpl  extends BaseServiceImpl<CutParts, Long> implem
 			tailor.setProductId(cutParts.getProductId());
 			//裁片和裁剪页面关联关系
 			tailor.setCutPartsId(cutParts.getId());
-			tailor.setTailorTypeId((long)71);
+			tailor.setTailorTypeId((long)71); 
 			tailor.setTailorSize(0.01);
 		}else{
 			tailor = tailorDao.findOne(cutParts.getTailorId());
