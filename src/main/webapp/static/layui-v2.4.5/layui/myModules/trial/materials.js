@@ -27,6 +27,7 @@ layui.define(['mytable'],function(exports){
 	            '<table id="materialsTable" lay-filter="materialsTable"></table>'
 	            ].join(' ');
 	var allUnit = myutil.getDataSync({ url:'/product/getBaseOne?type=unit', });
+	var allOverstock = myutil.getDataSync({ url:'/product/getBaseOne?type=overstock', });
 	var allMaterielSelect = '';
 	var materials = {	//模块
 			
@@ -176,6 +177,7 @@ layui.define(['mytable'],function(exports){
 			       { title:'手动损耗', 		field:'manualLoss',  },
 			       { title:'当批当品种用量',  field:'batchMaterial',	},
 			       { title:'当批当品种价格',  field:'batchMaterialPrice',   },
+			       { title:'压货环节',   	field:'overstockId', type:'select', 		select:{ data: allOverstock } ,},
 			       ]],
 	        done:function(){
 				 renderSelectSearch();
