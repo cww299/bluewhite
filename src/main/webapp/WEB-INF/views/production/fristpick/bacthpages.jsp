@@ -1241,8 +1241,19 @@
 						  btn: ['确定', '取消'],
 						  success:function(){
 							  //cookie设置输入框的时间值
-							  var date = $.cookie('batchTime') || '';
-							  $('#Time').val(date);
+							  var cookieData = $.cookie('batchTime') || '';
+							  if(cookieData){
+								  $('#remember').prop("checked",true);
+							  }else
+								  $('#remember').prop("checked",false);
+							  $('#remember').unbind().on('click',function(){
+								  if(!$('#remember').prop("checked"))
+									  $.cookie('batchTime','');
+								  else{
+									  $.cookie('batchTime',$('#Time').val());
+								  }
+							  })
+							  $('#Time').val(cookieData);
 							  $('#Time').on('click',function(){
 								  laydate({
 									  elem: '#Time', 
