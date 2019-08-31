@@ -641,6 +641,7 @@
 								$(".adjustTime").blur(function(){
 									var a=$(this).data('temporarily')
 									var groupId=$(this).data('groupid')
+									var load = layer.load(1);
 									if(a==1){
 										var postData={
 												id:$(this).data('ajid'),
@@ -649,54 +650,34 @@
 										$.ajax({
 											url:"${ctx}/production/updateTemporarily",
 											data:postData,
-								            traditional: true,
+											async:false,
 											type:"post",
-											beforeSend:function(){
-												index = layer.load(1, {
-													  shade: [0.1,'#fff'] //0.1透明度的白色背景
-													});
-											},
 											success:function(result){
-												if(0==result.code){
-													layer.msg(result.message, {icon: 1});
-												}else{
-													layer.msg(result.message, {icon: 2});
-												}
-												layer.close(index);
-											},error:function(){
-												layer.msg(result.message, {icon: 2});
-												layer.close(index);
+												var icon = 2;
+												if(0==result.code)
+													icon = 1;
+												layer.msg(result.message, {icon: icon});
 											}
 										});
 									}else{
-									var postData={
-											adjustTime:$(this).val(),
-											adjustId:$(this).data('ajid'),
-											groupId:groupId,
-										}
-									$.ajax({
-										url:"${ctx}/production/updateAdjustTime",
-										data:postData,
-							            traditional: true,
-										type:"GET",
-										beforeSend:function(){
-											index = layer.load(1, {
-												  shade: [0.1,'#fff'] //0.1透明度的白色背景
-												});
-										},
-										success:function(result){
-											if(0==result.code){
-												layer.msg("修改成功", {icon: 1});
-											}else{
-												layer.msg(result.message, {icon: 2});
+										var postData={
+												adjustTime:$(this).val(),
+												adjustId:$(this).data('ajid'),
+												groupId:groupId,
 											}
-											layer.close(index);
-										},error:function(){
-											layer.msg(result.message, {icon: 2});
-											layer.close(index);
-										}
-									});
+										$.ajax({
+											url:"${ctx}/production/updateAdjustTime",
+											data:postData,
+											async:false,
+											success:function(result){
+												var icon = 2;
+												if(0==result.code)
+													icon = 1;
+												layer.msg(result.message, {icon: icon});
+											}
+										});
 									}
+									layer.close(load);
 								})
 							},error:function(){
 								layer.msg("操作失败！", {icon: 2});
