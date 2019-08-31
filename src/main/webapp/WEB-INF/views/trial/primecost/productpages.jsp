@@ -41,6 +41,7 @@
 	box-shadow: 0 2px 4px rgba(0, 0, 0, .12);
 	max-height: 300px;
 	overflow-y: auto;
+	z-index: 999999999999;
 }
 #searchTipDiv dd{
 	padding: 0 10px;
