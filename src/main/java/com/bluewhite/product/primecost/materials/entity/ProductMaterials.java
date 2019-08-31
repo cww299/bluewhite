@@ -65,23 +65,10 @@ public class ProductMaterials extends BaseEntity<Long>{
     private Double oneMaterial;
 	
 	/**
-	 * 单位填写选择id
+	 * 是否转换单位获取不同的价格
 	 */
-	@Column(name = "unit_id")
-    private Long unitId;
-
-	/**
-	 * 单位
-	 */
-	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "unit_id", referencedColumnName = "id", insertable = false, updatable = false)
-	private BaseOne unit;
-	
-	/**
-	 * 按选定单位产品单价
-	 */
-	@Column(name = "unit_cost")
-    private Double unitCost;
+	@Column(name = "convert_unit")
+    private Integer convertUnit;
 	
 	/**
 	 * 手动损耗选择
@@ -111,20 +98,28 @@ public class ProductMaterials extends BaseEntity<Long>{
 	
 	
 	
+	public BaseOne getOverstock() {
+		return overstock;
+	}
+
+	public void setOverstock(BaseOne overstock) {
+		this.overstock = overstock;
+	}
+
+	public Integer getConvertUnit() {
+		return convertUnit;
+	}
+
+	public void setConvertUnit(Integer convertUnit) {
+		this.convertUnit = convertUnit;
+	}
+
 	public Materiel getMateriel() {
 		return materiel;
 	}
 
 	public void setMateriel(Materiel materiel) {
 		this.materiel = materiel;
-	}
-
-	public BaseOne getUnit() {
-		return unit;
-	}
-
-	public void setUnit(BaseOne unit) {
-		this.unit = unit;
 	}
 
 	public Double getOneOtherCutPartsPrice() {
@@ -151,14 +146,6 @@ public class ProductMaterials extends BaseEntity<Long>{
 		this.overstockId = overstockId;
 	}
 
-	public Long getUnitId() {
-		return unitId;
-	}
-
-	public void setUnitId(Long unitId) {
-		this.unitId = unitId;
-	}
-
 	public Long getProductId() {
 		return productId;
 	}
@@ -181,14 +168,6 @@ public class ProductMaterials extends BaseEntity<Long>{
 
 	public void setOneMaterial(Double oneMaterial) {
 		this.oneMaterial = oneMaterial;
-	}
-
-	public Double getUnitCost() {
-		return unitCost;
-	}
-
-	public void setUnitCost(Double unitCost) {
-		this.unitCost = unitCost;
 	}
 
 	public Double getManualLoss() {

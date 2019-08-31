@@ -52,7 +52,7 @@ public class ProductMaterialsAction {
 				.addRetainTerm(ProductMaterials.class, "id", "productId", "number", "materiel", "overstock", 
 						"oneMaterial", "unit","unitCost","manualLoss","batchMaterial","batchMaterialPrice")
 				.addRetainTerm(BaseOne.class, "id" ,"name","type")
-				.addRetainTerm(Materiel.class,"id","number","name","price","unit");
+				.addRetainTerm(Materiel.class,"id","number","name","price","unit","convertUnit","convertPrice");
 	}
 	
 	/**

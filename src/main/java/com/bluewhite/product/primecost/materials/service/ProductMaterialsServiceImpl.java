@@ -36,7 +36,11 @@ public class ProductMaterialsServiceImpl extends BaseServiceImpl<ProductMaterial
 		}else{
 			productMaterials.setBatchMaterial(NumUtils.mul(productMaterials.getManualLoss(),productMaterials.getOneMaterial(),(double)productMaterials.getNumber()));
 		}
-		productMaterials.setBatchMaterialPrice(NumUtils.mul(productMaterials.getBatchMaterial(),productMaterials.getUnitCost()));
+		if(productMaterials.getConvertUnit()==0){
+			productMaterials.setBatchMaterialPrice(NumUtils.mul(productMaterials.getBatchMaterial(),productMaterials.getMateriel().getPrice()));
+		}else{
+			productMaterials.setBatchMaterialPrice(NumUtils.mul(productMaterials.getBatchMaterial(),productMaterials.getMateriel().getConvertPrice()));
+		}
 		return dao.save(productMaterials);
 	}
 
