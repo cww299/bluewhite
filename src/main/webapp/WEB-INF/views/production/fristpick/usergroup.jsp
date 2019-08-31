@@ -595,7 +595,7 @@
 									html +='<tr>'
 				      				+'<td class="text-center">'+o.userName+'</td>'
 				      				+'<td class="text-center"><input  class="adjustTime" style="background:none;outline:none;border:0px;text-align:center;" data-id="'+o.id+'" data-temporarily='+o.temporarily+' data-groupid='+result.data[0].id+' data-ajid="'+o.adjustTimeId+'" value='+(o.adjustTime!=null ? o.adjustTime :0)+' /></td>'
-									+'<td class="text-center" style="width:300px;"><input class="form-control" id="startEndTime'+i+'" data-id="'+o.id+'" value="'+time+'"></td>'
+									+'<td class="text-center" style="width:300px;"><input class="form-control" data-temporarily='+o.temporarily+' id="startEndTime'+i+'" data-id="'+o.id+'" value="'+time+'"></td>'
 								})
 								$('#tableUserTime').html(html);
 								layui.use(['laydate'],function(){
@@ -607,23 +607,29 @@
 											range: '~',
 											done:function(value){
 												var id = $(this.elem).data('id');
-												var load = layer.load(1);
-												$.ajax({
-													url:"${ctx}/production/updateAdjustTime",
-													async:false,
-													data: {
-														id: id,
-														startTime: value.split('~')[0].trim(),
-														endTime: value.split('~')[1].trim(),
-													},
-													success:function(r){
-														var icon = 2;
-														if(r.code==0)
-															icon = 1;
-														layer.msg(r.message,{icon:icon});
-													}
-												});
-												layer.close(load);
+												var temporarily = $(this.elem).data('temporarily');
+												if(temporarily==0){
+													var load = layer.load(1);
+													$.ajax({
+														url:"${ctx}/production/updateAdjustTime",
+														async:false,
+														data: {
+															id: id,
+															startTime: value.split('~')[0].trim(),
+															endTime: value.split('~')[1].trim(),
+														},
+														success:function(r){
+															var icon = 2;
+															if(r.code==0)
+																icon = 1;
+															layer.msg(r.message,{icon:icon});
+														}
+													});
+													layer.close(load);
+												}else{
+													layer.msg('外调人员无法添加工作区间',{icon:2});
+													value='';
+												}
 											}
 										})
 									})
