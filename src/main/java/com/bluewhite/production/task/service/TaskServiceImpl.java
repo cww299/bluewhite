@@ -175,8 +175,12 @@ public class TaskServiceImpl extends BaseServiceImpl<Task, Long> implements Task
 								GroupTime groupTime = groupTimeDao.findByUserIdAndTypeAndGroupIdAndAllotTime(
 										userId, task.getType(), task.getGroupId(), DatesUtil.getfristDayOftime(task.getAllotTime()));
 								if(groupTime != null){
-									groupWorkTime = groupTime.getGroupWorkTime();
-									
+									if((groupTime.getStartTime().before(task.getAllotTime()) || groupTime.getStartTime().compareTo(task.getAllotTime()) == 0) 
+									&& (groupTime.getEndTime().after(task.getAllotTime()) || groupTime.getEndTime().compareTo(task.getAllotTime())==0)){
+										groupWorkTime = groupTime.getGroupWorkTime();
+									}else{
+										groupWorkTime = 0.0;
+									}
 								}
 							}
 							sumTime += (groupWorkTime != null ? groupWorkTime : attendancePay.getWorkTime());
@@ -218,7 +222,12 @@ public class TaskServiceImpl extends BaseServiceImpl<Task, Long> implements Task
 									GroupTime groupTime = groupTimeDao.findByUserIdAndTypeAndGroupIdAndAllotTime(
 											userId, task.getType(), task.getGroupId(), DatesUtil.getfristDayOftime(task.getAllotTime()));
 									if(groupTime != null){
-										workTime = groupTime.getGroupWorkTime();
+										if((groupTime.getStartTime().before(task.getAllotTime()) || groupTime.getStartTime().compareTo(task.getAllotTime()) == 0) 
+												&& (groupTime.getEndTime().after(task.getAllotTime()) || groupTime.getEndTime().compareTo(task.getAllotTime())==0)){
+													workTime = groupTime.getGroupWorkTime();
+												}else{
+													workTime = 0.0;
+												}
 									}else{
 										workTime = attendancePayNewList.get(0).getWorkTime();
 									}

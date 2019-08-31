@@ -25,5 +25,14 @@ public interface ProcedureDao extends BaseRepository<Procedure, Long>{
 	 * @return
 	 */
 	List<Procedure> findByProductIdAndProcedureTypeIdAndType(Long productId, Long procedureTypeId, Integer type);
+	
+	/**
+	 *  根据产品和工序类型查询工序具体
+	 * @param productId
+	 * @param procedureTypeId
+	 * @param type
+	 * @return
+	 */
+	List<Procedure> findByType(Integer type);
 
 }

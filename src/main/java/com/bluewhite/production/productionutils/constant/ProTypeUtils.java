@@ -879,6 +879,10 @@ public  class ProTypeUtils {
 		if(allotTime == null ){
 			Calendar  cal = Calendar.getInstance();
 			cal.add(Calendar.DATE,-1);
+			cal.set(Calendar.HOUR_OF_DAY, 0);// 设置时为0点
+			cal.set(Calendar.MINUTE, 0);// 设置分钟为0分
+			cal.set(Calendar.SECOND, 0);// 设置秒为0秒
+			cal.set(Calendar.MILLISECOND, 000);// 设置毫秒为000
 			allotTime = cal.getTime();
 		}
 		return allotTime;
