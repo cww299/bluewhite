@@ -18,6 +18,7 @@
 	<script src="${ctx }/static/js/vendor/jquery-3.3.1.min.js"></script>
 	<script src="${ctx }/static/js/layer/layer.js"></script>	
 	<script src="${ctx }/static/js/laydate-icon/laydate.js"></script>
+	<script src="${ctx}/static/layui-v2.4.5/layui/layui.js"></script>
 	<link rel="stylesheet" href="${ctx }/static/css/main.css">
 	<script src="${ctx }/static/js/laypage/laypage.js"></script>
 	<script src="${ctx }/static/js/vendor/typeahead.js"></script>    <!-- 员工分组需要加入此链接 -->
@@ -175,6 +176,7 @@
 								<tr>
 									<th class="text-center">人名</th>
 									<th class="text-center">所在组工作时长</th>
+									<th class="text-center">工作区间</th>
 								</tr>
 							</thead>
 							<tbody id="tableUserTime">
@@ -556,8 +558,6 @@
 				})
 				
 				
-				
-				
 				//人员详细显示方法
 				$('.savemode').on('click',function(){
 					var id=$(this).data('id')
@@ -588,15 +588,60 @@
 							
 							success:function(result){
 								$(result.data[0].users).each(function(i,o){
+									var time = '';
+									if(o.orderTimeBegin){
+										time = o.orderTimeBegin+' ~ '+o.orderTimeEnd;
+									}
 									html +='<tr>'
 				      				+'<td class="text-center">'+o.userName+'</td>'
 				      				+'<td class="text-center"><input  class="adjustTime" style="background:none;outline:none;border:0px;text-align:center;" data-id="'+o.id+'" data-temporarily='+o.temporarily+' data-groupid='+result.data[0].id+' data-ajid="'+o.adjustTimeId+'" value='+(o.adjustTime!=null ? o.adjustTime :0)+' /></td>'
+									+'<td class="text-center" style="width:300px;"><input class="form-control" data-temporarily='+o.temporarily+
+										' id="startEndTime'+i+'" data-id="'+o.id+'" value="'+time+'" data-groupid='+result.data[0].id+'></td>'
 								})
 								$('#tableUserTime').html(html);
+								layui.use(['laydate'],function(){
+									var laydate = layui.laydate;
+									$(result.data[0].users).each(function(i,o){
+										laydate.render({
+											elem: '#startEndTime'+i,
+											type: 'datetime',
+											range: '~',
+											done:function(value){
+												var id = $(this.elem).data('id');
+												var groupId = $(this.elem).data('groupid');
+												var temporarily = $(this.elem).data('temporarily');
+												if(temporarily==0){
+													var load = layer.load(1);
+													$.ajax({
+														url:"${ctx}/production/updateAdjustTime",
+														async:false,
+														data: {
+															adjustId: id,
+															groupId: groupId,
+															startTime: value.split('~')[0].trim(),
+															endTime: value.split('~')[1].trim(),
+														},
+														success:function(r){
+															var icon = 2;
+															if(r.code==0)
+																icon = 1;
+															layer.msg(r.message,{icon:icon});
+														}
+													});
+													layer.close(load);
+												}else{
+													layer.msg('外调人员无法添加工作区间',{icon:2});
+													value='';
+												}
+											}
+										})
+									})
+								})
 								layer.close(index);
 								$(".adjustTime").blur(function(){
 									var a=$(this).data('temporarily')
 									var groupId=$(this).data('groupid')
+									var load = layer.load(1);
 									if(a==1){
 										var postData={
 												id:$(this).data('ajid'),
@@ -605,54 +650,34 @@
 										$.ajax({
 											url:"${ctx}/production/updateTemporarily",
 											data:postData,
-								            traditional: true,
+											async:false,
 											type:"post",
-											beforeSend:function(){
-												index = layer.load(1, {
-													  shade: [0.1,'#fff'] //0.1透明度的白色背景
-													});
-											},
 											success:function(result){
-												if(0==result.code){
-													layer.msg(result.message, {icon: 1});
-												}else{
-													layer.msg(result.message, {icon: 2});
-												}
-												layer.close(index);
-											},error:function(){
-												layer.msg(result.message, {icon: 2});
-												layer.close(index);
+												var icon = 2;
+												if(0==result.code)
+													icon = 1;
+												layer.msg(result.message, {icon: icon});
 											}
 										});
 									}else{
-									var postData={
-											adjustTime:$(this).val(),
-											adjustId:$(this).data('ajid'),
-											groupId:groupId,
-										}
-									$.ajax({
-										url:"${ctx}/production/updateAdjustTime",
-										data:postData,
-							            traditional: true,
-										type:"GET",
-										beforeSend:function(){
-											index = layer.load(1, {
-												  shade: [0.1,'#fff'] //0.1透明度的白色背景
-												});
-										},
-										success:function(result){
-											if(0==result.code){
-												layer.msg("修改成功", {icon: 1});
-											}else{
-												layer.msg(result.message, {icon: 2});
+										var postData={
+												adjustTime:$(this).val(),
+												adjustId:$(this).data('ajid'),
+												groupId:groupId,
 											}
-											layer.close(index);
-										},error:function(){
-											layer.msg(result.message, {icon: 2});
-											layer.close(index);
-										}
-									});
+										$.ajax({
+											url:"${ctx}/production/updateAdjustTime",
+											data:postData,
+											async:false,
+											success:function(result){
+												var icon = 2;
+												if(0==result.code)
+													icon = 1;
+												layer.msg(result.message, {icon: icon});
+											}
+										});
 									}
+									layer.close(load);
 								})
 							},error:function(){
 								layer.msg("操作失败！", {icon: 2});

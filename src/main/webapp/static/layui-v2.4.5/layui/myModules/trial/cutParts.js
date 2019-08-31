@@ -37,13 +37,12 @@ layui.extend({
 			renderTd('materiel');
 			renderTd('complexMateriel');
 			function renderTd(attribute){
-				layui.each($('td[data-field="'+attribute+'"]').find('.layui-form-select'),function(index,item){	//遍历表格物料名称下拉框
-					$(item).unbind().on('click',function(event){
-						layui.stope(event);					//阻止事件冒泡、去除下拉框原本的点击事件、阻止点击事件自动隐藏
-						$(this).addClass('layui-form-selected');
-						var width = $(this).width();			
+				layui.each($('td[data-field="'+attribute+'"]').find('.layui-form-select').find('input'),function(index,item){	//遍历表格物料名称下拉框
+					$(item).unbind().focus(function(event){
+						$(this).parent().parent().addClass('layui-form-selected');
+						var width = $(this).parent().width();			
 						var tdElem = $(this).closest('td');
-						var val = $(this).find('input').val();
+						var val = $(this).val();
 						var Y = tdElem.offset().top;
 						var X = tdElem.offset().left;
 						getSearchMateriael(val);
@@ -54,24 +53,20 @@ layui.extend({
 						var i = $(this).closest('tr').data('index');
 						var trData = layui.table.cache[tableId][i];
 						updateTrData = trData;				//记录点击的当行数据和输入框、用于修改和修改成功后修改相应的输入框值
-						inputElem = $(this).find('input');
+						inputElem = $(this);
 						inputText = val;
 						inputField = $(this).closest('td').data('field');
-					})
-				})
-				layui.each($('td[data-field="'+attribute+'"]').find('.layui-form-select').find('input'),function(index,item){
-					$(item).bind("input propertychange",function(event){	//监听输入框内容改变
+					}).blur(function(obj){
+						setTimeout(function () {
+							$('#searchTipDiv').hide();
+							$(this).parent().parent().removeClass('layui-form-selected');
+							$(inputElem).val(inputText);
+					    }, 100);
+					}).bind("input propertychange",function(event){	//监听输入框内容改变
 						getSearchMateriael($(this).val());
 					});
 				})
 			}
-			 $(document).on('click',function(obj){		//监听其他点击事件、用于隐藏提示框
-				 if($(obj).closest('#searchTipDiv').length==0){
-					 $('#searchTipDiv').hide();
-					 $(this).removeClass('layui-form-selected');
-					 $(inputElem).val(inputText);
-				 } 
-			 })
 		}
 		function getSearchMateriael(name){	//根据输入的内容进行搜索、填充选择项
 			name = name.split('~')[1]?name.split('~')[1].trim():'';
@@ -176,7 +171,7 @@ layui.extend({
 			       { title:'使用片数',   	field:'cutPartsNumber', edit:true, },
 			       { title:'单片周长',   	field:'perimeter',		edit:true, },
 			       { title:'总周长',   		field:'allPerimeter',	edit:false, style:sty  },
-			       { title:'物料编号/名称/价格/单位',  field:'materiel',  templet: getSelectHtml() },
+			       { title:'物料编号/名称/价格/单位',  field:'materiel',  templet: getSelectHtml(), edit:false, },
 			       { title:'单片用料',   	field:'oneMaterial',	edit:true,},
 			       { title:'单位',   		field:'unit_id',		 type:'select', select:{ data: allUnit }  },
 			       { title:'用料占比',   	field:'scaleMaterial',  edit:false, style:sty },
@@ -184,7 +179,7 @@ layui.extend({
 			       { title:'手动损耗', 		field:'manualLoss',  	edit:true,},
 			       { title:'当批单片用料',   field:'batchMaterial', 	edit:false,  style:sty },
 			       { title:'当批单片价格',   field:'batchMaterialPrice',  edit:false, style:sty },
-			       { title:'请选择复合物',   field:'complexMateriel',templet: getSelectHtml('complexMateriel')	},
+			       { title:'请选择复合物',   field:'complexMateriel',templet: getSelectHtml('complexMateriel'),edit:false,	},
 			       { title:'是否双层对复',   field:'doubleComposite',type:'select', select:{ data: [{name:'是',id:1},{name:'否',id:0}] } 	},
 			       { title:'手动耗损',   field:'compositeManualLoss',			edit:true, },
 			       { title:'当批复合物用料',   	field:'complexBatchMaterial',			edit:false, style:sty },

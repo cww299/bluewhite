@@ -14,11 +14,12 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
 	
 	<link rel="stylesheet" href="${ctx }/static/plugins/bootstrap/css/bootstrap.min.css">
+	<link rel="stylesheet" href="${ctx }/static/css/main.css">
 	<script src="${ctx }/static/js/vendor/jquery-3.3.1.min.js"></script>
 	<script src="${ctx }/static/js/laydate-icon/laydate.js"></script>  <!-- 时间插件 -->
 	<script src="${ctx }/static/js/layer/layer.js"></script>
 	<script src="${ctx }/static/js/laypage/laypage.js"></script> 
-	<link rel="stylesheet" href="${ctx }/static/css/main.css">
+	<script src="${ctx}/static/js/vendor/jquery.cookie.js"></script>
 </head>
 
 <body>
@@ -131,10 +132,12 @@
 						<label class="col-sm-2 control-label">任务分配:</label>
 						<div class="col-sm-3">
 							<input id="Time" placeholder="时间可不填"
-								class="form-control laydate-icon"
-								onClick="laydate({elem: '#Time', istime: true, format: 'YYYY-MM-DD hh:mm:ss'})">
+								class="form-control laydate-icon" >
 						</div>
-						<label class="col-sm-2 control-label">加绩工序:</label>
+						<div class="col-sm-1">
+							<input type="checkbox" id="remember">记住
+						</div>
+						<label class="col-sm-1 control-label">加绩工序:</label>
 						<div class="col-sm-3 workingtw"></div>
 					</div>
 
@@ -818,7 +821,6 @@
 							  btn: ['关闭'],
 							  end:function(){
 								  $('#addDictDivType').hide();
-							
 								  $('.addDictDivTypeForm')[0].reset(); 
 								
 							  }
@@ -1237,6 +1239,35 @@
 						  offset:(parent.document.documentElement.scrollTop+50)+'px',
 						  content: dicDiv,
 						  btn: ['确定', '取消'],
+						  success:function(){
+							  //cookie设置输入框的时间值
+							  var cookieData = $.cookie('batchTime') || '';
+							  if(cookieData){
+								  $('#remember').prop("checked",true);
+							  }else
+								  $('#remember').prop("checked",false);
+							  $('#remember').unbind().on('click',function(){
+								  if(!$('#remember').prop("checked"))
+									  $.cookie('batchTime','');
+								  else{
+									  $.cookie('batchTime',$('#Time').val());
+								  }
+							  })
+							  $('#Time').val(cookieData);
+							  $('#Time').on('click',function(){
+								  laydate({
+									  elem: '#Time', 
+									  istime: true, 
+									  format: 'YYYY-MM-DD hh:mm:ss',
+									  choose: function(value){
+										 var check = $('#remember').prop("checked");
+										 if(check){
+											 $.cookie('batchTime',value);
+										 }
+									  }  
+								  });
+							  })
+						  },
 						  yes:function(index, layero){
 							  var values=new Array()
 							  var numberr=new Array()

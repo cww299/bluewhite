@@ -2,10 +2,11 @@
  * 2019/8/29   试制模块：dd除裁片、生产用料
  * materials.render({ elem:'给定的元素。填充真正的内容', btn:'绑定的按钮' })
  */
-layui.define(['mytable'],function(exports){
+layui.define(['mytable','form'],function(exports){
 	var $ = layui.jquery,
 		mytable = layui.mytable,
 		table = layui.table,
+		form = layui.form,
 		myutil = layui.myutil;
 	var html = [
 	            '<table class="layui-form"><tr>',
@@ -26,7 +27,6 @@ layui.define(['mytable'],function(exports){
 	            '</tr></table>',
 	            '<table id="materialsTable" lay-filter="materialsTable"></table>'
 	            ].join(' ');
-	var allUnit = myutil.getDataSync({ url:'/product/getBaseOne?type=unit', });
 	var allOverstock = myutil.getDataSync({ url:'/product/getBaseOne?type=overstock', });
 	var allMaterielSelect = '';
 	var materials = {	//模块
@@ -36,54 +36,60 @@ layui.define(['mytable'],function(exports){
 		url:'/product/getMateriel',
 		success:function(data){
 			layui.each(data,function(index,item){
-				allMaterielSelect += '<dd data-value="'+item.id+'">'+item.number+' ~ '+item.name+' ~ ￥'+item.price+' ~ '+item.unit+'</dd>';
+				allMaterielSelect += '<dd data-value="'+item.id+'" data-convertPrice="'+item.convertPrice+'" data-convertUnit="'+item.convertPrice+'">'+
+						item.number+' ~ '+item.name+' ~ ￥'+item.price+' ~ '+item.unit+'</dd>';
 			})
 		}
 	});
 	var tableId = 'materialsTable';
 	var noneHtml = '<dd style="color:#999;">没有搜索到匹配的相关信息</dd>';
+	
+	
+	var trIndex = '';			//记录获取焦点的输入框的索引
+	var trMateriel = { };   	//记录各行的materiel实体、用于单位转换下拉框改变时使用
+	var inputText = '';
+	
+	
+	
 	var updateTrData = { }, inputElem = null, inputText = '',inputField='';	//用于记录所点击的下拉框的值、修改的当行id、输入框元素。用于修改、回滚等
+	
+	
 	var renderSelectSearch = function(){		//自定义下拉框搜索
-		renderTd('materiel');
-		function renderTd(attribute){
-			layui.each($('td[data-field="'+attribute+'"]').find('.layui-form-select'),function(index,item){	//遍历表格物料名称下拉框
-				$(item).unbind().on('click',function(event){
-					layui.stope(event);					//阻止事件冒泡、去除下拉框原本的点击事件、阻止点击事件自动隐藏
-					$(this).addClass('layui-form-selected');
-					var width = $(this).width();			
-					var tdElem = $(this).closest('td');
-					var val = $(this).find('input').val();
-					var Y = tdElem.offset().top;
-					var X = tdElem.offset().left;
-					getSearchMateriael(val);
-					$('#searchTipDiv').css("top",Y+45);	//定位搜索提示框位置并显示提示框
-					$('#searchTipDiv').css("left",X+15);
-					$('#searchTipDiv').css("width",width);
-					$('#searchTipDiv').show();
-					var i = $(this).closest('tr').data('index');
-					var trData = layui.table.cache[tableId][i];
-					updateTrData = trData;				//记录点击的当行数据和输入框、用于修改和修改成功后修改相应的输入框值
-					inputElem = $(this).find('input');
-					inputText = val;
-					inputField = $(this).closest('td').data('field');
-				})
-			})
-			layui.each($('td[data-field="'+attribute+'"]').find('.layui-form-select').find('input'),function(index,item){
-				$(item).bind("input propertychange",function(event){	//监听输入框内容改变
-					getSearchMateriael($(this).val());
-				});
-			})
-		}
-		 $(document).on('click',function(obj){		//监听其他点击事件、用于隐藏提示框
-			 if($(obj).closest('#searchTipDiv').length==0){
-				 $('#searchTipDiv').hide();
-				 $(this).removeClass('layui-form-selected');
-				 $(inputElem).val(inputText);
-			 } 
-		 })
+		layui.each($('td[data-field="convertUnit"]').find('select'),function(index,item){
+			var index = $(item).closest('tr').data('index');
+			if(!trMateriel[index] || !trMateriel[index].convertUnit)
+				$(item).prop('disabled','disabled');
+		})
+		form.render();
+		layui.each($('td[data-field="materiel"]').find('.layui-form-select').find('input'),function(index,item){	//遍历表格物料名称下拉框
+			$(item).unbind().focus(function(event){
+				$(this).parent().parent().addClass('layui-form-selected');
+				inputText = $(this).val();
+				trIndex = $(this).closest('tr').data('index');
+				var width = $(this).parent().width();			
+				var tdElem = $(this).closest('td');
+				var val = $(this).val();
+				var Y = tdElem.offset().top;
+				var X = tdElem.offset().left;
+				getSearchMateriael(val);
+				$('#searchTipDiv').css("top",Y+45);	//定位搜索提示框位置并显示提示框
+				$('#searchTipDiv').css("left",X+15);
+				$('#searchTipDiv').css("width",width);
+				$('#searchTipDiv').show();
+			}).blur(function(obj){
+				var self = this;
+				setTimeout(function (obj) {
+					$('#searchTipDiv').hide();
+					$(self).parent().parent().removeClass('layui-form-selected');
+					$(self).val(inputText);
+			    }, 100);
+			}).bind("input propertychange",function(event){		//监听输入框内容改变
+				getSearchMateriael($(this).val());
+			});
+		})
 	}
 	function getSearchMateriael(name){	//根据输入的内容进行搜索、填充选择项
-		name = name.split('~')[1]?name.split('~')[1].trim():'';
+		name = name.split('~')[1]?name.split('~')[1].trim():name.trim();
 		var html = '';
 		if(!name){
 			html = allMaterielSelect;
@@ -97,8 +103,11 @@ layui.define(['mytable'],function(exports){
 					if(data.length==0)
 						html = noneHtml;
 					layui.each(data,function(index,item){
-						//var sty='style="background-color:#5fb878;"';
-						html += '<dd data-value="'+item.id+'">'+item.number+' ~ '+item.name+' ~ ￥'+item.price+' ~ '+item.unit+'</dd>';
+						var sty= '';
+						if(trMateriel[trIndex] && trMateriel[trIndex].id == item.id)
+							sty= 'style="background-color:#5fb878;"';
+						html += '<dd data-value="'+item.id+'" data-convertPrice="'+item.convertPrice+'" '+sty+' data-convertUnit="'+item.convertUnit+'" >'+
+								item.number+' ~ '+item.name+' ~ ￥'+item.price+' ~ '+item.unit+'</dd>';
 					})
 					renderHtml();
 				}
@@ -106,22 +115,35 @@ layui.define(['mytable'],function(exports){
 		function renderHtml(){
 			$('#searchTipDiv').html(html);
 			$('#searchTipDiv').find('dd').on('click',function(obj){		//监听选择事件、如果选中某一个选项
-				layui.stope(obj);
-				var text = $(this).html();
+				var text = $(this).html().split('~');
 				var val = $(this).data('value');
+				var convertPrice = $(this).data('convertprice');
+				var convertUnit = $(this).data('convertunit');
 				if(!val)
 					return;
-				$('#searchTipDiv').hide();
-				$(inputElem).closest('.layui-form-select').removeClass('layui-form-selected');
-				$(inputElem).val(text);	 	//修改下拉框显示的值、缓存值
-				inputText = text;
-				updateTrData['materielId'] = val;
-				if(!updateTrData.id)
+				trMateriel[trIndex] = {		//记录更新当行的materiel实体
+					id: val,
+					number: text[0].trim(),
+					name: text[1].trim(),
+					price: text[2].trim().split('￥')[1],
+					unit: text[3].trim(),
+					convertPrice: convertPrice,
+					convertUnit: convertUnit,
+				};
+				var select = $('tr[data-index="'+trIndex+'"').find('td[data-field="convertUnit"]').find('select');
+				if(convertPrice){
+					select.removeAttr('disabled');
+				}else{
+					select.val(0);
+					select.prop('disabled','disabled');
+				}
+				form.render();
+				var trData = table.cache[tableId][trIndex];
+				inputText = $(this).html();		//修改输入框的值(在失去焦点的时候获取该值)
+				trData['materielId'] = val;		//修改缓存值
+				if(!trData.id)
 					return;
-				var data = {id: updateTrData.id,},field='';
-				if(inputField == 'materiel')
-					field = 'materielId';
-				data[field] = val;
+				var data = {id: trData.id, materielId: val };
 				myutil.saveAjax({
 					url:'/product/updateProductMaterials',
 					data: data,
@@ -140,47 +162,82 @@ layui.define(['mytable'],function(exports){
 			autoUpdate:{
 				saveUrl:'/product/updateProductMaterials',
 				deleUrl:'/product/deleteProductMaterials',
-				field: { materiel:'materielId',unit_id:'unitId', },
+				field: { materiel:'materielId', overstock_id:'overstockId'},
 			}, 
 			curd:{
 				addTemp:{
 					materielId: '',
+					convertUnit:0,
 					oneMaterial: '',
-					unitId: allUnit[0].id,
 					manualLoss: '',
 					batchMaterial: '',
 					batchMaterialPrice: '',
+					overstockId: allOverstock[0].id,
 				},
 				addTempAfter: renderSelectSearch,
 				saveFun:function(data){
+					var successNum = 0;
 					for(var i=0;i<data.length;i++){
 						var check = table.checkStatus('productTable').data;
 						data[i]['productId'] = check[0].id;		//添加产品id参数
 						myutil.saveAjax({
 							url: '/product/addProductMaterials', 
 							data: data[i],
+							success:function(){
+								successNum++;
+							}
 						})
 					}
-					table.reload(tableId);
+					if(successNum == data.length)
+						table.reload(tableId);
 				}
 			},
 			verify:{ 
 				notNull: ['materiel'],
 				price:['oneMaterial','manualLoss','batchMaterial','batchMaterialPrice'] 
 			},
-			colsWidth:[0,0,8,6,8,8,8],
+			colsWidth:[0,0,8,6,8,8,8,15],
 			cols:[[
 			       { type:'checkbox',},
-			       { title:'物料编号/名称/价格/单位',   	field:'materiel',	templet: getSelectHtml(), },
+			       { title:'物料编号/名称/价格/单位',   	field:'materiel',	templet: getSelectHtml(), edit:false, },
+			       { title:'是否转换',   	field:'convertUnit', type:'select',
+			    	   select:{ data: [{id:0,name:'不转换'},{id:1,name:'转换'}],layFilter:'convertUnitSelect',unsearch:true, } ,},
 			       { title:'单只用料',   	field:'oneMaterial',	},
-			       { title:'单位',   		field:'unit_id',		 type:'select', select:{ data: allUnit }  },
 			       { title:'手动损耗', 		field:'manualLoss',  },
 			       { title:'当批当品种用量',  field:'batchMaterial',	},
 			       { title:'当批当品种价格',  field:'batchMaterialPrice',   },
-			       { title:'压货环节',   	field:'overstockId', type:'select', 		select:{ data: allOverstock } ,},
+			       { title:'压货环节',   	field:'overstock_id', type:'select', select:{ data: allOverstock } ,},
 			       ]],
 	        done:function(){
 				 renderSelectSearch();
+				 form.on('select(convertUnitSelect)',function(obj){
+					 var index = $(obj.elem).closest('tr').data('index');
+					 var t = trMateriel[index];
+					 var trData = table.cache[tableId][index];
+					 var convertPrice = t.convertPrice;
+					 var convertUnit = t.convertUnit;
+					 if(!convertPrice){
+						 $(obj.elem).val(0);
+						 form.render();
+						 return myutil.emsg('该物料无单位转换');
+					 }else{
+						 if(obj.value==0){
+							 convertPrice = t.price;
+							 convertUnit = t.unit;
+						 }
+						 var text = t.number+' ~ '+t.name+' ~ ￥'+convertPrice+' ~ '+convertUnit;
+						 $('tr[data-index="'+index+'"]').find('td[data-field="materiel"]').find('input').val(text);
+						 if(trData.id){
+							 myutil.saveAjax({
+									url:'/product/updateProductMaterials',
+									data: { id:trData.id, convertUnit:obj.value },
+							})
+						 }
+					 }
+				 })
+				 layui.each(table.cache[tableId],function(index,item){
+					 trMateriel[index] = item.materiel;
+				 })
 			}
 		})
 		function getSelectHtml(){
