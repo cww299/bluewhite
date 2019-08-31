@@ -315,6 +315,7 @@
 						})
 						$('#selectOne').append(htmls);
 						$("#userId").append(htmls);
+						form.render();
 					},
 				});
 			})();
