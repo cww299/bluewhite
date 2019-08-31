@@ -1,5 +1,7 @@
 package com.bluewhite.personnel.attendance.service;
 
+import static org.hamcrest.CoreMatchers.nullValue;
+
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -7,9 +9,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-import javax.persistence.EntityManager;
-import javax.persistence.FlushModeType;
-import javax.persistence.PersistenceContext;
 import javax.persistence.criteria.Predicate;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -42,7 +41,7 @@ public class AttendanceServiceImpl extends BaseServiceImpl<Attendance, Long> imp
 
 	@Autowired
 	private AttendanceDao dao;
-
+	
 	@Autowired
 	private ZkemSDKUtils sdk;
 
@@ -54,9 +53,6 @@ public class AttendanceServiceImpl extends BaseServiceImpl<Attendance, Long> imp
 
 	@Autowired
 	private AttendanceInitDao attendanceInitDao;
-
-	@PersistenceContext
-	protected EntityManager entityManager;
 
 	@Override
 	public List<Map<String, Object>> getAllUser(String address) {
@@ -159,7 +155,7 @@ public class AttendanceServiceImpl extends BaseServiceImpl<Attendance, Long> imp
 
 	@Override
 	@Transactional
-	public List<Attendance> allAttendance(String address, Date startTime, Date endTime) {
+	public List<Attendance> allAttendance(String address, Date startTime, Date endTime ,Long userId) {
 		sdk.initSTA();
 		boolean flag = false;
 		try {
@@ -173,30 +169,15 @@ public class AttendanceServiceImpl extends BaseServiceImpl<Attendance, Long> imp
 			attendanceListAll = sdk.getGeneralLogData(0);
 		}
 		attendanceListAll = attendanceListAll.stream()
-				.filter(Attendance -> Attendance.getTime().before(endTime) && Attendance.getTime().after(startTime))
+				.filter(Attendance -> Attendance.getTime().before(endTime) && Attendance.getTime().after(startTime) )
 				.collect(Collectors.toList());
-		dao.save(attendanceListAll);
+		if(userId!=null){  
+			attendanceListAll = attendanceListAll.stream().filter(Attendance -> Attendance.getUserId()!=null && Attendance.getUserId().equals(userId)).collect(Collectors.toList());
+		}
+		batchSave(attendanceListAll);
 		sdk.disConnect();
 		sdk.release();
 		return attendanceListAll;
-	}
-
-	/**
-	 * 考勤导入批处理
-	 * 
-	 * @param productList
-	 */
-	private void saveAllProduct(List<Attendance> attendanceListAll) {
-		entityManager.setFlushMode(FlushModeType.COMMIT);
-		for (int i = 0; i < attendanceListAll.size(); i++) {
-			Attendance attendance = attendanceListAll.get(i);
-			entityManager.merge(attendance);
-			if (i % 1000 == 0 && i > 0) {
-				entityManager.flush();
-				entityManager.clear();
-			}
-		}
-		entityManager.close();
 	}
 
 	@Override
@@ -315,14 +296,14 @@ public class AttendanceServiceImpl extends BaseServiceImpl<Attendance, Long> imp
 		if(attendanceList.size()>0){
 			dao.deleteInBatch(attendanceList);
 		}
-		if(!StringUtils.isEmpty(address)){
-			allAttendance(Constants.THREE_FLOOR, startTime, endTime);
-			allAttendance(Constants.TWO_FLOOR, startTime, endTime);
-			allAttendance(Constants.ONE_FLOOR, startTime, endTime);
-			allAttendance(Constants.EIGHT_WAREHOUSE, startTime, endTime);
-			allAttendance(Constants.NEW_IGHT_WAREHOUSE, startTime, endTime);
+		if(StringUtils.isEmpty(address)){
+			allAttendance(Constants.THREE_FLOOR, startTime, endTime,userId);
+			allAttendance(Constants.TWO_FLOOR, startTime, endTime,userId);
+			allAttendance(Constants.ONE_FLOOR, startTime, endTime,userId);
+			allAttendance(Constants.EIGHT_WAREHOUSE, startTime, endTime,userId);
+			allAttendance(Constants.NEW_IGHT_WAREHOUSE, startTime, endTime,userId);
 		}else{
-			allAttendance(address, startTime, endTime);
+			allAttendance(address, startTime, endTime,userId);
 		}
 		return attendanceList.size();
 	}

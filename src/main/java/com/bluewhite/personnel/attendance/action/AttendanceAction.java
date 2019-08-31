@@ -176,7 +176,7 @@ public class AttendanceAction {
 	@ResponseBody
 	public CommonResponse getAllAttendance(HttpServletRequest request, String address, Date startTime, Date endTime) {
 		CommonResponse cr = new CommonResponse();
-		cr.setData(clearCascadeJSON.format(attendanceService.allAttendance(address, startTime, endTime)).toJSON());
+		cr.setData(clearCascadeJSON.format(attendanceService.allAttendance(address, startTime, endTime,null)).toJSON());
 		cr.setMessage("同步成功");
 		return cr;
 	}

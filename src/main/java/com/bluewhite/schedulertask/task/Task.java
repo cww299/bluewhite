@@ -2,20 +2,15 @@ package com.bluewhite.schedulertask.task;
 
 import java.util.Calendar;
 import java.util.Date;
-import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
 import com.bluewhite.common.Constants;
-import com.bluewhite.common.annotation.SysLogAspectAnnotation;
 import com.bluewhite.common.utils.DatesUtil;
-import com.bluewhite.personnel.attendance.entity.Attendance;
 import com.bluewhite.personnel.attendance.service.AttendanceService;
-import com.bluewhite.production.finance.entity.CollectInformation;
 import com.bluewhite.production.finance.service.CollectInformationService;
-import com.bluewhite.system.sys.entity.SysLog;
 
 @Component
 public class Task {
@@ -34,11 +29,11 @@ public class Task {
 		Date time = cal.getTime();
 		Date startTime = DatesUtil.getfristDayOftime(time);
 		Date endTime = DatesUtil.getLastDayOftime(time);
-		attendanceService.allAttendance(Constants.THREE_FLOOR, startTime, endTime);
-		attendanceService.allAttendance(Constants.TWO_FLOOR, startTime, endTime);
-		attendanceService.allAttendance(Constants.ONE_FLOOR, startTime, endTime);
-		attendanceService.allAttendance(Constants.EIGHT_WAREHOUSE, startTime, endTime);
-		attendanceService.allAttendance(Constants.NEW_IGHT_WAREHOUSE, startTime, endTime);
+		attendanceService.allAttendance(Constants.THREE_FLOOR, startTime, endTime,null);
+		attendanceService.allAttendance(Constants.TWO_FLOOR, startTime, endTime,null);
+		attendanceService.allAttendance(Constants.ONE_FLOOR, startTime, endTime,null);
+		attendanceService.allAttendance(Constants.EIGHT_WAREHOUSE, startTime, endTime,null);
+		attendanceService.allAttendance(Constants.NEW_IGHT_WAREHOUSE, startTime, endTime,null);
 	}
 
 
