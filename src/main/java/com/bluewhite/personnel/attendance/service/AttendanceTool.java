@@ -242,7 +242,7 @@ public class AttendanceTool {
 			actualOverTime += 0.5;
 		}
 		attendanceTime.setTurnWorkTime(actualTurnWorkTime);
-		attendanceTime.setOvertime(actualOverTime);
+		attendanceTime.setOrdinaryOvertime(actualOverTime);
 		attendanceTime.setDutytime(actualDutyTime);
 		attendanceTime.setLeaveEarlyTime(actualLeaveEarly);
 		attendanceTime.setBelateTime(actualbelateTime);

@@ -97,29 +97,8 @@ public class TaskServiceImpl extends BaseServiceImpl<Task, Long> implements Task
 		List<AttendancePay> attendancePayList = null;
 		List<User> userList = userDao.findByIdIn(userIdList);
 		if(task.getType() == 2) {  
-			 Map<Long, List<AttendancePay>> attendancePayMapList = null;
 			 temporarilyList = temporarilyDao.findByUserIdInAndTemporarilyDateAndType(userIdList, orderTimeBegin,  task.getType());
-			 //获取当前员工
 			 attendancePayList = attendancePayDao.findByUserIdInAndTypeAndAllotTimeBetween(userIdList, task.getType(), orderTimeBegin, orderTimeEnd);
-			 
-			 if(attendancePayList.size()>0){
-				 attendancePayMapList = attendancePayList.stream().collect(Collectors.groupingBy(AttendancePay::getGroupId, Collectors.toList()));
-			 }
-			 //当分组id为空，且员工只有一组
-			 if(task.getGroupId() == null  && attendancePayMapList.size()==1){
-				 task.setGroupId(attendancePayList.get(0).getGroupId());
-			 }
-			 //当分组id为空，且员工有多组，去人数较多的一组
-			 if(task.getGroupId() == null  && attendancePayMapList.size()>1){
-				Map<Long, Integer> groupMap = new HashMap<>();
-				for (Entry<Long, List<AttendancePay>> entry  : attendancePayMapList.entrySet()) {
-					List<AttendancePay> psList1 = entry.getValue();
-					groupMap.put(psList1.get(0).getGroupId(), psList1.size());
-				}
-				 List<Map.Entry<Long,Integer>> list = new ArrayList(groupMap.entrySet());
-				 Collections.sort(list, (o1, o2) -> (o1.getValue() - o2.getValue()));
-				 task.setGroupId(list.get(list.size()-1).getKey());
-			 }
 		}
 		Double sumTaskPrice = 0.0;
 		// 将工序ids分成多个任务
@@ -135,7 +114,7 @@ public class TaskServiceImpl extends BaseServiceImpl<Task, Long> implements Task
 				}
 				newTask.setProcedureId(id);
 				newTask.setProcedureName(procedure.getName());
-				// 二楼特殊业务，当存在实际不为null的时候，先  计算出任务数量
+				// 二楼特殊业务，当存在实际不为null的时候，先 计算出任务数量
 				if (task.getTaskTime() != null && task.getType() == 3) {
 					newTask.setNumber(NumUtils.roundTwo(ProTypeUtils.getTaskNumber(newTask.getTaskTime(),
 							newTask.getType(), procedure.getWorkingTime())));
@@ -165,7 +144,7 @@ public class TaskServiceImpl extends BaseServiceImpl<Task, Long> implements Task
 				// 实际任务价值（通过实际完成时间得出）
 				newTask.setTaskPrice(NumUtils.round(ProTypeUtils.sumTaskPrice(newTask.getTaskTime(), procedure.getType(), newTask.getFlag(), null),5));
 				// B工资净值
-				newTask.setPayB(NumUtils.round(ProTypeUtils.sumBPrice(newTask.getTaskPrice(), procedure.getType()), 5));
+				newTask.setPayB(NumUtils.round(ProTypeUtils.sumBPrice(newTask.getTaskPrice(),  procedure.getType()), 5));
 				// 当任务有加绩情况时
 				// 任务加绩具体数值
 				if (task.getPerformanceNumber() != null) {
@@ -178,6 +157,7 @@ public class TaskServiceImpl extends BaseServiceImpl<Task, Long> implements Task
 				if (task.getType() == 2) {
 					// 总考勤时间
 					for (String userTypeId : task.getUsersIds()) {
+						
 						Long userId = Long.parseLong(userTypeId);
 						List<Temporarily> temporarilyNewList = temporarilyList.stream().filter(Temporarily->Temporarily.getUserId().equals(userId)).collect(Collectors.toList());
 						if(task.getGroupId()!=null){
@@ -196,6 +176,7 @@ public class TaskServiceImpl extends BaseServiceImpl<Task, Long> implements Task
 										userId, task.getType(), task.getGroupId(), DatesUtil.getfristDayOftime(task.getAllotTime()));
 								if(groupTime != null){
 									groupWorkTime = groupTime.getGroupWorkTime();
+									
 								}
 							}
 							sumTime += (groupWorkTime != null ? groupWorkTime : attendancePay.getWorkTime());

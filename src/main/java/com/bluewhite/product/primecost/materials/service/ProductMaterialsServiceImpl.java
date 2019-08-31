@@ -17,6 +17,8 @@ import com.bluewhite.common.entity.PageResult;
 import com.bluewhite.common.utils.NumUtils;
 import com.bluewhite.product.primecost.materials.dao.ProductMaterialsDao;
 import com.bluewhite.product.primecost.materials.entity.ProductMaterials;
+import com.bluewhite.product.primecostbasedata.dao.MaterielDao;
+import com.bluewhite.product.primecostbasedata.entity.Materiel;
 import com.bluewhite.product.product.dao.ProductDao;
 
 @Service
@@ -26,6 +28,8 @@ public class ProductMaterialsServiceImpl extends BaseServiceImpl<ProductMaterial
 	private ProductMaterialsDao dao ;
 	@Autowired
 	private ProductDao productdao;
+	@Autowired
+	private MaterielDao materielDao;
 	
 	@Override
 	@Transactional
@@ -36,10 +40,11 @@ public class ProductMaterialsServiceImpl extends BaseServiceImpl<ProductMaterial
 		}else{
 			productMaterials.setBatchMaterial(NumUtils.mul(productMaterials.getManualLoss(),productMaterials.getOneMaterial(),(double)productMaterials.getNumber()));
 		}
+		Materiel materiel = materielDao.findOne(productMaterials.getMaterielId());
 		if(productMaterials.getConvertUnit()==0){
-			productMaterials.setBatchMaterialPrice(NumUtils.mul(productMaterials.getBatchMaterial(),productMaterials.getMateriel().getPrice()));
+			productMaterials.setBatchMaterialPrice(NumUtils.mul(productMaterials.getBatchMaterial(),materiel.getPrice()));
 		}else{
-			productMaterials.setBatchMaterialPrice(NumUtils.mul(productMaterials.getBatchMaterial(),productMaterials.getMateriel().getConvertPrice()));
+			productMaterials.setBatchMaterialPrice(NumUtils.mul(productMaterials.getBatchMaterial(),materiel.getConvertPrice()));
 		}
 		return dao.save(productMaterials);
 	}

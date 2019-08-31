@@ -394,7 +394,7 @@ public class AttendanceTimeServiceImpl extends BaseServiceImpl<AttendanceTime, L
 
 					// 进行出勤，加班，缺勤，迟到，早退的计算
 					AttendanceTool.attendanceIntTool(sign, workTime, workTimeEnd, restBeginTime, restEndTime,
-							NumUtils.mul(minute, 60), turnWorkTime, attendanceTime, attendanceInit, us, restTime);
+							minute, turnWorkTime, attendanceTime, attendanceInit, us, restTime);
 				}
 				// 当一天的考勤记录条数小于2时。为异常的考勤
 				if (attList.size() < 2) {

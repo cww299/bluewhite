@@ -1,6 +1,5 @@
 package com.bluewhite.personnel.attendance.service;
 
-import java.text.ParseException;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
@@ -9,7 +8,6 @@ import com.bluewhite.base.BaseCRUDService;
 import com.bluewhite.common.entity.PageParameter;
 import com.bluewhite.common.entity.PageResult;
 import com.bluewhite.personnel.attendance.entity.Attendance;
-import com.bluewhite.personnel.attendance.entity.AttendanceTime;
 
 
 public interface AttendanceService  extends BaseCRUDService<Attendance,Long>{
@@ -45,7 +43,7 @@ public interface AttendanceService  extends BaseCRUDService<Attendance,Long>{
 	 * 根据日期同步考勤机中全部考勤记录
 	 * @param address
 	 */
-	public List<Attendance> allAttendance(String address,Date startTime , Date endTime);
+	public List<Attendance> allAttendance(String address,Date startTime , Date endTime ,Long userId);
 	
 	/**
 	 * 分页查看考勤记录
