@@ -20,7 +20,7 @@
 				<tr>
 					<td>&nbsp;&nbsp;</td>
 					<td>员工姓名:</td>
-					<td><input type="text" id="userName" name="userName" class="layui-input" /></td>
+					<td><select id="userId" name="userId" lay-search><option value="">请选择</option></select></td>
 					<td>&nbsp;&nbsp;</td>
 					<td>员工编号:</td>
 					<td><input type="text" id="number" name="number" class="layui-input" /></td>
@@ -56,6 +56,30 @@ layui.use(['table','jquery','form','laydate','layer'],function(){
 		elem:'#startTime',
 		range:'~',
 	})
+	var orgId = '';
+	;!(function(){
+		$.ajax({
+			url:'${ctx}/getCurrentUser',		
+			async:false,
+			success:function(r){
+				if(0==r.code)
+					orgId = r.data.orgNameId || '';		//获取当前登录用户的部门id
+			}
+		})
+	})();
+	$.ajax({
+		url: '${ctx}/system/user/findUserList?foreigns=0&isAdmin=false&orgNameIds='+orgId,
+		async: false,
+		success: function(result) {
+			var htmls = '';
+			$(result.data).each(function(i, o) {
+				htmls += '<option value=' + o.id + '>' + o.userName + '</option>'
+			})
+			$('#userId').append(htmls);
+			form.render();
+		},
+	});
+	
 	
 	var isAttend = true,orgId = '';	  //是否是考情记录员,和所在部门
 	;!(function(){
@@ -130,6 +154,7 @@ layui.use(['table','jquery','form','laydate','layer'],function(){
 				data: {
 					startTime:val.split('~')[0]+'00:00:00',
 					endTime: val.split('~')[1]+' 23:59:59',
+					userId: $('#userId').val(),
 				},
 				success: function(result){
 					var icon = 2;
