@@ -25,26 +25,6 @@ public class Task {
 	@Autowired
 	private AttendanceService attendanceService;
 
-	@Scheduled(cron = "0 30 23 * * ?") // 每晚23点30触发
-	@SysLogAspectAnnotation(description = "定时任务数据汇总", module = "数据汇总", operateType = "更新", logType = SysLog.ADMIN_LOG_TYPE)
-	public void aTask() {
-		CollectInformation collectInformation = new CollectInformation();
-		collectInformation.setType(1);
-		collectInformationService.collectInformation(collectInformation);
-		CollectInformation collectInformation1 = new CollectInformation();
-		collectInformation1.setType(2);
-		collectInformationService.collectInformation(collectInformation1);
-		CollectInformation collectInformation2 = new CollectInformation();
-		collectInformation2.setType(3);
-		collectInformationService.collectInformation(collectInformation2);
-		CollectInformation collectInformation4 = new CollectInformation();
-		collectInformation4.setType(4);
-		collectInformationService.collectInformation(collectInformation4);
-		CollectInformation collectInformation5 = new CollectInformation();
-		collectInformation5.setType(5);
-		collectInformationService.collectInformation(collectInformation5);
-
-	}
 
 	@Scheduled(cron = "0 00 06 * * ?") // 清晨6点触发
 	public void attendanceTask() {

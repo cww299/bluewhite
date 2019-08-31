@@ -1,5 +1,6 @@
 package com.bluewhite.production.finance.service;
 
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
@@ -8,6 +9,7 @@ import org.springframework.stereotype.Service;
 import com.bluewhite.base.BaseCRUDService;
 import com.bluewhite.common.entity.PageParameter;
 import com.bluewhite.common.entity.PageResult;
+import com.bluewhite.production.farragotask.entity.FarragoTask;
 import com.bluewhite.production.finance.entity.CollectPay;
 import com.bluewhite.production.finance.entity.GroupProduction;
 import com.bluewhite.production.finance.entity.MonthlyProduction;
@@ -87,10 +89,21 @@ public interface CollectPayService extends BaseCRUDService<CollectPay,Long>{
 	 */
 	public Object getMouthYields(Long id,String date);
 	
-	
+	/**
+	 *  根据员工类型和时间查找
+	 * @param collectPay
+	 * @return
+	 */
 	CollectPay findCollectPay(CollectPay collectPay);
 	
-
+	/**
+	 * 根据类型和时间查找
+	 * @param type
+	 * @param startTime
+	 * @param endTime
+	 * @return
+	 */
+	List<CollectPay> findByTypeAndAllotTimeBetween(Integer type,Date startTime,Date endTime);
 	
 
 

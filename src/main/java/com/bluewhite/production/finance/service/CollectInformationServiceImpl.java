@@ -54,54 +54,35 @@ public class CollectInformationServiceImpl extends BaseServiceImpl<CollectInform
 	
 	@Override
 	public CollectInformation collectInformation(CollectInformation collectInformation) {
-		PageParameter page  = new PageParameter();
-		page.setSize(Integer.MAX_VALUE);
-		
 		//各批次地区差价汇总(不予给付汇总)
-		Bacth bacth = new Bacth();
-		bacth.setOrderTimeBegin(collectInformation.getOrderTimeBegin());
-		bacth.setOrderTimeEnd(collectInformation.getOrderTimeEnd());
-		bacth.setType(collectInformation.getType());
-		List<Bacth> bacthList = bacthService.findPages(bacth, page).getRows();
+		List<Bacth> bacthList = bacthService.findByTypeAndAllotTimeBetween(collectInformation.getType(),collectInformation.getOrderTimeBegin(),collectInformation.getOrderTimeEnd());
 		double regionalPrice = bacthList.stream().filter(Bacth->Bacth.getRegionalPrice()!=null).mapToDouble(Bacth::getRegionalPrice).sum();
-		collectInformation.setRegionalPrice(regionalPrice);
-		
+		collectInformation.setRegionalPrice(NumUtils.round(regionalPrice,4));
 		//全表加工费  汇总
-		Task task = new Task();
-		task.setOrderTimeBegin(collectInformation.getOrderTimeBegin());
-		task.setOrderTimeEnd(collectInformation.getOrderTimeEnd());
-		task.setType(collectInformation.getType());
-		task.setFlag(0);
-		List<Task> taskList = taskService.findPages(task, page).getRows();
-		double sumTask = taskList.stream().mapToDouble(Task::getTaskPrice).sum();
-		collectInformation.setSumTask(sumTask);
-		
+		List<Task> taskList = taskService.findByTypeAndAllotTimeBetween(collectInformation.getType(),collectInformation.getOrderTimeBegin(),collectInformation.getOrderTimeEnd());
+		double sumTask = taskList.stream().filter(Task->Task.getFlag()==0).mapToDouble(Task::getTaskPrice).sum();
+		collectInformation.setSumTask(NumUtils.round(sumTask,4));
+
 		//返工费 汇总
-		task.setFlag(1);
-		List<Task> taskFlagList = taskService.findPages(task, page).getRows();
-		double sumTaskFlag = taskFlagList.stream().mapToDouble(Task::getTaskPrice).sum();
-		collectInformation.setSumTaskFlag(sumTaskFlag);
+		double sumTaskFlag = taskList.stream().filter(Task->Task.getFlag()==1).mapToDouble(Task::getTaskPrice).sum();
+		collectInformation.setSumTaskFlag(NumUtils.round(sumTaskFlag,4));
 		
 		//杂工费 汇总
-		FarragoTask farragoTask = new FarragoTask();
-		farragoTask.setOrderTimeBegin(collectInformation.getOrderTimeBegin());
-		farragoTask.setOrderTimeEnd(collectInformation.getOrderTimeEnd());
-		farragoTask.setType(collectInformation.getType());
-		List<FarragoTask> farragoTaskList = farragoTaskService.findPages(farragoTask, page).getRows();
+		List<FarragoTask> farragoTaskList = farragoTaskService.findByTypeAndAllotTimeBetween(collectInformation.getType(),collectInformation.getOrderTimeBegin(),collectInformation.getOrderTimeEnd());
 		double sumFarragoTask = farragoTaskList.stream().mapToDouble(FarragoTask::getPrice).sum();
-		collectInformation.setSumFarragoTask(sumFarragoTask);
+		collectInformation.setSumFarragoTask(NumUtils.round(sumFarragoTask, 4));
 		//全表加工费,返工费和杂工费汇总
-		double priceCollect = sumTask+sumTaskFlag+sumFarragoTask;
+		double priceCollect =NumUtils.sum(sumTask,sumTaskFlag,sumFarragoTask);
 		collectInformation.setPriceCollect(priceCollect);
 		//不予给付汇总占比
-		double proportion = NumUtils.division(regionalPrice/sumTask);
+		double proportion = NumUtils.div(regionalPrice,sumTask,3);
 		collectInformation.setProportion(proportion);
 		//我们的表和小关的表差价不予给付
-		double priceDifferences = (sumTask-regionalPrice)*( NumUtils.division(regionalPrice/sumTask));
+		double priceDifferences =NumUtils.mul( NumUtils.sub(sumTask,regionalPrice) , NumUtils.div(regionalPrice,sumTask,3));
 		//预算多余在手部分
 		double overtop = 0;
 		if(collectInformation.getType()==1 || collectInformation.getType()==2){
-			 overtop = regionalPrice > 0 ? 0 : Math.abs(regionalPrice)/0.25*0.2;
+			 overtop = regionalPrice > 0 ? 0 : NumUtils.mul(NumUtils.div(Math.abs(regionalPrice),0.25,3),0.2);
 		}else{
 			 overtop = regionalPrice > 0 ? 0 : Math.abs(regionalPrice);
 		}
@@ -112,47 +93,37 @@ public class CollectInformationServiceImpl extends BaseServiceImpl<CollectInform
 		//多给了一线的和打棉的
 	
 		//已经打算给予A汇总(a工资汇总 + 绩效奖励汇总)
-		AttendancePay attendancePay = new AttendancePay();
-		attendancePay.setOrderTimeBegin(collectInformation.getOrderTimeBegin());
-		attendancePay.setOrderTimeEnd(collectInformation.getOrderTimeEnd());
-		attendancePay.setType(collectInformation.getType());
-		List<AttendancePay> attendancePayList = attendancePayService.findPages(attendancePay, page).getRows();
+		List<AttendancePay> attendancePayList = attendancePayService.findByTypeAndAllotTimeBetween(collectInformation.getType(),collectInformation.getOrderTimeBegin(),collectInformation.getOrderTimeEnd());
 		double sumAttendancePay = attendancePayList.stream().mapToDouble(AttendancePay::getPayNumber).sum();
 		//绩效奖励汇总
-		CollectPay collectPay = new CollectPay();
-		collectPay.setOrderTimeBegin(collectInformation.getOrderTimeBegin());
-		collectPay.setOrderTimeEnd(collectInformation.getOrderTimeEnd());
-		collectPay.setType(collectInformation.getType());
-		List<CollectPay>  collectPayList = collectPayService.findPages(collectPay, page).getRows();
+		List<CollectPay>  collectPayList = collectPayService.findByTypeAndAllotTimeBetween(collectInformation.getType(),collectInformation.getOrderTimeBegin(),collectInformation.getOrderTimeEnd());
 		double addPerformancePay = 0;
 		if(collectInformation.getType()==3 || collectInformation.getType()==4 || collectInformation.getType()==5){
 			   addPerformancePay = collectPayList.stream().filter(CollectPay->CollectPay.getAddPerformancePay()!=null).mapToDouble(CollectPay::getAddPerformancePay).sum(); 
 		}else{
 			addPerformancePay = collectPayList.stream().filter(CollectPay->CollectPay.getHardAddPerformancePay()!=null).mapToDouble(CollectPay::getHardAddPerformancePay).sum(); 
 		}
-		collectInformation.setSumAttendancePay(sumAttendancePay + addPerformancePay);
+		collectInformation.setSumAttendancePay(NumUtils.mul(sumAttendancePay, addPerformancePay));
 		
 		//我们可以给予一线的
-		task.setFlag(null);
-		taskList = taskService.findPages(task, page).getRows();
 		//任务价值汇总
 		double sumTaskOne = taskList.stream().mapToDouble(Task::getTaskPrice).sum();
 		//b工资净值汇总
 		double sumPayB = taskList.stream().mapToDouble(Task::getPayB).sum();
 		//产生的管理费汇总
-		double sumManage = sumTaskOne-sumPayB;
+		double sumManage =NumUtils.sub(sumTaskOne,sumPayB);
 		collectInformation.setManage(sumManage);
 		//H和N相差天数
 		double days = 0;
 		//给予一线
-		double giveThread = collectInformation.getPriceCollect()-collectInformation.getRegionalPrice()-sumManage;
+		double giveThread = NumUtils.sub(collectInformation.getPriceCollect(),collectInformation.getRegionalPrice(),sumManage);
 		collectInformation.setGiveThread(giveThread);
 		//一线剩余给我们
-		double surplusThread = giveThread-sumAttendancePay;
+		double surplusThread = NumUtils.sub(giveThread,sumAttendancePay);
 		collectInformation.setSurplusThread(surplusThread);
 		
 		//考虑管理费，预留在手等。可调配资金
-		double deployPrice = sumManage+collectInformation.getOvertop()+collectInformation.getSurplusThread();
+		double deployPrice = NumUtils.sum(sumManage+collectInformation.getOvertop(),collectInformation.getSurplusThread());
 		collectInformation.setDeployPrice(deployPrice);
 		
 		//模拟得出可调配资金
@@ -160,11 +131,7 @@ public class CollectInformationServiceImpl extends BaseServiceImpl<CollectInform
 		collectInformation.setAnalogDeployPrice(analogDeployPrice);
 		
 		//从A考勤开始日期以消费的房租
-		UsualConsume usualConsume = new UsualConsume();
-		usualConsume.setOrderTimeBegin(collectInformation.getOrderTimeBegin());
-		usualConsume.setOrderTimeEnd(collectInformation.getOrderTimeEnd());
-		usualConsume.setType(collectInformation.getType());
-		List<UsualConsume> usualConsumeList = usualConsumeService.findPages(usualConsume, page).getRows();
+		List<UsualConsume> usualConsumeList = usualConsumeService.findByTypeAndConsumeDateBetween(collectInformation.getType(),collectInformation.getOrderTimeBegin(),collectInformation.getOrderTimeEnd());
 		double sumChummage = usualConsumeList.stream().mapToDouble(UsualConsume::getChummage).sum();
 		collectInformation.setSumChummage(sumChummage);
 		

@@ -240,6 +240,11 @@ public class BacthServiceImpl extends BaseServiceImpl<Bacth, Long> implements Ba
 		  }
 		return dao.save(bacth);
 	}
+
+	@Override
+	public List<Bacth> findByTypeAndAllotTimeBetween(Integer type, Date startTime, Date endTime) {
+		return dao.findByTypeAndAllotTimeBetween(type, startTime, endTime);
+	}
 	
 	
 	

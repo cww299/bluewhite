@@ -1,5 +1,8 @@
 package com.bluewhite.production.finance.service;
 
+import java.util.Date;
+import java.util.List;
+
 import org.springframework.stereotype.Service;
 
 import com.bluewhite.base.BaseCRUDService;
@@ -20,6 +23,15 @@ public interface UsualConsumeService extends BaseCRUDService<UsualConsume,Long>{
 	 * @param page
 	 * @return
 	 */
-	public PageResult<UsualConsume>  findPages(UsualConsume usualConsume, PageParameter page);
+	public PageResult<UsualConsume> findPages(UsualConsume usualConsume, PageParameter page);
+	
+	/**
+	 * 根据类型和时间查找
+	 * @param type
+	 * @param startTime
+	 * @param endTime
+	 * @return
+	 */
+	List<UsualConsume> findByTypeAndConsumeDateBetween(Integer type,Date startTime,Date endTime);
 
 }
