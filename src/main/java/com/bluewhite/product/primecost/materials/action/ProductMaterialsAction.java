@@ -90,7 +90,7 @@ public class ProductMaterialsAction {
 		CommonResponse cr = new CommonResponse();
 		if(StringUtils.isEmpty(productMaterials.getId())){
 			cr.setCode(ErrorCode.ILLEGAL_ARGUMENT.getCode());
-			cr.setMessage("dd除裁片以外的所有生产用料不能为空");
+			cr.setMessage("生产用料不能为空");
 		}else{
 			ProductMaterials oldProductMaterials = productMaterialsService.findOne(productMaterials.getId());
 			BeanCopyUtils.copyNullProperties(oldProductMaterials,productMaterials);
@@ -127,7 +127,7 @@ public class ProductMaterialsAction {
 //				ps.setOneOtherCutPartsPrice(primeCost.getOneOtherCutPartsPrice());
 //			}
 //		}
-		cr.setData(productMaterialsList);
+		cr.setData(clearCascadeJSON.format(productMaterialsList).toJSON());
 		cr.setMessage("查询成功");
 		return cr;
 	}
