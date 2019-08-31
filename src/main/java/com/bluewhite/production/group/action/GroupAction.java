@@ -139,7 +139,7 @@ public class GroupAction {
 	 */
 	@RequestMapping(value = "/production/updateAdjustTime", method = RequestMethod.GET)
 	@ResponseBody
-	public CommonResponse updateAttendance(HttpServletRequest request, Long adjustId, Double adjustTime,Long groupId) {
+	public CommonResponse updateAttendance(HttpServletRequest request, Long adjustId, Double adjustTime,Long groupId,Date startTime, Date endTime) {
 		CommonResponse cr = new CommonResponse();
 		if (adjustId!=null) {
 			AttendancePay attendancePay = attendancePayService.findOne(adjustId);
@@ -151,7 +151,19 @@ public class GroupAction {
 				groupTime.setType(attendancePay.getType());
 				groupTime.setAllotTime(attendancePay.getAllotTime());
 			}
-			groupTime.setGroupWorkTime(adjustTime);
+			if(adjustTime!=null){
+				groupTime.setGroupWorkTime(adjustTime);
+			}else{
+				cr.setMessage("请填写工作时长");
+				return cr;
+			}
+			if(startTime!=null && endTime!=null){
+				groupTime.setStartTime(startTime);
+				groupTime.setEndTime(endTime);
+			}else{
+				cr.setMessage("请填写工作区间");
+				return cr;
+			}
 			groupTimeDao.save(groupTime);
 			cr.setMessage("修改成功");
 		} else {
