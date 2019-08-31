@@ -106,6 +106,7 @@ layui.extend({
 					$(inputElem).closest('.layui-form-select').removeClass('layui-form-selected');
 					$(inputElem).val(text);	 	//修改下拉框显示的值、缓存值
 					inputText = text;
+					updateTrData['materielId'] = val;
 					if(!updateTrData.id)
 						return;
 					var data = {id: updateTrData.id,},field='complexMaterielId';
@@ -168,7 +169,7 @@ layui.extend({
 				price:['perimeter','oneMaterial','manualLoss','compositeManualLoss',], 
 				notNull:['cutPartsName','materiel','perimeter','oneMaterial','manualLoss','cutPartsNumber',],
 			},
-			colsWidth:[0,6,6,6,5,30,6,6,6,6,6,7,7,30,7,7,8,10,9,10,],
+			colsWidth:[0,6,6,6,5,30,6,6,6,6,6,7,7,30,7,7,8,9,9,10,],
 			cols:[[
 			       { type:'checkbox', 		fixed:'left'},
 			       { title:'裁片名字',   	field:'cutPartsName',	edit:true, fixed:'left'},
