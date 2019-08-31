@@ -305,20 +305,25 @@ public class AttendanceServiceImpl extends BaseServiceImpl<Attendance, Long> imp
 
 	@Override
 	@Transactional
-	public int restAttendance(String address, Date startTime, Date endTime) {
+	public int restAttendance(String address, Date startTime, Date endTime,Long userId) {
 		Attendance attendance  =  new Attendance();
 		attendance.setOrderTimeBegin(startTime);
 		attendance.setOrderTimeEnd(endTime);
+		attendance.setUserId(userId);
 		List<Attendance> attendanceList = findPageAttendance(attendance, new PageParameter(0, Integer.MAX_VALUE))
-				.getRows().stream().filter(Attendance->Attendance.getInOutMode()==null || Attendance.getInOutMode()!=2).collect(Collectors.toList());
+				.getRows().stream().filter(Attendance->(Attendance.getInOutMode()==null || Attendance.getInOutMode()!=2)).collect(Collectors.toList());
 		if(attendanceList.size()>0){
-			dao.delete(attendanceList);
+			dao.deleteInBatch(attendanceList);
 		}
-		allAttendance(Constants.THREE_FLOOR, startTime, endTime);
-		allAttendance(Constants.TWO_FLOOR, startTime, endTime);
-		allAttendance(Constants.ONE_FLOOR, startTime, endTime);
-		allAttendance(Constants.EIGHT_WAREHOUSE, startTime, endTime);
-		allAttendance(Constants.NEW_IGHT_WAREHOUSE, startTime, endTime);
+		if(!StringUtils.isEmpty(address)){
+			allAttendance(Constants.THREE_FLOOR, startTime, endTime);
+			allAttendance(Constants.TWO_FLOOR, startTime, endTime);
+			allAttendance(Constants.ONE_FLOOR, startTime, endTime);
+			allAttendance(Constants.EIGHT_WAREHOUSE, startTime, endTime);
+			allAttendance(Constants.NEW_IGHT_WAREHOUSE, startTime, endTime);
+		}else{
+			allAttendance(address, startTime, endTime);
+		}
 		return attendanceList.size();
 	}
 

@@ -60,11 +60,10 @@ public class ProductMaterialsAction {
 	 * 
 	 * @param request 请求
 	 * @return cr
-	 * @throws Exception
 	 */
 	@RequestMapping(value = "/product/addProductMaterials", method = RequestMethod.POST)
 	@ResponseBody
-	public CommonResponse addProductMaterials(HttpServletRequest request,ProductMaterials productMaterials) {
+	public CommonResponse addProductMaterials(ProductMaterials productMaterials) {
 		CommonResponse cr = new CommonResponse();
 		if(StringUtils.isEmpty(productMaterials.getProductId())){
 			cr.setCode(ErrorCode.ILLEGAL_ARGUMENT.getCode());

@@ -384,10 +384,10 @@ public class BaseOneAction {
 //			}else{
 //				unitCost=materiel.getConvertPrice();
 //			}
-			if(unitCost!=pm.getUnitCost()){
-				pm.setUnitCost(unitCost);
-				productMaterialsService.saveProductMaterials(pm);
-			}
+//			if(unitCost!=pm.getUnitCost()){
+//				pm.setUnitCost(unitCost);
+//				productMaterialsService.saveProductMaterials(pm);
+//			}
 		}
 		return cr;
 	}

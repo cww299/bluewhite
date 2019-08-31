@@ -190,9 +190,9 @@ public class AttendanceAction {
 	 */
 	@RequestMapping(value = "/personnel/restAttendance", method = RequestMethod.GET)
 	@ResponseBody
-	public CommonResponse restAttendance(HttpServletRequest request, String address, Date startTime, Date endTime) {
+	public CommonResponse restAttendance(HttpServletRequest request, String address, Date startTime, Date endTime,Long userId) {
 		CommonResponse cr = new CommonResponse();
-		int count = attendanceService.restAttendance(address, startTime, endTime);
+		int count = attendanceService.restAttendance(address, startTime, endTime,userId);
 		cr.setMessage("成功重置" + count + "条考勤记录");
 		return cr;
 	}
