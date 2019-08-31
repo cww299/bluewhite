@@ -7,8 +7,6 @@ import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 import javax.servlet.http.HttpServletRequest;
@@ -216,6 +214,8 @@ public class GroupAction {
 					GroupTime groupWorkTime = groupTimeDao.findByUserIdAndTypeAndGroupIdAndAllotTime(u.getId(), gr.getType(), gr.getId(),startTime);
 					u.setAdjustTime(groupWorkTime != null ? groupWorkTime.getGroupWorkTime() : attendancePay.get(0).getWorkTime());
 					u.setAdjustTimeId(attendancePay.get(0).getId());
+					u.setOrderTimeBegin(groupWorkTime != null ? groupWorkTime.getStartTime() : null);
+					u.setOrderTimeEnd(groupWorkTime != null ? groupWorkTime.getEndTime() : null);
 					u.setTemporarily(0);
 				}
 			}

@@ -290,8 +290,7 @@ public class ReportExportServiceImpl implements ReportExportService {
 			procedure.setFlag(flag);
 			procedure.setProductId(productId);
 			procedure.setName(machinistProcedurePoi.getName());
-			procedure.setWorkingTime(
-					NumUtils.sum(machinistProcedurePoi.getOneTime(), machinistProcedurePoi.getScissorsTime() == null ? 0.0 : machinistProcedurePoi.getScissorsTime() / 12 * 1.08 * 1.25));
+			procedure.setWorkingTime(machinistProcedurePoi.getOneTime());
 			procedure.setType(type);
 			if (flag == 0) {
 				procedure.setProcedureTypeId(baseDataList.get(0).getId());

@@ -27,9 +27,12 @@ import com.bluewhite.common.Log;
 import com.bluewhite.common.entity.CommonResponse;
 import com.bluewhite.common.entity.ErrorCode;
 import com.bluewhite.common.entity.PageParameter;
+import com.bluewhite.common.utils.NumUtils;
 import com.bluewhite.production.finance.dao.PayBDao;
 import com.bluewhite.production.finance.entity.PayB;
+import com.bluewhite.production.procedure.dao.ProcedureDao;
 import com.bluewhite.production.procedure.entity.Procedure;
+import com.bluewhite.production.procedure.service.ProcedureService;
 import com.bluewhite.production.productionutils.constant.ProTypeUtils;
 import com.bluewhite.production.task.entity.Task;
 import com.bluewhite.production.task.service.TaskService;
@@ -43,6 +46,12 @@ private static final Log log = Log.getLog(TaskAction.class);
 	
 	@Autowired
 	private TaskService taskService;
+	
+	@Autowired
+	private ProcedureDao procedureDao;
+	
+	@Autowired
+	private ProcedureService procedureService;
 	
 	@Autowired
 	private UserService userService;
@@ -339,6 +348,19 @@ private static final Log log = Log.getLog(TaskAction.class);
 		}
 		return cr;
 	}
+	
+	@RequestMapping(value = "/task/test", method = RequestMethod.GET)
+	@ResponseBody
+	public CommonResponse test() {
+		CommonResponse cr = new CommonResponse();
+		List<Procedure> procedureList= procedureDao.findByType(4);
+		for(Procedure procedure : procedureList){
+			procedure.setWorkingTime(NumUtils.div(procedure.getWorkingTime(), NumUtils.mul(1.08, 1.25), 4));
+			procedureService.countPrice(procedure);
+		}
+		return cr;
+	}
+	
 	
 	
 	@InitBinder
