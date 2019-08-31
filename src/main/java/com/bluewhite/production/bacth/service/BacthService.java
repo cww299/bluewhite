@@ -1,6 +1,7 @@
 package com.bluewhite.production.bacth.service;
 
 import java.util.Date;
+import java.util.List;
 
 import org.springframework.stereotype.Service;
 
@@ -44,5 +45,14 @@ public interface BacthService extends BaseCRUDService<Bacth,Long>{
 	 * @param bacth
 	 */
 	public Bacth saveBacth(Bacth bacth) throws Exception;
+	
+	/**
+	 * 根据类型和时间查找
+	 * @param type
+	 * @param startTime
+	 * @param endTime
+	 * @return
+	 */
+	List<Bacth> findByTypeAndAllotTimeBetween(Integer type,Date startTime,Date endTime);
 
 }

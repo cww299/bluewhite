@@ -1,5 +1,8 @@
 package com.bluewhite.production.farragotask.service;
 
+import java.util.Date;
+import java.util.List;
+
 import org.springframework.stereotype.Service;
 
 import com.bluewhite.base.BaseCRUDService;
@@ -30,6 +33,13 @@ public interface FarragoTaskService extends BaseCRUDService<FarragoTask,Long>{
 	 * @param id
 	 */
 	public void deleteFarragoTask(Long id);
-
+	/**
+	 * 根据类型和时间查找
+	 * @param type
+	 * @param startTime
+	 * @param endTime
+	 * @return
+	 */
+	List<FarragoTask> findByTypeAndAllotTimeBetween(Integer type,Date startTime,Date endTime);
 
 }

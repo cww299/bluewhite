@@ -34,7 +34,9 @@ public class FarragoTaskServiceImpl extends BaseServiceImpl<FarragoTask, Long> i
 	@Autowired
 	private UserDao userDao;
 	@Autowired
-	private FarragoTaskPayDao farragoTaskPayDao ;
+	private FarragoTaskPayDao farragoTaskPayDao;
+	
+	
 	
 	@Override
 	public PageResult<FarragoTask> findPages(FarragoTask param, PageParameter page) {
@@ -135,4 +137,11 @@ public class FarragoTaskServiceImpl extends BaseServiceImpl<FarragoTask, Long> i
 		}
 		dao.delete(id);
 	}
+
+	@Override
+	public List<FarragoTask> findByTypeAndAllotTimeBetween(Integer type, Date startTime, Date endTime) {
+		return dao.findByTypeAndAllotTimeBetween(type, startTime, endTime);
+	}
+	
+	
 }

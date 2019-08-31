@@ -900,6 +900,11 @@ public class CollectPayServiceImpl extends BaseServiceImpl<CollectPay, Long> imp
 		
 	}
 
+	@Override
+	public List<CollectPay> findByTypeAndAllotTimeBetween(Integer type, Date startTime, Date endTime) {
+		return dao.findByTypeAndAllotTimeBetween(type, startTime, endTime);
+	}
+
 
 	
 	

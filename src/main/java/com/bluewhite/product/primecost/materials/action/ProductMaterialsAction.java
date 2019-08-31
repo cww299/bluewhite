@@ -29,6 +29,8 @@ import com.bluewhite.product.primecost.materials.entity.ProductMaterials;
 import com.bluewhite.product.primecost.materials.service.ProductMaterialsService;
 import com.bluewhite.product.primecost.primecost.entity.PrimeCost;
 import com.bluewhite.product.primecost.tailor.entity.Tailor;
+import com.bluewhite.product.primecostbasedata.entity.BaseOne;
+import com.bluewhite.product.primecostbasedata.entity.Materiel;
 import com.bluewhite.product.product.entity.Product;
 import com.bluewhite.product.product.service.ProductService;
 
@@ -44,6 +46,14 @@ public class ProductMaterialsAction {
 	@Autowired
 	private ProductService productService;
 	
+	private ClearCascadeJSON clearCascadeJSON;
+	{
+		clearCascadeJSON = ClearCascadeJSON.get()
+				.addRetainTerm(ProductMaterials.class, "id", "productId", "number", "materiel", "overstock", 
+						"oneMaterial", "unit","unitCost","manualLoss","batchMaterial","batchMaterialPrice")
+				.addRetainTerm(BaseOne.class, "id" ,"name","type")
+				.addRetainTerm(Materiel.class,"id","number","name","price","unit");
+	}
 	
 	/**
 	 * dd除裁片以外的所有生产用料填写
@@ -107,17 +117,16 @@ public class ProductMaterialsAction {
 	@ResponseBody
 	public CommonResponse getProductMaterials(HttpServletRequest request,PageParameter page,ProductMaterials productMaterials) {
 		CommonResponse cr = new CommonResponse();
-		PageResult<ProductMaterials>  productMaterialsList= new PageResult<>(); 
-		if(productMaterials.getProductId()!=null){
-			productMaterialsList = productMaterialsService.findPages(productMaterials,page);
-			PrimeCost primeCost = new PrimeCost();
-			primeCost.setProductId(productMaterials.getProductId());
-			productService.getPrimeCost(primeCost);
-			for(ProductMaterials ps : productMaterialsList.getRows()){
-				ps.setOneOtherCutPartsPrice(primeCost.getOneOtherCutPartsPrice());
-			}
-		
-		}
+		PageResult<ProductMaterials>  productMaterialsList = productMaterialsService.findPages(productMaterials,page);
+//		if(productMaterials.getProductId()!=null){
+//			
+//			PrimeCost primeCost = new PrimeCost();
+//			primeCost.setProductId(productMaterials.getProductId());
+//			productService.getPrimeCost(primeCost);
+//			for(ProductMaterials ps : productMaterialsList.getRows()){
+//				ps.setOneOtherCutPartsPrice(primeCost.getOneOtherCutPartsPrice());
+//			}
+//		}
 		cr.setData(productMaterialsList);
 		cr.setMessage("查询成功");
 		return cr;

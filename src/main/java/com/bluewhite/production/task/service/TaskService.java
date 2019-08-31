@@ -73,5 +73,14 @@ public interface TaskService extends BaseCRUDService<Task,Long>{
 	 */
 	public List<Task> findByUserIdAndAllotTime(String userid, Date beginTime, Date endTime);
 	
+	/**
+	 * 根据类型和时间查找
+	 * @param type
+	 * @param startTime
+	 * @param endTime
+	 * @return
+	 */
+	List<Task> findByTypeAndAllotTimeBetween(Integer type,Date startTime,Date endTime);
+	
 
 }

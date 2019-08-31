@@ -74,4 +74,9 @@ public class UsualConsumeServiceImpl extends BaseServiceImpl<UsualConsume, Long>
 	        return result;
 	    }
 
+	@Override
+	public List<UsualConsume> findByTypeAndConsumeDateBetween(Integer type, Date startTime, Date endTime) {
+		return dao.findByTypeAndConsumeDateBetween(type, startTime, endTime);
+	}
+
 }

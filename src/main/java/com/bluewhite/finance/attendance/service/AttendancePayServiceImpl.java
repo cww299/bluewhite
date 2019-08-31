@@ -28,6 +28,7 @@ import com.bluewhite.common.utils.NumUtils;
 import com.bluewhite.common.utils.SalesUtils;
 import com.bluewhite.finance.attendance.dao.AttendancePayDao;
 import com.bluewhite.finance.attendance.entity.AttendancePay;
+import com.bluewhite.production.bacth.entity.Bacth;
 import com.bluewhite.production.task.entity.Task;
 import com.bluewhite.production.task.service.TaskService;
 import com.bluewhite.system.user.entity.User;
@@ -256,6 +257,11 @@ public class AttendancePayServiceImpl extends BaseServiceImpl<AttendancePay, Lon
 				taskService.addTask(task);
 			}
 		}
+	}
+
+	@Override
+	public List<AttendancePay> findByTypeAndAllotTimeBetween(Integer type, Date startTime, Date endTime) {
+		return dao.findByTypeAndAllotTimeBetween(type, startTime, endTime);
 	}
 
 }

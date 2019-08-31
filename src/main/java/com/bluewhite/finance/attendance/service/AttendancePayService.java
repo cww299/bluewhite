@@ -1,5 +1,6 @@
 package com.bluewhite.finance.attendance.service;
 
+import java.util.Date;
 import java.util.List;
 
 import org.springframework.stereotype.Service;
@@ -8,6 +9,7 @@ import com.bluewhite.base.BaseCRUDService;
 import com.bluewhite.common.entity.PageParameter;
 import com.bluewhite.common.entity.PageResult;
 import com.bluewhite.finance.attendance.entity.AttendancePay;
+import com.bluewhite.production.bacth.entity.Bacth;
 @Service
 public interface AttendancePayService  extends BaseCRUDService<AttendancePay,Long>{
 	
@@ -47,5 +49,14 @@ public interface AttendancePayService  extends BaseCRUDService<AttendancePay,Lon
 	 * @param attendancePay
 	 */
 	public void updateAttendance(AttendancePay attendancePay);
+	
+	/**
+	 * 根据类型和时间查找
+	 * @param type
+	 * @param startTime
+	 * @param endTime
+	 * @return
+	 */
+	List<AttendancePay> findByTypeAndAllotTimeBetween(Integer type,Date startTime,Date endTime);
 
 }

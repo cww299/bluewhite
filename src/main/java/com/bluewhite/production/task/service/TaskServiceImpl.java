@@ -101,6 +101,7 @@ public class TaskServiceImpl extends BaseServiceImpl<Task, Long> implements Task
 			 temporarilyList = temporarilyDao.findByUserIdInAndTemporarilyDateAndType(userIdList, orderTimeBegin,  task.getType());
 			 //获取当前员工
 			 attendancePayList = attendancePayDao.findByUserIdInAndTypeAndAllotTimeBetween(userIdList, task.getType(), orderTimeBegin, orderTimeEnd);
+			 
 			 if(attendancePayList.size()>0){
 				 attendancePayMapList = attendancePayList.stream().collect(Collectors.groupingBy(AttendancePay::getGroupId, Collectors.toList()));
 			 }
@@ -608,6 +609,11 @@ public class TaskServiceImpl extends BaseServiceImpl<Task, Long> implements Task
 	@Override
 	public List<Task> findByUserIdAndAllotTime(String userid, Date beginTime, Date endTime) {
 		return dao.findByUserIdAndAllotTime(userid, beginTime, endTime);
+	}
+
+	@Override
+	public List<Task> findByTypeAndAllotTimeBetween(Integer type, Date startTime, Date endTime) {
+		return dao.findByTypeAndAllotTimeBetween(type, startTime, endTime);
 	}
 
 }
