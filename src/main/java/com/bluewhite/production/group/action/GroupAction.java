@@ -74,7 +74,7 @@ public class GroupAction {
 		clearCascadeJSON = ClearCascadeJSON.get()
 				.addRetainTerm(Group.class, "id", "name", "price", "type", "users", "userName", "userId", "kindWork",
 						"womanUserName", "womanUserId", "remark")
-				.addRetainTerm(User.class, "id", "userName", "adjustTime", "temporarily", "adjustTimeId")
+				.addRetainTerm(User.class, "id", "userName", "adjustTime", "temporarily", "adjustTimeId","orderTimeBegin","orderTimeEnd")
 				.addRetainTerm(BaseData.class, "id", "name", "type");
 	}
 
