@@ -122,7 +122,7 @@ layui.define(['mytable','form'],function(exports){
 				var convertUnit = $(this).data('convertunit');
 				if(!val)
 					return;
-				trMateriel[trIndex] = {		//记录更新当行的materiel实体
+				trMateriel[trIndex] = {	//记录更新当行的materiel实体
 					id: val,
 					number: text[0].trim(),
 					name: text[1].trim(),
@@ -203,10 +203,10 @@ layui.define(['mytable','form'],function(exports){
 			       { title:'物料编号/名称/价格/单位',   	field:'materiel',	templet: getSelectHtml(), edit:false, },
 			       { title:'是否转换',   	field:'convertUnit', type:'select',
 			    	   select:{ data: [{id:0,name:'不转换'},{id:1,name:'转换'}],layFilter:'convertUnitSelect',unsearch:true, } ,},
-			       { title:'单只用料',   	field:'oneMaterial',	},
-			       { title:'手动损耗', 		field:'manualLoss',  },
-			       { title:'当批当品种用量',  field:'batchMaterial',	},
-			       { title:'当批当品种价格',  field:'batchMaterialPrice',   },
+			       { title:'单只用料',   	field:'oneMaterial',	edit:true, },
+			       { title:'手动损耗', 		field:'manualLoss',  	edit:true, },
+			       { title:'当批当品种用量',  field:'batchMaterial',	edit:true, },
+			       { title:'当批当品种价格',  field:'batchMaterialPrice',   edit:true, },
 			       { title:'压货环节',   	field:'overstock_id', type:'select', select:{ data: allOverstock } ,},
 			       ]],
 	        done:function(){
