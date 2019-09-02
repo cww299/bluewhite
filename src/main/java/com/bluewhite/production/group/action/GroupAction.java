@@ -151,9 +151,13 @@ public class GroupAction {
 				groupTime.setType(attendancePay.getType());
 				groupTime.setAllotTime(attendancePay.getAllotTime());
 			}
-			groupTime.setGroupWorkTime(adjustTime);
-			groupTime.setStartTime(startTime);
-			groupTime.setEndTime(endTime);
+			if(adjustTime!=null){
+				groupTime.setGroupWorkTime(adjustTime);
+			}
+			if(startTime!=null && endTime!=null){
+				groupTime.setStartTime(startTime);
+				groupTime.setEndTime(endTime);
+			}
 			groupTimeDao.save(groupTime);
 			cr.setMessage("修改成功");
 		} else {
