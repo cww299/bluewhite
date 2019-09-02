@@ -57,8 +57,9 @@ layui.define(['mytable','form'],function(exports){
 	var renderSelectSearch = function(){		//自定义下拉框搜索
 		layui.each($('td[data-field="convertUnit"]').find('select'),function(index,item){
 			var index = $(item).closest('tr').data('index');
-			if(!trMateriel[index] || !trMateriel[index].convertUnit)
+			if(!trMateriel[index] || !trMateriel[index].convertUnit){
 				$(item).prop('disabled','disabled');
+			}
 		})
 		form.render();
 		layui.each($('td[data-field="materiel"]').find('.layui-form-select').find('input'),function(index,item){	//遍历表格物料名称下拉框
@@ -209,6 +210,10 @@ layui.define(['mytable','form'],function(exports){
 			       { title:'压货环节',   	field:'overstock_id', type:'select', select:{ data: allOverstock } ,},
 			       ]],
 	        done:function(){
+	        	 trMateriel = {};
+				 layui.each(table.cache[tableId],function(index,item){
+					 trMateriel[index] = item.materiel;
+				 })
 				 renderSelectSearch();
 				 form.on('select(convertUnitSelect)',function(obj){
 					 var index = $(obj.elem).closest('tr').data('index');
@@ -234,9 +239,6 @@ layui.define(['mytable','form'],function(exports){
 							})
 						 }
 					 }
-				 })
-				 layui.each(table.cache[tableId],function(index,item){
-					 trMateriel[index] = item.materiel;
 				 })
 			}
 		})
