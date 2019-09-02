@@ -596,7 +596,7 @@
 				      				+'<td class="text-center">'+o.userName+'</td>'
 				      				+'<td class="text-center"><input  class="adjustTime" style="background:none;outline:none;border:0px;text-align:center;" data-id="'+o.id+'" data-temporarily='+o.temporarily+' data-groupid='+result.data[0].id+' data-ajid="'+o.adjustTimeId+'" value='+(o.adjustTime!=null ? o.adjustTime :0)+' /></td>'
 									+'<td class="text-center" style="width:300px;"><input class="form-control" data-temporarily='+o.temporarily+
-										' id="startEndTime'+i+'" data-id="'+o.id+'" value="'+time+'" data-groupid='+result.data[0].id+'></td>'
+										' id="startEndTime'+i+'" data-id="'+o.adjustTimeId+'" value="'+time+'" data-groupid='+result.data[0].id+'></td>'
 								})
 								$('#tableUserTime').html(html);
 								layui.use(['laydate'],function(){
