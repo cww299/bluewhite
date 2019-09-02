@@ -210,13 +210,13 @@ public class OrdinaryLaserServiceImpl extends BaseServiceImpl<OrdinaryLaser, Lon
 						5));
 			}
 			// 电推秒数（含快手)
-			ordinaryLaser
-					.setElectricSeconds(NumUtils.division(NumUtils.div(
-							NumUtils.div(ordinaryLaser.getPerimeter(),
-									NumUtils.mul(primeCoefficient.getElectricPushFive(),
-											primeCoefficient.getElectricPushSix()),
-									5),
-							ordinaryLaser.getLayerNumber(), 5)));
+			if(primeCoefficient.getElectricPushFive() !=0 && primeCoefficient.getElectricPushSix()!=0){
+				ordinaryLaser.setElectricSeconds(NumUtils.div(
+						NumUtils.div(ordinaryLaser.getPerimeter(),
+								NumUtils.mul(primeCoefficient.getElectricPushFive(),primeCoefficient.getElectricPushSix()),
+								5),
+						ordinaryLaser.getLayerNumber(), 5));
+			}
 			// 工价（含快手)
 			ordinaryLaser.setLabourCost(
 					NumUtils.mul(NumUtils.sum(ordinaryLaser.getOverlappedSeconds(), ordinaryLaser.getElectricSeconds()),
