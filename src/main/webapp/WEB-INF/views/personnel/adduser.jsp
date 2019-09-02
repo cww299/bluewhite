@@ -168,7 +168,7 @@ layui.use(['table','jquery','form','laydate','layer'],function(){
 			orderTimeBegin = val.split('~')[0]+'00:00:00';
 			orderTimeEnd = val.split('~')[1]+' 23:59:59';
 		}
-		location.href = "${ctx}/excel/importExcel/personnel/DownAttendanceSign?userName=" + userName + "&orgNameId=" + orgNameId + "&orderTimeBegin=" + orderTimeBegin
+		location.href = "${ctx}/excel/importExcel/personnel/DownAttendanceSign?userName=" + (userName || "") + "&orgNameId=" + orgNameId + "&orderTimeBegin=" + orderTimeBegin
 				+ "&orderTimeEnd=" + orderTimeEnd + "" +"&number="+number;
 	});
 	function getMode(){

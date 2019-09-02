@@ -44,15 +44,15 @@
 			<div class="layui-form-item">
 				<table>
 					<tr>
+						<td>申请人:</td>
+						<td><select id="userId" class="layui-input " lay-search="true" name="userId"></select></td>
+						<td>&nbsp;&nbsp;</td>
 						<shiro:lacksRole name="attendanceStatistician">
-							<td>申请人:</td>
-							<td><select id="userId" class="layui-input " lay-search="true" name="userId"></select></td>
-							<td>&nbsp;&nbsp;</td>
 							<td>部门:</td>
 							<td><select id="orgNameId" class="layui-input "  lay-search="true" name="orgNameId">
 									<option value=""></option></select></td>
+							<td>&nbsp;&nbsp;</td>
 						</shiro:lacksRole>
-						<td>&nbsp;&nbsp;</td>
 						<td>开始:</td>
 						<td><input id="startTime" name="orderTimeBegin" placeholder="请输入开始时间" class="layui-input laydate-icon"></td>
 						<td>&nbsp;&nbsp;</td>
@@ -278,7 +278,7 @@
 			
 			var isAttend = true,orgId = '';	  //是否是考情记录员,和所在部门
 			;!(function(){
-				if(document.getElementById('userId')==null){
+				if(document.getElementById('orgNameId')==null){
 					;!(function(){
 						$.ajax({
 							url:'${ctx}/getCurrentUser',		
@@ -401,7 +401,6 @@
 			table.render({
 				elem: '#tableData',
 				size: 'lg',
-				height:'700px',
 				url: '${ctx}/personnel/getApplicationLeavePage'+(isAttend?'?orgNameId='+orgId:'') ,
 				request:{ pageName: 'page' , limitName: 'size'  },
 				page: {},
