@@ -125,6 +125,8 @@ public class OrdinaryLaserServiceImpl extends BaseServiceImpl<OrdinaryLaser, Lon
 				ordinaryLaser.setAdministrativeAtaff(primeCoefficient.getPerSecondManage()*(ordinaryLaser.getPermSeconds()+ordinaryLaser.getTearingSeconds()+ordinaryLaser.getRabbTime()));
 				break;
 			case 74://设备电烫
+				
+				
 				break;
 			case 75://冲床
 				managePrice = materielService.getBaseThreeOne(ordinaryLaser.getTailorTypeId(), ordinaryLaser.getTailorSize());
