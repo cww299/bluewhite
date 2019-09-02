@@ -46,7 +46,7 @@ public class OrdinaryLaserServiceImpl extends BaseServiceImpl<OrdinaryLaser, Lon
 		switch (ordinaryLaser.getTailorTypeId().intValue()) {
 		case 71:// 普通激光切割
 			// 得到理论(市场反馈）含管理价值
-			ordinaryLaser.setManagePrice(primeCoefficient.getPeripheralLaser() * 100 * ordinaryLaser.getPerimeter());
+			ordinaryLaser.setManagePrice(primeCoefficient.getPeripheralLaser() / 100 * ordinaryLaser.getPerimeter());
 			// 单片激光需要用净时
 			if (ordinaryLaser.getSingleDouble() == 2) {
 				ordinaryLaser.setSingleLaserTime(((ordinaryLaser.getPerimeter() * primeCoefficient.getTime())
@@ -79,7 +79,7 @@ public class OrdinaryLaserServiceImpl extends BaseServiceImpl<OrdinaryLaser, Lon
 				ordinaryLaser.setManagePrice(
 						primeCoefficient.getPerimeterLessNumber() + primeCoefficient.getPerimeterLessNumber());
 			} else {
-				ordinaryLaser.setManagePrice(primeCoefficient.getPeripheralLaser() * 100 * ordinaryLaser.getPerimeter()
+				ordinaryLaser.setManagePrice(primeCoefficient.getPeripheralLaser() / 100 * ordinaryLaser.getPerimeter()
 						+ primeCoefficient.getEmbroideryLaserNumber());
 			}
 			// 单片激光需要用净时
@@ -217,8 +217,7 @@ public class OrdinaryLaserServiceImpl extends BaseServiceImpl<OrdinaryLaser, Lon
 			// 设备折旧和房水电费
 			ordinaryLaser.setEquipmentPrice(ordinaryLaser.getManualSeconds() * primeCoefficient.getPerSecondPrice());
 			// 管理人员费用
-			ordinaryLaser
-					.setAdministrativeAtaff(primeCoefficient.getPerSecondManage() * ordinaryLaser.getManualSeconds());
+			ordinaryLaser.setAdministrativeAtaff(primeCoefficient.getPerSecondManage() * ordinaryLaser.getManualSeconds());
 			break;
 		case 78:// 绣花领取
 			break;

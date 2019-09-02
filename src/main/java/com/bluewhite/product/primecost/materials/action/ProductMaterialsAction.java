@@ -3,7 +3,6 @@ package com.bluewhite.product.primecost.materials.action;
 import java.text.SimpleDateFormat;
 
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpSession;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.propertyeditors.CustomDateEditor;
@@ -24,14 +23,10 @@ import com.bluewhite.common.entity.CommonResponse;
 import com.bluewhite.common.entity.ErrorCode;
 import com.bluewhite.common.entity.PageParameter;
 import com.bluewhite.common.entity.PageResult;
-import com.bluewhite.product.primecost.cutparts.entity.CutParts;
 import com.bluewhite.product.primecost.materials.entity.ProductMaterials;
 import com.bluewhite.product.primecost.materials.service.ProductMaterialsService;
-import com.bluewhite.product.primecost.primecost.entity.PrimeCost;
-import com.bluewhite.product.primecost.tailor.entity.Tailor;
 import com.bluewhite.product.primecostbasedata.entity.BaseOne;
 import com.bluewhite.product.primecostbasedata.entity.Materiel;
-import com.bluewhite.product.product.entity.Product;
 import com.bluewhite.product.product.service.ProductService;
 
 @Controller 
@@ -92,13 +87,8 @@ public class ProductMaterialsAction {
 			cr.setMessage("生产用料不能为空");
 		}else{
 			ProductMaterials oldProductMaterials = productMaterialsService.findOne(productMaterials.getId());
-			BeanCopyUtils.copyNullProperties(oldProductMaterials,productMaterials);
-			productMaterials.setCreatedAt(oldProductMaterials.getCreatedAt());
-			productMaterialsService.saveProductMaterials(productMaterials);
-			PrimeCost primeCost = new PrimeCost();
-			primeCost.setProductId(productMaterials.getProductId());
-			productService.getPrimeCost(primeCost);
-			productMaterials.setOneOtherCutPartsPrice(primeCost.getOneOtherCutPartsPrice());
+			BeanCopyUtils.copyNotEmpty(productMaterials,oldProductMaterials,"");
+			productMaterialsService.saveProductMaterials(oldProductMaterials);
 			cr.setMessage("修改成功");
 		}
 		return cr;
@@ -117,15 +107,6 @@ public class ProductMaterialsAction {
 	public CommonResponse getProductMaterials(HttpServletRequest request,PageParameter page,ProductMaterials productMaterials) {
 		CommonResponse cr = new CommonResponse();
 		PageResult<ProductMaterials>  productMaterialsList = productMaterialsService.findPages(productMaterials,page);
-//		if(productMaterials.getProductId()!=null){
-//			
-//			PrimeCost primeCost = new PrimeCost();
-//			primeCost.setProductId(productMaterials.getProductId());
-//			productService.getPrimeCost(primeCost);
-//			for(ProductMaterials ps : productMaterialsList.getRows()){
-//				ps.setOneOtherCutPartsPrice(primeCost.getOneOtherCutPartsPrice());
-//			}
-//		}
 		cr.setData(clearCascadeJSON.format(productMaterialsList).toJSON());
 		cr.setMessage("查询成功");
 		return cr;

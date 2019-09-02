@@ -46,8 +46,24 @@ public class TailorServiceImpl extends BaseServiceImpl<Tailor, Long> implements 
 	@Transactional
 	public Tailor saveTailor(Tailor tailor) {
 		NumUtils.setzro(tailor);
-		// 当同一个裁剪页面实体，改变了类型，进行保存操作。同时删除之前关联的类型实体
+		// 得到理论(市场反馈）含管理价值
+		Double managePrice = materielService.getBaseThreeOne(tailor.getTailorTypeId(), tailor.getTailorSizeId());
+		tailor.setManagePrice(managePrice);
+		tailor.setCostPrice(managePrice);
 		OrdinaryLaser prams = ordinaryLaserDao.findByTailorId(tailor.getId());
+		NumUtils.setzro(prams);
+		// 得到实验推算价格
+		tailor.setExperimentPrice(prams.getStallPrice());
+		// 入成本价格
+		tailor.setAllCostPrice(NumUtils.mul(tailor.getBacthTailorNumber() ,tailor.getCostPrice()));
+		// 得到市场价与实推价比
+		if (tailor.getExperimentPrice()!=0.0) {
+			tailor.setRatePrice(NumUtils.div(tailor.getExperimentPrice(), tailor.getCostPrice(), 3));
+		}
+		// 各单道比全套工价
+		List<Tailor> tailorList = dao.findByProductId(tailor.getProductId());
+		double sumAllCostPrice = tailorList.stream().filter(Tailor -> Tailor.getAllCostPrice() != null).mapToDouble(Tailor::getAllCostPrice).sum();
+		tailor.setScaleMaterial(NumUtils.division(NumUtils.div(tailor.getAllCostPrice(),sumAllCostPrice,3)));
 		// 不含绣花环节的为机工压价
 		tailor.setNoeMbroiderPriceDown(NumUtils.sum(tailor.getAllCostPrice() , tailor.getPriceDown()));
 		// 含绣花环节的为机工压价
@@ -55,26 +71,15 @@ public class TailorServiceImpl extends BaseServiceImpl<Tailor, Long> implements 
 		// 为机工准备的压价
 		double MachinistPriceDown = tailor.getNoeMbroiderPriceDown() >= tailor.getEmbroiderPriceDown() ? tailor.getNoeMbroiderPriceDown() : tailor.getEmbroiderPriceDown();
 		tailor.setMachinistPriceDown(MachinistPriceDown);
-		if (prams != null && !prams.getId().equals(tailor.getOrdinaryLaserId())) {
-			ordinaryLaserDao.delete(prams);
-		}
-		// 根据裁剪类型进行新增
-		OrdinaryLaser prams1 = null;
-		if (tailor.getOrdinaryLaserId() != null) {
-			prams1 = ordinaryLaserDao.findOne(tailor.getOrdinaryLaserId());
-			// 当裁减类型实体种没有数据
-			if (prams1 == null) {
-				prams1 = new OrdinaryLaser();
-			}
-
-		}
-		getOrdinaryLaserDate(tailor, prams1);
+		prams.setTailorTypeId(tailor.getTailorTypeId());
+		getOrdinaryLaserDate(tailor, prams);
 		return tailor;
 	}
 
 	// 根据裁剪类型进行计算出不同的价格,获取裁剪页面所需要的数据
 	@Override
 	public OrdinaryLaser getOrdinaryLaserDate(Tailor tailor, OrdinaryLaser prams) {
+		//裁剪页面的基础系数
 		PrimeCoefficient primeCoefficient = null;
 		String type = null;
 		CutParts cutParts = cutPartsDao.findOne(tailor.getCutPartsId());
@@ -178,7 +183,9 @@ public class TailorServiceImpl extends BaseServiceImpl<Tailor, Long> implements 
 			prams.setRabbTime(NumUtils.mul(NumUtils.div(NumUtils.div(primeCoefficient.getPermOne(), 1.5 , 3) , prams.getTailorSize().getOrdinaryLaser(),3) 
 					, primeCoefficient.getQuickWorker()));
 			break;
-		case 74:// 设备电烫
+		case 74:// 设备电烫(暂无)
+			
+			
 
 			break;
 		case 75:// 冲床
@@ -237,30 +244,6 @@ public class TailorServiceImpl extends BaseServiceImpl<Tailor, Long> implements 
 		}, page);
 		PageResult<Tailor> result = new PageResult<Tailor>(pages, page);
 		return result;
-	}
-
-	@Override
-	public Tailor getTailorDate(Tailor tailor, OrdinaryLaser ordinaryLaser) {
-		// 得到理论(市场反馈）含管理价值
-		Double managePrice = materielService.getBaseThreeOne(tailor.getTailorTypeId(), tailor.getTailorSizeId());
-		tailor.setManagePrice(managePrice);
-		tailor.setCostPrice(managePrice);
-		// 得到实验推算价格
-		tailor.setExperimentPrice(ordinaryLaser.getStallPrice());
-		// 入成本价格
-		tailor.setAllCostPrice(NumUtils.mul(tailor.getBacthTailorNumber() , NumUtils.setzro(tailor.getCostPrice())));
-		// 得到市场价与实推价比
-		if (tailor.getExperimentPrice()!=null) {
-			tailor.setRatePrice(NumUtils.division( NumUtils.div(tailor.getExperimentPrice(), NumUtils.setzro(tailor.getCostPrice()), 3)));
-		}
-		// 各单道比全套工价
-		List<Tailor> tailorList = dao.findByProductId(tailor.getProductId());
-		tailorList.add(tailor);
-		double sumAllCostPrice = tailorList.stream().filter(Tailor -> Tailor.getAllCostPrice() != null).mapToDouble(Tailor::getAllCostPrice).sum();
-		tailor.setScaleMaterial(NumUtils.division(NumUtils.div(tailor.getAllCostPrice(),sumAllCostPrice,3)));
-		// 不含绣花环节的为机工压价
-		tailor.setNoeMbroiderPriceDown(NumUtils.sum(tailor.getAllCostPrice() , tailor.getPriceDown()));
-		return tailor;
 	}
 
 	@Override
