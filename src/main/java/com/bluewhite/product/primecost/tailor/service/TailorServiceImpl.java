@@ -64,13 +64,15 @@ public class TailorServiceImpl extends BaseServiceImpl<Tailor, Long> implements 
 		// 入成本价格
 		tailor.setAllCostPrice(NumUtils.mul(tailor.getBacthTailorNumber() ,tailor.getCostPrice()));
 		// 得到市场价与实推价比
-		if (tailor.getExperimentPrice()!=0.0) {
+		if (tailor.getExperimentPrice()!=0) {
 			tailor.setRatePrice(NumUtils.div(tailor.getExperimentPrice(), tailor.getCostPrice(), 3));
 		}
 		// 各单道比全套工价
 		List<Tailor> tailorList = dao.findByProductId(tailor.getProductId());
 		double sumAllCostPrice = tailorList.stream().filter(Tailor -> Tailor.getAllCostPrice() != null).mapToDouble(Tailor::getAllCostPrice).sum();
-		tailor.setScaleMaterial(NumUtils.division(NumUtils.div(tailor.getAllCostPrice(),sumAllCostPrice,3)));
+		if(sumAllCostPrice!=0){
+			tailor.setScaleMaterial(NumUtils.div(tailor.getAllCostPrice(),sumAllCostPrice,3));
+		}
 		// 不含绣花环节的为机工压价
 		tailor.setNoeMbroiderPriceDown(NumUtils.sum(tailor.getAllCostPrice() , tailor.getPriceDown()));
 		// 含绣花环节的为机工压价
@@ -110,8 +112,10 @@ public class TailorServiceImpl extends BaseServiceImpl<Tailor, Long> implements 
 			double singleLaserTime = NumUtils.mul(prams.getPerimeter(), primeCoefficient.getTime(),
 					(double)prams.getStallPoint(), primeCoefficient.getPauseTime());
 			// 拉布时间
-			prams.setRabbTime(NumUtils.mul(NumUtils.div(prams.getTailorSize().getOrdinaryLaser(), primeCoefficient.getQuilt(), 3),
-					primeCoefficient.getRabbTime()));
+			if(primeCoefficient.getQuilt()!=0){
+				prams.setRabbTime(NumUtils.mul(NumUtils.div(prams.getTailorSize().getOrdinaryLaser(), primeCoefficient.getQuilt(), 3),
+						primeCoefficient.getRabbTime()));
+			}
 			// 单片激光需要用净时
 			if (prams.getSingleDouble() == 2) {
 				prams.setSingleLaserTime(NumUtils.sum(NumUtils.div(singleLaserTime, 2, 3), prams.getRabbTime()));
@@ -153,8 +157,10 @@ public class TailorServiceImpl extends BaseServiceImpl<Tailor, Long> implements 
 						+ primeCoefficient.getEmbroideryLaserNumber());
 			}
 			// 拉布时间
-			prams.setRabbTime(NumUtils.mul(NumUtils.div(prams.getTailorSize().getOrdinaryLaser(), primeCoefficient.getQuilt(), 3),
-					primeCoefficient.getRabbTime()));
+			if( primeCoefficient.getQuilt()!=0){
+				prams.setRabbTime(NumUtils.mul(NumUtils.div(prams.getTailorSize().getOrdinaryLaser(), primeCoefficient.getQuilt(), 3),
+						primeCoefficient.getRabbTime()));
+			}
 			double singleLaserTimeOne = NumUtils.mul(prams.getPerimeter(), primeCoefficient.getTime(),
 					(double)prams.getStallPoint(), primeCoefficient.getPauseTime());
 			// 单片激光需要用净时
