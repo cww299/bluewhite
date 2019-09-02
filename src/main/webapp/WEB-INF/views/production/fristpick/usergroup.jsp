@@ -703,10 +703,8 @@
 							$('#delete').on('click',function(){
 								var arr=new Array();
 								var that=$(this);
-								console.log($(".stuCheckBoxt:checked"))
 								$(".stuCheckBoxt:checked").each(function() {   
 								    arr.push($(this).val()); 
-								    console.log($(this).val())
 								}); 
 								var postData = {
 										ids:arr,
@@ -1177,7 +1175,6 @@
 						    	  name=item.name
 						      }
 						      self.setCache(item.id); 
-						      //console.log($(".dropdown-menu").parent().parent())
 						    	 return  name;
 					    },
 						//item是选中的数据
