@@ -4,7 +4,8 @@
  * 合计行开启方式：totalRow:['需要开启合计行的字段',...]
  * 字段增加虚拟字段: cols:[[ { field:'user_userName' } ]] 对应user:{ userName: '' };
  * 增加数据转换模板: cols:[[ { field:'user_userName', transData:{data:['对应转化的值','按顺序对应0、1、2..'],text:'无值时的提示',skin:'是否开启皮肤模式 true\false'//默认开启， } ]]
- * 增加数据类型模板：cols:[[ { type:'select', select:{data:你的下拉框数据, id:'对应值',name:'显示名、虚拟字段'/[可多字段拼接],layFilter:'下拉框的lay-filter用于监听',unsearch:true } } ]]
+ * 增加数据类型模板：cols:[[ { type:'select', select:{data:你的下拉框数据, id:'对应值',name:'显示名、虚拟字段'/[可多字段拼接],layFilter:'下拉框的lay-filter用于监听',
+ * 								unsearch:true, isDisabled:true,} } ]]
  * 					cols:[[ { type:'date',  } ]]
  * 					cols:[[ { type:'dateTime', } ]]
  * 					cols:[[ { type:'price', }  ]]   修改时只能是数字，不能为空
@@ -112,10 +113,11 @@ layui.extend({
 					function getSelectHtml(r){
 						!item2.select && console.warn('请给定数据填充下拉框值');
 						var data = item2.select.data, id = item2.select.id || 'id', name = item2.select.name || 'name',
-							layFilter = item2.select.layFilter || item2.field, unsearch = item2.select.unsearch || false;
+							layFilter = item2.select.layFilter || item2.field, unsearch = item2.select.unsearch || false,
+							disabled = item2.select.isDisabled?'disabled':'';
 						if(selectLay.indexOf(layFilter)<0)
 							selectLay.push(layFilter);
-						var html = '<select '+(unsearch?"":"lay-search")+' lay-filter="'+(layFilter)+'">';
+						var html = '<select '+(unsearch?"":"lay-search")+' lay-filter="'+(layFilter)+'" '+disabled+'>';
 						layui.each(data,function(index,item){
 							var selected = r == item.id ? 'selected' : '';
 							var text = [];
