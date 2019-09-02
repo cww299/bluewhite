@@ -66,13 +66,13 @@
 									<option value="2">拒绝入职</option>
 									<option value="3">即将入职</option>
 							</select></td>
-							<td>&nbsp;&nbsp;</td>
+							<!-- <td>&nbsp;&nbsp;</td>
 							<td>在职情况:</td>
-							<td><select class="form-control">
+							<td><select class="form-control" name="quit">
 									<option value="">请选择</option>
 									<option value="0">在职</option>
 									<option value="1">离职</option>
-							</select></td>
+							</select></td> -->
 							<td>&nbsp;&nbsp;</td>
 							<td>面试情况:</td>
 							<td><select class="form-control" name="adopt">
@@ -91,8 +91,8 @@
 							<td><select class="form-control" name="positionId" lay-search="true" id="positionss">
 									
 							</select></td>
-							<td>&nbsp;&nbsp;</td>
-							<td><input type="checkbox" name="like[write]" lay-filter="lockDemo" title="入职在职"></td>
+							<!-- <td>&nbsp;&nbsp;</td>
+							<td><input type="checkbox" name="like[write]" lay-filter="lockDemo" title="入职在职"></td> -->
 					</tr>
 				</table>
 				</div>
@@ -1446,8 +1446,8 @@
 							$('#tableUserSum').html(html);
 							 dicDiv=$('#userSum');
 						}
-						if(obj.event=='mod116'){
-							$(obj.data.mod116).each(function(i,o){
+						if(obj.event=='mod16'){
+							$(obj.data.mod16).each(function(i,o){
 								html +='<tr>'
 			      				+'<td class="text-center">'+o.name+'</td>'
 			      				+'<td class="text-center"><input style="background:none;outline:none;border:0px;text-align:center;" value='+o.position.name+' /></td>'
@@ -1863,18 +1863,18 @@
 						field.orderTimeBegin=orderTime[0];
 						field.orderTimeEnd=orderTime[1];
 						field.time="2019-06-02 11:00:00";
-						if(check=="on"){
+						/* if(check=="on"){
 						field.time="";
 						field.testTime="2019-06-02 11:00:00";
 						field.quit=0;
 						field.state=1;
 						}else{
 							field.testTime="";
-						}
-						if(field.state!=""){
+						} */
+						/* if(field.state!=""){
 							field.testTime="2019-06-02 11:00:00";
 							field.time="";
-						}
+						} */
 						table.reload('tableData', {
 							where: field,
 							page: {

@@ -534,8 +534,6 @@
 									self.setIndex(item.id);
 										return item.name
 								},
-
-								
 							});
 					}
 					

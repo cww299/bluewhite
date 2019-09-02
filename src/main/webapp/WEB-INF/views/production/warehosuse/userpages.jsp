@@ -45,9 +45,6 @@
 				</div>
 			</div>
 			<table id="tableData" class="table_th_search" lay-filter="tableData"></table>
-			
-			
-			
 		</div>
 	</div>
 	<script type="text/html" id="toolbar">

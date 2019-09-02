@@ -116,10 +116,6 @@ public class Procedure extends BaseEntity<Long> {
 	 */
 	@Transient
 	private Integer residualNumber;
-	
-	
-	
-
 
 	public Integer getSign() {
 		return sign;
