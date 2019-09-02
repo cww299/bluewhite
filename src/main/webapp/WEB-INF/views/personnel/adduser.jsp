@@ -27,7 +27,7 @@
 					<td>&nbsp;&nbsp;</td>
 					<shiro:lacksRole name="attendanceStatistician">
 						<td>员工部门:</td>
-						<td><select name="orgNameId" id="department"><option value="">请选择</option></select></td>
+						<td><select name="orgNameId" id="department" lay-search><option value="">请选择</option></select></td>
 						<td>&nbsp;&nbsp;</td>
 					</shiro:lacksRole>
 					<td>开始时间:</td>
