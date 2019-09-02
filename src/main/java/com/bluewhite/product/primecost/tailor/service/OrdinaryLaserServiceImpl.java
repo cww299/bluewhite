@@ -46,7 +46,8 @@ public class OrdinaryLaserServiceImpl extends BaseServiceImpl<OrdinaryLaser, Lon
 		switch (ordinaryLaser.getTailorTypeId().intValue()) {
 		case 71:// 普通激光切割
 			// 得到理论(市场反馈）含管理价值
-			ordinaryLaser.setManagePrice(NumUtils.div(NumUtils.mul(primeCoefficient.getPeripheralLaser(), ordinaryLaser.getPerimeter()), 100, 5));
+			ordinaryLaser.setManagePrice(NumUtils
+					.div(NumUtils.mul(primeCoefficient.getPeripheralLaser(), ordinaryLaser.getPerimeter()), 100, 5));
 			double singleLaserTime = NumUtils.mul(ordinaryLaser.getPerimeter(), primeCoefficient.getTime(),
 					(double) ordinaryLaser.getStallPoint(), primeCoefficient.getPauseTime());
 			// 单片激光需要用净时
@@ -111,7 +112,7 @@ public class OrdinaryLaserServiceImpl extends BaseServiceImpl<OrdinaryLaser, Lon
 			// 得到理论(市场反馈）含管理价值
 			ordinaryLaser.setManagePrice(managePrice);
 			// 电烫秒数（含快手)
-			if(ordinaryLaser.getTypesettingNumber()!=0){
+			if (ordinaryLaser.getTypesettingNumber() != 0) {
 				ordinaryLaser.setPermSeconds(
 						NumUtils.div(NumUtils.mul(primeCoefficient.getPermThree(), primeCoefficient.getQuickWorker()),
 								ordinaryLaser.getTypesettingNumber(), 5));
@@ -127,8 +128,10 @@ public class OrdinaryLaserServiceImpl extends BaseServiceImpl<OrdinaryLaser, Lon
 			}
 			ordinaryLaser.setTearingSeconds(NumUtils.mul(tearingSeconds, primeCoefficient.getQuickWorker()));
 			// 拉布秒数（含快手)
-			ordinaryLaser.setRabbTime(NumUtils.division(NumUtils.div(primeCoefficient.getPermOne()
-					, NumUtils.mul( NumUtils.div(1.5 , ordinaryLaser.getTailorSize().getOrdinaryLaser(),5) , primeCoefficient.getQuickWorker()),5)));
+			ordinaryLaser.setRabbTime(NumUtils.division(NumUtils.div(primeCoefficient.getPermOne(),
+					NumUtils.mul(NumUtils.div(1.5, ordinaryLaser.getTailorSize().getOrdinaryLaser(), 5),
+							primeCoefficient.getQuickWorker()),
+					5)));
 			// 电烫工价（含快手)
 			ordinaryLaser.setPermPrice(
 					NumUtils.mul(NumUtils.sum(ordinaryLaser.getPermSeconds(), ordinaryLaser.getRabbTime()),
@@ -154,11 +157,11 @@ public class OrdinaryLaserServiceImpl extends BaseServiceImpl<OrdinaryLaser, Lon
 			// 得到理论(市场反馈）含管理价值
 			ordinaryLaser.setManagePrice(managePrice);
 			// 叠布秒数（含快手)
-			ordinaryLaser.setOverlappedSeconds(NumUtils.division(
-					NumUtils.div(
+			ordinaryLaser
+					.setOverlappedSeconds(NumUtils.division(NumUtils.div(
 							(ordinaryLaser.getNumber() < primeCoefficient.getPuncherTwo()
 									? primeCoefficient.getPuncherFour()
-									:  NumUtils.mul(primeCoefficient.getPuncherOne() , ordinaryLaser.getLayerNumber())),
+									: NumUtils.mul(primeCoefficient.getPuncherOne(), ordinaryLaser.getLayerNumber())),
 							NumUtils.div(
 									NumUtils.mul(ordinaryLaser.getLayerNumber(), primeCoefficient.getPuncherThree(),
 											1.5),
@@ -166,7 +169,7 @@ public class OrdinaryLaserServiceImpl extends BaseServiceImpl<OrdinaryLaser, Lon
 											primeCoefficient.getQuickWorker()),
 									5),
 							5)));
-			if(ordinaryLaser.getLayerNumber()!=0){
+			if (ordinaryLaser.getLayerNumber() != 0) {
 				ordinaryLaser.setPunchingSeconds(
 						NumUtils.mul(NumUtils.div(primeCoefficient.getPuncherFive(), ordinaryLaser.getLayerNumber(), 5),
 								primeCoefficient.getQuickWorker()));
@@ -174,11 +177,9 @@ public class OrdinaryLaserServiceImpl extends BaseServiceImpl<OrdinaryLaser, Lon
 
 			// 工价（含快手)
 			ordinaryLaser.setLabourCost(
-					NumUtils.mul(
-							NumUtils.sum(ordinaryLaser.getOverlappedSeconds() , ordinaryLaser.getPunchingSeconds()
-									, ordinaryLaser.getOtherTimeOne() , ordinaryLaser.getOtherTimeThree()
-									, ordinaryLaser.getOtherTimeTwo()),
-							primeCoefficient.getPerSecondMachinist()));
+					NumUtils.mul(NumUtils.sum(ordinaryLaser.getOverlappedSeconds(), ordinaryLaser.getPunchingSeconds(),
+							ordinaryLaser.getOtherTimeOne(), ordinaryLaser.getOtherTimeThree(),
+							ordinaryLaser.getOtherTimeTwo()), primeCoefficient.getPerSecondMachinist()));
 			// 设备折旧和房水电费
 			ordinaryLaser.setEquipmentPrice(NumUtils.mul(
 					NumUtils.sum(primeCoefficient.getDepreciation(), primeCoefficient.getLaserTubePriceSecond(),
@@ -199,30 +200,36 @@ public class OrdinaryLaserServiceImpl extends BaseServiceImpl<OrdinaryLaser, Lon
 			// 得到理论(市场反馈）含管理价值
 			ordinaryLaser.setManagePrice(managePrice);
 			// 叠布秒数（含快手)
-			ordinaryLaser.setOverlappedSeconds(NumUtils.division(NumUtils.div(
-					NumUtils.sum(NumUtils.mul(primeCoefficient.getElectricPushOne(), ordinaryLaser.getLayerNumber()),
-							primeCoefficient.getElectricPushThree(), (double) primeCoefficient.getElectricPushFour()),
-					NumUtils.mul(
-							NumUtils.mul(primeCoefficient.getElectricPushTwo(), 1.5, ordinaryLaser.getLayerNumber()),
-							ordinaryLaser.getTailorSize().getOrdinaryLaser()),
-					5)));
+			double num = NumUtils.mul(
+					NumUtils.mul(primeCoefficient.getElectricPushTwo(), 1.5, ordinaryLaser.getLayerNumber()),
+					ordinaryLaser.getTailorSize().getOrdinaryLaser());
+			if (num != 0) {
+				ordinaryLaser.setOverlappedSeconds(NumUtils.div(NumUtils.sum(
+						NumUtils.mul(primeCoefficient.getElectricPushOne(), ordinaryLaser.getLayerNumber()),
+						primeCoefficient.getElectricPushThree(), (double) primeCoefficient.getElectricPushFour()), num,
+						5));
+			}
 			// 电推秒数（含快手)
-			ordinaryLaser.setElectricSeconds(NumUtils.division(
-					NumUtils.div(NumUtils.div(ordinaryLaser.getPerimeter() , 
-					NumUtils.mul(primeCoefficient.getElectricPushFive() , primeCoefficient.getElectricPushSix()),5) 
-							, ordinaryLaser.getLayerNumber(),5)));
+			ordinaryLaser
+					.setElectricSeconds(NumUtils.division(NumUtils.div(
+							NumUtils.div(ordinaryLaser.getPerimeter(),
+									NumUtils.mul(primeCoefficient.getElectricPushFive(),
+											primeCoefficient.getElectricPushSix()),
+									5),
+							ordinaryLaser.getLayerNumber(), 5)));
 			// 工价（含快手)
-			ordinaryLaser.setLabourCost(NumUtils.mul(NumUtils.sum(ordinaryLaser.getOverlappedSeconds() , ordinaryLaser.getElectricSeconds())
-					, primeCoefficient.getQuickWorker() , primeCoefficient.getPerSecondMachinist()));
+			ordinaryLaser.setLabourCost(
+					NumUtils.mul(NumUtils.sum(ordinaryLaser.getOverlappedSeconds(), ordinaryLaser.getElectricSeconds()),
+							primeCoefficient.getQuickWorker(), primeCoefficient.getPerSecondMachinist()));
 			// 设备折旧和房水电费
-			ordinaryLaser
-					.setEquipmentPrice(NumUtils.mul(NumUtils.sum(primeCoefficient.getDepreciation() , primeCoefficient.getLaserTubePriceSecond()
-							, primeCoefficient.getMaintenanceChargeSecond() , primeCoefficient.getPerSecondPrice())
-							, NumUtils.sum(ordinaryLaser.getOverlappedSeconds() , ordinaryLaser.getElectricSeconds())));
+			ordinaryLaser.setEquipmentPrice(NumUtils.mul(
+					NumUtils.sum(primeCoefficient.getDepreciation(), primeCoefficient.getLaserTubePriceSecond(),
+							primeCoefficient.getMaintenanceChargeSecond(), primeCoefficient.getPerSecondPrice()),
+					NumUtils.sum(ordinaryLaser.getOverlappedSeconds(), ordinaryLaser.getElectricSeconds())));
 			// 管理人员费用
-			ordinaryLaser
-					.setAdministrativeAtaff(NumUtils.mul(NumUtils.sum(ordinaryLaser.getOverlappedSeconds() , ordinaryLaser.getElectricSeconds())
-							, ordinaryLaser.getSingleLaserHandTime()));
+			ordinaryLaser.setAdministrativeAtaff(
+					NumUtils.mul(NumUtils.sum(ordinaryLaser.getOverlappedSeconds(), ordinaryLaser.getElectricSeconds()),
+							ordinaryLaser.getSingleLaserHandTime()));
 			break;
 		case 77:// 手工剪刀
 			managePrice = materielService.getBaseThreeOne(ordinaryLaser.getTailorTypeId(),
@@ -230,13 +237,16 @@ public class OrdinaryLaserServiceImpl extends BaseServiceImpl<OrdinaryLaser, Lon
 			// 得到理论(市场反馈）含管理价值
 			ordinaryLaser.setManagePrice(managePrice);
 			// 手工秒数（含快手)
-			ordinaryLaser.setManualSeconds(NumUtils.mul(ordinaryLaser.getPerimeter() , primeCoefficient.getManualTwo()));
+			ordinaryLaser.setManualSeconds(NumUtils.mul(ordinaryLaser.getPerimeter(), primeCoefficient.getManualTwo()));
 			// 工价（含快手)
-			ordinaryLaser.setLabourCost(NumUtils.mul(ordinaryLaser.getManualSeconds() , primeCoefficient.getPerSecondMachinist()));
+			ordinaryLaser.setLabourCost(
+					NumUtils.mul(ordinaryLaser.getManualSeconds(), primeCoefficient.getPerSecondMachinist()));
 			// 设备折旧和房水电费
-			ordinaryLaser.setEquipmentPrice(NumUtils.mul(ordinaryLaser.getManualSeconds() , primeCoefficient.getPerSecondPrice()));
+			ordinaryLaser.setEquipmentPrice(
+					NumUtils.mul(ordinaryLaser.getManualSeconds(), primeCoefficient.getPerSecondPrice()));
 			// 管理人员费用
-			ordinaryLaser.setAdministrativeAtaff(NumUtils.mul(primeCoefficient.getPerSecondManage() , ordinaryLaser.getManualSeconds()));
+			ordinaryLaser.setAdministrativeAtaff(
+					NumUtils.mul(primeCoefficient.getPerSecondManage(), ordinaryLaser.getManualSeconds()));
 			break;
 		case 78:// 绣花领取
 			break;
@@ -244,8 +254,9 @@ public class OrdinaryLaserServiceImpl extends BaseServiceImpl<OrdinaryLaser, Lon
 			break;
 		}
 		// 普通激光切割该裁片费用
-		ordinaryLaser.setStallPrice(NumUtils.mul(NumUtils.sum(ordinaryLaser.getLabourCost() , ordinaryLaser.getEquipmentPrice()
-				, ordinaryLaser.getAdministrativeAtaff()) , primeCoefficient.getEquipmentProfit()));
+		ordinaryLaser.setStallPrice(
+				NumUtils.mul(NumUtils.sum(ordinaryLaser.getLabourCost(), ordinaryLaser.getEquipmentPrice(),
+						ordinaryLaser.getAdministrativeAtaff()), primeCoefficient.getEquipmentProfit()));
 		// 同时需要去更新裁剪页面的（得到实验推算价格）
 		tailor.setExperimentPrice(ordinaryLaser.getStallPrice());
 		dao.save(ordinaryLaser);
