@@ -590,7 +590,9 @@
 								$(result.data[0].users).each(function(i,o){
 									var time = '';
 									if(o.orderTimeBegin){
-										time = o.orderTimeBegin+' ~ '+o.orderTimeEnd;
+										var startTime = o.orderTimeBegin.split(' ')[1].trim();
+										var endTime = o.orderTimeEnd.split(' ')[1].trim();
+										time = startTime+' ~ '+endTime;
 									}
 									html +='<tr>'
 				      				+'<td class="text-center">'+o.userName+'</td>'
@@ -604,12 +606,13 @@
 									$(result.data[0].users).each(function(i,o){
 										laydate.render({
 											elem: '#startEndTime'+i,
-											type: 'datetime',
+											type: 'time',
 											range: '~',
 											done:function(value){
 												var id = $(this.elem).data('id');
 												var groupId = $(this.elem).data('groupid');
 												var temporarily = $(this.elem).data('temporarily');
+												var searchDate = $('#startTimeTable').val().split(' ')[0];
 												if(temporarily==0){
 													var load = layer.load(1);
 													$.ajax({
@@ -618,20 +621,16 @@
 														data: {
 															adjustId: id,
 															groupId: groupId,
-															startTime: value.split('~')[0].trim(),
-															endTime: value.split('~')[1].trim(),
+															startTime: searchDate+' '+value.split('~')[0].trim(),
+															endTime: searchDate+' '+value.split('~')[1].trim(),
 														},
 														success:function(r){
-															var icon = 2;
-															if(r.code==0)
-																icon = 1;
-															layer.msg(r.message,{icon:icon});
+															layer.msg(r.message,{icon: r.code?2:1 });
 														}
 													});
 													layer.close(load);
 												}else{
 													layer.msg('外调人员无法添加工作区间',{icon:2});
-													value='';
 												}
 											}
 										})
