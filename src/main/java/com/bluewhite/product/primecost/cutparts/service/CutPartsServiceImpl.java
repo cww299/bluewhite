@@ -95,7 +95,7 @@ public class CutPartsServiceImpl  extends BaseServiceImpl<CutParts, Long> implem
 		tailor.setBacthTailorNumber(cutParts.getCutPartsNumber()*cutParts.getNumber());
 		//物料压价,通过cc裁片填写中该裁片该面料的价值 得到
 		tailor.setPriceDown(NumUtils.sum(cutParts.getBatchMaterialPrice(),cutParts.getBatchComplexAddPrice()));
-		tailorDao.save(tailor);
+		tailorService.saveTailor(tailor);
 		//裁剪方式
 		OrdinaryLaser prams = null;
 		if(tailor.getOrdinaryLaserId()==null){
@@ -106,10 +106,9 @@ public class CutPartsServiceImpl  extends BaseServiceImpl<CutParts, Long> implem
 		NumUtils.setzro(prams);
 		prams.setTailorId(tailor.getId());
 		tailorService.getOrdinaryLaserDate(tailor, prams);
-		//不含绣花环节的为机工压价	
-		//含绣花环节的为机工压价
-		//为机工准备的压价
-		tailorService.getTailorDate(tailor,prams);
+		
+		
+
 		//更新裁剪页面id到裁片中
 		cutParts.setTailorId(tailor.getId());
 		//各单片比全套用料

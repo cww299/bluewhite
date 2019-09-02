@@ -82,10 +82,7 @@ public class MaterielServiceImpl extends BaseServiceImpl<Materiel, Long> impleme
 	@Override
 	public Double getBaseThreeOne(Long typeId, Long id) {
 		BaseThree baseThree = baseThreeDao.findOne(id);
-		
 		double returnNumber = 0 ;
-		
-		
 		switch (typeId.intValue()) {
 		case 71://普通激光切割
 			returnNumber = baseThree.getTextualOrdinaryLight();
@@ -147,9 +144,7 @@ public class MaterielServiceImpl extends BaseServiceImpl<Materiel, Long> impleme
 	        },page);
 			PageResult<Materiel> result = new PageResult<Materiel>(pages, page);
 	        return result;
-}
-	
-	
+	}
 	
 	
 

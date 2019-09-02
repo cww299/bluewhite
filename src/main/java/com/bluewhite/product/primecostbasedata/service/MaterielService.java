@@ -9,7 +9,6 @@ import com.bluewhite.common.entity.PageParameter;
 import com.bluewhite.common.entity.PageResult;
 import com.bluewhite.product.primecostbasedata.entity.BaseOne;
 import com.bluewhite.product.primecostbasedata.entity.Materiel;
-import com.bluewhite.product.product.entity.Product;
 
 @Service
 public interface MaterielService extends BaseCRUDService<Materiel,Long>{
@@ -35,7 +34,13 @@ public interface MaterielService extends BaseCRUDService<Materiel,Long>{
 	 */
 	public Double getBaseThreeOne(Long typeId, Long id);
 	
-
+	
+	/**
+	 * 分页查看
+	 * @param materiel
+	 * @param page
+	 * @return
+	 */
 	public PageResult<Materiel> findMaterielPages(Materiel materiel, PageParameter page);
 	
 	
