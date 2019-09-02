@@ -6,6 +6,10 @@
 <html class="no-js">
 	<link rel="stylesheet" href="${ctx }/static/layui-v2.4.5/layui/css/layui.css" media="all">
 <script src="${ctx }/static/layui-v2.4.5/layui/layui.js"></script>
+	<script src="${ctx }/static/js/vendor/jquery-3.3.1.min.js"></script>
+	<script src="${ctx }/static/js/vendor/typeahead.js"></script>
+	<link rel="stylesheet" href="${ctx }/static/css/bootstrap.min.css"> 
+<link rel="stylesheet" href="${ctx }/static/css/main.css">  <!-- 界面样式 -->
 <head>
 <meta charset="utf-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -294,6 +298,105 @@
 			</div>
 </div>
 
+
+<div style="display: none;" id="layuiShare2">
+			<div class="layui-form layui-card-header layuiadmin-card-header-auto">
+				<div class="layui-form-item">
+					<table>
+						<tr>
+							<td>查询时间:</td>
+							<td><input id="startTime2" style="width: 180px;" name="startTime" placeholder="请输入开始时间" class="layui-input laydate-icon">
+							<input id="queryId" style="display: none;" name="id">
+							</td>
+							<td>&nbsp;&nbsp;</td>
+							<td>
+								<div class="layui-inline">
+									<button class="layui-btn layuiadmin-btn-admin"  lay-submit lay-filter="LAY-search3">
+										<i class="layui-icon layui-icon-search layuiadmin-button-btn"></i>
+									</button>
+								</div>
+							</td>
+						</tr>
+					</table>
+					<div style="">
+						<table class="table table-hover" style="margin:auto;width:100%;">
+								<thead>
+									<tr>
+										<th class="text-center" style="width:20%;">人名</th>
+										<th class="text-center" style="width:20%;">工作时长</th>
+										<th class="text-center" style="width:20%;">小组名</th>
+										<th class="text-center" style="width:20%;">日期</th>
+										<th class="text-center" style="width:20%;">操作</th>
+									</tr>
+								</thead>
+								<tbody id="tableUserOut">
+								</tbody>
+						</table>
+					</div>
+				</div>
+			</div>
+</div>
+
+
+<form action="" id="layuiadmin-form-admin2"
+		style="padding: 20px 0px 0 50px; display:none;  text-align:">
+		<div class="layui-form" lay-filter="layuiadmin-form-admin">
+			<div class="layui-form-item">
+				<label class="layui-form-label" style="width: 100px;">外调日期</label>
+					<div class="layui-input-inline">
+						<input type="text" 
+							style="width: 190px; position: absolute; float: left;" name="temporarilyDate"
+							id="tradeDaysTime" lay-verify="temporarilyDate" placeholder="请输入日期"
+							class="layui-input laydate-icon">
+					</div>
+				</div>
+			
+			 <div class="layui-form-item">
+				<label class="layui-form-label" style="width: 100px;">是否是本厂</label>
+				<div class="layui-input-inline">
+					<select name="isLocalFactory" style="width:290px;"  lay-filter="mode" id="isLocalFactory">
+						<option value='0'>是</option>
+						<option value="1" selected>否</option>
+					</select>
+				</div>
+			</div>	
+				
+			<div class="layui-form-item">
+				<label class="layui-form-label" style="width: 100px;">姓名</label>
+				<div class="layui-input-inline">
+					<input name="userId"   id="userId" class="layui-input" />
+				</div>
+			</div>
+
+			<div class="layui-form-item">
+				<label class="layui-form-label" style="width: 100px;">工作时长</label>
+				<div class="layui-input-inline">
+					<input type="text"  name="workTime" id="keyValueThree2" lay-verify="required" class="layui-input">
+				</div>
+			</div>
+	
+			<div class="layui-form-item">
+				<label class="layui-form-label" style="width: 100px;">是否转正</label>
+				<div class="layui-input-inline">
+					<select name="positive" style="width:290px;"  lay-filter="mode" id="isPositive" lay-search="true">
+						<option value='false'>不转正</option>
+						<option value="true">待转正</option>
+					</select>
+				</div>
+			</div>
+			
+			<div class="layui-form-item">
+				<label class="layui-form-label" style="width: 100px;">小组</label>
+				<div class="layui-input-inline">
+					<select name="groupId" style="width:290px;"  lay-filter="mode" id="groupId" lay-search="true">
+					
+					</select>
+				</div>
+			</div>
+			
+		</div>
+	</form>
+
 <div class="layui-card">
 		<div class="layui-card-body">
 			<table id="tableData" class="table_th_search" lay-filter="tableData"></table>
@@ -303,6 +406,7 @@
 			<div class="layui-btn-container layui-inline">
 				<span class="layui-btn layui-btn-sm" lay-event="addTempData">新增</span>
 				<span class="layui-btn layui-btn-sm layui-btn-warm" lay-event="saveTempData">批量保存</span>
+				<span class="layui-btn layui-btn-sm" lay-event="addOutside">新增外调人员</span>
 			</div>
 	</script>
 	
@@ -341,6 +445,13 @@
 				  	this.getIndex = function(){
 				  		return _index;
 				  	}
+				  	var _cache;
+					this.setCache = function(cache){
+				  		_cache=cache;
+				  	}
+				  	this.getCache = function(){
+				  		return _cache;
+				  	}
 					//select全局变量
 					var htmls = '<option value="">请选择</option>';
 					var index = layer.load(1, {
@@ -350,7 +461,14 @@
 						elem: '#startTime',
 						type: 'datetime',
 					});
-				
+					laydate.render({
+						elem: '#startTime2',
+						type: 'datetime',
+					});
+					laydate.render({
+						elem: '#tradeDaysTime',
+						type: 'datetime',
+					});
 					var myDate = new Date(new Date().getTime() - 86400000);
 					//获取当前年
 					var year=myDate.getFullYear();
@@ -369,15 +487,13 @@
 					var a=year + '-' + '0'+month + '-' + date+' '+'00:00:00'
 					var b=year + '-' + '0'+month + '-' + date+' '+'23:59:59'
 					$('#startTime').val(a);
-					
+					$('#startTime2').val(a);
 					var htmlfrn= '<option value="">请选择</option>';
 					var htmlth= '<option value="">请选择</option>';
 				    $.ajax({
 					      url:"${ctx}/system/user/findUserList",
 					      data:{
-								foreigns:0,
-								quit:0,
-								isAdmin:0,
+								foreigns:1,
 							},
 					      type:"GET",
 					      async:false,
@@ -390,15 +506,14 @@
 			      			  $(result.data).each(function(k,j){
 			      				htmlfrn +='<option value="'+j.id+'">'+j.userName+'</option>'
 			      			  });
-			      			  $("#singleMealConsumptionId").html(htmlfrn)
 			      			layer.close(indextwo);
 					      }
 					  });
 					
 					
-				    var getdata={type:"Meals",}
+				    var getdata={type:"6",}
 	      			$.ajax({								
-					      url:"${ctx}/basedata/list",
+					      url:"${ctx}/production/getGroup",
 					      data:getdata,
 					      type:"GET",
 					      async:false,
@@ -411,33 +526,12 @@
 			      			  $(result.data).each(function(k,j){
 			      				htmlth +='<option value="'+j.id+'">'+j.name+'</option>'
 			      			  });
-			      			  $("#selectType").html(htmlth);
+			      			  $("#groupId").html(htmlth);
 			      			layui.form.render()
 			      			layer.close(indextwo);
 					      }
 					  });
 					
-					// 处理操作列
-					var fn1 = function(field) {
-						return function(d) {
-							return [
-								'<select name="selectOne" lay-filter="lay_selecte" lay-search="true" data-value="' + d.userId + '">' +
-								htmlfrn +
-								'</select>'
-							].join('');
-						};
-						layui.form.render(); 
-					};
-					
-					var fn2 = function(field) {
-						return function(d) {
-							return ['<select name="selectTwo" style="outline: none;border: none; " class="selectTwo" lay-filter="lay_selecte" lay-search="true" data-value="' + d.type + '">',
-								htmlth +
-								'</select>'
-							].join('');
-
-						};
-					};
 				   	tablePlug.smartReload.enable(true); 
 					table.render({
 						elem: '#tableData',
@@ -517,10 +611,9 @@
 							}
 							mainJs.loadworkingTable(data);
 							var dicDiv=$('#layuiShare');
-							table.reload("layuiShare2");
 							layer.open({
 						         type: 1
-						        ,title: '招聘汇总' //不显示标题栏
+						        ,title: '人员详情' //不显示标题栏
 						        ,closeBtn: false
 						        ,zindex:-1
 						        ,area:['40%', '90%']
@@ -544,7 +637,36 @@
 						      });
 							break;
 						case 'queryOut':
-							alert(1)	
+							var data={
+								type:6,
+								temporarilyDate:$("#startTime2").val()
+							}
+							mainJs.loadworking(data);
+							var dicDiv=$('#layuiShare2');
+							layer.open({
+						         type: 1
+						        ,title: '人员详情' //不显示标题栏
+						        ,closeBtn: false
+						        ,zindex:-1
+						        ,area:['50%', '90%']
+						        ,shade: 0.5
+						        ,id: 'LAY_layuipro29' //设定一个id，防止重复弹出
+						        ,btn: ['取消']
+						        ,btnAlign: 'c'
+						        ,moveType: 1 //拖拽模式，0或者1
+						        ,content:dicDiv
+						        ,success : function(layero, index) {
+						        	layero.addClass('layui-form');
+									// 将保存按钮改变成提交按钮
+									layero.find('.layui-layer-btn0').attr({
+										'lay-filter' : 'addRole2',
+										'lay-submit' : ''
+									})
+						        }
+						        ,end:function(){
+						        	$("#layuiShare").hide();
+								  } 
+						      });
 							break;
 						}
 					})
@@ -581,7 +703,48 @@
 									table.cleanTemp(tableId);
 									})	
 								}
-						          break;
+						     break;
+							case 'addOutside':
+								var	dicDiv=$("#layuiadmin-form-admin2");
+								layer.open({
+									type:1,
+									title:'新增外调人员',
+									area:['30%','60%'],
+									btn:['确认','取消'],
+									content:dicDiv,
+									id: 'LAY_layuipro' ,
+									btnAlign: 'c',
+								    moveType: 1, //拖拽模式，0或者1
+									success : function(layero, index) {
+							        	layero.addClass('layui-form');
+										// 将保存按钮改变成提交按钮
+										layero.find('.layui-layer-btn0').attr({
+											'lay-filter' : 'addRole',
+											'lay-submit' : ''
+										})
+							        },
+									yes:function(){
+										form.on('submit(addRole)', function(data) {
+											  var a;
+											  if(self.getCache()==""){
+												  a=1
+											  }else{
+												  a=0
+											  }
+											  data.field.userName=$('#userId').val();
+											  data.field.userId=self.getCache();
+											  data.field.type=6;
+											 mainJs.fTemporarily(data.field);
+											document.getElementById("layuiadmin-form-admin2").reset();
+								        	layui.form.render();
+										})
+									},end:function(){ 
+							        	document.getElementById("layuiadmin-form-admin2").reset();
+							        	layui.form.render();
+									  }
+								})
+								 
+								break;
 						}
 					});
 	
@@ -599,19 +762,88 @@
 							mainJs.fUpdate(postData);
 					});
 					
-					
-					/* $(document).keydown(function(event){
-						　　if(event.keyCode==13){
-						　   $("#LAY-search5").click();
-						　　}
-						}); */
+					//提示人员姓名
+					$("#userId").typeahead({
+						//ajax 拿way数据
+						source : function(query, process) {
+								return $.ajax({
+									url : '${ctx}/system/user/findUserList?foreigns='+$('#isLocalFactory').val(),
+									type : 'GET',
+									data : {
+								  		temporarilyName:$.trim(query),
+									},
+									success : function(result) {
+										
+										//转换成 json集合
+										 var resultList = result.data.map(function (item) {
+											 	//转换成 json对象
+						                        var aItem = {name: item.userName, id:item.id}
+						                        //处理 json对象为字符串
+						                         return JSON.stringify(aItem); 
+						                    });
+										//提示框返回数据
+										  if(resultList==""){
+												var aItemtw = {"name":"查无此人", "id":""}
+												resultList.push(JSON.stringify(aItemtw)); 
+											} 
+										 return process(resultList);
+									},
+								})
+								//提示框显示
+							}, highlighter: function (item) {
+							    //转出成json对象
+								 var item = JSON.parse(item);
+								/*  var name;
+							      if(item.id==""){
+							    	  
+							    	  name=$('#groupNametw').val()
+							      }else{
+							    	  name=item.name
+							      } */
+								return item.name
+								//按条件匹配输出
+			                }, matcher: function (item) {
+			                	//转出成json对象
+						        var item = JSON.parse(item);
+						      /*    $('.product').val(item.name); */
+						      var name;
+						      if(item.id==""){
+						    	  name=$('#userId').val()
+						      }else{
+						    	  name=item.name
+						      }
+						      self.setCache(item.id); 
+						    	 return  name;
+						    },
+							//item是选中的数据
+							 updater:function(item){
+								//转出成json对象
+								var item = JSON.parse(item);
+								 var name;
+							      if(item.id==""){
+							    	  
+							    	  name=$('#userId').val()
+							      }else{
+							    	  name=item.name
+							      }
+								self.setCache(item.id);
+									return name
+							}, 
+						});
 						form.on('submit(LAY-search2)', function(obj) {
 							var data={
 									id:obj.field.id,
 									temporarilyDate:$("#startTime").val()
 							}
 							mainJs.loadworkingTable(data);
-					});
+					    });
+						form.on('submit(LAY-search3)', function(obj) {
+							var data={
+									type:6,
+									temporarilyDate:$("#startTime2").val()
+							}
+							mainJs.loadworking(data);
+					    });
 					//监听搜索
 					form.on('submit(LAY-search)', function(obj) {		//修改此处
 						var field = obj.field;
@@ -623,6 +855,7 @@
 							 page: { curr : 1 }
 						});  
 					});
+					 
 					$(document).on('click', '.layui-table-view tbody tr', function(event) {
 						var elemTemp = $(this);
 						var tableView = elemTemp.closest('.layui-table-view');
@@ -705,6 +938,40 @@
 						});
 						layer.close(index);
 				    },
+				    fTemporarily : function(data){
+				    	$.ajax({
+							url: "${ctx}/production/addTemporarily",
+							data: data,
+							type: "POST",
+							beforeSend: function() {
+								index;
+							},
+							success: function(result) {
+								if(0 == result.code) {
+								 	 table.reload("tableData", {
+						                page: {
+						                }
+						              }) 
+									layer.msg(result.message, {
+										icon: 1,
+										time:800
+									});
+								
+								}else {
+									layer.msg(result.message, {
+										icon: 2,
+										time:800
+									});
+								}
+							},
+							error: function() {
+								layer.msg("操作失败！请重试", {
+									icon: 2
+								});
+							},
+						});
+						layer.close(index);
+				    },
 				    loadworkingTable:function(data){
 							 var arr=new Array();
 								var html="";
@@ -758,9 +1025,76 @@
 										layer.close(index);
 									}
 								});
-						}
+						},
 					    
-					    
+						loadworking:function(data){
+							  var arr=new Array();
+								var html="";
+								$.ajax({
+									url:"${ctx}/production/getTemporarily",
+									data:data, 
+									type:"GET",
+									beforeSend:function(){
+										index = layer.load(1, { 
+											  shade: [0.1,'#fff'] //0.1透明度的白色背景
+											});
+									},
+									
+									success:function(result){
+										$(result.data).each(function(i,o){
+										html +='<tr>'
+						      				+'<td class="text-center  bacthNumber">'+o.user.userName+'</td>'
+						      				+'<td class="text-center edit allotTime">'+o.workTime+'</td>'
+						      				+'<td class="text-center edit allotTime">'+o.groupName+'</td>'
+						      				+'<td class="text-center edit allotTime">'+o.temporarilyDate+'</td>'
+						      				+'<td class="text-center edit allotTime"><button class="btn btn-sm btn-info  btn-danger delete" data-id='+o.id+'>删除</button></td></tr>'
+						      				
+										})
+										 $('#tableUserOut').html(html);
+										form.render();
+										$(".delete").on('click',function(){
+											var arr=$(this).data('id')
+											var that=$(this)
+											var postData = {
+													ids:arr,
+											}
+											var index;
+											 index = layer.confirm('确定删除吗', {btn: ['确定', '取消']},function(){
+											$.ajax({
+												url:"${ctx}/production/deleteTemporarily",
+												data:postData,
+												traditional: true,
+												type:"GET",
+												beforeSend:function(){
+													index = layer.load(1, {
+														  shade: [0.1,'#fff'] //0.1透明度的白色背景
+														});
+												},
+												
+												success:function(result){
+													if(0==result.code){
+													layer.msg("删除成功！", {icon: 1});
+													that.parent().parent().hide();
+													layer.close(index);
+													}else{
+														layer.msg("删除失败！", {icon: 1});
+														layer.close(index);
+													}
+												},error:function(){
+													layer.msg("操作失败！", {icon: 2});
+													layer.close(index);
+												}
+											});
+											 })
+						                });
+										layer.close(index);
+										
+									},error:function(){
+										layer.msg("操作失败！", {icon: 2});
+										layer.close(index);
+									}
+								});
+						  }
 					}
 
 				}
@@ -868,7 +1202,7 @@
 			
 			
 			
-			this.loadEvents = function(){
+			this.loadEvents = function(){aw
 				//修改方法
 				$('.update').on('click',function(){
 					if($(this).text() == "编辑"){

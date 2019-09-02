@@ -48,7 +48,7 @@
 							<td>结束时间:</td>
 							<td><input id="endTimeth" placeholder="请输入结束时间"
 								class="form-control laydate-icon"
-								onClick="laydate({elem: '#endTimeth', istime: true, format: 'YYYY-MM-DD hh:mm:ss'})">
+								onClick="laydate({elem: '#endTimeth', istime: true, format: 'YYYY-MM-DD 23:59:59'})">
 							</td>
 							<td>&nbsp&nbsp&nbsp&nbsp</td>
 							<td><input type="checkbox" id="check" value="1">详情</td>

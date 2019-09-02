@@ -100,12 +100,12 @@ public class RecruitServiceImpl extends BaseServiceImpl<Recruit, Long>
 			}
 			}
 			// 按入职时间
-			if (sundry.getTestTime()!=null) {
+			/*if (sundry.getTestTime()!=null) {
 			if (!StringUtils.isEmpty(sundry.getOrderTimeBegin()) && !StringUtils.isEmpty(sundry.getOrderTimeEnd())) {
 				predicate.add(cb.between(root.get("testTime").as(Date.class), sundry.getOrderTimeBegin(),
 						sundry.getOrderTimeEnd()));
 			}
-			}
+			}*/
 			Predicate[] pre = new Predicate[predicate.size()];
 			query.where(predicate.toArray(pre));
 			return null;

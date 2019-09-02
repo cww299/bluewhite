@@ -1178,14 +1178,12 @@
 						    	 return  name;
 					    },
 						//item是选中的数据
-							
 						 updater:function(item){
 							//转出成json对象
 							var item = JSON.parse(item);
 							self.setCache(item.id);
 							var name;
 						      if(item.id==""){
-						    	  
 						    	  name=$('#groupNametw').val()
 						      }else{
 						    	  name=item.name
