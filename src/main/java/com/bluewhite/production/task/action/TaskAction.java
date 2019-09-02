@@ -353,11 +353,14 @@ private static final Log log = Log.getLog(TaskAction.class);
 	@ResponseBody
 	public CommonResponse test() {
 		CommonResponse cr = new CommonResponse();
+		int count = 0;
 		List<Procedure> procedureList= procedureDao.findByType(4);
 		for(Procedure procedure : procedureList){
 			procedure.setWorkingTime(NumUtils.div(procedure.getWorkingTime(), NumUtils.mul(1.08, 1.25), 4));
 			procedureService.countPrice(procedure);
+			count++;
 		}
+		cr.setMessage(count+"条");
 		return cr;
 	}
 	
