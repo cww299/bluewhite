@@ -168,8 +168,16 @@ layui.extend({
 			else
 				toolbar = TOOLTPL.join('');
 		}
-		opt.toolbar && ( toolbar = toolbar + $(opt.toolbar).html());
-		opt.toolbar = toolbar+'</div>';									//设置工具栏模板
+		if(opt.toolbar){		//根据传入的不同模板类型进行相应的拼接
+			if(opt.toolbar.indexOf("#")>0){
+				toolbar = toolbar + $(opt.toolbar).html();
+			}else{
+				toolbar = toolbar + opt.toolbar;
+			}
+		} 
+		opt.toolbar = toolbar;									//设置工具栏模板
+		if(opt.toolbar == '')									//如果没有的话，就不开启删除相关配置
+			delete opt.toolbar;
 		var done = opt.done || null;//深拷贝回调函数
 		function newDone(res, curr, cou){	 		 //时间、下拉框类型的渲染。修改值时的同步缓存操作、工具栏的操作等------------------------------
 			if(!opt.exportField){ //开启虚拟字段导出
