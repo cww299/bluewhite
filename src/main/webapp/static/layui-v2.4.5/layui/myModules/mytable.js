@@ -9,7 +9,7 @@
  * 					cols:[[ { type:'dateTime', } ]]
  * 					cols:[[ { type:'price', }  ]]   修改时只能是数字，不能为空
  * 					cols:[[ { type:'count', }  ]]	修改时只能是正整数
- * 开启自动修改功能：autoUpdate:{  saveUrl:'修改的接口', deleUrl:'删除接口', field:{ 虚拟字段:'对应的上传值' },  },   如：customer_id 对应的上传值customerId
+ * 开启自动修改功能：autoUpdate:{  saveUrl:'修改的接口', deleUrl:'删除接口', field:{ 虚拟字段:'对应的上传值' },isReload：修改成功是否重载表格  },   如：customer_id 对应的上传值customerId
  * 增加自动curd工具模板：curd: {
  * 							btn:[1,2,3,4],  需要显示的按钮，按顺序，默认全显
  *							addTemp:{ },  新增一行给定的默认值。不给的时候、默认为空值
@@ -232,6 +232,10 @@ layui.extend({
 								myutil.saveAjax({
 									url: opt.autoUpdate.saveUrl,
 									data: data,
+									success: function(){
+										if(opt.autoUpdate.isReload)
+											table.reload(tableId);
+									}
 								})
 							}
 						}  
@@ -264,6 +268,10 @@ layui.extend({
 						myutil.saveAjax({
 							url: opt.autoUpdate.saveUrl,
 							data: data,
+							success: function(){
+								if(opt.autoUpdate.isReload)
+									table.reload(tableId);
+							}
 						})
 					}
 					trData[t] = val;  //修改缓存值
