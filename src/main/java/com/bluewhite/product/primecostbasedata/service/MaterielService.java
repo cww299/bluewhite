@@ -33,7 +33,7 @@ public interface MaterielService extends BaseCRUDService<Materiel,Long>{
 	 * @param number
 	 * @return
 	 */
-	public Double getBaseThreeOne(Long typeId, Double number);
+	public Double getBaseThreeOne(Long typeId, Long id);
 	
 
 	public PageResult<Materiel> findMaterielPages(Materiel materiel, PageParameter page);

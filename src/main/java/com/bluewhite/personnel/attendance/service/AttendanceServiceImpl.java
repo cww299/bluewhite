@@ -294,7 +294,7 @@ public class AttendanceServiceImpl extends BaseServiceImpl<Attendance, Long> imp
 		List<Attendance> attendanceList = findPageAttendance(attendance, new PageParameter(0, Integer.MAX_VALUE))
 				.getRows().stream().filter(Attendance->(Attendance.getInOutMode()==null || Attendance.getInOutMode()!=2)).collect(Collectors.toList());
 		if(attendanceList.size()>0){
-			dao.deleteInBatch(attendanceList);
+			dao.delete(attendanceList);
 		}
 		if(StringUtils.isEmpty(address)){
 			allAttendance(Constants.THREE_FLOOR, startTime, endTime,userId);

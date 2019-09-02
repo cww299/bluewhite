@@ -10,6 +10,7 @@ import javax.persistence.Transient;
 
 import com.bluewhite.base.BaseEntity;
 import com.bluewhite.product.primecostbasedata.entity.BaseOne;
+import com.bluewhite.product.primecostbasedata.entity.BaseThree;
 /**
  * (裁剪普通激光,绣花定位激光，冲床，电烫，电推，手工剪刀）
  * 不同的裁剪方式，获取不同的成本价格
@@ -52,10 +53,17 @@ public class OrdinaryLaser extends BaseEntity<Long>{
 	
 	
 	/**
-	 * 该裁片的平方M
+	 * 手选该裁片的平方M
 	 */
-	@Column(name = "tailor_size")
-    private Double tailorSize;
+	@Column(name = "tailor_size_id")
+	private Long tailorSizeId;
+	
+	/**
+	 * 裁片的平方M
+	 */
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "tailor_size_id", referencedColumnName = "id", insertable = false, updatable = false)
+	private BaseThree tailorSize;
 	
 	/**
 	 * 手选裁剪方式id
@@ -409,11 +417,19 @@ public class OrdinaryLaser extends BaseEntity<Long>{
 		this.tailorNumber = tailorNumber;
 	}
 
-	public Double getTailorSize() {
+	public Long getTailorSizeId() {
+		return tailorSizeId;
+	}
+
+	public void setTailorSizeId(Long tailorSizeId) {
+		this.tailorSizeId = tailorSizeId;
+	}
+
+	public BaseThree getTailorSize() {
 		return tailorSize;
 	}
 
-	public void setTailorSize(Double tailorSize) {
+	public void setTailorSize(BaseThree tailorSize) {
 		this.tailorSize = tailorSize;
 	}
 
