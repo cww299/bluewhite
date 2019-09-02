@@ -146,10 +146,8 @@ layui.define(['mytable','element'],function(exports){
 			btn = opt.btn;
 		$('#'+elem).html(html);	//填充真正的html内容
 		element.render();
-		mytable.render({			//裁片汇总表格
+		rederMyTable({			//裁片汇总表格
 			elem:'#'+allTable[0],
-			data:[],
-			size:'lg',
 			colsWidth:[0,7,7,7,8,10,10,10,10,10,10,10,10,10,10,10,10,10],
 			autoUpdate:{
 				saveUrl:'/product/addOrdinaryLaser',
@@ -180,12 +178,9 @@ layui.define(['mytable','element'],function(exports){
 				//isReload: true,
 			};
 		for(var i =1;i<3;i++){	//普通、绣花激光
-			mytable.render({
-				elem:'#'+allTable[i],
-				data:[],
-				size:'lg',
+			rederMyTable({
+				elem: '#'+allTable[i],
 				colsWidth:[0,7,10,6,8,6,6,6,6,6,8,10,10,10,10,10,10,10],
-				autoUpdate: autoUpdate, 
 				verify:{ 
 					price:['perimeter','time','otherTimeOne','otherTimeTwo',],
 					count:['stallPoint'],
@@ -193,7 +188,7 @@ layui.define(['mytable','element'],function(exports){
 				cols:[[
 				       { type:'checkbox',},
 				       { title:'裁剪部位',   	field:'tailorName',	},
-				       { title:'裁剪方式',   	field:'tailorType_id',	type:'select', select:{ data: allType }},
+				       { title:'裁剪方式',   	field:'tailorType_id',	type:'select', select:{ data: allType,isDisabled:true,unsearch:true }},
 				       { title:'裁片周长',   	field:'perimeter',	edit:true, },
 				       { title:'激光停顿点',   	field:'stallPoint', edit:true, },
 				       { title:'单双激光头', 	field:'singleDouble',  type:'select', select:{ data: allDouble }  },
@@ -210,12 +205,9 @@ layui.define(['mytable','element'],function(exports){
 				       ]],
 			})
 		}
-		mytable.render({		//冲床
-			elem:'#'+allTable[3],
-			data:[],
-			size:'lg',
+		rederMyTable({		//冲床
+			elem: '#'+allTable[3],
 			colsWidth:[0,0,10,6,6,6,6,6,6,11,11,11,11,],
-			autoUpdate: autoUpdate, 
 			verify:{ 
 				price:['otherTimeOne','otherTimeTwo','otherTimeThree'],
 				count:['layerNumber'],
@@ -223,7 +215,7 @@ layui.define(['mytable','element'],function(exports){
 			cols:[[
 			       { type:'checkbox',},
 			       { title:'裁剪部位',   		field:'tailorName',	},
-			       { title:'裁剪方式',   		field:'tailorType_id',	type:'select', select:{ data: allType }},
+			       { title:'裁剪方式',   		field:'tailorType_id',	type:'select', select:{ data: allType,isDisabled:true,unsearch:true }},
 			       { title:'叠片层数',   		field:'layerNumber',	edit:true, },
 			       { title:'其他时间1',   		field:'otherTimeOne',	edit:true, },
 			       { title:'其他时间2', 	 		field:'otherTimeTwo',   edit:true, },
@@ -237,20 +229,17 @@ layui.define(['mytable','element'],function(exports){
 			       ]],
 		})
 		
-		mytable.render({		//电烫
-			elem:'#'+allTable[4],
-			data:[],
-			size:'lg',
+		rederMyTable({		//电烫
+			elem: '#'+allTable[4],
 			colsWidth:[0,0,10,7,6,6,6,6,6,6,6,10,10,10,10,10,10],
-			autoUpdate: autoUpdate, 
 			verify:{ 
-				price:['otherTimeTwo','otherTimeThree'],
+				price:['otherTimeTwo','otherTimeOne'],
 				count:['typesettingNumber',],
 			},
 			cols:[[
 			       { type:'checkbox',},
 			       { title:'裁剪部位',   		field:'tailorName',	},
-			       { title:'裁剪方式',   		field:'tailorType_id',	type:'select', select:{ data: allType }},
+			       { title:'裁剪方式',   		field:'tailorType_id',	type:'select', select:{ data: allType,isDisabled:true,unsearch:true }},
 			       { title:'一板排版片数',   	field:'typesettingNumber',	edit:true, },
 			       { title:'其他时间1',   		field:'otherTimeOne',	 	edit:true, },
 			       { title:'其他时间2', 	 		field:'otherTimeTwo',   	edit:true, },
@@ -264,20 +253,17 @@ layui.define(['mytable','element'],function(exports){
 			       { title:'裁片费用', 			field:'stallPrice',  },
 			       ]],
 		})
-		mytable.render({		//电推
-			elem:'#'+allTable[5],
-			data:[],
-			size:'lg',
+		rederMyTable({		//电推
+			elem: '#'+allTable[5],
 			colsWidth:[0,0,10,6,6,6,6,6,6,10,10,10,10,],
-			autoUpdate: autoUpdate, 
 			verify:{ 
-				price:['perimeter','otherTimeTwo','otherTimeThree'],
+				price:['perimeter','otherTimeOne','otherTimeTwo',],
 				count:['layerNumber',],
 			},
 			cols:[[
 				   { type:'checkbox',},
 				   { title:'裁剪部位',   		field:'tailorName',	},
-				   { title:'裁剪方式',   		field:'tailorType_id',	type:'select', select:{ data: allType }},
+				   { title:'裁剪方式',   		field:'tailorType_id',	type:'select', select:{ data: allType,isDisabled:true,unsearch:true }},
 				   { title:'叠片层数',   		field:'layerNumber',	edit:true, },
 				   { title:'裁片周长',   		field:'perimeter',		edit:true, },
 				   { title:'其他时间1',   		field:'otherTimeOne',	edit:true, },
@@ -290,19 +276,16 @@ layui.define(['mytable','element'],function(exports){
 			       { title:'裁片费用', 			field:'stallPrice',  },
 			       ]],
 		})
-		mytable.render({		//手工剪刀
-			elem:'#'+allTable[6],
-			data:[],
-			size:'lg',
+		rederMyTable({		//手工剪刀
+			elem: '#'+allTable[6],
 			colsWidth:[0,0,10,7,7,7,7,12,12,12,12],
-			autoUpdate: autoUpdate, 
 			verify:{ 
 				price:['perimeter','otherTimeTwo','otherTimeThree'],
 			},
 			cols:[[
 			       { type:'checkbox',},
 			       { title:'裁剪部位',   		field:'tailorName',	},
-			       { title:'裁剪方式',   		field:'tailorType_id',	type:'select', select:{ data: allType }},
+			       { title:'裁剪方式',   		field:'tailorType_id',	type:'select', select:{ data: allType,isDisabled:true,unsearch:true }},
 			       { title:'裁片周长',   		field:'perimeter',	 edit:true,   },
 			       { title:'其他时间1',   		field:'otherTimeOne',edit:true,	  },
 			       { title:'其他时间2', 	 		field:'otherTimeTwo',edit:true,   },
@@ -313,6 +296,19 @@ layui.define(['mytable','element'],function(exports){
 			       { title:'裁片费用', 			field:'stallPrice',  },
 			       ]],
 		})
+		function rederMyTable(opt){
+			var newopt = $.extend({},{ 
+					data:[], 
+					size:'lg', 
+					autoUpdate: autoUpdate,
+					toolbar: '<div><span class="showProductBtn">商品：-----</span></div>',
+					done: function(){
+						var check = table.checkStatus('productTable').data;
+						check[0] && $('.showProductBtn').html('商品名称：'+check[0].name);
+					}
+				},opt);
+			mytable.render(newopt);
+		}
 		element.on('tab(tabFilterTailor)', function(obj){
 			var check = table.checkStatus('productTable').data;		
 			var index = obj.index;
