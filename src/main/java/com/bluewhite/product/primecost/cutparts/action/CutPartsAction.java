@@ -72,13 +72,6 @@ public class CutPartsAction {
 			cr.setMessage("产品不能为空");
 		} else {
 			cutPartsService.saveCutParts(cutParts);
-			PrimeCost primeCost = primeCostDao.findByProductId(cutParts.getProductId());
-			if(primeCost == null){
-				 primeCost = new PrimeCost();
-				 primeCost.setProductId(cutParts.getProductId());
-			}
-			productService.getPrimeCost(primeCost);
-			cutParts.setOneCutPartsPrice(primeCost.getOneCutPartsPrice());
 			cr.setMessage("添加成功");
 		}
 		return cr;

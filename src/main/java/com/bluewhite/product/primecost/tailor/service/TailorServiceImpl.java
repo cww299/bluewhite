@@ -58,7 +58,6 @@ public class TailorServiceImpl extends BaseServiceImpl<Tailor, Long> implements 
 		OrdinaryLaser prams = null;
 		if(tailor.getOrdinaryLaserId()==null){
 			prams = new OrdinaryLaser();
-			prams.setTailorId(tailor.getId());
 		}else{
 			prams = ordinaryLaserDao.findOne(tailor.getOrdinaryLaserId());
 		}
@@ -233,11 +232,12 @@ public class TailorServiceImpl extends BaseServiceImpl<Tailor, Long> implements 
 		default:
 			break;
 		}
-		ordinaryLaserDao.save(prams);
 		// 将裁剪方式和裁剪页面数据进行关联，实现一对一的同步更新
+		ordinaryLaserDao.save(prams);
 		tailor.setOrdinaryLaserId(prams.getId());
 		dao.save(tailor);
-		return prams;
+		prams.setTailorId(tailor.getId());   
+		return ordinaryLaserDao.save(prams);
 	}
 
 	@Override
