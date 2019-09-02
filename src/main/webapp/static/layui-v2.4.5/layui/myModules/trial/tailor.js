@@ -177,6 +177,7 @@ layui.define(['mytable','element'],function(exports){
 		var autoUpdate = {		//其他普通页面的修改配置
 				saveUrl:'/product/addOrdinaryLaser',
 				field: { tailorType_id:'tailorTypeId'},
+				//isReload: true,
 			};
 		for(var i =1;i<3;i++){	//普通、绣花激光
 			mytable.render({
@@ -186,7 +187,8 @@ layui.define(['mytable','element'],function(exports){
 				colsWidth:[0,7,10,6,8,6,6,6,6,6,8,10,10,10,10,10,10,10],
 				autoUpdate: autoUpdate, 
 				verify:{ 
-					price:['perimeter','time','otherTimeOne','otherTimeTwo','stallPoint'],
+					price:['perimeter','time','otherTimeOne','otherTimeTwo',],
+					count:['stallPoint'],
 				},
 				cols:[[
 				       { type:'checkbox',},
