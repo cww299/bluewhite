@@ -173,13 +173,13 @@ public class TaskServiceImpl extends BaseServiceImpl<Task, Long> implements Task
 							Double groupWorkTime = null;
 							if(task.getGroupId()!=null){
 								GroupTime groupTime = groupTimeDao.findByUserIdAndTypeAndGroupIdAndAllotTime(
-										userId, task.getType(), task.getGroupId(), DatesUtil.getfristDayOftime(task.getAllotTime()));
+ 										userId, task.getType(), task.getGroupId(), DatesUtil.getfristDayOftime(task.getAllotTime()));
 								if(groupTime != null){
-									if((groupTime.getStartTime().before(task.getAllotTime()) || groupTime.getStartTime().compareTo(task.getAllotTime()) == 0) 
-									&& (groupTime.getEndTime().after(task.getAllotTime()) || groupTime.getEndTime().compareTo(task.getAllotTime())==0)){
+									if((groupTime.getStartTime()!=null && (groupTime.getStartTime().before(task.getAllotTime()) || groupTime.getStartTime().compareTo(task.getAllotTime()) == 0)) 
+									&& (groupTime.getEndTime()!=null && ( groupTime.getEndTime().after(task.getAllotTime()) || groupTime.getEndTime().compareTo(task.getAllotTime())==0))){
 										groupWorkTime = groupTime.getGroupWorkTime();
 									}else{
-										groupWorkTime = 0.0;
+										groupWorkTime = null;
 									}
 								}
 							}
@@ -217,13 +217,12 @@ public class TaskServiceImpl extends BaseServiceImpl<Task, Long> implements Task
 								workTime = temporarilyNewList.stream().mapToDouble(Temporarily::getWorkTime).sum();
 							} 
 							if (attendancePayNewList.size()>0) {
-								Double groupWorkTime = null;
 								if(task.getGroupId()!=null){
 									GroupTime groupTime = groupTimeDao.findByUserIdAndTypeAndGroupIdAndAllotTime(
 											userId, task.getType(), task.getGroupId(), DatesUtil.getfristDayOftime(task.getAllotTime()));
 									if(groupTime != null){
-										if((groupTime.getStartTime().before(task.getAllotTime()) || groupTime.getStartTime().compareTo(task.getAllotTime()) == 0) 
-												&& (groupTime.getEndTime().after(task.getAllotTime()) || groupTime.getEndTime().compareTo(task.getAllotTime())==0)){
+										if((groupTime.getStartTime()!=null && (groupTime.getStartTime().before(task.getAllotTime()) || groupTime.getStartTime().compareTo(task.getAllotTime()) == 0)) 
+												&& (groupTime.getEndTime()!=null && ( groupTime.getEndTime().after(task.getAllotTime()) || groupTime.getEndTime().compareTo(task.getAllotTime())==0))){
 													workTime = groupTime.getGroupWorkTime();
 												}else{
 													workTime = 0.0;
