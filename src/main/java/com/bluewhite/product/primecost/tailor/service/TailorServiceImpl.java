@@ -21,7 +21,9 @@ import com.bluewhite.product.primecost.tailor.dao.OrdinaryLaserDao;
 import com.bluewhite.product.primecost.tailor.dao.TailorDao;
 import com.bluewhite.product.primecost.tailor.entity.OrdinaryLaser;
 import com.bluewhite.product.primecost.tailor.entity.Tailor;
+import com.bluewhite.product.primecostbasedata.dao.BaseThreeDao;
 import com.bluewhite.product.primecostbasedata.dao.PrimeCoefficientDao;
+import com.bluewhite.product.primecostbasedata.entity.BaseThree;
 import com.bluewhite.product.primecostbasedata.entity.PrimeCoefficient;
 import com.bluewhite.product.primecostbasedata.service.MaterielService;
 import com.bluewhite.product.product.dao.ProductDao;
@@ -41,6 +43,8 @@ public class TailorServiceImpl extends BaseServiceImpl<Tailor, Long> implements 
 	private PrimeCoefficientDao primeCoefficientDao;
 	@Autowired
 	private MaterielService materielService;
+	@Autowired
+	private BaseThreeDao baseThreeDao;
 
 	@Override
 	@Transactional
@@ -101,6 +105,7 @@ public class TailorServiceImpl extends BaseServiceImpl<Tailor, Long> implements 
 		prams.setTailorId(tailor.getId());
 		prams.setPerimeter(NumUtils.setzro(cutParts.getPerimeter()));
 		prams.setTime(prams.getTime() != null ? prams.getTime() : 0.5);
+		double tailorSize = baseThreeDao.findOne(prams.getTailorSizeId()).getOrdinaryLaser();
 		switch (tailor.getTailorTypeId().intValue()) {
 		case 71:// 普通激光切割
 			type = "ordinarylaser";
@@ -113,7 +118,7 @@ public class TailorServiceImpl extends BaseServiceImpl<Tailor, Long> implements 
 					(double)prams.getStallPoint(), primeCoefficient.getPauseTime());
 			// 拉布时间
 			if(primeCoefficient.getQuilt()!=0){
-				prams.setRabbTime(NumUtils.mul(NumUtils.div(prams.getTailorSize().getOrdinaryLaser(), primeCoefficient.getQuilt(), 3),
+				prams.setRabbTime(NumUtils.mul(NumUtils.div(tailorSize, primeCoefficient.getQuilt(), 3),
 						primeCoefficient.getRabbTime()));
 			}
 			// 单片激光需要用净时
@@ -158,7 +163,7 @@ public class TailorServiceImpl extends BaseServiceImpl<Tailor, Long> implements 
 			}
 			// 拉布时间
 			if( primeCoefficient.getQuilt()!=0){
-				prams.setRabbTime(NumUtils.mul(NumUtils.div(prams.getTailorSize().getOrdinaryLaser(), primeCoefficient.getQuilt(), 3),
+				prams.setRabbTime(NumUtils.mul(NumUtils.div(tailorSize, primeCoefficient.getQuilt(), 3),
 						primeCoefficient.getRabbTime()));
 			}
 			double singleLaserTimeOne = NumUtils.mul(prams.getPerimeter(), primeCoefficient.getTime(),
@@ -193,7 +198,7 @@ public class TailorServiceImpl extends BaseServiceImpl<Tailor, Long> implements 
 			prams.setTailorType(type);
 			tailor.setTailorType(type);
 			// 拉布秒数（含快手)
-			prams.setRabbTime(NumUtils.mul(NumUtils.div(NumUtils.div(primeCoefficient.getPermOne(), 1.5 , 3) , prams.getTailorSize().getOrdinaryLaser(),3) 
+			prams.setRabbTime(NumUtils.mul(NumUtils.div(NumUtils.div(primeCoefficient.getPermOne(), 1.5 , 3) , tailorSize,3) 
 					, primeCoefficient.getQuickWorker()));
 			break;
 		case 74:// 设备电烫(暂无)
