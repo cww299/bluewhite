@@ -50,7 +50,14 @@ public class TailorServiceImpl extends BaseServiceImpl<Tailor, Long> implements 
 		Double managePrice = materielService.getBaseThreeOne(tailor.getTailorTypeId(), tailor.getTailorSizeId());
 		tailor.setManagePrice(managePrice);
 		tailor.setCostPrice(managePrice);
-		OrdinaryLaser prams = ordinaryLaserDao.findByTailorId(tailor.getId());
+		//裁剪方式
+		OrdinaryLaser prams = null;
+		if(tailor.getOrdinaryLaserId()==null){
+			prams = new OrdinaryLaser();
+			prams.setTailorId(tailor.getId());
+		}else{
+			prams = ordinaryLaserDao.findOne(tailor.getOrdinaryLaserId());
+		}
 		NumUtils.setzro(prams);
 		// 得到实验推算价格
 		tailor.setExperimentPrice(prams.getStallPrice());

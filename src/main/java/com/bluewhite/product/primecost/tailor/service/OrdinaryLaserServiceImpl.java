@@ -46,66 +46,55 @@ public class OrdinaryLaserServiceImpl extends BaseServiceImpl<OrdinaryLaser, Lon
 		switch (ordinaryLaser.getTailorTypeId().intValue()) {
 		case 71:// 普通激光切割
 			// 得到理论(市场反馈）含管理价值
-			ordinaryLaser.setManagePrice(primeCoefficient.getPeripheralLaser() / 100 * ordinaryLaser.getPerimeter());
+			ordinaryLaser.setManagePrice(NumUtils.div(NumUtils.mul(primeCoefficient.getPeripheralLaser(),ordinaryLaser.getPerimeter()),100 ,5));
+			double singleLaserTime = NumUtils.mul(ordinaryLaser.getPerimeter(), primeCoefficient.getTime(),
+					(double)ordinaryLaser.getStallPoint(), primeCoefficient.getPauseTime());
 			// 单片激光需要用净时
 			if (ordinaryLaser.getSingleDouble() == 2) {
-				ordinaryLaser.setSingleLaserTime(((ordinaryLaser.getPerimeter() * primeCoefficient.getTime())
-						+ (ordinaryLaser.getStallPoint() * primeCoefficient.getPauseTime())) / 2
-						+ ordinaryLaser.getRabbTime() + ordinaryLaser.getTime());
+				ordinaryLaser.setSingleLaserTime(NumUtils.sum(NumUtils.div(singleLaserTime, 2, 3), ordinaryLaser.getRabbTime()));
 			} else {
-				ordinaryLaser.setSingleLaserTime(((ordinaryLaser.getPerimeter() * primeCoefficient.getTime())
-						+ (ordinaryLaser.getStallPoint() * primeCoefficient.getPauseTime()))
-						+ ordinaryLaser.getRabbTime() + ordinaryLaser.getTime());
+				ordinaryLaser.setSingleLaserTime(NumUtils.sum(singleLaserTime, ordinaryLaser.getRabbTime()));
 			}
 			// 单片激光放快手时间
-			ordinaryLaser.setSingleLaserHandTime(
-					ordinaryLaser.getSingleLaserTime() * 1.08 * primeCoefficient.getQuickWorker());
+			ordinaryLaser.setSingleLaserHandTime(NumUtils.mul( ordinaryLaser.getSingleLaserTime() , 1.08 , primeCoefficient.getQuickWorker()));
 			// 工价（含快手)
-			ordinaryLaser
-					.setLabourCost(ordinaryLaser.getSingleLaserHandTime() * primeCoefficient.getPerSecondMachinist());
+			ordinaryLaser.setLabourCost(NumUtils.mul(ordinaryLaser.getSingleLaserHandTime() , primeCoefficient.getPerSecondMachinist()));
 			// 设备折旧和房水电费
-			ordinaryLaser
-					.setEquipmentPrice((primeCoefficient.getDepreciation() + primeCoefficient.getLaserTubePriceSecond()
-							+ primeCoefficient.getMaintenanceChargeSecond() + primeCoefficient.getPerSecondPrice())
-							* ordinaryLaser.getSingleLaserHandTime());
+			ordinaryLaser.setEquipmentPrice(NumUtils.mul(
+					NumUtils.sum(primeCoefficient.getDepreciation(), primeCoefficient.getLaserTubePriceSecond(),
+							primeCoefficient.getMaintenanceChargeSecond(), primeCoefficient.getPerSecondPrice()),
+					ordinaryLaser.getSingleLaserHandTime()));
 			// 管理人员费用
 			ordinaryLaser.setAdministrativeAtaff(
-					primeCoefficient.getPerSecondManage() * ordinaryLaser.getSingleLaserHandTime());
-
+					NumUtils.mul(primeCoefficient.getPerSecondManage(), ordinaryLaser.getSingleLaserHandTime()));
 			break;
 		case 72:// 绣花激光切割
 			// 得到理论(市场反馈）含管理价值
 			if (ordinaryLaser.getPerimeter() < primeCoefficient.getPerimeterLess()) {
-				ordinaryLaser.setManagePrice(
-						primeCoefficient.getPerimeterLessNumber() + primeCoefficient.getPerimeterLessNumber());
+				ordinaryLaser.setManagePrice(NumUtils.sum(primeCoefficient.getPerimeterLessNumber() , primeCoefficient.getPerimeterLessNumber()));
 			} else {
-				ordinaryLaser.setManagePrice(primeCoefficient.getPeripheralLaser() / 100 * ordinaryLaser.getPerimeter()
-						+ primeCoefficient.getEmbroideryLaserNumber());
+				ordinaryLaser.setManagePrice(NumUtils.div(NumUtils.mul(primeCoefficient.getPeripheralLaser(),ordinaryLaser.getPerimeter()),100 ,5));
 			}
 			// 单片激光需要用净时
+			double singleLaserTimeOne = NumUtils.mul(ordinaryLaser.getPerimeter(), primeCoefficient.getTime(),
+					(double)ordinaryLaser.getStallPoint(), primeCoefficient.getPauseTime());
 			if (ordinaryLaser.getSingleDouble() == 2) {
-				ordinaryLaser.setSingleLaserTime(((ordinaryLaser.getPerimeter() * primeCoefficient.getTime())
-						+ (ordinaryLaser.getStallPoint() * primeCoefficient.getPauseTime())) / 2
-						+ ordinaryLaser.getRabbTime() + ordinaryLaser.getTime() + ordinaryLaser.getEmbroiderTime());
+				ordinaryLaser.setSingleLaserTime(NumUtils.sum(NumUtils.div(singleLaserTimeOne, 2, 3), ordinaryLaser.getRabbTime()));
 			} else {
-				ordinaryLaser.setSingleLaserTime(((ordinaryLaser.getPerimeter() * primeCoefficient.getTime())
-						+ (ordinaryLaser.getStallPoint() * primeCoefficient.getPauseTime()))
-						+ ordinaryLaser.getRabbTime() + ordinaryLaser.getTime() + ordinaryLaser.getEmbroiderTime());
+				ordinaryLaser.setSingleLaserTime(NumUtils.sum(singleLaserTimeOne, ordinaryLaser.getRabbTime()));
 			}
 			// 单片激光放快手时间
-			ordinaryLaser.setSingleLaserHandTime(
-					ordinaryLaser.getSingleLaserTime() * 1.08 * primeCoefficient.getQuickWorker());
+			ordinaryLaser.setSingleLaserHandTime( NumUtils.mul(ordinaryLaser.getSingleLaserTime() , 1.08 , primeCoefficient.getQuickWorker()));
 			// 工价（含快手)
-			ordinaryLaser
-					.setLabourCost(ordinaryLaser.getSingleLaserHandTime() * primeCoefficient.getPerSecondMachinist());
+			ordinaryLaser.setLabourCost(NumUtils.mul(ordinaryLaser.getSingleLaserHandTime() , primeCoefficient.getPerSecondMachinist()));
 			// 设备折旧和房水电费
-			ordinaryLaser
-					.setEquipmentPrice((primeCoefficient.getDepreciation() + primeCoefficient.getLaserTubePriceSecond()
-							+ primeCoefficient.getMaintenanceChargeSecond() + primeCoefficient.getPerSecondPrice())
-							* ordinaryLaser.getSingleLaserHandTime());
+			ordinaryLaser.setEquipmentPrice(NumUtils.mul(
+					NumUtils.sum(primeCoefficient.getDepreciation(), primeCoefficient.getLaserTubePriceSecond(),
+							primeCoefficient.getMaintenanceChargeSecond(), primeCoefficient.getPerSecondPrice()),
+					ordinaryLaser.getSingleLaserHandTime()));
 			// 管理人员费用
 			ordinaryLaser.setAdministrativeAtaff(
-					primeCoefficient.getPerSecondManage() * ordinaryLaser.getSingleLaserHandTime());
+					NumUtils.mul(primeCoefficient.getPerSecondManage(), ordinaryLaser.getSingleLaserHandTime()));
 
 			break;
 		case 73:// 手工电烫
