@@ -76,7 +76,7 @@ public class PrimeCoefficient extends BaseEntity<Long>{
 	private Double rabbTime;
 	
 	/**
-	 *被/数
+	 * 被/数
 	 */
 	@Column(name = "quilt")
 	private Double quilt;
