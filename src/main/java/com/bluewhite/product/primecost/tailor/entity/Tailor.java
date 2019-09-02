@@ -2,10 +2,14 @@ package com.bluewhite.product.primecost.tailor.entity;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 
 import com.bluewhite.base.BaseEntity;
+import com.bluewhite.product.primecostbasedata.entity.BaseThree;
 
 /**
  * 裁剪页面
@@ -68,8 +72,16 @@ public class Tailor extends BaseEntity<Long> {
 	/**
 	 * 手选该裁片的平方M
 	 */
-	@Column(name = "tailor_size")
-	private Double tailorSize;
+	@Column(name = "tailor_size_id")
+	private Long tailorSizeId;
+	
+	/**
+	 * 裁片的平方M
+	 */
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "tailor_size_id", referencedColumnName = "id", insertable = false, updatable = false)
+	private BaseThree tailorSize;
+	
 
 	/**
 	 * 手选裁剪方式id
@@ -148,6 +160,26 @@ public class Tailor extends BaseEntity<Long> {
 	 */
 	@Transient
 	private Double oneCutPrice;
+	
+	
+
+	
+
+	public Long getTailorSizeId() {
+		return tailorSizeId;
+	}
+
+	public void setTailorSizeId(Long tailorSizeId) {
+		this.tailorSizeId = tailorSizeId;
+	}
+
+	public BaseThree getTailorSize() {
+		return tailorSize;
+	}
+
+	public void setTailorSize(BaseThree tailorSize) {
+		this.tailorSize = tailorSize;
+	}
 
 	public Long getEmbroideryId() {
 		return embroideryId;
@@ -219,14 +251,6 @@ public class Tailor extends BaseEntity<Long> {
 
 	public void setBacthTailorNumber(Integer bacthTailorNumber) {
 		this.bacthTailorNumber = bacthTailorNumber;
-	}
-
-	public Double getTailorSize() {
-		return tailorSize;
-	}
-
-	public void setTailorSize(Double tailorSize) {
-		this.tailorSize = tailorSize;
 	}
 
 	public String getTailorType() {

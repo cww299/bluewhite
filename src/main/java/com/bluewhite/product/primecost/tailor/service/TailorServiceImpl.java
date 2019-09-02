@@ -45,17 +45,16 @@ public class TailorServiceImpl extends BaseServiceImpl<Tailor, Long> implements 
 	@Override
 	@Transactional
 	public Tailor saveTailor(Tailor tailor) {
+		NumUtils.setzro(tailor);
 		// 当同一个裁剪页面实体，改变了类型，进行保存操作。同时删除之前关联的类型实体
 		OrdinaryLaser prams = ordinaryLaserDao.findByTailorId(tailor.getId());
 		// 不含绣花环节的为机工压价
-		tailor.setNoeMbroiderPriceDown(NumUtils.setzro(tailor.getAllCostPrice()) + tailor.getPriceDown());
+		tailor.setNoeMbroiderPriceDown(NumUtils.sum(tailor.getAllCostPrice() , tailor.getPriceDown()));
 		// 含绣花环节的为机工压价
-		tailor.setEmbroiderPriceDown(0.0);
+		
 		// 为机工准备的压价
-		double MachinistPriceDown = tailor.getNoeMbroiderPriceDown() >= NumUtils.setzro(tailor.getEmbroiderPriceDown())
-				? tailor.getNoeMbroiderPriceDown() : NumUtils.setzro(tailor.getEmbroiderPriceDown());
+		double MachinistPriceDown = tailor.getNoeMbroiderPriceDown() >= tailor.getEmbroiderPriceDown() ? tailor.getNoeMbroiderPriceDown() : tailor.getEmbroiderPriceDown();
 		tailor.setMachinistPriceDown(MachinistPriceDown);
-
 		if (prams != null && !prams.getId().equals(tailor.getOrdinaryLaserId())) {
 			ordinaryLaserDao.delete(prams);
 		}
@@ -69,7 +68,7 @@ public class TailorServiceImpl extends BaseServiceImpl<Tailor, Long> implements 
 			}
 
 		}
-		this.getOrdinaryLaserDate(tailor, prams1);
+		getOrdinaryLaserDate(tailor, prams1);
 		return tailor;
 	}
 
@@ -84,7 +83,7 @@ public class TailorServiceImpl extends BaseServiceImpl<Tailor, Long> implements 
 		prams.setTailorName(tailor.getTailorName());
 		prams.setNumber(tailor.getNumber());
 		prams.setTailorNumber(tailor.getTailorNumber());
-		prams.setTailorSize(tailor.getTailorSize());
+		prams.setTailorSizeId(tailor.getTailorSizeId());
 		prams.setTailorId(tailor.getId());
 		prams.setPerimeter(NumUtils.setzro(cutParts.getPerimeter()));
 		prams.setTime(prams.getTime() != null ? prams.getTime() : 0.5);
@@ -99,7 +98,7 @@ public class TailorServiceImpl extends BaseServiceImpl<Tailor, Long> implements 
 			double singleLaserTime = NumUtils.mul(prams.getPerimeter(), primeCoefficient.getTime(),
 					(double)prams.getStallPoint(), primeCoefficient.getPauseTime());
 			// 拉布时间
-			prams.setRabbTime(NumUtils.mul(NumUtils.div(prams.getTailorSize(), primeCoefficient.getQuilt(), 3),
+			prams.setRabbTime(NumUtils.mul(NumUtils.div(prams.getTailorSize().getOrdinaryLaser(), primeCoefficient.getQuilt(), 3),
 					primeCoefficient.getRabbTime()));
 			// 单片激光需要用净时
 			if (prams.getSingleDouble() == 2) {
@@ -142,7 +141,7 @@ public class TailorServiceImpl extends BaseServiceImpl<Tailor, Long> implements 
 						+ primeCoefficient.getEmbroideryLaserNumber());
 			}
 			// 拉布时间
-			prams.setRabbTime(NumUtils.mul(NumUtils.div(prams.getTailorSize(), primeCoefficient.getQuilt(), 3),
+			prams.setRabbTime(NumUtils.mul(NumUtils.div(prams.getTailorSize().getOrdinaryLaser(), primeCoefficient.getQuilt(), 3),
 					primeCoefficient.getRabbTime()));
 			double singleLaserTimeOne = NumUtils.mul(prams.getPerimeter(), primeCoefficient.getTime(),
 					(double)prams.getStallPoint(), primeCoefficient.getPauseTime());
@@ -176,7 +175,7 @@ public class TailorServiceImpl extends BaseServiceImpl<Tailor, Long> implements 
 			prams.setTailorType(type);
 			tailor.setTailorType(type);
 			// 拉布秒数（含快手)
-			prams.setRabbTime(NumUtils.mul(NumUtils.div(NumUtils.div(primeCoefficient.getPermOne(), 1.5 , 3) , prams.getTailorSize(),3) 
+			prams.setRabbTime(NumUtils.mul(NumUtils.div(NumUtils.div(primeCoefficient.getPermOne(), 1.5 , 3) , prams.getTailorSize().getOrdinaryLaser(),3) 
 					, primeCoefficient.getQuickWorker()));
 			break;
 		case 74:// 设备电烫
@@ -187,21 +186,21 @@ public class TailorServiceImpl extends BaseServiceImpl<Tailor, Long> implements 
 			prams.setTailorType(type);
 			tailor.setTailorType(type);
 			// 得到理论(市场反馈）含管理价值
-			prams.setManagePrice(materielService.getBaseThreeOne(prams.getTailorTypeId(), prams.getTailorSize()));
+			prams.setManagePrice(materielService.getBaseThreeOne(prams.getTailorTypeId(), prams.getTailorSizeId()));
 			break;
 		case 76:// 电推
 			type = "electricPush";
 			prams.setTailorType(type);
 			tailor.setTailorType(type);
 			// 得到理论(市场反馈）含管理价值
-			prams.setManagePrice(materielService.getBaseThreeOne(prams.getTailorTypeId(), prams.getTailorSize()));
+			prams.setManagePrice(materielService.getBaseThreeOne(prams.getTailorTypeId(),  prams.getTailorSizeId()));
 			break;
 		case 77:// 手工剪刀
 			type = "manual";
 			prams.setTailorType(type);
 			tailor.setTailorType(type);
 			// 得到理论(市场反馈）含管理价值
-			prams.setManagePrice(materielService.getBaseThreeOne(prams.getTailorTypeId(), prams.getTailorSize()));
+			prams.setManagePrice(materielService.getBaseThreeOne(prams.getTailorTypeId(), prams.getTailorSizeId()));
 			break;
 		case 78:// 绣花领取
 
@@ -243,7 +242,7 @@ public class TailorServiceImpl extends BaseServiceImpl<Tailor, Long> implements 
 	@Override
 	public Tailor getTailorDate(Tailor tailor, OrdinaryLaser ordinaryLaser) {
 		// 得到理论(市场反馈）含管理价值
-		Double managePrice = materielService.getBaseThreeOne(tailor.getTailorTypeId(), tailor.getTailorSize());
+		Double managePrice = materielService.getBaseThreeOne(tailor.getTailorTypeId(), tailor.getTailorSizeId());
 		tailor.setManagePrice(managePrice);
 		tailor.setCostPrice(managePrice);
 		// 得到实验推算价格

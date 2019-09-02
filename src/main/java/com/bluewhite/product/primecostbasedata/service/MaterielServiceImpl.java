@@ -80,8 +80,8 @@ public class MaterielServiceImpl extends BaseServiceImpl<Materiel, Long> impleme
 	}
 
 	@Override
-	public Double getBaseThreeOne(Long typeId, Double number) {
-		BaseThree baseThree = baseThreeDao.findByOrdinaryLaser(number);
+	public Double getBaseThreeOne(Long typeId, Long id) {
+		BaseThree baseThree = baseThreeDao.findOne(id);
 		
 		double returnNumber = 0 ;
 		

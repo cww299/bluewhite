@@ -777,7 +777,7 @@ public class ReportExportAction {
         cell.setCellValue("签到时间");  
         cell.setCellStyle(style); 
         List<Attendance> attendanceList = attendanceService.findPageAttendance(attendance,new PageParameter(0,Integer.MAX_VALUE)).getRows();
-        SimpleDateFormat sdf =   new SimpleDateFormat("yyyy-MM-dd HH:mm:ss"); 
+        SimpleDateFormat sdf =  new SimpleDateFormat("yyyy-MM-dd HH:mm:ss"); 
     	for (int i = 0; i < attendanceList.size(); i++)  
         {  
             row = sheet.createRow( i + 1);  
@@ -787,7 +787,7 @@ public class ReportExportAction {
             row.createCell(2).setCellValue(sdf.format(attendanceList.get(i).getTime()));  
         } 
     try {	
-    	OutputStream outputStream=response.getOutputStream();
+    	OutputStream outputStream = response.getOutputStream();
     	wb.write(outputStream);
     	outputStream.flush();
     	outputStream.close(); 

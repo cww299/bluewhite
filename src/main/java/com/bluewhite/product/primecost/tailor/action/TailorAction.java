@@ -3,7 +3,6 @@ package com.bluewhite.product.primecost.tailor.action;
 import java.text.SimpleDateFormat;
 
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpSession;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.propertyeditors.CustomDateEditor;
@@ -17,22 +16,21 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.support.ByteArrayMultipartFileEditor;
 
 import com.bluewhite.common.BeanCopyUtils;
+import com.bluewhite.common.ClearCascadeJSON;
 import com.bluewhite.common.DateTimePattern;
 import com.bluewhite.common.Log;
 import com.bluewhite.common.entity.CommonResponse;
 import com.bluewhite.common.entity.ErrorCode;
 import com.bluewhite.common.entity.PageParameter;
 import com.bluewhite.common.entity.PageResult;
-import com.bluewhite.product.primecost.cutparts.entity.CutParts;
-import com.bluewhite.product.primecost.embroidery.entity.Embroidery;
 import com.bluewhite.product.primecost.primecost.dao.PrimeCostDao;
 import com.bluewhite.product.primecost.primecost.entity.PrimeCost;
 import com.bluewhite.product.primecost.tailor.entity.OrdinaryLaser;
 import com.bluewhite.product.primecost.tailor.entity.Tailor;
 import com.bluewhite.product.primecost.tailor.service.OrdinaryLaserService;
 import com.bluewhite.product.primecost.tailor.service.TailorService;
-import com.bluewhite.product.primecostbasedata.entity.PrimeCoefficient;
-import com.bluewhite.product.product.entity.Product;
+import com.bluewhite.product.primecostbasedata.entity.BaseThree;
+import com.bluewhite.product.primecostbasedata.entity.Materiel;
 import com.bluewhite.product.product.service.ProductService;
 
 @Controller
@@ -49,7 +47,17 @@ public class TailorAction {
 	@Autowired
 	private PrimeCostDao primeCostDao;
 	
-
+	private ClearCascadeJSON clearCascadeJSON;
+	{
+		clearCascadeJSON = ClearCascadeJSON
+				.get().addRetainTerm(Tailor.class, "id", "productId", "number", "cutPartsId", "ordinaryLaserId", 
+						"embroideryId", "tailorName","tailorNumber","bacthTailorNumber","tailorSize","tailorType"
+						,"tailorTypeId","managePrice","experimentPrice","ratePrice","costPrice","allCostPrice","scaleMaterial"
+						,"priceDown","noeMbroiderPriceDown","embroiderPriceDown","machinistPriceDown","oneCutPrice")
+				.addRetainTerm(BaseThree.class, "id" ,"ordinaryLaser");
+	}
+	
+	
 	/**
 	 * 裁剪填写
 	 * 
@@ -68,10 +76,9 @@ public class TailorAction {
 				Tailor oldTailor = tailorService.findOne(tailor.getId());
 				BeanCopyUtils.copyNotEmpty(tailor,oldTailor,"");
 				tailorService.saveTailor(oldTailor);
-				PrimeCost primeCost = primeCostDao.findByProductId(oldTailor.getProductId());
-				productService.getPrimeCost(primeCost);
-				tailor.setOneCutPrice(primeCost.getOneCutPrice());
-				cr.setData(tailor);
+//				PrimeCost primeCost = primeCostDao.findByProductId(oldTailor.getProductId());
+//				productService.getPrimeCost(primeCost);
+//				tailor.setOneCutPrice(primeCost.getOneCutPrice());
 				cr.setMessage("添加成功");
 		}
 		return cr;
@@ -89,18 +96,16 @@ public class TailorAction {
 	@ResponseBody
 	public CommonResponse getTailor(HttpServletRequest request,PageParameter page,Tailor tailor) {
 		CommonResponse cr = new CommonResponse();
-		PageResult<Tailor>  tailorList= new PageResult<>(); 
-		if(tailor.getProductId()!=null){
-				tailorList = tailorService.findPages(tailor,page);
-				PrimeCost primeCost = new PrimeCost();
-				primeCost.setProductId(tailor.getProductId());
-				productService.getPrimeCost(primeCost);
-				for(Tailor tl : tailorList.getRows()){
-					tl.setOneCutPrice(primeCost.getOneCutPrice());
-				}
-		
-		}
-		cr.setData(tailorList);
+		PageResult<Tailor>  tailorList = tailorService.findPages(tailor,page);
+//		if(tailor.getProductId()!=null){
+//				PrimeCost primeCost = new PrimeCost();
+//				primeCost.setProductId(tailor.getProductId());
+//				productService.getPrimeCost(primeCost);
+//				for(Tailor tl : tailorList.getRows()){
+//					tl.setOneCutPrice(primeCost.getOneCutPrice());
+//				}
+//		}
+		cr.setData(clearCascadeJSON.format(tailorList).toJSON());
 		cr.setMessage("查询成功");
 		return cr;
 	}
