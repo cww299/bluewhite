@@ -27,7 +27,7 @@
 					<td>&nbsp;&nbsp;</td>
 					<shiro:lacksRole name="attendanceStatistician">
 						<td>员工部门:</td>
-						<td><select name="orgNameId" id="department"><option value="">请选择</option></select></td>
+						<td><select name="orgNameId" id="department" lay-search><option value="">请选择</option></select></td>
 						<td>&nbsp;&nbsp;</td>
 					</shiro:lacksRole>
 					<td>开始时间:</td>
@@ -157,7 +157,7 @@ layui.use(['table','jquery','form','laydate','layer'],function(){
 		})
 	}); 
 	$('#export').on('click',function() {
-		var userName = $('#userName').val();
+		var userId = $('#userId').val();
 		var orgNameId = $("#department").val();
 		var number = $('#number').val();
 		var orderTimeBegin = '';
@@ -168,7 +168,7 @@ layui.use(['table','jquery','form','laydate','layer'],function(){
 			orderTimeBegin = val.split('~')[0]+'00:00:00';
 			orderTimeEnd = val.split('~')[1]+' 23:59:59';
 		}
-		location.href = "${ctx}/excel/importExcel/personnel/DownAttendanceSign?userName=" + (userName || "") + "&orgNameId=" + orgNameId + "&orderTimeBegin=" + orderTimeBegin
+		location.href = "${ctx}/excel/importExcel/personnel/DownAttendanceSign?userId=" + (userId || "") + "&orgNameId=" + orgNameId + "&orderTimeBegin=" + orderTimeBegin
 				+ "&orderTimeEnd=" + orderTimeEnd + "" +"&number="+number;
 	});
 	function getMode(){

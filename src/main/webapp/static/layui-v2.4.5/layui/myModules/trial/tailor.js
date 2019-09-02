@@ -8,6 +8,7 @@ layui.define(['mytable','element'],function(exports){
 		element = layui.element
 		table = layui.table,
 		myutil = layui.myutil;
+	var tipText = '<td><span class="layui-badge">提示：小红点标志表示（含快手）</span></td>';
 	var html = [
 	            '<div class="layui-tab layui-tab-brief" lay-filter="tabFilterTailor">',
 					'<ul class="layui-tab-title">',
@@ -38,12 +39,14 @@ layui.define(['mytable','element'],function(exports){
 							'</tr><table>',
 							'<table id="tailorPageTable" lay-filter="tailorPageTable"></table>',
 						'</div>',
-						'<div class="layui-tab-item">',			//裁剪激光
+						'<div class="layui-tab-item">',			//普通裁剪激光
 							'<table class="layui-form"  style="margin-top:8px;"><tr>',
 								'<td>裁剪价格</td>',
 								'<td><input type="text" name="" class="layui-input"></td>',
 								'<td>&nbsp;&nbsp;</td>',
 								'<td><button lay-submit type="button" lay-filter="" class="layui-btn layui-btn-sm">搜索</button></td>',
+								'<td>&nbsp;&nbsp;</td>',
+								tipText,
 							'</tr><table>',
 							'<table id="tailorLaserTable" lay-filter="tailorLaserTable"></table>',
 						'</div>',
@@ -53,6 +56,8 @@ layui.define(['mytable','element'],function(exports){
 								'<td><input type="text" name="" class="layui-input"></td>',
 								'<td>&nbsp;&nbsp;</td>',
 								'<td><button lay-submit type="button" lay-filter="" class="layui-btn layui-btn-sm">搜索</button></td>',
+								'<td>&nbsp;&nbsp;</td>',
+								tipText,
 							'</tr><table>',
 							'<table id="embroideryLaserTable" lay-filter="embroideryLaserTable"></table>',
 						'</div>',
@@ -62,6 +67,8 @@ layui.define(['mytable','element'],function(exports){
 								'<td><input type="text" name="" class="layui-input"></td>',
 								'<td>&nbsp;&nbsp;</td>',
 								'<td><button lay-submit type="button" lay-filter="" class="layui-btn layui-btn-sm">搜索</button></td>',
+								'<td>&nbsp;&nbsp;</td>',
+								tipText,
 								'</tr><table>',
 							'<table id="bedTable" lay-filter="bedTable"></table>',
 						'</div>',
@@ -71,6 +78,8 @@ layui.define(['mytable','element'],function(exports){
 								'<td><input type="text" name="" class="layui-input"></td>',
 								'<td>&nbsp;&nbsp;</td>',
 								'<td><button lay-submit type="button" lay-filter="" class="layui-btn layui-btn-sm">搜索</button></td>',
+								'<td>&nbsp;&nbsp;</td>',
+								tipText,
 								'</tr><table>',
 							'<table id="permTable" lay-filter="permTable"></table>',
 						'</div>',
@@ -80,6 +89,8 @@ layui.define(['mytable','element'],function(exports){
 								'<td><input type="text" name="" class="layui-input"></td>',
 								'<td>&nbsp;&nbsp;</td>',
 								'<td><button lay-submit type="button" lay-filter="" class="layui-btn layui-btn-sm">搜索</button></td>',
+								'<td>&nbsp;&nbsp;</td>',
+								tipText,
 								'</tr><table>',
 							'<table id="electricTable" lay-filter="electricTable"></table>',
 						'</div>',
@@ -89,6 +100,8 @@ layui.define(['mytable','element'],function(exports){
 								'<td><input type="text" name="" class="layui-input"></td>',
 								'<td>&nbsp;&nbsp;</td>',
 								'<td><button lay-submit type="button" lay-filter="" class="layui-btn layui-btn-sm">搜索</button></td>',
+								'<td>&nbsp;&nbsp;</td>',
+								tipText,
 								'</tr><table>',
 							'<table id="scissorsTable" lay-filter="scissorsTable"></table>',
 						'</div>',
@@ -110,13 +123,12 @@ layui.define(['mytable','element'],function(exports){
 	               { id: 76, name: '电推' },
 	               { id: 77, name: '手工剪刀' },
 	               ];
-	var choosedPrice = [
-		               {id: 1, name: '理论价值' },
-		               {id: 2, name: '实验推算价格'},
+	var choosedPrice = [{id: 1, name: '市场价格' },
+		                {id: 2, name: '实验价格'},
 	                    ];
-	var allDouble = [
-	                 {id: 1, name: '单'},
+	var allDouble = [{id: 1, name: '单'},
 	                 {id: 2, name: '双'}];
+	var dot = '<span class="layui-badge-dot"></span>';		//小圆点标志
 	var allOrdinaryLaser = [];
 	myutil.getDataSync({
 		url:'/product/getBaseThree',
@@ -135,14 +147,12 @@ layui.define(['mytable','element'],function(exports){
 			btn = opt.btn;
 		$('#'+elem).html(html);	//填充真正的html内容
 		element.render();
-		mytable.render({			//裁片汇总表格
+		rederMyTable({			//裁片汇总表格
 			elem:'#'+allTable[0],
-			data:[],
-			size:'lg',
-			colsWidth:[0,7,7,7,8,10,10,10,10,10,10,10,10,10,10,10,10,10],
+			colsWidth:[0,7,6,6,7,10,6,6,6,10,6,8,6,10,10,10,10,10],
 			autoUpdate:{
-				saveUrl:'',
-				field: { tailorSize_id:'tailorSizeId',tailorType_id:'tailorTypeId',},
+				saveUrl:'/product/addTailor',
+				field: { tailorSize_id:'tailorSizeId',},
 			}, 
 			cols:[[
 			       { type:'checkbox',},
@@ -150,10 +160,10 @@ layui.define(['mytable','element'],function(exports){
 			       { title:'裁剪片数',   		field:'tailorNumber',	},
 			       { title:'当批片数',   		field:'bacthTailorNumber',	},
 			       { title:'裁片的平方M',   		field:'tailorSize_id',	   type:'select', select:{ data: allOrdinaryLaser }},
-			       { title:'裁剪方式', 	 		field:'tailorType_id',     type:'select', select:{ data: allType }  },
-			       { title:'理论价值含管理',   	field:'managePrice',	},
-			       { title:'实验推算价格',   	field:'experimentPrice',},
-			       { title:'市场价与实推价比',   field:'ratePrice',		},
+			       { title:'裁剪方式', 	 		field:'tailorTypeId',     type:'select', select:{ data: allType }  },
+			       { title:'市场价值',   		field:'managePrice',	},
+			       { title:'实验价格',   		field:'experimentPrice',},
+			       { title:'价格比',   			field:'ratePrice',		},
 			       { title:'选择入成本价格',   	field:'costPrice',	   type:'select', select:{ data: choosedPrice }},
 			       { title:'入成本价格',   		field:'allCostPrice',  },
 			       { title:'各单道比全套工价',   field:'scaleMaterial',  },
@@ -163,48 +173,42 @@ layui.define(['mytable','element'],function(exports){
 			       { title:'为机工准备的压价',  			field:'machinistPriceDown',  },
 			       ]],
 		})
+		var autoUpdate = {		//其他普通页面的修改配置
+				saveUrl:'/product/addOrdinaryLaser',
+				field: { tailorType_id:'tailorTypeId'},
+				isReload: true,
+			};
 		for(var i =1;i<3;i++){	//普通、绣花激光
-			mytable.render({
-				elem:'#'+allTable[i],
-				data:[],
-				size:'lg',
-				colsWidth:[0,7,7,7,8,10,10,10,10,10,10,10,10,10,10,10,10,10],
-				autoUpdate:{
-					saveUrl:'',
-					field: { tailorType_id:'tailorTypeId'},
-				}, 
+			rederMyTable({
+				elem: '#'+allTable[i],
+				colsWidth:[0,7,10,6,8,6,6,6,6,6,8,10,10,10,10,10,10,10],
 				verify:{ 
-					price:['perimeter','time','otherTimeOne','otherTimeTwo','stallPoint'],
+					price:['perimeter','time','otherTimeOne','otherTimeTwo',],
+					count:['stallPoint'],
 				},
 				cols:[[
 				       { type:'checkbox',},
 				       { title:'裁剪部位',   	field:'tailorName',	},
-				       { title:'裁剪方式',   	field:'tailorType_id',	type:'select', select:{ data: allType }},
+				       { title:'裁剪方式',   	field:'tailorTypeId',	type:'select', select:{ data: allType,isDisabled:true,unsearch:true }},
 				       { title:'裁片周长',   	field:'perimeter',	edit:true, },
 				       { title:'激光停顿点',   	field:'stallPoint', edit:true, },
-				       { title:'单双激光头', 	 field:'singleDouble',  type:'select', select:{ data: allDouble }  },
+				       { title:'单双激光头', 	field:'singleDouble',  type:'select', select:{ data: allDouble }  },
 				       { title:'捡片时间',   	field:'time',			edit:true, },
 				       { title:'其他时间1',   	field:'otherTimeOne', 	edit:true, },
 				       { title:'其他时间2',   	field:'otherTimeTwo', 	edit:true, },
 				       { title:'拉布时间',   	field:'rabbTime',	   			},
 				       { title:'单片激光净时', 	field:'singleLaserTime',  		},
 				       { title:'单片激光放快手时间', field:'singleLaserHandTime',},
-				       { title:'工价（含快手)', 		field:'labourCost',  		},
+				       { title:'工价'+dot, 			field:'labourCost',  		},
 				       { title:'设备折旧和房水电费', field:'equipmentPrice',  	},
 				       { title:'管理人员费用',  		field:'administrativeAtaff',},
 				       { title:'裁片费用',  			field:'stallPrice',  		},
 				       ]],
 			})
 		}
-		mytable.render({		//冲床
-			elem:'#'+allTable[3],
-			data:[],
-			size:'lg',
-			colsWidth:[0,7,7,7,8,10,10,10,10,10,10,10,10,10,10,10,10,10],
-			autoUpdate:{
-				saveUrl:'',
-				field: { tailorType_id:'tailorTypeId'},
-			}, 
+		rederMyTable({		//冲床
+			elem: '#'+allTable[3],
+			colsWidth:[0,0,10,6,6,6,6,6,6,11,11,11,11,],
 			verify:{ 
 				price:['otherTimeOne','otherTimeTwo','otherTimeThree'],
 				count:['layerNumber'],
@@ -212,110 +216,108 @@ layui.define(['mytable','element'],function(exports){
 			cols:[[
 			       { type:'checkbox',},
 			       { title:'裁剪部位',   		field:'tailorName',	},
-			       { title:'裁剪方式',   		field:'tailorType_id',	type:'select', select:{ data: allType }},
+			       { title:'裁剪方式',   		field:'tailorTypeId',	type:'select', select:{ data: allType,isDisabled:true,unsearch:true }},
 			       { title:'叠片层数',   		field:'layerNumber',	edit:true, },
 			       { title:'其他时间1',   		field:'otherTimeOne',	edit:true, },
 			       { title:'其他时间2', 	 		field:'otherTimeTwo',   edit:true, },
 			       { title:'其他时间3',   		field:'otherTimeThree',	edit:true, },
-			       { title:'叠布秒数（含快手)',  field:'overlappedSeconds',},
-			       { title:'冲压秒数（含快手)',  field:'punchingSeconds',		 },
-			       { title:'工价（含快手)',   	field:'labourCost',	   },
-			       { title:'设备折旧和房水电费', field:'allCostPrice',  },
+			       { title:'叠布秒数'+dot,  		field:'overlappedSeconds',},
+			       { title:'冲压秒数'+dot,  		field:'punchingSeconds',		 },
+			       { title:'工价'+dot,   		field:'labourCost',	   },
+			       { title:'设备折旧和房水电费', field:'equipmentPrice',  },
 			       { title:'管理人员费用',   	field:'administrativeAtaff',  },
 			       { title:'裁片费用', 			field:'stallPrice',  },
 			       ]],
 		})
 		
-		mytable.render({		//电烫
-			elem:'#'+allTable[4],
-			data:[],
-			size:'lg',
-			colsWidth:[0,7,7,7,8,10,10,10,10,10,10,10,10,10,10,10,10,10],
-			autoUpdate:{
-				saveUrl:'',
-				field: { tailorType_id:'tailorTypeId'},
-			}, 
+		rederMyTable({		//电烫
+			elem: '#'+allTable[4],
+			colsWidth:[0,0,10,7,6,6,6,6,6,6,6,10,10,10,10,10,10],
 			verify:{ 
-				price:['otherTimeTwo','otherTimeThree'],
+				price:['otherTimeTwo','otherTimeOne'],
 				count:['typesettingNumber',],
 			},
 			cols:[[
 			       { type:'checkbox',},
 			       { title:'裁剪部位',   		field:'tailorName',	},
-			       { title:'裁剪方式',   		field:'tailorType_id',	type:'select', select:{ data: allType }},
+			       { title:'裁剪方式',   		field:'tailorTypeId',	type:'select', select:{ data: allType,isDisabled:true,unsearch:true }},
 			       { title:'一板排版片数',   	field:'typesettingNumber',	edit:true, },
 			       { title:'其他时间1',   		field:'otherTimeOne',	 	edit:true, },
 			       { title:'其他时间2', 	 		field:'otherTimeTwo',   	edit:true, },
-			       { title:'电烫秒数（含快手)',  field:'permSeconds',	},
-			       { title:'撕片秒数（含快手)',  field:'tearingSeconds',},
-			       { title:'拉布秒数（含快手)',  field:'rabbTime',		 },
-			       { title:'电烫工价（含快手)',  field:'permPrice',	   },
+			       { title:'电烫秒数',    		field:'permSeconds',	},
+			       { title:'撕片秒数'+dot,    	field:'tearingSeconds',},
+			       { title:'拉布秒数'+dot,    	field:'rabbTime',		 },
+			       { title:'电烫工价'+dot,    	field:'permPrice',	   },
 			       { title:'撕片工价',   		field:'tearingPrice',  },
-			       { title:'设备折旧和房水电费', field:'allCostPrice',  },
+			       { title:'设备折旧和房水电费', field:'equipmentPrice',  },
 			       { title:'管理人员费用',   	field:'administrativeAtaff',  },
 			       { title:'裁片费用', 			field:'stallPrice',  },
 			       ]],
 		})
-		mytable.render({		//电推
-			elem:'#'+allTable[5],
-			data:[],
-			size:'lg',
-			colsWidth:[0,7,7,7,8,10,10,10,10,10,10,10,10,10,10,10,10,10],
-			autoUpdate:{
-				saveUrl:'',
-				field: { tailorType_id:'tailorTypeId'},
-			}, 
+		rederMyTable({		//电推
+			elem: '#'+allTable[5],
+			colsWidth:[0,0,10,6,6,6,6,6,6,10,10,10,10,],
 			verify:{ 
-				price:['perimeter','otherTimeTwo','otherTimeThree'],
+				price:['perimeter','otherTimeOne','otherTimeTwo',],
 				count:['layerNumber',],
 			},
 			cols:[[
 				   { type:'checkbox',},
 				   { title:'裁剪部位',   		field:'tailorName',	},
-				   { title:'裁剪方式',   		field:'tailorType_id',	type:'select', select:{ data: allType }},
+				   { title:'裁剪方式',   		field:'tailorTypeId',	type:'select', select:{ data: allType,isDisabled:true,unsearch:true }},
 				   { title:'叠片层数',   		field:'layerNumber',	edit:true, },
 				   { title:'裁片周长',   		field:'perimeter',		edit:true, },
 				   { title:'其他时间1',   		field:'otherTimeOne',	edit:true, },
 			       { title:'其他时间2', 	 		field:'otherTimeTwo',   edit:true, },
-			       { title:'叠布秒数（含快手)',  field:'overlappedSeconds',},
-			       { title:'电推秒数（含快手)',  field:'electricSeconds',		 },
-			       { title:'工价（含快手)',   	field:'labourCost',	   },
-			       { title:'设备折旧和房水电费', field:'allCostPrice',  },
+			       { title:'叠布秒数'+dot,  		field:'overlappedSeconds',},
+			       { title:'电推秒数'+dot,  		field:'electricSeconds',		 },
+			       { title:'工价'+dot,   		field:'labourCost',	   },
+			       { title:'设备折旧和房水电费', field:'equipmentPrice',  },
 			       { title:'管理人员费用',   	field:'administrativeAtaff',  },
 			       { title:'裁片费用', 			field:'stallPrice',  },
 			       ]],
 		})
-		mytable.render({		//手工剪刀
-			elem:'#'+allTable[6],
-			data:[],
-			size:'lg',
-			colsWidth:[0,7,7,7,8,10,10,10,10,10,10,10,10,10,10,10,10,10],
-			autoUpdate:{
-				saveUrl:'',
-				field: { tailorType_id:'tailorTypeId'},
-			}, 
+		rederMyTable({		//手工剪刀
+			elem: '#'+allTable[6],
+			colsWidth:[0,0,10,7,7,7,7,12,12,12,12],
 			verify:{ 
 				price:['perimeter','otherTimeTwo','otherTimeThree'],
 			},
 			cols:[[
 			       { type:'checkbox',},
 			       { title:'裁剪部位',   		field:'tailorName',	},
-			       { title:'裁剪方式',   		field:'tailorType_id',	type:'select', select:{ data: allType }},
+			       { title:'裁剪方式',   		field:'tailorTypeId',	type:'select', select:{ data: allType,isDisabled:true,unsearch:true }},
 			       { title:'裁片周长',   		field:'perimeter',	 edit:true,   },
 			       { title:'其他时间1',   		field:'otherTimeOne',edit:true,	  },
 			       { title:'其他时间2', 	 		field:'otherTimeTwo',edit:true,   },
-			       { title:'手工秒数（含快手）', field:'manualSeconds',	},
-			       { title:'工价（含快手)',   	field:'labourCost',	   },
-			       { title:'设备折旧和房水电费', field:'allCostPrice',  },
+			       { title:'手工秒数'+dot, 		field:'manualSeconds',	},
+			       { title:'工价'+dot,   		field:'labourCost',	   },
+			       { title:'设备折旧和房水电费', field:'equipmentPrice',  },
 			       { title:'管理人员费用',   	field:'administrativeAtaff',  },
 			       { title:'裁片费用', 			field:'stallPrice',  },
 			       ]],
 		})
+		function rederMyTable(opt){
+			var newopt = $.extend({},{ 
+					data:[], 
+					size:'lg', 
+					autoUpdate: autoUpdate,
+					toolbar: '<div><span class="showProductBtn">商品：-----</span></div>',
+					done: function(){
+						var check = table.checkStatus('productTable').data;
+						check[0] && $('.showProductBtn').html('商品名称：'+check[0].name);
+					}
+				},opt);
+			mytable.render(newopt);
+		}
 		element.on('tab(tabFilterTailor)', function(obj){
 			var check = table.checkStatus('productTable').data;		
 			var index = obj.index;
+			var url = '/product/getOrdinaryLaser';
+			if(index==0)
+				url = '/product/getTailor';
 			table.reload(allTable[index],{		//根据tab切换的选项下标，重载不同的表格
-				url: myutil.config.ctx+'/product/getOrdinaryLaser?productId='+check[0].id+'&getTailorTypeId='+allTypeId[index],
+				url: myutil.config.ctx+url+'?productId='+check[0].id+'&tailorTypeId='+allTypeId[index],
 			})
 		});
 		$('#'+btn).on('click',function(){	//绑定按钮点击事件。切换至该选项卡时。默认加载第一个表格

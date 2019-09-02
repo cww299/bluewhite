@@ -4,12 +4,13 @@
  * 合计行开启方式：totalRow:['需要开启合计行的字段',...]
  * 字段增加虚拟字段: cols:[[ { field:'user_userName' } ]] 对应user:{ userName: '' };
  * 增加数据转换模板: cols:[[ { field:'user_userName', transData:{data:['对应转化的值','按顺序对应0、1、2..'],text:'无值时的提示',skin:'是否开启皮肤模式 true\false'//默认开启， } ]]
- * 增加数据类型模板：cols:[[ { type:'select', select:{data:你的下拉框数据, id:'对应值',name:'显示名、虚拟字段'/[可多字段拼接],layFilter:'下拉框的lay-filter用于监听',unsearch:true } } ]]
+ * 增加数据类型模板：cols:[[ { type:'select', select:{data:你的下拉框数据, id:'对应值',name:'显示名、虚拟字段'/[可多字段拼接],layFilter:'下拉框的lay-filter用于监听',
+ * 								unsearch:true, isDisabled:true,} } ]]
  * 					cols:[[ { type:'date',  } ]]
  * 					cols:[[ { type:'dateTime', } ]]
  * 					cols:[[ { type:'price', }  ]]   修改时只能是数字，不能为空
  * 					cols:[[ { type:'count', }  ]]	修改时只能是正整数
- * 开启自动修改功能：autoUpdate:{  saveUrl:'修改的接口', deleUrl:'删除接口', field:{ 虚拟字段:'对应的上传值' },  },   如：customer_id 对应的上传值customerId
+ * 开启自动修改功能：autoUpdate:{  saveUrl:'修改的接口', deleUrl:'删除接口', field:{ 虚拟字段:'对应的上传值' },isReload：修改成功是否重载表格  },   如：customer_id 对应的上传值customerId
  * 增加自动curd工具模板：curd: {
  * 							btn:[1,2,3,4],  需要显示的按钮，按顺序，默认全显
  *							addTemp:{ },  新增一行给定的默认值。不给的时候、默认为空值
@@ -112,10 +113,11 @@ layui.extend({
 					function getSelectHtml(r){
 						!item2.select && console.warn('请给定数据填充下拉框值');
 						var data = item2.select.data, id = item2.select.id || 'id', name = item2.select.name || 'name',
-							layFilter = item2.select.layFilter || item2.field, unsearch = item2.select.unsearch || false;
+							layFilter = item2.select.layFilter || item2.field, unsearch = item2.select.unsearch || false,
+							disabled = item2.select.isDisabled?'disabled':'';
 						if(selectLay.indexOf(layFilter)<0)
 							selectLay.push(layFilter);
-						var html = '<select '+(unsearch?"":"lay-search")+' lay-filter="'+(layFilter)+'">';
+						var html = '<select '+(unsearch?"":"lay-search")+' lay-filter="'+(layFilter)+'" '+disabled+'>';
 						layui.each(data,function(index,item){
 							var selected = r == item.id ? 'selected' : '';
 							var text = [];
@@ -168,8 +170,16 @@ layui.extend({
 			else
 				toolbar = TOOLTPL.join('');
 		}
-		opt.toolbar && ( toolbar = toolbar + $(opt.toolbar).html());
-		opt.toolbar = toolbar+'</div>';									//设置工具栏模板
+		if(opt.toolbar){		//根据传入的不同模板类型进行相应的拼接
+			if(opt.toolbar.indexOf("#")>0){
+				toolbar = toolbar + $(opt.toolbar).html();
+			}else{
+				toolbar = toolbar + opt.toolbar;
+			}
+		} 
+		opt.toolbar = toolbar;									//设置工具栏模板
+		if(opt.toolbar == '')									//如果没有的话，就不开启删除相关配置
+			delete opt.toolbar;
 		var done = opt.done || null;//深拷贝回调函数
 		function newDone(res, curr, cou){	 		 //时间、下拉框类型的渲染。修改值时的同步缓存操作、工具栏的操作等------------------------------
 			if(!opt.exportField){ //开启虚拟字段导出
@@ -232,6 +242,10 @@ layui.extend({
 								myutil.saveAjax({
 									url: opt.autoUpdate.saveUrl,
 									data: data,
+									success: function(){
+										if(opt.autoUpdate.isReload)
+											table.reload(tableId);
+									}
 								})
 							}
 						}  
@@ -264,6 +278,10 @@ layui.extend({
 						myutil.saveAjax({
 							url: opt.autoUpdate.saveUrl,
 							data: data,
+							success: function(){
+								if(opt.autoUpdate.isReload)
+									table.reload(tableId);
+							}
 						})
 					}
 					trData[t] = val;  //修改缓存值

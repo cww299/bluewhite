@@ -210,7 +210,7 @@ public class OrdinaryLaserServiceImpl extends BaseServiceImpl<OrdinaryLaser, Lon
 						5));
 			}
 			// 电推秒数（含快手)
-			if(primeCoefficient.getElectricPushFive() !=0 && primeCoefficient.getElectricPushSix()!=0){
+			if(primeCoefficient.getElectricPushFive() !=0 || primeCoefficient.getElectricPushSix()!=0 ||ordinaryLaser.getLayerNumber()!=0){
 				ordinaryLaser.setElectricSeconds(NumUtils.div(
 						NumUtils.div(ordinaryLaser.getPerimeter(),
 								NumUtils.mul(primeCoefficient.getElectricPushFive(),primeCoefficient.getElectricPushSix()),
