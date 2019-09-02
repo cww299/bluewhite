@@ -58,11 +58,14 @@ public class TailorAction {
 	private ClearCascadeJSON clearCascadeJSONOrdinaryLaser;
 	{
 		clearCascadeJSONOrdinaryLaser = ClearCascadeJSON.get()
-				.addRetainTerm(Tailor.class, "id", "productId", "number", "cutPartsId", "ordinaryLaserId",
-						"embroideryId", "tailorName", "tailorNumber", "bacthTailorNumber", "tailorSize", "tailorType",
-						"tailorTypeId", "managePrice", "experimentPrice", "ratePrice", "costPrice", "allCostPrice",
-						"scaleMaterial", "priceDown", "noeMbroiderPriceDown", "embroiderPriceDown",
-						"machinistPriceDown", "oneCutPrice")
+				.addRetainTerm(OrdinaryLaser.class, "id", "productId", "number", "tailorId",
+						"tailorName", "tailorNumber", "bacthTailorNumber", "tailorSize", "tailorType",
+						"tailorTypeId", "managePrice", "perimeter", "layerNumber", "typesettingNumber",
+						"stallPoint","singleDouble", "time", "embroiderTime", "otherTimeOne",
+						"otherTimeTwo", "otherTimeThree","rabbTime","overlappedSeconds","punchingSeconds",
+						"electricSeconds","singleLaserTime","singleLaserHandTime","singleLaserHandTime","permSeconds"
+						,"tearingSeconds","manualSeconds","permPrice","tearingPrice","labourCost","equipmentPrice",
+						"administrativeAtaff","stallPrice","lamination","oneCutPrice")
 				.addRetainTerm(BaseThree.class, "id", "ordinaryLaser");
 	}
 
@@ -146,7 +149,7 @@ public class TailorAction {
 			OrdinaryLaser ordinaryLaser) {
 		CommonResponse cr = new CommonResponse();
 		PageResult<OrdinaryLaser> ordinaryLaserList = ordinaryLaserService.findPages(ordinaryLaser, page);
-		cr.setData(ordinaryLaserList);
+		cr.setData(clearCascadeJSONOrdinaryLaser.format(ordinaryLaserList).toJSON());
 		cr.setMessage("查询成功");
 		return cr;
 	}
