@@ -357,6 +357,30 @@ public class Machinist extends BaseEntity<Long> {
 	
 	
 	
+	public Long getNeedleSizeId() {
+		return needleSizeId;
+	}
+
+	public void setNeedleSizeId(Long needleSizeId) {
+		this.needleSizeId = needleSizeId;
+	}
+
+	public BaseOne getWireSize() {
+		return wireSize;
+	}
+
+	public void setWireSize(BaseOne wireSize) {
+		this.wireSize = wireSize;
+	}
+
+	public BaseOne getNeedleSpur() {
+		return needleSpur;
+	}
+
+	public void setNeedleSpur(BaseOne needleSpur) {
+		this.needleSpur = needleSpur;
+	}
+
 	public Double getCostPriceSelect() {
 		return costPriceSelect;
 	}
@@ -503,22 +527,12 @@ public class Machinist extends BaseEntity<Long> {
 		this.bendNumber = bendNumber;
 	}
 
-
-
 	public Integer getBackStitchCount() {
 		return backStitchCount;
 	}
 
 	public void setBackStitchCount(Integer backStitchCount) {
 		this.backStitchCount = backStitchCount;
-	}
-
-	public Long getNeedlesizeId() {
-		return needlesizeId;
-	}
-
-	public void setNeedlesizeId(Long needlesizeId) {
-		this.needlesizeId = needlesizeId;
 	}
 
 	public BaseOne getNeedleSize() {
@@ -537,13 +551,7 @@ public class Machinist extends BaseEntity<Long> {
 		this.wireSizeId = wireSizeId;
 	}
 
-	public BaseOne getWiresize() {
-		return wiresize;
-	}
 
-	public void setWiresize(BaseOne wiresize) {
-		this.wiresize = wiresize;
-	}
 
 	public Long getNeedleSpurId() {
 		return needleSpurId;
@@ -553,13 +561,7 @@ public class Machinist extends BaseEntity<Long> {
 		this.needleSpurId = needleSpurId;
 	}
 
-	public BaseOne getNeedlespur() {
-		return needlespur;
-	}
-
-	public void setNeedlespur(BaseOne needlespur) {
-		this.needlespur = needlespur;
-	}
+	
 
 	public Double getTime() {
 		return time;
