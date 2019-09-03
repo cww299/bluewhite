@@ -9,9 +9,9 @@ layui.define(['mytable','element'],function(exports){
 		table = layui.table,
 		myutil = layui.myutil;
 	var html = [
-	            '<div class="layui-tab layui-tab-brief" lay-filter="tabFilter">',
+	            '<div class="layui-tab layui-tab-brief" lay-filter="tabMachinist">',
 					'<ul class="layui-tab-title">',
-						'<li class="layui-this" style="width: 45%;" lay-id="tabTablePage">机工页面</li>',
+						'<li class="layui-this" style="width: 45%;" lay-id="tabMachinistFirst">机工页面</li>',
 						'<li style="width: 45%;">机缝时间</li>',
 					'</ul>',
 					'<div class="layui-tab-content">',
@@ -48,9 +48,9 @@ layui.define(['mytable','element'],function(exports){
 	var machinist = {	//模块
 			
 	};
-	/*var allMaterial = myutil.getDataSync({
-		url: myutil.config.ctx+'/product/getProductMaterials?overstockId=81&size=99&productId=',	//默认查找压货为机工的。id为81
-	});*/
+	var allMaterial = [];
+	var choosedPrice = [{id: 1, name: '电脑推算价格' },
+		                {id: 2, name: '试制费用价格'},];
 	machinist.render = function(opt){
 		var elem = opt.elem,
 			btn = opt.btn;
@@ -62,28 +62,74 @@ layui.define(['mytable','element'],function(exports){
 			elem:'#'+tableId,
 			data:[],
 			size:'lg',
-			colsWidth:[0,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10],
-			curd: {},
+			colsWidth:[0,10,18,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10],
+			curd: {
+				addTemp:{
+					machinistName: '',
+					productMaterialsId:'',
+					
+					cutparts: '',
+					
+					reckoningSewingPrice: '',
+					trialSewingPrice: '',
+					costPrice: choosedPrice[0].id,
+					allCostPrice: '',
+					scaleMaterial: '',
+					priceDown: '',
+					priceDownRemark: '',
+					needleworkPriceDown: '',
+					machinistPriceDown: '',
+				},
+				saveFun:function(data){
+					for(var i=0;i<data.length;i++){
+						var check = table.checkStatus('productTable').data;
+						data[i]['productId'] = check[0].id;		//添加产品id参数
+						myutil.saveAjax({
+							url: '/product/addCutParts', 
+							data: data[i],
+						})
+					}
+					table.reload(tableId);
+				},
+			},
 			autoUpdate:{
 				saveUrl:'/product/addMachinist',
 				deleUrl:'/product/deleteMachinist',
+				field: { productMaterials_id:'productMaterialsId', },
+				isReload: true,
+			},
+			parseData:function(ret){
+				var check = table.checkStatus('productTable').data;
+				allMaterial.splice(0,999);	//删除所有元素
+				allMaterial.push({
+					id:'', materiel:{ name:'请选择'}
+				})
+				 myutil.getDataSync({
+					url: myutil.config.ctx+'/product/getProductMaterials?overstockId=81&size=99&productId='+check[0].id,	//默认查找压货为机工的。id为81
+					success: function(data){
+						layui.each(data,function(index,item){
+							allMaterial.push(item);
+						})
+					}
+				});
+				return {  msg:ret.message,  code:ret.code , data:ret.data.rows, count:ret.data.total }; 
 			},
 			cols:[[
 			       { type:'checkbox',},
 			       { title:'填写机缝名',   		field:'machinistName',	edit:true,  },
-			       { title:'其他物料',   		field:'materials',	},
-			       { title:'所用裁片',   		field:'',	},
-			       { title:'用到裁片或上道',   	field:'cutparts',	},
-			       { title:'物料编号/名称', 	 	field:'',   },
-			       { title:'机缝工序费用',   	field:'',	},
-			       { title:'试制机缝工序费用',   field:'',	},
-			       { title:'选择入行成本价',   	field:'',		 },
-			       { title:'入成本价格',   		field:'',	},
-			       { title:'各单道比全套工价',   field:'',  },
-			       { title:'物料和上道压（裁剪）价',   	field:'',  },
-			       { title:'物料和上道压', 		field:'',  },
-			       { title:'为针工准备的压价',   		field:'',  },
-			       { title:'单独机工工序外发的压价',  	field:'',  },
+			       { title:'其他物料',   		field:'productMaterials_id',type:'select',   select:{ data: allMaterial, name:'materiel_name',  }},
+			       { title:'所用裁片',   		field:'',	edit:false, },
+			       { title:'用到裁片或上道',   	field:'cutparts',	edit:false, },
+			       { title:'物料编号/名称', 	 	field:'',   edit:false, },
+			       { title:'机缝工序费用',   	field:'reckoningSewingPrice',	edit:false, },
+			       { title:'试制机缝工序费用',   field:'trialSewingPrice',	edit:false, },
+			       { title:'选择入行成本价',   	field:'costPrice',		type:'select',   select:{ data: choosedPrice,}},
+			       { title:'入成本价格',   		field:'allCostPrice',	edit:false, },
+			       { title:'各单道比全套工价',   field:'scaleMaterial',  edit:false, },
+			       { title:'物料和上道压（裁剪）价',   	field:'priceDown',  edit:false, },
+			       { title:'物料和上道压', 		field:'priceDownRemark',  edit:false, },
+			       { title:'为针工准备的压价',   		field:'needleworkPriceDown', edit:false,  },
+			       { title:'单独机工工序外发的压价',  	field:'machinistPriceDown',  edit:false,  },
 			       ]],
 		})
 		mytable.render({
@@ -93,29 +139,35 @@ layui.define(['mytable','element'],function(exports){
 			colsWidth:[0,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10],
 			cols:[[
 			       { type:'checkbox',},
-			       { title:'机缝工序',   	field:'',	},
-			       { title:'针号',   		field:'',	},
-			       { title:'线色或线号',   	field:'',	},
-			       { title:'针距',   		field:'',	},
-			       { title:'试制净快手时间',  field:'',   },
-			       { title:'该工序回针次数',   	field:'',	},
-			       { title:'直线机缝模式',   	field:'',	},
-			       { title:'该工序满足G列',   	field:'',		 },
-			       { title:'弧线机缝模式',   	field:'',	},
-			       { title:'该工序满足I列',   	field:'',  },
-			       { title:'弯曲复杂机缝模式',   field:'',  },
-			       { title:'该工序满足K列', 		field:'',  },
-			       { title:'单一机缝需要时间/秒',   	field:'',  },
-			       { title:'设备折旧和房水电费',  	field:'',  },
-			       { title:'管理人员费用',   		field:'',  },
-			       { title:'电脑推算机缝该工序费用', 	field:'',  },
-			       { title:'试制机缝该工序费用',   	field:'',  },
+			       { title:'机缝工序',   	field:'machinistName',	},
+			       { title:'针号',   		field:'needlesize',	},
+			       { title:'线色或线号',   	field:'wiresize',	},
+			       { title:'针距',   		field:'needlespur',	},
+			       { title:'试制净快手时间',  field:'time',   },
+			       { title:'该工序回针次数',   	field:'backStitchCount',	},
+			       { title:'直线机缝模式',   	field:'beeline',	},
+			       { title:'该工序满足G列',   	field:'beelineNumber',		 },
+			       { title:'弧线机缝模式',   	field:'arc',	},
+			       { title:'该工序满足I列',   	field:'arcNumber',  },
+			       { title:'弯曲复杂机缝模式',   field:'bend',  },
+			       { title:'该工序满足K列', 		field:'bendNumber',  },
+			       { title:'单一机缝需要时间/秒',   	field:'oneSewingTime',  },
+			       { title:'设备折旧和房水电费',  	field:'equipmentPrice',  },
+			       { title:'管理人员费用',   		field:'administrativeAtaff',  },
+			       { title:'电脑推算机缝该工序费用', 	field:'reckoningSewingPrice',  },
+			       { title:'试制机缝该工序费用',   	field:'trialSewingPrice',  },
 			       ]],
 		})
-		element.on('tab(tabFilter)', function(obj){
-			var check = table.checkStatus('productTable').data;		//根据tab切换的选项下标，重载不同的表格
-			switch(obj.index){
+		element.on('tab(tabMachinist)', function(obj){
+			/*var check = table.checkStatus('productTable').data;		//根据tab切换的选项下标，重载不同的表格
+			var table = tableId;
+			if(obj.index==1){
+				table = tableTimeId;
 			}
+			table.cache[table] && table.reload(table,{
+				url: myutil.config.ctx+'/product/getMachinist?productId='+check[0].id,
+				page: { curr:1 }
+			})*/
 		});
 		$('#'+btn).on('click',function(){	//绑定按钮点击事件。切换至该选项卡时。默认加载第一个表格
 			var check = table.checkStatus('productTable').data;
@@ -123,7 +175,7 @@ layui.define(['mytable','element'],function(exports){
 				return myutil.emsg('请选择相应的商品');
 			if(check.length>1)
 				return myutil.emsg('不能同时选择多个商品');
-			element.tabChange('tabFilter', 'tabTablePage');		//切换至默认的第一个选项卡
+			element.tabChange('tabMachinist', 'tabMachinistFirst');		//切换至默认的第一个选项卡
 			table.cache[tableId] && table.reload(tableId,{
 				url: myutil.config.ctx+'/product/getMachinist?productId='+check[0].id,
 				page: { curr:1 }
