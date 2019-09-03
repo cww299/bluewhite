@@ -128,6 +128,10 @@ public class CutPartsServiceImpl  extends BaseServiceImpl<CutParts, Long> implem
 	        	if (!StringUtils.isEmpty(param.getCutPartsName())) {
 					predicate.add(cb.like(root.get("cutPartsName").as(String.class),"%"+param.getCutPartsName()+"%"));
 				}
+	        	//按压货环节id
+	        	if (param.getOverstockId() != null) {
+					predicate.add(cb.equal(root.get("overstockId").as(Long.class),param.getOverstockId()));
+				}
 				Predicate[] pre = new Predicate[predicate.size()];
 				query.where(predicate.toArray(pre));
 	        	return null;

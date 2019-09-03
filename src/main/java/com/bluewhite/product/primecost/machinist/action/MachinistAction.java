@@ -67,16 +67,13 @@ public class MachinistAction {
 		}else{
 			if(machinist.getId()!=null){
 				Machinist oldMachinist = machinistService.findOne(machinist.getId());
-				BeanCopyUtils.copyNullProperties(oldMachinist,machinist);
-				machinist.setCreatedAt(oldMachinist.getCreatedAt());
+				BeanCopyUtils.copyNotEmpty(machinist,oldMachinist,"");
+				machinistService.saveMachinist(oldMachinist);
+				cr.setMessage("修改成功");
+			}else{
+				machinistService.saveMachinist(machinist);
+				cr.setMessage("添加成功");
 			}
-			machinistService.saveMachinist(machinist);
-			PrimeCost primeCost = new PrimeCost();
-			primeCost.setProductId(machinist.getProductId());
-			productService.getPrimeCost(primeCost);
-			machinist.setOneMachinistPrice(primeCost.getOneMachinistPrice());
-			cr.setData(machinist);
-			cr.setMessage("添加成功");
 		}
 		return cr;
 	}
