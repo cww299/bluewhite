@@ -48,6 +48,9 @@ layui.define(['mytable','element'],function(exports){
 	var machinist = {	//模块
 			
 	};
+	/*var allMaterial = myutil.getDataSync({
+		url: myutil.config.ctx+'/product/getProductMaterials?overstockId=81&size=99&productId=',	//默认查找压货为机工的。id为81
+	});*/
 	machinist.render = function(opt){
 		var elem = opt.elem,
 			btn = opt.btn;
@@ -60,12 +63,17 @@ layui.define(['mytable','element'],function(exports){
 			data:[],
 			size:'lg',
 			colsWidth:[0,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10],
+			curd: {},
+			autoUpdate:{
+				saveUrl:'/product/addMachinist',
+				deleUrl:'/product/deleteMachinist',
+			},
 			cols:[[
 			       { type:'checkbox',},
-			       { title:'填写机缝名',   		field:'',	},
-			       { title:'其他物料',   		field:'',	},
+			       { title:'填写机缝名',   		field:'machinistName',	edit:true,  },
+			       { title:'其他物料',   		field:'materials',	},
 			       { title:'所用裁片',   		field:'',	},
-			       { title:'用到裁片或上道',   	field:'',	},
+			       { title:'用到裁片或上道',   	field:'cutparts',	},
 			       { title:'物料编号/名称', 	 	field:'',   },
 			       { title:'机缝工序费用',   	field:'',	},
 			       { title:'试制机缝工序费用',   field:'',	},
@@ -107,16 +115,6 @@ layui.define(['mytable','element'],function(exports){
 		element.on('tab(tabFilter)', function(obj){
 			var check = table.checkStatus('productTable').data;		//根据tab切换的选项下标，重载不同的表格
 			switch(obj.index){
-			case 0: 
-				table.reload(tableId,{
-					url: myutil.config.ctx+'/product/getMachinist?productId='+check[0].id,
-				})
-				break;
-			case 1: 
-				table.reload(tableTimeId,{
-					url: myutil.config.ctx+'/product/getMachinist?productId='+check[0].id,
-				})
-				break;
 			}
 		});
 		$('#'+btn).on('click',function(){	//绑定按钮点击事件。切换至该选项卡时。默认加载第一个表格
