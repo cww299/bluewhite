@@ -61,8 +61,8 @@ public class MachinistAction {
 				.get().addRetainTerm(Machinist.class, "id", "productId", "number", "machinistName", "costPriceSelect", 
 						"costPrice", "allCostPrice","scaleMaterial","priceDown","sumPriceDownRemark"
 						,"priceDownRemark","needleworkPriceDown","machinistPriceDown","productMaterials"
-						,"cutpartsNumber","cutparts","cutpartsPrice","needleSize","wiresize"
-						,"needlespur","time","backStitchCount","beeline","beelineNumber","arc","arcNumber"
+						,"cutpartsNumber","cutparts","cutpartsPrice","needleSize","wireSize"
+						,"needleSpur","time","backStitchCount","beeline","beelineNumber","arc","arcNumber"
 						,"bend","bendNumber","oneSewingTime","cutLineTime","sewingQuickWorkerTime","lineQuickWorkerTime"
 						,"trialProducePrice","reckoningPrice","cutLinePrice","equipmentPrice","administrativeAtaff"
 						,"reckoningSewingPrice","trialSewingPrice","timeCheck","backStitch","sticking"
