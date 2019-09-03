@@ -165,7 +165,7 @@ public class MachinistAction {
 	 */
 	@RequestMapping(value = "/product/getMachinistName", method = RequestMethod.GET)
 	@ResponseBody
-	public CommonResponse getMachinistName(PageParameter page,Long id) {
+	public CommonResponse getMachinistName(Long id) {
 		CommonResponse cr = new CommonResponse();
 		List<Map<String,Object>> mapList = new ArrayList<>();
 		Map<String,Object> map = null;
