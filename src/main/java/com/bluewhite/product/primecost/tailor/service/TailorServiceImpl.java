@@ -63,16 +63,21 @@ public class TailorServiceImpl extends BaseServiceImpl<Tailor, Long> implements 
 		NumUtils.setzro(prams);
 		// 得到实验推算价格
 		tailor.setExperimentPrice(prams.getStallPrice());
-		if(tailor.getCostPrice() == 1){
-			tailor.setCostPrice(tailor.getManagePrice());
-		}else if(tailor.getCostPrice() == 2){
-			tailor.setCostPrice(tailor.getExperimentPrice());
+		// 选择入成本价格
+		double costPrice = 0;
+		if(tailor.getCostPrice() == 0){
+			tailor.setCostPrice((double)1);
 		}
-		// 入成本价格
-		tailor.setAllCostPrice(NumUtils.mul(tailor.getBacthTailorNumber() , tailor.getCostPrice()));
+		if(tailor.getCostPrice() == 1){
+			costPrice = tailor.getManagePrice();
+		}else if(tailor.getCostPrice() == 2){
+			costPrice = tailor.getExperimentPrice();
+		}
+		// 总入成本价格
+		tailor.setAllCostPrice(NumUtils.mul(tailor.getBacthTailorNumber() , costPrice));
 		// 得到市场价与实推价比
 		if (tailor.getExperimentPrice()!=0) {
-			tailor.setRatePrice(NumUtils.div(tailor.getExperimentPrice(), tailor.getCostPrice(), 3));
+			tailor.setRatePrice(NumUtils.div(tailor.getExperimentPrice(), costPrice, 3));
 		}
 		// 各单道比全套工价
 		List<Tailor> tailorList = dao.findByProductId(tailor.getProductId());
