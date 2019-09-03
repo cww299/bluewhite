@@ -9,10 +9,11 @@ layui.define(['mytable','element'],function(exports){
 		table = layui.table,
 		myutil = layui.myutil;
 	var tipText = '<td><span class="layui-badge">提示：小红点标志表示（含快手）</span></td>';
+	var nbsp = '<td>&nbsp;&nbsp;</td>';
 	var html = [
 	            '<div class="layui-tab layui-tab-brief" lay-filter="tabFilterTailor">',
 					'<ul class="layui-tab-title">',
-						'<li class="layui-this" style="width: 12%;" lay-id="tabTablePageFirst">裁剪页面</li>',
+						'<li style="width: 12%;" class="layui-this" lay-id="tabTablePageFirst">裁剪页面</li>',
 						'<li style="width: 12%;">裁剪普通激光</li>',
 						'<li style="width: 12%;">绣花定位激光</li>',
 						'<li style="width: 12%;">冲床</li>',
@@ -25,16 +26,16 @@ layui.define(['mytable','element'],function(exports){
 							'<table class="layui-form" style="margin-top:8px;"><tr>',
 								'<td>产品名：</td>',
 								'<td><input type="text" name="" class="layui-input"></td>',
-								'<td>&nbsp;&nbsp;</td>',
+								nbsp,
 								'<td>数量：</td>',
 								'<td><input type="text" name="" class="layui-input"></td>',
-								'<td>&nbsp;&nbsp;</td>',
+								nbsp,
 								'<td>耗损：</td>',
 								'<td><input type="text" name="" class="layui-input"></td>',
-								'<td>&nbsp;&nbsp;</td>',
+								nbsp,
 								'<td>价格：</td>',
 								'<td><input type="text" name="" class="layui-input"></td>',
-								'<td>&nbsp;&nbsp;</td>',
+								nbsp,
 								'<td><button lay-submit type="button" lay-filter="" class="layui-btn layui-btn-sm">搜索</button></td>',
 							'</tr><table>',
 							'<table id="tailorPageTable" lay-filter="tailorPageTable"></table>',
@@ -43,9 +44,9 @@ layui.define(['mytable','element'],function(exports){
 							'<table class="layui-form"  style="margin-top:8px;"><tr>',
 								'<td>裁剪价格</td>',
 								'<td><input type="text" name="" class="layui-input"></td>',
-								'<td>&nbsp;&nbsp;</td>',
+								nbsp,
 								'<td><button lay-submit type="button" lay-filter="" class="layui-btn layui-btn-sm">搜索</button></td>',
-								'<td>&nbsp;&nbsp;</td>',
+								nbsp,
 								tipText,
 							'</tr><table>',
 							'<table id="tailorLaserTable" lay-filter="tailorLaserTable"></table>',
@@ -54,9 +55,9 @@ layui.define(['mytable','element'],function(exports){
 							'<table class="layui-form"  style="margin-top:8px;"><tr>',
 								'<td>裁剪价格</td>',
 								'<td><input type="text" name="" class="layui-input"></td>',
-								'<td>&nbsp;&nbsp;</td>',
+								nbsp,
 								'<td><button lay-submit type="button" lay-filter="" class="layui-btn layui-btn-sm">搜索</button></td>',
-								'<td>&nbsp;&nbsp;</td>',
+								nbsp,
 								tipText,
 							'</tr><table>',
 							'<table id="embroideryLaserTable" lay-filter="embroideryLaserTable"></table>',
@@ -65,9 +66,9 @@ layui.define(['mytable','element'],function(exports){
 							'<table class="layui-form"  style="margin-top:8px;"><tr>',
 								'<td>裁剪价格</td>',
 								'<td><input type="text" name="" class="layui-input"></td>',
-								'<td>&nbsp;&nbsp;</td>',
+								nbsp,
 								'<td><button lay-submit type="button" lay-filter="" class="layui-btn layui-btn-sm">搜索</button></td>',
-								'<td>&nbsp;&nbsp;</td>',
+								nbsp,
 								tipText,
 								'</tr><table>',
 							'<table id="bedTable" lay-filter="bedTable"></table>',
@@ -76,9 +77,9 @@ layui.define(['mytable','element'],function(exports){
 							'<table class="layui-form"  style="margin-top:8px;"><tr>',
 								'<td>裁剪价格</td>',
 								'<td><input type="text" name="" class="layui-input"></td>',
-								'<td>&nbsp;&nbsp;</td>',
+								nbsp,
 								'<td><button lay-submit type="button" lay-filter="" class="layui-btn layui-btn-sm">搜索</button></td>',
-								'<td>&nbsp;&nbsp;</td>',
+								nbsp,
 								tipText,
 								'</tr><table>',
 							'<table id="permTable" lay-filter="permTable"></table>',
@@ -87,9 +88,9 @@ layui.define(['mytable','element'],function(exports){
 							'<table class="layui-form"  style="margin-top:8px;"><tr>',
 								'<td>裁剪价格</td>',
 								'<td><input type="text" name="" class="layui-input"></td>',
-								'<td>&nbsp;&nbsp;</td>',
+								nbsp,
 								'<td><button lay-submit type="button" lay-filter="" class="layui-btn layui-btn-sm">搜索</button></td>',
-								'<td>&nbsp;&nbsp;</td>',
+								nbsp,
 								tipText,
 								'</tr><table>',
 							'<table id="electricTable" lay-filter="electricTable"></table>',
@@ -98,9 +99,9 @@ layui.define(['mytable','element'],function(exports){
 							'<table class="layui-form"  style="margin-top:8px;"><tr>',
 								'<td>裁剪价格</td>',
 								'<td><input type="text" name="" class="layui-input"></td>',
-								'<td>&nbsp;&nbsp;</td>',
+								nbsp,
 								'<td><button lay-submit type="button" lay-filter="" class="layui-btn layui-btn-sm">搜索</button></td>',
-								'<td>&nbsp;&nbsp;</td>',
+								nbsp,
 								tipText,
 								'</tr><table>',
 							'<table id="scissorsTable" lay-filter="scissorsTable"></table>',
@@ -111,8 +112,6 @@ layui.define(['mytable','element'],function(exports){
 	var tailor = {	//模块
 			
 	};
-	
-	
 	var allTypeId = ['',71,72,75,73,76,77,];  //各类型实体id值。普通激光71、绣花激光72、冲床75、手工电烫73、电推76、手工剪刀77、设备电烫74、绣花领取78
 	var allTable = ['tailorPageTable','tailorLaserTable','embroideryLaserTable','bedTable','permTable','electricTable','scissorsTable'];	//各实体对应的table
 	var allType = [
@@ -141,7 +140,11 @@ layui.define(['mytable','element'],function(exports){
 			})
 		}
 	});
-	
+	var autoUpdate = {		//其他普通页面的修改配置
+			saveUrl:'/product/addOrdinaryLaser',
+			field: { tailorType_id:'tailorTypeId'},
+			isReload: true,
+		};
 	tailor.render = function(opt){
 		var elem = opt.elem,
 			btn = opt.btn;
@@ -173,11 +176,6 @@ layui.define(['mytable','element'],function(exports){
 			       { title:'为机工准备的压价',  			field:'machinistPriceDown',  },
 			       ]],
 		})
-		var autoUpdate = {		//其他普通页面的修改配置
-				saveUrl:'/product/addOrdinaryLaser',
-				field: { tailorType_id:'tailorTypeId'},
-				isReload: true,
-			};
 		for(var i =1;i<3;i++){	//普通、绣花激光
 			rederMyTable({
 				elem: '#'+allTable[i],
