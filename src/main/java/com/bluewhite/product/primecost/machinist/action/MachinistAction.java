@@ -106,8 +106,10 @@ public class MachinistAction {
 				Machinist oldMachinist = machinistService.findOne(machinist.getId());
 				BeanCopyUtils.copyNotEmpty(machinist,oldMachinist,"");
 				machinistService.saveMachinist(oldMachinist);
+				cr.setMessage("修改成功");
+		}else{
+			cr.setMessage("id不能为空");
 		}
-		cr.setMessage("修改成功");
 		return cr;
 	}
 	
