@@ -49,8 +49,12 @@ layui.define(['mytable','element'],function(exports){
 			
 	};
 	var allMaterial = [];
-	var choosedPrice = [{id: 1, name: '电脑推算价格' },
-		                {id: 2, name: '试制费用价格'},];
+	var choosedPrice = [ {id: 1, name: '电脑推算价格' }, {id: 2, name: '试制费用价格'}, ];
+	var allNeedlesize = myutil.getDataSync({ url:'/product/getBaseOne?type="needlesize"'});
+	var allWiresize  = myutil.getDataSync({ url:'/product/getBaseOne?type="wiresize"'});
+	var allNeedlespur  = myutil.getDataSync({ url:'/product/getBaseOne?type="needlespur"'});
+	var all  = myutil.getDataSync({ url:'/product/getBaseFour?sewingOrder="wiresize"'});
+	
 	machinist.render = function(opt){
 		var elem = opt.elem,
 			btn = opt.btn;
@@ -136,21 +140,31 @@ layui.define(['mytable','element'],function(exports){
 			elem: '#'+tableTimeId,
 			data:[],
 			size:'lg',
-			colsWidth:[0,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10],
+			colsWidth:[0,8,6,6,6,6,6,10,6,10,6,10,6,8,8,8,10,10],
+			autoUpdate:{
+				saveUrl:'/product/addMachinist',
+				deleUrl:'/product/deleteMachinist',
+				field: { needlesize_id:'needlesizeId',wiresize_id:'wiresizeId',needlespur_id:'needlespurId' },
+				isReload: true,
+			},
+			verify:{
+				price: ['time',''],
+				count: ['backStitchCount',],
+			},
 			cols:[[
 			       { type:'checkbox',},
 			       { title:'机缝工序',   	field:'machinistName',	},
-			       { title:'针号',   		field:'needlesize',	},
-			       { title:'线色或线号',   	field:'wiresize',	},
-			       { title:'针距',   		field:'needlespur',	},
-			       { title:'试制净快手时间',  field:'time',   },
-			       { title:'该工序回针次数',   	field:'backStitchCount',	},
-			       { title:'直线机缝模式',   	field:'beeline',	},
-			       { title:'该工序满足G列',   	field:'beelineNumber',		 },
-			       { title:'弧线机缝模式',   	field:'arc',	},
-			       { title:'该工序满足I列',   	field:'arcNumber',  },
-			       { title:'弯曲复杂机缝模式',   field:'bend',  },
-			       { title:'该工序满足K列', 		field:'bendNumber',  },
+			       { title:'针号',   		field:'needlesize_id',	type:'select', select:{ data: allNeedlesize, },  },
+			       { title:'线色或线号',   	field:'wiresize_id',	type:'select', select:{ data: allWiresize, },  },
+			       { title:'针距',   		field:'needlespur_id',	type:'select', select:{ data: allNeedlespur, },  },
+			       { title:'快手时间',  		field:'time',   edit:true, },
+			       { title:'回针次数',   	field:'backStitchCount',edit:true, 	},
+			       { title:'直线机缝模式',   	field:'beeline',	type:'select', select:{ data: [], }, },
+			       { title:'该工序满足G列',   	field:'beelineNumber',	edit:true, 		 },
+			       { title:'弧线机缝模式',   	field:'arc',	    type:'select', select:{ data: [], }, },
+			       { title:'该工序满足I列',   	field:'arcNumber',  	edit:true, 	},
+			       { title:'弯曲复杂机缝模式',   field:'bend',  		type:'select', select:{ data: [], }, },
+			       { title:'该工序满足K列', 		field:'bendNumber',  	edit:true, 	},
 			       { title:'单一机缝需要时间/秒',   	field:'oneSewingTime',  },
 			       { title:'设备折旧和房水电费',  	field:'equipmentPrice',  },
 			       { title:'管理人员费用',   		field:'administrativeAtaff',  },
@@ -159,15 +173,15 @@ layui.define(['mytable','element'],function(exports){
 			       ]],
 		})
 		element.on('tab(tabMachinist)', function(obj){
-			/*var check = table.checkStatus('productTable').data;		//根据tab切换的选项下标，重载不同的表格
+			var check = layui.table.checkStatus('productTable').data;		//根据tab切换的选项下标，重载不同的表格
 			var table = tableId;
 			if(obj.index==1){
 				table = tableTimeId;
 			}
-			table.cache[table] && table.reload(table,{
+			layui.table.cache[table] && layui.table.reload(table,{
 				url: myutil.config.ctx+'/product/getMachinist?productId='+check[0].id,
 				page: { curr:1 }
-			})*/
+			})
 		});
 		$('#'+btn).on('click',function(){	//绑定按钮点击事件。切换至该选项卡时。默认加载第一个表格
 			var check = table.checkStatus('productTable').data;
