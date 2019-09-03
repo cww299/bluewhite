@@ -2,11 +2,14 @@
  * 2019/8/28   试制模块：机工
  * machinist.render({ elem:'给定的元素。填充真正的内容', btn:'绑定的按钮' })
  */
-layui.define(['mytable','element'],function(exports){
+layui.extend({
+	formSelects : 'formSelect/formSelects-v4',
+}).define(['mytable','element','formSelects'],function(exports){
 	var $ = layui.jquery,
 		mytable = layui.mytable,
 		element = layui.element
 		table = layui.table,
+		formSelects = layui.formSelects
 		myutil = layui.myutil;
 	var html = [
 	            '<div class="layui-tab layui-tab-brief" lay-filter="tabMachinist">',
@@ -53,7 +56,7 @@ layui.define(['mytable','element'],function(exports){
 	var allNeedlesize = myutil.getDataSync({ url:'/product/getBaseOne?type=needlesize'});
 	var allWiresize  = myutil.getDataSync({ url:'/product/getBaseOne?type=wiresize'});
 	var allNeedlespur  = myutil.getDataSync({ url:'/product/getBaseOne?type=needlespur'});
-	var all  = myutil.getDataSync({ url:'/product/getBaseFour?sewingOrder="wiresize"'});
+	var all = []; 
 	
 	machinist.render = function(opt){
 		var elem = opt.elem,
@@ -108,7 +111,7 @@ layui.define(['mytable','element'],function(exports){
 				allMaterial.push({
 					id:'', materiel:{ name:'请选择'}
 				})
-				 myutil.getDataSync({
+				myutil.getDataSync({
 					url: myutil.config.ctx+'/product/getProductMaterials?overstockId=81&size=99&productId='+check[0].id,	//默认查找压货为机工的。id为81
 					success: function(data){
 						layui.each(data,function(index,item){
@@ -116,15 +119,23 @@ layui.define(['mytable','element'],function(exports){
 						})
 					}
 				});
+				myutil.getDataSync({
+					url: myutil.config.ctx+'/product/getMachinistName&productId='+check[0].id,	
+					success: function(data){
+						layui.each(data,function(index,item){
+							a.push(item);
+						})
+					}
+				});
+				
 				return {  msg:ret.message,  code:ret.code , data:ret.data.rows, count:ret.data.total }; 
 			},
 			cols:[[
 			       { type:'checkbox',},
 			       { title:'填写机缝名',   		field:'machinistName',	edit:true,  },
 			       { title:'其他物料',   		field:'productMaterials_id',type:'select',   select:{ data: allMaterial, name:'materiel_name',  }},
-			       { title:'所用裁片',   		field:'',	edit:false, },
+			       { title:'所用裁片',   		field:'',	templet: getFormSelects() },
 			       { title:'用到裁片或上道',   	field:'cutparts',	edit:false, },
-			       { title:'物料编号/名称', 	 	field:'',   edit:false, },
 			       { title:'机缝工序费用',   	field:'reckoningSewingPrice',	edit:false, },
 			       { title:'试制机缝工序费用',   field:'trialSewingPrice',	edit:false, },
 			       { title:'选择入行成本价',   	field:'costPrice',		type:'select',   select:{ data: choosedPrice,}},
@@ -135,7 +146,28 @@ layui.define(['mytable','element'],function(exports){
 			       { title:'为针工准备的压价',   		field:'needleworkPriceDown', edit:false,  },
 			       { title:'单独机工工序外发的压价',  	field:'machinistPriceDown',  edit:false,  },
 			       ]],
+	        done:function(){
+				formSelects.render();
+			}
 		})
+		function getFormSelects(){
+			return function(d){
+				var html = '<select id="das" lay-search  xm-select="dasd" xm-select-show-count="5"><option value="">请选择</option>';
+				return html + '</select>';
+				/*
+				var ids=d.ids.split(',');
+				var isSelect='';
+				layui.each(allRole,function(index,item){ 
+					isSelect='';
+					for(var i=0;i<ids.length;i++){
+						if(ids[i]==item.id)
+							isSelect='selected';
+					}  }}
+				<option value="{{ item.id }}" {{ isSelect }} >{{ item.name }}</option>
+			{{# }); }}
+			</select>*/
+			}
+		}
 		mytable.render({
 			elem: '#'+tableTimeId,
 			data:[],
