@@ -90,16 +90,7 @@ public class MachinistAction {
 	@ResponseBody
 	public CommonResponse getMachinist(HttpServletRequest request,PageParameter page,Machinist machinist) {
 		CommonResponse cr = new CommonResponse();
-		PageResult<Machinist>  machinistList= new PageResult<>(); 
-		if(machinist.getProductId()!=null){
-			machinistList = machinistService.findPages(machinist,page);
-			PrimeCost primeCost = new PrimeCost();
-			primeCost.setProductId(machinist.getProductId());
-			productService.getPrimeCost(primeCost);
-			for(Machinist mt : machinistList.getRows()){
-				mt.setOneMachinistPrice(primeCost.getOneMachinistPrice());
-			}
-		}
+		PageResult<Machinist>  machinistList = machinistService.findPages(machinist,page);
 		cr.setData(machinistList);
 		cr.setMessage("查询成功");
 		return cr;
@@ -164,10 +155,6 @@ public class MachinistAction {
 		cr.setMessage("查询成功");
 		return cr;
 	}
-	
-	
-	
-
 	
 	
 	@InitBinder

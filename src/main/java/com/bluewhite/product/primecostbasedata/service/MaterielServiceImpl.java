@@ -14,9 +14,11 @@ import com.bluewhite.base.BaseServiceImpl;
 import com.bluewhite.common.entity.PageParameter;
 import com.bluewhite.common.entity.PageResult;
 import com.bluewhite.common.utils.StringUtil;
+import com.bluewhite.product.primecostbasedata.dao.BaseFourDao;
 import com.bluewhite.product.primecostbasedata.dao.BaseOneDao;
 import com.bluewhite.product.primecostbasedata.dao.BaseThreeDao;
 import com.bluewhite.product.primecostbasedata.dao.MaterielDao;
+import com.bluewhite.product.primecostbasedata.entity.BaseFour;
 import com.bluewhite.product.primecostbasedata.entity.BaseOne;
 import com.bluewhite.product.primecostbasedata.entity.BaseThree;
 import com.bluewhite.product.primecostbasedata.entity.Materiel;
@@ -32,6 +34,10 @@ public class MaterielServiceImpl extends BaseServiceImpl<Materiel, Long> impleme
 
 	@Autowired
 	private BaseThreeDao baseThreeDao;
+	
+	@Autowired
+	private BaseFourDao baseFourDao;
+	
 	
 	@Override
 	public List<Materiel> findList(Materiel materiel) {
@@ -145,7 +151,23 @@ public class MaterielServiceImpl extends BaseServiceImpl<Materiel, Long> impleme
 			PageResult<Materiel> result = new PageResult<Materiel>(pages, page);
 	        return result;
 	}
-	
-	
 
+	@Override
+	public Double getBaseFourDate(Long typeId, Long needleSpurId) {
+		BaseFour baseFour = baseFourDao.findOne(typeId);
+		Double baseFourDate = 0.0;
+		switch (needleSpurId.intValue()) {
+		case 204://每CM5-6针
+			baseFourDate = baseFour.getNeedle56();
+			break;
+		case 205://每CM4-5针
+			baseFourDate = baseFour.getNeedle45();
+			break;
+		case 206://每CM3-4针
+			baseFourDate = baseFour.getNeedle34();
+			break;
+		}
+		return baseFourDate;
+	}
+	
 }

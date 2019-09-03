@@ -30,7 +30,7 @@ public class ProductMaterials extends BaseEntity<Long>{
 	 * 批量产品数量或模拟批量数
 	 */
 	@Column(name = "number")
-	private Integer number;
+	private Integer number = 2000;
 	
 	/**
 	 * 物料名id

@@ -257,7 +257,6 @@ public class BaseOneAction {
 			if(primeCoefficient.getOmnHorAuxiliary()!=null){
 				primeCoefficient.setPerSecondMachinistTwo(primeCoefficient.getOmnHorAuxiliary()/TIME/TIME);
 			}
-			
 			//针工车间
 			if(primeCoefficient.getNeedleworkOne()!=null){
 				//每秒耗3费
@@ -318,41 +317,6 @@ public class BaseOneAction {
 		cr.setData(baseFour);
 		return cr;
 	}
-	
-	
-	/**
-	 * 获取机锋时间页面布料对应的数据
-	 * 
-	 * @param request 请求
-	 * @return cr
-	 * @throws Exception
-	 */
-	@RequestMapping(value = "/product/getBaseFourDate", method = RequestMethod.GET)
-	@ResponseBody
-	public CommonResponse getBaseFourDate(HttpServletRequest request,Long id,Integer type) {
-		CommonResponse cr = new CommonResponse();
-		if(id==null || type==null){
-			cr.setMessage("无数据");
-			return cr;
-		}
-		BaseFour baseFour = baseFourDao.findOne(id);
-		Double baseFourDate = 0.0;
-		switch (type) {
-		case 2://普通激光切割
-			baseFourDate = baseFour.getNeedle56();
-			break;
-		case 3://普通激光切割
-			baseFourDate = baseFour.getNeedle45();
-			break;
-		case 4://普通激光切割
-			baseFourDate = baseFour.getNeedle34();
-			break;
-		}
-		cr.setMessage("获取成功");
-		cr.setData(baseFourDate);
-		return cr;
-	}
-	
 	
 	/**
 	 * 当物料被修改，自动更新裁片页面和dd页面相关值
