@@ -47,7 +47,7 @@ public class OrdinaryLaserServiceImpl extends BaseServiceImpl<OrdinaryLaser, Lon
 		case 71:// 普通激光切割
 			// 得到理论(市场反馈）含管理价值
 			ordinaryLaser.setManagePrice(NumUtils
-					.div(NumUtils.mul(primeCoefficient.getPeripheralLaser(), ordinaryLaser.getPerimeter()), 100, 5));
+					.div(NumUtils.mul(primeCoefficient.getPeripheralLaser(), ordinaryLaser.getPerimeter()), 100, 3));
 			double singleLaserTime = NumUtils.mul(ordinaryLaser.getPerimeter(), primeCoefficient.getTime(),
 					(double) ordinaryLaser.getStallPoint(), primeCoefficient.getPauseTime());
 			// 单片激光需要用净时
@@ -79,7 +79,7 @@ public class OrdinaryLaserServiceImpl extends BaseServiceImpl<OrdinaryLaser, Lon
 						primeCoefficient.getPerimeterLessNumber()));
 			} else {
 				ordinaryLaser.setManagePrice(NumUtils.div(
-						NumUtils.mul(primeCoefficient.getPeripheralLaser(), ordinaryLaser.getPerimeter()), 100, 5));
+						NumUtils.mul(primeCoefficient.getPeripheralLaser(), ordinaryLaser.getPerimeter()), 100, 3));
 			}
 			// 单片激光需要用净时
 			double singleLaserTimeOne = NumUtils.mul(ordinaryLaser.getPerimeter(), primeCoefficient.getTime(),
@@ -115,7 +115,7 @@ public class OrdinaryLaserServiceImpl extends BaseServiceImpl<OrdinaryLaser, Lon
 			if (ordinaryLaser.getTypesettingNumber() != 0) {
 				ordinaryLaser.setPermSeconds(
 						NumUtils.div(NumUtils.mul(primeCoefficient.getPermThree(), primeCoefficient.getQuickWorker()),
-								ordinaryLaser.getTypesettingNumber(), 5));
+								ordinaryLaser.getTypesettingNumber(), 3));
 			}
 			// 撕片秒数（含快手)
 			double tearingSeconds = 0;
@@ -129,9 +129,9 @@ public class OrdinaryLaserServiceImpl extends BaseServiceImpl<OrdinaryLaser, Lon
 			ordinaryLaser.setTearingSeconds(NumUtils.mul(tearingSeconds, primeCoefficient.getQuickWorker()));
 			// 拉布秒数（含快手)
 			ordinaryLaser.setRabbTime(NumUtils.division(NumUtils.div(primeCoefficient.getPermOne(),
-					NumUtils.mul(NumUtils.div(1.5, ordinaryLaser.getTailorSize().getOrdinaryLaser(), 5),
+					NumUtils.mul(NumUtils.div(1.5, ordinaryLaser.getTailorSize().getOrdinaryLaser(), 3),
 							primeCoefficient.getQuickWorker()),
-					5)));
+					3)));
 			// 电烫工价（含快手)
 			ordinaryLaser.setPermPrice(
 					NumUtils.mul(NumUtils.sum(ordinaryLaser.getPermSeconds(), ordinaryLaser.getRabbTime()),
@@ -167,11 +167,11 @@ public class OrdinaryLaserServiceImpl extends BaseServiceImpl<OrdinaryLaser, Lon
 											1.5),
 									NumUtils.mul(ordinaryLaser.getTailorSize().getOrdinaryLaser(),
 											primeCoefficient.getQuickWorker()),
-									5),
-							5)));
+									3),
+							3)));
 			if (ordinaryLaser.getLayerNumber() != 0) {
 				ordinaryLaser.setPunchingSeconds(
-						NumUtils.mul(NumUtils.div(primeCoefficient.getPuncherFive(), ordinaryLaser.getLayerNumber(), 5),
+						NumUtils.mul(NumUtils.div(primeCoefficient.getPuncherFive(), ordinaryLaser.getLayerNumber(), 3),
 								primeCoefficient.getQuickWorker()));
 			}
 
@@ -207,15 +207,15 @@ public class OrdinaryLaserServiceImpl extends BaseServiceImpl<OrdinaryLaser, Lon
 				ordinaryLaser.setOverlappedSeconds(NumUtils.div(NumUtils.sum(
 						NumUtils.mul(primeCoefficient.getElectricPushOne(), ordinaryLaser.getLayerNumber()),
 						primeCoefficient.getElectricPushThree(), (double) primeCoefficient.getElectricPushFour()), num,
-						5));
+						3));
 			}
 			// 电推秒数（含快手)
 			if(primeCoefficient.getElectricPushFive() !=0 || primeCoefficient.getElectricPushSix()!=0 ||ordinaryLaser.getLayerNumber()!=0){
 				ordinaryLaser.setElectricSeconds(NumUtils.div(
 						NumUtils.div(ordinaryLaser.getPerimeter(),
 								NumUtils.mul(primeCoefficient.getElectricPushFive(),primeCoefficient.getElectricPushSix()),
-								5),
-						ordinaryLaser.getLayerNumber(), 5));
+								3),
+						ordinaryLaser.getLayerNumber(), 3));
 			}
 			// 工价（含快手)
 			ordinaryLaser.setLabourCost(
