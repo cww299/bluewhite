@@ -58,18 +58,17 @@ public class MachinistAction {
 	private ClearCascadeJSON clearCascadeJSON;
 	{
 		clearCascadeJSON = ClearCascadeJSON
-				.get().addRetainTerm(CutParts.class, "id", "productId", "number", "machinistName", "costPriceSelect", 
+				.get().addRetainTerm(Machinist.class, "id", "productId", "number", "machinistName", "costPriceSelect", 
 						"costPrice", "allCostPrice","scaleMaterial","priceDown","sumPriceDownRemark"
-						,"priceDownRemark","needleworkPriceDown"
-						,"machinistPriceDown","productMaterials","cutpartsNumber","cutparts","cutpartsPrice",
-						"needleSize","wiresize"
+						,"priceDownRemark","needleworkPriceDown","machinistPriceDown","productMaterials"
+						,"cutpartsNumber","cutparts","cutpartsPrice","needleSize","wiresize"
 						,"needlespur","time","backStitchCount","beeline","beelineNumber","arc","arcNumber"
 						,"bend","bendNumber","oneSewingTime","cutLineTime","sewingQuickWorkerTime","lineQuickWorkerTime"
 						,"trialProducePrice","reckoningPrice","cutLinePrice","equipmentPrice","administrativeAtaff"
 						,"reckoningSewingPrice","trialSewingPrice","timeCheck","backStitch","sticking"
 						,"modeOne","modeTwo","modeThree")
 				.addRetainTerm(BaseOne.class, "id" ,"name","type")
-				.addRetainTerm(BaseFour.class, "id" ,"name","type")
+				.addRetainTerm(BaseFour.class, "id" ,"name","needle56","needle45","needle34","sewingOrder")
 				.addRetainTerm(ProductMaterials.class,"id","materiel")
 				.addRetainTerm(Materiel.class,"id","number","name","price","unit");
 	}
@@ -115,8 +114,7 @@ public class MachinistAction {
 	public CommonResponse getMachinist(HttpServletRequest request,PageParameter page,Machinist machinist) {
 		CommonResponse cr = new CommonResponse();
 		PageResult<Machinist>  machinistList = machinistService.findPages(machinist,page);
-		
-		cr.setData(machinistList);
+		cr.setData(clearCascadeJSON.format(machinistList).toJSON());
 		cr.setMessage("查询成功");
 		return cr;
 	}
