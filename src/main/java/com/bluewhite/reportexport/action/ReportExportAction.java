@@ -38,6 +38,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.multipart.support.ByteArrayMultipartFileEditor;
 
+//import com.alibaba.excel.EasyExcel;
 import com.bluewhite.common.DateTimePattern;
 import com.bluewhite.common.entity.CommonResponse;
 import com.bluewhite.common.entity.ErrorCode;
@@ -887,6 +888,21 @@ public class ReportExportAction {
 	    Excelutil<User2Poi> util = new Excelutil<User2Poi>(User2Poi.class);
         util.exportExcel(lists2, "身份证", out);// 导出 
         out.close();
+	}
+	
+	
+	/**
+	 * 导出身份证号码
+	 * @param request
+	 * @param response
+	 * @throws IOException 
+	 */
+	@RequestMapping("/importExcel/downAttendance")
+	public void downAttendance(HttpServletResponse response) throws IOException{
+		  response.setContentType("application/vnd.ms-excel");
+	      response.setCharacterEncoding("utf-8");
+	      response.setHeader("Content-disposition", "attachment;filename=attendance.xlsx");
+//	      EasyExcel.write(response.getOutputStream(), DownloadData.class).sheet("考勤").doWrite(data());
 	}
 	
 	@InitBinder
