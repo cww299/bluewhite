@@ -66,7 +66,6 @@ public class MachinistServiceImpl extends BaseServiceImpl<Machinist, Long> imple
 		}
 		// 更新当前机工名称的机工压价，相当于裁片压价的总和，相当于ao
 		machinist.setSumPriceDownRemark(sumPrice);
-
 		// 更新机工压价的总和，也就是ap
 		double sumPriceDownRemark = 0;
 		if (!StringUtils.isEmpty(machinist.getCutparts())) {
