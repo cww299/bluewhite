@@ -128,7 +128,7 @@ public class Machinist extends BaseEntity<Long> {
 	 * 选择针号
 	 */
 	@Column(name = "needle_size_id")
-    private Long needlesizeId;
+    private Long needleSizeId;
 	
 	/**
 	 *针号
@@ -148,7 +148,7 @@ public class Machinist extends BaseEntity<Long> {
 	 */
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "wire_size_id", referencedColumnName = "id", insertable = false, updatable = false)
-	private BaseOne wiresize;
+	private BaseOne wireSize;
 	
 	/**
 	 * 选择针距
@@ -161,7 +161,7 @@ public class Machinist extends BaseEntity<Long> {
 	 */
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "needle_spur_id", referencedColumnName = "id", insertable = false, updatable = false)
-	private BaseOne needlespur;
+	private BaseOne needleSpur;
 	
 	/**
 	 * 得到试制净快手时间
