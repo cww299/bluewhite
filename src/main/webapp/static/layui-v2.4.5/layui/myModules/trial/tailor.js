@@ -167,7 +167,7 @@ layui.define(['mytable','element'],function(exports){
 			       { title:'市场价值',   		field:'managePrice',	},
 			       { title:'实验价格',   		field:'experimentPrice',},
 			       { title:'价格比',   			field:'ratePrice',		},
-			       { title:'成本价格',   	field:'costPrice',	   type:'select', select:{ data: choosedPrice }},
+			       { title:'成本价格',   		field:'costPriceSelect',	type:'select', select:{ data: choosedPrice }},
 			       { title:'总成本价格',   		field:'allCostPrice',  },
 			       { title:'各单道比全套工价',   field:'scaleMaterial',  },
 			       { title:'物料压价', 			field:'priceDown',  },
