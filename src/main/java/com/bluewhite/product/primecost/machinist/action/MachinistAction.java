@@ -20,17 +20,23 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.support.ByteArrayMultipartFileEditor;
 
 import com.bluewhite.common.BeanCopyUtils;
+import com.bluewhite.common.ClearCascadeJSON;
 import com.bluewhite.common.DateTimePattern;
 import com.bluewhite.common.Log;
 import com.bluewhite.common.entity.CommonResponse;
 import com.bluewhite.common.entity.ErrorCode;
 import com.bluewhite.common.entity.PageParameter;
 import com.bluewhite.common.entity.PageResult;
+import com.bluewhite.product.primecost.cutparts.entity.CutParts;
 import com.bluewhite.product.primecost.machinist.entity.Machinist;
 import com.bluewhite.product.primecost.machinist.service.MachinistService;
+import com.bluewhite.product.primecost.materials.entity.ProductMaterials;
 import com.bluewhite.product.primecost.primecost.entity.PrimeCost;
 import com.bluewhite.product.primecost.tailor.entity.Tailor;
 import com.bluewhite.product.primecost.tailor.service.TailorService;
+import com.bluewhite.product.primecostbasedata.entity.BaseFour;
+import com.bluewhite.product.primecostbasedata.entity.BaseOne;
+import com.bluewhite.product.primecostbasedata.entity.Materiel;
 import com.bluewhite.product.product.service.ProductService;
 
 @Controller 
@@ -49,6 +55,24 @@ public class MachinistAction {
 	@Autowired
 	private ProductService productService;
 	
+	private ClearCascadeJSON clearCascadeJSON;
+	{
+		clearCascadeJSON = ClearCascadeJSON
+				.get().addRetainTerm(CutParts.class, "id", "productId", "number", "machinistName", "costPriceSelect", 
+						"costPrice", "allCostPrice","scaleMaterial","priceDown","sumPriceDownRemark"
+						,"priceDownRemark","needleworkPriceDown"
+						,"machinistPriceDown","productMaterials","cutpartsNumber","cutparts","cutpartsPrice",
+						"needleSize","wiresize"
+						,"needlespur","time","backStitchCount","beeline","beelineNumber","arc","arcNumber"
+						,"bend","bendNumber","oneSewingTime","cutLineTime","sewingQuickWorkerTime","lineQuickWorkerTime"
+						,"trialProducePrice","reckoningPrice","cutLinePrice","equipmentPrice","administrativeAtaff"
+						,"reckoningSewingPrice","trialSewingPrice","timeCheck","backStitch","sticking"
+						,"modeOne","modeTwo","modeThree")
+				.addRetainTerm(BaseOne.class, "id" ,"name","type")
+				.addRetainTerm(BaseFour.class, "id" ,"name","type")
+				.addRetainTerm(ProductMaterials.class,"id","materiel")
+				.addRetainTerm(Materiel.class,"id","number","name","price","unit");
+	}
 	
 	/**
 	 * 机工填写
@@ -91,6 +115,7 @@ public class MachinistAction {
 	public CommonResponse getMachinist(HttpServletRequest request,PageParameter page,Machinist machinist) {
 		CommonResponse cr = new CommonResponse();
 		PageResult<Machinist>  machinistList = machinistService.findPages(machinist,page);
+		
 		cr.setData(machinistList);
 		cr.setMessage("查询成功");
 		return cr;
