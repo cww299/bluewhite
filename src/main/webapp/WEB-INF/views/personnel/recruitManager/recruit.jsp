@@ -232,6 +232,9 @@
 									<th class="text-center">面试时间</th>
 									<th class="text-center">平台</th>
 									<th class="text-center">招聘人</th>
+									<th class="text-center">入职时间</th>
+									<th class="text-center">离职时间</th>
+									<th class="text-center">离职原因</th>
 									<th class="text-center">备注</th>
 								</tr>
 							</thead>
@@ -1376,6 +1379,9 @@
 			      				+'<td class="text-center"><input style="background:none;outline:none;border:0px;text-align:center;" value='+o.time+' /></td>'
 			      				+'<td class="text-center"><input style="background:none;outline:none;border:0px;text-align:center;" value='+o.platform.name+' /></td>'
 			      				+'<td class="text-center"><input style="background:none;outline:none;border:0px;text-align:center;" value='+o.recruitName+' /></td>'
+			      				+'<td class="text-center"><input style="background:none;outline:none;border:0px;text-align:center;" value='+(o.user==null ? "":o.user.entry==null ? "" :o.user.entry)+' /></td>'
+			      				+'<td class="text-center"><input style="background:none;outline:none;border:0px;text-align:center;" value='+(o.user==null ? "":o.user.quitDate==null ? "":o.user.quitDate)+' /></td>'
+			      				+'<td class="text-center"><input style="background:none;outline:none;border:0px;text-align:center;" value='+(o.user==null ? "":o.user.reason==null ? "":o.user.reason)+' /></td>'
 			      				+'<td class="text-center"><input style="background:none;outline:none;border:0px;text-align:center;" value='+o.remarksOne+' /></td><tr>'
 							})
 							$('#tableUserSum').html(html);
@@ -1389,6 +1395,9 @@
 			      				+'<td class="text-center"><input style="background:none;outline:none;border:0px;text-align:center;" value='+o.time+' /></td>'
 			      				+'<td class="text-center"><input style="background:none;outline:none;border:0px;text-align:center;" value='+o.platform.name+' /></td>'
 			      				+'<td class="text-center"><input style="background:none;outline:none;border:0px;text-align:center;" value='+o.recruitName+' /></td>'
+			      				+'<td class="text-center"><input style="background:none;outline:none;border:0px;text-align:center;" value='+(o.user==null ? "":o.user.entry==null ? "" :o.user.entry)+' /></td>'
+			      				+'<td class="text-center"><input style="background:none;outline:none;border:0px;text-align:center;" value='+(o.user==null ? "":o.user.quitDate==null ? "":o.user.quitDate)+' /></td>'
+			      				+'<td class="text-center"><input style="background:none;outline:none;border:0px;text-align:center;" value='+(o.user==null ? "":o.user.reason==null ? "":o.user.reason)+' /></td>'
 			      				+'<td class="text-center"><input style="background:none;outline:none;border:0px;text-align:center;" value='+o.remarksOne+' /></td><tr>'
 							})
 							$('#tableUserSum').html(html);
@@ -1402,6 +1411,9 @@
 			      				+'<td class="text-center"><input style="background:none;outline:none;border:0px;text-align:center;" value='+o.time+' /></td>'
 			      				+'<td class="text-center"><input style="background:none;outline:none;border:0px;text-align:center;" value='+o.platform.name+' /></td>'
 			      				+'<td class="text-center"><input style="background:none;outline:none;border:0px;text-align:center;" value='+o.recruitName+' /></td>'
+			      				+'<td class="text-center"><input style="background:none;outline:none;border:0px;text-align:center;" value='+(o.user==null ? "":o.user.entry==null ? "" :o.user.entry)+' /></td>'
+			      				+'<td class="text-center"><input style="background:none;outline:none;border:0px;text-align:center;" value='+(o.user==null ? "":o.user.quitDate==null ? "":o.user.quitDate)+' /></td>'
+			      				+'<td class="text-center"><input style="background:none;outline:none;border:0px;text-align:center;" value='+(o.user==null ? "":o.user.reason==null ? "":o.user.reason)+' /></td>'
 			      				+'<td class="text-center"><input style="background:none;outline:none;border:0px;text-align:center;" value='+o.remarksOne+' /></td><tr>'
 							})
 							$('#tableUserSum').html(html);
@@ -1415,6 +1427,9 @@
 			      				+'<td class="text-center"><input style="background:none;outline:none;border:0px;text-align:center;" value='+o.time+' /></td>'
 			      				+'<td class="text-center"><input style="background:none;outline:none;border:0px;text-align:center;" value='+o.platform.name+' /></td>'
 			      				+'<td class="text-center"><input style="background:none;outline:none;border:0px;text-align:center;" value='+o.recruitName+' /></td>'
+			      				+'<td class="text-center"><input style="background:none;outline:none;border:0px;text-align:center;" value='+(o.user==null ? "":o.user.entry==null ? "" :o.user.entry)+' /></td>'
+			      				+'<td class="text-center"><input style="background:none;outline:none;border:0px;text-align:center;" value='+(o.user==null ? "":o.user.quitDate==null ? "":o.user.quitDate)+' /></td>'
+			      				+'<td class="text-center"><input style="background:none;outline:none;border:0px;text-align:center;" value='+(o.user==null ? "":o.user.reason==null ? "":o.user.reason)+' /></td>'
 			      				+'<td class="text-center"><input style="background:none;outline:none;border:0px;text-align:center;" value='+o.remarksOne+' /></td><tr>'
 							})
 							$('#tableUserSum').html(html);
@@ -1428,6 +1443,9 @@
 			      				+'<td class="text-center"><input style="background:none;outline:none;border:0px;text-align:center;" value='+o.time+' /></td>'
 			      				+'<td class="text-center"><input style="background:none;outline:none;border:0px;text-align:center;" value='+o.platform.name+' /></td>'
 			      				+'<td class="text-center"><input style="background:none;outline:none;border:0px;text-align:center;" value='+o.recruitName+' /></td>'
+			      				+'<td class="text-center"><input style="background:none;outline:none;border:0px;text-align:center;" value='+(o.user==null ? "":o.user.entry==null ? "" :o.user.entry)+' /></td>'
+			      				+'<td class="text-center"><input style="background:none;outline:none;border:0px;text-align:center;" value='+(o.user==null ? "":o.user.quitDate==null ? "":o.user.quitDate)+' /></td>'
+			      				+'<td class="text-center"><input style="background:none;outline:none;border:0px;text-align:center;" value='+(o.user==null ? "":o.user.reason==null ? "":o.user.reason)+' /></td>'
 			      				+'<td class="text-center"><input style="background:none;outline:none;border:0px;text-align:center;" value='+o.remarksOne+' /></td><tr>'
 							})
 							$('#tableUserSum').html(html);
@@ -1441,6 +1459,9 @@
 			      				+'<td class="text-center"><input style="background:none;outline:none;border:0px;text-align:center;" value='+o.time+' /></td>'
 			      				+'<td class="text-center"><input style="background:none;outline:none;border:0px;text-align:center;" value='+o.platform.name+' /></td>'
 			      				+'<td class="text-center"><input style="background:none;outline:none;border:0px;text-align:center;" value='+o.recruitName+' /></td>'
+			      				+'<td class="text-center"><input style="background:none;outline:none;border:0px;text-align:center;" value='+(o.user==null ? "":o.user.entry==null ? "" :o.user.entry)+' /></td>'
+			      				+'<td class="text-center"><input style="background:none;outline:none;border:0px;text-align:center;" value='+(o.user==null ? "":o.user.quitDate==null ? "":o.user.quitDate)+' /></td>'
+			      				+'<td class="text-center"><input style="background:none;outline:none;border:0px;text-align:center;" value='+(o.user==null ? "":o.user.reason==null ? "":o.user.reason)+' /></td>'
 			      				+'<td class="text-center"><input style="background:none;outline:none;border:0px;text-align:center;" value='+o.remarksOne+' /></td><tr>'
 							})
 							$('#tableUserSum').html(html);
@@ -1454,6 +1475,9 @@
 			      				+'<td class="text-center"><input style="background:none;outline:none;border:0px;text-align:center;" value='+o.time+' /></td>'
 			      				+'<td class="text-center"><input style="background:none;outline:none;border:0px;text-align:center;" value='+o.platform.name+' /></td>'
 			      				+'<td class="text-center"><input style="background:none;outline:none;border:0px;text-align:center;" value='+o.recruitName+' /></td>'
+			      				+'<td class="text-center"><input style="background:none;outline:none;border:0px;text-align:center;" value='+(o.user==null ? "":o.user.entry==null ? "" :o.user.entry)+' /></td>'
+			      				+'<td class="text-center"><input style="background:none;outline:none;border:0px;text-align:center;" value='+(o.user==null ? "":o.user.quitDate==null ? "":o.user.quitDate)+' /></td>'
+			      				+'<td class="text-center"><input style="background:none;outline:none;border:0px;text-align:center;" value='+(o.user==null ? "":o.user.reason==null ? "":o.user.reason)+' /></td>'
 			      				+'<td class="text-center"><input style="background:none;outline:none;border:0px;text-align:center;" value='+o.remarksOne+' /></td><tr>'
 							})
 							$('#tableUserSum').html(html);
@@ -1464,7 +1488,7 @@
 					        ,title: '人员详情' //不显示标题栏
 					        ,closeBtn: false
 					        ,zindex:-1
-					        ,area:['58%', '90%']
+					        ,area:['86%', '90%']
 					        ,shade: 0.5
 					        ,id: 'LAY_layuipro10' //设定一个id，防止重复弹出
 					        ,btn: ['取消']
