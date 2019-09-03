@@ -112,9 +112,15 @@ public class Tailor extends BaseEntity<Long> {
 	 */
 	@Column(name = "rate_price")
 	private Double ratePrice;
-
+	
 	/**
 	 * 选择单个入成本价格
+	 */
+	@Column(name = "cost_price_select")
+	private Integer costPriceSelect;
+
+	/**
+	 * 单个入成本价格
 	 */
 	@Column(name = "cost_price")
 	private Double costPrice;
@@ -164,6 +170,14 @@ public class Tailor extends BaseEntity<Long> {
 	
 
 	
+
+	public Integer getCostPriceSelect() {
+		return costPriceSelect;
+	}
+
+	public void setCostPriceSelect(Integer costPriceSelect) {
+		this.costPriceSelect = costPriceSelect;
+	}
 
 	public Long getTailorSizeId() {
 		return tailorSizeId;
