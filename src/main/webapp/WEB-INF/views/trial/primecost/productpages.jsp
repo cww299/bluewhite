@@ -71,13 +71,13 @@
 				</table>
 				<table id="productTable" lay-filter="productTable"></table>
 			</div>
-			<div id="cutPartTab"></div>
-			<div id="materialsTab"></div>
-			<div id="tailorTab"></div>
-			<div id="machinistTab"></div>
-			<div id="embroideryTab"></div>
-			<div id="needleworkTab"></div>
-			<div id="packTab"></div>
+			<div id="cutPartTab"   style="display:none;"></div>
+			<div id="materialsTab" style="display:none;"></div>
+			<div id="tailorTab"	   style="display:none;"></div>
+			<div id="machinistTab" style="display:none;"></div>
+			<div id="embroideryTab"style="display:none;"></div>
+			<div id="needleworkTab"style="display:none;"></div>
+			<div id="packTab"      style="display:none;"></div>
 		</div>
 		<div class="barDiv">
 			<div class="btnDiv">
@@ -99,82 +99,83 @@
 </div>
 </body>
 <script>
-var allMateriel = [];
 layui.config({
 	base : '${ctx}/static/layui-v2.4.5/'
 }).extend({
-	cutParts : 'layui/myModules/trial/cutParts',			//裁片
-	materials: 'layui/myModules/trial/materials',			//dd除裁片
-	tailor: 'layui/myModules/trial/tailor', 			 	//裁剪
-	machinist: 'layui/myModules/trial/machinist',			//机工
-	embroidery : 'layui/myModules/trial/embroidery',		//绣花
-	needlework: 'layui/myModules/trial/needlework',			//针工
-	pack: 'layui/myModules/trial/pack',						//包装
-}).define(
-	['laydate','cutParts','materials','tailor','machinist','embroidery','needlework','pack'],
-	function(){
-		var $ = layui.jquery
-		, layer = layui.layer 			
-		, form = layui.form			 		
-		, table = layui.table 
-		, myutil = layui.myutil
-		, laydate = layui.laydate
-		, cutParts = layui.cutParts
-		, materials = layui.materials
-		, tailor = layui.tailor
-		, machinist = layui.machinist
-		, embroidery = layui.embroidery
-		, needlework = layui.needlework
-		, pack = layui.pack
-		, mytable = layui.mytable;
-		myutil.config.ctx = '${ctx}';
-		myutil.config.msgOffset = '250px';
-		myutil.clickTr();
-		mytable.render({		//产品表格
-			elem:'#productTable',
-			url:'${ctx}/getProductPages',
-			cols:[[
-			       { type:'checkbox',},
-			       { title:'产品编号',   	field:'number',	},
-			       { title:'产品名称',   	field:'name',	},
-			      // { title:'成本',   	field:'primeCost',	},
-			       ]],
-		})
-		$('#productBtn').on('click',function(){
-			$('#productTab').siblings().hide();	//默认展示产品表格、隐藏其他
-			$('#productTab').show();
-		})
-		cutParts.render({		//裁片模块渲染
-			elem: 'cutPartTab',
-			btn: 'cutPartBtn',
-		})
-		materials.render({		//生产用料模块渲染
-			elem: 'materialsTab',
-			btn: 'materialsBtn',
-		})
-		machinist.render({
-			elem: 'machinistTab',
-			btn: 'machinistBtn',
-		})
-		tailor.render({
-			elem: 'tailorTab',
-			btn: 'tailorBtn'
-		})
-		embroidery.render({
-			elem: 'embroideryTab',
-			btn: 'embroideryBtn'
-		})
-		needlework.render({
-			elem: 'needleworkTab',
-			btn: 'needleworkBtn'
-		})
-		pack.render({
-			elem: 'packTab',
-			btn: 'packBtn'
-		})
+	mytable: 'layui/myModules/mytable',
+}).use(['mytable'],function(){
+	var $ = layui.jquery,
+		myutil = layui.myutil,
+		mytable = layui.mytable;
+	
+	myutil.config.ctx = '${ctx}';
+	myutil.config.msgOffset = '250px';
+	myutil.clickTr();
+	mytable.render({		//产品表格
+		elem:'#productTable',
+		url:'${ctx}/getProductPages',
+		cols:[[
+		       { type:'checkbox',},
+		       { title:'产品编号',   	field:'number',	},
+		       { title:'产品名称',   	field:'name',	},
+		      // { title:'成本',   	field:'primeCost',	},
+		       ]],
+	})
+	$('#productBtn').on('click',function(){
 		$('#productTab').siblings().hide();	//默认展示产品表格、隐藏其他
 		$('#productTab').show();
-	}
-)
+	})
+	
+	layui.extend({	//异步加载不同的模块。减少页面加载元素时间。使页面刷新更流畅
+		cutParts : 'layui/myModules/trial/cutParts',			//裁片
+		materials: 'layui/myModules/trial/materials',			//dd除裁片
+		tailor: 'layui/myModules/trial/tailor', 			 	//裁剪
+		machinist: 'layui/myModules/trial/machinist',			//机工
+		embroidery : 'layui/myModules/trial/embroidery',		//绣花
+		needlework: 'layui/myModules/trial/needlework',			//针工
+		pack: 'layui/myModules/trial/pack',						//包装
+	}).define(
+		['cutParts','materials','tailor','machinist','embroidery','needlework','pack'],
+		function(){
+			var cutParts = layui.cutParts
+			, materials = layui.materials
+			, tailor = layui.tailor
+			, machinist = layui.machinist
+			, embroidery = layui.embroidery
+			, needlework = layui.needlework
+			, pack = layui.pack;
+		
+			cutParts.render({		//裁片模块渲染
+				elem: 'cutPartTab',
+				btn: 'cutPartBtn',
+			})
+			materials.render({		//生产用料模块渲染
+				elem: 'materialsTab',
+				btn: 'materialsBtn',
+			})
+			machinist.render({
+				elem: 'machinistTab',
+				btn: 'machinistBtn',
+			})
+			tailor.render({
+				elem: 'tailorTab',
+				btn: 'tailorBtn'
+			})
+			embroidery.render({
+				elem: 'embroideryTab',
+				btn: 'embroideryBtn'
+			})
+			needlework.render({
+				elem: 'needleworkTab',
+				btn: 'needleworkBtn'
+			})
+			pack.render({
+				elem: 'packTab',
+				btn: 'packBtn'
+			})
+		}
+	)
+});
+
 </script>
 </html> 
