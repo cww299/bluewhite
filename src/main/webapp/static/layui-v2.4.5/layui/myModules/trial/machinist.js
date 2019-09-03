@@ -97,7 +97,7 @@ layui.define(['mytable','element'],function(exports){
 				},
 			},
 			autoUpdate:{
-				saveUrl:'/product/addMachinist',
+				saveUrl:'/product/updateMachinist',
 				deleUrl:'/product/deleteMachinist',
 				field: { productMaterials_id:'productMaterialsId', },
 				isReload: true,
@@ -142,7 +142,7 @@ layui.define(['mytable','element'],function(exports){
 			size:'lg',
 			colsWidth:[0,8,6,6,6,6,6,10,6,10,6,10,6,8,8,8,10,10],
 			autoUpdate:{
-				saveUrl:'/product/addMachinist',
+				saveUrl:'/product/updateMachinist',
 				deleUrl:'/product/deleteMachinist',
 				field: { needlesize_id:'needlesizeId',wiresize_id:'wiresizeId',needlespur_id:'needlespurId' },
 				isReload: true,
