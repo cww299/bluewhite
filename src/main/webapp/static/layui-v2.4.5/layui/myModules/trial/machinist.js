@@ -50,9 +50,9 @@ layui.define(['mytable','element'],function(exports){
 	};
 	var allMaterial = [];
 	var choosedPrice = [ {id: 1, name: '电脑推算价格' }, {id: 2, name: '试制费用价格'}, ];
-	var allNeedlesize = myutil.getDataSync({ url:'/product/getBaseOne?type="needlesize"'});
-	var allWiresize  = myutil.getDataSync({ url:'/product/getBaseOne?type="wiresize"'});
-	var allNeedlespur  = myutil.getDataSync({ url:'/product/getBaseOne?type="needlespur"'});
+	var allNeedlesize = myutil.getDataSync({ url:'/product/getBaseOne?type=needlesize'});
+	var allWiresize  = myutil.getDataSync({ url:'/product/getBaseOne?type=wiresize'});
+	var allNeedlespur  = myutil.getDataSync({ url:'/product/getBaseOne?type=needlespur'});
 	var all  = myutil.getDataSync({ url:'/product/getBaseFour?sewingOrder="wiresize"'});
 	
 	machinist.render = function(opt){
@@ -89,7 +89,7 @@ layui.define(['mytable','element'],function(exports){
 						var check = table.checkStatus('productTable').data;
 						data[i]['productId'] = check[0].id;		//添加产品id参数
 						myutil.saveAjax({
-							url: '/product/addCutParts', 
+							url: '/product/addMachinist', 
 							data: data[i],
 						})
 					}
