@@ -676,7 +676,8 @@ layui.config({
 							elem: tdElem.children[0],
 							type: 'datetime',
 							done: function(value, date) {
-									var id = table.cache['tableData'][index].id
+									var tableId = $(this.elem).closest('div[class="layui-table-box"]').parent().attr('lay-id');
+									var id = table.cache[tableId][index].id
 									var postData = {
 										id: id,
 										expenseDate: value,
