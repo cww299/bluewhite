@@ -288,7 +288,7 @@ layui.config({
 	 			},
 	 			cols: [[
 				       {align:'center', title:'投入平台广告费',   field:'advertisementPrice',	  }, 
-				       {align:'center', title:'应聘人员数量',   field:'admissionNum',  },
+				       {align:'center', title:'入职人员数量',   field:'admissionNum',  },
 				       {align:'center', title:'每人占到应聘费用',   field:'sharePrice',},
 				       {align:'center', title:'面试招聘人员费用',   field:'recruitUserPrice',  edit: true,  },
 				       {align:'center', title:'培训费用',   field:'trainPrice',    },
