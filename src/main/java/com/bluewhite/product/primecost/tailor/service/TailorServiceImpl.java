@@ -63,7 +63,6 @@ public class TailorServiceImpl extends BaseServiceImpl<Tailor, Long> implements 
 		NumUtils.setzro(prams);
 		// 得到实验推算价格
 		tailor.setExperimentPrice(prams.getStallPrice());
-		
 		if(tailor.getCostPriceSelect() == 0){
 			tailor.setCostPriceSelect(1);
 		}

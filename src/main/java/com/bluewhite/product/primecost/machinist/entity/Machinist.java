@@ -72,10 +72,8 @@ public class Machinist extends BaseEntity<Long> {
 	@Column(name = "price_down_remark")
     private Double priceDownRemark;
 	
-	
-	
 	/**
-	 *为针工准备的压价
+	 * 为针工准备的压价
 	 */
 	@Column(name = "needlework_price_down")
     private Double needleworkPriceDown;

@@ -36,17 +36,13 @@ public class MachinistServiceImpl extends BaseServiceImpl<Machinist, Long> imple
 	@Override
 	@Transactional
 	public Machinist saveMachinist(Machinist machinist) {
-		
 		PrimeCoefficient primeCoefficient = primeCoefficientDao.findByType("machinist");
-		
 		//自动将类型为null的属性赋值为0
 		NumUtils.setzro(machinist);
-		
 		//在填写机工名称时，同时将裁片或上到填写，第一次填写，此时裁片的压价可以显示，机工的压价没有，  在填完之后，同时保存更新技工的压价，也就是裁片的压价总和 .   
 		//原理，机工的压价是只能通过裁片的压价获取到
 		//当我第一次填写机工名称时，同时传入了裁片的压价，此时更新当前机工的压价
 		 double sumPrice = 0;
-		
 		 if(!StringUtils.isEmpty(machinist.getCutparts())){
 			 	String[] arr = machinist.getCutparts().split(",");
 				String[] arrPrice = machinist.getCutpartsPrice().split(",");
@@ -93,7 +89,6 @@ public class MachinistServiceImpl extends BaseServiceImpl<Machinist, Long> imple
 		machinist.setModeTwo(NumUtils.division(1/machinist.getBaseFourDateTwo()*machinist.getArcNumber()));
 		//3类模式可走（每CM时间/秒）
 		machinist.setModeThree(NumUtils.division(1/machinist.getBaseFourDateThree()*machinist.getBendNumber()));
-		
 		//单一机缝需要时间/秒
 		machinist.setOneSewingTime(machinist.getBackStitch()+machinist.getSticking()+machinist.getModeOne()+machinist.getModeTwo()+machinist.getModeThree());
 		//剪线时间/秒
@@ -109,15 +104,14 @@ public class MachinistServiceImpl extends BaseServiceImpl<Machinist, Long> imple
 		//剪线工价
 		machinist.setCutLinePrice(machinist.getLineQuickWorkerTime()*primeCoefficient.getPerSecondMachinistTwo());
 		//设备折旧和房水电费
-		machinist.setEquipmentPrice((primeCoefficient.getDepreciation()+primeCoefficient.getLaserTubePriceSecond()+
-				primeCoefficient.getMaintenanceChargeSecond()+primeCoefficient.getPerSecondPrice())*machinist.getTime());
+		machinist.setEquipmentPrice(NumUtils.mul(NumUtils.sum(primeCoefficient.getDepreciation(),primeCoefficient.getLaserTubePriceSecond(),
+				primeCoefficient.getMaintenanceChargeSecond(),primeCoefficient.getPerSecondPrice()),machinist.getTime()));
 		//管理人员费用
 		machinist.setAdministrativeAtaff(primeCoefficient.getPerSecondManage()*machinist.getTime());
 		//电脑推算机缝该工序费用
 		machinist.setReckoningSewingPrice(NumUtils.round((machinist.getReckoningPrice()+machinist.getEquipmentPrice()+machinist.getCutLinePrice()+machinist.getAdministrativeAtaff())*primeCoefficient.getEquipmentProfit(),3));		
 		//试制机缝该工序费用
 		machinist.setTrialSewingPrice(NumUtils.round((machinist.getTrialProducePrice()+machinist.getCutLinePrice()+machinist.getEquipmentPrice()+machinist.getAdministrativeAtaff())*primeCoefficient.getEquipmentProfit(),3));
-		
 		//入成本价格
 		machinist.setAllCostPrice(machinist.getNumber()*NumUtils.setzro(machinist.getCostPrice()));
 		//各单道比全套工价
@@ -133,7 +127,6 @@ public class MachinistServiceImpl extends BaseServiceImpl<Machinist, Long> imple
 		 machinist.setNeedleworkPriceDown(machinist.getAllCostPrice()+machinist.getPriceDown());
 		 //单独机工工序外发的压价
 		 machinist.setMachinistPriceDown(machinist.getAllCostPrice()+machinist.getPriceDownRemark());
-		
 		return dao.save((Machinist)NumUtils.setzro(machinist));
 	}
 

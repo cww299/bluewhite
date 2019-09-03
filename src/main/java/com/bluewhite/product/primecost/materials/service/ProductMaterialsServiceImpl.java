@@ -62,10 +62,10 @@ public class ProductMaterialsServiceImpl extends BaseServiceImpl<ProductMaterial
 	        	if (param.getProductId() != null) {
 					predicate.add(cb.equal(root.get("productId").as(Long.class),param.getProductId()));
 				}
-//	        	//按裁片名称过滤
-//	        	if (!StringUtils.isEmpty(param.getMaterialsName())) {
-//					predicate.add(cb.like(root.get("cutPartsName").as(String.class),"%"+param.getMaterialsName()+"%"));
-//				}
+	        	//按压货环节id
+	        	if (param.getOverstockId() != null) {
+					predicate.add(cb.equal(root.get("overstockId").as(Long.class),param.getOverstockId()));
+				}
 				Predicate[] pre = new Predicate[predicate.size()];
 				query.where(predicate.toArray(pre));
 	        	return null;
