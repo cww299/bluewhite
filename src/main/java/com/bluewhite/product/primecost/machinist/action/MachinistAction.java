@@ -76,28 +76,38 @@ public class MachinistAction {
 	/**
 	 * 机工填写
 	 * 
-	 * @param request 请求
 	 * @return cr
-	 * @throws Exception
 	 */
 	@RequestMapping(value = "/product/addMachinist", method = RequestMethod.POST)
 	@ResponseBody
-	public CommonResponse addMachinist(HttpServletRequest request,Machinist machinist) {
+	public CommonResponse addMachinist(Machinist machinist) {
 		CommonResponse cr = new CommonResponse();
 		if(StringUtils.isEmpty(machinist.getProductId())){
 			cr.setCode(ErrorCode.ILLEGAL_ARGUMENT.getCode());
 			cr.setMessage("产品不能为空");
 		}else{
-			if(machinist.getId()!=null){
+				machinistService.saveMachinist(machinist);
+		}
+		cr.setMessage("添加成功");
+		return cr;
+	}
+	
+	
+	/**
+	 * 机工填写
+	 * 
+	 * @return cr
+	 */
+	@RequestMapping(value = "/product/updateMachinist", method = RequestMethod.POST)
+	@ResponseBody
+	public CommonResponse updateMachinist(Machinist machinist) {
+		CommonResponse cr = new CommonResponse();
+		if(machinist.getId()!=null){
 				Machinist oldMachinist = machinistService.findOne(machinist.getId());
 				BeanCopyUtils.copyNotEmpty(machinist,oldMachinist,"");
 				machinistService.saveMachinist(oldMachinist);
-				cr.setMessage("修改成功");
-			}else{
-				machinistService.saveMachinist(machinist);
-				cr.setMessage("添加成功");
-			}
 		}
+		cr.setMessage("修改成功");
 		return cr;
 	}
 	
@@ -105,13 +115,11 @@ public class MachinistAction {
 	/**
 	 * 分页查看  机工填写
 	 * 
-	 * @param request 请求
 	 * @return cr
-	 * @throws Exception
 	 */
 	@RequestMapping(value = "/product/getMachinist", method = RequestMethod.GET)
 	@ResponseBody
-	public CommonResponse getMachinist(HttpServletRequest request,PageParameter page,Machinist machinist) {
+	public CommonResponse getMachinist(PageParameter page,Machinist machinist) {
 		CommonResponse cr = new CommonResponse();
 		PageResult<Machinist>  machinistList = machinistService.findPages(machinist,page);
 		cr.setData(clearCascadeJSON.format(machinistList).toJSON());
@@ -122,11 +130,12 @@ public class MachinistAction {
 	
 	/**
 	 * 删除机工填写
-	 * 
+	 * @param ids
+	 * @return
 	 */
 	@RequestMapping(value = "/product/deleteMachinist", method = RequestMethod.GET)
 	@ResponseBody
-	public CommonResponse deleteMachinist(HttpServletRequest request,String ids) {
+	public CommonResponse deleteMachinist(String ids) {
 		CommonResponse cr = new CommonResponse();
 		if (!StringUtils.isEmpty(ids)) {
 			String[] idArr = ids.split(",");
@@ -154,7 +163,7 @@ public class MachinistAction {
 	 */
 	@RequestMapping(value = "/product/getMachinistName", method = RequestMethod.GET)
 	@ResponseBody
-	public CommonResponse getMachinistName(HttpServletRequest request,PageParameter page,Long id) {
+	public CommonResponse getMachinistName(PageParameter page,Long id) {
 		CommonResponse cr = new CommonResponse();
 		List<Map<String,Object>> mapList = new ArrayList<>();
 		Map<String,Object> map = null;
