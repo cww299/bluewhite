@@ -140,11 +140,11 @@ layui.define(['mytable','element'],function(exports){
 			elem: '#'+tableTimeId,
 			data:[],
 			size:'lg',
-			colsWidth:[0,8,6,6,6,6,6,10,6,10,6,10,6,8,8,8,10,10],
+			colsWidth:[0,8,6,8,10,6,6,10,6,10,6,10,6,8,8,8,10,10],
 			autoUpdate:{
 				saveUrl:'/product/updateMachinist',
 				deleUrl:'/product/deleteMachinist',
-				field: { needlesize_id:'needlesizeId',wiresize_id:'wiresizeId',needlespur_id:'needlespurId' },
+				field: { needlesize_id:'needleSizeId',wireSize_id:'wireSizeId',needleSpur_id:'needleSpurId' },
 				isReload: true,
 			},
 			verify:{
@@ -154,9 +154,9 @@ layui.define(['mytable','element'],function(exports){
 			cols:[[
 			       { type:'checkbox',},
 			       { title:'机缝工序',   	field:'machinistName',	},
-			       { title:'针号',   		field:'needlesize_id',	type:'select', select:{ data: allNeedlesize, },  },
-			       { title:'线色或线号',   	field:'wiresize_id',	type:'select', select:{ data: allWiresize, },  },
-			       { title:'针距',   		field:'needlespur_id',	type:'select', select:{ data: allNeedlespur, },  },
+			       { title:'针号',   		field:'needleSize_id',	type:'select', select:{ data: allNeedlesize, },  },
+			       { title:'线色或线号',   	field:'wireSize_id',	type:'select', select:{ data: allWiresize, },  },
+			       { title:'针距',   		field:'needleSpur_id',	type:'select', select:{ data: allNeedlespur, },  },
 			       { title:'快手时间',  		field:'time',   edit:true, },
 			       { title:'回针次数',   	field:'backStitchCount',edit:true, 	},
 			       { title:'直线机缝模式',   	field:'beeline',	type:'select', select:{ data: [], }, },
