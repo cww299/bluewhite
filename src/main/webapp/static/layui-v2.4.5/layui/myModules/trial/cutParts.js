@@ -2,9 +2,7 @@
  * 2019/8/28   试制模块：裁片
  * cutParts.render({ elem:'给定的元素。填充真正的内容', btn:'绑定的按钮' })
  */
-layui.extend({
-	mytable: 'layui/myModules/mytable',
-}).define(['mytable'],function(exports){
+layui.define(['mytable'],function(exports){
 	var $ = layui.jquery,
 		mytable = layui.mytable,
 		table = layui.table,
