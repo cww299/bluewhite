@@ -43,6 +43,14 @@ public interface MaterielService extends BaseCRUDService<Materiel,Long>{
 	 */
 	public PageResult<Materiel> findMaterielPages(Materiel materiel, PageParameter page);
 	
+	/**
+	 *  获取机锋时间页面布料对应的数据
+	 * @param typeId
+	 * @param id
+	 * @return
+	 */
+	public Double getBaseFourDate(Long typeId, Long id);
+	
 	
 
 }

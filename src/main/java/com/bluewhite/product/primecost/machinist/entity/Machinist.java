@@ -2,10 +2,17 @@ package com.bluewhite.product.primecost.machinist.entity;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
+import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 
 import com.bluewhite.base.BaseEntity;
+import com.bluewhite.product.primecost.materials.entity.ProductMaterials;
+import com.bluewhite.product.primecostbasedata.entity.BaseFour;
+import com.bluewhite.product.primecostbasedata.entity.BaseOne;
 
 /**
  * 机工页面
@@ -26,13 +33,19 @@ public class Machinist extends BaseEntity<Long> {
 	 * 批量产品数量或模拟批量数
 	 */
 	@Column(name = "number")
-	private Integer number;
+	private Integer number = 2000;
 
 	/**
 	 * 缝纫步骤名称
 	 */
 	@Column(name = "machinist_name")
 	private String machinistName;
+	
+	/**
+	 * 选择入成本价格
+	 */
+	@Column(name = "cost_price_select")
+    private Double costPriceSelect;
 	
 	/**
 	 * 选择单个入成本价格
@@ -46,7 +59,6 @@ public class Machinist extends BaseEntity<Long> {
 	@Column(name = "all_cost_price")
     private Double allCostPrice;
 	
-	
 	/**
 	 * 各单片比全套工价
 	 */
@@ -58,7 +70,6 @@ public class Machinist extends BaseEntity<Long> {
 	 */
 	@Column(name = "price_down")
     private Double priceDown;
-	
 	
 	/**
 	 * 机工的压价总和
@@ -87,9 +98,12 @@ public class Machinist extends BaseEntity<Long> {
 	/**
 	 * 用除裁片以外物料
 	 */
-	@Column(name = "materials")
-    private String materials;
+	@Column(name = "productMaterials_id")
+    private Long productMaterialsId;
 	
+	@OneToOne
+	@JoinColumn(name="productMaterials_id", referencedColumnName = "id", insertable = false, updatable = false )
+	private ProductMaterials productMaterials;
 	
 	/**
 	 * 用到裁片或上道数量
@@ -113,21 +127,41 @@ public class Machinist extends BaseEntity<Long> {
 	/**
 	 * 选择针号
 	 */
-	@Column(name = "needlesize")
-    private String needlesize;
+	@Column(name = "needle_size_id")
+    private Long needlesizeId;
+	
+	/**
+	 *针号
+	 */
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "needle_size_id", referencedColumnName = "id", insertable = false, updatable = false)
+	private BaseOne needleSize;
 	
 	/**
 	 * 选择线色或线号
 	 */
-	@Column(name = "wiresize")
-    private String wiresize;
-	
+	@Column(name = "wire_size_id")
+    private Long wireSizeId;
 	
 	/**
-	 * 选择针距↓
+	 * 线色或线号
 	 */
-	@Column(name = "needleSpur")
-    private Integer needlespur;
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "wire_size_id", referencedColumnName = "id", insertable = false, updatable = false)
+	private BaseOne wiresize;
+	
+	/**
+	 * 选择针距
+	 */
+	@Column(name = "needle_spur_id")
+    private Long needleSpurId;
+	
+	/**
+	 * 针距
+	 */
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "needle_spur_id", referencedColumnName = "id", insertable = false, updatable = false)
+	private BaseOne needlespur;
 	
 	/**
 	 * 得到试制净快手时间
@@ -142,10 +176,18 @@ public class Machinist extends BaseEntity<Long> {
     private Integer backStitchCount;
 	
 	/**
-	 * 1请选直线机缝模式↓
+	 * 1请选直线机缝模式
 	 */
-	@Column(name = "beeline")
-    private String beeline;
+	@Column(name = "beeline_id")
+    private Long beelineId;
+	
+	/**
+	 * 选直线机缝模式
+	 */
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "beeline_id", referencedColumnName = "id", insertable = false, updatable = false)
+	private BaseFour beeline;
+	
 	
 	/**
 	 * 手填该工序满足G列的CM↓
@@ -156,8 +198,15 @@ public class Machinist extends BaseEntity<Long> {
 	/**
 	 * 2请选弧线机缝模式
 	 */
-	@Column(name = "arc")
-    private String arc;
+	@Column(name = "arc_id")
+    private Long arcId;
+	
+	/**
+	 * 弧线机缝模式
+	 */
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "arc_id", referencedColumnName = "id", insertable = false, updatable = false)
+	private BaseFour arc;
 	
 	/**
 	 * 手填该工序满足I列的CM↓
@@ -168,9 +217,15 @@ public class Machinist extends BaseEntity<Long> {
 	/**
 	 * 3请选弯曲复杂机缝模式↓
 	 */
-	@Column(name = "bend")
-    private String bend;
+	@Column(name = "bend_id")
+    private Long bendId;
 	
+	/**
+	 * 弯曲复杂机缝模式
+	 */
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "bend_id", referencedColumnName = "id", insertable = false, updatable = false)
+	private BaseFour bend;
 	
 	/**
 	 * 手填该工序满足K列的CM↓
@@ -302,6 +357,30 @@ public class Machinist extends BaseEntity<Long> {
 	
 	
 	
+	public Double getCostPriceSelect() {
+		return costPriceSelect;
+	}
+
+	public void setCostPriceSelect(Double costPriceSelect) {
+		this.costPriceSelect = costPriceSelect;
+	}
+
+	public Long getProductMaterialsId() {
+		return productMaterialsId;
+	}
+
+	public void setProductMaterialsId(Long productMaterialsId) {
+		this.productMaterialsId = productMaterialsId;
+	}
+
+	public ProductMaterials getProductMaterials() {
+		return productMaterials;
+	}
+
+	public void setProductMaterials(ProductMaterials productMaterials) {
+		this.productMaterials = productMaterials;
+	}
+
 	public Double getOneMachinistPrice() {
 		return oneMachinistPrice;
 	}
@@ -350,13 +429,6 @@ public class Machinist extends BaseEntity<Long> {
 		this.cutpartsPrice = cutpartsPrice;
 	}
 
-	public String getBeeline() {
-		return beeline;
-	}
-
-	public void setBeeline(String beeline) {
-		this.beeline = beeline;
-	}
 
 	public Double getBeelineNumber() {
 		return beelineNumber;
@@ -366,13 +438,6 @@ public class Machinist extends BaseEntity<Long> {
 		this.beelineNumber = beelineNumber;
 	}
 
-	public String getArc() {
-		return arc;
-	}
-
-	public void setArc(String arc) {
-		this.arc = arc;
-	}
 
 	public Double getArcNumber() {
 		return arcNumber;
@@ -382,11 +447,51 @@ public class Machinist extends BaseEntity<Long> {
 		this.arcNumber = arcNumber;
 	}
 
-	public String getBend() {
+	public Long getBeelineId() {
+		return beelineId;
+	}
+
+	public void setBeelineId(Long beelineId) {
+		this.beelineId = beelineId;
+	}
+
+	public BaseFour getBeeline() {
+		return beeline;
+	}
+
+	public void setBeeline(BaseFour beeline) {
+		this.beeline = beeline;
+	}
+
+	public Long getArcId() {
+		return arcId;
+	}
+
+	public void setArcId(Long arcId) {
+		this.arcId = arcId;
+	}
+
+	public BaseFour getArc() {
+		return arc;
+	}
+
+	public void setArc(BaseFour arc) {
+		this.arc = arc;
+	}
+
+	public Long getBendId() {
+		return bendId;
+	}
+
+	public void setBendId(Long bendId) {
+		this.bendId = bendId;
+	}
+
+	public BaseFour getBend() {
 		return bend;
 	}
 
-	public void setBend(String bend) {
+	public void setBend(BaseFour bend) {
 		this.bend = bend;
 	}
 
@@ -408,29 +513,51 @@ public class Machinist extends BaseEntity<Long> {
 		this.backStitchCount = backStitchCount;
 	}
 
-	public String getNeedlesize() {
-		return needlesize;
+	public Long getNeedlesizeId() {
+		return needlesizeId;
 	}
 
-	public void setNeedlesize(String needlesize) {
-		this.needlesize = needlesize;
+	public void setNeedlesizeId(Long needlesizeId) {
+		this.needlesizeId = needlesizeId;
 	}
 
-	public String getWiresize() {
+	public BaseOne getNeedleSize() {
+		return needleSize;
+	}
+
+	public void setNeedleSize(BaseOne needleSize) {
+		this.needleSize = needleSize;
+	}
+
+	public Long getWireSizeId() {
+		return wireSizeId;
+	}
+
+	public void setWireSizeId(Long wireSizeId) {
+		this.wireSizeId = wireSizeId;
+	}
+
+	public BaseOne getWiresize() {
 		return wiresize;
 	}
 
-	public void setWiresize(String wiresize) {
+	public void setWiresize(BaseOne wiresize) {
 		this.wiresize = wiresize;
 	}
 
+	public Long getNeedleSpurId() {
+		return needleSpurId;
+	}
 
+	public void setNeedleSpurId(Long needleSpurId) {
+		this.needleSpurId = needleSpurId;
+	}
 
-	public Integer getNeedlespur() {
+	public BaseOne getNeedlespur() {
 		return needlespur;
 	}
 
-	public void setNeedlespur(Integer needlespur) {
+	public void setNeedlespur(BaseOne needlespur) {
 		this.needlespur = needlespur;
 	}
 
@@ -578,13 +705,7 @@ public class Machinist extends BaseEntity<Long> {
 		this.timeCheck = timeCheck;
 	}
 
-	public String getMaterials() {
-		return materials;
-	}
 
-	public void setMaterials(String materials) {
-		this.materials = materials;
-	}
 
 
 	public Integer getCutpartsNumber() {
