@@ -63,21 +63,20 @@ public class TailorServiceImpl extends BaseServiceImpl<Tailor, Long> implements 
 		NumUtils.setzro(prams);
 		// 得到实验推算价格
 		tailor.setExperimentPrice(prams.getStallPrice());
-		// 选择入成本价格
-		double costPrice = 0;
-		if(tailor.getCostPrice() == 0){
-			tailor.setCostPrice((double)1);
+		
+		if(tailor.getCostPriceSelect() == 0){
+			tailor.setCostPriceSelect(1);
 		}
-		if(tailor.getCostPrice() == 1){
-			costPrice = tailor.getManagePrice();
-		}else if(tailor.getCostPrice() == 2){
-			costPrice = tailor.getExperimentPrice();
+		if(tailor.getCostPriceSelect() == 1){
+			tailor.setCostPrice(tailor.getManagePrice());
+		}else if(tailor.getCostPriceSelect() == 2){
+			tailor.setCostPrice(tailor.getExperimentPrice());
 		}
 		// 总入成本价格
-		tailor.setAllCostPrice(NumUtils.mul(tailor.getBacthTailorNumber() , costPrice));
+		tailor.setAllCostPrice(NumUtils.mul(tailor.getBacthTailorNumber() , tailor.getCostPrice()));
 		// 得到市场价与实推价比
-		if (tailor.getExperimentPrice()!=0) {
-			tailor.setRatePrice(NumUtils.div(tailor.getExperimentPrice(), costPrice, 3));
+		if (tailor.getExperimentPrice() != 0) {
+			tailor.setRatePrice(NumUtils.div(tailor.getExperimentPrice(), tailor.getCostPrice(), 3));
 		}
 		// 各单道比全套工价
 		List<Tailor> tailorList = dao.findByProductId(tailor.getProductId());
