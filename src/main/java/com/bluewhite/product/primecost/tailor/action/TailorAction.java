@@ -49,7 +49,7 @@ public class TailorAction {
 		clearCascadeJSON = ClearCascadeJSON.get()
 				.addRetainTerm(Tailor.class, "id", "productId", "number", "cutPartsId", "ordinaryLaserId",
 						"embroideryId", "tailorName", "tailorNumber", "bacthTailorNumber", "tailorSize", "tailorType",
-						"tailorTypeId", "managePrice", "experimentPrice", "ratePrice", "costPrice", "allCostPrice",
+						"tailorTypeId", "managePrice", "experimentPrice", "ratePrice", "costPrice","costPriceSelect", "allCostPrice",
 						"scaleMaterial", "priceDown", "noeMbroiderPriceDown", "embroiderPriceDown",
 						"machinistPriceDown", "oneCutPrice")
 				.addRetainTerm(BaseThree.class, "id", "ordinaryLaser");
