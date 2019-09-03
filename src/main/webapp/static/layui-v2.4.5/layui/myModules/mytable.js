@@ -130,8 +130,16 @@ layui.extend({
 									text.push(field);
 								})
 								text = text.join(' ~ ');
-							}else
-								text = item[name];
+							}else{
+								if(name.indexOf('_')>-1){
+									text = item;
+									var arr = name.split('_');
+									for(var key in arr){
+										text = text[arr[key]] || '数据异常';
+									}
+								}else
+									text = item[name];
+							}
 							html+='<option value="'+item[id]+'" '+selected+'>'+text+'</option>'
 						})
 						return html+='</select>';
