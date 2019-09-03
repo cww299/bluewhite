@@ -210,6 +210,10 @@ layui.define(['mytable','element'],function(exports){
 			verify:{ 
 				price:['otherTimeOne','otherTimeTwo','otherTimeThree'],
 				count:['layerNumber'],
+				otherVerify: function(data){
+					if(data.layerNumber==0)
+						return '叠片层数不能为0';
+				}
 			},
 			cols:[[
 			       { type:'checkbox',},
@@ -258,6 +262,10 @@ layui.define(['mytable','element'],function(exports){
 			verify:{ 
 				price:['perimeter','otherTimeOne','otherTimeTwo',],
 				count:['layerNumber',],
+				otherVerify: function(data){
+					if(data.layerNumber==0)
+						return '叠片层数不能为0';
+				},
 			},
 			cols:[[
 				   { type:'checkbox',},
