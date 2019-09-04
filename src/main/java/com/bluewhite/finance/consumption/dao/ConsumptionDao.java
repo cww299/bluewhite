@@ -21,7 +21,7 @@ public interface ConsumptionDao extends BaseRepository<Consumption, Long>{
 	 * @param id
 	 * @return
 	 */
-	public List<Consumption> findByBudgetAndOrgNameId(Integer budget,Long id);
+	public List<Consumption> findByBudgetAndOrgNameIdAndExpenseDateBetween(Integer budget,Long id,Date startDate,Date endDate);
 	
 	/**
 	 * 查出所有未付款和部分付款
