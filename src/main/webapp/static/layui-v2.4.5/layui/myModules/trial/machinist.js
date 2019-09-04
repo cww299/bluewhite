@@ -49,12 +49,12 @@ layui.define(['mytable','element',['form']],function(exports){
 	var machinist = {	//模块
 			
 	};
-	var allMaterial = [];
+	var allMaterial = [];		//所有除裁片以外物料
+	var allCutparts = []; 		//所有裁片或上道
 	var choosedPrice = [ {id: 1, name: '电脑推算价格' }, {id: 2, name: '试制费用价格'}, ];
 	var allNeedlesize = myutil.getDataSync({ url:'/product/getBaseOne?type=needlesize'});
 	var allWiresize  = myutil.getDataSync({ url:'/product/getBaseOne?type=wiresize'});
 	var allNeedlespur  = myutil.getDataSync({ url:'/product/getBaseOne?type=needlespur'});
-	var all = []; 
 	
 	machinist.render = function(opt){
 		var elem = opt.elem,
@@ -67,7 +67,7 @@ layui.define(['mytable','element',['form']],function(exports){
 			elem:'#'+tableId,
 			data:[],
 			size:'lg',
-			curd: {
+			curd: {		//新增配置
 				addTemp:{
 					machinistName: '',
 					productMaterialsId:'',
@@ -94,31 +94,32 @@ layui.define(['mytable','element',['form']],function(exports){
 					table.reload(tableId);
 				},
 			},
-			autoUpdate:{
+			autoUpdate:{	//修改、删除配置
 				saveUrl:'/product/updateMachinist',
 				deleUrl:'/product/deleteMachinist',
 				field: { productMaterials_id:'productMaterialsId', },
 				isReload: true,
 			},
-			parseData:function(ret){
+			parseData:function(ret){	//解析数据前先获取必要的数据
 				var check = table.checkStatus('productTable').data;
 				allMaterial.splice(0,999);	//删除所有元素
 				allMaterial.push({
 					id:'', materiel:{ name:'请选择'}
 				})
-				myutil.getDataSync({
-					url: myutil.config.ctx+'/product/getProductMaterials?overstockId=81&size=99&productId='+check[0].id,	//默认查找压货为机工的。id为81
+				myutil.getDataSync({	//默认查找压货为机工的。id为81   获取用除裁片以外物料
+					url: myutil.config.ctx+'/product/getProductMaterials?overstockId=81&size=99&productId='+check[0].id,	
 					success: function(data){
 						layui.each(data,function(index,item){
 							allMaterial.push(item);
 						})
 					}
 				});
-				myutil.getDataSync({
-					url: myutil.config.ctx+'/product/getMachinistName?productId='+check[0].id,	
+				allCutparts.splice(0,999);	//删除所有元素
+				myutil.getDataSync({		//获取机封上道和裁片
+					url: myutil.config.ctx+'/product/getMachinistName?id='+check[0].id,	
 					success: function(data){
 						layui.each(data,function(index,item){
-							a.push(item);
+							allCutparts.push(item);
 						})
 					}
 				});
@@ -152,11 +153,10 @@ layui.define(['mytable','element',['form']],function(exports){
 						var X = tdElem.offset().left;
 						(function getSelectHtml(){
 							var html = '';
-							for(var key in allMaterial){
-								var item = allMaterial[key];
+							for(var key in allCutparts){
+								var item = allCutparts[key];
 								var input = '<input type="checkbox" lay-filter="" lay-skin="primary">';
-								if(item.id)
-									html += '<dd data-value="'+item.id+'" style="text-align: left;">'+input+item.materiel.name+'</dd>';
+								html += '<dd data-value="'+item.price+'" style="text-align: left;">'+input+item.name+'</dd>';
 							}
 							$('#searchTipDiv').html(html);
 							form.render();
