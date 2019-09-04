@@ -55,11 +55,12 @@ layui.define(['mytable'],function(exports){
 						inputText = val;
 						inputField = $(this).closest('td').data('field');
 					}).blur(function(obj){
+						var self = this;
 						setTimeout(function () {
-							$('#searchTipDiv').hide();
-							$(this).parent().parent().removeClass('layui-form-selected');
+							//$('#searchTipDiv').hide();
+							$(self).parent().parent().removeClass('layui-form-selected');
 							$(inputElem).val(inputText);
-					    }, 100);
+					    }, 200);
 					}).bind("input propertychange",function(event){	//监听输入框内容改变
 						getSearchMateriael($(this).val());
 					});
@@ -67,13 +68,17 @@ layui.define(['mytable'],function(exports){
 			}
 		}
 		function getSearchMateriael(name){	//根据输入的内容进行搜索、填充选择项
-			name = name.split('~')[1]?name.split('~')[1].trim():'';
 			var html = '';
 			if(!name){
 				html = allMaterielSelect;
 				renderHtml();
 			}
-			else
+			else{
+				name = name.split('~');
+				if(name[1])
+					name = name[1].trim();
+				else 
+					name = name[0].trim();
 				myutil.getData({
 					url:'/product/getMateriel',
 					data:{ name: name },
@@ -87,6 +92,7 @@ layui.define(['mytable'],function(exports){
 						renderHtml();
 					}
 				})
+			}
 			function renderHtml(){
 				$('#searchTipDiv').html(html);
 				$('#searchTipDiv').find('dd').on('click',function(obj){		//监听选择事件、如果选中某一个选项
@@ -121,7 +127,7 @@ layui.define(['mytable'],function(exports){
 			autoUpdate:{
 				saveUrl:'/product/updateCutParts',
 				deleUrl:'/product/deleteCutParts',
-				field:{ unit_id:'unitId', materiel:'materielId',complexMateriel:'complexMaterielId', }
+				field:{ unit_id:'unitId', materiel:'materielId',complexMateriel:'complexMaterielId',overstock_id:'overstockId' }
 			}, 
 			curd:{
 				addTemp:{
@@ -184,7 +190,7 @@ layui.define(['mytable'],function(exports){
 			       { title:'当批复合物用料',   	field:'complexBatchMaterial',			edit:false, style:sty },
 			       { title:'当批复合物单片价格', field:'batchComplexMaterialPrice',		edit:false, style:sty },
 			       { title:'当批复合物加工费',   field:'batchComplexAddPrice',			edit:false, style:sty },
-			       { title:'压货环节',   	field:'overstockId', type:'select', 		select:{ data: allOverstock } ,},
+			       { title:'压货环节',   	field:'overstock_id', type:'select', 		select:{ data: allOverstock } ,},
 			       ]],
 			 done:function(){
 				 renderSelectSearch();

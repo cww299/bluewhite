@@ -503,6 +503,7 @@ layui.config({
 				where: field,
 				page:{ curr:1 },
 			});  
+			getDate(field);
 		});
 		//新增、修改接口
 		var mainJs = {
@@ -552,10 +553,11 @@ layui.config({
 		    },
 		};
 		//其他功能函数
-		function getDate(){
+		function getDate(data){
 			if(document.getElementById("totalAll")!=null){
 				$.ajax({
 					url:"${ctx}/fince/countConsumptionMoney",
+					data: data || null,
 					success:function(result){
 						if(0==result.code){
 							var html="";

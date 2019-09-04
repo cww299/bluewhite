@@ -2,14 +2,12 @@
  * 2019/8/28   试制模块：机工
  * machinist.render({ elem:'给定的元素。填充真正的内容', btn:'绑定的按钮' })
  */
-layui.extend({
-	formSelects : 'formSelect/formSelects-v4',
-}).define(['mytable','element','formSelects'],function(exports){
+layui.define(['mytable','element',['form']],function(exports){
 	var $ = layui.jquery,
 		mytable = layui.mytable,
 		element = layui.element
+		form =layui.form
 		table = layui.table,
-		formSelects = layui.formSelects
 		myutil = layui.myutil;
 	var html = [
 	            '<div class="layui-tab layui-tab-brief" lay-filter="tabMachinist">',
@@ -51,12 +49,12 @@ layui.extend({
 	var machinist = {	//模块
 			
 	};
-	var allMaterial = [];
+	var allMaterial = [];		//所有除裁片以外物料
+	var allCutparts = []; 		//所有裁片或上道
 	var choosedPrice = [ {id: 1, name: '电脑推算价格' }, {id: 2, name: '试制费用价格'}, ];
 	var allNeedlesize = myutil.getDataSync({ url:'/product/getBaseOne?type=needlesize'});
 	var allWiresize  = myutil.getDataSync({ url:'/product/getBaseOne?type=wiresize'});
 	var allNeedlespur  = myutil.getDataSync({ url:'/product/getBaseOne?type=needlespur'});
-	var all = []; 
 	
 	machinist.render = function(opt){
 		var elem = opt.elem,
@@ -69,14 +67,11 @@ layui.extend({
 			elem:'#'+tableId,
 			data:[],
 			size:'lg',
-			colsWidth:[0,10,18,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10],
-			curd: {
+			curd: {		//新增配置
 				addTemp:{
 					machinistName: '',
 					productMaterialsId:'',
-					
 					cutparts: '',
-					
 					reckoningSewingPrice: '',
 					trialSewingPrice: '',
 					costPrice: choosedPrice[0].id,
@@ -99,43 +94,44 @@ layui.extend({
 					table.reload(tableId);
 				},
 			},
-			autoUpdate:{
+			autoUpdate:{	//修改、删除配置
 				saveUrl:'/product/updateMachinist',
 				deleUrl:'/product/deleteMachinist',
 				field: { productMaterials_id:'productMaterialsId', },
 				isReload: true,
 			},
-			parseData:function(ret){
+			parseData:function(ret){	//解析数据前先获取必要的数据
 				var check = table.checkStatus('productTable').data;
 				allMaterial.splice(0,999);	//删除所有元素
 				allMaterial.push({
 					id:'', materiel:{ name:'请选择'}
 				})
-				myutil.getDataSync({
-					url: myutil.config.ctx+'/product/getProductMaterials?overstockId=81&size=99&productId='+check[0].id,	//默认查找压货为机工的。id为81
+				myutil.getDataSync({	//默认查找压货为机工的。id为81   获取用除裁片以外物料
+					url: myutil.config.ctx+'/product/getProductMaterials?overstockId=81&size=99&productId='+check[0].id,	
 					success: function(data){
 						layui.each(data,function(index,item){
 							allMaterial.push(item);
 						})
 					}
 				});
-				myutil.getDataSync({
-					url: myutil.config.ctx+'/product/getMachinistName&productId='+check[0].id,	
+				allCutparts.splice(0,999);	//删除所有元素
+				myutil.getDataSync({		//获取机封上道和裁片
+					url: myutil.config.ctx+'/product/getMachinistName?id='+check[0].id,	
 					success: function(data){
 						layui.each(data,function(index,item){
-							a.push(item);
+							allCutparts.push(item);
 						})
 					}
 				});
 				
 				return {  msg:ret.message,  code:ret.code , data:ret.data.rows, count:ret.data.total }; 
 			},
+			colsWidth:[0,10,18,22,10,10,10,10,10,10,10,10,10,10,10,10,10,10],
 			cols:[[
 			       { type:'checkbox',},
 			       { title:'填写机缝名',   		field:'machinistName',	edit:true,  },
 			       { title:'其他物料',   		field:'productMaterials_id',type:'select',   select:{ data: allMaterial, name:'materiel_name',  }},
-			       { title:'所用裁片',   		field:'',	templet: getFormSelects() },
-			       { title:'用到裁片或上道',   	field:'cutparts',	edit:false, },
+			       { title:'用到裁片或上道',   	field:'cutparts',	templet: getFormSelects(), edit:false, },
 			       { title:'机缝工序费用',   	field:'reckoningSewingPrice',	edit:false, },
 			       { title:'试制机缝工序费用',   field:'trialSewingPrice',	edit:false, },
 			       { title:'选择入行成本价',   	field:'costPrice',		type:'select',   select:{ data: choosedPrice,}},
@@ -147,25 +143,72 @@ layui.extend({
 			       { title:'单独机工工序外发的压价',  	field:'machinistPriceDown',  edit:false,  },
 			       ]],
 	        done:function(){
-				formSelects.render();
-			}
+	        	var trIndex = ''; //记录多选框吸附的行
+	        	layui.each($('td[data-field="cutparts"]').find('.layui-form-select').find('.layui-input'),function(index,item){	//遍历表格物料名称下拉框
+					$(item).unbind().click(function(event){
+						$(this).parent().parent().addClass('layui-form-selected');
+						var width = $(this).parent().width();			
+						var tdElem = $(this).closest('td');
+						var Y = tdElem.offset().top;
+						var X = tdElem.offset().left;
+						(function getSelectHtml(){
+							var html = '';
+							for(var key in allCutparts){
+								var item = allCutparts[key];
+								var input = '<input type="checkbox" lay-filter="" lay-skin="primary">';
+								html += '<dd data-value="'+item.price+'" style="text-align: left;">'+input+item.name+'</dd>';
+							}
+							$('#searchTipDiv').html(html);
+							form.render();
+						})();
+						clickDD();
+						$('#searchTipDiv').css("top",Y+45);	//定位搜索提示框位置并显示提示框
+						$('#searchTipDiv').css("left",X+15);
+						$('#searchTipDiv').css("width",width);
+						$('#searchTipDiv').show();
+						trIndex = $(this).closest('tr').data('index');
+					});
+				})
+				function clickDD(){
+	        		layui.each($('#searchTipDiv').find('dd'),function(index,item){
+	        			$(item).unbind().click(function(obj){
+	        				var checkbox = $(obj.target).find('input');
+	        				var checked = $(checkbox).prop('checked');
+	        				$(checkbox).prop('checked',!checked);
+	        				form.render();
+	        				var input = $('div[lay-id="'+tableId+'"]').find('tr[data-index="'+trIndex+'"]').find('td[data-field="cutparts"]').find('.layui-input');
+	        				$(input).append('<span class="layui-badge">'+'测试'+'<i class="layui-icon layui-icon-close"></i></span>&nbsp;')
+	        			})
+	        		});
+	        	}
+				$(document).click(function(event){
+				    var div = $('#searchTipDiv');
+				    if(!div.is(event.target) && div.has(event.target).length === 0 && $(event.target)[0].nodeName!='I' ){
+				    	$('#searchTipDiv').hide();
+						//console.log($('div[lay-id="'+tableId+'"]').find('tr[data-index="'+trIndex+'"]').find('td[data-field="cutparts"]').length)
+						//find('div[class="layui-form-select"]').removeClass('layui-form-selected');
+						//$(self).parent().parent().removeClass('layui-form-selected');
+					}
+				})
+	        }
 		})
 		function getFormSelects(){
 			return function(d){
-				var html = '<select id="das" lay-search  xm-select="dasd" xm-select-show-count="5"><option value="">请选择</option>';
-				return html + '</select>';
-				/*
-				var ids=d.ids.split(',');
-				var isSelect='';
-				layui.each(allRole,function(index,item){ 
-					isSelect='';
-					for(var i=0;i<ids.length;i++){
-						if(ids[i]==item.id)
-							isSelect='selected';
-					}  }}
-				<option value="{{ item.id }}" {{ isSelect }} >{{ item.name }}</option>
-			{{# }); }}
-			</select>*/
+				var text = '',c = d.cutparts.split(',');
+				for(var key in c){
+					if(c[key]!='')
+						text += '<span class="layui-badge">'+c[key]+'<i class="layui-icon layui-icon-close"></i></span>&nbsp;';
+				}
+				var html = ['<div class="layui-form-select">',
+				            	'<div class="layui-select-title">',
+				            		'<div class="layui-input" style="text-align: center;padding-top:10px;white-space: pre-line;">',
+				            			text,
+				            		'</div>',
+				            		'<i class="layui-edge"></i>',
+				            	'</div>',
+				            '</div>',
+				            ].join(' ');
+				return html;
 			}
 		}
 		mytable.render({

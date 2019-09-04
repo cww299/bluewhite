@@ -5,7 +5,6 @@
 <html>
 <head>
 	<link rel="stylesheet" href="${ctx }/static/layui-v2.4.5/layui/css/layui.css" media="all">
-	<link rel="stylesheet" href="${ctx }/static/layui-v2.4.5/formSelect/formSelects-v4.css" />
 	<script src="${ctx}/static/layui-v2.4.5/layui/layui.js"></script>
 	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 	<title>产品汇总</title>
@@ -55,11 +54,6 @@
 	background-color: #8080803d;
 	cursor:pointer;
 }
-.layui-formSelects-layer .xm-select-parent .xm-form-select dl {
-    position: relative;
-    top: 0 !important;
-    margin-top: 3px;
-}
 </style>
 </head>
 <body>
@@ -100,7 +94,7 @@
 	</div>
 </div>
 <!-- 搜索提示框 -->
-<div id="searchTipDiv">
+<div id="searchTipDiv" class="layui-form">
 	<dd style="color:#999;">....</dd>
 </div>
 </body>
