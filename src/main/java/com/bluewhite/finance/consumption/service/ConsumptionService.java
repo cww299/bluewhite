@@ -62,7 +62,7 @@ public interface ConsumptionService extends BaseCRUDService<Consumption, Long> {
 	 * @return cr
 	 * @throws Exception
 	 */
-	Map<String,Object> countConsumptionMoney();
+	Map<String,Object> countConsumptionMoney(Date startDate, Date enDate);
 	/**
 	 * 导入订单
 	 * @param excelListener
