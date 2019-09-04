@@ -85,9 +85,9 @@ public class ConsumptionAction {
 	 */
 	@RequestMapping(value = "/fince/countConsumptionMoney", method = RequestMethod.GET)  
 	@ResponseBody
-	public CommonResponse countConsumptionMoney(Date orderTimeBegin, Date orderTimeEnd) {
+	public CommonResponse countConsumptionMoney(Consumption consumption) {
 		CommonResponse cr = new CommonResponse();
-		cr.setData(consumptionService.countConsumptionMoney(orderTimeBegin,orderTimeEnd));
+		cr.setData(consumptionService.countConsumptionMoney(consumption));
 		cr.setMessage("统计成功");
 		return cr;
 	}

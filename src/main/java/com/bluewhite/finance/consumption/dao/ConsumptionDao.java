@@ -15,14 +15,6 @@ public interface ConsumptionDao extends BaseRepository<Consumption, Long>{
 	 */
 	public List<Consumption> findByParentId(Long id);
 	
-	
-	/**
-	 * 是否预算
-	 * @param id
-	 * @return
-	 */
-	public List<Consumption> findByBudgetAndOrgNameIdAndExpenseDateBetween(Integer budget,Long id,Date startDate,Date endDate);
-	
 	/**
 	 * 查出所有未付款和部分付款
 	 * @param type
