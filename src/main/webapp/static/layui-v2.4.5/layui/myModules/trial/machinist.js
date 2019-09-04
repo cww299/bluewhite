@@ -2,10 +2,11 @@
  * 2019/8/28   试制模块：机工
  * machinist.render({ elem:'给定的元素。填充真正的内容', btn:'绑定的按钮' })
  */
-layui.define(['mytable','element',],function(exports){
+layui.define(['mytable','element',['form']],function(exports){
 	var $ = layui.jquery,
 		mytable = layui.mytable,
 		element = layui.element
+		form =layui.form
 		table = layui.table,
 		myutil = layui.myutil;
 	var html = [
@@ -66,7 +67,6 @@ layui.define(['mytable','element',],function(exports){
 			elem:'#'+tableId,
 			data:[],
 			size:'lg',
-			colsWidth:[0,10,18,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10],
 			curd: {
 				addTemp:{
 					machinistName: '',
@@ -125,6 +125,7 @@ layui.define(['mytable','element',],function(exports){
 				
 				return {  msg:ret.message,  code:ret.code , data:ret.data.rows, count:ret.data.total }; 
 			},
+			colsWidth:[0,10,18,22,10,10,10,10,10,10,10,10,10,10,10,10,10,10],
 			cols:[[
 			       { type:'checkbox',},
 			       { title:'填写机缝名',   		field:'machinistName',	edit:true,  },
@@ -141,47 +142,66 @@ layui.define(['mytable','element',],function(exports){
 			       { title:'单独机工工序外发的压价',  	field:'machinistPriceDown',  edit:false,  },
 			       ]],
 	        done:function(){
+	        	var trIndex = ''; //记录多选框吸附的行
 	        	layui.each($('td[data-field="cutparts"]').find('.layui-form-select').find('.layui-input'),function(index,item){	//遍历表格物料名称下拉框
-					$(item).unbind().focus(function(event){
+					$(item).unbind().click(function(event){
 						$(this).parent().parent().addClass('layui-form-selected');
 						var width = $(this).parent().width();			
 						var tdElem = $(this).closest('td');
-						var val = $(this).val();
 						var Y = tdElem.offset().top;
 						var X = tdElem.offset().left;
-						//getSearchHtml(val);
+						(function getSelectHtml(){
+							var html = '';
+							for(var key in allMaterial){
+								var item = allMaterial[key];
+								var input = '<input type="checkbox" lay-filter="" lay-skin="primary">';
+								if(item.id)
+									html += '<dd data-value="'+item.id+'" style="text-align: left;">'+input+item.materiel.name+'</dd>';
+							}
+							$('#searchTipDiv').html(html);
+							form.render();
+						})();
+						clickDD();
 						$('#searchTipDiv').css("top",Y+45);	//定位搜索提示框位置并显示提示框
 						$('#searchTipDiv').css("left",X+15);
 						$('#searchTipDiv').css("width",width);
 						$('#searchTipDiv').show();
-						var i = $(this).closest('tr').data('index');
-						/*var trData = layui.table.cache[tableId][i];
-						updateTrData = trData;				//记录点击的当行数据和输入框、用于修改和修改成功后修改相应的输入框值
-						inputElem = $(this);
-						inputText = val;
-						inputField = $(this).closest('td').data('field');*/
-					}).blur(function(obj){
-						setTimeout(function () {
-							$('#searchTipDiv').hide();
-							$(this).parent().parent().removeClass('layui-form-selected');
-							//$(inputElem).val(inputText);
-					    }, 100);
-					}).bind("input propertychange",function(event){	//监听输入框内容改变
-						//getSearchHtml($(this).val());
+						trIndex = $(this).closest('tr').data('index');
 					});
 				})
-			}
+				function clickDD(){
+	        		layui.each($('#searchTipDiv').find('dd'),function(index,item){
+	        			$(item).unbind().click(function(obj){
+	        				var checkbox = $(obj.target).find('input');
+	        				var checked = $(checkbox).prop('checked');
+	        				$(checkbox).prop('checked',!checked);
+	        				form.render();
+	        				var input = $('div[lay-id="'+tableId+'"]').find('tr[data-index="'+trIndex+'"]').find('td[data-field="cutparts"]').find('.layui-input');
+	        				$(input).append('<span class="layui-badge">'+'测试'+'<i class="layui-icon layui-icon-close"></i></span>&nbsp;')
+	        			})
+	        		});
+	        	}
+				$(document).click(function(event){
+				    var div = $('#searchTipDiv');
+				    if(!div.is(event.target) && div.has(event.target).length === 0 && $(event.target)[0].nodeName!='I' ){
+				    	$('#searchTipDiv').hide();
+						//console.log($('div[lay-id="'+tableId+'"]').find('tr[data-index="'+trIndex+'"]').find('td[data-field="cutparts"]').length)
+						//find('div[class="layui-form-select"]').removeClass('layui-form-selected');
+						//$(self).parent().parent().removeClass('layui-form-selected');
+					}
+				})
+	        }
 		})
 		function getFormSelects(){
 			return function(d){
-				var text = '<span class="layui-badge">测试</span>&nbsp;',c = d.cutparts.split(',');
+				var text = '',c = d.cutparts.split(',');
 				for(var key in c){
 					if(c[key]!='')
-						text += '<span class="layui-badge">'+c[key]+'</span>&nbsp;';
+						text += '<span class="layui-badge">'+c[key]+'<i class="layui-icon layui-icon-close"></i></span>&nbsp;';
 				}
 				var html = ['<div class="layui-form-select">',
 				            	'<div class="layui-select-title">',
-				            		'<div class="layui-input">',
+				            		'<div class="layui-input" style="text-align: center;padding-top:10px;white-space: pre-line;">',
 				            			text,
 				            		'</div>',
 				            		'<i class="layui-edge"></i>',
