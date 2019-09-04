@@ -116,12 +116,12 @@ layui.define(['mytable','element'],function(exports){
 			       { title:'贴布面积',   	field:'',  },
 			       ]],
 		})
-		element.on('tab(tabFilter)', function(obj){
+		element.on('tab(tabFilterEmbroidery)', function(obj){
 			var check = table.checkStatus('productTable').data;		//根据tab切换的选项下标，重载不同的表格
-			var table = tableId;
+			var t = tableId;
 			if(obj.index==1)
-				table = tableTimeId;
-			table.cache[table] && table.reload(table,{
+				t = tableTimeId;
+			table.cache[t] && table.reload(t,{
 				url: myutil.config.ctx+'/product/getEmbroidery?productId='+check[0].id,
 				page: { curr:1 }
 			})
