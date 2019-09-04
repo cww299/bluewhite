@@ -94,7 +94,7 @@
 	</div>
 </div>
 <!-- 搜索提示框 -->
-<div id="searchTipDiv">
+<div id="searchTipDiv" class="layui-form">
 	<dd style="color:#999;">....</dd>
 </div>
 </body>
