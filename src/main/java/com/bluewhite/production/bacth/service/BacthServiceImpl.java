@@ -19,6 +19,7 @@ import com.bluewhite.common.ServiceException;
 import com.bluewhite.common.entity.PageParameter;
 import com.bluewhite.common.entity.PageResult;
 import com.bluewhite.common.entity.PageResultStat;
+import com.bluewhite.common.utils.NumUtils;
 import com.bluewhite.common.utils.SalesUtils;
 import com.bluewhite.common.utils.StringUtil;
 import com.bluewhite.production.bacth.dao.BacthDao;
@@ -227,14 +228,14 @@ public class BacthServiceImpl extends BaseServiceImpl<Bacth, Long> implements Ba
 	}
 
 	@Override
-	public Bacth saveBacth(Bacth bacth) throws Exception {
+	public Bacth saveBacth(Bacth bacth) {
 		bacth.setAllotTime(ProTypeUtils.countAllotTime(bacth.getAllotTime()));
 		bacth.setStatus(0);
 		bacth.setReceive(0);
 		List<Procedure> procedureList =procedureDao.findByProductIdAndTypeAndFlag(bacth.getProductId(), bacth.getType(), bacth.getFlag());
 		double time = procedureList.stream().mapToDouble(Procedure::getWorkingTime).sum();
 		if(procedureList!=null && procedureList.size()>0){
-			bacth.setTime(time*bacth.getNumber()/60);
+			bacth.setTime(NumUtils.div(NumUtils.mul(time,bacth.getNumber()),60,3));
 		  }else{
 			throw new ServiceException("当前产品未添加工序，无法分配批次，请先添加工序");
 		  }

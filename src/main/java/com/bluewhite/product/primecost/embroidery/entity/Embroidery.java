@@ -33,14 +33,8 @@ public class Embroidery extends BaseEntity<Long>{
 	 * 批量产品数量或模拟批量数
 	 */
 	@Column(name = "number")
-	private Integer number;
+	private Integer number = 2000;
 
-	/**
-	 * 绣花步骤名称
-	 */
-	@Column(name = "embroidery_name")
-	private String embroideryName;
-	
 	/**
 	 * 选择针数
 	 */
@@ -429,17 +423,6 @@ public class Embroidery extends BaseEntity<Long>{
 	public void setNumber(Integer number) {
 		this.number = number;
 	}
-
-
-	public String getEmbroideryName() {
-		return embroideryName;
-	}
-
-
-	public void setEmbroideryName(String embroideryName) {
-		this.embroideryName = embroideryName;
-	}
-
 
 	public Integer getNeedleNumber() {
 		return needleNumber;

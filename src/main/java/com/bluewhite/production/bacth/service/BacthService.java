@@ -44,7 +44,7 @@ public interface BacthService extends BaseCRUDService<Bacth,Long>{
 	 * 新增批次
 	 * @param bacth
 	 */
-	public Bacth saveBacth(Bacth bacth) throws Exception;
+	public Bacth saveBacth(Bacth bacth);
 	
 	/**
 	 * 根据类型和时间查找

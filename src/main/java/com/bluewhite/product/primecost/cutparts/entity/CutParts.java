@@ -203,6 +203,14 @@ public class CutParts extends BaseEntity<Long> {
 	private Double oneCutPartsPrice;
 	
 	
+	public BaseOne getOverstock() {
+		return overstock;
+	}
+
+	public void setOverstock(BaseOne overstock) {
+		this.overstock = overstock;
+	}
+
 	public Materiel getMateriel() {
 		return materiel;
 	}

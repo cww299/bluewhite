@@ -120,6 +120,8 @@ public class ApplicationLeaveServiceImpl extends BaseServiceImpl<ApplicationLeav
 	private ApplicationLeave setApp(ApplicationLeave applicationLeave) throws ParseException {
 		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
 		String holidayDetail = "";
+		double tradeDaysTime = 0;
+		double sumOverTime = 0;
 		JSONArray jsonArray = JSON.parseArray(applicationLeave.getTime());
 		for (int i = 0; i < jsonArray.size(); i++) {
 			JSONObject jsonObject = jsonArray.getJSONObject(i);
@@ -152,6 +154,13 @@ public class ApplicationLeaveServiceImpl extends BaseServiceImpl<ApplicationLeav
 				attendanceTimeParme.setOrderTimeBegin(DatesUtil.getFirstDayOfMonth(dateLeave));
 				//获取到当前员工统计一个月的考勤详细
 				List<AttendanceTime> attendanceTimeList = attendanceTimeService.attendanceTimeByApplication(attendanceTimeService.findAttendanceTime(attendanceTimeParme));
+				//调休申请
+				if (applicationLeave.isTradeDays()) {
+					sumOverTime = attendanceTimeList.stream().mapToDouble(AttendanceTime::getOvertime).sum();
+					tradeDaysTime += Double.valueOf(time);
+					holidayDetail =  holidayDetail.equals("") ? (date + "调休" + time + "小时") : holidayDetail+","+date + "调休" + time + "小时";
+					continue;
+				}
 				//过滤出选择日期的考勤详细
 				for(AttendanceTime at : attendanceTimeList ){
 					if(at.getTime().compareTo(dateLeave)==0){
@@ -239,9 +248,12 @@ public class ApplicationLeaveServiceImpl extends BaseServiceImpl<ApplicationLeav
 				if (attendanceTime == null) {
 					throw new ServiceException("该员工未统计考勤，无法比对加班时长，请先初始化该员工考勤");
 				}
-				
+				//获取所有的加班时间
+				double actualOverTime = 0.0;
+				if(attendanceInit.getOverTimeType()==2){
+					throw new ServiceException("该员工属于按打卡核算加班，无需填写加班申请");
+				}
 				if (attendanceTime.getCheckIn()!=null && attendanceTime.getCheckOut()!=null) {
-					double actualOverTime = 0.0;
 					//获取所有的休息日
 					if(attendanceInit.getRestDay()!=null || attendanceInit.getRestType()!=null){
 						PersonVariable restType = personVariableDao.findByType(0);
@@ -285,30 +297,36 @@ public class ApplicationLeaveServiceImpl extends BaseServiceImpl<ApplicationLeav
 									actualOverTime += restTime;
 								}
 							}
-						};
-					}
-					if (actualOverTime < Double.valueOf(time)) {
-						throw new ServiceException("根据"+date+"的签到时间该员工加班时间为" + actualOverTime + "小时，加班申请时间有误请重新核对");
+						}
 					}
 				}else{
 					throw new ServiceException("无签入签出时间，无法申请加班，请先检查或补签");
 				}
-				String overString = "";
-				switch (applicationLeave.getOvertimeType()) {
-				case 1:
-					overString = "申请加班";
-					break;
-				case 2:
-					overString = "撤销加班";
-					break;
-				case 3:
-					overString = "生产加班";
-					break;
+				//加班申请
+				if (applicationLeave.isApplyOvertime()) {
+					if (actualOverTime < Double.valueOf(time)) {
+						throw new ServiceException("根据"+date+"的签到时间该员工加班时间为" + actualOverTime + "小时，加班申请时间有误请重新核对");
+					}
+					String overString = "";
+					switch (applicationLeave.getOvertimeType()) {
+					case 1:
+						overString = "申请加班";
+						break;
+					case 2:
+						overString = "撤销加班";
+						break;
+					case 3:
+						overString = "生产加班";
+						break;
+					}
+					holidayDetail = holidayDetail.equals("") ? (date + overString + time + "小时") : (holidayDetail+"," + date + overString + time + "小时");
 				}
-				holidayDetail = holidayDetail.equals("") ? (date + overString + time + "小时") : (holidayDetail+"," + date + overString + time + "小时");
 			}
-			if (applicationLeave.isTradeDays()) {
-				holidayDetail =  holidayDetail.equals("") ? (date + "调休" + time + "小时") : holidayDetail+","+date + "调休" + time + "小时";
+		}
+		//调休
+		if (applicationLeave.isTradeDays()) {
+			if(tradeDaysTime > sumOverTime){
+				throw new ServiceException("总调休时长不可大于总加班时长，请检查调休情况");
 			}
 		}
 		applicationLeave.setHolidayDetail(holidayDetail);

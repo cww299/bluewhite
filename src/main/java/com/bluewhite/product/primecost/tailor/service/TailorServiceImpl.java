@@ -85,7 +85,7 @@ public class TailorServiceImpl extends BaseServiceImpl<Tailor, Long> implements 
 		}
 		// 不含绣花环节的为机工压价
 		tailor.setNoeMbroiderPriceDown(NumUtils.sum(tailor.getAllCostPrice() , tailor.getPriceDown()));
-		// 含绣花环节的为机工压价
+		// 含绣花环节的为机工压价(填写了绣花工序时才会出现)
 		
 		// 为机工准备的压价
 		double MachinistPriceDown = tailor.getNoeMbroiderPriceDown() >= tailor.getEmbroiderPriceDown() ? tailor.getNoeMbroiderPriceDown() : tailor.getEmbroiderPriceDown();

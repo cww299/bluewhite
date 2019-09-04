@@ -114,24 +114,24 @@ public class GroupServiceImpl extends BaseServiceImpl<Group, Long> implements Gr
 					.groupingBy(o -> o.getUserId() + "_" + o.getGroup().getKindWorkId(), Collectors.toList()));
 		}
 		// 获取外调人员的b工资
-		List<PayB> payBList = null;
-		if (!cu.getRole().contains("superAdmin") && !cu.getRole().contains("personnel")) {
-			// 获取外调人员的b工资
-			List<Long> userIds = new ArrayList<>();
-			for (Object ps : mapTemporarilyList.keySet()) {
-				Long userId = null;
-				String[] temp = ps.toString().split("_");
-				if (temp.length > 1) {
-					userId = Long.valueOf(temp[0]);
-				} else {
-					userId = Long.valueOf(ps.toString());
-				}
-				userIds.add(userId);
-			}
-			payBList = payBDao.findByUserIdInAndAllotTimeBetween(userIds, temporarily.getOrderTimeBegin(),
-					temporarily.getViewTypeDate() == 1 ? temporarily.getOrderTimeEnd()
-							: DatesUtil.getLastDayOfMonth(temporarily.getOrderTimeBegin()));
-		}
+//		List<PayB> payBList = null;
+//		if (!cu.getRole().contains("superAdmin") && !cu.getRole().contains("personnel")) {
+//			// 获取外调人员的b工资
+//			List<Long> userIds = new ArrayList<>();
+//			for (Object ps : mapTemporarilyList.keySet()) {
+//				Long userId = null;
+//				String[] temp = ps.toString().split("_");
+//				if (temp.length > 1) {
+//					userId = Long.valueOf(temp[0]);
+//				} else {
+//					userId = Long.valueOf(ps.toString());
+//				}
+//				userIds.add(userId);
+//			}
+//			payBList = payBDao.findByUserIdInAndAllotTimeBetween(userIds, temporarily.getOrderTimeBegin(),
+//					temporarily.getViewTypeDate() == 1 ? temporarily.getOrderTimeEnd()
+//							: DatesUtil.getLastDayOfMonth(temporarily.getOrderTimeBegin()));
+//		}
 		// 按天按月查看
 		long size = DatesUtil.getDaySub(temporarily.getOrderTimeBegin(), temporarily.getViewTypeDate() == 1
 				? temporarily.getOrderTimeEnd() : DatesUtil.getLastDayOfMonth(temporarily.getOrderTimeBegin()));
@@ -148,14 +148,14 @@ public class GroupServiceImpl extends BaseServiceImpl<Group, Long> implements Gr
 		Date beginTimes = temporarily.getOrderTimeBegin();
 		for (int i = 0; i < size; i++) {
 			List<PayB> paybDayList = new ArrayList<>();
-			if (payBList != null) {
-				for (PayB payB : payBList) {
-					if (payB.getAllotTime().compareTo(beginTimes) != -1
-							&& payB.getAllotTime().compareTo(DatesUtil.getLastDayOftime(beginTimes)) != 1) {
-						paybDayList.add(payB);
-					}
-				}
-			}
+//			if (payBList != null) {
+//				for (PayB payB : payBList) {
+//					if (payB.getAllotTime().compareTo(beginTimes) != -1
+//							&& payB.getAllotTime().compareTo(DatesUtil.getLastDayOftime(beginTimes)) != 1) {
+//						paybDayList.add(payB);
+//					}
+//				}
+//			}
 			for (Object ps : mapTemporarilyList.keySet()) {
 				Map<String, Object> mapTe = new HashMap<>();
 				// 获取特急人员或者分组

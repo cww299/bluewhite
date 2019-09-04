@@ -1,9 +1,5 @@
 package com.bluewhite.personnel.attendance.service;
 
-import static org.hamcrest.CoreMatchers.nullValue;
-
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.Date;
 
 import com.bluewhite.common.utils.DatesUtil;
@@ -243,6 +239,7 @@ public class AttendanceTool {
 		}
 		attendanceTime.setTurnWorkTime(actualTurnWorkTime);
 		attendanceTime.setOrdinaryOvertime(actualOverTime);
+		attendanceTime.setOvertime(actualOverTime);
 		attendanceTime.setDutytime(actualDutyTime);
 		attendanceTime.setLeaveEarlyTime(actualLeaveEarly);
 		attendanceTime.setBelateTime(actualbelateTime);
