@@ -139,7 +139,7 @@ public class AttendanceTimeServiceImpl extends BaseServiceImpl<AttendanceTime, L
 							&& (at.getTime().before(endTimes) || at.getTime().compareTo(endTimes) == 0)) {
 						attUserList.add(at);
 					}
-				} 
+				}
 				List<Attendance> attList = attUserList.stream().sorted(Comparator.comparing(Attendance::getTime))
 						.collect(Collectors.toList());
 				// 获取每个人当天的考勤记录
@@ -337,17 +337,13 @@ public class AttendanceTimeServiceImpl extends BaseServiceImpl<AttendanceTime, L
 										? workTimeEnd : attendanceTime.getCheckOut()));
 					} else {
 						// 实际工作时长
-						attendanceTime
-								.setWorkTime(
-										NumUtils.sub(
-												DatesUtil.getTimeHour(
+						attendanceTime.setWorkTime(NumUtils.sub(DatesUtil.getTimeHour(
 														// 签入小于等于工作开始时间时，取工作开始时间计算，否则取签入时间
 														attendanceTime.getCheckIn().compareTo(workTime) != 1 ? workTime
 																: attendanceTime.getCheckIn(),
 														// 签出大于等于工作结束时间时，取工作开始时间计算，否则取签出时间
 														attendanceTime.getCheckOut().compareTo(workTimeEnd) != -1
-																? workTimeEnd : attendanceTime.getCheckOut()),
-												restTime));
+																? workTimeEnd : attendanceTime.getCheckOut()),restTime));
 					}
 
 					// 当休息日有打卡记录时，不需要申请加班的人自动算加班时长
@@ -393,8 +389,8 @@ public class AttendanceTimeServiceImpl extends BaseServiceImpl<AttendanceTime, L
 					}
 
 					// 进行出勤，加班，缺勤，迟到，早退的计算
-					AttendanceTool.attendanceIntTool(sign, workTime, workTimeEnd, restBeginTime, restEndTime,
-							minute, turnWorkTime, attendanceTime, attendanceInit, us, restTime);
+					AttendanceTool.attendanceIntTool(sign, workTime, workTimeEnd, restBeginTime, restEndTime, minute,
+							turnWorkTime, attendanceTime, attendanceInit, us, restTime);
 				}
 				// 当一天的考勤记录条数小于2时。为异常的考勤
 				if (attList.size() < 2) {
@@ -431,7 +427,8 @@ public class AttendanceTimeServiceImpl extends BaseServiceImpl<AttendanceTime, L
 
 	@Override
 	public List<Map<String, Object>> findAttendanceTimeCollectAdd(AttendanceTime attendanceTime) throws ParseException {
-		return attendanceCollect(saveAttendanceTimeList(attendanceTimeByApplication(findAttendanceTime(attendanceTime))), true);
+		return attendanceCollect(
+				saveAttendanceTimeList(attendanceTimeByApplication(findAttendanceTime(attendanceTime))), true);
 	}
 
 	@Override
@@ -553,7 +550,8 @@ public class AttendanceTimeServiceImpl extends BaseServiceImpl<AttendanceTime, L
 		List<User> userList = new ArrayList<>();
 		if (new Date().before(DatesUtil.getLastDayOfMonth(attendanceTime.getOrderTimeBegin()))) {
 			throw new ServiceException("选择日期的签到记录未完成,无法统计");
-		};
+		}
+		;
 		if (!StringUtils.isEmpty(attendanceTime.getOrgNameId())) {
 			userList = userService.findByOrgNameId(attendanceTime.getOrgNameId());
 		}
@@ -744,12 +742,13 @@ public class AttendanceTimeServiceImpl extends BaseServiceImpl<AttendanceTime, L
 							} else {
 								at.setOvertime(NumUtils.sum(NumUtils.setzro(at.getOvertime()), time));
 							}
-							
-							if(al.getOvertimeType() == 1){
+
+							if (al.getOvertimeType() == 1) {
 								at.setOrdinaryOvertime(NumUtils.sum(NumUtils.setzro(at.getOrdinaryOvertime()), time));
 							}
-							if(al.getOvertimeType() == 3){
-								at.setProductionOvertime(NumUtils.sum(NumUtils.setzro(at.getProductionOvertime()), time));
+							if (al.getOvertimeType() == 3) {
+								at.setProductionOvertime(
+										NumUtils.sum(NumUtils.setzro(at.getProductionOvertime()), time));
 							}
 						}
 						// 调休且员工出勤时间等于调休到的那一天
@@ -775,10 +774,10 @@ public class AttendanceTimeServiceImpl extends BaseServiceImpl<AttendanceTime, L
 		return attendanceTimeList;
 	}
 
-	private  List<AttendanceTime> saveAttendanceTimeList(List<AttendanceTime> attendanceTimeList){
+	private List<AttendanceTime> saveAttendanceTimeList(List<AttendanceTime> attendanceTimeList) {
 		return dao.save(attendanceTimeList);
 	}
-	
+
 	@Override
 	public List<Map<String, Object>> syncAttendanceTimeCollect(AttendanceTime attendanceTime) throws ParseException {
 		checkAttendanceTime(attendanceTime);
@@ -814,7 +813,7 @@ public class AttendanceTimeServiceImpl extends BaseServiceImpl<AttendanceTime, L
 
 		// 按打卡记录查出考勤
 		List<AttendanceTime> attendanceTimeList = findAttendanceTimePage(attendanceTime);
-		if(attendanceTimeList.size()==0){
+		if (attendanceTimeList.size() == 0) {
 			throw new ServiceException("该部门当月未统计考勤，无法比对数据，请先统计考勤");
 		}
 		// 按类型获取车间填写的人工考勤
@@ -836,7 +835,7 @@ public class AttendanceTimeServiceImpl extends BaseServiceImpl<AttendanceTime, L
 			// 获取单一员工打卡记录的考勤数据 自然排序
 			List<AttendanceTime> attendanceTimes = mapAttendanceTime.get(ps1).stream()
 					.sorted(Comparator.comparing(AttendanceTime::getTime)).collect(Collectors.toList());
-			//將打卡记录当作循环体，通过日期对比 
+			// 將打卡记录当作循环体，通过日期对比
 			attendanceTimes.stream().forEach(aTime -> {
 				List<AttendancePay> asList = attendancePays.stream()
 						.filter(AttendancePay -> AttendancePay.getAllotTime().compareTo(aTime.getTime()) == 0)
@@ -844,40 +843,44 @@ public class AttendanceTimeServiceImpl extends BaseServiceImpl<AttendanceTime, L
 				AttendancePay aPay = null;
 				Map<String, Object> map = new HashMap<>();
 				if (asList.size() > 0) {
-					 aPay = asList.get(0);
-					 map.put("id", aPay.getId());
-					 map.put("warning", aPay.getWarning());
-				}else{
+					aPay = asList.get(0);
+					map.put("id", aPay.getId());
+					map.put("warning", aPay.getWarning());
+				} else {
 					aPay = new AttendancePay();
 					NumUtils.setzro(aPay);
 				}
-					map.put("date", sdf.format(aTime.getTime()));
-					map.put("name", aTime.getUser().getUserName());
-					map.put("userId", aTime.getUserId());
-					// 针工 （检验 管理 开棉）
-					if (aTime.getUser().getGroup().getKindWorkId() != null && aTime.getUser().getGroup().getKindWorkId().equals(113) && aTime.getUser().getGroup().getKindWorkId().equals(116) && aTime.getUser().getGroup().getKindWorkId().equals(120)) {
-						if (!aPay.getWorkTime().equals(aTime.getWorkTime())) {
-							// 记录工作时长
-							map.put("recordTurnWorkTime", aPay.getWorkTime());
-							// 打卡工作时长
-							map.put("clockInTurnWorkTime", aTime.getWorkTime());
-							mapList.add(map);
-						}
-					} else {
-						// 出勤时间比对
-						if (!aPay.getTurnWorkTime().equals(aTime.getTurnWorkTime()) || !aPay.getOverTime().equals(aTime.getOvertime())) {
-							// 记录出勤
-							map.put("recordTurnWorkTime", aPay.getTurnWorkTime());
-							// 打卡出勤
-							map.put("clockInTurnWorkTime", aTime.getTurnWorkTime());
-							// 加班时间比对
-							// 记录加班
-							map.put("recordOverTime", aPay.getOverTime());
-							// 打卡加班
-							map.put("clockInOvertime", aTime.getOvertime());
-							mapList.add(map);
-						}
+				map.put("date", sdf.format(aTime.getTime()));
+				map.put("name", aTime.getUser().getUserName());
+				map.put("userId", aTime.getUserId());
+				// 针工 （检验 管理 开棉）
+				if (aTime.getUser().getGroup().getKindWorkId() != null
+						&& aTime.getUser().getGroup().getKindWorkId().equals(113)
+						&& aTime.getUser().getGroup().getKindWorkId().equals(116)
+						&& aTime.getUser().getGroup().getKindWorkId().equals(120)) {
+					if (!aPay.getWorkTime().equals(aTime.getWorkTime())) {
+						// 记录工作时长
+						map.put("recordTurnWorkTime", aPay.getWorkTime());
+						// 打卡工作时长
+						map.put("clockInTurnWorkTime", aTime.getWorkTime());
+						mapList.add(map);
 					}
+				} else {
+					// 出勤时间比对
+					if (!aPay.getTurnWorkTime().equals(aTime.getTurnWorkTime())
+							|| !aPay.getOverTime().equals(aTime.getOvertime())) {
+						// 记录出勤
+						map.put("recordTurnWorkTime", aPay.getTurnWorkTime());
+						// 打卡出勤
+						map.put("clockInTurnWorkTime", aTime.getTurnWorkTime());
+						// 加班时间比对
+						// 记录加班
+						map.put("recordOverTime", aPay.getOverTime());
+						// 打卡加班
+						map.put("clockInOvertime", aTime.getOvertime());
+						mapList.add(map);
+					}
+				}
 			});
 
 		}

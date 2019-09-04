@@ -112,16 +112,16 @@ public class Machinist extends BaseEntity<Long> {
     private Integer cutpartsNumber;
 	
 	/**
-	 * 用到裁片或上道(多个，以逗号分隔)
+	 * 用到裁片和压价(多个，以逗号分隔)(使用json数组数据)
 	 */
-	@Column(name = "cutparts")
-    private String cutparts;
+	@Column(name = "cutparts_and_price")
+    private String cutpartsAndPrice;
 	
 	/**
-	 * 用到裁片或上道的压价(多个，以逗号分隔)
+	 * 用到机缝上道和压价(多个，以逗号分隔)(使用json数组数据)
 	 */
-	@Column(name = "cutparts_price")
-    private String cutpartsPrice;
+	@Column(name = "machinist_and_price")
+    private String machinistAndPrice;
 	
 	/****机封时间 ***/
 	/**
@@ -131,7 +131,7 @@ public class Machinist extends BaseEntity<Long> {
     private Long needleSizeId;
 	
 	/**
-	 *针号
+	 * 针号
 	 */
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "needle_size_id", referencedColumnName = "id", insertable = false, updatable = false)
@@ -170,7 +170,7 @@ public class Machinist extends BaseEntity<Long> {
     private Double time;
 	
 	/**
-	 *手填该工序回针次数
+	 * 手填该工序回针次数
 	 */
 	@Column(name = "backStitch_count")
     private Integer backStitchCount;
@@ -296,20 +296,17 @@ public class Machinist extends BaseEntity<Long> {
 	@Column(name = "time_check")
 	private Integer timeCheck;
 	
-	
 	/**
 	 *该工序涉及回针次数时间/秒
 	 */
 	@Column(name = "back_stitch")
 	private Double backStitch;
 	
-	
 	/**
 	 * 该工序涉及粘片次数时间/秒
 	 */
 	@Column(name = "sticking")
 	private Double sticking;
-	
 	
 	/**
 	 * 1类模式可走（每CM时间/秒）
@@ -329,7 +326,6 @@ public class Machinist extends BaseEntity<Long> {
 	@Column(name = "mode_three")
 	private Double modeThree;
 	
-	
 	/**
 	 * 得到basefour中数据1
 	 */
@@ -341,7 +337,6 @@ public class Machinist extends BaseEntity<Long> {
 	 */
 	@Column(name = "base_four_date_two")
 	private Double baseFourDateTwo;
-	
 	
 	/**
 	 * 得到basefour中数据3
@@ -445,14 +440,13 @@ public class Machinist extends BaseEntity<Long> {
 		this.sumPriceDownRemark = sumPriceDownRemark;
 	}
 
-	public String getCutpartsPrice() {
-		return cutpartsPrice;
+	public String getMachinistAndPrice() {
+		return machinistAndPrice;
 	}
 
-	public void setCutpartsPrice(String cutpartsPrice) {
-		this.cutpartsPrice = cutpartsPrice;
+	public void setMachinistAndPrice(String machinistAndPrice) {
+		this.machinistAndPrice = machinistAndPrice;
 	}
-
 
 	public Double getBeelineNumber() {
 		return beelineNumber;
@@ -718,12 +712,14 @@ public class Machinist extends BaseEntity<Long> {
 		this.cutpartsNumber = cutpartsNumber;
 	}
 
-	public String getCutparts() {
-		return cutparts;
+	
+
+	public String getCutpartsAndPrice() {
+		return cutpartsAndPrice;
 	}
 
-	public void setCutparts(String cutparts) {
-		this.cutparts = cutparts;
+	public void setCutpartsAndPrice(String cutpartsAndPrice) {
+		this.cutpartsAndPrice = cutpartsAndPrice;
 	}
 
 	public Long getProductId() {

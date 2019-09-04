@@ -72,19 +72,13 @@ private static final Log log = Log.getLog(BacthAction.class);
 			List<Procedure> procedureList =procedureDao.findByProductIdAndTypeAndFlag(bacth.getProductId(), bacth.getType(), bacth.getFlag());
 			double time = procedureList.stream().mapToDouble(Procedure::getWorkingTime).sum();
 			if(procedureList!=null && procedureList.size()>0){
-				bacth.setTime(NumUtils.div(NumUtils.mul(time, bacth.getNumber()),60,5));
+				bacth.setTime(NumUtils.div(NumUtils.mul(time, bacth.getNumber()),60,3));
 				}
 			bacthService.save(bacth);
 			cr.setMessage("修改成功");
 		}else{
 			if(bacth.getProductId()!=null){
-				try {
-					bacthService.saveBacth(bacth);
-				} catch (Exception e) {
-					cr.setMessage(e.getMessage());
-					cr.setCode(ErrorCode.ILLEGAL_ARGUMENT.getCode());
-					return cr;
-				}
+				bacthService.saveBacth(bacth);
 				cr.setMessage("添加成功");
 			}else{
 				cr.setCode(ErrorCode.ILLEGAL_ARGUMENT.getCode());

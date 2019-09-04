@@ -20,7 +20,6 @@ import com.bluewhite.product.primecost.cutparts.dao.CutPartsDao;
 import com.bluewhite.product.primecost.cutparts.entity.CutParts;
 import com.bluewhite.product.primecost.embroidery.dao.EmbroideryDao;
 import com.bluewhite.product.primecost.embroidery.entity.Embroidery;
-import com.bluewhite.product.primecost.machinist.entity.Machinist;
 import com.bluewhite.product.primecost.tailor.dao.TailorDao;
 import com.bluewhite.product.primecost.tailor.entity.Tailor;
 import com.bluewhite.product.primecostbasedata.dao.PrimeCoefficientDao;
@@ -44,10 +43,8 @@ public class EmbroideryServiceImpl extends BaseServiceImpl<Embroidery, Long> imp
 	@Override
 	@Transactional
 	public Embroidery saveEmbroidery(Embroidery embroidery) {
-		
 		//自动将类型为null的属性赋值为0
 		NumUtils.setzro(embroidery);
-
 		PrimeCoefficient primeCoefficient = primeCoefficientDao.findByType("embroidery");
 		// 单片机走时间
 		embroidery.setSinglechipApplique(NumUtils.round(
@@ -142,7 +139,7 @@ public class EmbroideryServiceImpl extends BaseServiceImpl<Embroidery, Long> imp
 		tailorList.get(0).setMachinistPriceDown(MachinistPriceDown);
 		tailorDao.save(tailorList);
 		
-		dao.save((Embroidery)NumUtils.setzro(embroidery));
+		dao.save(embroidery);
 		Tailor tr = tailorDao.findOne(embroidery.getTailorId());
 		tr.setEmbroideryId(embroidery.getId());
 		tailorDao.save(tr);
