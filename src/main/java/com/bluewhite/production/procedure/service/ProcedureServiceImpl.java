@@ -1,8 +1,9 @@
 package com.bluewhite.production.procedure.service;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
-import java.util.stream.Collector;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 import javax.persistence.criteria.Predicate;
@@ -13,8 +14,6 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
 
 import com.bluewhite.base.BaseServiceImpl;
-import com.bluewhite.common.ServiceException;
-import com.bluewhite.common.entity.PageParameter;
 import com.bluewhite.common.utils.NumUtils;
 import com.bluewhite.production.bacth.dao.BacthDao;
 import com.bluewhite.production.bacth.entity.Bacth;
@@ -143,6 +142,19 @@ public class ProcedureServiceImpl extends BaseServiceImpl<Procedure, Long> imple
 		Procedure procedure = procedureDao.findOne(id);
 		procedureDao.delete(id);
 		this.countPrice(procedure);
+	}
+
+
+	@Override
+	public List<Procedure> soon(Procedure procedure) {
+	List<Procedure> list=procedureDao.findByType(6);
+	Map<String, List<Procedure>> map=list.stream().filter(Procedure -> Procedure.getSourg() != null).collect(Collectors.groupingBy(Procedure::getSourg, Collectors.toList()));
+	for (String ps1 : map.keySet()) {
+		HashMap countMap = new HashMap<>();
+		List<Procedure> psList1 = map.get(ps1);
+	}
+		System.out.println(map);
+	return null;
 	}
 
 }

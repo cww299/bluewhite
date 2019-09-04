@@ -68,7 +68,7 @@ public class Basics extends BaseEntity<Long> {
 	 *当月应聘被录取人员数量/人填写→
 	 */
 	@Transient
-	private Integer admissionNum;
+	private Double admissionNum;
 	
 	/**
 	 * 查询字段
@@ -126,10 +126,11 @@ public class Basics extends BaseEntity<Long> {
 		this.occupyPrice = occupyPrice;
 	}
 	
-	public Integer getAdmissionNum() {
+	
+	public Double getAdmissionNum() {
 		return admissionNum;
 	}
-	public void setAdmissionNum(Integer admissionNum) {
+	public void setAdmissionNum(Double admissionNum) {
 		this.admissionNum = admissionNum;
 	}
 	public Date getOrderTimeBegin() {

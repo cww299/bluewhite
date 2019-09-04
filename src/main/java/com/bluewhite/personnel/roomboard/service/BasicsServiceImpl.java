@@ -17,10 +17,12 @@ import com.bluewhite.common.utils.DatesUtil;
 import com.bluewhite.common.utils.NumUtils;
 import com.bluewhite.personnel.roomboard.dao.AdvertisementDao;
 import com.bluewhite.personnel.roomboard.dao.BasicsDao;
+import com.bluewhite.personnel.roomboard.dao.PlanDao;
 import com.bluewhite.personnel.roomboard.dao.RecruitDao;
 import com.bluewhite.personnel.roomboard.dao.RewardDao;
 import com.bluewhite.personnel.roomboard.entity.Advertisement;
 import com.bluewhite.personnel.roomboard.entity.Basics;
+import com.bluewhite.personnel.roomboard.entity.Plan;
 import com.bluewhite.personnel.roomboard.entity.Recruit;
 import com.bluewhite.personnel.roomboard.entity.Reward;
 
@@ -39,6 +41,8 @@ public class BasicsServiceImpl extends BaseServiceImpl<Basics, Long>
 	private RecruitDao recruitDao;
 	@Autowired
 	private RewardDao rewardDao;
+	@Autowired
+	private PlanDao planDao;
 	/*
 	 *查询汇总数据
 	 */
@@ -66,7 +70,7 @@ public class BasicsServiceImpl extends BaseServiceImpl<Basics, Long>
 			double trainPrice=0;//培训费
 			double advertisementPrice=0;//广告费
 			Integer sum=0;//应邀面试人数汇总
-			Integer sum2=0;//当月应聘被录取人员数量
+			double sum2=0;//当月应聘被录取人员数量
 			if (listFilter2.size()>0) {
 				for (Advertisement advertisement : listFilter2) {
 					//过滤 1.开始时间在区间时间之前 结束时间在区间时间之后（4.1  5.1~5.31  6.1）
@@ -123,12 +127,16 @@ public class BasicsServiceImpl extends BaseServiceImpl<Basics, Long>
 			}
 			Recruit recruit=new Recruit();
 			recruit.setTime(basics.getTime());
+			List<Plan> plans=planDao.findByTimeBetween(orderTimeBegin, orderTimeEnd);//当前月份计划招聘的人
+			for (Plan plan : plans) {
+				sum2=NumUtils.sum(sum2, NumUtils.mul(plan.getTarget(),plan.getCoefficient()));
+			}
 			List<Map<String, Object>> maps=recruitService.Statistics(recruit);
 			for (Map<String, Object> map : maps) {
 				 Object aInteger= map.get("mod2");
 				 Object aInteger3= map.get("mod8");
 				 sum=sum+Integer.parseInt(aInteger==null?"":aInteger.toString());
-				 sum2=sum2+Integer.parseInt(aInteger3==null?"":aInteger3.toString());
+				/* sum2=sum2+Integer.parseInt(aInteger3==null?"":aInteger3.toString());*/
 			}
 		Basics basics2=	dao.findByTimeBetween(DatesUtil.getFirstDayOfMonth(basics.getTime()),DatesUtil.getLastDayOfMonth(basics.getTime()));
 

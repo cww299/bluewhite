@@ -221,6 +221,7 @@
 				<span class="layui-btn layui-btn-sm layui-btn-warm" lay-event="saveTempData">批量保存</span>
 				<span class="layui-btn layui-btn-sm layui-btn-danger" lay-event="deleteSome">批量删除</span>
 			</div>
+				<input id="start" style="width: 180px; height: 30px;text-align:center;"  placeholder="想要保存工序 请输入名称">
 		</script>
 	
 	<script>
@@ -242,6 +243,7 @@
 			
 			//全部字段
 			var allField;
+			var productId="";
 			var self = this;
 			this.setIndex = function(index){
 		  		_index=index;
@@ -289,7 +291,7 @@
 			var fn1 = function(field) {
 				return function(d) {
 					return [
-						'<select name="selectOne" class="selectOne" lay-filter="lay_selecte" lay-search="true" data-value="' +  (d.procedureTypeId==null ? '' : d.procedureTypeId) + '">' +
+						'<select name="selectOne" class="selectOne" lay-filter="lay_selecte" lay-search="true" data-value="' +  (d.procedureType==null ? '' : d.procedureType.id) + '">' +
 						htmls +
 						'</select>'
 					].join('');
@@ -312,7 +314,7 @@
 				page: {
 				},//开启分页
 				loading: true,
-				toolbar: '#toolbar', //开启工具栏，此处显示默认图标，可以自定义模板，详见文档
+				//toolbar: '#toolbar', //开启工具栏，此处显示默认图标，可以自定义模板，详见文档
 				//totalRow: true,		 //开启合计行 */
 				cellMinWidth: 90,
 				colFilterRecord: true,
@@ -410,7 +412,7 @@
 				var tableId = config.id;
 				switch(obj.event) {
 				case 'addTempData':
-					allField = {name: '',workingTime:''};
+					allField = {name: '',workingTime:'',procedureTypeId:'293'};
 					table.addTemp(tableId,allField,function(trElem) {
 						// 进入回调的时候this是当前的表格的config
 						var that = this;
@@ -418,33 +420,71 @@
 					});
 					break;
 					case 'saveTempData':
-						var data = table.checkStatus(tableId).data;
-						var arr=new Array()//员工id
-						var turnWorkTime=new Array()//出勤时间
-						var overtimes=new Array()//加班时间
-						data.forEach(function(j,k) {  
-							turnWorkTime.push(j.turnWorkTime)
-							if(j.overtimes==""){
-								j.overtimes=0
-							}
-							overtimes.push(j.overtimes)
-							arr.push(j.id)
-						});
-						if(arr.length<=0){
-							return layer.msg("至少选择一个！", {icon: 2});
-						}
-						if($("#startTimes").val()==""){
-							return layer.msg("注意添加考勤时间", {icon: 2});
-						}
-						var postData={
-								type:6,
-								usersId:arr,
-								overtimes:overtimes,
-								turnWorkTimes:turnWorkTime,
-								allotTime:$("#startTimes").val()+' '+'00:00:00',
-						}
-						 mainJs.fAdd(postData);
+						var data = table.getTemp('layuiShare2').data;
+						data.forEach(function(data2,i){
+							var postData={
+									  name:data2.name,
+									  sourg:$("#start").val(),
+									  workingTime:data2.workingTime,
+									  type:6,
+									  flag:0,
+									  productId:productId,
+									  procedureTypeId:data2.procedureTypeId,
+								}
+							  mainJs.fAdd(postData); 
+							table.cleanTemp(tableId);
+							})
 				          break;
+					case 'deleteSome':
+						// 获得当前选中的
+						var checkedIds = tablePlug.tableCheck.getChecked(tableId);
+						layer.confirm('您是否确定要删除选中的' + checkedIds.length + '条记录？', function() {
+							var postData = {
+								ids: checkedIds,
+							}
+							$.ajax({
+								url: "${ctx}/production/delete",
+								data: postData,
+								traditional: true,
+								type: "GET",
+								beforeSend: function() {
+									index;
+								},
+								success: function(result) {
+									if(0 == result.code) {
+										var configTemp = tablePlug.getConfig("tableData");
+							            if (configTemp.page && configTemp.page.curr > 1) {
+							              table.reload("layuiShare2", {
+							                page: {
+							                  curr: configTemp.page.curr - 1
+							                }
+							              })
+							            }else{
+							            	table.reload("layuiShare2", {
+								                page: {
+								                }
+								              })
+							            };
+										layer.msg(result.message, {
+											icon: 1,
+											time:800
+										});
+									} else {
+										layer.msg(result.message, {
+											icon: 2,
+											time:800
+										});
+									}
+								},
+								error: function() {
+									layer.msg("操作失败！", {
+										icon: 2
+									});
+								}
+							});
+							layer.close(index);
+						});
+						break;	
 				}
 			});
 			
@@ -454,6 +494,7 @@
 				switch(obj.event) {
 				case 'query':
 					$("#queryId").val(data.id)//把组ID放进查询  方便查询调用
+					productId=data.id;//全局变量 赋值产品ID
 					var data={
 						productId:data.id,
 						type:6,
@@ -462,7 +503,7 @@
 					var dicDiv=$('#layuiShare');
 					layer.open({
 				         type: 1
-				        ,title: '人员详情' //不显示标题栏
+				        ,title: '工序详情' //不显示标题栏
 				        ,closeBtn: false
 				        ,zindex:-1
 				        ,area:['40%', '90%']
@@ -513,7 +554,7 @@
 							})
 				        }
 				        ,end:function(){
-				        	$("#layuiShare").hide();
+				        	$("#layuiShare2").hide();
 						  } 
 				      });
 					break;
@@ -540,6 +581,21 @@
 					}
 			});
 			
+			//监听工序单元格编辑
+			table.on('edit(layuiShare)', function(obj) {
+				var value = obj.value ,//得到修改后的值
+					data = obj.data ,//得到所在行所有键值
+					field = obj.field, //得到字段
+					id = data.id;
+						var postData = {
+							id:id,
+							[field]:value
+						}
+					//调用新增修改
+					if(postData.id)
+						mainJs.fAdd(postData);
+			});
+			
 			//监听搜索
 			form.on('submit(LAY-search)', function(obj) {		//修改此处
 				var field = obj.field;
@@ -559,7 +615,7 @@
 				//新增							
 			    fAdd : function(data){
 			    	$.ajax({
-						url: "${ctx}/finance/addAttendance",
+						url: "${ctx}/production/addProcedure",
 						data: data,
 						type: "POST",
 						traditional: true,
@@ -568,7 +624,7 @@
 						},
 						success: function(result) {
 							if(0 == result.code) {
-							 	 table.reload("tableData", {
+							 	 table.reload("layuiShare2", {
 					                page: {
 					                }
 					              }) 
@@ -687,6 +743,9 @@
 						colFilterRecord: true,
 						smartReloadModel: true,// 开启智能重载
 						parseData: function(ret) {
+							if(ret.data!=''){
+							$("#start").val(ret.data[0].sourg)
+							}
 							layui.each(ret.data.rows,function(index,item){
 								item.overtimes = 0;
 							})
@@ -694,7 +753,7 @@
 								code: ret.code,
 								msg: ret.message,
 								count:ret.data.total,
-								data: ret.data.rows
+								data: ret.data
 							}
 						},
 						cols: [
