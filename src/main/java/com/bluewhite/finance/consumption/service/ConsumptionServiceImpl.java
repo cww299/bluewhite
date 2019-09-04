@@ -6,6 +6,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 import javax.persistence.criteria.CriteriaBuilder.In;
 import javax.persistence.criteria.Predicate;
@@ -356,11 +357,13 @@ public class ConsumptionServiceImpl extends BaseServiceImpl<Consumption, Long> i
 	}
 
 	@Override
-	public Map<String, Object> countConsumptionMoney(Date startDate, Date enDate) {
+	public Map<String, Object> countConsumptionMoney(Consumption consumption) {
 		Map<String, Object> map = new HashMap<>();
 		CurrentUser cu = SessionManager.getUserSession();
-		List<Consumption> consumptionList = dao.findByBudgetAndOrgNameIdAndExpenseDateBetween(0, cu.getOrgNameId(),startDate,enDate);
-		List<Consumption> consumptionList1 = dao.findByBudgetAndOrgNameIdAndExpenseDateBetween(1, cu.getOrgNameId(),startDate,enDate);
+		consumption.setOrgNameId(cu.getOrgNameId());
+		List<Consumption> cpList = findList(consumption);
+		List<Consumption> consumptionList = cpList.stream().filter(Consumption->Consumption.getBudget()==0).collect(Collectors.toList());
+		List<Consumption> consumptionList1 = cpList.stream().filter(Consumption->Consumption.getBudget()==1).collect(Collectors.toList());
 		List<Double> listDouble = new ArrayList<>();
 		Double budget = 0.0;
 		Double nonBudget = 0.0;
@@ -445,6 +448,12 @@ public class ConsumptionServiceImpl extends BaseServiceImpl<Consumption, Long> i
 					predicate.add(in);
 				}
 			}
+			
+			// 按部门id过滤
+			if (param.getOrgNameId() != null) {
+				predicate.add(cb.equal(root.get("orgNameId").as(Long.class), param.getOrgNameId()));
+			}
+			
 			// 按是否預算
 			if (param.getBudget() != null) {
 				predicate.add(cb.equal(root.get("budget").as(Integer.class), param.getBudget()));
