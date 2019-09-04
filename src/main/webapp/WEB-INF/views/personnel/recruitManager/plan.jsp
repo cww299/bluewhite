@@ -22,20 +22,9 @@
 				<div class="layui-form-item">
 					<table>
 						<tr>
-							<td><select class="layui-input" id="selectone">
-									<option name="beginTime" value="beginTime">缴费开始日期</option>
-									<option name="endTime" value="endTime">缴费结束日期</option>
-							</select></td>
-							<td>&nbsp;&nbsp;</td>
 							<td>日期:</td>
 							<td><input id="startTime" style="width: 310px;"  name="time" placeholder="请输入开始时间" class="layui-input laydate-icon">
 							</td>
-							<td>&nbsp;&nbsp;</td>
-							<td>公司所在地:</td>
-							<td><select class="form-control" id="siteTypeId" lay-search="true"  name="siteTypeId"></select></td>
-							<td>&nbsp;&nbsp;</td>
-							<td>费用类型:</td>
-							<td><select class="form-control" id="costTypeId" lay-search="true"  name="costTypeId"></select></td>
 							<td>&nbsp;&nbsp;</td>
 							<td>
 								<div class="layui-inline">
@@ -89,9 +78,6 @@
 			</div>
 	</script>
 
-<script type="text/html" id="toolbar2">
-	用餐人数<input id="start"  disabled="disabled" style="width:100px; height: 30px;">  单人费用<input id="price"  disabled="disabled" style="width:100px; height: 30px;">
-</script>
 	<script>
 			layui.config({
 				base: '${ctx}/static/layui-v2.4.5/'
@@ -123,12 +109,15 @@
 						shade: [0.1, '#fff'] //0.1透明度的白色背景
 					});
 					laydate.render({
+						elem: '#startTimes',
+						type: 'month',
+					});
+					laydate.render({
 						elem: '#startTime',
 						type: 'datetime',
 						range: '~',
 					});
-					
-					var getdataa={type:"siteType",}
+					var getdataa={type:"orgName",}
 					var htmls= '<option value="">请选择</option>';
 				    $.ajax({
 					      url:"${ctx}/basedata/list",
@@ -149,44 +138,65 @@
 					      }
 					  });
 					
-				    var getdataa={type:"costType",}
 					var htmlfrn= '<option value="">请选择</option>';
-				    $.ajax({
-					      url:"${ctx}/basedata/list",
-					      data:getdataa,
-					      type:"GET",
-					      async:false,
-					      beforeSend:function(){
-					    	  indextwo = layer.load(1, {
-							  shade: [0.1,'#fff'] //0.1透明度的白色背景
+					
+				    form.on('select(lay_selecte2)', function(data){
+				    	var self = data;
+			      			$.ajax({								//获取当前部门下拉框选择的子数据：职位
+							      url:"${ctx}/basedata/children",
+							      data:{ id:data.value },
+							      async:false,
+					      		  success: function (result) {				//填充职位下拉框
+					      			  	var html='<option value="">请选择</option>'
+					      			  	$(result.data).each(function(i,o){
+					      			  		html +='<option  value="'+o.id+'">'+o.name+'</option>'
+					      				});
+					      			    $(data.elem).closest('td').next().find('select').html(html);
+					      			    form.render();
+							      }
 							  });
-						  }, 
-			      		  success: function (result) {
-			      			  $(result.data).each(function(k,j){
-			      				htmlfrn +='<option value="'+j.id+'">'+j.name+'</option>'
-			      			  });
-			      			 $("#costTypeId").html(htmlfrn)
-			      			layer.close(indextwo);
-					      }
-					  });
-					
-					
+			      			var selectElem = $(data.elem);
+							var tdElem = selectElem.closest('td');
+							var trElem = tdElem.closest('tr');
+							var tableView = trElem.closest('.layui-table-view');
+							var field = tdElem.data('field');
+							table.cache[tableView.attr('lay-id')][trElem.data('index')][tdElem.data('field')] = data.value;
+							var id = table.cache[tableView.attr('lay-id')][trElem.data('index')].id
+							var postData = {
+								id: id,
+								[field]:data.value
+							}
+							//调用新增修改
+							mainJs.fUpdate(postData);
+					 })
 					// 处理操作列
 					var fn1 = function(field) {
 						return function(d) {
 							return [
-								'<select name="selectOne" lay-filter="lay_selecte" lay-search="true" data-value="' +( d.siteType?d.siteType.id :"")+ '">',
+								'<select name="selectOne" lay-filter="lay_selecte2" lay-search="true" data-value="' +d.orgNameId+ '">',
 								htmls +
 								'</select>'
 							].join('');
-
 						};
+						form.render(); 
 					};
 
-					var fn2 = function(field) {
+					var fn2 = function(d) {
 						return function(d) {
-							return ['<select name="selectTwo" class="selectTwo" lay-filter="lay_selecte" lay-search="true" data-value="' + (d.costType?d.costType.id:"" )+ '">',
-								htmlfrn+
+							var html = '<option value="">请选择</option>';
+							if(d && d.orgNameId)
+								$.ajax({								//获取当前部门下拉框选择的子数据：职位
+								      url:"${ctx}/basedata/children",
+								      data:{ id:d.orgNameId },
+								      async:false,
+						      		  success: function (result) {				//填充职位下拉框
+						      			  	$(result.data).each(function(i,o){
+						      			  		html +='<option  value="'+o.id+'">'+o.name+'</option>'
+						      				});
+								      }
+								  });
+							return ['<select name="selectTwo" class="selectTwo" lay-filter="lay_selecte" lay-search="true" data-value="' +d.positionId+ '">',
+								html,
 								'</select>'
 							].join('');
 						};
@@ -197,7 +207,7 @@
 					table.render({
 						elem: '#tableData',
 						size: 'lg',
-						url: '${ctx}/personnel/costLivingPage' ,
+						url: '${ctx}/personnel/getPlan' ,
 						request:{
 							pageName: 'page' ,//页码的参数名称，默认：page
 							limitName: 'size' //每页数据量的参数名，默认：limit
@@ -224,61 +234,50 @@
 								align: 'center',
 								fixed: 'left'
 							},{
-								field: "beginTime",
-								title: "缴费开始日期",
+								field: "time",
+								title: "所属月份",
 								align: 'center',
+								templet:function(d){
+									return (/\d{4}-\d{1,2}/g.exec(d.time)==null ? "" :/\d{4}-\d{1,2}/g.exec(d.time))
+								}
 							},{
-								field: "endTime",
-								title: "缴费结束日期",
-								align: 'center',
-							},{
-								field: "siteTypeId",
-								title: "公司所在地",
+								field:"orgNameId",
+								title: "部门",
 								align: 'center',
 								search: true,
 								edit: false,
 								type: 'normal',
 								templet: fn1('selectOne')
 							},{
-								field: "costTypeId",
-								title: "费用类型",
+								field: "positionId",
+								title: "职位",
 								align: 'center',
 								search: true,
 								edit: false,
 								type: 'normal',
 								templet: fn2('selectTwo')
 							},{
-								field: "total",
-								title: "总量",
+								field: "number",
+								title: "人数",
 								align: 'center',
 								edit: 'text',
 							},{
-								field: "totalCost",
-								title: "总费用",
+								field: "estimate",
+								title: "预计到岗时间",
 								align: 'center',
 								edit: 'text',
 							},{
-								field: "liveRemark",
-								title: "备注",
+								field: "target",
+								title: "招聘目标人数",
+								align: 'center',
+								edit: 'text',
+							},{
+								field: "coefficient",
+								title: "系数",
 								align: 'center',
 								edit: 'text',
 							}]
 						],
-						done: function() {
-							var tableView = this.elem.next();
-							tableView.find('.layui-table-grid-down').remove();
-							var totalRow = tableView.find('.layui-table-total');
-							var limit = this.page ? this.page.limit : this.limit;
-							layui.each(totalRow.find('td'), function(index, tdElem) {
-								tdElem = $(tdElem);
-								var text = tdElem.text();
-								if(text && !isNaN(text)) {
-									text = (parseFloat(text) / limit).toFixed(2);
-									tdElem.find('div.layui-table-cell').html(text);
-								}
-							});
-							
-						},
 						//下拉框回显赋值
 						done: function(res, curr, count) {
 							var tableView = this.elem.next();
@@ -289,43 +288,25 @@
 							});
 							form.render();
 							// 初始化laydate
-							layui.each(tableView.find('td[data-field="beginTime"]'), function(index, tdElem) {
+							layui.each(tableView.find('td[data-field="time"]'), function(index, tdElem) {
 								tdElem.onclick = function(event) {
 									layui.stope(event)
 								};
 								laydate.render({
 									elem: tdElem.children[0],
-									format: 'yyyy-MM-dd HH:mm:ss',
+									type:'month',
 									done: function(value, date) {
 											var id = table.cache[tableView.attr('lay-id')][index].id
 											var postData = {
 												id: id,
-												beginTime: value,
+												time: value+'-01 00:00:00',
 											};
 											//调用新增修改
 											mainJs.fUpdate(postData);
+											form.render();
 												}
 											})
 										})
-								
-							layui.each(tableView.find('td[data-field="endTime"]'), function(index, tdElem) {
-								tdElem.onclick = function(event) {
-									layui.stope(event)
-								};
-								laydate.render({
-									elem: tdElem.children[0],
-									format: 'yyyy-MM-dd HH:mm:ss',
-									done: function(value, date) {
-											var id = table.cache[tableView.attr('lay-id')][index].id
-											var postData = {
-												id: id,
-												endTime: value,
-											};
-											//调用新增修改
-											mainJs.fUpdate(postData);
-												}
-											})
-										})			
 									},
 								});
 					
@@ -346,8 +327,8 @@
 						var id = table.cache[tableView.attr('lay-id')][trElem.data('index')].id
 						var postData = {
 							id: id,
-							[field]:data.value
 						}
+						postData[field] = data.value
 						//调用新增修改
 						mainJs.fUpdate(postData);
 					});
@@ -358,48 +339,22 @@
 						var tableId = config.id;
 						switch(obj.event) {
 						case 'addTempData':
-							allField = {id: '',};
+							allField = {id: '',time:''};
 							table.addTemp(tableId,allField,function(trElem) {
 								// 进入回调的时候this是当前的表格的config
 								var that = this;
-								// 初始化laydate
-								layui.each(trElem.find('td[data-field="beginTime"]'), function(index, tdElem) {
+								layui.each(trElem.find('td[data-field="time"]'), function(index, tdElem) {
 									tdElem.onclick = function(event) {
 										layui.stope(event)
 									};
 									laydate.render({
 										elem: tdElem.children[0],
-										format: 'yyyy-MM-dd HH:mm:ss',
+										type:'month',
 										done: function(value, date) {
 											var trElem = $(this.elem[0]).closest('tr');
 											var tableView = trElem.closest('.layui-table-view');
-											table.cache[that.id][trElem.data('index')]['beginTime'] = value;
+											table.cache[that.id][trElem.data('index')]['time'] = value;
 											var id = table.cache[tableView.attr('lay-id')][trElem.data('index')].id
-											var postData = {
-												id: id,
-												time:value,
-											}
-											mainJs.fUpdate(postData);
-										}
-									})
-								})
-								layui.each(trElem.find('td[data-field="endTime"]'), function(index, tdElem) {
-									tdElem.onclick = function(event) {
-										layui.stope(event)
-									};
-									laydate.render({
-										elem: tdElem.children[0],
-										format: 'yyyy-MM-dd HH:mm:ss',
-										done: function(value, date) {
-											var trElem = $(this.elem[0]).closest('tr');
-											var tableView = trElem.closest('.layui-table-view');
-											table.cache[that.id][trElem.data('index')]['endTime'] = value;
-											var id = table.cache[tableView.attr('lay-id')][trElem.data('index')].id
-											var postData = {
-												id: id,
-												time:value.split(' ')[0]+' 23:59:59',
-											}
-											mainJs.fUpdate(postData);
 										}
 									})
 								})
@@ -417,8 +372,8 @@
 									})
 								if(flag==true){
 								data.forEach(function(postData,i){
-									 postData.endTime=postData.endTime.split(' ')[0]+' 23:59:59',
-									 mainJs.fAdd(postData);
+									 postData.time=postData.time+'-01 00:00:00',
+									mainJs.fAdd(postData); 
 									table.cleanTemp(tableId);
 									})	
 								}
@@ -431,10 +386,10 @@
 										ids: checkedIds,
 									}
 									$.ajax({
-										url: "${ctx}/personnel/deleteCostLiving",
+										url: "${ctx}/personnel/deletePlan",
 										data: postData,
 										traditional: true,
-										type: "POST",
+										type: "GET",
 										beforeSend: function() {
 											index;
 										},
@@ -496,21 +451,12 @@
 					//监听搜索
 					form.on('submit(LAY-search)', function(obj) {		//修改此处
 						var field = obj.field;
-						var a="";
-						var b="";
-						if($("#selectone").val()=="beginTime"){
-							a="2019-05-08 00:00:00"
-						}else{
-							b="2019-05-08 00:00:00"
-						}
 						var orderTime=field.time.split('~');
 						field.orderTimeBegin=orderTime[0];
 						field.orderTimeEnd=orderTime[1];
 						if(field.orderTimeEnd){
 							field.orderTimeEnd = field.orderTimeEnd.split(' ')[1]+' 23:59:59';
 						}
-						field.beginTime=a;
-						field.endTime=b;
 						table.reload('tableData', {
 							where: field,
 							 page: { curr : 1 }
@@ -527,7 +473,7 @@
 						//新增							
 					    fAdd : function(data){
 					    	$.ajax({
-								url: "${ctx}/personnel/saveCostLiving",
+								url: "${ctx}/personnel/addPlan",
 								data: data,
 								type: "POST",
 								beforeSend: function() {
@@ -566,7 +512,7 @@
 				    		return;
 				    	}
 				    	$.ajax({
-							url: "${ctx}/personnel/saveCostLiving",
+							url: "${ctx}/personnel/addPlan",
 							data: data,
 							type: "POST",
 							beforeSend: function() {

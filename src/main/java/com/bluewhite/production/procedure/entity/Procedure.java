@@ -106,6 +106,11 @@ public class Procedure extends BaseEntity<Long> {
 	private Integer sign ;
 	
 	/**
+	 * 保存工序类型
+	 */
+	@Column(name = "sourg")
+	private String sourg;
+	/**
 	 * 批次id（用于确定总数量，和任务）
 	 */
 	@Transient
@@ -123,6 +128,14 @@ public class Procedure extends BaseEntity<Long> {
 
 	public void setSign(Integer sign) {
 		this.sign = sign;
+	}
+
+	public String getSourg() {
+		return sourg;
+	}
+
+	public void setSourg(String sourg) {
+		this.sourg = sourg;
 	}
 
 	public Double getDeedlePrice() {

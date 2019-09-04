@@ -43,6 +43,13 @@ public interface ProcedureService extends BaseCRUDService<Procedure,Long>{
 	List<Procedure> saveList(List<Procedure> procedureList);
 	
 	/**
+	 * 分组工序
+	 * @param procedure
+	 * @return
+	 */
+	List<Procedure> soon(Procedure procedure);
+	
+	/**
 	 * 删除工序
 	 * @param id
 	 */
