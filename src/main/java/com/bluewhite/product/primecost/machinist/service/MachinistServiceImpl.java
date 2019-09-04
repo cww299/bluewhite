@@ -201,7 +201,7 @@ public class MachinistServiceImpl extends BaseServiceImpl<Machinist, Long> imple
 			// 按id过滤
 			if (param.getId() != null) {
 				predicate.add(cb.equal(root.get("id").as(Long.class), param.getId()));
-			}
+			}	
 			// 按产品id过滤
 			if (param.getProductId() != null) {
 				predicate.add(cb.equal(root.get("productId").as(Long.class), param.getProductId()));
