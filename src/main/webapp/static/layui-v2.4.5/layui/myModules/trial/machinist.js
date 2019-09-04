@@ -2,14 +2,11 @@
  * 2019/8/28   试制模块：机工
  * machinist.render({ elem:'给定的元素。填充真正的内容', btn:'绑定的按钮' })
  */
-layui.extend({
-	formSelects : 'formSelect/formSelects-v4',
-}).define(['mytable','element','formSelects'],function(exports){
+layui.define(['mytable','element',],function(exports){
 	var $ = layui.jquery,
 		mytable = layui.mytable,
 		element = layui.element
 		table = layui.table,
-		formSelects = layui.formSelects
 		myutil = layui.myutil;
 	var html = [
 	            '<div class="layui-tab layui-tab-brief" lay-filter="tabMachinist">',
@@ -74,9 +71,7 @@ layui.extend({
 				addTemp:{
 					machinistName: '',
 					productMaterialsId:'',
-					
 					cutparts: '',
-					
 					reckoningSewingPrice: '',
 					trialSewingPrice: '',
 					costPrice: choosedPrice[0].id,
@@ -120,7 +115,7 @@ layui.extend({
 					}
 				});
 				myutil.getDataSync({
-					url: myutil.config.ctx+'/product/getMachinistName&productId='+check[0].id,	
+					url: myutil.config.ctx+'/product/getMachinistName?productId='+check[0].id,	
 					success: function(data){
 						layui.each(data,function(index,item){
 							a.push(item);
@@ -134,8 +129,7 @@ layui.extend({
 			       { type:'checkbox',},
 			       { title:'填写机缝名',   		field:'machinistName',	edit:true,  },
 			       { title:'其他物料',   		field:'productMaterials_id',type:'select',   select:{ data: allMaterial, name:'materiel_name',  }},
-			       { title:'所用裁片',   		field:'',	templet: getFormSelects() },
-			       { title:'用到裁片或上道',   	field:'cutparts',	edit:false, },
+			       { title:'用到裁片或上道',   	field:'cutparts',	templet: getFormSelects(), edit:false, },
 			       { title:'机缝工序费用',   	field:'reckoningSewingPrice',	edit:false, },
 			       { title:'试制机缝工序费用',   field:'trialSewingPrice',	edit:false, },
 			       { title:'选择入行成本价',   	field:'costPrice',		type:'select',   select:{ data: choosedPrice,}},
@@ -147,25 +141,54 @@ layui.extend({
 			       { title:'单独机工工序外发的压价',  	field:'machinistPriceDown',  edit:false,  },
 			       ]],
 	        done:function(){
-				formSelects.render();
+	        	layui.each($('td[data-field="cutparts"]').find('.layui-form-select').find('.layui-input'),function(index,item){	//遍历表格物料名称下拉框
+					$(item).unbind().focus(function(event){
+						$(this).parent().parent().addClass('layui-form-selected');
+						var width = $(this).parent().width();			
+						var tdElem = $(this).closest('td');
+						var val = $(this).val();
+						var Y = tdElem.offset().top;
+						var X = tdElem.offset().left;
+						//getSearchHtml(val);
+						$('#searchTipDiv').css("top",Y+45);	//定位搜索提示框位置并显示提示框
+						$('#searchTipDiv').css("left",X+15);
+						$('#searchTipDiv').css("width",width);
+						$('#searchTipDiv').show();
+						var i = $(this).closest('tr').data('index');
+						/*var trData = layui.table.cache[tableId][i];
+						updateTrData = trData;				//记录点击的当行数据和输入框、用于修改和修改成功后修改相应的输入框值
+						inputElem = $(this);
+						inputText = val;
+						inputField = $(this).closest('td').data('field');*/
+					}).blur(function(obj){
+						setTimeout(function () {
+							$('#searchTipDiv').hide();
+							$(this).parent().parent().removeClass('layui-form-selected');
+							//$(inputElem).val(inputText);
+					    }, 100);
+					}).bind("input propertychange",function(event){	//监听输入框内容改变
+						//getSearchHtml($(this).val());
+					});
+				})
 			}
 		})
 		function getFormSelects(){
 			return function(d){
-				var html = '<select id="das" lay-search  xm-select="dasd" xm-select-show-count="5"><option value="">请选择</option>';
-				return html + '</select>';
-				/*
-				var ids=d.ids.split(',');
-				var isSelect='';
-				layui.each(allRole,function(index,item){ 
-					isSelect='';
-					for(var i=0;i<ids.length;i++){
-						if(ids[i]==item.id)
-							isSelect='selected';
-					}  }}
-				<option value="{{ item.id }}" {{ isSelect }} >{{ item.name }}</option>
-			{{# }); }}
-			</select>*/
+				var text = '<span class="layui-badge">测试</span>&nbsp;',c = d.cutparts.split(',');
+				for(var key in c){
+					if(c[key]!='')
+						text += '<span class="layui-badge">'+c[key]+'</span>&nbsp;';
+				}
+				var html = ['<div class="layui-form-select">',
+				            	'<div class="layui-select-title">',
+				            		'<div class="layui-input">',
+				            			text,
+				            		'</div>',
+				            		'<i class="layui-edge"></i>',
+				            	'</div>',
+				            '</div>',
+				            ].join(' ');
+				return html;
 			}
 		}
 		mytable.render({
