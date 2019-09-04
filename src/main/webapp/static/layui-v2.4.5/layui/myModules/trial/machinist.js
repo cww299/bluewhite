@@ -179,11 +179,14 @@ layui.define(['mytable','element',['form']],function(exports){
 	        				var input = $('div[lay-id="'+tableId+'"]').find('tr[data-index="'+trIndex+'"]').find('td[data-field="cutparts"]').find('.layui-input');
 	        				$(input).append('<span class="layui-badge">'+'测试'+'<i class="layui-icon layui-icon-close"></i></span>&nbsp;')
 	        			})
+	        			$('.layui-icon-close').click(function(evnet){
+	        				$(this).parent().remove();
+	        			})
 	        		});
 	        	}
 				$(document).click(function(event){
 				    var div = $('#searchTipDiv');
-				    if(!div.is(event.target) && div.has(event.target).length === 0 && $(event.target)[0].nodeName!='I' ){
+				    if(!div.is(event.target) && div.has(event.target).length === 0 && $(event.target)[0].nodeName!='I'){
 				    	$('#searchTipDiv').hide();
 						//console.log($('div[lay-id="'+tableId+'"]').find('tr[data-index="'+trIndex+'"]').find('td[data-field="cutparts"]').length)
 						//find('div[class="layui-form-select"]').removeClass('layui-form-selected');
@@ -194,7 +197,7 @@ layui.define(['mytable','element',['form']],function(exports){
 		})
 		function getFormSelects(){
 			return function(d){
-				var text = '',c = d.cutparts.split(',');
+				var text = '',c = d.cutparts?d.cutparts.split(','):[];
 				for(var key in c){
 					if(c[key]!='')
 						text += '<span class="layui-badge">'+c[key]+'<i class="layui-icon layui-icon-close"></i></span>&nbsp;';
