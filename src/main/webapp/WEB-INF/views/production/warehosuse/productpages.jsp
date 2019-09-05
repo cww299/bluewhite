@@ -192,14 +192,14 @@
 				<div class="layui-form-item">
 					<table>
 						<tr>
-							<td>查询月份:</td>
-							<td><input id="monthDate3" style="width: 180px;" name="time" placeholder="请输入开始时间" class="layui-input laydate-icon">
-							</td>
+							<td>工序:</td>
+							<td><select class="form-control" name="sourg" id="sourg">
+							</select></td>
 							<td>&nbsp;&nbsp;</td>
 							<td>
 								<div class="layui-inline">
 									<button class="layui-btn layuiadmin-btn-admin"  lay-submit lay-filter="LAY-search2">
-										<i class="layui-icon layui-icon-search layuiadmin-button-btn"></i>
+										<i class="layui-icon layuiadmin-button-btn">新增</i>
 									</button>
 								</div>
 							</td>
@@ -269,6 +269,7 @@
 			var lastdate2= year + '-' + p(month) + '-' + x+date;
 			//select全局变量
 			var htmls = '';
+			var htmlsh = '<option value="">请选择</option>';
 			var index = layer.load(1, {
 				shade: [0.1, '#fff'] //0.1透明度的白色背景
 			});
@@ -288,6 +289,19 @@
 	      			  });  
 			      }
 			  });
+			
+		    $.ajax({
+			      url:"${ctx}/production/getsoon",
+			      type:"GET",
+	      		  success: function (result) {
+	      			  $(result.data).each(function(k,j){
+	      				htmlsh +='<option value="'+j.sourg+'">'+j.sourg+'</option>'
+	      			  }); 
+	      			  $("#sourg").html(htmlsh);
+	      			  form.render(); 
+			      }
+			  });
+			
 			var fn1 = function(field) {
 				return function(d) {
 					return [
@@ -589,6 +603,7 @@
 					id = data.id;
 						var postData = {
 							id:id,
+							sourg:$("#start").val(),
 							[field]:value
 						}
 					//调用新增修改
@@ -603,6 +618,46 @@
 					where: field,
 					 page: { curr : 1 }
 				});  
+			});
+			//根据选中的工序新增
+			form.on('submit(LAY-search2)', function(obj) {	
+				var field = obj.field;
+			data={
+					productId:productId,
+					sourg:field.sourg
+				}
+			$.ajax({
+				url: "${ctx}/production/getAdd",
+				data: data,
+				type: "GET",
+				traditional: true,
+				beforeSend: function() {
+					index;
+				},
+				success: function(result) {
+					if(0 == result.code) {
+					 	 table.reload("layuiShare2", {
+			                page: {
+			                }
+			              }) 
+						layer.msg(result.message, {
+							icon: 1,
+							time:800
+						});
+					
+					} else {
+						layer.msg(result.message, {
+							icon: 2,
+							time:800
+						});
+					}
+				},
+				error: function() {
+					layer.msg("操作失败！请重试", {
+						icon: 2
+					});
+				},
+			});
 			});
 			$(document).on('click', '.layui-table-view tbody tr', function(event) {
 				var elemTemp = $(this);

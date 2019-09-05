@@ -216,8 +216,7 @@ public class MealServiceImpl extends BaseServiceImpl<Meal, Long> implements Meal
 		// 当月结束日期
 		Date timeEnd = DatesUtil.getLastDayOfMonth(meal.getOrderTimeBegin());
 		// 水费
-		CostLiving costLivingWater = costLivingDao.findByCostTypeIdAndSiteTypeIdAndBeginTimeAndEndTime((long) 290,
-				siteTypeId, timeBegin, timeEnd);
+		CostLiving costLivingWater = costLivingDao.findByCostTypeIdAndSiteTypeIdAndBeginTimeAndEndTime((long) 290,siteTypeId, timeBegin, timeEnd);
 		if (costLivingWater != null) {
 			sum1 = NumUtils.mul(costLivingWater.getAverageCost(), day);
 		} else {
@@ -356,12 +355,88 @@ public class MealServiceImpl extends BaseServiceImpl<Meal, Long> implements Meal
 		List<Double> listDouble3 = new ArrayList<>();
 		List<Double> listDouble4 = new ArrayList<>();
 		List<Double> listDouble5 = new ArrayList<>();
+		List<Double> listDouble6 = new ArrayList<>();
+		List<Double> listDouble7 = new ArrayList<>();
 		double budget = 0;
 		double budget2 = 0;
 		double budget3 = 0;
 		double budget4 = 0;
+		double budget7 = 0;
+		double budget8 = 0;
+		double budget9 = 0;
+		double budget10 = 0;
+		double budget11 = 0;
+		long l = meals.stream().filter(Meal -> Meal.getMode() != null && Meal.getMode().equals(1)).count();// 早餐数
+		long q = meals.stream().filter(Meal -> Meal.getMode() != null && Meal.getMode().equals(2)).count();// 中餐数
+		long w = meals.stream().filter(Meal -> Meal.getMode() != null && Meal.getMode().equals(3)).count();// 晚餐数
+		long r = meals.stream().filter(Meal -> Meal.getMode() != null && Meal.getMode().equals(4)).count();// 夜宵数
+		long t = meals.stream().filter(Meal -> Meal.getMode() != null && Meal.getMode().equals(1) && Meal.getOrgNameId()!=null && Meal.getOrgNameId()==1).count();// 总经办早餐数
+		long y = meals.stream().filter(Meal -> Meal.getMode() != null && Meal.getMode().equals(2) && Meal.getOrgNameId()!=null && Meal.getOrgNameId()==1).count();// 总经办中数
+		long u = meals.stream().filter(Meal -> Meal.getMode() != null && Meal.getMode().equals(3) && Meal.getOrgNameId()!=null &&  Meal.getOrgNameId()==1).count();// 总经办晚餐数
 		//食材费用
-		List<SingleMeal> list1 = singleMealDao.findByTimeBetween(meal.getOrderTimeBegin(), meal.getOrderTimeEnd());
+		if (meal.getOrgNameId()==1) {
+			//总经办
+		List<SingleMeal> list = singleMealDao.findByTimeBetweenAndOrgNameId(meal.getOrderTimeBegin(), meal.getOrderTimeEnd(),(long)1);
+			if (list.size() == 0) {
+				throw new ServiceException("选择时间内，没有添加食材记录，请先添加");
+			}
+		
+			if (list.size() > 0) {
+				list.stream().filter(SingleMeal -> SingleMeal.getType() != null && SingleMeal.getType().equals(1))
+						.forEach(c -> {
+							listDouble2.add(c.getPrice());
+						});
+				if (listDouble2.size() > 0) {
+					budget = NumUtils.sum(listDouble2);// 早餐
+				}
+				list.stream().filter(SingleMeal -> SingleMeal.getType() != null && SingleMeal.getType().equals(2))
+						.forEach(c -> {
+							listDouble3.add(c.getPrice());
+						});
+				if (listDouble3.size() > 0) {
+					budget2 = NumUtils.sum(listDouble3);// 午餐
+				}
+				list.stream().filter(SingleMeal -> SingleMeal.getType() != null && SingleMeal.getType().equals(3))
+						.forEach(c -> {
+							listDouble4.add(c.getPrice());
+						});
+				if (listDouble4.size() > 0) {
+					budget3 = NumUtils.sum(listDouble4);// 晚餐
+				}
+				list.stream().filter(SingleMeal -> SingleMeal.getType() != null && SingleMeal.getType().equals(4))
+						.forEach(c -> {
+							listDouble5.add(c.getPrice());
+						});
+				if (listDouble5.size() > 0) {
+					budget4 = NumUtils.sum(listDouble5);// 夜宵
+				}
+				
+				list.stream().filter(SingleMeal -> SingleMeal.getType() != null && SingleMeal.getType().equals(5))
+				.forEach(c -> {
+					listDouble6.add(c.getPrice());
+				});
+				if (listDouble6.size() > 0) {
+					 double budget5 = NumUtils.sum(listDouble6);// 早中晚
+					long m=t+y+u;
+					 budget7=NumUtils.mul(budget5, NumUtils.div(t, m, 2));//早餐钱
+					 budget8=NumUtils.mul(budget5, NumUtils.div(y, m, 2));//中餐钱
+					 budget9=NumUtils.mul(budget5, NumUtils.div(u, m, 2));//晚餐钱
+				}
+				
+				list.stream().filter(SingleMeal -> SingleMeal.getType() != null && SingleMeal.getType().equals(6))
+				.forEach(c -> {
+					listDouble7.add(c.getPrice());
+				});
+				if (listDouble7.size() > 0) {
+					 double	budget6 = NumUtils.sum(listDouble7);// 中晚
+					long m=y+u;
+					 budget10=NumUtils.mul(budget6, NumUtils.div(y, m, 2));//中餐钱
+					 budget11=NumUtils.mul(budget6, NumUtils.div(u, m, 2));//晚餐钱
+				}
+			}
+		}else{
+		List<SingleMeal> list2 = singleMealDao.findByTimeBetween(meal.getOrderTimeBegin(), meal.getOrderTimeEnd());
+		List<SingleMeal> list1=	list2.stream().filter(SingleMeal->SingleMeal.getOrgNameId()==null).collect(Collectors.toList());
 		if (list1.size() == 0) {
 			throw new ServiceException("选择时间内，没有添加食材记录，请先添加");
 		}
@@ -394,16 +469,36 @@ public class MealServiceImpl extends BaseServiceImpl<Meal, Long> implements Meal
 			if (listDouble5.size() > 0) {
 				budget4 = NumUtils.sum(listDouble5);// 夜宵
 			}
+			
+			list1.stream().filter(SingleMeal -> SingleMeal.getType() != null && SingleMeal.getType().equals(5))
+			.forEach(c -> {
+				listDouble6.add(c.getPrice());
+			});
+			if (listDouble6.size() > 0) {
+				 double budget5 = NumUtils.sum(listDouble6);// 早中晚
+				long m=l+q+w;
+				 budget7=NumUtils.mul(budget5, NumUtils.div(l, m, 2));//早餐钱
+				 budget8=NumUtils.mul(budget5, NumUtils.div(q, m, 2));//中餐钱
+				 budget9=NumUtils.mul(budget5, NumUtils.div(w, m, 2));//晚餐钱
+			}
+			
+			list1.stream().filter(SingleMeal -> SingleMeal.getType() != null && SingleMeal.getType().equals(6))
+			.forEach(c -> {
+				listDouble7.add(c.getPrice());
+			});
+			if (listDouble7.size() > 0) {
+				 double	budget6 = NumUtils.sum(listDouble7);// 夜宵
+				long m=q+w;
+				 budget10=NumUtils.mul(budget6, NumUtils.div(q, m, 2));//中餐钱
+				 budget11=NumUtils.mul(budget6, NumUtils.div(w, m, 2));//晚餐钱
+			}
 		}
-		double f = NumUtils.sum(sumd, budget);// 早餐 加上 每天分摊的房租水电
-		double z = NumUtils.sum(sumd, budget2);// 中餐 加上 每天分摊的房租水电
-		double x = NumUtils.sum(sumd, budget3);// 晚餐 加上 每天分摊的房租水电
+		}
+		double f = NumUtils.sum(sumd, budget,budget7);// 早餐 加上 每天分摊的房租水电
+		double z = NumUtils.sum(sumd, budget2,budget8,budget10);// 中餐 加上 每天分摊的房租水电
+		double x = NumUtils.sum(sumd, budget3,budget9,budget11);// 晚餐 加上 每天分摊的房租水电
 		double c = NumUtils.sum(sumd, budget4);// 夜宵 加上 每天分摊的房租水电
 		
-		long l = meals.stream().filter(Meal -> Meal.getMode() != null && Meal.getMode().equals(1)).count();// 早餐数
-		long q = meals.stream().filter(Meal -> Meal.getMode() != null && Meal.getMode().equals(2)).count();// 中餐数
-		long w = meals.stream().filter(Meal -> Meal.getMode() != null && Meal.getMode().equals(3)).count();// 晚餐数
-		long r = meals.stream().filter(Meal -> Meal.getMode() != null && Meal.getMode().equals(4)).count();// 夜宵数
 	
 		double g = NumUtils.division(NumUtils.div(f, l, 2));// 早餐平均
 		double i = NumUtils.division(NumUtils.div(z, q, 2));// 中餐平均

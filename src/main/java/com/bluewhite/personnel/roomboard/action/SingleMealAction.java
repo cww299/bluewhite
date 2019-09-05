@@ -34,7 +34,7 @@ public class SingleMealAction {
 	private ClearCascadeJSON clearCascadeJSON;
 	{
 		clearCascadeJSON = ClearCascadeJSON.get()
-				.addRetainTerm(SingleMeal.class,"id","time","singleMealConsumptionId", "singleMealConsumption","content","price","type");
+				.addRetainTerm(SingleMeal.class,"id","time","singleMealConsumptionId", "singleMealConsumption","content","price","type","orgNameId","orgName");
 	}
 	/**
 	 * 分页查看

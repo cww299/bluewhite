@@ -36,6 +36,8 @@
 									<option value="2">中餐</option>
 									<option value="3">晚餐</option>
 									<option value="4">夜宵</option>
+									<option value="5">早中晚</option>
+								    <option value="6">中晚</option>
 							</select></td>
 							<td>&nbsp;&nbsp;</td>
 							<td>
@@ -194,7 +196,26 @@
 					      }
 					  });
 					
-					
+				    var getdatar={type:"orgName",}
+					var htmlfrt= '<option value="">请选择</option>';
+				    $.ajax({
+					      url:"${ctx}/basedata/list",
+					      data:getdatar,
+					      type:"GET",
+					      async:false,
+					      beforeSend:function(){
+					    	  indextwo = layer.load(1, {
+							  shade: [0.1,'#fff'] //0.1透明度的白色背景
+							  });
+						  }, 
+			      		  success: function (result) {
+			      			  $(result.data).each(function(k,j){
+			      				htmlfrt +='<option value="'+j.id+'">'+j.name+'</option>'
+			      			  });
+			      			  $("#singleMealConsumptionId").html(htmlfrn)
+			      			layer.close(indextwo);
+					      }
+					  });
 					
 					
 					// 处理操作列
@@ -208,7 +229,18 @@
 
 						};
 					};
+					
+					var fn3 = function(field) {
+						return function(d) {
+							return [
+								'<select name="selectThtee" lay-filter="lay_selecte" lay-search="true" data-value="' + d.orgNameId + '">' +
+								htmlfrt +
+								'</select>'
+							].join('');
 
+						};
+					};
+					
 					var fn2 = function(field) {
 						return function(d) {
 							return ['<select name="selectTwo" class="selectTwo" lay-filter="lay_selecte" lay-search="true" data-value="' + d.type + '">',
@@ -217,6 +249,8 @@
 								'<option value="2">中餐</option>',
 								'<option value="3">晚餐</option>',
 								'<option value="4">夜宵</option>',
+								'<option value="5">早中晚</option>',
+								'<option value="6">中晚</option>',
 								'</select>'
 							].join('');
 						};
@@ -283,6 +317,14 @@
 								field: "time",
 								title: "时间",
 								align: 'center',
+							},{
+								field: "orgNameId",
+								title: "部门",
+								align: 'center',
+								search: true,
+								edit: false,
+								type: 'normal',
+								templet: fn3('selectThree')
 							}]
 						],
 						done: function() {

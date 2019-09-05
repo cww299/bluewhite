@@ -34,5 +34,11 @@ public interface ProcedureDao extends BaseRepository<Procedure, Long>{
 	 * @return
 	 */
 	List<Procedure> findByType(Integer type);
+	
+	/**
+	 *  根据保存工序类型
+	 * 
+	 */
+	List<Procedure> findBySourg(String sourg);
 
 }
