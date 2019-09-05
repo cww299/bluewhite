@@ -71,6 +71,18 @@ public class Basics extends BaseEntity<Long> {
 	private Double admissionNum;
 	
 	/**
+	 * 当月计划人员数量
+	 */
+	@Transient
+	private Double planNumber;
+	
+	/**
+	 * 计划没人占到费用
+	 */
+	@Transient
+	private Double planPrice;
+	
+	/**
 	 * 查询字段
 	 */
 	@Transient
@@ -126,7 +138,18 @@ public class Basics extends BaseEntity<Long> {
 		this.occupyPrice = occupyPrice;
 	}
 	
-	
+	public Double getPlanNumber() {
+		return planNumber;
+	}
+	public void setPlanNumber(Double planNumber) {
+		this.planNumber = planNumber;
+	}
+	public Double getPlanPrice() {
+		return planPrice;
+	}
+	public void setPlanPrice(Double planPrice) {
+		this.planPrice = planPrice;
+	}
 	public Double getAdmissionNum() {
 		return admissionNum;
 	}

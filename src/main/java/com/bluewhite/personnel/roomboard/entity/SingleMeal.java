@@ -56,10 +56,23 @@ public class SingleMeal extends BaseEntity<Long> {
 	private Double price ;
 	
 	/**
-	 *1.早餐 2.中餐 3.晚餐 4.夜宵
+	 *1.早餐 2.中餐 3.晚餐 4.夜宵5.早中晚6.中晚
 	 */
 	@Column(name ="type")
 	private Integer type;
+	
+	/**
+	 * 部门id
+	 */
+	@Column(name = "orgName_id")
+	private Long orgNameId;
+	
+	/**
+	 * 部门
+	 */
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "orgName_id", referencedColumnName = "id", insertable = false, updatable = false)
+	private BaseData orgName;
 	
 	/**
 	 * 查询字段
@@ -118,6 +131,18 @@ public class SingleMeal extends BaseEntity<Long> {
 	}
 	public void setOrderTimeEnd(Date orderTimeEnd) {
 		this.orderTimeEnd = orderTimeEnd;
+	}
+	public Long getOrgNameId() {
+		return orgNameId;
+	}
+	public void setOrgNameId(Long orgNameId) {
+		this.orgNameId = orgNameId;
+	}
+	public BaseData getOrgName() {
+		return orgName;
+	}
+	public void setOrgName(BaseData orgName) {
+		this.orgName = orgName;
 	}
 	
 	

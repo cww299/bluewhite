@@ -71,6 +71,7 @@ public class BasicsServiceImpl extends BaseServiceImpl<Basics, Long>
 			double advertisementPrice=0;//广告费
 			Integer sum=0;//应邀面试人数汇总
 			double sum2=0;//当月应聘被录取人员数量
+			double sum3=0;//计划招聘人数
 			if (listFilter2.size()>0) {
 				for (Advertisement advertisement : listFilter2) {
 					//过滤 1.开始时间在区间时间之前 结束时间在区间时间之后（4.1  5.1~5.31  6.1）
@@ -129,14 +130,14 @@ public class BasicsServiceImpl extends BaseServiceImpl<Basics, Long>
 			recruit.setTime(basics.getTime());
 			List<Plan> plans=planDao.findByTimeBetween(orderTimeBegin, orderTimeEnd);//当前月份计划招聘的人
 			for (Plan plan : plans) {
-				sum2=NumUtils.sum(sum2, NumUtils.mul(plan.getTarget(),plan.getCoefficient()));
+				sum3=NumUtils.sum(sum3, NumUtils.mul(plan.getTarget(),plan.getCoefficient()));
 			}
 			List<Map<String, Object>> maps=recruitService.Statistics(recruit);
 			for (Map<String, Object> map : maps) {
 				 Object aInteger= map.get("mod2");
 				 Object aInteger3= map.get("mod8");
 				 sum=sum+Integer.parseInt(aInteger==null?"":aInteger.toString());
-				/* sum2=sum2+Integer.parseInt(aInteger3==null?"":aInteger3.toString());*/
+				 sum2=sum2+Integer.parseInt(aInteger3==null?"":aInteger3.toString());
 			}
 		Basics basics2=	dao.findByTimeBetween(DatesUtil.getFirstDayOfMonth(basics.getTime()),DatesUtil.getLastDayOfMonth(basics.getTime()));
 
@@ -148,11 +149,17 @@ public class BasicsServiceImpl extends BaseServiceImpl<Basics, Long>
 		basics2.setAdvertisementPrice(advertisementPrice);//广告费
 		basics2.setNumber(sum);//应邀面试人数汇总
 		basics2.setAdmissionNum(sum2);//当月应聘被录取人员数量
+		basics2.setPlanNumber(sum3);//计划招聘的人数
 		Double d1= NumUtils.sum(advertisementPrice, basics2.getRecruitUserPrice());//广告费+日期内面试招聘人员费用/元填写→
 		if (sum2!=0) {
 			basics2.setSharePrice(NumUtils.div(d1,sum2,2));//摊到的应聘费用
 		}else{
 			basics2.setSharePrice(0.0);//摊到的应聘费用
+		}
+		if (sum3!=0) {
+			basics2.setPlanPrice(NumUtils.div(d1,sum3,2));//计划摊到的费用
+		}else{
+			basics2.setPlanPrice(0.0);//计划摊到的费用
 		}
 		if(sum!=0){
 			basics2.setOccupyPrice(NumUtils.div(d1,sum, 2));//每人占到应聘费用
@@ -185,12 +192,13 @@ public class BasicsServiceImpl extends BaseServiceImpl<Basics, Long>
 		for (Long ps1 : map.keySet()) {
 			allMap =new HashMap<>();
 			List<Recruit> psList1 = map.get(ps1);
-			Long f=psList1.stream().filter(Recruit->Recruit.getOrgNameId().equals(Recruit.getOrgNameId()) && Recruit.getState().equals(1) && Recruit.getUser().getQuit().equals(0)).count();//已入职且在职
+			Long f=psList1.stream().filter(Recruit->Recruit.getOrgNameId().equals(Recruit.getOrgNameId()) && Recruit.getState().equals(1) /*&& Recruit.getUser().getQuit().equals(0)*/).count();//已入职且在职
 			//得到入职且在职的人
 			List<Recruit> list2= psList1.stream().filter(Recruit->Recruit.getOrgNameId().equals(Recruit.getOrgNameId()) && Recruit.getState().equals(1) && Recruit.getUser().getQuit().equals(0)).collect(Collectors.toList());
 			BaseData baseData=baseDataDao.findOne(ps1);
 			String string= baseData.getName();
 			double d= NumUtils.mul(basics2.getSharePrice(),f);//占到的应聘费用
+			double plan= NumUtils.mul(basics2.getPlanPrice(),f);//计划的应聘费用
 			double ReceivePrice=0;//奖金
 			double trainPrice=0;//培训费
 			if (list2.size()>0) {
@@ -243,6 +251,7 @@ public class BasicsServiceImpl extends BaseServiceImpl<Basics, Long>
 			
 			allMap.put("username", string);
 			allMap.put("occupyPrice",d);
+			allMap.put("planPrice",plan);
 			allMap.put("ReceivePrice",ReceivePrice);
 			allMap.put("trainPrice",trainPrice);
 			allList.add(allMap);

@@ -1,6 +1,7 @@
 package com.bluewhite.production.procedure.action;
 
 import java.util.List;
+import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -102,7 +103,7 @@ private static final Log log = Log.getLog(ProcedureAction.class);
 	@ResponseBody
 	public CommonResponse getSoon(HttpServletRequest request,Procedure procedure) {
 		CommonResponse cr = new CommonResponse();
-		 List<Procedure> list = procedureService.soon(procedure);
+		 List<Map<String, Object>> list = procedureService.soon(procedure);
 			cr.setData(clearCascadeJSON.format(list).toJSON());
 			cr.setMessage("查询成功");
 		return cr;
@@ -133,6 +134,21 @@ private static final Log log = Log.getLog(ProcedureAction.class);
 		return cr;
 	}
 	
+	/**
+	 * 根据保存工序新增
+	 * @param request
+	 * @param procedure
+	 * @return
+	 */
+	@RequestMapping(value = "/production/getAdd", method = RequestMethod.GET)
+	@ResponseBody
+	public CommonResponse getAdd(HttpServletRequest request,Procedure procedure) {
+		CommonResponse cr = new CommonResponse();
+		 Procedure list = procedureService.add(procedure);
+			cr.setData(clearCascadeJSON.format(list).toJSON());
+			cr.setMessage("新增成功");
+		return cr;
+	}
 	
 	/**
 	 * 删除工序

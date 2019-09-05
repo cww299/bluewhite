@@ -191,6 +191,12 @@
 						smartReloadModel: true,// 开启智能重载
 						parseData: function(ret) {
 							var data = ret.data || [];
+							layui.each(data,function(index,d){
+								d.mode1 = d.modeOne+' ～ ￥'+d.modeOneVal+' ～ ￥'+d.modeOnePrice;
+								d.mode2 = d.modeTwo+' ～ ￥'+d.modeTwoVal+' ～ ￥'+d.modeTwoPrice;
+								d.mode3 = d.modeThree+' ～ ￥'+d.modeThreeVal+' ～ ￥'+d.modeThreePrice;
+								d.mode4 = d.modeFour+' ～ ￥'+d.modeFourVal+' ～ ￥'+d.modeFourPrice;
+							})
 							return {
 								code: ret.code,
 								msg: ret.message,
@@ -213,40 +219,23 @@
 								field: "sumPrice",
 								title: "餐费汇总",
 								align: 'center',
-								edit: false,
 								totalRow: true
 							},{
-								field: "modeOne",
+								field: "mode1",
 								title: "早餐次数/单餐金额/总金额",
 								align: 'center',
-								edit: false,
-								templet:function(d){
-									return d.modeOne+'     ～￥'+d.modeOneVal+'     ～￥'+d.modeOnePrice
-								}
 							},{
-								field: "modeTwo",
+								field: "mode2",
 								title: "中餐次数/单餐金额/总金额",
 								align: 'center',
-								edit: false,
-								templet:function(d){
-									return d.modeTwo+'     ～￥'+d.modeTwoVal+'     ～￥'+d.modeTwoPrice
-								}
 							},{
-								field: "modeThree",
+								field: "mode3",
 								title: "晚餐次数/单餐金额/总金额",
 								align: 'center',
-								edit: false,
-								templet:function(d){
-									return d.modeThree+'     ～￥'+d.modeThreeVal+'     ～￥'+d.modeThreePrice
-								}
 							},{
-								field: "modeFour",
+								field: "mode4",
 								title: "夜宵次数/单餐金额/总金额",
 								align: 'center',
-								edit: false,
-								templet:function(d){
-									return d.modeFour+'     ～￥'+d.modeFourVal+'     ～￥'+d.modeFourPrice
-								}
 							}]
 						],
 								});

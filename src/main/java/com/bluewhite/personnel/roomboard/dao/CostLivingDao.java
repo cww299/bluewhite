@@ -1,9 +1,10 @@
 package com.bluewhite.personnel.roomboard.dao;
 
-import com.bluewhite.base.BaseRepository;
-import com.bluewhite.personnel.roomboard.entity.CostLiving;
 import java.util.Date;
 import java.util.List;
+
+import com.bluewhite.base.BaseRepository;
+import com.bluewhite.personnel.roomboard.entity.CostLiving;
 
 public interface CostLivingDao extends BaseRepository<CostLiving, Long>{
 	
