@@ -931,7 +931,7 @@ public class ReportExportAction {
 	 * @throws ParseException
 	 */
 	@RequestMapping("/importExcel/downAttendance")
-	public CommonResponse downAttendance(HttpServletResponse response, AttendanceTime attendanceTime)
+	public void downAttendance(HttpServletResponse response, AttendanceTime attendanceTime)
 			throws IOException, ParseException {
 		CommonResponse cr = new CommonResponse();
 		response.setContentType("application/vnd.ms-excel");
@@ -939,28 +939,27 @@ public class ReportExportAction {
 		response.setHeader("Content-disposition", "attachment;filename=attendance.xlsx");
 		List<Map<String, Object>> listmap = attendanceTimeService.findAttendanceTimeCollectList(attendanceTime);
 		BaseData baseData = baseDataService.findOne(attendanceTime.getOrgNameId());
-		if(listmap.size()==0){
-			cr.setCode(ErrorCode.NOT_FOUND.getCode());
-			cr.setMessage("请先统计考勤，再导出");
-		}else{
 			EasyExcel.write(response.getOutputStream())
 			// 这里放入动态头
 			.head(head(listmap)).sheet(baseData.getName())
 			// table的时候 传入class 并且设置needHead =false
 			.table().needHead(Boolean.FALSE).doWrite(data(listmap));
-		}
-		return cr;
 	}
 
 	// 表头
 	private List<List<String>> head(List<Map<String, Object>> listmap) {
 		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+		List<List<String>> list = new ArrayList<List<String>>();
+		if(listmap.size()==0){
+			List<String> err= new ArrayList<>();
+			err.add("请先统计考勤，再导出");
+			list.add(err);
+			return list;
+		}
 		List<AttendanceTime> attendanceTimeList = (List<AttendanceTime>) listmap.get(0).get("attendanceTimeData");
 		Date date = attendanceTimeList.get(0).getTime();
 		List<Date> dateList = DatesUtil.getPerDaysByStartAndEndDate(sdf.format(DatesUtil.getFirstDayOfMonth(date)),
 				sdf.format(DatesUtil.getLastDayOfMonth(date)), "yyyy-MM-dd");
-		List<List<String>> list = new ArrayList<List<String>>();
-
 		List<String> headName = new ArrayList<String>();
 		headName.add("姓名");
 		headName.add("姓名");
@@ -1015,23 +1014,25 @@ public class ReportExportAction {
 	// 数据
 	private List<List<Object>> data(List<Map<String, Object>> listmap) {
 		List<List<Object>> list = new ArrayList<>();
-		for (Map<String, Object> map : listmap) {
-			List<AttendanceTime> attendanceTimeList = (List<AttendanceTime>) map.get("attendanceTimeData");
-			AttendanceCollect collect = (AttendanceCollect) map.get("collect");
-			List<Object> bList = new ArrayList<>();
-			bList.add(attendanceTimeList.get(0).getUserName());
-			for (int i = 0; i < attendanceTimeList.size(); i++) {
-				AttendanceTime attendanceTime = attendanceTimeList.get(i);
-				bList.add(attendanceTime.getTurnWorkTime());
-				bList.add(attendanceTime.getOvertime());
-				bList.add(attendanceTime.getDutytime());
+		if(listmap.size()!=0){
+			for (Map<String, Object> map : listmap) {
+				List<AttendanceTime> attendanceTimeList = (List<AttendanceTime>) map.get("attendanceTimeData");
+				AttendanceCollect collect = (AttendanceCollect) map.get("collect");
+				List<Object> bList = new ArrayList<>();
+				bList.add(attendanceTimeList.get(0).getUserName());
+				for (int i = 0; i < attendanceTimeList.size(); i++) {
+					AttendanceTime attendanceTime = attendanceTimeList.get(i);
+					bList.add(attendanceTime.getTurnWorkTime());
+					bList.add(attendanceTime.getOvertime());
+					bList.add(attendanceTime.getDutytime());
+				}
+				bList.add(collect.getTurnWork());
+				bList.add(collect.getOvertime());
+				bList.add(collect.getDutyWork());
+				bList.add(collect.getTakeWork());
+				bList.add(collect.getAllWork());
+				list.add(bList);
 			}
-			bList.add(collect.getTurnWork());
-			bList.add(collect.getOvertime());
-			bList.add(collect.getDutyWork());
-			bList.add(collect.getTakeWork());
-			bList.add(collect.getAllWork());
-			list.add(bList);
 		}
 		return list;
 	}
