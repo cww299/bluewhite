@@ -72,6 +72,9 @@
 									<button class="layui-btn" lay-submit id="personMachineCompare" >人机对比 </button>
 								</div>
 							</shiro:hasAnyRoles>
+							<div class="layui-inline">
+								<button class="layui-btn" id="exportBtn">导出考勤 </button>
+							</div>
 							<div class="layui-inline">标注行颜色：<div id="colorChoose" style="width:30px;height:30px;"></div></div>
 						</td>
 					</tr>
@@ -266,13 +269,24 @@ layui.config({
 				})
 			}
 		})();
+		$('#exportBtn').on('click',function(){
+			var userId = $('#userId').val() || '';
+			var orgNameId = $('#orgNameId').val() || '';
+			isAttend && (orgNameId = orgId);
+			if(userId && orgNameId)
+				return myutil.emsg('无法同时选择部门与人员！');
+			var orderTimeBegin = $('#startTime').val()+'-01 00:00:00';
+			var url = "${ctx}/excel/importExcel/downAttendance?userId=" + (userId || "") + "&orgNameId=" + orgNameId + "&orderTimeBegin=" + orderTimeBegin;
+			location.href = url;
+		});
 		form.on('submit(LAY-role-search)', function(data) {
 			var field=data.field
 			if(!field.userId && !field.orgNameId && !isAttend){			
-				layer.msg('请选择部门或者相关人员',{icon:2})
-				return;
+				return myutil.emsg('请选择部门或者相关人员')
 			}
 			isAttend && (field.orgNameId = orgId);
+			if(field.userId && field.orgNameId)
+				return myutil.emsg('无法同时选择部门与人员！');
 			field.orderTimeBegin+="-01 00:00:00";
 			var postUrl='${ctx}/personnel/intAttendanceTime';
 			even(postUrl,field)
@@ -280,8 +294,7 @@ layui.config({
 		form.on('submit(LAY-role-searche)', function(data) {
 			var field=data.field
 			if(!field.userId && !field.orgNameId && !isAttend){			
-				layer.msg('请选择部门获取相关人员',{icon:2})
-				return;
+				return myutil.emsg('请选择部门或者相关人员')
 			}
 			var d={
 					userId:$('#userId').val(),
@@ -289,6 +302,8 @@ layui.config({
 					orderTimeBegin:$('#startTime').val()+'-01 00:00:00',
 			}
 			isAttend && (d.orgNameId = orgId);
+			if(d.userId && d.orgNameId)
+				return myutil.emsg('无法同时选择部门与人员！');
 			var postUrl='${ctx}/personnel/addAttendanceTime'
 			even(postUrl,d)
 		})
