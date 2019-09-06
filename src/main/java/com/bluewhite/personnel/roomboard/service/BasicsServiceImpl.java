@@ -130,7 +130,7 @@ public class BasicsServiceImpl extends BaseServiceImpl<Basics, Long>
 			recruit.setTime(basics.getTime());
 			List<Plan> plans=planDao.findByTimeBetween(orderTimeBegin, orderTimeEnd);//当前月份计划招聘的人
 			for (Plan plan : plans) {
-				sum3=NumUtils.sum(sum3, NumUtils.mul(plan.getTarget(),plan.getCoefficient()));
+				sum3=NumUtils.sum(sum3, NumUtils.mul(plan.getNumber(),plan.getCoefficient()));
 			}
 			List<Map<String, Object>> maps=recruitService.Statistics(recruit);
 			for (Map<String, Object> map : maps) {
