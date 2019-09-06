@@ -177,7 +177,8 @@ layui.define(['mytable','element',['form']],function(exports){
 	        				$(checkbox).prop('checked',!checked);
 	        				form.render();
 	        				var input = $('div[lay-id="'+tableId+'"]').find('tr[data-index="'+trIndex+'"]').find('td[data-field="cutparts"]').find('.layui-input');
-	        				$(input).append('<span class="layui-badge">'+'测试'+'<i class="layui-icon layui-icon-close"></i></span>&nbsp;')
+	        				$(input).append('<span class="layui-badge" style="margin: 0 2px; height: 80%; font-size: 15px;  padding-top: 4;">'+
+	        						'测试'+'<i class="layui-icon layui-icon-close"></i></span>')
 	        			})
 	        			$('.layui-icon-close').click(function(evnet){
 	        				$(this).parent().remove();
@@ -204,7 +205,7 @@ layui.define(['mytable','element',['form']],function(exports){
 				}
 				var html = ['<div class="layui-form-select">',
 				            	'<div class="layui-select-title">',
-				            		'<div class="layui-input" style="text-align: center;padding-top:10px;white-space: pre-line;">',
+				            		'<div class="layui-input" style="text-align: center;padding-top:2%;white-space: pre-line;">',
 				            			text,
 				            		'</div>',
 				            		'<i class="layui-edge"></i>',
