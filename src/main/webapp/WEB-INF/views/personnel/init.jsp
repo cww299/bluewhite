@@ -699,7 +699,6 @@ layui.config({
 										url: url,
 										data: data,
 										type: "Post",
-										beforeSend: function() { index; },
 										success: function(r) {
 											var icon = r.code==0?1:2;
 											layer.msg(r.message, { icon: icon });
