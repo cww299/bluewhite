@@ -596,9 +596,11 @@ public class AttendanceAction {
 	@ResponseBody
 	public CommonResponse updateRestType(PersonVariable personVariable) {
 		CommonResponse cr = new CommonResponse();
+		personVariable.setTime(DatesUtil.getFirstDayOfMonth(personVariable.getTime()));
 		if (personVariable.getId() != null) {
 			PersonVariable ot = personVariableDao.findOne(personVariable.getId());
 			BeanCopyUtils.copyNotEmpty(personVariable, ot, "");
+			personVariableDao.save(ot);
 			cr.setMessage("修改成功");
 		} else {
 			cr.setCode(ErrorCode.ILLEGAL_ARGUMENT.getCode());
