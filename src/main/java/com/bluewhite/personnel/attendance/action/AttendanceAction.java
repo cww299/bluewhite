@@ -582,7 +582,7 @@ public class AttendanceAction {
 	public CommonResponse findRestTypePage(PersonVariable personVariable, PageParameter page) {
 		CommonResponse cr = new CommonResponse();
 		personVariable.setType(0);
-		cr.setData(ClearCascadeJSON.get().addRetainTerm(PersonVariable.class, "id", "keyValue", "keyValueTwo")
+		cr.setData(ClearCascadeJSON.get().addRetainTerm(PersonVariable.class, "id", "keyValue", "keyValueTwo","time")
 				.format(personVariableService.findPersonVariablePage(personVariable,page)).toJSON());
 		return cr;
 	}
