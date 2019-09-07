@@ -211,27 +211,8 @@
 	</div>
 </form>
 <!-- 新增固定休息时间弹窗 -->
-<form action="" id="layuiadmin-form-admin2"
-	style="padding: 20px 30px 0 15px; display: none; text-align:">
-	<div class="layui-form-item">
-		<label class="layui-form-label" style="width: 130px;">周休一天</label> 
-		<input type="text" name="id" value="1" style="display:none;">
-		<div class="layui-input-inline">
-			<input type="text" id="weekly" placeholder="请输入周休一天的设定时间" class="layui-input laydate-icon">
-			&nbsp;&nbsp;
-			<div><div name="" id="weeklyRestDate" class="layui-textarea" style="height:150px;overflow-y:scroll;"></div></div>
-		</div>
-	</div>
-	<div class="layui-form-item">
-		<label class="layui-form-label" style="width: 130px;">月休2天</label>
-		<div class="layui-input-inline">
-			<input type="text" id="month" placeholder="请输入月休2天的设定时间" class="layui-input laydate-icon">
-			&nbsp;&nbsp;
-			<div>
-				<div name="" id="monthRestDate" class="layui-textarea" style="height:150px;overflow-y:scroll;"></div>
-			</div>
-		</div>
-	</div>
+<form action="" id="layuiadmin-form-admin2" style="padding: 0px 10px; display: none; text-align:">
+	<table id="fixedRestDay" lay-filter="fixedRestDay"></table>
 </form>
 <!-- 新增约定休息时间弹窗 -->
 <div class="layui-form" id="agreedSetDiv" style="padding:10px;display:none;">
@@ -259,6 +240,61 @@
 		<span class="layui-btn layui-btn-sm" lay-event="agreedSet">约定休息时间</span>
 	</div>
 </script>
+<!-- 固定休息日表格工具栏 -->
+<script type="text/html" id="fixedRestDayToolbar">
+	<div class="layui-btn-container layui-inline">
+		<span class="layui-btn layui-btn-sm" lay-event="add">新增</span>
+		<span class="layui-btn layui-btn-sm" lay-event="edit">修改</span>
+	</div>
+</script>
+<!-- 新增、修改固定休息日模板 -->
+<script type="text/html" id="addEditFixedTpl">
+<div class="layui-form" style="padding:20px 0px;">
+	<input type="text" name="id" value="1" style="display:none;">
+	<div class="layui-form-item">
+		<label class="layui-form-label" style="width: 130px;">周休一天</label> 
+		<div class="layui-input-inline">
+			<input type="text" id="setMonth" placeholder="设定月份" class="layui-input" value="{{ d.time }}">
+		</div>
+	</div>
+	<div class="layui-form-item">
+		<label class="layui-form-label" style="width: 130px;">周休一天</label> 
+		<div class="layui-input-inline">
+			<input type="text" id="weekly" placeholder="请输入周休一天的设定时间" class="layui-input">
+			&nbsp;&nbsp;
+			<div id="weeklyRestDate" class="layui-textarea" style="height:150px;overflow-y:scroll;">
+				{{#
+					var html = '';
+					layui.each(d.keyValue.split(','),function(index1,val){
+						if(val=='')
+							return;
+						html += '<p><span class="layui-badge layui-bg-green" data-value="'+val+'">'+val+'<i class="layui-icon layui-icon-close"></i></span></p>';
+					})
+				}}
+				{{ html }}
+			</div>
+		</div>
+	</div>
+	<div class="layui-form-item">
+		<label class="layui-form-label" style="width: 130px;">月休2天</label>
+		<div class="layui-input-inline">
+			<input type="text" id="month" placeholder="请输入月休2天的设定时间" class="layui-input">
+			&nbsp;&nbsp;
+			<div name="" id="monthRestDate" class="layui-textarea" style="height:150px;overflow-y:scroll;">
+				{{#
+					var html = '';
+					layui.each(d.keyValueTwo.split(','),function(index1,val){
+						if(val=='')
+							return;
+						html += '<p><span class="layui-badge layui-bg-green" data-value="'+val+'">'+val+'<i class="layui-icon layui-icon-close"></i></span></p>';
+					})
+				}}
+				{{ html }}
+			</div>
+		</div>
+	</div>
+</div>
+</script>
 <script type="text/html" id="barDemo">
 	<a class="layui-btn layui-btn-trans layui-btn-xs"  lay-event="update">编辑</a>
 </script>
@@ -269,12 +305,13 @@ layui.config({
 	tablePlug: 'tablePlug/tablePlug',
 	menuTree : 'layui/myModules/menuTree'
 }).define(
-	['tablePlug', 'laydate', 'element','form','menuTree'],
+	['tablePlug', 'laydate', 'element','form','menuTree','laytpl'],
 	function() {
 		var $ = layui.jquery,
 			layer = layui.layer,
 			form = layui.form,
 			table = layui.table,
+			laytpl = layui.laytpl,
 			laydate = layui.laydate,
 			menuTree = layui.menuTree,
 			tablePlug = layui.tablePlug,
@@ -305,22 +342,22 @@ layui.config({
 								name:'全选所有部门',
 								children:[],
 						}];
-						layui.each(r.data,function(index,item){			//解析数据格式
+						layui.each(r.data,function(index,item){
 							if(item.users.length>0){
 								var children = [];
 								layui.each(item.users,function(index1,item1){
 									children.push({
 										id:item1.id,
 										name:item1.userName,
-									})
-								})
+									});
+								});
 								data[0].children.push({
 									id:0,			//排除部门id的影响
 									name:item.name,
 									children: children,
-								})
-							}
-						})
+								});
+							};
+						});
 						menuTree.render({				
 				    	  elem:'#orgAndPersonDiv',
 				    	  data : data,
@@ -369,29 +406,8 @@ layui.config({
 			}
 		});
 		var timeAll2='';
-		laydate.render({
-			elem: '#weekly',
-			format: 'yyyy-MM-dd',
-			done: function(val, date) {
-				var html = '<p><span class="layui-badge layui-bg-green" data-value="'+val+'">'+val+'<i class="layui-icon layui-icon-close"></i></span></p>';
-				$('#weeklyRestDate').append(html);
-				$('#weeklyRestDate').find('.layui-icon-close').on('click',function(){	//删除节点
-					$(this).parent().parent().remove();
-				})
-			}
-		});
 		var timeAll3='';
-		laydate.render({
-			elem: '#month',
-			format: 'yyyy-MM-dd',
-			done: function(val, date) {
-				var html = '<p><span class="layui-badge layui-bg-green" data-value="'+val+'">'+val+'<i class="layui-icon layui-icon-close"></i></span></p>';
-				$('#monthRestDate').append(html);
-				$('#monthRestDate').find('.layui-icon-close').on('click',function(){	//删除节点
-					$(this).parent().parent().remove();
-				})
-			}
-		});
+		
 		$.ajax({
 			url: '${ctx}/system/user/findAllUser',
 			type: "GET",
@@ -749,101 +765,117 @@ layui.config({
 					})
 					break;
 				case 'set':
-					$.ajax({
-						url: "${ctx}/personnel/findRestType",
-						type: "GET",
-						beforeSend: function() { index; },
-						success: function(result) {
-							//回显
-							layui.each(result.data.keyValue.split(','),function(index1,val){
-								if(val=='')
-									return;
-								var html = '<p><span class="layui-badge layui-bg-green" data-value="'+val+'">'+val+'<i class="layui-icon layui-icon-close"></i></span></p>';
-								$('#weeklyRestDate').append(html);
+					table.render({
+						elem: '#fixedRestDay',
+						url: '${ctx}/personnel/findRestTypePage',
+						page:true,
+						parseData:function(r){
+							return { code: r.code, msg:r.message, count:r.data.total, data:r.data.rows };
+						},
+						toolbar:'#fixedRestDayToolbar',
+						request:{ pageName: 'page' , limitName: 'size' },
+						cols:[[
+						       { align:'center', type:'checkbox', },
+						       { align:'center', field:'time', title:'月份',},
+						       { align:'center', field:'keyValue', title:'周休一天',},
+						       { align:'center', field:'keyValueTwo', title:'月休两天',},
+						       ]]
+					})
+					table.on('toolbar(fixedRestDay)',function(obj){
+						var check = layui.table.checkStatus('fixedRestDay').data
+						, tpl = addEditFixedTpl.innerHTML
+						, data={	time:'',keyValue: "",keyValueTwo:'' }
+						, html = '';
+						switch(obj.event){
+						case 'add':  break;
+						case 'edit': 
+							if(!check.length>0)
+								return layer.msg('请选择相关信息',{icon:2});
+							data = check[0];
+							break;
+						}
+						laytpl(tpl).render(data,function(h){	
+							html=h;
+						});
+						layer.open({
+							type:1,
+							title:'固定休息日',
+							area:['30%','80%'],
+							content: html,
+							btn: ['确定','取消'],
+							alignBtn:'c',
+							success:function(){
+								laydate.render({
+									elem: '#setMonth',
+									format: 'yyyy-MM',
+								});
+								laydate.render({
+									elem: '#weekly',
+									format: 'yyyy-MM-dd',
+									done: function(val, date) {
+										var html = '<p><span class="layui-badge layui-bg-green" data-value="'+val+'">'+val+'<i class="layui-icon layui-icon-close"></i></span></p>';
+										$('#weeklyRestDate').append(html);
+										$('#weeklyRestDate').find('.layui-icon-close').on('click',function(){	//删除节点
+											$(this).parent().parent().remove();
+										})
+									}
+								});
+								laydate.render({
+									elem: '#month',
+									format: 'yyyy-MM-dd',
+									done: function(val, date) {
+										var html = '<p><span class="layui-badge layui-bg-green" data-value="'+val+'">'+val+'<i class="layui-icon layui-icon-close"></i></span></p>';
+										$('#monthRestDate').append(html);
+										$('#monthRestDate').find('.layui-icon-close').on('click',function(){	//删除节点
+											$(this).parent().parent().remove();
+										})
+									}
+								});
 								$('#weeklyRestDate').find('.layui-icon-close').on('click',function(){	//删除节点
 									$(this).parent().parent().remove();
 								})
-							})
-							layui.each(result.data.keyValueTwo.split(','),function(index1,val){
-								if(val=='')
-									return;
-								var html = '<p><span class="layui-badge layui-bg-green" data-value="'+val+'">'+val+'<i class="layui-icon layui-icon-close"></i></span></p>';
-								$('#monthRestDate').append(html);
 								$('#monthRestDate').find('.layui-icon-close').on('click',function(){	//删除节点
 									$(this).parent().parent().remove();
 								})
-							})
-						},
-						error: function() {
-							layer.msg("操作失败！请重试", { icon: 2 });
-						},
-					});
+							},
+							yes:function(){
+								form.on('submit(addRole2)', function(data) {
+					        		var data=data.field
+					        		data.keyValue='';
+									data.keyValueTwo='';
+					        		layui.each($('#weeklyRestDate').find('span'),function(index,item){
+										var val = $(item).attr('data-value');
+										data.keyValue += (val+',');
+									})
+									layui.each($('#monthRestDate').find('span'),function(index,item){
+										var val = $(item).attr('data-value');
+										data.keyValueTwo += (val+',');
+									})
+					        		$.ajax({
+										url: "${ctx}/personnel/updateRestType",
+										data: data,
+										type: "Post",
+										beforeSend: function() { index; },
+										success: function(result) {
+											if(0 == result.code) {
+												layer.msg(result.message, { icon: 1, time:500 });
+											} else {
+												layer.msg(result.message, { icon: 2, time:500 });
+											}
+										},
+									});
+								}) 
+							},
+						})
+					})
 					var dicDiv=$('#layuiadmin-form-admin2');
 					layer.open({
 				         type: 1
 				        ,title: "设定休息时间" //不显示标题栏
-				        ,closeBtn: false
-				        ,area:['30%', '70%']
+				        ,area:['70%', '70%']
 				        ,shade: 0.5
 				        ,id: 'LAY_layuipro' //设定一个id，防止重复弹出
-				        ,btn: ['确认', '取消']
-				        ,btnAlign: 'c'
-				        ,moveType: 1 //拖拽模式，0或者1
 				        ,content:dicDiv
-				        ,success : function(layero, index) {
-				        	layero.addClass('layui-form');
-							// 将保存按钮改变成提交按钮
-							layero.find('.layui-layer-btn0').attr({
-								'lay-filter' : 'addRole2',
-								'lay-submit' : ''
-							})
-				        }
-				        ,yes: function(index, layero){
-				        	form.on('submit(addRole2)', function(data) {
-				        		//保存
-				        		var data=data.field
-				        		data.keyValue='';
-								data.keyValueTwo='';
-				        		layui.each($('#weeklyRestDate').find('span'),function(index,item){
-									var val = $(item).attr('data-value');
-									console.log(val)
-									data.keyValue += (val+',');
-								})
-								layui.each($('#monthRestDate').find('span'),function(index,item){
-									var val = $(item).attr('data-value');
-									data.keyValueTwo += (val+',');
-								})
-				        		$.ajax({
-									url: "${ctx}/personnel/updateRestType",
-									data: data,
-									type: "Post",
-									beforeSend: function() { index; },
-									success: function(result) {
-										if(0 == result.code) {
-											layer.msg(result.message, { icon: 1, time:500 });
-										} else {
-											layer.msg(result.message, { icon: 2, time:500 });
-										}
-									},
-									error: function() {
-										layer.msg("操作失败！请重试", { icon: 2 });
-									},
-								});
-				        		
-				        	document.getElementById("layuiadmin-form-admin2").reset();
-				        	layui.form.render();
-				        	timeAll2="" 
-				        	timeAll3="" 
-							})  
-				        }
-				        ,end:function(){
-				        	 document.getElementById("layuiadmin-form-admin2").reset();
-				        	$('#weeklyRestDate').html('');
-							$('#monthRestDate').html('');
-				        	layui.form.render();
-				        	timeAll2=""
-				        	timeAll3=""
-						  } 
 				      });
 					break;
 			}
