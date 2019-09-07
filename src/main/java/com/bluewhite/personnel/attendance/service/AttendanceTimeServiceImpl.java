@@ -72,8 +72,8 @@ public class AttendanceTimeServiceImpl extends BaseServiceImpl<AttendanceTime, L
 	public List<AttendanceTime> findAttendanceTime(AttendanceTime attendance) throws ParseException {
 		// 获取改时间段所有的打卡记录
 		List<Attendance> allAttList = null;
-		// 获取固定休息日
-		PersonVariable restType = personVariableDao.findByType(0);
+		// 获取当前日期的固定休息日
+		PersonVariable restType = personVariableDao.findByTypeAndTime(0,DatesUtil.getFirstDayOfMonth(attendance.getOrderTimeBegin()));
 		// 报餐系统所需要的人员
 		List<User> list = null;
 		// 报餐人员满足于输入时间内离职和入职
