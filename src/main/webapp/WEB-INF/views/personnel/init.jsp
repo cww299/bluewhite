@@ -250,11 +250,11 @@
 <!-- 新增、修改固定休息日模板 -->
 <script type="text/html" id="addEditFixedTpl">
 <div class="layui-form" style="padding:20px 0px;">
-	<input type="text" name="id" value="1" style="display:none;">
+	<input type="text" name="id" value="{{d.id}}" style="display:none;">
 	<div class="layui-form-item">
-		<label class="layui-form-label" style="width: 130px;">周休一天</label> 
+		<label class="layui-form-label" style="width: 130px;">设定月份</label> 
 		<div class="layui-input-inline">
-			<input type="text" id="setMonth" placeholder="设定月份" class="layui-input" value="{{ d.time }}">
+			<input type="text" id="setMonth" placeholder="设定月份" lay-verify="required" class="layui-input" value="{{ d.time }}" name="time">
 		</div>
 	</div>
 	<div class="layui-form-item">
@@ -293,6 +293,7 @@
 			</div>
 		</div>
 	</div>
+	<button type="button" lay-submit lay-filter="addEditBtn" id="addEditBtn" style="display:none;"></button>
 </div>
 </script>
 <script type="text/html" id="barDemo">
@@ -784,7 +785,7 @@ layui.config({
 					table.on('toolbar(fixedRestDay)',function(obj){
 						var check = layui.table.checkStatus('fixedRestDay').data
 						, tpl = addEditFixedTpl.innerHTML
-						, data={	time:'',keyValue: "",keyValueTwo:'' }
+						, data={	time:'',keyValue: "",keyValueTwo:'',id:'', }
 						, html = '';
 						switch(obj.event){
 						case 'add':  break;
@@ -803,11 +804,11 @@ layui.config({
 							area:['30%','80%'],
 							content: html,
 							btn: ['确定','取消'],
-							alignBtn:'c',
+							btnAlign: 'c',
 							success:function(){
 								laydate.render({
 									elem: '#setMonth',
-									format: 'yyyy-MM',
+									type: 'month',
 								});
 								laydate.render({
 									elem: '#weekly',
@@ -839,8 +840,10 @@ layui.config({
 								})
 							},
 							yes:function(){
-								form.on('submit(addRole2)', function(data) {
+								$('#addEditBtn').click();
+								form.on('submit(addEditBtn)', function(data) {
 					        		var data=data.field
+					        		data.time+='-01 00:00:00';
 					        		data.keyValue='';
 									data.keyValueTwo='';
 					        		layui.each($('#weeklyRestDate').find('span'),function(index,item){
@@ -851,17 +854,18 @@ layui.config({
 										var val = $(item).attr('data-value');
 										data.keyValueTwo += (val+',');
 									})
+									var url = '${ctx}/personnel/addRestType';
+									if(data.id)
+										url = "${ctx}/personnel/updateRestType";
 					        		$.ajax({
-										url: "${ctx}/personnel/updateRestType",
+										url: url,
 										data: data,
 										type: "Post",
 										beforeSend: function() { index; },
-										success: function(result) {
-											if(0 == result.code) {
-												layer.msg(result.message, { icon: 1, time:500 });
-											} else {
-												layer.msg(result.message, { icon: 2, time:500 });
-											}
+										success: function(r) {
+											var icon = r.code==0?1:2;
+											layer.msg(r.message, { icon: icon });
+											table.reload('fixedRestDay');
 										},
 									});
 								}) 
