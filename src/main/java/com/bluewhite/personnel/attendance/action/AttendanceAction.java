@@ -597,6 +597,11 @@ public class AttendanceAction {
 	public CommonResponse updateRestType(PersonVariable personVariable) {
 		CommonResponse cr = new CommonResponse();
 		personVariable.setTime(DatesUtil.getFirstDayOfMonth(personVariable.getTime()));
+		PersonVariable pVariable = personVariableDao.findByTypeAndTime(0,DatesUtil.getFirstDayOfMonth(personVariable.getTime()));
+		if(pVariable != null){
+			cr.setMessage("该月已添加过固定休息方式，无法修改");
+			return cr;
+		}
 		if (personVariable.getId() != null) {
 			PersonVariable ot = personVariableDao.findOne(personVariable.getId());
 			BeanCopyUtils.copyNotEmpty(personVariable, ot, "");
