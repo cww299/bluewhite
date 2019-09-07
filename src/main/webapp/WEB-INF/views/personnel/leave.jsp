@@ -53,11 +53,8 @@
 									<option value=""></option></select></td>
 							<td>&nbsp;&nbsp;</td>
 						</shiro:lacksRole>
-						<td>开始:</td>
-						<td><input id="startTime" name="orderTimeBegin" placeholder="请输入开始时间" class="layui-input laydate-icon"></td>
-						<td>&nbsp;&nbsp;</td>
-						<td>结束:</td>
-						<td><input id="endTime" name="orderTimeEnd" placeholder="请输入结束时间" class="layui-input laydate-icon"> </td>
+						<td>申请时间:</td>
+						<td><input id="startTime" name="orderTimeBegin" style="width: 310px;" placeholder="请输入开始时间" class="layui-input laydate-icon"></td>
 						<td>&nbsp;&nbsp;</td>
 						<td> <div class="layui-inline">
 								<button class="layui-btn layuiadmin-btn-admin" lay-submit lay-filter="LAY-role-search">
@@ -268,11 +265,7 @@
 			laydate.render({
 				elem: '#startTime',
 				type: 'datetime',
-				calendar: true,
-			});
-			laydate.render({
-				elem: '#endTime',
-				type: 'datetime',
+				range : '~',
 			});
 			var moren = true;
 			
@@ -883,6 +876,9 @@
 			//监听搜索
 			form.on('submit(LAY-role-search)', function(data) {
 				var field = data.field;
+				var orderTime=field.orderTimeBegin.split('~');
+				field.orderTimeBegin=orderTime[0];
+				field.orderTimeEnd=orderTime[1].split(' ')[1]+' 23:59:59';
 				$.ajax({
 					url: "${ctx}/personnel/getApplicationLeavePage",
 					type: "get",

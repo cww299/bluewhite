@@ -163,7 +163,6 @@ public class Bacth extends BaseEntity<Long>{
 	@Transient
     private Integer packNumber;
 	
-	
 	/**
 	 * 产品名称
 	 */
@@ -199,10 +198,6 @@ public class Bacth extends BaseEntity<Long>{
      */
 	@Transient
     private Double hairPrice;
-	
-
-	
-	
 	
 
 	public Integer getPackNumber() {

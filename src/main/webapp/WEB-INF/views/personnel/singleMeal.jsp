@@ -23,7 +23,7 @@
 					<table>
 						<tr>
 							<td>日期:</td>
-							<td><input id="startTime"  name="time" placeholder="请输入开始时间" class="layui-input laydate-icon">
+							<td><input id="startTime" style="width: 320px;"  name="time" placeholder="请输入开始时间" class="layui-input laydate-icon">
 							</td>
 							<td>&nbsp;&nbsp;</td>
 							<td>物料:</td>
@@ -38,6 +38,7 @@
 									<option value="4">夜宵</option>
 									<option value="5">早中晚</option>
 								    <option value="6">中晚</option>
+								    <option value="7">早晚</option>
 							</select></td>
 							<td>&nbsp;&nbsp;</td>
 							<td>
@@ -58,43 +59,6 @@
 		</div>
 	</div>
 	
-	<!-- <form action="" id="layuiadmin-form-admin"
-		style="padding: 20px 30px 0 60px; display:none;  text-align:">
-		<div class="layui-form layui-card-header layuiadmin-card-header-auto">
-				<div class="layui-form-item">
-					<table>
-						<tr>
-							<td>查询时间:</td>
-							<td><input id="monthDate9" style="width: 320px;" name="orderTimeBegin" placeholder="请输入开始时间" class="layui-input laydate-icon">
-							</td>
-							<td>&nbsp;&nbsp;</td>
-							<td>
-								<div class="layui-inline">
-									<button class="layui-btn layuiadmin-btn-admin" type="button"  lay-submit lay-filter="LAY-searchsumday">
-										<i class="layui-icon layui-icon-search layuiadmin-button-btn"></i>
-									</button>
-								</div>
-							</td>
-						</tr>
-					</table>
-				</div>
-			</div>
-		<div class="layui-form" lay-filter="layuiadmin-form-admin">
-			<div class="layui-form-item">
-				<div class="layui-input-inline">
-					<table><tr><td>
-					<input type="text" style="width: 150px;"  name="keyValue" id="keyValue"
-						value="物料分类"
-						class="layui-input laydate-icon">
-						</td><td>
-					<input type="text" style="width: 150px;"  name="keyValue" id="keyValue"
-						 
-						class="layui-input laydate-icon">	
-					</td></tr></table>	
-				</div>
-			</div>
-		</div>
-	</form>	 -->
 
 <div style="display: none;" id="layuiShare">
 			<div class="layui-form layui-card-header layuiadmin-card-header-auto">
@@ -168,6 +132,7 @@
 					laydate.render({
 						elem: '#startTime',
 						type : 'datetime',
+						range: '~',
 					});
 					laydate.render({
 						elem: '#monthDate9',
@@ -251,6 +216,7 @@
 								'<option value="4">夜宵</option>',
 								'<option value="5">早中晚</option>',
 								'<option value="6">中晚</option>',
+								'<option value="7">早晚</option>',
 								'</select>'
 							].join('');
 						};
@@ -270,7 +236,7 @@
 						},//开启分页
 						loading: true,
 						toolbar: '#toolbar', //开启工具栏，此处显示默认图标，可以自定义模板，详见文档
-						//totalRow: true,		 //开启合计行 */
+						totalRow: true,		 //开启合计行 */
 						cellMinWidth: 90,
 						colFilterRecord: true,
 						smartReloadModel: true,// 开启智能重载
@@ -286,7 +252,8 @@
 							[{
 								type: 'checkbox',
 								align: 'center',
-								fixed: 'left'
+								fixed: 'left',
+								totalRowText: '合计'
 							},{
 								field: "singleMealConsumptionId",
 								title: "物料分类",
@@ -302,9 +269,10 @@
 								edit: 'text',
 							},{
 								field: "price",
-								title: "每天花费",
+								title: "花费",
 								align: 'center',
 								edit: 'text',
+								totalRow: true
 							},{
 								field: "type",
 								title: "餐次",
@@ -660,6 +628,9 @@
 					//监听搜索
 					form.on('submit(LAY-search)', function(obj) {		//修改此处
 						var field = obj.field;
+						var orderTime=field.time.split('~');
+						field.orderTimeBegin=orderTime[0];
+						field.orderTimeEnd=orderTime[1];
 						table.reload('tableData', {
 							where: field,
 							 page: { curr : 1 }
