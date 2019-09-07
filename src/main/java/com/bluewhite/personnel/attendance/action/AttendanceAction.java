@@ -39,6 +39,7 @@ import com.bluewhite.personnel.attendance.service.AttendanceCollectService;
 import com.bluewhite.personnel.attendance.service.AttendanceInitService;
 import com.bluewhite.personnel.attendance.service.AttendanceService;
 import com.bluewhite.personnel.attendance.service.AttendanceTimeService;
+import com.bluewhite.personnel.attendance.service.PersonVariableService;
 import com.bluewhite.system.user.entity.User;
 import com.bluewhite.system.user.service.UserService;
 
@@ -59,6 +60,8 @@ public class AttendanceAction {
 	private AttendanceCollectService attendanceCollectService;
 	@Autowired
 	private PersonVariableDao personVariableDao;
+	@Autowired
+	private PersonVariableService personVariableService;
 
 	private ClearCascadeJSON clearCascadeJSON;
 	{
@@ -574,12 +577,13 @@ public class AttendanceAction {
 	 * 
 	 * @return
 	 */
-	@RequestMapping(value = "/personnel/findRestType", method = RequestMethod.GET)
+	@RequestMapping(value = "/personnel/findRestTypePage", method = RequestMethod.GET)
 	@ResponseBody
-	public CommonResponse findRestType(Date time) {
+	public CommonResponse findRestTypePage(PersonVariable personVariable, PageParameter page) {
 		CommonResponse cr = new CommonResponse();
+		personVariable.setType(0);
 		cr.setData(ClearCascadeJSON.get().addRetainTerm(PersonVariable.class, "id", "keyValue", "keyValueTwo")
-				.format(personVariableDao.findByTypeAndTime(0,DatesUtil.getFirstDayOfMonth(time))).toJSON());
+				.format(personVariableService.findPersonVariablePage(personVariable,page)).toJSON());
 		return cr;
 	}
 
