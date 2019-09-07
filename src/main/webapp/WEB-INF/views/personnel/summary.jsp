@@ -241,7 +241,7 @@
 								});
 				   	
 					
-					
+4				
 					//监听头工具栏事件
 					table.on('toolbar(tableData)', function(obj) {
 						var config = obj.config;
@@ -382,7 +382,7 @@
 						var field = obj.field;
 						var orderTime=field.orderTimeBegin.split('~');
 						field.orderTimeBegin=orderTime[0];
-						field.orderTimeEnd=orderTime[1].split(' ')[1]+' 23:59:59';;
+						field.orderTimeEnd=orderTime[1].split(' ')[1]+' 23:59:59';
 						even(field)
 					});
 				}
