@@ -339,9 +339,9 @@ layui.config({
 				success:function(r){
 					if(0==r.code){
 						var data = [{
-								id:0,
-								name:'全选所有部门',
-								children:[],
+							id:0,
+							name:'全选所有部门',
+							children:[],
 						}];
 						layui.each(r.data,function(index,item){
 							if(item.users.length>0){
@@ -370,30 +370,15 @@ layui.config({
 			}) 
 			
 		})();
-		
-		//select全局变量
-		var htmls = '<option value="">请选择</option>';
-		var index = layer.load(1);
-		laydate.render({
-			elem: '#workTimeSummer',
-			range : '-',
-			type: 'time',
-		});
-		laydate.render({
-			elem: '#workTimeWinter',
-			range : '-',
-			type: 'time',
-		});
-		laydate.render({
-			elem: '#restTimeSummer',
-			range : '-',
-			type: 'time',
-		});
-		laydate.render({
-			elem: '#restTimeWinter',
-			range : '-',
-			type: 'time',
-		});
+		(function renderTime(arr){
+			for(var key in arr){
+				laydate.render({
+					elem: '#'+arr[key],	
+					range : '-',
+					type: 'time',
+				});
+			}
+		})(['workTimeSummer','workTimeWinter','restTimeSummer','restTimeWinter']);
 		var timeAll='';
 		laydate.render({
 			elem: '#applytime',
@@ -406,243 +391,101 @@ layui.config({
 				})
 			}
 		});
-		var timeAll2='';
-		var timeAll3='';
-		
 		$.ajax({
 			url: '${ctx}/system/user/findAllUser',
-			type: "GET",
-			async: false,
-			beforeSend: function() {
-				index;
-			},
 			success: function(result) {
+				var html = '<option value="">请选择</option>';
 				$(result.data).each(function(i, o) {
-					htmls += '<option value=' + o.id + '>' + o.userName + '</option>'
+					html += '<option value=' + o.id + '>' + o.userName + '</option>'
 				})
-				layer.close(index);
-			$('#selectOne').html(htmls);
-			$("#userId").append(htmls);
-			form.render();
+				$('#selectOne').html(html);
+				$("#userId").append(html);
+				form.render();
 			},
-			error: function() {
-				layer.msg("操作失败！", {
-					icon: 2
+		});
+		var getdata = { type : "orgName", }
+		$.ajax({
+			url : "${ctx}/basedata/list",
+			data : getdata,
+			success : function(result) {
+				var html="";
+				$(result.data).each(function(k, j) {
+					html += '<option value="'+j.id+'">' + j.name + '</option>'
 				});
-				layer.close(index);
+				
+				$("#orgNameId").append(html);
+				form.render();
 			}
 		});
-		
-		var getdata = {
-				type : "orgName",
-			}
-		var htmlfr=""
-			$.ajax({
-				url : "${ctx}/basedata/list",
-				data : getdata,
-				type : "GET",
-				beforeSend : function() {
-					index;
-				},
-				success : function(result) {
-					$(result.data).each(function(k, j) {
-						htmlfr += '<option value="'+j.id+'">' + j.name + '</option>'
-					});
-					
-					$("#orgNameId").append(htmlfr);
-					form.render();
-					layer.close(index);
-				}
-			});
-
-		
-		
-			var	quit= $("#quit").val()
-	 	/* tablePlug.smartReload.enable(true);  */
+		var	quit= $("#quit").val()
 		table.render({
 			elem: '#tableData',
 			size: 'lg',
 			height:'700px',
-			where:{
-				quit:quit
-			},
+			where:{ quit:quit },
 			url: '${ctx}/personnel/findAttendanceInit',
-			request:{
-				pageName: 'page' ,//页码的参数名称，默认：page
-				limitName: 'size' //每页数据量的参数名，默认：limit
-			},
-			page: {
-			} //开启分页
-			,
-			loading: true,
+			request:{ pageName: 'page' ,limitName: 'size'  },
+			page: { },
 			toolbar: '#toolbar', //开启工具栏，此处显示默认图标，可以自定义模板，详见文档
-			/*totalRow: true //开启合计行 */
 			cellMinWidth: 90,
 			colFilterRecord: true,
 			smartReloadModel: true,// 开启智能重载
 			parseData: function(ret) {
-				return {
-					code: ret.code,
-					msg: ret.message,
-					count:ret.data.total,
-					data: ret.data.rows
-				}
+				return { code: ret.code, msg: ret.message, count:ret.data.total, data: ret.data.rows }
 			},
-			cols: [
-				[{
-					type: 'checkbox',
-					align: 'center',
-					fixed: 'left'
-				}, {
-					field: "",
-					title: "员工姓名",
-					align: 'center',
-					fixed: 'left',
-					search: true,
-					edit: false,
+			cols: [[
+				 { type: 'checkbox', align: 'center', fixed: 'left' },
+				 { field: "", title: "员工姓名", align: 'center', fixed: 'left', templet: function(d){ return d.user.userName;} }, 
+				 { field: "", title: "休息方式", align: 'center',
 					templet: function(d){
-						return d.user.userName;
-					}
-				}, {
-					field: "",
-					title: "休息方式",
-					align: 'center',
-					edit: false,
-					templet: function(d){
-						if(d.restType==1){
+						if(d.restType==1)
 							return "周休一天";
-						}
-						if(d.restType==2){
+						if(d.restType==2)
 							return "月休两天,其他周日算加班";
-						}
-						if(d.restType==3){
+						if(d.restType==3)
 							return "全年无休";
-						}
-					}
-				}, {
-					field: "",
-					title: "出勤方式",
-					align: 'center',
-					edit: false,
+					} }, 
+				 { field: "", title: "出勤方式", align: 'center',
 					templet: function(d){
-						if(d.workType==0){
-						return "";
-						}
-						if(d.workType==1){
+						if(d.workType==0)
+							return "";
+						if(d.workType==1)
 							return "无到岗要求";
-						}
-						if(d.workType==2){
+						if(d.workType==2)
 							return "无打卡要求";
-						}
-						if(d.workType==3){
-							return "按到岗小时计算";
-						}
-					}
-				},
-				{
-					field: "restDay",
-					align: 'center',
-					title: "约定休息日",
-				},{
-					field: "workTimeSummer",
-					align: 'center',
-					width:170,
-					title: "夏令时工作区间",
-				},{
-					field: "workTimeWinter",
-					width:170,
-					align: 'center',
-					title: "冬令时工作区间",
-				},{
-					field: "turnWorkTimeSummer",
-					width:150,
-					align: 'center',
-					title: "夏令出勤时长",
-				},{
-					field: "turnWorkTimeWinter",
-					width:150,
-					align: 'center',
-					title: "冬令出勤时长",
-				},{
-					field: "restTimeSummer",
-					width:150,
-					align: 'center',
-					title: "夏令时午休区间",
-				},{
-					field: "restTimeWinter",
-					width:150,
-					align: 'center',
-					title: "冬令时午休区间",
-				},{
-					field: "restSummer",
-					width:150,
-					align: 'center',
-					title: "夏令时午休时长",
-				},{
-					field: "restWinter",
-					width:150,
-					align: 'center',
-					title: "冬令时午休时长",
-				},{
-					field: "restTimeWork",
-					align: 'center',
-					width:150,
-					title: "午休状态",
+						if(d.workType==3)
+							return "按到岗小时计算"; } },
+				{ field: "restDay", align: 'center', title: "约定休息日", },
+				{ field: "workTimeSummer", align: 'center', width:170, title: "夏令时工作区间", },
+				{ field: "workTimeWinter", width:170, align: 'center', title: "冬令时工作区间", },
+				{ field: "turnWorkTimeSummer", width:150, align: 'center', title: "夏令出勤时长", },
+				{ field: "turnWorkTimeWinter", width:150, align: 'center', title: "冬令出勤时长", },
+				{ field: "restTimeSummer", width:150, align: 'center', title: "夏令时午休区间", },
+				{ field: "restTimeWinter", width:150, align: 'center', title: "冬令时午休区间", },
+				{ field: "restSummer", width:150, align: 'center', title: "夏令时午休时长", },
+				{ field: "restWinter", width:150, align: 'center', title: "冬令时午休时长", },
+				{ field: "restTimeWork", align: 'center', width:150, title: "午休状态",
 					templet: function(d){
-						if(d.restTimeWork==1){
-						return "休息";
-						}
-						if(d.restTimeWork==2){
+						if(d.restTimeWork==1)
+							return "休息";
+						if(d.restTimeWork==2)
 							return "出勤";
-						}
-						if(d.restTimeWork==3){
-							return "加班";
-						}
-					}
-				},{
-					field: "restTimeWork",
-					align: 'center',
-					width:150,
-					title: "早到加班",
+						if(d.restTimeWork==3)
+							return "加班"; } },
+				{ field: "restTimeWork", align: 'center', width:150, title: "早到加班",
+					templet: function(d){ return d.earthWork?'是':'否'; } },
+				{ field: "overTimeType", align: 'center', title: "核算加班", width:150,
 					templet: function(d){
-						if(d.earthWork==false){
-						return "否";
-						}
-						if(d.restTimeWork==true){
-							return "是";
-						}
-					}
-				},{
-					field: "overTimeType",
-					align: 'center',
-					title: "核算加班",
-					width:150,
+						return d.overTimeType==1?"加班申请":"打卡核算"; } },
+				{ field: "comeWork", align: 'center', width:150, title: "加班后到岗",
 					templet: function(d){
-						if(d.overTimeType==1){
-						return "加班申请";
-						}
-						if(d.overTimeType==2){
-							return "打卡核算";
-						}
-						
-					}
-				},{
-					field: "comeWork",
-					align: 'center',
-					width:150,
-					title: "加班后到岗",
-					templet: function(d){
-						if(d.comeWork==1){
-						return "按点上班";
-						}
-						if(d.comeWork==2){
+						if(d.comeWork==1)
+							return "按点上班";
+						if(d.comeWork==2)
 							return "第二天上班时间超过24:00往后推";
-						}
-						if(d.comeWork==3){
-							return "超过24:30后默认休息7.5小时";
-						}
-					}
-				},{fixed:'right', title:'操作', align: 'center', toolbar: '#barDemo'}]
+						if(d.comeWork==3)
+							return "超过24:30后默认休息7.5小时"; } },
+				{fixed:'right', title:'操作', align: 'center', toolbar: '#barDemo'}]
 			],
 		});
 		//监听头工具栏事件
@@ -652,30 +495,24 @@ layui.config({
 			var tableId = config.id;
 			switch(obj.event) {
 				case 'deleteSome':
-					// 获得当前选中的
 					var checkedIds = tablePlug.tableCheck.getChecked(tableId);
 					layer.confirm('您是否确定要删除选中的' + checkedIds.length + '条记录？', function() {
-						var postData = {
-							ids: checkedIds,
-						}
+						var postData = { ids: checkedIds, };
+						var load = layer.load(1);
 						$.ajax({
 							url: "${ctx}/personnel/deleteAttendanceInit",
 							data: postData,
 							traditional: true,
-							beforeSend: function() { index; },
 							success: function(result) {
+								var icon = 2;
 								if(0 == result.code) {
+									icon = 1;
 									table.reload('tableData');
-									layer.msg(result.message, { icon: 1, time:500 });
-								} else {
-									layer.msg(result.message, { icon: 2, time:500 });
 								}
-							},
-							error: function() {
-								layer.msg("操作失败！", { icon: 2 });
+								layer.msg(result.message, { icon: icon });
 							}
 						});
-						layer.close(index);
+						layer.close(load);
 					});
 					break;
 				case 'notice':
@@ -842,9 +679,6 @@ layui.config({
 								$('#monthRestDate').find('.layui-icon-close').on('click',function(){	//删除节点
 									$(this).parent().parent().remove();
 								})
-							},
-							yes:function(){
-								$('#addEditBtn').click();
 								form.on('submit(addEditBtn)', function(data) {
 					        		var data=data.field
 					        		data.time+='-01 00:00:00';
@@ -874,6 +708,9 @@ layui.config({
 									});
 								}) 
 							},
+							yes:function(){
+								$('#addEditBtn').click();
+							},
 						})
 					})
 					var dicDiv=$('#layuiadmin-form-admin2');
@@ -900,74 +737,46 @@ layui.config({
 			$("#usID").val(id)
 		    if(obj.event === 'update'){
 		    	var dicDiv=$('#layuiadmin-form-admin');
-		    	$('#selectOne').each(function(j,k){
-					var id=data.user.id;
-					$(k).val(id);
-					form.render('select');
-				});
-		    	$('#restType').each(function(j,k){
-		    		var id=data.restType;
-					$(k).val(id);
-					form.render('select');
-				});
-		    	$('#workType').each(function(j,k){
-		    		var id=data.workType;
-					$(k).val(id);
-					form.render('select');
-				});
-		    	$('#restTimeWork').each(function(j,k){
-		    		var id=data.restTimeWork;
-					$(k).val(id);
-					form.render('select');
-				});
-				$('#overTimeType').each(function(j,k){
-		    		var id=data.overTimeType;
-					$(k).val(id);
-					form.render('select');
-				});
-				$('#comeWork').each(function(j,k){
-		    		var id=data.comeWork;
-					$(k).val(id);
-					form.render('select');
-				});
-				if(data.earthWork==true){
-				$("#kai").attr("checked","checked");
-		    	form.render();
-		       }else{
-		    	   $("#kai").attr("checked",false);
-			    	form.render();
-		       }
-				$('#eatType').each(function(j,k){
-		    		var id=data.eatType;
-					$(k).val(id);
-					form.render('select');
-				});
-				$('#fail').each(function(j,k){
-		    		var id=data.fail;
-					$(k).val(id);
-					form.render('select');
-				});
+		    	$('#selectOne').val(data.user.id);
+		    	$('#restType').val(data.restType);
+		    	$('#workType').val(data.workType);
+		    	$('#restTimeWork').val(data.restTimeWork);
+				$('#overTimeType').val(data.overTimeType);
+				$('#comeWork').val(data.comeWork);
+				if(data.earthWork){
+					$("#kai").attr("checked","checked");
+		        }else{
+		    	   	$("#kai").attr("checked",false);
+		        }
+				$('#eatType').val(data.eatType);
+				$('#fail').val(data.fail);
 				$("#restTimeSummer").val(data.restTimeSummer)
-		    	$("#layuiadmin-form-admin").setForm({restDay:data.restDay,workTimeSummer:data.workTimeSummer,workTimeWinter:data.workTimeWinter,turnWorkTimeSummer:data.turnWorkTimeSummer,turnWorkTimeWinter:data.turnWorkTimeWinter,restTimeSummer:data.restTimeSummer,restTimeWinter:data.restTimeWinter,restSummer:data.restSummer,restWinter:data.restWinter});
+		    	$("#layuiadmin-form-admin").setForm({
+		    		restDay: data.restDay,
+		    		workTimeSummer: data.workTimeSummer,
+		    		workTimeWinter: data.workTimeWinter,
+		    		turnWorkTimeSummer: data.turnWorkTimeSummer,
+		    		turnWorkTimeWinter: data.turnWorkTimeWinter,
+		    		restTimeSummer: data.restTimeSummer,
+		    		restTimeWinter: data.restTimeWinter,
+		    		restSummer: data.restSummer,
+		    		restWinter: data.restWinter
+		    	});
+				form.render();
 		    	layer.open({
 			         type: 1
 			        ,title: "修改" //不显示标题栏
-			        ,closeBtn: false
 			        ,area:['30%', '100%']
-			        ,shade: 0.5
 			        ,id: 'LAY_layuipro' //设定一个id，防止重复弹出
 			        ,btn: ['确定', '取消']
 			        ,btnAlign: 'c'
-			        ,moveType: 1 //拖拽模式，0或者1
 			        ,content:dicDiv
 			        ,success : function(layero, index) {
 			        	layero.addClass('layui-form');
-						// 将保存按钮改变成提交按钮
 						layero.find('.layui-layer-btn0').attr({
 							'lay-filter' : 'addRole',
 							'lay-submit' : ''
 						})
-						//回显
 						$('#inputapplytime').html('');
 						layui.each(data.restDay.split(','),function(index1,val){
 							if(val=='')
@@ -995,67 +804,44 @@ layui.config({
 			        	layui.form.render();
 			        	timeAll=""
 					  } 
-			       
 			      });
-		    	
-		    	
 		    }
 		});
-
-		//监听搜索
 		form.on('submit(LAY-role-search)', function(data) {
 			var field = data.field;
 			$.ajax({
 				url: "${ctx}/personnel/findAttendanceInit",
-				type: "get",
 				data: field,
-				dataType: "json",
 				success: function(result) {
-					table.reload('tableData', {
-						where: field
-					});
+					table.reload('tableData', { where: field });
 				}
 			});
 		});
-		
-		
 		//封装ajax主方法
 		var mainJs = {
-			//新增							
+			//新增
 		    fAdd : function(data){
+		    	var load = layer.load(1);
 		    	$.ajax({
 					url: "${ctx}/personnel/addAttendanceInit",
 					data: data,
 					type: "Post",
-					beforeSend: function() {
-						index;
-					},
 					success: function(result) {
+						var icon = 2;
 						if(0 == result.code) {
+							icon = 1;
 							table.reload('tableData');
-							layer.msg(result.message, {
-								icon: 1,
-								time:500
-							});
 							if(data.id==null){
-							document.getElementById("layuiadmin-form-admin").reset();
-				        	layui.form.render();
+								document.getElementById("layuiadmin-form-admin").reset();
+					        	layui.form.render();
 							}
-						} else {
-							layer.msg(result.message, {
-								icon: 2,
-								time:500
-							});
-						}
-					},
-					error: function() {
-						layer.msg("操作失败！请重试", { icon: 2 });
+						} 
+						layer.msg(result.message, { icon: 1 });
 					},
 				});
-				layer.close(index);
+				layer.close(load);
 		    }
 		}
-
 	}
 )
 </script>
