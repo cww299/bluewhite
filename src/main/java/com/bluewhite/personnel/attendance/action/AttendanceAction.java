@@ -562,6 +562,7 @@ public class AttendanceAction {
 	@ResponseBody
 	public CommonResponse addRestType(PersonVariable personVariable) {
 		CommonResponse cr = new CommonResponse();
+		personVariable.setType(0);
 		PersonVariable ot = personVariableDao.findByTypeAndTime(0,DatesUtil.getFirstDayOfMonth(personVariable.getTime()));
 		if(ot == null){
 			personVariableDao.save(personVariable);
