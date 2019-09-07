@@ -771,6 +771,10 @@ layui.config({
 						url: '${ctx}/personnel/findRestTypePage',
 						page:true,
 						parseData:function(r){
+							layui.each(r.data.rows,function(index,item){
+								var t = item.time.split('-');
+								item.time = t[0]+'-'+t[1];
+							})
 							return { code: r.code, msg:r.message, count:r.data.total, data:r.data.rows };
 						},
 						toolbar:'#fixedRestDayToolbar',
