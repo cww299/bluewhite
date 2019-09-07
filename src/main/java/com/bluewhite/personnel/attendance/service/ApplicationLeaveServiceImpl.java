@@ -256,7 +256,7 @@ public class ApplicationLeaveServiceImpl extends BaseServiceImpl<ApplicationLeav
 				if (attendanceTime.getCheckIn()!=null && attendanceTime.getCheckOut()!=null) {
 					//获取所有的休息日
 					if(attendanceInit.getRestDay()!=null || attendanceInit.getRestType()!=null){
-						PersonVariable restType = personVariableDao.findByType(0);
+						PersonVariable restType = personVariableDao.findByTypeAndTime(0, DatesUtil.getFirstDayOfMonth(applicationLeave.getWriteTime()));
 						List<String> allArr = new ArrayList<>();
 						if(attendanceInit.getRestType() == 1){
 							String[] weekArr = restType.getKeyValue().split(",");
