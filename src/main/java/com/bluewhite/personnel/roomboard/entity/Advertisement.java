@@ -62,6 +62,32 @@ public class Advertisement extends BaseEntity<Long> {
     private Date endTime;
 	
 	/**
+	 * 职位id
+	 */
+	@Column(name = "position_id")
+	private Long positionId;
+	
+	/**
+	 * 职位
+	 */
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "position_id", referencedColumnName = "id", insertable = false, updatable = false)
+	private BaseData position;
+	
+	/**
+	 * 部门id
+	 */
+	@Column(name = "orgName_id")
+	private Long orgNameId;
+	
+	/**
+	 * 部门
+	 */
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "orgName_id", referencedColumnName = "id", insertable = false, updatable = false)
+	private BaseData orgName;
+	
+	/**
 	 * 招聘
 	 */
 	@Column(name = "recruit_id")
@@ -147,6 +173,30 @@ public class Advertisement extends BaseEntity<Long> {
 	@Transient
 	private Date orderTimeEnd;
 	
+	public Long getPositionId() {
+		return positionId;
+	}
+	public void setPositionId(Long positionId) {
+		this.positionId = positionId;
+	}
+	public BaseData getPosition() {
+		return position;
+	}
+	public void setPosition(BaseData position) {
+		this.position = position;
+	}
+	public Long getOrgNameId() {
+		return orgNameId;
+	}
+	public void setOrgNameId(Long orgNameId) {
+		this.orgNameId = orgNameId;
+	}
+	public BaseData getOrgName() {
+		return orgName;
+	}
+	public void setOrgName(BaseData orgName) {
+		this.orgName = orgName;
+	}
 	public Integer getNumber() {
 		return number;
 	}

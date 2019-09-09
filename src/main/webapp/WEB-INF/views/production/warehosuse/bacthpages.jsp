@@ -348,30 +348,30 @@
 		style="padding: 20px 0px 0 50px; display:none;  text-align:">
 		<div class="layui-form" lay-filter="layuiadmin-form-admin">
 			<div class="layui-form-item" style="float: left; vertical-align: top">
-				<label class="layui-form-label" style="width: 100px;">产品名称</label>
+				<label class="layui-form-label" style="width: 100px;">任务分配</label>
 				<div class="layui-input-inline">
-					<input name="productName" style="width:200px;" lay-filter="id" id="productName" lay-search="true" class="layui-input laydate-icon">
+					<input name="productName" style="width:190px;" lay-filter="id" id="productName" lay-search="true" class="layui-input laydate-icon">
 				</div>
 			</div>
 		
 			<div class="" style="float: left;margin-left: 200px;">
 				<label class="layui-form-label" style="width: 100px;">批次号</label>
 				<div class="layui-input-inline">
-					<input name="bacthNumber" style="width:200px;" lay-filter="id" id="bacthNumber" lay-search="true" class="layui-input laydate-icon">
+					<input name="bacthNumber" style="width:210px;" lay-filter="id" id="bacthNumber" lay-search="true" class="layui-input laydate-icon">
 				</div>
 			</div>
 
 			<div class="layui-form-item" style="float: left;">
 				<label class="layui-form-label" style="width: 100px;">数量</label>
 				<div class="layui-input-inline">
-					<input name="number" style="width:200px;" lay-filter="id" id="number" lay-search="true" class="layui-input laydate-icon">
+					<input name="number" style="width:190px;" lay-filter="id" id="number" lay-search="true" class="layui-input laydate-icon">
 				</div>
 			</div>
 	
 			<div class="" style="float: left;margin-left: 200px;">
 				<label class="layui-form-label" style="width: 100px;">备注</label>
 				<div class="layui-input-inline">
-					<input name="remarks" style="width:200px;" lay-filter="id" id="remarks" lay-search="true" class="layui-input laydate-icon">
+					<input name="remarks" style="width:210px;" lay-filter="id" id="remarks" lay-search="true" class="layui-input laydate-icon">
 				</div>
 			</div>
 			
@@ -388,7 +388,7 @@
 				<div class="layui-input-inline">
 					<select class="form-control" lay-filter="lay_selecte3" style="width:200px;" name="sourg" id="complete"></select>
 				</div>
-				<div style="float: right; margin-left: 200px" class="select"></div>
+				<div style="float: right; margin-left: 10px" class="select"></div>
 			</div>
 		</div>
 	</form>
@@ -495,10 +495,11 @@
 						},
 						success:function(result){
 							$(result.data).each(function(i,o){
-								htmlfv +='<div class="input-group"><input type="checkbox" class="checkWork" style="display: inline;"  value="'+o.id+'" data-name="'+o.name+'" data-residualnumber="'+o.residualNumber+'">'+o.name+' 剩余:'+o.residualNumber+'</input></div>'
+								htmlfv +='<div class="input-group"><input type="checkbox" lay-ignore class="checkWork"  style="display: inline;"  value="'+o.id+'" data-name="'+o.name+'" data-residualnumber="'+o.residualNumber+'">'+o.name+' 剩余:'+o.residualNumber+'</input></div>'
 							})
-							var s="<div class='input-group'><input type='checkbox' style='display:inline;' class='checkWorkAll'>全选</input></div>"
+							var s="<div class='input-group'><input type='checkbox' lay-ignore style='display:inline;' class='checkWorkAll'>全选</input></div>"
 							$('.checkworking').html(s+htmlfv);
+							form.render();
 							$(".checkWorkAll").on('click',function(){
 			                    if($(this).is(':checked')){ 
 						 			$('.checkWork').each(function(){  
@@ -555,10 +556,10 @@
 					$(result.data).each(function(i,o){
 					
 					$(o.users).each(function(i,o){
-						htmltwo +='<div class="input-group"><input type="checkbox" style="display:inline;" class="stuCheckBox" value="'+o.id+'" data-username="'+o.userName+'">'+o.userName+'</input></div>'
+						htmltwo +='<div class="input-group"><input type="checkbox" lay-ignore style="display:inline;" class="stuCheckBox" value="'+o.id+'" data-username="'+o.userName+'">'+o.userName+'</input></div>'
 					})
 					})
-					var s="<div class='input-group'><input type='checkbox' style='display:inline;' class='checkall'>全选</input></div>"
+					var s="<div class='input-group'><input type='checkbox' lay-ignore style='display:inline;' class='checkall'>全选</input></div>"
 					$('.select').html(s+htmltwo)
 					$(".checkall").on('click',function(){
 		                    if($(this).is(':checked')){ 
