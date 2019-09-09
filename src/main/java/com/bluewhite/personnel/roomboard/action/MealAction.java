@@ -214,12 +214,8 @@ public class MealAction {
 	@ResponseBody
 	public CommonResponse getEatType(AttendanceTime attendanceTime) throws ParseException {
 		CommonResponse cr = new CommonResponse();
-		 int list;
-		
-			list = service.InitMeal(attendanceTime);
-		
-		
-		cr.setMessage("同步成功");
+		int list = service.InitMeal(attendanceTime);
+		cr.setMessage("成功同步"+list+"条吃饭记录");
 		return cr;
 	}
 	@InitBinder
