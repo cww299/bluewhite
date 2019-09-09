@@ -392,7 +392,17 @@ layui.config({
 			}
 		});
 		$.ajax({
-			url: '${ctx}/system/user/findAllUser',
+
+			url: '${ctx}/system/user/findUserList',
+			data:{
+				foreigns:0
+			},
+			type: "GET",
+			async: false,
+			beforeSend: function() {
+				index;
+			},
+
 			success: function(result) {
 				var html = '<option value="">请选择</option>';
 				$(result.data).each(function(i, o) {

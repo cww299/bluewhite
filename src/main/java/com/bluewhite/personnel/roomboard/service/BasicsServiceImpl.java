@@ -54,7 +54,7 @@ public class BasicsServiceImpl extends BaseServiceImpl<Basics, Long>
 	List<Advertisement> list=advertisementDao.findByType(0);
 	//过滤 1.开始时间在区间时间之前 结束时间在区间时间之后（4.1  5.1~5.31  6.1） 2. 开始时间在区间时间之后 结束时间在区间时间之后 （5.2  5.1~5.31  6.1）
 	//过滤 3.开始时间在区间时间之前 结束时间在区间时间之前 （4.1  5.1~5.31  5.30）4. 开始时间在区间时间之后 结束时间在区间时间之前（5.2  5.1~5.31  5.3）
-	List<Advertisement> listFilter= list.stream().filter(Advertisement->(Advertisement.getStartTime().compareTo(orderTimeBegin)==-1 && Advertisement.getEndTime().compareTo(orderTimeEnd)==1)
+	List<Advertisement> listFilter= list.stream().filter(Advertisement->!Advertisement.getPlatformId().equals(294) && (Advertisement.getStartTime().compareTo(orderTimeBegin)==-1 && Advertisement.getEndTime().compareTo(orderTimeEnd)==1)
 									  ||(Advertisement.getStartTime().compareTo(orderTimeBegin)==1 && Advertisement.getStartTime().compareTo(orderTimeEnd)==-1 && Advertisement.getEndTime().compareTo(orderTimeEnd)==1)
 									  ||(Advertisement.getStartTime().compareTo(orderTimeBegin)==-1 && Advertisement.getEndTime().compareTo(orderTimeBegin)==1 &&  Advertisement.getEndTime().compareTo(orderTimeEnd)==-1)
 									  ||(Advertisement.getStartTime().compareTo(orderTimeBegin)!=-1 && Advertisement.getEndTime().compareTo(orderTimeEnd)!=1)

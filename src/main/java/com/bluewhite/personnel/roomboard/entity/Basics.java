@@ -39,6 +39,7 @@ public class Basics extends BaseEntity<Long> {
 	private Double recruitUserPrice;
 	
 	
+	
 	/**
 	 * 当月面试应聘人员数量/人填写→
 	 */

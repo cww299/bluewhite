@@ -76,6 +76,92 @@ layui.config({
 				page : { curr:1 },
 			})
 		}) 
+		
+		var getdataa={type:"orgName",}
+					var htmls= '<option value="">请选择</option>';
+				    $.ajax({
+					      url:"${ctx}/basedata/list",
+					      data:getdataa,
+					      type:"GET",
+					      async:false,
+					      beforeSend:function(){
+					    	  indextwo = layer.load(1, {
+							  shade: [0.1,'#fff'] //0.1透明度的白色背景
+							  });
+						  }, 
+			      		  success: function (result) {
+			      			  $(result.data).each(function(k,j){
+			      				htmls +='<option value="'+j.id+'">'+j.name+'</option>'
+			      			  });
+			      			layer.close(indextwo);
+					      }
+					  });
+					
+					var htmlfrn= '<option value="">请选择</option>';
+					
+				    form.on('select(lay_selecte2)', function(data){
+				    	var self = data;
+			      			$.ajax({								//获取当前部门下拉框选择的子数据：职位
+							      url:"${ctx}/basedata/children",
+							      data:{ id:data.value },
+							      async:false,
+					      		  success: function (result) {				//填充职位下拉框
+					      			  	var html='<option value="">请选择</option>'
+					      			  	$(result.data).each(function(i,o){
+					      			  		html +='<option  value="'+o.id+'">'+o.name+'</option>'
+					      				});
+					      			    $(data.elem).closest('td').next().find('select').html(html);
+					      			    form.render();
+							      }
+							  });
+			      			var selectElem = $(data.elem);
+							var tdElem = selectElem.closest('td');
+							var trElem = tdElem.closest('tr');
+							var tableView = trElem.closest('.layui-table-view');
+							var field = tdElem.data('field');
+							table.cache[tableView.attr('lay-id')][trElem.data('index')][tdElem.data('field')] = data.value;
+							var id = table.cache[tableView.attr('lay-id')][trElem.data('index')].id
+						 	var postData = {
+								id: id,
+								[field]:data.value
+							}
+							//调用新增修改
+							 updateAjax(postData);  
+					 })
+					// 处理操作列
+					var fn1 = function(field) {
+						return function(d) {
+							console.log(d)
+							return [
+								'<select name="selectOne" lay-filter="lay_selecte2" lay-search="true" data-value="' +d.orgNameId+ '">',
+								htmls +
+								'</select>'
+							].join('');
+						};
+						form.render(); 
+					};
+					var fn2 = function(d) {
+						return function(d) {
+							var html = '<option value="">请选择</option>';
+							if(d && d.orgNameId)
+								$.ajax({								//获取当前部门下拉框选择的子数据：职位
+								      url:"${ctx}/basedata/children",
+								      data:{ id:d.orgNameId },
+								      async:false,
+						      		  success: function (result) {				//填充职位下拉框
+						      			  	$(result.data).each(function(i,o){
+						      			  		html +='<option  value="'+o.id+'">'+o.name+'</option>'
+						      				});
+								      }
+								  });
+							return ['<select name="selectTwo" class="selectTwo" lay-filter="lay_selecte" lay-search="true" data-value="' +d.positionId+ '">',
+								html,
+								'</select>'
+							].join('');
+						};
+						form.render(); 
+					};
+		
 		table.render({
 			elem:'#recruitTable',
 			url:'${ctx}/personnel/getAdvertisement?type=0',
@@ -92,6 +178,8 @@ layui.config({
 			       {align:'center', title:'投放费用',   field:'price',     edit:true,},
 			       {align:'center', title:'开始时间', 	field:'startTime',edit: false,	},
 			       {align:'center', title:'结束时间',   field:'endTime',	  edit: false,   },
+			       {field:"orgNameId",title: "部门",align: 'center',search: true,edit: false,type: 'normal',templet: fn1('selectOne')},
+			       {field: "positionId",title: "职位",align: 'center',search: true,edit: false,type: 'normal',templet: fn2('selectTwo')},
 			       {align:'center', title:'合格简历数',   field:'number',edit: true,   },
 			       {align:'center', title:'待定简历数',   field:'number2',edit: true,   }, 
 			       {align:'center', title:'不合格简历数',   field:'number3',edit: true,   }, 
@@ -100,6 +188,10 @@ layui.config({
 			done:function(){
 				var tableView = this.elem.next();
 				var tableElem = this.elem.next('.layui-table-view');
+				layui.each(tableElem.find('.layui-table-box').find('select'), function(index, item) {
+					var elem = $(item);
+					elem.val(elem.data('value'));
+				});
 				layui.each(tableView.find('td[data-field="startTime"]'), function(index, tdElem) {
 					laydate.render({
 						elem: tdElem.children[0],
@@ -135,6 +227,24 @@ layui.config({
 				})
 			}
 		})
+		
+					// 监听表格中的下拉选择将数据同步到table.cache中
+					form.on('select(lay_selecte)', function(data) {
+						var selectElem = $(data.elem);
+						var tdElem = selectElem.closest('td');
+						var trElem = tdElem.closest('tr');
+						var tableView = trElem.closest('.layui-table-view');
+						var field = tdElem.data('field');
+						table.cache[tableView.attr('lay-id')][trElem.data('index')][tdElem.data('field')] = data.value;
+						var id = table.cache[tableView.attr('lay-id')][trElem.data('index')].id
+						var postData = {
+							id: id,
+						}
+						postData[field] = data.value
+						//调用新增修改
+						updateAjax(postData);
+					});
+		
 		table.on('toolbar(recruitTable)',function(obj){
 			var config = obj.config;
 			var btnElem = $(this);
@@ -272,10 +382,9 @@ layui.config({
 		}
 		function getPlatformSelect() {
 			return function(d) {
-				var html = '<select lay-filter="platformSelect">'
+				var html = '<select lay-filter="platformSelect" data-value="'+d.platformId+'">'
 				layui.each(allPlatform,function(j,item){
-					var selected = d.platformId == item.id?'selected':'';
-					html+='<option value="'+item.id+'" '+selected+'>'+item.name+'</option>'
+					html+='<option value="'+item.id+'">'+item.name+'</option>'
 				})
 				html+='</select>';
 				if(d.platformId == '')
