@@ -142,7 +142,7 @@ layui.config({
 	 			
 		table.render({
 			elem:'#trainTable',
-			data:[],
+			url:'${ctx}/personnel/getAdvertisement?type=1',
 			toolbar:'#trainToolbar',
 			loading:true,
 			page:true,
