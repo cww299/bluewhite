@@ -8,6 +8,7 @@ import javax.persistence.criteria.Predicate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
+import org.springframework.util.StringUtils;
 
 import com.bluewhite.base.BaseServiceImpl;
 import com.bluewhite.basedata.dao.BaseDataDao;
@@ -17,15 +18,14 @@ import com.bluewhite.personnel.roomboard.dao.AdvertisementDao;
 import com.bluewhite.personnel.roomboard.entity.Advertisement;
 
 @Service
-public class AdvertisementServiceImpl extends BaseServiceImpl<Advertisement, Long>
-		implements AdvertisementService {
+public class AdvertisementServiceImpl extends BaseServiceImpl<Advertisement, Long> implements AdvertisementService {
 	@Autowired
 	private AdvertisementDao dao;
 	@Autowired
 	private BaseDataDao baseDataDao;
-	
+
 	/*
-	 *分页查询
+	 * 分页查询
 	 */
 	@Override
 	public PageResult<Advertisement> findPage(Advertisement advertisement, PageParameter page) {
@@ -42,6 +42,15 @@ public class AdvertisementServiceImpl extends BaseServiceImpl<Advertisement, Lon
 			if (advertisement.getRecruitId() != null) {
 				predicate.add(cb.equal(root.get("recruitId").as(Long.class), advertisement.getRecruitId()));
 			}
+			// 应聘人
+			if(!StringUtils.isEmpty(advertisement.getApplyName())){
+				predicate.add(cb.like(root.get("recruit").get("name").as(String.class), "%"+advertisement.getApplyName()+"%"));
+				
+			}
+			// 招聘人
+			if(!StringUtils.isEmpty(advertisement.getRecruitmentName())){
+				predicate.add(cb.like(root.get("recruit").get("recruitName").as(String.class), "%"+advertisement.getRecruitmentName()+"%"));
+			}
 			Predicate[] pre = new Predicate[predicate.size()];
 			query.where(predicate.toArray(pre));
 			return null;
@@ -49,34 +58,29 @@ public class AdvertisementServiceImpl extends BaseServiceImpl<Advertisement, Lon
 		PageResult<Advertisement> result = new PageResult<>(pages, page);
 		return result;
 	}
+
 	/*
-	 *新增修改
+	 * 新增修改
 	 */
 	@Override
 	public Advertisement addAdvertisement(Advertisement advertisement) {
-		
+
 		return dao.save(advertisement);
 	}
-	
+
 	/*
-	 *汇总单个人培训费用 
+	 * 汇总单个人培训费用
 	 */
 	@Override
 	public Advertisement findRecruitId(Long recruitId) {
-	  List<Advertisement> advertisements=dao.findByRecruitIdAndType(recruitId,1);
-	  double price=0;
-	  for (Advertisement advertisement : advertisements) {
-		  price=price+advertisement.getPrice();
-	}
-	  Advertisement advertisement=new Advertisement();
-	  advertisement.setPrice(price);
+		List<Advertisement> advertisements = dao.findByRecruitIdAndType(recruitId, 1);
+		double price = 0;
+		for (Advertisement advertisement : advertisements) {
+			price += advertisement.getPrice();
+		}
+		Advertisement advertisement = new Advertisement();
+		advertisement.setPrice(price);
 		return advertisement;
 	}
 
-
-
-
-	
-	
-	
 }
