@@ -72,8 +72,8 @@ public class AttendanceTimeServiceImpl extends BaseServiceImpl<AttendanceTime, L
 	public List<AttendanceTime> findAttendanceTime(AttendanceTime attendance) throws ParseException {
 		// 获取改时间段所有的打卡记录
 		List<Attendance> allAttList = null;
-		// 获取固定休息日
-		PersonVariable restType = personVariableDao.findByType(0);
+		// 获取当前日期的固定休息日
+		PersonVariable restType = personVariableDao.findByTypeAndTime(0,DatesUtil.getFirstDayOfMonth(attendance.getOrderTimeBegin()));
 		// 报餐系统所需要的人员
 		List<User> list = null;
 		// 报餐人员满足于输入时间内离职和入职
@@ -84,7 +84,7 @@ public class AttendanceTimeServiceImpl extends BaseServiceImpl<AttendanceTime, L
 			user.setForeigns(0);
 			list = userService.findUserList(user).stream()
 					.filter(User -> (User.getQuit() != null && User.getQuit() == 0) || (User.getQuitDate() != null
-							&& User.getQuitDate().compareTo(attendance.getOrderTimeBegin()) == -1))
+							&& User.getQuitDate().compareTo(attendance.getOrderTimeBegin()) != -1))
 					.collect(Collectors.toList()).stream()
 					.filter(User -> User.getEntry() != null && User.getEntry()
 							.compareTo(DatesUtil.getLastDayOfMonth(attendance.getOrderTimeBegin())) != 1)
@@ -753,7 +753,7 @@ public class AttendanceTimeServiceImpl extends BaseServiceImpl<AttendanceTime, L
 						}
 						// 调休且员工出勤时间等于调休到的那一天
 						if (al.isTradeDays() && at.getTime().compareTo(dateLeave) == 0) {
-							at.setTakeWork(time);
+							at.setTakeWork(NumUtils.sum(NumUtils.setzro(at.getTakeWork()),time) );
 							if (at.getDutytime() != 0) {
 								at.setTurnWorkTime(NumUtils.sum(at.getTurnWorkTime(), time));
 								at.setDutytime(NumUtils.sub(at.getDutytime(), time));

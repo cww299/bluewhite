@@ -22,6 +22,7 @@ import com.bluewhite.common.entity.CommonResponse;
 import com.bluewhite.common.entity.PageParameter;
 import com.bluewhite.common.entity.PageResult;
 import com.bluewhite.personnel.roomboard.entity.Advertisement;
+import com.bluewhite.personnel.roomboard.entity.Recruit;
 import com.bluewhite.personnel.roomboard.service.AdvertisementService;
 import com.bluewhite.system.user.entity.User;
 import com.bluewhite.system.user.service.UserService;
@@ -36,31 +37,36 @@ public class AdvertisementAction {
 	private ClearCascadeJSON clearCascadeJSON;
 	{
 		clearCascadeJSON = ClearCascadeJSON.get()
-				.addRetainTerm(Advertisement.class,"id","time","platformId","platform", "price","startTime","endTime","recruitId","recruitName","train","trainPrice","userId","user","qualified","type","number","number1","number2","number3","number4","positionId","position", "orgNameId","orgName")
-				.addRetainTerm(User.class, "id", "userName","number");
+				.addRetainTerm(Advertisement.class, "id", "time", "platformId", "platform", "price", "startTime",
+						"endTime", "recruitId", "recruitName", "train", "trainPrice", "userId", "user", "qualified",
+						"type", "number", "number1", "number2", "number3", "number4")
+				.addRetainTerm(User.class, "id", "userName", "number")
+				.addRetainTerm(Recruit.class, "recruitId", "recruitName", "name");
 	}
-	
+
 	/**
 	 * 分页查看招聘成本
 	 * 
-	 * @param request 请求
+	 * @param request
+	 *            请求
 	 * @return cr
 	 * @throws Exception
 	 */
 	@RequestMapping(value = "/personnel/getAdvertisement", method = RequestMethod.GET)
 	@ResponseBody
-	public CommonResponse getContact(HttpServletRequest request,PageParameter page,Advertisement advertisement) {
+	public CommonResponse getContact(HttpServletRequest request, PageParameter page, Advertisement advertisement) {
 		CommonResponse cr = new CommonResponse();
-		PageResult<Advertisement>  result= service.findPage(advertisement, page); 
+		PageResult<Advertisement> result = service.findPage(advertisement, page);
 		cr.setData(clearCascadeJSON.format(result).toJSON());
 		cr.setMessage("查询成功");
 		return cr;
 	}
-	
+
 	/**
 	 * 新增修改
 	 * 
-	 * @param request 请求
+	 * @param request
+	 *            请求
 	 * @return cr
 	 * @throws Exception
 	 */
@@ -68,23 +74,23 @@ public class AdvertisementAction {
 	@ResponseBody
 	public CommonResponse addConsumption(HttpServletRequest request, Advertisement advertisement) {
 		CommonResponse cr = new CommonResponse();
-		if(advertisement.getId() != null){
+		if (advertisement.getId() != null) {
 			Advertisement advertisement2 = service.findOne(advertisement.getId());
-				BeanCopyUtils.copyNullProperties(advertisement2, advertisement);
-				advertisement.setCreatedAt(advertisement2.getCreatedAt());
+			BeanCopyUtils.copyNullProperties(advertisement2, advertisement);
+			advertisement.setCreatedAt(advertisement2.getCreatedAt());
 			cr.setMessage("修改成功");
-		}else{
+		} else {
 			cr.setMessage("添加成功");
 		}
 		service.addAdvertisement(advertisement);
 		return cr;
 	}
-	
-	
+
 	/**
 	 * 删除
 	 * 
-	 * @param request 请求
+	 * @param request
+	 *            请求
 	 * @return cr
 	 * @throws Exception
 	 */
@@ -93,21 +99,22 @@ public class AdvertisementAction {
 	public CommonResponse deleteConsumption(HttpServletRequest request, String[] ids) {
 		CommonResponse cr = new CommonResponse();
 		int count = 0;
-		if(!StringUtils.isEmpty(ids)){
+		if (!StringUtils.isEmpty(ids)) {
 			for (int i = 0; i < ids.length; i++) {
 				Long id = Long.parseLong(ids[i]);
-				service.delete(id); 
+				service.delete(id);
 				count++;
 			}
 		}
-		cr.setMessage("成功删除"+count+"条");
+		cr.setMessage("成功删除" + count + "条");
 		return cr;
 	}
-	
+
 	/**
 	 * 查询单个人的培训汇总
 	 * 
-	 * @param request 请求
+	 * @param request
+	 *            请求
 	 * @return cr
 	 * @throws Exception
 	 */
@@ -115,7 +122,7 @@ public class AdvertisementAction {
 	@ResponseBody
 	public CommonResponse findRecruitId(HttpServletRequest request, Long recruitId) {
 		CommonResponse cr = new CommonResponse();
-		Advertisement  advertisement= service.findRecruitId(recruitId);
+		Advertisement advertisement = service.findRecruitId(recruitId);
 		cr.setData(clearCascadeJSON.format(advertisement).toJSON());
 		cr.setMessage("查询成功");
 		return cr;

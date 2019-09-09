@@ -1,5 +1,7 @@
 package com.bluewhite.personnel.attendance.entity;
 
+import java.util.Date;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Table;
@@ -33,13 +35,27 @@ public class PersonVariable extends BaseEntity<Long>{
 	@Column(name = "key_value_three")
 	private String keyValueThree;
 	
-	
 	/**
 	 * 变量类型(0=休息日期,1=早中晚三餐价值（取消）,2=水费，3=电费，4=设定早中晚三餐对于吃饭统计而延迟的分钟数,5=公司对于食堂水电房租占比,6=采购员采购绩效比)
 	 * 
 	 */
 	@Column(name = "type")
 	private Integer type;
+	
+	/**
+	 * 添加日期
+	 */
+	@Column(name = "time")
+	private Date time;
+	
+	
+	public Date getTime() {
+		return time;
+	}
+
+	public void setTime(Date time) {
+		this.time = time;
+	}
 
 	public String getKeyValue() {
 		return keyValue;

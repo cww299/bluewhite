@@ -177,13 +177,17 @@ layui.define(['mytable','element',['form']],function(exports){
 	        				$(checkbox).prop('checked',!checked);
 	        				form.render();
 	        				var input = $('div[lay-id="'+tableId+'"]').find('tr[data-index="'+trIndex+'"]').find('td[data-field="cutparts"]').find('.layui-input');
-	        				$(input).append('<span class="layui-badge">'+'测试'+'<i class="layui-icon layui-icon-close"></i></span>&nbsp;')
+	        				$(input).append('<span class="layui-badge" style="margin: 0 2px; height: 80%; font-size: 15px;  padding-top: 4;">'+
+	        						'测试'+'<i class="layui-icon layui-icon-close"></i></span>')
+	        			})
+	        			$('.layui-icon-close').click(function(evnet){
+	        				$(this).parent().remove();
 	        			})
 	        		});
 	        	}
 				$(document).click(function(event){
 				    var div = $('#searchTipDiv');
-				    if(!div.is(event.target) && div.has(event.target).length === 0 && $(event.target)[0].nodeName!='I' ){
+				    if(!div.is(event.target) && div.has(event.target).length === 0 && $(event.target)[0].nodeName!='I'){
 				    	$('#searchTipDiv').hide();
 						//console.log($('div[lay-id="'+tableId+'"]').find('tr[data-index="'+trIndex+'"]').find('td[data-field="cutparts"]').length)
 						//find('div[class="layui-form-select"]').removeClass('layui-form-selected');
@@ -194,14 +198,14 @@ layui.define(['mytable','element',['form']],function(exports){
 		})
 		function getFormSelects(){
 			return function(d){
-				var text = '',c = d.cutparts.split(',');
+				var text = '',c = d.cutparts?d.cutparts.split(','):[];
 				for(var key in c){
 					if(c[key]!='')
 						text += '<span class="layui-badge">'+c[key]+'<i class="layui-icon layui-icon-close"></i></span>&nbsp;';
 				}
 				var html = ['<div class="layui-form-select">',
 				            	'<div class="layui-select-title">',
-				            		'<div class="layui-input" style="text-align: center;padding-top:10px;white-space: pre-line;">',
+				            		'<div class="layui-input" style="text-align: center;padding-top:2%;white-space: pre-line;">',
 				            			text,
 				            		'</div>',
 				            		'<i class="layui-edge"></i>',

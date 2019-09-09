@@ -88,8 +88,8 @@ public class TailorServiceImpl extends BaseServiceImpl<Tailor, Long> implements 
 		// 含绣花环节的为机工压价(填写了绣花工序时才会出现)
 		
 		// 为机工准备的压价
-		double MachinistPriceDown = tailor.getNoeMbroiderPriceDown() >= tailor.getEmbroiderPriceDown() ? tailor.getNoeMbroiderPriceDown() : tailor.getEmbroiderPriceDown();
-		tailor.setMachinistPriceDown(MachinistPriceDown);
+		double machinistPriceDown = tailor.getNoeMbroiderPriceDown() >= tailor.getEmbroiderPriceDown() ? tailor.getNoeMbroiderPriceDown() : tailor.getEmbroiderPriceDown();
+		tailor.setMachinistPriceDown(machinistPriceDown);
 		prams.setTailorTypeId(tailor.getTailorTypeId());
 		getOrdinaryLaserDate(tailor, prams);
 		return tailor;
