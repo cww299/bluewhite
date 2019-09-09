@@ -49,7 +49,7 @@ public class BasicsAction {
 	@ResponseBody
 	public CommonResponse getContact(HttpServletRequest request,Basics basics) {
 		CommonResponse cr = new CommonResponse();
-		Basics result= service.findBasics(basics); 
+		Basics result = service.findBasics(basics); 
 		cr.setData(clearCascadeJSON.format(result).toJSON());
 		cr.setMessage("查询成功");
 		return cr;
