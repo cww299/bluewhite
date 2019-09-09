@@ -111,7 +111,9 @@ layui.config({
 	 				time = $(item).attr('data-time');
 	 		})
 	 		if(obj.value==''){
-	 			table.reload('trainTable',{ data:[], url:'', })
+	 			table.reload('trainTable',{ 
+	 				url:'${ctx}/personnel/getAdvertisement?type=1',
+	 				page:{ curr:1 } })
 				$('#recruitMoney').val(0);	 
 	 			$('#trainMoney').val(0);	 
 	 			$('#awardMoney').val(0);	 
