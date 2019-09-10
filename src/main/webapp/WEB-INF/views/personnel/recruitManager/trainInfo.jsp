@@ -73,7 +73,7 @@
 	<span class="layui-btn layui-btn-sm layui-btn-warm" lay-event="saveTempData">批量保存</span>
 	<span class="layui-btn layui-btn-sm layui-btn-danger" lay-event="deleteSome">批量删除</span>
 	<span class="layui-btn layui-btn-sm" lay-event="lookoverTotal">费用汇总</span>
-	<span class="layui-btn layui-btn-sm" lay-event="departmentTotal">部门支出</span>
+	<span class="layui-btn layui-btn-sm" lay-event="departmentTotal">部门招聘成本</span>
 </div>
 </script>
 
@@ -253,10 +253,11 @@ layui.config({
 				parseData:function(ret){ return { data:ret.data, msg:ret.message, code:ret.code } },
 				cols: [[
 				       {align:'center', title:'部门',   field:'username',	  }, 
-				       {align:'center', title:'部门付出奖金',   field:'ReceivePrice',  },
-				       {align:'center', title:'培训费用',   field:'trainPrice',  },
-				       {align:'center', title:'该部门占应聘费用',   field:'occupyPrice',    },
-				       {align:'center', title:'计划该部门占应聘费用',   field:'planPrice',    },
+				       {align:'center', title:'部门招聘奖励金',   field:'ReceivePrice',},
+				       {align:'center', title:'培训费用',   field:'trainPrice',},
+				       {align:'center', title:'该部门占应聘费用',   field:'occupyPrice',},
+				       {align:'center', title:'计划该部门占应聘费用',   field:'planPrice',},
+				       {align:'center', title:'定向招聘费用',   field:'directional',},
 		 			]],
 	 		})
 	 	}

@@ -395,14 +395,11 @@ layui.config({
 
 			url: '${ctx}/system/user/findUserList',
 			data:{
-				foreigns:0
+				foreigns:0,
+				isAdmin:'false'
 			},
 			type: "GET",
 			async: false,
-			beforeSend: function() {
-				index;
-			},
-
 			success: function(result) {
 				var html = '<option value="">请选择</option>';
 				$(result.data).each(function(i, o) {
