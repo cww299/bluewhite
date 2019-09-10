@@ -197,6 +197,42 @@ public class BasicsServiceImpl extends BaseServiceImpl<Basics, Long>
 			List<Recruit> list2= psList1.stream().filter(Recruit->Recruit.getOrgNameId().equals(Recruit.getOrgNameId()) && Recruit.getState().equals(1) && Recruit.getUser().getQuit().equals(0)).collect(Collectors.toList());
 			BaseData baseData=baseDataDao.findOne(ps1);
 			String string= baseData.getName();
+		    List<Advertisement> list3=advertisementDao.findByOrgNameIdAndType(ps1, 0);
+		    Date orderTimeBegin=DatesUtil.getFirstDayOfMonth(basics.getTime()); 
+			Date orderTimeEnd=DatesUtil.getLastDayOfMonth(basics.getTime());
+		    List<Advertisement> listFilter= list3.stream().filter(Advertisement->!Advertisement.getPlatformId().equals(294) && (Advertisement.getStartTime().compareTo(orderTimeBegin)==-1 && Advertisement.getEndTime().compareTo(orderTimeEnd)==1)
+					  ||(Advertisement.getStartTime().compareTo(orderTimeBegin)==1 && Advertisement.getStartTime().compareTo(orderTimeEnd)==-1 && Advertisement.getEndTime().compareTo(orderTimeEnd)==1)
+					  ||(Advertisement.getStartTime().compareTo(orderTimeBegin)==-1 && Advertisement.getEndTime().compareTo(orderTimeBegin)==1 &&  Advertisement.getEndTime().compareTo(orderTimeEnd)==-1)
+					  ||(Advertisement.getStartTime().compareTo(orderTimeBegin)!=-1 && Advertisement.getEndTime().compareTo(orderTimeEnd)!=1)
+						).collect(Collectors.toList());
+		    double advertisementPrice=0;//定向招聘费用
+		    if (list3.size()>0) {
+		    		for (Advertisement advertisement1 : listFilter) {
+						//过滤 1.开始时间在区间时间之前 结束时间在区间时间之后（4.1  5.1~5.31  6.1）
+						if (advertisement1.getStartTime().compareTo(orderTimeBegin)==-1 && advertisement1.getEndTime().compareTo(orderTimeEnd)==1) {
+							long day=DatesUtil.getDaySub(advertisement1.getStartTime(),advertisement1.getEndTime());//这条记录一共多少天
+							long day1=DatesUtil.getDaySub(orderTimeBegin,orderTimeEnd);//筛选后一共多少天
+							advertisementPrice=advertisementPrice+NumUtils.mul(NumUtils.div(Double.valueOf(day1).doubleValue(),Double.valueOf(day).doubleValue(),6),advertisement1.getPrice());//筛选后的广告费
+							
+						}
+						//2. 开始时间在区间时间之后 结束时间在区间时间之后 （5.2  5.1~5.31  6.1）
+						if (advertisement1.getStartTime().compareTo(orderTimeBegin)==1 && advertisement1.getStartTime().compareTo(orderTimeEnd)==-1 && advertisement1.getEndTime().compareTo(orderTimeEnd)==1) {
+							long day=DatesUtil.getDaySub(advertisement1.getStartTime(),advertisement1.getEndTime());//这条记录一共多少天
+							long day1=DatesUtil.getDaySub(advertisement1.getStartTime(),orderTimeEnd);//筛选后一共多少天
+							advertisementPrice=advertisementPrice+NumUtils.mul(NumUtils.div(Double.valueOf(day1).doubleValue(),Double.valueOf(day).doubleValue(),6),advertisement1.getPrice());//筛选后的广告费
+						}
+						//过滤 3.开始时间在区间时间之前 结束时间在区间时间之前 （4.1  5.1~5.31  5.30）
+						if (advertisement1.getStartTime().compareTo(orderTimeBegin)==-1 && advertisement1.getEndTime().compareTo(orderTimeBegin)==1 && advertisement1.getEndTime().compareTo(orderTimeEnd)==-1) {
+							long day=DatesUtil.getDaySub(advertisement1.getStartTime(),advertisement1.getEndTime());//这条记录一共多少天
+							long day1=DatesUtil.getDaySub(orderTimeBegin,advertisement1.getEndTime());//筛选后一共多少天
+							advertisementPrice=advertisementPrice+NumUtils.mul(NumUtils.div(Double.valueOf(day1).doubleValue(),Double.valueOf(day).doubleValue(),6),advertisement1.getPrice());//筛选后的广告费
+						}
+						//4. 开始时间在区间时间之后 结束时间在区间时间之前（5.2  5.1~5.31  5.3）
+						if (advertisement1.getStartTime().compareTo(orderTimeBegin)!=-1 && advertisement1.getEndTime().compareTo(orderTimeEnd)!=1) {
+							advertisementPrice=advertisementPrice+advertisement1.getPrice();
+						}
+				}
+			}
 			double d= NumUtils.mul(basics2.getSharePrice(),f);//占到的应聘费用
 			double plan= NumUtils.mul(basics2.getPlanPrice(),f);//计划的应聘费用
 			double ReceivePrice=0;//奖金
@@ -208,8 +244,6 @@ public class BasicsServiceImpl extends BaseServiceImpl<Basics, Long>
 					 * 查询单个人的培训汇总
 					 */
 					List<Advertisement> advertisements=advertisementDao.findByRecruitIdAndType(recruit.getId(), 1);
-					Date orderTimeBegin=DatesUtil.getFirstDayOfMonth(basics.getTime()); 
-					Date orderTimeEnd=DatesUtil.getLastDayOfMonth(basics.getTime());
 					List<Advertisement> listFilter2= advertisements.stream().filter(Advertisement->(Advertisement.getStartTime().compareTo(orderTimeBegin)==-1 && Advertisement.getEndTime().compareTo(orderTimeEnd)==1)
 							  ||(Advertisement.getStartTime().compareTo(orderTimeBegin)==1 && Advertisement.getStartTime().compareTo(orderTimeEnd)==-1 && Advertisement.getEndTime().compareTo(orderTimeEnd)==1)
 							  ||(Advertisement.getStartTime().compareTo(orderTimeBegin)==-1 && Advertisement.getEndTime().compareTo(orderTimeBegin)==1 && Advertisement.getEndTime().compareTo(orderTimeEnd)==-1)
@@ -254,6 +288,7 @@ public class BasicsServiceImpl extends BaseServiceImpl<Basics, Long>
 			allMap.put("planPrice",plan);
 			allMap.put("ReceivePrice",ReceivePrice);
 			allMap.put("trainPrice",trainPrice);
+			allMap.put("directional",advertisementPrice);
 			allList.add(allMap);
 			}
 		return allList;
