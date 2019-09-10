@@ -132,8 +132,7 @@ public class MachinistServiceImpl extends BaseServiceImpl<Machinist, Long> imple
 		// 管理人员费用
 		machinist.setAdministrativeAtaff(NumUtils.mul(primeCoefficient.getPerSecondManage(), machinist.getTime()));
 		// 电脑推算机缝该工序费用
-		machinist
-				.setReckoningSewingPrice(NumUtils.mul(
+		machinist.setReckoningSewingPrice(NumUtils.mul(
 						NumUtils.sum(machinist.getReckoningPrice(), machinist.getEquipmentPrice(),
 								machinist.getCutLinePrice(), machinist.getAdministrativeAtaff()),
 						primeCoefficient.getEquipmentProfit()));
