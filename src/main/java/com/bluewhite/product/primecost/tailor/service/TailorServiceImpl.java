@@ -226,7 +226,7 @@ public class TailorServiceImpl extends BaseServiceImpl<Tailor, Long> implements 
 			// 得到理论(市场反馈）含管理价值
 			prams.setManagePrice(materielService.getBaseThreeOne(prams.getTailorTypeId(),  prams.getTailorSizeId()));
 			break;
-		case 77:// 手工剪刀
+		case 77:// 手工剪刀 
 			type = "manual";
 			prams.setTailorType(type);
 			tailor.setTailorType(type);
