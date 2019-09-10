@@ -161,6 +161,7 @@ public class RecruitAction {
 				user.setForeigns(0);
 				user.setQuit(0);
 				user.setEntry(recruit.getTestTime());
+				user.setForeigns(1);
 				userService.addUser(user);
 				recruit.setUserId(user.getId());
 				recruit.setState(state);
