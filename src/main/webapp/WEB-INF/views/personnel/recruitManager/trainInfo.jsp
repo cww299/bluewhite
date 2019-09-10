@@ -84,8 +84,9 @@ layui.config({
 	base : '${ctx}/static/layui-v2.4.5/'
 }).extend({
 	tablePlug : 'tablePlug/tablePlug',
+	myutil: 'layui/myModules/myutil',
 }).define(
-	['tablePlug','laydate'],
+	['tablePlug','laydate','myutil'],
 	function(){
 		var $ = layui.jquery
 		, layer = layui.layer 				
@@ -93,13 +94,14 @@ layui.config({
 		, table = layui.table 
 		, laydate = layui.laydate
 		, laytpl = layui.laytpl
+		, myutil = layui.myutil
 		, tablePlug = layui.tablePlug;
 		
 		var allPlatform = []
 			,allTeacher = [];
 		
 		getRecruit();		
-		getTeacher();
+		allTeacher = myutil.getDataSync({ url:'${ctx}/system/user/findUserList?isAdmin=0&quit=0',	 })
 	 	tablePlug.smartReload.enable(true);  
 	 	form.on('select(searchName)',function(obj){
 	 		var time;
@@ -109,7 +111,9 @@ layui.config({
 	 				time = $(item).attr('data-time');
 	 		})
 	 		if(obj.value==''){
-	 			table.reload('trainTable',{ data:[], url:'', })
+	 			table.reload('trainTable',{ 
+	 				url:'${ctx}/personnel/getAdvertisement?type=1',
+	 				page:{ curr:1 } })
 				$('#recruitMoney').val(0);	 
 	 			$('#trainMoney').val(0);	 
 	 			$('#awardMoney').val(0);	 
@@ -142,9 +146,8 @@ layui.config({
 	 			
 		table.render({
 			elem:'#trainTable',
-			data:[],
+			url:'${ctx}/personnel/getAdvertisement?type=1',
 			toolbar:'#trainToolbar',
-			loading:true,
 			page:true,
 			size:'lg',
 			smartReloadModel: true,    // 开启智能重载
@@ -152,6 +155,8 @@ layui.config({
 			parseData:function(ret){ return { data:ret.data.rows, count:ret.data.total, msg:ret.message, code:ret.code } },
 			cols:[[
 			       {align:'center', type:'checkbox',},
+			       {align:'center', title:'应聘人', 	field:'name',edit: false, 	templet:'<span>{{ d.recruitName.name }}</span>'},
+			       {align:'center', title:'招聘人', 	field:'recruitName',edit: false, 	templet:'<span>{{ d.recruitName.recruitName }}</span>' },
 			       {align:'center', title:'开始时间', 	field:'startTime',edit: false, 	},
 			       {align:'center', title:'结束时间',   field:'endTime',	  edit: false,}, 
 			       {align:'center', title:'培训内容',   field:'train',   edit: true,},
@@ -162,46 +167,35 @@ layui.config({
 			done:function(){
 				var tableView = this.elem.next();
 				var tableElem = this.elem.next('.layui-table-view');
-				layui.each(tableView.find('td[data-field="startTime"]'), function(index, tdElem) {	//渲染开始时间，并修改
-					laydate.render({
-						elem: tdElem.children[0],
-						format: 'yyyy-MM-dd HH:mm:ss',
-						done: function(value, date) {
-							var id = table.cache[tableView.attr('lay-id')][index].id
-							var postData = { id: id,    startTime: value, }
-							updateAjax(postData);
-						}
-					})
-				})
-				layui.each(tableView.find('td[data-field="endTime"]'), function(index, tdElem) {
-					laydate.render({
-						elem: tdElem.children[0],
-						format: 'yyyy-MM-dd HH:mm:ss',
-						done: function(value, date) {
-							var id = table.cache[tableView.attr('lay-id')][index].id
-							var postData = { id: id,    endTime: value, }
-							updateAjax(postData);
-						}
-					})
-				})
-				form.on('select(qualifiedSelect)',function(obj){				// 监听是否合格下拉框，判断是否为新增行、是的话，记录选择的数据如果不是则进行修改
+				;(function(arr){
+					for(var key in arr){
+						var field = arr[key];
+						layui.each(tableView.find('td[data-field="'+field+'"]'), function(index, tdElem) {	//渲染开始时间，并修改
+							(function(f){
+								laydate.render({
+									elem: tdElem.children[0],
+									format: 'yyyy-MM-dd HH:mm:ss',
+									done: function(value, date) {
+										var id = table.cache[tableView.attr('lay-id')][index].id;
+										var postData = { id: id,};
+										postData[f] = value;
+										updateAjax(postData);
+									}
+								})
+							})(field);
+						})
+					}
+				})(['startTime','endTime']);
+				form.on('select(tableSelect)',function(obj){				// 监听是否合格下拉框，判断是否为新增行、是的话，记录选择的数据如果不是则进行修改
 					var trElem = $(obj.elem).closest('tr');
 					var index = trElem.data('index');			//当前行的索引
-					table.cache['trainTable'][index]['qualified'] = obj.value;
+					var field = $(obj.elem).closest('td').data('field');
+					table.cache['trainTable'][index][field] = obj.value;
 					if(index<0)
 						return;
 					var id = table.cache['trainTable'][index]['id'];
-					var postData = { id : id, qualified : obj.value, };
-					updateAjax(postData);
-				})
-				form.on('select(userSelect)',function(obj){
-					var trElem = $(obj.elem).closest('tr');
-					var index = trElem.data('index');			
-					table.cache['trainTable'][index]['userId'] = obj.value;
-					if(index<0)
-						return;
-					var id = table.cache['trainTable'][index]['id'];
-					var postData = { id : id, userId : obj.value, };
+					var postData = { id : id, };
+					postData[field] = obj.value;
 					updateAjax(postData);
 				})
 				form.render();
@@ -229,7 +223,7 @@ layui.config({
 		table.on('edit(trainTable)',function(obj){	
 			if(!obj.data.id)
 				return;
-			var postData ={};
+			var postData = null;
 			if(obj.field == 'price'){			// 监听价格
 				if(isNaN(obj.value))
 					layer.msg('培训成本只能为数字',{icon:2});		
@@ -336,6 +330,9 @@ layui.config({
 	 			return;
 	 		}
 			allField = {train: '', price: '', startTime:'',endTime:'',type:'1',qualified:0, userId:'', recruitId:$('#searchName').val(),};
+			var recruitname = $('#searchName').find('option[value="'+$('#searchName').val()+'"]').data('recruitname');
+			var name = $('#searchName').find('option[value="'+$('#searchName').val()+'"]').html().split(' ')[0];
+		    allField.recruitName = { name: name, recruitName: recruitname};
 			table.addTemp('trainTable',allField,function(trElem) {
 				var startTiemTd = trElem.find('td[data-field="startTime"]')[0];
 				laydate.render({
@@ -377,6 +374,7 @@ layui.config({
 			var load = layer.load(1);
 			var successAdd = 0;
 			for(var i=0;i<tempData.length;i++){
+				delete tempData[i].recruitName;
 				$.ajax({
 					url: '${ctx}/personnel/addAdvertisement',
 					type: 'post',
@@ -400,10 +398,8 @@ layui.config({
 		}
 		function deleteSome(){
 			var choosed=layui.table.checkStatus('trainTable').data;
-			if(choosed.length<1){
-				layer.msg('请选择相关信息',{icon:2});
-				return;
-			}
+			if(choosed.length<1)
+				return layer.msg('请选择相关信息',{icon:2});
 			layer.confirm("是否确认删除？",function(){
 				var ids=[];
 				for(var i=0;i<choosed.length;i++){
@@ -423,9 +419,6 @@ layui.config({
 						}
 						layer.msg(result.message,{icon:icon});
 					},
-					error:function(result){
-						layer.msg('ajax异常',{icon:2});
-					}
 				})
 				layer.close(load);
 			}) 
@@ -450,7 +443,7 @@ layui.config({
 		}
 		function getUserIdSelect(){
 	 		return function(d){
-	 			var html = '<select lay-filter="userSelect" lay-search>';
+	 			var html = '<select lay-filter="tableSelect" lay-search>';
 	 			layui.each(allTeacher,function(index,item){
 	 				var selected = (item.id==d.userId?"selected":"");
 	 				html+='<option value="'+item.id+'" '+selected+'>'+item.userName+'</option>'
@@ -463,7 +456,7 @@ layui.config({
 	 	}
 	 	function getQualifiedSelect(){ //0 no 1 yes
 	 		return function(d){
-	 			var html = '<select lay-filter="qualifiedSelect" lay-search>';
+	 			var html = '<select lay-filter="tableSelect" lay-search>';
 	 			html+='<option value="0" '+ (d.qualified == 0? "selected":"")+'>否</option>';
 	 			html+='<option value="1" '+ (d.qualified == 1? "selected":"")+'>是</option>'
 	 			html+='</select>';
@@ -478,20 +471,13 @@ layui.config({
 				success: function(r){
 					var html = '<option value="">应聘人</option>';
 					layui.each(r.data,function(index,item){
-						html+='<option value="'+item.id+'" data-recruitName="'+item.recruitName+'" data-time="'+item.testTime+'">'+item.name+'  ('+item.orgName.name+'  '+item.position.name+')</option>';
+						html+='<option value="'+item.id+'" data-recruitName="'+item.recruitName+'" data-time="'+item.testTime+'">'+
+							item.name+'  ('+item.orgName.name+'  '+item.position.name+')</option>';
 					})
 					$('#searchName').html(html);
 					form.render();
 				}
 			})
-		}
-		function getTeacher(){
-			$.ajax({
-				url:'${ctx}/system/user/findUserList?isAdmin=0&quit=0',	
-				success:function(r){
-					allTeacher = r.data;
-				}
-			}) 
 		}
 	}//end define function
 )//endedefine

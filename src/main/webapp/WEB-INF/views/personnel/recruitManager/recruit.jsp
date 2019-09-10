@@ -16,7 +16,7 @@
 	
 }
 </style>
-</head>
+</head> 
 
 <body>
 	<div class="layui-card">
