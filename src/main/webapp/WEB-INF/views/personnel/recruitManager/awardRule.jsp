@@ -150,8 +150,8 @@ layui.config({
 						id: obj.data.id,
 						recruitId: obj.recruitId,
 						type: obj.type,
-						[obj.field]: obj.value,
-				}
+				};
+				data[obj.field] = obj.value;
 				var load = layer.load(1);
 				saveData(data,function(){
 					table.reload("personTable");
@@ -175,7 +175,7 @@ layui.config({
 						recruitId:lookoverObj.recruitId,
 						remarks:'',
 						time:'',
-						coverRecruitId:'',
+						coverRecruitId: allCoverRecruit[0].id,
 						type:type,
 						recruitName:{recruitName:lookoverObj.recruitName} };
 			table.addTemp('rewardInfoTable',allField,function(trElem) {
