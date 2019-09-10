@@ -181,6 +181,38 @@ public class Advertisement extends BaseEntity<Long> {
 
 	
 
+	public Long getPositionId() {
+		return positionId;
+	}
+
+	public void setPositionId(Long positionId) {
+		this.positionId = positionId;
+	}
+
+	public BaseData getPosition() {
+		return position;
+	}
+
+	public void setPosition(BaseData position) {
+		this.position = position;
+	}
+
+	public Long getOrgNameId() {
+		return orgNameId;
+	}
+
+	public void setOrgNameId(Long orgNameId) {
+		this.orgNameId = orgNameId;
+	}
+
+	public BaseData getOrgName() {
+		return orgName;
+	}
+
+	public void setOrgName(BaseData orgName) {
+		this.orgName = orgName;
+	}
+
 	public Date getApplyName() {
 		return applyName;
 	}
