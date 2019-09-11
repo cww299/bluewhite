@@ -17,6 +17,8 @@ import com.bluewhite.common.ClearCascadeJSON;
 import com.bluewhite.common.DateTimePattern;
 import com.bluewhite.common.entity.CommonResponse;
 import com.bluewhite.common.entity.PageParameter;
+import com.bluewhite.common.utils.DatesUtil;
+import com.bluewhite.common.utils.NumUtils;
 import com.bluewhite.personnel.roomboard.entity.CostLiving;
 import com.bluewhite.personnel.roomboard.service.CostLivingService;
 
@@ -57,6 +59,9 @@ public class CostLivingAction {
 		CommonResponse cr = new CommonResponse();
 		if(costLiving.getId() != null){
 			CostLiving ot = costLivingService.findOne(costLiving.getId());
+			long day= DatesUtil.getDaySub(costLiving.getBeginTime(), costLiving.getEndTime());
+			Double averageCost = NumUtils.div(costLiving.getTotalCost(), day, 2);
+			costLiving.setAverageCost(averageCost);
 			costLivingService.update(costLiving, ot);
 			cr.setMessage("修改成功");
 		}else{
