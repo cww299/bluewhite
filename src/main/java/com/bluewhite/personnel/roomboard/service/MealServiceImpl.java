@@ -594,7 +594,7 @@ public class MealServiceImpl extends BaseServiceImpl<Meal, Long> implements Meal
 		}
 		List<Meal> meals = new ArrayList<Meal>();
 		// 0=休息日期,
-		PersonVariable restType = personVariableDao.findByType(0);
+		PersonVariable restType = personVariableDao.findByTypeAndTime(0,attendanceTime.getOrderTimeBegin());
 		// 4=设定早中晚三餐对于吃饭统计而延迟的分钟数
 		PersonVariable lagMin = personVariableDao.findByType(4);
 
