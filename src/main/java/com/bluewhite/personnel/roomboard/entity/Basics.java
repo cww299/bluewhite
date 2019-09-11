@@ -61,6 +61,12 @@ public class Basics extends BaseEntity<Long> {
 	private Double sharePrice;
 	
 	/**
+	 * 招聘费用汇总
+	 */
+	@Transient
+	private Double sumPrice;
+	
+	/**
 	 * 培训费用
 	 */
 	@Transient
@@ -95,6 +101,12 @@ public class Basics extends BaseEntity<Long> {
 	private Date orderTimeEnd;
 	
 	
+	public Double getSumPrice() {
+		return sumPrice;
+	}
+	public void setSumPrice(Double sumPrice) {
+		this.sumPrice = sumPrice;
+	}
 	public Double getSharePrice() {
 		return sharePrice;
 	}

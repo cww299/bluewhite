@@ -348,30 +348,30 @@
 		style="padding: 20px 0px 0 50px; display:none;  text-align:">
 		<div class="layui-form" lay-filter="layuiadmin-form-admin">
 			<div class="layui-form-item" style="float: left; vertical-align: top">
-				<label class="layui-form-label" style="width: 100px;">任务分配</label>
+				<label class="layui-form-label" style="width: 100px;">任务数量</label>
 				<div class="layui-input-inline">
-					<input name="productName" style="width:190px;" lay-filter="id" id="productName" lay-search="true" class="layui-input laydate-icon">
+					<input name="number" style="width:190px;" lay-filter="id" lay-verify="required" id="number" lay-search="true" class="layui-input laydate-icon">
 				</div>
 			</div>
 		
 			<div class="" style="float: left;margin-left: 200px;">
-				<label class="layui-form-label" style="width: 100px;">批次号</label>
+				<label class="layui-form-label" style="width: 100px;">实际任务时间</label>
 				<div class="layui-input-inline">
-					<input name="bacthNumber" style="width:210px;" lay-filter="id" id="bacthNumber" lay-search="true" class="layui-input laydate-icon">
+					<input name="remark" style="width:210px;" lay-filter="id"  id="remark" lay-search="true" class="layui-input laydate-icon">
 				</div>
 			</div>
 
 			<div class="layui-form-item" style="float: left;">
-				<label class="layui-form-label" style="width: 100px;">数量</label>
+				<label class="layui-form-label" style="width: 100px;">任务分配时间</label>
 				<div class="layui-input-inline">
-					<input name="number" style="width:190px;" lay-filter="id" id="number" lay-search="true" class="layui-input laydate-icon">
+					<input name="allotTime" style="width:190px;" lay-filter="id" id="allotTime" lay-search="true" class="layui-input laydate-icon">
 				</div>
 			</div>
 	
 			<div class="" style="float: left;margin-left: 200px;">
 				<label class="layui-form-label" style="width: 100px;">备注</label>
 				<div class="layui-input-inline">
-					<input name="remarks" style="width:210px;" lay-filter="id" id="remarks" lay-search="true" class="layui-input laydate-icon">
+					<select class="form-control" lay-filter="lay_selecte4" style="width:200px;" name="sourg" id="workingtw"></select>
 				</div>
 			</div>
 			
@@ -474,6 +474,19 @@
 	      			  $("#working").html(htmls);
 			      }
 			  });
+			
+			var html="<option value='0'>请选择</option>"
+				$.ajax({
+					url:"${ctx}/task/pickTaskPerformance",
+					type:"GET",
+					success:function(result){
+						$(result.data).each(function(i,o){
+						html+='<option value="'+i+'" data-name="'+o.name+'" data-value="'+o.number+'">'+o.name+'</option>'
+						})
+						$('#workingtw').html(html);
+						form.render(); 
+					}
+				});
 			
 			form.on('select(lay_selecte2)', function(data){
 				var data={
@@ -818,42 +831,8 @@
 			//监听工具事件
 			table.on('tool(tableData)', function(obj){
 				 var data = obj.data;
-				 console.log(data)
+				 var productName=data.product.name
 				switch(obj.event) {
-				case 'query':
-					$("#queryId").val(data.id)//把组ID放进查询  方便查询调用
-					productId=data.id;//全局变量 赋值产品ID
-					var data={
-						productId:data.id,
-						type:6,
-					}
-					mainJs.loadworkingTable(data);
-					var dicDiv=$('#layuiShare');
-					layer.open({
-				         type: 1
-				        ,title: '工序详情' //不显示标题栏
-				        ,closeBtn: false
-				        ,zindex:-1
-				        ,area:['40%', '90%']
-				        ,shade: 0.5
-				        ,id: 'LAY_layuipro29' //设定一个id，防止重复弹出
-				        ,btn: ['取消']
-				        ,btnAlign: 'c'
-				        ,moveType: 1 //拖拽模式，0或者1
-				        ,content:dicDiv
-				        ,success : function(layero, index) {
-				        	layero.addClass('layui-form');
-							// 将保存按钮改变成提交按钮
-							layero.find('.layui-layer-btn0').attr({
-								'lay-filter' : 'addRole2',
-								'lay-submit' : ''
-							})
-				        }
-				        ,end:function(){
-				        	$("#layuiShare").hide();
-						  } 
-				      });
-					break;
 				case 'queryOut':
 					productId=data.product.id;
 					bacthId=data.id;
@@ -862,7 +841,7 @@
 					var	dicDiv=$("#layuiadmin-form-admin2");
 					layer.open({
 						type:1,
-						title:'填写批次',
+						title:productName,
 						area:['70%','70%'],
 						btn:['确认','取消'],
 						content:dicDiv,
@@ -879,13 +858,14 @@
 				        },
 						yes:function(){
 							form.on('submit(addRole)', function(data) {
+								console.log(data)
 								data.field.type=6;
 								data.field.flag=0;
 								data.field.bacthDepartmentPrice=(data.field.bacthDepartmentPrice==null ? 0 : data.field.bacthDepartmentPrice)
 								data.field.bacthHairPrice=(data.field.bacthHairPrice==null ? 0 : data.field.bacthHairPrice)
 								data.field.productId=productId2
-								 mainJs.fAdd2(data.field);  
-								document.getElementById("layuiadmin-form-admin2").reset();
+								/*  mainJs.fAdd2(data.field);  
+								document.getElementById("layuiadmin-form-admin2").reset(); */
 					        	layui.form.render();
 							})
 						},end:function(){ 

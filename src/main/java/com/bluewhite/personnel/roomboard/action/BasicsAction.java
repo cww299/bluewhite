@@ -32,7 +32,7 @@ public class BasicsAction {
 	private ClearCascadeJSON clearCascadeJSON;
 	{
 		clearCascadeJSON = ClearCascadeJSON.get()
-				.addRetainTerm(Basics.class,"id","time","advertisementPrice","sharePrice","recruitUserPrice","number","occupyPrice","trainPrice","admissionNum","train","trainPrice","Teacher","qualified","type","planNumber","planPrice");
+				.addRetainTerm(Basics.class,"id","time","advertisementPrice","sharePrice","recruitUserPrice","number","occupyPrice","trainPrice","admissionNum","train","trainPrice","Teacher","qualified","type","planNumber","planPrice","sumPrice");
 	}
 	
 	/**
