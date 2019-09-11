@@ -23,19 +23,16 @@ import com.bluewhite.common.DateTimePattern;
 import com.bluewhite.common.entity.CommonResponse;
 import com.bluewhite.personnel.roomboard.entity.Basics;
 import com.bluewhite.personnel.roomboard.service.BasicsService;
-import com.bluewhite.system.user.service.UserService;
 
 @Controller
 public class BasicsAction {
 
 	@Autowired
 	private BasicsService service;
-	@Autowired
-	private UserService userService;
 	private ClearCascadeJSON clearCascadeJSON;
 	{
 		clearCascadeJSON = ClearCascadeJSON.get()
-				.addRetainTerm(Basics.class,"id","time","advertisementPrice","sharePrice","recruitUserPrice","number","occupyPrice","trainPrice","admissionNum","train","trainPrice","Teacher","qualified","type","planNumber","planPrice");
+				.addRetainTerm(Basics.class,"id","time","advertisementPrice","sharePrice","recruitUserPrice","number","occupyPrice","trainPrice","admissionNum","train","trainPrice","Teacher","qualified","type","planNumber","planPrice","sumPrice");
 	}
 	
 	/**

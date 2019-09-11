@@ -724,11 +724,14 @@ public class AttendanceTimeServiceImpl extends BaseServiceImpl<AttendanceTime, L
 									// 变更为请假状态
 									oneAtList.get(0).setFlag(2);
 									oneAtList.get(0).setHolidayType(al.getHolidayType());
-									oneAtList.get(0).setDutytime((time >= turnWorkTime) ? turnWorkTime : time);
+									oneAtList.get(0).setDutytime(time >= turnWorkTime ? turnWorkTime : time);
 									oneAtList.get(0).setTurnWorkTime(
 											NumUtils.sub(turnWorkTime, oneAtList.get(0).getDutytime()));
 									if (time >= turnWorkTime) {
 										time = NumUtils.sub(time, turnWorkTime);
+										oneAtList.get(0).setLeaveTime(turnWorkTime);
+									}else{
+										oneAtList.get(0).setLeaveTime(time);
 									}
 									oneAtList.get(0).setHolidayDetail(al.getHolidayDetail());
 								}

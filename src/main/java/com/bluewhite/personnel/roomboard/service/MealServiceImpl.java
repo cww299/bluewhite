@@ -377,7 +377,7 @@ public class MealServiceImpl extends BaseServiceImpl<Meal, Long> implements Meal
 		long y = meals.stream().filter(Meal -> Meal.getMode() != null && Meal.getMode().equals(2) && Meal.getOrgNameId()!=null && Meal.getOrgNameId()==1).count();// 总经办中数
 		long u = meals.stream().filter(Meal -> Meal.getMode() != null && Meal.getMode().equals(3) && Meal.getOrgNameId()!=null &&  Meal.getOrgNameId()==1).count();// 总经办晚餐数
 		//食材费用
-		if (meal.getOrgNameId()==1) {
+		if (meal.getOrgNameId()!=null && meal.getOrgNameId().equals(1)) {
 			//总经办
 		List<SingleMeal> list = singleMealDao.findByTimeBetweenAndOrgNameId(meal.getOrderTimeBegin(), meal.getOrderTimeEnd(),(long)1);
 			if (list.size() == 0) {
@@ -594,7 +594,7 @@ public class MealServiceImpl extends BaseServiceImpl<Meal, Long> implements Meal
 		}
 		List<Meal> meals = new ArrayList<Meal>();
 		// 0=休息日期,
-		PersonVariable restType = personVariableDao.findByType(0);
+		PersonVariable restType = personVariableDao.findByTypeAndTime(0,attendanceTime.getOrderTimeBegin());
 		// 4=设定早中晚三餐对于吃饭统计而延迟的分钟数
 		PersonVariable lagMin = personVariableDao.findByType(4);
 

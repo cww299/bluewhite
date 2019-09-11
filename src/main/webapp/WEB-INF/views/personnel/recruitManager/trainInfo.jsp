@@ -73,7 +73,7 @@
 	<span class="layui-btn layui-btn-sm layui-btn-warm" lay-event="saveTempData">批量保存</span>
 	<span class="layui-btn layui-btn-sm layui-btn-danger" lay-event="deleteSome">批量删除</span>
 	<span class="layui-btn layui-btn-sm" lay-event="lookoverTotal">费用汇总</span>
-	<span class="layui-btn layui-btn-sm" lay-event="departmentTotal">部门支出</span>
+	<span class="layui-btn layui-btn-sm" lay-event="departmentTotal">部门招聘成本</span>
 </div>
 </script>
 
@@ -253,10 +253,11 @@ layui.config({
 				parseData:function(ret){ return { data:ret.data, msg:ret.message, code:ret.code } },
 				cols: [[
 				       {align:'center', title:'部门',   field:'username',	  }, 
-				       {align:'center', title:'部门付出奖金',   field:'ReceivePrice',  },
-				       {align:'center', title:'培训费用',   field:'trainPrice',  },
-				       {align:'center', title:'该部门占应聘费用',   field:'occupyPrice',    },
-				       {align:'center', title:'计划该部门占应聘费用',   field:'planPrice',    },
+				       {align:'center', title:'部门招聘奖励金',   field:'ReceivePrice',},
+				       {align:'center', title:'培训费用',   field:'trainPrice',},
+				       {align:'center', title:'该部门占应聘费用',   field:'occupyPrice',},
+				       {align:'center', title:'计划该部门占应聘费用',   field:'planPrice',},
+				       {align:'center', title:'定向招聘费用',   field:'directional',},
 		 			]],
 	 		})
 	 	}
@@ -282,13 +283,14 @@ layui.config({
 	 				return { data:data,  msg:ret.message, code:ret.code } 
 	 			},
 	 			cols: [[
-				       {align:'center', title:'投入平台广告费',   field:'advertisementPrice',	  }, 
-				       {align:'center', title:'入职人员数量',   field:'admissionNum',  },
-				       {align:'center', title:'每人占到应聘费用',   field:'sharePrice',},
-				       {align:'center', title:'计划人员数量',   field:'planNumber',},
-				       {align:'center', title:'计划每人占到应聘费用',   field:'planPrice',},
-				       {align:'center', title:'面试招聘人员费用',   field:'recruitUserPrice',  edit: true,  },
+				       {align:'center', title:'宣传费',   field:'advertisementPrice',	  }, 
+				       {align:'center', title:'人工费用',   field:'recruitUserPrice',  edit: true,  },
 				       {align:'center', title:'培训费用',   field:'trainPrice',    },
+				       {align:'center', title:'招聘费用汇总',   field:'sumPrice',    },
+				       {align:'center', title:'招聘计划人数',   field:'planNumber',},
+				       {align:'center', title:'入职人员数量',   field:'admissionNum',  },
+				       {align:'center', title:'计划每人分到应聘费用',   field:'planPrice',},
+				       {align:'center', title:'每人占到应聘费用',   field:'sharePrice',},
 	 			        ]],
 	 		})
 	 	}

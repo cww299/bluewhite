@@ -39,7 +39,7 @@ public class AdvertisementAction {
 		clearCascadeJSON = ClearCascadeJSON.get()
 				.addRetainTerm(Advertisement.class, "id", "time", "platformId", "platform", "price", "startTime",
 						"endTime", "recruitId", "recruitName", "train", "trainPrice", "userId", "user", "qualified",
-						"type", "number", "number1", "number2", "number3", "number4")
+						"type", "number", "number1", "number2", "number3", "number4","position","positionId","orgName","orgNameId")
 				.addRetainTerm(User.class, "id", "userName", "number")
 				.addRetainTerm(Recruit.class, "recruitId", "recruitName", "name");
 	}
