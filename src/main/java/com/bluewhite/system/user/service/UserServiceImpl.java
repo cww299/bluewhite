@@ -294,7 +294,7 @@ public class UserServiceImpl extends BaseServiceImpl<User, Long> implements User
 
 	@Override
 	public List<User> findByOrgNameId(Long orgNameId) {
-		return dao.findByOrgNameIdAndQuit(orgNameId,0);
+		return dao.findByOrgNameIdAndQuitAndForeigns(orgNameId,0,0);
 	}
 
 	@Override

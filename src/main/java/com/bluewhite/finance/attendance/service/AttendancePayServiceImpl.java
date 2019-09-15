@@ -230,7 +230,7 @@ public class AttendancePayServiceImpl extends BaseServiceImpl<AttendancePay, Lon
 			List<AttendancePay> attendancePayList = findAttendancePay(attendancePay);
 			for (AttendancePay pay : attendancePayList) {
 				pay.setWorkPrice(attendancePay.getWorkPrice());
-				pay.setPayNumber(NumUtils.mul(pay.getWorkPrice() , pay.getWorkTime()));
+				pay.setPayNumber(NumUtils.mul(pay.getWorkPrice(), pay.getWorkTime()));
 				dao.save(pay);
 			}
 			count++;
@@ -244,17 +244,19 @@ public class AttendancePayServiceImpl extends BaseServiceImpl<AttendancePay, Lon
 		AttendancePay oldAttendancePay = dao.findOne(attendancePay.getId());
 		BeanCopyUtils.copyNotEmpty(attendancePay, oldAttendancePay, "");
 		oldAttendancePay.setWorkTime(NumUtils.sum(oldAttendancePay.getTurnWorkTime(), oldAttendancePay.getOverTime()));
-		oldAttendancePay.setPayNumber(NumUtils.mul(oldAttendancePay.getWorkPrice() , oldAttendancePay.getWorkTime()));
+		oldAttendancePay.setPayNumber(NumUtils.mul(oldAttendancePay.getWorkPrice(), oldAttendancePay.getWorkTime()));
 		dao.save(oldAttendancePay);
-		// 获取该员工当天做过的所有任务
-		List<Task> taskList = taskService.findByUserIdAndAllotTime(String.valueOf(oldAttendancePay.getUserId()),
-				DatesUtil.getfristDayOftime(oldAttendancePay.getAllotTime()),
-				DatesUtil.getLastDayOftime(oldAttendancePay.getAllotTime()));
-		if (taskList.size() > 0) {
-			for (Task task : taskList) {
-				String[] arrayRefVar = {String.valueOf(task.getProcedureId())};
-				task.setProcedureIds(arrayRefVar);
-				taskService.addTask(task);
+		if (attendancePay.getType() == 2) {
+			// 获取该员工当天做过的所有任务
+			List<Task> taskList = taskService.findByUserIdAndAllotTime(String.valueOf(oldAttendancePay.getUserId()),
+					DatesUtil.getfristDayOftime(oldAttendancePay.getAllotTime()),
+					DatesUtil.getLastDayOftime(oldAttendancePay.getAllotTime()));
+			if (taskList.size() > 0) {
+				for (Task task : taskList) {
+					String[] arrayRefVar = { String.valueOf(task.getProcedureId()) };
+					task.setProcedureIds(arrayRefVar);
+					taskService.addTask(task);
+				}
 			}
 		}
 	}
