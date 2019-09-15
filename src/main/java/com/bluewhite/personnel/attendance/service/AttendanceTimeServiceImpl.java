@@ -1,5 +1,7 @@
 package com.bluewhite.personnel.attendance.service;
 
+import static org.hamcrest.CoreMatchers.nullValue;
+
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -73,7 +75,8 @@ public class AttendanceTimeServiceImpl extends BaseServiceImpl<AttendanceTime, L
 		// 获取改时间段所有的打卡记录
 		List<Attendance> allAttList = null;
 		// 获取当前日期的固定休息日
-		PersonVariable restType = personVariableDao.findByTypeAndTime(0,DatesUtil.getFirstDayOfMonth(attendance.getOrderTimeBegin()));
+		PersonVariable restType = personVariableDao.findByTypeAndTime(0,
+				DatesUtil.getFirstDayOfMonth(attendance.getOrderTimeBegin()));
 		// 报餐系统所需要的人员
 		List<User> list = null;
 		// 报餐人员满足于输入时间内离职和入职
@@ -337,13 +340,17 @@ public class AttendanceTimeServiceImpl extends BaseServiceImpl<AttendanceTime, L
 										? workTimeEnd : attendanceTime.getCheckOut()));
 					} else {
 						// 实际工作时长
-						attendanceTime.setWorkTime(NumUtils.sub(DatesUtil.getTimeHour(
+						attendanceTime
+								.setWorkTime(
+										NumUtils.sub(
+												DatesUtil.getTimeHour(
 														// 签入小于等于工作开始时间时，取工作开始时间计算，否则取签入时间
 														attendanceTime.getCheckIn().compareTo(workTime) != 1 ? workTime
 																: attendanceTime.getCheckIn(),
 														// 签出大于等于工作结束时间时，取工作开始时间计算，否则取签出时间
 														attendanceTime.getCheckOut().compareTo(workTimeEnd) != -1
-																? workTimeEnd : attendanceTime.getCheckOut()),restTime));
+																? workTimeEnd : attendanceTime.getCheckOut()),
+												restTime));
 					}
 
 					// 当休息日有打卡记录时，不需要申请加班的人自动算加班时长
@@ -730,7 +737,7 @@ public class AttendanceTimeServiceImpl extends BaseServiceImpl<AttendanceTime, L
 									if (time >= turnWorkTime) {
 										time = NumUtils.sub(time, turnWorkTime);
 										oneAtList.get(0).setLeaveTime(turnWorkTime);
-									}else{
+									} else {
 										oneAtList.get(0).setLeaveTime(time);
 									}
 									oneAtList.get(0).setHolidayDetail(al.getHolidayDetail());
@@ -756,7 +763,7 @@ public class AttendanceTimeServiceImpl extends BaseServiceImpl<AttendanceTime, L
 						}
 						// 调休且员工出勤时间等于调休到的那一天
 						if (al.isTradeDays() && at.getTime().compareTo(dateLeave) == 0) {
-							at.setTakeWork(NumUtils.sum(NumUtils.setzro(at.getTakeWork()),time) );
+							at.setTakeWork(NumUtils.sum(NumUtils.setzro(at.getTakeWork()), time));
 							if (at.getDutytime() != 0) {
 								at.setTurnWorkTime(NumUtils.sum(at.getTurnWorkTime(), time));
 								at.setDutytime(NumUtils.sub(at.getDutytime(), time));
@@ -831,15 +838,20 @@ public class AttendanceTimeServiceImpl extends BaseServiceImpl<AttendanceTime, L
 				.filter(AttendanceTime -> AttendanceTime.getUserId() != null)
 				.collect(Collectors.groupingBy(AttendanceTime::getUserId, Collectors.toList()));
 
-		for (Long ps1 : mapAttendance.keySet()) {
+		for (Long ps1 : mapAttendanceTime.keySet()) {
 			// 获取单一员工车间填写的考勤数据 自然排序
-			List<AttendancePay> attendancePays = mapAttendance.get(ps1).stream()
-					.sorted(Comparator.comparing(AttendancePay::getAllotTime)).collect(Collectors.toList());
+			List<AttendancePay> attendancePays = mapAttendance.get(ps1);
+			if(attendancePays!=null){
+				attendancePays = attendancePays.stream().sorted(Comparator.comparing(AttendancePay::getAllotTime)).collect(Collectors.toList());
+			}else{
+				continue;
+			}
 			// 获取单一员工打卡记录的考勤数据 自然排序
 			List<AttendanceTime> attendanceTimes = mapAttendanceTime.get(ps1).stream()
 					.sorted(Comparator.comparing(AttendanceTime::getTime)).collect(Collectors.toList());
 			// 將打卡记录当作循环体，通过日期对比
-			attendanceTimes.stream().forEach(aTime -> {
+
+			for (AttendanceTime aTime : attendanceTimes) {
 				List<AttendancePay> asList = attendancePays.stream()
 						.filter(AttendancePay -> AttendancePay.getAllotTime().compareTo(aTime.getTime()) == 0)
 						.collect(Collectors.toList());
@@ -851,8 +863,9 @@ public class AttendanceTimeServiceImpl extends BaseServiceImpl<AttendanceTime, L
 					map.put("warning", aPay.getWarning());
 				} else {
 					aPay = new AttendancePay();
-					NumUtils.setzro(aPay);
 				}
+				NumUtils.setzro(aTime);
+				NumUtils.setzro(aPay);
 				map.put("date", sdf.format(aTime.getTime()));
 				map.put("name", aTime.getUser().getUserName());
 				map.put("userId", aTime.getUserId());
@@ -884,8 +897,7 @@ public class AttendanceTimeServiceImpl extends BaseServiceImpl<AttendanceTime, L
 						mapList.add(map);
 					}
 				}
-			});
-
+			}
 		}
 		return mapList;
 	}
