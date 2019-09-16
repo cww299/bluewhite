@@ -23,7 +23,6 @@ import com.bluewhite.product.primecost.tailor.entity.OrdinaryLaser;
 import com.bluewhite.product.primecost.tailor.entity.Tailor;
 import com.bluewhite.product.primecostbasedata.dao.BaseThreeDao;
 import com.bluewhite.product.primecostbasedata.dao.PrimeCoefficientDao;
-import com.bluewhite.product.primecostbasedata.entity.BaseThree;
 import com.bluewhite.product.primecostbasedata.entity.PrimeCoefficient;
 import com.bluewhite.product.primecostbasedata.service.MaterielService;
 import com.bluewhite.product.product.dao.ProductDao;
