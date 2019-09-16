@@ -12,7 +12,7 @@ import com.bluewhite.base.BaseEntity;
 import com.bluewhite.product.primecostbasedata.entity.BaseOne;
 import com.bluewhite.product.primecostbasedata.entity.Materiel;
 /**
- * dd除裁片以外的所有生产用料填写
+ * 辅料
  * @author zhangliang
  *
  */

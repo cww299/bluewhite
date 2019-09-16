@@ -28,7 +28,6 @@ import com.bluewhite.common.utils.NumUtils;
 import com.bluewhite.common.utils.SalesUtils;
 import com.bluewhite.finance.attendance.dao.AttendancePayDao;
 import com.bluewhite.finance.attendance.entity.AttendancePay;
-import com.bluewhite.production.bacth.entity.Bacth;
 import com.bluewhite.production.task.entity.Task;
 import com.bluewhite.production.task.service.TaskService;
 import com.bluewhite.system.user.entity.User;
@@ -246,7 +245,7 @@ public class AttendancePayServiceImpl extends BaseServiceImpl<AttendancePay, Lon
 		oldAttendancePay.setWorkTime(NumUtils.sum(oldAttendancePay.getTurnWorkTime(), oldAttendancePay.getOverTime()));
 		oldAttendancePay.setPayNumber(NumUtils.mul(oldAttendancePay.getWorkPrice(), oldAttendancePay.getWorkTime()));
 		dao.save(oldAttendancePay);
-		if (attendancePay.getType() == 2) {
+		if (oldAttendancePay.getType() == 2) {
 			// 获取该员工当天做过的所有任务
 			List<Task> taskList = taskService.findByUserIdAndAllotTime(String.valueOf(oldAttendancePay.getUserId()),
 					DatesUtil.getfristDayOftime(oldAttendancePay.getAllotTime()),

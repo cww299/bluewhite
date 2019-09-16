@@ -1,7 +1,5 @@
 package com.bluewhite.personnel.attendance.service;
 
-import static org.hamcrest.CoreMatchers.nullValue;
-
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -95,6 +93,9 @@ public class AttendanceTimeServiceImpl extends BaseServiceImpl<AttendanceTime, L
 			attendanceInitList = attendanceInitDao.findAll();
 			allAttList = attendanceDao.findByTimeBetween(attendance.getOrderTimeBegin(),
 					DatesUtil.getLastDayOfMonth(attendance.getOrderTimeBegin()));
+		}
+		if (attendance.getUserId() != null && attendance.getOrgNameId() != null) {
+			throw new ServiceException("请不要同时选择部门和人员");
 		}
 
 		// 检查当前月份属于夏令时或冬令时 flag=ture 为夏令时
@@ -378,7 +379,7 @@ public class AttendanceTimeServiceImpl extends BaseServiceImpl<AttendanceTime, L
 													attendanceTime.getCheckOut().after(restEndTime) ? restTime : 0));
 								}
 							}
-
+							attendanceTime.setOrdinaryOvertime(attendanceTime.getOvertime());
 						}
 						attendanceTimeList.add(attendanceTime);
 						continue;
@@ -796,7 +797,7 @@ public class AttendanceTimeServiceImpl extends BaseServiceImpl<AttendanceTime, L
 	}
 
 	@Override
-	public List<Map<String, Object>> workshopAttendanceContrast(AttendanceTime attendanceTime) {
+	public List<Map<String, Object>> workshopAttendanceContrast(AttendanceTime attendanceTime) throws ParseException {
 		List<Map<String, Object>> mapList = new ArrayList<>();
 		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
 		attendanceTime.setOrderTimeEnd(DatesUtil.getLastDayOfMonth(attendanceTime.getOrderTimeBegin()));
@@ -824,7 +825,7 @@ public class AttendanceTimeServiceImpl extends BaseServiceImpl<AttendanceTime, L
 		// 按打卡记录查出考勤
 		List<AttendanceTime> attendanceTimeList = findAttendanceTimePage(attendanceTime);
 		if (attendanceTimeList.size() == 0) {
-			throw new ServiceException("该部门当月未统计考勤，无法比对数据，请先统计考勤");
+			attendanceTimeList = attendanceTimeByApplication(findAttendanceTime(attendanceTime));
 		}
 		// 按类型获取车间填写的人工考勤
 		List<AttendancePay> attendancePayList = attendancePayDao.findByTypeAndAllotTimeBetween(type,
@@ -850,7 +851,6 @@ public class AttendanceTimeServiceImpl extends BaseServiceImpl<AttendanceTime, L
 			List<AttendanceTime> attendanceTimes = mapAttendanceTime.get(ps1).stream()
 					.sorted(Comparator.comparing(AttendanceTime::getTime)).collect(Collectors.toList());
 			// 將打卡记录当作循环体，通过日期对比
-
 			for (AttendanceTime aTime : attendanceTimes) {
 				List<AttendancePay> asList = attendancePays.stream()
 						.filter(AttendancePay -> AttendancePay.getAllotTime().compareTo(aTime.getTime()) == 0)
@@ -863,17 +863,18 @@ public class AttendanceTimeServiceImpl extends BaseServiceImpl<AttendanceTime, L
 					map.put("warning", aPay.getWarning());
 				} else {
 					aPay = new AttendancePay();
+					NumUtils.setzro(aPay);
 				}
-				NumUtils.setzro(aTime);
-				NumUtils.setzro(aPay);
 				map.put("date", sdf.format(aTime.getTime()));
-				map.put("name", aTime.getUser().getUserName());
+				User user = userService.findOne(aTime.getUserId());
+				map.put("name",user.getUserName());
 				map.put("userId", aTime.getUserId());
 				// 针工 （检验 管理 开棉）
-				if (aTime.getUser().getGroup().getKindWorkId() != null
-						&& aTime.getUser().getGroup().getKindWorkId().equals(113)
-						&& aTime.getUser().getGroup().getKindWorkId().equals(116)
-						&& aTime.getUser().getGroup().getKindWorkId().equals(120)) {
+				if (user.getGroup()!=null 
+						&& user.getGroup().getKindWorkId() != null
+						&& user.getGroup().getKindWorkId().equals(113)
+						&& user.getGroup().getKindWorkId().equals(116)
+						&& user.getGroup().getKindWorkId().equals(120)) {
 					if (!aPay.getWorkTime().equals(aTime.getWorkTime())) {
 						// 记录工作时长
 						map.put("recordTurnWorkTime", aPay.getWorkTime());
