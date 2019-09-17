@@ -244,6 +244,14 @@ public class TaskServiceImpl extends BaseServiceImpl<Task, Long> implements Task
 									GroupTime groupTime = groupTimeDao.findByUserIdAndTypeAndGroupIdAndAllotTime(userId,
 											task.getType(), task.getGroupId(),
 											DatesUtil.getfristDayOftime(task.getAllotTime()));
+									//包装的任务分配时长，根据所在组的时间段进行分配
+									//任务分配时间在所在组时间段
+									//填写任务分配时间，
+									//那么所有的任务都是在早上8点之后开始的。
+									//给员工在当前分组里面的时间段，有二种情况
+									//第一种，没有填时间段，那就默认他所有的任务都参与了，
+									//第二种。你填了时间段，并且填了任务时间，只要是任务时间在你填的时间段之内，这个任务他就参与了
+									//第二种情况还分，如果你填了时间段，但是没有填任务时间，那么他不参与任何任务
 									if (groupTime != null) {
 										if (groupTime.getStartTime() != null && groupTime.getEndTime() != null) {
 											if ((groupTime.getStartTime().before(task.getAllotTime())
@@ -428,8 +436,7 @@ public class TaskServiceImpl extends BaseServiceImpl<Task, Long> implements Task
 					}
 					// 更新批次
 					bacthDao.save(bacth);
-				}
-				;
+				};
 			}
 		}
 	}
