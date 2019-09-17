@@ -213,9 +213,7 @@ public class CollectPayServiceImpl extends BaseServiceImpl<CollectPay, Long> imp
 		monthlyProduction.setPeopleNumber(peopleNumber);
 		//考勤总时间
 		double time = list.stream().mapToDouble(AttendancePay::getWorkTime).sum();
-		//考勤加班总时间
-		double overTime = list.stream().filter(AttendancePay->AttendancePay.getOverTime()!=null).mapToDouble(AttendancePay::getOverTime).sum();
-		monthlyProduction.setTime(time+overTime);
+		monthlyProduction.setTime(time);
 		
 		
 		//当天产量
@@ -431,7 +429,6 @@ public class CollectPayServiceImpl extends BaseServiceImpl<CollectPay, Long> imp
 						).collect(Collectors.toList());
 				//考勤总时间
 				double sunTime = list.stream().mapToDouble(AttendancePay::getWorkTime).sum();
-				double overTime = list.stream().filter(AttendancePay->AttendancePay.getOverTime()!=null).mapToDouble(AttendancePay::getOverTime).sum();
 				//分组人员B工资总和
 				double sumBPay = payBList.stream().filter(PayB->PayB.getGroupId() != null && PayB.getGroupId().equals(group.getId())).mapToDouble(PayB::getPayNumber).sum();
 				//分组人员杂工工资总和
@@ -440,11 +437,11 @@ public class CollectPayServiceImpl extends BaseServiceImpl<CollectPay, Long> imp
 						&& FarragoTaskPay.getGroupId().equals(group.getId())).mapToDouble(FarragoTaskPay::getPayNumber).sum();
 				map.put("id", group.getId());
 				map.put("name", group.getName());
-				map.put("sunTime", NumUtils.sum(sunTime,overTime));
+				map.put("sunTime", sunTime);
 				map.put("sumBPay", NumUtils.sum(sumBPay,sumfarragoTaskPay));
 				Double sum = 0.0;
-				if(NumUtils.sum(sunTime,overTime)!= 0.0){
-					 sum = NumUtils.div(NumUtils.sum(sumBPay,sumfarragoTaskPay),NumUtils.sum(sunTime,overTime),5);
+				if(sunTime!= 0.0){
+					 sum = NumUtils.div(NumUtils.sum(sumBPay,sumfarragoTaskPay),sunTime,5);
 				}
 				map.put("specificValue",sum);
 				map.put("price", list.size()>0 ?list.get(0).getWorkPrice() : 0);
@@ -610,8 +607,6 @@ public class CollectPayServiceImpl extends BaseServiceImpl<CollectPay, Long> imp
 			
 			//分别统计出考勤总时间
 			double sunTime = psList.stream().mapToDouble(AttendancePay::getWorkTime).sum();
-			//考勤加班总时间
-			double overTime = psList.stream().filter(AttendancePay->AttendancePay.getOverTime()!=null).mapToDouble(AttendancePay::getOverTime).sum();
 			//统计出A工资
 			double payA = psList.stream().filter(AttendancePay->AttendancePay.getPayNumber()!=0.0).mapToDouble(AttendancePay::getPayNumber).sum();
 			
@@ -628,7 +623,7 @@ public class CollectPayServiceImpl extends BaseServiceImpl<CollectPay, Long> imp
 			//分组人员杂工工资总和
 			sumfarragoTaskPay = farragoTaskPayList.stream().mapToDouble(FarragoTaskPay::getPayNumber).sum();
 			//汇总考勤总时间
-			collect.setTime(sunTime+overTime);
+			collect.setTime(sunTime);
 			//汇总B工资+杂工工资
 			collect.setPayB(NumUtils.round(sumBPay+sumfarragoTaskPay, null));
 			//汇总A工资
