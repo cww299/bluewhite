@@ -274,7 +274,7 @@
 						field: "departmentPrice",
 						title: "生产预计单价",
 						align: 'center',
-						edit: false,
+						edit: 'text',
 						templet:function(d){
 							return (d.departmentPrice==null ? 0 : d.departmentPrice)
 						}
@@ -282,7 +282,7 @@
 						field: "hairPrice",
 						title: "外发价格",
 						align: 'center',
-						edit: false,
+						edit: 'text',
 						templet:function(d){
 							return (d.hairPrice==null ? 0 : d.hairPrice)
 						}
@@ -668,7 +668,7 @@
 		    		return;
 		    	}
 		    	$.ajax({
-					url: "${ctx}/system/user/update",
+					url: "${ctx}/updateProduct",
 					data: data,
 					type: "POST",
 					beforeSend: function() {
