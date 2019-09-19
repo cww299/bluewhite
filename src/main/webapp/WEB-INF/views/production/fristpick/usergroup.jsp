@@ -613,7 +613,16 @@
 												var groupId = $(this.elem).data('groupid');
 												var temporarily = $(this.elem).data('temporarily');
 												var searchDate = $('#startTimeTable').val().split(' ')[0];
-												if(temporarily==0){
+												var time1=value.split('~')[0].trim();
+												var time2=value.split('~')[1].trim();
+												var searchDate2= $('#startTimeTable').val().split(' ')[0];
+												if(time2<time1){
+													var dateTime=new Date(searchDate);
+													dateTime=dateTime.setDate(dateTime.getDate()+1);
+													dateTime=new Date(dateTime);
+													searchDate2=dateTime.toLocaleDateString();
+												}
+												 if(temporarily==0){
 													var load = layer.load(1);
 													$.ajax({
 														url:"${ctx}/production/updateAdjustTime",
@@ -622,7 +631,7 @@
 															adjustId: id,
 															groupId: groupId,
 															startTime: searchDate+' '+value.split('~')[0].trim(),
-															endTime: searchDate+' '+value.split('~')[1].trim(),
+															endTime: searchDate2+' '+value.split('~')[1].trim(),
 														},
 														success:function(r){
 															layer.msg(r.message,{icon: r.code?2:1 });
@@ -631,7 +640,7 @@
 													layer.close(load);
 												}else{
 													layer.msg('外调人员无法添加工作区间',{icon:2});
-												}
+												} 
 											}
 										})
 									})
