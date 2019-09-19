@@ -289,9 +289,9 @@ public class BaseOneAction {
 	 */
 	@RequestMapping(value = "/product/getPrimeCoefficient", method = RequestMethod.GET)
 	@ResponseBody
-	public CommonResponse getPrimeCoefficient(HttpServletRequest request,String type) {
+	public CommonResponse getPrimeCoefficient(HttpServletRequest request,Long id) {
 		CommonResponse cr = new CommonResponse();
-		cr.setData(primeCoefficientDao.findByType(type));
+		cr.setData(primeCoefficientDao.findByTailorTypeId(id));
 		return cr;
 	}
 	

@@ -79,13 +79,6 @@ public class TaskServiceImpl extends BaseServiceImpl<Task, Long> implements Task
 		List<Long> userIdList = new ArrayList<>();
 		Date orderTimeBegin = DatesUtil.getfristDayOftime(task.getAllotTime());
 		Date orderTimeEnd = DatesUtil.getLastDayOftime(task.getAllotTime());
-		if (task.getId() != null) {
-			// 查出该任务的所有b工资并删除
-			List<PayB> payBList = payBDao.findByTaskId(task.getId());
-			if (payBList.size() > 0) {
-				payBDao.deleteInBatch(payBList);
-			}
-		}
 		// 将用户变成string类型储存
 		if (!StringUtils.isEmpty(task.getUserIds())) {
 			String[] idArr = task.getUserIds().split(",");
@@ -163,7 +156,6 @@ public class TaskServiceImpl extends BaseServiceImpl<Task, Long> implements Task
 				if (task.getType() == 2) {
 					// 总考勤时间
 					for (String userTypeId : task.getUsersIds()) {
-
 						Long userId = Long.parseLong(userTypeId);
 						List<Temporarily> temporarilyNewList = temporarilyList.stream()
 								.filter(Temporarily -> Temporarily.getUserId().equals(userId))
@@ -205,6 +197,14 @@ public class TaskServiceImpl extends BaseServiceImpl<Task, Long> implements Task
 						}
 					}
 				}
+				
+//				if (task.getId() != null) {
+//				// 查出该任务的所有b工资并删除
+//				List<PayB> payBList = payBDao.findByTaskId(task.getId());
+//				if (payBList.size() > 0) {
+//					payBDao.deleteInBatch(payBList);
+//				}
+//			}
 				List<PayB> payBList = new ArrayList<>();
 				/// 员工和任务形成多对多关系
 				if (task.getUsersIds().length > 0) {
@@ -213,18 +213,25 @@ public class TaskServiceImpl extends BaseServiceImpl<Task, Long> implements Task
 						User user = userList.stream().filter(User -> User.getId().equals(userId))
 								.collect(Collectors.toList()).get(0);
 						// 给予每个员工b工资
-						PayB payB = new PayB();
-						payB.setUserId(userId);
-						payB.setGroupId(task.getGroupId());
-						payB.setUserName(user.getUserName());
-						payB.setBacth(newTask.getBacthNumber());
-						payB.setBacthId(newTask.getBacthId());
-						payB.setProductId(newTask.getProductId());
-						payB.setProductName(newTask.getProductName());
-						payB.setTaskId(newTask.getId());
-						payB.setType(newTask.getType());
-						payB.setAllotTime(newTask.getAllotTime());
-						payB.setFlag(newTask.getFlag());
+						PayB payB = payBDao.findByTaskIdAndUserId(newTask.getId(), userId);
+						if(payB==null){
+							payB = new PayB();
+							payB.setUserId(userId);
+							if(task.getType()==2){
+								payB.setGroupId(task.getGroupId());
+							}else{
+								payB.setGroupId(user.getGroupId());
+							}
+							payB.setUserName(user.getUserName());
+							payB.setBacth(newTask.getBacthNumber());
+							payB.setBacthId(newTask.getBacthId());
+							payB.setProductId(newTask.getProductId());
+							payB.setProductName(newTask.getProductName());
+							payB.setTaskId(newTask.getId());
+							payB.setType(newTask.getType());
+							payB.setAllotTime(newTask.getAllotTime());
+							payB.setFlag(newTask.getFlag());
+						}
 						// 计算B工资数值
 						// 包装分配任务，员工b工资根据考情占比分配，其他部门是均分
 						if (task.getType() == 2) {
@@ -282,10 +289,10 @@ public class TaskServiceImpl extends BaseServiceImpl<Task, Long> implements Task
 							payB.setPayNumber(NumUtils.div(newTask.getPayB(), task.getUsersIds().length, 5));
 						}
 						// 当存在加绩时，计算加绩工资
-						if (newTask.getPerformanceNumber() != null) {
-							payB.setPerformancePayNumber(
-									NumUtils.div(newTask.getPerformancePrice(), task.getUsersIds().length, 5));
-						}
+//						if (newTask.getPerformanceNumber() != null) {
+//							payB.setPerformancePayNumber(
+//									NumUtils.div(newTask.getPerformancePrice(), task.getUsersIds().length, 5));
+//						}
 						payBList.add(payB);
 					}
 				}

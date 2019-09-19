@@ -44,7 +44,7 @@ public class MachinistServiceImpl extends BaseServiceImpl<Machinist, Long> imple
 	@Override
 	@Transactional
 	public Machinist saveMachinist(Machinist machinist) {
-		PrimeCoefficient primeCoefficient = primeCoefficientDao.findByType("machinist");
+		PrimeCoefficient primeCoefficient = primeCoefficientDao.findByTailorTypeId((long)75);
 		// 自动将类型为null的属性赋值为0
 		NumUtils.setzro(machinist);
 		// 在填写机工名称时，同时将裁片或上到填写，第一次填写，此时裁片的压价可以显示，机工的压价没有，

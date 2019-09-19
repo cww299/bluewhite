@@ -9,6 +9,7 @@ import javax.persistence.Table;
 import javax.persistence.Transient;
 
 import com.bluewhite.base.BaseEntity;
+import com.bluewhite.product.primecostbasedata.entity.BaseOne;
 import com.bluewhite.product.primecostbasedata.entity.BaseThree;
 /**
  * (裁剪普通激光,绣花定位激光，冲床，电烫，电推，手工剪刀）
@@ -31,6 +32,20 @@ public class OrdinaryLaser extends BaseEntity<Long>{
 	 */
 	@Column(name = "tailor_id")
     private Long tailorId;
+	
+	/**
+	 * 手选裁剪方式id
+	 */
+	@Column(name = "tailor_Type_id")
+    private Long tailorTypeId;
+	
+	/**
+	 * 裁剪方式
+	 */
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "tailor_Type_id", referencedColumnName = "id", insertable = false, updatable = false)
+	private BaseOne tailorType;
+	
 	
 	/**
 	 * 批量产品数量或模拟批量数
@@ -63,18 +78,6 @@ public class OrdinaryLaser extends BaseEntity<Long>{
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "tailor_size_id", referencedColumnName = "id", insertable = false, updatable = false)
 	private BaseThree tailorSize;
-	
-	/**
-	 * 手选裁剪方式id
-	 */
-	@Column(name = "tailor_Type_id")
-    private Long tailorTypeId;
-	
-	/**
-	 * 裁剪方式
-	 */
-	@Column(name = "tailorType")
-	private String tailorType;
 	
 	/**
 	 *得到理论(市场反馈）含管理价值
@@ -124,7 +127,6 @@ public class OrdinaryLaser extends BaseEntity<Long>{
 	 */
 	@Column(name = " embroider_time")
     private Double  embroiderTime;	
-	
 	
 	/**
 	 * 其他未考虑时间1
@@ -256,11 +258,12 @@ public class OrdinaryLaser extends BaseEntity<Long>{
 	
 	
 
-	public String getTailorType() {
+
+	public BaseOne getTailorType() {
 		return tailorType;
 	}
 
-	public void setTailorType(String tailorType) {
+	public void setTailorType(BaseOne tailorType) {
 		this.tailorType = tailorType;
 	}
 

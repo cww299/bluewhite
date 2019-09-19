@@ -9,6 +9,7 @@ import javax.persistence.Table;
 import javax.persistence.Transient;
 
 import com.bluewhite.base.BaseEntity;
+import com.bluewhite.product.primecostbasedata.entity.BaseOne;
 import com.bluewhite.product.primecostbasedata.entity.BaseThree;
 
 /**
@@ -39,6 +40,19 @@ public class Tailor extends BaseEntity<Long> {
 	@Column(name = "ordinaryLaser_id")
 	private Long ordinaryLaserId;
 
+	/**
+	 * 手选裁剪方式id
+	 */
+	@Column(name = "tailor_Type_id")
+	private Long tailorTypeId;
+	
+	/**
+	 * 裁剪方式
+	 */
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "tailor_Type_id", referencedColumnName = "id", insertable = false, updatable = false)
+	private BaseOne tailorType;
+	
 	/**
 	 * 绣花id
 	 */
@@ -81,19 +95,6 @@ public class Tailor extends BaseEntity<Long> {
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "tailor_size_id", referencedColumnName = "id", insertable = false, updatable = false)
 	private BaseThree tailorSize;
-	
-
-	/**
-	 * 手选裁剪方式id
-	 */
-	@Column(name = "tailor_Type_id")
-	private Long tailorTypeId;
-
-	/**
-	 * 手选裁剪方式
-	 */
-	@Column(name = "tailor_Type")
-	private String tailorType;
 
 	/**
 	 * 得到理论(市场反馈）含管理价值
@@ -170,6 +171,14 @@ public class Tailor extends BaseEntity<Long> {
 	
 
 	
+
+	public BaseOne getTailorType() {
+		return tailorType;
+	}
+
+	public void setTailorType(BaseOne tailorType) {
+		this.tailorType = tailorType;
+	}
 
 	public Integer getCostPriceSelect() {
 		return costPriceSelect;
@@ -265,14 +274,6 @@ public class Tailor extends BaseEntity<Long> {
 
 	public void setBacthTailorNumber(Integer bacthTailorNumber) {
 		this.bacthTailorNumber = bacthTailorNumber;
-	}
-
-	public String getTailorType() {
-		return tailorType;
-	}
-
-	public void setTailorType(String tailorType) {
-		this.tailorType = tailorType;
 	}
 
 	public Double getManagePrice() {

@@ -41,7 +41,7 @@ public class PrimeCost extends BaseEntity<Long>{
 	private Long productId;
 	
 	/**
-	 * 
+	 * 产品
 	 */
 	@OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
 	@JoinColumn(name = "productId" ,referencedColumnName = "id", insertable = false, updatable = false)

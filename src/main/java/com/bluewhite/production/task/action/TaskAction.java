@@ -260,7 +260,7 @@ private static final Log log = Log.getLog(TaskAction.class);
 	@ResponseBody
 	public CommonResponse giveTaskPerformance(HttpServletRequest request,String[] taskIds,String[] ids, String[] performance , Double[] performanceNumber,Integer update) {
 		CommonResponse cr = new CommonResponse();
-		taskService.giveTaskPerformance(taskIds,ids,performance , performanceNumber,update);
+		taskService.giveTaskPerformance(taskIds,ids,performance,performanceNumber,update);
 		cr.setMessage("添加成功");
 		return cr;
 	}

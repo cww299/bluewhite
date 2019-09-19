@@ -35,11 +35,7 @@ public class ProductMaterialsServiceImpl extends BaseServiceImpl<ProductMaterial
 	@Transactional
 	public ProductMaterials saveProductMaterials(ProductMaterials productMaterials) {
 		NumUtils.setzro(productMaterials);
-		if(StringUtils.isEmpty(productMaterials.getManualLoss())){
-			productMaterials.setBatchMaterial(NumUtils.mul(productMaterials.getOneMaterial(),productMaterials.getNumber()));
-		}else{
-			productMaterials.setBatchMaterial(NumUtils.mul(productMaterials.getManualLoss(),productMaterials.getOneMaterial(),(double)productMaterials.getNumber()));
-		}
+		countComposite(productMaterials);
 		Materiel materiel = materielDao.findOne(productMaterials.getMaterielId());
 		if(productMaterials.getConvertUnit()==0){
 			productMaterials.setBatchMaterialPrice(NumUtils.mul(productMaterials.getBatchMaterial(),materiel.getPrice()));
@@ -49,6 +45,12 @@ public class ProductMaterialsServiceImpl extends BaseServiceImpl<ProductMaterial
 		return dao.save(productMaterials);
 	}
 
+
+	@Override
+	public ProductMaterials countComposite(ProductMaterials productMaterials) {
+		productMaterials.setBatchMaterial(NumUtils.mul(productMaterials.getManualLoss(),productMaterials.getOneMaterial(),(double)productMaterials.getNumber()));
+		return productMaterials;
+	}
 
 	@Override
 	public PageResult<ProductMaterials> findPages(ProductMaterials param, PageParameter page) {
@@ -94,5 +96,7 @@ public class ProductMaterialsServiceImpl extends BaseServiceImpl<ProductMaterial
 	public List<ProductMaterials> findByProductId(Long productId) {
 		return dao.findByProductId(productId);
 	}
+
+
 
 }

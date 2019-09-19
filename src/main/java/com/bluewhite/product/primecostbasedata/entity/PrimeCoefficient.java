@@ -2,6 +2,9 @@ package com.bluewhite.product.primecostbasedata.entity;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
 import com.bluewhite.base.BaseEntity;
@@ -17,10 +20,17 @@ import com.bluewhite.base.BaseEntity;
 public class PrimeCoefficient extends BaseEntity<Long>{
 	
 	/**
-	 *类型
+	 * 手选裁剪方式id
 	 */
-	@Column(name = "type")
-	private String type;
+	@Column(name = "tailor_Type_id")
+    private Long tailorTypeId;
+	
+	/**
+	 * 裁剪方式
+	 */
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "tailor_Type_id", referencedColumnName = "id", insertable = false, updatable = false)
+	private BaseOne tailorType;
 	
 	
 	/**
@@ -500,6 +510,22 @@ public class PrimeCoefficient extends BaseEntity<Long>{
 	
 
 
+
+	public Long getTailorTypeId() {
+		return tailorTypeId;
+	}
+
+	public void setTailorTypeId(Long tailorTypeId) {
+		this.tailorTypeId = tailorTypeId;
+	}
+
+	public BaseOne getTailorType() {
+		return tailorType;
+	}
+
+	public void setTailorType(BaseOne tailorType) {
+		this.tailorType = tailorType;
+	}
 
 	public Double getNeedleworkFive() {
 		return needleworkFive;
@@ -1085,14 +1111,6 @@ public class PrimeCoefficient extends BaseEntity<Long>{
 
 	public void setEquipmentProfit(Double equipmentProfit) {
 		this.equipmentProfit = equipmentProfit;
-	}
-
-	public String getType() {
-		return type;
-	}
-
-	public void setType(String type) {
-		this.type = type;
 	}
 
 	public Double getEmbroideryLaserNumber() {
