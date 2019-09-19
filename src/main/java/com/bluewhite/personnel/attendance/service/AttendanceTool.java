@@ -54,6 +54,7 @@ public class AttendanceTool {
 		double actualDutyTime = 0;
 		double actualLeaveEarly = 0;
 		double actualbelateTime = 0;
+		double actualDutytimMinute = 0;
 		// 将实际工作时间延长一分钟计算迟到
 		workTime = DatesUtil.getDaySum(workTime, 1.0);
 
@@ -83,6 +84,8 @@ public class AttendanceTool {
 				actualTurnWorkTime = NumUtils.sum(attendanceTime.getWorkTime(), DatesUtil.getTimeHour(minute));
 				// 等于默认出勤-实际出勤
 				actualDutyTime = NumUtils.sub(turnWorkTime, actualTurnWorkTime);
+				//实际缺勤时长分钟数
+				actualDutytimMinute = DatesUtil.getTime(workTime,attendanceTime.getCheckIn());
 				flag = false;
 				attendanceTime.setFlag(1);
 			}
@@ -94,6 +97,8 @@ public class AttendanceTool {
 			if (flag) {
 				actualTurnWorkTime = NumUtils.sum(attendanceTime.getWorkTime(), DatesUtil.getTimeHour(minute));
 				actualDutyTime = NumUtils.sub(turnWorkTime, actualTurnWorkTime);
+				//实际缺勤时长分钟数
+				actualDutytimMinute += DatesUtil.getTime(attendanceTime.getCheckOut(),workTimeEnd);
 				flag = false;
 				attendanceTime.setFlag(1);
 			}
@@ -167,11 +172,13 @@ public class AttendanceTool {
 			// 满足于：员工不可以加班后晚到岗 ，签入时间在默认上班开始时间之后，签出时间在工作结束时间之后 出现缺勤 (迟到时间过长导致缺勤)
 			flag = attendanceTime.getCheckIn().after(DatesUtil.getDaySum(workTime, DUTYMIN))
 					&& (attendanceTime.getCheckOut().after(workTimeEnd) || attendanceTime.getCheckOut().compareTo(workTimeEnd) == 0 );
-			if (flag) {
+			if (flag) { 
 				// 等于实际工作时间
 				actualTurnWorkTime = attendanceTime.getWorkTime();
 				// 等于默认出勤-实际出勤
 				actualDutyTime = NumUtils.sub(turnWorkTime, actualTurnWorkTime);
+				//实际缺勤时长分钟数
+				actualDutytimMinute = DatesUtil.getTime(workTime,attendanceTime.getCheckIn());
 				attendanceTime.setFlag(1);
 				flag = false;
 			}
@@ -181,6 +188,8 @@ public class AttendanceTool {
 			if (flag) {
 				actualTurnWorkTime = attendanceTime.getWorkTime();
 				actualDutyTime = NumUtils.sub(turnWorkTime, actualTurnWorkTime);
+				//实际缺勤时长分钟数
+				actualDutytimMinute += DatesUtil.getTime(attendanceTime.getCheckOut(),workTimeEnd);
 				flag = false;
 				attendanceTime.setFlag(1);
 			}
@@ -243,6 +252,7 @@ public class AttendanceTool {
 		attendanceTime.setDutytime(actualDutyTime);
 		attendanceTime.setLeaveEarlyTime(actualLeaveEarly);
 		attendanceTime.setBelateTime(actualbelateTime);
+		attendanceTime.setDutytimMinute(actualDutytimMinute);
 		return attendanceTime;
 
 	}

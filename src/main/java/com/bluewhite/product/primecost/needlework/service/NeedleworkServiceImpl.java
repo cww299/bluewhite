@@ -44,7 +44,7 @@ public class NeedleworkServiceImpl extends BaseServiceImpl<Needlework, Long> imp
 		//自动将类型为null的属性赋值为0
 		NumUtils.setzro(needlework);
 		
-		PrimeCoefficient primeCoefficient = primeCoefficientDao.findByType("needlework");
+		PrimeCoefficient primeCoefficient = primeCoefficientDao.findByTailorTypeId((long)75);
 		// 单工序单只时间
 		needlework.setSingleTime(
 				needlework.getSecondaryPrice() == 0 ? needlework.getSeconds() : needlework.getSecondaryPrice());

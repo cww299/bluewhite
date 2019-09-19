@@ -720,13 +720,29 @@ public class AttendanceTimeServiceImpl extends BaseServiceImpl<AttendanceTime, L
 										.collect(Collectors.toList());
 								if (oneAtList.size() > 0) {
 									if (al.getHolidayType() == 6) {
-										// 当请假时间大于或等于迟到时间
-										if (NumUtils.mul(time, 60) >= oneAtList.get(0).getBelateTime()
-												|| NumUtils.mul(time, 60) >= oneAtList.get(0).getLeaveEarlyTime()) {
-											oneAtList.get(0).setBelate(0);
-											oneAtList.get(0).setBelateTime(0.0);
-											oneAtList.get(0).setLeaveEarly(0);
-											oneAtList.get(0).setLeaveEarlyTime(0.0);
+										//存在迟到或早退
+										if(oneAtList.get(0).getBelate()==1){
+											// 当请假时间大于或等于迟到时间 或 早退时间
+											if (NumUtils.mul(time, 60) >= oneAtList.get(0).getBelateTime() ) {
+												oneAtList.get(0).setBelate(0);
+												oneAtList.get(0).setBelateTime(0.0);
+											}
+										}
+										
+										//存在早退
+										if(oneAtList.get(0).getLeaveEarly()==1){
+											if(NumUtils.mul(time, 60) >= oneAtList.get(0).getLeaveEarlyTime()){
+												oneAtList.get(0).setLeaveEarly(0);
+												oneAtList.get(0).setLeaveEarlyTime(0.0);
+											}
+										}
+										
+										if(NumUtils.mul(time, 60) < oneAtList.get(0).getDutytimMinute()){
+											if(oneAtList.get(0).getDutytimMinute()>30){
+												oneAtList.get(0).setBelate(1);
+												oneAtList.get(0).setBelateTime(NumUtils.sub(oneAtList.get(0).getDutytimMinute(),NumUtils.mul(time, 60)));
+												oneAtList.get(0).setDutytimMinute(NumUtils.sub(oneAtList.get(0).getDutytimMinute(),NumUtils.mul(time, 60)));
+											}
 										}
 									}
 									// 变更为请假状态

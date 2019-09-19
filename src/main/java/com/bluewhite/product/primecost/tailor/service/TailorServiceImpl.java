@@ -98,7 +98,7 @@ public class TailorServiceImpl extends BaseServiceImpl<Tailor, Long> implements 
 	@Override
 	public OrdinaryLaser getOrdinaryLaserDate(Tailor tailor, OrdinaryLaser prams) {
 		//裁剪页面的基础系数
-		PrimeCoefficient primeCoefficient = null;
+		PrimeCoefficient primeCoefficient = primeCoefficientDao.findByTailorTypeId(tailor.getTailorTypeId());
 		String type = null;
 		CutParts cutParts = cutPartsDao.findOne(tailor.getCutPartsId());
 		prams.setProductId(tailor.getProductId());
@@ -113,10 +113,6 @@ public class TailorServiceImpl extends BaseServiceImpl<Tailor, Long> implements 
 		double tailorSize = baseThreeDao.findOne(prams.getTailorSizeId()).getOrdinaryLaser();
 		switch (tailor.getTailorTypeId().intValue()) {
 		case 71:// 普通激光切割
-			type = "ordinarylaser";
-			primeCoefficient = primeCoefficientDao.findByType(type);
-			prams.setTailorType(type);
-			tailor.setTailorType(type);
 			prams.setSingleDouble(2);
 			prams.setStallPoint(1);
 			double singleLaserTime = NumUtils.mul(prams.getPerimeter(), primeCoefficient.getTime(),
@@ -152,10 +148,6 @@ public class TailorServiceImpl extends BaseServiceImpl<Tailor, Long> implements 
 
 			break;
 		case 72:// 绣花激光切割
-			type = "embroideryLaser";
-			primeCoefficient = primeCoefficientDao.findByType(type);
-			prams.setTailorType(type);
-			tailor.setTailorType(type);
 			prams.setSingleDouble(2);
 			prams.setStallPoint(1);
 			// 得到理论(市场反馈）含管理价值
@@ -198,10 +190,6 @@ public class TailorServiceImpl extends BaseServiceImpl<Tailor, Long> implements 
 					primeCoefficient.getEquipmentProfit()));
 			break;
 		case 73:// 手工电烫
-			type = "perm";
-			primeCoefficient = primeCoefficientDao.findByType(type);
-			prams.setTailorType(type);
-			tailor.setTailorType(type);
 			// 拉布秒数（含快手)
 			prams.setRabbTime(NumUtils.mul(NumUtils.div(NumUtils.div(primeCoefficient.getPermOne(), 1.5 , 3) , tailorSize,3) 
 					, primeCoefficient.getQuickWorker()));
@@ -212,23 +200,14 @@ public class TailorServiceImpl extends BaseServiceImpl<Tailor, Long> implements 
 
 			break;
 		case 75:// 冲床
-			type = "puncher";
-			prams.setTailorType(type);
-			tailor.setTailorType(type);
 			// 得到理论(市场反馈）含管理价值
 			prams.setManagePrice(materielService.getBaseThreeOne(prams.getTailorTypeId(), prams.getTailorSizeId()));
 			break;
 		case 76:// 电推
-			type = "electricPush";
-			prams.setTailorType(type);
-			tailor.setTailorType(type);
 			// 得到理论(市场反馈）含管理价值
 			prams.setManagePrice(materielService.getBaseThreeOne(prams.getTailorTypeId(),  prams.getTailorSizeId()));
 			break;
 		case 77:// 手工剪刀 
-			type = "manual";
-			prams.setTailorType(type);
-			tailor.setTailorType(type);
 			// 得到理论(市场反馈）含管理价值
 			prams.setManagePrice(materielService.getBaseThreeOne(prams.getTailorTypeId(), prams.getTailorSizeId()));
 			break;

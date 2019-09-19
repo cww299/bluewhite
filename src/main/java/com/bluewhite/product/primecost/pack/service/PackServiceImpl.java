@@ -63,7 +63,7 @@ public class PackServiceImpl extends BaseServiceImpl<Pack, Long> implements Pack
 		// 自动将类型为null的属性赋值为0
 		NumUtils.setzro(pack);
 
-		PrimeCoefficient primeCoefficient = primeCoefficientDao.findByType("pack");
+		PrimeCoefficient primeCoefficient = primeCoefficientDao.findByTailorTypeId((long)75);
 		// 单只产品用时/秒
 		pack.setOneTime(NumUtils.division(pack.getTime() / pack.getPackNumber()));
 		// 批量用时/秒(含快手）
