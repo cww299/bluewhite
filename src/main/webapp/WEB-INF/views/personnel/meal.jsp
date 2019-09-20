@@ -230,9 +230,6 @@
 				
 					$.ajax({
 						url: '${ctx}/system/user/findUserList',
-						data:{
-							foreigns:0
-						},
 						type: "GET",
 						async: false,
 						beforeSend: function() {

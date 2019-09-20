@@ -14,6 +14,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
 	
 	<link rel="stylesheet" href="${ctx }/static/plugins/bootstrap/css/bootstrap.min.css">
+	<link rel="stylesheet" href="${ctx }/static/layui-v2.4.5/layui/css/layui.css" media="all">
 	<link rel="stylesheet" href="${ctx }/static/css/main.css">
 	<script src="${ctx }/static/js/vendor/jquery-3.3.1.min.js"></script>
 	<script src="${ctx }/static/js/laydate-icon/laydate.js"></script>  <!-- 时间插件 -->
@@ -25,11 +26,11 @@
 <body>
 
 <div class="panel panel-default">			
-	<div class="panel-body">
+	<div class="panel-body" style="width: 100%">
 		<table>
 			<tr>
-				<td>批次号:</td>
-				<td><input type="text" name="number" id="number" placeholder="请输入批次号"
+				<td class="hidden-sm">批次号:</td>
+				<td class="hidden-sm"><input type="text" name="number" id="number" placeholder="请输入批次号"
 					class="form-control search-query number" /></td>
 				<td>&nbsp;&nbsp;</td>
 				<td>产品名称:</td>
@@ -37,13 +38,7 @@
 					class="form-control search-query name" /></td>
 				<td>&nbsp;&nbsp;</td>
 				<td>开始时间:</td>
-				<td><input id="startTime" placeholder="请输入开始时间" class="form-control laydate-icon"
-					onClick="laydate({elem: '#startTime', istime: true, format: 'YYYY-MM-DD hh:mm:ss'})"></td>
-				<td>&nbsp;&nbsp;</td>
-				<td>结束时间:</td>
-				<td><input id="endTime" placeholder="请输入结束时间" class="form-control laydate-icon"
-					onClick="laydate({elem: '#endTime', istime: true, format: 'YYYY-MM-DD hh:mm:ss'})">
-				</td>
+				<td><input id="startTime" placeholder="请输入开始时间" style="width: 250px;" class="form-control"></td>
 				<td>&nbsp;&nbsp;</td>
 				<td>完成状态:</td>
 				<td><select class="form-control selectchoice"><option value="0">未完成</option>
@@ -52,7 +47,7 @@
 				<td><span class="input-group-btn">
 						<button type="button" class="btn btn-info btn-square btn-sm btn-3d searchtask">查&nbsp找</button></span></td>
 				<td>&nbsp;&nbsp;&nbsp;&nbsp;</td> 
-				<td><span class="input-group-btn">
+				<td><span class="input-group-btn hidden-sm">
 						<button type="button" id="addprocedure" class="btn btn-success btn-sm btn-3d pull-right">一键接收</button></span></td>
 				<td>&nbsp;&nbsp;&nbsp;&nbsp;</td> 
 				<td><span class="input-group-btn">
@@ -60,41 +55,44 @@
 			</tr>
 		</table>
 		<h1 class="page-header"></h1>
-		<table class="table table-condensed table-hover">
+		<table  style="width: 100%"><!-- class="table table-condensed table-hover" --> 
 			<thead>
 				<tr>
 					<th class="center"><label> <input type="checkbox"
 							class="ace checkstw" /> <span class="lbl"></span>
 					</label></th>
-					<th class="text-center">批次号</th>
+					<th class="text-center hidden-sm">批次号</th>
 					<th class="text-center">时间</th>
-					<th class="text-center" style="width: 250px;">产品名</th>
+					<th class="text-center" style="width: 240px;">产品名</th>
 					<th class="text-center">数量</th>
-					<th class="text-center">预计生产单价</th>
-					<th class="text-center">外发价格</th>
-					<th class="text-center">任务价值</th>
-					<th class="text-center">地区差价</th>
+					<th class="text-center hidden-sm">预计生产单价</th>
+					<th class="text-center hidden-sm">外发价格</th>
+					<th class="text-center hidden-sm">任务价值</th>
+					<th class="text-center hidden-sm">地区差价</th>
 					<th class="text-center">当批用时</th>
 					<th class="text-center">备注</th>
 					<th class="text-center">状态</th>
-					<th class="text-center">操作</th>
+					<th class="text-center" style="width: 170px;">操作</th>
+					<th class="text-center"></th>
+					
 				</tr>
 			</thead>
-			<tbody id="tablecontent">
+			<tbody id="tablecontent" style="width: 100%">
 			</tbody>
 			<thead>
 				<tr>
 					<td class="center">合计</td>
-					<td class="text-center"></td>
+					<td class="text-center hidden-sm"></td>
 					<td class="text-center"></td>
 					<td class="text-center"></td>
 					<td class="text-center" id="total"></td>	
-					<td class="text-center"></td>
-					<td class="text-center"></td>
+					<td class="text-center hidden-sm"></td>
+					<td class="text-center hidden-sm"></td>
 					<!-- <td class="text-center" id="totaltw"></td> -->  <!-- 修改此处 -->
-					<td class="text-center" id="tota2">1</td>
-					<td class="text-center"></td>
+					<td class="text-center hidden-sm" id="tota2">1</td>
+					<td class="text-center hidden-sm"></td>
 					<td class="text-center" id="tota3">1</td>
+					<td class="text-center"></td>
 					<td class="text-center"></td>
 					<td class="text-center"></td>
 				</tr>
@@ -114,13 +112,13 @@
 
 
 					<div class="form-group">
-						<label class="col-sm-3 col-md-2 control-label">任务数量:</label>
-						<div class="col-sm-3 col-md-3">
+						<label class="col-sm-2 col-md-2 control-label">任务数量:</label>
+						<div class="col-sm-4 col-md-4">
 							<input type="text" class="form-control sumnumber">
 						</div>
 						<div>
 							<label class="col-sm-2 col-md-2 control-label">预计完成时间:</label>
-							<div class="col-sm-3 col-md-3">
+							<div class="col-sm-4 col-md-3">
 								<input type="text" placeholder="非返工任务不填写"
 									class="form-control sumtime">
 							</div>
@@ -129,28 +127,28 @@
 
 
 					<div class="form-group">
-						<label class="col-sm-2 control-label">任务分配:</label>
-						<div class="col-sm-3">
+						<label class="col-sm-2 control-label col-md-2">任务分配:</label>
+						<div class="col-sm-4 col-md-3">
 							<input id="Time" placeholder="时间可不填"
-								class="form-control laydate-icon" >
+								class="form-control">
 						</div>
-						<div class="col-sm-1">
+						<div class="col-sm-2 hidden-sm col-md-1" >
 							<input type="checkbox" id="remember">记住
 						</div>
-						<label class="col-sm-1 control-label">加绩工序:</label>
-						<div class="col-sm-3 workingtw"></div>
+						<label class="col-sm-2 control-label hidden-sm col-md-2">加绩工序:</label>
+						<div class="col-sm-3 workingtw hidden-sm col-md-3"></div>
 					</div>
 
 
 					<div class="form-group">
-						<label class="col-sm-2 control-label">选择工序:</label>
+						<label class="text-center col-sm-2 col-md-2 control-label">工序:</label>
 						<div class="col-sm-2 working"></div>
-						<div class="col-sm-2 checkworking"></div>
-						<label class="col-sm-1 control-label">完成人:</label>
-						<div class="col-sm-1 complete">
+						<div class="col-sm-2 checkworking" style="width: 23%"></div>
+						<label class="col-sm-1 control-label"  style="width: 12%">完成人:</label>
+						<div class="col-sm-2 complete" style="width: 10%">
 							<input type="text" class="form-control">
 						</div>
-						<div class="col-sm-3 select" id="showB"></div>
+						<div class="col-sm-2 select" id="showB"></div>
 					</div>
 				</div>
 		</div>
@@ -165,7 +163,7 @@
 
 
 	<!--隐藏框 工序分配2开始  -->
-	<div id="addDictDivTypetw" style="display: none;">
+	<!-- <div id="addDictDivTypetw" style="display: none;">
 		<div class=" col-xs-12  col-sm-12  col-md-12 ">
 			<div class="space-10"></div>
 			<div style="height: 30px"></div>
@@ -223,7 +221,7 @@
 		</div>
 
 		</form>
-	</div>
+	</div> -->
 	<!--隐藏框 工序分配2结束  -->
 
 
@@ -269,7 +267,7 @@
 										class="btn btn-info btn-square btn-sm btn-3d searchtasktw">
 										查&nbsp找</button>
 								</span>
-								<td>&nbsp&nbsp&nbsp&nbsp</td> <span class="input-group-btn">
+								<td>&&nbsp;&&nbsp;&nbsp;&nbsp;</td> <span class="input-group-btn">
 									<button type="button"
 										class="btn btn-default btn-danger btn-sm btn-3d receive">一键接收</button>&nbsp&nbsp
 									</td>
@@ -298,7 +296,7 @@
 						<th class="text-center">待接收数量</th>
 					</tr>
 				</thead>
-				<tbody id="tableworking">
+				<tbody  id="tableworking">
 				</tbody>
 			</table>
 			<div id="pagerrtw" class="pull-right"></div>
@@ -318,53 +316,35 @@
 							class="btn btn-default btn-danger btn-xs btn-3d attendance">一键删除</button>&nbsp&nbsp</td>
 				</tr>
 			</table>
-			<div class="panel-body">
-				<table class="table table-hover">
+			<div class="panel panel-default" style="margin: 0 auto;">	
+			<div class="panel-body" >
+				<table >
 					<thead>
 						<tr>
 							<th class="center"><label> <input type="checkbox"
 									class="ace checks" /> <span class="lbl"></span>
 							</label></th>
-							<th class="text-center">批次号</th>
-							<th class="text-center">产品名</th>
+							<th class="text-center hidden-sm">批次号</th>
+							<th class="text-center hidden-sm" >产品名</th>
 							<th class="text-center">时间</th>
 							<th class="text-center">工序</th>
-							<th class="text-center">预计时间</th>
-							<th class="text-center">任务价值</th>
-							<th class="text-center">b工资净值</th>
-							<th class="text-center">数量</th>
-							<th class="text-center">工序加价</th>
+							<th class="text-center hidden-sm">预计时间</th>
+							<th class="text-center hidden-sm">任务价值</th>
+							<th class="text-center hidden-sm">b工资净值</th>
+							<th class="text-center hidden-sm">数量</th>
+							<th class="text-center ">工序加价</th>
 							<th class="text-center">加绩工资</th>
 							<th class="text-center">完成人</th>
 							<th class="text-center">操作</th>
 						</tr>
 					</thead>
-					<tbody id="tablecontentto">
+					<tbody id="tablecontentto" style="width: 100%">
 
 					</tbody>
-					<thead>
-						<tr>
-							<td class="center">合计</td>
-							<td class="text-center"></td>
-							<td class="text-center"></td>
-							<td class="text-center"></td>
-							<td class="text-center" id="total"></td>
-							<td class="text-center"></td>
-							<td class="text-center"></td>
-							<td class="text-center" id="tota2">1</td>
-							<td class="text-center"></td>
-							<td class="text-center" id="tota3">1</td>
-							<td class="text-center"></td>
-							<td class="text-center"></td>
-							<td class="text-center"></td>
-							<td class="text-center"></td>
-							<td class="text-center"></td>
-						</tr>
-					</thead>
 				</table>
 				<div id="pagerr" class="pull-right"></div>
 			</div>
-
+</div>
 		</div>
 
 
@@ -383,7 +363,7 @@
 		</div>
 	</div>
 	<!--隐藏框 人员信息结束  -->
-	
+	<script src="${ctx}/static/layui-v2.4.5/layui/layui.js"></script>
 		<script>
    jQuery(function($){
    	var Login = function(){
@@ -416,17 +396,25 @@
 			var day = new Date(year,month,0);  
 			var firstdate = year + '-' + '0'+month + '-01'+' '+'00:00:00';
 			var lastdate = year + '-' + '0'+month + '-' + day.getDate() +' '+'23:59:59';
-			$('#startTime').val(firstdate);
-			$('#endTime').val(lastdate);
+			/* $('#startTime').val(firstdate);
+			$('#endTime').val(lastdate); */
 			 var data={
 						page:1,
 				  		size:12,	
 				  		type:2,
 				  		status:$('.selectchoice').val(),
-				  		orderTimeBegin:$("#startTime").val(),
-				  		orderTimeEnd:$("#endTime").val(),
+				  		orderTimeBegin:firstdate,
+				  		orderTimeEnd:lastdate,
 				} 
-			 
+			 layui.use(['laydate'],function(){
+					var laydate = layui.laydate;
+					laydate.render({
+						elem: '#startTime',
+						type: 'datetime',
+						range: '~',
+						value : firstdate+' ~ '+lastdate,
+					});
+			 })
 			this.init = function(){
 				
 				//注册绑定事件
@@ -464,14 +452,14 @@
 		      					strname="未完成";
 		      				 }
 		      				 html +='<tr><td class="center reste"><label> <input type="checkbox" class="ace checkboxId" value="'+o.id+'"/><span class="lbl"></span></label></td>'
-		      				+'<td class="text-center  bacthNumber">'+o.bacthNumber+'</td>'
+		      				+'<td class="text-center  bacthNumber hidden-sm">'+o.bacthNumber+'</td>'
 		      				+'<td class="text-center edit allotTime">'+o.allotTime+'</td>'
 		      				+'<td class="text-center  names" data-id='+o.id+'>'+o.product.name+'</td>'
 		      				+'<td class="text-center edit number">'+o.number+'</td>'
-		      				+'<td class="text-center  bacthDepartmentPrice">'+parseFloat((o.bacthDepartmentPrice).toFixed(3))+'</td>'
-		      				+'<td class="text-center  bacthHairPrice">'+o.bacthHairPrice+'</td>'
-		      				+'<td class="text-center  sumTaskPrice">'+ parseFloat((o.sumTaskPrice*1).toFixed(3))+'</td>'
-		      				+'<td class="text-center  regionalPrice">'+parseFloat((o.regionalPrice*1).toFixed(3))+'</td>'
+		      				+'<td class="text-center  bacthDepartmentPrice hidden-sm">'+parseFloat((o.bacthDepartmentPrice).toFixed(3))+'</td>'
+		      				+'<td class="text-center  bacthHairPrice hidden-sm">'+o.bacthHairPrice+'</td>'
+		      				+'<td class="text-center  sumTaskPrice hidden-sm">'+ parseFloat((o.sumTaskPrice*1).toFixed(3))+'</td>'
+		      				+'<td class="text-center  regionalPrice hidden-sm">'+parseFloat((o.regionalPrice*1).toFixed(3))+'</td>'
 		      				+'<td class="text-center ">'+parseFloat((o.time*1).toFixed(3))+'</td>'
 		      				+'<td class="text-center edit remarks">'+o.remarks+'</td>'
 		      				+'<td class="text-center ">'+strname+'</td>'
@@ -555,14 +543,14 @@
 			      					o.taskActualTime=0
 			      				 }
 			      				html +='<tr><td class="center reste"><label> <input type="checkbox" class="ace checkboxIdto" value="'+o.id+'"/><span class="lbl"></span></label></td>'
-			      				+'<td class="text-center ">'+o.bacthNumber+'</td>'
-			      				+'<td class="text-center ">'+o.productName+'</td>'
+			      				+'<td class="text-center hidden-sm">'+o.bacthNumber+'</td>'
+			      				+'<td class="text-center hidden-sm">'+o.productName+'</td>'
 			      				+'<td class="text-center edit allotTimetw">'+o.allotTime+'</td>'
 			      				+'<td class="text-center ">'+s+a+'</td>'
-			      				+'<td class="text-center ">'+parseFloat((o.expectTime).toFixed(4))+'</td>'
-			      				+'<td class="text-center ">'+parseFloat((o.taskPrice).toFixed(4))+'</td>'
-			      				+'<td class="text-center ">'+parseFloat((o.payB).toFixed(4))+'</td>'
-			      				+'<td class="text-center edit number">'+o.number+'</td>'
+			      				+'<td class="text-center hidden-sm">'+parseFloat((o.expectTime).toFixed(4))+'</td>'
+			      				+'<td class="text-center hidden-sm">'+parseFloat((o.taskPrice).toFixed(4))+'</td>'
+			      				+'<td class="text-center hidden-sm">'+parseFloat((o.payB).toFixed(4))+'</td>'
+			      				+'<td class="text-center edit number hidden-sm">'+o.number+'</td>'
 			      				+'<td class="text-center ">'+o.performance+'</td>'
 			      				+'<td class="text-center ">'+parseFloat((o.performancePrice).toFixed(4))+'</td>'
 			      				+'<td class="text-center"><button class="btn btn-primary btn-trans btn-sm savemode" data-toggle="modal" data-target="#myModal" data-id="'+o.id+'")">查看人员</button></td>'
@@ -830,6 +818,15 @@
 					
 					
 				} 
+			  $(document).on('click', '#tablecontent  tr', function(event) {
+				  if($(this).find('.checkboxId').is(':checked')==false){
+					$(this).find('.checkboxId').prop("checked",true)
+					 $(this).css("color","red");
+				  }else{
+					  $(this).find('.checkboxId').prop("checked",false)
+					  $(this).css("color","inherit");
+				  }
+				})
 			this.loadEvents = function(){
 				$('.names').on('click',function(){
 					var that=$(this);
@@ -854,7 +851,7 @@
 					_index = layer.open({
 						  type: 1,
 						  skin: 'layui-layer-rim', //加上边框
-						  area: ['80%', '100%'], 
+						  area: ['95%', '80%'], 
 						  btnAlign: 'c',//宽高
 						  maxmin: true,
 						  title:this.innerHTML,
@@ -1116,7 +1113,7 @@
 										$(result.data).each(function(j,k){
 										
 										$(k.users).each(function(i,o){
-											htmltwo +='<div class="input-group"><input type="checkbox" class="stuCheckBox"   value="'+o.id+'" data-groupid="'+k.id+'"><label style="width:70px;text-align:center;color:gray;">'+o.userName+'</label>-<input style="width:100px;" class="time2" data-id="'+o.adjustTimeId+'" data-temporarily="'+o.temporarily+'" value="'+(o.adjustTime!=null ? o.adjustTime : "")+'" /></div>'
+											htmltwo +='<div class="input-group"><input type="checkbox" class="stuCheckBox"   value="'+o.id+'" data-groupid="'+k.id+'"><label style="width:70px;text-align:center;color:gray;">'+o.userName+'</label><input class="hidden-sm" style="width:100px;" class="time2" data-id="'+o.adjustTimeId+'" data-temporarily="'+o.temporarily+'" value="'+(o.adjustTime!=null ? o.adjustTime : "")+'" /></div>'
 										})
 										})
 										 var s="<div class='input-group'><input type='checkbox' class='checkedAll'><label style='width:70px;text-align:center;color:gray;'>全选</label></input></div>" 
@@ -1232,7 +1229,7 @@
 					_index = layer.open({
 						  type: 1,
 						  skin: 'layui-layer-rim', //加上边框
-						  area: ['85%', '500px'], 
+						  area: ['100%', '500px'], 
 						  btnAlign: 'c',//宽高
 						  maxmin: true,
 						  title:productName,
@@ -1411,9 +1408,6 @@
 					
 					
 				})
-				
-				
-				
 				
 				
 				
@@ -2028,14 +2022,15 @@
 				  })
 				//查询
 				$('.searchtask').on('click',function(){
+					var orderTime=$("#startTime").val().split('~');
 					var data = {
 				  			page:1,
 				  			size:12,
 				  			type:2,
 				  			name:$('#name').val(),
 				  			bacthNumber:$('#number').val(),
-				  			 orderTimeBegin:$("#startTime").val(),
-				  			orderTimeEnd:$("#endTime").val(), 
+				  			 orderTimeBegin:orderTime[0],
+				  			orderTimeEnd:orderTime[1], 
 				  			status:$('.selectchoice').val(),
 				  	}
 		            self.loadPagination(data);
