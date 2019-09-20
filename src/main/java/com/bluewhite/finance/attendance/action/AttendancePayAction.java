@@ -69,7 +69,7 @@ public class AttendancePayAction {
 		CommonResponse cr = new CommonResponse();
 		// 修改
 		if (attendancePay.getId()!=null) {
-			attendancePayService.updateAttendance(attendancePay);
+			attendancePayService.updateAttendance(attendancePay,request);
 			cr.setMessage("修改成功");
 		} else {
 			cr.setCode(ErrorCode.ILLEGAL_ARGUMENT.getCode());

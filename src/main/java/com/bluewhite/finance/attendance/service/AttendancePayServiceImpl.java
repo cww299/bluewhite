@@ -7,6 +7,7 @@ import java.util.List;
 import java.util.OptionalDouble;
 
 import javax.persistence.criteria.Predicate;
+import javax.servlet.http.HttpServletRequest;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -239,7 +240,7 @@ public class AttendancePayServiceImpl extends BaseServiceImpl<AttendancePay, Lon
 
 	@Override
 	@Transactional
-	public void updateAttendance(AttendancePay attendancePay) {
+	public void updateAttendance(AttendancePay attendancePay,HttpServletRequest request) {
 		AttendancePay oldAttendancePay = dao.findOne(attendancePay.getId());
 		BeanCopyUtils.copyNotEmpty(attendancePay, oldAttendancePay, "");
 		oldAttendancePay.setWorkTime(NumUtils.sum(oldAttendancePay.getTurnWorkTime(), oldAttendancePay.getOverTime()));
@@ -254,7 +255,7 @@ public class AttendancePayServiceImpl extends BaseServiceImpl<AttendancePay, Lon
 				for (Task task : taskList) {
 					String[] arrayRefVar = { String.valueOf(task.getProcedureId()) };
 					task.setProcedureIds(arrayRefVar);
-					taskService.addTask(task);
+					taskService.addTask(task,null);
 				}
 			}
 		}

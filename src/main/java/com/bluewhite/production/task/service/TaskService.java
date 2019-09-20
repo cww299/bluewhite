@@ -3,6 +3,8 @@ package com.bluewhite.production.task.service;
 import java.util.Date;
 import java.util.List;
 
+import javax.servlet.http.HttpServletRequest;
+
 import org.springframework.stereotype.Service;
 
 import com.bluewhite.base.BaseCRUDService;
@@ -18,7 +20,7 @@ public interface TaskService extends BaseCRUDService<Task,Long>{
 	 * @param task
 	 * @return
 	 */
-	public Task addTask(Task task);
+	public Task addTask(Task task,HttpServletRequest request);
 	/**
 	 * 分页查询所有任务
 	 * @param task
