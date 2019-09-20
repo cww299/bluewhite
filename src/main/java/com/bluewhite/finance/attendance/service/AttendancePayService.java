@@ -3,6 +3,8 @@ package com.bluewhite.finance.attendance.service;
 import java.util.Date;
 import java.util.List;
 
+import javax.servlet.http.HttpServletRequest;
+
 import org.springframework.stereotype.Service;
 
 import com.bluewhite.base.BaseCRUDService;
@@ -19,7 +21,7 @@ public interface AttendancePayService  extends BaseCRUDService<AttendancePay,Lon
 	 * @param page
 	 * @return
 	 */
-	public PageResult<AttendancePay>  findPages(AttendancePay attendancePay, PageParameter page);
+	public PageResult<AttendancePay> findPages(AttendancePay attendancePay, PageParameter page);
 	
 	/**
 	 * 批量新增考勤
@@ -48,7 +50,7 @@ public interface AttendancePayService  extends BaseCRUDService<AttendancePay,Lon
 	 * 修改考勤
 	 * @param attendancePay
 	 */
-	public void updateAttendance(AttendancePay attendancePay);
+	public void updateAttendance(AttendancePay attendancePay,HttpServletRequest request);
 	
 	/**
 	 * 根据类型和时间查找
