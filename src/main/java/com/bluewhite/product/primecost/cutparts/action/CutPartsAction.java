@@ -65,7 +65,7 @@ public class CutPartsAction {
 	 */
 	@RequestMapping(value = "/product/addCutParts", method = RequestMethod.POST)
 	@ResponseBody
-	public CommonResponse addCutParts( CutParts cutParts) {
+	public CommonResponse addCutParts(CutParts cutParts) {
 		CommonResponse cr = new CommonResponse();
 		if (StringUtils.isEmpty(cutParts.getProductId())) {
 			cr.setCode(ErrorCode.ILLEGAL_ARGUMENT.getCode());
@@ -80,14 +80,12 @@ public class CutPartsAction {
 	/**
 	 * cc裁片修改
 	 * 
-	 * @param request
-	 *            请求
 	 * @return cr
 	 * @throws Exception
 	 */
 	@RequestMapping(value = "/product/updateCutParts", method = RequestMethod.POST)
 	@ResponseBody
-	public CommonResponse updateCutParts(HttpServletRequest request, CutParts cutParts) {
+	public CommonResponse updateCutParts(CutParts cutParts) {
 		CommonResponse cr = new CommonResponse();      
 		if (StringUtils.isEmpty(cutParts.getId())) {
 			cr.setCode(ErrorCode.ILLEGAL_ARGUMENT.getCode());
@@ -104,8 +102,6 @@ public class CutPartsAction {
 	/**
 	 * 分页查看cc裁片
 	 * 
-	 * @param request
-	 *            请求
 	 * @return cr
 	 * @throws Exception
 	 */
@@ -124,7 +120,7 @@ public class CutPartsAction {
 	 */
 	@RequestMapping(value = "/product/deleteCutParts", method = RequestMethod.GET)
 	@ResponseBody
-	public CommonResponse deleteCutParts(HttpServletRequest request, String ids) {
+	public CommonResponse deleteCutParts(String ids) {
 		CommonResponse cr = new CommonResponse();
 		if (!StringUtils.isEmpty(ids)) {
 			String[] idArr = ids.split(",");

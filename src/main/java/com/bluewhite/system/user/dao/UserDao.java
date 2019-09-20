@@ -56,7 +56,7 @@ public interface UserDao extends BaseRepository<User, Long> {
 	 * @param number
 	 * @return
 	 */
-	public List<User> findByOrgNameIdAndQuit(Long orgNameId, int quit);
+	public List<User> findByOrgNameIdAndQuitAndForeigns(Long orgNameId, int quit,int foreigns);
 
 	/**
 	 * 查找所有不是外来人员的员工（本厂员工）

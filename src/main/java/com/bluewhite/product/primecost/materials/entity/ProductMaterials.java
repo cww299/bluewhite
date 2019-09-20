@@ -12,7 +12,7 @@ import com.bluewhite.base.BaseEntity;
 import com.bluewhite.product.primecostbasedata.entity.BaseOne;
 import com.bluewhite.product.primecostbasedata.entity.Materiel;
 /**
- * dd除裁片以外的所有生产用料填写
+ * 辅料
  * @author zhangliang
  *
  */
@@ -65,16 +65,29 @@ public class ProductMaterials extends BaseEntity<Long>{
     private Double oneMaterial;
 	
 	/**
+	 * 单位id
+	 */
+	@Column(name = "unit_id")
+	private Long unitId;
+	
+	/**
+	 * 单位
+	 */
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "unit_id", referencedColumnName = "id", insertable = false, updatable = false)
+	private BaseOne unit;
+	
+	/**
 	 * 是否转换单位获取不同的价格
 	 */
 	@Column(name = "convert_unit")
     private Integer convertUnit;
 	
 	/**
-	 * 手动损耗选择
+	 * 手动损耗选择(默认 = 1)
 	 */
 	@Column(name = "manual_loss")
-    private Double manualLoss;
+    private Double manualLoss = 1.0;
 	
 	
 	/**
@@ -98,6 +111,22 @@ public class ProductMaterials extends BaseEntity<Long>{
 	
 	
 	
+	public Long getUnitId() {
+		return unitId;
+	}
+
+	public void setUnitId(Long unitId) {
+		this.unitId = unitId;
+	}
+
+	public BaseOne getUnit() {
+		return unit;
+	}
+
+	public void setUnit(BaseOne unit) {
+		this.unit = unit;
+	}
+
 	public BaseOne getOverstock() {
 		return overstock;
 	}

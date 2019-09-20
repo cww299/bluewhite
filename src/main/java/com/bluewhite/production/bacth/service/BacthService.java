@@ -24,7 +24,7 @@ public interface BacthService extends BaseCRUDService<Bacth,Long>{
 	 * 批次删除
 	 * @param id
 	 */
-	public int deleteBacth(Long id);
+	public int deleteBacth(String ids);
 	/**
 	 * 一键完成批次，改变status，会转入包装列表
 	 * @param ids

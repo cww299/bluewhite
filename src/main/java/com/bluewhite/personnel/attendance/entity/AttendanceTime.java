@@ -113,6 +113,13 @@ public class AttendanceTime extends BaseEntity<Long> {
 	private Double dutytime;
 	
 	/**
+	 * 实际缺勤时长（分钟数）
+	 * 
+	 */
+	@Column(name = "duty_time_minute")
+	private Double dutytimMinute;
+	
+	/**
 	 * 请假时长
 	 * 
 	 */
@@ -220,6 +227,16 @@ public class AttendanceTime extends BaseEntity<Long> {
 	
 
 	
+
+	
+
+	public Double getDutytimMinute() {
+		return dutytimMinute;
+	}
+
+	public void setDutytimMinute(Double dutytimMinute) {
+		this.dutytimMinute = dutytimMinute;
+	}
 
 	public Double getOrdinaryOvertime() {
 		return ordinaryOvertime;

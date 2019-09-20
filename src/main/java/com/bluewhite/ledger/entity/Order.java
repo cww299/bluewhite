@@ -103,6 +103,12 @@ public class Order extends BaseEntity<Long>{
 	private Integer internal;
 	
 	/**
+	 * 是否审核（0=未审核，1=已审核）（审核成功后进入生产计划环节）
+	 */
+	@Column(name = "audit")
+	private Integer audit;
+	
+	/**
 	 * 客户name
 	 * 
 	 */
@@ -135,6 +141,16 @@ public class Order extends BaseEntity<Long>{
 	
 	
 	
+	public Integer getAudit() {
+		return audit;
+	}
+
+
+	public void setAudit(Integer audit) {
+		this.audit = audit;
+	}
+
+
 	public Integer getSurplusNumber() {
 		return surplusNumber;
 	}

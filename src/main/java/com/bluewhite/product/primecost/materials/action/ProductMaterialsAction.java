@@ -37,7 +37,6 @@ public class ProductMaterialsAction {
 	
 	@Autowired
 	private ProductMaterialsService productMaterialsService;
-	
 	@Autowired
 	private ProductService productService;
 	
