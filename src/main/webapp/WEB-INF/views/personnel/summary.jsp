@@ -128,7 +128,7 @@
 						type : 'month',
 					}); 
 					$.ajax({
-						url: '${ctx}/system/user/findAllUser',
+						url: '${ctx}/system/user/findUserList',
 						type: "GET",
 						async: false,
 						beforeSend: function() {
