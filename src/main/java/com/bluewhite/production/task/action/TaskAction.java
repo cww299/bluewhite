@@ -244,7 +244,7 @@ public class TaskAction {
 		if (procedureId != null) {
 			Procedure procedure = procedureService.findOne(procedureId);
 			if (procedure != null) {
-				if (procedure.getName().indexOf("发货位堆放") != -1 || procedure.getName().indexOf("推包到发货位") != -1) {
+				if (procedure.getName().indexOf("发货位堆放") != -1 || procedure.getName().indexOf("推包到发货位") != -1 || procedure.getName().indexOf("推箱到发货位") != -1 ) {
 					mapList.stream().forEach(m->{
 						if(String.valueOf(m.get("name")).equals("推货工序")){
 							m.put("checked", 1);
