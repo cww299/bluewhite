@@ -69,9 +69,6 @@
 				<td>&nbsp;&nbsp;&nbsp;&nbsp;</td> 
 				<td><span class="input-group-btn">
 					<button type="button"class="btn btn-success  btn-sm btn-3d addDict">加绩</button></span></td>
-				<td>&nbsp;&nbsp;&nbsp;&nbsp;</td> 
-				<td><span class="input-group-btn">
-					<button type="button"class="btn btn-success  btn-sm btn-3d updatetw">加绩修改</button></span></td>
 			</tr>
 		</table>
 	
@@ -635,7 +632,7 @@
 						});
 					  
 					  if(f==0 && g==1){
-							return layer.msg("只能选择同一种状态", {icon: 2});
+							return layer.msg("不能同时选择新增修改", {icon: 2});
 						} 
 					var  update;
 					  if(f==0){
@@ -798,6 +795,17 @@
 										  $('.addDictDivTypeFormtw')[0].reset(); 
 											layer.msg("成功！", {icon: 1});
 											layer.close(_index);
+											var _data = {
+								        			page:self.getCount(),
+											  		size:13,
+											  		type:2,
+											  		productName:$('#name').val(),
+										  			bacthNumber:$('#number').val(),
+										  			orderTimeBegin:$("#startTime").val(),
+										  			orderTimeEnd:$("#endTime").val(),
+										  			flag:$('.selectchoice').val(),
+										  	}
+											self.loadPagination(_data);
 										}else{
 											layer.msg("添加失败", {icon: 2});
 										}
