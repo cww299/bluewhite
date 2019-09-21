@@ -7,6 +7,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import javax.persistence.criteria.Predicate;
+import javax.servlet.http.HttpServletRequest;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -154,7 +155,7 @@ public class BacthServiceImpl extends BaseServiceImpl<Bacth, Long> implements Ba
 
 	@Override
 	@Transactional
-	public int statusBacth(String[] ids, Date time) throws Exception {
+	public int statusBacth(HttpServletRequest request,String[] ids, Date time) throws Exception {
 		int count = 0;
 		Calendar cal = Calendar.getInstance();
 		cal.add(Calendar.DATE, -1);
@@ -193,7 +194,7 @@ public class BacthServiceImpl extends BaseServiceImpl<Bacth, Long> implements Ba
 								task.setBacthNumber(bacth.getBacthNumber());
 								task.setProcedureIds(pro);
 								task.setUserIds(userIds);
-								taskService.addTask(task, null);
+								taskService.addTask(task, request);
 							}
 						}
 					}

@@ -50,12 +50,15 @@
 				<td><span class="input-group-btn hidden-sm">
 						<button type="button" id="addprocedure" class="btn btn-success btn-sm btn-3d pull-right">一键接收</button></span></td>
 				<td>&nbsp;&nbsp;&nbsp;&nbsp;</td> 
+				<td><button type="button"
+							class="btn btn-default btn-danger btn-sm btn-3d attendance2">一键删除</button>&nbsp&nbsp</td>
+				<td>&nbsp;&nbsp;&nbsp;&nbsp;</td> 
 				<td><span class="input-group-btn">
 						<button type="button" class="btn btn-success  btn-sm btn-3d start">一键完成</button></span></td>
 			</tr>
 		</table>
 		<h1 class="page-header"></h1>
-		<table  style="width: 100%"><!-- class="table table-condensed table-hover" --> 
+		<table  class="table table-condensed table-hover" style="width: 100%"><!-- class="table table-condensed table-hover" --> 
 			<thead>
 				<tr>
 					<th class="center"><label> <input type="checkbox"
@@ -463,7 +466,7 @@
 		      				+'<td class="text-center ">'+parseFloat((o.time*1).toFixed(3))+'</td>'
 		      				+'<td class="text-center edit remarks">'+o.remarks+'</td>'
 		      				+'<td class="text-center ">'+strname+'</td>'
-							+'<td class="text-center"><button class="btn btn-sm btn-primary btn-trans addDict" data-id='+o.id+' data-proid='+o.product.id+' data-bacthnumber='+o.bacthNumber+' data-proname='+o.product.name+'>分配</button>  <button class="btn btn-sm btn-info  btn-trans updateremake" data-id='+o.id+'>编辑</button> <button class="btn btn-sm btn-danger btn-trans delete" data-id='+o.id+'>删除</button></td></tr>' 
+							+'<td class="text-center"><button class="btn btn-sm btn-primary btn-trans addDict" data-id='+o.id+' data-proid='+o.product.id+' data-bacthnumber='+o.bacthNumber+' data-proname='+o.product.name+'>分配</button>  <button class="btn btn-sm btn-info  btn-trans updateremake" data-id='+o.id+'>编辑</button> </td></tr>' 
 							
 		      			}); 
 		      			self.setCount(result.data.pageNum)
@@ -474,15 +477,15 @@
 					      curr:  result.data.pageNum || 1, 
 					      jump: function(obj, first){ 
 					    	  if(!first){ 
-					    		 
+					    		  var orderTime=$("#startTime").val().split('~');
 						        	var _data = {
 						        			page:obj.curr,
 									  		size:12,
 									  		type:2,
 								  			name:$('#name').val(),
 								  			bacthNumber:$('#number').val(),
-								  			orderTimeBegin:$("#startTime").val(),
-								  			orderTimeEnd:$("#endTime").val(),
+								  			orderTimeBegin:orderTime[0],
+								  			orderTimeEnd:orderTime[1], 
 								  			status:$('.selectchoice').val(),
 								  	}
 						        
@@ -873,50 +876,7 @@
 						  }
 					});
 				})
-				//删除
-				$('.delete').on('click',function(){
-					var postData = {
-							id:$(this).data('id'),
-					}
-					
-					var index;
-					 index = layer.confirm('确定删除吗', {btn: ['确定', '取消']},function(){
-					$.ajax({
-						url:"${ctx}/bacth/deleteBacth",
-						data:postData,
-						type:"GET",
-						beforeSend:function(){
-							index = layer.load(1, {
-								  shade: [0.1,'#fff'] //0.1透明度的白色背景
-								});
-						},
-						
-						success:function(result){
-							if(0==result.code){
-							layer.msg("删除成功！", {icon: 1});
-							var data = {
-				        			page:1,
-							  		size:12,
-							  		type:2,
-						  			name:$('#name').val(),
-						  			bacthNumber:$('#number').val(),
-						  			orderTimeBegin:$("#startTime").val(),
-						  			orderTimeEnd:$("#endTime").val(),
-						  			status:$('.selectchoice').val(),
-						  	}
-							self.loadPagination(data)
-							layer.close(index);
-							}else{
-								layer.msg("删除失败！", {icon: 1});
-								layer.close(index);
-							}
-						},error:function(){
-							layer.msg("操作失败！", {icon: 2});
-							layer.close(index);
-						}
-					});
-					 })
-				})
+				
 				//修改方法
 				$('.updateremake').on('click',function(){
 					if($(this).text() == "编辑"){
@@ -1905,6 +1865,61 @@
 				}) 
 			}
 			this.events = function(){
+				
+				/* 一键删除 */
+				$('.attendance2').on('click',function(){
+					  var  that=$(this);
+					  var arr=new Array()//员工id
+						$(this).parent().parent().parent().parent().parent().find(".checkboxId:checked").each(function() {  
+							arr.push($(this).val());   
+						});
+					  if(arr.length<=0){
+							return layer.msg("至少选择一个！", {icon: 2});
+						}
+						var postData={
+								ids:arr,
+						}
+						var index;
+						 index = layer.confirm('确定删除吗', {btn: ['确定', '取消']},function(){
+						$.ajax({
+							url:"${ctx}/bacth/deleteBacth",
+							data:postData,
+							traditional: true,
+							type:"GET",
+							beforeSend:function(){
+								index = layer.load(1, {
+									  shade: [0.1,'#fff'] //0.1透明度的白色背景
+									});
+							},
+							
+							success:function(result){
+								if(0==result.code){
+								layer.msg("删除成功！", {icon: 1});
+								var orderTime=$("#startTime").val().split('~');
+								var data = {
+					        			page:1,
+								  		size:12,
+								  		type:2,
+							  			name:$('#name').val(),
+							  			bacthNumber:$('#number').val(),
+							  			orderTimeBegin:orderTime[0],
+							  			orderTimeEnd:orderTime[1], 
+							  			status:$('.selectchoice').val(),
+							  	}
+								self.loadPagination(data)
+								layer.close(index);
+								}else{
+									layer.msg("删除失败！", {icon: 1});
+									layer.close(index);
+								}
+							},error:function(){
+								layer.msg("操作失败！", {icon: 2});
+								layer.close(index);
+							}
+						});
+						 })
+				  })
+				
 				/* 一键删除 */
 				$('.attendance').on('click',function(){
 					  var  that=$(this);
@@ -1998,14 +2013,15 @@
 							success:function(result){
 								if(0==result.code){
 									layer.msg(result.message, {icon: 1});
+									var orderTime=$("#startTime").val().split('~');
 									var _datae = {
 								  			page:1,
 								  			size:12,
 								  			type:2,
 								  			name:$('#name').val(),
 								  			bacthNumber:$('#number').val(),
-								  			 orderTimeBegin:$("#startTime").val(),
-								  			orderTimeEnd:$("#endTime").val(), 
+								  			orderTimeBegin:orderTime[0],
+								  			orderTimeEnd:orderTime[1], 
 								  			status:$('.selectchoice').val(),
 								  	}
 									self.loadPagination(_datae);
