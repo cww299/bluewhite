@@ -262,7 +262,7 @@
 		      				if(o.flag==1){
 		      					a="(返工)"
 		      				}
-		      				html +='<tr><td class="center reste"><label> <input type="checkbox" class="ace checkboxId" value="'+o.id+'" data-procedurename="'+s+a+'" data-proname="'+o.productName+'" data-performancenumber="'+o.performanceNumber+'"/><span class="lbl"></span></label></td>'
+		      				html +='<tr><td class="center reste"><label> <input type="checkbox" class="ace checkboxId" value="'+o.id+'" data-procedurename="'+s+a+'" data-proname="'+o.productName+'" data-procedure="'+o.procedure.id+'" data-performance="'+o.performance+'"/><span class="lbl"></span></label></td>'
 		      				+'<td class="text-center ">'+o.bacthNumber+'</td>'
 		      				+'<td class="text-center ">'+o.productName+'</td>'
 		      				+'<td class="text-center edit allotTime">'+o.allotTime+'</td>'
@@ -607,20 +607,43 @@
 					var arr=""//员工id
 					var arrytw=new Array()
 					var arryth=new Array()
+					var arryfr=new Array()
 					var tasksId=new Array()
 					var CheckCount=0;
 					var productNam;
-					  thae.parent().parent().parent().parent().parent().find(".checkboxId:checked").each(function() {  
+					var f;
+					var g;
+					  thae.parent().parent().parent().parent().parent().find(".checkboxId:checked").each(function(i,o) {  
 						  CheckCount++;
 						  arr=$(this).val();  
 						  tasksId.push($(this).val());  
 						  arrytw.push($(this).data('procedurename'));
-						  arryth.push($(this).data('performancenumber')); 
-						  productName=$(this).data('proname')
+						  arryth.push($(this).data('performance')); 
+						  arryfr.push($(this).data('procedure')); 
+						  productName=$(this).data('proname');
+						  //
+						  if($(this).data('performance')==""){
+							  f=0;
+						  }else{
+							  g=1;
+						  }
+						  if($(this).data('performance')!=""){
+							  g=1;
+						  }else{
+							  f=0;
+						  }
 						});
-					 /*  if(CheckCount>1){
-							return layer.msg("只能选择一条任务", {icon: 2});
-						} */
+					  
+					  if(f==0 && g==1){
+							return layer.msg("只能选择同一种状态", {icon: 2});
+						} 
+					var  update;
+					  if(f==0){
+						  update=0;  
+					  }
+					  if(g==1){
+						  update=1;  
+					  }
 					if(arr==""){
 						return layer.msg("请选择一条任务", {icon: 2});
 					}
@@ -685,37 +708,44 @@
 						for (var i = 0; i < arrytw.length; i++) {
 						var array_element = arrytw[i];
 						var array_element2 =arryth[i];
-						console.log(array_element2)
-						htm+="<label class='col-sm-2 control-label'>工序:</label><div class='col-sm-3 type'><input type='text' disabled='disabled' class='form-control' value="+array_element+"></div><div class='form-group'><label class='col-sm-2 control-label'>加绩工序:</label><div class='col-sm-3 workingtw'><select class='form-control selectchangtw'></select></div>"
+						var array_element3 =arryfr[i];
+						data={
+								procedureId:array_element3
+								}
+							var id="";
+							var htmls="<option>请选择</option>"
+									$.ajax({
+										url:"${ctx}/task/pickTaskPerformance",
+										type:"GET",
+										data:data,
+										async: false,
+										beforeSend:function(){
+											index = layer.load(1, {
+												  shade: [0.1,'#fff'] //0.1透明度的白色背景
+												});
+										},
+										success:function(result){
+											$(result.data).each(function(i,o){
+												var a="";
+												if(o.checked==1){
+													id=o.name
+												}
+													ids=array_element2==""?id:array_element2;
+												
+											htmls+='<option value="'+o.name+'" data-number="'+o.number+'" '+(ids==o.name ? "selected" : "")+'>'+o.name+'</option>'
+											
+											})
+											layer.close(index);
+										},error:function(){
+											layer.msg("操作失败！", {icon: 2});
+											layer.close(index);
+										}
+									});
+						
+						htm+="<label class='col-sm-2 control-label'>工序:</label><div class='col-sm-3 type'><input type='text' disabled='disabled' class='form-control' value="+array_element+"></div><div class='form-group'><label class='col-sm-2 control-label'>加绩工序:</label><div class='col-sm-3 workingtw'><select class='form-control selectchangtw'>"+htmls+"</select></div>"
 						+"</div>"
 						$('#type').html(htm)
 			      			
-						var htmls=""
-								$.ajax({
-									url:"${ctx}/task/pickTaskPerformance",
-									type:"GET",
-									async: false,
-									beforeSend:function(){
-										index = layer.load(1, {
-											  shade: [0.1,'#fff'] //0.1透明度的白色背景
-											});
-									},
-									success:function(result){
-										$(result.data).each(function(i,o){
-										htmls+='<option value="'+o.number+'" data-name="'+o.name+'">'+o.name+'</option>'
-										})
-										$('.selectchangtw').html(htmls)
-										layer.close(index);
-									},error:function(){
-										layer.msg("操作失败！", {icon: 2});
-										layer.close(index);
-									}
-								});
-			      		
-						$('.selectchangtw').each(function(i,o){
-							var id=array_element2;
-							$(o).val(id);
-						})
 						}
 					
 				    
@@ -742,7 +772,7 @@
 								var performanceNumber=new Array()
 								var performance=new Array()
 								$(".selectchangtw option:selected").each(function() {
-									performanceNumber.push($(this).val());
+									performanceNumber.push($(this).data('number'));
 									performance.push($(this).text());
 								})
 								var postData = {
@@ -750,7 +780,7 @@
 										ids:arry,
 										performanceNumber:performanceNumber,
 										performance:performance,
-										update:0,
+										update:update,
 								}
 							    $.ajax({
 									url:"${ctx}/task/giveTaskPerformance",
@@ -766,7 +796,7 @@
 									success:function(result){
 										if(0==result.code){
 										  $('.addDictDivTypeFormtw')[0].reset(); 
-											layer.msg("添加成功！", {icon: 1});
+											layer.msg("成功！", {icon: 1});
 											layer.close(_index);
 										}else{
 											layer.msg("添加失败", {icon: 2});
@@ -782,193 +812,6 @@
 							  $('.addDictDivTypeFormtw')[0].reset(); 
 							  $("#addDictDivTypetw").hide();
 							  $('.select').text("");
-							  var date={
-										page:self.getCount(),
-								  		size:13,	
-								  		type:2,
-								} 
-							   self.loadPagination(date);
-							
-						  } 
-					});
-					
-					
-				})
-				//修改
-				$('.updatetw').on('click',function(){
-					var  thae=$(".table-hover");
-					var arr=""//员工id
-					var arrytw=new Array()
-					var tasksId=new Array()
-					var CheckCount=0;
-					var productName;
-					  thae.parent().parent().parent().parent().parent().find(".checkboxId:checked").each(function() {  
-						  CheckCount++;
-						  arr=$(this).val();  
-						  tasksId.push($(this).val());  
-						  arrytw.push($(this).data('procedurename'));
-						  productName=$(this).data('proname');
-						});
-					 /*  if(CheckCount>1){
-							return layer.msg("只能选择一条任务", {icon: 2});
-						} */
-					if(arr==""){
-						return layer.msg("请选择一条任务", {icon: 2});
-					}
-					var that=$(this)
-					
-					var _index
-					var index
-					var postData
-					//工序遍历  
-				    var indextwo;
-				    
-				    var htmlth = '';
-				    var htmlfr = '';
-					//遍历人名组别
-			      			  $('.complete').html("<select class='form-control selectcomplete'><option value="+0+">请选择</option><option value="+""+">全部</option></select>")
-							//改变事件
-			      			 $(".selectcomplete").change(function(){
-			      				var htmltwo = "";
-			      				var	id=$(this).val()
-								   var data={
-										  id:arr,
-								   }
-			      				$.ajax({
-									url:"${ctx}/task/taskUser",
-									data:data,
-									type:"GET",
-									beforeSend:function(){
-										index = layer.load(1, {
-											  shade: [0.1,'#fff'] //0.1透明度的白色背景
-											});
-									},
-									
-									success:function(result){
-										$(result.data).each(function(i,o){
-											htmltwo +='<div class="input-group"><input type="checkbox" class="stuCheckBox" value="'+o.id+'" data-username="'+o.userName+'">'+o.userName+'</input></div>'
-										})
-										var s="<div class='input-group'><input type='checkbox' class='checkall'>全选</input></div>"
-										$('.select').html(s+htmltwo)
-										$(".checkall").on('click',function(){
-							                    if($(this).is(':checked')){ 
-										 			$('.stuCheckBox').each(function(){  
-							                    //此处如果用attr，会出现第三次失效的情况  
-							                     		$(this).prop("checked",true);
-										 			})
-							                    }else{
-							                    	$('.stuCheckBox').each(function(){ 
-							                    		$(this).prop("checked",false);
-							                    		
-							                    	})
-							                    }
-							                });
-										layer.close(index);
-									},error:function(){
-										layer.msg("操作失败！", {icon: 2});
-										layer.close(index);
-									}
-								});
-							 }) 
-					//遍历杂工加绩比值
-					var html=""
-					$.ajax({
-						url:"${ctx}/task/pickTaskPerformance",
-						type:"GET",
-						beforeSend:function(){
-							index = layer.load(1, {
-								  shade: [0.1,'#fff'] //0.1透明度的白色背景
-								});
-						},
-						
-						success:function(result){
-							$(result.data).each(function(i,o){
-							html+='<option value="'+o.number+'" data-name="'+o.name+'">'+o.name+'</option>'
-							})
-						var htm=""
-						for (var i = 0; i < arrytw.length; i++) {
-						var array_element = arrytw[i];
-						htm+="<label class='col-sm-2 control-label'>工序:</label><div class='col-sm-3 type'><input type='text' disabled='disabled' class='form-control' value="+array_element+"></div><div class='form-group'><label class='col-sm-2 control-label'>加绩工序:</label><div class='col-sm-3 workingtw'><select class='form-control selectchangtw'><option value='0'></option>"+html+"</select></div>"
-						+"</div>"
-						$('#type').html(htm)
-						}
-							layer.close(index);
-							
-						},error:function(){
-							layer.msg("操作失败！", {icon: 2});
-							layer.close(index);
-						}
-					});
-				    
-					var postData
-					var dicDiv=$('#addDictDivTypetw');
-					_index = layer.open({
-						  type: 1,
-						  skin: 'layui-layer-rim', //加上边框
-						  area: ['60%', '60%'], 
-						  btnAlign: 'c',//宽高
-						  maxmin: true,
-						  title:productName,
-						  offset:(parent.document.documentElement.scrollTop+100)+'px',
-						  content: dicDiv,
-						  btn: ['确定', '取消'],
-						  yes:function(index, layero){
-							  var arry=new Array()
-								$(".stuCheckBox:checked").each(function() {   
-								    arry.push($(this).val());   
-								}); 
-								if(arr.length<=0){
-									return layer.msg("至少选择一个员工！", {icon: 2});
-								}
-								var performanceNumber=new Array()
-								var performance=new Array()
-								$(".selectchangtw option:selected").each(function() {
-									performanceNumber.push($(this).val());
-									performance.push($(this).text());
-								})
-								var postData = {
-										taskIds:tasksId,
-										ids:arry,
-										performanceNumber:performanceNumber,
-										performance:performance,
-										update:1,
-								}
-							    $.ajax({
-									url:"${ctx}/task/giveTaskPerformance",
-									data:postData,
-						            traditional: true,
-									type:"post",
-									beforeSend:function(){
-										index = layer.load(1, {
-											  shade: [0.1,'#fff'] //0.1透明度的白色背景
-											});
-									},
-									
-									success:function(result){
-										if(0==result.code){
-										  $('.addDictDivTypeFormtw')[0].reset(); 
-											layer.msg("添加成功！", {icon: 1});
-											layer.close(_index);
-										}else{
-											layer.msg("添加失败", {icon: 2});
-										}
-										layer.close(index);
-									},error:function(){
-										layer.msg("操作失败！", {icon: 2});
-										layer.close(index);
-									}
-								});  
-							},
-						   end:function(){
-							  $('.addDictDivTypeFormtw')[0].reset(); 
-							  $("#addDictDivTypetw").hide();
-							  $('.select').text("");
-							  var date={
-										page:self.getCount(),
-								  		size:13,	
-								  		type:2,
-								} 
-							   self.loadPagination(date);
 							
 						  } 
 					});
