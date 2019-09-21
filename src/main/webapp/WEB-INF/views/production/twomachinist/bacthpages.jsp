@@ -65,6 +65,9 @@
 							查&nbsp;找</button>
 					</span></td>
 					<td>&nbsp;&nbsp;&nbsp;&nbsp;</td> 
+					<td><button type="button"
+							class="btn btn-default btn-danger btn-sm btn-3d attendance2">一键删除</button>&nbsp&nbsp</td>
+				<td>&nbsp;&nbsp;&nbsp;&nbsp;</td> 
 					<td><span class="input-group-btn">
 						<button type="button"
 							class="btn btn-success  btn-sm btn-3d export">
@@ -336,7 +339,7 @@
 		      				+'<td class="text-center edit remarks">'+o.remarks+'</td>'
 		      				+'<td class="text-center ">'+strname+'</td>'
 		      				+'<td class="text-center "><select class="text-center form-control choice"><option value="0" '+(o.machinist==0?"selected":"")+'>二楼机工</option><option value="1" '+(o.machinist==1?"selected":"")+'>三楼机工</option></select></td>'
-							+'<td class="text-center"><button class="btn btn-sm btn-primary btn-trans addDict" data-id='+o.id+' data-proid='+o.product.id+' data-bacthnumber='+o.bacthNumber+' data-proname='+o.product.name+'>分配</button>  <button class="btn btn-sm btn-info  btn-trans updateremaketw" data-id='+o.id+'>编辑</button> <button class="btn btn-sm btn-danger btn-trans delete" data-id='+o.id+'>删除</button></td></tr>' 
+							+'<td class="text-center"><button class="btn btn-sm btn-primary btn-trans addDict" data-id='+o.id+' data-proid='+o.product.id+' data-bacthnumber='+o.bacthNumber+' data-proname='+o.product.name+'>分配</button>  <button class="btn btn-sm btn-info  btn-trans updateremaketw" data-id='+o.id+'>编辑</button> </td></tr>' 
 							
 		      			}); 
 		      			 self.setCount(result.data.pageNum)
@@ -758,40 +761,6 @@
 						  }
 					});
 				})
-				//删除
-				$('.delete').on('click',function(){
-					var postData = {
-							id:$(this).data('id'),
-					}
-					var that=$(this);
-					var index;
-					 index = layer.confirm('确定删除吗', {btn: ['确定', '取消']},function(){
-					$.ajax({
-						url:"${ctx}/bacth/deleteBacth",
-						data:postData,
-						type:"GET",
-						beforeSend:function(){
-							index = layer.load(1, {
-								  shade: [0.1,'#fff'] //0.1透明度的白色背景
-								});
-						},
-						
-						success:function(result){
-							if(0==result.code){
-							layer.msg("删除成功！", {icon: 1});
-							that.parent().parent().hide();
-							layer.close(index);
-							}else{
-								layer.msg("删除失败！", {icon: 1});
-								layer.close(index);
-							}
-						},error:function(){
-							layer.msg("操作失败！", {icon: 2});
-							layer.close(index);
-						}
-					});
-					 })
-				})
 				//修改方法
 				$('.updateremaketw').on('click',function(){
 					if($(this).text() == "编辑"){
@@ -1192,6 +1161,58 @@
 				  	}
 		            self.loadPagination(data);
 				});
+				/* 一键删除 */
+				$('.attendance2').on('click',function(){
+					  var  that=$(this);
+					  var arr=new Array()//员工id
+						$(this).parent().parent().parent().parent().parent().find(".checkboxId:checked").each(function() {  
+							arr.push($(this).val());   
+						});
+					  if(arr.length<=0){
+							return layer.msg("至少选择一个！", {icon: 2});
+						}
+						var postData={
+								ids:arr,
+						}
+						var index;
+						 index = layer.confirm('确定删除吗', {btn: ['确定', '取消']},function(){
+						$.ajax({
+							url:"${ctx}/bacth/deleteBacth",
+							data:postData,
+							traditional: true,
+							type:"GET",
+							beforeSend:function(){
+								index = layer.load(1, {
+									  shade: [0.1,'#fff'] //0.1透明度的白色背景
+									});
+							},
+							
+							success:function(result){
+								if(0==result.code){
+								layer.msg("删除成功！", {icon: 1});
+								var data = {
+					        			page:1,
+								  		size:12,
+								  		type:4,
+							  			name:$('#name').val(),
+							  			bacthNumber:$('#number').val(),
+							  			orderTimeBegin:$("#startTime").val(),
+							  			orderTimeEnd:$("#endTime").val(),
+							  			status:$('.selectchoice').val(),
+							  	}
+								self.loadPagination(data)
+								layer.close(index);
+								}else{
+									layer.msg("删除失败！", {icon: 1});
+									layer.close(index);
+								}
+							},error:function(){
+								layer.msg("操作失败！", {icon: 2});
+								layer.close(index);
+							}
+						});
+						 })
+				  })
 				/* 一键完成  */
 				 $('.start').on('click',function(){
 					  var  that=$(".table-hover");
