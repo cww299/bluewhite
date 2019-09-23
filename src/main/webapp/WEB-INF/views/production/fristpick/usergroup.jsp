@@ -175,8 +175,8 @@
 							<thead>
 								<tr>
 									<th class="text-center">人名</th>
-									<th class="text-center">所在组工作时长</th>
-									<th class="text-center">工作区间</th>
+									<th class="text-center hidden-sm">所在组工作时长</th>
+									<th class="text-center hidden-sm">工作区间</th>
 								</tr>
 							</thead>
 							<tbody id="tableUserTime">
@@ -596,8 +596,8 @@
 									}
 									html +='<tr>'
 				      				+'<td class="text-center">'+o.userName+'</td>'
-				      				+'<td class="text-center"><input  class="adjustTime" style="background:none;outline:none;border:0px;text-align:center;" data-id="'+o.id+'" data-temporarily='+o.temporarily+' data-groupid='+result.data[0].id+' data-ajid="'+o.adjustTimeId+'" value='+(o.adjustTime!=null ? o.adjustTime :0)+' /></td>'
-									+'<td class="text-center" style="width:300px;"><input class="form-control" data-temporarily='+o.temporarily+
+				      				+'<td class="text-center hidden-sm"><input  class="adjustTime" style="background:none;outline:none;border:0px;text-align:center;" data-id="'+o.id+'" data-temporarily='+o.temporarily+' data-groupid='+result.data[0].id+' data-ajid="'+o.adjustTimeId+'" value='+(o.adjustTime!=null ? o.adjustTime :0)+' /></td>'
+									+'<td class="text-center hidden-sm" style="width:300px;"><input class="form-control" data-temporarily='+o.temporarily+
 										' id="startEndTime'+i+'" data-id="'+o.adjustTimeId+'" value="'+time+'" data-groupid='+result.data[0].id+'></td>'
 								})
 								$('#tableUserTime').html(html);
@@ -999,7 +999,7 @@
 					_index = layer.open({
 						  type: 1,
 						  skin: 'layui-layer-rim', //加上边框
-						  area: ['30%', '50%'], 
+						  area: ['500px', '400px'], 
 						  btnAlign: 'c',//宽高
 						  maxmin: true,
 						  title:"新增小组",
@@ -1080,7 +1080,7 @@
 					_index = layer.open({
 						  type: 1,
 						  skin: 'layui-layer-rim', //加上边框
-						  area: ['30%', '60%'], 
+						  area: ['500px', '500px'], 
 						  btnAlign: 'c',//宽高
 						  maxmin: true,
 						  title:"新增人员",

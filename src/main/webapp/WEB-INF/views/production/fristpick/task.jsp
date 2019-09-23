@@ -14,6 +14,7 @@
 <meta name="viewport"
 	content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
 <link rel="stylesheet" href="${ctx }/static/plugins/bootstrap/css/bootstrap.min.css">
+<link rel="stylesheet" href="${ctx }/static/layui-v2.4.5/layui/css/layui.css" media="all">
 	<script src="${ctx }/static/js/vendor/jquery-3.3.1.min.js"></script>
 	<script src="${ctx }/static/js/layer/layer.js"></script>	
 	<script src="${ctx }/static/js/laydate-icon/laydate.js"></script>
@@ -29,31 +30,22 @@
 		<!--查询开始  -->				
 		<table>
 			<tr>
-				<td>批次号:</td>
-				<td><input type="text" name="number" id="number"
+				<td class="hidden-sm">批次号:</td>
+				<td class="hidden-sm"><input type="text" name="number" id="number"
 					placeholder="请输入批次号"
 					class="form-control search-query number" /></td>
 				<td>&nbsp;&nbsp;</td>
-				<td>产品名称:</td>
+				<td>产品名:</td>
 				<td><input type="text" name="name" id="name"
-					placeholder="请输入产品名称"
+					placeholder="请输入产品名称" style="width: 120px;"
 					class="form-control search-query name" /></td>
 				<td>&nbsp;&nbsp;</td>
-				<td>工序名称:</td>
-				<td><input type="text" name="procedureName" id="procedureName"
+				<td>工序名:</td>
+				<td><input type="text" name="procedureName" id="procedureName" style="width: 120px;"
 						placeholder="请输入工序名称" class="form-control search-query name" /></td>
 				<td>&nbsp;&nbsp;</td>
-				<td>开始时间:</td>
-				<td><input id="startTime" placeholder="请输入开始时间"
-					class="form-control laydate-icon"
-					onClick="laydate({elem: '#startTime', istime: true, format: 'YYYY-MM-DD hh:mm:ss'})">
-				</td>
-				<td>&nbsp;&nbsp;</td>
-				<td>结束时间:</td>
-				<td><input id="endTime" placeholder="请输入结束时间"
-					class="form-control laydate-icon"
-					onClick="laydate({elem: '#endTime', istime: true, format: 'YYYY-MM-DD hh:mm:ss'})">
-				</td>
+				<td>时间:</td>
+				<td><input id="startTime" placeholder="请输入开始时间" style="width: 230px;" class="form-control"></td>
 				<td>&nbsp;&nbsp;</td>
 				<td>工序:</td>
 				<td><select class="form-control selectchoice"><option
@@ -80,14 +72,14 @@
 					<th class="center"><label> <input type="checkbox"
 							class="ace checks" /> <span class="lbl"></span>
 					</label></th>
-					<th class="text-center">批次号</th>
+					<th class="text-center hidden-sm">批次号</th>
 					<th class="text-center" style="width: 250px;">产品名</th>
 					<th class="text-center">时间</th>
 					<th class="text-center">工序</th>
-					<th class="text-center">预计时间</th>
-					<th class="text-center">任务价值</th>
-					<th class="text-center">b工资净值</th>
-					<th class="text-center">数量</th>
+					<th class="text-center hidden-sm">预计时间</th>
+					<th class="text-center hidden-sm">任务价值</th>
+					<th class="text-center hidden-sm">b工资净值</th>
+					<th class="text-center hidden-sm">数量</th>
 					<th class="text-center">工序加价</th>
 					<th class="text-center">加绩工资</th>
 					<th class="text-center">完成人</th>
@@ -152,14 +144,14 @@
 				<div class="form-group">
 
 					<label class="col-sm-1 control-label" style="width: 17.1%;">完成人:</label>
-					<div class="col-sm-2 complete">
+					<div class="col-sm-2 complete" style="width: 20%;">
 						<input type="text" class="form-control">
 					</div>
 					<div class="col-sm-2 select"></div>
 				</div>
+		</form>
 		</div>
 
-		</form>
 	</div>
 	</div>
 	<!--隐藏框 工序加绩分配结束  -->
@@ -189,8 +181,7 @@
 		</div>
 	</div>
 	<!--隐藏框 查看加价结束  -->
-
-	</section>
+<script src="${ctx}/static/layui-v2.4.5/layui/layui.js"></script>
 	<script>
    jQuery(function($){
    	var Login = function(){
@@ -223,17 +214,26 @@
 			var day = new Date(year,month,0);  
 			var firstdate = year + '-' + '0'+month + '-01'+' '+'00:00:00';
 			var lastdate = year + '-' + '0'+month + '-' + day.getDate() +' '+'23:59:59';
-			$('#startTime').val(firstdate);
-			$('#endTime').val(lastdate);
+			/* $('#startTime').val(firstdate);
+			$('#endTime').val(lastdate); */
 			 var data={
 						page:1,
 				  		size:13,	
 				  		type:2,
-				  		orderTimeBegin:$("#startTime").val(),
-				  		orderTimeEnd:$("#endTime").val(),
+				  		orderTimeBegin:firstdate,
+				  		orderTimeEnd:lastdate,
 				} 
+			
+			 layui.use(['laydate'],function(){
+					var laydate = layui.laydate;
+					laydate.render({
+						elem: '#startTime',
+						type: 'datetime',
+						range: '~',
+						value : firstdate+' ~ '+lastdate,
+					});
+			 })
 			this.init = function(){
-				
 				//注册绑定事件
 				self.events();
 				self.loadPagination(data);
@@ -260,13 +260,13 @@
 		      					a="(返工)"
 		      				}
 		      				html +='<tr><td class="center reste"><label> <input type="checkbox" class="ace checkboxId" value="'+o.id+'" data-procedurename="'+s+a+'" data-proname="'+o.productName+'" data-procedure="'+o.procedure.id+'" data-performance="'+o.performance+'"/><span class="lbl"></span></label></td>'
-		      				+'<td class="text-center ">'+o.bacthNumber+'</td>'
+		      				+'<td class="text-center hidden-sm">'+o.bacthNumber+'</td>'
 		      				+'<td class="text-center ">'+o.productName+'</td>'
 		      				+'<td class="text-center edit allotTime">'+o.allotTime+'</td>'
-		      				+'<td class="text-center ">'+s+a+'</td>'
-		      				+'<td class="text-center ">'+parseFloat((o.expectTime).toFixed(4))+'</td>'
-		      				+'<td class="text-center ">'+parseFloat((o.taskPrice).toFixed(4))+'</td>'
-		      				+'<td class="text-center ">'+parseFloat((o.payB).toFixed(4))+'</td>'
+		      				+'<td class="text-center hidden-sm">'+s+a+'</td>'
+		      				+'<td class="text-center hidden-sm">'+parseFloat((o.expectTime).toFixed(4))+'</td>'
+		      				+'<td class="text-center hidden-sm">'+parseFloat((o.taskPrice).toFixed(4))+'</td>'
+		      				+'<td class="text-center hidden-sm">'+parseFloat((o.payB).toFixed(4))+'</td>'
 		      				+'<td class="text-center edit number">'+o.number+'</td>'
 		      				+'<td class="text-center "><button class="btn btn-primary btn-trans btn-sm savemodePerformance" data-toggle="modal" data-target="#myModaltw" data-id="'+o.id+'")">查看加价</button></td>'
 		      				+'<td class="text-center ">'+parseFloat((o.performancePrice).toFixed(4))+'</td>'
@@ -282,7 +282,7 @@
 					      curr:  result.data.pageNum || 1, 
 					      jump: function(obj, first){ 
 					    	  if(!first){ 
-					    		 
+					    		  var orderTime=$("#startTime").val().split('~');
 						        	var _data = {
 						        			page:obj.curr,
 									  		size:13,
@@ -290,8 +290,8 @@
 								  			productName:$('#name').val(),
 								  			bacthNumber:$('#number').val(),
 								  			procedureName:$('#procedureName').val(),
-								  			orderTimeBegin:$("#startTime").val(),
-								  			orderTimeEnd:$("#endTime").val(), 
+								  			orderTimeBegin:orderTime[0],
+								  			orderTimeEnd:orderTime[1],  
 								  			flag:$('.selectchoice').val(),
 								  	}
 						        
@@ -333,14 +333,15 @@
 								success:function(result){
 									if(0==result.code){
 									layer.msg("删除成功！", {icon: 1});
+									var orderTime=$("#startTime").val().split('~');
 									var _data = {
 						        			page:self.getCount(),
 									  		size:13,
 									  		type:2,
 									  		productName:$('#name').val(),
 								  			bacthNumber:$('#number').val(),
-								  			orderTimeBegin:$("#startTime").val(),
-								  			orderTimeEnd:$("#endTime").val(),
+								  			orderTimeBegin:orderTime[0],
+								  			orderTimeEnd:orderTime[1], 
 								  			flag:$('.selectchoice').val(),
 								  	}
 									self.loadPagination(_data);
@@ -407,14 +408,15 @@
 								success:function(result){
 									if(0==result.code){
 									layer.msg(result.message, {icon: 1});
+									var orderTime=$("#startTime").val().split('~');
 									var _data = {
 						        			page:self.getCount(),
 									  		size:13,
 									  		type:2,
 									  		productName:$('#name').val(),
 								  			bacthNumber:$('#number').val(),
-								  			orderTimeBegin:$("#startTime").val(),
-								  			orderTimeEnd:$("#endTime").val(),
+								  			orderTimeBegin:orderTime[0],
+								  			orderTimeEnd:orderTime[1], 
 								  			flag:$('.selectchoice').val(),
 								  	}
 									self.loadPagination(_data);
@@ -527,8 +529,18 @@
                 }); 
 				
 			}
+			$(document).on('click', '#tablecontent  tr', function(event) {
+				  if($(this).find('.checkboxId').is(':checked')==false){
+					$(this).find('.checkboxId').prop("checked",true)
+					 $(this).css("color","red");
+				  }else{
+					  $(this).find('.checkboxId').prop("checked",false)
+					  $(this).css("color","inherit");
+				  }
+				})
 			this.events = function(){
 				$('.searchtask').on('click',function(){
+					var orderTime=$("#startTime").val().split('~');
 					var data = {
 				  			page:1,
 				  			size:13,
@@ -536,8 +548,8 @@
 				  			productName:$('#name').val(),
 				  			bacthNumber:$('#number').val(),
 				  			procedureName:$('#procedureName').val(),
-				  			orderTimeBegin:$("#startTime").val(),
-				  			orderTimeEnd:$("#endTime").val(), 
+				  			orderTimeBegin:orderTime[0],
+				  			orderTimeEnd:orderTime[1], 
 				  			flag:$('.selectchoice').val(),
 				  	}
 		            self.loadPagination(data);
@@ -573,14 +585,15 @@
 							success:function(result){
 								if(0==result.code){
 									layer.msg(result.message, {icon: 1});
+									var orderTime=$("#startTime").val().split('~');
 									var _data = {
 						        			page:self.getCount(),
 									  		size:13,
 									  		type:2,
 									  		productName:$('#name').val(),
 								  			bacthNumber:$('#number').val(),
-								  			orderTimeBegin:$("#startTime").val(),
-								  			orderTimeEnd:$("#endTime").val(),
+								  			orderTimeBegin:orderTime[0],
+								  			orderTimeEnd:orderTime[1], 
 								  			flag:$('.selectchoice').val(),
 								  	}
 									self.loadPagination(_data);
@@ -655,9 +668,8 @@
 				    var htmlth = '';
 				    var htmlfr = '';
 					//遍历人名组别
-			      			  $('.complete').html("<select class='form-control selectcomplete'><option value="+0+">请选择</option><option value="+""+">全部</option></select>")
+			      			  $('.complete').html("<select class='form-control selectcomplete'><option value="+""+">全部</option></select>")
 							//改变事件
-			      			 $(".selectcomplete").change(function(){
 			      				var htmltwo = "";
 			      				var	id=$(this).val()
 								   var data={
@@ -698,7 +710,7 @@
 										layer.close(index);
 									}
 								});
-							 }) 
+							  
 					//遍历杂工加绩比值
 					var html=""
 					var htm=""
@@ -739,7 +751,7 @@
 										}
 									});
 						
-						htm+="<label class='col-sm-2 control-label'>工序:</label><div class='col-sm-3 type'><input type='text' disabled='disabled' class='form-control' value="+array_element+"></div><div class='form-group'><label class='col-sm-2 control-label'>加绩工序:</label><div class='col-sm-3 workingtw'><select class='form-control selectchangtw'>"+htmls+"</select></div>"
+						htm+="<label class='col-sm-2 control-label'>工序:</label><div class='col-sm-3 type'><input type='text' disabled='disabled' class='form-control' value="+array_element+"></div><div class='form-group'><label class='col-sm-3 control-label'>加绩工序:</label><div class='col-sm-3 workingtw'><select class='form-control selectchangtw'>"+htmls+"</select></div>"
 						+"</div>"
 						$('#type').html(htm)
 			      			
@@ -795,14 +807,15 @@
 										  $('.addDictDivTypeFormtw')[0].reset(); 
 											layer.msg("成功！", {icon: 1});
 											layer.close(_index);
+											var orderTime=$("#startTime").val().split('~');
 											var _data = {
 								        			page:self.getCount(),
 											  		size:13,
 											  		type:2,
 											  		productName:$('#name').val(),
 										  			bacthNumber:$('#number').val(),
-										  			orderTimeBegin:$("#startTime").val(),
-										  			orderTimeEnd:$("#endTime").val(),
+										  			orderTimeBegin:orderTime[0],
+										  			orderTimeEnd:orderTime[1], 
 										  			flag:$('.selectchoice').val(),
 										  	}
 											self.loadPagination(_data);
