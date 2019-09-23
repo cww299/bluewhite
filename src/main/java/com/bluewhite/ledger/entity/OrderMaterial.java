@@ -81,6 +81,12 @@ public class OrderMaterial extends BaseEntity<Long>{
 	 */
 	@Column(name = "dosage")
     private Double dosage;
+	
+	/**
+	 * 是否删除
+	 */
+	@Column(name = "flag")
+    private Integer flag;
 
 	/**
 	 * 产品name
@@ -101,6 +107,16 @@ public class OrderMaterial extends BaseEntity<Long>{
 	
 	
 	
+
+	public Integer getFlag() {
+		return flag;
+	}
+
+
+	public void setFlag(Integer flag) {
+		this.flag = flag;
+	}
+
 
 	public String getProductName() {
 		return productName;
