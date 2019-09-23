@@ -438,17 +438,6 @@
 						</div>
 					</div>
 					<div class="form-group">
-						<label class="col-sm-4 control-label">归属车间:</label>
-						<div class="col-sm-4">
-							<select class="form-control" id="type4"><option value="">请选择</option>
-								<option value="1">质检</option>
-								<option value="2">包装</option>
-								<option value="3">针工</option>
-								<option value="4">机工</option>
-								<option value="5">8号仓库</option></select>
-						</div>
-					</div>
-					<div class="form-group">
 						<label class="col-sm-4 control-label">部门:</label>
 						<div class="col-sm-4 department"></div>
 					</div>
@@ -456,13 +445,6 @@
 					<div class="form-group">
 						<label class="col-sm-4 control-label">职位:</label>
 						<div class="col-sm-4 position"></div>
-					</div>
-					<div class="form-group">
-						<label class="col-sm-4 control-label">是否为销售人员:</label>
-						<div class="col-sm-4">
-							<select class="form-control" id="sale"><option value="">请选择</option>
-								<option value="1">是</option></select>
-						</div>
 					</div>
 					<div class="form-group hidden">
 						<input type="text" id="productId" class="form-control">
@@ -1067,7 +1049,7 @@ jQuery(function($){
 							  }, 
 				      		  success: function (result) {
 				      			 $(result.data.rows).each(function(i,o){
-				      				 var order = i+1;
+				      				var order = i+1;
 				      				var k;
 				      				var th='';
 				      				 if(o.orgName==null){
@@ -1154,6 +1136,9 @@ jQuery(function($){
 									$('#producturl').val(o.pictureUrl);
 					      			var html='<input class="form-control" value="'+l+'" />'
 					      			$(".position").html(html);
+					      			$('.selectgroupChange').each(function(j,m){
+										$(m).val(z);
+									});
 					      			$('.gender').each(function(j,k){
 										var id=o.gender;
 										$(k).val(id);

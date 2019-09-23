@@ -167,6 +167,21 @@
         $('#example').dataTable();
     });  */
    jQuery(function($){
+	 	//判断当前设备的UA
+	   var ua = navigator.userAgent.toLocaleLowerCase();
+	      var pf = navigator.platform.toLocaleLowerCase();
+	      var isAndroid = (/android/i).test(ua)||((/iPhone|iPod|iPad/i).test(ua) && (/linux/i).test(pf))
+	          || (/ucweb.*linux/i.test(ua));
+	      var isIOS =(/iPhone|iPod|iPad/i).test(ua) && !isAndroid;
+	      var isWinPhone = (/Windows Phone|ZuneWP7/i).test(ua);
+	  
+	      var mobileType = {
+	         pc:!isAndroid && !isIOS && !isWinPhone,
+	         ios:isIOS,
+	         android:isAndroid,
+	         winPhone:isWinPhone
+	   };
+	      var mobileType=mobileType.android;
    	var Login = function(){
 			var self = this;
 			//表单jsonArray
@@ -191,6 +206,9 @@
 				  		type:2,
 
 				} 
+			 function p(s) {
+					return s < 10 ? '0' + s: s;
+					}
 			this.init = function(){
 				
 				//注册绑定事件
@@ -258,6 +276,24 @@
 			this.loadEvents = function(){
 				//触发批次弹框
 				$('.addbatch').on('click',function(){
+					var myDate = new Date();
+					  
+					//获取当前年
+					var year=myDate.getFullYear();
+					//获取当前月
+					var month=myDate.getMonth()+1;
+					//获取当前日
+					var date=myDate.getDate();
+					var h=myDate.getHours();              //获取当前小时数(0-23)
+					var m=myDate.getMinutes();          //获取当前分钟数(0-59)
+					var s=myDate.getSeconds();
+					var day = new Date(year,month,0);  
+					var firstdate = year + '-' + '0'+month + '-01'+' '+'00:00:00';
+					var lastdate = year + '-' + '0'+month + '-' + day.getDate() +' '+'23:59:59';
+					var now=year+'-'+p(month)+"-"+p(date)+" "+p(h)+':'+p(m)+":"+p(s);//当前时间
+					if(mobileType==true){
+						$("#Time").val(now)
+					}
 					var _index
 					var index
 					var postData
@@ -270,16 +306,13 @@
 					_index = layer.open({
 						  type: 1,
 						  skin: 'layui-layer-rim', //加上边框
-						  area: ['30%', '55%'], 
+						  area: ['500px', '450px'], 
 						  btnAlign: 'c',//宽高
 						  maxmin: true,
 						  title:"填写批次",
 						  content: dicDiv,
 						  btn: ['确定', '取消'],
 						  yes:function(index, layero){
-							  if($('#bacthNumber').val()==""){
-								  return layer.msg("批次号不能为空", {icon: 2});
-							  }
 							  if($('#prosum').val()==""){
 								  return layer.msg("数量不能为空", {icon: 2});
 							  }
@@ -341,7 +374,7 @@
 					_index = layer.open({
 						  type: 1,
 						  skin: 'layui-layer-rim', //加上边框
-						  area: ['60%', '60%'], 
+						  area: ['650px', '500px'], 
 						  btnAlign: 'c',//宽高
 						  maxmin: true,
 						  title:name,
@@ -501,7 +534,7 @@
 				  
 				
 			}
-this.checkeddd=function(){
+	this.checkeddd=function(){
 				
 				$(".checkstw").on('click',function(){
 					
@@ -799,7 +832,7 @@ this.checkeddd=function(){
 					_index = layer.open({
 						  type: 1,
 						  skin: 'layui-layer-rim', //加上边框
-						  area: ['30%', '50%'], 
+						  area: ['50%', '50%'], 
 						  btnAlign: 'c',//宽高
 						  maxmin: true,
 						  title:"新增产品",

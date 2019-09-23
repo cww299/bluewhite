@@ -34,25 +34,25 @@
 					class="form-control search-query number" /></td>
 				<td>&nbsp;&nbsp;</td>
 				<td>产品名称:</td>
-				<td><input type="text" name="name" id="name" placeholder="请输入产品名称"
+				<td><input type="text" name="name" id="name" placeholder="请输入产品名称" style="width: 140px;"
 					class="form-control search-query name" /></td>
 				<td>&nbsp;&nbsp;</td>
-				<td>开始时间:</td>
-				<td><input id="startTime" placeholder="请输入开始时间" style="width: 250px;" class="form-control"></td>
+				<td>时间:</td>
+				<td><input id="startTime" placeholder="请输入开始时间" style="width: 230px;" class="form-control"></td>
 				<td>&nbsp;&nbsp;</td>
-				<td>完成状态:</td>
+				<td>状态:</td>
 				<td><select class="form-control selectchoice"><option value="0">未完成</option>
 						<option value="1">已完成</option></select></td>
 				<td>&nbsp;&nbsp;&nbsp;&nbsp;</td>
 				<td><span class="input-group-btn">
 						<button type="button" class="btn btn-info btn-square btn-sm btn-3d searchtask">查&nbsp找</button></span></td>
-				<td>&nbsp;&nbsp;&nbsp;&nbsp;</td> 
+				<td>&nbsp;&nbsp;</td> 
 				<td><span class="input-group-btn hidden-sm">
 						<button type="button" id="addprocedure" class="btn btn-success btn-sm btn-3d pull-right">一键接收</button></span></td>
-				<td>&nbsp;&nbsp;&nbsp;&nbsp;</td> 
+				<td>&nbsp;&nbsp;</td> 
 				<td><button type="button"
-							class="btn btn-default btn-danger btn-sm btn-3d attendance2">一键删除</button>&nbsp&nbsp</td>
-				<td>&nbsp;&nbsp;&nbsp;&nbsp;</td> 
+							class="btn btn-default btn-danger btn-sm btn-3d attendance2">一键删除</button>&nbsp;&nbsp;</td>
+				<td>&nbsp;&nbsp;</td> 
 				<td><span class="input-group-btn">
 						<button type="button" class="btn btn-success  btn-sm btn-3d start">一键完成</button></span></td>
 			</tr>
@@ -133,7 +133,7 @@
 						<label class="col-sm-2 control-label col-md-2">任务分配:</label>
 						<div class="col-sm-4 col-md-3">
 							<input id="Time" placeholder="时间可不填"
-								class="form-control">
+								class="form-control nows">
 						</div>
 						<div class="col-sm-2 hidden-sm col-md-1" >
 							<input type="checkbox" id="remember">记住
@@ -369,6 +369,21 @@
 	<script src="${ctx}/static/layui-v2.4.5/layui/layui.js"></script>
 		<script>
    jQuery(function($){
+	 			//判断当前设备的UA
+			var ua = navigator.userAgent.toLocaleLowerCase();
+			      var pf = navigator.platform.toLocaleLowerCase();
+			      var isAndroid = (/android/i).test(ua)||((/iPhone|iPod|iPad/i).test(ua) && (/linux/i).test(pf))
+			          || (/ucweb.*linux/i.test(ua));
+			      var isIOS =(/iPhone|iPod|iPad/i).test(ua) && !isAndroid;
+			      var isWinPhone = (/Windows Phone|ZuneWP7/i).test(ua);
+			  
+			      var mobileType = {
+			         pc:!isAndroid && !isIOS && !isWinPhone,
+			         ios:isIOS,
+			         android:isAndroid,
+			         winPhone:isWinPhone
+			   };
+			      var mobileType=mobileType.android;
    	var Login = function(){
 			var self = this;
 			//表单jsonArray
@@ -389,18 +404,21 @@
 		  	function p(s) {
 				return s < 10 ? '0' + s: s;
 				}
-		  	var myDate = new Date(new Date().getTime() - 86400000);
+		  	var myDate = new Date();
+		  
 			//获取当前年
 			var year=myDate.getFullYear();
 			//获取当前月
 			var month=myDate.getMonth()+1;
 			//获取当前日
-			var date=myDate.getDate(); 
+			var date=myDate.getDate();
+			var h=myDate.getHours();              //获取当前小时数(0-23)
+			var m=myDate.getMinutes();          //获取当前分钟数(0-59)
+			var s=myDate.getSeconds();
 			var day = new Date(year,month,0);  
 			var firstdate = year + '-' + '0'+month + '-01'+' '+'00:00:00';
 			var lastdate = year + '-' + '0'+month + '-' + day.getDate() +' '+'23:59:59';
-			/* $('#startTime').val(firstdate);
-			$('#endTime').val(lastdate); */
+			var now=year+'-'+p(month)+"-"+p(date)+" "+p(h)+':'+p(m)+":"+p(s);//当前时间
 			 var data={
 						page:1,
 				  		size:12,	
@@ -419,7 +437,6 @@
 					});
 			 })
 			this.init = function(){
-				
 				//注册绑定事件
 				self.events();
 				self.loadPagination(data);
@@ -953,6 +970,24 @@
 				
 				//分配1
 				$('.addDict').on('click',function(){
+					var myDate = new Date();
+					  
+					//获取当前年
+					var year=myDate.getFullYear();
+					//获取当前月
+					var month=myDate.getMonth()+1;
+					//获取当前日
+					var date=myDate.getDate();
+					var h=myDate.getHours();              //获取当前小时数(0-23)
+					var m=myDate.getMinutes();          //获取当前分钟数(0-59)
+					var s=myDate.getSeconds();
+					var day = new Date(year,month,0);  
+					var firstdate = year + '-' + '0'+month + '-01'+' '+'00:00:00';
+					var lastdate = year + '-' + '0'+month + '-' + day.getDate() +' '+'23:59:59';
+					var now=year+'-'+p(month)+"-"+p(date)+" "+p(h)+':'+p(m)+":"+p(s);//当前时间
+					if(mobileType==true){
+						$("#Time").val(now)
+					}
 					var that=$(this)
 					var productId=$(this).data('proid')
 					var productName=$(this).data('proname')
@@ -1198,6 +1233,7 @@
 						  btn: ['确定', '取消'],
 						  success:function(){
 							  //cookie设置输入框的时间值
+							   if(mobileType==false){
 							  var cookieData = $.cookie('batchTime') || '';
 							  if(cookieData){
 								  $('#remember').prop("checked",true);
@@ -1224,6 +1260,7 @@
 									  }  
 								  });
 							  })
+							  } 
 						  },
 						  yes:function(index, layero){
 							  var values=new Array()
