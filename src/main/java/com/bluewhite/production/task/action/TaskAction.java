@@ -27,7 +27,6 @@ import com.bluewhite.common.Log;
 import com.bluewhite.common.entity.CommonResponse;
 import com.bluewhite.common.entity.ErrorCode;
 import com.bluewhite.common.entity.PageParameter;
-import com.bluewhite.common.utils.NumUtils;
 import com.bluewhite.production.finance.dao.PayBDao;
 import com.bluewhite.production.finance.entity.PayB;
 import com.bluewhite.production.procedure.dao.ProcedureDao;
@@ -244,7 +243,7 @@ public class TaskAction {
 		if (procedureId != null) {
 			Procedure procedure = procedureService.findOne(procedureId);
 			if (procedure != null) {
-				if (procedure.getName().indexOf("发货位堆放") != -1 || procedure.getName().indexOf("推包到发货位") != -1) {
+				if (procedure.getName().indexOf("发货位堆放") != -1 || procedure.getName().indexOf("推包到发货位") != -1 || procedure.getName().indexOf("推箱到发货位") != -1 ) {
 					mapList.stream().forEach(m->{
 						if(String.valueOf(m.get("name")).equals("推货工序")){
 							m.put("checked", 1);

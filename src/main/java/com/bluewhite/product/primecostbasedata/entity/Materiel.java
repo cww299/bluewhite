@@ -2,12 +2,15 @@ package com.bluewhite.product.primecostbasedata.entity;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
 import com.bluewhite.base.BaseEntity;
 import com.bluewhite.common.utils.excel.Poi;
 /**
- * 基础数据3(成本计算,面料)
+ * 面辅料（库存）
  * @author zhangliang
  *
  */
@@ -30,33 +33,31 @@ public class Materiel extends BaseEntity<Long>{
     private String name;
 	
 	/**
-     * 面料最新价格
+     * 面料价格
      */
 	@Column(name = "price")
 	@Poi(name = "", column = "C")
     private Double price;
 	
 	/**
-     * 面料克重等备注
-     */
-	@Column(name = "unit")
-	@Poi(name = "", column = "D")
-    private String unit;
+	 * 单位id
+	 */
+	@Column(name = "unit_id")
+	private Long unitId;
 	
 	/**
-     * 面料类型
+	 * 单位
+	 */
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "unit_id", referencedColumnName = "id", insertable = false, updatable = false)
+	private BaseOne unit;
+	
+	/**
+     * 类型
      */
 	@Column(name = "type")
     private String type;
-	
-	
-	/**
-	 * 请将有价格变化提示的新价格誊写到该行（有变化一定要更新！）
-	 * @return
-	 */
-	@Column(name = "change_price")
-    private String changePrice;
-	
+		
 	/**
 	 * 需要的数字填写
 	 * @return
@@ -84,6 +85,15 @@ public class Materiel extends BaseEntity<Long>{
 	 */
 	@Column(name = "convert_number")
     private Double convertNumber;
+	
+	
+	/**
+	 * 库存数量
+	 * 
+	 */
+	@Column(name = "inventory_number")
+	private Integer inventoryNumber;
+	
 	
 	
 	
@@ -119,14 +129,6 @@ public class Materiel extends BaseEntity<Long>{
 		this.count = count;
 	}
 
-	public String getChangePrice() {
-		return changePrice;
-	}
-
-	public void setChangePrice(String changePrice) {
-		this.changePrice = changePrice;
-	}
-
 	public String getType() {
 		return type;
 	}
@@ -158,18 +160,4 @@ public class Materiel extends BaseEntity<Long>{
 	public void setPrice(Double price) {
 		this.price = price;
 	}
-
-	public String getUnit() {
-		return unit;
-	}
-
-	public void setUnit(String unit) {
-		this.unit = unit;
-	}
-
-
-	
-	
-	
-
 }

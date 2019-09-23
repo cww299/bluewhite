@@ -130,7 +130,7 @@
 					var fn1 = function(field) {
 						return function(d) {
 							return [
-								'<select name="selectOne" class="selectOne" lay-filter="lay_selecte" lay-search="true" data-value="' +  (d.group==null ? '' : d.group.id) + '">' +
+								'<select name="selectOne" class="selectOne" lay-filter="lay_selecte"  data-value="' +  (d.group==null ? '' : d.group.id) + '">' +
 								htmls +
 								'</select>'
 							].join('');

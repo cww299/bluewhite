@@ -52,5 +52,8 @@ public interface RecruitService  extends BaseCRUDService<Recruit,Long>{
 	 * @param onlineOrder
 	 */
 	public  List<Map<String, Object>> sumday(Recruit recruit);
+	
 	public int deletes(String[] ids);
+
+	public int updateRecruit(String[] ids, Integer state);
 }

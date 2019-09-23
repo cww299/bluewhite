@@ -3,12 +3,8 @@ package com.bluewhite.production.task.service;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
-import java.util.Map.Entry;
 import java.util.concurrent.CopyOnWriteArraySet;
 import java.util.stream.Collectors;
 
@@ -243,9 +239,8 @@ public class TaskServiceImpl extends BaseServiceImpl<Task, Long> implements Task
 							}
 						}
 						// 计算B工资数值
-						if (!UnUtil.isFromMobile(request)) {
+						if (!UnUtil.isFromMobile(request) && task.getType() == 2) {
 							// 包装分配任务，员工b工资根据考情占比分配，其他部门是均分
-							if (task.getType() == 2) {
 								// 该员工实际工作时长
 								Double workTime = 0.0;
 								List<Temporarily> temporarilyNewList = temporarilyList.stream()
@@ -297,7 +292,6 @@ public class TaskServiceImpl extends BaseServiceImpl<Task, Long> implements Task
 								// 按考情时间占比分配B工资
 								payB.setPayNumber(NumUtils.div(NumUtils.mul(newTask.getPayB(), workTime),
 										NumUtils.round(sumTime, 2), 5));
-							}
 						} else {
 							payB.setPayNumber(NumUtils.div(newTask.getPayB(), task.getUsersIds().length, 5));
 						}
