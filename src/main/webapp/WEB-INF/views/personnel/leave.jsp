@@ -876,9 +876,14 @@
 			//监听搜索
 			form.on('submit(LAY-role-search)', function(data) {
 				var field = data.field;
-				var orderTime=field.orderTimeBegin.split('~');
-				field.orderTimeBegin=orderTime[0];
-				field.orderTimeEnd=orderTime[1].split(' ')[1]+' 23:59:59';
+				if(field.orderTimeBegin){
+					var orderTime=field.orderTimeBegin.split('~');
+					field.orderTimeBegin=orderTime[0];
+					field.orderTimeEnd=orderTime[1].split(' ')[1]+' 23:59:59';
+				}else{
+					field.orderTimeBegin='';
+					field.orderTimeEnd='';
+				}
 				$.ajax({
 					url: "${ctx}/personnel/getApplicationLeavePage",
 					type: "get",

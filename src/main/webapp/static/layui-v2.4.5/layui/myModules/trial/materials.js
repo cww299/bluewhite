@@ -33,7 +33,7 @@ layui.define(['mytable','form'],function(exports){
 			
 	};
 	myutil.getData({ 
-		url:'/product/getMateriel',
+		url:'/product/getMateriel?type=material',
 		success:function(data){
 			layui.each(data,function(index,item){
 				allMaterielSelect += '<dd data-value="'+item.id+'" data-convertPrice="'+item.convertPrice+'" data-convertUnit="'+item.convertPrice+'">'+
@@ -98,7 +98,7 @@ layui.define(['mytable','form'],function(exports){
 		}
 		else
 			myutil.getData({
-				url:'/product/getMateriel',
+				url:'/product/getMateriel?type=material',
 				data:{ name: name },
 				success:function(data){
 					if(data.length==0)
@@ -267,6 +267,8 @@ layui.define(['mytable','form'],function(exports){
 				url: myutil.config.ctx+'/product/getProductMaterials?productId='+check[0].id,
 				page: { curr:1 }
 			})
+			$('#'+btn).css('color','red');
+			$('#'+btn).siblings().css('color','white');
 			$('#'+elem).siblings().hide();
 			$('#'+elem).show();
 		})
