@@ -292,13 +292,13 @@ public class UserAction {
 		List<User> userList = 	userService.findAll();
 		//退休时间，过滤出有生日的员工
 		List<Map<String,Object>> userBirthList = new ArrayList<Map<String,Object>>();
-		List<User> userBirth1 = userList.stream().filter(User->User.getBirthDate()!=null && User.getGender()!=null).collect(Collectors.toList());
+		List<User> userBirth1 = userList.stream().filter(User->User.getBirthDate()!=null && User.getGender()!=null && User.getCommitmentId()!=null  && User.getCommitmentId()!=317).collect(Collectors.toList());
 		for(User user : userBirth1){
 			int age = DatesUtil.getAgeByBirth(user.getBirthDate());
 			user.setAge(age);
 		}
 		userService.save(userBirth1);
-		List<User> userBirth = userList.stream().filter(User->User.getBirthDate()!=null && User.getGender()!=null && User.getQuit()!=null && User.getQuit()!=1  && User.getCommitmentId()!=null && User.getCommitmentId() !=144).collect(Collectors.toList());
+		List<User> userBirth = userList.stream().filter(User->User.getBirthDate()!=null && User.getGender()!=null && User.getQuit()!=null && User.getQuit()!=1 && User.getCommitmentId()!=null && User.getCommitmentId() !=144 && User.getCommitmentId()!=317).collect(Collectors.toList());
 		for(User user : userBirth ){
 			Map<String,Object> us = new HashMap<String,Object>();
 			int co = DatesUtil.getAgeByBirth(user.getBirthDate());
@@ -320,11 +320,11 @@ public class UserAction {
 		}
 		//合同到期时间
 		List<Map<String , Object>> userContractList = new ArrayList<Map<String , Object>>();
-		List<User> userContract = userList.stream().filter(User->User.getContractDateEnd()!=null  &&  User.getQuit()!=null && User.getQuit()!=1  ).collect(Collectors.toList());
+		List<User> userContract = userList.stream().filter(User->User.getContractDateEnd()!=null  &&  User.getQuit()!=null && User.getQuit()!=1 && User.getCommitmentId()!=null && User.getCommitmentId()!=317).collect(Collectors.toList());
 		for(User user : userContract ){
 			Map<String,Object> us = new HashMap<String,Object>();
 			long co = DatesUtil.getDaySub( DatesUtil.getfristDayOftime(new Date()),DatesUtil.getfristDayOftime(user.getContractDateEnd()));
-			if(co<=45){
+			if(co<=80){
 				us.put("userId", user.getId());
 				us.put("username", user.getUserName());
 				us.put("contractDateEnd", sdf.format(user.getContractDateEnd()));
@@ -334,7 +334,7 @@ public class UserAction {
 		
 		//身份证到期
 		List<Map<String , Object>> userCardList = new ArrayList<Map<String , Object>>();
-		List<User> userrCard = userList.stream().filter(User->User.getIdCardEnd()!=null  && User.getQuit()!=1 && User.getQuit()!=null ).collect(Collectors.toList());
+		List<User> userrCard = userList.stream().filter(User->User.getIdCardEnd()!=null  && User.getQuit()!=1 && User.getQuit()!=null && User.getCommitmentId()!=null && User.getCommitmentId()!=317).collect(Collectors.toList());
 		for(User user : userrCard ){
 			Map<String,Object> us = new HashMap<String,Object>();
 			long co = DatesUtil.getDaySub( DatesUtil.getfristDayOftime(new Date()),DatesUtil.getfristDayOftime(user.getIdCardEnd()));

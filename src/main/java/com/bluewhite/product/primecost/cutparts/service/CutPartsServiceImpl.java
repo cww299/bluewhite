@@ -51,22 +51,7 @@ public class CutPartsServiceImpl  extends BaseServiceImpl<CutParts, Long> implem
 		NumUtils.setzro(cutParts);
 		//该片在这个货中的单只用料（累加处）
 		cutParts.setAddMaterial(NumUtils.mul(cutParts.getCutPartsNumber(), cutParts.getOneMaterial()));
-		Materiel materiel  =  materielDao.findOne(cutParts.getMaterielId());
-		//当批各单片用料
-		if(cutParts.getComposite()==0){
-			cutParts.setBatchMaterial(NumUtils.div(NumUtils.mul(cutParts.getAddMaterial(), 
-					NumUtils.sum(cutParts.getManualLoss(),1),(double)cutParts.getCutPartsNumber()), 
-					NumUtils.mul(cutParts.getCutPartsNumber(),cutParts.getNumber()),3));
-			//当批各单片价格
-			cutParts.setBatchMaterialPrice(NumUtils.mul(cutParts.getBatchMaterial(),materiel.getPrice()));
-		}
-		if(cutParts.getComposite()==1){
-			Materiel complexMateriel  =  materielDao.findOne(cutParts.getComplexMaterielId());
-			cutParts.setComplexBatchMaterial(NumUtils.mul(cutParts.getAddMaterial(), 
-					NumUtils.sum(cutParts.getCompositeManualLoss(),1),(double)cutParts.getNumber()));
-			cutParts.setBatchComplexMaterialPrice(NumUtils.mul(cutParts.getComplexBatchMaterial(),materiel.getPrice()));
-			cutParts.setBatchComplexAddPrice(NumUtils.mul(cutParts.getComplexBatchMaterial(),complexMateriel.getPrice()));
-		}
+		countComposite(cutParts);
 		//使用片数周长
 		cutParts.setAllPerimeter(NumUtils.mul(cutParts.getPerimeter(),cutParts.getCutPartsNumber()));
 		dao.save(cutParts);
@@ -111,6 +96,28 @@ public class CutPartsServiceImpl  extends BaseServiceImpl<CutParts, Long> implem
 		return cutParts;
 	}
 
+	@Override
+	public CutParts countComposite(CutParts cutParts) {
+		Materiel materiel  =  materielDao.findOne(cutParts.getMaterielId());
+		//当批各单片用料
+		if(cutParts.getComposite()==0){
+			cutParts.setBatchMaterial(NumUtils.div(NumUtils.mul(cutParts.getAddMaterial(), 
+					NumUtils.sum(cutParts.getManualLoss(),1),(double)cutParts.getCutPartsNumber()), 
+					NumUtils.mul(cutParts.getCutPartsNumber(),cutParts.getNumber()),3));
+			//当批各单片价格
+			cutParts.setBatchMaterialPrice(NumUtils.mul(cutParts.getBatchMaterial(),materiel.getPrice()));
+		}
+		if(cutParts.getComposite()==1){
+			Materiel complexMateriel  =  materielDao.findOne(cutParts.getComplexMaterielId());
+			cutParts.setComplexBatchMaterial(NumUtils.mul(cutParts.getAddMaterial(), 
+					NumUtils.sum(cutParts.getCompositeManualLoss(),1),(double)cutParts.getNumber()));
+			cutParts.setBatchComplexMaterialPrice(NumUtils.mul(cutParts.getComplexBatchMaterial(),materiel.getPrice()));
+			cutParts.setBatchComplexAddPrice(NumUtils.mul(cutParts.getComplexBatchMaterial(),complexMateriel.getPrice()));
+		}
+		return cutParts;
+	}
+	
+	
 
 	@Override
 	public PageResult<CutParts> findPages(CutParts param, PageParameter page) {

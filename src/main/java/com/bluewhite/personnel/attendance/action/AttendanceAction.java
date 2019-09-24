@@ -377,10 +377,11 @@ public class AttendanceAction {
 	 * 
 	 * @param attendanceCollect
 	 * @return
+	 * @throws ParseException 
 	 */
 	@RequestMapping(value = "/personnel/workshopAttendanceContrast", method = RequestMethod.GET)
 	@ResponseBody
-	public CommonResponse workshopAttendanceContrast(AttendanceTime attendanceTime) {
+	public CommonResponse workshopAttendanceContrast(AttendanceTime attendanceTime) throws ParseException {
 		CommonResponse cr = new CommonResponse();
 		cr.setData(attendanceTimeService.workshopAttendanceContrast(attendanceTime));
 		cr.setMessage("查询成功");

@@ -96,7 +96,7 @@ public class GroupAction {
 			BeanCopyUtils.copyNullProperties(oldGroup, group);
 			group.setCreatedAt(oldGroup.getCreatedAt());
 			groupService.save(group);
-			cr.setMessage("工序修改成功");
+			cr.setMessage("分组修改成功");
 		} else {
 			if (group.getType() != null) {
 				cr.setData(clearCascadeJSON.format(groupService.save(group)).toJSON());

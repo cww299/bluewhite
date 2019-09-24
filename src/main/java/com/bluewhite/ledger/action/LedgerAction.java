@@ -22,6 +22,7 @@ import com.bluewhite.ledger.entity.Bill;
 import com.bluewhite.ledger.entity.Customer;
 import com.bluewhite.ledger.entity.Mixed;
 import com.bluewhite.ledger.entity.Order;
+import com.bluewhite.ledger.entity.OrderMaterial;
 import com.bluewhite.ledger.entity.Packing;
 import com.bluewhite.ledger.entity.PackingChild;
 import com.bluewhite.ledger.entity.PackingMaterials;
@@ -29,6 +30,7 @@ import com.bluewhite.ledger.entity.ReceivedMoney;
 import com.bluewhite.ledger.entity.Sale;
 import com.bluewhite.ledger.entity.SendGoods;
 import com.bluewhite.ledger.service.MixedService;
+import com.bluewhite.ledger.service.OrderMaterialService;
 import com.bluewhite.ledger.service.OrderService;
 import com.bluewhite.ledger.service.PackingService;
 import com.bluewhite.ledger.service.ReceivedMoneyService;
@@ -58,6 +60,8 @@ public class LedgerAction {
 	private ReceivedMoneyService receivedMoneyService;
 	@Autowired
 	private SaleService saleService;
+	@Autowired
+	private OrderMaterialService orderMaterialService;
 
 
 	private ClearCascadeJSON clearCascadeJSON;
@@ -218,6 +222,50 @@ public class LedgerAction {
 		cr.setMessage("成功删除" + count + "订单合同");
 		return cr;
 	}
+	
+	
+	/**
+	 * （生产计划部）确认订单自动生成耗料表
+	 * @param order
+	 * @return
+	 */
+	@RequestMapping(value = "/ledger/confirmOrderMaterial", method = RequestMethod.POST)
+	@ResponseBody
+	public CommonResponse confirmOrderMaterial(String  ids) {
+		CommonResponse cr = new CommonResponse();
+		int count = orderMaterialService.confirmOrderMaterial(ids);
+		cr.setMessage("成功生成"+count+"条耗料表");
+		return cr;
+	}
+	
+	/**
+	 * （生产计划部）修改耗料表
+	 * @param order
+	 * @return
+	 */
+	@RequestMapping(value = "/ledger/updateOrderMaterial", method = RequestMethod.POST)
+	@ResponseBody
+	public CommonResponse updateOrderMaterial(OrderMaterial orderMaterial) {
+		CommonResponse cr = new CommonResponse();
+		orderMaterialService.updateOrderMaterial(orderMaterial);
+		cr.setMessage("修改成功");
+		return cr;
+	}
+	
+	/**
+	 * （生产计划部）删除耗料表
+	 * @param order
+	 * @return
+	 */
+	@RequestMapping(value = "/ledger/deleteOrderMaterial", method = RequestMethod.POST)
+	@ResponseBody
+	public CommonResponse deleteOrderMaterial(String ids) {
+		CommonResponse cr = new CommonResponse();
+		int count = orderMaterialService.deleteOrderMaterial(ids);
+		cr.setMessage("成功删除"+count+"条耗料");
+		return cr;
+	}
+	
 
 	/**
 	 * 分页查看贴包单

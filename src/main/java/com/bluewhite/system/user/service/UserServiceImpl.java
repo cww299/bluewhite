@@ -294,7 +294,7 @@ public class UserServiceImpl extends BaseServiceImpl<User, Long> implements User
 
 	@Override
 	public List<User> findByOrgNameId(Long orgNameId) {
-		return dao.findByOrgNameIdAndQuit(orgNameId,0);
+		return dao.findByOrgNameIdAndQuitAndForeigns(orgNameId,0,0);
 	}
 
 	@Override
@@ -323,9 +323,7 @@ public class UserServiceImpl extends BaseServiceImpl<User, Long> implements User
 	public User addUser(User user) {
 		User oldUser = userDao.findByUserName(user.getUserName());
 		if(oldUser!=null){
-			if(oldUser.getForeigns()==1){
-				throw  new ServiceException("该用户姓名在特急人员出现，请前往特急人员信息中确认是否需要转正");
-			}
+				throw new ServiceException("该用户姓名在特急人员出现，请前往特急人员信息中确认是否需要转正");
 		}
 		
 		if(!StringUtils.isEmpty(user.getPhone())){

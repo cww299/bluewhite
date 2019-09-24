@@ -40,32 +40,6 @@ public class Group  extends BaseEntity<Long>{
 	private Set<User> users = new HashSet<User>();
 	
 	/**
-	 * 组长id
-	 */
-	@Column(name = "user_id")
-	private Long userId;
-	
-	/**
-	 * 组长姓名
-	 */
-	@Column(name = "user_name")
-	private String userName;
-	
-	
-	/**
-	 * 女组长id
-	 */
-	@Column(name = "woman_user_id")
-	private Long womanUserId;
-	
-	/**
-	 * 组长姓名
-	 */
-	@Column(name = "woman_user_name")
-	private String womanUserName;
-	
-	
-	/**
 	 * 工种id
 	 */
 	@Column(name = "kind_work_id")
@@ -80,36 +54,11 @@ public class Group  extends BaseEntity<Long>{
 	private BaseData kindWork;
 	
 	/**
-	 * 标记（1楼包装）（0=男，1=女）
-	 */
-	@Column(name = "sign")
-	private String sign;
-	
-	/**
 	 * 备注
 	 */
 	@Column(name = "remark")
 	private String remark;
 	
-	
-	
-	
-	public Long getWomanUserId() {
-		return womanUserId;
-	}
-
-	public void setWomanUserId(Long womanUserId) {
-		this.womanUserId = womanUserId;
-	}
-
-	public String getWomanUserName() {
-		return womanUserName;
-	}
-
-	public void setWomanUserName(String womanUserName) {
-		this.womanUserName = womanUserName;
-	}
-
 	public Long getKindWorkId() {
 		return kindWorkId;
 	}
@@ -126,36 +75,12 @@ public class Group  extends BaseEntity<Long>{
 		this.kindWork = kindWork;
 	}
 
-	public String getSign() {
-		return sign;
-	}
-
-	public void setSign(String sign) {
-		this.sign = sign;
-	}
-
 	public String getRemark() {
 		return remark;
 	}
 
 	public void setRemark(String remark) {
 		this.remark = remark;
-	}
-
-	public Long getUserId() {
-		return userId;
-	}
-
-	public void setUserId(Long userId) {
-		this.userId = userId;
-	}
-
-	public String getUserName() {
-		return userName;
-	}
-
-	public void setUserName(String userName) {
-		this.userName = userName;
 	}
 
 	public Set<User> getUsers() {

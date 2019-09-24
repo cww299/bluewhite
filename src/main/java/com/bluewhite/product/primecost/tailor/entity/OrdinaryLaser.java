@@ -34,6 +34,20 @@ public class OrdinaryLaser extends BaseEntity<Long>{
     private Long tailorId;
 	
 	/**
+	 * 手选裁剪方式id
+	 */
+	@Column(name = "tailor_Type_id")
+    private Long tailorTypeId;
+	
+	/**
+	 * 裁剪方式
+	 */
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "tailor_Type_id", referencedColumnName = "id", insertable = false, updatable = false)
+	private BaseOne tailorType;
+	
+	
+	/**
 	 * 批量产品数量或模拟批量数
 	 */
 	@Column(name = "number")
@@ -64,18 +78,6 @@ public class OrdinaryLaser extends BaseEntity<Long>{
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "tailor_size_id", referencedColumnName = "id", insertable = false, updatable = false)
 	private BaseThree tailorSize;
-	
-	/**
-	 * 手选裁剪方式id
-	 */
-	@Column(name = "tailor_Type_id")
-    private Long tailorTypeId;
-	
-	/**
-	 * 裁剪方式
-	 */
-	@Column(name = "tailorType")
-	private String tailorType;
 	
 	/**
 	 *得到理论(市场反馈）含管理价值
@@ -125,7 +127,6 @@ public class OrdinaryLaser extends BaseEntity<Long>{
 	 */
 	@Column(name = " embroider_time")
     private Double  embroiderTime;	
-	
 	
 	/**
 	 * 其他未考虑时间1
@@ -257,11 +258,12 @@ public class OrdinaryLaser extends BaseEntity<Long>{
 	
 	
 
-	public String getTailorType() {
+
+	public BaseOne getTailorType() {
 		return tailorType;
 	}
 
-	public void setTailorType(String tailorType) {
+	public void setTailorType(BaseOne tailorType) {
 		this.tailorType = tailorType;
 	}
 

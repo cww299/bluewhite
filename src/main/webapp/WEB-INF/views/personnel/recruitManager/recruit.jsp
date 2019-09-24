@@ -1738,6 +1738,7 @@
 					        },
 							yes:function(){
 								form.on('submit(addRole)', function(data) {
+									var load = layer.load(1);
 									data.field.id=id;
 									if(!(/^1[3456789]\d{9}$/.test(data.field.phone))){ 
 										return layer.msg("手机号码有误,请重新填写",{icon: 2}) 
@@ -1748,7 +1749,8 @@
 						        	if(id==""){
 						        	
 						        	}
-									})
+									layer.close(load);
+								})
 							}
 						})
 						form.render();
@@ -1929,6 +1931,7 @@
 								url: "${ctx}/personnel/addRecruit",
 								data: data,
 								type: "POST",
+								 async:false,
 								beforeSend: function() {
 									index;
 								},

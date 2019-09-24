@@ -7,6 +7,7 @@ import java.util.List;
 import java.util.OptionalDouble;
 
 import javax.persistence.criteria.Predicate;
+import javax.servlet.http.HttpServletRequest;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -28,7 +29,6 @@ import com.bluewhite.common.utils.NumUtils;
 import com.bluewhite.common.utils.SalesUtils;
 import com.bluewhite.finance.attendance.dao.AttendancePayDao;
 import com.bluewhite.finance.attendance.entity.AttendancePay;
-import com.bluewhite.production.bacth.entity.Bacth;
 import com.bluewhite.production.task.entity.Task;
 import com.bluewhite.production.task.service.TaskService;
 import com.bluewhite.system.user.entity.User;
@@ -230,7 +230,7 @@ public class AttendancePayServiceImpl extends BaseServiceImpl<AttendancePay, Lon
 			List<AttendancePay> attendancePayList = findAttendancePay(attendancePay);
 			for (AttendancePay pay : attendancePayList) {
 				pay.setWorkPrice(attendancePay.getWorkPrice());
-				pay.setPayNumber(NumUtils.mul(pay.getWorkPrice() , pay.getWorkTime()));
+				pay.setPayNumber(NumUtils.mul(pay.getWorkPrice(), pay.getWorkTime()));
 				dao.save(pay);
 			}
 			count++;
@@ -240,21 +240,23 @@ public class AttendancePayServiceImpl extends BaseServiceImpl<AttendancePay, Lon
 
 	@Override
 	@Transactional
-	public void updateAttendance(AttendancePay attendancePay) {
+	public void updateAttendance(AttendancePay attendancePay,HttpServletRequest request) {
 		AttendancePay oldAttendancePay = dao.findOne(attendancePay.getId());
 		BeanCopyUtils.copyNotEmpty(attendancePay, oldAttendancePay, "");
 		oldAttendancePay.setWorkTime(NumUtils.sum(oldAttendancePay.getTurnWorkTime(), oldAttendancePay.getOverTime()));
-		oldAttendancePay.setPayNumber(NumUtils.mul(oldAttendancePay.getWorkPrice() , oldAttendancePay.getWorkTime()));
+		oldAttendancePay.setPayNumber(NumUtils.mul(oldAttendancePay.getWorkPrice(), oldAttendancePay.getWorkTime()));
 		dao.save(oldAttendancePay);
-		// 获取该员工当天做过的所有任务
-		List<Task> taskList = taskService.findByUserIdAndAllotTime(String.valueOf(oldAttendancePay.getUserId()),
-				DatesUtil.getfristDayOftime(oldAttendancePay.getAllotTime()),
-				DatesUtil.getLastDayOftime(oldAttendancePay.getAllotTime()));
-		if (taskList.size() > 0) {
-			for (Task task : taskList) {
-				String[] arrayRefVar = {String.valueOf(task.getProcedureId())};
-				task.setProcedureIds(arrayRefVar);
-				taskService.addTask(task);
+		if (oldAttendancePay.getType() == 2) {
+			// 获取该员工当天做过的所有任务
+			List<Task> taskList = taskService.findByUserIdAndAllotTime(String.valueOf(oldAttendancePay.getUserId()),
+					DatesUtil.getfristDayOftime(oldAttendancePay.getAllotTime()),
+					DatesUtil.getLastDayOftime(oldAttendancePay.getAllotTime()));
+			if (taskList.size() > 0) {
+				for (Task task : taskList) {
+					String[] arrayRefVar = { String.valueOf(task.getProcedureId()) };
+					task.setProcedureIds(arrayRefVar);
+					taskService.addTask(task,null);
+				}
 			}
 		}
 	}

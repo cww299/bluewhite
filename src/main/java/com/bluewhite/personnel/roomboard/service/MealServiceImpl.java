@@ -316,8 +316,9 @@ public class MealServiceImpl extends BaseServiceImpl<Meal, Long> implements Meal
 		}
 		double valPrice2 = NumUtils.mul(NumUtils.div(valwage, 25 * val, 2),
 				Double.parseDouble(personVariable1.getKeyValueThree()));// 第二个含管理收入
-		double valPrice3 = NumUtils.sum(valPrice, valPrice2);// 物料采购和数据跟进费
-		double valPrice4 = NumUtils.div(valwage, day, 2);// 人工工资
+		double valPrice3 =NumUtils.mul( NumUtils.sum(valPrice, valPrice2), day);//每月 物料采购和数据跟进费
+		
+		//double valPrice4 = NumUtils.div(valwage, day, 2);// 人工工资
 		List<Wage> wages = wageDao.findByTypeAndTimeBetween((long)282,
 				DatesUtil.getFristDayOfLastMonth(meal.getOrderTimeBegin()),
 				DatesUtil.getLastDayOLastMonth(meal.getOrderTimeBegin()));
@@ -343,14 +344,19 @@ public class MealServiceImpl extends BaseServiceImpl<Meal, Long> implements Meal
 		}
 		double merits = NumUtils.mul((double) meals.size(), than, (double) 0.5);// 人工绩效
 		PersonVariable restType = personVariableDao.findByType(5);
-		double water = NumUtils.div(NumUtils.mul(sum1, Double.parseDouble(restType.getKeyValue())), day, 2);// 每天水费
-		double electric = NumUtils.div(NumUtils.mul(sum2, Double.parseDouble(restType.getKeyValueThree())), day, 2);// 每天电费
-		double rent = NumUtils.div(NumUtils.mul(sum3, Double.parseDouble(restType.getKeyValueTwo())), day, 2);// 每天房租费
-		double coal = NumUtils.div(NumUtils.mul(sum4, Double.parseDouble(restType.getKeyValueTwo())), day, 2);// 每天煤气费
-		double sum = NumUtils.div(NumUtils.sum(water, electric, rent, coal, valPrice3, valPrice4, merits),
-				(double)4, 2);// 划分到每一餐
-		long day1 = DatesUtil.getDaySub(meal.getOrderTimeBegin(), meal.getOrderTimeEnd());
-		double sumd = NumUtils.mul(sum, day1);// 选则时间内 水电费的总和
+		//double water = NumUtils.div(NumUtils.mul(sum1, Double.parseDouble(restType.getKeyValue())), day, 2);// 每天水费
+		//double electric = NumUtils.div(NumUtils.mul(sum2, Double.parseDouble(restType.getKeyValueTwo())), day, 2);// 每天电费
+		//double rent = NumUtils.div(NumUtils.mul(sum3, Double.parseDouble(restType.getKeyValueThree())), day, 2);// 每天房租费
+		//double coal = NumUtils.div(NumUtils.mul(sum4, Double.parseDouble(restType.getKeyValueThree())), day, 2);// 每天煤气费
+		//double merits2=NumUtils.div(merits,day,2);
+		//double sum = NumUtils.div(NumUtils.sum(water, electric, rent, coal, valPrice3, valPrice4, merits2),(double)4, 2);// 划分到每一餐
+		double water = NumUtils.mul(sum1, Double.parseDouble(restType.getKeyValue()));// 每月水费
+		double electric =NumUtils.mul(sum2, Double.parseDouble(restType.getKeyValueTwo()));// 每月电费
+		double rent = NumUtils.mul(sum3, Double.parseDouble(restType.getKeyValueThree()));// 每月房租费
+		double coal = NumUtils.mul(sum4, Double.parseDouble(restType.getKeyValueThree()));// 每月煤气费
+		double sumd =NumUtils.sum(water, electric, rent, coal, valPrice3, valwage, merits);// 所有费用汇总
+		//long day1 = DatesUtil.getDaySub(meal.getOrderTimeBegin(), meal.getOrderTimeEnd());
+		//double sumd = NumUtils.mul(sum, day1);// 选则时间内 水电费的总和
 		List<Double> listDouble2 = new ArrayList<>();
 		List<Double> listDouble3 = new ArrayList<>();
 		List<Double> listDouble4 = new ArrayList<>();
@@ -377,7 +383,7 @@ public class MealServiceImpl extends BaseServiceImpl<Meal, Long> implements Meal
 		long y = meals.stream().filter(Meal -> Meal.getMode() != null && Meal.getMode().equals(2) && Meal.getOrgNameId()!=null && Meal.getOrgNameId()==1).count();// 总经办中数
 		long u = meals.stream().filter(Meal -> Meal.getMode() != null && Meal.getMode().equals(3) && Meal.getOrgNameId()!=null &&  Meal.getOrgNameId()==1).count();// 总经办晚餐数
 		//食材费用
-		if (meal.getOrgNameId()==1) {
+		if (meal.getOrgNameId()!=null && meal.getOrgNameId().equals(1)) {
 			//总经办
 		List<SingleMeal> list = singleMealDao.findByTimeBetweenAndOrgNameId(meal.getOrderTimeBegin(), meal.getOrderTimeEnd(),(long)1);
 			if (list.size() == 0) {
@@ -521,16 +527,17 @@ public class MealServiceImpl extends BaseServiceImpl<Meal, Long> implements Meal
 			
 		}
 		}
-		double f = NumUtils.sum(sumd, budget,budget7,budget12);// 早餐 加上 每天分摊的房租水电
-		double z = NumUtils.sum(sumd, budget2,budget8,budget10);// 中餐 加上 每天分摊的房租水电
-		double x = NumUtils.sum(sumd, budget3,budget9,budget11,budget13);// 晚餐 加上 每天分摊的房租水电
-		double c = NumUtils.sum(sumd, budget4);// 夜宵 加上 每天分摊的房租水电
+		double f = NumUtils.sum(budget,budget7,budget12);// 早餐 食材 
+		double z = NumUtils.sum(budget2,budget8,budget10);// 中餐 食材
+		double x = NumUtils.sum(budget3,budget9,budget11,budget13);// 晚餐 食材
+		double c = NumUtils.sum(budget4);// 夜宵 食材 
 		
-	
-		double g = NumUtils.division(NumUtils.div(f, l, 2));// 早餐平均
-		double i = NumUtils.division(NumUtils.div(z, q, 2));// 中餐平均
-		double n = NumUtils.division(NumUtils.div(x, w, 2));// 晚餐平均
-		double h = NumUtils.division(NumUtils.div(c, r, 2));// 夜宵平均
+		double q1=	NumUtils.div(sumd, meals.size(),2);//水电早餐的平均价格
+		
+		double g = NumUtils.sum(NumUtils.division(NumUtils.div(f, l, 2)), q1); // 早餐平均 
+		double i =  NumUtils.sum(NumUtils.division(NumUtils.div(z, q, 2)), q1);// 中餐平均
+		double n = NumUtils.sum(NumUtils.division(NumUtils.div(x, w, 2)), q1);// 晚餐平均
+		double h =NumUtils.sum(NumUtils.division(NumUtils.div(c, r, 2)), q1); ;// 夜宵平均
 		
 		List<Meal> mealsList = findMeal(meal);
 		Map<Long, List<Meal>> mealMap = mealsList.stream().filter(Meal -> Meal.getUserId() != null)
@@ -594,7 +601,7 @@ public class MealServiceImpl extends BaseServiceImpl<Meal, Long> implements Meal
 		}
 		List<Meal> meals = new ArrayList<Meal>();
 		// 0=休息日期,
-		PersonVariable restType = personVariableDao.findByType(0);
+		PersonVariable restType = personVariableDao.findByTypeAndTime(0,attendanceTime.getOrderTimeBegin());
 		// 4=设定早中晚三餐对于吃饭统计而延迟的分钟数
 		PersonVariable lagMin = personVariableDao.findByType(4);
 

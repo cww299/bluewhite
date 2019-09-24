@@ -107,10 +107,10 @@ private static final Log log = Log.getLog(BacthAction.class);
 	 */
 	@RequestMapping(value = "/bacth/deleteBacth", method = RequestMethod.GET)
 	@ResponseBody
-	public CommonResponse deleteBacth(HttpServletRequest request,Bacth bacth) {
+	public CommonResponse deleteBacth(String ids) {
 		CommonResponse cr = new CommonResponse();
-		if(bacth.getId()!=null){
-			bacthService.deleteBacth(bacth.getId());
+		if(ids!=null){
+			bacthService.deleteBacth(ids);
 			cr.setMessage("删除成功");
 		}else{
 			cr.setCode(ErrorCode.ILLEGAL_ARGUMENT.getCode());
@@ -130,7 +130,7 @@ private static final Log log = Log.getLog(BacthAction.class);
 		CommonResponse cr = new CommonResponse();
 		int count;
 		try {
-			count = bacthService.statusBacth(ids,time);
+			count = bacthService.statusBacth(request,ids,time);
 		} catch (Exception e) {
 			cr.setMessage(e.getMessage());
 			cr.setCode(ErrorCode.ILLEGAL_ARGUMENT.getCode());

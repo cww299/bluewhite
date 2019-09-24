@@ -513,8 +513,7 @@ public class ReportExportAction {
 		OutputStream out = response.getOutputStream();
 		List<CollectPay> collectPayList = payBService.collectPay(collectPay);
 		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
-		collectPayList.stream()
-				.forEach(CollectPay -> CollectPay.setStartDate(sdf.format(collectPay.getOrderTimeBegin())));
+		collectPayList.stream().forEach(CollectPay -> CollectPay.setStartDate(sdf.format(collectPay.getOrderTimeBegin())));
 		Excelutil<CollectPay> util = new Excelutil<CollectPay>(CollectPay.class);
 		util.exportExcel(collectPayList, "绩效报表", out);// 导出
 		out.close();

@@ -10,6 +10,6 @@ public interface PrimeCoefficientDao extends BaseRepository<PrimeCoefficient, Lo
 	 * @param type
 	 * @return
 	 */
-	PrimeCoefficient findByType(String type);
+	PrimeCoefficient findByTailorTypeId(Long id);
 
 }

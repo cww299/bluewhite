@@ -72,14 +72,11 @@ public class TailorAction {
 	/**
 	 * 裁剪填写
 	 * 
-	 * @param request
-	 *            请求
 	 * @return cr
-	 * @throws Exception
 	 */
 	@RequestMapping(value = "/product/addTailor", method = RequestMethod.POST)
 	@ResponseBody
-	public CommonResponse addTailor(HttpServletRequest request, Tailor tailor) {
+	public CommonResponse addTailor(Tailor tailor) {
 		CommonResponse cr = new CommonResponse();
 		if (StringUtils.isEmpty(tailor.getId())) {
 			cr.setCode(ErrorCode.ILLEGAL_ARGUMENT.getCode());
@@ -96,14 +93,11 @@ public class TailorAction {
 	/**
 	 * 分页查看裁剪
 	 * 
-	 * @param request
-	 *            请求
 	 * @return cr
-	 * @throws Exception
 	 */
 	@RequestMapping(value = "/product/getTailor", method = RequestMethod.GET)
 	@ResponseBody
-	public CommonResponse getTailor(HttpServletRequest request, PageParameter page, Tailor tailor) {
+	public CommonResponse getTailor(PageParameter page, Tailor tailor) {
 		CommonResponse cr = new CommonResponse();
 		PageResult<Tailor> tailorList = tailorService.findPages(tailor, page);
 		cr.setData(clearCascadeJSON.format(tailorList).toJSON());
@@ -114,14 +108,11 @@ public class TailorAction {
 	/**
 	 * (裁剪普通激光,绣花定位激光，冲床，电烫，电推，手工剪刀)填写
 	 * 
-	 * @param request
-	 *            请求
 	 * @return cr
-	 * @throws Exception
 	 */
 	@RequestMapping(value = "/product/addOrdinaryLaser", method = RequestMethod.POST)
 	@ResponseBody
-	public CommonResponse addOrdinaryLaser(HttpServletRequest request, OrdinaryLaser ordinaryLaser) {
+	public CommonResponse addOrdinaryLaser(OrdinaryLaser ordinaryLaser) {
 		CommonResponse cr = new CommonResponse();
 		if (StringUtils.isEmpty(ordinaryLaser.getId())) {
 			cr.setCode(ErrorCode.ILLEGAL_ARGUMENT.getCode());
@@ -138,14 +129,11 @@ public class TailorAction {
 	/**
 	 * 分页查看裁减类型实体
 	 * 
-	 * @param request
-	 *            请求
 	 * @return cr
-	 * @throws Exception
 	 */
 	@RequestMapping(value = "/product/getOrdinaryLaser", method = RequestMethod.GET)
 	@ResponseBody
-	public CommonResponse getOrdinaryLaser(HttpServletRequest request, PageParameter page,
+	public CommonResponse getOrdinaryLaser(PageParameter page,
 			OrdinaryLaser ordinaryLaser) {
 		CommonResponse cr = new CommonResponse();
 		PageResult<OrdinaryLaser> ordinaryLaserList = ordinaryLaserService.findPages(ordinaryLaser, page);

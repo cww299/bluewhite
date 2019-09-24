@@ -14,6 +14,7 @@
 <meta name="viewport"
 	content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
 <link rel="stylesheet" href="${ctx }/static/plugins/bootstrap/css/bootstrap.min.css">
+<link rel="stylesheet" href="${ctx }/static/layui-v2.4.5/layui/css/layui.css" media="all">
 	<script src="${ctx }/static/js/vendor/jquery-3.3.1.min.js"></script>
 	<script src="${ctx }/static/js/layer/layer.js"></script>	
 	<script src="${ctx }/static/js/laydate-icon/laydate.js"></script>
@@ -29,31 +30,22 @@
 		<!--查询开始  -->				
 		<table>
 			<tr>
-				<td>批次号:</td>
-				<td><input type="text" name="number" id="number"
+				<td class="hidden-sm">批次号:</td>
+				<td class="hidden-sm"><input type="text" name="number" id="number"
 					placeholder="请输入批次号"
 					class="form-control search-query number" /></td>
 				<td>&nbsp;&nbsp;</td>
-				<td>产品名称:</td>
+				<td>产品名:</td>
 				<td><input type="text" name="name" id="name"
-					placeholder="请输入产品名称"
+					placeholder="请输入产品名称" style="width: 120px;"
 					class="form-control search-query name" /></td>
 				<td>&nbsp;&nbsp;</td>
-				<td>工序名称:</td>
-				<td><input type="text" name="procedureName" id="procedureName"
+				<td>工序名:</td>
+				<td><input type="text" name="procedureName" id="procedureName" style="width: 120px;"
 						placeholder="请输入工序名称" class="form-control search-query name" /></td>
 				<td>&nbsp;&nbsp;</td>
-				<td>开始时间:</td>
-				<td><input id="startTime" placeholder="请输入开始时间"
-					class="form-control laydate-icon"
-					onClick="laydate({elem: '#startTime', istime: true, format: 'YYYY-MM-DD hh:mm:ss'})">
-				</td>
-				<td>&nbsp;&nbsp;</td>
-				<td>结束时间:</td>
-				<td><input id="endTime" placeholder="请输入结束时间"
-					class="form-control laydate-icon"
-					onClick="laydate({elem: '#endTime', istime: true, format: 'YYYY-MM-DD hh:mm:ss'})">
-				</td>
+				<td>时间:</td>
+				<td><input id="startTime" placeholder="请输入开始时间" style="width: 230px;" class="form-control"></td>
 				<td>&nbsp;&nbsp;</td>
 				<td>工序:</td>
 				<td><select class="form-control selectchoice"><option
@@ -69,9 +61,6 @@
 				<td>&nbsp;&nbsp;&nbsp;&nbsp;</td> 
 				<td><span class="input-group-btn">
 					<button type="button"class="btn btn-success  btn-sm btn-3d addDict">加绩</button></span></td>
-				<td>&nbsp;&nbsp;&nbsp;&nbsp;</td> 
-				<td><span class="input-group-btn">
-					<button type="button"class="btn btn-success  btn-sm btn-3d updatetw">加绩修改</button></span></td>
 			</tr>
 		</table>
 	
@@ -83,14 +72,14 @@
 					<th class="center"><label> <input type="checkbox"
 							class="ace checks" /> <span class="lbl"></span>
 					</label></th>
-					<th class="text-center">批次号</th>
+					<th class="text-center hidden-sm">批次号</th>
 					<th class="text-center" style="width: 250px;">产品名</th>
 					<th class="text-center">时间</th>
 					<th class="text-center">工序</th>
-					<th class="text-center">预计时间</th>
-					<th class="text-center">任务价值</th>
-					<th class="text-center">b工资净值</th>
-					<th class="text-center">数量</th>
+					<th class="text-center hidden-sm">预计时间</th>
+					<th class="text-center hidden-sm">任务价值</th>
+					<th class="text-center hidden-sm">b工资净值</th>
+					<th class="text-center hidden-sm">数量</th>
 					<th class="text-center">工序加价</th>
 					<th class="text-center">加绩工资</th>
 					<th class="text-center">完成人</th>
@@ -155,14 +144,14 @@
 				<div class="form-group">
 
 					<label class="col-sm-1 control-label" style="width: 17.1%;">完成人:</label>
-					<div class="col-sm-2 complete">
+					<div class="col-sm-2 complete" style="width: 20%;">
 						<input type="text" class="form-control">
 					</div>
 					<div class="col-sm-2 select"></div>
 				</div>
+		</form>
 		</div>
 
-		</form>
 	</div>
 	</div>
 	<!--隐藏框 工序加绩分配结束  -->
@@ -192,8 +181,7 @@
 		</div>
 	</div>
 	<!--隐藏框 查看加价结束  -->
-
-	</section>
+<script src="${ctx}/static/layui-v2.4.5/layui/layui.js"></script>
 	<script>
    jQuery(function($){
    	var Login = function(){
@@ -226,17 +214,26 @@
 			var day = new Date(year,month,0);  
 			var firstdate = year + '-' + '0'+month + '-01'+' '+'00:00:00';
 			var lastdate = year + '-' + '0'+month + '-' + day.getDate() +' '+'23:59:59';
-			$('#startTime').val(firstdate);
-			$('#endTime').val(lastdate);
+			/* $('#startTime').val(firstdate);
+			$('#endTime').val(lastdate); */
 			 var data={
 						page:1,
 				  		size:13,	
 				  		type:2,
-				  		orderTimeBegin:$("#startTime").val(),
-				  		orderTimeEnd:$("#endTime").val(),
+				  		orderTimeBegin:firstdate,
+				  		orderTimeEnd:lastdate,
 				} 
+			
+			 layui.use(['laydate'],function(){
+					var laydate = layui.laydate;
+					laydate.render({
+						elem: '#startTime',
+						type: 'datetime',
+						range: '~',
+						value : firstdate+' ~ '+lastdate,
+					});
+			 })
 			this.init = function(){
-				
 				//注册绑定事件
 				self.events();
 				self.loadPagination(data);
@@ -262,14 +259,14 @@
 		      				if(o.flag==1){
 		      					a="(返工)"
 		      				}
-		      				html +='<tr><td class="center reste"><label> <input type="checkbox" class="ace checkboxId" value="'+o.id+'" data-procedurename="'+s+a+'" data-proname="'+o.productName+'"/><span class="lbl"></span></label></td>'
-		      				+'<td class="text-center ">'+o.bacthNumber+'</td>'
+		      				html +='<tr><td class="center reste"><label> <input type="checkbox" class="ace checkboxId" value="'+o.id+'" data-procedurename="'+s+a+'" data-proname="'+o.productName+'" data-procedure="'+o.procedure.id+'" data-performance="'+o.performance+'"/><span class="lbl"></span></label></td>'
+		      				+'<td class="text-center hidden-sm">'+o.bacthNumber+'</td>'
 		      				+'<td class="text-center ">'+o.productName+'</td>'
 		      				+'<td class="text-center edit allotTime">'+o.allotTime+'</td>'
-		      				+'<td class="text-center ">'+s+a+'</td>'
-		      				+'<td class="text-center ">'+parseFloat((o.expectTime).toFixed(4))+'</td>'
-		      				+'<td class="text-center ">'+parseFloat((o.taskPrice).toFixed(4))+'</td>'
-		      				+'<td class="text-center ">'+parseFloat((o.payB).toFixed(4))+'</td>'
+		      				+'<td class="text-center hidden-sm">'+s+a+'</td>'
+		      				+'<td class="text-center hidden-sm">'+parseFloat((o.expectTime).toFixed(4))+'</td>'
+		      				+'<td class="text-center hidden-sm">'+parseFloat((o.taskPrice).toFixed(4))+'</td>'
+		      				+'<td class="text-center hidden-sm">'+parseFloat((o.payB).toFixed(4))+'</td>'
 		      				+'<td class="text-center edit number">'+o.number+'</td>'
 		      				+'<td class="text-center "><button class="btn btn-primary btn-trans btn-sm savemodePerformance" data-toggle="modal" data-target="#myModaltw" data-id="'+o.id+'")">查看加价</button></td>'
 		      				+'<td class="text-center ">'+parseFloat((o.performancePrice).toFixed(4))+'</td>'
@@ -285,7 +282,7 @@
 					      curr:  result.data.pageNum || 1, 
 					      jump: function(obj, first){ 
 					    	  if(!first){ 
-					    		 
+					    		  var orderTime=$("#startTime").val().split('~');
 						        	var _data = {
 						        			page:obj.curr,
 									  		size:13,
@@ -293,8 +290,8 @@
 								  			productName:$('#name').val(),
 								  			bacthNumber:$('#number').val(),
 								  			procedureName:$('#procedureName').val(),
-								  			orderTimeBegin:$("#startTime").val(),
-								  			orderTimeEnd:$("#endTime").val(), 
+								  			orderTimeBegin:orderTime[0],
+								  			orderTimeEnd:orderTime[1],  
 								  			flag:$('.selectchoice').val(),
 								  	}
 						        
@@ -336,14 +333,15 @@
 								success:function(result){
 									if(0==result.code){
 									layer.msg("删除成功！", {icon: 1});
+									var orderTime=$("#startTime").val().split('~');
 									var _data = {
 						        			page:self.getCount(),
 									  		size:13,
 									  		type:2,
 									  		productName:$('#name').val(),
 								  			bacthNumber:$('#number').val(),
-								  			orderTimeBegin:$("#startTime").val(),
-								  			orderTimeEnd:$("#endTime").val(),
+								  			orderTimeBegin:orderTime[0],
+								  			orderTimeEnd:orderTime[1], 
 								  			flag:$('.selectchoice').val(),
 								  	}
 									self.loadPagination(_data);
@@ -410,14 +408,15 @@
 								success:function(result){
 									if(0==result.code){
 									layer.msg(result.message, {icon: 1});
+									var orderTime=$("#startTime").val().split('~');
 									var _data = {
 						        			page:self.getCount(),
 									  		size:13,
 									  		type:2,
 									  		productName:$('#name').val(),
 								  			bacthNumber:$('#number').val(),
-								  			orderTimeBegin:$("#startTime").val(),
-								  			orderTimeEnd:$("#endTime").val(),
+								  			orderTimeBegin:orderTime[0],
+								  			orderTimeEnd:orderTime[1], 
 								  			flag:$('.selectchoice').val(),
 								  	}
 									self.loadPagination(_data);
@@ -530,8 +529,18 @@
                 }); 
 				
 			}
+			$(document).on('click', '#tablecontent  tr', function(event) {
+				  if($(this).find('.checkboxId').is(':checked')==false){
+					$(this).find('.checkboxId').prop("checked",true)
+					 $(this).css("color","red");
+				  }else{
+					  $(this).find('.checkboxId').prop("checked",false)
+					  $(this).css("color","inherit");
+				  }
+				})
 			this.events = function(){
 				$('.searchtask').on('click',function(){
+					var orderTime=$("#startTime").val().split('~');
 					var data = {
 				  			page:1,
 				  			size:13,
@@ -539,8 +548,8 @@
 				  			productName:$('#name').val(),
 				  			bacthNumber:$('#number').val(),
 				  			procedureName:$('#procedureName').val(),
-				  			orderTimeBegin:$("#startTime").val(),
-				  			orderTimeEnd:$("#endTime").val(), 
+				  			orderTimeBegin:orderTime[0],
+				  			orderTimeEnd:orderTime[1], 
 				  			flag:$('.selectchoice').val(),
 				  	}
 		            self.loadPagination(data);
@@ -576,14 +585,15 @@
 							success:function(result){
 								if(0==result.code){
 									layer.msg(result.message, {icon: 1});
+									var orderTime=$("#startTime").val().split('~');
 									var _data = {
 						        			page:self.getCount(),
 									  		size:13,
 									  		type:2,
 									  		productName:$('#name').val(),
 								  			bacthNumber:$('#number').val(),
-								  			orderTimeBegin:$("#startTime").val(),
-								  			orderTimeEnd:$("#endTime").val(),
+								  			orderTimeBegin:orderTime[0],
+								  			orderTimeEnd:orderTime[1], 
 								  			flag:$('.selectchoice').val(),
 								  	}
 									self.loadPagination(_data);
@@ -606,19 +616,44 @@
 					var  thae=$(".table-hover");
 					var arr=""//员工id
 					var arrytw=new Array()
+					var arryth=new Array()
+					var arryfr=new Array()
 					var tasksId=new Array()
 					var CheckCount=0;
 					var productNam;
-					  thae.parent().parent().parent().parent().parent().find(".checkboxId:checked").each(function() {  
+					var f;
+					var g;
+					  thae.parent().parent().parent().parent().parent().find(".checkboxId:checked").each(function(i,o) {  
 						  CheckCount++;
 						  arr=$(this).val();  
 						  tasksId.push($(this).val());  
 						  arrytw.push($(this).data('procedurename'));
-						  productName=$(this).data('proname')
+						  arryth.push($(this).data('performance')); 
+						  arryfr.push($(this).data('procedure')); 
+						  productName=$(this).data('proname');
+						  //
+						  if($(this).data('performance')==""){
+							  f=0;
+						  }else{
+							  g=1;
+						  }
+						  if($(this).data('performance')!=""){
+							  g=1;
+						  }else{
+							  f=0;
+						  }
 						});
-					 /*  if(CheckCount>1){
-							return layer.msg("只能选择一条任务", {icon: 2});
-						} */
+					  
+					  if(f==0 && g==1){
+							return layer.msg("不能同时选择新增修改", {icon: 2});
+						} 
+					var  update;
+					  if(f==0){
+						  update=0;  
+					  }
+					  if(g==1){
+						  update=1;  
+					  }
 					if(arr==""){
 						return layer.msg("请选择一条任务", {icon: 2});
 					}
@@ -633,9 +668,8 @@
 				    var htmlth = '';
 				    var htmlfr = '';
 					//遍历人名组别
-			      			  $('.complete').html("<select class='form-control selectcomplete'><option value="+0+">请选择</option><option value="+""+">全部</option></select>")
+			      			  $('.complete').html("<select class='form-control selectcomplete'><option value="+""+">全部</option></select>")
 							//改变事件
-			      			 $(".selectcomplete").change(function(){
 			      				var htmltwo = "";
 			      				var	id=$(this).val()
 								   var data={
@@ -676,36 +710,53 @@
 										layer.close(index);
 									}
 								});
-							 }) 
+							  
 					//遍历杂工加绩比值
 					var html=""
-					$.ajax({
-						url:"${ctx}/task/pickTaskPerformance",
-						type:"GET",
-						beforeSend:function(){
-							index = layer.load(1, {
-								  shade: [0.1,'#fff'] //0.1透明度的白色背景
-								});
-						},
-						
-						success:function(result){
-							$(result.data).each(function(i,o){
-							html+='<option value="'+o.number+'" data-name="'+o.name+'">'+o.name+'</option>'
-							})
-						var htm=""
+					var htm=""
 						for (var i = 0; i < arrytw.length; i++) {
 						var array_element = arrytw[i];
-						htm+="<label class='col-sm-2 control-label'>工序:</label><div class='col-sm-3 type'><input type='text' disabled='disabled' class='form-control' value="+array_element+"></div><div class='form-group'><label class='col-sm-2 control-label'>加绩工序:</label><div class='col-sm-3 workingtw'><select class='form-control selectchangtw'><option value='0'></option>"+html+"</select></div>"
+						var array_element2 =arryth[i];
+						var array_element3 =arryfr[i];
+						data={
+								procedureId:array_element3
+								}
+							var id="";
+							var htmls="<option>请选择</option>"
+									$.ajax({
+										url:"${ctx}/task/pickTaskPerformance",
+										type:"GET",
+										data:data,
+										async: false,
+										beforeSend:function(){
+											index = layer.load(1, {
+												  shade: [0.1,'#fff'] //0.1透明度的白色背景
+												});
+										},
+										success:function(result){
+											$(result.data).each(function(i,o){
+												var a="";
+												if(o.checked==1){
+													id=o.name
+												}
+													ids=array_element2==""?id:array_element2;
+												
+											htmls+='<option value="'+o.name+'" data-number="'+o.number+'" '+(ids==o.name ? "selected" : "")+'>'+o.name+'</option>'
+											
+											})
+											layer.close(index);
+										},error:function(){
+											layer.msg("操作失败！", {icon: 2});
+											layer.close(index);
+										}
+									});
+						
+						htm+="<label class='col-sm-2 control-label'>工序:</label><div class='col-sm-3 type'><input type='text' disabled='disabled' class='form-control' value="+array_element+"></div><div class='form-group'><label class='col-sm-3 control-label'>加绩工序:</label><div class='col-sm-3 workingtw'><select class='form-control selectchangtw'>"+htmls+"</select></div>"
 						+"</div>"
 						$('#type').html(htm)
+			      			
 						}
-							layer.close(index);
-							
-						},error:function(){
-							layer.msg("操作失败！", {icon: 2});
-							layer.close(index);
-						}
-					});
+					
 				    
 					var postData
 					var dicDiv=$('#addDictDivTypetw');
@@ -730,7 +781,7 @@
 								var performanceNumber=new Array()
 								var performance=new Array()
 								$(".selectchangtw option:selected").each(function() {
-									performanceNumber.push($(this).val());
+									performanceNumber.push($(this).data('number'));
 									performance.push($(this).text());
 								})
 								var postData = {
@@ -738,7 +789,7 @@
 										ids:arry,
 										performanceNumber:performanceNumber,
 										performance:performance,
-										update:0,
+										update:update,
 								}
 							    $.ajax({
 									url:"${ctx}/task/giveTaskPerformance",
@@ -754,8 +805,20 @@
 									success:function(result){
 										if(0==result.code){
 										  $('.addDictDivTypeFormtw')[0].reset(); 
-											layer.msg("添加成功！", {icon: 1});
+											layer.msg("成功！", {icon: 1});
 											layer.close(_index);
+											var orderTime=$("#startTime").val().split('~');
+											var _data = {
+								        			page:self.getCount(),
+											  		size:13,
+											  		type:2,
+											  		productName:$('#name').val(),
+										  			bacthNumber:$('#number').val(),
+										  			orderTimeBegin:orderTime[0],
+										  			orderTimeEnd:orderTime[1], 
+										  			flag:$('.selectchoice').val(),
+										  	}
+											self.loadPagination(_data);
 										}else{
 											layer.msg("添加失败", {icon: 2});
 										}
@@ -770,193 +833,6 @@
 							  $('.addDictDivTypeFormtw')[0].reset(); 
 							  $("#addDictDivTypetw").hide();
 							  $('.select').text("");
-							  var date={
-										page:self.getCount(),
-								  		size:13,	
-								  		type:2,
-								} 
-							   self.loadPagination(date);
-							
-						  } 
-					});
-					
-					
-				})
-				//修改
-				$('.updatetw').on('click',function(){
-					var  thae=$(".table-hover");
-					var arr=""//员工id
-					var arrytw=new Array()
-					var tasksId=new Array()
-					var CheckCount=0;
-					var productName;
-					  thae.parent().parent().parent().parent().parent().find(".checkboxId:checked").each(function() {  
-						  CheckCount++;
-						  arr=$(this).val();  
-						  tasksId.push($(this).val());  
-						  arrytw.push($(this).data('procedurename'));
-						  productName=$(this).data('proname');
-						});
-					 /*  if(CheckCount>1){
-							return layer.msg("只能选择一条任务", {icon: 2});
-						} */
-					if(arr==""){
-						return layer.msg("请选择一条任务", {icon: 2});
-					}
-					var that=$(this)
-					
-					var _index
-					var index
-					var postData
-					//工序遍历  
-				    var indextwo;
-				    
-				    var htmlth = '';
-				    var htmlfr = '';
-					//遍历人名组别
-			      			  $('.complete').html("<select class='form-control selectcomplete'><option value="+0+">请选择</option><option value="+""+">全部</option></select>")
-							//改变事件
-			      			 $(".selectcomplete").change(function(){
-			      				var htmltwo = "";
-			      				var	id=$(this).val()
-								   var data={
-										  id:arr,
-								   }
-			      				$.ajax({
-									url:"${ctx}/task/taskUser",
-									data:data,
-									type:"GET",
-									beforeSend:function(){
-										index = layer.load(1, {
-											  shade: [0.1,'#fff'] //0.1透明度的白色背景
-											});
-									},
-									
-									success:function(result){
-										$(result.data).each(function(i,o){
-											htmltwo +='<div class="input-group"><input type="checkbox" class="stuCheckBox" value="'+o.id+'" data-username="'+o.userName+'">'+o.userName+'</input></div>'
-										})
-										var s="<div class='input-group'><input type='checkbox' class='checkall'>全选</input></div>"
-										$('.select').html(s+htmltwo)
-										$(".checkall").on('click',function(){
-							                    if($(this).is(':checked')){ 
-										 			$('.stuCheckBox').each(function(){  
-							                    //此处如果用attr，会出现第三次失效的情况  
-							                     		$(this).prop("checked",true);
-										 			})
-							                    }else{
-							                    	$('.stuCheckBox').each(function(){ 
-							                    		$(this).prop("checked",false);
-							                    		
-							                    	})
-							                    }
-							                });
-										layer.close(index);
-									},error:function(){
-										layer.msg("操作失败！", {icon: 2});
-										layer.close(index);
-									}
-								});
-							 }) 
-					//遍历杂工加绩比值
-					var html=""
-					$.ajax({
-						url:"${ctx}/task/pickTaskPerformance",
-						type:"GET",
-						beforeSend:function(){
-							index = layer.load(1, {
-								  shade: [0.1,'#fff'] //0.1透明度的白色背景
-								});
-						},
-						
-						success:function(result){
-							$(result.data).each(function(i,o){
-							html+='<option value="'+o.number+'" data-name="'+o.name+'">'+o.name+'</option>'
-							})
-						var htm=""
-						for (var i = 0; i < arrytw.length; i++) {
-						var array_element = arrytw[i];
-						htm+="<label class='col-sm-2 control-label'>工序:</label><div class='col-sm-3 type'><input type='text' disabled='disabled' class='form-control' value="+array_element+"></div><div class='form-group'><label class='col-sm-2 control-label'>加绩工序:</label><div class='col-sm-3 workingtw'><select class='form-control selectchangtw'><option value='0'></option>"+html+"</select></div>"
-						+"</div>"
-						$('#type').html(htm)
-						}
-							layer.close(index);
-							
-						},error:function(){
-							layer.msg("操作失败！", {icon: 2});
-							layer.close(index);
-						}
-					});
-				    
-					var postData
-					var dicDiv=$('#addDictDivTypetw');
-					_index = layer.open({
-						  type: 1,
-						  skin: 'layui-layer-rim', //加上边框
-						  area: ['60%', '60%'], 
-						  btnAlign: 'c',//宽高
-						  maxmin: true,
-						  title:productName,
-						  offset:(parent.document.documentElement.scrollTop+100)+'px',
-						  content: dicDiv,
-						  btn: ['确定', '取消'],
-						  yes:function(index, layero){
-							  var arry=new Array()
-								$(".stuCheckBox:checked").each(function() {   
-								    arry.push($(this).val());   
-								}); 
-								if(arr.length<=0){
-									return layer.msg("至少选择一个员工！", {icon: 2});
-								}
-								var performanceNumber=new Array()
-								var performance=new Array()
-								$(".selectchangtw option:selected").each(function() {
-									performanceNumber.push($(this).val());
-									performance.push($(this).text());
-								})
-								var postData = {
-										taskIds:tasksId,
-										ids:arry,
-										performanceNumber:performanceNumber,
-										performance:performance,
-										update:1,
-								}
-							    $.ajax({
-									url:"${ctx}/task/giveTaskPerformance",
-									data:postData,
-						            traditional: true,
-									type:"post",
-									beforeSend:function(){
-										index = layer.load(1, {
-											  shade: [0.1,'#fff'] //0.1透明度的白色背景
-											});
-									},
-									
-									success:function(result){
-										if(0==result.code){
-										  $('.addDictDivTypeFormtw')[0].reset(); 
-											layer.msg("添加成功！", {icon: 1});
-											layer.close(_index);
-										}else{
-											layer.msg("添加失败", {icon: 2});
-										}
-										layer.close(index);
-									},error:function(){
-										layer.msg("操作失败！", {icon: 2});
-										layer.close(index);
-									}
-								});  
-							},
-						   end:function(){
-							  $('.addDictDivTypeFormtw')[0].reset(); 
-							  $("#addDictDivTypetw").hide();
-							  $('.select').text("");
-							  var date={
-										page:self.getCount(),
-								  		size:13,	
-								  		type:2,
-								} 
-							   self.loadPagination(date);
 							
 						  } 
 					});

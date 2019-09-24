@@ -3,6 +3,8 @@ package com.bluewhite.production.bacth.service;
 import java.util.Date;
 import java.util.List;
 
+import javax.servlet.http.HttpServletRequest;
+
 import org.springframework.stereotype.Service;
 
 import com.bluewhite.base.BaseCRUDService;
@@ -24,13 +26,13 @@ public interface BacthService extends BaseCRUDService<Bacth,Long>{
 	 * 批次删除
 	 * @param id
 	 */
-	public int deleteBacth(Long id);
+	public int deleteBacth(String ids);
 	/**
 	 * 一键完成批次，改变status，会转入包装列表
 	 * @param ids
 	 * @return
 	 */
-	public int statusBacth(String[] ids,Date time) throws Exception;
+	public int statusBacth(HttpServletRequest request,String[] ids,Date time) throws Exception;
 	
 	/**
 	 *  一键接收批次，改变批次的数量，重新变成批次到包装列表，type=2

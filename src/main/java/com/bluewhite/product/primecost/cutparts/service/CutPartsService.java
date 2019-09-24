@@ -45,6 +45,10 @@ public interface CutPartsService extends BaseCRUDService<CutParts,Long>{
 	 * @param productId
 	 * @return
 	 */
-	public  List<CutParts> findByProductIdAndOverstockId(Long productId, Long id);
-
+	public List<CutParts> findByProductIdAndOverstockId(Long productId, Long id);
+	
+	/**
+	 * 计算当批耗料
+	 */
+	public CutParts countComposite(CutParts cutParts);
 }

@@ -283,13 +283,14 @@ layui.config({
 	 				return { data:data,  msg:ret.message, code:ret.code } 
 	 			},
 	 			cols: [[
-				       {align:'center', title:'投入平台广告费',   field:'advertisementPrice',	  }, 
-				       {align:'center', title:'入职人员数量',   field:'admissionNum',  },
-				       {align:'center', title:'每人占到应聘费用',   field:'sharePrice',},
-				       {align:'center', title:'计划人员数量',   field:'planNumber',},
-				       {align:'center', title:'计划每人占到应聘费用',   field:'planPrice',},
-				       {align:'center', title:'面试招聘人员费用',   field:'recruitUserPrice',  edit: true,  },
+				       {align:'center', title:'宣传费',   field:'advertisementPrice',	  }, 
+				       {align:'center', title:'人工费用',   field:'recruitUserPrice',  edit: true,  },
 				       {align:'center', title:'培训费用',   field:'trainPrice',    },
+				       {align:'center', title:'招聘费用汇总',   field:'sumPrice',    },
+				       {align:'center', title:'招聘计划人数',   field:'planNumber',},
+				       {align:'center', title:'入职人员数量',   field:'admissionNum',  },
+				       {align:'center', title:'计划每人分到应聘费用',   field:'planPrice',},
+				       {align:'center', title:'每人占到应聘费用',   field:'sharePrice',},
 	 			        ]],
 	 		})
 	 	}
