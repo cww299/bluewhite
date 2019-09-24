@@ -81,7 +81,7 @@
 		</div>
 		<div class="barDiv">
 			<div class="btnDiv">
-				<button type="button" class="layui-btn layui-btn-sm" id="productBtn">首页</button><br>	
+				<button type="button" class="layui-btn layui-btn-sm" id="productBtn" style="color:red;">首页</button><br>	
 				<button type="button" class="layui-btn layui-btn-sm" id="cutPartBtn">裁片填写</button><br>
 	            <button type="button" class="layui-btn layui-btn-sm" id="materialsBtn">生产用料</button><br>
 	            <button type="button" class="layui-btn layui-btn-sm" id="tailorBtn">裁剪填写</button><br>
@@ -122,6 +122,8 @@ layui.config({
 		       ]],
 	})
 	$('#productBtn').on('click',function(){
+		$('#productBtn').css('color','red');
+		$('#productBtn').siblings().css('color','white');
 		$('#productTab').siblings().hide();	//默认展示产品表格、隐藏其他
 		$('#productTab').show();
 	})
