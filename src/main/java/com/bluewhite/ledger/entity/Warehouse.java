@@ -2,13 +2,9 @@ package com.bluewhite.ledger.entity;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.FetchType;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
 import com.bluewhite.base.BaseEntity;
-import com.bluewhite.onlineretailers.inventory.entity.Inventory;
 /**
  * 仓库种类
  * @author zhangliang
