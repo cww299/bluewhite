@@ -8,9 +8,10 @@ import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
 import com.bluewhite.base.BaseEntity;
+import com.bluewhite.basedata.entity.BaseData;
 import com.bluewhite.common.utils.excel.Poi;
 /**
- * 面辅料（库存）
+ * 面辅料
  * @author zhangliang
  *
  */
@@ -57,7 +58,14 @@ public class Materiel extends BaseEntity<Long>{
      */
 	@Column(name = "type")
     private String type;
-		
+	
+	/**
+	 * 是否换算(0=是，1=否)
+	 * @return
+	 */
+	@Column(name = "convert")
+    private Integer convert;
+	
 	/**
 	 * 需要的数字填写
 	 * @return
@@ -65,12 +73,19 @@ public class Materiel extends BaseEntity<Long>{
 	@Column(name = "count")
 	private Integer count;
 	
+	
 	/**
-	 * 换算之后的单位
-	 * @return
+	 *  换算之后的单位id
 	 */
-	@Column(name = "convert_unit")
-    private String convertUnit;
+	@Column(name = "convert_unit_id")
+	private Long convertUnitId;
+	
+	/**
+	 *  换算之后的单位
+	 */
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "convert_unit_id", referencedColumnName = "id", insertable = false, updatable = false)
+	private BaseOne convertUnit;
 	
 	/**
 	 * 换算之后的单位的价格
@@ -88,29 +103,139 @@ public class Materiel extends BaseEntity<Long>{
 	
 	
 	/**
+	 * 面辅料id
+	 */
+	@Column(name = "materiel_id")
+	private Long materielId;
+
+	/**
+	 * 面辅料
+	 */
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "materiel_id", referencedColumnName = "id", insertable = false, updatable = false)
+	private Materiel materiel;
+	
+	/**
 	 * 库存数量
 	 * 
 	 */
 	@Column(name = "inventory_number")
 	private Integer inventoryNumber;
 	
+	/**
+	 * 仓库种类id
+	 */
+	@Column(name = "warehouse_type_id")
+	private Long warehouseTypeId;
+	
+	/**
+	 * 仓库种类
+	 */
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "warehouse_type_id", referencedColumnName = "id", insertable = false, updatable = false)
+	private BaseData warehouseType;
+	
+	/**
+	 * 库位
+	 * 
+	 */
+	@Column(name = "location")
+	private String location;
 	
 	
 	
+	
+	
+	public Integer getConvert() {
+		return convert;
+	}
+
+	public void setConvert(Integer convert) {
+		this.convert = convert;
+	}
+
+	public Long getConvertUnitId() {
+		return convertUnitId;
+	}
+
+	public void setConvertUnitId(Long convertUnitId) {
+		this.convertUnitId = convertUnitId;
+	}
+
+	public void setConvertUnit(BaseOne convertUnit) {
+		this.convertUnit = convertUnit;
+	}
+
+	public Long getUnitId() {
+		return unitId;
+	}
+
+	public void setUnitId(Long unitId) {
+		this.unitId = unitId;
+	}
+
+	public BaseOne getUnit() {
+		return unit;
+	}
+
+	public void setUnit(BaseOne unit) {
+		this.unit = unit;
+	}
+
+	public Long getMaterielId() {
+		return materielId;
+	}
+
+	public void setMaterielId(Long materielId) {
+		this.materielId = materielId;
+	}
+
+	public Materiel getMateriel() {
+		return materiel;
+	}
+
+	public void setMateriel(Materiel materiel) {
+		this.materiel = materiel;
+	}
+
+	public Integer getInventoryNumber() {
+		return inventoryNumber;
+	}
+
+	public void setInventoryNumber(Integer inventoryNumber) {
+		this.inventoryNumber = inventoryNumber;
+	}
+
+	public Long getWarehouseTypeId() {
+		return warehouseTypeId;
+	}
+
+	public void setWarehouseTypeId(Long warehouseTypeId) {
+		this.warehouseTypeId = warehouseTypeId;
+	}
+
+	public BaseData getWarehouseType() {
+		return warehouseType;
+	}
+
+	public void setWarehouseType(BaseData warehouseType) {
+		this.warehouseType = warehouseType;
+	}
+
+	public String getLocation() {
+		return location;
+	}
+
+	public void setLocation(String location) {
+		this.location = location;
+	}
+
 	public Double getConvertNumber() {
 		return convertNumber;
 	}
 
 	public void setConvertNumber(Double convertNumber) {
 		this.convertNumber = convertNumber;
-	}
-
-	public String getConvertUnit() {
-		return convertUnit;
-	}
-
-	public void setConvertUnit(String convertUnit) {
-		this.convertUnit = convertUnit;
 	}
 
 	public Double getConvertPrice() {
