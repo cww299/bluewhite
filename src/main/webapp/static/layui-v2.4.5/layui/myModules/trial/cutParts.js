@@ -17,7 +17,7 @@ layui.define(['mytable'],function(exports){
 			
 	};
 	myutil.getData({ 
-		url:'/product/getMateriel',
+		url:'/product/getMateriel?type=material',	//获取面料
 		success:function(data){
 			layui.each(data,function(index,item){
 				allMaterielSelect += '<dd data-value="'+item.id+'">'+item.number+' ~ '+item.name+' ~ ￥'+item.price+' ~ '+item.unit+'</dd>';
@@ -221,6 +221,8 @@ layui.define(['mytable'],function(exports){
 				url: myutil.config.ctx+'/product/getCutParts?productId='+check[0].id,
 				page: { curr:1 }
 			})
+			$('#'+btn).css('color','red');
+			$('#'+btn).siblings().css('color','white');
 			$('#'+elem).siblings().hide();
 			$('#'+elem).show();
 		})
