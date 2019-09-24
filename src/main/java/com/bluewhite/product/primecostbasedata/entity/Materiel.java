@@ -11,7 +11,7 @@ import com.bluewhite.base.BaseEntity;
 import com.bluewhite.basedata.entity.BaseData;
 import com.bluewhite.common.utils.excel.Poi;
 /**
- * 面辅料
+ * 面辅料库存
  * @author zhangliang
  *
  */
@@ -101,20 +101,6 @@ public class Materiel extends BaseEntity<Long>{
 	@Column(name = "convert_number")
     private Double convertNumber;
 	
-	
-	/**
-	 * 面辅料id
-	 */
-	@Column(name = "materiel_id")
-	private Long materielId;
-
-	/**
-	 * 面辅料
-	 */
-	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "materiel_id", referencedColumnName = "id", insertable = false, updatable = false)
-	private Materiel materiel;
-	
 	/**
 	 * 库存数量
 	 * 
@@ -141,8 +127,6 @@ public class Materiel extends BaseEntity<Long>{
 	 */
 	@Column(name = "location")
 	private String location;
-	
-	
 	
 	
 	
@@ -180,22 +164,6 @@ public class Materiel extends BaseEntity<Long>{
 
 	public void setUnit(BaseOne unit) {
 		this.unit = unit;
-	}
-
-	public Long getMaterielId() {
-		return materielId;
-	}
-
-	public void setMaterielId(Long materielId) {
-		this.materielId = materielId;
-	}
-
-	public Materiel getMateriel() {
-		return materiel;
-	}
-
-	public void setMateriel(Materiel materiel) {
-		this.materiel = materiel;
 	}
 
 	public Integer getInventoryNumber() {
