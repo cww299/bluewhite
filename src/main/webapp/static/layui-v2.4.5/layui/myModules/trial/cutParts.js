@@ -95,7 +95,7 @@ layui.define(['mytable'],function(exports){
 					name = name[0].trim();
 				var t = '';
 				if(type=='materiel')
-					t = 'materiel';
+					t = 'material';
 				else
 					t = 'reunite';
 				myutil.getData({
