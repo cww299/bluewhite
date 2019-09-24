@@ -53,18 +53,26 @@ public class Materiel extends BaseEntity<Long>{
 	@JoinColumn(name = "unit_id", referencedColumnName = "id", insertable = false, updatable = false)
 	private BaseOne unit;
 	
+	
 	/**
-     * 类型
-     */
-	@Column(name = "type")
-    private String type;
+	 * 面辅料类型id
+	 */
+	@Column(name = "materiel_type_id")
+	private Long materielTypeId;
+	
+	/**
+	 * 面辅料类型
+	 */
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "materiel_type_id", referencedColumnName = "id", insertable = false, updatable = false)
+	private BaseData materielType;
 	
 	/**
 	 * 是否换算(0=是，1=否)
 	 * @return
 	 */
-	@Column(name = "convert")
-    private Integer convert;
+	@Column(name = "convert_change")
+    private Integer convertChange;
 	
 	/**
 	 * 需要的数字填写
@@ -72,7 +80,6 @@ public class Materiel extends BaseEntity<Long>{
 	 */
 	@Column(name = "count")
 	private Integer count;
-	
 	
 	/**
 	 *  换算之后的单位id
@@ -125,17 +132,45 @@ public class Materiel extends BaseEntity<Long>{
 	 * 库位
 	 * 
 	 */
-	@Column(name = "location")
-	private String location;
+	@Column(name = "materiel_location")
+	private String materielLocation;
 	
 	
 	
-	public Integer getConvert() {
-		return convert;
+	public Long getMaterielTypeId() {
+		return materielTypeId;
 	}
 
-	public void setConvert(Integer convert) {
-		this.convert = convert;
+	public void setMaterielTypeId(Long materielTypeId) {
+		this.materielTypeId = materielTypeId;
+	}
+
+	public BaseData getMaterielType() {
+		return materielType;
+	}
+
+	public void setMaterielType(BaseData materielType) {
+		this.materielType = materielType;
+	}
+
+	public BaseOne getConvertUnit() {
+		return convertUnit;
+	}
+
+	public Integer getConvertChange() {
+		return convertChange;
+	}
+
+	public void setConvertChange(Integer convertChange) {
+		this.convertChange = convertChange;
+	}
+
+	public String getMaterielLocation() {
+		return materielLocation;
+	}
+
+	public void setMaterielLocation(String materielLocation) {
+		this.materielLocation = materielLocation;
 	}
 
 	public Long getConvertUnitId() {
@@ -190,14 +225,6 @@ public class Materiel extends BaseEntity<Long>{
 		this.warehouseType = warehouseType;
 	}
 
-	public String getLocation() {
-		return location;
-	}
-
-	public void setLocation(String location) {
-		this.location = location;
-	}
-
 	public Double getConvertNumber() {
 		return convertNumber;
 	}
@@ -222,13 +249,6 @@ public class Materiel extends BaseEntity<Long>{
 		this.count = count;
 	}
 
-	public String getType() {
-		return type;
-	}
-
-	public void setType(String type) {
-		this.type = type;
-	}
 
 	public String getNumber() {
 		return number;

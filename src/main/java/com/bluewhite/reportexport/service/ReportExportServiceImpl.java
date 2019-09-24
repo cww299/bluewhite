@@ -244,7 +244,7 @@ public class ReportExportServiceImpl implements ReportExportService {
 				mt.setPrice(materiel.getPrice());
 				materielDao.save(mt);
 			} else {
-				materiel.setType("accessories");
+//				materiel.setType("accessories");
 				materielDao.save(materiel);
 				count++;
 			}

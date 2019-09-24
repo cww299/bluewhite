@@ -1463,14 +1463,14 @@
 										title: "部门",
 										align: 'center',
 										templet:function(d){
-											return d.user.orgName.name
+											return (d.user.orgName==null ? "" : d.user.orgName.name)
 										}
 									},{
 										field: "age",
 										title: "年龄",
 										align: 'center',
 										templet:function(d){
-											return d.user.age
+											return (d.user.age==null ? "" : d.user.age)
 										}
 									},{
 										field: "bed",

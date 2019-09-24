@@ -34,7 +34,6 @@
 				<tr>
 					<th class="text-center">组名</th>
 					<th class="text-center">人员信息</th>
-					<th class="text-center">组长姓名</th>
 					<th class="text-center">操作</th>
 				</tr>
 			</thead>
@@ -46,7 +45,6 @@
 					<td class="text-center">外调组</td>
 					<td class="text-center"><button class="btn btn-primary btn-trans btn-sm savemodetw"
 							data-toggle="modal" data-target="#myModaltw">查看人员</button></td>
-					<td class="text-center"></td>
 					<td class="text-center"><button type="button" id="add" class="btn btn-success btn-sm btn-3d">外调人员</button></td>
 				</tr>
 			</thead>
@@ -66,18 +64,6 @@
 					<label class="col-sm-3 control-label">小组名称:</label>
 					<div class="col-sm-6">
 						<input type="text" id="groupName" class="form-control">
-					</div>
-				</div>
-				<div class="form-group">
-					<label class="col-sm-3 control-label">小组男组长:</label>
-					<div class="col-sm-6">
-						<input type="text" id="leader" class="form-control">
-					</div>
-				</div>
-				<div class="form-group">
-					<label class="col-sm-3 control-label">小组女组长:</label>
-					<div class="col-sm-6">
-						<input type="text" id="leaderth" class="form-control">
 					</div>
 				</div>
 			</form>
@@ -365,12 +351,9 @@
 		      				 }else{
 		      					 a=o.kindWork.id
 		      				 } 
-		      				 var b="男:";
-		      				var c="女:";
 		      				html +='<tr>'
 		      				+'<td class="text-center edit name">'+o.name+'</td>'
 		      				+'<td class="text-center"><button class="btn btn-primary btn-trans btn-sm savemode" data-toggle="modal" data-target="#myModal" data-id="'+o.id+'")">查看人员</button></td>'
-		      				+'<td class="text-center  leadertw"  data-provide="typeahead">'+b+o.userName+" "+c+o.womanUserName+'</td>'
 		      				+'<td class="text-center"><button class="btn btn-sm btn-info  btn-trans update" data-id='+o.id+'>编辑</button> <button class="btn btn-sm btn-danger btn-trans delete" data-id='+o.id+'>删除</button></td></tr>'
 							
 		      			}); 
