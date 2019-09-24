@@ -150,10 +150,7 @@ public class TaskServiceImpl extends BaseServiceImpl<Task, Long> implements Task
 				dao.save(newTask);
 
 				double sumTime = 0;
-				if (!UnUtil.isFromMobile(request)) {
-					// 总考勤时间
-					// 当为包装时，需要按照考勤时间去核算工资
-					if (task.getType() == 2) {
+				if (!UnUtil.isFromMobile(request) && task.getType() == 2) {
 						// 总考勤时间
 						for (String userTypeId : task.getUsersIds()) {
 							Long userId = Long.parseLong(userTypeId);
@@ -196,7 +193,6 @@ public class TaskServiceImpl extends BaseServiceImpl<Task, Long> implements Task
 								sumTime += (groupWorkTime != null ? groupWorkTime : attendancePay.getWorkTime());
 							}
 						}
-					}
 				}
 				// 查出该任务的所有b工资
 				List<PayB> payBList = payBDao.findByTaskId(task.getId());

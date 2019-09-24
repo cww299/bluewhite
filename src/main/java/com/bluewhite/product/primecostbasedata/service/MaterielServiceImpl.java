@@ -1,5 +1,7 @@
 package com.bluewhite.product.primecostbasedata.service;
 
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -47,8 +49,8 @@ public class MaterielServiceImpl extends BaseServiceImpl<Materiel, Long> impleme
 				predicate.add(cb.equal(root.get("id").as(Long.class), materiel.getId()));
 			}
 			// 按類型
-			if (materiel.getType() != null) {
-				predicate.add(cb.equal(root.get("type").as(String.class), materiel.getType()));
+			if (materiel.getMaterielTypeId() != null) {
+				predicate.add(cb.equal(root.get("materielType").get("id").as(Long.class), materiel.getMaterielTypeId()));
 			}
 			// 按物料编号过滤
 			if (!StringUtils.isEmpty(materiel.getNumber())) {
@@ -147,8 +149,9 @@ public class MaterielServiceImpl extends BaseServiceImpl<Materiel, Long> impleme
 				predicate.add(cb.like(root.get("number").as(String.class), "%" + materiel.getNumber() + "%"));
 			}
 			// 按類型
-			if (materiel.getType() != null) {
-				predicate.add(cb.equal(root.get("type").as(String.class), materiel.getType()));
+			if (materiel.getMaterielTypeId() != null) {
+				predicate.add(
+						cb.equal(root.get("materielType").get("id").as(String.class), materiel.getMaterielTypeId()));
 			}
 			// 按产品名称过滤
 			if (!StringUtils.isEmpty(materiel.getName())) {
