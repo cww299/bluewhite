@@ -10,23 +10,24 @@ layui.define(['mytable'],function(exports){
 	var html = [
 	            '<table id="cutPartTable" lay-filter="cutPartTable"></table>'
 	            ].join(' ');
-	var allUnit = myutil.getDataSync({ url:'/product/getBaseOne?type=unit', });
-	var allOverstock = myutil.getDataSync({ url:'/product/getBaseOne?type=overstock', });
+	var allUnit = myutil.getDataSync({ url:'/product/getBaseOne?type=unit', });		//获取所有单位
+	var allOverstock = myutil.getDataSync({ url:'/product/getBaseOne?type=overstock', }); //获取所有压货
 	var allMaterielSelect = '', allReuniteSelect = '' ;//获取所有面料下拉框的值进行记录。减少搜索次数
 	var cutParts = {	//模块
 			
 	};
-	getSelectData('material');	//分别查询所有的面料、复合料进行记录
-	getSelectData('reunite');
+	//Id:321为面料、322为辅料 、323为填充物、 324为复合样、325人工、326设计
+	getSelectData(321);	//分别查询所有的面料、复合料进行记录
+	getSelectData(324);
 	function getSelectData(type){
 		myutil.getData({ 
-			url:'/product/getMateriel?type='+type,	
+			url:'/product/getMateriel?materielTypeId='+type,	
 			success:function(data){
 				var allSelect = '';
 				layui.each(data,function(index,item){
-					allSelect += '<dd data-value="'+item.id+'">'+item.number+' ~ '+item.name+' ~ ￥'+item.price+' ~ '+item.unit+'</dd>';
+					allSelect += '<dd data-value="'+item.id+'">'+item.number+' ~ '+item.name+' ~ ￥'+item.price+' ~ '+(item.unit && item.unit.name)+'</dd>';
 				})
-				if(type=='material')
+				if(type==321)
 					allMaterielSelect = allSelect;
 				else
 					allReuniteSelect = allSelect;
@@ -95,9 +96,9 @@ layui.define(['mytable'],function(exports){
 					name = name[0].trim();
 				var t = '';
 				if(type=='materiel')
-					t = 'material';
+					t = 321;
 				else
-					t = 'reunite';
+					t = 324;
 				myutil.getData({
 					url:'/product/getMateriel?type='+t,
 					data:{ name: name },
@@ -106,7 +107,7 @@ layui.define(['mytable'],function(exports){
 							html = noneHtml;
 						layui.each(data,function(index,item){
 							//var sty='style="background-color:#5fb878;"';
-							html += '<dd data-value="'+item.id+'">'+item.number+' ~ '+item.name+' ~ ￥'+item.price+' ~ '+item.unit+'</dd>';
+							html += '<dd data-value="'+item.id+'">'+item.number+' ~ '+item.name+' ~ ￥'+item.price+' ~ '+(item.unit && item.unit.name)+'</dd>';
 						})
 						renderHtml();
 					}
@@ -221,7 +222,7 @@ layui.define(['mytable'],function(exports){
 				var html = ['<div class="layui-form-select">',
 				            	'<div class="layui-select-title">',
 				            		'<input type="text" class="layui-input" placeholder="请选择" value="',
-				            			d ? (d.number+' ~ '+d.name+' ~ ￥'+d.price+' ~ '+d.unit) : '',
+				            			d ? (d.number+' ~ '+d.name+' ~ ￥'+d.price+' ~ '+(d.unit && d.unit.name) ) : '',
 				            		'">',
 				            		'<i class="layui-edge"></i>',
 				            	'</div>',

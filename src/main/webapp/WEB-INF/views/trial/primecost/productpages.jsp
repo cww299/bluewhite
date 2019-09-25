@@ -128,6 +128,13 @@ layui.config({
 		$('#productTab').show();
 	})
 	
+	$(document).click(function(event){
+	    var div = $('#searchTipDiv');
+	    if(!div.is(event.target) && div.has(event.target).length === 0 && $(event.target)[0].nodeName!='I'){
+	    	$('#searchTipDiv').hide();
+		}
+	})
+				
 	layui.extend({	//异步加载不同的模块。减少页面加载元素时间。使页面刷新更流畅
 		cutParts : 'layui/myModules/trial/cutParts',			//裁片
 		materials: 'layui/myModules/trial/materials',			//dd除裁片
