@@ -14,10 +14,9 @@ import com.bluewhite.base.BaseServiceImpl;
 import com.bluewhite.common.entity.PageParameter;
 import com.bluewhite.common.entity.PageResult;
 import com.bluewhite.common.entity.PageResultStat;
-import com.bluewhite.common.utils.SalesUtils;
+import com.bluewhite.common.utils.NumUtils;
 import com.bluewhite.personnel.officeshare.dao.OfficeSuppliesDao;
 import com.bluewhite.personnel.officeshare.entity.OfficeSupplies;
-import com.bluewhite.product.primecost.cutparts.entity.CutParts;
 
 @Service
 public class OfficeSuppliesServiceImpl extends BaseServiceImpl<OfficeSupplies, Long> implements OfficeSuppliesService {
@@ -41,7 +40,7 @@ public class OfficeSuppliesServiceImpl extends BaseServiceImpl<OfficeSupplies, L
 			Predicate[] pre = new Predicate[predicate.size()];
 			query.where(predicate.toArray(pre));
 			return null;
-		}, SalesUtils.getQueryNoPageParameter());
+		}, page);
 		PageResultStat<OfficeSupplies> result = new PageResultStat<>(pages, page);
 		return result;
 	}
@@ -52,6 +51,8 @@ public class OfficeSuppliesServiceImpl extends BaseServiceImpl<OfficeSupplies, L
 			OfficeSupplies ot = dao.findOne(officeSupplies.getId());
 			update(officeSupplies, ot);
 		}else{
+			officeSupplies.setInventoryNumber(0);
+			officeSupplies.setLibraryValue(NumUtils.mul(officeSupplies.getInventoryNumber(),officeSupplies.getPrice()));
 			dao.save(officeSupplies);
 		}
 	}
@@ -65,10 +66,11 @@ public class OfficeSuppliesServiceImpl extends BaseServiceImpl<OfficeSupplies, L
 				for (int i = 0; i < idArr.length; i++) {
 					Long id = Long.parseLong(idArr[i]);
 					dao.delete(id);
+					count++;
 				}
 			}
 		}
-		return 0;
+		return count;
 	}
 
 }

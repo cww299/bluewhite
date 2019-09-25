@@ -8,6 +8,7 @@ import javax.persistence.FetchType;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 
 import com.bluewhite.base.BaseEntity;
 import com.bluewhite.basedata.entity.BaseData;
@@ -75,9 +76,63 @@ public class InventoryDetail extends BaseEntity<Long>{
 	@Column(name = "time")
 	private Date time;
 	
+	/**
+	 * 出库（入库）数量
+	 */
+	@Column(name = "number")
+	private Integer number;
+	
+	/**
+	 * 名称
+	 */
+	@Transient
+	private String name;
+	
+	/**
+	 * 查询字段
+	 */
+	@Transient
+	private Date orderTimeBegin;
+	/**
+	 * 查询字段
+	 */
+	@Transient
+	private Date orderTimeEnd;
 	
 	
 	
+
+	public Integer getNumber() {
+		return number;
+	}
+
+	public void setNumber(Integer number) {
+		this.number = number;
+	}
+
+	public String getName() {
+		return name;
+	}
+
+	public void setName(String name) {
+		this.name = name;
+	}
+
+	public Date getOrderTimeBegin() {
+		return orderTimeBegin;
+	}
+
+	public void setOrderTimeBegin(Date orderTimeBegin) {
+		this.orderTimeBegin = orderTimeBegin;
+	}
+
+	public Date getOrderTimeEnd() {
+		return orderTimeEnd;
+	}
+
+	public void setOrderTimeEnd(Date orderTimeEnd) {
+		this.orderTimeEnd = orderTimeEnd;
+	}
 
 	public Date getTime() {
 		return time;
