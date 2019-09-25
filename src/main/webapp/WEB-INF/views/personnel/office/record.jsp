@@ -10,7 +10,7 @@
 <head>
 <meta charset="utf-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
-<title>办公库存</title>
+<title>出入记录</title>
 <meta name="description" content="">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
 </head>
@@ -250,7 +250,7 @@
 					table.render({
 						elem: '#tableData',
 						size: 'lg',
-						url: '${ctx}/personnel/getOfficeSupplies' ,
+						url: '${ctx}/personnel/getInventoryDetail' ,
 						request:{
 							pageName: 'page' ,//页码的参数名称，默认：page
 							limitName: 'size' //每页数据量的参数名，默认：limit
