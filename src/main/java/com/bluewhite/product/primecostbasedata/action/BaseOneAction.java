@@ -115,7 +115,7 @@ public class BaseOneAction {
 	 */
 	@RequestMapping(value = "/product/getBaseThreeOne", method = RequestMethod.GET)
 	@ResponseBody
-	public CommonResponse getBaseThreeOne(HttpServletRequest request,Long typeId, Double number) {
+	public CommonResponse getBaseThreeOne(Long typeId, Double number) {
 		CommonResponse cr = new CommonResponse();
 		List<BaseThree> baseThreeList = baseThreeDao.findAll();
 		BaseThree BaseThree = null;
@@ -190,7 +190,7 @@ public class BaseOneAction {
 	 */
 	@RequestMapping(value = "/product/getMaterielPage", method = RequestMethod.GET)
 	@ResponseBody
-	public CommonResponse getMaterielPage(HttpServletRequest request,Materiel materiel,PageParameter page) {
+	public CommonResponse getMaterielPage(Materiel materiel,PageParameter page) {
 		CommonResponse cr = new CommonResponse();
 		cr.setData(ClearCascadeJSON
 				.get()
