@@ -97,7 +97,10 @@ public class InventoryDetailServiceImpl extends BaseServiceImpl<InventoryDetail,
 					OfficeSupplies officeSupplies = officeSuppliesDao.findOne(onventoryDetail.getOfficeSuppliesId());
 					// 出库
 					if (onventoryDetail.getFlag() == 0) {
-							officeSupplies.setInventoryNumber(officeSupplies.getInventoryNumber() + onventoryDetail.getNumber());
+						
+						
+						
+						officeSupplies.setInventoryNumber(officeSupplies.getInventoryNumber() + onventoryDetail.getNumber());
 					}
 					// 入库
 					if (onventoryDetail.getFlag() == 1) {
@@ -111,6 +114,14 @@ public class InventoryDetailServiceImpl extends BaseServiceImpl<InventoryDetail,
 			}
 		}
 		return count;
+	}
+
+	@Override
+	public void statisticalInventoryDetail(InventoryDetail onventoryDetail) {
+		
+		
+		
+		
 	}
 
 }
