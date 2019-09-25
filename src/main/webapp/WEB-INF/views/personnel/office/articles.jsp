@@ -55,29 +55,41 @@
 		</div>
 	</div>
 	
+<form action="" id="layuiadmin-form-admin2"
+		style="padding: 20px 0px 0 50px; display:none;  text-align:">
+		<div class="layui-form" lay-filter="layuiadmin-form-admin">
+			<div class="layui-form-item">
+				<label class="layui-form-label" style="width: 100px;">日期</label>
+					<div class="layui-input-inline">
+						<input type="text" 
+							style="width: 190px;" name="time"
+							id="time"	lay-verify="required" placeholder="请输入日期"
+							class="layui-input laydate-icon">
+					</div>
+				</div>
 
-<div style="display: none;" id="layuiShare">
-			<div class="layui-form layui-card-header layuiadmin-card-header-auto">
-				<div class="layui-form-item">
-					<table>
-						<tr>
-							<td>查询日期:</td>
-							<td><input id="monthDate9" style="width: 180px;" name="time" placeholder="请输入开始时间" class="layui-input laydate-icon">
-							</td>
-							<td>&nbsp;&nbsp;</td>
-							<td>
-								<div class="layui-inline">
-									<button class="layui-btn layuiadmin-btn-admin"  lay-submit lay-filter="LAY-search2">
-										<i class="layui-icon layui-icon-search layuiadmin-button-btn"></i>
-									</button>
-								</div>
-							</td>
-						</tr>
-					</table>
+			<div class="layui-form-item">
+				<label class="layui-form-label" style="width: 100px;">数量</label>
+				<div class="layui-input-inline">
+					<input type="text" 
+							style="width: 190px;" name="number"
+								 lay-verify="required" placeholder="请输入入库数量"
+							class="layui-input laydate-icon">
 				</div>
 			</div>
-			<table id="layuiShare2"  class="table_th_search" lay-filter="layuiShare"></table>
-</div>	
+			
+			<div class="layui-form-item">
+				<label class="layui-form-label" style="width: 100px;">备注</label>
+				<div class="layui-input-inline">
+					<input type="text" 
+							style="width: 190px;" name="remark"
+							class="layui-input laydate-icon">
+				</div>
+			</div>
+			
+		</div>
+	</form>
+
 	
 	
 	<script type="text/html" id="toolbar">
@@ -125,9 +137,8 @@
 						shade: [0.1, '#fff'] //0.1透明度的白色背景
 					});
 					laydate.render({
-						elem: '#startTime',
+						elem: '#time',
 						type: 'datetime',
-						range: '~',
 					});
 					
 					var getdataa={type:"officeUnit",}
@@ -372,7 +383,49 @@
 							break;
 						}
 					});
-	
+					
+					table.on('tool(tableData)', function(obj){
+						 var data = obj.data;
+						 var officeSuppliesId=data.id
+						switch(obj.event) {
+						case 'inLibrary':
+							var	dicDiv=$("#layuiadmin-form-admin2");
+							layer.open({
+								type:1,
+								title:'入库',
+								area:['30%','40%'],
+								btn:['确认','取消'],
+								content:dicDiv,
+								id: 'LAY_layuipro' ,
+								btnAlign: 'c',
+							    moveType: 1, //拖拽模式，0或者1
+								success : function(layero, index) {
+						        	layero.addClass('layui-form');
+									// 将保存按钮改变成提交按钮
+									layero.find('.layui-layer-btn0').attr({
+										'lay-filter' : 'addRole',
+										'lay-submit' : ''
+									})
+						        },
+								yes:function(){
+									form.on('submit(addRole)', function(data) {
+										data.field.officeSuppliesId=officeSuppliesId
+										data.field.flag=1
+										mainJs.faddInOut(data.field); 
+										document.getElementById("layuiadmin-form-admin2").reset();
+							        	layui.form.render();
+									})
+								},end:function(){ 
+						        	document.getElementById("layuiadmin-form-admin2").reset();
+						        	layui.form.render();
+								  }
+							})
+							break;
+						case 'outLibrary':
+							alert(2)
+							break;	
+						}
+					});
 					//监听单元格编辑
 					table.on('edit(tableData)', function(obj) {
 						var value = obj.value ,//得到修改后的值
@@ -491,7 +544,47 @@
 							},
 						});
 						layer.close(index);
-				    }
+				    },
+					   
+					  //出入库						
+					    faddInOut : function(data){
+					    	if(data.id==""){
+					    		return;
+					    	}
+					    	$.ajax({
+								url: "${ctx}/personnel/addInventoryDetail",
+								data: data,
+								type: "POST",
+								beforeSend: function() {
+									index;
+								},
+								success: function(result) {
+									if(0 == result.code) {
+									 	 table.reload("tableData", {
+							                page: {
+							                }
+							              }) 
+										layer.msg(result.message, {
+											icon: 1,
+											time:800
+										});
+									
+									} else {
+										layer.msg(result.message, {
+											icon: 2,
+											time:800
+										});
+									}
+								},
+								error: function() {
+									layer.msg("操作失败！请重试", {
+										icon: 2
+									});
+								},
+							});
+							layer.close(index);
+					    }
+					    
 					}
 
 				}
