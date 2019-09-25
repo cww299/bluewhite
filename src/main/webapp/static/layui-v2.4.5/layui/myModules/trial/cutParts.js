@@ -125,7 +125,10 @@ layui.define(['mytable'],function(exports){
 					$(inputElem).closest('.layui-form-select').removeClass('layui-form-selected');
 					$(inputElem).val(text);	 	//修改下拉框显示的值、缓存值
 					inputText = text;
-					updateTrData['materielId'] = val;
+					if($(inputElem).closest('td').data('field')=='complexMateriel')
+						updateTrData['complexMaterielId'] = val;
+					else
+						updateTrData['materielId'] = val;
 					if(!updateTrData.id)
 						return;
 					var data = {id: updateTrData.id,},field='complexMaterielId';
