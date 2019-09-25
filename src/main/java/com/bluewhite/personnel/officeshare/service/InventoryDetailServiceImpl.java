@@ -50,7 +50,7 @@ public class InventoryDetailServiceImpl extends BaseServiceImpl<InventoryDetail,
 			}
 			// 按部门
 			if (param.getOrgNameId() != null) {
-				predicate.add(cb.equal(root.get("orgNameId").as(Long.class), param.getName()));
+				predicate.add(cb.equal(root.get("orgNameId").as(Long.class), param.getOrgNameId()));
 			}
 			// 按部门
 			if (param.getFlag() != null) {
