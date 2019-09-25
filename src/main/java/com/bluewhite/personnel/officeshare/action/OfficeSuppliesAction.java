@@ -1,10 +1,7 @@
 package com.bluewhite.personnel.officeshare.action;
 
-import javax.servlet.http.HttpServletRequest;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
-import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -12,20 +9,20 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import com.bluewhite.basedata.entity.BaseData;
 import com.bluewhite.common.ClearCascadeJSON;
 import com.bluewhite.common.entity.CommonResponse;
-import com.bluewhite.common.entity.ErrorCode;
 import com.bluewhite.common.entity.PageParameter;
-import com.bluewhite.ledger.entity.Order;
-import com.bluewhite.personnel.attendance.entity.Attendance;
+import com.bluewhite.personnel.officeshare.entity.InventoryDetail;
 import com.bluewhite.personnel.officeshare.entity.OfficeSupplies;
+import com.bluewhite.personnel.officeshare.service.InventoryDetailService;
 import com.bluewhite.personnel.officeshare.service.OfficeSuppliesService;
-import com.bluewhite.product.primecostbasedata.entity.Materiel;
-import com.bluewhite.system.user.entity.User;
 
 @Controller
 public class OfficeSuppliesAction {
 	
 	@Autowired
 	private OfficeSuppliesService officeSuppliesService;
+	@Autowired
+	private InventoryDetailService inventoryDetailService;
+	
 	
 	
 	private ClearCascadeJSON clearCascadeJSON;
@@ -79,7 +76,46 @@ public class OfficeSuppliesAction {
 		return cr;
 	}
 	
+	/**
+	 * 出入库明细列表
+	 * 
+	 * @return cr
+	 */
+	@RequestMapping(value = "/personnel/getInventoryDetail", method = RequestMethod.GET)
+	@ResponseBody
+	public CommonResponse getInventoryDetail(InventoryDetail inventoryDetail,PageParameter page) {
+		CommonResponse cr = new CommonResponse();
+		cr.setData(clearCascadeJSON.format(inventoryDetailService.findPages(inventoryDetail, page)).toJSON());
+		cr.setMessage("查询成功");
+		return cr;
+	}
 	
+	/**
+	 * 新增出入库记录
+	 * @param order
+	 * @return
+	 */
+	@RequestMapping(value = "/personnel/addInventoryDetail", method = RequestMethod.POST)
+	@ResponseBody
+	public CommonResponse addInventoryDetail(InventoryDetail onventoryDetail) {
+		CommonResponse cr = new CommonResponse();
+		inventoryDetailService.addInventoryDetail(onventoryDetail);
+		cr.setMessage("新增成功");
+		return cr;
+	}
+	
+	/**
+	 * 删除出入库记录
+	 * 
+	 */
+	@RequestMapping(value = "/product/deleteInventoryDetail", method = RequestMethod.GET)
+	@ResponseBody
+	public CommonResponse deleteInventoryDetail(String ids) {
+		CommonResponse cr = new CommonResponse();
+		int count = inventoryDetailService.deleteInventoryDetail(ids);
+		cr.setMessage("成功删除"+count+"条出入库记录");
+		return cr;
+	}
 	
 
 
