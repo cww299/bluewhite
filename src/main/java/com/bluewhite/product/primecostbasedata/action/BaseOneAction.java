@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.support.ByteArrayMultipartFileEditor;
 
+import com.bluewhite.basedata.entity.BaseData;
 import com.bluewhite.common.BeanCopyUtils;
 import com.bluewhite.common.ClearCascadeJSON;
 import com.bluewhite.common.DateTimePattern;
@@ -167,11 +168,13 @@ public class BaseOneAction {
 	 */
 	@RequestMapping(value = "/product/getMateriel", method = RequestMethod.GET)
 	@ResponseBody
-	public CommonResponse getMateriel(HttpServletRequest request,Materiel materiel) {
+	public CommonResponse getMateriel(Materiel materiel) {
 		CommonResponse cr = new CommonResponse();
 		cr.setData(ClearCascadeJSON
 				.get()
-				.addRetainTerm(Materiel.class,"id","number","name","price","type","unit","changePrice","count","convertUnit","convertPrice")
+				.addRetainTerm(Materiel.class,"id","number","name","price","materielType","unit","changePrice","count","convertUnit","convertPrice")
+				.addRetainTerm(BaseOne.class,"id","name")
+				.addRetainTerm(BaseData.class,"id","name")
 				.format(materielService.findList(materiel)).toJSON());
 		cr.setMessage("成功");
 		return cr;

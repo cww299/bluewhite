@@ -273,6 +273,8 @@ layui.define(['mytable','element',['form']],function(exports){
 				url: myutil.config.ctx+'/product/getMachinist?productId='+check[0].id,
 				page: { curr:1 }
 			})
+			$('#'+btn).css('color','red');
+			$('#'+btn).siblings().css('color','white');
 			$('#'+elem).siblings().hide();
 			$('#'+elem).show();
 		})

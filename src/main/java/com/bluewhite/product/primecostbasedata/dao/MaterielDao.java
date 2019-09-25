@@ -13,12 +13,6 @@ import com.bluewhite.product.primecostbasedata.entity.Materiel;
 public interface MaterielDao extends BaseRepository<Materiel, Long>{
 	
 	/**
-	 * 根据类型查找物料
-	 * @param type
-	 * @return
-	 */
-	List<Materiel> findByType(String type);
-	/**
 	 * 根据物料名查找物料
 	 * @param name
 	 * @return

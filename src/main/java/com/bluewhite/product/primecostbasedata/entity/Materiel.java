@@ -8,9 +8,10 @@ import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
 import com.bluewhite.base.BaseEntity;
+import com.bluewhite.basedata.entity.BaseData;
 import com.bluewhite.common.utils.excel.Poi;
 /**
- * 面辅料（库存）
+ * 面辅料库存
  * @author zhangliang
  *
  */
@@ -52,12 +53,27 @@ public class Materiel extends BaseEntity<Long>{
 	@JoinColumn(name = "unit_id", referencedColumnName = "id", insertable = false, updatable = false)
 	private BaseOne unit;
 	
+	
 	/**
-     * 类型
-     */
-	@Column(name = "type")
-    private String type;
-		
+	 * 面辅料类型id
+	 */
+	@Column(name = "materiel_type_id")
+	private Long materielTypeId;
+	
+	/**
+	 * 面辅料类型
+	 */
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "materiel_type_id", referencedColumnName = "id", insertable = false, updatable = false)
+	private BaseData materielType;
+	
+	/**
+	 * 是否换算(0=是，1=否)
+	 * @return
+	 */
+	@Column(name = "convert_change")
+    private Integer convertChange;
+	
 	/**
 	 * 需要的数字填写
 	 * @return
@@ -66,11 +82,17 @@ public class Materiel extends BaseEntity<Long>{
 	private Integer count;
 	
 	/**
-	 * 换算之后的单位
-	 * @return
+	 *  换算之后的单位id
 	 */
-	@Column(name = "convert_unit")
-    private String convertUnit;
+	@Column(name = "convert_unit_id")
+	private Long convertUnitId;
+	
+	/**
+	 *  换算之后的单位
+	 */
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "convert_unit_id", referencedColumnName = "id", insertable = false, updatable = false)
+	private BaseOne convertUnit;
 	
 	/**
 	 * 换算之后的单位的价格
@@ -86,7 +108,6 @@ public class Materiel extends BaseEntity<Long>{
 	@Column(name = "convert_number")
     private Double convertNumber;
 	
-	
 	/**
 	 * 库存数量
 	 * 
@@ -94,23 +115,122 @@ public class Materiel extends BaseEntity<Long>{
 	@Column(name = "inventory_number")
 	private Integer inventoryNumber;
 	
+	/**
+	 * 仓库种类id
+	 */
+	@Column(name = "warehouse_type_id")
+	private Long warehouseTypeId;
+	
+	/**
+	 * 仓库种类
+	 */
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "warehouse_type_id", referencedColumnName = "id", insertable = false, updatable = false)
+	private BaseData warehouseType;
+	
+	/**
+	 * 库位
+	 * 
+	 */
+	@Column(name = "materiel_location")
+	private String materielLocation;
 	
 	
 	
+	public Long getMaterielTypeId() {
+		return materielTypeId;
+	}
+
+	public void setMaterielTypeId(Long materielTypeId) {
+		this.materielTypeId = materielTypeId;
+	}
+
+	public BaseData getMaterielType() {
+		return materielType;
+	}
+
+	public void setMaterielType(BaseData materielType) {
+		this.materielType = materielType;
+	}
+
+	public BaseOne getConvertUnit() {
+		return convertUnit;
+	}
+
+	public Integer getConvertChange() {
+		return convertChange;
+	}
+
+	public void setConvertChange(Integer convertChange) {
+		this.convertChange = convertChange;
+	}
+
+	public String getMaterielLocation() {
+		return materielLocation;
+	}
+
+	public void setMaterielLocation(String materielLocation) {
+		this.materielLocation = materielLocation;
+	}
+
+	public Long getConvertUnitId() {
+		return convertUnitId;
+	}
+
+	public void setConvertUnitId(Long convertUnitId) {
+		this.convertUnitId = convertUnitId;
+	}
+
+	public void setConvertUnit(BaseOne convertUnit) {
+		this.convertUnit = convertUnit;
+	}
+
+	public Long getUnitId() {
+		return unitId;
+	}
+
+	public void setUnitId(Long unitId) {
+		this.unitId = unitId;
+	}
+
+	public BaseOne getUnit() {
+		return unit;
+	}
+
+	public void setUnit(BaseOne unit) {
+		this.unit = unit;
+	}
+
+	public Integer getInventoryNumber() {
+		return inventoryNumber;
+	}
+
+	public void setInventoryNumber(Integer inventoryNumber) {
+		this.inventoryNumber = inventoryNumber;
+	}
+
+	public Long getWarehouseTypeId() {
+		return warehouseTypeId;
+	}
+
+	public void setWarehouseTypeId(Long warehouseTypeId) {
+		this.warehouseTypeId = warehouseTypeId;
+	}
+
+	public BaseData getWarehouseType() {
+		return warehouseType;
+	}
+
+	public void setWarehouseType(BaseData warehouseType) {
+		this.warehouseType = warehouseType;
+	}
+
 	public Double getConvertNumber() {
 		return convertNumber;
 	}
 
 	public void setConvertNumber(Double convertNumber) {
 		this.convertNumber = convertNumber;
-	}
-
-	public String getConvertUnit() {
-		return convertUnit;
-	}
-
-	public void setConvertUnit(String convertUnit) {
-		this.convertUnit = convertUnit;
 	}
 
 	public Double getConvertPrice() {
@@ -129,13 +249,6 @@ public class Materiel extends BaseEntity<Long>{
 		this.count = count;
 	}
 
-	public String getType() {
-		return type;
-	}
-
-	public void setType(String type) {
-		this.type = type;
-	}
 
 	public String getNumber() {
 		return number;

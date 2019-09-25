@@ -28,7 +28,6 @@ import com.bluewhite.common.annotation.FilterRetainTerm;
  * <b>但是执行顺序是先排除后保留，如果同时设置相同属性既排除又保留会执行排除.</b>
  * {@link #addExtractTerm(String, String)}仅对{@linkplain #toJSON()}方法有效<br/>
  * 本方法还支持将DATE格式转化成Timestamp。默认转化格式为yyyy-mm-dd HH:mm:ss，如需打开{@link #dateToTimestamp()}}
- * @author ZhouYong
  *
  */
 public class ClearCascadeJSON {

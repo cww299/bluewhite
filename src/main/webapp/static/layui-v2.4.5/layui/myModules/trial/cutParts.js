@@ -12,18 +12,27 @@ layui.define(['mytable'],function(exports){
 	            ].join(' ');
 	var allUnit = myutil.getDataSync({ url:'/product/getBaseOne?type=unit', });
 	var allOverstock = myutil.getDataSync({ url:'/product/getBaseOne?type=overstock', });
-	var allMaterielSelect = '';
+	var allMaterielSelect = '', allReuniteSelect = '' ;//获取所有面料下拉框的值进行记录。减少搜索次数
 	var cutParts = {	//模块
 			
 	};
-	myutil.getData({ 
-		url:'/product/getMateriel',
-		success:function(data){
-			layui.each(data,function(index,item){
-				allMaterielSelect += '<dd data-value="'+item.id+'">'+item.number+' ~ '+item.name+' ~ ￥'+item.price+' ~ '+item.unit+'</dd>';
-			})
-		}
-	});
+	getSelectData('material');	//分别查询所有的面料、复合料进行记录
+	getSelectData('reunite');
+	function getSelectData(type){
+		myutil.getData({ 
+			url:'/product/getMateriel?type='+type,	
+			success:function(data){
+				var allSelect = '';
+				layui.each(data,function(index,item){
+					allSelect += '<dd data-value="'+item.id+'">'+item.number+' ~ '+item.name+' ~ ￥'+item.price+' ~ '+item.unit+'</dd>';
+				})
+				if(type=='material')
+					allMaterielSelect = allSelect;
+				else
+					allReuniteSelect = allSelect;
+			}
+		});
+	}
 	cutParts.render = function(opt){
 		var elem = opt.elem,
 			btn = opt.btn;
@@ -43,7 +52,7 @@ layui.define(['mytable'],function(exports){
 						var val = $(this).val();
 						var Y = tdElem.offset().top;
 						var X = tdElem.offset().left;
-						getSearchMateriael(val);
+						getSearchMateriael(val,$(tdElem).data('field'));
 						$('#searchTipDiv').css("top",Y+45);	//定位搜索提示框位置并显示提示框
 						$('#searchTipDiv').css("left",X+15);
 						$('#searchTipDiv').css("width",width);
@@ -62,15 +71,20 @@ layui.define(['mytable'],function(exports){
 							$(inputElem).val(inputText);
 					    }, 200);
 					}).bind("input propertychange",function(event){	//监听输入框内容改变
-						getSearchMateriael($(this).val());
+						var type = $(this).closest('td').data('field');
+						getSearchMateriael($(this).val(),type);
 					});
 				})
 			}
 		}
-		function getSearchMateriael(name){	//根据输入的内容进行搜索、填充选择项
+		function getSearchMateriael(name,type){	//根据输入的内容进行搜索、填充选择项
+			name=name.trim();
 			var html = '';
 			if(!name){
-				html = allMaterielSelect;
+				if(type=='materiel')
+					html = allMaterielSelect;
+				else
+					html = allReuniteSelect;
 				renderHtml();
 			}
 			else{
@@ -79,8 +93,13 @@ layui.define(['mytable'],function(exports){
 					name = name[1].trim();
 				else 
 					name = name[0].trim();
+				var t = '';
+				if(type=='materiel')
+					t = 'material';
+				else
+					t = 'reunite';
 				myutil.getData({
-					url:'/product/getMateriel',
+					url:'/product/getMateriel?type='+t,
 					data:{ name: name },
 					success:function(data){
 						if(data.length==0)
@@ -221,6 +240,8 @@ layui.define(['mytable'],function(exports){
 				url: myutil.config.ctx+'/product/getCutParts?productId='+check[0].id,
 				page: { curr:1 }
 			})
+			$('#'+btn).css('color','red');
+			$('#'+btn).siblings().css('color','white');
 			$('#'+elem).siblings().hide();
 			$('#'+elem).show();
 		})
