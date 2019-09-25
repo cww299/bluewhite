@@ -20,12 +20,6 @@ import com.bluewhite.basedata.entity.BaseData;
 public class OfficeSupplies extends BaseEntity<Long>{
 	
 	/**
-     * 编号
-     */
-	@Column(name = "number")
-    private String number;
-	
-	/**
      * 物品名
      */
 	@Column(name = "name")
@@ -83,13 +77,24 @@ public class OfficeSupplies extends BaseEntity<Long>{
 	 */
 	@Column(name = "location")
 	private String location;
+	
+	/**
+	 * 库值
+	 * 
+	 */
+	@Column(name = "library_value")
+	private Double libraryValue;
+	
+	
 
-	public String getNumber() {
-		return number;
+	
+
+	public Double getLibraryValue() {
+		return libraryValue;
 	}
 
-	public void setNumber(String number) {
-		this.number = number;
+	public void setLibraryValue(Double libraryValue) {
+		this.libraryValue = libraryValue;
 	}
 
 	public String getName() {

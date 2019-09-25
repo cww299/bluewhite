@@ -8,6 +8,7 @@ import javax.persistence.FetchType;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 
 import com.bluewhite.base.BaseEntity;
 import com.bluewhite.basedata.entity.BaseData;
@@ -19,7 +20,7 @@ import com.bluewhite.system.user.entity.User;
  *
  */
 @Entity
-@Table(name = "person_ inventory_detail")
+@Table(name = "person_inventory_detail")
 public class InventoryDetail extends BaseEntity<Long>{
 	
 	/**
@@ -70,13 +71,97 @@ public class InventoryDetail extends BaseEntity<Long>{
 	private User user;
 	
 	/**
-	 * 领取时间
+	 * 出库（入库）时间
 	 */
 	@Column(name = "time")
 	private Date time;
 	
+	/**
+	 * 出库（入库）数量
+	 */
+	@Column(name = "number")
+	private Integer number;
+	
+	/**
+	 * 领用价值
+	 */
+	@Column(name = "outbound_cost")
+	private Double outboundCost;
+	
+	/**
+	 * 备注
+	 */
+	@Column(name = "remark")
+	private String remark;
+	
+	/**
+	 * 名称
+	 */
+	@Transient
+	private String name;
+	
+	/**
+	 * 查询字段
+	 */
+	@Transient
+	private Date orderTimeBegin;
+	/**
+	 * 查询字段
+	 */
+	@Transient
+	private Date orderTimeEnd;
 	
 	
+	
+
+
+	public Double getOutboundCost() {
+		return outboundCost;
+	}
+
+	public void setOutboundCost(Double outboundCost) {
+		this.outboundCost = outboundCost;
+	}
+
+	public String getRemark() {
+		return remark;
+	}
+
+	public void setRemark(String remark) {
+		this.remark = remark;
+	}
+
+	public Integer getNumber() {
+		return number;
+	}
+
+	public void setNumber(Integer number) {
+		this.number = number;
+	}
+
+	public String getName() {
+		return name;
+	}
+
+	public void setName(String name) {
+		this.name = name;
+	}
+
+	public Date getOrderTimeBegin() {
+		return orderTimeBegin;
+	}
+
+	public void setOrderTimeBegin(Date orderTimeBegin) {
+		this.orderTimeBegin = orderTimeBegin;
+	}
+
+	public Date getOrderTimeEnd() {
+		return orderTimeEnd;
+	}
+
+	public void setOrderTimeEnd(Date orderTimeEnd) {
+		this.orderTimeEnd = orderTimeEnd;
+	}
 
 	public Date getTime() {
 		return time;
