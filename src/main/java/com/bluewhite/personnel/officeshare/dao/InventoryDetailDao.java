@@ -14,5 +14,5 @@ public interface InventoryDetailDao extends BaseRepository<InventoryDetail, Long
 	 * @param endTime
 	 * @return
 	 */
-	List<InventoryDetail> findByTimeBetween(Date startTime, Date endTime);
+	List<InventoryDetail> findByFlagAndTimeBetween(Integer flag , Date startTime, Date endTime);
 }
