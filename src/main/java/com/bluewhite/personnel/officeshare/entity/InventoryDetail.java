@@ -70,10 +70,11 @@ public class InventoryDetail extends BaseEntity<Long>{
 	private User user;
 	
 	/**
-	 * 领取时间
+	 * 出库（入库）时间
 	 */
 	@Column(name = "time")
 	private Date time;
+	
 	
 	
 	

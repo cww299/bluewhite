@@ -1,7 +1,5 @@
 package com.bluewhite.product.primecostbasedata.service;
 
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-
 import java.util.ArrayList;
 import java.util.List;
 
