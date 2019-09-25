@@ -84,8 +84,8 @@
 				<button type="button" class="layui-btn layui-btn-sm" id="productBtn" style="color:red;">首页</button><br>	
 				<button type="button" class="layui-btn layui-btn-sm" id="cutPartBtn">裁片填写</button><br>
 	            <button type="button" class="layui-btn layui-btn-sm" id="materialsBtn">生产辅料</button><br>
-	            <!-- <button type="button" class="layui-btn layui-btn-sm" id="tailorBtn">裁剪填写</button><br>
-	            <button type="button" class="layui-btn layui-btn-sm" id="machinistBtn">机工填写</button><br>
+	            <button type="button" class="layui-btn layui-btn-sm" id="tailorBtn">裁剪填写</button><br>
+	             <!-- <button type="button" class="layui-btn layui-btn-sm" id="machinistBtn">机工填写</button><br>
 	            <button type="button" class="layui-btn layui-btn-sm" id="embroideryBtn">绣花填写</button><br>
 	            <button type="button" class="layui-btn layui-btn-sm" id="needleworkBtn">针工填写</button><br>
 	            <button type="button" class="layui-btn layui-btn-sm" id="packBtn">内外包装</button><br> -->
@@ -128,6 +128,13 @@ layui.config({
 		$('#productTab').show();
 	})
 	
+	$(document).click(function(event){
+	    var div = $('#searchTipDiv');
+	    if(!div.is(event.target) && div.has(event.target).length === 0 && $(event.target)[0].nodeName!='I'){
+	    	$('#searchTipDiv').hide();
+		}
+	})
+				
 	layui.extend({	//异步加载不同的模块。减少页面加载元素时间。使页面刷新更流畅
 		cutParts : 'layui/myModules/trial/cutParts',			//裁片
 		materials: 'layui/myModules/trial/materials',			//dd除裁片
@@ -155,13 +162,13 @@ layui.config({
 				elem: 'materialsTab',
 				btn: 'materialsBtn',
 			})
-			/* machinist.render({
-				elem: 'machinistTab',
-				btn: 'machinistBtn',
-			})
 			tailor.render({
 				elem: 'tailorTab',
 				btn: 'tailorBtn'
+			})
+			/* machinist.render({
+				elem: 'machinistTab',
+				btn: 'machinistBtn',
 			})
 			embroidery.render({
 				elem: 'embroideryTab',
