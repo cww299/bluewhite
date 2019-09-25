@@ -124,7 +124,7 @@ public class InventoryDetailServiceImpl extends BaseServiceImpl<InventoryDetail,
 	@Override
 	public List<Map<String, Object>> statisticalInventoryDetail(InventoryDetail onventoryDetail) {
 		List<Map<String, Object>> mapList = new ArrayList<>(); 
-		List<InventoryDetail> onventoryDetailList = dao.findByTimeBetween(onventoryDetail.getOrderTimeBegin(),
+		List<InventoryDetail> onventoryDetailList = dao.findByFlagAndTimeBetween(0,onventoryDetail.getOrderTimeBegin(),
 				onventoryDetail.getOrderTimeEnd());
 		double sumCostList = onventoryDetailList.stream().mapToDouble(InventoryDetail::getOutboundCost).sum();
 		// 按人员分组
