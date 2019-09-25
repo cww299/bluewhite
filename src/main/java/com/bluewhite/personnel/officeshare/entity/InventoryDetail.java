@@ -83,6 +83,12 @@ public class InventoryDetail extends BaseEntity<Long>{
 	private Integer number;
 	
 	/**
+	 * 备注
+	 */
+	@Column(name = "remark")
+	private String remark;
+	
+	/**
 	 * 名称
 	 */
 	@Transient
@@ -101,6 +107,14 @@ public class InventoryDetail extends BaseEntity<Long>{
 	
 	
 	
+
+	public String getRemark() {
+		return remark;
+	}
+
+	public void setRemark(String remark) {
+		this.remark = remark;
+	}
 
 	public Integer getNumber() {
 		return number;
