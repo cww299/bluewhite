@@ -1,10 +1,12 @@
 package com.bluewhite.personnel.officeshare.service;
 
+import java.util.List;
+import java.util.Map;
+
 import com.bluewhite.base.BaseCRUDService;
 import com.bluewhite.common.entity.PageParameter;
 import com.bluewhite.common.entity.PageResult;
 import com.bluewhite.personnel.officeshare.entity.InventoryDetail;
-import com.bluewhite.personnel.officeshare.entity.OfficeSupplies;
 
 public interface InventoryDetailService  extends BaseCRUDService<InventoryDetail,Long>{
 
@@ -29,9 +31,12 @@ public interface InventoryDetailService  extends BaseCRUDService<InventoryDetail
 	 */
 	public int deleteInventoryDetail(String ids);
 	
-	
-
-	public void statisticalInventoryDetail(InventoryDetail onventoryDetail);
+	/**
+	 * 统计部门分摊费用
+	 * @param onventoryDetail
+	 * @return
+	 */
+	public List<Map<String, Object>> statisticalInventoryDetail(InventoryDetail onventoryDetail);
 	
 	
 

@@ -143,7 +143,8 @@ public class OfficeSuppliesAction {
 	@ResponseBody
 	public CommonResponse statisticalInventoryDetail(InventoryDetail onventoryDetail) {
 		CommonResponse cr = new CommonResponse();
-		inventoryDetailService.statisticalInventoryDetail(onventoryDetail);
+		cr.setData(inventoryDetailService.statisticalInventoryDetail(onventoryDetail));
+		cr.setMessage("成功");
 		return cr;
 	}
 	
