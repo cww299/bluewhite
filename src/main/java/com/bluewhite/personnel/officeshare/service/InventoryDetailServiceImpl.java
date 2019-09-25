@@ -2,13 +2,17 @@ package com.bluewhite.personnel.officeshare.service;
 
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 import javax.persistence.criteria.Predicate;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
 
 import com.bluewhite.base.BaseServiceImpl;
@@ -74,6 +78,7 @@ public class InventoryDetailServiceImpl extends BaseServiceImpl<InventoryDetail,
 				throw new ServiceException("数量为0，无法出库");
 			} else {
 				officeSupplies.setInventoryNumber(officeSupplies.getInventoryNumber() - onventoryDetail.getNumber());
+				onventoryDetail.setOutboundCost(NumUtils.mul(officeSupplies.getPrice(),onventoryDetail.getNumber()));
 			}
 		}
 		// 入库
@@ -86,6 +91,7 @@ public class InventoryDetailServiceImpl extends BaseServiceImpl<InventoryDetail,
 	}
 
 	@Override
+	@Transactional
 	public int deleteInventoryDetail(String ids) {
 		int count = 0;
 		if (!StringUtils.isEmpty(ids)) {
@@ -97,16 +103,15 @@ public class InventoryDetailServiceImpl extends BaseServiceImpl<InventoryDetail,
 					OfficeSupplies officeSupplies = officeSuppliesDao.findOne(onventoryDetail.getOfficeSuppliesId());
 					// 出库
 					if (onventoryDetail.getFlag() == 0) {
-						
-						
-						
 						officeSupplies.setInventoryNumber(officeSupplies.getInventoryNumber() + onventoryDetail.getNumber());
 					}
 					// 入库
 					if (onventoryDetail.getFlag() == 1) {
-						officeSupplies.setInventoryNumber(officeSupplies.getInventoryNumber() - onventoryDetail.getNumber());
+						officeSupplies
+								.setInventoryNumber(officeSupplies.getInventoryNumber() - onventoryDetail.getNumber());
 					}
-					officeSupplies.setLibraryValue(NumUtils.mul(officeSupplies.getInventoryNumber(), officeSupplies.getPrice()));
+					officeSupplies.setLibraryValue(
+							NumUtils.mul(officeSupplies.getInventoryNumber(), officeSupplies.getPrice()));
 					officeSuppliesDao.save(officeSupplies);
 					dao.delete(id);
 					count++;
@@ -117,11 +122,25 @@ public class InventoryDetailServiceImpl extends BaseServiceImpl<InventoryDetail,
 	}
 
 	@Override
-	public void statisticalInventoryDetail(InventoryDetail onventoryDetail) {
-		
-		
-		
-		
+	public List<Map<String, Object>> statisticalInventoryDetail(InventoryDetail onventoryDetail) {
+		List<Map<String, Object>> mapList = new ArrayList<>(); 
+		List<InventoryDetail> onventoryDetailList = dao.findByTimeBetween(onventoryDetail.getOrderTimeBegin(),
+				onventoryDetail.getOrderTimeEnd());
+		double sumCostList = onventoryDetailList.stream().mapToDouble(InventoryDetail::getOutboundCost).sum();
+		// 按人员分组
+		Map<Long, List<InventoryDetail>> mapAttendance = onventoryDetailList.stream()
+				.filter(InventoryDetail -> InventoryDetail.getOrgNameId() != null)
+				.collect(Collectors.groupingBy(InventoryDetail::getOrgNameId, Collectors.toList()));
+		for (Long ps1 : mapAttendance.keySet()) {
+			Map<String, Object> map = new HashMap<>();
+			List<InventoryDetail> psList = mapAttendance.get(ps1);
+			double sumCost = psList.stream().mapToDouble(InventoryDetail::getOutboundCost).sum();
+			map.put("orgName", psList.get(0).getOrgName().getName());
+			map.put("sumCost", NumUtils.round(sumCost, 2));
+			map.put("accounted",NumUtils.mul(NumUtils.div(sumCost, sumCostList, 2),100)+"%");
+			mapList.add(map);
+		}
+		return mapList;
 	}
 
 }

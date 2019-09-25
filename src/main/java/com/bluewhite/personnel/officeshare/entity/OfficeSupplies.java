@@ -82,17 +82,19 @@ public class OfficeSupplies extends BaseEntity<Long>{
 	 * 库值
 	 * 
 	 */
-	@Column(name = "Library_value")
-	private Double LibraryValue;
+	@Column(name = "library_value")
+	private Double libraryValue;
 	
+	
+
 	
 
 	public Double getLibraryValue() {
-		return LibraryValue;
+		return libraryValue;
 	}
 
 	public void setLibraryValue(Double libraryValue) {
-		LibraryValue = libraryValue;
+		this.libraryValue = libraryValue;
 	}
 
 	public String getName() {
