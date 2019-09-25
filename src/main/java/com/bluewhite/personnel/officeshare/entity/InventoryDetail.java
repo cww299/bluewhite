@@ -20,7 +20,7 @@ import com.bluewhite.system.user.entity.User;
  *
  */
 @Entity
-@Table(name = "person_ inventory_detail")
+@Table(name = "person_inventory_detail")
 public class InventoryDetail extends BaseEntity<Long>{
 	
 	/**
@@ -83,6 +83,12 @@ public class InventoryDetail extends BaseEntity<Long>{
 	private Integer number;
 	
 	/**
+	 * 领用价值
+	 */
+	@Column(name = "outbound_cost")
+	private Double outboundCost;
+	
+	/**
 	 * 备注
 	 */
 	@Column(name = "remark")
@@ -107,6 +113,15 @@ public class InventoryDetail extends BaseEntity<Long>{
 	
 	
 	
+
+
+	public Double getOutboundCost() {
+		return outboundCost;
+	}
+
+	public void setOutboundCost(Double outboundCost) {
+		this.outboundCost = outboundCost;
+	}
 
 	public String getRemark() {
 		return remark;
