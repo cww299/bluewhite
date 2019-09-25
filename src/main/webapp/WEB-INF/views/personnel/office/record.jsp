@@ -211,16 +211,12 @@
 								field: "price",
 								title: "单价",
 								align: 'center',
-								templet:function(d){
-									return d.officeSupplies.price
-								}
+								
 							},{
 								field: "flag",
 								title: "出入库",
 								align: 'center',
-								templet:function(d){
-									return (d.flag==0 ? "出库" :"入库")
-								}
+								
 							},{
 								field: "number",
 								title: "数量",
@@ -230,16 +226,12 @@
 								field: "userName",
 								title: "领取人",
 								align: 'center',
-								templet:function(d){
-									return (d.user==null ? "" :d.user.userName)
-								}
+								
 							},{
 								field: "orgName",
 								title: "部门",
 								align: 'center',
-								templet:function(d){
-									return (d.orgName==null ? "" :d.orgName.name)
-								}
+								
 							},{
 								field: "remark",
 								title: "备注",
