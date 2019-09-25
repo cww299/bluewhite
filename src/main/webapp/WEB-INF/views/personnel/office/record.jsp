@@ -27,6 +27,21 @@
 							<td><input  style="width: 250px;"  name="name" placeholder="请输入物品名" class="layui-input">
 							</td>
 							<td>&nbsp;&nbsp;</td>
+							<td>时间:</td>
+							<td><input id="startTime" style="width: 300px;"  placeholder="请输入面试时间" class="layui-input laydate-icon">
+							<td>&nbsp;&nbsp;</td>
+							<td>部门:</td>
+							<td><select class="form-control"  name="orgNameId" lay-search="true" id="selectorgNameId">
+									
+							</select></td>
+							<td>&nbsp;&nbsp;</td>
+							<td>出入库:</td>
+							<td><select class="form-control"  name="flag" lay-search="true" >
+									<option value="">请选择</option>
+									<option  value="0">出库</option>
+									<option  value="1">入库</option>
+							</select></td>
+							<td>&nbsp;&nbsp;</td>
 							<td>
 								<div class="layui-inline">
 									<button class="layui-btn layuiadmin-btn-admin" id="LAY-search5" lay-submit lay-filter="LAY-search">
@@ -108,8 +123,9 @@
 					});
 					layer.close(index);
 					laydate.render({
-						elem: '#time',
+						elem: '#startTime',
 						type: 'datetime',
+						range:'~',
 					});
 					
 					laydate.render({
@@ -118,6 +134,27 @@
 						range:'~',
 					});
 					
+					var getdataa={type:"orgName",}
+					var htmlst= '<option value="">请选择</option>';
+				    $.ajax({
+					      url:"${ctx}/basedata/list",
+					      data:getdataa,
+					      type:"GET",
+					      async:false,
+					      beforeSend:function(){
+					    	  indextwo = layer.load(1, {
+							  shade: [0.1,'#fff'] //0.1透明度的白色背景
+							  });
+						  }, 
+			      		  success: function (result) {
+			      			  $(result.data).each(function(k,j){
+			      				htmlst +='<option value="'+j.id+'">'+j.name+'</option>'
+			      				$('#selectorgNameId').html(htmlst);
+			      				form.render();
+			      			  });
+			      			layer.close(indextwo);
+					      }
+					  });
 					
 				   	tablePlug.smartReload.enable(true); 
 					table.render({
@@ -137,6 +174,15 @@
 						colFilterRecord: true,
 						smartReloadModel: true,// 开启智能重载
 						parseData: function(ret) {
+							if(ret.code==0){
+								layui.each(ret.data.rows,function(index,item){
+									item.name=item.officeSupplies.name
+									item.price=item.officeSupplies.price
+									item.flag=(item.flag==0 ? "出库" :"入库")
+									item.userName=(item.user==null ? "" :item.user.userName)
+									item.orgName=(item.orgName==null ? "" :item.orgName.name)
+								})
+							}
 							return {
 								code: ret.code,
 								msg: ret.message,
@@ -188,7 +234,7 @@
 									return (d.user==null ? "" :d.user.userName)
 								}
 							},{
-								field: "userName",
+								field: "orgName",
 								title: "部门",
 								align: 'center',
 								templet:function(d){
@@ -361,6 +407,9 @@
 					//监听搜索
 					form.on('submit(LAY-search)', function(obj) {		//修改此处
 						var field = obj.field;
+						var orderTime=$("#startTime").val().split('~');
+						field.orderTimeBegin=orderTime[0];
+						field.orderTimeEnd=orderTime[1].split(" ")[1] +" 23:59:59";
 						table.reload('tableData', {
 							where: field,
 							 page: { curr : 1 }

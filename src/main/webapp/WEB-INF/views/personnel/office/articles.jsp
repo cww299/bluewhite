@@ -161,6 +161,7 @@
 					
 					//全部字段
 					var allField;
+					var allUnit;
 					var self = this;
 					this.setIndex = function(index){
 				  		_index=index;
@@ -195,6 +196,7 @@
 							  });
 						  }, 
 			      		  success: function (result) {
+			      			  allUnit = result.data;
 			      			  $(result.data).each(function(k,j){
 			      				htmls +='<option value="'+j.id+'">'+j.name+'</option>'
 			      			  });
@@ -229,6 +231,7 @@
 			      			  $(result.data).each(function(k,j){
 			      				htmlst +='<option value="'+j.id+'">'+j.name+'</option>'
 			      				$('#selectorgNameId').html(htmlst);
+			      				form.render();
 			      			  });
 			      			layer.close(indextwo);
 					      }
@@ -264,6 +267,14 @@
 						colFilterRecord: true,
 						smartReloadModel: true,// 开启智能重载
 						parseData: function(ret) {
+							if(ret.code==0){
+								layui.each(ret.data.rows,function(index,item){
+									layui.each(allUnit,function(index2,item2){
+										if((item.unit && item.unit.id) == item2.id)
+											item.unitName = item2.name;
+									})
+								})
+							}
 							return {
 								code: ret.code,
 								msg: ret.message,
@@ -287,7 +298,7 @@
 								align: 'center',
 								edit: 'text',
 							},{
-								field: "unitId",
+								field: "unitName",
 								title: "单位",
 								align: 'center',
 								search: true,
@@ -356,12 +367,15 @@
 						var tdElem = selectElem.closest('td');
 						var trElem = tdElem.closest('tr');
 						var tableView = trElem.closest('.layui-table-view');
-						var field = tdElem.data('field');
 						table.cache[tableView.attr('lay-id')][trElem.data('index')][tdElem.data('field')] = data.value;
-						var id = table.cache[tableView.attr('lay-id')][trElem.data('index')].id
+						var id = table.cache[tableView.attr('lay-id')][trElem.data('index')].id;
+						if(id)
+							table.cache[tableView.attr('lay-id')][trElem.data('index')]['unitName'] = $(data.elem).find('option[value="'+data.value+'"]').html();
+						else
+							table.cache[tableView.attr('lay-id')][trElem.data('index')]['unitId'] = data.value;
 						var postData = {
 							id: id,
-							[field]:data.value
+							unitId:data.value
 						}
 						//调用新增修改
 						mainJs.fUpdate(postData);
@@ -375,7 +389,6 @@
 						case 'addTempData':
 							allField = {id: '',};
 							table.addTemp(tableId,allField,function(trElem) {
-								// 进入回调的时候this是当前的表格的config
 								var that = this;
 								// 初始化laydate
 							});
