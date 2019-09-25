@@ -162,13 +162,13 @@ layui.config({
 				elem: 'materialsTab',
 				btn: 'materialsBtn',
 			})
-			/* machinist.render({
-				elem: 'machinistTab',
-				btn: 'machinistBtn',
-			})
 			tailor.render({
 				elem: 'tailorTab',
 				btn: 'tailorBtn'
+			})
+			/* machinist.render({
+				elem: 'machinistTab',
+				btn: 'machinistBtn',
 			})
 			embroidery.render({
 				elem: 'embroideryTab',
