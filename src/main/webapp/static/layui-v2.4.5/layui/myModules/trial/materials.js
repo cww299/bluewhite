@@ -33,11 +33,11 @@ layui.define(['mytable','form'],function(exports){
 			
 	};
 	myutil.getData({ 
-		url:'/product/getMateriel?type=material',
+		url:'/product/getMateriel?materielTypeId=321',
 		success:function(data){
 			layui.each(data,function(index,item){
 				allMaterielSelect += '<dd data-value="'+item.id+'" data-convertPrice="'+item.convertPrice+'" data-convertUnit="'+item.convertPrice+'">'+
-						item.number+' ~ '+item.name+' ~ ￥'+item.price+' ~ '+item.unit+'</dd>';
+						item.number+' ~ '+item.name+' ~ ￥'+item.price+' ~ '+(item.unit && item.unit.name )+'</dd>';
 			})
 		}
 	});
@@ -98,7 +98,7 @@ layui.define(['mytable','form'],function(exports){
 		}
 		else
 			myutil.getData({
-				url:'/product/getMateriel?type=material',
+				url:'/product/getMateriel?materielTypeId=321',
 				data:{ name: name },
 				success:function(data){
 					if(data.length==0)
@@ -108,7 +108,7 @@ layui.define(['mytable','form'],function(exports){
 						if(trMateriel[trIndex] && trMateriel[trIndex].id == item.id)
 							sty= 'style="background-color:#5fb878;"';
 						html += '<dd data-value="'+item.id+'" data-convertPrice="'+item.convertPrice+'" '+sty+' data-convertUnit="'+item.convertUnit+'" >'+
-								item.number+' ~ '+item.name+' ~ ￥'+item.price+' ~ '+item.unit+'</dd>';
+								item.number+' ~ '+item.name+' ~ ￥'+item.price+' ~ '+(item.unit && item.unit.name )+'</dd>';
 					})
 					renderHtml();
 				}
@@ -248,7 +248,7 @@ layui.define(['mytable','form'],function(exports){
 				var html = ['<div class="layui-form-select">',
 				            	'<div class="layui-select-title">',
 				            		'<input type="text" class="layui-input" placeholder="请选择" value="',
-				            			d ? (d.number+' ~ '+d.name+' ~ ￥'+d.price+' ~ '+d.unit) : '',
+				            			d ? (d.number+' ~ '+d.name+' ~ ￥'+d.price+' ~ '+(d.unit && d.unit.name )) : '',
 				            		'">',
 				            		'<i class="layui-edge"></i>',
 				            	'</div>',

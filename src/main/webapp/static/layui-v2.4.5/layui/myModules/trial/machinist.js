@@ -185,15 +185,6 @@ layui.define(['mytable','element',['form']],function(exports){
 	        			})
 	        		});
 	        	}
-				$(document).click(function(event){
-				    var div = $('#searchTipDiv');
-				    if(!div.is(event.target) && div.has(event.target).length === 0 && $(event.target)[0].nodeName!='I'){
-				    	$('#searchTipDiv').hide();
-						//console.log($('div[lay-id="'+tableId+'"]').find('tr[data-index="'+trIndex+'"]').find('td[data-field="cutparts"]').length)
-						//find('div[class="layui-form-select"]').removeClass('layui-form-selected');
-						//$(self).parent().parent().removeClass('layui-form-selected');
-					}
-				})
 	        }
 		})
 		function getFormSelects(){
