@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import com.bluewhite.basedata.entity.BaseData;
 import com.bluewhite.common.ClearCascadeJSON;
 import com.bluewhite.common.entity.CommonResponse;
 import com.bluewhite.common.entity.ErrorCode;
@@ -30,7 +31,9 @@ public class OfficeSuppliesAction {
 	private ClearCascadeJSON clearCascadeJSON;
 	{
 		clearCascadeJSON = ClearCascadeJSON.get()
-				.addRetainTerm(OfficeSupplies.class, "number", "user", "time", "inOutMode", "verifyMode");
+				.addRetainTerm(OfficeSupplies.class, "number", "name", "price", "unit"
+						, "inventoryNumber","location")
+				.addRetainTerm(BaseData.class, "id", "name");
 	}
 	
 	
