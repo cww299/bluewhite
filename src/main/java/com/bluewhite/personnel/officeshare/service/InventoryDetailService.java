@@ -31,4 +31,8 @@ public interface InventoryDetailService  extends BaseCRUDService<InventoryDetail
 	
 	
 
+	public void statisticalInventoryDetail(InventoryDetail onventoryDetail);
+	
+	
+
 }
