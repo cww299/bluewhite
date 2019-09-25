@@ -88,10 +88,12 @@
 				<span class="layui-btn layui-btn-sm layui-btn-danger" lay-event="deleteSome">批量删除</span>
 			</div>
 	</script>
-
-<script type="text/html" id="toolbar2">
-	用餐人数<input id="start"  disabled="disabled" style="width:100px; height: 30px;">  单人费用<input id="price"  disabled="disabled" style="width:100px; height: 30px;">
-</script>
+	
+	<script type="text/html" id="barDemo">
+			<button type="button" class="layui-btn layui-btn-xs" lay-event="inLibrary">入库</button>
+			<button type="button" class="layui-btn layui-btn-xs" lay-event="outLibrary">出库</button>
+	</script>
+	
 	<script>
 			layui.config({
 				base: '${ctx}/static/layui-v2.4.5/'
@@ -155,7 +157,7 @@
 					var fn1 = function(field) {
 						return function(d) {
 							return [
-								'<select name="selectOne" lay-filter="lay_selecte" lay-search="true" data-value="' +d.unitId+ '">',
+								'<select name="selectOne"   lay-filter="lay_selecte" lay-search="true" data-value="'+( d.unit?d.unit.id :"")+'">',
 								htmls +
 								'</select>'
 							].join('');
@@ -197,10 +199,12 @@
 								field: "location",
 								title: "仓位",
 								align: 'center',
+								edit: 'text',
 							},{
 								field: "name",
 								title: "物品名",
 								align: 'center',
+								edit: 'text',
 							},{
 								field: "unitId",
 								title: "单位",
@@ -213,21 +217,22 @@
 								field: "price",
 								title: "单价",
 								align: 'center',
+								edit: 'text',
 							},{
 								field: "inventoryNumber",
 								title: "库存数量",
 								align: 'center',
-								edit: 'text',
+								edit: false,
 							},{
-								field: "totalCost",
-								title: "总费用",
+								field: "LibraryValue",
+								title: "库值",
 								align: 'center',
-								edit: 'text',
+								edit: false,
 							},{
-								field: "liveRemark",
-								title: "备注",
+								field: "",
+								title: "操作",
 								align: 'center',
-								edit: 'text',
+								toolbar: '#barDemo',
 							}]
 						],
 						done: function() {
@@ -254,44 +259,7 @@
 								elem.val(elem.data('value'));
 							});
 							form.render();
-							// 初始化laydate
-							layui.each(tableView.find('td[data-field="beginTime"]'), function(index, tdElem) {
-								tdElem.onclick = function(event) {
-									layui.stope(event)
-								};
-								laydate.render({
-									elem: tdElem.children[0],
-									format: 'yyyy-MM-dd HH:mm:ss',
-									done: function(value, date) {
-											var id = table.cache[tableView.attr('lay-id')][index].id
-											var postData = {
-												id: id,
-												beginTime: value,
-											};
-											//调用新增修改
-											mainJs.fUpdate(postData);
-												}
-											})
-										})
-								
-							layui.each(tableView.find('td[data-field="endTime"]'), function(index, tdElem) {
-								tdElem.onclick = function(event) {
-									layui.stope(event)
-								};
-								laydate.render({
-									elem: tdElem.children[0],
-									format: 'yyyy-MM-dd HH:mm:ss',
-									done: function(value, date) {
-											var id = table.cache[tableView.attr('lay-id')][index].id
-											var postData = {
-												id: id,
-												endTime: value,
-											};
-											//调用新增修改
-											mainJs.fUpdate(postData);
-												}
-											})
-										})			
+									
 									},
 								});
 					
@@ -329,46 +297,6 @@
 								// 进入回调的时候this是当前的表格的config
 								var that = this;
 								// 初始化laydate
-								layui.each(trElem.find('td[data-field="beginTime"]'), function(index, tdElem) {
-									tdElem.onclick = function(event) {
-										layui.stope(event)
-									};
-									laydate.render({
-										elem: tdElem.children[0],
-										format: 'yyyy-MM-dd HH:mm:ss',
-										done: function(value, date) {
-											var trElem = $(this.elem[0]).closest('tr');
-											var tableView = trElem.closest('.layui-table-view');
-											table.cache[that.id][trElem.data('index')]['beginTime'] = value;
-											var id = table.cache[tableView.attr('lay-id')][trElem.data('index')].id
-											var postData = {
-												id: id,
-												time:value,
-											}
-											mainJs.fUpdate(postData);
-										}
-									})
-								})
-								layui.each(trElem.find('td[data-field="endTime"]'), function(index, tdElem) {
-									tdElem.onclick = function(event) {
-										layui.stope(event)
-									};
-									laydate.render({
-										elem: tdElem.children[0],
-										format: 'yyyy-MM-dd HH:mm:ss',
-										done: function(value, date) {
-											var trElem = $(this.elem[0]).closest('tr');
-											var tableView = trElem.closest('.layui-table-view');
-											table.cache[that.id][trElem.data('index')]['endTime'] = value;
-											var id = table.cache[tableView.attr('lay-id')][trElem.data('index')].id
-											var postData = {
-												id: id,
-												time:value.split(' ')[0]+' 23:59:59',
-											}
-											mainJs.fUpdate(postData);
-										}
-									})
-								})
 							});
 							break;
 							case 'saveTempData':
@@ -383,7 +311,6 @@
 									})
 								if(flag==true){
 								data.forEach(function(postData,i){
-									 postData.endTime=postData.endTime.split(' ')[0]+' 23:59:59',
 									 mainJs.fAdd(postData);
 									table.cleanTemp(tableId);
 									})	
@@ -392,15 +319,16 @@
 							case 'deleteSome':
 								// 获得当前选中的
 								var checkedIds = tablePlug.tableCheck.getChecked(tableId);
+								/* var d = table.checkStatus(tableId).data; */
 								layer.confirm('您是否确定要删除选中的' + checkedIds.length + '条记录？', function() {
 									var postData = {
 										ids: checkedIds,
 									}
 									$.ajax({
-										url: "${ctx}/personnel/deleteCostLiving",
+										url: "${ctx}/product/deleteOfficeSupplies",
 										data: postData,
 										traditional: true,
-										type: "POST",
+										type: "GET",
 										beforeSend: function() {
 											index;
 										},
@@ -532,7 +460,7 @@
 				    		return;
 				    	}
 				    	$.ajax({
-							url: "${ctx}/personnel/saveCostLiving",
+							url: "${ctx}/personnel/addOfficeSupplies",
 							data: data,
 							type: "POST",
 							beforeSend: function() {
