@@ -263,7 +263,7 @@
 						},//开启分页
 						loading: true,
 						toolbar: '#toolbar', //开启工具栏，此处显示默认图标，可以自定义模板，详见文档
-						//totalRow: true,		 //开启合计行 */
+						totalRow: true,		 //开启合计行 */
 						cellMinWidth: 90,
 						colFilterRecord: true,
 						smartReloadModel: true,// 开启智能重载
@@ -287,7 +287,8 @@
 							[{
 								type: 'checkbox',
 								align: 'center',
-								fixed: 'left'
+								fixed: 'left',
+								totalRowText: '合计'
 							},{
 								field: "location",
 								title: "仓位",
@@ -321,6 +322,7 @@
 								title: "库值",
 								align: 'center',
 								edit: false,
+								totalRow: true
 							},{
 								field: "",
 								title: "操作",
