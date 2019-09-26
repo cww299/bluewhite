@@ -65,7 +65,7 @@ public class InventoryDetailServiceImpl extends BaseServiceImpl<InventoryDetail,
 			query.where(predicate.toArray(pre));
 			return null;
 		}, page);
-		PageResultStat<InventoryDetail> result = new PageResultStat<>(pages, page);
+		PageResult<InventoryDetail> result = new PageResult<>(pages, page);
 		return result;
 	}
 
