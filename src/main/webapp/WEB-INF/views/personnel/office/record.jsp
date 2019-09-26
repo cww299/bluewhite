@@ -28,7 +28,7 @@
 							</td>
 							<td>&nbsp;&nbsp;</td>
 							<td>时间:</td>
-							<td><input id="startTime" style="width: 300px;" name="startTime"  placeholder="请输入面试时间" class="layui-input laydate-icon">
+							<td><input id="startTime" style="width: 300px;" name="startTime"  placeholder="请输入时间" class="layui-input laydate-icon">
 							<td>&nbsp;&nbsp;</td>
 							<td>部门:</td>
 							<td><select class="form-control"  name="orgNameId" lay-search="true" id="selectorgNameId">
@@ -221,13 +221,11 @@
 								field: "number",
 								title: "数量",
 								align: 'center',
-								edit: false,
 								totalRow: true
 							},{
 								field: "outboundCost",
 								title: "领用价值",
 								align: 'center',
-								edit: false,
 								totalRow: true
 							},{
 								field: "userName",
@@ -245,21 +243,6 @@
 								align: 'center',
 							}]
 						],
-						done: function() {
-							var tableView = this.elem.next();
-							tableView.find('.layui-table-grid-down').remove();
-							var totalRow = tableView.find('.layui-table-total');
-							var limit = this.page ? this.page.limit : this.limit;
-							layui.each(totalRow.find('td'), function(index, tdElem) {
-								tdElem = $(tdElem);
-								var text = tdElem.text();
-								if(text && !isNaN(text)) {
-									text = (parseFloat(text) / limit).toFixed(2);
-									tdElem.find('div.layui-table-cell').html(text);
-								}
-							});
-							
-						},
 								});
 					//监听头工具栏事件
 					table.on('toolbar(tableData)', function(obj) {
