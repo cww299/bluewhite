@@ -615,7 +615,7 @@ public class CollectPayServiceImpl extends BaseServiceImpl<CollectPay, Long> imp
 			payB.setUserId((Long)ps);
 			List<PayB> payBList = payBService.findPayB(payB);
 			//分组人员B工资总和
-			sumBPay = payBList.stream().mapToDouble(PayB::getPayNumber).sum();
+			sumBPay = payBList.stream().filter(PayB->PayB.getPayNumber()!=null).mapToDouble(PayB::getPayNumber).sum();
 			//杂工工资
 			double sumfarragoTaskPay = 0;
 			farragoTaskPay.setUserId((Long)ps);
