@@ -10,7 +10,8 @@ import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
 import com.bluewhite.base.BaseEntity;
-import com.bluewhite.basedata.entity.BaseData;
+import com.bluewhite.product.primecostbasedata.entity.BaseOne;
+import com.bluewhite.system.user.entity.User;
 
 /**
  * 采购（采购面辅料订单）(由生产下单用料转化得到)
@@ -37,6 +38,12 @@ public class OrderProcurement extends BaseEntity<Long>{
 	
 	
 	/**
+	 * 下单数量
+	 */
+	@Column(name = "place_order_number")
+	private Date placeOrderNumber;
+	
+	/**
 	 * 下单日期
 	 */
 	@Column(name = "place_order_time")
@@ -55,7 +62,6 @@ public class OrderProcurement extends BaseEntity<Long>{
 	 */
 	@Column(name = "customer_id")
 	private Long customerId;
-	
 
 	/**
 	 * 客户
@@ -63,6 +69,33 @@ public class OrderProcurement extends BaseEntity<Long>{
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "customer_id", referencedColumnName = "id", insertable = false, updatable = false)
 	private Customer customer;
+	
+	/**
+	 * 订料人id
+	 * 
+	 */
+	@Column(name = "user_id")
+	private Long userId;
+
+	/**
+	 * 订料人
+	 */
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "user_id", referencedColumnName = "id", insertable = false, updatable = false)
+	private User user;
+	
+	/**
+	 * 单位id
+	 */
+	@Column(name = "unit_id")
+	private Long unitId;
+	
+	/**
+	 * 单位
+	 */
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "unit_id", referencedColumnName = "id", insertable = false, updatable = false)
+	private BaseOne unit;
 
 
 	public Long getOrderMaterialId() {
