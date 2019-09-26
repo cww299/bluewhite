@@ -28,7 +28,7 @@
 							</td>
 							<td>&nbsp;&nbsp;</td>
 							<td>时间:</td>
-							<td><input id="startTime" style="width: 300px;"  placeholder="请输入面试时间" class="layui-input laydate-icon">
+							<td><input id="startTime" style="width: 300px;" name="startTime"  placeholder="请输入面试时间" class="layui-input laydate-icon">
 							<td>&nbsp;&nbsp;</td>
 							<td>部门:</td>
 							<td><select class="form-control"  name="orgNameId" lay-search="true" id="selectorgNameId">
@@ -80,7 +80,7 @@
 					</table>
 				</div>
 			</div>
-			<table id="layuiShare2"  class="table_th_search" lay-filter="layuiShare"></table>
+			<table id="layuiShare2"  class="table_th_search" lay-filter="layuiShare2"></table>
 </div>
 
 	<script type="text/html" id="toolbar">
@@ -223,6 +223,11 @@
 								align: 'center',
 								edit: false,
 							},{
+								field: "outboundCost",
+								title: "领用价值",
+								align: 'center',
+								edit: false,
+							},{
 								field: "userName",
 								title: "领取人",
 								align: 'center',
@@ -282,6 +287,7 @@
 										'lay-filter' : 'addRole2',
 										'lay-submit' : ''
 									})
+									table.resize('layuiShare2');
 						        }
 						        ,end:function(){
 						        	$("#layuiShare").hide();
@@ -370,6 +376,7 @@
 						totalRow: true,		 //开启合计行 */
 						colFilterRecord: true,
 						smartReloadModel: true,// 开启智能重载
+						cellMinWidth: 90,
 						parseData: function(ret) {
 							return {
 								code: ret.code,
@@ -399,9 +406,11 @@
 					//监听搜索
 					form.on('submit(LAY-search)', function(obj) {		//修改此处
 						var field = obj.field;
+					if($("#startTime").val()!=""){
 						var orderTime=$("#startTime").val().split('~');
 						field.orderTimeBegin=orderTime[0];
 						field.orderTimeEnd=orderTime[1].split(" ")[1] +" 23:59:59";
+					}
 						table.reload('tableData', {
 							where: field,
 							 page: { curr : 1 }

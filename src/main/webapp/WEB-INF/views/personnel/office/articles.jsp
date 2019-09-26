@@ -104,18 +104,19 @@
 			</div>
 			
 			<div class="layui-form-item">
+				<label class="layui-form-label" style="width: 100px;">部门</label>
+				<div class="layui-input-inline">
+					<select name="orgNameId"  id="selectorgNameId" lay-search="true"></select>
+				</div>
+			</div>
+			
+			<div class="layui-form-item">
 				<label class="layui-form-label" style="width: 100px;">领取人</label>
 				<div class="layui-input-inline">
 					<select name="userId"  id="selectUserId" lay-search="true"></select>
 				</div>
 			</div>
 			
-			<div class="layui-form-item">
-				<label class="layui-form-label" style="width: 100px;">部门</label>
-				<div class="layui-input-inline">
-					<select name="orgNameId"  id="selectorgNameId" lay-search="true"></select>
-				</div>
-			</div>
 			
 			<div class="layui-form-item">
 				<label class="layui-form-label" style="width: 100px;">备注</label>
