@@ -55,7 +55,7 @@ public class Customer extends BaseEntity<Long> {
 	
 	
 	/**
-	 * 客户类型(0=电商,1=商超，2=线下 )
+	 * 客户类型(1=电商,2=商超，3=线下，4=面辅料 )
 	 * 
 	 */
 	@Column(name = "type")
