@@ -48,12 +48,6 @@ public class Product extends BaseEntity<Long>{
 	@Column(name = "url")
     private String url;
 	
-	/**
-	 * 产品图片
-	 */
-	@OneToMany(mappedBy = "product",cascade = CascadeType.ALL, orphanRemoval = true)
-	private Set<Files> productFile = new HashSet<Files>();
-	
     @OneToOne(fetch=FetchType.LAZY,cascade = CascadeType.ALL) 
     @JoinColumn(name="prime_cost_id",referencedColumnName="id",nullable=true)
     @NotFound(action=NotFoundAction.IGNORE)
@@ -247,17 +241,6 @@ public class Product extends BaseEntity<Long>{
 	public void setUrl(String url) {
 		this.url = url;
 	}
-
-	public Set<Files> getProductFile() {
-		return productFile;
-	}
-
-	public void setProductFile(Set<Files> productFile) {
-		this.productFile = productFile;
-	}
-
-	
-	
 	
 
 }
