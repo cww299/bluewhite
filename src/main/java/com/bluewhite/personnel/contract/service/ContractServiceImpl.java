@@ -56,6 +56,10 @@ public class ContractServiceImpl extends BaseServiceImpl<Contract, Long> impleme
 			if (param.getContractTypeId() != null) {
 				predicate.add(cb.equal(root.get("contractTypeId").as(Long.class), param.getContractTypeId()));
 			}
+			//是否有效
+			if (param.getFlag() != null) {
+				predicate.add(cb.equal(root.get("flag").as(Integer.class), param.getFlag()));
+			}
 			// 按开始日期
 			if (!StringUtils.isEmpty(param.getStarTime()) && !StringUtils.isEmpty(param.getOrderTimeBegin())
 					&& !StringUtils.isEmpty(param.getOrderTimeEnd())) {
