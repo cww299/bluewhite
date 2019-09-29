@@ -10,6 +10,6 @@ import com.bluewhite.system.sys.entity.Files;
 @Service
 public interface FilesService  extends BaseCRUDService<Files, Long>{
 	
-	public Files upFile( MultipartFile file, HttpServletRequest request);
+	public Files upFile( MultipartFile file, HttpServletRequest request,Long filesTypeId);
 
 }

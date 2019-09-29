@@ -1,6 +1,7 @@
 package com.bluewhite.base;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
@@ -84,14 +85,14 @@ public abstract class BaseServiceImpl<T extends AbstractEntity<ID>, ID extends S
      * @param id 主键
      */
     public int delete(String ids) {
-    	int count = 0;
+    	List<T> tList = new ArrayList<>();
 		String[] arrIds = ids.split(",");
 		for (int i = 0; i < arrIds.length; i++) {
-			ID id = (ID)arrIds[i];
-			baseRepository.delete(id);
-			count++;
+			T t = baseRepository.findOne((ID) arrIds[i]);
+			tList.add(t);
 		}
-		return count;
+		baseRepository.deleteInBatch(tList);
+		return tList.size();
     }
 
     /**
