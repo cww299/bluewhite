@@ -1,6 +1,5 @@
 package com.bluewhite.system.sys.entity;
 
-
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -9,11 +8,11 @@ import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
 import com.bluewhite.base.BaseEntity;
-import com.bluewhite.product.product.entity.Product;
+import com.bluewhite.basedata.entity.BaseData;
+
 @Entity
 @Table(name = "sys_files")
-public class Files extends BaseEntity<Long>{
-
+public class Files extends BaseEntity<Long> {
 
 	/**
 	 * 文件名称
@@ -35,66 +34,67 @@ public class Files extends BaseEntity<Long>{
 	 */
 	@Column(name = "url")
 	private String url;
-	
-
 	/**
-	 * 产品id
+	 * 文件类型id
 	 */
-	@Column(name = "product_id")
-	private Long productId;
-
+	@Column(name = "files_type_id")
+	private Long filesTypeId;
+	
 	/**
-	 * 产品
+	 * 文件类型
 	 */
 	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "product_id", referencedColumnName = "id", updatable = false, insertable = false)
-	private Product product;
+	@JoinColumn(name = "files_type_id", referencedColumnName = "id", insertable = false, updatable = false)
+	private BaseData filesType;
 	
+	
+	
+	public Long getFilesTypeId() {
+		return filesTypeId;
+	}
 
-	public Long getProductId() {
-		return productId;
+	public void setFilesTypeId(Long filesTypeId) {
+		this.filesTypeId = filesTypeId;
 	}
-	public void setProductId(Long productId) {
-		this.productId = productId;
+
+	public BaseData getFilesType() {
+		return filesType;
 	}
-	public Product getProduct() {
-		return product;
+
+	public void setFilesType(BaseData filesType) {
+		this.filesType = filesType;
 	}
-	public void setProduct(Product product) {
-		this.product = product;
-	}
+
 	public String getName() {
 		return name;
 	}
+
 	public void setName(String name) {
 		this.name = name;
 	}
+
 	public Long getSize() {
 		return size;
 	}
+
 	public void setSize(Long size) {
 		this.size = size;
 	}
+
 	public String getType() {
 		return type;
 	}
+
 	public void setType(String type) {
 		this.type = type;
 	}
+
 	public String getUrl() {
 		return url;
 	}
+
 	public void setUrl(String url) {
 		this.url = url;
 	}
-	
-	
-	
-	
-
-
-
-
-
 
 }

@@ -299,12 +299,10 @@ public class ApplicationLeaveServiceImpl extends BaseServiceImpl<ApplicationLeav
 							}
 						}
 					}
-				}else{
-					throw new ServiceException("无签入签出时间，无法申请加班，请先检查或补签");
 				}
 				//加班申请
 				if (applicationLeave.isApplyOvertime()) {
-					if (actualOverTime < Double.valueOf(time)) {
+					if (attendanceTime.getCheckIn()!=null && attendanceTime.getCheckOut()!=null && actualOverTime < Double.valueOf(time)) {
 						throw new ServiceException("根据"+date+"的签到时间该员工加班时间为" + actualOverTime + "小时，加班申请时间有误请重新核对");
 					}
 					String overString = "";
