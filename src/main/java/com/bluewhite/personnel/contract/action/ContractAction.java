@@ -29,7 +29,7 @@ public class ContractAction {
 	private ClearCascadeJSON clearCascadeJSON;
 	{
 		clearCascadeJSON = ClearCascadeJSON.get().addRetainTerm(Contract.class, "id", "contractKind", "contractType",
-				"duration", "pictureUrl", "starTime", "endTime", "content", "amount")
+				"duration", "pictureUrl", "starTime", "endTime", "content", "amount","flag")
 				.addRetainTerm(BaseData.class, "id", "name");
 	}
 
