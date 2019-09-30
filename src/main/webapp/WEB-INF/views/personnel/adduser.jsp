@@ -33,10 +33,16 @@
 					<td>开始时间:</td>
 					<td><input id="startTime" placeholder="请输入查找时间" class="layui-input" ></td>
 					<td>&nbsp;&nbsp;</td>
+					<td>签到状态:</td>
+					<td style="width:120px;">
+										<select name="status"><option value="">请选择</option>
+										<option value="1">正常签到</option>
+										<option value="2">补签</option></select></td>
+					<td>&nbsp;&nbsp;</td>
 					<td><button type="button" class="layui-btn" lay-submit lay-filter='search'>查找</button></td>
 					<td>&nbsp;&nbsp;</td>
 					<td><button type="button" id="export" class="layui-btn">导出签到</button></td>
-					<td style="width:15%;"></td> 
+					<td>&nbsp;&nbsp;</td> 
 					<shiro:lacksRole name="attendanceStatistician">
 						<td><button type="button" id="synchronization2" class="layui-btn layui-btn-danger">考勤重置</button></td>
 					</shiro:lacksRole>
@@ -202,8 +208,8 @@ layui.config({
 	function getStatu(){
 		return function(d){
 			var statu = "补签";
-			if(!d.inOutMode)
-				statu = "暂无";
+			if(d.inOutMode==1)
+				statu = "正常签到";
 			else
 				switch(d.inOutMode){
 				case 0: statu = '上班签到'; break;
