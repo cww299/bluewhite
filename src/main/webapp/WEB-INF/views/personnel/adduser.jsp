@@ -46,11 +46,16 @@
 		</div>
 	</div>
 <script>
-layui.use(['table','jquery','form','laydate','layer'],function(){
+layui.config({
+	base: '${ctx}/static/layui-v2.4.5/'
+}).extend({
+	tablePlug: 'tablePlug/tablePlug',
+}).use(['tablePlug','table','jquery','form','laydate','layer'],function(){
 	var $ = layui.jquery
 	, table = layui.table
 	, form = layui.form
 	, laydate =layui.laydate
+	, tablePlug = layui.tablePlug
 	, layer = layui.layer;
 	laydate.render({
 		elem:'#startTime',
@@ -104,16 +109,25 @@ layui.use(['table','jquery','form','laydate','layer'],function(){
 		elem: '#tableData',
 		url:'${ctx}/personnel/findPageAttendance'+(isAttend?'?orgNameId='+orgId:''),
 		request:{pageName: 'page' ,	 limitName: 'size' 	},
-		parseData : function(ret) { return { code : ret.code, msg : ret.message, data : ret.data.rows, count:ret.data.total,} },
+		toolbar:true,
+		parseData : function(ret) { 
+			if(ret.code==0){
+				for(var key in ret.data.rows){
+					var d = ret.data.rows[key];
+					d.userName = d.user?d.user.userName:'---';
+				}
+			}
+			return { code : ret.code, msg : ret.message, data : ret.data.rows, count:ret.data.total,} 
+		},
 		page:{},
 		limits:[15,50,100],
 		limit:15,
 		cols: [[
 		        {align:'center',field:'number',title:'员工编号'},
-		        {align:'center',field:'name',title:'员工姓名',templet:function(d){ return (d.user == null ? "" : d.user.userName)}},
+		        {align:'center',field:'userName',title:'员工姓名',},
 		        {align:'center',field:'time',title:'签到时间'},
 		        {align:'center',field:'mode',title:'验证方式',templet: getMode()},
-		        {align:'center',field:'status',title:'签到状态',templet: getStatu()},
+		        {align:'center',field:'status',title:'签到状态',templet: getStatu(),filter:true,},
 		        ]]
 	})
 	form.on('submit(search)',function(obj){
