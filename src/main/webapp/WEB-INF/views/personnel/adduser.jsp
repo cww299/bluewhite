@@ -35,7 +35,7 @@
 					<td>&nbsp;&nbsp;</td>
 					<td>签到状态:</td>
 					<td style="width:120px;">
-										<select name="status"><option value="">请选择</option>
+										<select name="inOutMode"><option value="">请选择</option>
 										<option value="1">正常签到</option>
 										<option value="2">补签</option></select></td>
 					<td>&nbsp;&nbsp;</td>
