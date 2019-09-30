@@ -25,7 +25,6 @@
 }
 .showTimeDiv span{
 	height:24px;
-	overflow-y: scroll;
 }
 #orgAndPersonDiv{
 	float: right;
@@ -130,7 +129,7 @@
 			</div>
 			<div class="layui-form-item">
 				<label class="layui-form-label" style="width: 90px;">显示</label>
-				<div class="layui-input-inline" style="width: 230px;">
+				<div class="layui-input-inline" style="width: 250px;">
 					<div name="inputapplytime2" id="inputapplytime2" class="layui-textarea showTimeDiv"></div>
 				</div>
 			</div>
@@ -147,7 +146,7 @@
 		    
 		    <div class="layui-form-item" >
 			      <label class="layui-form-label" style="width: 90px;">显示</label>
-			      <div class="layui-input-inline" style="width: 230px;">
+			      <div class="layui-input-inline" style="width: 250px;">
 			      <div name="inputapplytime3"   id="inputapplytime3" class="layui-textarea showTimeDiv"></div>
 		      </div>
 		    </div>
@@ -169,7 +168,7 @@
 			</div>
 			<div class="layui-form-item">
 				<label class="layui-form-label" style="width: 90px;">显示</label>
-				<div class="layui-input-inline" style="width: 230px;">
+				<div class="layui-input-inline" style="width: 250px;">
 					<div name="repairtime" id="inputapplytime" class="layui-textarea showTimeDiv"></div>
 				</div>
 			</div>
@@ -200,7 +199,7 @@
 			</div>
 			<div class="layui-form-item">
 				<label class="layui-form-label" style="width: 90px;">显示</label>
-				<div class="layui-input-inline" style="width: 230px;">
+				<div class="layui-input-inline" style="width: 250px;">
 					<div name="inputapplytime4" id="inputapplytime4" class="layui-textarea showTimeDiv"></div>
 				</div>
 			</div>
