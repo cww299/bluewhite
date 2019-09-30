@@ -25,6 +25,7 @@
 }
 .showTimeDiv span{
 	height:24px;
+	overflow-y: scroll;
 }
 #orgAndPersonDiv{
 	float: right;
