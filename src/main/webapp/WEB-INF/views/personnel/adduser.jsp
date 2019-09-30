@@ -33,10 +33,16 @@
 					<td>开始时间:</td>
 					<td><input id="startTime" placeholder="请输入查找时间" class="layui-input" ></td>
 					<td>&nbsp;&nbsp;</td>
+					<td>签到状态:</td>
+					<td style="width:120px;">
+										<select name="inOutMode"><option value="">请选择</option>
+										<option value="1">正常签到</option>
+										<option value="2">补签</option></select></td>
+					<td>&nbsp;&nbsp;</td>
 					<td><button type="button" class="layui-btn" lay-submit lay-filter='search'>查找</button></td>
 					<td>&nbsp;&nbsp;</td>
 					<td><button type="button" id="export" class="layui-btn">导出签到</button></td>
-					<td style="width:15%;"></td> 
+					<td>&nbsp;&nbsp;</td> 
 					<shiro:lacksRole name="attendanceStatistician">
 						<td><button type="button" id="synchronization2" class="layui-btn layui-btn-danger">考勤重置</button></td>
 					</shiro:lacksRole>
@@ -46,11 +52,16 @@
 		</div>
 	</div>
 <script>
-layui.use(['table','jquery','form','laydate','layer'],function(){
+layui.config({
+	base: '${ctx}/static/layui-v2.4.5/'
+}).extend({
+	tablePlug: 'tablePlug/tablePlug',
+}).use(['tablePlug','table','jquery','form','laydate','layer'],function(){
 	var $ = layui.jquery
 	, table = layui.table
 	, form = layui.form
 	, laydate =layui.laydate
+	, tablePlug = layui.tablePlug
 	, layer = layui.layer;
 	laydate.render({
 		elem:'#startTime',
@@ -104,16 +115,25 @@ layui.use(['table','jquery','form','laydate','layer'],function(){
 		elem: '#tableData',
 		url:'${ctx}/personnel/findPageAttendance'+(isAttend?'?orgNameId='+orgId:''),
 		request:{pageName: 'page' ,	 limitName: 'size' 	},
-		parseData : function(ret) { return { code : ret.code, msg : ret.message, data : ret.data.rows, count:ret.data.total,} },
+		toolbar:true,
+		parseData : function(ret) { 
+			if(ret.code==0){
+				for(var key in ret.data.rows){
+					var d = ret.data.rows[key];
+					d.userName = d.user?d.user.userName:'---';
+				}
+			}
+			return { code : ret.code, msg : ret.message, data : ret.data.rows, count:ret.data.total,} 
+		},
 		page:{},
 		limits:[15,50,100],
 		limit:15,
 		cols: [[
 		        {align:'center',field:'number',title:'员工编号'},
-		        {align:'center',field:'name',title:'员工姓名',templet:function(d){ return (d.user == null ? "" : d.user.userName)}},
+		        {align:'center',field:'userName',title:'员工姓名',},
 		        {align:'center',field:'time',title:'签到时间'},
 		        {align:'center',field:'mode',title:'验证方式',templet: getMode()},
-		        {align:'center',field:'status',title:'签到状态',templet: getStatu()},
+		        {align:'center',field:'status',title:'签到状态',templet: getStatu(),filter:true,},
 		        ]]
 	})
 	form.on('submit(search)',function(obj){
@@ -188,8 +208,8 @@ layui.use(['table','jquery','form','laydate','layer'],function(){
 	function getStatu(){
 		return function(d){
 			var statu = "补签";
-			if(!d.inOutMode)
-				statu = "暂无";
+			if(d.inOutMode==1)
+				statu = "正常签到";
 			else
 				switch(d.inOutMode){
 				case 0: statu = '上班签到'; break;
