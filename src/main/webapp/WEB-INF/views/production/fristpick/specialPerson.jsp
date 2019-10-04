@@ -16,14 +16,12 @@
 </style>
 </head>
 <body>
-
-<div class="layui-card">
-	<div class="layui-card-body">
-		<div id="div"></div>
+	<div class="layui-card">
+		<div class="layui-card-body">
+			<div id="div"></div>
+		</div>
 	</div>
-</div>
 </body>
-
 </body>
 <script>
 layui.config({
@@ -34,20 +32,14 @@ layui.config({
 	['specialPerson'],
 	function(){
 		var $ = layui.jquery
-		, layer = layui.layer 				
-		, form = layui.form			 		
-		, table = layui.table 
-		, myutil = layui.myutil
+		, layer = layui.layer 	
 		, specialPerson = layui.specialPerson;
-		
 		
 		specialPerson.render({
 			elem:'#div',
 			ctx:'${ctx}',
 			type:2,
 		})
-		
-		
 	}//end define function
 )//endedefine
 </script>
