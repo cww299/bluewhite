@@ -2,6 +2,7 @@ package com.bluewhite.ledger.service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
 import javax.persistence.criteria.Predicate;
 
@@ -18,6 +19,7 @@ import com.bluewhite.ledger.dao.OrderDao;
 import com.bluewhite.ledger.dao.OrderMaterialDao;
 import com.bluewhite.ledger.entity.Order;
 import com.bluewhite.ledger.entity.OrderMaterial;
+import com.bluewhite.ledger.entity.OrderProcurement;
 import com.bluewhite.product.primecost.cutparts.entity.CutParts;
 import com.bluewhite.product.primecost.cutparts.service.CutPartsService;
 import com.bluewhite.product.primecost.materials.entity.ProductMaterials;
@@ -49,14 +51,12 @@ public class OrderMaterialServiceImpl extends BaseServiceImpl<OrderMaterial, Lon
 			}
 			// 按产品名称
 			if (!StringUtils.isEmpty(param.getProductName())){
-				predicate.add(cb.equal(root.get("orderId").as(Long.class),"%"+StringUtil.specialStrKeyword(param.getProductName())+"%") );
+				predicate.add(cb.like(root.get("order").get("product").get("name").as(String.class),"%"+StringUtil.specialStrKeyword(param.getProductName())+"%") );
 			}
-			
 			Predicate[] pre = new Predicate[predicate.size()];
 			query.where(predicate.toArray(pre));
 			return null;
 		}, page);
-
 		PageResult<OrderMaterial> result = new PageResult<>(pages, page);
 		return result;
 	}

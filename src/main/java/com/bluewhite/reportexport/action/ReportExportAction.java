@@ -42,7 +42,6 @@ import com.alibaba.excel.EasyExcel;
 import com.bluewhite.basedata.entity.BaseData;
 import com.bluewhite.basedata.service.BaseDataService;
 import com.bluewhite.common.DateTimePattern;
-import com.bluewhite.common.ServiceException;
 import com.bluewhite.common.entity.CommonResponse;
 import com.bluewhite.common.entity.ErrorCode;
 import com.bluewhite.common.entity.PageParameter;
@@ -853,12 +852,12 @@ public class ReportExportAction {
 		List<User> users = userDao.findAll();
 		List<User> list = users.stream()
 				.filter(User -> User.getGender() != null && User.getAge() != null && User.getBirthDate() != null
-						&& User.getForeigns().equals(0) && User.getGender().equals(1) && User.getAge() >= 50
+						&& User.getGender().equals(1) && User.getAge() >= 50
 						&& User.getBirthDate().before(date3))
 				.collect(Collectors.toList());
 		List<User> list2 = users.stream()
 				.filter(User -> User.getGender() != null && User.getAge() != null && User.getBirthDate() != null
-						&& User.getForeigns().equals(0) && User.getGender().equals(0) && User.getAge() >= 60
+						&& User.getGender().equals(0) && User.getAge() >= 60
 						&& User.getBirthDate().before(date4))
 				.collect(Collectors.toList());
 		lists.addAll(list);
@@ -895,7 +894,7 @@ public class ReportExportAction {
 		List<User> lists = new ArrayList<>();
 		List<User> users = userDao.findAll();
 		List<User> list = users.stream().filter(User -> User.getIdCard() != null && !User.getIdCard().equals("")
-				&& User.getForeigns().equals(0) && User.getIsAdmin() == false).collect(Collectors.toList());
+				&& User.getIsAdmin() == false).collect(Collectors.toList());
 		lists.addAll(list);
 		List<User2Poi> lists2 = new ArrayList<>();
 		for (User user : lists) {

@@ -1,15 +1,21 @@
 package com.bluewhite.product.primecostbasedata.entity;
 
+import java.util.HashSet;
+import java.util.Set;
+
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
 import com.bluewhite.base.BaseEntity;
 import com.bluewhite.basedata.entity.BaseData;
 import com.bluewhite.common.utils.excel.Poi;
+import com.bluewhite.ledger.entity.OrderProcurement;
 /**
  * 面辅料库存
  * @author zhangliang
@@ -129,14 +135,22 @@ public class Materiel extends BaseEntity<Long>{
 	private BaseData warehouseType;
 	
 	/**
-	 * 库位
-	 * 
+	 * 面料的订购记录
 	 */
-	@Column(name = "materiel_location")
-	private String materielLocation;
+	@OneToMany(mappedBy = "materiel",cascade = CascadeType.ALL, orphanRemoval = true)
+	private Set<OrderProcurement> orderProcurements = new HashSet<OrderProcurement>();
 	
 	
 	
+	
+	public Set<OrderProcurement> getOrderProcurements() {
+		return orderProcurements;
+	}
+
+	public void setOrderProcurements(Set<OrderProcurement> orderProcurements) {
+		this.orderProcurements = orderProcurements;
+	}
+
 	public Long getMaterielTypeId() {
 		return materielTypeId;
 	}
@@ -163,14 +177,6 @@ public class Materiel extends BaseEntity<Long>{
 
 	public void setConvertChange(Integer convertChange) {
 		this.convertChange = convertChange;
-	}
-
-	public String getMaterielLocation() {
-		return materielLocation;
-	}
-
-	public void setMaterielLocation(String materielLocation) {
-		this.materielLocation = materielLocation;
 	}
 
 	public Long getConvertUnitId() {

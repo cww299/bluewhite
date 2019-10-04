@@ -126,12 +126,6 @@ public interface UserService extends BaseCRUDService<User, Long> {
 	public boolean checkPassword(String password);
 	
 	/**
-	 * 获取转正人员
-	 * @return
-	 */
-	public List<User> getPositiveUser();
-	
-	/**
 	 * 转正人员
 	 * @param positiveUser
 	 * @return
@@ -148,5 +142,10 @@ public interface UserService extends BaseCRUDService<User, Long> {
 	 * 给人员批量设定约定休息日期
 	 */
 	public int setUserRestDate(String userIds,String restDay);
+	
+	/**
+	 * 根据分组查看员工
+	 */
+	public List<User> findByGroupId(Long groupId);
 
 }

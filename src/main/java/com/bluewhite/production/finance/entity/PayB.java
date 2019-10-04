@@ -38,6 +38,11 @@ public class PayB extends BaseEntity<Long>{
 	@Column(name = "user_id")
     private Long userId;
 	
+	/**
+	 * 临时员工id
+	 */
+	@Column(name = "temporary_user_id")
+    private Long temporaryUserId;
 	
 	/**
 	 * 任务工资数额
@@ -143,6 +148,14 @@ public class PayB extends BaseEntity<Long>{
 	
 	
 
+
+	public Long getTemporaryUserId() {
+		return temporaryUserId;
+	}
+
+	public void setTemporaryUserId(Long temporaryUserId) {
+		this.temporaryUserId = temporaryUserId;
+	}
 
 	public String getPerformance() {
 		return performance;

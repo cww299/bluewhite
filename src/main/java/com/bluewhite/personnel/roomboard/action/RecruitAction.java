@@ -22,6 +22,7 @@ import com.bluewhite.basedata.entity.BaseData;
 import com.bluewhite.common.BeanCopyUtils;
 import com.bluewhite.common.ClearCascadeJSON;
 import com.bluewhite.common.DateTimePattern;
+import com.bluewhite.common.annotation.SysLogAspectAnnotation;
 import com.bluewhite.common.entity.CommonResponse;
 import com.bluewhite.common.entity.PageParameter;
 import com.bluewhite.common.entity.PageResult;
@@ -30,6 +31,7 @@ import com.bluewhite.personnel.roomboard.dao.RewardDao;
 import com.bluewhite.personnel.roomboard.entity.Recruit;
 import com.bluewhite.personnel.roomboard.service.RecruitService;
 import com.bluewhite.production.group.entity.Group;
+import com.bluewhite.system.sys.entity.SysLog;
 import com.bluewhite.system.user.entity.Role;
 import com.bluewhite.system.user.entity.User;
 import com.bluewhite.system.user.entity.UserContract;
@@ -119,7 +121,7 @@ public class RecruitAction {
 			if (date.equals(recruit.getTestTime())) {
 				recruit2.setTestTime(null);
 			}
-			service.save(recruit2);
+			service.addRecruit(recruit2);
 			cr.setMessage("修改成功");
 		} else {
 			service.addRecruit(recruit);

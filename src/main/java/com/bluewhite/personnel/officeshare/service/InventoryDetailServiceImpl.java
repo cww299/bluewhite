@@ -19,7 +19,6 @@ import com.bluewhite.base.BaseServiceImpl;
 import com.bluewhite.common.ServiceException;
 import com.bluewhite.common.entity.PageParameter;
 import com.bluewhite.common.entity.PageResult;
-import com.bluewhite.common.entity.PageResultStat;
 import com.bluewhite.common.utils.NumUtils;
 import com.bluewhite.personnel.officeshare.dao.InventoryDetailDao;
 import com.bluewhite.personnel.officeshare.dao.OfficeSuppliesDao;
@@ -70,6 +69,7 @@ public class InventoryDetailServiceImpl extends BaseServiceImpl<InventoryDetail,
 	}
 
 	@Override
+	@Transactional
 	public void addInventoryDetail(InventoryDetail onventoryDetail) {
 		OfficeSupplies officeSupplies = officeSuppliesDao.findOne(onventoryDetail.getOfficeSuppliesId());
 		// 出库
@@ -78,7 +78,7 @@ public class InventoryDetailServiceImpl extends BaseServiceImpl<InventoryDetail,
 				throw new ServiceException("数量为0，无法出库");
 			} else {
 				officeSupplies.setInventoryNumber(officeSupplies.getInventoryNumber() - onventoryDetail.getNumber());
-				onventoryDetail.setOutboundCost(NumUtils.mul(officeSupplies.getPrice(),onventoryDetail.getNumber()));
+				onventoryDetail.setOutboundCost(NumUtils.mul(officeSupplies.getPrice(), onventoryDetail.getNumber()));
 			}
 		}
 		// 入库
@@ -103,7 +103,8 @@ public class InventoryDetailServiceImpl extends BaseServiceImpl<InventoryDetail,
 					OfficeSupplies officeSupplies = officeSuppliesDao.findOne(onventoryDetail.getOfficeSuppliesId());
 					// 出库
 					if (onventoryDetail.getFlag() == 0) {
-						officeSupplies.setInventoryNumber(officeSupplies.getInventoryNumber() + onventoryDetail.getNumber());
+						officeSupplies
+								.setInventoryNumber(officeSupplies.getInventoryNumber() + onventoryDetail.getNumber());
 					}
 					// 入库
 					if (onventoryDetail.getFlag() == 1) {
@@ -123,22 +124,33 @@ public class InventoryDetailServiceImpl extends BaseServiceImpl<InventoryDetail,
 
 	@Override
 	public List<Map<String, Object>> statisticalInventoryDetail(InventoryDetail onventoryDetail) {
-		List<Map<String, Object>> mapList = new ArrayList<>(); 
-		List<InventoryDetail> onventoryDetailList = dao.findByFlagAndTimeBetween(0,onventoryDetail.getOrderTimeBegin(),
+		List<Map<String, Object>> mapList = new ArrayList<>();
+		List<InventoryDetail> onventoryDetailList = dao.findByFlagAndTimeBetween(0, onventoryDetail.getOrderTimeBegin(),
 				onventoryDetail.getOrderTimeEnd());
 		double sumCostList = onventoryDetailList.stream().mapToDouble(InventoryDetail::getOutboundCost).sum();
 		// 按人员分组
 		Map<Long, List<InventoryDetail>> mapAttendance = onventoryDetailList.stream()
 				.filter(InventoryDetail -> InventoryDetail.getOrgNameId() != null)
 				.collect(Collectors.groupingBy(InventoryDetail::getOrgNameId, Collectors.toList()));
-		for (Long ps1 : mapAttendance.keySet()) {
-			Map<String, Object> map = new HashMap<>();
-			List<InventoryDetail> psList = mapAttendance.get(ps1);
-			double sumCost = psList.stream().mapToDouble(InventoryDetail::getOutboundCost).sum();
-			map.put("orgName", psList.get(0).getOrgName().getName());
-			map.put("sumCost", NumUtils.round(sumCost, 2));
-			map.put("accounted",NumUtils.mul(NumUtils.div(sumCost, sumCostList, 2),100)+"%");
-			mapList.add(map);
+		// 后勤部费用分摊到所有部门
+		double logisticsCost = onventoryDetailList.stream()
+				.filter(InventoryDetail -> InventoryDetail.getOutboundCost() == 60)
+				.mapToDouble(InventoryDetail::getOutboundCost).sum();
+		if (mapAttendance.size() > 0) {
+			//均分费用
+			double averageLogisticsCost = NumUtils.div(logisticsCost, mapAttendance.size(), 2);
+			for (Long ps1 : mapAttendance.keySet()) {
+				Map<String, Object> map = new HashMap<>();
+				List<InventoryDetail> psList = mapAttendance.get(ps1);
+				if (psList.get(0).getOrgName().getId() != 60) {
+					double sumCost = psList.stream().mapToDouble(InventoryDetail::getOutboundCost).sum();
+					sumCost = NumUtils.sum(sumCost,averageLogisticsCost);
+					map.put("orgName", psList.get(0).getOrgName().getName());
+					map.put("sumCost", NumUtils.round(sumCost, 2));
+					map.put("accounted", NumUtils.mul(NumUtils.div(sumCost, sumCostList, 2), 100) + "%");
+					mapList.add(map);
+				}
+			}
 		}
 		return mapList;
 	}

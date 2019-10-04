@@ -1,17 +1,12 @@
 package com.bluewhite.production.group.service;
 
-import static org.hamcrest.CoreMatchers.nullValue;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.DoubleSummaryStatistics;
 import java.util.HashMap;
-import java.util.IntSummaryStatistics;
 import java.util.List;
 import java.util.Map;
-import java.util.function.Function;
 import java.util.stream.Collectors;
 
 import javax.persistence.criteria.Predicate;
@@ -25,7 +20,11 @@ import com.bluewhite.common.SessionManager;
 import com.bluewhite.common.entity.CurrentUser;
 import com.bluewhite.common.utils.DatesUtil;
 import com.bluewhite.common.utils.NumUtils;
+import com.bluewhite.production.farragotask.dao.FarragoTaskDao;
+import com.bluewhite.production.farragotask.entity.FarragoTask;
+import com.bluewhite.production.finance.dao.FarragoTaskPayDao;
 import com.bluewhite.production.finance.dao.PayBDao;
+import com.bluewhite.production.finance.entity.FarragoTaskPay;
 import com.bluewhite.production.finance.entity.PayB;
 import com.bluewhite.production.group.dao.GroupDao;
 import com.bluewhite.production.group.dao.TemporarilyCollectDao;
@@ -39,15 +38,14 @@ import com.bluewhite.system.user.entity.User;
 public class GroupServiceImpl extends BaseServiceImpl<Group, Long> implements GroupService {
 	@Autowired
 	private GroupDao dao;
-
 	@Autowired
 	private TemporarilyDao temporarilyDao;
-
 	@Autowired
 	private TemporarilyCollectDao temporarilyCollectDao;
-	
 	@Autowired
 	private PayBDao payBDao;
+	@Autowired
+	private FarragoTaskPayDao farragoTaskPayDao;
 
 	@Override
 	public List<Group> findByType(Integer type) {
@@ -91,8 +89,7 @@ public class GroupServiceImpl extends BaseServiceImpl<Group, Long> implements Gr
 					}
 					group.setUsers(null);
 					dao.delete(group);
-				}
-				;
+				};
 			}
 		}
 	}
@@ -115,6 +112,8 @@ public class GroupServiceImpl extends BaseServiceImpl<Group, Long> implements Gr
 		}
 		// 获取外调人员的b工资
 		List<PayB> payBList = null;
+		// 获取外调人员的杂工工资
+		List<FarragoTaskPay> parragoTaskList = null;
 		if (!cu.getRole().contains("superAdmin") && !cu.getRole().contains("personnel") && temporarily.getType() != 2) {
 			// 获取外调人员的b工资
 			List<Long> userIds = new ArrayList<>();
@@ -129,6 +128,9 @@ public class GroupServiceImpl extends BaseServiceImpl<Group, Long> implements Gr
 				userIds.add(userId);
 			}
 			payBList = payBDao.findByUserIdInAndAllotTimeBetween(userIds, temporarily.getOrderTimeBegin(),
+					temporarily.getViewTypeDate() == 1 ? temporarily.getOrderTimeEnd()
+							: DatesUtil.getLastDayOfMonth(temporarily.getOrderTimeBegin()));
+			parragoTaskList = farragoTaskPayDao.findByUserIdInAndAllotTimeBetween(userIds, temporarily.getOrderTimeBegin(),
 					temporarily.getViewTypeDate() == 1 ? temporarily.getOrderTimeEnd()
 							: DatesUtil.getLastDayOfMonth(temporarily.getOrderTimeBegin()));
 		}
@@ -156,12 +158,22 @@ public class GroupServiceImpl extends BaseServiceImpl<Group, Long> implements Gr
 					}
 				}
 			}
+			List<FarragoTaskPay> parragoList = new ArrayList<>();
+			if (parragoTaskList != null) {
+				for (FarragoTaskPay farragoTaskPay : parragoTaskList) {
+					if (farragoTaskPay.getAllotTime().compareTo(beginTimes) != -1
+							&& farragoTaskPay.getAllotTime().compareTo(DatesUtil.getLastDayOftime(beginTimes)) != 1) {
+						parragoList.add(farragoTaskPay);
+					}
+				}
+			}
 			for (Object ps : mapTemporarilyList.keySet()) {
 				Map<String, Object> mapTe = new HashMap<>();
 				// 获取特急人员或者分组
 				List<Temporarily> psList = mapTemporarilyList.get(ps);
 				List<Temporarily> psListTe = new ArrayList<>();
 				double sumPayb = 0.0;
+				double sumPayP = 0.0;
 				Group group = null;
 				// 按日获取所有的特急人员考勤
 				for (Temporarily te : psList) {
@@ -180,6 +192,12 @@ public class GroupServiceImpl extends BaseServiceImpl<Group, Long> implements Gr
 										.equals(temporarily.getType() == 3 ? Long.valueOf(temp[0]) : ps))
 								.mapToDouble(PayB::getPayNumber).sum();
 					}
+					if (parragoList.size() > 0) {
+						sumPayP = parragoList.stream()
+								.filter(FarragoTaskPay -> FarragoTaskPay.getUserId()
+										.equals(temporarily.getType() == 3 ? Long.valueOf(temp[0]) : ps))
+								.mapToDouble(FarragoTaskPay::getPayNumber).sum();
+					}
 				}
 				// 按分组
 				if (temporarily.getViewTypeUser() == 2) {
@@ -193,6 +211,13 @@ public class GroupServiceImpl extends BaseServiceImpl<Group, Long> implements Gr
 									.mapToDouble(PayB::getPayNumber).sum();
 							sumPayb += NumUtils.round(sumGroupPayb, 4);
 						}
+						
+						if (parragoList.size() > 0) {
+							double sumGroupPayP = parragoList.stream().filter(FarragoTaskPay -> FarragoTaskPay.getUserId().equals(ps1))
+									.mapToDouble(FarragoTaskPay::getPayNumber).sum();
+							sumPayP += NumUtils.round(sumGroupPayP, 4);
+						}
+						
 					}
 				}
 
@@ -205,11 +230,10 @@ public class GroupServiceImpl extends BaseServiceImpl<Group, Long> implements Gr
 							: formatter2.format(beginTimes));
 					mapTe.put("name", temporarily.getViewTypeUser() == 1 ? psList.get(0).getUser().getUserName()
 							: group == null ? "" : group.getName());
-					mapTe.put("foreigns", temporarily.getViewTypeUser() == 1
-							? ((psList.get(0).getUser().getForeigns() == 0 && psList.get(0).getUser().getQuit() == 0)
-									? "本厂" : "外厂")
-							: "");
-					mapTe.put("bPay", NumUtils.round(sumPayb, 4));
+//					mapTe.put("foreigns", temporarily.getViewTypeUser() == 1
+//							? ((psList.get(0).getUser().getForeigns() == 0 && psList.get(0).getUser().getQuit() == 0)
+//									? "本厂" : "外厂"): "");
+					mapTe.put("bPay", NumUtils.round(NumUtils.sum(sumPayP,sumPayb), 4));
 					mapTe.put("sumWorkTime", sumWorkTime);
 					double price = temporarily.getViewTypeUser() == 1
 							? (psList.get(0).getUser().getPrice() != null ? psList.get(0).getUser().getPrice() : 0) : 0;

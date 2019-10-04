@@ -24,6 +24,7 @@ public class HydropowerServiceImpl extends BaseServiceImpl<Hydropower, Long>
 	private HydropowerDao dao;
 	@Autowired
 	private PersonVariableDao personVariableDao;
+	
 	/*
 	 *分页查询
 	 */
