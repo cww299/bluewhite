@@ -35,9 +35,7 @@ import com.bluewhite.production.bacth.entity.Bacth;
 import com.bluewhite.production.finance.dao.PayBDao;
 import com.bluewhite.production.finance.entity.PayB;
 import com.bluewhite.production.finance.service.PayBService;
-import com.bluewhite.production.group.dao.GroupTimeDao;
 import com.bluewhite.production.group.dao.TemporarilyDao;
-import com.bluewhite.production.group.entity.GroupTime;
 import com.bluewhite.production.group.entity.Temporarily;
 import com.bluewhite.production.procedure.dao.ProcedureDao;
 import com.bluewhite.production.procedure.entity.Procedure;
@@ -66,8 +64,6 @@ public class TaskServiceImpl extends BaseServiceImpl<Task, Long> implements Task
 	private TemporarilyDao temporarilyDao;
 	@Autowired
 	private AttendancePayDao attendancePayDao;
-	@Autowired
-	private GroupTimeDao groupTimeDao;
 
 	private final static String QUALITY_STRING = "贴破洞";
 
@@ -151,48 +147,27 @@ public class TaskServiceImpl extends BaseServiceImpl<Task, Long> implements Task
 
 				double sumTime = 0;
 				if (!UnUtil.isFromMobile(request) && task.getType() == 2) {
-						// 总考勤时间
-						for (String userTypeId : task.getUsersIds()) {
-							Long userId = Long.parseLong(userTypeId);
-							List<Temporarily> temporarilyNewList = temporarilyList.stream()
-									.filter(Temporarily -> Temporarily.getUserId().equals(userId))
+					// 总考勤时间
+					for (String userTypeId : task.getUsersIds()) {
+						Long userId = Long.parseLong(userTypeId);
+						List<Temporarily> temporarilyNewList = temporarilyList.stream().filter(Temporarily -> Temporarily.getUserId().equals(userId))
+								.collect(Collectors.toList());
+						if (task.getGroupId() != null) {
+							temporarilyNewList = temporarilyNewList.stream().filter(Temporarily -> Temporarily.getGroupId().equals(task.getGroupId()))
 									.collect(Collectors.toList());
-							if (task.getGroupId() != null) {
-								temporarilyNewList = temporarilyNewList.stream()
-										.filter(Temporarily -> Temporarily.getGroupId().equals(task.getGroupId()))
-										.collect(Collectors.toList());
-							}
-							List<AttendancePay> attendancePayNewList = attendancePayList.stream()
-									.filter(AttendancePay -> AttendancePay.getUserId().equals(userId))
-									.collect(Collectors.toList());
-							if (temporarilyNewList.size() > 0) {
-								Double temporarilyTime = temporarilyNewList.stream()
-										.mapToDouble(Temporarily::getWorkTime).sum();
-								sumTime += temporarilyTime;
-							}
-							if (attendancePayNewList.size() > 0) {
-								AttendancePay attendancePay = attendancePayNewList.get(0);
-								Double groupWorkTime = null;
-								if (task.getGroupId() != null) {
-									GroupTime groupTime = groupTimeDao.findByUserIdAndTypeAndGroupIdAndAllotTime(userId,
-											task.getType(), task.getGroupId(),
-											DatesUtil.getfristDayOftime(task.getAllotTime()));
-									if (groupTime != null) {
-										if (groupTime.getStartTime() != null && groupTime.getEndTime() != null) {
-											if ((groupTime.getStartTime().before(task.getAllotTime())
-													|| groupTime.getStartTime().compareTo(task.getAllotTime()) == 0)
-													&& (groupTime.getEndTime().after(task.getAllotTime()) || groupTime
-															.getEndTime().compareTo(task.getAllotTime()) == 0)) {
-												groupWorkTime = groupTime.getGroupWorkTime();
-											} else {
-												groupWorkTime = null;
-											}
-										}
-									}
-								}
-								sumTime += (groupWorkTime != null ? groupWorkTime : attendancePay.getWorkTime());
-							}
 						}
+						List<AttendancePay> attendancePayNewList = attendancePayList.stream()
+								.filter(AttendancePay -> AttendancePay.getUserId().equals(userId))
+								.collect(Collectors.toList());
+						if (temporarilyNewList.size() > 0) {
+							Double temporarilyTime = temporarilyNewList.stream().mapToDouble(Temporarily::getWorkTime).sum();
+							sumTime += temporarilyTime;
+						}
+						if (attendancePayNewList.size() > 0) {
+							AttendancePay attendancePay = attendancePayNewList.get(0);
+							sumTime += attendancePay.getWorkTime();
+						}
+					}
 				}
 				// 查出该任务的所有b工资
 				List<PayB> payBList = payBDao.findByTaskId(task.getId());
@@ -229,65 +204,39 @@ public class TaskServiceImpl extends BaseServiceImpl<Task, Long> implements Task
 							payBList.add(payB);
 						} else {
 							String performance = payB.getPerformance();
-							if(!StringUtils.isEmpty(performance)){
-								long count = payBList.stream().filter(PayB -> PayB.getPerformance()!=null && PayB.getPerformance().equals(performance)).count();
+							if (!StringUtils.isEmpty(performance)) {
+								long count = payBList.stream().filter(PayB -> PayB.getPerformance() != null
+										&& PayB.getPerformance().equals(performance)).count();
 								payB.setPerformancePayNumber(NumUtils.div(newTask.getPerformancePrice(), count, 3));
 							}
 						}
 						// 计算B工资数值
 						if (!UnUtil.isFromMobile(request) && task.getType() == 2) {
 							// 包装分配任务，员工b工资根据考情占比分配，其他部门是均分
-								// 该员工实际工作时长
-								Double workTime = 0.0;
-								List<Temporarily> temporarilyNewList = temporarilyList.stream()
-										.filter(Temporarily -> Temporarily.getUserId().equals(userId))
-										.collect(Collectors.toList());
-								List<AttendancePay> attendancePayNewList = attendancePayList.stream()
-										.filter(AttendancePay -> AttendancePay.getUserId().equals(userId))
-										.collect(Collectors.toList());
-								if (temporarilyNewList.size() > 0) {
-									workTime = temporarilyNewList.stream().mapToDouble(Temporarily::getWorkTime).sum();
+							// 该员工实际工作时长
+							Double workTime = 0.0;
+							List<Temporarily> temporarilyNewList = temporarilyList.stream()
+									.filter(Temporarily -> Temporarily.getUserId().equals(userId))
+									.collect(Collectors.toList());
+							List<AttendancePay> attendancePayNewList = attendancePayList.stream()
+									.filter(AttendancePay -> AttendancePay.getUserId().equals(userId))
+									.collect(Collectors.toList());
+							if (temporarilyNewList.size() > 0) {
+								workTime = temporarilyNewList.stream().mapToDouble(Temporarily::getWorkTime).sum();
+							}
+							if (attendancePayNewList.size() > 0) {
+								if (task.getGroupId() != null) {
+									workTime = attendancePayNewList.get(0).getWorkTime();
 								}
-								if (attendancePayNewList.size() > 0) {
-									if (task.getGroupId() != null) {
-										GroupTime groupTime = groupTimeDao.findByUserIdAndTypeAndGroupIdAndAllotTime(
-												userId, task.getType(), task.getGroupId(),
-												DatesUtil.getfristDayOftime(task.getAllotTime()));
-										// 包装的任务分配时长，根据所在组的时间段进行分配
-										// 任务分配时间在所在组时间段
-										// 填写任务分配时间，
-										// 那么所有的任务都是在早上8点之后开始的。
-										// 给员工在当前分组里面的时间段，有二种情况
-										// 第一种，没有填时间段，那就默认他所有的任务都参与了，
-										// 第二种。你填了时间段，并且填了任务时间，只要是任务时间在你填的时间段之内，这个任务他就参与了
-										// 第二种情况还分，如果你填了时间段，但是没有填任务时间，那么他不参与任何任务
-										if (groupTime != null) {
-											if (groupTime.getStartTime() != null && groupTime.getEndTime() != null) {
-												if ((groupTime.getStartTime().before(task.getAllotTime())
-														|| groupTime.getStartTime().compareTo(task.getAllotTime()) == 0)
-														&& (groupTime.getEndTime().after(task.getAllotTime())
-																|| groupTime.getEndTime()
-																		.compareTo(task.getAllotTime()) == 0)) {
-													workTime = groupTime.getGroupWorkTime();
-												} else {
-													workTime = 0.0;
-												}
-											} else {
-												workTime = attendancePayNewList.get(0).getWorkTime();
-											}
-										} else {
-											workTime = attendancePayNewList.get(0).getWorkTime();
-										}
-									}
-								}
-								if (temporarilyNewList.size() == 0 && attendancePayNewList.size() == 0) {
-									throw new ServiceException("员工" + user.getUserName() + "没有"
-											+ new SimpleDateFormat("yyyy-MM-dd").format(task.getAllotTime())
-											+ "的考勤记录，无法分配任务");
-								}
-								// 按考情时间占比分配B工资
-								payB.setPayNumber(NumUtils.div(NumUtils.mul(newTask.getPayB(), workTime),
-										NumUtils.round(sumTime, 2), 5));
+							}
+							if (temporarilyNewList.size() == 0 && attendancePayNewList.size() == 0) {
+								throw new ServiceException("员工" + user.getUserName() + "没有"
+										+ new SimpleDateFormat("yyyy-MM-dd").format(task.getAllotTime())
+										+ "的考勤记录，无法分配任务");
+							}
+							// 按考情时间占比分配B工资
+							payB.setPayNumber(NumUtils.div(NumUtils.mul(newTask.getPayB(), workTime),
+									NumUtils.round(sumTime, 2), 5));
 						} else {
 							payB.setPayNumber(NumUtils.div(newTask.getPayB(), task.getUsersIds().length, 5));
 						}

@@ -1,7 +1,5 @@
 package com.bluewhite.personnel.attendance.service;
 
-import static org.hamcrest.CoreMatchers.nullValue;
-
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -302,6 +300,7 @@ public class AttendanceServiceImpl extends BaseServiceImpl<Attendance, Long> imp
 			allAttendance(Constants.ONE_FLOOR, startTime, endTime,userId);
 			allAttendance(Constants.EIGHT_WAREHOUSE, startTime, endTime,userId);
 			allAttendance(Constants.NEW_IGHT_WAREHOUSE, startTime, endTime,userId);
+			allAttendance(Constants.ELEVEN_WAREHOUSE, startTime, endTime,userId);
 		}else{
 			allAttendance(address, startTime, endTime,userId);
 		}
@@ -324,6 +323,11 @@ public class AttendanceServiceImpl extends BaseServiceImpl<Attendance, Long> imp
 		sdk.disConnect();
 		sdk.release();
 		return user;
+	}
+
+	@Override
+	public List<Attendance> findByUserIdInAndTimeBetween(List<Long> userLong,Date beginDate, Date endDate) {
+		return dao.findByUserIdInAndTimeBetween(userLong,beginDate,endDate);
 	}
 
 }

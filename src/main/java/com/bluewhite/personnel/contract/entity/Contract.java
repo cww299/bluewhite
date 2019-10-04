@@ -17,7 +17,7 @@ import com.bluewhite.basedata.entity.BaseData;
  *
  */
 @Entity
-@Table(name = "sys_contract")
+@Table(name = "person_contract")
 public class Contract extends BaseEntity<Long>{
 	
 	
