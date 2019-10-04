@@ -273,7 +273,7 @@ layui.extend({
 							msg = '修改失败，请正确填写'+china[field];
 						else if(count.indexOf(field)>=0 && !isCount(val))
 							msg = '修改失败，请正确填写'+china[field];
-						else if(opt.verify.otherVerify)
+						else if(opt.verify && opt.verify.otherVerify)
 							msg = opt.verify.otherVerify(trData) || '';
 						if(msg!=''){
 							$(this).val(myutil.lastData);   //回滚数据
