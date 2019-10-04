@@ -685,7 +685,7 @@ public class AttendanceTimeServiceImpl extends BaseServiceImpl<AttendanceTime, L
 										}
 									}
 
-									if (NumUtils.mul(time, 60) < oneAtList.get(0).getDutytimMinute()) {
+									if (oneAtList.get(0).getDutytimMinute() !=null && NumUtils.mul(time, 60) < oneAtList.get(0).getDutytimMinute()) {
 										if (oneAtList.get(0).getDutytimMinute() > 30) {
 											oneAtList.get(0).setBelate(1);
 											oneAtList.get(0).setBelateTime(NumUtils

@@ -22,7 +22,7 @@ public interface TemporarilyDao extends BaseRepository<Temporarily, Long>{
 	public Temporarily findByUserIdAndTemporarilyDateAndType(Long userId, Date getfristDayOftime,Integer type);
 	
 	/**
-	 * 根据人员id,日期,查询
+	 * 根据人员ids,日期,查询
 	 * 
 	 * @param type
 	 * @param orderTimeBegin
