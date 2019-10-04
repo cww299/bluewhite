@@ -1,20 +1,14 @@
 package com.bluewhite.production.group.entity;
 
-import java.util.HashSet;
-import java.util.Set;
-
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
-import javax.persistence.Transient;
 
 import com.bluewhite.base.BaseEntity;
 import com.bluewhite.basedata.entity.BaseData;
-import com.bluewhite.system.user.entity.TemporaryUser;
-import com.bluewhite.system.user.entity.User;
 /**
  * 分组表，用于记录生产部分组
  * @author zhangliang
@@ -55,28 +49,8 @@ public class Group  extends BaseEntity<Long>{
 	@Column(name = "remark")
 	private String remark;
 	
-	/**
-	 * 正式人员
-	 */
-	@Transient
-	private Set<User> users = new HashSet<User>();
-	
-	/**
-	 * 临时人员
-	 */
-	@Transient
-	private Set<TemporaryUser> temporaryUsers = new HashSet<TemporaryUser>();
 	
 	
-	
-	public Set<TemporaryUser> getTemporaryUsers() {
-		return temporaryUsers;
-	}
-
-	public void setTemporaryUsers(Set<TemporaryUser> temporaryUsers) {
-		this.temporaryUsers = temporaryUsers;
-	}
-
 	public Long getKindWorkId() {
 		return kindWorkId;
 	}
@@ -116,18 +90,5 @@ public class Group  extends BaseEntity<Long>{
 	public void setName(String name) {
 		this.name = name;
 	}
-
-	public Set<User> getUsers() {
-		return users;
-	}
-
-	public void setUsers(Set<User> users) {
-		this.users = users;
-	}
-
-	
-	
-	
-	
 
 }

@@ -4,7 +4,6 @@ import java.util.Date;
 import java.util.List;
 
 import com.bluewhite.base.BaseRepository;
-import com.bluewhite.production.finance.entity.PayB;
 import com.bluewhite.production.group.entity.Temporarily;
 
 public interface TemporarilyDao extends BaseRepository<Temporarily, Long>{
@@ -30,7 +29,7 @@ public interface TemporarilyDao extends BaseRepository<Temporarily, Long>{
 	 * @param orderTimeEnd
 	 * @return
 	 */
-	List<Temporarily> findByUserIdInAndTemporarilyDateAndType(List<Long> userIds, Date orderTimeBegin, Integer type);
+	List<Temporarily> findByUserIdInAndTemporarilyDateAndType(List<Long> userIds,Date orderTimeBegin,Integer type);
 	
 	/**
 	 * 根据分组id，员工id，日期查询

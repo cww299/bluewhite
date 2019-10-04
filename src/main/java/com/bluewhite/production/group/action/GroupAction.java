@@ -4,12 +4,15 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 
 import javax.servlet.http.HttpServletRequest;
 
+import org.apache.poi.poifs.storage.ListManagedBlock;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.propertyeditors.CustomDateEditor;
 import org.springframework.stereotype.Controller;
@@ -131,6 +134,7 @@ public class GroupAction {
 	@ResponseBody
 	public CommonResponse allGroup(HttpServletRequest request,Long id, Date temporarilyDate) {
 		CommonResponse cr = new CommonResponse();
+		Map<String,Object> groupMap = new HashMap<>();
 		Group group = groupService.findOne(id);
 		Date startTime = DatesUtil.getfristDayOftime(ProTypeUtils.countAllotTime(temporarilyDate));
 		Date endTime = DatesUtil.getLastDayOftime(ProTypeUtils.countAllotTime(temporarilyDate));
@@ -138,38 +142,40 @@ public class GroupAction {
 			List<Temporarily> temporarilyList = temporarilyDao.findByTypeAndTemporarilyDateAndGroupId(group.getType(),
 					startTime, id);
 			List<AttendancePay> attendancePayList = attendancePayDao.findByGroupIdAndTypeAndAllotTimeBetween(id,group.getType(), startTime, endTime);
-			Set<User> userlist = group.getUsers();
-			Set<TemporaryUser> temporaryUserlist = group.getTemporaryUsers();
+			List<Map<String, Object>> userList = new ArrayList<>();
+			List<Map<String, Object>> temporarilyUserList = new ArrayList<>();
 			
 			if (temporarilyList.size() > 0) {
 				for (Temporarily temporarily : temporarilyList) {
-					// 查询出该分组本厂借调员工的出勤数据
-					if (temporarily.getUserId() != null) {
-						User user = new User();
-						user.setUserName(temporarily.getUser().getUserName());
-						user.setTurnWorkTime(temporarily.getWorkTime());
-						userlist.add(user);
-					}
+					Map<String, Object>  temporarilyUserMap = new HashMap<>();
 					// 查询出该分组临时员工的出勤数据
 					if (temporarily.getTemporaryUserId() != null) {
-						TemporaryUser temporaryUser = new TemporaryUser();
-						temporaryUser.setUserName(temporarily.getTemporaryUser().getUserName());
-						temporaryUser.setTurnWorkTime(temporarily.getWorkTime());
-						temporaryUserlist.add(temporaryUser);
+						temporarilyUserMap.put("id", temporarily.getUser().getId());
+						temporarilyUserMap.put("name",temporarily.getUser().getUserName());
+						temporarilyUserMap.put("time",temporarily.getWorkTime());
 					}
-				}  
+					// 查询出该分组本厂借调员工的出勤数据
+					if (temporarily.getUserId() != null) {
+						temporarilyUserMap.put("id", temporarily.getUser().getId());
+						temporarilyUserMap.put("name",temporarily.getUser().getUserName());
+						temporarilyUserMap.put("time",temporarily.getWorkTime());
+					}
+					temporarilyUserList.add(temporarilyUserMap);
+				} 
+				groupMap.put("temporarilyUser", temporarilyUserList);
 			}
 			
 			if (attendancePayList.size() > 0) {
 				// 查询出该分组本厂员工的出勤数据
 				for (AttendancePay attendancePay : attendancePayList) {
-					User user = new User();
-					user.setUserName(attendancePay.getUserName());
-					user.setTurnWorkTime(attendancePay.getWorkTime());
-					userlist.add(user);
+					Map<String, Object>  userMap = new HashMap<>();
+					userMap.put("id", attendancePay.getUser().getId());
+					userMap.put("name",attendancePay.getUserName());
+					userMap.put("time",attendancePay.getWorkTime());
+					userList.add(userMap);
 				}
+				groupMap.put("userList", userList);
 			}
-			
 			//按打卡记录显示工作人员
 //			if(!UnUtil.isFromMobile(request)){
 //			}else{
@@ -188,7 +194,7 @@ public class GroupAction {
 //
 //			}
 		}
-		cr.setData(clearCascadeJSON.format(group).toJSON());
+		cr.setData(groupMap);
 		cr.setMessage("查询成功");
 		return cr;
 	}
@@ -247,7 +253,7 @@ public class GroupAction {
 	public CommonResponse delete(String ids) {
 		CommonResponse cr = new CommonResponse();
 		if (!StringUtils.isEmpty(ids)) {
-			groupService.deleteGroup(ids);
+			groupService.delete(ids);
 			cr.setMessage("删除成功");
 		} else {
 			cr.setCode(ErrorCode.ILLEGAL_ARGUMENT.getCode());

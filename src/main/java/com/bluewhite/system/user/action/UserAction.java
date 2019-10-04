@@ -88,8 +88,8 @@ public class UserAction {
 	private ClearCascadeJSON clearCascadeJSONTemporaryUser;
 	{
 		clearCascadeJSONTemporaryUser = ClearCascadeJSON.get()
-				.addRetainTerm(TemporaryUser.class, "userName", "nation", "phone", "idCard",
-						"bankCard1");
+				.addRetainTerm(TemporaryUser.class, "userName", "id", "phone", "idCard","bankCard1","group","status","turnWorkTime")
+				.addRetainTerm(Group.class, "name", "id");
 	}
 
 
@@ -219,6 +219,20 @@ public class UserAction {
 		CommonResponse cr = new CommonResponse();
 		cr.setData(clearCascadeJSONTemporaryUser.format(temporaryUserService.getPagedUser(page, temporaryUser)).toJSON());
 		cr.setMessage("查询成功");
+		return cr;
+	}
+	
+	/**
+	 * 删除临时员工
+	 * 
+	 * @return
+	 */
+	@RequestMapping(value = "/deleteTemporaryUser", method = RequestMethod.GET)
+	@ResponseBody
+	public CommonResponse deleteTemporaryUser(String ids) {
+		CommonResponse cr = new CommonResponse();
+		int count = temporaryUserService.deleteTemporaryUser(ids);
+		cr.setMessage("成功删除"+count+"条人员");
 		return cr;
 	}
 
