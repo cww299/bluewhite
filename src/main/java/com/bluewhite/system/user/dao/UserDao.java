@@ -56,23 +56,22 @@ public interface UserDao extends BaseRepository<User, Long> {
 	 * @param number
 	 * @return
 	 */
-	public List<User> findByOrgNameIdAndQuitAndForeigns(Long orgNameId, int quit,int foreigns);
+	public List<User> findByOrgNameIdAndQuit(Long orgNameId, int quit);
 
 	/**
 	 * 查找所有不是外来人员的员工（本厂员工）
-	 * @param foreigns=0=否
 	 * @return
 	 */
-	public List<User> findByForeignsAndIsAdminAndQuit(Integer foreigns,boolean admin,Integer quit);
+	public List<User> findByIsAdminAndQuit(boolean admin,Integer quit);
 
-	/**
-	 * 获取转正人员
-	 * @return
-	 */
-	public List<User> findByForeignsAndPositive(int foreigns, boolean positive);
 	/**
 	 * 根据离职时间查询
 	 * @return
 	 */
 	public List<User> findByQuitDateBetween(Date orderTimeBegin, Date orderTimeEnd);
+
+	/**
+	 * 根据分组查看员工
+	 */
+	public List<User> findByGroupId(Long groupId);
 }
