@@ -29,7 +29,7 @@
 layui.config({
 	base : '${ctx}/static/layui-v2.4.5/'
 }).extend({
-	specialPerson: 'layui/myModules/specialPerson',
+	specialPerson: 'layui/myModules/product/specialPerson',
 }).define(
 	['specialPerson'],
 	function(){
