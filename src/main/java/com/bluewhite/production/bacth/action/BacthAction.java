@@ -126,11 +126,11 @@ private static final Log log = Log.getLog(BacthAction.class);
 	 */
 	@RequestMapping(value = "/bacth/statusBacth", method = RequestMethod.GET)
 	@ResponseBody
-	public CommonResponse statusBacth(HttpServletRequest request,String[] ids, Date time ) {
+	public CommonResponse statusBacth(String[] ids, Date time ) {
 		CommonResponse cr = new CommonResponse();
 		int count;
 		try {
-			count = bacthService.statusBacth(request,ids,time);
+			count = bacthService.statusBacth(ids,time);
 		} catch (Exception e) {
 			cr.setMessage(e.getMessage());
 			cr.setCode(ErrorCode.ILLEGAL_ARGUMENT.getCode());

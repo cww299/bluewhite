@@ -155,7 +155,7 @@ public class BacthServiceImpl extends BaseServiceImpl<Bacth, Long> implements Ba
 
 	@Override
 	@Transactional
-	public int statusBacth(HttpServletRequest request,String[] ids, Date time) throws Exception {
+	public int statusBacth(String[] ids, Date time) throws Exception {
 		int count = 0;
 		Calendar cal = Calendar.getInstance();
 		cal.add(Calendar.DATE, -1);
@@ -167,38 +167,6 @@ public class BacthServiceImpl extends BaseServiceImpl<Bacth, Long> implements Ba
 					if (bacth.getStatus() == 1) {
 						throw new ServiceException("批次编号为" + bacth.getBacthNumber() + "的任务已经完成,无需再次完成");
 					}
-					if (bacth.getType() == 3 && bacth.getFlag() == 0) {
-						Group group = groupDao.findByNameAndType(GROUP, bacth.getType());
-						List<Procedure> procedure = procedureDao.findByProductIdAndProcedureTypeIdAndType(
-								bacth.getProductId(), (long) 101, bacth.getType());
-						List<Task> taskList = bacth.getTasks().stream()
-								.filter(Task -> Task.getProcedureId().equals(procedure.get(0).getId()))
-								.collect(Collectors.toList());
-						if (taskList.size() == 0) {
-							if (procedure.size() > 0) {
-								Task task = new Task();
-								String[] pro = new String[] { String.valueOf(procedure.get(0).getId()) };
-								String userIds = "";
-								String userNames = "";
-								for (User user : group.getUsers()) {
-									userIds = userIds.equals("") ? String.valueOf(user.getId())
-											: userIds + "," + user.getId();
-									userNames = userNames.equals("") ? String.valueOf(user.getUserName())
-											: userNames + "," + user.getUserName();
-								}
-								task.setNumber(bacth.getNumber());
-								task.setType(bacth.getType());
-								task.setAllotTime(ProTypeUtils.countAllotTime(time));
-								task.setBacthId(bacth.getId());
-								task.setProductName(bacth.getProduct().getName());
-								task.setBacthNumber(bacth.getBacthNumber());
-								task.setProcedureIds(pro);
-								task.setUserIds(userIds);
-								taskService.addTask(task, request);
-							}
-						}
-					}
-
 					bacth.setStatus(1);
 					bacth.setStatusTime(time == null ? cal.getTime() : time);
 					dao.save(bacth);
