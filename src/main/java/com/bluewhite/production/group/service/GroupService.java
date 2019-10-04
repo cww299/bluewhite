@@ -6,7 +6,6 @@ import java.util.Map;
 import org.springframework.stereotype.Service;
 
 import com.bluewhite.base.BaseCRUDService;
-import com.bluewhite.common.entity.PageParameter;
 import com.bluewhite.production.group.entity.Group;
 import com.bluewhite.production.group.entity.Temporarily;
 @Service
@@ -23,12 +22,6 @@ public interface GroupService extends BaseCRUDService<Group,Long>{
 	 * @return
 	 */
 	List<Group> findList(Group group);
-	
-	/**
-	 * 批量删除
-	 * @param ids
-	 */
-	void deleteGroup(String ids);
 	
 	/**
 	 * 汇总外调人员绩效
