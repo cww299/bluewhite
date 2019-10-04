@@ -147,20 +147,22 @@ public class GroupAction {
 			
 			if (temporarilyList.size() > 0) {
 				for (Temporarily temporarily : temporarilyList) {
-					Map<String, Object>  temporarilyUserMap = new HashMap<>();
 					// 查询出该分组临时员工的出勤数据
 					if (temporarily.getTemporaryUserId() != null) {
+						Map<String, Object>  temporarilyUserMap = new HashMap<>();
 						temporarilyUserMap.put("id", temporarily.getUser().getId());
 						temporarilyUserMap.put("name",temporarily.getUser().getUserName());
 						temporarilyUserMap.put("time",temporarily.getWorkTime());
+						temporarilyUserList.add(temporarilyUserMap);
 					}
 					// 查询出该分组本厂借调员工的出勤数据
 					if (temporarily.getUserId() != null) {
-						temporarilyUserMap.put("id", temporarily.getUser().getId());
-						temporarilyUserMap.put("name",temporarily.getUser().getUserName());
-						temporarilyUserMap.put("time",temporarily.getWorkTime());
+						Map<String, Object>  userMap = new HashMap<>();
+						userMap.put("id", temporarily.getUser().getId());
+						userMap.put("name",temporarily.getUser().getUserName());
+						userMap.put("time",temporarily.getWorkTime());
+						userList.add(userMap);
 					}
-					temporarilyUserList.add(temporarilyUserMap);
 				} 
 				groupMap.put("temporarilyUser", temporarilyUserList);
 			}

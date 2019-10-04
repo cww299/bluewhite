@@ -118,6 +118,7 @@ public class ApplicationLeaveServiceImpl extends BaseServiceImpl<ApplicationLeav
 	}
 
 	private ApplicationLeave setApp(ApplicationLeave applicationLeave) throws ParseException {
+		dao.save(applicationLeave);
 		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
 		String holidayDetail = "";
 		double tradeDaysTime = 0;
@@ -228,6 +229,7 @@ public class ApplicationLeaveServiceImpl extends BaseServiceImpl<ApplicationLeav
 				}
 				attendance.setTime(tm);
 				attendance.setUserId(applicationLeave.getUserId());
+				attendance.setApplicationLeaveId(applicationLeave.getId());
 				attendance.setInOutMode(2);
 				attendanceDao.save(attendance);
 				holidayDetail += date + (time.equals("0") ? "补签入," : "补签出,");
