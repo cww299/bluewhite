@@ -52,10 +52,17 @@ public class Attendance extends BaseEntity<Long> {
 	
 	/**
 	 * 
-	 * 签到状态  0 上班 1下班 2补签
+	 * 签到状态   1正常签到 2补签
 	 */
 	@Column(name = "inout_mode")
 	private Integer inOutMode;
+	
+	/**
+	 * 
+	 * 补签id
+	 */
+	@Column(name = "application_leave_id")
+	private Long applicationLeaveId;
 	
 	/**
 	 *  验证方式：0为密码验证，1为指纹验证，2为卡验，15为 面部验证
@@ -93,6 +100,14 @@ public class Attendance extends BaseEntity<Long> {
 	private String orgName;
 
 	
+
+	public Long getApplicationLeaveId() {
+		return applicationLeaveId;
+	}
+
+	public void setApplicationLeaveId(Long applicationLeaveId) {
+		this.applicationLeaveId = applicationLeaveId;
+	}
 
 	public String getOrgName() {
 		return orgName;

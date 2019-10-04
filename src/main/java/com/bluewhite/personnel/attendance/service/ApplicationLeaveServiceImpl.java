@@ -102,12 +102,12 @@ public class ApplicationLeaveServiceImpl extends BaseServiceImpl<ApplicationLeav
 						for (String ad : addDate) {
 							List<Attendance> attendance = attendanceDao
 									.findByUserIdAndTime(oldApplicationLeave.getUserId(), sdf.parse(ad));
-							if (attendance.size() > 0) {  
+							if (attendance.size() > 0) {
 								attendanceDao.delete(attendance);
 							}
 						}
 					}
-				}  
+				}
 			}
 			BeanCopyUtils.copyNotEmpty(applicationLeave, oldApplicationLeave, "");
 		} else {
@@ -152,18 +152,20 @@ public class ApplicationLeaveServiceImpl extends BaseServiceImpl<ApplicationLeav
 				AttendanceTime attendanceTimeParme = new AttendanceTime();
 				attendanceTimeParme.setUserId(applicationLeave.getUserId());
 				attendanceTimeParme.setOrderTimeBegin(DatesUtil.getFirstDayOfMonth(dateLeave));
-				//获取到当前员工统计一个月的考勤详细
-				List<AttendanceTime> attendanceTimeList = attendanceTimeService.attendanceTimeByApplication(attendanceTimeService.findAttendanceTime(attendanceTimeParme));
-				//调休申请
+				// 获取到当前员工统计一个月的考勤详细
+				List<AttendanceTime> attendanceTimeList = attendanceTimeService
+						.attendanceTimeByApplication(attendanceTimeService.findAttendanceTime(attendanceTimeParme));
+				// 调休申请
 				if (applicationLeave.isTradeDays()) {
 					sumOverTime = attendanceTimeList.stream().mapToDouble(AttendanceTime::getOvertime).sum();
 					tradeDaysTime += Double.valueOf(time);
-					holidayDetail =  holidayDetail.equals("") ? (date + "调休" + time + "小时") : holidayDetail+","+date + "调休" + time + "小时";
+					holidayDetail = holidayDetail.equals("") ? (date + "调休" + time + "小时")
+							: holidayDetail + "," + date + "调休" + time + "小时";
 					continue;
 				}
-				//过滤出选择日期的考勤详细
-				for(AttendanceTime at : attendanceTimeList ){
-					if(at.getTime().compareTo(dateLeave)==0){
+				// 过滤出选择日期的考勤详细
+				for (AttendanceTime at : attendanceTimeList) {
+					if (at.getTime().compareTo(dateLeave) == 0) {
 						attendanceTime = at;
 						break;
 					}
@@ -178,25 +180,12 @@ public class ApplicationLeaveServiceImpl extends BaseServiceImpl<ApplicationLeav
 					// 将 工作间隔开始结束时间转换成当前日期的时间
 					workTime = DatesUtil.dayTime(dateLeave, workTimeArr[0]);
 					workTimeEnd = DatesUtil.dayTime(dateLeave, workTimeArr[1]);
-					String[] restTimeArr = attendanceInit.getRestTimeSummer().split(" - ");
-					// 将 休息间隔开始结束时间转换成当前日期的时间
-					restBeginTime = DatesUtil.dayTime(dateLeave, restTimeArr[0]);
-					restEndTime = DatesUtil.dayTime(dateLeave, restTimeArr[1]);
-					restTime = attendanceInit.getRestSummer();
-					turnWorkTime = attendanceInit.getTurnWorkTimeSummer();
-				}else{
+				} else {
 					// 冬令时
 					String[] workTimeArr = attendanceInit.getWorkTimeWinter().split(" - ");
 					// 将 工作间隔开始结束时间转换成当前日期的时间
 					workTime = DatesUtil.dayTime(dateLeave, workTimeArr[0]);
 					workTimeEnd = DatesUtil.dayTime(dateLeave, workTimeArr[1]);
-					// 将 休息间隔开始结束时间转换成当前日期的时间
-					String[] restTimeArr = attendanceInit.getRestTimeSummer().split(" - ");
-					// 将 休息间隔开始结束时间转换成当前日期的时间
-					restBeginTime = DatesUtil.dayTime(dateLeave, restTimeArr[0]);
-					restEndTime = DatesUtil.dayTime(dateLeave, restTimeArr[1]);
-					restTime = attendanceInit.getRestWinter();
-					turnWorkTime = attendanceInit.getTurnWorkTimeWinter();
 				}
 			}
 
@@ -227,15 +216,15 @@ public class ApplicationLeaveServiceImpl extends BaseServiceImpl<ApplicationLeav
 					break;
 				}
 				holidayDetail = holidayDetail.equals("") ? (date + detail + time + "小时")
-						: (holidayDetail+"," + date + detail + time + "小时");
+						: (holidayDetail + "," + date + detail + time + "小时");
 			}
-			//补签
+			// 补签
 			if (applicationLeave.isAddSignIn()) {
 				SimpleDateFormat sdft = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 				Attendance attendance = new Attendance();
 				Date tm = sdft.parse(date);
-				if(DatesUtil.timeIsZero(tm)){
-					tm = time.equals("0") ? workTime : workTimeEnd;  
+				if (DatesUtil.timeIsZero(tm)) {
+					tm = time.equals("0") ? workTime : workTimeEnd;
 				}
 				attendance.setTime(tm);
 				attendance.setUserId(applicationLeave.getUserId());
@@ -243,67 +232,70 @@ public class ApplicationLeaveServiceImpl extends BaseServiceImpl<ApplicationLeav
 				attendanceDao.save(attendance);
 				holidayDetail += date + (time.equals("0") ? "补签入," : "补签出,");
 			}
-			
+
 			if (applicationLeave.isApplyOvertime()) {
 				if (attendanceTime == null) {
 					throw new ServiceException("该员工未统计考勤，无法比对加班时长，请先初始化该员工考勤");
 				}
-				//获取所有的加班时间
+				// 获取所有的加班时间
 				double actualOverTime = 0.0;
-				if(attendanceInit.getOverTimeType()==2){
+				if (attendanceInit.getOverTimeType() == 2) {
 					throw new ServiceException("该员工属于按打卡核算加班，无需填写加班申请");
 				}
-				if (attendanceTime.getCheckIn()!=null && attendanceTime.getCheckOut()!=null) {
-					//获取所有的休息日
-					if(attendanceInit.getRestDay()!=null || attendanceInit.getRestType()!=null){
-						PersonVariable restType = personVariableDao.findByTypeAndTime(0, DatesUtil.getFirstDayOfMonth(applicationLeave.getWriteTime()));
+				if (attendanceTime.getCheckIn() != null && attendanceTime.getCheckOut() != null) {
+					// 获取所有的休息日
+					if (attendanceInit.getRestDay() != null || attendanceInit.getRestType() != null) {
+						PersonVariable restType = personVariableDao.findByTypeAndTime(0,
+								DatesUtil.getFirstDayOfMonth(applicationLeave.getWriteTime()));
 						List<String> allArr = new ArrayList<>();
-						if(attendanceInit.getRestType() == 1){
+						if (attendanceInit.getRestType() == 1) {
 							String[] weekArr = restType.getKeyValue().split(",");
-							List<String> listWeek =  Arrays.asList(weekArr);
+							List<String> listWeek = Arrays.asList(weekArr);
 							allArr.addAll(listWeek);
 						}
-						if(attendanceInit.getRestType() == 2){
+						if (attendanceInit.getRestType() == 2) {
 							String[] monthArr = restType.getKeyValueTwo().split(",");
-							List<String> listMonth =  Arrays.asList(monthArr);
+							List<String> listMonth = Arrays.asList(monthArr);
 							allArr.addAll(listMonth);
 						}
-						
-						if(attendanceInit.getRestDay() != null){
+
+						if (attendanceInit.getRestDay() != null) {
 							String[] restArr = attendanceInit.getRestDay().split(",");
-							List<String> listRest =  Arrays.asList(restArr);
+							List<String> listRest = Arrays.asList(restArr);
 							allArr.addAll(listRest);
 						}
-						
-						if(allArr.contains(date.substring(0, 10))){   
+
+						if (allArr.contains(date.substring(0, 10))) {
 							double one = 0;
 							double two = 0;
-							//签入时间在中午休息开始时间之前
-							if(attendanceTime.getCheckIn().before(restBeginTime)){
+							// 签入时间在中午休息开始时间之前
+							if (attendanceTime.getCheckIn().before(restBeginTime)) {
 								one = DatesUtil.getTime(attendanceTime.getCheckIn(), restBeginTime);
 							}
-							//签出时间在中午休息结束时间之后
-							if(attendanceTime.getCheckOut().after(restEndTime)){
-								two = DatesUtil.getTime(restEndTime,attendanceTime.getCheckOut());
+							// 签出时间在中午休息结束时间之后
+							if (attendanceTime.getCheckOut().after(restEndTime)) {
+								two = DatesUtil.getTime(restEndTime, attendanceTime.getCheckOut());
 							}
 							actualOverTime = DatesUtil.getTimeHour(NumUtils.sum(one, two));
-							if(attendanceInit.getRestTimeWork()==3){
+							if (attendanceInit.getRestTimeWork() == 3) {
 								actualOverTime += restTime;
 							}
-						}else{
-							if(workTimeEnd.before(attendanceTime.getCheckOut())){
+						} else {
+							if (workTimeEnd.before(attendanceTime.getCheckOut())) {
 								actualOverTime = DatesUtil.getTimeHour(workTimeEnd, attendanceTime.getCheckOut());
-								if(attendanceTime.getCheckIn().before(restBeginTime) && attendanceTime.getCheckOut().after(restEndTime) ){
+								if (attendanceTime.getCheckIn().before(restBeginTime)
+										&& attendanceTime.getCheckOut().after(restEndTime)) {
 									actualOverTime += restTime;
 								}
 							}
 						}
 					}
 				}
-				//加班申请
+				// 加班申请
 				if (applicationLeave.isApplyOvertime()) {
-					if (attendanceTime.getCheckIn()!=null && attendanceTime.getCheckOut()!=null && actualOverTime < Double.valueOf(time)) {
-						throw new ServiceException("根据"+date+"的签到时间该员工加班时间为" + actualOverTime + "小时，加班申请时间有误请重新核对");
+					if (attendanceTime.getCheckIn() != null && attendanceTime.getCheckOut() != null
+							&& actualOverTime < Double.valueOf(time)) {
+						throw new ServiceException("根据" + date + "的签到时间该员工加班时间为" + actualOverTime + "小时，加班申请时间有误请重新核对");
 					}
 					String overString = "";
 					switch (applicationLeave.getOvertimeType()) {
@@ -317,20 +309,20 @@ public class ApplicationLeaveServiceImpl extends BaseServiceImpl<ApplicationLeav
 						overString = "生产加班";
 						break;
 					}
-					holidayDetail = holidayDetail.equals("") ? (date + overString + time + "小时") : (holidayDetail+"," + date + overString + time + "小时");
+					holidayDetail = holidayDetail.equals("") ? (date + overString + time + "小时")
+							: (holidayDetail + "," + date + overString + time + "小时");
 				}
 			}
 		}
-		//调休
+		// 调休
 		if (applicationLeave.isTradeDays()) {
-			if(tradeDaysTime > sumOverTime){
+			if (tradeDaysTime > sumOverTime) {
 				throw new ServiceException("总调休时长不可大于总加班时长，请检查调休情况");
 			}
 		}
 		applicationLeave.setHolidayDetail(holidayDetail);
 		return applicationLeave;
 	}
-	
 
 	@Override
 	@Transactional
@@ -341,24 +333,10 @@ public class ApplicationLeaveServiceImpl extends BaseServiceImpl<ApplicationLeav
 		for (int i = 0; i < arrIds.length; i++) {
 			Long id = Long.valueOf(arrIds[i]);
 			ApplicationLeave applicationLeave = dao.findOne(id);
-			applicationLeave.setUser(null);
 			if (applicationLeave.isAddSignIn()) {
-				JSONArray jsonArray = JSON.parseArray(applicationLeave.getTime());
-				for (int i1 = 0; i1 < jsonArray.size(); i1++) {
-					JSONObject jsonObject = jsonArray.getJSONObject(i1);
-					String date = jsonObject.getString("date");
-					String time = jsonObject.getString("time");
-					// 获取时间区间
-					String[] addDate = date.split(",");
-					if (addDate.length > 0) {
-						for (String ad : addDate) {
-							List<Attendance> attendance = attendanceDao
-									.findByUserIdAndTime(applicationLeave.getUserId(), sdf.parse(ad));
-							if (attendance.size() > 0) {
-								attendanceDao.delete(attendance);
-							}
-						}
-					}
+				List<Attendance> attendance = attendanceDao.findByApplicationLeaveId(id);
+				if (attendance.size() > 0) {
+					attendanceDao.delete(attendance);
 				}
 			}
 			count++;
@@ -371,7 +349,7 @@ public class ApplicationLeaveServiceImpl extends BaseServiceImpl<ApplicationLeav
 	public void defaultRetroactive(ApplicationLeave applicationLeave) throws ParseException {
 		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 		JSONArray jsonArray = new JSONArray();
-		JSONObject jsonObject = new JSONObject(); 
+		JSONObject jsonObject = new JSONObject();
 		jsonObject.put("date", sdf.format(applicationLeave.getWriteTime()));
 		jsonObject.put("time", applicationLeave.getSign());
 		jsonArray.add(jsonObject);

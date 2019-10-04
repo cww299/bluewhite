@@ -11,6 +11,7 @@ import javax.persistence.Table;
 import javax.persistence.Transient;
 
 import com.bluewhite.base.BaseEntity;
+import com.bluewhite.system.user.entity.TemporaryUser;
 import com.bluewhite.system.user.entity.User;
 
 /**
@@ -36,13 +37,26 @@ public class Temporarily extends BaseEntity<Long>{
 	private User user;
 	
 	/**
+	 * 借调人员id(临时工id)
+	 */
+	@Column(name = "temporary_user_id")
+	private Long temporaryUserId;
+	
+	/**
+	 * 借调人员
+	 */
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "temporary_user_id", referencedColumnName = "id", insertable = false, updatable = false)
+	private TemporaryUser temporaryUser;
+	
+	/**
 	 * 工作时长
 	 */
 	@Column(name = "work_time")
 	private Double workTime;
 	
 	/**
-	 * 外调时间
+	 * 借调时间
 	 */
 	@Column(name = "temporarily_date")
 	private Date temporarilyDate;	
@@ -61,24 +75,17 @@ public class Temporarily extends BaseEntity<Long>{
 	private Long groupId;
 	
 	/**
-	 * 借调人员
+	 * 分组
 	 */
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "group_id", referencedColumnName = "id", insertable = false, updatable = false)
 	private Group group;
 	
 	/**
-	 * 工作时间段(可多选)
-	 */
-	@Column(name = "work_time_slice")
-	private String workTimeSlice;
-	
-	/**
 	 * 分组
 	 */
 	@Transient
 	private String groupName;
-
 	
 	/**
 	 * 外调时间批量
@@ -91,13 +98,6 @@ public class Temporarily extends BaseEntity<Long>{
 	 */
 	@Transient
 	private String userName;
-	
-	/**
-	 * 是否是转正人员(在生产线上直接添加的外来人员，可成为正式员工)
-	 */
-	@Transient
-	private Boolean positive = false;
-	
 	
 	/**
 	 * 查看方式（日期）（1=按天，2=按月）
@@ -125,15 +125,24 @@ public class Temporarily extends BaseEntity<Long>{
 	
 	
 
-	public String getWorkTimeSlice() {
-		return workTimeSlice;
+	public Long getTemporaryUserId() {
+		return temporaryUserId;
 	}
 
 
-	public void setWorkTimeSlice(String workTimeSlice) {
-		this.workTimeSlice = workTimeSlice;
+	public void setTemporaryUserId(Long temporaryUserId) {
+		this.temporaryUserId = temporaryUserId;
 	}
 
+
+	public TemporaryUser getTemporaryUser() {
+		return temporaryUser;
+	}
+
+
+	public void setTemporaryUser(TemporaryUser temporaryUser) {
+		this.temporaryUser = temporaryUser;
+	}
 
 	public Group getGroup() {
 		return group;
@@ -182,16 +191,6 @@ public class Temporarily extends BaseEntity<Long>{
 
 	public void setViewTypeUser(Integer viewTypeUser) {
 		this.viewTypeUser = viewTypeUser;
-	}
-
-
-	public Boolean getPositive() {
-		return positive;
-	}
-
-
-	public void setPositive(Boolean positive) {
-		this.positive = positive;
 	}
 
 

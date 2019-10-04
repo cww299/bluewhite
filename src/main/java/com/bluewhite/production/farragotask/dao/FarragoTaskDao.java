@@ -5,7 +5,6 @@ import java.util.List;
 
 import com.bluewhite.base.BaseRepository;
 import com.bluewhite.production.farragotask.entity.FarragoTask;
-import com.bluewhite.production.task.entity.Task;
 
 public interface FarragoTaskDao extends BaseRepository<FarragoTask, Long>{
 	

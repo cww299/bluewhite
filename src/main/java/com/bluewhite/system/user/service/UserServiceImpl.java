@@ -118,15 +118,6 @@ public class UserServiceImpl extends BaseServiceImpl<User, Long> implements User
 			if (user.getRole().size() == 0) {
 				predicate.add(cb.equal(root.get("isAdmin").as(Boolean.class),false));
 			}
-			//是否外调
-			if (user.getForeigns() != null) {
-				predicate.add(cb.equal(root.get("foreigns").as(Integer.class),user.getForeigns()));
-			}
-			
-			//归属车间
-			if (user.getType() != null) {
-				predicate.add(cb.equal(root.get("type").as(Integer.class),user.getType()));
-			}
 			
 			//是否离职
 			if (user.getQuit() != null) {
@@ -146,11 +137,6 @@ public class UserServiceImpl extends BaseServiceImpl<User, Long> implements User
 			//按学历查找
 			if (!StringUtils.isEmpty(user.getEducation())) {
 				predicate.add(cb.like(root.get("education").as(String.class),"%" + user.getEducation() + "%"));
-			}
-			
-			//外调中按姓名精确查找
-			if (!StringUtils.isEmpty(user.getTemporarilyName())) {
-				predicate.add(cb.equal(root.get("userName").as(String.class),user.getTemporarilyName()));
 			}
 			
 			//按归属银行查找
@@ -294,12 +280,12 @@ public class UserServiceImpl extends BaseServiceImpl<User, Long> implements User
 
 	@Override
 	public List<User> findByOrgNameId(Long orgNameId) {
-		return dao.findByOrgNameIdAndQuitAndForeigns(orgNameId,0,0);
+		return dao.findByOrgNameIdAndQuit(orgNameId,0);
 	}
 
 	@Override
 	public List<User> findByForeigns() {
-		return  dao.findByForeignsAndIsAdminAndQuit(0,false,0);
+		return  dao.findByIsAdminAndQuit(false,0);
 	}
 
 	@Override
@@ -323,16 +309,14 @@ public class UserServiceImpl extends BaseServiceImpl<User, Long> implements User
 	public User addUser(User user) {
 		User oldUser = userDao.findByUserName(user.getUserName());
 		if(oldUser!=null){
-				throw new ServiceException("该用户姓名在特急人员出现，请前往特急人员信息中确认是否需要转正");
+				throw new ServiceException("该用户姓名在系统中已存在，请确认是否为同一人，如果是同一人，请联系管理员");
 		}
-		
 		if(!StringUtils.isEmpty(user.getPhone())){
 			User u = findByPhone(user.getPhone());
 			if(u != null){
 				throw  new ServiceException("该用户手机号已存在");
 			}else{
 				user.setPassword( new SimpleHash("md5", "123456").toHex());
-				user.setForeigns(0);
 				user.setStatus(0);
 				UserContract userContract = new UserContract();
 				userContractDao.save(userContract);
@@ -355,18 +339,6 @@ public class UserServiceImpl extends BaseServiceImpl<User, Long> implements User
 			//管理员
 			if (user.getIsAdmin()!=null) {
 				predicate.add(cb.equal(root.get("isAdmin").as(Boolean.class),user.getIsAdmin()));
-			}
-			
-			//是否外调
-			if (user.getForeigns() != null) {
-				predicate.add(cb.equal(root.get("foreigns").as(Integer.class),user.getForeigns()));
-//				if(user.getForeigns() == 1){
-//					Predicate p2 = cb.equal(root.get("quit").as(Integer.class),1);
-//					predicate.add(cb.or(p1,p2));
-//				}else{
-//					Predicate p2 = cb.equal(root.get("quit").as(Integer.class),0);
-//					predicate.add(cb.and(p1,p2));
-//				}
 			}
 			
 			//是否离职
@@ -405,11 +377,6 @@ public class UserServiceImpl extends BaseServiceImpl<User, Long> implements User
 				predicate.add(cb.like(root.get("number").as(String.class),"%" + user.getNumber() + "%"));
 			}
 			
-			//外调中按姓名精确查找
-			if (!StringUtils.isEmpty(user.getTemporarilyName())) {
-				predicate.add(cb.equal(root.get("userName").as(String.class),user.getTemporarilyName()));
-			}
-			
 			//按位置编号
 			if (!StringUtils.isEmpty(user.getLotionNumber())) {
 				predicate.add(cb.like(root.get("userContract").get("number").as(String.class),"%" + user.getLotionNumber() + "%"));
@@ -430,11 +397,6 @@ public class UserServiceImpl extends BaseServiceImpl<User, Long> implements User
 	}
 
 	@Override
-	public List<User> getPositiveUser() {
-		return dao.findByForeignsAndPositive(1, true);
-	}
-
-	@Override
 	@Transactional
 	public int positiveUser(String ids) {
 		int count = 0;
@@ -445,8 +407,6 @@ public class UserServiceImpl extends BaseServiceImpl<User, Long> implements User
 			if(StringUtils.isEmpty(user.getPhone())){
 				throw new ServiceException(user.getUserName() +"的手机号为空，不能转正，请先添加手机号");
 			}
-			user.setForeigns(0);
-			user.setPositive(false);
 			user.setQuit(0);
 			UserContract userContract = new UserContract();
 			userContractDao.save(userContract);
@@ -462,7 +422,6 @@ public class UserServiceImpl extends BaseServiceImpl<User, Long> implements User
 		List<BaseData> baseDataList = baseDataDao.findByType("orgName");
 		User user = new User();
 		user.setIsAdmin(false);
-		user.setForeigns(0);
 		List<User> userList = findUserList(user);
 		for(BaseData baseData : baseDataList ){
 			List<User> users = userList.stream().filter(User->User.getOrgNameId()!=null && User.getOrgNameId().equals(baseData.getId())).collect(Collectors.toList());
@@ -482,6 +441,11 @@ public class UserServiceImpl extends BaseServiceImpl<User, Long> implements User
 			count = attendanceInitList.size();
 		}
 		return count;
+	}
+
+	@Override
+	public List<User> findByGroupId(Long groupId) {
+		return dao.findByGroupId(groupId);
 	}
 
 }

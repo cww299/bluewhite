@@ -1,18 +1,23 @@
 package com.bluewhite.ledger.entity;
 
 import java.util.Date;
+import java.util.HashSet;
+import java.util.Set;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 
 import com.bluewhite.base.BaseEntity;
 import com.bluewhite.product.primecostbasedata.entity.BaseOne;
 import com.bluewhite.product.primecostbasedata.entity.Materiel;
+import com.bluewhite.system.user.entity.User;
 
 /**
  * 订单（下单合同）生产用料
@@ -51,17 +56,31 @@ public class OrderMaterial extends BaseEntity<Long>{
 	private Materiel materiel;
 	
 	/**
-	 * 领取模式(手选裁剪方式id或者压货环节id)
+	 * 领取模式id(手选裁剪方式id或者压货环节id)
 	 */
 	@Column(name = "receive_mode_id")
     private Long receiveModeId;
 	
 	/**
-	 * 裁剪方式
+	 * 领取模式
 	 */
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "receive_mode_id", referencedColumnName = "id", insertable = false, updatable = false)
 	private BaseOne receiveMode;
+	
+   	/**
+	 *  领取人id
+	 * 
+	 */
+	@Column(name = "user_id")
+	private Long userId;
+
+	/**
+	 *  领取人
+	 */
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "user_id", referencedColumnName = "id", insertable = false, updatable = false)
+	private User user;
 	
 	/**
 	 * 单位id
@@ -87,6 +106,19 @@ public class OrderMaterial extends BaseEntity<Long>{
 	 */
 	@Column(name = "flag")
     private Integer flag;
+	
+	/**
+	 * 面料的订购记录(一个订单耗料可以拥有多个采购单)
+	 */
+	@OneToMany(mappedBy = "orderMaterial",cascade = CascadeType.ALL, orphanRemoval = true)
+	private Set<OrderProcurement> orderProcurements = new HashSet<OrderProcurement>();
+	
+	/**
+	 * 状态（1=库存充足，2无库存，3有库存量不足）
+	 */
+	@Transient
+    private Integer state;
+	
 
 	/**
 	 * 产品name
@@ -107,6 +139,46 @@ public class OrderMaterial extends BaseEntity<Long>{
 	
 	
 	
+
+	public Set<OrderProcurement> getOrderProcurements() {
+		return orderProcurements;
+	}
+
+
+	public void setOrderProcurements(Set<OrderProcurement> orderProcurements) {
+		this.orderProcurements = orderProcurements;
+	}
+
+
+	public Long getUserId() {
+		return userId;
+	}
+
+
+	public void setUserId(Long userId) {
+		this.userId = userId;
+	}
+
+
+	public User getUser() {
+		return user;
+	}
+
+
+	public void setUser(User user) {
+		this.user = user;
+	}
+
+
+	public Integer getState() {
+		return state;
+	}
+
+
+	public void setState(Integer state) {
+		this.state = state;
+	}
+
 
 	public Integer getFlag() {
 		return flag;

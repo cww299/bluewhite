@@ -40,6 +40,14 @@ public interface TemporarilyDao extends BaseRepository<Temporarily, Long>{
 	 */
 	public Temporarily findByUserIdAndTemporarilyDateAndTypeAndGroupId(Long userId, Date getfristDayOftime,Integer type,Long groupId);
 	
+	/**
+	 * 根据分组id，员工id，日期查询
+	 * @param userId
+	 * @param getfristDayOftime
+	 * @return
+	 */
+	public Temporarily findByTemporaryUserIdAndTemporarilyDateAndTypeAndGroupId(Long temporaryUserId, Date getfristDayOftime,Integer type,Long groupId);
+	
 	
 	/**
 	 * 根据日期和类型查找
