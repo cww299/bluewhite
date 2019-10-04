@@ -204,9 +204,6 @@ layui.config({
 								}
 								return {  msg:r.message,  code:r.code , data:data, }
 							},
-							autoUpdate:{
-								saveUrl:'/production/updateAdjustTime',
-							},
 							where:{
 								temporarilyDate: now,
 							},
@@ -214,7 +211,22 @@ layui.config({
 							       { field:'name', title:'人名' },
 							       { field:'time', title:'所在组工作时长',edit:true, },
 							       { field:'isTemp', title:'是否临时',filter:true, },
-							       ]]
+							       ]],
+							done:function(){
+								table.on('edit(lookoverTable)',function(obj){
+									var url = '';
+									if(obj.data.isTemp=='是')
+										url = '/system/user/addTemporaryUser';
+									var data = {
+										id: obj.data.id,
+										time: obj.data.time,
+									};
+									myutil.saveAjax({
+										url: url,
+										data: data,
+									})
+								})
+							}
 						})
 						form.on('submit(search)',function(obj){
 							table.reload('lookoverTable',{
