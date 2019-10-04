@@ -483,7 +483,9 @@
 		      				+'<td class="text-center ">'+parseFloat((o.time*1).toFixed(3))+'</td>'
 		      				+'<td class="text-center edit remarks">'+o.remarks+'</td>'
 		      				+'<td class="text-center ">'+strname+'</td>'
-							+'<td class="text-center"><button class="btn btn-sm btn-primary btn-trans addDict" data-id='+o.id+' data-proid='+o.product.id+'  data-proname='+o.product.name+' data-bacthnumber='+o.bacthNumber+'>分配</button>  <button class="btn btn-sm btn-info  btn-trans updateremake" data-id='+o.id+'>编辑</button> </td></tr>' 
+							+'<td class="text-center"><button class="btn btn-sm btn-primary btn-trans addDict" data-id='+o.id+' data-proid='+o.product.id
+							+' data-proname='+o.product.name+' data-number='+o.number +' data-bacthnumber='+o.bacthNumber+'>分配</button>'
+							+'<button class="btn btn-sm btn-info  btn-trans updateremake" data-id='+o.id+'>编辑</button> </td></tr>' 
 							
 		      			}); 
 		      			self.setCount(result.data.pageNum)
@@ -993,7 +995,8 @@
 					var productName=$(this).data('proname')
 					var bacthId=$(this).data('id')
 					var bacthNumber=$(this).data('bacthnumber')
-					console.log(bacthNumber)
+					var number = $(this).data('number');
+					$('.sumnumber').val(number);		//默认显示分配数量
 					var _index
 					var index
 					var postData
@@ -1012,11 +1015,12 @@
 			      		  success: function (result) {
 			      			  $(result.data).each(function(k,j){
 			      				htmlfr +='<option value="'+j.id+'">'+j.name+'</option>'
-			      			  });  
-			      			$('.working').html("<select class='form-control selectchang'><option value="+0+">请选择</option><option value="+""+">全部</option>"+htmlfr+"</select>")
+			      			  });
+			      			var h = ["<select class='form-control selectchang'><option value="+0+">请选择</option>",
+			      					"<option value='' selected>全部</option>"+htmlfr+"</select>"].join(' ');
+			      			$('.working').html(h)
 							//改变事件
 			      			$(".selectchang").change(function(){
-			      				var htmlfv="";
 			      				var	id=$(this).val()
 			      				if(id==109 || id==""){
 			      					$('#dis').css("display","block")
@@ -1029,45 +1033,56 @@
 										   bacthId:bacthId,
 										   procedureTypeId:id,
 								   }
-			      				//查询各个工序的名称
-								   $.ajax({
-										url:"${ctx}/production/typeToProcedure",
-										data:data,
-										type:"GET",
-										beforeSend:function(){
-											index = layer.load(1, {
-												  shade: [0.1,'#fff'] //0.1透明度的白色背景
-												});
-										},
-										
-										success:function(result){
-											$(result.data).each(function(i,o){
-												htmlfv +='<div class="input-group"><input type="checkbox" class="checkWork" value="'+o.id+'" data-residualnumber="'+o.residualNumber+'">'+o.name+' 剩余:'+o.residualNumber+'</input></div>'
-											})
-											var s="<div class='input-group'><input type='checkbox' class='checkWorkAll'>全选</input></div>"
-											$('.checkworking').html(s+htmlfv);
-											$(".checkWorkAll").on('click',function(){
-							                    if($(this).is(':checked')){ 
-										 			$('.checkWork').each(function(){  
-							                    //此处如果用attr，会出现第三次失效的情况  
-							                     		$(this).prop("checked",true);
-										 			})
-							                    }else{
-							                    	$('.checkWork').each(function(){ 
-							                    		$(this).prop("checked",false);
-							                    		
-							                    	})
-							                    }
-							                });
-											layer.close(index);
-										},error:function(){
-											layer.msg("操作失败！", {icon: 2});
-											layer.close(index);
-										}
-									});
+			      				findWork(data);
 							 })
 					      }
 					  });
+				    findWork({
+				        productId:productId,
+					    type:2,
+					    bacthId:bacthId,
+				    },true);
+				    function findWork(data,nocart){	//查询各个工序的名称
+			    		var htmlfv="";	
+					    $.ajax({
+							url:"${ctx}/production/typeToProcedure",
+							data:data,
+							type:"GET",
+							beforeSend:function(){
+								index = layer.load(1, {
+									  shade: [0.1,'#fff'] //0.1透明度的白色背景
+									});
+							},
+							success:function(result){
+								$(result.data).each(function(i,o){
+									var checked = '';
+									if(nocart){
+										if(o.name.indexOf('上车')<0)
+											checked = 'checked';
+									}
+									htmlfv +='<div class="input-group"><input type="checkbox" class="checkWork" '+checked+' value="'+o.id
+											+'" data-residualnumber="'+o.residualNumber+'">'+o.name+' 剩余:'+o.residualNumber+'</input></div>'
+								})
+								var s="<div class='input-group'><input type='checkbox' "+(nocart?'checked':'')+" class='checkWorkAll'>全选</input></div>"
+								$('.checkworking').html(s+htmlfv);
+								$(".checkWorkAll").on('click',function(){
+				                    if($(this).is(':checked')){ 
+							 			$('.checkWork').each(function(){  	 //此处如果用attr，会出现第三次失效的情况  
+				                     		$(this).prop("checked",true);
+							 			})
+				                    }else{
+				                    	$('.checkWork').each(function(){ 
+				                    		$(this).prop("checked",false);
+				                    	})
+				                    }
+				                });
+								layer.close(index);
+							},error:function(){
+								layer.msg("操作失败！", {icon: 2});
+								layer.close(index);
+							}
+						});
+				    }
 					var data={
 							type:2
 					}
