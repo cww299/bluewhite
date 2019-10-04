@@ -79,7 +79,7 @@
 					<th class="text-center hidden-sm">预计时间</th>
 					<th class="text-center hidden-sm">任务价值</th>
 					<th class="text-center hidden-sm">b工资净值</th>
-					<th class="text-center hidden-sm">数量</th>
+					<th class="text-center">数量</th>
 					<th class="text-center">工序加价</th>
 					<th class="text-center">加绩工资</th>
 					<th class="text-center">完成人</th>
@@ -263,7 +263,7 @@
 		      				+'<td class="text-center hidden-sm">'+o.bacthNumber+'</td>'
 		      				+'<td class="text-center ">'+o.productName+'</td>'
 		      				+'<td class="text-center edit allotTime">'+o.allotTime+'</td>'
-		      				+'<td class="text-center hidden-sm">'+s+a+'</td>'
+		      				+'<td class="text-center">'+s+a+'</td>'
 		      				+'<td class="text-center hidden-sm">'+parseFloat((o.expectTime).toFixed(4))+'</td>'
 		      				+'<td class="text-center hidden-sm">'+parseFloat((o.taskPrice).toFixed(4))+'</td>'
 		      				+'<td class="text-center hidden-sm">'+parseFloat((o.payB).toFixed(4))+'</td>'
