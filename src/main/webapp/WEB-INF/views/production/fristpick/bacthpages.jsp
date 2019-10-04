@@ -21,6 +21,19 @@
 	<script src="${ctx }/static/js/layer/layer.js"></script>
 	<script src="${ctx }/static/js/laypage/laypage.js"></script> 
 	<script src="${ctx}/static/js/vendor/jquery.cookie.js"></script>
+	<style>
+		@media screen and (min-width: 768px){
+			.select{
+			    width: 10%;
+			    padding: 0;
+			}
+		}
+		.checkedLabel{
+			width:70px;
+			text-align:center;
+			color:gray;
+		}
+	</style>
 </head>
 
 <body>
@@ -136,7 +149,7 @@
 								class="form-control nows">
 						</div>
 						<div class="col-sm-2 hidden-sm col-md-1" >
-							<input type="checkbox" id="remember">记住
+							<!-- <input type="checkbox" id="remember">记住 -->
 						</div>
 						<label class="col-sm-2 control-label hidden-sm col-md-2">加绩工序:</label>
 						<div class="col-sm-3 workingtw hidden-sm col-md-3"></div>
@@ -151,7 +164,8 @@
 						<div class="col-sm-2 complete" style="width: 10%">
 							<input type="text" class="form-control">
 						</div>
-						<div class="col-sm-2 select" id="showB"></div>
+						<div class="col-sm-1 select" id="showB"></div>
+						<div class="col-sm-1 select" id="showB1"></div>
 					</div>
 				</div>
 		</div>
@@ -1114,21 +1128,40 @@
 			      				$.ajax({
 									url:"${ctx}/production/allGroup",
 									data:data,
-									type:"GET",
 									beforeSend:function(){
 										index = layer.load(1, {
 											  shade: [0.1,'#fff'] //0.1透明度的白色背景
 											});
 									},
 									success:function(result){
-										$(result.data).each(function(j,k){
+										var checkboxHtml = "<div class='input-group'><input type='checkbox' class='checkedAll'><label class='checkedLabel'>全选</label></input></div>",
+										checkboxHtml2= "<div class='input-group'><input type='checkbox' class='checkedAll'><label class='checkedLabel'>全选</label></input></div>";
+										if(result.data.temporarilyUser){
+											var d = result.data.temporarilyUser;
+											for(var k in d){
+												checkboxHtml += [
+												            '<div class="input-group">',
+												            	'<input type="checkbox" class="stuCheckBox" value="'+d[k].id+'">',
+												            	'<label style="width:70px;text-align:center;color:gray;">'+d[k].name+'</label>',
+											            	'</div>',
+												            ].join(' ');
+											}
+										}
+										if(result.data.userList){
+											var d = result.data.userList;
+											for(var k in d){
+												checkboxHtml2 += [
+												            '<div class="input-group">',
+												            	'<input type="checkbox" class="stuCheckBox" value="'+d[k].id+'">',
+												            	'<label style="width:70px;text-align:center;color:gray;">'+d[k].name+'</label>',
+											            	'</div>',
+												            ].join(' ');
+											}
+										}
+										var s="" 
+										$('#showB').html(s+checkboxHtml);
+										$('#showB1').html(s+checkboxHtml2);
 										
-										$(k.users).each(function(i,o){
-											htmltwo +='<div class="input-group"><input type="checkbox" class="stuCheckBox"   value="'+o.id+'" data-groupid="'+k.id+'"><label style="width:70px;text-align:center;color:gray;">'+o.userName+'</label><input class="hidden-sm" style="width:100px;" class="time2" data-id="'+o.adjustTimeId+'" data-temporarily="'+o.temporarily+'" value="'+(o.adjustTime!=null ? o.adjustTime : "")+'" /></div>'
-										})
-										})
-										 var s="<div class='input-group'><input type='checkbox' class='checkedAll'><label style='width:70px;text-align:center;color:gray;'>全选</label></input></div>" 
-										$('.select').html(s+htmltwo)
 										$(".time2").blur(function(){
 											var a=$(this).data('temporarily')
 											var id=$(this).data('id')
@@ -1190,15 +1223,9 @@
 										}) 
 										 $(".checkedAll").on('click',function(){
 							                    if($(this).is(':checked')){ 
-										 			$('.stuCheckBox').each(function(){  
-							                    //此处如果用attr，会出现第三次失效的情况  
-							                     		$(this).prop("checked",true);
-										 			})
+										 			$(this).parent().parent().find('input').prop("checked",true);
 							                    }else{
-							                    	$('.stuCheckBox').each(function(){ 
-							                    		$(this).prop("checked",false);
-							                    		
-							                    	})
+							                    	$(this).parent().parent().find('input').prop("checked",false);
 							                    }
 							                }); 
 										layer.close(index);
@@ -1293,7 +1320,7 @@
 							  var arr=new Array()
 							  var groupId;
 							  if(check.length<=0){
-								$(".stuCheckBox:checked").each(function() {   
+								$(".stuCheckBox:checked").each(function() {
 								    arr.push($(this).val());
 								    groupId=$(this).data('groupid');
 								}); 
@@ -1327,11 +1354,18 @@
 										},
 										success:function(result){
 											if(0==result.code){
-												$(result.data).each(function(i,o){
-													$(o.users).each(function(i,o){
-														  arr.push(o.id);   
-													})
-													})
+												if(result.data.temporarilyUser){
+													var d = result.data.temporarilyUser;
+													for(var k in d){
+														arr.push(d[k].id);   
+													}
+												}
+												if(result.data.userList){
+													var d = result.data.userList;
+													for(var k in d){
+														arr.push(d[k].id);   
+													}
+												}
 											}else{
 												layer.msg(result.message, {icon: 2});
 											}
@@ -1344,11 +1378,11 @@
 								} 
 							  }
 							  if(values.length<=0){
-									return layer.msg("至少选择一个工序！", {icon: 2});
-								}
-								 if(arr.length<=0){
-									return layer.msg("至少选择一个员工！", {icon: 2});
-								} 
+								return layer.msg("至少选择一个工序！", {icon: 2,offset:'100px'});
+							  }
+							  if(arr.length<=0){
+							  	return layer.msg("至少选择一个员工！", {icon: 2,offset:'100px'});
+							  } 
 								 number=$(".sumnumber").val();
 								 if(number==""){
 									 number=0;
@@ -1380,7 +1414,6 @@
 										productId:productId,
 										groupId:groupId
 								}
-								
 							    $.ajax({
 									url:"${ctx}/task/addTask",
 									data:postData,
