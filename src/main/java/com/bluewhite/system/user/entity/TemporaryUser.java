@@ -68,7 +68,7 @@ public class TemporaryUser extends BaseEntity<Long> {
 	/**
 	 * 出勤时长
 	 */
-	@Transient
+	@Column(name = "turn_work_time")
 	private Double turnWorkTime;
 
 	public Integer getStatus() {
