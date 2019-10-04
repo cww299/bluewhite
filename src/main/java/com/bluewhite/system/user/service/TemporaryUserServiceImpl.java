@@ -52,4 +52,12 @@ public class TemporaryUserServiceImpl  extends BaseServiceImpl<TemporaryUser, Lo
 			dao.save(temporaryUser);
 		}
 	}
+
+	@Override
+	public int deleteTemporaryUser(String ids) {
+		if(!StringUtils.isEmpty(ids)){
+			
+		}
+		return 0;
+	}
 }

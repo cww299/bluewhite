@@ -212,6 +212,12 @@ public class Task  extends BaseEntity<Long>{
 	private  String[] usersIds;
 	
 	/**
+	 * 领取任务人员ids
+	 */
+	@Transient
+	private  String[] temporaryUsersIds;
+	
+	/**
 	 * 工序ids
 	 */
 	@Transient
@@ -248,6 +254,14 @@ public class Task  extends BaseEntity<Long>{
     private Integer machinist;
 	
 	 
+
+	public String[] getTemporaryUsersIds() {
+		return temporaryUsersIds;
+	}
+
+	public void setTemporaryUsersIds(String[] temporaryUsersIds) {
+		this.temporaryUsersIds = temporaryUsersIds;
+	}
 
 	public String getTemporaryUserIds() {
 		return temporaryUserIds;

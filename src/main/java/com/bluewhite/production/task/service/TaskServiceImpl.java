@@ -71,24 +71,28 @@ public class TaskServiceImpl extends BaseServiceImpl<Task, Long> implements Task
 	@Transactional
 	public Task addTask(Task task, HttpServletRequest request) {
 		List<Long> userIdList = new ArrayList<>();
+		List<Long> temporaryUserIdList = new ArrayList<>();
 		Date orderTimeBegin = DatesUtil.getfristDayOftime(task.getAllotTime());
 		Date orderTimeEnd = DatesUtil.getLastDayOftime(task.getAllotTime());
 		// 将用户变成string类型储存
 		if (!StringUtils.isEmpty(task.getUserIds())) {
-			String[] idArr = task.getUserIds().split(",");
-			task.setUsersIds(idArr);
+			task.setUsersIds(task.getUserIds().split(","));
 		}
-		userIdList = Arrays.asList(task.getUsersIds()).stream().map(a -> Long.parseLong(a))
-				.collect(Collectors.toList());
-		// 初始化参数
+		if (!StringUtils.isEmpty(task.getTemporaryUserIds())) {
+			task.setTemporaryUsersIds(task.getTemporaryUserIds().split(","));
+		}
+		//正式员工
+		userIdList = Arrays.asList(task.getUsersIds()).stream().map(a -> Long.parseLong(a)).collect(Collectors.toList());
+		//临时员工
+		temporaryUserIdList = Arrays.asList(task.getTemporaryUserIds()).stream().map(a -> Long.parseLong(a)).collect(Collectors.toList());
+		
+		
 		List<Temporarily> temporarilyList = null;
 		List<AttendancePay> attendancePayList = null;
 		List<User> userList = userDao.findByIdIn(userIdList);
 		if (task.getType() == 2) {
-			temporarilyList = temporarilyDao.findByUserIdInAndTemporarilyDateAndType(userIdList, orderTimeBegin,
-					task.getType());
-			attendancePayList = attendancePayDao.findByUserIdInAndTypeAndAllotTimeBetween(userIdList, task.getType(),
-					orderTimeBegin, orderTimeEnd);
+			temporarilyList = temporarilyDao.findByUserIdInAndTemporarilyDateAndType(userIdList, orderTimeBegin,task.getType());
+			attendancePayList = attendancePayDao.findByUserIdInAndTypeAndAllotTimeBetween(userIdList, task.getType(),orderTimeBegin, orderTimeEnd);
 		}
 		Double sumTaskPrice = 0.0;
 		// 将工序ids分成多个任务
@@ -114,15 +118,13 @@ public class TaskServiceImpl extends BaseServiceImpl<Task, Long> implements Task
 				// 当前台传值得预计时间不为null，说明该任务类型是返工类型
 				newTask.setFlag(procedure.getFlag());
 				if (task.getExpectTime() == null) {
-					newTask.setExpectTime(NumUtils
-							.round(ProTypeUtils.sumExpectTime(procedure, procedure.getType(), newTask.getNumber()), 5));
+					newTask.setExpectTime(NumUtils.round(ProTypeUtils.sumExpectTime(procedure, procedure.getType(), newTask.getNumber()), 5));
 				}
 				// 实际完成时间（1.工序类型不是返工，预计时间等于实际时间，2工序类型是返工，实际完成时间根据公式的出）
 				if (task.getExpectTime() == null) {
 					newTask.setTaskTime(newTask.getExpectTime());
 				} else {
-					newTask.setTaskTime(NumUtils.round(ProTypeUtils.sumTaskTime(procedure.getWorkingTime(),
-							procedure.getType(), newTask.getNumber()), 5));
+					newTask.setTaskTime(NumUtils.round(ProTypeUtils.sumTaskTime(procedure.getWorkingTime(),procedure.getType(), newTask.getNumber()), 5));
 				}
 				// 预计任务价值（通过预计完成时间得出）（1.工序类型不是返工，预计任务价值通过计算得出
 				// 2.工序类型是返工,没有预计任务价值）

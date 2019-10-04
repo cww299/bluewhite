@@ -20,19 +20,14 @@ import com.bluewhite.common.SessionManager;
 import com.bluewhite.common.entity.CurrentUser;
 import com.bluewhite.common.utils.DatesUtil;
 import com.bluewhite.common.utils.NumUtils;
-import com.bluewhite.production.farragotask.dao.FarragoTaskDao;
-import com.bluewhite.production.farragotask.entity.FarragoTask;
 import com.bluewhite.production.finance.dao.FarragoTaskPayDao;
 import com.bluewhite.production.finance.dao.PayBDao;
 import com.bluewhite.production.finance.entity.FarragoTaskPay;
 import com.bluewhite.production.finance.entity.PayB;
 import com.bluewhite.production.group.dao.GroupDao;
-import com.bluewhite.production.group.dao.TemporarilyCollectDao;
 import com.bluewhite.production.group.dao.TemporarilyDao;
 import com.bluewhite.production.group.entity.Group;
 import com.bluewhite.production.group.entity.Temporarily;
-import com.bluewhite.production.group.entity.TemporarilyCollect;
-import com.bluewhite.system.user.entity.User;
 
 @Service
 public class GroupServiceImpl extends BaseServiceImpl<Group, Long> implements GroupService {
@@ -40,8 +35,6 @@ public class GroupServiceImpl extends BaseServiceImpl<Group, Long> implements Gr
 	private GroupDao dao;
 	@Autowired
 	private TemporarilyDao temporarilyDao;
-	@Autowired
-	private TemporarilyCollectDao temporarilyCollectDao;
 	@Autowired
 	private PayBDao payBDao;
 	@Autowired
@@ -73,25 +66,6 @@ public class GroupServiceImpl extends BaseServiceImpl<Group, Long> implements Gr
 			return null;
 		});
 		return result;
-	}
-
-	@Override
-	public void deleteGroup(String ids) {
-		if (!StringUtils.isEmpty(ids)) {
-			String[] idArr = ids.split(",");
-			if (idArr.length > 0) {
-				for (int i = 0; i < idArr.length; i++) {
-					Long id = Long.parseLong(idArr[i]);
-					Group group = dao.findOne(id);
-					for (User user : group.getUsers()) {
-						user.setGroupId(null);
-						user.setGroup(null);
-					}
-					group.setUsers(null);
-					dao.delete(group);
-				};
-			}
-		}
 	}
 
 	@Override
@@ -281,26 +255,6 @@ public class GroupServiceImpl extends BaseServiceImpl<Group, Long> implements Gr
 				nmap.put("kindWork", slist.get(0).get("kindWork"));
 				nmap.put("type", slist.get(0).get("type"));
 				mapListMonth.add(nmap);
-				
-				//当人事查看时，人事进行数据的保存
-				if((cu.getRole().contains("superAdmin") || cu.getRole().contains("personnel")) && temporarily.getViewTypeUser() == 1){
-					TemporarilyCollect temporarilyCollect = temporarilyCollectDao.findByTemporarilyDateAndUserId(nmap.get("date").toString(),(Long)nmap.get("id"));
-					if(temporarilyCollect == null){
-						temporarilyCollect =  new TemporarilyCollect();
-					}
-					temporarilyCollect.setForeigns(nmap.get("foreigns").toString());
-					temporarilyCollect.setTemporarilyDate(nmap.get("date").toString());   
-					temporarilyCollect.setUserId((Long)nmap.get("id"));
-					temporarilyCollect.setUserName(nmap.get("name").toString());
-					temporarilyCollect.setSumPrice((Double)nmap.get("sumPrice"));
-					temporarilyCollect.setWorkTime((Double)nmap.get("workTime"));
-					temporarilyCollect.setPrice((Double)nmap.get("price"));
-					temporarilyCollect.setKindWork(nmap.get("kindWork").toString());  
-					temporarilyCollect.setPrice((Double)nmap.get("price"));
-					temporarilyCollect.setType((Integer)nmap.get("type"));
-					temporarilyCollectDao.save(temporarilyCollect);
-				}      
-				
 			};
 			return mapListMonth;
 		}

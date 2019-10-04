@@ -4,7 +4,6 @@ import com.bluewhite.base.BaseCRUDService;
 import com.bluewhite.common.entity.PageParameter;
 import com.bluewhite.common.entity.PageResult;
 import com.bluewhite.system.user.entity.TemporaryUser;
-import com.bluewhite.system.user.entity.User;
 
 public interface TemporaryUserService  extends BaseCRUDService<TemporaryUser, Long> {
 	
@@ -22,5 +21,12 @@ public interface TemporaryUserService  extends BaseCRUDService<TemporaryUser, Lo
 	 * @param temporaryUser
 	 */
 	public void addTemporaryUser(TemporaryUser temporaryUser);
+	
+	/**
+	 * 批量删除临时人员
+	 * @param ids
+	 * @return
+	 */
+	public int deleteTemporaryUser(String ids);
 
 }
