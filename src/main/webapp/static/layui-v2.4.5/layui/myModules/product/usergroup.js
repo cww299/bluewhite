@@ -51,11 +51,11 @@ layui.config({
 	                  '<div style="padding:15px;" >',
 	                  	'<table style="width:100%;" class="layui-form">',
 	                  		'<tr>',
-	                  			'<td>外调时间：</td>',
+	                  			'<td>借调时间：</td>',
 	                  			'<td><input type="text" class="layui-input" name="temporarilyDate" id="addNewTime"></td>',
 	                  		'</tr>',
 	                  		'<tr>',
-	                  			'<td>外调人员：</td>',
+	                  			'<td>借调人员：</td>',
 	                  			'<td><select name="userId" id="addUserId" lay-search lay-verify="required">',
 	                  					'<option value="">请选择</option></select></td>',
 	                  		'</tr>',
@@ -76,7 +76,9 @@ layui.config({
 	
 	
 	Class.prototype.render = function(opt){
-		var now = new Date().format('yyyy-MM-dd 00:00:00');
+		var now = new Date();
+		now.setTime(now.getTime()-24*60*60*1000);
+		now = now.format('yyyy-MM-dd 00:00:00');
 		laytpl(TPL).render({},function(h){
 			$(opt.elem).append(h);
 		})
@@ -174,10 +176,13 @@ layui.config({
 				laytpl(LOOKOVER_TPL).render({},function(h){
 					html = h;
 				})
+				if(obj.data.id==0 && (opt.type==4 || opt.type==5 ))
+					return myutil.emsg('无外调人员');
 				layer.open({
 					type:1,
 					area:['40%','80%'],
 					title:'人员信息',
+					shadeClose:true,
 					content: html,
 					success:function(){
 						laydate.render({
@@ -185,9 +190,14 @@ layui.config({
 							value:now,
 							type:'datetime'
 						})
+						var idOrType = '?id='+obj.data.id,url='/production/allGroup';
+						if(obj.data.id==0){
+							idOrType = '?type='+opt.type;
+							url = '/production/getTemporarily';
+						};
 						mytable.renderNoPage({
 							elem:'#lookoverTable',
-							url:'/production/allGroup?id='+obj.data.id,
+							url: url+idOrType,
 							parseData:function(r){
 								var data = [];
 								if(r.code==0){
