@@ -94,7 +94,7 @@ public class TaskServiceImpl extends BaseServiceImpl<Task, Long> implements Task
 		//正式员工
 		List<User> userList = userDao.findByIdIn(userIdList);
 		//临时人员
-		List<TemporaryUser> TemporarilyUserList = temporaryUserDao.findByIdIn(temporaryUserIdList);
+		List<TemporaryUser> temporarilyUserList = temporaryUserDao.findByIdIn(temporaryUserIdList);
 		Double sumTaskPrice = 0.0;
 		// 将工序ids分成多个任务
 		if (task.getProcedureIds().length > 0) {
@@ -115,6 +115,7 @@ public class TaskServiceImpl extends BaseServiceImpl<Task, Long> implements Task
 							newTask.getType(), procedure.getWorkingTime())));
 				}
 
+			 
 				// 预计完成时间（1.工序类型不是返工，预计时间利用公式计算的得出。2.工序类型是返工，手填预计完成时间）
 				// 当前台传值得预计时间不为null，说明该任务类型是返工类型
 				newTask.setFlag(procedure.getFlag());
@@ -174,8 +175,7 @@ public class TaskServiceImpl extends BaseServiceImpl<Task, Long> implements Task
 						User user = userList.stream().filter(User -> User.getId().equals(userId))
 								.collect(Collectors.toList()).get(0);
 						// 给予每个员工b工资
-						List<PayB> payBOneList = payBList.stream().filter(PayB -> PayB.getUserId().equals(userId))
-								.collect(Collectors.toList());
+						List<PayB> payBOneList = payBList.stream().filter(PayB -> PayB.getUserId().equals(userId)).collect(Collectors.toList());
 						PayB payB = null;
 						if (payBOneList.size() > 0) {
 							payB = payBOneList.get(0);
@@ -219,9 +219,52 @@ public class TaskServiceImpl extends BaseServiceImpl<Task, Long> implements Task
 									payB.setPayNumber(NumUtils.div(NumUtils.mul(newTask.getPayB(), workTime),NumUtils.round(sumTime, 2), 5));
 								}
 							}
-							//临时员工
+						} else {
+							payB.setPayNumber(NumUtils.div(newTask.getPayB(), (task.getUsersIds().length+task.getTemporaryUsersIds().length), 5));
+						}
+						payBList.add(payB);
+					}
+				}
+				
+				//临时员工
+				if (task.getTemporaryUsersIds().length > 0) {
+					for (String iString : task.getTemporaryUsersIds()) {
+						Long userId = Long.parseLong(iString);
+						TemporaryUser user = temporarilyUserList.stream().filter(TemporaryUser -> TemporaryUser.getId().equals(userId)).collect(Collectors.toList()).get(0);
+						// 给予每个员工b工资
+						List<PayB> payBOneList = payBList.stream().filter(PayB -> PayB.getUserId().equals(userId))
+								.collect(Collectors.toList());
+						PayB payB = null;
+						if (payBOneList.size() > 0) {
+							payB = payBOneList.get(0);
+						}
+						if (payB == null) {
+							payB = new PayB();
+							payB.setUserId(userId);
+							payB.setGroupId(user.getGroupId());
+							payB.setUserName(user.getUserName());
+							payB.setBacth(newTask.getBacthNumber());
+							payB.setBacthId(newTask.getBacthId());
+							payB.setProductId(newTask.getProductId());
+							payB.setProductName(newTask.getProductName());
+							payB.setTaskId(newTask.getId());
+							payB.setType(newTask.getType());
+							payB.setAllotTime(newTask.getAllotTime());
+							payB.setFlag(newTask.getFlag());
+						} else {
+							String performance = payB.getPerformance();
+							if (!StringUtils.isEmpty(performance)) {
+								long count = payBList.stream().filter(PayB -> PayB.getPerformance() != null && PayB.getPerformance().equals(performance)).count();
+								payB.setPerformancePayNumber(NumUtils.div(newTask.getPerformancePrice(), count, 3));
+							}
+						}
+						// 计算B工资数值
+						if (!UnUtil.isFromMobile(request) && task.getType() == 2) {
+							// 包装分配任务，员工b工资根据考情占比分配，其他部门是均分
+							// 该员工实际工作时长
+							Double workTime = null;
 							for (String userId1 : task.getTemporaryUsersIds()) {
-								Temporarily temporarilyList = temporarilyDao.findByUserIdAndTemporarilyDateAndType(Long.parseLong(userId1), orderTimeBegin, task.getType()); 
+								Temporarily temporarilyList = temporarilyDao.findByTemporaryUserIdAndTemporarilyDateAndType(Long.parseLong(userId1), orderTimeBegin, task.getType()); 
 								workTime = temporarilyList.getWorkTime();
 								// 按考情时间占比分配B工资
 								if(workTime!=null){
