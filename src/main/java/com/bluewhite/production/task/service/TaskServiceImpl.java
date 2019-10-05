@@ -1,6 +1,5 @@
 package com.bluewhite.production.task.service;
 
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
@@ -20,7 +19,8 @@ import org.springframework.util.StringUtils;
 import com.bluewhite.base.BaseServiceImpl;
 import com.bluewhite.common.BeanCopyUtils;
 import com.bluewhite.common.Constants;
-import com.bluewhite.common.ServiceException;
+import com.bluewhite.common.SessionManager;
+import com.bluewhite.common.entity.CurrentUser;
 import com.bluewhite.common.entity.PageParameter;
 import com.bluewhite.common.entity.PageResult;
 import com.bluewhite.common.utils.DatesUtil;
@@ -74,6 +74,8 @@ public class TaskServiceImpl extends BaseServiceImpl<Task, Long> implements Task
 	@Override
 	@Transactional
 	public Task addTask(Task task, HttpServletRequest request) {
+		CurrentUser cu = SessionManager.getUserSession();
+		task.setUserId(cu.getId());
 		List<Long> userIdList = new ArrayList<>();
 		List<Long> temporaryUserIdList = new ArrayList<>();
 		Date orderTimeBegin = DatesUtil.getfristDayOftime(task.getAllotTime());
@@ -93,7 +95,6 @@ public class TaskServiceImpl extends BaseServiceImpl<Task, Long> implements Task
 		List<User> userList = userDao.findByIdIn(userIdList);
 		//临时人员
 		List<TemporaryUser> TemporarilyUserList = temporaryUserDao.findByIdIn(temporaryUserIdList);
-		
 		Double sumTaskPrice = 0.0;
 		// 将工序ids分成多个任务
 		if (task.getProcedureIds().length > 0) {
@@ -129,8 +130,7 @@ public class TaskServiceImpl extends BaseServiceImpl<Task, Long> implements Task
 				// 预计任务价值（通过预计完成时间得出）（1.工序类型不是返工，预计任务价值通过计算得出
 				// 2.工序类型是返工,没有预计任务价值）
 				if (task.getExpectTime() == null) {
-					newTask.setExpectTaskPrice(NumUtils.round(
-							ProTypeUtils.sumTaskPrice(newTask.getExpectTime(), procedure.getType(), 0, null), 5));
+					newTask.setExpectTaskPrice(NumUtils.round(ProTypeUtils.sumTaskPrice(newTask.getExpectTime(), procedure.getType(), 0, null), 5));
 				} else {
 					newTask.setExpectTaskPrice(null);
 				}
@@ -183,11 +183,7 @@ public class TaskServiceImpl extends BaseServiceImpl<Task, Long> implements Task
 						if (payB == null) {
 							payB = new PayB();
 							payB.setUserId(userId);
-							if (task.getType() == 2) {
-								payB.setGroupId(task.getGroupId());
-							} else {
-								payB.setGroupId(user.getGroupId());
-							}
+							payB.setGroupId(user.getGroupId());
 							payB.setUserName(user.getUserName());
 							payB.setBacth(newTask.getBacthNumber());
 							payB.setBacthId(newTask.getBacthId());
@@ -197,7 +193,6 @@ public class TaskServiceImpl extends BaseServiceImpl<Task, Long> implements Task
 							payB.setType(newTask.getType());
 							payB.setAllotTime(newTask.getAllotTime());
 							payB.setFlag(newTask.getFlag());
-							payBList.add(payB);
 						} else {
 							String performance = payB.getPerformance();
 							if (!StringUtils.isEmpty(performance)) {
@@ -236,6 +231,7 @@ public class TaskServiceImpl extends BaseServiceImpl<Task, Long> implements Task
 						} else {
 							payB.setPayNumber(NumUtils.div(newTask.getPayB(), (task.getUsersIds().length+task.getTemporaryUsersIds().length), 5));
 						}
+						payBList.add(payB);
 					}
 				}
 				payBService.batchSave(payBList);
@@ -262,8 +258,7 @@ public class TaskServiceImpl extends BaseServiceImpl<Task, Long> implements Task
 					count += ta.getNumber();
 				}
 			}
-		}
-		;
+		};
 		if (bacth.getNumber() == count) {
 			bacth.setStatus(1);
 			bacth.setStatusTime(task.getAllotTime());
@@ -286,7 +281,11 @@ public class TaskServiceImpl extends BaseServiceImpl<Task, Long> implements Task
 			if (param.getId() != null) {
 				predicate.add(cb.equal(root.get("id").as(Long.class), param.getId()));
 			}
-			// 按id过滤
+			// 按分配人过滤
+			if (param.getUserId() != null) {
+				predicate.add(cb.equal(root.get("userId").as(Long.class), param.getUserId()));
+			}
+			// 按批次id过滤
 			if (param.getBacthId() != null) {
 				predicate.add(cb.equal(root.get("bacthId").as(Long.class), param.getBacthId()));
 			}
