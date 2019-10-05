@@ -336,6 +336,7 @@ layui.config({
 						form.render();
 					},
 					yes:function(){
+						var load = layer.load(1);
 						var userIds = [],procedureIds = [],temporaryUserIds = [];
 						var userTreeId = menuTree.getVal('userTree'),procedureTreeId = menuTree.getVal('procedureTree');
 						for(var i in userTreeId){	
@@ -372,6 +373,7 @@ layui.config({
 								table.reload('tableData');
 							}
 						})
+						layer.close(load);
 					}
 				})
 			}
