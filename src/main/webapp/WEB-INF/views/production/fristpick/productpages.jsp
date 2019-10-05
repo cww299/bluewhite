@@ -37,7 +37,7 @@
 				<td><span class="input-group-btn">
 					<button type="button" class="btn btn-info btn-square btn-sm btn-3d searchtask">查&nbsp;找</button></span></td>
 				<td>&nbsp;&nbsp;&nbsp;&nbsp;</td>
-				<td><span class="input-group-btn">
+				<td class="hidden-sm"><span class="input-group-btn">
 					<button type="button" id="addproduct" class="btn btn-success  btn-sm btn-3d pull-right">新增产品</button></span></td>
 			</tr>
 		</table>
@@ -238,7 +238,7 @@
 		      				+'<td class="text-center edit name">'+o.name+'</td>'
 		      				+'<td class="text-center  departmentPrice">'+o.departmentPrice*1+'</td>'
 		      				+'<td class="text-center  hairPrice">'+o.hairPrice*1+'</td>'
-							+'<td class="text-center"><button class="btn btn-xs btn-info  btn-trans update" data-id='+o.id+'>编辑</button>  <button class="btn btn-xs btn-primary btn-trans addprocedure" data-id='+o.id+' data-name='+o.name+'>添加工序</button> <button class="btn btn-xs btn-success btn-trans addbatch" data-id='+o.id+' data-name='+o.name+'>填写批次</button></td></tr>'
+							+'<td class="text-center"><button class="btn btn-xs btn-info hidden-sm  btn-trans update" data-id='+o.id+'>编辑</button>  <button class="btn btn-xs btn-primary btn-trans hidden-sm addprocedure" data-id='+o.id+' data-name='+o.name+'>添加工序</button> <button class="btn btn-xs btn-success btn-trans addbatch" data-id='+o.id+' data-name='+o.name+'>填写批次</button></td></tr>'
 							
 		      			}); 
 		      			self.setIndex(result.data.pageNum);

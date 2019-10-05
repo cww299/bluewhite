@@ -201,6 +201,7 @@
 		  	this.setCount = function(count){
 		  		_count=count;
 		  	}
+		 
 		  	function p(s) {
 				return s < 10 ? '0' + s: s;
 				}
@@ -212,8 +213,8 @@
 			//获取当前日
 			var date=myDate.getDate(); 
 			var day = new Date(year,month,0);  
-			var firstdate = year + '-' + '0'+month + '-01'+' '+'00:00:00';
-			var lastdate = year + '-' + '0'+month + '-' + day.getDate() +' '+'23:59:59';
+			var firstdate = year + '-' +month + '-01'+' '+'00:00:00';
+			var lastdate = year + '-' +month + '-' + day.getDate() +' '+'23:59:59';
 			/* $('#startTime').val(firstdate);
 			$('#endTime').val(lastdate); */
 			 var data={
@@ -269,7 +270,7 @@
 		      				+'<td class="text-center hidden-sm">'+parseFloat((o.payB).toFixed(4))+'</td>'
 		      				+'<td class="text-center edit number">'+o.number+'</td>'
 		      				+'<td class="text-center "><button class="btn btn-primary btn-trans btn-sm savemodePerformance" data-toggle="modal" data-target="#myModaltw" data-id="'+o.id+'")">查看加价</button></td>'
-		      				+'<td class="text-center ">'+parseFloat((o.performancePrice).toFixed(4))+'</td>'
+		      				+'<td class="text-center ">'+parseFloat((o.performancePrice==null ? '0' : o.performancePrice).toFixed(4))+'</td>'
 		      				+'<td class="text-center"><button class="btn btn-primary btn-trans btn-sm savemode" data-toggle="modal" data-target="#myModal" data-id="'+o.id+'")">查看人员</button></td>'
 							+'<td class="text-center"><button class="btn btn-sm btn-info  btn-trans updateremake" data-id='+o.id+'>编辑</button> <button class="btn btn-sm btn-danger btn-trans delete" data-id='+o.id+'>删除</button></td></tr>'
 							
