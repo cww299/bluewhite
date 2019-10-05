@@ -20,4 +20,10 @@ public interface RewardService  extends BaseCRUDService<Reward,Long>{
 	 */
 	public Reward addReward(Reward reward);
 	
+	/**
+	 * 查询发放剩余奖励
+	 * @param onlineOrder
+	 */
+	public Reward findReward(Reward reward);
+	
 }
