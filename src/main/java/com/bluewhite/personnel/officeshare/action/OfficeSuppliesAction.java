@@ -37,7 +37,7 @@ public class OfficeSuppliesAction {
 	{
 		clearCascadeJSON = ClearCascadeJSON.get()
 				.addRetainTerm(OfficeSupplies.class,"id","number", "name", "price", "unit"
-						, "inventoryNumber","location","libraryValue")
+						, "inventoryNumber","location","libraryValue","createdAt")
 				.addRetainTerm(BaseData.class, "id", "name");
 	}
 	

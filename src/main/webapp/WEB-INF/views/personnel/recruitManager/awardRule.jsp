@@ -83,18 +83,21 @@ layui.config({
 			} 
 		})
 		function lookoverAward(type){
-			getCoverRecruit();			 
+					 
 			var cols = [
-						{align:'center', type:'checkbox',},
+						{align:'center', type:'checkbox',totalRowText: '合计'},
 						{align:'center', title:'时间',   field:'time',	},
 						{align:'center', title:'招聘人',   field:'recruitId', edit:false,templet:function(d){ return d.recruitName.recruitName; }	},
 					    ];
 			if(type==1){
-				cols.push({align:'center', title:'领取奖励',   field:'price', edit:true,});
+				cols.push({align:'center', title:'领取奖励',   field:'price', edit:true,totalRow: true});
+				cols.push({align:'center', title:'被聘人',   field:'coverRecruitId',templet:getSelectHtml(),edit:false,	});
+				cols.push({align:'center', title:'入职时间',   field:'entry', edit:false,templet:function(d){ return d.recruitName.user.entry==null ? "" :d.recruitName.user.entry;}});
+				cols.push({align:'center', title:'离职时间',   field:'quitDate', edit:false,templet:function(d){ return d.recruitName.user.quitDate==null ? "" : d.recruitName.user.quitDate;}});
 			}
 			else{
 				cols.push({align:'center', title:'被聘人',   field:'coverRecruitId',templet:getSelectHtml(),edit:false,	});
-				cols.push({align:'center', title:'奖励',   field:'price',edit:true,});
+				cols.push({align:'center', title:'奖励',   field:'price',edit:true,totalRow: true});
 			}
 			cols.push({align:'center', title:'备注',   field:'remarks',	edit:true,});
 			layer.open({
@@ -102,13 +105,19 @@ layui.config({
 				title: ''+(type==1?'领取奖金':'') +'流水详情',
 				area:['80%','80%'],
 				offset:'50px',
-				content:'<div><table class="layui-table" id="rewardInfoTable" lay-filter="rewardInfoTable"></table></div>',
+				content:'<div>'+(type==1?'<table class="layui-form"><tr><td>应聘人:</td><td><select lay-search id="searchName" lay-filter="searchName"><option value="">获取数据中...</option></select></td><td>总奖励：</td><td><input type="text" readonly="readonly" id="collarPrice" lay-verify="required" class="layui-input"></td><td>剩余奖励：</td><td><input type="text" readonly="readonly" id="hairPrice" lay-verify="required" class="layui-input"></td></tr></table>':'')+'<table class="layui-table" id="rewardInfoTable" lay-filter="rewardInfoTable"></table></div>',
 				success:function(){
+					form.render();
 					table.render({
 						elem:'#rewardInfoTable',
-						url:'${ctx}/personnel/getReward?type='+type+'&recruitId='+lookoverObj.recruitId,
+						url:'${ctx}/personnel/getReward',
+						where:{
+							type:type,
+							recruitId:lookoverObj.recruitId
+						},
 						request:{ pageName:'page', limitName:'size' },
 						parseData:function(ret){ return { data:ret.data.rows, count:ret.data.total,msg:ret.message, code:ret.code } },
+						totalRow: true,
 						toolbar:'#rewardInfoToolbar',
 						cols: [cols],
 						size: 'lg',
@@ -142,6 +151,7 @@ layui.config({
 					})
 				},
 			})
+			getCoverRecruit();	
 			table.on('edit(rewardInfoTable)',function(obj){
 				if(!obj.data.id)
 					return;
@@ -170,14 +180,57 @@ layui.config({
 				}
 			})
 		}
+		
+		form.on('select(searchName)',function(obj){
+			
+			   $.ajax({
+				      url:"${ctx}/personnel/getfindReward",
+				      data:{
+				    	  coverRecruitId:obj.value
+				      },
+				      type:"GET",
+				      async:false,
+				      beforeSend:function(){
+				    	  indextwo = layer.load(1, {
+						  shade: [0.1,'#fff'] //0.1透明度的白色背景
+						  });
+					  }, 
+		      		  success: function (result) {
+		      			  $(result.data).each(function(k,j){
+		      				$("#collarPrice").val(j.collarPrice)
+		      				$("#hairPrice").val(j.hairPrice)
+		      			  });
+		      			form.render();
+		      			layer.close(indextwo);
+				      }
+				  });
+			
+			
+			table.reload('rewardInfoTable', {
+				where:{
+					coverRecruitId:obj.value
+				},
+				page: { curr : 1 }
+			});
+		})
+		
 		function addTempData(type){
+		var coverRecruitId=	$("#searchName").val()
+		if(type==1 && coverRecruitId==""){
+			return layer.msg('请先选择应聘人',{icon:2,offset:'200px'})
+		}
 			allField = {price:'',
 						recruitId:lookoverObj.recruitId,
 						remarks:'',
 						time:'',
-						coverRecruitId: allCoverRecruit[0].id,
+						
+						recruitName:{
+							user:{ entry:''},
+							recruitName:lookoverObj.recruitName
+						},
+						coverRecruitId:(type==1 ? coverRecruitId : allCoverRecruit[0].id) ,
 						type:type,
-						recruitName:{recruitName:lookoverObj.recruitName} };
+						 };
 			table.addTemp('rewardInfoTable',allField,function(trElem) {
 				var timeTd = trElem.find('td[data-field="time"]')[0];
 				laydate.render({
@@ -228,8 +281,6 @@ layui.config({
 			table.reload("personTable");
 			if(successAdd==tempData.length)
 				layer.msg('成功新增：'+successAdd+'条数据',{icon:1});
-			else
-				layer.msg('新增异常：'+(tempData.length-successAdd)+'条数据',{icon:2});
 			layer.close(load);
 		}
 		function deleteRewardInfo(tables){
@@ -265,6 +316,13 @@ layui.config({
 				async:false,
 				success:function(r){
 					allCoverRecruit = r.data;
+					var html = '<option value="">应聘人</option>';
+					layui.each(r.data,function(index,item){
+						html+='<option value="'+item.id+'" data-recruitName="'+item.recruitName+'" data-time="'+item.testTime+'">'+
+							item.name+'  ('+item.orgName.name+'  '+item.position.name+')</option>';
+					})
+					$('#searchName').html(html);
+					form.render();
 				}
 			})
 		}

@@ -507,6 +507,7 @@
 	<script type="text/html" id="toolbar">
 			<div class="layui-btn-container layui-block">
 				<span class="layui-btn layui-btn-sm" lay-event="addTempData">新增宿舍</span>
+				<span class="layui-btn layui-btn-sm layui-btn-danger" lay-event="deleteSome">宿舍删除</span>
 				<span class="layui-btn layui-btn-sm" lay-event="openMeal">水费标准</span>
 				<span class="layui-btn layui-btn-sm" lay-event="openMea2">电费标准</span>
 				<span class="layui-btn layui-btn-sm" lay-event="openuser">人员分摊</span>
@@ -762,7 +763,7 @@
 								title: "宿舍名",
 								align: 'center',
 								filter:true,
-								edit: false,
+								edit: 'text',
 							}
 							,{fixed:'right', title:'宿舍详情', align: 'center', toolbar: '#barDemo2'}
 							,{fixed:'right', title:'水费详情', align: 'center', toolbar: '#barDemo3'}
@@ -1055,6 +1056,58 @@
 										}
 									})
 							break;	
+							
+							case 'deleteSome':
+								// 获得当前选中的
+								var checkedIds = tablePlug.tableCheck.getChecked(tableId);
+								/* var d = table.checkStatus(tableId).data; */
+								layer.confirm('您是否确定要删除选中的' + checkedIds.length + '条记录？', function() {
+									var postData = {
+										ids: checkedIds,
+									}
+									$.ajax({
+										url: "${ctx}/fince/deleteHostel",
+										data: postData,
+										traditional: true,
+										type: "GET",
+										beforeSend: function() {
+											index;
+										},
+										success: function(result) {
+											if(0 == result.code) {
+												var configTemp = tablePlug.getConfig("tableData");
+									            if (configTemp.page && configTemp.page.curr > 1) {
+									              table.reload("tableData", {
+									                page: {
+									                  curr: configTemp.page.curr - 1
+									                }
+									              })
+									            }else{
+									            	table.reload("tableData", {
+										                page: {
+										                }
+										              })
+									            };
+												layer.msg(result.message, {
+													icon: 1,
+													time:800
+												});
+											} else {
+												layer.msg(result.message, {
+													icon: 2,
+													time:800
+												});
+											}
+										},
+										error: function() {
+											layer.msg("操作失败！", {
+												icon: 2
+											});
+										}
+									});
+									layer.close(index);
+								});
+								break;
 									
 							case 'summary':
 								table.render({
@@ -1248,6 +1301,7 @@
 										limitName: 'size' //每页数据量的参数名，默认：limit
 									},
 									page: {
+										
 									},//开启分页
 									loading: true,
 									toolbar: '#tool3', //开启工具栏，此处显示默认图标，可以自定义模板，详见文档
@@ -1363,7 +1417,19 @@
 						}
 					});
 					
-					
+					//监听单元格编辑
+					table.on('edit(tableData)', function(obj) {
+						var value = obj.value ,//得到修改后的值
+							data = obj.data ,//得到所在行所有键值
+							field = obj.field, //得到字段
+							id = data.id;
+							var postData = {
+								id:id,
+								[field]:value
+							}
+							//调用新增修改
+							mainJs.fAdd(postData);
+					});
 					
 					//监听单元格编辑
 					table.on('tool(tableData)', function(obj) {

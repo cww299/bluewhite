@@ -394,12 +394,17 @@ public class GroupAction {
 	 */
 	@RequestMapping(value = "/production/deleteTemporarily", method = RequestMethod.GET)
 	@ResponseBody
-	public CommonResponse deleteTemporarily(String[] ids) {
+	public CommonResponse deleteTemporarily(String ids) {
 		CommonResponse cr = new CommonResponse();
-		for (String id : ids) {
-			temporarilyDao.delete(Long.parseLong(id));
+		int count = 0;
+		if (!StringUtils.isEmpty(ids)) {
+			String[] idString = ids.split(",");
+			for(String id : idString){
+				temporarilyDao.delete(Long.parseLong(id));
+				count++;
+			}
 		}
-		cr.setMessage("删除成功");
+		cr.setMessage("成功删除"+count+"个分组");
 		return cr;
 	}
 

@@ -28,6 +28,7 @@ layui.define(['jquery','layer','form','table'],function(exports){
 			url : options.url,
 			type : options.type || 'post',	//默认post方法
 			async : options.async || false,
+			traditional: options.traditional || 'false',
 			data : options.data,
 			success: function(r){
 				var msg = '成功';

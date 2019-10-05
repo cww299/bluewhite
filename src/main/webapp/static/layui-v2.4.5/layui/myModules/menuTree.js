@@ -26,7 +26,8 @@ layui.define(['jquery','form'],function(exports){
         sumNumber:false,//父菜单下子菜单选择的条数，是否开启
         disabled:[],	//不可选择的对象
         checkbox:true,	//是否开启复选框
-        hide:true,		//是否隐藏子菜单	    
+        hide:true,		//是否隐藏子菜单
+        showName:false,	//是否自定义显示名
 		/*  除此默认配置外还可选的配置有： url，type，elem， */
     };
     //渲染菜单树	
@@ -110,7 +111,10 @@ layui.define(['jquery','form'],function(exports){
 					    html+='<input type="checkbox" lay-filter="menuTreeCheckbox-'+self.index+'" parentid="'+data[i].parentId+'" icon="'+data[i].icon+'" '+
 					  		'value="'+data[i].id+'" '+c+' '+d+' lay-skin="primary">';//复选框
 				    html+='<i class="layui-icon layui-icon-'+data[i].icon+'"></i>&nbsp;&nbsp;'			//菜单图标
-				    html+='<span>'+data[i].name+'</span>&nbsp;&nbsp;';				//菜单名
+				    if(conf.showName){
+				    	html+='<span>'+conf.showName(data[i])+'</span>&nbsp;&nbsp;';	
+				    }else
+				    	html+='<span>'+data[i].name+'</span>&nbsp;&nbsp;';				//菜单名
 				    if(conf.toolbar){
 				    	conf.toolbar = conf.toolbar == true?['add','edit','delete'] : conf.toolbar;
 				    	html += '<div class="menuControl" style="float: right;display:none;" lay-id="menuToolbar-'+self.index+'" data-id="'+data[i].id+'">';

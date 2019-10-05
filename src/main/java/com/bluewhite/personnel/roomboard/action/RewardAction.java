@@ -32,7 +32,7 @@ public class RewardAction {
 	private ClearCascadeJSON clearCascadeJSON;
 	{
 		clearCascadeJSON = ClearCascadeJSON.get()
-				.addRetainTerm(Reward.class,"id","time","recruitId", "coverRecruitId","recruitName","price","type","remarks");
+				.addRetainTerm(Reward.class,"id","time","recruitId", "coverRecruitId","recruitName","price","type","remarks","collarPrice","hairPrice");
 	}
 	/**
 	 * 分页查看招聘奖励
@@ -97,7 +97,23 @@ public class RewardAction {
 		cr.setMessage("成功删除"+count+"条");
 		return cr;
 	}
-	
+
+	/**
+	 * 查询发放领取奖励
+	 * 
+	 * @param request 请求
+	 * @return cr
+	 * @throws Exception
+	 */
+	@RequestMapping(value = "/personnel/getfindReward", method = RequestMethod.GET)
+	@ResponseBody
+	public CommonResponse findReward(Reward reward) {
+		CommonResponse cr = new CommonResponse();
+		Reward  mealList= service.findReward(reward); 
+		cr.setData(clearCascadeJSON.format(mealList).toJSON());
+		cr.setMessage("查询成功");
+		return cr;
+	}
 	
 	@InitBinder
 	protected void initBinder(WebDataBinder binder) {

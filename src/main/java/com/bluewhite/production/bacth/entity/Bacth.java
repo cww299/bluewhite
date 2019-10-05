@@ -18,6 +18,7 @@ import javax.persistence.Transient;
 import com.bluewhite.base.BaseEntity;
 import com.bluewhite.product.product.entity.Product;
 import com.bluewhite.production.task.entity.Task;
+import com.bluewhite.system.user.entity.User;
 
 /**
  * 产品批次实体
@@ -157,6 +158,19 @@ public class Bacth extends BaseEntity<Long>{
 	@Column(name ="machinist")
     private Integer machinist;
 	
+	/**
+	 * 任务分配人id
+	 */
+	@Column(name = "user_id")
+	private Long  userId;
+	
+	/**
+	 * 任务分配人
+	 */
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "user_id", referencedColumnName = "id", insertable = false, updatable = false)
+	private User user;
+	
     /**
      * （一楼包装）该批次数量
      */
@@ -199,6 +213,24 @@ public class Bacth extends BaseEntity<Long>{
 	@Transient
     private Double hairPrice;
 	
+	
+	
+
+	public Long getUserId() {
+		return userId;
+	}
+
+	public void setUserId(Long userId) {
+		this.userId = userId;
+	}
+
+	public User getUser() {
+		return user;
+	}
+
+	public void setUser(User user) {
+		this.user = user;
+	}
 
 	public Integer getPackNumber() {
 		return packNumber;
