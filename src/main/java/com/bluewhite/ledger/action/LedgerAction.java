@@ -23,6 +23,7 @@ import com.bluewhite.ledger.entity.Customer;
 import com.bluewhite.ledger.entity.Mixed;
 import com.bluewhite.ledger.entity.Order;
 import com.bluewhite.ledger.entity.OrderMaterial;
+import com.bluewhite.ledger.entity.OrderProcurement;
 import com.bluewhite.ledger.entity.Packing;
 import com.bluewhite.ledger.entity.PackingChild;
 import com.bluewhite.ledger.entity.PackingMaterials;
@@ -31,11 +32,14 @@ import com.bluewhite.ledger.entity.Sale;
 import com.bluewhite.ledger.entity.SendGoods;
 import com.bluewhite.ledger.service.MixedService;
 import com.bluewhite.ledger.service.OrderMaterialService;
+import com.bluewhite.ledger.service.OrderProcurementService;
 import com.bluewhite.ledger.service.OrderService;
 import com.bluewhite.ledger.service.PackingService;
 import com.bluewhite.ledger.service.ReceivedMoneyService;
 import com.bluewhite.ledger.service.SaleService;
 import com.bluewhite.ledger.service.SendGoodsService;
+import com.bluewhite.product.primecostbasedata.entity.BaseOne;
+import com.bluewhite.product.primecostbasedata.entity.Materiel;
 import com.bluewhite.product.product.entity.Product;
 import com.bluewhite.system.user.entity.User;
 
@@ -62,98 +66,101 @@ public class LedgerAction {
 	private SaleService saleService;
 	@Autowired
 	private OrderMaterialService orderMaterialService;
-
+	@Autowired
+	private OrderProcurementService orderProcurementService;
 
 	private ClearCascadeJSON clearCascadeJSON;
 	{
 		clearCascadeJSON = ClearCascadeJSON.get()
 				.addRetainTerm(Packing.class, "id", "number", "customer", "packingMaterials", "packingChilds",
-						"packingDate","packingMaterials","flag","user","type","warehouseTypeId","warehouseType")
-				.addRetainTerm(User.class, "id", "userName")
-				.addRetainTerm(Customer.class, "id", "name")
-				.addRetainTerm(PackingChild.class, "id", "bacthNumber", "product", "count","sendGoodsId","lastPackingChildId","surplusNumber")
-				.addRetainTerm(PackingMaterials.class, "id", "packagingMaterials","packagingCount")
-				.addRetainTerm(Product.class, "id", "name", "number")
-				.addRetainTerm(BaseData.class, "id", "name");
+						"packingDate", "packingMaterials", "flag", "user", "type", "warehouseTypeId", "warehouseType")
+				.addRetainTerm(User.class, "id", "userName").addRetainTerm(Customer.class, "id", "name")
+				.addRetainTerm(PackingChild.class, "id", "bacthNumber", "product", "count", "sendGoodsId",
+						"lastPackingChildId", "surplusNumber")
+				.addRetainTerm(PackingMaterials.class, "id", "packagingMaterials", "packagingCount")
+				.addRetainTerm(Product.class, "id", "name", "number").addRetainTerm(BaseData.class, "id", "name");
 	}
-	
+
 	private ClearCascadeJSON clearCascadeJSONSale;
 	{
 		clearCascadeJSONSale = ClearCascadeJSON.get()
-				.addRetainTerm(Sale.class, "id", "bacthNumber", "product","price","count","sumPrice","copyright","newBacth"
-						,"saleNumber","sendDate","flag","customer" ,"remark","audit","delivery"
-						,"deliveryNumber","deliveryDate","disputeNumber","disputeRemark","deliveryCollectionDate"
-						,"offshorePay","acceptPay","disputePay","deliveryStatus","warehouse","warehouseType","confirm","confirmNumber")
-				.addRetainTerm(BaseData.class, "id", "name")
-				.addRetainTerm(Customer.class, "id", "name","user")
-				.addRetainTerm(User.class, "id", "userName")
-				.addRetainTerm(Product.class, "id", "name", "number");
+				.addRetainTerm(Sale.class, "id", "bacthNumber", "product", "price", "count", "sumPrice", "copyright",
+						"newBacth", "saleNumber", "sendDate", "flag", "customer", "remark", "audit", "delivery",
+						"deliveryNumber", "deliveryDate", "disputeNumber", "disputeRemark", "deliveryCollectionDate",
+						"offshorePay", "acceptPay", "disputePay", "deliveryStatus", "warehouse", "warehouseType",
+						"confirm", "confirmNumber")
+				.addRetainTerm(BaseData.class, "id", "name").addRetainTerm(Customer.class, "id", "name", "user")
+				.addRetainTerm(User.class, "id", "userName").addRetainTerm(Product.class, "id", "name", "number");
 	}
-	
+
 	private ClearCascadeJSON clearCascadeJSONChild;
 	{
 		clearCascadeJSONChild = ClearCascadeJSON.get()
-				.addRetainTerm(PackingChild.class, "id", "bacthNumber", "product", "count","sendDate","flag"
-						,"customer" ,"remark","warehouse","warehouseType","confirm","confirmNumber","warehouseTypeDelivery","surplusNumber")
-				.addRetainTerm(BaseData.class, "id", "name")
-				.addRetainTerm(Customer.class, "id", "name","user")
-				.addRetainTerm(User.class, "id", "userName")
-				.addRetainTerm(Product.class, "id", "name", "number");
+				.addRetainTerm(PackingChild.class, "id", "bacthNumber", "product", "count", "sendDate", "flag",
+						"customer", "remark", "warehouse", "warehouseType", "confirm", "confirmNumber",
+						"warehouseTypeDelivery", "surplusNumber")
+				.addRetainTerm(BaseData.class, "id", "name").addRetainTerm(Customer.class, "id", "name", "user")
+				.addRetainTerm(User.class, "id", "userName").addRetainTerm(Product.class, "id", "name", "number");
 	}
-	
-	
+
 	private ClearCascadeJSON clearCascadeJSONPrice;
 	{
 		clearCascadeJSONPrice = ClearCascadeJSON.get()
-				.addRetainTerm(PackingChild.class, "id","product","price","customer","sendDate")
-				.addRetainTerm(Customer.class, "id", "name")
-				.addRetainTerm(Product.class, "id", "name", "number");
+				.addRetainTerm(PackingChild.class, "id", "product", "price", "customer", "sendDate")
+				.addRetainTerm(Customer.class, "id", "name").addRetainTerm(Product.class, "id", "name", "number");
 	}
 
 	private ClearCascadeJSON clearCascadeJSONSendGoods;
 	{
 		clearCascadeJSONSendGoods = ClearCascadeJSON.get()
 				.addRetainTerm(SendGoods.class, "id", "customer", "bacthNumber", "product", "number", "sendNumber",
-						"surplusNumber","sendDate","orderId")
-				.addRetainTerm(Customer.class, "id", "name")
-				.addRetainTerm(Product.class, "name", "number");
+						"surplusNumber", "sendDate", "orderId")
+				.addRetainTerm(Customer.class, "id", "name").addRetainTerm(Product.class, "name", "number");
 	}
 
 	private ClearCascadeJSON clearCascadeJSONOrder;
 	{
 		clearCascadeJSONOrder = ClearCascadeJSON.get()
-				.addRetainTerm(Order.class, "id", "remark", "orderDate", "customer","bacthNumber", "product", "number","price","surplusNumber")
-				.addRetainTerm(Customer.class, "id", "name")
-				.addRetainTerm(Product.class, "id", "name", "number");
+				.addRetainTerm(Order.class, "id", "remark", "orderDate", "customer", "bacthNumber", "product", "number",
+						"price", "surplusNumber")
+				.addRetainTerm(Customer.class, "id", "name").addRetainTerm(Product.class, "id", "name", "number");
 	}
-	
+
 	private ClearCascadeJSON clearCascadeJSONMixed;
 	{
 		clearCascadeJSONMixed = ClearCascadeJSON.get()
-				.addRetainTerm(Mixed.class, "id", "customer", "mixtTime", "mixDetailed","mixPrice")
+				.addRetainTerm(Mixed.class, "id", "customer", "mixtTime", "mixDetailed", "mixPrice")
 				.addRetainTerm(Customer.class, "id", "name");
 	}
-	
+
 	private ClearCascadeJSON clearCascadeJSONBill;
 	{
-		clearCascadeJSONBill = ClearCascadeJSON.get()
-				.addRetainTerm(Bill.class, "customerName","customerId","billDate", "offshorePay", "acceptPay",
-						"acceptPayable","disputePay","nonArrivalPay","overpaymentPay","arrivalPay");
+		clearCascadeJSONBill = ClearCascadeJSON.get().addRetainTerm(Bill.class, "customerName", "customerId",
+				"billDate", "offshorePay", "acceptPay", "acceptPayable", "disputePay", "nonArrivalPay",
+				"overpaymentPay", "arrivalPay");
 	}
-	
+
 	private ClearCascadeJSON clearCascadeJSONReceivedMoney;
 	{
-		clearCascadeJSONReceivedMoney = ClearCascadeJSON.get()
-				.addRetainTerm(ReceivedMoney.class, "id", "customer", "receivedMoneyDate", "receivedMoney","receivedRemark")
-				.addRetainTerm(Customer.class, "id", "name");
+		clearCascadeJSONReceivedMoney = ClearCascadeJSON.get().addRetainTerm(ReceivedMoney.class, "id", "customer",
+				"receivedMoneyDate", "receivedMoney", "receivedRemark").addRetainTerm(Customer.class, "id", "name");
 	}
 	
-	
-	
-	
+	private ClearCascadeJSON clearCascadeJSONOrderMaterial;
+	{
+		clearCascadeJSONOrderMaterial = ClearCascadeJSON.get()
+				.addRetainTerm(OrderMaterial.class, "order", "materiel","receiveMode", "user", "unit","dosage","flag")
+				.addRetainTerm(Order.class, "id", "bacthNumber","product","number","remark")
+				.addRetainTerm(Materiel.class, "id", "name","number","orderProcurements","inventoryNumber")
+				.addRetainTerm(OrderProcurement.class, "id", "orderProcurementNumber","placeOrderNumber","arrivalNumber")
+				.addRetainTerm(BaseOne.class, "id", "name")
+				.addRetainTerm(User.class, "id", "userName")
+				.addRetainTerm(Product.class, "id", "name");
+	}
 
 	/**
 	 * 分页查看订单
+	 * 
 	 * @param page
 	 * @param order
 	 * @return
@@ -169,6 +176,7 @@ public class LedgerAction {
 
 	/**
 	 * 查看订单
+	 * 
 	 * @param order
 	 * @return
 	 */
@@ -183,6 +191,7 @@ public class LedgerAction {
 
 	/**
 	 * 新增订单
+	 * 
 	 * @param order
 	 * @return
 	 */
@@ -222,24 +231,40 @@ public class LedgerAction {
 		cr.setMessage("成功删除" + count + "订单合同");
 		return cr;
 	}
-	
-	
+
 	/**
-	 * （生产计划部）确认订单自动生成耗料表
+	 * （生产计划部）查看耗料订单
+	 * 
 	 * @param order
 	 * @return
 	 */
-	@RequestMapping(value = "/ledger/confirmOrderMaterial", method = RequestMethod.POST)
+	@RequestMapping(value = "/ledger/getOrderMaterial", method = RequestMethod.GET)
 	@ResponseBody
-	public CommonResponse confirmOrderMaterial(String  ids) {
+	public CommonResponse getOrderMaterial(PageParameter page, OrderMaterial orderMaterial) {
 		CommonResponse cr = new CommonResponse();
-		int count = orderMaterialService.confirmOrderMaterial(ids);
-		cr.setMessage("成功生成"+count+"条耗料表");
+		cr.setData(clearCascadeJSONOrderMaterial.format(orderMaterialService.findPages(orderMaterial, page)).toJSON());
+		cr.setMessage("查看成功");
 		return cr;
 	}
-	
+
+	/**
+	 * （生产计划部）确认订单自动生成耗料表
+	 * 
+	 * @param order
+	 * @return
+	 */
+	@RequestMapping(value = "/ledger/confirmOrderMaterial", method = RequestMethod.GET)
+	@ResponseBody
+	public CommonResponse confirmOrderMaterial(String ids) {
+		CommonResponse cr = new CommonResponse();
+		int count = orderMaterialService.confirmOrderMaterial(ids);
+		cr.setMessage("成功生成" + count + "条耗料表");
+		return cr;
+	}
+
 	/**
 	 * （生产计划部）修改耗料表
+	 * 
 	 * @param order
 	 * @return
 	 */
@@ -251,32 +276,36 @@ public class LedgerAction {
 		cr.setMessage("修改成功");
 		return cr;
 	}
-	
+
 	/**
 	 * （生产计划部）删除耗料表
+	 * 
 	 * @param order
 	 * @return
 	 */
-	@RequestMapping(value = "/ledger/deleteOrderMaterial", method = RequestMethod.POST)
+	@RequestMapping(value = "/ledger/deleteOrderMaterial", method = RequestMethod.GET)
 	@ResponseBody
 	public CommonResponse deleteOrderMaterial(String ids) {
 		CommonResponse cr = new CommonResponse();
 		int count = orderMaterialService.deleteOrderMaterial(ids);
-		cr.setMessage("成功删除"+count+"条耗料");
+		cr.setMessage("成功删除" + count + "条耗料");
 		return cr;
 	}
+
 	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
+	/**
+	 * （采购部）确认库存不足的面料采购订单
+	 * 
+	 * @param order
+	 * @return
+	 */
+	@RequestMapping(value = "/ledger/confirmOrderProcurement", method = RequestMethod.POST)
+	@ResponseBody
+	public CommonResponse confirmOrderProcurement(String ids) {
+		CommonResponse cr = new CommonResponse();
+		orderProcurementService.confirmOrderProcurement(ids);
+		return cr;
+	}
 	
 	
 	
@@ -322,8 +351,7 @@ public class LedgerAction {
 		cr.setMessage("成功发货" + count + "条");
 		return cr;
 	}
-	
-	
+
 	/**
 	 * 删除贴包单
 	 * 
@@ -337,8 +365,7 @@ public class LedgerAction {
 		cr.setMessage("成功删除" + count + "条贴包单");
 		return cr;
 	}
-	
-	
+
 	/**
 	 * 删除贴包子单
 	 * 
@@ -352,7 +379,7 @@ public class LedgerAction {
 		cr.setMessage("成功删除" + count + "条贴包子单");
 		return cr;
 	}
-	
+
 	/**
 	 * 删除包装材料子单
 	 * 
@@ -418,15 +445,15 @@ public class LedgerAction {
 	@ResponseBody
 	public CommonResponse addSendGoods(SendGoods sendGoods) {
 		CommonResponse cr = new CommonResponse();
-		if(sendGoods.getId()!=null){
+		if (sendGoods.getId() != null) {
 			cr.setMessage("修改成功");
-		}else{
+		} else {
 			cr.setMessage("新增成功");
 		}
 		sendGoodsService.addSendGoods(sendGoods);
 		return cr;
 	}
-	
+
 	/**
 	 * 删除待发货单
 	 * 
@@ -441,12 +468,11 @@ public class LedgerAction {
 		return cr;
 	}
 
-	
-	
 	/***************************** 财务 **********************************/
-	
+
 	/**
 	 * 分页查看销售单
+	 * 
 	 * @return cr
 	 */
 	@RequestMapping(value = "/ledger/salePage", method = RequestMethod.GET)
@@ -457,9 +483,10 @@ public class LedgerAction {
 		cr.setMessage("查看成功");
 		return cr;
 	}
-	
+
 	/**
 	 * 修改销售单(财务填写 )
+	 * 
 	 * @return cr
 	 */
 	@RequestMapping(value = "/ledger/updateFinanceSale", method = RequestMethod.POST)
@@ -470,10 +497,10 @@ public class LedgerAction {
 		cr.setMessage("修改成功");
 		return cr;
 	}
-	
-	
+
 	/**
 	 * 修改销售单(业务员填写 )
+	 * 
 	 * @return cr
 	 */
 	@RequestMapping(value = "/ledger/updateUserSale", method = RequestMethod.POST)
@@ -484,22 +511,24 @@ public class LedgerAction {
 		cr.setMessage("修改成功");
 		return cr;
 	}
-	
+
 	/**
 	 * 审核销售单(业务员)
+	 * 
 	 * @return cr
 	 */
 	@RequestMapping(value = "/ledger/auditUserSale", method = RequestMethod.GET)
 	@ResponseBody
-	public CommonResponse auditUserSale(String ids,Integer deliveryStatus) {
+	public CommonResponse auditUserSale(String ids, Integer deliveryStatus) {
 		CommonResponse cr = new CommonResponse();
-		int count= saleService.auditUserSale(ids, deliveryStatus);
-		cr.setMessage("成功确认"+count+"条销售单");
+		int count = saleService.auditUserSale(ids, deliveryStatus);
+		cr.setMessage("成功确认" + count + "条销售单");
 		return cr;
 	}
-	
+
 	/**
 	 * 根据产品和客户查找以往价格
+	 * 
 	 * @param page
 	 * @param packingChild
 	 * @return
@@ -512,23 +541,24 @@ public class LedgerAction {
 		cr.setMessage("查看成功");
 		return cr;
 	}
-	
+
 	/**
 	 * 审核销售单（财务）
+	 * 
 	 * @return cr
 	 */
 	@RequestMapping(value = "/ledger/auditSale", method = RequestMethod.GET)
 	@ResponseBody
-	public CommonResponse auditSale(String ids,Integer audit) {
+	public CommonResponse auditSale(String ids, Integer audit) {
 		CommonResponse cr = new CommonResponse();
-		int count= saleService.auditSale(ids, audit);
-		cr.setMessage("成功审核"+count+"条销售单");
+		int count = saleService.auditSale(ids, audit);
+		cr.setMessage("成功审核" + count + "条销售单");
 		return cr;
 	}
-	
-	
+
 	/**
 	 * 分页查看杂支
+	 * 
 	 * @param page
 	 * @param order
 	 * @return
@@ -541,10 +571,10 @@ public class LedgerAction {
 		cr.setMessage("查看成功");
 		return cr;
 	}
-	
-	
+
 	/**
 	 * 新增修改杂支
+	 * 
 	 * @param order
 	 * @return
 	 */
@@ -552,18 +582,17 @@ public class LedgerAction {
 	@ResponseBody
 	public CommonResponse addMixed(Mixed mixed) {
 		CommonResponse cr = new CommonResponse();
-		if(mixed.getId()!=null){
+		if (mixed.getId() != null) {
 			Mixed ot = mixedService.findOne(mixed.getId());
 			mixedService.update(mixed, ot);
 			cr.setMessage("修改成功");
-		}else{
+		} else {
 			mixedService.addMixed(mixed);
 			cr.setMessage("新增成功");
 		}
 		return cr;
 	}
-	
-	
+
 	/**
 	 * 删除杂支
 	 * 
@@ -578,27 +607,26 @@ public class LedgerAction {
 		return cr;
 	}
 
-	
-	
 	/**
 	 * 已到货款分页
+	 * 
 	 * @param page
 	 * @param receivedMoney
 	 * @return
 	 */
 	@RequestMapping(value = "/ledger/receivedMoneyPage", method = RequestMethod.GET)
 	@ResponseBody
-	public CommonResponse mixedList(ReceivedMoney receivedMoney,PageParameter page) {
+	public CommonResponse mixedList(ReceivedMoney receivedMoney, PageParameter page) {
 		CommonResponse cr = new CommonResponse();
-		cr.setData(clearCascadeJSONReceivedMoney.format(receivedMoneyService.receivedMoneyPage(receivedMoney,page)).toJSON());
+		cr.setData(clearCascadeJSONReceivedMoney.format(receivedMoneyService.receivedMoneyPage(receivedMoney, page))
+				.toJSON());
 		cr.setMessage("查看成功");
 		return cr;
 	}
-	
-	
-	
+
 	/**
 	 * 新增修改货款
+	 * 
 	 * @param order
 	 * @return
 	 */
@@ -606,18 +634,17 @@ public class LedgerAction {
 	@ResponseBody
 	public CommonResponse addReceivedMoney(ReceivedMoney receivedMoney) {
 		CommonResponse cr = new CommonResponse();
-		if(receivedMoney.getId()!=null){
+		if (receivedMoney.getId() != null) {
 			ReceivedMoney ot = receivedMoneyService.findOne(receivedMoney.getId());
 			receivedMoneyService.update(receivedMoney, ot);
 			cr.setMessage("修改成功");
-		}else{
+		} else {
 			receivedMoneyService.save(receivedMoney);
 			cr.setMessage("新增成功");
 		}
 		return cr;
 	}
-	
-	
+
 	/**
 	 * 删除货款
 	 * 
@@ -631,9 +658,10 @@ public class LedgerAction {
 		cr.setMessage("成功删除" + count + "条货款");
 		return cr;
 	}
-	
+
 	/**
 	 * 汇总货款
+	 * 
 	 * @return cr
 	 */
 	@RequestMapping(value = "/ledger/collectBill", method = RequestMethod.GET)
@@ -644,13 +672,12 @@ public class LedgerAction {
 		cr.setMessage("汇总成功");
 		return cr;
 	}
-	
-	
-	/*****************   仓库       ************/
-	
-	
+
+	/***************** 仓库 ************/
+
 	/**
 	 * 分页查看贴包子单
+	 * 
 	 * @return cr
 	 */
 	@RequestMapping(value = "/ledger/packingChildPage", method = RequestMethod.GET)
@@ -661,23 +688,24 @@ public class LedgerAction {
 		cr.setMessage("查看成功");
 		return cr;
 	}
-	
+
 	/**
 	 * 查看贴包子单
+	 * 
 	 * @return cr
 	 */
 	@RequestMapping(value = "/ledger/packingChildList", method = RequestMethod.GET)
 	@ResponseBody
-	public CommonResponse packingChildList( PackingChild packingChild) {
+	public CommonResponse packingChildList(PackingChild packingChild) {
 		CommonResponse cr = new CommonResponse();
 		cr.setData(clearCascadeJSONChild.format(packingService.packingChildList(packingChild)).toJSON());
 		cr.setMessage("查看成功");
 		return cr;
 	}
-	  
-	
+
 	/**
 	 * 修改贴包子单 (仓管填写 )
+	 * 
 	 * @return cr
 	 */
 	@RequestMapping(value = "/ledger/updateInventoryPackingChild", method = RequestMethod.POST)
@@ -688,7 +716,7 @@ public class LedgerAction {
 		cr.setMessage("修改成功");
 		return cr;
 	}
-	
+
 	/**
 	 * 审核入库
 	 */
@@ -696,11 +724,11 @@ public class LedgerAction {
 	@ResponseBody
 	public CommonResponse confirmPackingChild(String ids) {
 		CommonResponse cr = new CommonResponse();
-		int count  = packingService.confirmPackingChild(ids);
-		cr.setMessage("成功审核"+count+"条入库单");
+		int count = packingService.confirmPackingChild(ids);
+		cr.setMessage("成功审核" + count + "条入库单");
 		return cr;
 	}
-	
+
 	/**
 	 * 取消审核入库
 	 */
@@ -708,11 +736,10 @@ public class LedgerAction {
 	@ResponseBody
 	public CommonResponse cancelConfirmPackingChild(String ids) {
 		CommonResponse cr = new CommonResponse();
-		int count  = packingService.cancelConfirmPackingChild(ids);
-		cr.setMessage("成功取消审核"+count+"条入库单");
+		int count = packingService.cancelConfirmPackingChild(ids);
+		cr.setMessage("成功取消审核" + count + "条入库单");
 		return cr;
 	}
-	
 
 	@InitBinder
 	protected void initBinder(WebDataBinder binder) {

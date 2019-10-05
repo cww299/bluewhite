@@ -50,6 +50,12 @@ public class Task  extends BaseEntity<Long>{
 	@Column(name = "userIds")
 	private  String userIds;
 	
+	/**
+	 * 领取任务人员ids(任务和员工多对多关系)
+	 */
+	@Column(name = "temporaryUserIds")
+	private  String temporaryUserIds;
+	
 	
 	/**
 	 * 产品名称
@@ -206,6 +212,12 @@ public class Task  extends BaseEntity<Long>{
 	private  String[] usersIds;
 	
 	/**
+	 * 领取任务人员ids
+	 */
+	@Transient
+	private  String[] temporaryUsersIds;
+	
+	/**
 	 * 工序ids
 	 */
 	@Transient
@@ -241,6 +253,23 @@ public class Task  extends BaseEntity<Long>{
 	@Transient
     private Integer machinist;
 	
+	 
+
+	public String[] getTemporaryUsersIds() {
+		return temporaryUsersIds;
+	}
+
+	public void setTemporaryUsersIds(String[] temporaryUsersIds) {
+		this.temporaryUsersIds = temporaryUsersIds;
+	}
+
+	public String getTemporaryUserIds() {
+		return temporaryUserIds;
+	}
+
+	public void setTemporaryUserIds(String temporaryUserIds) {
+		this.temporaryUserIds = temporaryUserIds;
+	}
 
 	public Long getGroupId() {
 		return groupId;

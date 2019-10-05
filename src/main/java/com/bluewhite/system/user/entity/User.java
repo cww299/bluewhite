@@ -40,18 +40,6 @@ public class User extends BaseEntity<Long> {
 	private Boolean isAdmin = false;
 	
 	/**
-	 * 是否是外来人员（0=否，1=是）(外来人员是指当生产线上业务繁忙聘请的临时人员)
-	 */
-	@Column(name = "foreigns")
-	private Integer foreigns;
-	
-	/**
-	 * 是否是转正人员(在生产线上直接添加的外来人员，可成为正式员工)
-	 */
-	@Column(name = "positive")
-	private Boolean positive = false;
-	
-	/**
 	 * 是否锁定
 	 */
 	@Column(name = "del_flag")
@@ -239,7 +227,7 @@ public class User extends BaseEntity<Long> {
 	
 	/**
 	 * 保险情况
-	 *  0=未缴，1=已缴，
+	 * 0=未缴，1=已缴，
 	 */
 	@Column(name = "safe")
 	private Integer safe;
@@ -406,12 +394,6 @@ public class User extends BaseEntity<Long> {
 	private String company;
 	
 	/**
-	 * 归属车间类型（1=一楼质检，2=一楼包装，3=二楼针工,4=二楼机工,5=8号仓库）
-	 */
-	@Column(name = "type")
-	private Integer type;
-
-	/**
 	 * 宿舍ID
 	 */
 	@Column(name = "hostel_id")
@@ -446,19 +428,6 @@ public class User extends BaseEntity<Long> {
 	private String orgNameIds;
 	
 	/**
-	 * 分组员工ids
-	 */
-	@Transient
-	private String userIds;
-	
-	
-	/**
-	 * 外来是否查询
-	 */
-	@Transient
-	private Integer temporarily;
-	
-	/**
 	 * 是否退休返聘
 	 */
 	@Transient
@@ -469,30 +438,12 @@ public class User extends BaseEntity<Long> {
 	 */
 	@Transient
 	private Date orderTimeBegin;
+	
 	/**
 	 * 时间查询字段
 	 */
 	@Transient
 	private Date orderTimeEnd;
-	
-	/**
-	 * 外调精确查找姓名
-	 */
-	@Transient
-	private String temporarilyName;
-	
-	
-	/**
-	 * 当组分配任务的调整时间
-	 */
-	@Transient
-	private Double adjustTime;
-	
-	/**
-	 * 当组分配任务的调整时间所在数据的id
-	 */
-	@Transient
-	private Long adjustTimeId;
 	
 	/**
 	 * 按位置编号排序
@@ -507,7 +458,7 @@ public class User extends BaseEntity<Long> {
 	private Double  turnWorkTime;
 	
 	/**
-	 * 对于陈建人员显示出勤时间特殊字段
+	 * 对于人员显示出勤时间特殊字段
 	 */
 	@Transient
 	private Integer isType;
@@ -546,52 +497,12 @@ public class User extends BaseEntity<Long> {
 		this.userContractId = userContractId;
 	}
 
-	public Boolean getPositive() {
-		return positive;
-	}
-
-	public void setPositive(Boolean positive) {
-		this.positive = positive;
-	}
-
-	public Long getAdjustTimeId() {
-		return adjustTimeId;
-	}
-
-	public void setAdjustTimeId(Long adjustTimeId) {
-		this.adjustTimeId = adjustTimeId;
-	}
-
-	public Double getAdjustTime() {
-		return adjustTime;
-	}
-
-	public void setAdjustTime(Double adjustTime) {
-		this.adjustTime = adjustTime;
-	}
-
-	public String getTemporarilyName() {
-		return temporarilyName;
-	}
-
-	public void setTemporarilyName(String temporarilyName) {
-		this.temporarilyName = temporarilyName;
-	}
-
 	public String getAscriptionBank1() {
 		return ascriptionBank1;
 	}
 
 	public void setAscriptionBank1(String ascriptionBank1) {
 		this.ascriptionBank1 = ascriptionBank1;
-	}
-
-	public Integer getType() {
-		return type;
-	}
-
-	public void setType(Integer type) {
-		this.type = type;
 	}
 
 	public Date getOrderTimeBegin() {
@@ -701,14 +612,6 @@ public class User extends BaseEntity<Long> {
 		this.telephone = telephone;
 	}
 
-	public Integer getTemporarily() {
-		return temporarily;
-	}
-
-	public void setTemporarily(Integer temporarily) {
-		this.temporarily = temporarily;
-	}
-
 	public Double getWorkTime() {
 		return workTime;
 	}
@@ -731,15 +634,6 @@ public class User extends BaseEntity<Long> {
 
 	public void setStatus(Integer status) {
 		this.status = status;
-	}
-
-
-	public String getUserIds() {
-		return userIds;
-	}
-
-	public void setUserIds(String userIds) {
-		this.userIds = userIds;
 	}
 
 	public String getOrgNameIds() {
@@ -1134,14 +1028,6 @@ public class User extends BaseEntity<Long> {
 
 	public void setGroup(Group group) {
 		this.group = group;
-	}
-
-	public Integer getForeigns() {
-		return foreigns;
-	}
-
-	public void setForeigns(Integer foreigns) {
-		this.foreigns = foreigns;
 	}
 
 	public Long getHostelId() {

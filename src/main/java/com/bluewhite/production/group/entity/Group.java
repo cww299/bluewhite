@@ -1,19 +1,14 @@
 package com.bluewhite.production.group.entity;
 
-import java.util.HashSet;
-import java.util.Set;
-
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
-import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
 import com.bluewhite.base.BaseEntity;
 import com.bluewhite.basedata.entity.BaseData;
-import com.bluewhite.system.user.entity.User;
 /**
  * 分组表，用于记录生产部分组
  * @author zhangliang
@@ -33,11 +28,6 @@ public class Group  extends BaseEntity<Long>{
 	 */
 	@Column(name = "type")
 	private Integer type;
-	/**
-	 * 分组人员
-	 */
-	@OneToMany(mappedBy = "group")
-	private Set<User> users = new HashSet<User>();
 	
 	/**
 	 * 工种id
@@ -58,6 +48,8 @@ public class Group  extends BaseEntity<Long>{
 	 */
 	@Column(name = "remark")
 	private String remark;
+	
+	
 	
 	public Long getKindWorkId() {
 		return kindWorkId;
@@ -83,14 +75,6 @@ public class Group  extends BaseEntity<Long>{
 		this.remark = remark;
 	}
 
-	public Set<User> getUsers() {
-		return users;
-	}
-
-	public void setUsers(Set<User> users) {
-		this.users = users;
-	}
-
 	public Integer getType() {
 		return type;
 	}
@@ -106,10 +90,5 @@ public class Group  extends BaseEntity<Long>{
 	public void setName(String name) {
 		this.name = name;
 	}
-
-	
-	
-	
-	
 
 }

@@ -82,7 +82,6 @@ public class AttendanceTimeServiceImpl extends BaseServiceImpl<AttendanceTime, L
 		if (attendance.getUserId() == null && attendance.getOrgNameId() == null) {
 			User user = new User();
 			user.setIsAdmin(false);
-			user.setForeigns(0);
 			list = userService.findUserList(user).stream()
 					.filter(User -> (User.getQuit() != null && User.getQuit() == 0) || (User.getQuitDate() != null
 							&& User.getQuitDate().compareTo(attendance.getOrderTimeBegin()) != -1))
@@ -650,13 +649,14 @@ public class AttendanceTimeServiceImpl extends BaseServiceImpl<AttendanceTime, L
 					}
 
 					// 请假
-					if (al.isHoliday() && dateArr.length >= 2) {
+					if (al.isHoliday() && dateArr.length >= 2) { 
 						// 获取请假所有日期
 						List<Date> dateList = DatesUtil.getPerDaysByStartAndEndDate(dateArr[0], dateArr[1],
 								"yyyy-MM-dd");
 						for (Date inTime : dateList) {
 							// flag=ture 为夏令时
-							if (flag) {
+							boolean flag1 = DatesUtil.belongCalendar(inTime);
+							if (flag1) {
 								turnWorkTime = attendanceInit.getTurnWorkTimeSummer();
 							} else {
 								turnWorkTime = attendanceInit.getTurnWorkTimeWinter();
@@ -685,7 +685,7 @@ public class AttendanceTimeServiceImpl extends BaseServiceImpl<AttendanceTime, L
 										}
 									}
 
-									if (NumUtils.mul(time, 60) < oneAtList.get(0).getDutytimMinute()) {
+									if (oneAtList.get(0).getDutytimMinute() !=null && NumUtils.mul(time, 60) < oneAtList.get(0).getDutytimMinute()) {
 										if (oneAtList.get(0).getDutytimMinute() > 30) {
 											oneAtList.get(0).setBelate(1);
 											oneAtList.get(0).setBelateTime(NumUtils
@@ -699,8 +699,7 @@ public class AttendanceTimeServiceImpl extends BaseServiceImpl<AttendanceTime, L
 								oneAtList.get(0).setFlag(2);
 								oneAtList.get(0).setHolidayType(al.getHolidayType());
 								oneAtList.get(0).setDutytime(time >= turnWorkTime ? turnWorkTime : time);
-								oneAtList.get(0)
-										.setTurnWorkTime(NumUtils.sub(turnWorkTime, oneAtList.get(0).getDutytime()));
+								oneAtList.get(0).setTurnWorkTime(NumUtils.sub(turnWorkTime, oneAtList.get(0).getDutytime()));
 								if (time >= turnWorkTime) {
 									time = NumUtils.sub(time, turnWorkTime);
 									oneAtList.get(0).setLeaveTime(turnWorkTime);
@@ -715,10 +714,7 @@ public class AttendanceTimeServiceImpl extends BaseServiceImpl<AttendanceTime, L
 					// 加班
 					if (al.isApplyOvertime()) {
 						Date inTime = dateLeave;
-						AttendanceTime at = psList1.stream()
-								.filter(AttendanceTime -> (AttendanceTime.getTime().compareTo(inTime)) == 0)
-								.collect(Collectors.toList()).get(0);
-
+						AttendanceTime at = psList1.stream().filter(AttendanceTime -> (AttendanceTime.getTime().compareTo(inTime)) == 0).collect(Collectors.toList()).get(0);
 						if (al.getOvertimeType() == 2) {
 							at.setOvertime(NumUtils.sub(NumUtils.setzro(at.getOvertime()), time));
 						} else {

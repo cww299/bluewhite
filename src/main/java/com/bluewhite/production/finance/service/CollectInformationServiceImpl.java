@@ -75,10 +75,15 @@ public class CollectInformationServiceImpl extends BaseServiceImpl<CollectInform
 		double priceCollect =NumUtils.sum(sumTask,sumTaskFlag,sumFarragoTask);
 		collectInformation.setPriceCollect(priceCollect);
 		//不予给付汇总占比
-		double proportion = NumUtils.div(regionalPrice,sumTask,3);
-		collectInformation.setProportion(proportion);
+		double proportion = 0;
 		//我们的表和小关的表差价不予给付
-		double priceDifferences =NumUtils.mul( NumUtils.sub(sumTask,regionalPrice) , NumUtils.div(regionalPrice,sumTask,3));
+		double priceDifferences = 0;
+		if(sumTask!=0){
+			proportion = NumUtils.div(regionalPrice,sumTask,3);
+			priceDifferences = NumUtils.mul( NumUtils.sub(sumTask,regionalPrice) , NumUtils.div(regionalPrice,sumTask,3));
+		}
+		collectInformation.setProportion(proportion);
+	 
 		//预算多余在手部分
 		double overtop = 0;
 		if(collectInformation.getType()==1 || collectInformation.getType()==2){

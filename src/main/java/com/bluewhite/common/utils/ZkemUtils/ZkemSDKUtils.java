@@ -184,6 +184,7 @@ public class ZkemSDKUtils {
 						attendance.setUserId(user.get().getId());
 					}
 				}
+				attendance.setInOutMode(1);
 				strList.add(attendance);
 			}
 		} 

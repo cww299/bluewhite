@@ -23,6 +23,7 @@ import com.bluewhite.common.entity.PageParameter;
 import com.bluewhite.common.entity.PageResult;
 import com.bluewhite.common.utils.DatesUtil;
 import com.bluewhite.common.utils.NumUtils;
+import com.bluewhite.common.utils.StringUtil;
 import com.bluewhite.personnel.roomboard.dao.AdvertisementDao;
 import com.bluewhite.personnel.roomboard.dao.RecruitDao;
 import com.bluewhite.personnel.roomboard.dao.RewardDao;
@@ -118,6 +119,14 @@ public class RecruitServiceImpl extends BaseServiceImpl<Recruit, Long> implement
 
 	@Override
 	public Recruit addRecruit(Recruit recruit) {
+		User oldUser = userDao.findByUserName(recruit.getName());
+		if (oldUser != null) {
+			throw new ServiceException("该用户姓名在系统中已存在，请确认是否为同一人，如果是同一人，请联系管理员");
+		}
+		if (recruit.getName().indexOf("特急") != -1 || recruit.getName().indexOf("(男)") != -1
+				|| recruit.getName().indexOf("女") != -1 || StringUtil.HasDigit(recruit.getName())) {
+			throw new ServiceException("人员姓名数据不合法,请联系管理员");
+		}
 		if (recruit.getId() == null) {
 			Recruit recruit2 = dao.findByPhone(recruit.getPhone());
 			if (recruit2 != null) {
@@ -302,7 +311,6 @@ public class RecruitServiceImpl extends BaseServiceImpl<Recruit, Long> implement
 		double sum6 = 0;// 入职且在职人数
 		User user = new User();
 		user.setIsAdmin(false);
-		user.setForeigns(0);
 		double sum5 = userService.findUserList(user).stream()
 				.filter(User -> (User.getQuitDate() == null || User.getQuitDate().after(recruit.getTime()))
 						&& (User.getEntry() != null && User.getEntry().before(recruit.getTime())))
@@ -509,7 +517,6 @@ public class RecruitServiceImpl extends BaseServiceImpl<Recruit, Long> implement
 					User user = new User();
 					user.setUserName(recruit.getName());
 					user.setPhone(recruit.getPhone());
-					user.setForeigns(0);
 					user.setQuit(0);
 					user.setEntry(recruit.getTestTime());
 					userService.addUser(user);

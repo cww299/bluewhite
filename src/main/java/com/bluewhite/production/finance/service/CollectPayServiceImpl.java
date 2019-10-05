@@ -43,12 +43,14 @@ import com.bluewhite.production.finance.entity.GroupProduction;
 import com.bluewhite.production.finance.entity.MonthlyProduction;
 import com.bluewhite.production.finance.entity.NonLine;
 import com.bluewhite.production.finance.entity.PayB;
+import com.bluewhite.production.group.dao.GroupDao;
 import com.bluewhite.production.group.entity.Group;
 import com.bluewhite.production.group.service.GroupService;
 import com.bluewhite.production.procedure.dao.ProcedureDao;
 import com.bluewhite.production.procedure.entity.Procedure;
 import com.bluewhite.production.task.entity.Task;
 import com.bluewhite.production.task.service.TaskService;
+import com.bluewhite.system.user.dao.UserDao;
 import com.bluewhite.system.user.entity.User;
 import com.bluewhite.system.user.service.UserService;
 @Service
@@ -65,6 +67,9 @@ public class CollectPayServiceImpl extends BaseServiceImpl<CollectPay, Long> imp
 	
 	@Autowired
 	private UserService userService;
+	
+	@Autowired
+	private UserDao userDao;
 	
 	@Autowired
 	private TaskService taskService;
@@ -88,12 +93,17 @@ public class CollectPayServiceImpl extends BaseServiceImpl<CollectPay, Long> imp
 	private GroupService groupService;
 	
 	@Autowired
+	private GroupDao groupDao;
+	
+	@Autowired
 	private NonLineDao nonLineDao;
 	
 	@Autowired
 	private PayBDao payBDao;
+	
 	@Autowired
 	private AttendancePayDao attendancePayDao;
+	
 	@Autowired
 	private FarragoTaskPayDao farragoTaskPayDao;
 	
@@ -200,12 +210,13 @@ public class CollectPayServiceImpl extends BaseServiceImpl<CollectPay, Long> imp
 		List<AttendancePay> list = attendancePayList.stream().filter(AttendancePay->AttendancePay.getWorkTime()!=0).collect(Collectors.toList());
 		if(monthlyProduction.getType()==3 || monthlyProduction.getType()==4){
 			//去除管理组的员工
-			Group group= new Group();
-			group.setKindWorkId((long)116);
-			List<Group> groupList = groupService.findList(group);
+			List<Group> groupList = groupDao.findByKindWorkIdAndType((long)116, monthlyProduction.getType());
 			for(Group gp : groupList){
-				for(User user : gp.getUsers()){
-					list = list.stream().filter(AttendancePay->!AttendancePay.getUserId().equals(user.getId()) ).collect(Collectors.toList());
+				List <User> userList = userDao.findByGroupId(gp.getId());
+				if(userList.size()>0){
+					for(User user : userList){
+						list = list.stream().filter(AttendancePay->!AttendancePay.getUserId().equals(user.getId()) ).collect(Collectors.toList());
+					}
 				}
 			}
 		}
@@ -615,7 +626,7 @@ public class CollectPayServiceImpl extends BaseServiceImpl<CollectPay, Long> imp
 			payB.setUserId((Long)ps);
 			List<PayB> payBList = payBService.findPayB(payB);
 			//分组人员B工资总和
-			sumBPay = payBList.stream().mapToDouble(PayB::getPayNumber).sum();
+			sumBPay = payBList.stream().filter(PayB->PayB.getPayNumber()!=null).mapToDouble(PayB::getPayNumber).sum();
 			//杂工工资
 			double sumfarragoTaskPay = 0;
 			farragoTaskPay.setUserId((Long)ps);
@@ -680,11 +691,11 @@ public class CollectPayServiceImpl extends BaseServiceImpl<CollectPay, Long> imp
 		//组装出只属于充棉工的人员
 		CollectPay collect = null;
 		for(Group rp: groupList){
-			if(rp.getUsers().size()>0){
-				for(User us : rp.getUsers()){
+			List <User> userList = userDao.findByGroupId(rp.getId());
+			if(userList.size()>0){
+				for(User us : userList){
 					collect = new CollectPay();
 					double sumPayNumber = 0;
-					
 					//任务里查出除了充棉的类型，以外的所有任务
 					Task task= new Task();
 					task.setOrderTimeBegin(collectPay.getOrderTimeBegin());
