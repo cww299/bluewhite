@@ -72,7 +72,7 @@ public class Live  extends BaseEntity<Long>{
 	private String liveRemark;
 	
 	/**
-	 * 状态
+	 * 状态（1.现在入住 2.已经搬离）
 	 */
 	@Column(name = "type")
 	private Integer type;

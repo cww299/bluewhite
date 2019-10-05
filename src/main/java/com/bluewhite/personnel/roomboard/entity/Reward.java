@@ -65,6 +65,18 @@ public class Reward extends BaseEntity<Long> {
 	@Column(name ="remarks")
 	private String remarks;
 	
+	
+	/**
+	 * 累计奖励
+	 */
+	@Transient
+	private Double collarPrice;
+	
+	/**
+	 * 剩余奖励
+	 */
+	@Transient
+	private Double hairPrice;
 	/**
 	 * 查询字段
 	 */
@@ -129,6 +141,18 @@ public class Reward extends BaseEntity<Long> {
 	}
 	public void setOrderTimeEnd(Date orderTimeEnd) {
 		this.orderTimeEnd = orderTimeEnd;
+	}
+	public Double getCollarPrice() {
+		return collarPrice;
+	}
+	public void setCollarPrice(Double collarPrice) {
+		this.collarPrice = collarPrice;
+	}
+	public Double getHairPrice() {
+		return hairPrice;
+	}
+	public void setHairPrice(Double hairPrice) {
+		this.hairPrice = hairPrice;
 	}
 	
 	
