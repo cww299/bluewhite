@@ -17,6 +17,8 @@ import org.springframework.util.StringUtils;
 
 import com.bluewhite.base.BaseServiceImpl;
 import com.bluewhite.common.ServiceException;
+import com.bluewhite.common.SessionManager;
+import com.bluewhite.common.entity.CurrentUser;
 import com.bluewhite.common.entity.PageParameter;
 import com.bluewhite.common.entity.PageResult;
 import com.bluewhite.common.entity.PageResultStat;
@@ -63,6 +65,10 @@ public class BacthServiceImpl extends BaseServiceImpl<Bacth, Long> implements Ba
 			// 按id过滤
 			if (param.getId() != null) {
 				predicate.add(cb.equal(root.get("id").as(Long.class), param.getId()));
+			}
+			// 按分配人过滤
+			if (param.getUserId() != null) {
+				predicate.add(cb.equal(root.get("userId").as(Long.class), param.getUserId()));
 			}
 			// 按产品id
 			if (param.getProductId() != null) {
@@ -215,6 +221,8 @@ public class BacthServiceImpl extends BaseServiceImpl<Bacth, Long> implements Ba
 
 	@Override
 	public Bacth saveBacth(Bacth bacth) {
+		CurrentUser cu = SessionManager.getUserSession();
+		bacth.setUserId(cu.getId());
 		bacth.setAllotTime(ProTypeUtils.countAllotTime(bacth.getAllotTime()));
 		bacth.setStatus(0);
 		bacth.setReceive(0);

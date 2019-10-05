@@ -14,6 +14,7 @@ import javax.persistence.Transient;
 import com.bluewhite.base.BaseEntity;
 import com.bluewhite.production.bacth.entity.Bacth;
 import com.bluewhite.production.procedure.entity.Procedure;
+import com.bluewhite.system.user.entity.User;
 /**
  * 产品批次任务
  * @author zhangliang
@@ -25,7 +26,7 @@ import com.bluewhite.production.procedure.entity.Procedure;
 public class Task  extends BaseEntity<Long>{
 	
 	/**
-	 * 批次id  
+	 * 批次id
 	 */
 	@Column(name = "bacth_id")
 	private Long bacthId;
@@ -178,10 +179,17 @@ public class Task  extends BaseEntity<Long>{
 	private String  remark;
 	
 	/**
-	 * 完成任务的分组id 
+	 * 任务分配人id
 	 */
-	@Column(name = "group_id")
-	private Long  groupId;
+	@Column(name = "user_id")
+	private Long  userId;
+	
+	/**
+	 * 任务分配人
+	 */
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "user_id", referencedColumnName = "id", insertable = false, updatable = false)
+	private User user;
 	
 	/**
 	 * 查询字段
@@ -254,6 +262,23 @@ public class Task  extends BaseEntity<Long>{
     private Integer machinist;
 	
 	 
+	
+
+	public Long getUserId() {
+		return userId;
+	}
+
+	public void setUserId(Long userId) {
+		this.userId = userId;
+	}
+
+	public User getUser() {
+		return user;
+	}
+
+	public void setUser(User user) {
+		this.user = user;
+	}
 
 	public String[] getTemporaryUsersIds() {
 		return temporaryUsersIds;
@@ -269,14 +294,6 @@ public class Task  extends BaseEntity<Long>{
 
 	public void setTemporaryUserIds(String temporaryUserIds) {
 		this.temporaryUserIds = temporaryUserIds;
-	}
-
-	public Long getGroupId() {
-		return groupId;
-	}
-
-	public void setGroupId(Long groupId) {
-		this.groupId = groupId;
 	}
 
 	public Integer getMachinist() {

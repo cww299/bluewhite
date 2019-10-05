@@ -24,7 +24,9 @@ import com.bluewhite.common.BeanCopyUtils;
 import com.bluewhite.common.ClearCascadeJSON;
 import com.bluewhite.common.DateTimePattern;
 import com.bluewhite.common.Log;
+import com.bluewhite.common.SessionManager;
 import com.bluewhite.common.entity.CommonResponse;
+import com.bluewhite.common.entity.CurrentUser;
 import com.bluewhite.common.entity.ErrorCode;
 import com.bluewhite.common.entity.PageParameter;
 import com.bluewhite.production.finance.dao.PayBDao;
@@ -173,6 +175,10 @@ public class TaskAction {
 	@ResponseBody
 	public CommonResponse allTask(HttpServletRequest request, Task task, PageParameter page) {
 		CommonResponse cr = new CommonResponse();
+		CurrentUser cu = SessionManager.getUserSession();
+		if(!cu.getRole().contains("superAdmin") && !cu.getRole().contains("personnel")){
+			task.setUserId(cu.getId());
+		}
 		cr.setData(clearCascadeJSON.format(taskService.findPages(task, page)).toJSON());
 		cr.setMessage("查询成功");
 		return cr;
