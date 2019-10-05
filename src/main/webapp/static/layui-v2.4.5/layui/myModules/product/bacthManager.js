@@ -34,8 +34,6 @@ layui.config({
 		
 	};
 	
-	layui.link('static/layui-v2.4.5/layui/myModules/css/bacthManager.css');
-	
 	var baseType = ['','productFristQuality','productFristPack','productTwoDeedle','productTwoMachinist','productEightTailor'];
 	myutil.timeFormat();
 	myutil.clickTr();
