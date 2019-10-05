@@ -101,8 +101,10 @@ layui.config({
 										url:'/system/user/addTemporaryUserTime',
 										data:{
 											temporaryUserId: checked[k].id,
+											turnWorkTime: checked[k].turnWorkTime,
 											groupId: checked[k].group && checked[k].group.id,
 											temporarilyDates: $('#date').html(),
+											type: opt.type,
 										}
 									})
 								}
