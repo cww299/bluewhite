@@ -24,26 +24,26 @@ import com.bluewhite.system.user.entity.User;
 public class Temporarily extends BaseEntity<Long>{
 	
 	/**
-	 * 借调人员id
+	 * 正式人员id
 	 */
 	@Column(name = "user_id")
 	private Long userId;
 	
 	/**
-	 * 借调人员
+	 * 正式人员
 	 */
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "user_id", referencedColumnName = "id", insertable = false, updatable = false)
 	private User user;
 	
 	/**
-	 * 借调人员id(临时工id)
+	 * 临时人员id
 	 */
 	@Column(name = "temporary_user_id")
 	private Long temporaryUserId;
 	
 	/**
-	 * 借调人员
+	 * 临时人员
 	 */
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "temporary_user_id", referencedColumnName = "id", insertable = false, updatable = false)
