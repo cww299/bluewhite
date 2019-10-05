@@ -130,7 +130,7 @@ layui.config({
 				isSmall = true;
 		})
 		var todata = new Date().format('yyyy-MM-dd');
-		var firstDay = new Date().format('yyyy-04-01');
+		var firstDay = new Date().format('yyyy-MM-01');
 		laydate.render({
 			elem: '#searchTime',
 			range:'~',
