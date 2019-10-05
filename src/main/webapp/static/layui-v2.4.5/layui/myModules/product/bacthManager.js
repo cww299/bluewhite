@@ -34,6 +34,8 @@ layui.config({
 		
 	};
 	
+	layui.link('static/layui-v2.4.5/layui/myModules/css/bacthManager.css');
+	
 	var baseType = ['','productFristQuality','productFristPack','productTwoDeedle','productTwoMachinist','productEightTailor'];
 	myutil.timeFormat();
 	myutil.clickTr();
@@ -113,6 +115,7 @@ layui.config({
 	
 	
 	Class.prototype.render = function(opt){
+		
 		var isSmall = false;
 		var allProcedure = [],allUser = [];
 		myutil.getData({
