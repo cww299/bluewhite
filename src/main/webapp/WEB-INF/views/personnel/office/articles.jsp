@@ -289,6 +289,7 @@
 								align: 'center',
 								fixed: 'left',
 								totalRowText: '合计'
+								
 							},{
 								field: "createdAt",
 								title: "时间",
