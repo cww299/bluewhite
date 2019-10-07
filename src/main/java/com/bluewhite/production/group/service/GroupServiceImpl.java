@@ -1,5 +1,7 @@
 package com.bluewhite.production.group.service;
 
+import static org.hamcrest.CoreMatchers.notNullValue;
+
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;

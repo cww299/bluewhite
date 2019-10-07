@@ -5,6 +5,7 @@ import java.util.List;
 import com.bluewhite.base.BaseRepository;
 import com.bluewhite.system.user.entity.TemporaryUser;
 import com.bluewhite.system.user.entity.User;
+import java.lang.String;
 
 public interface TemporaryUserDao extends BaseRepository<TemporaryUser, Long> {
 	
@@ -14,5 +15,12 @@ public interface TemporaryUserDao extends BaseRepository<TemporaryUser, Long> {
 	 * @return list
 	 */
 	public List<TemporaryUser> findByIdIn(List<Long> ids);
+	
+	/**
+	 * 根据名字查找
+	 * @param username
+	 * @return
+	 */
+	List<TemporaryUser> findByUserName(String username);
 
 }

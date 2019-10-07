@@ -1,5 +1,7 @@
 package com.bluewhite.system.user.service;
 
+import static org.hamcrest.CoreMatchers.nullValue;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -15,15 +17,19 @@ import com.bluewhite.base.BaseServiceImpl;
 import com.bluewhite.common.ServiceException;
 import com.bluewhite.common.entity.PageParameter;
 import com.bluewhite.common.entity.PageResult;
+import com.bluewhite.common.utils.SalesUtils;
 import com.bluewhite.system.user.dao.TemporaryUserDao;
+import com.bluewhite.system.user.dao.UserDao;
 import com.bluewhite.system.user.entity.TemporaryUser;
+import com.bluewhite.system.user.entity.User;
 
 @Service
 public class TemporaryUserServiceImpl  extends BaseServiceImpl<TemporaryUser, Long> implements TemporaryUserService{
 	
 	@Autowired
 	private TemporaryUserDao dao;
-	
+	@Autowired
+	private UserDao userDao;
 	
 	@Override
 	public PageResult<TemporaryUser> getPagedUser(PageParameter page, TemporaryUser param) {
@@ -52,7 +58,13 @@ public class TemporaryUserServiceImpl  extends BaseServiceImpl<TemporaryUser, Lo
 			TemporaryUser ot = dao.findOne(temporaryUser.getId());
 			update(temporaryUser, ot);
 		}else{
+			//保证临时人员id和正式人员id不重复
 			temporaryUser.setStatus(0);
+			List<TemporaryUser> temporaryUserOld = dao.findByUserName(temporaryUser.getUserName());
+			if(temporaryUserOld.size()>0){
+				throw new ServiceException("该临时人员姓名已存在,请先查找，如是重名员工，请联系管理员");
+			}
+			temporaryUser.setId(Long.parseLong(SalesUtils.findRandomCode()));;
 			dao.save(temporaryUser);
 		}
 	}
