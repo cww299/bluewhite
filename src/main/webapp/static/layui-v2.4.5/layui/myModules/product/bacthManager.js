@@ -275,6 +275,11 @@ layui.config({
 						menuTree.render({				
 				    	  elem:'#userTree',
 				    	  data : allUser,
+				    	  showName: function(data){
+				    		  if(data.id=='-1')
+				    			  return data.name;
+			    			  return data.name+'  --- '+data.time;
+				    	  }
 						})
 						var checked = [];
 						if(opt.type==2){	//如果是包装，默认选中包装工序的全部，除去上车
@@ -353,10 +358,10 @@ layui.config({
 						}
 						var saveData = {
 								type: opt.type,
-								userIds: userIds.join(','),
-								ids: ids.join(','),
-								temporaryUserIds: temporaryUserIds.join(','),
-								temporaryIds:temporaryIds.join(','),
+								userIds: ids.join(','), 
+								ids:  userIds.join(','),
+								temporaryUserIds: temporaryIds.join(','),
+								temporaryIds: temporaryUserIds.join(','),
 								procedureIds: procedureIds.join(','),
 								number: $('#number').val(),
 								allotTime: $('#allotTime').val(),
@@ -578,7 +583,8 @@ layui.config({
 											for(var k in t)
 												data.children[0].children.push({
 													id: 't-'+t[k].id+'~'+t[k].userId,
-													name: t[k].name
+													name: t[k].name,
+													time: t[k].time,
 												});
 										}
 										if(groupPeople.userList && groupPeople.userList.length>0){
@@ -586,7 +592,8 @@ layui.config({
 											for(var k in t)
 												data.children[1].children.push({
 													id: t[k].id+'~'+t[k].userId,
-													name: t[k].name
+													name: t[k].name,
+													time: t[k].time,
 												})
 										}
 										allUser.push(data);
