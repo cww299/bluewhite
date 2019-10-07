@@ -216,7 +216,9 @@ layui.config({
 								elem:'#lookoverTable',
 								url: opt.ctx+'/production/allGroup?id='+obj.data.id,
 								where:{ temporarilyDate: now,  },
+								toolbar:'<div><span class="layui-btn layui-btn-danger layui-btn-sm" lay-event="deletes">批量删除</span></div>',
 								cols:[[
+								    { type:'checkbox', },
 									{ field:'name', title:'人名' },
 									{ field:'time', title:'所在组工作时长', },
 									{ field:'isTemp', title:'是否临时',filter:true, },
@@ -237,6 +239,33 @@ layui.config({
 									}
 									return {  msg:r.message,  code:r.code , data:data, }
 								},
+							})
+							table.on('toolbar(lookoverTable)',function(obj){
+								var checked = layui.table.checkStatus('lookoverTable').data;
+								if(obj.event=='deletes'){
+									if(checked.length==0)
+										return myutil.emsg('请选择信息删除');
+									var userIds = [], temporarilyIds = [];
+									for(var i in checked)
+										if(checked[i].isTemp=='否'){
+											userIds.push(checked[i].id);
+											return myutil.emsg('不能删除非临时员工');
+										}
+										else
+											temporarilyIds.push(checked[i].id);
+									var load = layer.load(1);
+									myutil.deleteAjax({
+										url: '/production/deleteTemporarily',
+										ids: temporarilyIds.join(','),
+									})
+									/* 删除非临时员工
+									myutil.deleteAjax({
+										url: '/production/deleteTemporarily',
+										ids: userIds.join(','),
+									})
+									*/
+									layer.close(load);
+								}
 							})
 						}
 						form.on('submit(search)',function(obj){
