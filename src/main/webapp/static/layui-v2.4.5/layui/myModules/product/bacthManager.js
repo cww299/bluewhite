@@ -210,7 +210,8 @@ layui.config({
 			url: opt.ctx+'/bacth/allBacth?type='+opt.type,
 			totalRow:['number','sumTaskPrice','time'],
 			parseData:function(ret){
-				statData = ret.data.statData;
+				if(ret.code==0)
+					statData = ret.data.statData;
 				return {  msg:ret.message,  code:ret.code , data:ret.data.rows, count:ret.data.total }; 
 			},
 			where: {
@@ -247,38 +248,8 @@ layui.config({
 					html = h;
 				})
 				var now = myutil.getSubDay( isSmall ? 0 : 1 );
-				//获取所有工序的树形结构
-				var procedureTree = [{
-					id:-1,name:'全部',children:[],
-				}];
-				for(var k in allProcedure){
-					(function(name,id){
-						var da = { id:-1, name:name, children:[] }
-						$.ajax({
-							url: opt.ctx+'/production/typeToProcedure',
-							async: false,
-							data: {
-								productId: trData.product.id,
-								bacthId: trData.id,
-								type: opt.type,
-								procedureTypeId: id,
-								flag: 0,
-							},
-							success:function(r){
-								if(r.code==0){
-									for(var i in r.data){
-										da.children.push({
-											id: r.data[i].id+'-'+r.data[i].residualNumber,	//拼接剩余数量，用于判断是否为0
-											name: r.data[i].name,
-											number: r.data[i].residualNumber,
-										})
-									}
-									procedureTree[0].children.push(da);
-								}
-							}
-						})
-					})(allProcedure[k].name,allProcedure[k].id);
-				}
+				var procedureTree = [];
+				getAllProcedureTree();
 				var area = isSmall?['100%','80%']:['60%','80%'];
 				var allotWin = layer.open({		//分配弹窗
 					type:1,
@@ -347,7 +318,9 @@ layui.config({
 								}
 							})
 						}
-						$('#number').val(trData.number);
+						if(opt.type==1 || opt.type==2){
+							$('#number').val(trData.number);
+						}
 						form.render();
 					},
 					yes:function(){
@@ -390,12 +363,13 @@ layui.config({
 								if(opt.type==1 || opt.type==2)
 									layer.close(allotWin);
 								else{
-									getUserData(now);
+									getAllProcedureTree();	//重新获取工序进行重载
 									menuTree.reload('userTree',{
 										checked:[],
 									})
 									menuTree.reload('procedureTree',{
 										checked:[],
+										data: procedureTree,
 									})
 								}
 								table.reload('tableData');
@@ -403,6 +377,39 @@ layui.config({
 						})
 					}
 				})
+				function getAllProcedureTree(){	//获取所有工序的树形结构
+					procedureTree = [{
+						id:-1,name:'全部',children:[],
+					}];
+					for(var k in allProcedure){
+						(function(name,id){
+							var da = { id:-1, name:name, children:[] }
+							$.ajax({
+								url: opt.ctx+'/production/typeToProcedure',
+								async: false,
+								data: {
+									productId: trData.product.id,
+									bacthId: trData.id,
+									type: opt.type,
+									procedureTypeId: id,
+									flag: 0,
+								},
+								success:function(r){
+									if(r.code==0){
+										for(var i in r.data){
+											da.children.push({
+												id: r.data[i].id+'-'+r.data[i].residualNumber,	//拼接剩余数量，用于判断是否为0
+												name: r.data[i].name,
+												number: r.data[i].residualNumber,
+											})
+										}
+										procedureTree[0].children.push(da);
+									}
+								}
+							})
+						})(allProcedure[k].name,allProcedure[k].id);
+					}
+				}
 			}
 		})
 		function finish(){
@@ -552,7 +559,7 @@ layui.config({
 												name: name,
 												children:[
 												          { id:'-1', name:'临时员工' ,children:[]},
-												          { id:'-1', name:'非临时员工',children:[] },
+												          { id:'-1', name:'正式员工',children:[] },
 												          ]
 										};
 										if(groupPeople.temporarilyUser && groupPeople.temporarilyUser.length>0){
