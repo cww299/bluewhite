@@ -5,6 +5,7 @@ import java.util.List;
 
 import com.bluewhite.base.BaseRepository;
 import com.bluewhite.system.user.entity.User;
+import java.io.Serializable;
 
 public interface UserDao extends BaseRepository<User, Long> {
 	/**
@@ -74,4 +75,5 @@ public interface UserDao extends BaseRepository<User, Long> {
 	 * 根据分组查看员工
 	 */
 	public List<User> findByGroupId(Long groupId);
+	
 }
