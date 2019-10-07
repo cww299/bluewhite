@@ -323,11 +323,13 @@ public class GroupAction {
 	@ResponseBody
 	public CommonResponse updateTemporarily(Temporarily temporarily) {
 		CommonResponse cr = new CommonResponse();
-		if (StringUtils.isEmpty(temporarily.getUserId())) {
+		if (temporarily.getId()!=null) {
 			Temporarily oldtemporarily = temporarilyDao.findOne(temporarily.getId());
 			BeanCopyUtils.copyNotEmpty(temporarily, oldtemporarily);
 			temporarilyDao.save(oldtemporarily);
 			cr.setMessage("修改成功");
+		}else{
+			cr.setMessage("不能为空");
 		}
 		return cr;
 	}
