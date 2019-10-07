@@ -533,7 +533,6 @@ layui.config({
 								},
 								success:function(r){
 									if(r.code==0){
-										console.log(r)
 										var groupPeople = r.data;
 										var data = {
 												id:-1,
@@ -562,7 +561,6 @@ layui.config({
 							})
 						})(allGroup[k].name);
 					}
-					console.log(allUser)
 				}
 			});
 		}
