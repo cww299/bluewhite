@@ -260,9 +260,6 @@
 		  	this.setCount = function(count){
 		  		_count=count;
 		  	}
-		  	 function p(s) {
-					return s < 10 ? '0' + s: s;
-					}
 			  	var myDate = new Date(new Date().getTime() - 86400000);
 				//获取当前年
 				var year=myDate.getFullYear();
@@ -271,8 +268,11 @@
 				//获取当前日
 				var date=myDate.getDate(); 
 				var day = new Date(year,month,0);  
-				var firstdate = year + '-' + '0'+month + '-01'+' '+'00:00:00';
-				var lastdate = year + '-' + '0'+month + '-' + day.getDate() +' '+'23:59:59'; 
+				if(month < 10){
+					month = "0" + month;
+					}
+				var firstdate = year + '-' +month + '-01'+' '+'00:00:00';
+				var lastdate = year + '-' +month + '-' + day.getDate() +' '+'23:59:59'; 
 			 layui.use(['laydate'],function(){
 					var laydate = layui.laydate;
 					laydate.render({
