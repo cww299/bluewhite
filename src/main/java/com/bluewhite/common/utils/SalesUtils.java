@@ -49,12 +49,13 @@ public class SalesUtils {
      * 获取4位数随机码
      */
     public static String findRandomCode(){
-        int intCount = (new Random()).nextInt(9999);// 最大值位9999
-        if (intCount < 1000) {
-            intCount += 1000; // 最小值位1001
+        int intCount = (new Random()).nextInt(99999);// 最大值位9999
+        if (intCount < 10000) {
+            intCount += 10000; // 最小值位1001
         }
         return String.valueOf(intCount);
     }
+    
 
     /**
      * 获取加密的手机号

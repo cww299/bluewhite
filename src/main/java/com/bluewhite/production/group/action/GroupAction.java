@@ -139,7 +139,7 @@ public class GroupAction {
 		Date startTime = DatesUtil.getfristDayOftime(ProTypeUtils.countAllotTime(temporarilyDate));
 		Date endTime = DatesUtil.getLastDayOftime(ProTypeUtils.countAllotTime(temporarilyDate));
 		if (group.getType() == 1 || group.getType() == 2 || group.getType() == 3) {
-			List<Temporarily> temporarilyList = temporarilyDao.findByTypeAndTemporarilyDate(group.getType(),startTime);
+			List<Temporarily> temporarilyList = temporarilyDao.findByTypeAndTemporarilyDateAndGroupId(group.getType(),startTime,id);
 			List<AttendancePay> attendancePayList = attendancePayDao.findByGroupIdAndTypeAndAllotTimeBetween(id,group.getType(), startTime, endTime);
 			List<Map<String, Object>> userList = new ArrayList<>();
 			List<Map<String, Object>> temporarilyUserList = new ArrayList<>();
