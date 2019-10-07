@@ -113,6 +113,7 @@ layui.config({
 	
 	
 	Class.prototype.render = function(opt){
+		
 		var isSmall = false;
 		var allProcedure = [],allUser = [];
 		myutil.getData({
@@ -127,7 +128,7 @@ layui.config({
 				isSmall = true;
 		})
 		var todata = new Date().format('yyyy-MM-dd');
-		var firstDay = new Date().format('yyyy-04-01');
+		var firstDay = new Date().format('yyyy-MM-01');
 		laydate.render({
 			elem: '#searchTime',
 			range:'~',
@@ -333,6 +334,7 @@ layui.config({
 						form.render();
 					},
 					yes:function(){
+						var load = layer.load(1);
 						var userIds = [],procedureIds = [],temporaryUserIds = [];
 						var userTreeId = menuTree.getVal('userTree'),procedureTreeId = menuTree.getVal('procedureTree');
 						for(var i in userTreeId){	
@@ -369,6 +371,7 @@ layui.config({
 								table.reload('tableData');
 							}
 						})
+						layer.close(load);
 					}
 				})
 			}
