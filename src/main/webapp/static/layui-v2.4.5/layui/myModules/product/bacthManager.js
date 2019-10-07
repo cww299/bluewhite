@@ -113,7 +113,6 @@ layui.config({
 	
 	
 	Class.prototype.render = function(opt){
-		
 		var isSmall = false;
 		var allProcedure = [],allUser = [];
 		myutil.getData({
@@ -184,7 +183,6 @@ layui.config({
 			    	   return '<span class="layui-btn layui-btn-sm">分配</span>';
 			       	 } },
 			      ];
-			
 		}
 		if(isSmall){
 			col = [
@@ -204,10 +202,8 @@ layui.config({
 			elem:'#tableData',
 			url: '/bacth/allBacth?type='+opt.type,
 			totalRow:['number','sumTaskPrice','time'],
-			/*width:'100%',*/
 			parseData:function(ret){
-				if(ret.code==0)
-					statData = ret.data.statData;
+				statData = ret.data.statData;
 				return {  msg:ret.message,  code:ret.code , data:ret.data.rows, count:ret.data.total }; 
 			},
 			where: {
@@ -244,11 +240,7 @@ layui.config({
 				laytpl(ALLO_TPL).render({},function(h){
 					html = h;
 				})
-				var now = new Date();
-				if(!isSmall){
-					now.setTime(now.getTime()-24*60*60*1000);
-				}
-				now = now.format('yyyy-MM-dd 00:00:00');
+				var now = myutil.getSubDay( isSmall ? 0 : 1 );
 				//获取所有工序的树形结构
 				var procedureTree = [{
 					id:-1,name:'全部',children:[],
@@ -281,10 +273,8 @@ layui.config({
 						})
 					})(allProcedure[k].name,allProcedure[k].id);
 				}
-				var area = ['60%','80%'];
-				if(isSmall)
-					area = ['100%','80%'];
-				var allotWin = layer.open({
+				var area = isSmall?['100%','80%']:['60%','80%'];
+				var allotWin = layer.open({		//分配弹窗
 					type:1,
 					area: area,
 					offset:'20px',
@@ -454,9 +444,7 @@ layui.config({
 					laytpl(LOOKOVER_ALLOT).render({},function(h){
 						html = h;
 					})
-					var area = ['80%','80%'];
-					if(isSmall)
-						area = ['100%','80%'];
+					var area = isSmall?['100%','80%']:['80%','80%'];
 					layer.open({
 						type:1,
 						title: check[0].product.name,
@@ -569,11 +557,6 @@ layui.config({
 				}
 			});
 		}
-		
-		
-		
-		
-		
 	}//end render
 	bacthManager.render = function(opt){
 		var s = new Class();
