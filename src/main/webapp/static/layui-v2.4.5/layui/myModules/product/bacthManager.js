@@ -512,7 +512,7 @@ layui.config({
 		function getUserData(day){
 			allUser = [];
 			myutil.getDataSync({	//获取所有分组用户的树形结构数据
-				url:'/production/getGroup?type='+opt.type,
+				url: opt.ctx+'/production/getGroup?type='+opt.type,
 				success:function(allGroup){
 					for(var k in allGroup){
 						(function(name){

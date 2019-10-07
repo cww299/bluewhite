@@ -134,7 +134,7 @@ layui.config({
 								})
 								$('#addUserId').append(allPeople);
 								myutil.getData({
-									url:'/production/getGroup?type='+opt.type,
+									url: opt.ctx+'/production/getGroup?type='+opt.type,
 									success:function(d){
 										var html = '';
 										for(var k in d){
