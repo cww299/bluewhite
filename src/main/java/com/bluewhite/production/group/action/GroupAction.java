@@ -403,7 +403,7 @@ public class GroupAction {
 				count++;
 			}
 		}
-		cr.setMessage("成功删除"+count+"个分组");
+		cr.setMessage("成功删除"+count+"个");
 		return cr;
 	}
 

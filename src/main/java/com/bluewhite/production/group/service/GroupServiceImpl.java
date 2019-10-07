@@ -1,5 +1,7 @@
 package com.bluewhite.production.group.service;
 
+import static org.hamcrest.CoreMatchers.notNullValue;
+
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -284,7 +286,7 @@ public class GroupServiceImpl extends BaseServiceImpl<Group, Long> implements Gr
 			query.orderBy(cb.asc(root.get("temporarilyDate").as(Long.class)));  
 			return null;
 		});
-		return result;
+		return result.stream().filter(Temporarily->Temporarily.getUserId()!=null).collect(Collectors.toList());
 	}
 
 }
