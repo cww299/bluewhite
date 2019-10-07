@@ -341,9 +341,10 @@ public class GroupAction {
 		CommonResponse cr = new CommonResponse();
 		List<Temporarily> temporarilyList = temporarilyDao.findByTypeAndTemporarilyDate(type, temporarilyDate);
 		cr.setData(ClearCascadeJSON.get()
-				.addRetainTerm(Temporarily.class, "id", "userId", "workTime", "temporarilyDate", "groupName", "group",
-						"user")
-				.addRetainTerm(User.class, "userName").addRetainTerm(Group.class, "name").format(temporarilyList)
+				.addRetainTerm(Temporarily.class, "id","workTime", "temporarilyDate", "groupName", "group","user")
+				.addRetainTerm(User.class, "id","userName")
+				.addRetainTerm(Group.class,"id","name")
+				.format(temporarilyList)
 				.toJSON());
 		cr.setMessage("查询成功");
 		return cr;
