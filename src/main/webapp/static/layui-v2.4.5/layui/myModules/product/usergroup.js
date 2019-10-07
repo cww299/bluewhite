@@ -201,16 +201,29 @@ layui.config({
 							parseData:function(r){
 								var data = [];
 								if(r.code==0){
-									if(r.data.temporarilyUser)
-										for(var k in r.data.temporarilyUser){
-											r.data.temporarilyUser[k].isTemp = '是';
-											data.push(r.data.temporarilyUser[k])
+									if(obj.data.id==0){	//如果是借调组
+										for(var k in r.data){
+											data.push({
+												id: r.data[k].id,
+												isTemp: '否',
+												name: r.data[k].user.userName,
+												time: r.data[k].workTime,
+											})
 										}
-									if(r.data.userList)
-										for(var k in r.data.userList){
-											r.data.userList[k].isTemp = '否';
-											data.push(r.data.userList[k])
-										}
+									}
+									else {
+										if(r.data.userList)
+											for(var k in r.data.userList){
+												r.data.userList[k].isTemp = '否';
+												data.push(r.data.userList[k])
+											}
+										if(r.data.temporarilyUser)
+											for(var k in r.data.temporarilyUser){
+												r.data.temporarilyUser[k].isTemp = '是';
+												data.push(r.data.temporarilyUser[k])
+											}
+									}
+										
 								}
 								return {  msg:r.message,  code:r.code , data:data, }
 							},
