@@ -257,6 +257,9 @@ layui.config({
 									myutil.deleteAjax({
 										url: '/production/deleteTemporarily',
 										ids: temporarilyIds.join(','),
+										success:function(){
+											table.reload('lookoverTable');
+										}
 									})
 									/* 删除非临时员工
 									myutil.deleteAjax({
