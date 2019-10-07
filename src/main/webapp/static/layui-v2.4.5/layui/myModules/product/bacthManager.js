@@ -198,6 +198,13 @@ layui.config({
 			      ];
 		}
 		var statData = '';
+		var toolbar = ['<span class="layui-btn layui-btn-sm" lay-event="onekeyFinish">一键完成</span>',
+				          '<span class="layui-btn layui-btn-sm" lay-event="lookover">查看分配工序</span>'];
+		if(opt.type==4){	//二楼机工增加导出按钮
+			toolbar.push(
+				'<span class="layui-btn layui-btn-sm" lay-event="export">导出工序</span>'
+			)
+		}
 		mytable.render({
 			elem:'#tableData',
 			url: opt.ctx+'/bacth/allBacth?type='+opt.type,
@@ -221,8 +228,7 @@ layui.config({
 				btn:[4],
 				otherBtn: finish(),
 			},
-			toolbar: ['<span class="layui-btn layui-btn-sm" lay-event="onekeyFinish">一键完成</span>',
-			          '<span class="layui-btn layui-btn-sm" lay-event="lookover">查看分配工序</span>'].join(' '),
+			toolbar: toolbar.join(' '),
             limit:'14',
             limits:[10,14,20,50],
 			cols:[col],
@@ -381,7 +387,8 @@ layui.config({
 							url:'/task/addTask',
 							data:saveData,
 							success:function(){
-								layer.close('allotWin');
+								if(opt.type==1 || opt.type==2)
+									layer.close(allotWin);
 								table.reload('tableData');
 							}
 						})
@@ -395,6 +402,7 @@ layui.config({
 				switch(obj.event){
 				case 'onekeyFinish': onekeyFinish(); break;
 				case 'lookover': lookover(); break;
+				case 'export' : exportProcedure(); break;
 				}
 				function onekeyFinish(){
 					var inputTime = layer.open({
@@ -503,6 +511,11 @@ layui.config({
 							})
 						}
 					})//later open end
+				}
+				function exportProcedure(){	//导出工序
+					if(check.length!=1)
+						return myutil.emsg('只能选择一条信息导出！');
+					location.href= opt.ctx+'/excel/importExcel/DownBacth?id='+check[0].id;
 				}
 			}
 		}//end finish
