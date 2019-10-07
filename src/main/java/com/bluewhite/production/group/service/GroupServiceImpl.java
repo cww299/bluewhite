@@ -286,7 +286,7 @@ public class GroupServiceImpl extends BaseServiceImpl<Group, Long> implements Gr
 			query.orderBy(cb.asc(root.get("temporarilyDate").as(Long.class)));  
 			return null;
 		});
-		return result.stream().filter(Temporarily->Temporarily.getUserId()!=null).collect(Collectors.toList());
+		return result;
 	}
 
 }
