@@ -242,7 +242,7 @@
 		  	this.setCount = function(count){
 		  		_count=count;
 		  	}
-			 
+		  	
 			 var myDate = new Date(new Date().getTime() - 86400000);
 				//获取当前年
 				var year=myDate.getFullYear();
