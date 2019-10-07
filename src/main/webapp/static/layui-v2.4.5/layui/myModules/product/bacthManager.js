@@ -378,7 +378,7 @@ layui.config({
 							};
 						if(opt.type==1)
 							saveData.holeNumber = tiepidongNumber;
-						myutil.saveAjaxSync({
+						myutil.saveAjax({
 							url:'/task/addTask',
 							data:saveData,
 							success:function(){
