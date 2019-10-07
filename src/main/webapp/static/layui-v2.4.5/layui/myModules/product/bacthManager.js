@@ -250,7 +250,7 @@ layui.config({
 				now = now.format('yyyy-MM-dd 00:00:00');
 				//获取所有工序的树形结构
 				var procedureTree = [{
-						id:-1,name:'全部',children:[],
+					id:-1,name:'全部',children:[],
 				}];
 				for(var k in allProcedure){
 					(function(name,id){
@@ -280,9 +280,9 @@ layui.config({
 						})
 					})(allProcedure[k].name,allProcedure[k].id);
 				}
-				var area = ['50%','80%'];
+				var area = ['60%','80%'];
 				if(isSmall)
-					area = ['90%','80%'];
+					area = ['100%','80%'];
 				var allotWin = layer.open({
 					type:1,
 					area: area,
@@ -533,7 +533,6 @@ layui.config({
 								},
 								success:function(r){
 									if(r.code==0){
-										console.log(r)
 										var groupPeople = r.data;
 										var data = {
 												id:-1,
@@ -562,7 +561,6 @@ layui.config({
 							})
 						})(allGroup[k].name);
 					}
-					console.log(allUser)
 				}
 			});
 		}

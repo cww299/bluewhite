@@ -7,7 +7,7 @@
 }
 .userDiv,.procedureDiv{
 	float:left;
-	width:45%;
+	width:50%;
 	height: 90%;
 }
 .layui-form-item{
@@ -19,7 +19,8 @@
     width: 80%;
     height: 80%;
     margin: auto;
-    overflow-y: scroll;
+    overflow-y: auto;
+    overflow-x: auto;
 }
 .procedureDiv p{
 	margin-left: 25px;
@@ -56,5 +57,6 @@
 	}
 	#userTree,#procedureTree{
 		border: 1px solid #0000008f;;
+		width: 90%;
 	}
 }
