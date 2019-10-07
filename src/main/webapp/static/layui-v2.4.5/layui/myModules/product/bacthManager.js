@@ -339,6 +339,8 @@ layui.config({
 								var id = procedureTreeId[i].split('-');
 								if(id[1]==0)
 									return myutil.emsg('选择的工序剩余数量不能为0');
+								if(id[1]>$('#number').val())
+									return myutil.emsg('选择的工序剩余数量不能为任务分配数量');
 								procedureIds.push(id[0]);
 							}
 						}
