@@ -1,7 +1,5 @@
 package com.bluewhite.system.user.service;
 
-import static org.hamcrest.CoreMatchers.nullValue;
-
 import java.util.ArrayList;
 import java.util.List;
 
@@ -21,7 +19,6 @@ import com.bluewhite.common.utils.SalesUtils;
 import com.bluewhite.system.user.dao.TemporaryUserDao;
 import com.bluewhite.system.user.dao.UserDao;
 import com.bluewhite.system.user.entity.TemporaryUser;
-import com.bluewhite.system.user.entity.User;
 
 @Service
 public class TemporaryUserServiceImpl  extends BaseServiceImpl<TemporaryUser, Long> implements TemporaryUserService{
@@ -42,6 +39,10 @@ public class TemporaryUserServiceImpl  extends BaseServiceImpl<TemporaryUser, Lo
 			// 按姓名查找
 			if (!StringUtils.isEmpty(param.getUserName())) {
 				predicate.add(cb.like(root.get("userName").as(String.class),"%"+param.getUserName()+"%"));
+			}
+			// 按分组id过滤
+			if (param.getGroupId() != null) {
+				predicate.add(cb.equal(root.get("groupId").as(Long.class), param.getGroupId()));
 			}
 			Predicate[] pre = new Predicate[predicate.size()];
 			query.where(predicate.toArray(pre));
