@@ -149,7 +149,8 @@ public class GroupAction {
 					// 查询出该分组临时员工的出勤数据
 					if (temporarily.getTemporaryUserId() != null) {
 						Map<String, Object>  temporarilyUserMap = new HashMap<>();
-						temporarilyUserMap.put("id", temporarily.getId());
+						temporarilyUserMap.put("id", temporarily.getTemporaryUserId());
+						temporarilyUserMap.put("userId", temporarily.getId());
 						temporarilyUserMap.put("secondment", 0);
 						temporarilyUserMap.put("name",temporarily.getTemporaryUser().getUserName());
 						temporarilyUserMap.put("time",temporarily.getWorkTime());
@@ -158,7 +159,8 @@ public class GroupAction {
 					// 查询出该分组本厂借调员工的出勤数据
 					if (temporarily.getUserId() != null) {
 						Map<String, Object>  userMap = new HashMap<>();
-						userMap.put("id", temporarily.getId());
+						userMap.put("id", temporarily.getUserId());
+						userMap.put("userId", temporarily.getId());
 						userMap.put("secondment", 0);
 						userMap.put("name",temporarily.getUser().getUserName());
 						userMap.put("time",temporarily.getWorkTime());
@@ -172,7 +174,8 @@ public class GroupAction {
 				// 查询出该分组本厂员工的出勤数据
 				for (AttendancePay attendancePay : attendancePayList) {
 					Map<String, Object>  userMap = new HashMap<>();
-					userMap.put("id", attendancePay.getId());
+					userMap.put("id", attendancePay.getUserId());
+					userMap.put("userId", attendancePay.getId());
 					userMap.put("secondment", 1);
 					userMap.put("name",attendancePay.getUserName());
 					userMap.put("time",attendancePay.getWorkTime());
@@ -323,11 +326,13 @@ public class GroupAction {
 	@ResponseBody
 	public CommonResponse updateTemporarily(Temporarily temporarily) {
 		CommonResponse cr = new CommonResponse();
-		if (StringUtils.isEmpty(temporarily.getUserId())) {
+		if (temporarily.getId()!=null) {
 			Temporarily oldtemporarily = temporarilyDao.findOne(temporarily.getId());
 			BeanCopyUtils.copyNotEmpty(temporarily, oldtemporarily);
 			temporarilyDao.save(oldtemporarily);
 			cr.setMessage("修改成功");
+		}else{
+			cr.setMessage("不能为空");
 		}
 		return cr;
 	}
