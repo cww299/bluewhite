@@ -190,18 +190,41 @@ layui.config({
 							value:now,
 							type:'datetime'
 						})
-						var idOrType = '?id='+obj.data.id,url='/production/allGroup';
-						if(obj.data.id==0){
+						var idOrType = '?id='+obj.data.id
+							,url='/production/allGroup'
+							, cols = [
+								       { field:'name', title:'人名' },
+								       { field:'time', title:'所在组工作时长', },
+								       { field:'isTemp', title:'是否临时',filter:true, },
+								       ];
+						
+						if(obj.data.id==0){		//如果查看的是借调组人员
 							idOrType = '?type='+opt.type;
 							url = '/production/getTemporarily';
+							cols = [
+								       
+							       ];
 						};
-						mytable.renderNoPage({
-							elem:'#lookoverTable',
-							url: url+idOrType,
-							parseData:function(r){
-								var data = [];
-								if(r.code==0){
-									if(obj.data.id==0){	//如果是借调组
+						
+						
+						if(obj.data.id==0){		//如果查看的是借调组人员
+							mytable.renderNoPage({
+								elem:'#lookoverTable',
+								url: '/production/getTemporarily?type='+opt.type,
+								where:{  temporarilyDate: now, },
+								autoUpdate:{
+									saveUrl:'/production/updateTemporarily',
+									field:{ time:'', },
+								},
+								cols:[[
+									{ field:'name', title:'人名' },
+									{ field:'time', title:'所在组工作时长',edit:true, },
+									{ field:'time', title:'所在小组',  },
+									{ field:'isTemp', title:'是否临时',filter:true, },
+								]],
+								parseData:function(r){
+									var data = [];
+									if(r.code==0){
 										for(var k in r.data){
 											data.push({
 												id: r.data[k].id,
@@ -211,7 +234,22 @@ layui.config({
 											})
 										}
 									}
-									else {
+									return {  msg:r.message,  code:r.code , data:data, }
+								},
+							})
+						}else{
+							mytable.renderNoPage({
+								elem:'#lookoverTable',
+								url: '/production/allGroup',
+								where:{ temporarilyDate: now, },
+								cols:[[
+									{ field:'name', title:'人名' },
+									{ field:'time', title:'所在组工作时长', },
+									{ field:'isTemp', title:'是否临时',filter:true, },
+								]],
+								parseData:function(r){
+									var data = [];
+									if(r.code==0){
 										if(r.data.userList)
 											for(var k in r.data.userList){
 												r.data.userList[k].isTemp = '否';
@@ -223,34 +261,10 @@ layui.config({
 												data.push(r.data.temporarilyUser[k])
 											}
 									}
-										
-								}
-								return {  msg:r.message,  code:r.code , data:data, }
-							},
-							where:{
-								temporarilyDate: now,
-							},
-							cols:[[
-							       { field:'name', title:'人名' },
-							       { field:'time', title:'所在组工作时长',edit:true, },
-							       { field:'isTemp', title:'是否临时',filter:true, },
-							       ]],
-							done:function(){
-								table.on('edit(lookoverTable)',function(obj){
-									var url = '';
-									if(obj.data.isTemp=='是')
-										url = '/system/user/addTemporaryUser';
-									var data = {
-										id: obj.data.id,
-										time: obj.data.time,
-									};
-									myutil.saveAjax({
-										url: url,
-										data: data,
-									})
-								})
-							}
-						})
+									return {  msg:r.message,  code:r.code , data:data, }
+								},
+							})
+						}
 						form.on('submit(search)',function(obj){
 							table.reload('lookoverTable',{
 								where: obj.field,
