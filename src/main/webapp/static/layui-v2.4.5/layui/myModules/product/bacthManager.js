@@ -389,6 +389,15 @@ layui.config({
 							success:function(){
 								if(opt.type==1 || opt.type==2)
 									layer.close(allotWin);
+								else{
+									getUserData(now);
+									menuTree.reload('userTree',{
+										checked:[],
+									})
+									menuTree.reload('procedureTree',{
+										checked:[],
+									})
+								}
 								table.reload('tableData');
 							}
 						})
