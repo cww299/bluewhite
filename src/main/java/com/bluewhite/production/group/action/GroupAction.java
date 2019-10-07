@@ -339,7 +339,8 @@ public class GroupAction {
 	@ResponseBody
 	public CommonResponse getTemporarily(Integer type, Date temporarilyDate) {
 		CommonResponse cr = new CommonResponse();
-		List<Temporarily> temporarilyList = temporarilyDao.findByTypeAndTemporarilyDate(type, temporarilyDate);
+		List<Temporarily> temporarilyList = temporarilyDao.findByTypeAndTemporarilyDate(type, temporarilyDate)
+				.stream().filter(Temporarily->Temporarily.getUserId()!=null).collect(Collectors.toList());
 		cr.setData(ClearCascadeJSON.get()
 				.addRetainTerm(Temporarily.class, "id","workTime", "temporarilyDate", "groupName", "group","user")
 				.addRetainTerm(User.class, "id","userName")
