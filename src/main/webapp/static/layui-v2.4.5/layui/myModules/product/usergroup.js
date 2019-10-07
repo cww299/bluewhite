@@ -250,7 +250,7 @@ layui.config({
 										if(checked[i].secondment=='1')
 											return myutil.emsg('不能删除正式包装员工，请去工资总汇删除');
 										else
-											temporarilyIds.push(checked[i].id);
+											temporarilyIds.push(checked[i].userId);
 									myutil.deleteAjax({
 										url: '/production/deleteTemporarily',
 										ids: temporarilyIds.join(','),
