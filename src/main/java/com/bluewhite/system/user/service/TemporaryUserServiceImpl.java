@@ -46,7 +46,7 @@ public class TemporaryUserServiceImpl  extends BaseServiceImpl<TemporaryUser, Lo
 	}
 
 	@Override
-	
+	@Transactional
 	public void addTemporaryUser(TemporaryUser temporaryUser) {
 		if(temporaryUser.getId()!=null){
 			TemporaryUser ot = dao.findOne(temporaryUser.getId());

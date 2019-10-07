@@ -89,7 +89,7 @@ public class TaskServiceImpl extends BaseServiceImpl<Task, Long> implements Task
 		if (!StringUtils.isEmpty(task.getTemporaryUserIds())) {
 			task.setTemporaryUsersIds(task.getTemporaryUserIds().split(","));
 			//临时员工ids
-			temporaryUserIdList = Arrays.asList(task.getTemporaryUserIds()).stream().map(a -> Long.parseLong(a)).collect(Collectors.toList());
+			temporaryUserIdList = Arrays.asList(task.getTemporaryUsersIds()).stream().map(a -> Long.parseLong(a)).collect(Collectors.toList());
 		}
 		//正式员工
 		List<User> userList = userDao.findByIdIn(userIdList);
@@ -171,7 +171,7 @@ public class TaskServiceImpl extends BaseServiceImpl<Task, Long> implements Task
 					//临时员工
 					if(task.getTemporaryUsersIds()!=null && task.getTemporaryUsersIds().length>0){
 						for (String userId : task.getTemporaryUsersIds()) {
-							Temporarily temporarilyList = temporarilyDao.findByUserIdAndTemporarilyDateAndType(Long.parseLong(userId), orderTimeBegin, task.getType()); 
+							Temporarily temporarilyList = temporarilyDao.findByTemporaryUserIdAndTemporarilyDateAndType(Long.parseLong(userId), orderTimeBegin, task.getType()); 
 							sumTime += temporarilyList.getWorkTime();
 						}
 					}
