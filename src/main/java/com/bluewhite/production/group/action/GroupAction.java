@@ -139,8 +139,7 @@ public class GroupAction {
 		Date startTime = DatesUtil.getfristDayOftime(ProTypeUtils.countAllotTime(temporarilyDate));
 		Date endTime = DatesUtil.getLastDayOftime(ProTypeUtils.countAllotTime(temporarilyDate));
 		if (group.getType() == 1 || group.getType() == 2 || group.getType() == 3) {
-			List<Temporarily> temporarilyList = temporarilyDao.findByTypeAndTemporarilyDateAndGroupId(group.getType(),
-					startTime, id);
+			List<Temporarily> temporarilyList = temporarilyDao.findByTypeAndTemporarilyDate(group.getType(),startTime);
 			List<AttendancePay> attendancePayList = attendancePayDao.findByGroupIdAndTypeAndAllotTimeBetween(id,group.getType(), startTime, endTime);
 			List<Map<String, Object>> userList = new ArrayList<>();
 			List<Map<String, Object>> temporarilyUserList = new ArrayList<>();
@@ -150,15 +149,15 @@ public class GroupAction {
 					// 查询出该分组临时员工的出勤数据
 					if (temporarily.getTemporaryUserId() != null) {
 						Map<String, Object>  temporarilyUserMap = new HashMap<>();
-						temporarilyUserMap.put("id", temporarily.getUser().getId());
-						temporarilyUserMap.put("name",temporarily.getUser().getUserName());
+						temporarilyUserMap.put("id", temporarily.getTemporaryUserId());
+						temporarilyUserMap.put("name",temporarily.getTemporaryUser().getUserName());
 						temporarilyUserMap.put("time",temporarily.getWorkTime());
 						temporarilyUserList.add(temporarilyUserMap);
 					}
 					// 查询出该分组本厂借调员工的出勤数据
 					if (temporarily.getUserId() != null) {
 						Map<String, Object>  userMap = new HashMap<>();
-						userMap.put("id", temporarily.getUser().getId());
+						userMap.put("id", temporarily.getUserId());
 						userMap.put("name",temporarily.getUser().getUserName());
 						userMap.put("time",temporarily.getWorkTime());
 						userList.add(userMap);
@@ -297,8 +296,7 @@ public class GroupAction {
 			BeanCopyUtils.copyNotEmpty(temporarily, temporarilyNew, "");
 			temporarilyNew.setTemporarilyDate(DatesUtil.getfristDayOftime(date));
 			if (temporarily.getUserId() != null) {
-				if (temporarilyDao.findByUserIdAndTemporarilyDateAndTypeAndGroupId(temporarily.getUserId(),
-						temporarily.getTemporarilyDate(), temporarily.getType(), temporarily.getGroupId()) != null) {
+				if (temporarilyDao.findByUserIdAndTemporarilyDateAndType(temporarily.getUserId(),date, temporarily.getType()) != null) {
 					cr.setMessage("当天当前分组已添加过正式人员的工作时间,不必再次添加");
 					cr.setCode(ErrorCode.ILLEGAL_ARGUMENT.getCode());
 					return cr;
@@ -343,9 +341,10 @@ public class GroupAction {
 		CommonResponse cr = new CommonResponse();
 		List<Temporarily> temporarilyList = temporarilyDao.findByTypeAndTemporarilyDate(type, temporarilyDate);
 		cr.setData(ClearCascadeJSON.get()
-				.addRetainTerm(Temporarily.class, "id", "userId", "workTime", "temporarilyDate", "groupName", "group",
-						"user")
-				.addRetainTerm(User.class, "userName").addRetainTerm(Group.class, "name").format(temporarilyList)
+				.addRetainTerm(Temporarily.class, "id","workTime", "temporarilyDate", "groupName", "group","user")
+				.addRetainTerm(User.class, "id","userName")
+				.addRetainTerm(Group.class,"id","name")
+				.format(temporarilyList)
 				.toJSON());
 		cr.setMessage("查询成功");
 		return cr;

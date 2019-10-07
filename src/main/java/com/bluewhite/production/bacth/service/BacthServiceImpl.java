@@ -4,10 +4,8 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
-import java.util.stream.Collectors;
 
 import javax.persistence.criteria.Predicate;
-import javax.servlet.http.HttpServletRequest;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -30,13 +28,11 @@ import com.bluewhite.production.bacth.entity.Bacth;
 import com.bluewhite.production.finance.dao.PayBDao;
 import com.bluewhite.production.finance.entity.PayB;
 import com.bluewhite.production.group.dao.GroupDao;
-import com.bluewhite.production.group.entity.Group;
 import com.bluewhite.production.procedure.dao.ProcedureDao;
 import com.bluewhite.production.procedure.entity.Procedure;
 import com.bluewhite.production.productionutils.constant.ProTypeUtils;
 import com.bluewhite.production.task.entity.Task;
 import com.bluewhite.production.task.service.TaskService;
-import com.bluewhite.system.user.entity.User;
 
 @Service
 public class BacthServiceImpl extends BaseServiceImpl<Bacth, Long> implements BacthService {
@@ -117,12 +113,12 @@ public class BacthServiceImpl extends BaseServiceImpl<Bacth, Long> implements Ba
 					predicate.add(cb.between(root.get("statusTime").as(Date.class), param.getOrderTimeBegin(),
 							param.getOrderTimeEnd()));
 				}
-			} else {
-				// 按时间过滤
-				if (!StringUtils.isEmpty(param.getOrderTimeBegin()) && !StringUtils.isEmpty(param.getOrderTimeEnd())) {
-					predicate.add(cb.between(root.get("allotTime").as(Date.class), param.getOrderTimeBegin(),
-							param.getOrderTimeEnd()));
-				}
+			}
+			
+			// 按生成时间过滤
+			if (!StringUtils.isEmpty(param.getOrderTimeBegin()) && !StringUtils.isEmpty(param.getOrderTimeEnd())) {
+				predicate.add(cb.between(root.get("allotTime").as(Date.class), param.getOrderTimeBegin(),
+						param.getOrderTimeEnd()));
 			}
 
 			Predicate[] pre = new Predicate[predicate.size()];
@@ -161,20 +157,24 @@ public class BacthServiceImpl extends BaseServiceImpl<Bacth, Long> implements Ba
 
 	@Override
 	@Transactional
-	public int statusBacth(String[] ids, Date time) throws Exception {
+	public int statusBacth(String ids, Date time){
 		int count = 0;
-		Calendar cal = Calendar.getInstance();
-		cal.add(Calendar.DATE, -1);
+		if(time == null){
+			Calendar cal = Calendar.getInstance();
+			cal.add(Calendar.DATE, -1);
+			time =  cal.getTime();
+		}
 		if (!StringUtils.isEmpty(ids)) {
-			if (ids.length > 0) {
-				for (int i = 0; i < ids.length; i++) {
-					Long id = Long.parseLong(ids[i]);
+			String[] idStrings = ids.split(","); 
+			if (idStrings.length > 0) {
+				for (int i = 0; i < idStrings.length; i++) {
+					Long id = Long.parseLong(idStrings[i]);
 					Bacth bacth = dao.findOne(id);
 					if (bacth.getStatus() == 1) {
 						throw new ServiceException("批次编号为" + bacth.getBacthNumber() + "的任务已经完成,无需再次完成");
 					}
 					bacth.setStatus(1);
-					bacth.setStatusTime(time == null ? cal.getTime() : time);
+					bacth.setStatusTime(time);
 					dao.save(bacth);
 					count++;
 				}

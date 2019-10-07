@@ -202,14 +202,14 @@
 		  		_count=count;
 		  	}
 		 
-		  	function p(s) {
-				return s < 10 ? '0' + s: s;
-				}
 		  	var myDate = new Date(new Date().getTime() - 86400000);
 			//获取当前年
 			var year=myDate.getFullYear();
 			//获取当前月
 			var month=myDate.getMonth()+1;
+			if(month < 10){
+				month = "0" + month;
+				}
 			//获取当前日
 			var date=myDate.getDate(); 
 			var day = new Date(year,month,0);  

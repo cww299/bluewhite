@@ -37,8 +37,11 @@ import com.bluewhite.production.procedure.service.ProcedureService;
 import com.bluewhite.production.productionutils.constant.ProTypeUtils;
 import com.bluewhite.production.task.entity.Task;
 import com.bluewhite.production.task.service.TaskService;
+import com.bluewhite.system.user.entity.TemporaryUser;
 import com.bluewhite.system.user.entity.User;
+import com.bluewhite.system.user.service.TemporaryUserService;
 import com.bluewhite.system.user.service.UserService;
+import com.fasterxml.jackson.annotation.JsonFormat.Value;
 
 @Controller
 public class TaskAction {
@@ -47,18 +50,16 @@ public class TaskAction {
 
 	@Autowired
 	private TaskService taskService;
-
 	@Autowired
 	private ProcedureDao procedureDao;
-
 	@Autowired
 	private ProcedureService procedureService;
-
 	@Autowired
 	private UserService userService;
-
 	@Autowired
 	private PayBDao payBDao;
+	@Autowired
+	private TemporaryUserService temporaryUserService;
 
 	private ClearCascadeJSON clearCascadeJSON;
 
@@ -212,22 +213,38 @@ public class TaskAction {
 	 */
 	@RequestMapping(value = "/task/taskUser", method = RequestMethod.GET)
 	@ResponseBody
-	public CommonResponse taskUser(HttpServletRequest request, Long id) {
+	public CommonResponse taskUser(Long id) {
 		CommonResponse cr = new CommonResponse();
+		List<Map<String, Object>> list = new ArrayList<>();
 		if (id != null) {
 			Task task = taskService.findOne(id);
-			List<User> userList = new ArrayList<User>();
 			if (!StringUtils.isEmpty(task.getUserIds())) {
 				String[] idArr = task.getUserIds().split(",");
 				if (idArr.length > 0) {
 					for (int i = 0; i < idArr.length; i++) {
+						Map<String, Object> userMap = new HashMap<>();
 						Long userid = Long.parseLong(idArr[i]);
 						User user = userService.findOne(userid);
-						userList.add(user);
+						userMap.put("id", user.getId());
+						userMap.put("userName", user.getUserName());
+						list.add(userMap);
 					}
 				}
 			}
-			cr.setData(ClearCascadeJSON.get().addRetainTerm(User.class, "id", "userName").format(userList).toJSON());
+			if(!StringUtils.isEmpty(task.getTemporaryUserIds())){
+				String[] idArr = task.getTemporaryUserIds().split(",");
+				if (idArr.length > 0) {
+					for (int i = 0; i < idArr.length; i++) {
+						Map<String, Object> userMap = new HashMap<>();
+						Long userid = Long.parseLong(idArr[i]);
+						TemporaryUser temporaryUser = temporaryUserService.findOne(userid);
+						userMap.put("id", temporaryUser.getId());
+						userMap.put("userName", temporaryUser.getUserName());
+						list.add(userMap);
+					}
+				}
+			}
+			cr.setData(list);
 			cr.setMessage("查询成功");
 		} else {
 			cr.setCode(ErrorCode.ILLEGAL_ARGUMENT.getCode());

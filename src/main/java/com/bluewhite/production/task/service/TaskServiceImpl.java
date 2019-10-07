@@ -83,14 +83,14 @@ public class TaskServiceImpl extends BaseServiceImpl<Task, Long> implements Task
 		// 将用户变成string类型储存
 		if (!StringUtils.isEmpty(task.getUserIds())) {
 			task.setUsersIds(task.getUserIds().split(","));
+			//正式员工ids
+			userIdList = Arrays.asList(task.getUsersIds()).stream().map(a -> Long.parseLong(a)).collect(Collectors.toList());
 		}
 		if (!StringUtils.isEmpty(task.getTemporaryUserIds())) {
 			task.setTemporaryUsersIds(task.getTemporaryUserIds().split(","));
+			//临时员工ids
+			temporaryUserIdList = Arrays.asList(task.getTemporaryUsersIds()).stream().map(a -> Long.parseLong(a)).collect(Collectors.toList());
 		}
-		//正式员工ids
-		userIdList = Arrays.asList(task.getUsersIds()).stream().map(a -> Long.parseLong(a)).collect(Collectors.toList());
-		//临时员工ids
-		temporaryUserIdList = Arrays.asList(task.getTemporaryUserIds()).stream().map(a -> Long.parseLong(a)).collect(Collectors.toList());
 		//正式员工
 		List<User> userList = userDao.findByIdIn(userIdList);
 		//临时人员
@@ -105,7 +105,11 @@ public class TaskServiceImpl extends BaseServiceImpl<Task, Long> implements Task
 				Long id = Long.parseLong(task.getProcedureIds()[i]);
 				Procedure procedure = procedureDao.findOne(id);
 				if (procedure.getName().equals(QUALITY_STRING)) {
-					newTask.setNumber(task.getHoleNumber());
+					if(task.getHoleNumber()!=0){
+						newTask.setNumber(task.getHoleNumber());
+					}else{
+						newTask.setNumber(task.getNumber());
+					}
 				}
 				newTask.setProcedureId(id);
 				newTask.setProcedureName(procedure.getName());
@@ -145,6 +149,8 @@ public class TaskServiceImpl extends BaseServiceImpl<Task, Long> implements Task
 				// 任务加绩具体数值
 				if (task.getPerformanceNumber() != null) {
 					newTask.setPerformancePrice(NumUtils.round(ProTypeUtils.sumtaskPerformancePrice(newTask), 5));
+				}else{
+					newTask.setPerformancePrice(0.0);
 				}
 				dao.save(newTask);
 
@@ -152,18 +158,22 @@ public class TaskServiceImpl extends BaseServiceImpl<Task, Long> implements Task
 				if (!UnUtil.isFromMobile(request) && task.getType() == 2) {
 					//总考勤时间
 					//正式员工的出勤时长
-					for (String userId : task.getUsersIds()) {
-						List<AttendancePay> attendancePayList = attendancePayDao.findByUserIdAndTypeAndAllotTimeBetween(Long.parseLong(userId), task.getType(), orderTimeBegin, orderTimeEnd);
-						Temporarily temporarilyList = null;
-						if(attendancePayList.size()==0){
-							temporarilyList = temporarilyDao.findByUserIdAndTemporarilyDateAndType(Long.parseLong(userId), orderTimeBegin, task.getType()); 
+					if(task.getUsersIds().length>0){
+						for (String userId : task.getUsersIds()) {
+							List<AttendancePay> attendancePayList = attendancePayDao.findByUserIdAndTypeAndAllotTimeBetween(Long.parseLong(userId), task.getType(), orderTimeBegin, orderTimeEnd);
+							Temporarily temporarilyList = null;
+							if(attendancePayList.size()==0){
+								temporarilyList = temporarilyDao.findByUserIdAndTemporarilyDateAndType(Long.parseLong(userId), orderTimeBegin, task.getType()); 
+							}
+							sumTime += attendancePayList.size()==0 ? temporarilyList.getWorkTime() : attendancePayList.get(0).getWorkTime();
 						}
-						sumTime += attendancePayList.size()==0 ? temporarilyList.getWorkTime() : attendancePayList.get(0).getWorkTime();
 					}
 					//临时员工
-					for (String userId : task.getTemporaryUsersIds()) {
-						Temporarily temporarilyList = temporarilyDao.findByUserIdAndTemporarilyDateAndType(Long.parseLong(userId), orderTimeBegin, task.getType()); 
-						sumTime += temporarilyList.getWorkTime();
+					if(task.getTemporaryUsersIds()!=null && task.getTemporaryUsersIds().length>0){
+						for (String userId : task.getTemporaryUsersIds()) {
+							Temporarily temporarilyList = temporarilyDao.findByTemporaryUserIdAndTemporarilyDateAndType(Long.parseLong(userId), orderTimeBegin, task.getType()); 
+							sumTime += temporarilyList.getWorkTime();
+						}
 					}
 				}
 				// 查出该任务的所有b工资
@@ -220,14 +230,16 @@ public class TaskServiceImpl extends BaseServiceImpl<Task, Long> implements Task
 								}
 							}
 						} else {
-							payB.setPayNumber(NumUtils.div(newTask.getPayB(), (task.getUsersIds().length+task.getTemporaryUsersIds().length), 5));
+							int userInt = task.getUsersIds()!=null && task.getUsersIds().length >0 ? task.getUsersIds().length:0;
+							int temporaryUsersInt = task.getTemporaryUsersIds()!=null && task.getTemporaryUsersIds().length>0 ? task.getTemporaryUsersIds().length:0;
+							payB.setPayNumber(NumUtils.div(newTask.getPayB(),(userInt+temporaryUsersInt),5));
 						}
 						payBList.add(payB);
 					}
 				}
 				
 				//临时员工
-				if (task.getTemporaryUsersIds().length > 0) {
+				if (task.getTemporaryUsersIds()!=null && task.getTemporaryUsersIds().length > 0) {
 					for (String iString : task.getTemporaryUsersIds()) {
 						Long userId = Long.parseLong(iString);
 						TemporaryUser user = temporarilyUserList.stream().filter(TemporaryUser -> TemporaryUser.getId().equals(userId)).collect(Collectors.toList()).get(0);

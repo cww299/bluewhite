@@ -45,7 +45,6 @@ public class BacthAction {
 	private ProcedureDao procedureDao;
 
 	private ClearCascadeJSON clearCascadeJSON;
-
 	{
 		clearCascadeJSON = ClearCascadeJSON.get()
 				.addRetainTerm(Bacth.class, "id", "machinist", "sign", "time", "statusTime", "bacthDeedlePrice",
@@ -133,17 +132,10 @@ public class BacthAction {
 	 */
 	@RequestMapping(value = "/bacth/statusBacth", method = RequestMethod.GET)
 	@ResponseBody
-	public CommonResponse statusBacth(String[] ids, Date time) {
+	public CommonResponse statusBacth(String ids, Date time) {
 		CommonResponse cr = new CommonResponse();
-		int count;
-		try {
-			count = bacthService.statusBacth(ids, time);
-		} catch (Exception e) {
-			cr.setMessage(e.getMessage());
-			cr.setCode(ErrorCode.ILLEGAL_ARGUMENT.getCode());
-			return cr;
-		}
-		cr.setMessage("成功完成" + count + "批次");
+		int count = bacthService.statusBacth(ids, time);
+		cr.setMessage("成功完成"+ count +"批次");
 		return cr;
 	}
 
