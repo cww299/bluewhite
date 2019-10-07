@@ -125,7 +125,7 @@ layui.config({
 							type:1,
 							area:['28%','50%'],
 							btn:['确定','取消'],
-							title:'新增外调人员',
+							title:'新增借调人员',
 							content:html,
 							success:function(){
 								laydate.render({

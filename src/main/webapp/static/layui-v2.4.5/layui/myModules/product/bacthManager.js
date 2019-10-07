@@ -198,12 +198,20 @@ layui.config({
 			      ];
 		}
 		var statData = '';
+		var toolbar = ['<span class="layui-btn layui-btn-sm" lay-event="onekeyFinish">一键完成</span>',
+				          '<span class="layui-btn layui-btn-sm" lay-event="lookover">查看分配工序</span>'];
+		if(opt.type==4){	//二楼机工增加导出按钮
+			toolbar.push(
+				'<span class="layui-btn layui-btn-sm" lay-event="export">导出工序</span>'
+			)
+		}
 		mytable.render({
 			elem:'#tableData',
 			url: opt.ctx+'/bacth/allBacth?type='+opt.type,
 			totalRow:['number','sumTaskPrice','time'],
 			parseData:function(ret){
-				statData = ret.data.statData;
+				if(ret.code==0)
+					statData = ret.data.statData;
 				return {  msg:ret.message,  code:ret.code , data:ret.data.rows, count:ret.data.total }; 
 			},
 			where: {
@@ -221,8 +229,7 @@ layui.config({
 				btn:[4],
 				otherBtn: finish(),
 			},
-			toolbar: ['<span class="layui-btn layui-btn-sm" lay-event="onekeyFinish">一键完成</span>',
-			          '<span class="layui-btn layui-btn-sm" lay-event="lookover">查看分配工序</span>'].join(' '),
+			toolbar: toolbar.join(' '),
             limit:'14',
             limits:[10,14,20,50],
 			cols:[col],
@@ -241,38 +248,8 @@ layui.config({
 					html = h;
 				})
 				var now = myutil.getSubDay( isSmall ? 0 : 1 );
-				//获取所有工序的树形结构
-				var procedureTree = [{
-					id:-1,name:'全部',children:[],
-				}];
-				for(var k in allProcedure){
-					(function(name,id){
-						var da = { id:-1, name:name, children:[] }
-						$.ajax({
-							url: opt.ctx+'/production/typeToProcedure',
-							async: false,
-							data: {
-								productId: trData.product.id,
-								bacthId: trData.id,
-								type: opt.type,
-								procedureTypeId: id,
-								flag: 0,
-							},
-							success:function(r){
-								if(r.code==0){
-									for(var i in r.data){
-										da.children.push({
-											id: r.data[i].id+'-'+r.data[i].residualNumber,	//拼接剩余数量，用于判断是否为0
-											name: r.data[i].name,
-											number: r.data[i].residualNumber,
-										})
-									}
-									procedureTree[0].children.push(da);
-								}
-							}
-						})
-					})(allProcedure[k].name,allProcedure[k].id);
-				}
+				var procedureTree = [];
+				getAllProcedureTree();
 				var area = isSmall?['100%','80%']:['60%','80%'];
 				var allotWin = layer.open({		//分配弹窗
 					type:1,
@@ -341,7 +318,9 @@ layui.config({
 								}
 							})
 						}
-						$('#number').val(trData.number);
+						if(opt.type==1 || opt.type==2){
+							$('#number').val(trData.number);
+						}
 						form.render();
 					},
 					yes:function(){
@@ -363,7 +342,6 @@ layui.config({
 								procedureIds.push(id[0]);
 							}
 						}
-						var load = layer.load(1);
 						var saveData = {
 								type: opt.type,
 								userIds: userIds.join(','),
@@ -382,13 +360,56 @@ layui.config({
 							url:'/task/addTask',
 							data:saveData,
 							success:function(){
-								layer.close('allotWin');
+								if(opt.type==1 || opt.type==2)
+									layer.close(allotWin);
+								else{
+									getAllProcedureTree();	//重新获取工序进行重载
+									menuTree.reload('userTree',{
+										checked:[],
+									})
+									menuTree.reload('procedureTree',{
+										checked:[],
+										data: procedureTree,
+									})
+								}
 								table.reload('tableData');
 							}
 						})
-						layer.close(load);
 					}
 				})
+				function getAllProcedureTree(){	//获取所有工序的树形结构
+					procedureTree = [{
+						id:-1,name:'全部',children:[],
+					}];
+					for(var k in allProcedure){
+						(function(name,id){
+							var da = { id:-1, name:name, children:[] }
+							$.ajax({
+								url: opt.ctx+'/production/typeToProcedure',
+								async: false,
+								data: {
+									productId: trData.product.id,
+									bacthId: trData.id,
+									type: opt.type,
+									procedureTypeId: id,
+									flag: 0,
+								},
+								success:function(r){
+									if(r.code==0){
+										for(var i in r.data){
+											da.children.push({
+												id: r.data[i].id+'-'+r.data[i].residualNumber,	//拼接剩余数量，用于判断是否为0
+												name: r.data[i].name,
+												number: r.data[i].residualNumber,
+											})
+										}
+										procedureTree[0].children.push(da);
+									}
+								}
+							})
+						})(allProcedure[k].name,allProcedure[k].id);
+					}
+				}
 			}
 		})
 		function finish(){
@@ -397,6 +418,7 @@ layui.config({
 				switch(obj.event){
 				case 'onekeyFinish': onekeyFinish(); break;
 				case 'lookover': lookover(); break;
+				case 'export' : exportProcedure(); break;
 				}
 				function onekeyFinish(){
 					var inputTime = layer.open({
@@ -506,6 +528,11 @@ layui.config({
 						}
 					})//later open end
 				}
+				function exportProcedure(){	//导出工序
+					if(check.length!=1)
+						return myutil.emsg('只能选择一条信息导出！');
+					location.href= opt.ctx+'/excel/importExcel/DownBacth?id='+check[0].id;
+				}
 			}
 		}//end finish
 		
@@ -532,7 +559,7 @@ layui.config({
 												name: name,
 												children:[
 												          { id:'-1', name:'临时员工' ,children:[]},
-												          { id:'-1', name:'非临时员工',children:[] },
+												          { id:'-1', name:'正式员工',children:[] },
 												          ]
 										};
 										if(groupPeople.temporarilyUser && groupPeople.temporarilyUser.length>0){
