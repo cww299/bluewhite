@@ -73,8 +73,8 @@ layui.extend({
 				item2.align = item2.align || 'center';			//行内元素默认居中
 				switch(item2.type){
 				case 'select': break;
-				case 'date': 	 dateField.indexOf(item2.field)<0 && item2.edit && dateField.push(item2.field); (!item2.edit) && (item2.edit = false);	break;
-				case 'dateTime': dateTimeField.indexOf(item2.field)<0 && item2.edit && dateTimeField.push(item2.field); (!item2.edit) && (item2.edit = false); break;//开启日期时间
+				case 'date': 	 dateField.indexOf(item2.field)<0 && item2.edit && dateField.push(item2.field); (item2.edit) && (item2.edit = false);	break;
+				case 'dateTime': dateTimeField.indexOf(item2.field)<0 && item2.edit && dateTimeField.push(item2.field); (item2.edit) && (item2.edit = false); break;//开启日期时间
 				}
 				if(item2.field){
 					allField.push(item2.field);			//记录字段和对应的中文名
@@ -425,6 +425,7 @@ layui.extend({
 		render.verify && (delete render.verify);
 		render.colsWidth && (delete render.colsWidth);
 		render.autoUpdate && (delete render.autoUpdate);
+		console.log(render)
 		table.render(render);
 	}
 

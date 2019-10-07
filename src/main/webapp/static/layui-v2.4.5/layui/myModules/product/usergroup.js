@@ -74,8 +74,8 @@ layui.config({
 	                  '</div>',
 	                  ].join(' ');
 	
-	
 	Class.prototype.render = function(opt){
+		myutil.clickTr();
 		var now = new Date();
 		now.setTime(now.getTime()-24*60*60*1000);
 		now = now.format('yyyy-MM-dd 00:00:00');
@@ -84,7 +84,7 @@ layui.config({
 		})
 		var allPeople = '';
 		myutil.getData({
-			url:'/system/user/findUserList?quit=0',
+			url: opt.ctx+'/system/user/findUserList?quit=0',
 			success:function(d){
 				for(var k in d){
 					allPeople += '<option value="'+d[k].id+'">'+d[k].userName+'</option>';
@@ -93,7 +93,7 @@ layui.config({
 		})
 		mytable.renderNoPage({
 			elem:'#tableData',
-			url: '/production/getGroup?type='+opt.type,
+			url: opt.ctx+'/production/getGroup?type='+opt.type,
 			parseData:function(ret){
 				if(ret.code==0)
 					ret.data.push({ id:0, name:'借调组', })
@@ -125,7 +125,7 @@ layui.config({
 							type:1,
 							area:['28%','50%'],
 							btn:['确定','取消'],
-							title:'新增外调人员',
+							title:'新增借调人员',
 							content:html,
 							success:function(){
 								laydate.render({
@@ -134,7 +134,7 @@ layui.config({
 								})
 								$('#addUserId').append(allPeople);
 								myutil.getData({
-									url:'/production/getGroup?type='+opt.type,
+									url: opt.ctx+'/production/getGroup?type='+opt.type,
 									success:function(d){
 										var html = '';
 										for(var k in d){
@@ -190,54 +190,77 @@ layui.config({
 							value:now,
 							type:'datetime'
 						})
-						var idOrType = '?id='+obj.data.id,url='/production/allGroup';
-						if(obj.data.id==0){
-							idOrType = '?type='+opt.type;
-							url = '/production/getTemporarily';
-						};
-						mytable.renderNoPage({
-							elem:'#lookoverTable',
-							url: url+idOrType,
-							parseData:function(r){
-								var data = [];
-								if(r.code==0){
-									if(r.data.temporarilyUser)
-										for(var k in r.data.temporarilyUser){
-											r.data.temporarilyUser[k].isTemp = '是';
-											data.push(r.data.temporarilyUser[k])
+						if(obj.data.id==0){		//如果查看的是借调组人员
+							mytable.renderNoPage({
+								elem:'#lookoverTable',
+								url: opt.ctx+'/production/getTemporarily?type='+opt.type,
+								where:{  temporarilyDate: now, },
+								size:'lg',
+								autoUpdate:{
+									saveUrl:'/production/updateTemporarily',
+									deleUrl:'/production/deleteTemporarily',
+									field:{ group_id:'groupId', },
+								},
+								curd:{
+									btn:[4],
+								},
+								cols:[[
+								    { type:'checkbox', },
+									{ field:'user_userName', title:'人名' },
+									{ field:'workTime', title:'所在组工作时长',edit:true, },
+									{ field:'group_id', type:'select', title:'所在小组', select: {data:table.cache['tableData'], } ,  },
+								]],
+							})
+						}else{
+							mytable.renderNoPage({
+								elem:'#lookoverTable',
+								url: opt.ctx+'/production/allGroup?id='+obj.data.id,
+								where:{ temporarilyDate: now,  },
+								toolbar:'<div><span class="layui-btn layui-btn-danger layui-btn-sm" lay-event="deletes">批量删除</span></div>',
+								cols:[[
+								    { type:'checkbox', },
+									{ field:'name', title:'人名' },
+									{ field:'time', title:'所在组工作时长', },
+									{ field:'isTemp', title:'是否临时',filter:true, },
+								]],
+								parseData:function(r){
+									var data = [];
+									if(r.code==0){
+										if(r.data.userList)
+											for(var k in r.data.userList){
+												r.data.userList[k].isTemp = '否';
+												data.push(r.data.userList[k])
+											}
+										if(r.data.temporarilyUser)
+											for(var k in r.data.temporarilyUser){
+												r.data.temporarilyUser[k].isTemp = '是';
+												data.push(r.data.temporarilyUser[k])
+											}
+									}
+									return {  msg:r.message,  code:r.code , data:data, }
+								},
+							})
+							table.on('toolbar(lookoverTable)',function(obj){
+								var checked = layui.table.checkStatus('lookoverTable').data;
+								if(obj.event=='deletes'){
+									if(checked.length==0)
+										return myutil.emsg('请选择信息删除');
+									var temporarilyIds = [];
+									for(var i in checked)
+										if(checked[i].secondment=='1')
+											return myutil.emsg('不能删除正式包装员工，请去工资总汇删除');
+										else
+											temporarilyIds.push(checked[i].userId);
+									myutil.deleteAjax({
+										url: '/production/deleteTemporarily',
+										ids: temporarilyIds.join(','),
+										success:function(){
+											table.reload('lookoverTable');
 										}
-									if(r.data.userList)
-										for(var k in r.data.userList){
-											r.data.userList[k].isTemp = '否';
-											data.push(r.data.userList[k])
-										}
-								}
-								return {  msg:r.message,  code:r.code , data:data, }
-							},
-							where:{
-								temporarilyDate: now,
-							},
-							cols:[[
-							       { field:'name', title:'人名' },
-							       { field:'time', title:'所在组工作时长',edit:true, },
-							       { field:'isTemp', title:'是否临时',filter:true, },
-							       ]],
-							done:function(){
-								table.on('edit(lookoverTable)',function(obj){
-									var url = '';
-									if(obj.data.isTemp=='是')
-										url = '/system/user/addTemporaryUser';
-									var data = {
-										id: obj.data.id,
-										time: obj.data.time,
-									};
-									myutil.saveAjax({
-										url: url,
-										data: data,
 									})
-								})
-							}
-						})
+								}
+							})
+						}
 						form.on('submit(search)',function(obj){
 							table.reload('lookoverTable',{
 								where: obj.field,

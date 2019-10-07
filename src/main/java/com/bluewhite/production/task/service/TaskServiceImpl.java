@@ -89,7 +89,7 @@ public class TaskServiceImpl extends BaseServiceImpl<Task, Long> implements Task
 		if (!StringUtils.isEmpty(task.getTemporaryUserIds())) {
 			task.setTemporaryUsersIds(task.getTemporaryUserIds().split(","));
 			//临时员工ids
-			temporaryUserIdList = Arrays.asList(task.getTemporaryUserIds()).stream().map(a -> Long.parseLong(a)).collect(Collectors.toList());
+			temporaryUserIdList = Arrays.asList(task.getTemporaryUsersIds()).stream().map(a -> Long.parseLong(a)).collect(Collectors.toList());
 		}
 		//正式员工
 		List<User> userList = userDao.findByIdIn(userIdList);
@@ -162,16 +162,16 @@ public class TaskServiceImpl extends BaseServiceImpl<Task, Long> implements Task
 						for (String userId : task.getUsersIds()) {
 							List<AttendancePay> attendancePayList = attendancePayDao.findByUserIdAndTypeAndAllotTimeBetween(Long.parseLong(userId), task.getType(), orderTimeBegin, orderTimeEnd);
 							Temporarily temporarilyList = null;
-							if(attendancePayList.size()==0){
+							if(attendancePayList!=null && attendancePayList.size()==0){
 								temporarilyList = temporarilyDao.findByUserIdAndTemporarilyDateAndType(Long.parseLong(userId), orderTimeBegin, task.getType()); 
+								sumTime += attendancePayList.size()==0 ? temporarilyList.getWorkTime() : attendancePayList.get(0).getWorkTime();
 							}
-							sumTime += attendancePayList.size()==0 ? temporarilyList.getWorkTime() : attendancePayList.get(0).getWorkTime();
 						}
 					}
 					//临时员工
 					if(task.getTemporaryUsersIds()!=null && task.getTemporaryUsersIds().length>0){
 						for (String userId : task.getTemporaryUsersIds()) {
-							Temporarily temporarilyList = temporarilyDao.findByUserIdAndTemporarilyDateAndType(Long.parseLong(userId), orderTimeBegin, task.getType()); 
+							Temporarily temporarilyList = temporarilyDao.findByTemporaryUserIdAndTemporarilyDateAndType(Long.parseLong(userId), orderTimeBegin, task.getType()); 
 							sumTime += temporarilyList.getWorkTime();
 						}
 					}

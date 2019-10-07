@@ -113,11 +113,10 @@ layui.config({
 	
 	
 	Class.prototype.render = function(opt){
-		
 		var isSmall = false;
 		var allProcedure = [],allUser = [];
 		myutil.getData({
-			url:'/basedata/list?type='+baseType[opt.type],
+			url:opt.ctx+'/basedata/list?type='+baseType[opt.type],
 			success: function(d){
 				allProcedure = d;
 			}
@@ -151,9 +150,9 @@ layui.config({
 		var col = [
 		           { type:'checkbox' },
 			       { title:'批次号', 	field:'bacthNumber', },
-			       { title:'时间', 	field:'allotTime', },
+			       { title:'时间', 	field:'allotTime', type:'date', edit:true, },
 			       { title:'产品名', 	field:'product_name', },
-			       { title:'数量', 	field:'number', },
+			       { title:'数量', 	field:'number',edit:true, },
 			       { title:'预计生产单价', 	field:'bacthDepartmentPrice', templet:function(d){ return d.bacthDepartmentPrice.toFixed(3);  } },
 			       { title:'外发价格', 	field:'bacthHairPrice', },
 			       { title:'任务价值', 	field:'sumTaskPrice', templet:function(d){ return d.sumTaskPrice?d.sumTaskPrice.toFixed(3):'---' } },
@@ -169,9 +168,9 @@ layui.config({
 			col = [
 		           { type:'checkbox' },
 			       { title:'批次号', 	field:'bacthNumber', },
-			       { title:'时间', 	field:'allotTime', },
+			       { title:'时间', 	field:'allotTime',type:'date', edit:true,   },
 			       { title:'产品名', 	field:'product_name', },
-			       { title:'数量', 	field:'number', },
+			       { title:'数量', 	field:'number',edit:true, },
 			       { title:'预计生产单价', 	field:'bacthDepartmentPrice', templet:function(d){ return d.bacthDepartmentPrice.toFixed(3);  } },
 			       { title:'外发价格', 	field:'bacthHairPrice', },
 			       { title:'针工价格', field:'bacthDeedlePrice',templet:function(d){ return d.sumTaskPrice?d.sumTaskPrice.toFixed(3):'---' }},
@@ -184,14 +183,13 @@ layui.config({
 			    	   return '<span class="layui-btn layui-btn-sm">分配</span>';
 			       	 } },
 			      ];
-			
 		}
 		if(isSmall){
 			col = [
 		           { type:'checkbox' },
-			       { title:'时间', 	field:'allotTime',width:'18%',},
+			       { title:'时间', 	field:'allotTime',width:'18%',type:'date', edit:true,  },
 			       { title:'产品名', 	field:'product_name', },
-			       { title:'数量', 	field:'number', width:'12%',},
+			       { title:'数量', 	field:'number', width:'12%', edit:true,},
 			       { title:'备注	', 	field:'remarks',width:'8%', },
 			       { title:'状态	', 	field:'status', width:'12%', transData:{data:['未完成','已完成'],} },
 			       { title:'操作', event:'allocation',width:'12%', templet:function(d){
@@ -200,9 +198,16 @@ layui.config({
 			      ];
 		}
 		var statData = '';
+		var toolbar = ['<span class="layui-btn layui-btn-sm" lay-event="onekeyFinish">一键完成</span>',
+				          '<span class="layui-btn layui-btn-sm" lay-event="lookover">查看分配工序</span>'];
+		if(opt.type==4){	//二楼机工增加导出按钮
+			toolbar.push(
+				'<span class="layui-btn layui-btn-sm" lay-event="export">导出工序</span>'
+			)
+		}
 		mytable.render({
 			elem:'#tableData',
-			url: '/bacth/allBacth?type='+opt.type,
+			url: opt.ctx+'/bacth/allBacth?type='+opt.type,
 			totalRow:['number','sumTaskPrice','time'],
 			parseData:function(ret){
 				if(ret.code==0)
@@ -224,10 +229,9 @@ layui.config({
 				btn:[4],
 				otherBtn: finish(),
 			},
-			toolbar: ['<span class="layui-btn layui-btn-sm" lay-event="onekeyFinish">一键完成</span>',
-			          '<span class="layui-btn layui-btn-sm" lay-event="lookover">查看分配工序</span>'].join(' '),
-            limit:'15',
-            limits:[10,15,20,50],
+			toolbar: toolbar.join(' '),
+            limit:'14',
+            limits:[10,14,20,50],
 			cols:[col],
 			done:function(){
 				$('.layui-table-total').find('td[data-field="number"]').find('div').html(statData.number);
@@ -243,48 +247,11 @@ layui.config({
 				laytpl(ALLO_TPL).render({},function(h){
 					html = h;
 				})
-				var now = new Date();
-				if(!isSmall){
-					now.setTime(now.getTime()-24*60*60*1000);
-				}
-				now.format('yyyy-MM-dd 00:00:00');
-				//获取所有工序的树形结构
-				var procedureTree = [{
-						id:-1,name:'全部',children:[],
-				}];
-				for(var k in allProcedure){
-					(function(name,id){
-						var da = { id:-1, name:name, children:[] }
-						$.ajax({
-							url: opt.ctx+'/production/typeToProcedure',
-							async: false,
-							data: {
-								productId: trData.product.id,
-								bacthId: trData.id,
-								type: opt.type,
-								procedureTypeId: id,
-								flag: 0,
-							},
-							success:function(r){
-								if(r.code==0){
-									for(var i in r.data){
-										da.children.push({
-											id: r.data[i].id,
-											name: r.data[i].name,
-											number: r.data[i].residualNumber,
-										})
-									}
-									console.log(da)
-									procedureTree[0].children.push(da);
-								}
-							}
-						})
-					})(allProcedure[k].name,allProcedure[k].id);
-				}
-				var area = ['50%','80%'];
-				if(isSmall)
-					area = ['90%','80%'];
-				var allotWin = layer.open({
+				var now = myutil.getSubDay( isSmall ? 0 : 1 );
+				var procedureTree = [];
+				getAllProcedureTree();
+				var area = isSmall?['100%','80%']:['60%','80%'];
+				var allotWin = layer.open({		//分配弹窗
 					type:1,
 					area: area,
 					offset:'20px',
@@ -293,19 +260,40 @@ layui.config({
 					btn:['确定','取消'],
 					btnAlign: 'c',
 					success:function(){
+						getUserData(now);
 						laydate.render({
 							elem:'#allotTime',
 							value:now,
 							type:'datetime',
+							done: function(value){
+								getUserData(value);
+								menuTree.reload('userTree',{
+									data: allUser,
+								})
+							}
 						});
 						menuTree.render({				
 				    	  elem:'#userTree',
 				    	  data : allUser,
-						}) 
+						})
+						var checked = [];
+						if(opt.type==2){	//如果是包装，默认选中包装工序的全部，除去上车
+							var t = procedureTree[0].children;
+							for(var i in t){
+								if(t[i].name=='包装'){
+									for(var k in t[i].children){
+										if(t[i].children[k].name.indexOf('上车')<0)
+											checked.push(t[i].children[k].id);
+									}
+								}
+							}
+						}
 						menuTree.render({				
 				    	  elem:'#procedureTree',
 				    	  data : procedureTree,
 				    	  toolbar: opt.type==1?['edit']:[],
+		    			  hide: false,
+		    			  checked: checked,
 				    	  showName: function(data){
 				    		  if(isNaN(data.number))
 				    			  return data.name;
@@ -330,11 +318,12 @@ layui.config({
 								}
 							})
 						}
-						$('#number').val(trData.number);
+						if(opt.type==1 || opt.type==2){
+							$('#number').val(trData.number);
+						}
 						form.render();
 					},
 					yes:function(){
-						var load = layer.load(1);
 						var userIds = [],procedureIds = [],temporaryUserIds = [];
 						var userTreeId = menuTree.getVal('userTree'),procedureTreeId = menuTree.getVal('procedureTree');
 						for(var i in userTreeId){	
@@ -346,8 +335,12 @@ layui.config({
 							}
 						}
 						for(var i in procedureTreeId){
-							if(procedureTreeId[i]!=-1)
-								procedureIds.push(procedureTreeId[i]);
+							if(procedureTreeId[i]!=-1){	
+								var id = procedureTreeId[i].split('-');
+								if(id[1]==0)
+									return myutil.emsg('选择的工序剩余数量不能为0');
+								procedureIds.push(id[0]);
+							}
 						}
 						var saveData = {
 								type: opt.type,
@@ -367,13 +360,56 @@ layui.config({
 							url:'/task/addTask',
 							data:saveData,
 							success:function(){
-								layer.close('allotWin');
+								if(opt.type==1 || opt.type==2)
+									layer.close(allotWin);
+								else{
+									getAllProcedureTree();	//重新获取工序进行重载
+									menuTree.reload('userTree',{
+										checked:[],
+									})
+									menuTree.reload('procedureTree',{
+										checked:[],
+										data: procedureTree,
+									})
+								}
 								table.reload('tableData');
 							}
 						})
-						layer.close(load);
 					}
 				})
+				function getAllProcedureTree(){	//获取所有工序的树形结构
+					procedureTree = [{
+						id:-1,name:'全部',children:[],
+					}];
+					for(var k in allProcedure){
+						(function(name,id){
+							var da = { id:-1, name:name, children:[] }
+							$.ajax({
+								url: opt.ctx+'/production/typeToProcedure',
+								async: false,
+								data: {
+									productId: trData.product.id,
+									bacthId: trData.id,
+									type: opt.type,
+									procedureTypeId: id,
+									flag: 0,
+								},
+								success:function(r){
+									if(r.code==0){
+										for(var i in r.data){
+											da.children.push({
+												id: r.data[i].id+'-'+r.data[i].residualNumber,	//拼接剩余数量，用于判断是否为0
+												name: r.data[i].name,
+												number: r.data[i].residualNumber,
+											})
+										}
+										procedureTree[0].children.push(da);
+									}
+								}
+							})
+						})(allProcedure[k].name,allProcedure[k].id);
+					}
+				}
 			}
 		})
 		function finish(){
@@ -382,6 +418,7 @@ layui.config({
 				switch(obj.event){
 				case 'onekeyFinish': onekeyFinish(); break;
 				case 'lookover': lookover(); break;
+				case 'export' : exportProcedure(); break;
 				}
 				function onekeyFinish(){
 					var inputTime = layer.open({
@@ -397,21 +434,20 @@ layui.config({
 						},
 						yes:function(){
 							var time = $('#finishTime').val(), ids = [];
-							if(time=='')
-								return myutil.emsg('请输入完成时间');
+							if(time)
+								time+=' 00:00:00'
 							if(check.length<1)
 								return myutil.emsg('请选择相关信息');
 							for(var k in check)
 								ids.push(check[k].id);
 							myutil.saveAjax({
 								url:'/bacth/statusBacth',
-								traditional:true,
 								type:'get',
 								data:{
 									type: opt.type,
 									status: 1,
-									time: time+' 00:00:00',
-									ids: ids,
+									time: time,
+									ids: ids.join(','),
 								},
 								success:function(){
 									layer.close(inputTime);
@@ -430,9 +466,7 @@ layui.config({
 					laytpl(LOOKOVER_ALLOT).render({},function(h){
 						html = h;
 					})
-					var area = ['80%','80%'];
-					if(isSmall)
-						area = ['100%','80%'];
+					var area = isSmall?['100%','80%']:['80%','80%'];
 					layer.open({
 						type:1,
 						title: check[0].product.name,
@@ -446,7 +480,7 @@ layui.config({
 							$('#looktime').html(check[0].allotTime);
 							mytable.render({
 								elem:'#lookTable',
-								url:'/task/allTask?type='+opt.type+'&bacthId='+check[0].id,
+								url:opt.ctx+'/task/allTask?type='+opt.type+'&bacthId='+check[0].id,
 								autoUpdate:{
 									deleUrl:'/task/delete',
 								},
@@ -479,7 +513,7 @@ layui.config({
 												success:function(){
 													 mytable.renderNoPage({
 														 elem:'#peopleTable',
-														 url:'/task/taskUser?id='+obj.data.id,
+														 url:opt.ctx+'/task/taskUser?id='+obj.data.id,
 														 cols:[[
 														        { field:'id', title:'id', },
 														        { field:'userName', title:'完成人', },
@@ -494,58 +528,62 @@ layui.config({
 						}
 					})//later open end
 				}
+				function exportProcedure(){	//导出工序
+					if(check.length!=1)
+						return myutil.emsg('只能选择一条信息导出！');
+					location.href= opt.ctx+'/excel/importExcel/DownBacth?id='+check[0].id;
+				}
 			}
 		}//end finish
 		
-		myutil.getData({	//获取所有分组用户的树形结构数据
-			url:'/production/getGroup?type='+opt.type,
-			success:function(allGroup){
-				for(var k in allGroup){
-					(function(name){
-						$.ajax({
-							url: opt.ctx+'/production/allGroup',
-							async:false,
-							data:{
-								id: allGroup[k].id,
-								type: opt.type,
-							},
-							success:function(r){
-								if(r.code==0){
-									var groupPeople = r.data;
-									var data = {
-											id:-1,
-											name: name,
-											children:[
-											          { id:'-1', name:'临时员工' ,children:[]},
-											          { id:'-1', name:'非临时员工',children:[] },
-											          ]
-									};
-									if(groupPeople.temporarilyUser && groupPeople.temporarilyUser.length>0){
-										var t = groupPeople.temporarilyUser;
-										for(var k in t)
-											data.children[0].children.push({
-												id: 't-'+t[k].id,
-												name: t[k].name
-											});
+		function getUserData(day){
+			allUser = [];
+			myutil.getDataSync({	//获取所有分组用户的树形结构数据
+				url: opt.ctx+'/production/getGroup?type='+opt.type,
+				success:function(allGroup){
+					for(var k in allGroup){
+						(function(name){
+							$.ajax({
+								url: opt.ctx+'/production/allGroup',
+								async: false,
+								data:{
+									id: allGroup[k].id,
+									type: opt.type,
+									temporarilyDate: day,
+								},
+								success:function(r){
+									if(r.code==0){
+										var groupPeople = r.data;
+										var data = {
+												id:-1,
+												name: name,
+												children:[
+												          { id:'-1', name:'临时员工' ,children:[]},
+												          { id:'-1', name:'正式员工',children:[] },
+												          ]
+										};
+										if(groupPeople.temporarilyUser && groupPeople.temporarilyUser.length>0){
+											var t = groupPeople.temporarilyUser;
+											for(var k in t)
+												data.children[0].children.push({
+													id: 't-'+t[k].id,
+													name: t[k].name
+												});
+										}
+										if(groupPeople.userList && groupPeople.userList.length>0){
+											var t = groupPeople.userList;
+											for(var k in t)
+												data.children[1].children.push(t[k])
+										}
+										allUser.push(data);
 									}
-									if(groupPeople.userList && groupPeople.userList.length>0){
-										var t = groupPeople.userList;
-										for(var k in t)
-											data.children[1].children.push(t[k])
-									}
-									allUser.push(data);
 								}
-							}
-						})
-					})(allGroup[k].name);
+							})
+						})(allGroup[k].name);
+					}
 				}
-			}
-		});
-		
-		
-		
-		
-		
+			});
+		}
 	}//end render
 	bacthManager.render = function(opt){
 		var s = new Class();
