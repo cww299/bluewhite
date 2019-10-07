@@ -90,6 +90,9 @@ layui.config({
 				url :  "${ctx}/getTreeMenuPage",
 				checkbox : false,
 				toolbar : true,
+				showName: function(data){
+    				return data.name+'  '+data.orderNo;
+		    	}
 			})
 			menuTree.onToolbar('menuTreeDiv',function(obj){
 				switch(obj.type){
