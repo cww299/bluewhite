@@ -150,9 +150,9 @@ layui.config({
 		var col = [
 		           { type:'checkbox' },
 			       { title:'批次号', 	field:'bacthNumber', },
-			       { title:'时间', 	field:'allotTime', },
+			       { title:'时间', 	field:'allotTime', type:'date', edit:true, },
 			       { title:'产品名', 	field:'product_name', },
-			       { title:'数量', 	field:'number', },
+			       { title:'数量', 	field:'number',edit:true, },
 			       { title:'预计生产单价', 	field:'bacthDepartmentPrice', templet:function(d){ return d.bacthDepartmentPrice.toFixed(3);  } },
 			       { title:'外发价格', 	field:'bacthHairPrice', },
 			       { title:'任务价值', 	field:'sumTaskPrice', templet:function(d){ return d.sumTaskPrice?d.sumTaskPrice.toFixed(3):'---' } },
@@ -168,9 +168,9 @@ layui.config({
 			col = [
 		           { type:'checkbox' },
 			       { title:'批次号', 	field:'bacthNumber', },
-			       { title:'时间', 	field:'allotTime', },
+			       { title:'时间', 	field:'allotTime',type:'date', edit:true,   },
 			       { title:'产品名', 	field:'product_name', },
-			       { title:'数量', 	field:'number', },
+			       { title:'数量', 	field:'number',edit:true, },
 			       { title:'预计生产单价', 	field:'bacthDepartmentPrice', templet:function(d){ return d.bacthDepartmentPrice.toFixed(3);  } },
 			       { title:'外发价格', 	field:'bacthHairPrice', },
 			       { title:'针工价格', field:'bacthDeedlePrice',templet:function(d){ return d.sumTaskPrice?d.sumTaskPrice.toFixed(3):'---' }},
@@ -187,9 +187,9 @@ layui.config({
 		if(isSmall){
 			col = [
 		           { type:'checkbox' },
-			       { title:'时间', 	field:'allotTime',width:'18%',},
+			       { title:'时间', 	field:'allotTime',width:'18%',type:'date', edit:true,  },
 			       { title:'产品名', 	field:'product_name', },
-			       { title:'数量', 	field:'number', width:'12%',},
+			       { title:'数量', 	field:'number', width:'12%', edit:true,},
 			       { title:'备注	', 	field:'remarks',width:'8%', },
 			       { title:'状态	', 	field:'status', width:'12%', transData:{data:['未完成','已完成'],} },
 			       { title:'操作', event:'allocation',width:'12%', templet:function(d){
