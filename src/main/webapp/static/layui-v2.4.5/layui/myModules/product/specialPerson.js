@@ -101,7 +101,7 @@ layui.config({
 										url:'/system/user/addTemporaryUserTime',
 										data:{
 											temporaryUserId: checked[k].id,
-											turnWorkTime: checked[k].turnWorkTime,
+											workTime: checked[k].turnWorkTime,
 											groupId: checked[k].group && checked[k].group.id,
 											temporarilyDates: $('#date').html(),
 											type: opt.type,
@@ -124,10 +124,12 @@ layui.config({
 			       { type:'select',  title:'分组',   field:'group_id',	select:{ data: allGroup, }  },
 			       ]],
 			done:function(){
+				var lastDay = myutil.getSubDay(1,'yyyy-MM-dd');
 				laydate.render({
 					elem:'#date',
 					type:'date',
-					range:"~"
+					range:"~",
+					value: lastDay+' ~ '+lastDay,
 				})
 			}
 		}) 
