@@ -149,7 +149,8 @@ public class GroupAction {
 					// 查询出该分组临时员工的出勤数据
 					if (temporarily.getTemporaryUserId() != null) {
 						Map<String, Object>  temporarilyUserMap = new HashMap<>();
-						temporarilyUserMap.put("id", temporarily.getTemporaryUserId());
+						temporarilyUserMap.put("id", temporarily.getId());
+						temporarilyUserMap.put("secondment", 0);
 						temporarilyUserMap.put("name",temporarily.getTemporaryUser().getUserName());
 						temporarilyUserMap.put("time",temporarily.getWorkTime());
 						temporarilyUserList.add(temporarilyUserMap);
@@ -157,7 +158,8 @@ public class GroupAction {
 					// 查询出该分组本厂借调员工的出勤数据
 					if (temporarily.getUserId() != null) {
 						Map<String, Object>  userMap = new HashMap<>();
-						userMap.put("id", temporarily.getUserId());
+						userMap.put("id", temporarily.getId());
+						userMap.put("secondment", 0);
 						userMap.put("name",temporarily.getUser().getUserName());
 						userMap.put("time",temporarily.getWorkTime());
 						userList.add(userMap);
@@ -170,7 +172,8 @@ public class GroupAction {
 				// 查询出该分组本厂员工的出勤数据
 				for (AttendancePay attendancePay : attendancePayList) {
 					Map<String, Object>  userMap = new HashMap<>();
-					userMap.put("id", attendancePay.getUser().getId());
+					userMap.put("id", attendancePay.getId());
+					userMap.put("secondment", 1);
 					userMap.put("name",attendancePay.getUserName());
 					userMap.put("time",attendancePay.getWorkTime());
 					userList.add(userMap);
@@ -388,7 +391,7 @@ public class GroupAction {
 	}
 
 	/**
-	 * 删除借调人员
+	 * 删除临时人员
 	 * 
 	 * @return cr
 	 */
