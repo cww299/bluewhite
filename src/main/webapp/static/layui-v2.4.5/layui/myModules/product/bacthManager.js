@@ -247,7 +247,7 @@ layui.config({
 				if(!isSmall){
 					now.setTime(now.getTime()-24*60*60*1000);
 				}
-				now.format('yyyy-MM-dd 00:00:00');
+				now = now.format('yyyy-MM-dd 00:00:00');
 				//获取所有工序的树形结构
 				var procedureTree = [{
 						id:-1,name:'全部',children:[],
