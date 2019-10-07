@@ -57,9 +57,6 @@ layui.config({
 				}
 			}
 		});
-		var status = [
-		              { id:'0', name:'工作' ,},
-		              { id:'1', name:'休息' ,},];
 		laytpl(TPL).render({},function(h){
 			$(opt.elem).append(h);
 			var html = '';
@@ -76,6 +73,7 @@ layui.config({
 			size: 'lg',
 			autoUpdate:{
 				saveUrl:'/system/user/addTemporaryUser',
+				deleUrl:'/system/user/deleteTemporaryUser',
 				field:{
 					group_id:'groupId',
 				},
@@ -88,7 +86,6 @@ layui.config({
 			toolbar:['<span class="layui-btn layui-btn-sm" lay-event="onekey">一键添加考勤</span>',
 			         '<span class="layui-btn layui-btn-sm" id="date">2019-10-04 ~ 2019-10-04</span>'].join(' '),
 			curd:{
-				btn:[1,2,3],
 				otherBtn: function(obj){
 					if(obj.event =='onekey'){
 						var checked = layui.table.checkStatus('tableData').data;
@@ -117,7 +114,7 @@ layui.config({
 			       { type:'checkbox' },
 			       { title:'人员姓名', 	field:'userName', edit:true, },
 			       { title:'手机号',   field:'phone',  edit:true, },
-			       { type:'select',  title:'工作状态',   field:'status',select:{ data:status, }	},
+			       { title:'工作状态',   field:'status', templet:getSwitch(),filter:true,edit:false,	},
 			       { title:'出勤时长',   field:'turnWorkTime',	edit:true,},
 			       { title:'身份证',   field:'idCard',	edit:true,},
 			       { title:'银行卡号',   field:'bankCard1',	edit:true,},
@@ -131,8 +128,29 @@ layui.config({
 					range:"~",
 					value: lastDay+' ~ '+lastDay,
 				})
+				form.on('switch(status)', function(data){
+					var value = 1;
+					if(data.elem.checked)
+						value = 0;
+					var index = $(data.elem).closest('tr').data('index');
+					var trData = layui.table.cache['tableData'][index];
+					myutil.saveAjax({
+						url: '/system/user/addTemporaryUser',
+						data: {
+							id: trData.id,
+							status: value,
+						}
+					})
+				});  
 			}
 		}) 
+		
+		function getSwitch(){
+			return function(d){	//0工作 1休息
+				var checked = d.status==1?'':'checked';
+				return '<input type="checkbox" lay-skin="switch" lay-filter="status" lay-text="工作|休息" '+checked+'>';
+			}
+		}
 		
 		form.on('submit(search)',function(obj){
 			table.reload('tableData',{
