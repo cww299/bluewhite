@@ -1,6 +1,10 @@
 /* 工具模块
  * 2019/7/6
- * getSelectHtml：{ url、data、}
+ * getSelectHtml：{ url、data、},
+ * saveAjax: 保存数值函数，默认同步➕遮罩➕post。设置ctx时，无需给前缀，成功回调success
+ * deleteAjax： 删除函数，同上，数据：ids
+ * getData: 默认异步 success(data)回调
+ * getDataSync: 默认同步
  */
 layui.define(['jquery','layer','form','table'],function(exports){
 	var $ = layui.jquery
@@ -28,7 +32,7 @@ layui.define(['jquery','layer','form','table'],function(exports){
 			url : options.url,
 			type : options.type || 'post',	//默认post方法
 			async : options.async || false,
-			traditional: options.traditional || 'false',
+			traditional: options.traditional || false,
 			data : options.data,
 			success: function(r){
 				var msg = '成功';
@@ -66,7 +70,7 @@ layui.define(['jquery','layer','form','table'],function(exports){
 			url : options.url,
 			type : options.type || 'get',	
 			async : options.async || false,
-			traditional: options.traditional || 'false',
+			traditional: options.traditional || false,
 			data : {ids: options.ids },
 			success: function(r){
 				var msg = '成功';
@@ -269,6 +273,13 @@ layui.define(['jquery','layer','form','table'],function(exports){
 		    return fmt; 
 		}  
 	};
+	myutil.getSubDay = function(day,format){	//获取当前时间减去day天。
+		myutil.timeFormat();
+		var now = new Date();
+		now.setTime(now.getTime()-24*60*60*1000*day)
+		return now.format(format || 'yyyy-MM-dd 00:00:00');
+	};
+	
 	myutil.getLastData = function(){	//用于记录表格单元格修改前的数据
 		$(document).on('mouseup','td[data-edit="true"],td[data-edit="text"]',function(obj){
 			var elem = obj.toElement;
