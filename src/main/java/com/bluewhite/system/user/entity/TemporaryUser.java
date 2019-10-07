@@ -80,7 +80,7 @@ public class TemporaryUser extends BaseEntity<Long> {
 	}
 
 	public Double getTurnWorkTime() {
-		return turnWorkTime;
+		return turnWorkTime == null ? 0 : turnWorkTime ;
 	}
 
 	public void setTurnWorkTime(Double turnWorkTime) {

@@ -20,7 +20,6 @@ import com.bluewhite.production.bacth.entity.Bacth;
 import com.bluewhite.production.farragotask.entity.FarragoTask;
 import com.bluewhite.production.finance.entity.UsualConsume;
 import com.bluewhite.production.procedure.entity.Procedure;
-import com.bluewhite.production.procedure.service.ProcedureService;
 import com.bluewhite.production.productionutils.constant.entity.ProductionConstant;
 import com.bluewhite.production.productionutils.constant.service.ProductionConstantService;
 import com.bluewhite.production.task.entity.Task;
@@ -876,7 +875,7 @@ public  class ProTypeUtils {
 	
 	
 	/**
-	 *  根据不同的部门，得到不同的填写日期
+	 * 获取前一天开始时间
 	 * @param farragoTask
 	 * @return
 	 */

@@ -84,18 +84,16 @@ public class UserAction {
 						"username", "archives", "pic", "idCard", "bankCard", "physical", "qualification",
 						"formalSchooling", "agreement", "secrecyAgreement", "contract", "remark", "quit");
 	}
-	
+
 	private ClearCascadeJSON clearCascadeJSONTemporaryUser;
 	{
-		clearCascadeJSONTemporaryUser = ClearCascadeJSON.get()
-				.addRetainTerm(TemporaryUser.class, "userName", "id", "phone", "idCard","bankCard1","group","status","turnWorkTime")
+		clearCascadeJSONTemporaryUser = ClearCascadeJSON.get().addRetainTerm(TemporaryUser.class, "userName", "id",
+				"phone", "idCard", "bankCard1", "group", "status", "turnWorkTime")
 				.addRetainTerm(Group.class, "name", "id");
 	}
 
-
 	/**
-	 * 查看员工列表 
-	 * 按不同部门显示的不同的人员
+	 * 查看员工列表 按不同部门显示的不同的人员
 	 * 
 	 * @param request
 	 * @param user
@@ -155,8 +153,12 @@ public class UserAction {
 	@ResponseBody
 	public CommonResponse addTemporaryUser(TemporaryUser temporaryUser) {
 		CommonResponse cr = new CommonResponse();
+		if(temporaryUser.getId()!=null){
+			cr.setMessage("修改成功");
+		}else{
+			cr.setMessage("新增成功");
+		}
 		temporaryUserService.addTemporaryUser(temporaryUser);
-		cr.setMessage("新增成功");
 		return cr;
 	}
 
@@ -194,8 +196,7 @@ public class UserAction {
 			BeanCopyUtils.copyNotEmpty(temporarily, temporarilyNew, "");
 			temporarilyNew.setTemporarilyDate(DatesUtil.getfristDayOftime(date));
 			if (temporarily.getTemporaryUserId() != null) {
-				if (temporarilyDao.findByTemporaryUserIdAndTemporarilyDateAndTypeAndGroupId(temporarily.getTemporaryUserId(),
-						temporarily.getTemporarilyDate(), temporarily.getType(), temporarily.getGroupId()) != null) {
+				if (temporarilyDao.findByTemporaryUserIdAndTemporarilyDateAndType(temporarily.getTemporaryUserId(),date,temporarily.getType()) != null) {
 					cr.setMessage("当天当前分组已添加过临时工的工作时间,不必再次添加");
 					cr.setCode(ErrorCode.ILLEGAL_ARGUMENT.getCode());
 					return cr;
@@ -217,11 +218,12 @@ public class UserAction {
 	@ResponseBody
 	public CommonResponse findTemporaryUserTimePages(TemporaryUser temporaryUser, PageParameter page) {
 		CommonResponse cr = new CommonResponse();
-		cr.setData(clearCascadeJSONTemporaryUser.format(temporaryUserService.getPagedUser(page, temporaryUser)).toJSON());
+		cr.setData(
+				clearCascadeJSONTemporaryUser.format(temporaryUserService.getPagedUser(page, temporaryUser)).toJSON());
 		cr.setMessage("查询成功");
 		return cr;
 	}
-	
+
 	/**
 	 * 删除临时员工
 	 * 
@@ -232,7 +234,7 @@ public class UserAction {
 	public CommonResponse deleteTemporaryUser(String ids) {
 		CommonResponse cr = new CommonResponse();
 		int count = temporaryUserService.deleteTemporaryUser(ids);
-		cr.setMessage("成功删除"+count+"条人员");
+		cr.setMessage("成功删除" + count + "条人员");
 		return cr;
 	}
 

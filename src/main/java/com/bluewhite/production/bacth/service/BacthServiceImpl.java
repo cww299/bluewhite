@@ -113,12 +113,12 @@ public class BacthServiceImpl extends BaseServiceImpl<Bacth, Long> implements Ba
 					predicate.add(cb.between(root.get("statusTime").as(Date.class), param.getOrderTimeBegin(),
 							param.getOrderTimeEnd()));
 				}
-			} else {
-				// 按时间过滤
-				if (!StringUtils.isEmpty(param.getOrderTimeBegin()) && !StringUtils.isEmpty(param.getOrderTimeEnd())) {
-					predicate.add(cb.between(root.get("allotTime").as(Date.class), param.getOrderTimeBegin(),
-							param.getOrderTimeEnd()));
-				}
+			}
+			
+			// 按生成时间过滤
+			if (!StringUtils.isEmpty(param.getOrderTimeBegin()) && !StringUtils.isEmpty(param.getOrderTimeEnd())) {
+				predicate.add(cb.between(root.get("allotTime").as(Date.class), param.getOrderTimeBegin(),
+						param.getOrderTimeEnd()));
 			}
 
 			Predicate[] pre = new Predicate[predicate.size()];
@@ -159,8 +159,11 @@ public class BacthServiceImpl extends BaseServiceImpl<Bacth, Long> implements Ba
 	@Transactional
 	public int statusBacth(String ids, Date time){
 		int count = 0;
-		Calendar cal = Calendar.getInstance();
-		cal.add(Calendar.DATE, -1);
+		if(time == null){
+			Calendar cal = Calendar.getInstance();
+			cal.add(Calendar.DATE, -1);
+			time =  cal.getTime();
+		}
 		if (!StringUtils.isEmpty(ids)) {
 			String[] idStrings = ids.split(","); 
 			if (idStrings.length > 0) {
@@ -171,7 +174,7 @@ public class BacthServiceImpl extends BaseServiceImpl<Bacth, Long> implements Ba
 						throw new ServiceException("批次编号为" + bacth.getBacthNumber() + "的任务已经完成,无需再次完成");
 					}
 					bacth.setStatus(1);
-					bacth.setStatusTime(time == null ? cal.getTime() : time);
+					bacth.setStatusTime(time);
 					dao.save(bacth);
 					count++;
 				}

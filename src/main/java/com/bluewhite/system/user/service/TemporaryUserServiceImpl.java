@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import javax.persistence.criteria.Predicate;
+import javax.transaction.Transactional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -11,6 +12,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
 import com.bluewhite.base.BaseServiceImpl;
+import com.bluewhite.common.ServiceException;
 import com.bluewhite.common.entity.PageParameter;
 import com.bluewhite.common.entity.PageResult;
 import com.bluewhite.system.user.dao.TemporaryUserDao;
@@ -44,20 +46,32 @@ public class TemporaryUserServiceImpl  extends BaseServiceImpl<TemporaryUser, Lo
 	}
 
 	@Override
+	
 	public void addTemporaryUser(TemporaryUser temporaryUser) {
 		if(temporaryUser.getId()!=null){
 			TemporaryUser ot = dao.findOne(temporaryUser.getId());
 			update(temporaryUser, ot);
 		}else{
+			temporaryUser.setStatus(0);
 			dao.save(temporaryUser);
 		}
 	}
 
 	@Override
+	@Transactional
 	public int deleteTemporaryUser(String ids) {
+		int count = 0;
 		if(!StringUtils.isEmpty(ids)){
-			
+			String[] idString = ids.split(",");
+			for(String id : idString){
+				try {
+					dao.delete(Long.parseLong(id));
+				} catch (Exception e) {
+					throw new ServiceException("该临时人员存在任务或者b工资，无法删除，如需删除，请联系管理员");
+				}
+				count++;
+			}
 		}
-		return 0;
+		return count;
 	}
 }
