@@ -193,8 +193,8 @@ public class UserAction {
 			Temporarily temporarilyNew = new Temporarily();
 			BeanCopyUtils.copyNotEmpty(temporarily, temporarilyNew, "");
 			temporarilyNew.setTemporarilyDate(DatesUtil.getfristDayOftime(date));
-			if (temporarily.getUserId() != null) {
-				if (temporarilyDao.findByTemporaryUserIdAndTemporarilyDateAndTypeAndGroupId(temporarily.getUserId(),
+			if (temporarily.getTemporaryUserId() != null) {
+				if (temporarilyDao.findByTemporaryUserIdAndTemporarilyDateAndTypeAndGroupId(temporarily.getTemporaryUserId(),
 						temporarily.getTemporarilyDate(), temporarily.getType(), temporarily.getGroupId()) != null) {
 					cr.setMessage("当天当前分组已添加过临时工的工作时间,不必再次添加");
 					cr.setCode(ErrorCode.ILLEGAL_ARGUMENT.getCode());
