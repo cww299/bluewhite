@@ -27,7 +27,9 @@ layui.define(['jquery','layer','form','table'],function(exports){
 		}
 		if(myutil.config.ctx!='')
 			options.url = myutil.config.ctx+options.url;
-		var load = layer.load(1);
+		var load = layer.load(1,{
+			 shade: [0.3,'black'],
+		});
 		$.ajax({
 			url : options.url,
 			type : options.type || 'post',	//默认post方法
@@ -65,7 +67,9 @@ layui.define(['jquery','layer','form','table'],function(exports){
 		}
 		if(myutil.config.ctx!='')
 			options.url = myutil.config.ctx+options.url;
-		var load = layer.load(1);
+		var load = layer.load(1,{
+			shade: [0.3,'black'], 
+		});
 		$.ajax({
 			url : options.url,
 			type : options.type || 'get',	

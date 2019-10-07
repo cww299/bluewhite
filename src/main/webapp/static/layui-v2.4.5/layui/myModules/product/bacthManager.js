@@ -363,7 +363,6 @@ layui.config({
 								procedureIds.push(id[0]);
 							}
 						}
-						var load = layer.load(1);
 						var saveData = {
 								type: opt.type,
 								userIds: userIds.join(','),
@@ -386,7 +385,6 @@ layui.config({
 								table.reload('tableData');
 							}
 						})
-						layer.close(load);
 					}
 				})
 			}
