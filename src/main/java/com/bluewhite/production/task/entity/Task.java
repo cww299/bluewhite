@@ -53,7 +53,7 @@ public class Task extends BaseEntity<Long> {
 	private String userIds;
 
 	/**
-	 * 领取任务人员ids(任务和员工多对多关系)
+	 * 领取任务临时人员ids(任务和员工多对多关系)
 	 */
 	@Column(name = "temporaryUserIds")
 	private String temporaryUserIds;
