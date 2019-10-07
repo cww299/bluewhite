@@ -84,7 +84,7 @@ layui.config({
 		})
 		var allPeople = '';
 		myutil.getData({
-			url:'/system/user/findUserList?quit=0',
+			url: opt.ctx+'/system/user/findUserList?quit=0',
 			success:function(d){
 				for(var k in d){
 					allPeople += '<option value="'+d[k].id+'">'+d[k].userName+'</option>';
@@ -93,7 +93,7 @@ layui.config({
 		})
 		mytable.renderNoPage({
 			elem:'#tableData',
-			url: '/production/getGroup?type='+opt.type,
+			url: opt.ctx+'/production/getGroup?type='+opt.type,
 			parseData:function(ret){
 				if(ret.code==0)
 					ret.data.push({ id:0, name:'借调组', })
@@ -193,7 +193,7 @@ layui.config({
 						if(obj.data.id==0){		//如果查看的是借调组人员
 							mytable.renderNoPage({
 								elem:'#lookoverTable',
-								url: '/production/getTemporarily?type='+opt.type,
+								url: opt.ctx+'/production/getTemporarily?type='+opt.type,
 								where:{  temporarilyDate: now, },
 								size:'lg',
 								autoUpdate:{
@@ -214,7 +214,7 @@ layui.config({
 						}else{
 							mytable.renderNoPage({
 								elem:'#lookoverTable',
-								url: '/production/allGroup?id='+obj.data.id,
+								url: opt.ctx+'/production/allGroup?id='+obj.data.id,
 								where:{ temporarilyDate: now,  },
 								cols:[[
 									{ field:'name', title:'人名' },

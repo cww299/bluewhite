@@ -211,7 +211,7 @@ layui.config({
 		})
 		mytable.render({
 			elem:'#tableData',
-			url:'/contract/findContract',
+			url:'${ctx}/contract/findContract',
 			where:{ flag:1 },
 			toolbar:'#tableTool',
 			cols:[[

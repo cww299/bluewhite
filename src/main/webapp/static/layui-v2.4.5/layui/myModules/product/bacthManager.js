@@ -116,7 +116,7 @@ layui.config({
 		var isSmall = false;
 		var allProcedure = [],allUser = [];
 		myutil.getData({
-			url:'/basedata/list?type='+baseType[opt.type],
+			url:opt.ctx+'/basedata/list?type='+baseType[opt.type],
 			success: function(d){
 				allProcedure = d;
 			}
@@ -200,7 +200,7 @@ layui.config({
 		var statData = '';
 		mytable.render({
 			elem:'#tableData',
-			url: '/bacth/allBacth?type='+opt.type,
+			url: opt.ctx+'/bacth/allBacth?type='+opt.type,
 			totalRow:['number','sumTaskPrice','time'],
 			parseData:function(ret){
 				statData = ret.data.statData;
@@ -458,7 +458,7 @@ layui.config({
 							$('#looktime').html(check[0].allotTime);
 							mytable.render({
 								elem:'#lookTable',
-								url:'/task/allTask?type='+opt.type+'&bacthId='+check[0].id,
+								url:opt.ctx+'/task/allTask?type='+opt.type+'&bacthId='+check[0].id,
 								autoUpdate:{
 									deleUrl:'/task/delete',
 								},
@@ -491,7 +491,7 @@ layui.config({
 												success:function(){
 													 mytable.renderNoPage({
 														 elem:'#peopleTable',
-														 url:'/task/taskUser?id='+obj.data.id,
+														 url:opt.ctx+'/task/taskUser?id='+obj.data.id,
 														 cols:[[
 														        { field:'id', title:'id', },
 														        { field:'userName', title:'完成人', },

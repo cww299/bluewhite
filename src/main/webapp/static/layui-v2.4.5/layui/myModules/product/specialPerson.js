@@ -69,7 +69,7 @@ layui.config({
 		
 		mytable.render({
 			elem:'#tableData',
-			url: '/system/user/findTemporaryUserTimePages?type='+opt.type,
+			url: opt.ctx+'/system/user/findTemporaryUserTimePages?type='+opt.type,
 			size: 'lg',
 			autoUpdate:{
 				saveUrl:'/system/user/addTemporaryUser',
