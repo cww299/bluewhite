@@ -274,7 +274,6 @@ layui.config({
 											number: r.data[i].residualNumber,
 										})
 									}
-									console.log(da)
 									procedureTree[0].children.push(da);
 								}
 							}
@@ -293,19 +292,40 @@ layui.config({
 					btn:['确定','取消'],
 					btnAlign: 'c',
 					success:function(){
+						getUserData(now);
 						laydate.render({
 							elem:'#allotTime',
 							value:now,
 							type:'datetime',
+							done: function(value){
+								getUserData(value);
+								menuTree.reload('userTree',{
+									data: allUser,
+								})
+							}
 						});
 						menuTree.render({				
 				    	  elem:'#userTree',
 				    	  data : allUser,
-						}) 
+						})
+						var checked = [];
+						if(opt.type==2){	//如果是包装，默认选中包装工序的全部，除去上车
+							var t = procedureTree[0].children;
+							for(var i in t){
+								if(t[i].name=='包装'){
+									for(var k in t[i].children){
+										if(t[i].children[k].name.indexOf('上车')<0)
+											checked.push(t[i].children[k].id);
+									}
+								}
+							}
+						}
 						menuTree.render({				
 				    	  elem:'#procedureTree',
 				    	  data : procedureTree,
 				    	  toolbar: opt.type==1?['edit']:[],
+		    			  hide: false,
+		    			  checked: checked,
 				    	  showName: function(data){
 				    		  if(isNaN(data.number))
 				    			  return data.name;
@@ -397,21 +417,20 @@ layui.config({
 						},
 						yes:function(){
 							var time = $('#finishTime').val(), ids = [];
-							if(time=='')
-								return myutil.emsg('请输入完成时间');
+							if(time)
+								time+=' 00:00:00'
 							if(check.length<1)
 								return myutil.emsg('请选择相关信息');
 							for(var k in check)
 								ids.push(check[k].id);
 							myutil.saveAjax({
 								url:'/bacth/statusBacth',
-								traditional:true,
 								type:'get',
 								data:{
 									type: opt.type,
 									status: 1,
-									time: time+' 00:00:00',
-									ids: ids,
+									time: time,
+									ids: ids.join(','),
 								},
 								success:function(){
 									layer.close(inputTime);
@@ -497,50 +516,56 @@ layui.config({
 			}
 		}//end finish
 		
-		myutil.getData({	//获取所有分组用户的树形结构数据
-			url:'/production/getGroup?type='+opt.type,
-			success:function(allGroup){
-				for(var k in allGroup){
-					(function(name){
-						$.ajax({
-							url: opt.ctx+'/production/allGroup',
-							async:false,
-							data:{
-								id: allGroup[k].id,
-								type: opt.type,
-							},
-							success:function(r){
-								if(r.code==0){
-									var groupPeople = r.data;
-									var data = {
-											id:-1,
-											name: name,
-											children:[
-											          { id:'-1', name:'临时员工' ,children:[]},
-											          { id:'-1', name:'非临时员工',children:[] },
-											          ]
-									};
-									if(groupPeople.temporarilyUser && groupPeople.temporarilyUser.length>0){
-										var t = groupPeople.temporarilyUser;
-										for(var k in t)
-											data.children[0].children.push({
-												id: 't-'+t[k].id,
-												name: t[k].name
-											});
+		function getUserData(day){
+			allUser = [];
+			myutil.getDataSync({	//获取所有分组用户的树形结构数据
+				url:'/production/getGroup?type='+opt.type,
+				success:function(allGroup){
+					for(var k in allGroup){
+						(function(name){
+							$.ajax({
+								url: opt.ctx+'/production/allGroup',
+								async: false,
+								data:{
+									id: allGroup[k].id,
+									type: opt.type,
+									temporarilyDate: day,
+								},
+								success:function(r){
+									if(r.code==0){
+										console.log(r)
+										var groupPeople = r.data;
+										var data = {
+												id:-1,
+												name: name,
+												children:[
+												          { id:'-1', name:'临时员工' ,children:[]},
+												          { id:'-1', name:'非临时员工',children:[] },
+												          ]
+										};
+										if(groupPeople.temporarilyUser && groupPeople.temporarilyUser.length>0){
+											var t = groupPeople.temporarilyUser;
+											for(var k in t)
+												data.children[0].children.push({
+													id: 't-'+t[k].id,
+													name: t[k].name
+												});
+										}
+										if(groupPeople.userList && groupPeople.userList.length>0){
+											var t = groupPeople.userList;
+											for(var k in t)
+												data.children[1].children.push(t[k])
+										}
+										allUser.push(data);
 									}
-									if(groupPeople.userList && groupPeople.userList.length>0){
-										var t = groupPeople.userList;
-										for(var k in t)
-											data.children[1].children.push(t[k])
-									}
-									allUser.push(data);
 								}
-							}
-						})
-					})(allGroup[k].name);
+							})
+						})(allGroup[k].name);
+					}
+					console.log(allUser)
 				}
-			}
-		});
+			});
+		}
 		
 		
 		
