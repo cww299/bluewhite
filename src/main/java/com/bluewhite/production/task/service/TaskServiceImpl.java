@@ -162,10 +162,10 @@ public class TaskServiceImpl extends BaseServiceImpl<Task, Long> implements Task
 						for (String userId : task.getUsersIds()) {
 							List<AttendancePay> attendancePayList = attendancePayDao.findByUserIdAndTypeAndAllotTimeBetween(Long.parseLong(userId), task.getType(), orderTimeBegin, orderTimeEnd);
 							Temporarily temporarilyList = null;
-							if(attendancePayList.size()==0){
+							if(attendancePayList!=null && attendancePayList.size()==0){
 								temporarilyList = temporarilyDao.findByUserIdAndTemporarilyDateAndType(Long.parseLong(userId), orderTimeBegin, task.getType()); 
+								sumTime += attendancePayList.size()==0 ? temporarilyList.getWorkTime() : attendancePayList.get(0).getWorkTime();
 							}
-							sumTime += attendancePayList.size()==0 ? temporarilyList.getWorkTime() : attendancePayList.get(0).getWorkTime();
 						}
 					}
 					//临时员工
