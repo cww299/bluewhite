@@ -204,6 +204,7 @@ layui.config({
 			elem:'#tableData',
 			url: '/bacth/allBacth?type='+opt.type,
 			totalRow:['number','sumTaskPrice','time'],
+			/*width:'100%',*/
 			parseData:function(ret){
 				if(ret.code==0)
 					statData = ret.data.statData;
@@ -226,8 +227,8 @@ layui.config({
 			},
 			toolbar: ['<span class="layui-btn layui-btn-sm" lay-event="onekeyFinish">一键完成</span>',
 			          '<span class="layui-btn layui-btn-sm" lay-event="lookover">查看分配工序</span>'].join(' '),
-            limit:'15',
-            limits:[10,15,20,50],
+            limit:'14',
+            limits:[10,14,20,50],
 			cols:[col],
 			done:function(){
 				$('.layui-table-total').find('td[data-field="number"]').find('div').html(statData.number);
@@ -269,7 +270,7 @@ layui.config({
 								if(r.code==0){
 									for(var i in r.data){
 										da.children.push({
-											id: r.data[i].id,
+											id: r.data[i].id+'-'+r.data[i].residualNumber,	//拼接剩余数量，用于判断是否为0
 											name: r.data[i].name,
 											number: r.data[i].residualNumber,
 										})
@@ -354,7 +355,6 @@ layui.config({
 						form.render();
 					},
 					yes:function(){
-						var load = layer.load(1);
 						var userIds = [],procedureIds = [],temporaryUserIds = [];
 						var userTreeId = menuTree.getVal('userTree'),procedureTreeId = menuTree.getVal('procedureTree');
 						for(var i in userTreeId){	
@@ -366,9 +366,14 @@ layui.config({
 							}
 						}
 						for(var i in procedureTreeId){
-							if(procedureTreeId[i]!=-1)
-								procedureIds.push(procedureTreeId[i]);
+							if(procedureTreeId[i]!=-1){	
+								var id = procedureTreeId[i].split('-');
+								if(id[1]==0)
+									return myutil.emsg('选择的工序剩余数量不能为0');
+								procedureIds.push(id[0]);
+							}
 						}
+						var load = layer.load(1);
 						var saveData = {
 								type: opt.type,
 								userIds: userIds.join(','),
@@ -383,7 +388,7 @@ layui.config({
 							};
 						if(opt.type==1)
 							saveData.holeNumber = tiepidongNumber;
-						myutil.saveAjax({
+						myutil.saveAjaxSync({
 							url:'/task/addTask',
 							data:saveData,
 							success:function(){
