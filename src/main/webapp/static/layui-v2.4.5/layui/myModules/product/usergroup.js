@@ -74,8 +74,8 @@ layui.config({
 	                  '</div>',
 	                  ].join(' ');
 	
-	
 	Class.prototype.render = function(opt){
+		myutil.clickTr();
 		var now = new Date();
 		now.setTime(now.getTime()-24*60*60*1000);
 		now = now.format('yyyy-MM-dd 00:00:00');
@@ -190,58 +190,32 @@ layui.config({
 							value:now,
 							type:'datetime'
 						})
-						var idOrType = '?id='+obj.data.id
-							,url='/production/allGroup'
-							, cols = [
-								       { field:'name', title:'人名' },
-								       { field:'time', title:'所在组工作时长', },
-								       { field:'isTemp', title:'是否临时',filter:true, },
-								       ];
-						
-						if(obj.data.id==0){		//如果查看的是借调组人员
-							idOrType = '?type='+opt.type;
-							url = '/production/getTemporarily';
-							cols = [
-								       
-							       ];
-						};
-						
-						
 						if(obj.data.id==0){		//如果查看的是借调组人员
 							mytable.renderNoPage({
 								elem:'#lookoverTable',
 								url: '/production/getTemporarily?type='+opt.type,
 								where:{  temporarilyDate: now, },
+								size:'lg',
 								autoUpdate:{
 									saveUrl:'/production/updateTemporarily',
-									field:{ time:'', },
+									deleUrl:'/production/deleteTemporarily',
+									field:{ group_id:'groupId', },
+								},
+								curd:{
+									btn:[4],
 								},
 								cols:[[
-									{ field:'name', title:'人名' },
-									{ field:'time', title:'所在组工作时长',edit:true, },
-									{ field:'time', title:'所在小组',  },
-									{ field:'isTemp', title:'是否临时',filter:true, },
+								    { type:'checkbox', },
+									{ field:'user_userName', title:'人名' },
+									{ field:'workTime', title:'所在组工作时长',edit:true, },
+									{ field:'group_id', type:'select', title:'所在小组', select: {data:table.cache['tableData'], } ,  },
 								]],
-								parseData:function(r){
-									var data = [];
-									if(r.code==0){
-										for(var k in r.data){
-											data.push({
-												id: r.data[k].id,
-												isTemp: '否',
-												name: r.data[k].user.userName,
-												time: r.data[k].workTime,
-											})
-										}
-									}
-									return {  msg:r.message,  code:r.code , data:data, }
-								},
 							})
 						}else{
 							mytable.renderNoPage({
 								elem:'#lookoverTable',
-								url: '/production/allGroup',
-								where:{ temporarilyDate: now, },
+								url: '/production/allGroup?id='+obj.data.id,
+								where:{ temporarilyDate: now,  },
 								cols:[[
 									{ field:'name', title:'人名' },
 									{ field:'time', title:'所在组工作时长', },
