@@ -324,6 +324,9 @@ layui.config({
 						form.render();
 					},
 					yes:function(){
+						var load = layer.load(1,{
+							shade: [0.3,'black'],
+						});
 						var userIds = [],procedureIds = [],temporaryUserIds = [];
 						var ids = [],temporaryIds = [];
 						var userTreeId = menuTree.getVal('userTree'),procedureTreeId = menuTree.getVal('procedureTree');
@@ -344,10 +347,14 @@ layui.config({
 						for(var i in procedureTreeId){
 							if(procedureTreeId[i]!=-1){	
 								var id = procedureTreeId[i].split('-');
-								if(id[1]==0)
+								if(id[1]==0){
+									layer.close(load);
 									return myutil.emsg('选择的工序剩余数量不能为0');
-								if(id[1]-$('#number').val()<0)
+								}
+								if(id[1]-$('#number').val()<0){
+									layer.close(load);
 									return myutil.emsg('任务分配数量不能大于选择的工序剩余数量');
+								}
 								procedureIds.push(id[0]);
 							}
 						}
@@ -370,6 +377,7 @@ layui.config({
 						myutil.saveAjax({
 							url:'/task/addTask',
 							data:saveData,
+							closeLoad:true,
 							success:function(){
 								if(opt.type==1 || opt.type==2)
 									layer.close(allotWin);
@@ -386,6 +394,7 @@ layui.config({
 								table.reload('tableData');
 							}
 						})
+						layer.close(load);
 					}
 				})
 				function getAllProcedureTree(){	//获取所有工序的树形结构
