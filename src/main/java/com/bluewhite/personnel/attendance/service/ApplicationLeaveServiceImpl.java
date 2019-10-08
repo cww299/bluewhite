@@ -116,7 +116,8 @@ public class ApplicationLeaveServiceImpl extends BaseServiceImpl<ApplicationLeav
 		setApp(oldApplicationLeave);
 		return dao.save(oldApplicationLeave);
 	}
-
+	
+	@Transactional
 	private ApplicationLeave setApp(ApplicationLeave applicationLeave) throws ParseException {
 		dao.save(applicationLeave);
 		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
@@ -142,8 +143,6 @@ public class ApplicationLeaveServiceImpl extends BaseServiceImpl<ApplicationLeav
 			Date restBeginTime = null;
 			// 中午休息结束时间
 			Date restEndTime = null;
-			// 出勤时长
-			Double turnWorkTime = null;
 			// 休息时长
 			Double restTime = null;
 			// 获取员工考勤的初始化参数
@@ -175,19 +174,32 @@ public class ApplicationLeaveServiceImpl extends BaseServiceImpl<ApplicationLeav
 				if (attendanceInit == null) {
 					throw new ServiceException("该员工没有考勤设定数据，无法申请，请先添加考勤设定数据");
 				}
+				
 				// flag=ture 为夏令时
 				if (flag) {
 					String[] workTimeArr = attendanceInit.getWorkTimeSummer().split(" - ");
 					// 将 工作间隔开始结束时间转换成当前日期的时间
 					workTime = DatesUtil.dayTime(dateLeave, workTimeArr[0]);
 					workTimeEnd = DatesUtil.dayTime(dateLeave, workTimeArr[1]);
+					String[] restTimeArr = attendanceInit.getRestTimeSummer().split(" - ");
+					// 将 休息间隔开始结束时间转换成当前日期的时间
+					restBeginTime = DatesUtil.dayTime(dateLeave, restTimeArr[0]);
+					restEndTime = DatesUtil.dayTime(dateLeave, restTimeArr[1]);
+					restTime = attendanceInit.getRestSummer();
 				} else {
 					// 冬令时
 					String[] workTimeArr = attendanceInit.getWorkTimeWinter().split(" - ");
 					// 将 工作间隔开始结束时间转换成当前日期的时间
 					workTime = DatesUtil.dayTime(dateLeave, workTimeArr[0]);
 					workTimeEnd = DatesUtil.dayTime(dateLeave, workTimeArr[1]);
+					// 将 休息间隔开始结束时间转换成当前日期的时间
+					String[] restTimeArr = attendanceInit.getRestTimeWinter().split(" - ");
+					// 将 休息间隔开始结束时间转换成当前日期的时间
+					restBeginTime = DatesUtil.dayTime(dateLeave, restTimeArr[0]);
+					restEndTime = DatesUtil.dayTime(dateLeave, restTimeArr[1]);
+					restTime = attendanceInit.getRestWinter();
 				}
+				
 			}
 
 			if (applicationLeave.isHoliday()) {
@@ -234,7 +246,7 @@ public class ApplicationLeaveServiceImpl extends BaseServiceImpl<ApplicationLeav
 				attendanceDao.save(attendance);
 				holidayDetail += date + (time.equals("0") ? "补签入," : "补签出,");
 			}
-
+			//加班
 			if (applicationLeave.isApplyOvertime()) {
 				if (attendanceTime == null) {
 					throw new ServiceException("该员工未统计考勤，无法比对加班时长，请先初始化该员工考勤");
