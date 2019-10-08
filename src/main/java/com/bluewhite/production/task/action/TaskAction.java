@@ -95,7 +95,7 @@ public class TaskAction {
 	public CommonResponse addTask(HttpServletRequest request, Task task) {
 		CommonResponse cr = new CommonResponse();
 		// 新增
-		if (!StringUtils.isEmpty(task.getUserIds()) && !StringUtils.isEmpty(task.getTemporaryUserIds())) {
+		if (!StringUtils.isEmpty(task.getUserIds()) || !StringUtils.isEmpty(task.getTemporaryUserIds())) {
 			task.setAllotTime(ProTypeUtils.countAllotTime(task.getAllotTime()));
 			taskService.addTask(task, request);
 			cr.setMessage("任务分配成功");
