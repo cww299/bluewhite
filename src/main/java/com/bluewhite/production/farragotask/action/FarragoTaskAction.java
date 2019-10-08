@@ -77,7 +77,6 @@ private static final Log log = Log.getLog(FarragoTaskAction.class);
 	/**
 	 * 添加杂工任务（修改）
 	 * 
-	 * 
 	 */
 	@RequestMapping(value = "/farragoTask/addFarragoTask", method = RequestMethod.POST)
 	@ResponseBody
