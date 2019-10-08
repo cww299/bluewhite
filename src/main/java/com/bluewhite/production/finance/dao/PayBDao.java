@@ -24,6 +24,16 @@ public interface PayBDao extends BaseRepository<PayB, Long> {
 	 * @return
 	 */
 	PayB findByTaskIdAndUserId(Long id, Long userid);
+	
+	
+	/**
+	 * 根据任务id和员工id查询工资
+	 * 
+	 * @param id
+	 * @param userid
+	 * @return
+	 */
+	PayB findByTaskIdAndTemporaryUserId(Long id, Long userid);
 
 	/**
 	 * 根据条件查询b

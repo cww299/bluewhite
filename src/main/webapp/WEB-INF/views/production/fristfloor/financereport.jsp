@@ -225,12 +225,12 @@
 				var m=myDate.getMinutes();     //获取当前分钟数(0-59)
 				var s=myDate.getSeconds(); 
 				var day = new Date(year,month,0);  
-				var firstdate = year + '-' + '0'+month + '-01'+' '+'00:00:00';
-				var lastdate = year + '-' + '0'+month + '-' + day.getDate() +' '+'23:59:59';
+				var firstdate = year + '-' +p(month)+ '-01'+' '+'00:00:00';
+				var lastdate = year + '-' +p(month) + '-' + day.getDate() +' '+'23:59:59';
 				$('#startTime').val(firstdate);
 				$('#endTime').val(lastdate);
-				var a=year + '-' + '0'+month + '-' + date+' '+'00:00:00'
-				var b=year + '-' + '0'+month + '-' + date+' '+'23:59:59'
+				var a=year + '-' + p(month)+ '-' + date+' '+'00:00:00'
+				var b=year + '-' + p(month)+ '-' + date+' '+'23:59:59'
 				$('#startTimetw').val(a);
 				$('#endTimetw').val(b);
 				

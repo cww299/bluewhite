@@ -405,16 +405,20 @@
 			      			  $(result.data).each(function(k,j){
 			      				htmlth +='<option value="'+j.id+'">'+j.name+'</option>'
 			      			  });  
-			      			 $('.complete').html("<select class='form-control selectcomplete'><option value="+0+">请选择</option><option value="+""+">全部</option>"+htmlth+"</select>") 
+			      			 $('.complete').html("<select class='form-control selectcomplete'><option value="+0+">请选择</option>"+htmlth+"</select>") 
 							//改变事件
 			      			 $(".selectcomplete").change(function(){
 			      				var htmltwo = "";
+			      				var htmltwh = "";
 			      				var	id=$(this).val()
 								   var data={
 										  id:id,
 										  type:1,
 										  temporarilyDate:$('#Time').val(),
 								   }
+			      				if(id==0){
+			      					$('.select').html("");
+			      				}else{
 			      				$.ajax({
 									url:"${ctx}/production/allGroup",
 									data:data,
@@ -428,20 +432,23 @@
 									success:function(result){
 										$(result.data).each(function(i,o){
 										
-										$(o.users).each(function(i,o){
-											htmltwo +='<div class="input-group"><input type="checkbox" class="stuCheckBox" value="'+o.id+'" data-username="'+o.userName+'">'+o.userName+'</input></div>'
-										})
+											$(o.userList).each(function(i,o){
+												htmltwo +='<div class="input-group"><input type="checkbox" class="stuCheckBoxtt" value="'+o.userId+'"  data-secondment='+o.secondment+' data-id="'+o.id+'" data-username="'+o.name+'">'+o.name+'</input></div>'
+											})
+											$(o.temporarilyUser).each(function(i,o){
+												htmltwh +='<div class="input-group"><input type="checkbox" class="stuCheckBoxtt" value="'+o.userId+'" data-secondment='+o.secondment+' data-id="'+o.id+'" data-username="'+o.name+'">'+o.name+'</input></div>'
+											})
 										})
 										var s="<div class='input-group'><input type='checkbox' class='checkall'>全选</input></div>"
-										$('.select').html(s+htmltwo)
+										$('.select').html(s+htmltwo+htmltwh)
 										$(".checkall").on('click',function(){
 							                    if($(this).is(':checked')){ 
-										 			$('.stuCheckBox').each(function(){  
+										 			$('.stuCheckBoxtt').each(function(){  
 							                    //此处如果用attr，会出现第三次失效的情况  
 							                     		$(this).prop("checked",true);
 										 			})
 							                    }else{
-							                    	$('.stuCheckBox').each(function(){ 
+							                    	$('.stuCheckBoxtt').each(function(){ 
 							                    		$(this).prop("checked",false);
 							                    		
 							                    	})
@@ -453,6 +460,7 @@
 										layer.close(index);
 									}
 								});
+			      				}
 							 }) 
 					      }
 					  });
@@ -495,11 +503,22 @@
 							 if(performance=="请选择"){
 								 performance="";
 							 }
-							  var arr=new Array()
-								$(".stuCheckBox:checked").each(function() {   
-								    arr.push($(this).val());   
+							 var arr=new Array()
+							 var arrtem=new Array()
+							 var ids=new Array()
+							 var temporaryIds=new Array()
+								$(".stuCheckBoxtt:checked").each(function() {   
+								   	if($(this).data('secondment')==1){
+								    arr.push($(this).val()); 
+								    ids.push($(this).data('id'));
+								   	}
+								   	if($(this).data('secondment')==0){
+								   		arrtem.push($(this).val());
+								   		temporaryIds.push($(this).data('id'));
+									   	}
 								});
-							  if(arr.length<=0){
+							  
+							   if(arr.length<=0 && arrtem.length<=0){
 								 return layer.msg("领取人不能为空", {icon:2 });
 							  }
 							  if($(".sumnumber").val()==""){
@@ -516,6 +535,9 @@
 									  performance:performance,
 									  performanceNumber:performanceNumber,
 									  userIds:arr,
+									  temporaryUserIds:arrtem,
+									  ids:ids,
+									  temporaryIds:temporaryIds,
 									  bacth:$(".bacth").val(),
 									  type:1,
 							  }

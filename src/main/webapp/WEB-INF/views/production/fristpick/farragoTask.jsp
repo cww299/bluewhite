@@ -792,7 +792,7 @@
 			      			  $(result.data).each(function(k,j){
 			      				htmlth +='<option value="'+j.id+'">'+j.name+'</option>'
 			      			  });  
-			      			 $('.completetw').html("<select class='form-control selectcompletee'><option value="+0+">请选择</option><option value="+""+">全部</option>"+htmlth+"</select>") 
+			      			 $('.completetw').html("<select class='form-control selectcompletee'><option value="+0+">请选择</option>"+htmlth+"</select>") 
 							//改变事件
 			      			 $(".selectcompletee").change(function(){
 			      				var htmltwo = "";
@@ -803,6 +803,9 @@
 										 	id:id,
 										 	temporarilyDate:$('#Time').val(),
 								   }
+			      				if(id==0){
+			      					$('.selecttw').html("");
+			      				}else{
 			      				$.ajax({
 									url:"${ctx}/production/allGroup",
 									data:data,
@@ -816,10 +819,10 @@
 									success:function(result){
 										$(result.data).each(function(i,o){
 										$(o.userList).each(function(i,o){
-											htmltwo +='<div class="input-group"><input type="checkbox" class="stuCheckBoxtt" value="'+o.id+'" data-secondment='+o.secondment+' data-username="'+o.name+'">'+o.name+'</input></div>'
+											htmltwo +='<div class="input-group"><input type="checkbox" class="stuCheckBoxtt" value="'+o.userId+'" data-secondment='+o.secondment+' data-id="'+o.id+'" data-username="'+o.name+'">'+o.name+'</input></div>'
 										})
 										$(o.temporarilyUser).each(function(i,o){
-											htmltwh +='<div class="input-group"><input type="checkbox" class="stuCheckBoxtt" value="'+o.id+'" data-secondment='+o.secondment+' data-username="'+o.name+'">'+o.name+'</input></div>'
+											htmltwh +='<div class="input-group"><input type="checkbox" class="stuCheckBoxtt" value="'+o.userId+'" data-secondment='+o.secondment+' data-id="'+o.id+'" data-username="'+o.name+'">'+o.name+'</input></div>'
 										})
 										})
 										var s="<div class='input-group'><input type='checkbox' class='checkalltt'>全选</input></div>"
@@ -843,6 +846,7 @@
 										layer.close(index);
 									}
 								});
+			      				}
 							 }) 
 					      }
 					  });
@@ -885,14 +889,18 @@
 							 if(performance=="请选择"){
 								 performance="";
 							 }
-							  var arr=new Array()
-							  var arrtem=new Array()
+							 var arr=new Array()
+							 var arrtem=new Array()
+							 var ids=new Array()
+							 var temporaryIds=new Array()
 								$(".stuCheckBoxtt:checked").each(function() {   
 								   	if($(this).data('secondment')==1){
-								    arr.push($(this).val());   
+								    arr.push($(this).val()); 
+								    ids.push($(this).data('id'));
 								   	}
 								   	if($(this).data('secondment')==0){
-								   		arrtem.push($(this).val());   
+								   		arrtem.push($(this).val());
+								   		temporaryIds.push($(this).data('id'));
 									   	}
 								});
 							  
@@ -911,6 +919,8 @@
 									  performanceNumber:performanceNumber,
 									  userIds:arr,
 									  temporaryUserIds:arrtem,
+									  ids:ids,
+									  temporaryIds:temporaryIds,
 									  bacth:$(".bacth").val(),
 									  type:2,
 							  }

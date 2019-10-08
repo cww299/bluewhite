@@ -911,7 +911,7 @@
 					      }
 					  });
 					var data={
-							type:3
+							type:3,
 					}
 					//遍历人名组别
 				    $.ajax({
@@ -926,11 +926,12 @@
 							//改变事件
 			      			 $(".selectcomplete").change(function(){
 			      				var htmltwo = "";
+			      				var htmltwh = "";
 			      				var	id=$(this).val()
 								   var data={
 										  id:id,
 										  type:3,
-										 
+										  temporarilyDate:$('#Timetw').val(),
 								   }
 			      				$.ajax({
 									url:"${ctx}/production/allGroup",
@@ -945,20 +946,23 @@
 									success:function(result){
 										$(result.data).each(function(i,o){
 										
-										$(o.users).each(function(i,o){
-											htmltwo +='<div class="input-group"><input type="checkbox" class="stuCheckBox" value="'+o.id+'" data-username="'+o.userName+'">'+o.userName+'</input></div>'
-										})
+											$(o.userList).each(function(i,o){
+												htmltwo +='<div class="input-group"><input type="checkbox" class="stuCheckBoxtt" value="'+o.userId+'" data-id="'+o.id+'" data-secondment='+o.secondment+' data-username="'+o.name+'">'+o.name+'---<font color="#30b448">正</font>'+'</input></div>'
+											})
+											$(o.temporarilyUser).each(function(i,o){
+												htmltwh +='<div class="input-group"><input type="checkbox" class="stuCheckBoxtt" value="'+o.userId+'" data-id="'+o.id+'" data-secondment='+o.secondment+' data-username="'+o.name+'">'+o.name+'---<font color="#FF0000">临</font>'+'</input></div>'
+											})
 										})
 										var s="<div class='input-group'><input type='checkbox' class='checkall'>全选</input></div>"
-										$('.select').html(s+htmltwo)
+										$('.select').html(s+htmltwo+htmltwh)
 										$(".checkall").on('click',function(){
 							                    if($(this).is(':checked')){ 
-										 			$('.stuCheckBox').each(function(){  
+										 			$('.stuCheckBoxtt').each(function(){  
 							                    //此处如果用attr，会出现第三次失效的情况  
 							                     		$(this).prop("checked",true);
 										 			})
 							                    }else{
-							                    	$('.stuCheckBox').each(function(){ 
+							                    	$('.stuCheckBoxtt').each(function(){ 
 							                    		$(this).prop("checked",false);
 							                    		
 							                    	})
@@ -992,13 +996,26 @@
 									values.push($(this).val());
 									numberr.push($(this).data('residualnumber'));
 								}); 
-							  var arr=new Array()
-							  
-								$(".stuCheckBox:checked").each(function() {   
-								    arr.push($(this).val());   
-								}); 
+							 	 var arr=new Array()
+								 var arrtem=new Array()
+								 var ids=new Array()
+								 var temporaryIds=new Array()
+									$(".stuCheckBoxtt:checked").each(function() {   
+									   	if($(this).data('secondment')==1){
+									    arr.push($(this).val()); 
+									    ids.push($(this).data('id'));
+									   	}
+									   	if($(this).data('secondment')==0){
+									   		arrtem.push($(this).val());
+									   		temporaryIds.push($(this).data('id'));
+										   	}
+									});
+								  
+								   if(arr.length<=0 && arrtem.length<=0){
+									 return layer.msg("领取人不能为空", {icon:2 });
+								  }
 							  var username=new Array()
-							  $(".stuCheckBox:checked").each(function() {   
+							  $(".stuCheckBoxtt:checked").each(function() {   
 								  username.push($(this).data('username'));   
 								});
 							  if(values.length<=0){
@@ -1018,7 +1035,10 @@
 										type:3,
 										bacthId:that.data("id"),
 										procedureIds:values,
-										userIds:arr,
+										ids:arr,
+									    userIds:ids,
+									    temporaryIds:arrtem,
+										temporaryUserIds:temporaryIds,
 										number:number,
 										userNames:username,
 										productName:productName,
