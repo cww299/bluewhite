@@ -153,11 +153,11 @@ layui.config({
 			       { title:'时间', 	field:'allotTime', type:'date', edit:true, },
 			       { title:'产品名', 	field:'product_name', },
 			       { title:'数量', 	field:'number',edit:true, },
-			       { title:'预计生产单价', 	field:'bacthDepartmentPrice', templet:function(d){ return d.bacthDepartmentPrice.toFixed(3);  } },
+			       { title:'预计生产单价', 	field:'bacthDepartmentPrice', templet: getFixed('bacthDepartmentPrice',3),  },
 			       { title:'外发价格', 	field:'bacthHairPrice', },
-			       { title:'任务价值', 	field:'sumTaskPrice', templet:function(d){ return d.sumTaskPrice?d.sumTaskPrice.toFixed(3):'---' } },
-			       { title:'地区差价	', 	field:'regionalPrice',templet:function(d){ return d.regionalPrice?d.regionalPrice.toFixed(3):'---' }  },
-			       { title:'当批用时	', 	field:'time', templet:function(d){ return d.time.toFixed(3) }  },
+			       { title:'任务价值', 	field:'sumTaskPrice', templet: getFixed('sumTaskPrice',3),  },
+			       { title:'地区差价	', 	field:'regionalPrice',templet: getFixed('regionalPrice',3),  },
+			       { title:'当批用时	', 	field:'time', templet: getFixed('time',3),  },
 			       { title:'备注	', 	field:'remarks', },
 			       { title:'状态	', 	field:'status', transData:{data:['未完成','已完成'],} },
 			       { title:'操作', event:'allocation', templet:function(d){
@@ -171,12 +171,12 @@ layui.config({
 			       { title:'时间', 	field:'allotTime',type:'date', edit:true,   },
 			       { title:'产品名', 	field:'product_name', },
 			       { title:'数量', 	field:'number',edit:true, },
-			       { title:'预计生产单价', 	field:'bacthDepartmentPrice', templet:function(d){ return d.bacthDepartmentPrice.toFixed(3);  } },
+			       { title:'预计生产单价', 	field:'bacthDepartmentPrice', templet: getFixed('bacthDepartmentPrice',3), },
 			       { title:'外发价格', 	field:'bacthHairPrice', },
-			       { title:'针工价格', field:'bacthDeedlePrice',templet:function(d){ return d.sumTaskPrice?d.sumTaskPrice.toFixed(3):'---' }},
-			       { title:'任务价值', 	field:'sumTaskPrice', templet:function(d){ return d.sumTaskPrice?d.sumTaskPrice.toFixed(3):'---' } },
-			       { title:'地区差价	', 	field:'regionalPrice',templet:function(d){ return d.regionalPrice?d.regionalPrice.toFixed(3):'---' }  },
-			       { title:'当批用时	', 	field:'time', templet:function(d){ return d.time.toFixed(3) }  },
+			       { title:'针工价格', field:'bacthDeedlePrice',templet: getFixed('bacthDeedlePrice',3), },
+			       { title:'任务价值', 	field:'sumTaskPrice', templet: getFixed('sumTaskPrice',3),  },
+			       { title:'地区差价	', 	field:'regionalPrice',templet: getFixed('regionalPrice',3), },
+			       { title:'当批用时	', 	field:'time', templet: getFixed('time',3),  },
 			       { title:'备注	', 	field:'remarks', },
 			       { title:'状态	', 	field:'status', transData:{data:['未完成','已完成'],} },
 			       { title:'操作', event:'allocation', templet:function(d){
@@ -511,12 +511,12 @@ layui.config({
 								cols:[[
 								       { type:'checkbox', },
 								       { title:'工序', field:'procedureName', },
-								       { title:'预计时间', field:'expectTime', templet:function(d){ return d.expectTime.toFixed(4) }},
-								       { title:'任务价值', field:'expectTaskPrice', templet:function(d){ return d.expectTaskPrice.toFixed(4)}},
-								       { title:'b工资净值', field:'payB', templet:function(d){ return d.payB.toFixed(4)}},
+								       { title:'预计时间', field:'expectTime', templet: getFixed('expectTime',4), },
+								       { title:'任务价值', field:'expectTaskPrice', templet: getFixed('expectTaskPrice',4), },
+								       { title:'b工资净值', field:'payB', templet: getFixed('payB',4), },
 								       { title:'数量', field:'number', },
 								       { title:'工序加价', field:'performance', },
-								       { title:'加绩工资', field:'performancePrice', templet:function(d){ return d.performancePrice.toFixed(4)} },
+								       { title:'加绩工资', field:'performancePrice', templet: getFixed('performancePrice',4), },
 								       { title:'完成人', event:'finishPeople', templet:function(d){
 								    	   return '<span class="layui-btn layui-btn-sm">查看完成人</span>';
 								       	 	} },
@@ -556,6 +556,11 @@ layui.config({
 			}
 		}//end finish
 		
+		function getFixed(field,number){
+			return function(d){
+				return d[field]?d[field].toFixed(number):'---';
+			}
+		}
 		function getUserData(day){
 			allUser = [];
 			myutil.getDataSync({	//获取所有分组用户的树形结构数据
