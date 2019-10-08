@@ -187,7 +187,7 @@ layui.config({
 					return myutil.emsg('无外调人员');
 				layer.open({
 					type:1,
-					area:['40%','80%'],
+					area:['60%','80%'],
 					title:'人员信息',
 					shadeClose:true,
 					content: html,
@@ -214,7 +214,7 @@ layui.config({
 								cols:[[
 								    { type:'checkbox', },
 									{ field:'user_userName', title:'人名' },
-									{ field:'workTime', title:'所在组工作时长',edit:true, },
+									{ field:'workTime', title:'工作时长',edit:true, },
 									{ field:'group_id', type:'select', title:'所在小组', select: {data:table.cache['tableData'], } ,  },
 								]],
 							})
@@ -227,7 +227,7 @@ layui.config({
 								cols:[[
 								    { type:'checkbox', },
 									{ field:'name', title:'人名' },
-									{ field:'time', title:'所在组工作时长', edit:true,},
+									{ field:'time', title:'工作时长', edit:true,},
 									{ field:'isTemp', title:'是否临时',filter:true, },
 								]],
 								parseData:function(r){
