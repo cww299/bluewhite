@@ -420,21 +420,23 @@
 									
 									success:function(result){
 										$(result.data).each(function(i,o){
-										
-										$(o.users).each(function(i,o){
-											htmltwo +='<div class="input-group"><input type="checkbox" class="stuCheckBox" value="'+o.id+'" data-username="'+o.userName+'">'+o.userName+'</input></div>'
-										})
+											$(o.userList).each(function(i,o){
+												htmltwo +='<div class="input-group"><input type="checkbox" class="stuCheckBoxtt" value="'+o.userId+'" data-secondment='+o.secondment+' data-username="'+o.name+'">'+o.name+'</input></div>'
+											})
+											$(o.temporarilyUser).each(function(i,o){
+												htmltwh +='<div class="input-group"><input type="checkbox" class="stuCheckBoxtt" value="'+o.userId+'" data-secondment='+o.secondment+' data-username="'+o.name+'">'+o.name+'</input></div>'
+											})
 										})
 										var s="<div class='input-group'><input type='checkbox' class='checkall'>全选</input></div>"
 										$('.select').html(s+htmltwo)
 										$(".checkall").on('click',function(){
 							                    if($(this).is(':checked')){ 
-										 			$('.stuCheckBox').each(function(){  
+										 			$('.stuCheckBoxtt').each(function(){  
 							                    //此处如果用attr，会出现第三次失效的情况  
 							                     		$(this).prop("checked",true);
 										 			})
 							                    }else{
-							                    	$('.stuCheckBox').each(function(){ 
+							                    	$('.stuCheckBoxtt').each(function(){ 
 							                    		$(this).prop("checked",false);
 							                    		
 							                    	})
@@ -465,11 +467,18 @@
 							 if(performance=="请选择"){
 								 performance="";
 							 }
-							  var arr=new Array()
-								$(".stuCheckBox:checked").each(function() {   
+							 var arr=new Array()
+							 var arrtem=new Array()
+								$(".stuCheckBoxtt:checked").each(function() {   
+								   	if($(this).data('secondment')==1){
 								    arr.push($(this).val());   
+								   	}
+								   	if($(this).data('secondment')==0){
+								   		arrtem.push($(this).val());   
+									   	}
 								});
-							  if(arr.length<=0){
+							  
+							   if(arr.length<=0 && arrtem.length<=0){
 								 return layer.msg("领取人不能为空", {icon:2 });
 							  }
 							  if($(".sumnumber").val()==""){
@@ -488,6 +497,7 @@
 									  performance:performance,
 									  performanceNumber:performanceNumber,
 									  userIds:arr,
+									  temporaryUserIds:arrtem,
 									  bacth:$(".bacth").val(),
 									  type:4,
 							  }
