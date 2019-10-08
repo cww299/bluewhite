@@ -497,6 +497,7 @@
 									  performance:performance,
 									  performanceNumber:performanceNumber,
 									  userIds:arr,
+									  temporaryUserIds:arrtem,
 									  bacth:$(".bacth").val(),
 									  type:4,
 							  }
