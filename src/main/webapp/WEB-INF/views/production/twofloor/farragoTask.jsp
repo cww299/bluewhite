@@ -401,6 +401,7 @@
 							//改变事件
 			      			 $(".selectcomplete").change(function(){
 			      				var htmltwo = "";
+			      				var htmltwh = "";
 			      				var	id=$(this).val()
 								   var data={
 										  id:id,
@@ -431,7 +432,7 @@
 											})
 										})
 										var s="<div class='input-group'><input type='checkbox' class='checkall'>全选</input></div>"
-										$('.select').html(s+htmltwo)
+										$('.select').html(s+htmltwo+htmltwh)
 										$(".checkall").on('click',function(){
 							                    if($(this).is(':checked')){ 
 										 			$('.stuCheckBoxtt').each(function(){  

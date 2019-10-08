@@ -121,9 +121,9 @@ public class PayBServiceImpl extends BaseServiceImpl<PayB, Long> implements PayB
 			collect.setAllotTime(collectPay.getOrderTimeBegin());
 			collect.setPayA(attendance.getPayNumber());
 			//个人b工资
-			List<PayB> BList = payBList.stream().filter(PayB->PayB.getUserId().equals(attendance.getUserId())).collect(Collectors.toList());
+			List<PayB> BList = payBList.stream().filter(PayB->PayB.getUserId()!=null && PayB.getUserId().equals(attendance.getUserId())).collect(Collectors.toList());
 			//个人杂工工资
-			List<FarragoTaskPay> FList = farragoTaskPayList.stream().filter(FarragoTaskPay->FarragoTaskPay.getUserId().equals(attendance.getUserId())).collect(Collectors.toList());
+			List<FarragoTaskPay> FList = farragoTaskPayList.stream().filter(FarragoTaskPay->FarragoTaskPay.getUserId() !=null && FarragoTaskPay.getUserId().equals(attendance.getUserId())).collect(Collectors.toList());
 			//b工资加上加绩工资，加上杂工和杂工绩效 。 一天的总工资
 			Double sumPayB = 0.0;
 			Double sumPayF = 0.0;
