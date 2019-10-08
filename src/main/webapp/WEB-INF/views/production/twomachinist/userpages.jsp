@@ -5,12 +5,6 @@
 <!DOCTYPE html>
 <html>
 <head>
-<style type="text/css">
-	.layui-table-cell .layui-form-checkbox[lay-skin="primary"]{
-     top: 50% !important;
-     transform: translateY(-50%);
-}
-</style>
 <link rel="stylesheet" href="${ctx }/static/layui-v2.4.5/layui/css/layui.css" media="all">
 <script src="${ctx }/static/layui-v2.4.5/layui/layui.js"></script>
 	

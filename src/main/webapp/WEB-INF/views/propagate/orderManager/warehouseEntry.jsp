@@ -9,20 +9,12 @@
 	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <title>入库单</title>
 <style>
-.layui-table-cell .layui-form-checkbox[lay-skin="primary"]{
-     top: 50%;
-     transform: translateY(-50%);
-}
 td{
 	text-align:center;
 }
 .layui-card .layui-table-cell{	
 	  height:auto;
 	  padding:0px;
-}
-.layui-card  .layui-table-cell .layui-form-checkbox[lay-skin="primary"]{
-     top: 50%;
-     transform: translateY(0%);
 }
 .layui-table tbody tr:hover, .layui-table-hover {
 	background-color: transparent;

@@ -9,10 +9,6 @@
 	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 	<title>下单合同</title>
 <style>
-.layui-table-cell .layui-form-checkbox[lay-skin="primary"]{
-     top: 50%;
-     transform: translateY(-50%);
-}
 .layui-form-pane .layui-item{
 	margin-top:10px;
 }

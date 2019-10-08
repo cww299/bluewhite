@@ -9,17 +9,9 @@
 	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 	<title>贴包管理</title>
 <style>
-.layui-table-cell .layui-form-checkbox[lay-skin="primary"]{
-     top: 50%;
-     transform: translateY(-50%);
-}
 .layui-card .layui-table-cell{	/* 表格内容自动换行样式 */
 	  height:auto !important; 
 	  padding:0px; 
-}
-.layui-card  .layui-table-cell .layui-form-checkbox[lay-skin="primary"]{
-     top: 50%;
-     transform: translateY(0%);
 }
 .layui-card .layui-table tbody tr:hover, .layui-table-hover {
 	 background-color: transparent; 

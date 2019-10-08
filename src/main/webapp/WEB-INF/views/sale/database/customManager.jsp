@@ -9,10 +9,6 @@
 	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <title>客户资料</title>
 <style>
-.layui-table-cell .layui-form-checkbox[lay-skin="primary"]{
-     top: 50%;
-     transform: translateY(-50%);
-}
 #provinceCityCounty .layui-form-select .layui-input {		/* 设置省份下拉框的宽度 */
     width: 150px;
 }

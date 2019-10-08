@@ -9,10 +9,6 @@
 	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <title>添加订单</title>
 <style>
-.layui-table-cell .layui-form-checkbox[lay-skin="primary"]{
-     top: 50%;
-     transform: translateY(-50%);
-}
 .layui-input, .layui-select, .layui-textarea {
     height: 28px;
 }
