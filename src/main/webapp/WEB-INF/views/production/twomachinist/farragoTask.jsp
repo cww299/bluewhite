@@ -399,7 +399,7 @@
 			      			  $(result.data).each(function(k,j){
 			      				htmlth +='<option value="'+j.id+'">'+j.name+'</option>'
 			      			  });  
-			      			 $('.complete').html("<select class='form-control selectcomplete'><option value="+0+">请选择</option><option value="+""+">全部</option>"+htmlth+"</select>") 
+			      			 $('.complete').html("<select class='form-control selectcomplete'><option value="+0+">请选择</option>"+htmlth+"</select>") 
 							//改变事件
 			      			 $(".selectcomplete").change(function(){
 			      				var htmltwo = "";
@@ -408,6 +408,9 @@
 										  id:id,
 										  type:4,
 								   }
+			      				if(id==0){
+			      					$('.select').html("");
+			      				}else{
 			      				$.ajax({
 									url:"${ctx}/production/allGroup",
 									data:data,
@@ -448,6 +451,7 @@
 										layer.close(index);
 									}
 								});
+			      				}
 							 }) 
 					      }
 					  });
