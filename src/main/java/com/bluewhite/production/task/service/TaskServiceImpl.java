@@ -648,6 +648,9 @@ public class TaskServiceImpl extends BaseServiceImpl<Task, Long> implements Task
 								for (int ii = 0; ii < ids.length; ii++) {
 									Long userid = Long.parseLong(ids[ii]);
 									PayB payB = payBDao.findByTaskIdAndUserId(task.getId(), userid);
+									if(payB == null){
+										payB = payBDao.findByTaskIdAndTemporaryUserId(id, userid);
+									}
 									payB.setPerformance(performance[i]);
 									payB.setPerformancePayNumber(performancePrice / ids.length);
 									payB.setPerformanceNumber(performanceNumber[i]);
