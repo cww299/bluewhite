@@ -90,6 +90,7 @@ layui.config({
 				url :  "${ctx}/getTreeMenuPage",
 				checkbox : false,
 				toolbar : true,
+				otherToolbar: '<i class="layui-icon layui-icon-up" type="up"></i>&nbsp;<i class="layui-icon layui-icon-down" type="down"></i>',
 				showName: function(data){
     				return data.name+'  '+data.orderNo;
 		    	}
@@ -102,8 +103,31 @@ layui.config({
 							break;
 				case 'delete': deleteMenu(obj.data);
 							break;
+				case 'up': move(obj.data,'up'); break;
+				case 'down': move(obj.data,'down'); break;
 				}
 			})
+			
+			function move(data,type){
+				var orderNo;
+				if(type=='up'){
+					orderNo = --data.orderNo;
+				}else{
+					orderNo = ++data.orderNo;
+				}
+				$.ajax({
+					url:'${ctx}/saveMenu',
+					data:{
+						id: data.id,
+						orderNo: orderNo,
+					},
+					success:function(r){
+						if(r.code==0){
+							menuTree.reloadData('menuTreeDiv');
+						}
+					}
+				})
+			}
 			
 			function addEditMenu(type,d){			
 				if($('#submitBtn-'+type+'-'+d.id).length > 0){				//通过判断提交按钮是否存在判断窗口是否打开
