@@ -353,10 +353,10 @@ layui.config({
 						}
 						var saveData = {
 								type: opt.type,
-								userIds: userIds.join(','),
-								ids: ids.join(','),
-								temporaryUserIds: temporaryUserIds.join(','),
-								temporaryIds:temporaryIds.join(','),
+								userIds: ids.join(','), 
+								ids:  userIds.join(','),
+								temporaryUserIds: temporaryIds.join(','),
+								temporaryIds: temporaryUserIds.join(','),
 								procedureIds: procedureIds.join(','),
 								number: $('#number').val(),
 								allotTime: $('#allotTime').val(),
