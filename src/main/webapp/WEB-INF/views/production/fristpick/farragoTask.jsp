@@ -816,10 +816,10 @@
 									success:function(result){
 										$(result.data).each(function(i,o){
 										$(o.userList).each(function(i,o){
-											htmltwo +='<div class="input-group"><input type="checkbox" class="stuCheckBoxtt" value="'+o.id+'" data-secondment='+o.secondment+' data-username="'+o.name+'">'+o.name+'</input></div>'
+											htmltwo +='<div class="input-group"><input type="checkbox" class="stuCheckBoxtt" value="'+o.userId+'" data-secondment='+o.secondment+' data-username="'+o.name+'">'+o.name+'</input></div>'
 										})
 										$(o.temporarilyUser).each(function(i,o){
-											htmltwh +='<div class="input-group"><input type="checkbox" class="stuCheckBoxtt" value="'+o.id+'" data-secondment='+o.secondment+' data-username="'+o.name+'">'+o.name+'</input></div>'
+											htmltwh +='<div class="input-group"><input type="checkbox" class="stuCheckBoxtt" value="'+o.userId+'" data-secondment='+o.secondment+' data-username="'+o.name+'">'+o.name+'</input></div>'
 										})
 										})
 										var s="<div class='input-group'><input type='checkbox' class='checkalltt'>全选</input></div>"
