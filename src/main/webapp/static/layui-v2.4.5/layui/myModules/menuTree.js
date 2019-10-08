@@ -124,6 +124,8 @@ layui.define(['jquery','form'],function(exports){
 				    		html += '<i class="layui-icon layui-icon-edit" type="edit"></i>&nbsp;';
 				    	if(conf.toolbar.indexOf('delete')!=-1)
 				    		html += '<i class="layui-icon layui-icon-delete" type="delete"></i>&nbsp;';
+				    	if(conf.otherToolbar)
+				    		html += conf.otherToolbar;
 				    	html += '</div>';
 				    }
 				    if(conf.sumNumber)
