@@ -1,5 +1,7 @@
 package com.bluewhite.production.farragotask.service;
 
+import static org.hamcrest.CoreMatchers.nullValue;
+
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -18,13 +20,19 @@ import com.bluewhite.common.entity.PageResult;
 import com.bluewhite.common.entity.PageResultStat;
 import com.bluewhite.common.utils.NumUtils;
 import com.bluewhite.common.utils.SalesUtils;
+import com.bluewhite.finance.attendance.dao.AttendancePayDao;
+import com.bluewhite.finance.attendance.entity.AttendancePay;
 import com.bluewhite.production.bacth.entity.Bacth;
 import com.bluewhite.production.farragotask.dao.FarragoTaskDao;
 import com.bluewhite.production.farragotask.entity.FarragoTask;
 import com.bluewhite.production.finance.dao.FarragoTaskPayDao;
 import com.bluewhite.production.finance.entity.FarragoTaskPay;
+import com.bluewhite.production.group.dao.TemporarilyDao;
+import com.bluewhite.production.group.entity.Temporarily;
 import com.bluewhite.production.productionutils.constant.ProTypeUtils;
+import com.bluewhite.system.user.dao.TemporaryUserDao;
 import com.bluewhite.system.user.dao.UserDao;
+import com.bluewhite.system.user.entity.TemporaryUser;
 import com.bluewhite.system.user.entity.User;
 @Service
 public class FarragoTaskServiceImpl extends BaseServiceImpl<FarragoTask, Long> implements FarragoTaskService{
@@ -32,10 +40,11 @@ public class FarragoTaskServiceImpl extends BaseServiceImpl<FarragoTask, Long> i
 	@Autowired
 	private FarragoTaskDao dao;
 	@Autowired
-	private UserDao userDao;
-	@Autowired
 	private FarragoTaskPayDao farragoTaskPayDao;
-	
+	@Autowired
+	private TemporarilyDao temporarilyDao;
+	@Autowired
+	private AttendancePayDao attendancePayDao;
 	
 	
 	@Override
@@ -76,11 +85,12 @@ public class FarragoTaskServiceImpl extends BaseServiceImpl<FarragoTask, Long> i
 
 	@Override
 	public FarragoTask addFarragoTask(FarragoTask farragoTask) {
-		
 		//将用户变成string类型储存
 		if (!StringUtils.isEmpty(farragoTask.getUserIds())) {
 			String[] idArr = farragoTask.getUserIds().split(",");
 			farragoTask.setUsersIds(idArr);
+			String[] temporaryUsersidArr = farragoTask.getTemporaryUserIds().split(",");
+			farragoTask.setTemporaryUsersIds(temporaryUsersidArr);
 		}
 		//当数量不为null，计算出实际完成时间
 		if(farragoTask.getNumber()!=null){
@@ -94,26 +104,51 @@ public class FarragoTaskServiceImpl extends BaseServiceImpl<FarragoTask, Long> i
 		}
 		//B工资净值
 		farragoTask.setPayB(NumUtils.round(ProTypeUtils.sumBPrice(farragoTask.getPrice(), farragoTask.getType()), null));
-		
 		farragoTask =  dao.save(farragoTask);
 		//将杂工工资统计成流水
+		int userSize =  farragoTask.getUsersIds() != null ? farragoTask.getUsersIds().length :0;
+		int temporaryUserSize = farragoTask.getTemporaryUsersIds() !=null ? farragoTask.getTemporaryUsersIds().length :0;
 		if (farragoTask.getUsersIds().length>0) {
 			for (int j = 0; j < farragoTask.getUsersIds().length; j++) {
 				Long userid = Long.parseLong(farragoTask.getUsersIds()[j]);
-				User user = userDao.findOne(userid);
+				AttendancePay attendancePay = attendancePayDao.findOne(userid);
 				FarragoTaskPay farragoTaskPay = new FarragoTaskPay();
 				farragoTaskPay.setAllotTime(farragoTask.getAllotTime());
 				//计算杂工工资
 				farragoTaskPay.setPayNumber(farragoTask.getPayB()/farragoTask.getUsersIds().length);
 				farragoTaskPay.setType(farragoTask.getType());
-				farragoTaskPay.setUserId(user.getId());
-				farragoTaskPay.setGroupId(user.getGroupId());
+				farragoTaskPay.setUserId(attendancePay.getUserId());
+				farragoTaskPay.setGroupId(attendancePay.getGroupId());
 				farragoTaskPay.setTaskId(farragoTask.getId());
-				farragoTaskPay.setUserName(user.getUserName());
+				farragoTaskPay.setUserName(attendancePay.getUserName());
 				farragoTaskPay.setTaskName(farragoTask.getName());
 				//计算杂工加绩工资
 				if(farragoTask.getPerformancePrice()!=null){
-					farragoTaskPay.setPerformancePayNumber(farragoTask.getPerformancePrice()/farragoTask.getUsersIds().length);
+					farragoTaskPay.setPerformancePayNumber(NumUtils.div(farragoTask.getPerformancePrice(),(userSize+temporaryUserSize),3));
+				}
+				farragoTaskPayDao.save(farragoTaskPay);
+			}
+		}
+		
+		//将杂工工资统计成流水
+		if (farragoTask.getTemporaryUsersIds()!=null && farragoTask.getTemporaryUsersIds().length>0) {
+			for (int j = 0; j < farragoTask.getTemporaryUsersIds().length; j++) {
+				Long userid = Long.parseLong(farragoTask.getTemporaryUsersIds()[j]);
+				Temporarily temporarily = temporarilyDao.findOne(userid);
+				FarragoTaskPay farragoTaskPay = new FarragoTaskPay();
+				farragoTaskPay.setAllotTime(farragoTask.getAllotTime());
+				//计算杂工工资
+				farragoTaskPay.setPayNumber(NumUtils.div(farragoTask.getPayB(),farragoTask.getTemporaryUsersIds().length,3));
+				farragoTaskPay.setType(farragoTask.getType());
+				farragoTaskPay.setTemporaryUserId(temporarily.getTemporaryUserId());
+				farragoTaskPay.setUserId(temporarily.getUserId());
+				farragoTaskPay.setGroupId(temporarily.getGroupId());
+				farragoTaskPay.setTaskId(farragoTask.getId());
+				farragoTaskPay.setUserName(temporarily.getTemporaryUser()!=null ?temporarily.getTemporaryUser().getUserName() : temporarily.getUser().getUserName());
+				farragoTaskPay.setTaskName(farragoTask.getName());
+				//计算杂工加绩工资
+				if(farragoTask.getPerformancePrice()!=null){
+					farragoTaskPay.setPerformancePayNumber(NumUtils.div(farragoTask.getPerformancePrice(),(userSize+temporaryUserSize), 3) );
 				}
 				farragoTaskPayDao.save(farragoTaskPay);
 			}

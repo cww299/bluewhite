@@ -37,7 +37,7 @@
 						<option value="192.168.1.205">一楼打卡机</option>
 						<option value="192.168.7.123">面辅料打卡机</option>
 						<option value="192.168.6.73">成品打卡机</option>
-						<option value="192.168.14.1">11号打卡机</option>
+						<option value="192.168.14.201">11号打卡机</option>
 					</select>
 				</td>
 				<td>&nbsp;</td>

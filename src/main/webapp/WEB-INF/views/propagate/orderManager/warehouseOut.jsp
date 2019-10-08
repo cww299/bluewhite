@@ -1,7 +1,7 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
 <c:set var="ctx" value="${pageContext.request.contextPath }" />
-<!DOCTYPE>
+<!DOCTYPE html>
 <html>
 <head>
 	<link rel="stylesheet" href="${ctx }/static/layui-v2.4.5/layui/css/layui.css" media="all">
@@ -9,13 +9,6 @@
 	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <title>出库单</title>
 <style>
-.layui-table-cell .layui-form-checkbox[lay-skin="primary"]{
-     top: 50%;
-     transform: translateY(-50%);
-}
-.layui-card  .layui-table-cell .layui-form-checkbox[lay-skin="primary"]{
-     transform: translateY(0%);
-}
 td{
 	text-align:center;
 }
