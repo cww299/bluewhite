@@ -1,7 +1,5 @@
 package com.bluewhite.production.farragotask.service;
 
-import static org.hamcrest.CoreMatchers.nullValue;
-
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -22,7 +20,6 @@ import com.bluewhite.common.utils.NumUtils;
 import com.bluewhite.common.utils.SalesUtils;
 import com.bluewhite.finance.attendance.dao.AttendancePayDao;
 import com.bluewhite.finance.attendance.entity.AttendancePay;
-import com.bluewhite.production.bacth.entity.Bacth;
 import com.bluewhite.production.farragotask.dao.FarragoTaskDao;
 import com.bluewhite.production.farragotask.entity.FarragoTask;
 import com.bluewhite.production.finance.dao.FarragoTaskPayDao;
@@ -30,10 +27,6 @@ import com.bluewhite.production.finance.entity.FarragoTaskPay;
 import com.bluewhite.production.group.dao.TemporarilyDao;
 import com.bluewhite.production.group.entity.Temporarily;
 import com.bluewhite.production.productionutils.constant.ProTypeUtils;
-import com.bluewhite.system.user.dao.TemporaryUserDao;
-import com.bluewhite.system.user.dao.UserDao;
-import com.bluewhite.system.user.entity.TemporaryUser;
-import com.bluewhite.system.user.entity.User;
 @Service
 public class FarragoTaskServiceImpl extends BaseServiceImpl<FarragoTask, Long> implements FarragoTaskService{
 
@@ -85,13 +78,23 @@ public class FarragoTaskServiceImpl extends BaseServiceImpl<FarragoTask, Long> i
 
 	@Override
 	public FarragoTask addFarragoTask(FarragoTask farragoTask) {
+		//领取记录
+		String[] userIds = null;
+		if(!StringUtils.isEmpty(farragoTask.getUserIds())){
+			userIds = farragoTask.getUserIds().split(",");
+		}
+		String[] temporaryUserIds = null;
+		if(!StringUtils.isEmpty(farragoTask.getTemporaryUserIds())){
+			temporaryUserIds = farragoTask.getTemporaryUserIds().split(",");
+		}
+		
 		//将用户变成string类型储存
-		if (!StringUtils.isEmpty(farragoTask.getUserIds())) {
-			String[] idArr = farragoTask.getUserIds().split(",");
+		if (!StringUtils.isEmpty(farragoTask.getIds())) {
+			String[] idArr = farragoTask.getIds().split(",");
 			farragoTask.setUsersIds(idArr);
 		}
-		if(!StringUtils.isEmpty(farragoTask.getTemporaryUserIds())){
-			String[] temporaryUsersIdArr = farragoTask.getTemporaryUserIds().split(",");
+		if(!StringUtils.isEmpty(farragoTask.getTemporaryIds())){
+			String[] temporaryUsersIdArr = farragoTask.getTemporaryIds().split(",");
 			farragoTask.setTemporaryUsersIds(temporaryUsersIdArr);
 		}
 		//当数量不为null，计算出实际完成时间
@@ -110,8 +113,8 @@ public class FarragoTaskServiceImpl extends BaseServiceImpl<FarragoTask, Long> i
 		//将杂工工资统计成流水
 		int userSize =  farragoTask.getUsersIds() != null ? farragoTask.getUsersIds().length :0;
 		int temporaryUserSize = farragoTask.getTemporaryUsersIds() !=null ? farragoTask.getTemporaryUsersIds().length :0;
-		if (farragoTask.getUsersIds().length>0) {
-			for (int j = 0; j < farragoTask.getUsersIds().length; j++) {
+		if (userIds!=null && userIds.length>0) {
+			for (int j = 0; j <userIds.length; j++) {
 				Long userid = Long.parseLong(farragoTask.getUsersIds()[j]);
 				AttendancePay attendancePay = attendancePayDao.findOne(userid);
 				FarragoTaskPay farragoTaskPay = new FarragoTaskPay();
@@ -133,7 +136,7 @@ public class FarragoTaskServiceImpl extends BaseServiceImpl<FarragoTask, Long> i
 		}
 		
 		//将杂工工资统计成流水
-		if (farragoTask.getTemporaryUsersIds()!=null && farragoTask.getTemporaryUsersIds().length>0) {
+		if (temporaryUserIds!=null && temporaryUserIds.length>0) {
 			for (int j = 0; j < farragoTask.getTemporaryUsersIds().length; j++) {
 				Long userid = Long.parseLong(farragoTask.getTemporaryUsersIds()[j]);
 				Temporarily temporarily = temporarilyDao.findOne(userid);
