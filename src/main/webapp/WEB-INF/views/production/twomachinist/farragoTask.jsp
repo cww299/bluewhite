@@ -407,6 +407,7 @@
 								   var data={
 										  id:id,
 										  type:4,
+										  temporarilyDate:$('#Time').val(),
 								   }
 			      				if(id==0){
 			      					$('.select').html("");
