@@ -275,6 +275,11 @@ layui.config({
 						menuTree.render({				
 				    	  elem:'#userTree',
 				    	  data : allUser,
+				    	  showName: function(data){
+				    		  if(data.id=='-1')
+				    			  return data.name;
+			    			  return data.name+'  --- '+data.time;
+				    	  }
 						})
 						var checked = [];
 						if(opt.type==2){	//如果是包装，默认选中包装工序的全部，除去上车
@@ -325,13 +330,20 @@ layui.config({
 					},
 					yes:function(){
 						var userIds = [],procedureIds = [],temporaryUserIds = [];
+						var ids = [],temporaryIds = [];
 						var userTreeId = menuTree.getVal('userTree'),procedureTreeId = menuTree.getVal('procedureTree');
+						
 						for(var i in userTreeId){	
-							if(userTreeId[i]!=-1){	//区分是否为临时员工
+							if(userTreeId[i]!=-1){	//区分是否为临时员工,临时员工的id： t-id~userId
 								if(userTreeId[i].indexOf('-')>0){
-									temporaryUserIds.push(userTreeId[i].split('-')[1]);
-								}else
-									userIds.push(userTreeId[i]);
+									var t = userTreeId[i].split('-')[1].split('~');
+									temporaryIds.push(t[0]);
+									temporaryUserIds.push(t[1]);
+								}else{
+									var t = userTreeId[i].split('~');
+									ids.push(t[0]);
+									userIds.push(t[1]);
+								}
 							}
 						}
 						for(var i in procedureTreeId){
@@ -339,13 +351,17 @@ layui.config({
 								var id = procedureTreeId[i].split('-');
 								if(id[1]==0)
 									return myutil.emsg('选择的工序剩余数量不能为0');
+								if(id[1]>$('#number').val())
+									return myutil.emsg('选择的工序剩余数量不能为任务分配数量');
 								procedureIds.push(id[0]);
 							}
 						}
 						var saveData = {
 								type: opt.type,
-								userIds: userIds.join(','),
-								temporaryUserIds: temporaryUserIds.join(','),
+								userIds: ids.join(','), 
+								ids:  userIds.join(','),
+								temporaryUserIds: temporaryIds.join(','),
+								temporaryIds: temporaryUserIds.join(','),
 								procedureIds: procedureIds.join(','),
 								number: $('#number').val(),
 								allotTime: $('#allotTime').val(),
@@ -566,14 +582,19 @@ layui.config({
 											var t = groupPeople.temporarilyUser;
 											for(var k in t)
 												data.children[0].children.push({
-													id: 't-'+t[k].id,
-													name: t[k].name
+													id: 't-'+t[k].id+'~'+t[k].userId,
+													name: t[k].name,
+													time: t[k].time,
 												});
 										}
 										if(groupPeople.userList && groupPeople.userList.length>0){
 											var t = groupPeople.userList;
 											for(var k in t)
-												data.children[1].children.push(t[k])
+												data.children[1].children.push({
+													id: t[k].id+'~'+t[k].userId,
+													name: t[k].name,
+													time: t[k].time,
+												})
 										}
 										allUser.push(data);
 									}

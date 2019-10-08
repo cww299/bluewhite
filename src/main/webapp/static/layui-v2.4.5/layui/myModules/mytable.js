@@ -425,7 +425,6 @@ layui.extend({
 		render.verify && (delete render.verify);
 		render.colsWidth && (delete render.colsWidth);
 		render.autoUpdate && (delete render.autoUpdate);
-		console.log(render)
 		table.render(render);
 	}
 

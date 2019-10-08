@@ -688,9 +688,10 @@
 									
 									success:function(result){
 										$(result.data).each(function(i,o){
-											htmltwo +='<div class="input-group"><input type="checkbox" class="stuCheckBox" value="'+o.id+'" data-username="'+o.userName+'">'+o.userName+'</input></div>'
+											htmltwo +='<div class="input-group checks"><input type="checkbox" class="stuCheckBox" value="'+o.id+'" data-username="'+o.userName+
+														'"><span class="nameFont">'+o.userName+'</span></input></div>'
 										})
-										var s="<div class='input-group'><input type='checkbox' class='checkall'>全选</input></div>"
+										var s="<div class='input-group chec'><input type='checkbox' class='checkall'><span class='checkallFont'>全选</span></input></div>"
 										$('.select').html(s+htmltwo)
 										$(".checkall").on('click',function(){
 							                    if($(this).is(':checked')){ 
@@ -705,6 +706,16 @@
 							                    	})
 							                    }
 							                });
+										$('.checkallFont').unbind().on('click',function(obj){
+											var checked = !$(obj.target).parent().find('input').is(':checked');
+											$(obj.target).parent().find('input').prop('checked',checked);
+											$('.stuCheckBox').each(function(){  
+					                     		$(this).prop("checked",checked);
+								 			})
+										})
+										$('.nameFont').unbind().on('click',function(obj){
+											$(obj.target).parent().find('input').prop('checked',!$(obj.target).parent().find('input').is(':checked'));
+										})
 										layer.close(index);
 									},error:function(){
 										layer.msg("操作失败！", {icon: 2});

@@ -220,7 +220,7 @@ layui.config({
 								cols:[[
 								    { type:'checkbox', },
 									{ field:'name', title:'人名' },
-									{ field:'time', title:'所在组工作时长', },
+									{ field:'time', title:'所在组工作时长', edit:true,},
 									{ field:'isTemp', title:'是否临时',filter:true, },
 								]],
 								parseData:function(r){
@@ -258,6 +258,23 @@ layui.config({
 											table.reload('lookoverTable');
 										}
 									})
+								}
+							})
+							table.on('edit(lookoverTable)',function(obj){
+								if(obj.data.secondment==0){
+									myutil.saveAjax({
+										url:'/production/updateTemporarily',
+										data:{
+											id:obj.data.userId,
+											workTime:obj.data.time,
+										},
+										success:function(){
+											table.reload('lookoverTable');
+										}
+									})
+								}else{
+									table.reload('lookoverTable');
+									return myutil.emsg('不能修改正式包装员工');
 								}
 							})
 						}

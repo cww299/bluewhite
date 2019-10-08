@@ -152,6 +152,7 @@ public class GroupAction {
 						temporarilyUserMap.put("id", temporarily.getTemporaryUserId());
 						temporarilyUserMap.put("userId", temporarily.getId());
 						temporarilyUserMap.put("secondment", 0);
+						temporarilyUserMap.put("groupId", temporarily.getGroupId());
 						temporarilyUserMap.put("name",temporarily.getTemporaryUser().getUserName());
 						temporarilyUserMap.put("time",temporarily.getWorkTime());
 						temporarilyUserList.add(temporarilyUserMap);
@@ -162,6 +163,7 @@ public class GroupAction {
 						userMap.put("id", temporarily.getUserId());
 						userMap.put("userId", temporarily.getId());
 						userMap.put("secondment", 0);
+						userMap.put("groupId", temporarily.getGroupId());
 						userMap.put("name",temporarily.getUser().getUserName());
 						userMap.put("time",temporarily.getWorkTime());
 						userList.add(userMap);
@@ -177,6 +179,7 @@ public class GroupAction {
 					userMap.put("id", attendancePay.getUserId());
 					userMap.put("userId", attendancePay.getId());
 					userMap.put("secondment", 1);
+					userMap.put("groupId", attendancePay.getGroupId());
 					userMap.put("name",attendancePay.getUserName());
 					userMap.put("time",attendancePay.getWorkTime());
 					userList.add(userMap);
@@ -302,7 +305,7 @@ public class GroupAction {
 			BeanCopyUtils.copyNotEmpty(temporarily, temporarilyNew, "");
 			temporarilyNew.setTemporarilyDate(DatesUtil.getfristDayOftime(date));
 			if (temporarily.getUserId() != null) {
-				if (temporarilyDao.findByUserIdAndTemporarilyDateAndType(temporarily.getUserId(),date, temporarily.getType()) != null) {
+				if (temporarilyDao.findByUserIdAndTemporarilyDateAndTypeAndGroupId(temporarily.getUserId(),date, temporarily.getType(),temporarily.getGroupId()) != null) {
 					cr.setMessage("当天当前分组已添加过正式人员的工作时间,不必再次添加");
 					cr.setCode(ErrorCode.ILLEGAL_ARGUMENT.getCode());
 					return cr;
