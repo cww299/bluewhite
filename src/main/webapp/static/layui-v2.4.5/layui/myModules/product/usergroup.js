@@ -49,36 +49,41 @@ layui.config({
 	                    ].join(' ');
 	var ADDNEW_TPL = [		//新增外调模板
 	                  '<div style="padding:15px;" >',
-	                  	'<table style="width:100%;" class="layui-form">',
-	                  		'<tr>',
-	                  			'<td>借调时间：</td>',
-	                  			'<td><input type="text" class="layui-input" name="temporarilyDate" id="addNewTime"></td>',
-	                  		'</tr>',
-	                  		'<tr>',
-	                  			'<td>借调人员：</td>',
-	                  			'<td><select name="userId" id="addUserId" lay-search lay-verify="required">',
-	                  					'<option value="">请选择</option></select></td>',
-	                  		'</tr>',
-	                  		'<tr>',
-		              			'<td>工作时长：</td>',
-		              			'<td><input type="text" class="layui-input" name="workTime"></td>',
-              				'</tr>',
-		              		'<tr>',
-			          			'<td>小组：</td>',
-			          			'<td><select name="groupId" id="addGroupId" lay-search lay-verify="required">',
-              						'<option value="">请选择</option></select>',
+	                  	'<div class="layui-form layui-form-pane">',
+	                  		'<div class="layui-form-item" pane>',
+	                    		'<label class="layui-form-label">借调时间</label>',
+	                    		'<div class="layui-input-block">',
+			                      '<input type="text" class="layui-input" name="temporarilyDate" id="addNewTime">',
+			                    '</div>',
+			                '</div>',
+			                '<div class="layui-form-item" pane>',
+	                    		'<label class="layui-form-label">借调人员</label>',
+	                    		'<div class="layui-input-block">',
+		                    		'<select name="userId" id="addUserId" lay-search lay-verify="required">',
+	              					'<option value="">请选择</option></select>',
+			                    '</div>',
+			                '</div>',
+			                '<div class="layui-form-item" pane>',
+		                		'<label class="layui-form-label">工作时长</label>',
+		                		'<div class="layui-input-block">',
+			                      '<input type="text" class="layui-input" name="workTime" lay-verify="number">',
+			                    '</div>',
+			                '</div>',
+			                '<div class="layui-form-item" pane>',
+			                	'<label class="layui-form-label">小组</label>',
+			                	'<div class="layui-input-block">',
+				                	'<select name="groupId" id="addGroupId" lay-search lay-verify="required">',
+	          						'<option value="">请选择</option></select>',
 			          				'<span style="display:none;" lay-submit lay-filter="sureAdd" id="sureAdd"></span>',
-			          			'</td>',
-			          		'</tr>',
-		          		'</table>',
+			                    '</div>',
+			                '</div>',
+		          		'</div>',
 	                  '</div>',
 	                  ].join(' ');
 	
 	Class.prototype.render = function(opt){
 		myutil.clickTr();
-		var now = new Date();
-		now.setTime(now.getTime()-24*60*60*1000);
-		now = now.format('yyyy-MM-dd 00:00:00');
+		var now = myutil.getSubDay(1);
 		laytpl(TPL).render({},function(h){
 			$(opt.elem).append(h);
 		})
@@ -123,8 +128,10 @@ layui.config({
 						})
 						var addNewWin = layer.open({
 							type:1,
-							area:['28%','50%'],
+							area:['28%','40%'],
+							offset:'80px',
 							btn:['确定','取消'],
+							btnAlign:'c',
 							title:'新增借调人员',
 							content:html,
 							success:function(){
@@ -262,16 +269,21 @@ layui.config({
 							})
 							table.on('edit(lookoverTable)',function(obj){
 								if(obj.data.secondment==0){
-									myutil.saveAjax({
-										url:'/production/updateTemporarily',
-										data:{
-											id:obj.data.userId,
-											workTime:obj.data.time,
-										},
-										success:function(){
-											table.reload('lookoverTable');
-										}
-									})
+									if(isNaN(obj.data.time)){
+										table.reload('lookoverTable');
+										return myutil.emsg('只能修改为数字！');
+									}
+									else
+										myutil.saveAjax({
+											url:'/production/updateTemporarily',
+											data:{
+												id:obj.data.userId,
+												workTime:obj.data.time,
+											},
+											success:function(){
+												table.reload('lookoverTable');
+											}
+										})
 								}else{
 									table.reload('lookoverTable');
 									return myutil.emsg('不能修改正式包装员工');
