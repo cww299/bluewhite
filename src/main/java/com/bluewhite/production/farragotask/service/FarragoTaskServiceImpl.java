@@ -89,8 +89,10 @@ public class FarragoTaskServiceImpl extends BaseServiceImpl<FarragoTask, Long> i
 		if (!StringUtils.isEmpty(farragoTask.getUserIds())) {
 			String[] idArr = farragoTask.getUserIds().split(",");
 			farragoTask.setUsersIds(idArr);
-			String[] temporaryUsersidArr = farragoTask.getTemporaryUserIds().split(",");
-			farragoTask.setTemporaryUsersIds(temporaryUsersidArr);
+		}
+		if(!StringUtils.isEmpty(farragoTask.getTemporaryUserIds())){
+			String[] temporaryUsersIdArr = farragoTask.getTemporaryUserIds().split(",");
+			farragoTask.setTemporaryUsersIds(temporaryUsersIdArr);
 		}
 		//当数量不为null，计算出实际完成时间
 		if(farragoTask.getNumber()!=null){
