@@ -106,11 +106,11 @@ public class TaskServiceImpl extends BaseServiceImpl<Task, Long> implements Task
 		}
 		// 总考勤时间
 		double sumTime = 0;
-		List<AttendancePay> attendancePayList = null;
-		List<Temporarily> temporarilyList = null;
+		List<AttendancePay> attendancePayList = attendancePayDao.findByIdInAndTypeAndAllotTimeBetween(idsList, task.getType(),
+				orderTimeBegin, orderTimeEnd);
+		List<Temporarily> temporarilyList = temporarilyDao.findByIdInAndTemporarilyDateAndType(temporaryIdList, orderTimeBegin,
+				task.getType());
 		if (!UnUtil.isFromMobile(request) && task.getType() == 2) {
-			attendancePayList = attendancePayDao.findByIdInAndTypeAndAllotTimeBetween(idsList, task.getType(),
-					orderTimeBegin, orderTimeEnd);
 			// 正式员工的出勤时长
 			// 获取正式员工的出勤记录
 			if (idsList.size() > 0) {
@@ -128,8 +128,7 @@ public class TaskServiceImpl extends BaseServiceImpl<Task, Long> implements Task
 					}
 				}
 			}
-			temporarilyList = temporarilyDao.findByIdInAndTemporarilyDateAndType(temporaryIdList, orderTimeBegin,
-					task.getType());
+			
 			// 临时员工
 			if (task.getTemporaryUsersIds() != null && task.getTemporaryUsersIds().length > 0) {
 				for (Long id : temporaryIdList) {
