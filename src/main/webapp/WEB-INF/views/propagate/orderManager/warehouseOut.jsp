@@ -9,13 +9,6 @@
 	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <title>出库单</title>
 <style>
-.layui-table-cell .layui-form-checkbox[lay-skin="primary"]{
-     top: 50%;
-     transform: translateY(-50%);
-}
-.layui-card  .layui-table-cell .layui-form-checkbox[lay-skin="primary"]{
-     transform: translateY(0%);
-}
 td{
 	text-align:center;
 }

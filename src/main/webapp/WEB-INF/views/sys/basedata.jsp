@@ -10,12 +10,6 @@
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <title>基础数据</title>
 </head>
-<style>
-.layui-table-cell .layui-form-checkbox[lay-skin="primary"]{
-     top: 50%;
-     transform: translateY(-50%);
-}
-</style>
 <body>
 <div class="layui-card">
 	<div class="layui-card-body">

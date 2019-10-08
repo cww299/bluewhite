@@ -24,19 +24,15 @@
     <link rel="stylesheet" href="${ctx }/static/css/dropzone.css">
     <script src="${ctx }/static/js/vendor/dropzone.min.js"></script>
 <style>
-.layui-table-cell .layui-form-checkbox[lay-skin="primary"]{
-     top: 50%;
-     transform: translateY(-50%);
-}
-#moreController{
-    width: 5%;
-    position: absolute;
-    left: 96%;
-    top: 70%;
-}
-#moreController button{
-    margin: 5px 0;
-}
+	#moreController{
+	    width: 5%;
+	    position: absolute;
+	    left: 96%;
+	    top: 70%;
+	}
+	#moreController button{
+	    margin: 5px 0;
+	}
 </style>
     
 </head>

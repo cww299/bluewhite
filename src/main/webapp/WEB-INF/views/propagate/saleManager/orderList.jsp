@@ -1,7 +1,7 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
 <c:set var="ctx" value="${pageContext.request.contextPath }" />
-<!DOCTYPE html>>
+<!DOCTYPE html>
 <html>
 <head>
 	<link rel="stylesheet" href="${ctx }/static/layui-v2.4.5/layui/css/layui.css" media="all">
@@ -10,10 +10,6 @@
 <title>订单列表</title>
 </head>
 <style>
-.layui-table-cell .layui-form-checkbox[lay-skin="primary"]{
-     top: 50%;
-     transform: translateY(-50%);
-}
 .layui-table, .layui-table-view {
      margin: 0px; 
 }

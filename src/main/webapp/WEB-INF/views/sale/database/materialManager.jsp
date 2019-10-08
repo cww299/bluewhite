@@ -10,12 +10,6 @@
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <title>包装</title>
 </head>
-<style>
-.layui-table-cell .layui-form-checkbox[lay-skin="primary"]{
-     top: 50%;
-     transform: translateY(-50%);
-}
-</style>
 <body>
 	<table id="baseDataTable" lay-filter="baseDataTable"></table>
 </body>
