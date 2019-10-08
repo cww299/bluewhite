@@ -75,6 +75,12 @@ public class FarragoTask  extends BaseEntity<Long>{
 	private  String userIds;
 	
 	/**
+	 * 领取任务临时人员ids(任务和员工多对多关系)
+	 */
+	@Column(name = "temporaryUserIds")
+	private String temporaryUserIds;
+	
+	/**
 	 * 是否工序加价选择(杂工加绩选项)
 	 */
 	@Column(name = "performance")
@@ -123,6 +129,13 @@ public class FarragoTask  extends BaseEntity<Long>{
 	@Transient
 	private  String[] usersIds;
 	
+
+	/**
+	 * 领取任务人员ids
+	 */
+	@Transient
+	private  String[] temporaryUsersIds;
+	
 	/**
 	 * ac5
 	 */
@@ -132,6 +145,22 @@ public class FarragoTask  extends BaseEntity<Long>{
 	
 	
 	
+	public String[] getTemporaryUsersIds() {
+		return temporaryUsersIds;
+	}
+
+	public void setTemporaryUsersIds(String[] temporaryUsersIds) {
+		this.temporaryUsersIds = temporaryUsersIds;
+	}
+
+	public String getTemporaryUserIds() {
+		return temporaryUserIds;
+	}
+
+	public void setTemporaryUserIds(String temporaryUserIds) {
+		this.temporaryUserIds = temporaryUserIds;
+	}
+
 	public Double getPayB() {
 		return payB;
 	}
