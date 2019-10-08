@@ -15,6 +15,7 @@ import org.apache.shiro.cache.Cache;
 import org.apache.shiro.cache.CacheManager;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 import org.springframework.util.StringUtils;
@@ -154,7 +155,8 @@ public class MenuServiceImpl extends BaseServiceImpl<Menu, Long> implements Menu
 
 	@Override
 	public List<Menu> getTreeMenuPage() {
-		List<Menu> result  = menuDao.findAll();
+		Sort sort = new Sort(Sort.Direction.ASC,"orderNo");
+		List<Menu> result  = menuDao.findAll(sort);
 		// 为分类建立键值对
 		Map mapNodes = new HashMap(result.size());
 		for (Menu treeNode : result) {
