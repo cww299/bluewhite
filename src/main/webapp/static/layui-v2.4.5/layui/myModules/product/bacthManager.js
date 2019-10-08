@@ -158,7 +158,7 @@ layui.config({
 			       { title:'任务价值', 	field:'sumTaskPrice', templet: getFixed('sumTaskPrice',3),  },
 			       { title:'地区差价	', 	field:'regionalPrice',templet: getFixed('regionalPrice',3),  },
 			       { title:'当批用时	', 	field:'time', templet: getFixed('time',3),  },
-			       { title:'备注	', 	field:'remarks', },
+			       { title:'备注	', 	field:'remarks', edit:true,},
 			       { title:'状态	', 	field:'status', transData:{data:['未完成','已完成'],} },
 			       { title:'操作', event:'allocation', templet:function(d){
 			    	   return '<span class="layui-btn layui-btn-sm">分配</span>';
@@ -177,7 +177,7 @@ layui.config({
 			       { title:'任务价值', 	field:'sumTaskPrice', templet: getFixed('sumTaskPrice',3),  },
 			       { title:'地区差价	', 	field:'regionalPrice',templet: getFixed('regionalPrice',3), },
 			       { title:'当批用时	', 	field:'time', templet: getFixed('time',3),  },
-			       { title:'备注	', 	field:'remarks', },
+			       { title:'备注	', 	field:'remarks', edit:true,},
 			       { title:'状态	', 	field:'status', transData:{data:['未完成','已完成'],} },
 			       { title:'操作', event:'allocation', templet:function(d){
 			    	   return '<span class="layui-btn layui-btn-sm">分配</span>';
@@ -190,7 +190,7 @@ layui.config({
 			       { title:'时间', 	field:'allotTime',width:'18%',type:'date', edit:true,  },
 			       { title:'产品名', 	field:'product_name', },
 			       { title:'数量', 	field:'number', width:'12%', edit:true,},
-			       { title:'备注	', 	field:'remarks',width:'8%', },
+			       { title:'备注	', 	field:'remarks',width:'8%',edit:true, },
 			       { title:'状态	', 	field:'status', width:'12%', transData:{data:['未完成','已完成'],} },
 			       { title:'操作', event:'allocation',width:'12%', templet:function(d){
 			    	   return '<span class="layui-btn layui-btn-sm">分配</span>';
