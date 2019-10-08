@@ -114,7 +114,7 @@ public class BacthServiceImpl extends BaseServiceImpl<Bacth, Long> implements Ba
 							param.getOrderTimeEnd()));
 				}
 			}
-			
+
 			// 按生成时间过滤
 			if (!StringUtils.isEmpty(param.getOrderTimeBegin()) && !StringUtils.isEmpty(param.getOrderTimeEnd())) {
 				predicate.add(cb.between(root.get("allotTime").as(Date.class), param.getOrderTimeBegin(),
@@ -146,7 +146,8 @@ public class BacthServiceImpl extends BaseServiceImpl<Bacth, Long> implements Ba
 						List<PayB> payB = payBDao.findByTaskId(task.getId());
 						// 删除该任务的所有B工资
 						payBDao.deleteInBatch(payB);
-					};
+					}
+					;
 					count++;
 					dao.delete(id);
 				}
@@ -157,15 +158,15 @@ public class BacthServiceImpl extends BaseServiceImpl<Bacth, Long> implements Ba
 
 	@Override
 	@Transactional
-	public int statusBacth(String ids, Date time){
+	public int statusBacth(String ids, Date time) {
 		int count = 0;
-		if(time == null){
+		if (time == null) {
 			Calendar cal = Calendar.getInstance();
 			cal.add(Calendar.DATE, -1);
-			time =  cal.getTime();
+			time = cal.getTime();
 		}
 		if (!StringUtils.isEmpty(ids)) {
-			String[] idStrings = ids.split(","); 
+			String[] idStrings = ids.split(",");
 			if (idStrings.length > 0) {
 				for (int i = 0; i < idStrings.length; i++) {
 					Long id = Long.parseLong(idStrings[i]);
@@ -202,8 +203,7 @@ public class BacthServiceImpl extends BaseServiceImpl<Bacth, Long> implements Ba
 						bacth.setBacthHairPrice(procedureList.get(0).getHairPrice());
 						bacth.setBacthDepartmentPrice(procedureList.get(0).getDepartmentPrice());
 					} else {
-						throw new ServiceException("产品序号为" + oldBacth.getProductId() + "的"
-								+ oldBacth.getProduct().getName() + "未添加工序，无法接受，请先添加工序");
+						throw new ServiceException("产品序号为" + oldBacth.getProductId() + oldBacth.getProduct().getName() + "未添加工序，无法接受，请先添加工序");
 					}
 					bacth.setBacthNumber(oldBacth.getBacthNumber());
 					bacth.setAllotTime(oldBacth.getAllotTime());

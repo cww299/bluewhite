@@ -599,9 +599,9 @@
 									
 									success:function(result){
 										$(result.data).each(function(i,o){
-											htmltwo +='<div class="input-group"><input type="checkbox" class="stuCheckBoxee" value="'+o.id+'" data-username="'+o.userName+'">'+o.userName+'</input></div>'
+											htmltwo +='<div class="input-group"><input type="checkbox" class="stuCheckBoxee" value="'+o.id+'" data-username="'+o.userName+'"><span class="nameFont">'+o.userName+'</span></input></div>'
 										})
-										var s="<div class='input-group'><input type='checkbox' class='checkallee'>全选</input></div>"
+										var s="<div class='input-group'><input type='checkbox' class='checkallee'><span class='checkallFont'>全选</span></input></div>"
 										$('.select').html(s+htmltwo)
 										$(".checkallee").on('click',function(){
 							                    if($(this).is(':checked')){ 
@@ -616,6 +616,16 @@
 							                    	})
 							                    }
 							                });
+										$(".checkallFont").on('click',function(obj){
+											var checked = !$(obj.target).parent().find('input').is(':checked');
+											$(obj.target).parent().find('input').prop('checked',checked);
+											$('.stuCheckBoxee').each(function(){  
+					                     		$(this).prop("checked",checked);
+								 			})
+										})
+										$('.nameFont').unbind().on('click',function(obj){
+											$(obj.target).parent().find('input').prop('checked',!$(obj.target).parent().find('input').is(':checked'));
+										})
 										layer.close(index);
 									},error:function(){
 										layer.msg("操作失败！", {icon: 2});
@@ -747,7 +757,7 @@
 				//新增杂工
 				$('#addgroup').on('click',function(){
 					var myDate = new Date();
-					  
+					function p(s) { return s < 10 ? '0' + s: s; }
 					//获取当前年
 					var year=myDate.getFullYear();
 					//获取当前月
@@ -786,6 +796,7 @@
 							//改变事件
 			      			 $(".selectcompletee").change(function(){
 			      				var htmltwo = "";
+			      				var  htmltwh = "";
 			      				var	id=$(this).val()
 								   var data={
 			      							type:2,
@@ -804,13 +815,15 @@
 									
 									success:function(result){
 										$(result.data).each(function(i,o){
-										
-										$(o.users).each(function(i,o){
-											htmltwo +='<div class="input-group"><input type="checkbox" class="stuCheckBoxtt" value="'+o.id+'" data-username="'+o.userName+'">'+o.userName+'</input></div>'
+										$(o.userList).each(function(i,o){
+											htmltwo +='<div class="input-group"><input type="checkbox" class="stuCheckBoxtt" value="'+o.id+'" data-secondment='+o.secondment+' data-username="'+o.name+'">'+o.name+'</input></div>'
+										})
+										$(o.temporarilyUser).each(function(i,o){
+											htmltwh +='<div class="input-group"><input type="checkbox" class="stuCheckBoxtt" value="'+o.id+'" data-secondment='+o.secondment+' data-username="'+o.name+'">'+o.name+'</input></div>'
 										})
 										})
 										var s="<div class='input-group'><input type='checkbox' class='checkalltt'>全选</input></div>"
-										$('.selecttw').html(s+htmltwo)
+										$('.selecttw').html(s+htmltwo+htmltwh)
 										$(".checkalltt").on('click',function(){
 							                    if($(this).is(':checked')){ 
 										 			$('.stuCheckBoxtt').each(function(){  
@@ -873,14 +886,19 @@
 								 performance="";
 							 }
 							  var arr=new Array()
-							  console.log($(".stuCheckBoxtt:checked").each(function() {}))
+							  var arrtem=new Array()
 								$(".stuCheckBoxtt:checked").each(function() {   
+								   	if($(this).data('secondment')==1){
 								    arr.push($(this).val());   
-								    console.log($(this).val())
+								   	}
+								   	if($(this).data('secondment')==0){
+								   		arrtem.push($(this).val());   
+									   	}
 								});
-							  if(arr.length<=0){
+							  
+							   if(arr.length<=0 && arrtem.length<=0){
 								 return layer.msg("领取人不能为空", {icon:2 });
-							  }
+							  } 
 							  if($(".sumnumber").val()==""){
 									 return layer.msg("工序不能为空", {icon:2 });
 								  }
@@ -892,6 +910,7 @@
 									  performance:performance,
 									  performanceNumber:performanceNumber,
 									  userIds:arr,
+									  temporaryUserIds:arrtem,
 									  bacth:$(".bacth").val(),
 									  type:2,
 							  }

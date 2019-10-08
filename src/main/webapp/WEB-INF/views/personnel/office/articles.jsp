@@ -399,6 +399,21 @@
 							table.addTemp(tableId,allField,function(trElem) {
 								var that = this;
 								// 初始化laydate
+								layui.each(trElem.find('td[data-field="createdAt"]'), function(index, tdElem) {
+									tdElem.onclick = function(event) {
+										layui.stope(event)
+									};
+									laydate.render({
+										elem: tdElem.children[0],
+										format: 'yyyy-MM-dd HH:mm:ss',
+										done: function(value, date) {
+											var trElem = $(this.elem[0]).closest('tr');
+											var tableView = trElem.closest('.layui-table-view');
+											table.cache[that.id][trElem.data('index')]['createdAt'] = value;
+											var id = table.cache[tableView.attr('lay-id')][trElem.data('index')].id
+										}
+									})
+								})
 							});
 							break;
 							case 'saveTempData':
