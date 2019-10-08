@@ -35,7 +35,9 @@ import com.bluewhite.production.finance.entity.FarragoTaskPay;
 import com.bluewhite.production.finance.entity.PayB;
 import com.bluewhite.production.productionutils.constant.ProTypeUtils;
 import com.bluewhite.production.task.entity.Task;
+import com.bluewhite.system.user.entity.TemporaryUser;
 import com.bluewhite.system.user.entity.User;
+import com.bluewhite.system.user.service.TemporaryUserService;
 import com.bluewhite.system.user.service.UserService;
 
 @Controller
@@ -49,6 +51,8 @@ private static final Log log = Log.getLog(FarragoTaskAction.class);
 	private UserService userService;
 	@Autowired
 	private FarragoTaskPayDao farragoTaskPayDao;
+	@Autowired
+	private TemporaryUserService temporaryUserService;
 	
 	private ClearCascadeJSON clearCascadeJSON;
 
@@ -148,23 +152,38 @@ private static final Log log = Log.getLog(FarragoTaskAction.class);
 	@ResponseBody
 	public CommonResponse taskUser(HttpServletRequest request,Long id) {
 		CommonResponse cr = new CommonResponse();
-		if(id!=null){
+		List<Map<String, Object>> list = new ArrayList<>();
+		if (id != null) {
 			FarragoTask farragoTask = farragoTaskService.findOne(id);
-			List<User> userList = new ArrayList<User>();
 			if (!StringUtils.isEmpty(farragoTask.getUserIds())) {
 				String[] idArr = farragoTask.getUserIds().split(",");
-				if (idArr.length>0) {
+				if (idArr.length > 0) {
 					for (int i = 0; i < idArr.length; i++) {
+						Map<String, Object> userMap = new HashMap<>();
 						Long userid = Long.parseLong(idArr[i]);
 						User user = userService.findOne(userid);
-						userList.add(user);
-						}
+						userMap.put("id", user.getId());
+						userMap.put("userName", user.getUserName());
+						list.add(userMap);
+					}
 				}
 			}
-			cr.setData(ClearCascadeJSON.get().addRetainTerm(User.class, "id","userName")
-					.format(userList).toJSON());
+			if(!StringUtils.isEmpty(farragoTask.getTemporaryUserIds())){
+				String[] idArr = farragoTask.getTemporaryUserIds().split(",");
+				if (idArr.length > 0) {
+					for (int i = 0; i < idArr.length; i++) {
+						Map<String, Object> userMap = new HashMap<>();
+						Long userid = Long.parseLong(idArr[i]);
+						TemporaryUser temporaryUser = temporaryUserService.findOne(userid);
+						userMap.put("id", temporaryUser.getId());
+						userMap.put("userName", temporaryUser.getUserName());
+						list.add(userMap);
+					}
+				}
+			}
+			cr.setData(list);
 			cr.setMessage("查询成功");
-		}else{
+		} else {
 			cr.setCode(ErrorCode.ILLEGAL_ARGUMENT.getCode());
 			cr.setMessage("不能为空");
 		}
