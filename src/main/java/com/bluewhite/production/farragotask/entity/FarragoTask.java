@@ -121,6 +121,18 @@ public class FarragoTask  extends BaseEntity<Long>{
 	 */
 	@Transient
 	private Date orderTimeEnd;
+	
+	/**
+	 * 领取记录ids
+	 */
+	@Transient
+	private String ids;
+
+	/**
+	 * 领取记录ids
+	 */
+	@Transient
+	private String temporaryIds;
 
 
 	/**
@@ -145,6 +157,22 @@ public class FarragoTask  extends BaseEntity<Long>{
 	
 	
 	
+	public String getIds() {
+		return ids;
+	}
+
+	public void setIds(String ids) {
+		this.ids = ids;
+	}
+
+	public String getTemporaryIds() {
+		return temporaryIds;
+	}
+
+	public void setTemporaryIds(String temporaryIds) {
+		this.temporaryIds = temporaryIds;
+	}
+
 	public String[] getTemporaryUsersIds() {
 		return temporaryUsersIds;
 	}
