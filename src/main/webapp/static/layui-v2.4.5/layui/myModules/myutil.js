@@ -1,7 +1,7 @@
 /* 工具模块
  * 2019/7/6
  * getSelectHtml：{ url、data、},
- * saveAjax: 保存数值函数，默认同步➕遮罩➕post。设置ctx时，无需给前缀，成功回调success
+ * saveAjax: 保存数值函数，默认同步➕遮罩➕post。设置ctx时，无需给前缀，成功回调success,closeLoad关闭遮罩
  * deleteAjax： 删除函数，同上，数据：ids
  * getData: 默认异步 success(data)回调
  * getDataSync: 默认同步
@@ -27,9 +27,11 @@ layui.define(['jquery','layer','form','table'],function(exports){
 		}
 		if(myutil.config.ctx!='')
 			options.url = myutil.config.ctx+options.url;
-		var load = layer.load(1,{
-			 shade: [0.3,'black'],
-		});
+		if(!options.closeLoad){
+			var load = layer.load(1,{
+				shade: [0.3,'black'],
+			});
+		}
 		$.ajax({
 			url : options.url,
 			type : options.type || 'post',	//默认post方法
@@ -52,7 +54,9 @@ layui.define(['jquery','layer','form','table'],function(exports){
 				}
 			}
 		})
-		layer.close(load);
+		if(!options.closeLoad){
+			layer.close(load);
+		}
 	}
 	
 	Class.prototype.deleteAjax = function(options,callback,error){
