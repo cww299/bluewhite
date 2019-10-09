@@ -98,7 +98,7 @@ layui.config({
 			colFilterRecord:'local',
 			page:true,
 			autoSort:false,
-			limits:[10,25,50,100],
+			limits:[10,25,50,100,500,1000,2000],
 			limit:100,
 			request:{ pageName:'page', limitName:'size' },
 			parseData:function(ret){ return {data:ret.data.rows,count:ret.data.total,msg:ret.message,code:ret.code } },
