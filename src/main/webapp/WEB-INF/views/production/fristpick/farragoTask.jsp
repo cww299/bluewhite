@@ -733,10 +733,10 @@
 											  			orderTimeEnd:orderTime[1], 
 												} 
 											   self.loadPagination(date);
+										layer.close(_index);
 										}else{
 											layer.msg("添加失败", {icon: 2});
 										}
-										layer.close(index);
 									},error:function(){
 										layer.msg("操作失败！", {icon: 2});
 										layer.close(index);

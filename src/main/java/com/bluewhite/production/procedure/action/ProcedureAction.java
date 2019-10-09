@@ -7,6 +7,7 @@ import javax.servlet.http.HttpServletRequest;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -158,10 +159,14 @@ private static final Log log = Log.getLog(ProcedureAction.class);
 	 */
 	@RequestMapping(value = "/production/delete", method = RequestMethod.GET)
 	@ResponseBody
-	public CommonResponse delete(HttpServletRequest request,String[] ids) {
+	public CommonResponse delete(HttpServletRequest request,String ids) {
 		CommonResponse cr = new CommonResponse();
-		if(ids.length>0){
-				for(String id : ids){
+		String[] idStrings = null;
+		if (!StringUtils.isEmpty(ids)){
+			idStrings = ids.split(",");
+		}
+		if(idStrings.length>0){
+				for(String id : idStrings){
 					procedureService.deleteProcedure(Long.valueOf(id));
 				}
 			cr.setMessage("工序删除成功");

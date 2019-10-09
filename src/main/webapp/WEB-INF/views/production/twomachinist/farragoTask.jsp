@@ -477,6 +477,7 @@
 							 var arrtem=new Array()
 							 var ids=new Array()
 							 var temporaryIds=new Array()
+							 
 							 $(".stuCheckBoxtt:checked").each(function() {   
 									var id = $(this).data('id');
 									if(String(id).indexOf('-')>0){
@@ -496,6 +497,7 @@
 								  }
 							  if($(".bacth").val()==""){
 									 return layer.msg("批次号不能为空", {icon:2 });
+									 
 								  }
 							  postData={
 									  procedureTime:$(".timeone").val(),
