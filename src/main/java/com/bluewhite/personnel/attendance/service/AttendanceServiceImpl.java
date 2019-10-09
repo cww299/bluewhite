@@ -7,6 +7,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+import javax.annotation.PostConstruct;
 import javax.persistence.criteria.Predicate;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -250,7 +251,7 @@ public class AttendanceServiceImpl extends BaseServiceImpl<Attendance, Long> imp
 		PageResult<Attendance> result = new PageResult<>(pages, page);
 		return result;
 	}
-
+	
 	public void regEvent() {
 		sdk.initSTA();
 		try {

@@ -2,6 +2,7 @@ package com.bluewhite.common.utils.ZkemUtils;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.Date;
 
 import javax.annotation.PostConstruct;
 
@@ -29,8 +30,8 @@ public class SensorEvents {
 	@PostConstruct
 	public void init() {
 		sensorEvents = this;
-		sensorEvents.userService = this.userService; //步骤2 初使化时将已静态化的testService实例化
-		sensorEvents.dao = this.dao; //步骤2 初使化时将已静态化的testService实例化
+		sensorEvents.userService = this.userService;  
+		sensorEvents.dao = this.dao; 
 	}
 	
 	
@@ -51,14 +52,10 @@ public class SensorEvents {
 		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 		//验证时间
 		String time = arge[4]+"-"+arge[5]+"-"+arge[6]+"-"+arge[7]+":"+arge[8]+":"+arge[9]+" "+arge[10];
-		User user = userService.findByNumber(arge[0].getStringRef());
-		attendance.setUserId(user.getId());
 		attendance.setNumber(String.valueOf(arge[0]));
-		try {
-			attendance.setTime(sdf.parse(time));
-		} catch (ParseException e) {
-			throw new ServiceException("时间转换异常");
-		}
+		User user = userService.findByNumber(attendance.getNumber());
+		attendance.setUserId(user.getId());
+		attendance.setTime(new Date());
 		//考勤状态
 		attendance.setInOutMode(Integer.parseInt(String.valueOf(arge[2])));
 		//验证方式
@@ -68,7 +65,7 @@ public class SensorEvents {
 	}
 
 	public void OnEnrollFingerEx(Variant[] arge){
-		System.out.println("登记指纹时触发该事件===="+arge.clone());
+		System.out.println("登记指纹时触发该事件===="+arge);
 	}
 
 	public void OnFinger(Variant[] arge){
