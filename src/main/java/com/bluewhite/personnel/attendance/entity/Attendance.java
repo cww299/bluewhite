@@ -15,67 +15,78 @@ import com.bluewhite.base.BaseEntity;
 import com.bluewhite.system.user.entity.User;
 
 /**
- * 签到记录 
+ * 签到记录
  * 
  * @author zhangliang
  *
  */
 @Entity
-@Table(name = "person_attendance"  ,indexes = {	@Index(columnList = "time")})     
+@Table(name = "person_attendance", indexes = { @Index(columnList = "time") })
 public class Attendance extends BaseEntity<Long> {
-	
+
 	/**
 	 * 员工编号（考勤机上的编号）
 	 * 
 	 */
 	@Column(name = "number")
 	private String number;
-	
+
 	/**
 	 * 员工id
 	 */
 	@Column(name = "user_id")
 	private Long userId;
-	
+
 	/**
 	 * 员工
 	 */
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "user_id", referencedColumnName = "id", insertable = false, updatable = false)
 	private User user;
-	
+
 	/**
 	 * 签到考勤时间
 	 */
 	@Column(name = "time")
 	private Date time;
-	
+
 	/**
 	 * 
-	 * 签到状态   1正常签到 2补签
+	 * 签到状态 1正常签到 2补签
 	 */
 	@Column(name = "inout_mode")
 	private Integer inOutMode;
-	
+
 	/**
 	 * 
 	 * 补签id
 	 */
 	@Column(name = "application_leave_id")
 	private Long applicationLeaveId;
-	
+
 	/**
-	 *  验证方式：0为密码验证，1为指纹验证，2为卡验，15为 面部验证
+	 * 验证方式：0为密码验证，1为指纹验证，2为卡验，15为 面部验证
 	 */
 	@Column(name = "verify_mode")
 	private Integer verifyMode;
-	
+	/**
+	 * 打卡记录来源(
+	 * THREE_FLOOR = "192.168.1.204" 
+	 * TWO_FLOOR = "192.168.1.205"
+	 * ONE_FLOOR = "192.168.1.250"
+	 * EIGHT_WAREHOUSE = "192.168.7.123"
+	 * NEW_IGHT_WAREHOUSE = "192.168.6.73"
+	 * ELEVEN_WAREHOUSE = "192.168.14.201"
+	 */
+	@Column(name = "source_machine")
+	private String sourceMachine;
+
 	/**
 	 * 员工姓名
 	 */
 	@Transient
 	private String userName;
-	
+
 	/**
 	 * 查询字段
 	 */
@@ -86,20 +97,28 @@ public class Attendance extends BaseEntity<Long> {
 	 */
 	@Transient
 	private Date orderTimeEnd;
-	
+
 	/**
 	 * 查询字段（部门）
 	 */
 	@Transient
 	private Long orgNameId;
-	
+
 	/**
 	 * 查询字段（部门）
 	 */
 	@Transient
 	private String orgName;
-
 	
+	
+
+	public String getSourceMachine() {
+		return sourceMachine;
+	}
+
+	public void setSourceMachine(String sourceMachine) {
+		this.sourceMachine = sourceMachine;
+	}
 
 	public Long getApplicationLeaveId() {
 		return applicationLeaveId;
@@ -116,7 +135,6 @@ public class Attendance extends BaseEntity<Long> {
 	public void setOrgName(String orgName) {
 		this.orgName = orgName;
 	}
-
 
 	public Long getOrgNameId() {
 		return orgNameId;
@@ -197,10 +215,5 @@ public class Attendance extends BaseEntity<Long> {
 	public void setVerifyMode(Integer verifyMode) {
 		this.verifyMode = verifyMode;
 	}
-	
-	
-	
-	
-	
 
 }

@@ -39,13 +39,13 @@ public class AttendanceServiceImpl extends BaseServiceImpl<Attendance, Long> imp
 
 	@Autowired
 	private AttendanceDao dao;
-	
+
 	@Autowired
 	private ZkemSDKUtils sdk;
 
 	@Autowired
 	private ApplicationLeaveDao applicationLeaveDao;
-	
+
 	@Autowired
 	private AttendanceTimeDao attendanceTimeDao;
 
@@ -78,13 +78,15 @@ public class AttendanceServiceImpl extends BaseServiceImpl<Attendance, Long> imp
 		for (Map<String, Object> map : userMapList) {
 			if (userListAll.size() > 0) {
 				List<User> user = userListAll.stream()
-						.filter(User ->User.getNumber() == null && User.getUserName().trim().equals(map.get("name").toString().trim()))
+						.filter(User -> User.getNumber() == null
+								&& User.getUserName().trim().equals(map.get("name").toString().trim()))
 						.collect(Collectors.toList());
 				if (user.size() > 1) {
 					throw new ServiceException("系统用户有相同名称的员工" + user.get(0).getUserName() + "，请检查是否重复");
 				}
 				if (user.size() > 0) {
-					if (user.get(0).getNumber() == null || !user.get(0).getNumber().equals(map.get("number").toString())) {	
+					if (user.get(0).getNumber() == null
+							|| !user.get(0).getNumber().equals(map.get("number").toString())) {
 						user.get(0).setNumber(map.get("number").toString());
 						userService.save(user.get(0));
 						count++;
@@ -106,9 +108,10 @@ public class AttendanceServiceImpl extends BaseServiceImpl<Attendance, Long> imp
 			throw new ServiceException("考勤机连接失败");
 		}
 		if (flag) {
-//			if(address.equals(Constants.EIGHT_WAREHOUSE) || address.equals(Constants.NEW_IGHT_WAREHOUSE)){
-//				sdk.delectUserById(number);
-//			}
+			// if(address.equals(Constants.EIGHT_WAREHOUSE) ||
+			// address.equals(Constants.NEW_IGHT_WAREHOUSE)){
+			// sdk.delectUserById(number);
+			// }
 			flag = sdk.setUserInfo(number, name, "", isPrivilege, enabled);
 		}
 		sdk.disConnect();
@@ -153,7 +156,7 @@ public class AttendanceServiceImpl extends BaseServiceImpl<Attendance, Long> imp
 
 	@Override
 	@Transactional
-	public List<Attendance> allAttendance(String address, Date startTime, Date endTime ,Long userId) {
+	public List<Attendance> allAttendance(String address, Date startTime, Date endTime, Long userId) {
 		sdk.initSTA();
 		boolean flag = false;
 		try {
@@ -167,11 +170,37 @@ public class AttendanceServiceImpl extends BaseServiceImpl<Attendance, Long> imp
 			attendanceListAll = sdk.getGeneralLogData(0);
 		}
 		attendanceListAll = attendanceListAll.stream()
-				.filter(Attendance -> Attendance.getTime().before(endTime) && Attendance.getTime().after(startTime) )
+				.filter(Attendance -> Attendance.getTime().before(endTime) && Attendance.getTime().after(startTime))
 				.collect(Collectors.toList());
-		if(userId!=null){  
-			attendanceListAll = attendanceListAll.stream().filter(Attendance -> Attendance.getUserId()!=null && Attendance.getUserId().equals(userId)).collect(Collectors.toList());
+		if (userId != null) {
+			attendanceListAll = attendanceListAll.stream()
+					.filter(Attendance -> Attendance.getUserId() != null && Attendance.getUserId().equals(userId))
+					.collect(Collectors.toList());
 		}
+		String sourceMachine = null;
+		if (Constants.THREE_FLOOR.equals(address)) {
+			sourceMachine = "THREE_FLOOR";
+		}
+		if (Constants.TWO_FLOOR.equals(address)) {
+			sourceMachine = "TWO_FLOOR";
+		}
+		if (Constants.ONE_FLOOR.equals(address)) {
+			sourceMachine = "ONE_FLOOR";
+		}
+		if (Constants.EIGHT_WAREHOUSE.equals(address)) {
+			sourceMachine = "EIGHT_WAREHOUSE";
+		}
+		if (Constants.NEW_IGHT_WAREHOUSE.equals(address)) {
+			sourceMachine = "NEW_IGHT_WAREHOUSE";
+		}
+		if (Constants.ELEVEN_WAREHOUSE.equals(address)) {
+			sourceMachine = "ELEVEN_WAREHOUSE";
+		}
+		String sourceMachineFina = sourceMachine;
+		attendanceListAll.stream().forEach(a -> {
+			a.setSourceMachine(sourceMachineFina);
+		});
+		;
 		batchSave(attendanceListAll);
 		sdk.disConnect();
 		sdk.release();
@@ -180,19 +209,19 @@ public class AttendanceServiceImpl extends BaseServiceImpl<Attendance, Long> imp
 
 	@Override
 	public PageResult<Attendance> findPageAttendance(Attendance param, PageParameter page) {
-		page.setSort(new Sort(Direction.DESC,"time"));
+		page.setSort(new Sort(Direction.DESC, "time"));
 		Page<Attendance> pages = dao.findAll((root, query, cb) -> {
 			List<Predicate> predicate = new ArrayList<>();
 			// 按用户 id过滤
 			if (param.getUserId() != null) {
 				predicate.add(cb.equal(root.get("userId").as(Long.class), param.getUserId()));
 			}
-			
+
 			// 按签到类型过滤
 			if (param.getInOutMode() != null) {
 				predicate.add(cb.equal(root.get("inOutMode").as(Integer.class), param.getInOutMode()));
 			}
-			
+
 			// 按编号
 			if (!StringUtils.isEmpty(param.getNumber())) {
 				predicate.add(cb.equal(root.get("number").as(String.class), param.getNumber()));
@@ -200,7 +229,8 @@ public class AttendanceServiceImpl extends BaseServiceImpl<Attendance, Long> imp
 
 			// 按姓名查找
 			if (!StringUtils.isEmpty(param.getUserName())) {
-				predicate.add(cb.like(root.get("user").get("userName").as(String.class),"%"+param.getUserName()+"%"));
+				predicate.add(
+						cb.like(root.get("user").get("userName").as(String.class), "%" + param.getUserName() + "%"));
 			}
 
 			// 按部门查找
@@ -231,8 +261,6 @@ public class AttendanceServiceImpl extends BaseServiceImpl<Attendance, Long> imp
 			e.printStackTrace();
 		}
 	}
-
-	
 
 	@Override
 	public List<Map<String, Object>> getAllAttendance(String address) {
@@ -284,25 +312,27 @@ public class AttendanceServiceImpl extends BaseServiceImpl<Attendance, Long> imp
 
 	@Override
 	@Transactional
-	public int restAttendance(String address, Date startTime, Date endTime,Long userId) {
-		Attendance attendance  =  new Attendance();
+	public int restAttendance(String address, Date startTime, Date endTime, Long userId) {
+		Attendance attendance = new Attendance();
 		attendance.setOrderTimeBegin(startTime);
 		attendance.setOrderTimeEnd(endTime);
 		attendance.setUserId(userId);
 		List<Attendance> attendanceList = findPageAttendance(attendance, new PageParameter(0, Integer.MAX_VALUE))
-				.getRows().stream().filter(Attendance->(Attendance.getInOutMode()==null || Attendance.getInOutMode()!=2)).collect(Collectors.toList());
-		if(attendanceList.size()>0){
+				.getRows().stream()
+				.filter(Attendance -> (Attendance.getInOutMode() == null || Attendance.getInOutMode() != 2))
+				.collect(Collectors.toList());
+		if (attendanceList.size() > 0) {
 			dao.delete(attendanceList);
 		}
-		if(StringUtils.isEmpty(address)){
-			allAttendance(Constants.THREE_FLOOR, startTime, endTime,userId);
-			allAttendance(Constants.TWO_FLOOR, startTime, endTime,userId);
-			allAttendance(Constants.ONE_FLOOR, startTime, endTime,userId);
-			allAttendance(Constants.EIGHT_WAREHOUSE, startTime, endTime,userId);
-			allAttendance(Constants.NEW_IGHT_WAREHOUSE, startTime, endTime,userId);
-			allAttendance(Constants.ELEVEN_WAREHOUSE, startTime, endTime,userId);
-		}else{
-			allAttendance(address, startTime, endTime,userId);
+		if (StringUtils.isEmpty(address)) {
+			allAttendance(Constants.THREE_FLOOR, startTime, endTime, userId);
+			allAttendance(Constants.TWO_FLOOR, startTime, endTime, userId);
+			allAttendance(Constants.ONE_FLOOR, startTime, endTime, userId);
+			allAttendance(Constants.EIGHT_WAREHOUSE, startTime, endTime, userId);
+			allAttendance(Constants.NEW_IGHT_WAREHOUSE, startTime, endTime, userId);
+			allAttendance(Constants.ELEVEN_WAREHOUSE, startTime, endTime, userId);
+		} else {
+			allAttendance(address, startTime, endTime, userId);
 		}
 		return attendanceList.size();
 	}
@@ -326,8 +356,8 @@ public class AttendanceServiceImpl extends BaseServiceImpl<Attendance, Long> imp
 	}
 
 	@Override
-	public List<Attendance> findByUserIdInAndTimeBetween(List<Long> userLong,Date beginDate, Date endDate) {
-		return dao.findByUserIdInAndTimeBetween(userLong,beginDate,endDate);
+	public List<Attendance> findByUserIdInAndTimeBetween(List<Long> userLong, Date beginDate, Date endDate) {
+		return dao.findByUserIdInAndTimeBetween(userLong, beginDate, endDate);
 	}
 
 }
