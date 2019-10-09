@@ -122,13 +122,15 @@ public class AttendanceTimeServiceImpl extends BaseServiceImpl<AttendanceTime, L
 				userList.addAll(list);
 			}
 			// 满足于输入时间内离职和入职
-			userList =userList.stream()
+			userList =userList
+					.stream()
 					.filter(User -> (User.getQuit() != null && User.getQuit() == 0) || (User.getQuitDate() != null
 					&& User.getQuitDate().compareTo(attendance.getOrderTimeBegin()) != -1))
-			.collect(Collectors.toList()).stream()
-			.filter(User -> User.getEntry() != null && User.getEntry()
+					.collect(Collectors.toList())
+					.stream()
+					.filter(User -> User.getEntry() != null && User.getEntry()
 					.compareTo(DatesUtil.getLastDayOfMonth(attendance.getOrderTimeBegin())) != 1)
-			.collect(Collectors.toList());
+					.collect(Collectors.toList());
 
 			String exUser = "";
 			// 开始汇总每个人的考勤
