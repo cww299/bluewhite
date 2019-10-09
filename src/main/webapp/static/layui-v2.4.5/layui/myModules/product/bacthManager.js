@@ -330,7 +330,17 @@ layui.config({
 						var userIds = [],procedureIds = [],temporaryUserIds = [];
 						var ids = [],temporaryIds = [];
 						var userTreeId = menuTree.getVal('userTree'),procedureTreeId = menuTree.getVal('procedureTree');
-						
+						var msg = '';
+						if($('#number').val()==0)
+							msg = '分配数量不能为0';
+						if(isNaN($('#number').val()))
+							msg = '分配数量只能为数字';
+						if($('#number').val()%1!=0)
+							msg = '分配数量只能为整数';
+						if(msg!=''){
+							layer.close(load);
+							return myutil.emsg(msg);
+						}
 						for(var i in userTreeId){	
 							if(userTreeId[i]!=-1){	//区分是否为临时员工,临时员工的id： t-id~userId
 								if(userTreeId[i].indexOf('-')>0){
@@ -412,7 +422,7 @@ layui.config({
 									bacthId: trData.id,
 									type: opt.type,
 									procedureTypeId: id,
-									flag: 0,
+									flag: name=='返工'?1:0,
 								},
 								success:function(r){
 									if(r.code==0){
