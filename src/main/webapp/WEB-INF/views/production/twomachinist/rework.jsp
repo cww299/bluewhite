@@ -448,7 +448,7 @@
 			      			  $(result.data).each(function(k,j){
 			      				htmlth +='<option value="'+j.id+'">'+j.name+'</option>'
 			      			  });  
-			      			 $('.complete').html("<select class='form-control selectcomplete'><option value="+0+">请选择</option><option value="+""+">全部</option>"+htmlth+"</select>") 
+			      			 $('.complete').html("<select class='form-control selectcomplete'><option value="+0+">请选择</option>"+htmlth+"</select>") 
 							//改变事件
 			      			 $(".selectcomplete").change(function(){
 			      				var htmltwo = "";
@@ -476,7 +476,7 @@
 												htmltwo +='<div class="input-group"><input type="checkbox" class="stuCheckBoxtt" value="'+o.userId+'" data-id="'+o.id+'" data-secondment='+o.secondment+' data-username="'+o.name+'">'+o.name+'--<font color="#30b448">正</font>'+'</input></div>'
 											})
 											$(o.temporarilyUser).each(function(i,o){
-												htmltwh +='<div class="input-group"><input type="checkbox" class="stuCheckBoxtt" value="'+o.userId+'" data-id="'+o.id+'" data-secondment='+o.secondment+' data-username="'+o.name+'">'+o.name+'--<font color="#FF0000">临</font>'+'</input></div>'
+												htmltwh +='<div class="input-group"><input type="checkbox" class="stuCheckBoxtt" value="'+o.userId+'" data-id="t-'+o.id+'" data-secondment='+o.secondment+' data-username="'+o.name+'">'+o.name+'--<font color="#FF0000">临</font>'+'</input></div>'
 											})
 										})
 										var s="<div class='input-group'><input type='checkbox' class='checkall'>全选</input></div>"
@@ -519,15 +519,15 @@
 								 var arrtem=new Array()
 								 var ids=new Array()
 								 var temporaryIds=new Array()
-									$(".stuCheckBoxtt:checked").each(function() {   
-									   	if($(this).data('secondment')==1){
-									    arr.push($(this).val()); 
-									    ids.push($(this).data('id'));
-									   	}
-									   	if($(this).data('secondment')==0){
+									$(".stuCheckBoxtt:checked").each(function() {
+										var id = $(this).data('id');
+										if(String(id).indexOf('-')>0){
 									   		arrtem.push($(this).val());
-									   		temporaryIds.push($(this).data('id'));
-										   	}
+									   		temporaryIds.push(id.split('-')[1]);
+										}else{
+										    arr.push($(this).val()); 
+										    ids.push($(this).data('id'));
+										}
 									});
 								  
 								   if(arr.length<=0 && arrtem.length<=0){
