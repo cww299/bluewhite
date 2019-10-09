@@ -301,7 +301,9 @@ layui.config({
 		    					if(text[0]=='贴破洞'){
 		    						$(item).parent().find('.menuControl').find('input').addClass('tiepodongNumber');
 		    						$('.tiepodongNumber').on('change',function(obj){
-		    							var val = $(obj.target).val();
+		    							var val = $(obj.target).val().trim();
+		    							if(val=='')
+		    								val = 0;
 		    							if(isNaN(val)){
 		    								myutil.emsg('贴破洞数量只能为数字！');
 		    							}if(val%1!=0){
