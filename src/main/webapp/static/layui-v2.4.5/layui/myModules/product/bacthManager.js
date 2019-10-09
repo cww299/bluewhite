@@ -432,6 +432,7 @@ layui.config({
 							};
 						if(opt.type==1)
 							saveData.holeNumber = tiepidongNumber;
+						saveData.allotTime+=' 00:00:00';
 						myutil.saveAjax({
 							url:'/task/addTask',
 							data:saveData,
