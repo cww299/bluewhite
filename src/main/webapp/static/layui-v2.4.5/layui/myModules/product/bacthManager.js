@@ -17,6 +17,7 @@ layui.config({
 	mytable: 'layui/myModules/mytable',
 	menuTree : 'layui/myModules/menuTree',
 }).define(['jquery','table','form','mytable','laytpl','laydate','layer','menuTree'],function(exports){
+	"use strict"
 	var $ = layui.jquery
 	, table = layui.table 
 	, form = layui.form
@@ -66,8 +67,6 @@ layui.config({
 	
 	var ALLO_TPL = [	//分配任务模板
                     '<div style="padding:15px;" class="layui-form">',
-                    	'<p class="hiddenTip">',
-                    		'<span class="layui-badge">提示:贴破洞数量需要点击编辑进行设置，当前设置为<b id="tiepodongNumber">0</b></span></p>',
 	                    '<div class="procedureDiv">',
 	                    	'<div class="layui-form-item">',
 	                    		'<label class="layui-form-label">任务数量：</label>',
@@ -291,9 +290,32 @@ layui.config({
 						menuTree.render({				
 				    	  elem:'#procedureTree',
 				    	  data : procedureTree,
-				    	  toolbar: opt.type==1?['edit']:[],
+				    	  toolbar: [],
+				    	  otherToolbar: opt.type==1?'<input type="text" style="display:none;">':'',
+				    	  toolShow:true,
 		    			  hide: false,
 		    			  checked: checked,
+		    			  done:function(){
+		    				layui.each($('.layui-tree-grade').find('span'),function(index,item){
+		    					var text = $(item).html().split(' ');
+		    					if(text[0]=='贴破洞'){
+		    						$(item).parent().find('.menuControl').find('input').addClass('tiepodongNumber');
+		    						$('.tiepodongNumber').on('change',function(obj){
+		    							var val = $(obj.target).val().trim();
+		    							if(val=='')
+		    								val = 0;
+		    							if(isNaN(val)){
+		    								myutil.emsg('贴破洞数量只能为数字！');
+		    							}if(val%1!=0){
+		    								myutil.emsg('贴破洞数量只能为整数！');
+		    							}else{
+		    								tiepidongNumber = parseInt(val);
+		    							}
+		    							$(obj.target).val(tiepidongNumber)
+		    						})
+		    					}
+		    				})  
+		    			  },
 				    	  showName: function(data){
 				    		  if(isNaN(data.number))
 				    			  return data.name;
@@ -301,23 +323,6 @@ layui.config({
 				    			  return data.name+' 剩余:'+data.number;
 				    	  }
 						})
-						if(opt.type==1){	//如果是一楼质检，开启编辑模式
-							$('.hiddenTip').show();
-							menuTree.onToolbar('procedureTree',function(obj){
-								switch(obj.type){
-								case 'edit': 
-									if(obj.data.name=='贴破洞'){
-										var numberWin = layer.prompt({offset:'120px', title: '请输入贴破洞数量',},function(value, index, elem){
-											tiepidongNumber = value;
-											myutil.smsg('贴破洞数量设置成功!');
-											$('#tiepodongNumber').html(tiepidongNumber);
-											layer.close(numberWin);
-										});
-									}
-									break;
-								}
-							})
-						}
 						if(opt.type==1 || opt.type==2){
 							$('#number').val(trData.number);
 						}
@@ -333,10 +338,14 @@ layui.config({
 						var msg = '';
 						if($('#number').val()==0)
 							msg = '分配数量不能为0';
-						if(isNaN($('#number').val()))
+						else if(isNaN($('#number').val()))
 							msg = '分配数量只能为数字';
-						if($('#number').val()%1!=0)
+						else if($('#number').val()%1!=0)
 							msg = '分配数量只能为整数';
+						else if(procedureTreeId.length==0)
+							msg = '请选择分配工序';
+						else if(userTreeId.length==0)
+							msg = '请选择分配人员';
 						if(msg!=''){
 							layer.close(load);
 							return myutil.emsg(msg);
