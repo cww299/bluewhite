@@ -1021,9 +1021,6 @@
 							  if(values.length<=0){
 									return layer.msg("至少选择一个工序！", {icon: 2});
 								}
-								if(arr.length<=0){
-									return layer.msg("至少选择一个员工！", {icon: 2});
-								}
 								number=$(".sumnumbertw").val();
 								for (var i = 0; i < numberr.length; i++) {
 									if(numberr[i]-number<0){
