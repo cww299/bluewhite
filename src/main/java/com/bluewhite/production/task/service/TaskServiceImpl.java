@@ -202,6 +202,10 @@ public class TaskServiceImpl extends BaseServiceImpl<Task, Long> implements Task
 
 				// 查出该任务的所有b工资
 				List<PayB> payBList = new ArrayList<>();
+				int userInt = task.getUsersIds() != null && task.getUsersIds().length > 0
+						? task.getUsersIds().length : 0;
+				int temporaryUsersInt = task.getTemporaryUsersIds() != null
+						&& task.getTemporaryUsersIds().length > 0 ? task.getTemporaryUsersIds().length : 0;
 				if (task.getId() != null) {
 					payBList = payBDao.findByTaskId(task.getId());
 				}
@@ -268,10 +272,7 @@ public class TaskServiceImpl extends BaseServiceImpl<Task, Long> implements Task
 										NumUtils.round(sumTime, 2), 5));
 							}
 						} else {
-							int userInt = task.getUsersIds() != null && task.getUsersIds().length > 0
-									? task.getUsersIds().length : 0;
-							int temporaryUsersInt = task.getTemporaryUsersIds() != null
-									&& task.getTemporaryUsersIds().length > 0 ? task.getTemporaryUsersIds().length : 0;
+						
 							payB.setPayNumber(NumUtils.div(newTask.getPayB(), (userInt + temporaryUsersInt), 5));
 						}
 						payBList.add(payB);
@@ -324,8 +325,7 @@ public class TaskServiceImpl extends BaseServiceImpl<Task, Long> implements Task
 										NumUtils.round(sumTime, 2), 5));
 							}
 						} else {
-							payB.setPayNumber(NumUtils.div(newTask.getPayB(),
-									(task.getUsersIds().length + task.getTemporaryUsersIds().length), 5));
+							payB.setPayNumber(NumUtils.div(newTask.getPayB(),(userInt + temporaryUsersInt), 5));
 						}
 						payBList.add(payB);
 					}
