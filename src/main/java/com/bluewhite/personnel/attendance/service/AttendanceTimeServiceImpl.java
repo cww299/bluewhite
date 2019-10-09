@@ -77,18 +77,11 @@ public class AttendanceTimeServiceImpl extends BaseServiceImpl<AttendanceTime, L
 				DatesUtil.getFirstDayOfMonth(attendance.getOrderTimeBegin()));
 		// 报餐系统所需要的人员
 		List<User> list = null;
-		// 报餐人员满足于输入时间内离职和入职
 		List<AttendanceInit> attendanceInitList = null;
 		if (attendance.getUserId() == null && attendance.getOrgNameId() == null) {
 			User user = new User();
 			user.setIsAdmin(false);
-			list = userService.findUserList(user).stream()
-					.filter(User -> (User.getQuit() != null && User.getQuit() == 0) || (User.getQuitDate() != null
-							&& User.getQuitDate().compareTo(attendance.getOrderTimeBegin()) != -1))
-					.collect(Collectors.toList()).stream()
-					.filter(User -> User.getEntry() != null && User.getEntry()
-							.compareTo(DatesUtil.getLastDayOfMonth(attendance.getOrderTimeBegin())) != 1)
-					.collect(Collectors.toList());
+			list = userService.findUserList(user);
 			attendanceInitList = attendanceInitDao.findAll();
 			allAttList = attendanceDao.findByTimeBetween(attendance.getOrderTimeBegin(),
 					DatesUtil.getLastDayOfMonth(attendance.getOrderTimeBegin()));
@@ -128,6 +121,14 @@ public class AttendanceTimeServiceImpl extends BaseServiceImpl<AttendanceTime, L
 			if (attendance.getUserId() == null && attendance.getOrgNameId() == null) {
 				userList.addAll(list);
 			}
+			// 满足于输入时间内离职和入职
+			userList =userList.stream()
+					.filter(User -> (User.getQuit() != null && User.getQuit() == 0) || (User.getQuitDate() != null
+					&& User.getQuitDate().compareTo(attendance.getOrderTimeBegin()) != -1))
+			.collect(Collectors.toList()).stream()
+			.filter(User -> User.getEntry() != null && User.getEntry()
+					.compareTo(DatesUtil.getLastDayOfMonth(attendance.getOrderTimeBegin())) != 1)
+			.collect(Collectors.toList());
 
 			String exUser = "";
 			// 开始汇总每个人的考勤
