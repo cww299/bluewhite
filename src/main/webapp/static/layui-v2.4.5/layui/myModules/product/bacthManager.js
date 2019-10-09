@@ -263,9 +263,9 @@ layui.config({
 						laydate.render({
 							elem:'#allotTime',
 							value:now,
-							type:'datetime',
+							type:'date',
 							done: function(value){
-								getUserData(value);
+								getUserData(value+' 00:00:00');
 								menuTree.reload('userTree',{
 									data: allUser,
 								})
@@ -274,6 +274,37 @@ layui.config({
 						menuTree.render({				
 				    	  elem:'#userTree',
 				    	  data : allUser,
+				    	  done: function(value){
+				    		  $('#userTree').val(value);
+				    		  if(opt.type==3){	//如果是针工默认展开 充棉和翻皮
+				    			  layui.each($('.userDiv').find('.layui-tree-grade').find('span'),function(index,item){
+				    				  var text = $(item).html();
+			    					  if(text=='翻皮组' || text=='充棉组'){
+			    						  if($(item).parent().next().length>0){
+			    							  var SHOWICON = 'layui-icon-triangle-d'	
+			    								    ,HIDEICON = 'layui-icon-triangle-r';
+			    							  $(item).parent().find('i:first').removeClass(HIDEICON);
+			    							  $(item).parent().find('i:first').addClass(SHOWICON);
+			    							  $(item).parent().next().show();
+			    							  $('.'+SHOWICON).on('click',function(obj){ hide(obj); })
+			    						        $('.'+HIDEICON).on('click',function(obj){ show(obj); })
+			    						        function show(obj){
+			    						            $(obj.target).parent().next().slideDown();
+			    						            $(obj.target).attr("class","layui-icon "+SHOWICON);
+			    						            $(obj.target).unbind();
+			    						            $('.'+SHOWICON).on('click',function(obj){ hide(obj); })
+			    						        }
+			    						        function hide(obj){
+			    						            $(obj.target).parent().next().slideUp();
+			    						            $(obj.target).attr("class","layui-icon "+HIDEICON)
+			    						            $(obj.target).unbind();
+			    						            $('.'+HIDEICON).on('click',function(obj){  show(obj); })
+			    						        }
+			    						  }
+			    					  }
+				    			  })  
+				    		  }
+				    	  }
 						})
 						var checked = [];
 						if(opt.type==2){	//如果是包装，默认选中包装工序的全部，除去上车
@@ -304,7 +335,7 @@ layui.config({
 		    			  hide: false,
 		    			  checked: checked,
 		    			  done:function(){
-		    				layui.each($('.layui-tree-grade').find('span'),function(index,item){
+		    				layui.each($('.procedureDiv').find('.layui-tree-grade').find('span'),function(index,item){
 		    					var text = $(item).html().split(' ');
 		    					if(text[0]=='贴破洞'){
 		    						$(item).parent().find('.menuControl').find('input').addClass('tiepodongNumber');
