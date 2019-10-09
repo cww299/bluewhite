@@ -429,7 +429,7 @@
 												htmltwo +='<div class="input-group"><input type="checkbox" class="stuCheckBoxtt" value="'+o.userId+'" data-secondment='+o.secondment+' data-id="'+o.id+'" data-username="'+o.name+'">'+o.name+'</input></div>'
 											})
 											$(o.temporarilyUser).each(function(i,o){
-												htmltwh +='<div class="input-group"><input type="checkbox" class="stuCheckBoxtt" value="'+o.userId+'" data-secondment='+o.secondment+' data-id="'+o.id+'" data-username="'+o.name+'">'+o.name+'</input></div>'
+												htmltwh +='<div class="input-group"><input type="checkbox" class="stuCheckBoxtt" value="'+o.userId+'" data-secondment='+o.secondment+' data-id="t-'+o.id+'" data-username="'+o.name+'">'+o.name+'</input></div>'
 											})
 										})
 										var s="<div class='input-group'><input type='checkbox' class='checkall'>全选</input></div>"
@@ -477,15 +477,16 @@
 							 var arrtem=new Array()
 							 var ids=new Array()
 							 var temporaryIds=new Array()
-								$(".stuCheckBoxtt:checked").each(function() {   
-								   	if($(this).data('secondment')==1){
-								    arr.push($(this).val()); 
-								    ids.push($(this).data('id'));
-								   	}
-								   	if($(this).data('secondment')==0){
+							 
+							 $(".stuCheckBoxtt:checked").each(function() {   
+									var id = $(this).data('id');
+									if(String(id).indexOf('-')>0){
 								   		arrtem.push($(this).val());
-								   		temporaryIds.push($(this).data('id'));
-									   	}
+								   		temporaryIds.push(id.split('-')[1]);
+									}else{
+									    arr.push($(this).val()); 
+									    ids.push($(this).data('id'));
+									}
 								});
 							  
 							   if(arr.length<=0 && arrtem.length<=0){
@@ -496,6 +497,7 @@
 								  }
 							  if($(".bacth").val()==""){
 									 return layer.msg("批次号不能为空", {icon:2 });
+									 
 								  }
 							  postData={
 									  procedureTime:$(".timeone").val(),

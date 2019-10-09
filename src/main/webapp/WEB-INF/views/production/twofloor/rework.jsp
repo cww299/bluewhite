@@ -950,7 +950,7 @@
 												htmltwo +='<div class="input-group"><input type="checkbox" class="stuCheckBoxtt" value="'+o.userId+'" data-id="'+o.id+'" data-secondment='+o.secondment+' data-username="'+o.name+'">'+o.name+'---<font color="#30b448">正</font>'+'</input></div>'
 											})
 											$(o.temporarilyUser).each(function(i,o){
-												htmltwh +='<div class="input-group"><input type="checkbox" class="stuCheckBoxtt" value="'+o.userId+'" data-id="'+o.id+'" data-secondment='+o.secondment+' data-username="'+o.name+'">'+o.name+'---<font color="#FF0000">临</font>'+'</input></div>'
+												htmltwh +='<div class="input-group"><input type="checkbox" class="stuCheckBoxtt" value="'+o.userId+'" data-id="t-'+o.id+'" data-secondment='+o.secondment+' data-username="'+o.name+'">'+o.name+'---<font color="#FF0000">临</font>'+'</input></div>'
 											})
 										})
 										var s="<div class='input-group'><input type='checkbox' class='checkall'>全选</input></div>"
@@ -1001,14 +1001,14 @@
 								 var ids=new Array()
 								 var temporaryIds=new Array()
 									$(".stuCheckBoxtt:checked").each(function() {   
-									   	if($(this).data('secondment')==1){
-									    arr.push($(this).val()); 
-									    ids.push($(this).data('id'));
-									   	}
-									   	if($(this).data('secondment')==0){
+										var id = $(this).data('id');
+										if(String(id).indexOf('-')>0){
 									   		arrtem.push($(this).val());
-									   		temporaryIds.push($(this).data('id'));
-										   	}
+									   		temporaryIds.push(id.split('-')[1]);
+										}else{
+										    arr.push($(this).val()); 
+										    ids.push($(this).data('id'));
+										}
 									});
 								  
 								   if(arr.length<=0 && arrtem.length<=0){
@@ -1020,9 +1020,6 @@
 								});
 							  if(values.length<=0){
 									return layer.msg("至少选择一个工序！", {icon: 2});
-								}
-								if(arr.length<=0){
-									return layer.msg("至少选择一个员工！", {icon: 2});
 								}
 								number=$(".sumnumbertw").val();
 								for (var i = 0; i < numberr.length; i++) {

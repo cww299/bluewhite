@@ -22,7 +22,7 @@ public interface FarragoTaskPayDao extends BaseRepository<FarragoTaskPay, Long> 
 	List<FarragoTaskPay> findByTaskId(Long id);
 
 	/**
-	 * 
+	 * 根据任务id和员工id
 	 * @param id
 	 * @param userid
 	 * @return
@@ -68,5 +68,13 @@ public interface FarragoTaskPayDao extends BaseRepository<FarragoTaskPay, Long> 
 	 * @return
 	 */
 	List<FarragoTaskPay> findByUserIdInAndAllotTimeBetween(List<Long> userIds, Date orderTimeBegin, Date orderTimeEnd);
+
+	/**
+	 * 根据任务id和临时员工id
+	 * @param id
+	 * @param userid
+	 * @return
+	 */
+	FarragoTaskPay findByTaskIdAndTemporaryUserId(Long id, Long userid);
 
 }
