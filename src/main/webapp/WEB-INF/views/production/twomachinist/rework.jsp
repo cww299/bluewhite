@@ -533,9 +533,6 @@
 								   if(arr.length<=0 && arrtem.length<=0){
 									 return layer.msg("领取人不能为空", {icon:2 });
 								  }
-							  if(arr.length<=0){
-								 return layer.msg("领取人不能为空", {icon:2 });
-							  }
 							  if($(".sumnumber").val()==""){
 									 return layer.msg("工序不能为空", {icon:2 });
 								  }
