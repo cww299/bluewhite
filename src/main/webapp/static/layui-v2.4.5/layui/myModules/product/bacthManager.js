@@ -280,10 +280,18 @@ layui.config({
 							var t = procedureTree[0].children;
 							for(var i in t){
 								if(t[i].name=='包装'){
+									var card = [],noCard = [],choosedNoCard = true;
 									for(var k in t[i].children){
-										if(t[i].children[k].name.indexOf('上车')<0)
-											checked.push(t[i].children[k].id);
+										if(t[i].children[k].name.indexOf('上车')<0){
+											if(t[i].children[k].number!=0)		//如果有剩余数量不为0，则选择非上车的
+												choosedNoCard = false;
+											card.push(t[i].children[k].id);
+										}else{
+											if(t[i].children[k].number!=0)
+												noCard.push(t[i].children[k].id);
+										}
 									}
+									checked = choosedNoCard?noCard:card;
 								}
 							}
 						}
