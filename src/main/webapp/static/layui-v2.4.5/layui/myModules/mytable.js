@@ -23,6 +23,7 @@
  * 增加字段验证规则：verify:{ notNull:[ 非空的字段集合 ], price:[ 价格的字段集合 ], count:[ 数量的字段集合] ,otherVerify:function(trData){ 其他验证.返回msg }  }
  * 增加列宽度字段： colsWidth:[0,10,0,20,1,对应的各个字段宽度] 0为自适应，只填数字默认百分比。开启checkbox时，第一个数字应为0保留复选框自适应
  * 增加默认导出假字段 exportField: true, //true为关闭、默认开启
+ * 增加null值时的提示：ifNull:'', //返回值为null获取''时自动转换
  */
 layui.extend({
 	myutil: 'layui/myModules/myutil',
@@ -98,7 +99,12 @@ layui.extend({
 						else if(item2.type && item2.type=='date'){			//开启日期
 							return res.split(' ')[0];
 						}
-						return item2.transData? transData(res) : res; 		//数据转换
+						if(item2.transData)
+							return transData(res);	//数据转换
+						if(typeof(opt.ifNull)!='undefined')
+							if(res==null || res=='')
+								res = opt.ifNull;
+						return res; 		
 					};
 					function transData(r){
 						var text = r;
@@ -422,6 +428,7 @@ layui.extend({
 			})
 		})
 		render.curd && (delete render.curd);			//删除增、改、查、删配置
+		render.ifNull && (delete render.ifNull);
 		render.verify && (delete render.verify);
 		render.colsWidth && (delete render.colsWidth);
 		render.autoUpdate && (delete render.autoUpdate);

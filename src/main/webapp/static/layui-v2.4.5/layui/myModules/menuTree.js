@@ -117,7 +117,8 @@ layui.define(['jquery','form'],function(exports){
 				    	html+='<span>'+data[i].name+'</span>&nbsp;&nbsp;';				//菜单名
 				    if(conf.toolbar){
 				    	conf.toolbar = conf.toolbar == true?['add','edit','delete'] : conf.toolbar;
-				    	html += '<div class="menuControl" style="float: right;display:none;" lay-id="menuToolbar-'+self.index+'" data-id="'+data[i].id+'">';
+				    	var disNone = conf.toolShow?'':'display:none;'
+				    	html += '<div class="menuControl" style="float: right;'+disNone+'" lay-id="menuToolbar-'+self.index+'" data-id="'+data[i].id+'">';
 				    	if(conf.toolbar.indexOf('add')!=-1)
 				    	    html += '<i class="layui-icon layui-icon-add-1" type="add"></i>&nbsp;';
 				    	if(conf.toolbar.indexOf('edit')!=-1)
@@ -179,10 +180,12 @@ layui.define(['jquery','form'],function(exports){
 	    if(conf.toolbar){
 	    	elem.mouseover(function(){
 	    		$(this).css("cursor","pointer");								  //鼠标变手
-	    		$(this).find('div[lay-id="menuToolbar-'+self.index+'"]').show();  //显示工具
+	    		if(!conf.toolShow)
+	    			$(this).find('div[lay-id="menuToolbar-'+self.index+'"]').show();  //显示工具
 	    	}).mouseout(function (){  
 	    		$(this).css("cursor","default");
-	    		$(this).find('div[lay-id="menuToolbar-'+self.index+'"]').hide();  
+	    		if(!conf.toolShow)
+	    			$(this).find('div[lay-id="menuToolbar-'+self.index+'"]').hide();  
 	        });
 	    	elem.find('div[lay-id="menuToolbar-'+self.index+'"]').find('i').mouseover(function(){
 	    		$(this).css('color','#0bcc20');
