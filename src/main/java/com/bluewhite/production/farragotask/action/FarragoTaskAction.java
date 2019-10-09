@@ -223,9 +223,13 @@ private static final Log log = Log.getLog(FarragoTaskAction.class);
 							}
 							if (!StringUtils.isEmpty(ids)) {
 								if (ids.length>0) {
-									for (int ii = 0; ii < ids.length; ii++) {
-										Long userid = Long.parseLong(ids[ii]);
+									for (int j = 0; j < ids.length; j++) {
+										Long userid = Long.parseLong(ids[j]);
 										FarragoTaskPay farragoTaskPay = farragoTaskPayDao.findByTaskIdAndUserId(farragoTask.getId(),userid);
+										if(farragoTaskPay == null){
+											farragoTaskPay = farragoTaskPayDao.findByTaskIdAndTemporaryUserId(farragoTask.getId(), userid);
+										}
+										
 										farragoTaskPay.setPerformance(performance[i]);
 										farragoTaskPay.setPerformancePayNumber(performancePrice/ids.length);
 										farragoTaskPayDao.save(farragoTaskPay);
