@@ -52,4 +52,6 @@ public interface AttendanceDao extends BaseRepository<Attendance, Long>{
 	 */
 	public List<Attendance> findByUserIdInAndTimeBetween(List<Long> userLong, Date beginDate, Date endDate);
 
+	public List<Attendance> findByNumber(String i);
+
 }
