@@ -195,6 +195,20 @@ public class Recruit extends BaseEntity<Long> {
 	 */
 	@Transient
 	private Date orderTimeEnd;
+	
+	/**
+	 * 判断字段
+	 */
+	@Transient
+	private int judge;
+	
+	
+	public int getJudge() {
+		return judge;
+	}
+	public void setJudge(int judge) {
+		this.judge = judge;
+	}
 	public Long getPlatformId() {
 		return platformId;
 	}
