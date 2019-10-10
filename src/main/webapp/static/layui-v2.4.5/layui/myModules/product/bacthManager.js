@@ -246,7 +246,7 @@ layui.config({
 				laytpl(ALLO_TPL).render({},function(h){
 					html = h;
 				})
-				var now = myutil.getSubDay( isSmall ? 0 : 1 );
+				var now = myutil.getSubDay( isSmall ? 0 : 1,'yyyy-MM-dd' );
 				var procedureTree = [];
 				getAllProcedureTree();
 				var area = isSmall?['100%','80%']:['60%','80%'];
@@ -259,7 +259,7 @@ layui.config({
 					btn:['确定','取消'],
 					btnAlign: 'c',
 					success:function(){
-						getUserData(now);
+						getUserData(now+' 00:00:00');
 						laydate.render({
 							elem:'#allotTime',
 							value:now,
