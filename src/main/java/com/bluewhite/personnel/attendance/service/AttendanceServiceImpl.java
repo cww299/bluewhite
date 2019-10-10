@@ -7,7 +7,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-import javax.annotation.PostConstruct;
 import javax.persistence.criteria.Predicate;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -256,7 +255,7 @@ public class AttendanceServiceImpl extends BaseServiceImpl<Attendance, Long> imp
 		sdk.initSTA();
 		try {
 			System.out.println("考勤机实时事件启动");
-			sdk.connect("192.168.1.204", 4370);
+			sdk.connect(Constants.ONE_FLOOR, 4370);
 			sdk.regEvent();
 		} catch (Exception e) {
 			e.printStackTrace();

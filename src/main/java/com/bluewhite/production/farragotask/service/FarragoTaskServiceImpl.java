@@ -115,7 +115,9 @@ public class FarragoTaskServiceImpl extends BaseServiceImpl<FarragoTask, Long> i
 		int temporaryUserSize = temporaryUserIds !=null ? temporaryUserIds.length :0;
 		if (userIds!=null && userIds.length>0) {
 			for (int j = 0; j <userIds.length; j++) {
+				//任务人员出勤记录id
 				Long id = Long.parseLong(userIds[j]);
+				//任务人员id
 				Long userId = Long.parseLong(farragoTask.getUsersIds()[j]);
 				AttendancePay attendancePay = attendancePayDao.findByIdAndUserId(id,userId);
 				Temporarily temporarily = null;
