@@ -14,5 +14,5 @@ public interface RecruitDao extends BaseRepository<Recruit, Long>{
 	
 	public List<Recruit> findByRecruitId(Long recruitId);
 	public List<Recruit> findByRecruitIdAndState(Long long1,Integer state);
-	public Recruit findByPhone(String phone);
+	public List<Recruit> findByPhone(String phone);
 }
