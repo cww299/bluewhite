@@ -96,9 +96,30 @@ layui.config({
 				}
 			}
 		})
+		var kindWork = [];
+		var cols =[
+		           { type:'checkbox' },
+		           { title:'组名', 	field:'name', edit:true, },
+		           ];
+		if(opt.type==3){
+			myutil.getDataSync({
+				url: opt.ctx+'/basedata/list?type=kindWork',
+				success:function(d){
+					kindWork = d;
+				}
+			})
+			cols.push({
+				type:'select',select:{ data:kindWork, },title:'工种',field:'kindWork_id'
+			})
+		}
+		cols.push({
+			title:'人员信息', event:'lookover', templet:function(d){
+	        	   return '<span class="layui-btn layui-btn-sm">查看人员</span>';}
+		})
 		mytable.renderNoPage({
 			elem:'#tableData',
 			url: opt.ctx+'/production/getGroup?type='+opt.type,
+			size:opt.type==3?'lg':'',
 			parseData:function(ret){
 				if(ret.code==0)
 					ret.data.push({ id:0, name:'借调组', })
@@ -107,6 +128,7 @@ layui.config({
 			autoUpdate:{
 				saveUrl:'/production/addGroup',
 				deleUrl:'/production/group/delete',
+				field:{ kindWork_id:'kindWorkId', },
 			},
 			toolbar: '<span class="layui-btn layui-btn-sm" lay-event="addAllot">借调人员</span>',
 			curd:{ 
@@ -169,13 +191,7 @@ layui.config({
 					}
 				},
 			},
-			cols:[[
-			       { type:'checkbox' },
-			       { title:'组名', 	field:'name', edit:true, },
-			       { title:'人员信息', event:'lookover', templet:function(d){
-			    	   return '<span class="layui-btn layui-btn-sm">查看人员</span>';
-			       	 } },
-			       ]],
+			cols:[ cols],
 		}) 
 		table.on('tool(tableData)', function(obj){
 			if(obj.event=='lookover'){
