@@ -272,6 +272,7 @@ layui.extend({
 				table.on('edit('+tableId+')',function(obj){
 					var val = obj.value, trData = obj.data, data = { id : trData.id },field = obj.field,msg = '';
 					var t = opt.autoUpdate.field[field] || field;	//查找对应的虚拟字段
+					var input = $(this);
 					if(data.id && data.id!=''){
 						if(notNull.indexOf(field)>=0 && isNull(val))
 							msg = '修改失败，该值不能为空';
@@ -296,6 +297,10 @@ layui.extend({
 							success: function(){
 								if(opt.autoUpdate.isReload)
 									table.reload(tableId);
+							},
+							error: function(){
+								var index = $(obj.tr).data('index');
+								table.cache[tableId][index][t] = myutil.lastData;
 							}
 						})
 					}

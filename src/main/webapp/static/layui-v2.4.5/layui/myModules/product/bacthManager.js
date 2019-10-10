@@ -17,6 +17,7 @@ layui.config({
 	mytable: 'layui/myModules/mytable',
 	menuTree : 'layui/myModules/menuTree',
 }).define(['jquery','table','form','mytable','laytpl','laydate','layer','menuTree'],function(exports){
+	"use strict"
 	var $ = layui.jquery
 	, table = layui.table 
 	, form = layui.form
@@ -66,8 +67,6 @@ layui.config({
 	
 	var ALLO_TPL = [	//分配任务模板
                     '<div style="padding:15px;" class="layui-form">',
-                    	'<p class="hiddenTip">',
-                    		'<span class="layui-badge">提示:贴破洞数量需要点击编辑进行设置，当前设置为<b id="tiepodongNumber">0</b></span></p>',
 	                    '<div class="procedureDiv">',
 	                    	'<div class="layui-form-item">',
 	                    		'<label class="layui-form-label">任务数量：</label>',
@@ -247,7 +246,7 @@ layui.config({
 				laytpl(ALLO_TPL).render({},function(h){
 					html = h;
 				})
-				var now = myutil.getSubDay( isSmall ? 0 : 1 );
+				var now = myutil.getSubDay( isSmall ? 0 : 1,'yyyy-MM-dd' );
 				var procedureTree = [];
 				getAllProcedureTree();
 				var area = isSmall?['100%','80%']:['60%','80%'];
@@ -260,13 +259,13 @@ layui.config({
 					btn:['确定','取消'],
 					btnAlign: 'c',
 					success:function(){
-						getUserData(now);
+						getUserData(now+' 00:00:00');
 						laydate.render({
 							elem:'#allotTime',
 							value:now,
-							type:'datetime',
+							type:'date',
 							done: function(value){
-								getUserData(value);
+								getUserData(value+' 00:00:00');
 								menuTree.reload('userTree',{
 									data: allUser,
 								})
@@ -275,25 +274,87 @@ layui.config({
 						menuTree.render({				
 				    	  elem:'#userTree',
 				    	  data : allUser,
+				    	  done: function(value){
+				    		  $('#userTree').val(value);
+				    		  if(opt.type==3){	//如果是针工默认展开 充棉和翻皮
+				    			  layui.each($('.userDiv').find('.layui-tree-grade').find('span'),function(index,item){
+				    				  var text = $(item).html();
+			    					  if(text=='翻皮组' || text=='充棉组'){
+			    						  if($(item).parent().next().length>0){
+			    							  var SHOWICON = 'layui-icon-triangle-d'	
+			    								    ,HIDEICON = 'layui-icon-triangle-r';
+			    							  $(item).parent().find('i:first').removeClass(HIDEICON);
+			    							  $(item).parent().find('i:first').addClass(SHOWICON);
+			    							  $(item).parent().next().show();
+			    							  $('.'+SHOWICON).on('click',function(obj){ hide(obj); })
+			    						        $('.'+HIDEICON).on('click',function(obj){ show(obj); })
+			    						        function show(obj){
+			    						            $(obj.target).parent().next().slideDown();
+			    						            $(obj.target).attr("class","layui-icon "+SHOWICON);
+			    						            $(obj.target).unbind();
+			    						            $('.'+SHOWICON).on('click',function(obj){ hide(obj); })
+			    						        }
+			    						        function hide(obj){
+			    						            $(obj.target).parent().next().slideUp();
+			    						            $(obj.target).attr("class","layui-icon "+HIDEICON)
+			    						            $(obj.target).unbind();
+			    						            $('.'+HIDEICON).on('click',function(obj){  show(obj); })
+			    						        }
+			    						  }
+			    					  }
+				    			  })  
+				    		  }
+				    	  }
 						})
 						var checked = [];
 						if(opt.type==2){	//如果是包装，默认选中包装工序的全部，除去上车
 							var t = procedureTree[0].children;
 							for(var i in t){
 								if(t[i].name=='包装'){
+									var card = [],noCard = [],choosedNoCard = true;
 									for(var k in t[i].children){
-										if(t[i].children[k].name.indexOf('上车')<0)
-											checked.push(t[i].children[k].id);
+										if(t[i].children[k].name.indexOf('上车')<0){
+											if(t[i].children[k].number!=0)		//如果有剩余数量不为0，则选择非上车的
+												choosedNoCard = false;
+											card.push(t[i].children[k].id);
+										}else{
+											if(t[i].children[k].number!=0)
+												noCard.push(t[i].children[k].id);
+										}
 									}
+									checked = choosedNoCard?noCard:card;
 								}
 							}
 						}
 						menuTree.render({				
 				    	  elem:'#procedureTree',
 				    	  data : procedureTree,
-				    	  toolbar: opt.type==1?['edit']:[],
+				    	  toolbar: [],
+				    	  otherToolbar: opt.type==1?'<input type="text" style="display:none;">':'',
+				    	  toolShow:true,
 		    			  hide: false,
 		    			  checked: checked,
+		    			  done:function(){
+		    				layui.each($('.procedureDiv').find('.layui-tree-grade').find('span'),function(index,item){
+		    					var text = $(item).html().split(' ');
+		    					if(text[0]=='贴破洞'){
+		    						$(item).parent().find('.menuControl').find('input').addClass('tiepodongNumber');
+		    						$('.tiepodongNumber').on('change',function(obj){
+		    							var val = $(obj.target).val().trim();
+		    							if(val=='')
+		    								val = 0;
+		    							if(isNaN(val)){
+		    								myutil.emsg('贴破洞数量只能为数字！');
+		    							}if(val%1!=0){
+		    								myutil.emsg('贴破洞数量只能为整数！');
+		    							}else{
+		    								tiepidongNumber = parseInt(val);
+		    							}
+		    							$(obj.target).val(tiepidongNumber)
+		    						})
+		    					}
+		    				})  
+		    			  },
 				    	  showName: function(data){
 				    		  if(isNaN(data.number))
 				    			  return data.name;
@@ -301,23 +362,6 @@ layui.config({
 				    			  return data.name+' 剩余:'+data.number;
 				    	  }
 						})
-						if(opt.type==1){	//如果是一楼质检，开启编辑模式
-							$('.hiddenTip').show();
-							menuTree.onToolbar('procedureTree',function(obj){
-								switch(obj.type){
-								case 'edit': 
-									if(obj.data.name=='贴破洞'){
-										var numberWin = layer.prompt({offset:'120px', title: '请输入贴破洞数量',},function(value, index, elem){
-											tiepidongNumber = value;
-											myutil.smsg('贴破洞数量设置成功!');
-											$('#tiepodongNumber').html(tiepidongNumber);
-											layer.close(numberWin);
-										});
-									}
-									break;
-								}
-							})
-						}
 						if(opt.type==1 || opt.type==2){
 							$('#number').val(trData.number);
 						}
@@ -333,10 +377,14 @@ layui.config({
 						var msg = '';
 						if($('#number').val()==0)
 							msg = '分配数量不能为0';
-						if(isNaN($('#number').val()))
+						else if(isNaN($('#number').val()))
 							msg = '分配数量只能为数字';
-						if($('#number').val()%1!=0)
+						else if($('#number').val()%1!=0)
 							msg = '分配数量只能为整数';
+						else if(procedureTreeId.length==0)
+							msg = '请选择分配工序';
+						else if(userTreeId.length==0)
+							msg = '请选择分配人员';
 						if(msg!=''){
 							layer.close(load);
 							return myutil.emsg(msg);
@@ -384,6 +432,7 @@ layui.config({
 							};
 						if(opt.type==1)
 							saveData.holeNumber = tiepidongNumber;
+						saveData.allotTime+=' 00:00:00';
 						myutil.saveAjax({
 							url:'/task/addTask',
 							data:saveData,

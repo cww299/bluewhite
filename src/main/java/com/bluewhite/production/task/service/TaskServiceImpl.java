@@ -553,6 +553,8 @@ public class TaskServiceImpl extends BaseServiceImpl<Task, Long> implements Task
 	@Override
 	@Transactional
 	public Task addReTask(Task task) {
+		CurrentUser cu = SessionManager.getUserSession();
+		task.setUserId(cu.getId());
 		// 将用户变成string类型储存
 		if (!StringUtils.isEmpty(task.getUserIds())) {
 			String[] idArr = task.getUserIds().split(",");

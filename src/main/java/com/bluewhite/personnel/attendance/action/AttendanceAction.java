@@ -657,19 +657,9 @@ public class AttendanceAction {
 	 */
 	@RequestMapping(value = "/personnel/regEvent", method = RequestMethod.GET)
 	@ResponseBody
-	public CommonResponse regEvent(HttpServletRequest request) {
-		CommonResponse cr = new CommonResponse();
+	public void regEvent(HttpServletRequest request) {
 		ZkemSDKUtils sdk = new ZkemSDKUtils();
-		sdk.initSTA();
-		try {
-			boolean flag = sdk.connect("192.168.1.204", 4370);
-			System.out.println(flag);
-			sdk.regEvent();
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-		cr.setMessage("同步成功");
-		return cr;
+		sdk.disConnect();
 	}
 
 	@InitBinder

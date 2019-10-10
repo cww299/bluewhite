@@ -206,6 +206,8 @@ layui.define(['jquery','form'],function(exports){
 	    	delete conf.reloadConf;
 	    if(conf.onToolbar)
 	    	self.onToolbar();
+	    if(conf.done)
+	    	conf.done();
     };
     //绑定工具栏点击事件
     Class.prototype.onToolbar = function(){		
