@@ -127,7 +127,7 @@ public class RecruitServiceImpl extends BaseServiceImpl<Recruit, Long> implement
 				|| recruit.getName().indexOf("女") != -1 || StringUtil.HasDigit(recruit.getName())) {
 			throw new ServiceException("人员姓名数据不合法,请联系管理员");
 		}
-		if (recruit.getPhone() != null) {
+		if (recruit.getPhone() != null && recruit.getJudge()==1) {
 			
 			List<Recruit> recruit2 = dao.findByPhone(recruit.getPhone());
 			if (recruit2.size()>0) {
