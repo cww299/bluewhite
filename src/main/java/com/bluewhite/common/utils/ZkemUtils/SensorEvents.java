@@ -49,17 +49,15 @@ public class SensorEvents {
 
 	public void OnAttTransactionEx(Variant[] arge){
 		Attendance attendance = new Attendance(); 
-		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-		//验证时间
-		String time = arge[4]+"-"+arge[5]+"-"+arge[6]+"-"+arge[7]+":"+arge[8]+":"+arge[9]+" "+arge[10];
+		System.out.println(arge[0].getIntRef());
 		attendance.setNumber(String.valueOf(arge[0]));
 		User user = userService.findByNumber(attendance.getNumber());
 		attendance.setUserId(user.getId());
 		attendance.setTime(new Date());
 		//考勤状态
-		attendance.setInOutMode(Integer.parseInt(String.valueOf(arge[2])));
+		attendance.setInOutMode(arge[2].getIntRef());
 		//验证方式
-		attendance.setVerifyMode(Integer.parseInt(String.valueOf(arge[3])));
+		attendance.setVerifyMode(arge[3].getIntRef());
 		dao.save(attendance);
 		System.out.println("当验证通过时触发该事件====签到成功");
 	}

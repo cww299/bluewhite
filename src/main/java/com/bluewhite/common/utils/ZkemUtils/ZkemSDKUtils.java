@@ -87,7 +87,7 @@ public class ZkemSDKUtils {
 	 */
 	public static void regEvent() {
 		System.out.println("启动----------");
-		zkem.invoke("RegEvent", new Variant(1), new Variant(2));
+		zkem.invoke("RegEvent", new Variant(1), new Variant(1));
 		zkem.invoke("ReadRTLog", new Variant(1));
 		zkem.invoke("GetRTLog", new Variant(1));
 		new DispatchEvents(zkem.getObject(), new SensorEvents());
