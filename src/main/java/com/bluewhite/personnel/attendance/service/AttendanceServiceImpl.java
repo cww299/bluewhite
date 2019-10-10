@@ -256,7 +256,8 @@ public class AttendanceServiceImpl extends BaseServiceImpl<Attendance, Long> imp
 		try {
 			System.out.println("考勤机实时事件启动");
 			sdk.connect("192.168.1.204", 4370);
-//			sdk.connect("192.168.1.250", 4370);
+			sdk.connect("192.168.1.250", 4370);
+			sdk.connect("192.168.1.205", 4370);
 			sdk.regEvent();
 		} catch (Exception e) {
 			e.printStackTrace();
