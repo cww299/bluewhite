@@ -9,6 +9,8 @@ import javax.annotation.PostConstruct;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
+import org.springframework.web.context.WebApplicationContext;
+import org.springframework.web.context.support.WebApplicationContextUtils;
 
 import com.bluewhite.common.ServiceException;
 import com.bluewhite.personnel.attendance.dao.AttendanceDao;
@@ -26,12 +28,11 @@ public class SensorEvents {
 	private AttendanceDao dao;
 	
 	public static SensorEvents sensorEvents;
-
+	
+	
 	@PostConstruct
 	public void init() {
 		sensorEvents = this;
-		sensorEvents.userService = this.userService;  
-		sensorEvents.dao = this.dao; 
 	}
 	
 	
@@ -49,16 +50,16 @@ public class SensorEvents {
 
 	public void OnAttTransactionEx(Variant[] arge){
 		Attendance attendance = new Attendance(); 
-		System.out.println(arge[0].getIntRef());
+		System.out.println(arge[0]);
 		attendance.setNumber(String.valueOf(arge[0]));
-		User user = userService.findByNumber(attendance.getNumber());
+		User user = SensorEvents.sensorEvents.userService.findByNumber(attendance.getNumber());
 		attendance.setUserId(user.getId());
 		attendance.setTime(new Date());
 		//考勤状态
-		attendance.setInOutMode(arge[2].getIntRef());
+		attendance.setInOutMode(Integer.valueOf(String.valueOf(arge[2])));
 		//验证方式
-		attendance.setVerifyMode(arge[3].getIntRef());
-		dao.save(attendance);
+		attendance.setVerifyMode(Integer.valueOf(String.valueOf(arge[3])));
+		SensorEvents.sensorEvents.dao.save(attendance);
 		System.out.println("当验证通过时触发该事件====签到成功");
 	}
 

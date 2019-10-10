@@ -20,10 +20,10 @@ import org.springframework.beans.BeanWrapperImpl;
 public class BeanCopyUtils {
 
 	/**
-	 * 格式化非空属性复制给target
-	 * @param source
-	 * @param target
-	 * @param ignoreProperties
+	 * source格式化非空属性复制给target，将传入的非空参数传给原数据
+	 * @param source（传入的数据）
+	 * @param target（原数据数据）
+	 * @param ignoreProperties（需要过滤的参数）
 	 */
 	public static void copyNotEmpty(Object source, Object target, String...ignoreProperties){
 		BeanWrapper src = new BeanWrapperImpl(source);
