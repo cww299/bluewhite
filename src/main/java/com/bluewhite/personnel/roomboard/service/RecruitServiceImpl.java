@@ -128,6 +128,7 @@ public class RecruitServiceImpl extends BaseServiceImpl<Recruit, Long> implement
 			throw new ServiceException("人员姓名数据不合法,请联系管理员");
 		}
 		if (recruit.getPhone() != null) {
+			
 			List<Recruit> recruit2 = dao.findByPhone(recruit.getPhone());
 			if (recruit2.size()>0) {
 				throw new ServiceException("该用户手机号已存在");
