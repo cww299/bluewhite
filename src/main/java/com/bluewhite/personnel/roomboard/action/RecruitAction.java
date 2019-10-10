@@ -113,15 +113,17 @@ public class RecruitAction {
 		CommonResponse cr = new CommonResponse();
 		if (recruit.getId() != null) {
 			Recruit recruit2 = service.findOne(recruit.getId());
+			int a=0;
+			if(recruit.getPhone() !=null && (!recruit.getPhone().equals(recruit2.getPhone()))){
+				a=1;
+			}
 			BeanCopyUtils.copyNotEmpty(recruit, recruit2, "");
 			SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 			Date date = sdf.parse("2000-01-01 00:00:00");
 			if (date.equals(recruit.getTestTime())) {
 				recruit2.setTestTime(null);
 			}
-			if(recruit.getPhone()!= null){
-				recruit2.setJudge(1);
-			}
+			recruit2.setJudge(a);
 			service.addRecruit(recruit2);
 			cr.setMessage("修改成功");
 		} else {

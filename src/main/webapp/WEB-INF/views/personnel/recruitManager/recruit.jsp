@@ -1741,6 +1741,7 @@
 									data.field.recruitName=$('#recruitId option:selected').text();
 									data.field.time += $("#tplTime").val();
 						        	mainJs.fAdd(data.field)
+						        	
 						        	if(id==""){
 						        	
 						        	}
@@ -1936,7 +1937,7 @@
 							                page: {
 							                }
 							              })   
-							              document.getElementById("layuiadmin-form-admin").reset();
+							             /*  document.getElementById("layuiadmin-form-admin").reset(); */
 						        	layui.form.render();
 										layer.msg(result.message, {
 											icon: 1,
