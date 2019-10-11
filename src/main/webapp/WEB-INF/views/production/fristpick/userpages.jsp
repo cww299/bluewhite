@@ -69,6 +69,21 @@
 						,tablePlug = layui.tablePlug //表格插件
 						,element = layui.element;
 					
+					var ua = navigator.userAgent.toLocaleLowerCase();
+				      var pf = navigator.platform.toLocaleLowerCase();
+				      var isAndroid = (/android/i).test(ua)||((/iPhone|iPod|iPad/i).test(ua) && (/linux/i).test(pf))
+				          || (/ucweb.*linux/i.test(ua));
+				      var isIOS =(/iPhone|iPod|iPad/i).test(ua) && !isAndroid;
+				      var isWinPhone = (/Windows Phone|ZuneWP7/i).test(ua);
+				  
+				      var mobileType = {
+				         pc:!isAndroid && !isIOS && !isWinPhone,
+				         ios:isIOS,
+				         android:isAndroid,
+				         winPhone:isWinPhone
+				   };
+				      var mobileType=mobileType.android;
+					
 					//全部字段
 					var allField;
 					var self = this;
@@ -94,6 +109,7 @@
 					}
 					var lastdate = year + '-' + p(month) + '-' + x+date +' '+'00:00:00';
 					var lastdate2= year + '-' + p(month) + '-' + x+date;
+					
 					//select全局变量
 					var htmls = '<option value="">请选择</option>';
 					var index = layer.load(1, {
@@ -238,11 +254,31 @@
 								elem.val(elem.data('value'));
 							});
 							form.render();
-							laydate.render({
-								elem: '#startTimes',
-								type : 'date',
-								value:lastdate2,
-							})
+							var myDate2 = new Date();
+							var year=myDate2.getFullYear();
+							//获取当前月
+							var month=myDate2.getMonth()+1;
+							//获取当前日
+							var date=myDate2.getDate();
+							var h=myDate2.getHours();              //获取当前小时数(0-23)
+							var m=myDate2.getMinutes();          //获取当前分钟数(0-59)
+							var s=myDate2.getSeconds();
+							var day = new Date(year,month,0); 
+							var now=year+'-'+p(month)+"-"+p(date);//当前时间
+							if(mobileType==false){
+								laydate.render({
+									elem: '#startTimes',
+									type : 'date',
+									value:lastdate2,
+								})
+							}
+							if(mobileType==true){
+								laydate.render({
+									elem: '#startTimes',
+									type :'date',
+									value:now,
+								})
+							}
 						},
 								});
 					

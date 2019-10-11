@@ -126,6 +126,7 @@ public class RecruitServiceImpl extends BaseServiceImpl<Recruit, Long> implement
 		if (recruit.getName().indexOf("特急") != -1 || recruit.getName().indexOf("(男)") != -1
 				|| recruit.getName().indexOf("女") != -1 || StringUtil.HasDigit(recruit.getName())) {
 			throw new ServiceException("人员姓名数据不合法,请联系管理员");
+			
 		}
 		if (recruit.getPhone() != null && recruit.getJudge()==1) {
 			
