@@ -29,9 +29,9 @@
 
 <!-- 编辑菜单模板、新增菜单模板 -->
 <script type="text/html" id="templEditMenu">
-<div class="layui-form" id="editMenuDiv" style="padding:20px;"> 
+<div class="layui-form" lay-filter="form-{{ d.id ? 'edit-'+d.id : 'add-'+d.parentId }}" id="editMenuDiv" style="padding:20px;"> 
 	<div class="layui-form-item">
-	    <label class="layui-form-label">菜单id</label>
+	    <label class="layui-form-label">菜单id</label> 
 	    <div class="layui-input-block">
 		    <input type="text" name="id"  readonly value="{{ d.id }}" class="layui-input"></div></div>
     <div class="layui-form-item">
@@ -67,6 +67,10 @@
 	    <div class="layui-input-block">
 		    <input type="text" name="orderNo" placeholder="请输入" value="{{ d.orderNo }}" class="layui-input"></div></div>
     <button type="button" id="submitBtn-{{ d.id ? 'edit-'+d.id : 'add-'+d.parentId }}" lay-submit lay-filter="submitBtn" style="display:none;"></button>
+	<p style="text-align: center; margin-top: 10px;">
+		<span class="layui-btn layui-btn-sm copyBtn">复制菜单</span>
+		<span class="layui-btn layui-btn-sm layui-btn-normal pasteBtn">黏贴菜单</span>
+	</p>
 </div>
 </script>
 
@@ -107,7 +111,6 @@ layui.config({
 				case 'down': move(obj.data,'down'); break;
 				}
 			})
-			
 			function move(data,type){
 				var orderNo;
 				if(type=='up'){
@@ -128,7 +131,6 @@ layui.config({
 					}
 				})
 			}
-			
 			function addEditMenu(type,d){			
 				if($('#submitBtn-'+type+'-'+d.id).length > 0){				//通过判断提交按钮是否存在判断窗口是否打开
 					layer.msg('该编辑窗口已经打开，请勿重复打开',{icon:2});
@@ -156,6 +158,56 @@ layui.config({
 						//console.log($(this.content).find('button[lay-submit]'))
 						//$(this.content).find('button[lay-submit]')[0].click();
 						$('#submitBtn-'+type+'-'+d.id).click();
+					}
+					,success:function(){
+						//菜单复制，黏贴功能
+						$('.copyBtn').click(function(obj){
+							var parent = $(obj.target).closest('div');
+							var identy = $(parent).find('input[name="identity"]').val();
+							var menuName = $(parent).find('input[name="name"]').val();
+							var isShow = $(parent).find('input[type="checkbox"]').attr('checked');
+							var icon = $(parent).find('input[name="icon"]').val();
+							var url = $(parent).find('input[name="url"]').val();
+							var span = $(parent).find('input[name="span"]').val();
+							var orderNo = $(parent).find('input[name="orderNo"]').val();
+							var copy = [
+							            '{"identy":"'+identy+'"',
+							            '"menuName":"'+menuName+'"',
+							            '"isShow":"'+isShow+'"',
+							            '"icon":"'+icon+'"',
+							            '"url":"'+url+'"',
+							            '"span":"'+span+'"',
+							            '"orderNo":"'+orderNo+'"}',
+							            ].join(',');
+							var inp =document.createElement('input'); 
+							document.body.appendChild(inp)
+							inp.value = copy; 
+							inp.select();
+							document.execCommand('copy',false); 
+							inp.remove();
+							layer.msg('复制成功',{icon:1});
+						})
+						$('.pasteBtn').click(function(obj){
+							layer.prompt(function(value,index){
+								value = JSON.parse(value);
+								if(typeof(value)!='object'){
+									layer.msg('输入的菜单格式错误',{icon:2});
+								}else{
+									var filter = $(obj.target).closest('div').attr('lay-filter');
+									form.val(filter, { 
+									  "identity": value.identy 
+									  ,"name": value.menuName
+									  ,"icon": value.icon
+									  ,"isShow": value.isShow=='checked'?true:false
+									  ,"url": value.url
+									  ,"span": value.span
+									  ,"orderNo": value.orderNo
+									});
+									form.render();
+								}
+								layer.close(index)
+							});
+						})
 					}
 				});
 				form.on('submit(submitBtn)',function(obj){
