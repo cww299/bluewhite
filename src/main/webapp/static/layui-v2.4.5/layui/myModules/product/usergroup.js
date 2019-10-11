@@ -83,6 +83,7 @@ layui.config({
 	
 	Class.prototype.render = function(opt){
 		myutil.clickTr();
+		myutil.timeFormat();
 		var now = myutil.getSubDay(1);
 		laytpl(TPL).render({},function(h){
 			$(opt.elem).append(h);
@@ -160,9 +161,13 @@ layui.config({
 							title:'新增借调人员',
 							content:html,
 							success:function(){
+								var value = '';
+								if(window.screen.width<1200)
+									value = new Date().format('yyyy-MM-dd hh:mm:ss');
 								laydate.render({
 									elem:'#addNewTime',
-									type:'datetime'
+									type:'datetime',
+									value: value,
 								})
 								$('#addUserId').append(allPeople);
 								myutil.getData({
