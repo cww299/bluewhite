@@ -29,16 +29,16 @@ import com.jacob.com.Variant;
 
 @Component
 public class ZkemSDKUtils {
-	
+
 	@Autowired
 	private UserService userService;
-	
+
 	private static ZkemSDKUtils zkemSDKUtils;
-	
+
 	@PostConstruct
 	public void init() {
 		zkemSDKUtils = this;
-		zkemSDKUtils.userService = this.userService; // 初使化时将已静态化的testService实例化
+		zkemSDKUtils.userService = this.userService; // 初使化时将已静态化的Service实例化
 	}
 
 	private static ActiveXComponent zkem;
@@ -72,6 +72,11 @@ public class ZkemSDKUtils {
 		// 2、address：中控考勤机IP地址。
 		// 3、port：端口号
 		boolean result = zkem.invoke("Connect_NET", address, port).getBoolean();
+		if (!result) {
+			throw new ServiceException("考勤机连接失败");
+		} else {
+			System.out.println(address + ":连接成功");
+		}
 		return result;
 	}
 
@@ -86,11 +91,10 @@ public class ZkemSDKUtils {
 	 * 启动事件监听
 	 */
 	public static void regEvent() {
-		System.out.println("启动----------");
-		zkem.invoke("RegEvent", new Variant(1), new Variant(2));
-		zkem.invoke("ReadRTLog", new Variant(1));
-		zkem.invoke("GetRTLog", new Variant(1));
-		new DispatchEvents(zkem.getObject(), new SensorEvents());
+		Dispatch.call(zkem, "RegEvent", new Variant(1l), new Variant(65535l));
+//		Dispatch.call(zkem, "RegEvent", new Variant(2l), new Variant(65535l));
+		DispatchEvents de = new DispatchEvents(zkem.getObject(), new SensorEvents());
+		new Thread(new FrmEquipment(de)).start();
 		new STA().doMessagePump();
 	}
 
@@ -141,10 +145,10 @@ public class ZkemSDKUtils {
 	 * 
 	 * @return 返回的map中，包含以下键值： "EnrollNumber" 人员编号 "Time" 考勤时间串，格式: yyyy-MM-dd
 	 *         HH:mm:ss "VerifyMode" 验证方式：0 为密码验证，1 为指纹验证，2 为卡验证 ,15为 面部验证
-	 *         "InOutMode" 默认
-	 *         0—Check-In 1—Check-Out 2—Break-O 3—Break-In 4—OT-In 5—OT-Out
+	 *         "InOutMode" 默认 0—Check-In 1—Check-Out 2—Break-O 3—Break-In
+	 *         4—OT-In 5—OT-Out
 	 */
-	public List<Attendance>  getGeneralLogData(int machineNum) {
+	public List<Attendance> getGeneralLogData(int machineNum) {
 		Variant v0 = new Variant(machineNum);
 		Variant dwEnrollNumber = new Variant("", true);
 		Variant dwVerifyMode = new Variant(0, true);
@@ -172,23 +176,24 @@ public class ZkemSDKUtils {
 				Attendance attendance = new Attendance();
 				attendance.setNumber(enrollNumber);
 				try {
-					attendance.setTime(sdf.parse(dwYear.getIntRef() + "-" + dwMonth.getIntRef() + "-" + dwDay.getIntRef() + " "
-							+ dwHour.getIntRef() + ":" + dwMinute.getIntRef() + ":" + dwSecond.getIntRef()));
+					attendance.setTime(
+							sdf.parse(dwYear.getIntRef() + "-" + dwMonth.getIntRef() + "-" + dwDay.getIntRef() + " "
+									+ dwHour.getIntRef() + ":" + dwMinute.getIntRef() + ":" + dwSecond.getIntRef()));
 				} catch (ParseException e) {
 					throw new ServiceException("时间转换异常");
 				}
 				attendance.setVerifyMode(dwVerifyMode.getIntRef());
-				if(userList.size()>0){
-					Optional<User> user = userList.stream().filter(User->User.getNumber().equals(enrollNumber.trim())).findFirst();
-					if(user.isPresent()){
+				if (userList.size() > 0) {
+					Optional<User> user = userList.stream().filter(User -> User.getNumber().equals(enrollNumber.trim()))
+							.findFirst();
+					if (user.isPresent()) {
 						attendance.setUserId(user.get().getId());
 					}
 				}
 				attendance.setInOutMode(1);
 				strList.add(attendance);
 			}
-		} 
-		while (newresult == true);
+		} while (newresult == true);
 		return strList;
 	}
 
@@ -228,9 +233,9 @@ public class ZkemSDKUtils {
 			if (index > -1) {
 				name = name.substring(0, index);
 			}
-//			if (sName.getStringRef().length() > 4) {
-//				name = sName.getStringRef().substring(0, 4);
-//			}
+			// if (sName.getStringRef().length() > 4) {
+			// name = sName.getStringRef().substring(0, 4);
+			// }
 			// 如果没有名字，跳过。
 			if (name.trim().length() == 0)
 				continue;
@@ -268,7 +273,7 @@ public class ZkemSDKUtils {
 				.getBoolean();
 		return result;
 	}
-	
+
 	/**
 	 * 得到用户指纹信息
 	 *
@@ -285,10 +290,10 @@ public class ZkemSDKUtils {
 		Variant v0 = new Variant(1);
 		Variant dwEnrollNumber = new Variant(number, true);
 		Variant dwFingerIndex = new Variant(0, true);
-		Variant TmpData = new Variant("", true);  
+		Variant TmpData = new Variant("", true);
 		Variant TmpLength = new Variant(0, true);
-  		boolean result = zkem.invoke("SSR_GetUserTmpStr", v0, dwEnrollNumber, dwFingerIndex, TmpData, TmpLength)
-			.getBoolean();
+		boolean result = zkem.invoke("SSR_GetUserTmpStr", v0, dwEnrollNumber, dwFingerIndex, TmpData, TmpLength)
+				.getBoolean();
 		Map<String, Object> m = new HashMap<String, Object>();
 		m.put("dwEnrollNumber", dwEnrollNumber.getStringRef());
 		m.put("dwFingerIndex", dwFingerIndex.getIntRef());
@@ -296,7 +301,6 @@ public class ZkemSDKUtils {
 		m.put("TmpLength", TmpLength.getIntRef());
 		return m;
 	}
-	
 
 	/**
 	 * 根据考勤号码获取用户信息
@@ -305,7 +309,7 @@ public class ZkemSDKUtils {
 	 *            考勤号码
 	 * @return
 	 */
-	public static List<Map<String, Object>>  getUserInfoByNumber(String number) {
+	public static List<Map<String, Object>> getUserInfoByNumber(String number) {
 		Variant v0 = new Variant(1);
 		Variant sdwEnrollNumber = new Variant(number, true);
 		Variant sName = new Variant("", true);
@@ -324,9 +328,9 @@ public class ZkemSDKUtils {
 			if (index > -1) {
 				name = name.substring(0, index);
 			}
-//			if (sName.getStringRef().length() > 4) {
-//				name = sName.getStringRef().substring(0, 4);
-//			}
+			// if (sName.getStringRef().length() > 4) {
+			// name = sName.getStringRef().substring(0, 4);
+			// }
 			Map<String, Object> m = new HashMap<String, Object>();
 			m.put("number", number);
 			m.put("name", name.trim());

@@ -9,6 +9,8 @@ import javax.annotation.PostConstruct;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
+import org.springframework.web.context.WebApplicationContext;
+import org.springframework.web.context.support.WebApplicationContextUtils;
 
 import com.bluewhite.common.ServiceException;
 import com.bluewhite.personnel.attendance.dao.AttendanceDao;
@@ -26,12 +28,11 @@ public class SensorEvents {
 	private AttendanceDao dao;
 	
 	public static SensorEvents sensorEvents;
-
+	
+	
 	@PostConstruct
 	public void init() {
 		sensorEvents = this;
-		sensorEvents.userService = this.userService;  
-		sensorEvents.dao = this.dao; 
 	}
 	
 	
@@ -49,18 +50,16 @@ public class SensorEvents {
 
 	public void OnAttTransactionEx(Variant[] arge){
 		Attendance attendance = new Attendance(); 
-		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-		//验证时间
-		String time = arge[4]+"-"+arge[5]+"-"+arge[6]+"-"+arge[7]+":"+arge[8]+":"+arge[9]+" "+arge[10];
+		System.out.println(arge[0]);
 		attendance.setNumber(String.valueOf(arge[0]));
-		User user = userService.findByNumber(attendance.getNumber());
+		User user = SensorEvents.sensorEvents.userService.findByNumber(attendance.getNumber());
 		attendance.setUserId(user.getId());
 		attendance.setTime(new Date());
 		//考勤状态
-		attendance.setInOutMode(Integer.parseInt(String.valueOf(arge[2])));
+		attendance.setInOutMode(Integer.valueOf(String.valueOf(arge[2])));
 		//验证方式
-		attendance.setVerifyMode(Integer.parseInt(String.valueOf(arge[3])));
-		dao.save(attendance);
+		attendance.setVerifyMode(Integer.valueOf(String.valueOf(arge[3])));
+		SensorEvents.sensorEvents.dao.save(attendance);
 		System.out.println("当验证通过时触发该事件====签到成功");
 	}
 
