@@ -100,7 +100,7 @@ layui.config({
 			elem:'#tableData',
 			url: opt.ctx+'/production/getGroup?type='+opt.type,
 			parseData:function(ret){
-				if(ret.code==0)
+				if(ret.code==0) 
 					ret.data.push({ id:0, name:'借调组', })
 				return {  msg:ret.message,  code:ret.code , data:ret.data, };
 			},
