@@ -144,13 +144,16 @@ layui.config({
 				},
 				otherBtn: function(obj){
 					if(obj.event == 'addAllot'){
+						var area = ['28%','40%'];
+						if(window.screen.width<1200)
+							area = ['80%','30%'];
 						var html = '';
 						laytpl(ADDNEW_TPL).render({},function(h){
 							html = h;
 						})
 						var addNewWin = layer.open({
 							type:1,
-							area:['28%','40%'],
+							area:area,
 							offset:'80px',
 							btn:['确定','取消'],
 							btnAlign:'c',
