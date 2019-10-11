@@ -83,8 +83,9 @@ layui.config({
 	
 	Class.prototype.render = function(opt){
 		myutil.clickTr();
-		myutil.timeFormat();
-		var now = myutil.getSubDay(1);
+		var isSmall = window.screen.width<1400;
+		var yesterDay = myutil.getSubDay(1);
+		var today = myutil.getSubDay(0);
 		laytpl(TPL).render({},function(h){
 			$(opt.elem).append(h);
 		})
@@ -146,8 +147,8 @@ layui.config({
 				otherBtn: function(obj){
 					if(obj.event == 'addAllot'){
 						var area = ['28%','40%'];
-						if(window.screen.width<1200)
-							area = ['80%','30%'];
+						if(isSmall)
+							area = ['80%','40%'];
 						var html = '';
 						laytpl(ADDNEW_TPL).render({},function(h){
 							html = h;
@@ -161,13 +162,10 @@ layui.config({
 							title:'新增借调人员',
 							content:html,
 							success:function(){
-								var value = '';
-								if(window.screen.width<1200)
-									value = new Date().format('yyyy-MM-dd hh:mm:ss');
 								laydate.render({
 									elem:'#addNewTime',
 									type:'datetime',
-									value: value,
+									value: isSmall?today:yesterDay,
 								})
 								$('#addUserId').append(allPeople);
 								myutil.getData({
@@ -216,16 +214,17 @@ layui.config({
 					shadeClose:true,
 					content: html,
 					success:function(){
+						var day = isSmall?today:yesterDay;
 						laydate.render({
 							elem:'#searchTime',
-							value:now,
+							value: day,
 							type:'datetime'
 						})
 						if(obj.data.id==0){		//如果查看的是借调组人员
 							mytable.renderNoPage({
 								elem:'#lookoverTable',
 								url: opt.ctx+'/production/getTemporarily?type='+opt.type,
-								where:{  temporarilyDate: now, },
+								where:{  temporarilyDate: day, },
 								size:'lg',
 								autoUpdate:{
 									saveUrl:'/production/updateTemporarily',
@@ -246,7 +245,7 @@ layui.config({
 							mytable.renderNoPage({
 								elem:'#lookoverTable',
 								url: opt.ctx+'/production/allGroup?id='+obj.data.id,
-								where:{ temporarilyDate: now,  },
+								where:{ temporarilyDate: day,  },
 								toolbar:'<div><span class="layui-btn layui-btn-danger layui-btn-sm" lay-event="deletes">批量删除</span></div>',
 								cols:[[
 								    { type:'checkbox', },
