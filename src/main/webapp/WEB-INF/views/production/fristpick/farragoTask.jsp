@@ -679,7 +679,7 @@
 					_index = layer.open({
 						  type: 1,
 						  skin: 'layui-layer-rim', //加上边框
-						  area: ['60%', '400px'], 
+						  area: ['650px', '500px'], 
 						  btnAlign: 'c',//宽高
 						  maxmin: true,
 						  offset:(parent.document.documentElement.scrollTop+100)+'px',
