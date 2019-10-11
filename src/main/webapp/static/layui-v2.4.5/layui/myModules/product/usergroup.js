@@ -299,7 +299,7 @@ layui.config({
 									else
 										myutil.saveAjax({
 											url:'/production/updateTemporarily',
-											data:{
+											data:{ 
 												id:obj.data.userId,
 												workTime:obj.data.time,
 											},
