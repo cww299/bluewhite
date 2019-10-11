@@ -123,7 +123,7 @@ layui.config({
 			url: opt.ctx+'/production/getGroup?type='+opt.type,
 			size:opt.type==3?'lg':'',
 			parseData:function(ret){
-				if(ret.code==0)
+				if(ret.code==0) 
 					ret.data.push({ id:0, name:'借调组', })
 				return {  msg:ret.message,  code:ret.code , data:ret.data, };
 			},
