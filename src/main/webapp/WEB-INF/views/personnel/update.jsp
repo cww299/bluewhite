@@ -446,16 +446,17 @@ layui.config({
 				where :data,
 				height:'700px',
 				method : 'POST',
-				loading: true,
-				toolbar: '#toolbar', //开启工具栏，此处显示默认图标，可以自定义模板，详见文档
-				cellMinWidth: 90,
-				colFilterRecord: true,
-				smartReloadModel: true,// 开启智能重载
-				parseData: function(ret) { return { code: ret.code, msg: ret.message, count:ret.data.total, data: ret.data } },
+				toolbar: true, //开启工具栏，此处显示默认图标，可以自定义模板，详见文档
+				parseData: function(ret) { 
+					for(var k in ret.data){
+						ret.data[k].belateDetails = ret.data[k].belateDetails.split(',').join('。');
+					}
+					return { code: ret.code, msg: ret.message, count:ret.data.total, data: ret.data } 
+				},
 				cols: [
 					[ { field: "userName", title: "人名", align: 'center',
 					},{ field: "leaveDetails", title: "请假详情", align: 'center',
-					},{ field: "belateDetails", title: "迟到详情", align: 'center',
+					},{ field: "belateDetails", title: "迟到详情", align: 'center', width:'50%'
 					},{ field: "leaveTime", title: "请假时长", align: 'center',
 					},{ field: "turnWork", title: "出勤时长", align: 'center',
 					},{ field: "ordinaryOvertime", title: "普通加班时长", align: 'center',
@@ -465,28 +466,14 @@ layui.config({
 					},{ field: "sign", title: "签字", align: 'center',
 					}]
 				],
-				done: function() {
-					var tableView = this.elem.next();
-					tableView.find('.layui-table-grid-down').remove();
-					var totalRow = tableView.find('.layui-table-total');
-					var limit = this.page ? this.page.limit : this.limit;
-					layui.each(totalRow.find('td'), function(index, tdElem) {
-						tdElem = $(tdElem);
-						var text = tdElem.text();
-						if(text && !isNaN(text)) {
-							text = (parseFloat(text) / limit).toFixed(2);
-							tdElem.find('div.layui-table-cell').html(text);
-						}
-					});
-				}
 			});
 		}		
 		table.on('edit(test5)', function(obj) {
 			var field = obj.field;
 			var postData={
 				id: obj.data.id,
-				[field]: obj.value,
 			}
+			postData[field] = obj.value;
 			var load = layer.load(1);
 		    $.ajax({
 				url:"${ctx}/personnel/updateAttendanceCollect",
@@ -526,8 +513,8 @@ layui.config({
 			}
 			var postData={
 					id:id,
-					[field]:value,
 			}
+			postData[field] = value;
 			var load = layer.load(1);
 			$.ajax({
 				url:"${ctx}/personnel/updateAttendanceTime",

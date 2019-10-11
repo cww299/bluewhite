@@ -83,7 +83,9 @@ layui.config({
 	
 	Class.prototype.render = function(opt){
 		myutil.clickTr();
-		var now = myutil.getSubDay(1);
+		var isSmall = window.screen.width<1400;
+		var yesterDay = myutil.getSubDay(1);
+		var today = myutil.getSubDay(0);
 		laytpl(TPL).render({},function(h){
 			$(opt.elem).append(h);
 		})
@@ -96,17 +98,39 @@ layui.config({
 				}
 			}
 		})
+		var kindWork = [];
+		var cols =[
+		           { type:'checkbox' },
+		           { title:'组名', 	field:'name', edit:true, },
+		           ];
+		if(opt.type==3){
+			myutil.getDataSync({
+				url: opt.ctx+'/basedata/list?type=kindWork',
+				success:function(d){
+					kindWork = d;
+				}
+			})
+			cols.push({
+				type:'select',select:{ data:kindWork, },title:'工种',field:'kindWork_id'
+			})
+		}
+		cols.push({
+			title:'人员信息', event:'lookover', templet:function(d){
+	        	   return '<span class="layui-btn layui-btn-sm">查看人员</span>';}
+		})
 		mytable.renderNoPage({
 			elem:'#tableData',
 			url: opt.ctx+'/production/getGroup?type='+opt.type,
+			size:opt.type==3?'lg':'',
 			parseData:function(ret){
-				if(ret.code==0)
+				if(ret.code==0) 
 					ret.data.push({ id:0, name:'借调组', })
 				return {  msg:ret.message,  code:ret.code , data:ret.data, };
 			},
 			autoUpdate:{
 				saveUrl:'/production/addGroup',
 				deleUrl:'/production/group/delete',
+				field:{ kindWork_id:'kindWorkId', },
 			},
 			toolbar: '<span class="layui-btn layui-btn-sm" lay-event="addAllot">借调人员</span>',
 			curd:{ 
@@ -122,13 +146,16 @@ layui.config({
 				},
 				otherBtn: function(obj){
 					if(obj.event == 'addAllot'){
+						var area = ['28%','40%'];
+						if(isSmall)
+							area = ['80%','40%'];
 						var html = '';
 						laytpl(ADDNEW_TPL).render({},function(h){
 							html = h;
 						})
 						var addNewWin = layer.open({
 							type:1,
-							area:['28%','40%'],
+							area:area,
 							offset:'80px',
 							btn:['确定','取消'],
 							btnAlign:'c',
@@ -137,7 +164,8 @@ layui.config({
 							success:function(){
 								laydate.render({
 									elem:'#addNewTime',
-									type:'datetime'
+									type:'datetime',
+									value: isSmall?today:yesterDay,
 								})
 								$('#addUserId').append(allPeople);
 								myutil.getData({
@@ -169,13 +197,7 @@ layui.config({
 					}
 				},
 			},
-			cols:[[
-			       { type:'checkbox' },
-			       { title:'组名', 	field:'name', edit:true, },
-			       { title:'人员信息', event:'lookover', templet:function(d){
-			    	   return '<span class="layui-btn layui-btn-sm">查看人员</span>';
-			       	 } },
-			       ]],
+			cols:[ cols],
 		}) 
 		table.on('tool(tableData)', function(obj){
 			if(obj.event=='lookover'){
@@ -192,16 +214,17 @@ layui.config({
 					shadeClose:true,
 					content: html,
 					success:function(){
+						var day = isSmall?today:yesterDay;
 						laydate.render({
 							elem:'#searchTime',
-							value:now,
+							value: day,
 							type:'datetime'
 						})
 						if(obj.data.id==0){		//如果查看的是借调组人员
 							mytable.renderNoPage({
 								elem:'#lookoverTable',
 								url: opt.ctx+'/production/getTemporarily?type='+opt.type,
-								where:{  temporarilyDate: now, },
+								where:{  temporarilyDate: day, },
 								size:'lg',
 								autoUpdate:{
 									saveUrl:'/production/updateTemporarily',
@@ -222,7 +245,7 @@ layui.config({
 							mytable.renderNoPage({
 								elem:'#lookoverTable',
 								url: opt.ctx+'/production/allGroup?id='+obj.data.id,
-								where:{ temporarilyDate: now,  },
+								where:{ temporarilyDate: day,  },
 								toolbar:'<div><span class="layui-btn layui-btn-danger layui-btn-sm" lay-event="deletes">批量删除</span></div>',
 								cols:[[
 								    { type:'checkbox', },
@@ -276,7 +299,7 @@ layui.config({
 									else
 										myutil.saveAjax({
 											url:'/production/updateTemporarily',
-											data:{
+											data:{ 
 												id:obj.data.userId,
 												workTime:obj.data.time,
 											},
