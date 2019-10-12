@@ -209,7 +209,7 @@ layui.config({
 					return myutil.emsg('无外调人员');
 				layer.open({
 					type:1,
-					area:['60%','80%'],
+					area:[ isSmall?'80%':'60%','80%'],
 					title:'人员信息',
 					shadeClose:true,
 					content: html,
@@ -272,12 +272,13 @@ layui.config({
 									return {  msg:r.message,  code:r.code , data:data, }
 								},
 								done:function(){
-									form.on('checkbox(changeStatus)',function(data){
+									form.on('switch(changeStatus)',function(data){
 										var index = $(data.elem).closest('tr').data('index');
 										var trData = table.cache['lookoverTable'][index];
-										layer.confrim('是否确认修改:'+trData.name+' 工作时长：'+trData.time+' 的工作状态？',function(){
+										layer.confirm('是否确认修改:'+trData.name+' 工作时长：'+trData.time+' 的工作状态？',{offset:'100px'},function(){
 											myutil.saveAjax({
 												url: '/production/updateManualTime',
+												type: 'get',
 												data:{
 													id: trData.userId,
 													status: data.elem.checked?1:0,
