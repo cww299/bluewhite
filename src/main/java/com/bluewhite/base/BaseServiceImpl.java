@@ -64,8 +64,8 @@ public abstract class BaseServiceImpl<T extends AbstractEntity<ID>, ID extends S
      * @param t 实体
      * @return 返回更新的实体
      */
-    public T update(T t,T ot) {
-    	BeanCopyUtils.copyNotEmpty(t,ot,"");
+    public T update(T t,T ot,String... ignoreProperties) {
+    	BeanCopyUtils.copyNotEmpty(t,ot,ignoreProperties);
         return baseRepository.save(ot);
     }
 

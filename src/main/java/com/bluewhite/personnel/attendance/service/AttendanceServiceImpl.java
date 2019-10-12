@@ -7,7 +7,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-import javax.annotation.PostConstruct;
 import javax.persistence.criteria.Predicate;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -56,18 +55,13 @@ public class AttendanceServiceImpl extends BaseServiceImpl<Attendance, Long> imp
 	@Override
 	public List<Map<String, Object>> getAllUser(String address) {
 		sdk.initSTA();
-		boolean flag = false;
-		try {
-			flag = sdk.connect(address, 4370);
-		} catch (Exception e) {
-			throw new ServiceException("考勤机连接失败");
-		}
+		boolean flag = sdk.connect(address, 4370);
 		List<Map<String, Object>> userList = null;
 		if (flag) {
 			userList = sdk.getUserInfo();
 		}
-		sdk.disConnect();
-		sdk.release();
+//		sdk.disConnect();
+//		sdk.release();
 		return userList;
 	}
 
@@ -102,12 +96,7 @@ public class AttendanceServiceImpl extends BaseServiceImpl<Attendance, Long> imp
 	@Override
 	public boolean updateUser(String address, String number, String name, int isPrivilege, boolean enabled) {
 		sdk.initSTA();
-		boolean flag = false;
-		try {
-			flag = sdk.connect(address, 4370);
-		} catch (Exception e) {
-			throw new ServiceException("考勤机连接失败");
-		}
+		boolean flag = sdk.connect(address, 4370);
 		if (flag) {
 			// if(address.equals(Constants.EIGHT_WAREHOUSE) ||
 			// address.equals(Constants.NEW_IGHT_WAREHOUSE)){
@@ -115,43 +104,33 @@ public class AttendanceServiceImpl extends BaseServiceImpl<Attendance, Long> imp
 			// }
 			flag = sdk.setUserInfo(number, name, "", isPrivilege, enabled);
 		}
-		sdk.disConnect();
-		sdk.release();
+//		sdk.disConnect();
+//		sdk.release();
 		return flag;
 	}
 
 	@Override
 	public boolean deleteUser(String address, String number) {
 		sdk.initSTA();
-		boolean flag = false;
-		try {
-			flag = sdk.connect(address, 4370);
-		} catch (Exception e) {
-			throw new ServiceException("考勤机连接失败");
-		}
+		boolean flag = sdk.connect(address, 4370);
 		if (flag) {
 			flag = sdk.delectUserById(number);
 		}
-		sdk.disConnect();
-		sdk.release();
+//		sdk.disConnect();
+//		sdk.release();
 		return flag;
 	}
 
 	@Override
 	public List<Map<String, Object>> findUser(String address, String number) {
 		sdk.initSTA();
-		boolean flag = false;
+		boolean flag = sdk.connect(address, 4370);
 		List<Map<String, Object>> user = null;
-		try {
-			flag = sdk.connect(address, 4370);
-		} catch (Exception e) {
-			throw new ServiceException("考勤机连接失败");
-		}
 		if (flag) {
 			user = sdk.getUserInfoByNumber(number);
 		}
-		sdk.disConnect();
-		sdk.release();
+//		sdk.disConnect();
+//		sdk.release();
 		return user;
 	}
 
@@ -159,14 +138,9 @@ public class AttendanceServiceImpl extends BaseServiceImpl<Attendance, Long> imp
 	@Transactional
 	public List<Attendance> allAttendance(String address, Date startTime, Date endTime, Long userId) {
 		sdk.initSTA();
-		boolean flag = false;
-		try {
-			flag = sdk.connect(address, 4370);
-		} catch (Exception e) {
-			throw new ServiceException("考勤机连接失败");
-		}
+		sdk.connect(address, 4370);
 		List<Attendance> attendanceListAll = new ArrayList<>();
-		flag = sdk.readGeneralLogData(0);
+		boolean flag = sdk.readGeneralLogData(0);
 		if (flag) {
 			attendanceListAll = sdk.getGeneralLogData(0);
 		}
@@ -201,10 +175,9 @@ public class AttendanceServiceImpl extends BaseServiceImpl<Attendance, Long> imp
 		attendanceListAll.stream().forEach(a -> {
 			a.setSourceMachine(sourceMachineFina);
 		});
-		;
-		batchSave(attendanceListAll);
-		sdk.disConnect();
-		sdk.release();
+//		batchSave(attendanceListAll);
+//		sdk.disConnect();
+//		sdk.release();
 		return attendanceListAll;
 	}
 
@@ -251,35 +224,19 @@ public class AttendanceServiceImpl extends BaseServiceImpl<Attendance, Long> imp
 		PageResult<Attendance> result = new PageResult<>(pages, page);
 		return result;
 	}
-	
-	public void regEvent() {
-		sdk.initSTA();
-		try {
-			System.out.println("考勤机实时事件启动");
-			sdk.connect("192.168.1.204", 4370);
-			sdk.regEvent();
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-	}
 
 	@Override
 	public List<Map<String, Object>> getAllAttendance(String address) {
 		sdk.initSTA();
-		boolean flag = false;
-		try {
-			flag = sdk.connect(address, 4370);
-		} catch (Exception e) {
-			throw new ServiceException("考勤机连接失败");
-		}
+		boolean flag = sdk.connect(address, 4370);
 		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 		List<Map<String, Object>> attendanceList = null;
 		flag = sdk.readGeneralLogData(0);
 		if (flag) {
 			// attendanceList = sdk.getGeneralLogData(0);
 		}
-		sdk.disConnect();
-		sdk.release();
+//		sdk.disConnect();
+//		sdk.release();
 		return attendanceList;
 	}
 
@@ -341,24 +298,25 @@ public class AttendanceServiceImpl extends BaseServiceImpl<Attendance, Long> imp
 	@Override
 	public Map<String, Object> getUser(String address, String number) {
 		sdk.initSTA();
-		boolean flag = false;
+		boolean flag = sdk.connect(address, 4370);
 		Map<String, Object> user = null;
-		try {
-			flag = sdk.connect(address, 4370);
-		} catch (Exception e) {
-			throw new ServiceException("考勤机连接失败");
-		}
 		if (flag) {
 			user = sdk.getUserInfoTmp(number);
 		}
-		sdk.disConnect();
-		sdk.release();
+//		sdk.disConnect();
+//		sdk.release();
 		return user;
 	}
 
 	@Override
 	public List<Attendance> findByUserIdInAndTimeBetween(List<Long> userLong, Date beginDate, Date endDate) {
 		return dao.findByUserIdInAndTimeBetween(userLong, beginDate, endDate);
+	}
+
+	@Override
+	public List<Attendance> findByUserIdAndSourceMachineAndTimeBetween(Long userId, String sourceMachine,
+			Date startTime, Date endTime) {
+		return dao.findByUserIdAndSourceMachineAndTimeBetween(userId,sourceMachine,startTime,endTime);
 	}
 
 }

@@ -1,13 +1,10 @@
 package com.bluewhite.production.task.service;
 
-import static org.hamcrest.CoreMatchers.nullValue;
-
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArraySet;
-import java.util.stream.Collector;
 import java.util.stream.Collectors;
 
 import javax.persistence.criteria.Predicate;
@@ -47,7 +44,6 @@ import com.bluewhite.production.task.dao.TaskDao;
 import com.bluewhite.production.task.entity.Task;
 import com.bluewhite.system.user.dao.TemporaryUserDao;
 import com.bluewhite.system.user.dao.UserDao;
-import com.bluewhite.system.user.entity.TemporaryUser;
 import com.bluewhite.system.user.entity.User;
 
 @Service
@@ -128,7 +124,6 @@ public class TaskServiceImpl extends BaseServiceImpl<Task, Long> implements Task
 					}
 				}
 			}
-			
 			// 临时员工
 			if (task.getTemporaryUsersIds() != null && task.getTemporaryUsersIds().length > 0) {
 				for (Long id : temporaryIdList) {
@@ -215,7 +210,9 @@ public class TaskServiceImpl extends BaseServiceImpl<Task, Long> implements Task
 						// 获取正式员工的出勤记录
 						Temporarily temporarily = null;
 						AttendancePay attendancePay = null;
+						//任务人员出勤记录id
 						Long idP = idsList.get(j);
+						//任务人员id
 						Long userIdP = userIdsList.get(j);
 						List<AttendancePay> attendancePayListOne = attendancePayList.stream()
 								.filter(AttendancePay -> AttendancePay.getId().equals(idP)

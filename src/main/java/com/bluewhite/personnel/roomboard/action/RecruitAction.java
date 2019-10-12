@@ -2,7 +2,6 @@ package com.bluewhite.personnel.roomboard.action;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
@@ -22,7 +21,6 @@ import com.bluewhite.basedata.entity.BaseData;
 import com.bluewhite.common.BeanCopyUtils;
 import com.bluewhite.common.ClearCascadeJSON;
 import com.bluewhite.common.DateTimePattern;
-import com.bluewhite.common.annotation.SysLogAspectAnnotation;
 import com.bluewhite.common.entity.CommonResponse;
 import com.bluewhite.common.entity.PageParameter;
 import com.bluewhite.common.entity.PageResult;
@@ -31,7 +29,6 @@ import com.bluewhite.personnel.roomboard.dao.RewardDao;
 import com.bluewhite.personnel.roomboard.entity.Recruit;
 import com.bluewhite.personnel.roomboard.service.RecruitService;
 import com.bluewhite.production.group.entity.Group;
-import com.bluewhite.system.sys.entity.SysLog;
 import com.bluewhite.system.user.entity.Role;
 import com.bluewhite.system.user.entity.User;
 import com.bluewhite.system.user.entity.UserContract;
@@ -111,19 +108,20 @@ public class RecruitAction {
 	 */
 	@RequestMapping(value = "/personnel/addRecruit", method = RequestMethod.POST)
 	@ResponseBody
-	public CommonResponse addConsumption(HttpServletRequest request, Recruit recruit) throws ParseException {
+	public CommonResponse addConsumption(HttpServletRequest request, Recruit recruit) {
 		CommonResponse cr = new CommonResponse();
 		if (recruit.getId() != null) {
 			Recruit recruit2 = service.findOne(recruit.getId());
-			BeanCopyUtils.copyNotEmpty(recruit, recruit2, "");
-			SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-			Date date = sdf.parse("2000-01-01 00:00:00");
-			if (date.equals(recruit.getTestTime())) {
-				recruit2.setTestTime(null);
+			int a=0;
+			if(recruit.getPhone() !=null && (!recruit.getPhone().equals(recruit2.getPhone()))){
+				a=1;
 			}
+			BeanCopyUtils.copyNotEmpty(recruit, recruit2, "testTime");
+			recruit2.setJudge(a);
 			service.addRecruit(recruit2);
 			cr.setMessage("修改成功");
 		} else {
+			recruit.setJudge(1);
 			service.addRecruit(recruit);
 			cr.setMessage("添加成功");
 		}

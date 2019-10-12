@@ -748,9 +748,6 @@
 											return layer.msg("已入职不能修改",{icon: 2})
 										}
 										var id = table.cache['tableData'][index].id
-										if(value==""){
-											value="2000-01-01 00:00:00"
-										}
 											var postData = {
 												id: id,
 												testTime:value,
@@ -1741,6 +1738,7 @@
 									data.field.recruitName=$('#recruitId option:selected').text();
 									data.field.time += $("#tplTime").val();
 						        	mainJs.fAdd(data.field)
+						        	
 						        	if(id==""){
 						        	
 						        	}
@@ -1936,7 +1934,7 @@
 							                page: {
 							                }
 							              })   
-							              document.getElementById("layuiadmin-form-admin").reset();
+							             /*  document.getElementById("layuiadmin-form-admin").reset(); */
 						        	layui.form.render();
 										layer.msg(result.message, {
 											icon: 1,

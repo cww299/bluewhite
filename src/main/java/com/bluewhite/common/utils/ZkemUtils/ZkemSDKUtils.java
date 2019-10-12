@@ -29,16 +29,16 @@ import com.jacob.com.Variant;
 
 @Component
 public class ZkemSDKUtils {
-	
+
 	@Autowired
 	private UserService userService;
-	
+
 	private static ZkemSDKUtils zkemSDKUtils;
-	
+
 	@PostConstruct
 	public void init() {
 		zkemSDKUtils = this;
-		zkemSDKUtils.userService = this.userService; // 初使化时将已静态化的testService实例化
+		zkemSDKUtils.userService = this.userService; // 初使化时将已静态化的Service实例化
 	}
 
 	private static ActiveXComponent zkem;
@@ -66,12 +66,17 @@ public class ZkemSDKUtils {
 	 * @return
 	 * @throws Exception
 	 */
-	public boolean connect(String address, int port) throws Exception {
+	public boolean connect(String address, int port) {
 		// 连接考勤机，返回是否连接成功，成功返回true，失败返回false。
 		// 1、Connect_NET：zkem中方法，通过网络连接中控考勤机。
 		// 2、address：中控考勤机IP地址。
 		// 3、port：端口号
 		boolean result = zkem.invoke("Connect_NET", address, port).getBoolean();
+		if (!result) {
+			throw new ServiceException(address+":考勤机连接失败");
+		} else {
+			System.out.println(address + ":连接成功");
+		}
 		return result;
 	}
 
@@ -85,15 +90,20 @@ public class ZkemSDKUtils {
 	/**
 	 * 启动事件监听
 	 */
-	public static void regEvent() {
-		System.out.println("启动----------");
-		zkem.invoke("RegEvent", new Variant(1), new Variant(2));
-		zkem.invoke("ReadRTLog", new Variant(1));
-		zkem.invoke("GetRTLog", new Variant(1));
-		new DispatchEvents(zkem.getObject(), new SensorEvents());
+	public static void regEvent(String address) {
+		ActiveXComponent zkem = new ActiveXComponent("zkemkeeper.ZKEM");
+		System.out.println("考勤机实时事件启动");
+		boolean result = zkem.invoke("Connect_NET", address, 4370).getBoolean();
+		if (!result) {
+			throw new ServiceException(address+":考勤机连接失败");
+		} else {
+			System.out.println(address + ":连接成功");
+		}
+		Dispatch.call(zkem, "RegEvent", new Variant(1l), new Variant(65535l));
+		DispatchEvents de = new DispatchEvents(zkem.getObject(), new SensorEvents(zkem));
 		new STA().doMessagePump();
 	}
-
+	
 	/**
 	 * 读取考勤所有数据到缓存中。配合getGeneralLogData使用。
 	 * 
@@ -101,7 +111,7 @@ public class ZkemSDKUtils {
 	 */
 	public boolean readGeneralLogData(int machineNum) {
 		// 调用zkem中的ReadGeneralLogData方法，传入参数，机器号
-		boolean result = zkem.invoke("ReadGeneralLogData", new Variant[] { new Variant(machineNum) }).getBoolean();
+		boolean result = zkem.invoke("ReadGeneralLogData", new Variant[] { new Variant(machineNum)}).getBoolean();
 		return result;
 	}
 
@@ -141,10 +151,10 @@ public class ZkemSDKUtils {
 	 * 
 	 * @return 返回的map中，包含以下键值： "EnrollNumber" 人员编号 "Time" 考勤时间串，格式: yyyy-MM-dd
 	 *         HH:mm:ss "VerifyMode" 验证方式：0 为密码验证，1 为指纹验证，2 为卡验证 ,15为 面部验证
-	 *         "InOutMode" 默认
-	 *         0—Check-In 1—Check-Out 2—Break-O 3—Break-In 4—OT-In 5—OT-Out
+	 *         "InOutMode" 默认 0—Check-In 1—Check-Out 2—Break-O 3—Break-In
+	 *         4—OT-In 5—OT-Out
 	 */
-	public List<Attendance>  getGeneralLogData(int machineNum) {
+	public List<Attendance> getGeneralLogData(int machineNum) {
 		Variant v0 = new Variant(machineNum);
 		Variant dwEnrollNumber = new Variant("", true);
 		Variant dwVerifyMode = new Variant(0, true);
@@ -172,23 +182,24 @@ public class ZkemSDKUtils {
 				Attendance attendance = new Attendance();
 				attendance.setNumber(enrollNumber);
 				try {
-					attendance.setTime(sdf.parse(dwYear.getIntRef() + "-" + dwMonth.getIntRef() + "-" + dwDay.getIntRef() + " "
-							+ dwHour.getIntRef() + ":" + dwMinute.getIntRef() + ":" + dwSecond.getIntRef()));
+					attendance.setTime(
+							sdf.parse(dwYear.getIntRef() + "-" + dwMonth.getIntRef() + "-" + dwDay.getIntRef() + " "
+									+ dwHour.getIntRef() + ":" + dwMinute.getIntRef() + ":" + dwSecond.getIntRef()));
 				} catch (ParseException e) {
 					throw new ServiceException("时间转换异常");
 				}
 				attendance.setVerifyMode(dwVerifyMode.getIntRef());
-				if(userList.size()>0){
-					Optional<User> user = userList.stream().filter(User->User.getNumber().equals(enrollNumber.trim())).findFirst();
-					if(user.isPresent()){
+				if (userList.size() > 0) {
+					Optional<User> user = userList.stream().filter(User -> User.getNumber().equals(enrollNumber.trim()))
+							.findFirst();
+					if (user.isPresent()) {
 						attendance.setUserId(user.get().getId());
 					}
 				}
 				attendance.setInOutMode(1);
 				strList.add(attendance);
 			}
-		} 
-		while (newresult == true);
+		} while (newresult == true);
 		return strList;
 	}
 
@@ -228,9 +239,9 @@ public class ZkemSDKUtils {
 			if (index > -1) {
 				name = name.substring(0, index);
 			}
-//			if (sName.getStringRef().length() > 4) {
-//				name = sName.getStringRef().substring(0, 4);
-//			}
+			// if (sName.getStringRef().length() > 4) {
+			// name = sName.getStringRef().substring(0, 4);
+			// }
 			// 如果没有名字，跳过。
 			if (name.trim().length() == 0)
 				continue;
@@ -268,7 +279,7 @@ public class ZkemSDKUtils {
 				.getBoolean();
 		return result;
 	}
-	
+
 	/**
 	 * 得到用户指纹信息
 	 *
@@ -285,10 +296,10 @@ public class ZkemSDKUtils {
 		Variant v0 = new Variant(1);
 		Variant dwEnrollNumber = new Variant(number, true);
 		Variant dwFingerIndex = new Variant(0, true);
-		Variant TmpData = new Variant("", true);  
+		Variant TmpData = new Variant("", true);
 		Variant TmpLength = new Variant(0, true);
-  		boolean result = zkem.invoke("SSR_GetUserTmpStr", v0, dwEnrollNumber, dwFingerIndex, TmpData, TmpLength)
-			.getBoolean();
+		boolean result = zkem.invoke("SSR_GetUserTmpStr", v0, dwEnrollNumber, dwFingerIndex, TmpData, TmpLength)
+				.getBoolean();
 		Map<String, Object> m = new HashMap<String, Object>();
 		m.put("dwEnrollNumber", dwEnrollNumber.getStringRef());
 		m.put("dwFingerIndex", dwFingerIndex.getIntRef());
@@ -296,7 +307,6 @@ public class ZkemSDKUtils {
 		m.put("TmpLength", TmpLength.getIntRef());
 		return m;
 	}
-	
 
 	/**
 	 * 根据考勤号码获取用户信息
@@ -305,7 +315,7 @@ public class ZkemSDKUtils {
 	 *            考勤号码
 	 * @return
 	 */
-	public static List<Map<String, Object>>  getUserInfoByNumber(String number) {
+	public static List<Map<String, Object>> getUserInfoByNumber(String number) {
 		Variant v0 = new Variant(1);
 		Variant sdwEnrollNumber = new Variant(number, true);
 		Variant sName = new Variant("", true);
@@ -324,9 +334,9 @@ public class ZkemSDKUtils {
 			if (index > -1) {
 				name = name.substring(0, index);
 			}
-//			if (sName.getStringRef().length() > 4) {
-//				name = sName.getStringRef().substring(0, 4);
-//			}
+			// if (sName.getStringRef().length() > 4) {
+			// name = sName.getStringRef().substring(0, 4);
+			// }
 			Map<String, Object> m = new HashMap<String, Object>();
 			m.put("number", number);
 			m.put("name", name.trim());
@@ -354,11 +364,26 @@ public class ZkemSDKUtils {
 		 */
 		return zkem.invoke("SSR_DeleteEnrollDataExt", v0, sdwEnrollNumber, sdwBackupNumber).getBoolean();
 	}
+	
+	
+	/**
+	 * 获取机器名称
+	 * @param machineNumber 机器号
+	 * @return 机器号
+	 */
+	public String GetProductCode(int machineNumber){
+		Variant productCode=new Variant("",true);
+		boolean status=zkem.invoke("GetProductCode",new Variant(machineNumber),productCode).getBoolean();
+		if(status==false){
+			return null;
+		}
+		return productCode.getStringRef();
+	}
 
 	/**
 	 * 获取考勤机序列码
 	 */
-	public String getSerialNumber(int machineNum) {
+	public static String getSerialNumber(int machineNum) {
 		// Variant：变体类型，能够在运行期间动态的改变类型。
 		// 变体类型能支持所有简单的数据类型，如整型、浮点、字符串、布尔型、日期时间、货币及OLE自动化对象等，不能够表达Object
 		// Pascal对象。
@@ -370,6 +395,56 @@ public class ZkemSDKUtils {
 			return dwSerialNumber.getStringRef();
 		}
 		return null;
+	}
+	
+	/**
+	 * 获取机器IP号
+	 * @param machineNumber 机器号
+	 * @return IP地址
+	 */
+	public static String GetDeviceIP(int machineNumber,ActiveXComponent zkem){
+		Variant ipAddr=new Variant("",true);
+		boolean status= zkem.invoke("GetDeviceIP",new Variant(machineNumber),ipAddr).getBoolean();
+		if(status==false){
+			return null;
+		}
+		return ipAddr.getStringRef();
+	}
+	
+	/**
+	 * 查询是否有门禁功能
+	 * @return
+	 */
+	public static int GetACFun(){
+	    Variant ACFun = new Variant(100,true);
+	    boolean result = zkem.invoke("GetACFun",ACFun).getBoolean();
+	    return ACFun.getIntRef();
+	}
+	
+	/**
+	 * 开门
+	 * @param machineNumber 设备号
+	 * @param delay  延时 delay/10 秒后关门
+	 * @return
+	 */
+	public static boolean ACUnlock(int machineNumber, int delay){
+	    boolean result = zkem.invoke("ACUnlock",new Variant(machineNumber),new Variant(delay)).getBoolean();
+	    return result;
+	}
+	
+	/**
+	 * 读取实时事件到pc缓冲区
+	 * @param machineNumber
+	 * @return
+	 */
+	public static boolean ReadRTLog(int machineNumber){
+	    boolean result = zkem.invoke("ReadRTLog",new Variant(machineNumber)).getBoolean();
+	    return result;
+	}
+	
+	public static boolean GetRTLog(int machineNumber){
+	    boolean result = zkem.invoke("GetRTLog",new Variant(machineNumber)).getBoolean();
+	    return result;
 	}
 
 }
