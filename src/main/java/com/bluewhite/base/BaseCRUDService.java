@@ -28,7 +28,7 @@ public interface BaseCRUDService<T,ID> {
      * @param t 实体
      * @return 返回更新的实体
      */
-    public T update(T t,T ot) ;
+    public T update(T t,T ot,String... ignoreProperties) ;
     
     /**
      * 根据主键删除相应实体
