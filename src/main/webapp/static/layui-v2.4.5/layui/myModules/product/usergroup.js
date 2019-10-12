@@ -275,12 +275,16 @@ layui.config({
 									form.on('checkbox(changeStatus)',function(data){
 										var index = $(data.elem).closest('tr').data('index');
 										var trData = table.cache['lookoverTable'][index];
-										myutil.saveAjax({
-											url: '/production/updateManualTime',
-											data:{
-												id: trData.userId,
-												status: data.elem.checked?1:0,
-											}
+										layer.confrim('是否确认修改:'+trData.name+' 工作时长：'+trData.time+' 的工作状态？',function(){
+											myutil.saveAjax({
+												url: '/production/updateManualTime',
+												data:{
+													id: trData.userId,
+													status: data.elem.checked?1:0,
+												}
+											})
+										},function(){
+											table.reload('lookoverTable');
 										})
 									})
 								}
