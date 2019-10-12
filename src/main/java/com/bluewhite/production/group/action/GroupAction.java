@@ -228,11 +228,13 @@ public class GroupAction {
 								timeH =DatesUtil.getTimeHourPick(attendanceIn.getTime(),new Date());
 								flag = 1;
 							}else{
-								attendanceIn.setManualTime(attendanceOut.getTime());
 								flag = 0;
+								attendanceIn.setManualTime(attendanceOut.getTime());
+								attendanceService.save(attendanceIn);
 							}
 						}
 					}else{
+						flag = 0;
 						time = DatesUtil.getTime(attendanceIn.getTime(), attendanceIn.getManualTime());
 						timeH =DatesUtil.getTimeHourPick(attendanceIn.getTime(), attendanceIn.getManualTime());
 					}
@@ -242,7 +244,7 @@ public class GroupAction {
 					userMap.put("secondment", 1);
 					userMap.put("groupId", user.getGroupId());
 					userMap.put("name",user.getUserName());
-					userMap.put("time",timeH+"H/("+time+")M");
+					userMap.put("time",timeH+"H/("+time+"M)");
 					userMap.put("status",flag);
 					userList.add(userMap);
 				}
@@ -319,8 +321,7 @@ public class GroupAction {
 				attendance.setManualTime(null);
 			}
 		}
-		cr.setCode(ErrorCode.ILLEGAL_ARGUMENT.getCode());
-		cr.setMessage("分组类型不能为空");
+		cr.setMessage("修改成功");
 		return cr;
 	}
 	
