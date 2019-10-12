@@ -748,9 +748,6 @@
 											return layer.msg("已入职不能修改",{icon: 2})
 										}
 										var id = table.cache['tableData'][index].id
-										if(value==""){
-											value="2000-01-01 00:00:00"
-										}
 											var postData = {
 												id: id,
 												testTime:value,

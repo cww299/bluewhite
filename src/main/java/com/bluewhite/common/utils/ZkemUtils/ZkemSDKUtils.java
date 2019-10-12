@@ -66,14 +66,14 @@ public class ZkemSDKUtils {
 	 * @return
 	 * @throws Exception
 	 */
-	public boolean connect(String address, int port) throws Exception {
+	public boolean connect(String address, int port) {
 		// 连接考勤机，返回是否连接成功，成功返回true，失败返回false。
 		// 1、Connect_NET：zkem中方法，通过网络连接中控考勤机。
 		// 2、address：中控考勤机IP地址。
 		// 3、port：端口号
 		boolean result = zkem.invoke("Connect_NET", address, port).getBoolean();
 		if (!result) {
-			throw new ServiceException("考勤机连接失败");
+			throw new ServiceException(address+":考勤机连接失败");
 		} else {
 			System.out.println(address + ":连接成功");
 		}
@@ -90,14 +90,20 @@ public class ZkemSDKUtils {
 	/**
 	 * 启动事件监听
 	 */
-	public static void regEvent() {
+	public static void regEvent(String address) {
+		ActiveXComponent zkem = new ActiveXComponent("zkemkeeper.ZKEM");
+		System.out.println("考勤机实时事件启动");
+		boolean result = zkem.invoke("Connect_NET", address, 4370).getBoolean();
+		if (!result) {
+			throw new ServiceException(address+":考勤机连接失败");
+		} else {
+			System.out.println(address + ":连接成功");
+		}
 		Dispatch.call(zkem, "RegEvent", new Variant(1l), new Variant(65535l));
-//		Dispatch.call(zkem, "RegEvent", new Variant(2l), new Variant(65535l));
-		DispatchEvents de = new DispatchEvents(zkem.getObject(), new SensorEvents());
-		new Thread(new FrmEquipment(de)).start();
+		DispatchEvents de = new DispatchEvents(zkem.getObject(), new SensorEvents(zkem));
 		new STA().doMessagePump();
 	}
-
+	
 	/**
 	 * 读取考勤所有数据到缓存中。配合getGeneralLogData使用。
 	 * 
@@ -105,7 +111,7 @@ public class ZkemSDKUtils {
 	 */
 	public boolean readGeneralLogData(int machineNum) {
 		// 调用zkem中的ReadGeneralLogData方法，传入参数，机器号
-		boolean result = zkem.invoke("ReadGeneralLogData", new Variant[] { new Variant(machineNum) }).getBoolean();
+		boolean result = zkem.invoke("ReadGeneralLogData", new Variant[] { new Variant(machineNum)}).getBoolean();
 		return result;
 	}
 
@@ -358,11 +364,26 @@ public class ZkemSDKUtils {
 		 */
 		return zkem.invoke("SSR_DeleteEnrollDataExt", v0, sdwEnrollNumber, sdwBackupNumber).getBoolean();
 	}
+	
+	
+	/**
+	 * 获取机器名称
+	 * @param machineNumber 机器号
+	 * @return 机器号
+	 */
+	public String GetProductCode(int machineNumber){
+		Variant productCode=new Variant("",true);
+		boolean status=zkem.invoke("GetProductCode",new Variant(machineNumber),productCode).getBoolean();
+		if(status==false){
+			return null;
+		}
+		return productCode.getStringRef();
+	}
 
 	/**
 	 * 获取考勤机序列码
 	 */
-	public String getSerialNumber(int machineNum) {
+	public static String getSerialNumber(int machineNum) {
 		// Variant：变体类型，能够在运行期间动态的改变类型。
 		// 变体类型能支持所有简单的数据类型，如整型、浮点、字符串、布尔型、日期时间、货币及OLE自动化对象等，不能够表达Object
 		// Pascal对象。
@@ -374,6 +395,56 @@ public class ZkemSDKUtils {
 			return dwSerialNumber.getStringRef();
 		}
 		return null;
+	}
+	
+	/**
+	 * 获取机器IP号
+	 * @param machineNumber 机器号
+	 * @return IP地址
+	 */
+	public static String GetDeviceIP(int machineNumber,ActiveXComponent zkem){
+		Variant ipAddr=new Variant("",true);
+		boolean status= zkem.invoke("GetDeviceIP",new Variant(machineNumber),ipAddr).getBoolean();
+		if(status==false){
+			return null;
+		}
+		return ipAddr.getStringRef();
+	}
+	
+	/**
+	 * 查询是否有门禁功能
+	 * @return
+	 */
+	public static int GetACFun(){
+	    Variant ACFun = new Variant(100,true);
+	    boolean result = zkem.invoke("GetACFun",ACFun).getBoolean();
+	    return ACFun.getIntRef();
+	}
+	
+	/**
+	 * 开门
+	 * @param machineNumber 设备号
+	 * @param delay  延时 delay/10 秒后关门
+	 * @return
+	 */
+	public static boolean ACUnlock(int machineNumber, int delay){
+	    boolean result = zkem.invoke("ACUnlock",new Variant(machineNumber),new Variant(delay)).getBoolean();
+	    return result;
+	}
+	
+	/**
+	 * 读取实时事件到pc缓冲区
+	 * @param machineNumber
+	 * @return
+	 */
+	public static boolean ReadRTLog(int machineNumber){
+	    boolean result = zkem.invoke("ReadRTLog",new Variant(machineNumber)).getBoolean();
+	    return result;
+	}
+	
+	public static boolean GetRTLog(int machineNumber){
+	    boolean result = zkem.invoke("GetRTLog",new Variant(machineNumber)).getBoolean();
+	    return result;
 	}
 
 }

@@ -1,13 +1,11 @@
 package com.bluewhite.common.utils.ZkemUtils;
 
-import com.jacob.com.DispatchEvents;
+public class SDKRunnable implements Runnable {
 
-public class FrmEquipment implements Runnable {
+	private String address;
 
-	private DispatchEvents de;
-
-	public FrmEquipment(DispatchEvents de) {
-		this.de = de;
+	public SDKRunnable(String address) {
+		this.address = address;
 	}
 
 	@Override
@@ -15,6 +13,7 @@ public class FrmEquipment implements Runnable {
 		System.out.println("Thread开始====200秒等待设备实时事件");
 		try {
 			Thread.sleep(2000);
+			ZkemSDKUtils.regEvent(address);
 		} catch (InterruptedException e) {
 		}
 		System.out.println("Thread结束=====");
