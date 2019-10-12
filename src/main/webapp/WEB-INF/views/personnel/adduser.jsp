@@ -207,15 +207,7 @@ layui.config({
 	}
 	function getStatu(){
 		return function(d){
-			var statu = "补签";
-			if(d.inOutMode==1)
-				statu = "正常签到";
-			else
-				switch(d.inOutMode){
-				case 0: statu = '上班签到'; break;
-				case 1: statu = '下班签到'; break;
-				}
-			return statu;
+			return d.inOutMode==2?"补签":"正常签到";
 		}
 	};
 })
