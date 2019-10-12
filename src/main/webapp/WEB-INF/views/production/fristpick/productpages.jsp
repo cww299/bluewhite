@@ -97,9 +97,9 @@
 		<div class="panel-body">
 			<div class="form-group">
 				<input type="file" name="file" id="upfile" style="display: inline">
-				<button type="button" class="btn btn-success btn-sm" id="btn"
+				<button type="button" class="btn btn-success btn-sm hidden-sm" id="btn"
 					style="display: inline">点击导入</button>
-				<button class="btn btn-sm btn-danger  " id="deleteprocedure">一键删除</button>
+				<button class="btn btn-sm btn-danger  hidden-sm" id="deleteprocedure">一键删除</button>
 			</div>
 			<table class="table table-hover">
 				<thead>
@@ -238,7 +238,7 @@
 		      				+'<td class="text-center edit name">'+o.name+'</td>'
 		      				+'<td class="text-center  departmentPrice">'+o.departmentPrice*1+'</td>'
 		      				+'<td class="text-center  hairPrice">'+o.hairPrice*1+'</td>'
-							+'<td class="text-center"><button class="btn btn-xs btn-info hidden-sm  btn-trans update" data-id='+o.id+'>编辑</button>  <button class="btn btn-xs btn-primary btn-trans hidden-sm addprocedure" data-id='+o.id+' data-name='+o.name+'>添加工序</button> <button class="btn btn-xs btn-success btn-trans addbatch" data-id='+o.id+' data-name='+o.name+'>填写批次</button></td></tr>'
+							+'<td class="text-center"><button class="btn btn-xs btn-info hidden-sm  btn-trans update" data-id='+o.id+'>编辑</button>  <button class="btn btn-xs btn-primary btn-trans  addprocedure" data-id='+o.id+' data-name='+o.name+'>添加工序</button> <button class="btn btn-xs btn-success btn-trans addbatch" data-id='+o.id+' data-name='+o.name+'>填写批次</button></td></tr>'
 							
 		      			}); 
 		      			self.setIndex(result.data.pageNum);
@@ -509,13 +509,13 @@
 						      				+'<td class="text-center edit workingnametwo id">'+o.name+'</td>'
 						      				+'<td class="text-center edit workingtimetwo">'+o.workingTime+'</td>'
 						      				+'<td data-id="'+o.id+'" class="text-center" data-code="'+o.procedureType.id+'">'+htmlfr+'</td>' 
-											+'<td class="text-center"><button class="btn btn-xs btn-primary btn-3d updateworking" data-id='+o.id+'>编辑</button></td></tr>'
+											+'<td class="text-center"><button class="btn btn-xs btn-primary hidden-sm btn-3d updateworking " data-id='+o.id+'>编辑</button></td></tr>'
 											
 						      			});  
 									   	   
 									   	layer.close(indextwo);
 									   	//新增时 查找工序类型
-								      			htmltwo="<tr><td class='text-center'><label><input type='checkbox' class='ace checkstw' /><span class='lbl'></span></label></td><td class='text-center'><input type='text' class='input-large workingname'></td><td class='text-center'><input type='text' class='input-small workingtime' ></td><td class='text-center'>"+htmlfr+"</td><td class='text-center'><button class='btn btn-xs btn-primary btn-3d add' data-productid="+productId+">新增</button></td></tr>"+htmltwo;
+								      			htmltwo="<tr><td class='text-center'><label><input type='checkbox' class='ace checkstw' /><span class='lbl'></span></label></td><td class='text-center'><input type='text' class='input-large workingname'></td><td class='text-center'><input type='text' class='input-small workingtime' ></td><td class='text-center'>"+htmlfr+"</td><td class='text-center'><button class='btn btn-xs btn-primary hidden-sm btn-3d add' data-productid="+productId+">新增</button></td></tr>"+htmltwo;
 								      			$("#tableworking").html(htmltwo); 
 								      			
 						      			
@@ -524,6 +524,9 @@
 								      			self.loadevenstwo();
 									   	self.checked();
 									   	self.checkeddd();
+									   	if(mobileType==true){
+									   		$(".Proceduretypeid").prop('disabled','disabled')
+									   	}
 								      },error:function(){
 											layer.msg("加载失败！", {icon: 2});
 											layer.close(indextwo);
@@ -619,6 +622,7 @@
 						}
 				 })
 				  $(".Proceduretypeid").on('click',function(){
+					  
 					  $(this).parent().find(".Proceduretypeid").each(function(i,o){
 							$(o).prop("checked", false);
 
@@ -633,6 +637,7 @@
 						flag=1
 					}
 					if(id!=undefined){
+					
 					$.ajax({
 						url:"${ctx}/production/addProcedure",
 						data:{
