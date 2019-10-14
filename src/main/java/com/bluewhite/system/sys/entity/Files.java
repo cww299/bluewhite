@@ -9,6 +9,7 @@ import javax.persistence.Table;
 
 import com.bluewhite.base.BaseEntity;
 import com.bluewhite.basedata.entity.BaseData;
+import com.bluewhite.personnel.contract.entity.Contract;
 
 @Entity
 @Table(name = "sys_files")
@@ -47,8 +48,37 @@ public class Files extends BaseEntity<Long> {
 	@JoinColumn(name = "files_type_id", referencedColumnName = "id", insertable = false, updatable = false)
 	private BaseData filesType;
 	
+	/**
+	 * 合同id
+	 */
+	@Column(name = "contract_id")
+	private Long contractId;
+	
+	/**
+	 * 合同
+	 */
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "contract_id", referencedColumnName = "id", insertable = false, updatable = false)
+	private Contract contract;
 	
 	
+	
+	public Long getContractId() {
+		return contractId;
+	}
+
+	public void setContractId(Long contractId) {
+		this.contractId = contractId;
+	}
+
+	public Contract getContract() {
+		return contract;
+	}
+
+	public void setContract(Contract contract) {
+		this.contract = contract;
+	}
+
 	public Long getFilesTypeId() {
 		return filesTypeId;
 	}
