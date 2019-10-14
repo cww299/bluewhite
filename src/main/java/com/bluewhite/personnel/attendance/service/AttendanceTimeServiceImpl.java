@@ -618,10 +618,10 @@ public class AttendanceTimeServiceImpl extends BaseServiceImpl<AttendanceTime, L
 		Map<Long, List<AttendanceTime>> mapAttendanceTime = attendanceTimeList.stream()
 				.collect(Collectors.groupingBy(AttendanceTime::getUserId, Collectors.toList()));
 		for (Long ps1 : mapAttendanceTime.keySet()) {
-			// 获取员工考勤的初始化参数
-			AttendanceInit attendanceInit = attendanceTimeList.get(0).getAttendanceInit();
 			// 获取单一员工日期区间所有的考勤
 			List<AttendanceTime> psList1 = mapAttendanceTime.get(ps1);
+			// 获取员工考勤的初始化参数
+			AttendanceInit attendanceInit =psList1.get(0).getAttendanceInit();
 			// 查找出申请时间是当月的有符合该员工请假事项
 			List<ApplicationLeave> applicationLeave = applicationLeaveDao.findByUserIdAndWriteTimeBetween(ps1,
 					DatesUtil.getFirstDayOfMonth(psList1.get(0).getTime()),

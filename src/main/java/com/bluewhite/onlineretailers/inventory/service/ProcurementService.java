@@ -115,4 +115,7 @@ public interface ProcurementService extends BaseCRUDService<Procurement, Long> {
 	int test(String ids);
 
 
+	int correctionInventory(ExcelListener excelListener, Long userId, Long warehouseId);
+
+
 }
