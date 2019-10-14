@@ -271,7 +271,7 @@ layui.config({
 		
 		function addEdit(type){
 			var data={ id:'',contractKind:{name:''},contractType:{name:''},duration:'',
-					starTime:'',endTime:'',content:'',amount:'',flag:1,company:'', },
+					starTime:'',endTime:'',content:'',amount:'',flag:1,company:'', pictureUrl:'',},
 			choosed=layui.table.checkStatus('tableData').data,
 			tpl=addEditTpl.innerHTML,
 			title='新增合同',
@@ -288,7 +288,7 @@ layui.config({
 			laytpl(tpl).render(data,function(h){
 				html=h;
 			})
-			var picUrl = '';
+			var picUrl = data.pictureUrl;
 			var addEditWin=layer.open({
 				type:1,
 				title:title,
@@ -315,11 +315,11 @@ layui.config({
 					})
 					upload.render({
 					   elem: '#uploadPic' //绑定元素
-					   ,url: '/upload' 
+					   ,url: '${ctx}/upload' 
 					   ,data:{ filesTypeId:361, }
 					   ,done: function(res, index, upload){
 					    if(res.code == 0){
-					    	picUrl = res.data.url;
+					    	picUrl.push(res.data.url);
 					    }else
 					   		myutil.emsg(res.message);
 					  }
@@ -328,7 +328,7 @@ layui.config({
 						obj.field.starTime += ' 00:00:00';
 						obj.field.endTime += ' 00:00:00';
 						obj.field.flag = obj.field.flag || 0;
-						obj.field.pictureUrl = picUrl;
+						obj.field.pictureUrl = picUrl.join(',');
 						myutil.saveAjax({
 							url:'/contract/addContract',
 							data:obj.field,
