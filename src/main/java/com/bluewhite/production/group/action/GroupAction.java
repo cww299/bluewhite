@@ -1,8 +1,11 @@
 package com.bluewhite.production.group.action;
 
+import static org.hamcrest.CoreMatchers.nullValue;
+
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Comparator;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -24,12 +27,16 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.support.ByteArrayMultipartFileEditor;
 
+import com.alibaba.druid.sql.visitor.functions.If;
 import com.bluewhite.basedata.entity.BaseData;
 import com.bluewhite.common.BeanCopyUtils;
 import com.bluewhite.common.ClearCascadeJSON;
+import com.bluewhite.common.Constants;
 import com.bluewhite.common.DateTimePattern;
 import com.bluewhite.common.Log;
+import com.bluewhite.common.SessionManager;
 import com.bluewhite.common.entity.CommonResponse;
+import com.bluewhite.common.entity.CurrentUser;
 import com.bluewhite.common.entity.ErrorCode;
 import com.bluewhite.common.utils.DatesUtil;
 import com.bluewhite.common.utils.UnUtil;
@@ -134,14 +141,33 @@ public class GroupAction {
 	@ResponseBody
 	public CommonResponse allGroup(HttpServletRequest request,Long id, Date temporarilyDate) {
 		CommonResponse cr = new CommonResponse();
+		CurrentUser cu = SessionManager.getUserSession();
+		String sourceMachine = "";
+		if (cu.getRole().contains("productFristPack")) {
+			sourceMachine = "ONE_FLOOR";
+		}
+		if (cu.getRole().contains("packScene")) {
+			sourceMachine = "ELEVEN_WAREHOUSE";
+		}
 		Map<String,Object> groupMap = new HashMap<>();
-		Group group = groupService.findOne(id);
 		Date startTime = DatesUtil.getfristDayOftime(ProTypeUtils.countAllotTime(temporarilyDate));
 		Date endTime = DatesUtil.getLastDayOftime(ProTypeUtils.countAllotTime(temporarilyDate));
-			List<Temporarily> temporarilyList = temporarilyDao.findByTypeAndTemporarilyDateAndGroupId(group.getType(),startTime,id);
-			List<AttendancePay> attendancePayList = attendancePayDao.findByGroupIdAndTypeAndAllotTimeBetween(id,group.getType(), startTime, endTime);
-			List<Map<String, Object>> userList = new ArrayList<>();
-			List<Map<String, Object>> temporarilyUserList = new ArrayList<>();
+		Group group = groupService.findOne(id);
+		List<Temporarily> temporarilyList = temporarilyDao.findByTypeAndTemporarilyDateAndGroupId(group.getType(),startTime,id);
+		List<Map<String, Object>> userList = new ArrayList<>();
+		List<Map<String, Object>> temporarilyUserList = new ArrayList<>();
+		//平板模式下，按打卡记录显示正式工作人员
+//		if(UnUtil.isFromMobile(request)){
+			List<User> userGroupList = userService.findByGroupId(id);
+			String sourceMachineFinal = sourceMachine;
+			userGroupList = userGroupList.stream().filter(user->{
+				List<Attendance>  attendanceList = attendanceService.findByUserIdAndSourceMachineAndTimeBetween(user.getId(), sourceMachineFinal, startTime, endTime);
+				if(attendanceList.size()>0){
+					return true;
+				}else{
+					return false;
+				}
+			}).collect(Collectors.toList());
 			
 			if (temporarilyList.size() > 0) {
 				for (Temporarily temporarily : temporarilyList) {
@@ -153,7 +179,9 @@ public class GroupAction {
 						temporarilyUserMap.put("secondment", 0);
 						temporarilyUserMap.put("groupId", temporarily.getGroupId());
 						temporarilyUserMap.put("name",temporarily.getTemporaryUser().getUserName());
-						temporarilyUserMap.put("time",temporarily.getWorkTime());
+						temporarilyUserMap.put("time",temporarily.getWorkTime()==null?0:temporarily.getWorkTime());
+						//工作休息状态
+						temporarilyUserMap.put("status",1);
 						temporarilyUserList.add(temporarilyUserMap);
 					}
 					// 查询出该分组本厂借调员工的出勤数据
@@ -164,48 +192,141 @@ public class GroupAction {
 						userMap.put("secondment", 0);
 						userMap.put("groupId", temporarily.getGroupId());
 						userMap.put("name",temporarily.getUser().getUserName());
-						userMap.put("time",temporarily.getWorkTime());
+						userMap.put("time",temporarily.getWorkTime()==null?0:temporarily.getWorkTime());
+						userMap.put("status",1);
 						userList.add(userMap);
 					}
 				} 
 				groupMap.put("temporarilyUser", temporarilyUserList);
 			}
 			
-			if (attendancePayList.size() > 0) {
+			if (userGroupList.size() > 0) {
 				// 查询出该分组本厂员工的出勤数据
-				for (AttendancePay attendancePay : attendancePayList) {
+				for (User user : userGroupList) {
+					// 获取员工一天内的打卡记录并按照自然排序
+					List<Attendance>  attendanceList = attendanceService.findByUserIdAndSourceMachineAndTimeBetween(user.getId(),sourceMachine, startTime, endTime)
+							.stream().sorted(Comparator.comparing(Attendance::getTime))
+							.collect(Collectors.toList());
+					Attendance attendanceIn = null;
+					Attendance attendanceOut = null;
+					Double time = null;
+					Double timeH = null;
+					int flag = 0;
+					//根据签到时间实时显示工作时长
+					if(attendanceList.size()>0){
+						attendanceIn = attendanceList.get(0);
+						flag = 1;
+					}
+					if(attendanceIn.getManualTime()==null){
+						if(attendanceList.size()>1){
+							attendanceOut = attendanceList.get(attendanceList.size()-1);
+							time = DatesUtil.getTime(attendanceIn.getTime(), attendanceOut.getTime());
+							timeH =DatesUtil.getTimeHourPick(attendanceIn.getTime(), attendanceOut.getTime());
+							//当签入签出时长小于25，不满半个小时不计算工作状态
+							if(time<25){
+								time = DatesUtil.getTime(attendanceIn.getTime(), new Date());
+								timeH =DatesUtil.getTimeHourPick(attendanceIn.getTime(),new Date());
+								flag = 1;
+							}else{
+								flag = 0;
+								attendanceIn.setManualTime(attendanceOut.getTime());
+								attendanceService.save(attendanceIn);
+							}
+						}
+					}else{
+						flag = 0;
+						time = DatesUtil.getTime(attendanceIn.getTime(), attendanceIn.getManualTime());
+						timeH =DatesUtil.getTimeHourPick(attendanceIn.getTime(), attendanceIn.getManualTime());
+					}
 					Map<String, Object>  userMap = new HashMap<>();
-					userMap.put("id", attendancePay.getUserId());
-					userMap.put("userId", attendancePay.getId());
+					userMap.put("id", user.getId());
+					userMap.put("userId", attendanceIn.getId());
 					userMap.put("secondment", 1);
-					userMap.put("groupId", attendancePay.getGroupId());
-					userMap.put("name",attendancePay.getUserName());
-					userMap.put("time",attendancePay.getWorkTime());
+					userMap.put("groupId", user.getGroupId());
+					userMap.put("name",user.getUserName());
+					userMap.put("time",timeH+"H/("+time+"M)");
+					userMap.put("status",flag);
 					userList.add(userMap);
 				}
 				groupMap.put("userList", userList);
 			}
-			//按打卡记录显示工作人员
-//			if(!UnUtil.isFromMobile(request)){
-//			}else{
-//				if (attendancePayList.size() > 0) {
-//					List<User> userList = userService.findByGroupId(id);
-//					List<Long> userLong = userList.stream().map(user ->user.getId()).collect(Collectors.toList());
-//					List<Attendance> attendanceList = attendanceService.findByUserIdInAndTimeBetween(userLong,startTime,endTime);
-//					
-//					for (AttendancePay attendancePay : attendancePayList) {
-//						User user = new User();
-//						user.setUserName(attendancePay.getUserName());
-//						user.setTurnWorkTime(attendancePay.getWorkTime());
-//						userlist.add(user);
+//		}else{
+//			//pc模式下
+//			List<AttendancePay> attendancePayList = attendancePayDao.findByGroupIdAndTypeAndAllotTimeBetween(id,group.getType(), startTime, endTime);
+//			if (temporarilyList.size() > 0) {
+//				for (Temporarily temporarily : temporarilyList) {
+//					// 查询出该分组临时员工的出勤数据
+//					if (temporarily.getTemporaryUserId() != null) {
+//						Map<String, Object>  temporarilyUserMap = new HashMap<>();
+//						temporarilyUserMap.put("id", temporarily.getTemporaryUserId());
+//						temporarilyUserMap.put("userId", temporarily.getId());
+//						temporarilyUserMap.put("secondment", 0);
+//						temporarilyUserMap.put("groupId", temporarily.getGroupId());
+//						temporarilyUserMap.put("name",temporarily.getTemporaryUser().getUserName());
+//						temporarilyUserMap.put("time",temporarily.getWorkTime());
+//						temporarilyUserMap.put("status",1);
+//						temporarilyUserList.add(temporarilyUserMap);
 //					}
-//				}
-//
+//					// 查询出该分组本厂借调员工的出勤数据
+//					if (temporarily.getUserId() != null) {
+//						Map<String, Object>  userMap = new HashMap<>();
+//						userMap.put("id", temporarily.getUserId());
+//						userMap.put("userId", temporarily.getId());
+//						userMap.put("secondment", 0);
+//						userMap.put("groupId", temporarily.getGroupId());
+//						userMap.put("name",temporarily.getUser().getUserName());
+//						userMap.put("time",temporarily.getWorkTime());
+//						userMap.put("status",1);
+//						userList.add(userMap);
+//					}
+//				} 
+//				groupMap.put("temporarilyUser", temporarilyUserList);
 //			}
+//			if (attendancePayList.size() > 0) {
+//				// 查询出该分组本厂员工的出勤数据
+//				for (AttendancePay attendancePay : attendancePayList) {
+//					Map<String, Object>  userMap = new HashMap<>();
+//					userMap.put("id", attendancePay.getUserId());
+//					userMap.put("userId", attendancePay.getId());
+//					userMap.put("secondment", 1);
+//					userMap.put("groupId", attendancePay.getGroupId());
+//					userMap.put("name",attendancePay.getUserName());
+//					userMap.put("time",attendancePay.getWorkTime());
+//					userMap.put("status",1);
+//					userList.add(userMap);
+//				}
+//				groupMap.put("userList", userList);
+//			}
+//		}
+
 		cr.setData(groupMap);
 		cr.setMessage("查询成功");
 		return cr;
 	}
+	
+	/**
+	 * 手动签出
+	 * 
+	 */
+	@RequestMapping(value = "/production/updateManualTime", method = RequestMethod.GET)
+	@ResponseBody
+	public CommonResponse updateManualTime(Long id,Integer status) {
+		CommonResponse cr = new CommonResponse();
+		if(id!=null){
+			Attendance attendance = attendanceService.findOne(id);
+			if(status==0){
+				attendance.setManualTime(new Date());
+			}
+			if(status==1){
+				attendance.setManualTime(null);
+			}
+		}
+		cr.setMessage("修改成功");
+		return cr;
+	}
+	
+	
+	
 
 	/**
 	 * 查询分组

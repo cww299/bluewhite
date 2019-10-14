@@ -2,7 +2,6 @@ package com.bluewhite.personnel.roomboard.action;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
@@ -109,7 +108,7 @@ public class RecruitAction {
 	 */
 	@RequestMapping(value = "/personnel/addRecruit", method = RequestMethod.POST)
 	@ResponseBody
-	public CommonResponse addConsumption(HttpServletRequest request, Recruit recruit) throws ParseException {
+	public CommonResponse addConsumption(HttpServletRequest request, Recruit recruit) {
 		CommonResponse cr = new CommonResponse();
 		if (recruit.getId() != null) {
 			Recruit recruit2 = service.findOne(recruit.getId());
@@ -117,12 +116,7 @@ public class RecruitAction {
 			if(recruit.getPhone() !=null && (!recruit.getPhone().equals(recruit2.getPhone()))){
 				a=1;
 			}
-			BeanCopyUtils.copyNotEmpty(recruit, recruit2, "");
-			SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-			Date date = sdf.parse("2000-01-01 00:00:00");
-			if (date.equals(recruit.getTestTime())) {
-				recruit2.setTestTime(null);
-			}
+			BeanCopyUtils.copyNotEmpty(recruit, recruit2, "testTime");
 			recruit2.setJudge(a);
 			service.addRecruit(recruit2);
 			cr.setMessage("修改成功");

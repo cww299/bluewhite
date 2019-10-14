@@ -80,6 +80,13 @@ public class Attendance extends BaseEntity<Long> {
 	 */
 	@Column(name = "source_machine")
 	private String sourceMachine;
+	
+	/**
+	 * （包装实时环境）
+	 * 生产环境下的手动离开时间
+	 */
+	@Column(name = "manual_time")
+	private Date manualTime;
 
 	/**
 	 * 员工姓名
@@ -111,6 +118,14 @@ public class Attendance extends BaseEntity<Long> {
 	private String orgName;
 	
 	
+
+	public Date getManualTime() {
+		return manualTime;
+	}
+
+	public void setManualTime(Date manualTime) {
+		this.manualTime = manualTime;
+	}
 
 	public String getSourceMachine() {
 		return sourceMachine;

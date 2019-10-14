@@ -376,7 +376,7 @@ public class UserAction {
 		List<Map<String, Object>> userBirthList = new ArrayList<Map<String, Object>>();
 		List<User> userBirth1 = userList.stream()
 				.filter(User -> User.getBirthDate() != null && User.getGender() != null
-						&& User.getCommitmentId() != null && User.getCommitmentId() != 317)
+						&& User.getCommitmentId() != null && User.getCommitmentId() != 317 && User.getCommitmentId() != 145)
 				.collect(Collectors.toList());
 		for (User user : userBirth1) {
 			int age = DatesUtil.getAgeByBirth(user.getBirthDate());
