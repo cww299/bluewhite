@@ -12,4 +12,6 @@ public interface CommodityDao extends BaseRepository<Commodity, Long>{
 	Commodity findByProductId(Long id);
 	
 	List<Commodity> findByProductIdIsNull();
+
+	Commodity findByName(String name);
 }

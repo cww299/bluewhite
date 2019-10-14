@@ -558,7 +558,7 @@ public class ProcurementServiceImpl extends BaseServiceImpl<Procurement, Long> i
 			} else {
 				throw new ServiceException("当前导入excel第" + (i + 2) + "条数据的商品不存在，请先添加");
 			}
-			if(cPoi.getNumber()==null){
+			if (cPoi.getNumber() == null) {
 				throw new ServiceException("当前导入excel第" + (i + 2) + "条数据的数量不存在，请先添加");
 			}
 			jsonObject.put("number", cPoi.getNumber());
@@ -618,7 +618,7 @@ public class ProcurementServiceImpl extends BaseServiceImpl<Procurement, Long> i
 									packingChildDao.save(packingChild);
 								}
 							}
-						}else{
+						} else {
 							PackingChild packingChild = new PackingChild();
 							packingChild.setWarehouseTypeDeliveryId(warehouseTypeDeliveryId);
 							packingChild.setCustomerId(procurement.getOnlineCustomerId());
@@ -696,12 +696,12 @@ public class ProcurementServiceImpl extends BaseServiceImpl<Procurement, Long> i
 			pc.getProcurement().setResidueNumber(number);
 			// 更新上级转换的子单数量
 			ProcurementChild pcParent = procurementChildDao.findOne(pc.getParentId());
-			
+
 			// 子单数量不能大于上级单据的剩余数量
-			if (pc.getNumber() > (pcParent.getResidueNumber()+num)) {
+			if (pc.getNumber() > (pcParent.getResidueNumber() + num)) {
 				throw new ServiceException("针工单剩余数量不够，无法修改，请确认剩余数量");
 			} else {
-				pcParent.setResidueNumber((pcParent.getResidueNumber()+num) - pc.getNumber());
+				pcParent.setResidueNumber((pcParent.getResidueNumber() + num) - pc.getNumber());
 			}
 			procurementChildDao.save(pcParent);
 			procurementChildDao.save(pc);
@@ -771,7 +771,7 @@ public class ProcurementServiceImpl extends BaseServiceImpl<Procurement, Long> i
 				}
 				// 判定是否更换客户发货，更换客户发货变成新批次，->Y
 				Order order = orderDao.findByBacthNumber(pc.getBacthNumber());
-				if (order!=null && order.getInternal() != 1 && order.getCustomerId() != pc.getCustomerId()) {
+				if (order != null && order.getInternal() != 1 && order.getCustomerId() != pc.getCustomerId()) {
 					sale.setBacthNumber(pc.getBacthNumber().substring(0, pc.getBacthNumber().length() - 1) + "Y");
 					sale.setNewBacth(1);
 				}
@@ -783,4 +783,80 @@ public class ProcurementServiceImpl extends BaseServiceImpl<Procurement, Long> i
 		return count;
 	}
 
+	/**
+	 * * 修正库存（根据剩余库存判断是 1.新增出库单：当导入的数量比实际库存小 2.新增入库单 ：当导入的数量比实际库存大 )
+	 */
+
+	@Transactional
+	public int correctionInventory(ExcelListener excelListener, Long userId, Long warehouseId) {
+		int count = 0;
+		//出库
+		Procurement procurement = new Procurement();
+		procurement.setType(3);
+		procurement.setUserId((long) 1706);
+		procurement.setStatus(5);
+		//入库
+		Procurement procurement2 = new Procurement();
+		procurement2.setType(2);
+		procurement2.setUserId((long) 1706);
+		procurement2.setStatus(4);
+		int sumNumber = 0;
+		int sumNumber2 = 0;
+		// 获取导入的出库单
+		List<Object> excelListenerList = excelListener.getData();
+		JSONArray jsonArray = new JSONArray();
+		JSONArray jsonArray2 = new JSONArray();
+		for (int i = 0; i < excelListenerList.size(); i++) {
+			count++;
+			OutProcurementPoi cPoi = (OutProcurementPoi) excelListenerList.get(i);
+			Commodity commodity = commodityService.findByName(cPoi.getName().trim());
+			if (commodity == null) {
+				System.out.println("商品："+(i + 2));
+//				throw new ServiceException("当前导入excel第" + (i + 2) + "条数据的商品不存在，请先添加");
+				continue;
+			}
+			if (cPoi.getNumber() == null) {
+				System.out.println("数量："+(i + 2));
+//				throw new ServiceException("当前导入excel第" + (i + 2) + "条数据的数量不存在，请先添加");
+				continue;
+			}
+			int number = 0;
+			for(Inventory inventory : commodity.getInventorys()){
+				if(inventory!=null){
+					number+=inventory.getNumber();
+				}
+			}
+			if (cPoi.getNumber() < number) {
+				JSONObject jsonObject = new JSONObject();
+				int renumber = Math.abs(cPoi.getNumber() - number);
+				jsonObject.put("productId", commodity.getProductId());
+				jsonObject.put("number", renumber);
+				jsonObject.put("warehouseId", 157);
+				jsonObject.put("batchNumber", "");
+				jsonObject.put("status", 5);
+				jsonObject.put("childRemark", "导入出库单");
+				sumNumber += cPoi.getNumber() - number;
+				jsonArray.add(jsonObject);
+			} 
+			if (cPoi.getNumber() > number) {
+				JSONObject jsonObject2 = new JSONObject();
+				int renumber = cPoi.getNumber() - number;
+				jsonObject2.put("productId", commodity.getProductId());
+				jsonObject2.put("number", renumber);
+				jsonObject2.put("warehouseId", 157);
+				jsonObject2.put("batchNumber", "");
+				jsonObject2.put("status", 4);
+				jsonObject2.put("childRemark", "导入入库单");
+				sumNumber2 += number - cPoi.getNumber();
+				jsonArray2.add(jsonObject2);
+			}
+		}
+		procurement.setCommodityNumber(jsonArray.toJSONString());
+		procurement2.setCommodityNumber(jsonArray2.toJSONString());
+		procurement.setNumber(sumNumber);
+		procurement2.setNumber(sumNumber);
+		saveProcurement(procurement);
+		saveProcurement(procurement2);
+		return count;
+	}
 }

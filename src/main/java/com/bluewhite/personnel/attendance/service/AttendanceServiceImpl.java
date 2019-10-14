@@ -60,8 +60,6 @@ public class AttendanceServiceImpl extends BaseServiceImpl<Attendance, Long> imp
 		if (flag) {
 			userList = sdk.getUserInfo();
 		}
-//		sdk.disConnect();
-//		sdk.release();
 		return userList;
 	}
 
@@ -104,8 +102,6 @@ public class AttendanceServiceImpl extends BaseServiceImpl<Attendance, Long> imp
 			// }
 			flag = sdk.setUserInfo(number, name, "", isPrivilege, enabled);
 		}
-//		sdk.disConnect();
-//		sdk.release();
 		return flag;
 	}
 
@@ -116,8 +112,6 @@ public class AttendanceServiceImpl extends BaseServiceImpl<Attendance, Long> imp
 		if (flag) {
 			flag = sdk.delectUserById(number);
 		}
-//		sdk.disConnect();
-//		sdk.release();
 		return flag;
 	}
 
@@ -129,8 +123,6 @@ public class AttendanceServiceImpl extends BaseServiceImpl<Attendance, Long> imp
 		if (flag) {
 			user = sdk.getUserInfoByNumber(number);
 		}
-//		sdk.disConnect();
-//		sdk.release();
 		return user;
 	}
 
@@ -175,9 +167,7 @@ public class AttendanceServiceImpl extends BaseServiceImpl<Attendance, Long> imp
 		attendanceListAll.stream().forEach(a -> {
 			a.setSourceMachine(sourceMachineFina);
 		});
-//		batchSave(attendanceListAll);
-//		sdk.disConnect();
-//		sdk.release();
+		batchSave(attendanceListAll);
 		return attendanceListAll;
 	}
 
@@ -203,8 +193,7 @@ public class AttendanceServiceImpl extends BaseServiceImpl<Attendance, Long> imp
 
 			// 按姓名查找
 			if (!StringUtils.isEmpty(param.getUserName())) {
-				predicate.add(
-						cb.like(root.get("user").get("userName").as(String.class), "%" + param.getUserName() + "%"));
+				predicate.add(cb.like(root.get("user").get("userName").as(String.class), "%" + param.getUserName() + "%"));
 			}
 
 			// 按部门查找
@@ -235,8 +224,6 @@ public class AttendanceServiceImpl extends BaseServiceImpl<Attendance, Long> imp
 		if (flag) {
 			// attendanceList = sdk.getGeneralLogData(0);
 		}
-//		sdk.disConnect();
-//		sdk.release();
 		return attendanceList;
 	}
 
@@ -303,8 +290,6 @@ public class AttendanceServiceImpl extends BaseServiceImpl<Attendance, Long> imp
 		if (flag) {
 			user = sdk.getUserInfoTmp(number);
 		}
-//		sdk.disConnect();
-//		sdk.release();
 		return user;
 	}
 

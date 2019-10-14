@@ -43,6 +43,13 @@ public class Attendance extends BaseEntity<Long> {
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "user_id", referencedColumnName = "id", insertable = false, updatable = false)
 	private User user;
+	
+	/**
+	 * 员工姓名（取自考勤机上的姓名，在系统中两两种情况，1.正式员工暂时未录入系统，这个时候，userid=null；2.临时员工无需录入系统）
+	 * 
+	 */
+	@Column(name = "userName")
+	private String userName;
 
 	/**
 	 * 签到考勤时间
@@ -87,12 +94,6 @@ public class Attendance extends BaseEntity<Long> {
 	 */
 	@Column(name = "manual_time")
 	private Date manualTime;
-
-	/**
-	 * 员工姓名
-	 */
-	@Transient
-	private String userName;
 
 	/**
 	 * 查询字段
