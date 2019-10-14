@@ -275,17 +275,51 @@ layui.config({
 									form.on('switch(changeStatus)',function(data){
 										var index = $(data.elem).closest('tr').data('index');
 										var trData = table.cache['lookoverTable'][index];
-										layer.confirm('是否确认修改:'+trData.name+' 工作时长：'+trData.time+' 的工作状态？',{offset:'100px'},function(){
-											myutil.saveAjax({
-												url: '/production/updateManualTime',
-												type: 'get',
-												data:{
-													id: trData.userId,
-													status: data.elem.checked?1:0,
-												}
-											})
-										},function(){
-											table.reload('lookoverTable');
+										var html = [
+										            '<div style="padding:15px;">',
+										                '<h3 style="text-align: center;color: gray;padding: 10px 0;">',
+										                	'是否确认修改:'+trData.name+' 工作时长：'+trData.time+' 的工作状态？<h3>',
+										                	'<form class="layui-form layui-form-pane" action="">',
+										                	  '<div class="layui-form-item" pane>',
+										                	    '<label class="layui-form-label">签出时间</label>',
+										                	    '<div class="layui-input-block">',
+										                	      '<input type="text" id="outTime" class="layui-input">',
+										                	    '</div>',
+										                	  '</div>',
+										                	'</form>',
+										                '</h2>',
+										            '</div>',
+										            ].join(' ');
+										var confirm = layer.open({
+											type:1,
+											content: html,
+											offset:'100px',
+											area: ['45%','30%'],
+											btn:['确定','取消'],
+											success:function(){
+												laydate.render({
+													elem: '#outTime',
+													type: 'datetime',
+													value: new Date().format('yyyy-MM-dd hh:mm:ss'),
+												})
+											},
+											yes: function(){
+												myutil.saveAjax({
+													url: '/production/updateManualTime',
+													type: 'get',
+													data:{
+														id: trData.userId,
+														status: data.elem.checked?1:0,
+														time: $('#outTime').val(),
+													},
+													success:function(){
+														layer.close(confirm);
+													}
+												})
+											},
+											end:function(){
+												table.reload('lookoverTable');
+											}
 										})
 									})
 								}
