@@ -136,6 +136,7 @@ layui.config({
 		        {align:'center',field:'time',title:'签到时间'},
 		        {align:'center',field:'mode',title:'验证方式',templet: getMode()},
 		        {align:'center',field:'status',title:'签到状态',templet: getStatu(),filter:true,},
+		        {align:'center',field:'sourceMachine',title:'打卡地点',templet: getMachine(),filter:true,},
 		        ]]
 	})
 	form.on('submit(search)',function(obj){
@@ -205,6 +206,20 @@ layui.config({
 				case 2: mode = '打卡验证'; break;
 				}
 			return mode;
+		}
+	}
+	function getMachine(){
+		return function(d){
+			var machine = '---';
+			switch(d.sourceMachine){
+			case 'THREE_FLOOR': machine='三楼打卡机'; break;
+			case 'TWO_FLOOR': machine='二楼打卡机'; break;
+			case 'ONE_FLOOR': machine='一楼打卡机'; break;
+			case 'EIGHT_WAREHOUSE': machine='面辅料打卡机'; break;
+			case 'NEW_IGHT_WAREHOUSE': machine='成品打卡机'; break;
+			case 'ELEVEN_WAREHOUSE': machine='11号打卡机'; break;
+			}
+			return machine;
 		}
 	}
 	function getStatu(){
