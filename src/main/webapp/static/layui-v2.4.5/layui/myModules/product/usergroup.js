@@ -326,7 +326,7 @@ layui.config({
 							})
 							function getStatus(){
 								return function(d){
-									var disabled = 'disabled1',checked = '';
+									var disabled = 'disabled',checked = '';
 									if(isSmall && d.isTemp=='否')	//小屏且非临时，可修改
 										disabled = '';
 									if(d.status==1)
