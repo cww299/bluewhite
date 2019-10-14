@@ -6,13 +6,13 @@ import com.alibaba.excel.metadata.BaseRowModel;
 public class OutProcurementPoi extends BaseRowModel{
 	
 	/**
-	 * 订单编号
+	 * 产品名称
 	 */
 	@ExcelProperty(index = 0)
 	private String name;
 	
 	/**
-	 * 客户昵称
+	 * 数量
 	 * 
 	 */
 	@ExcelProperty(index = 1)

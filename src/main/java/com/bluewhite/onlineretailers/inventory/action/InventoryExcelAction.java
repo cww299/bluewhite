@@ -163,6 +163,27 @@ public class InventoryExcelAction {
 		return cr;
 	}
 	
+	/**
+	 * 修正库存（1.根据剩余库存判断是新增出库单：当导入的数量比实际库存小，则新增出库单 
+	 * 					还是新增入库单 ：当导入的数量比实际库存大，则新增入库单）
+	 * 
+	 * 
+	 * @return
+	 * @throws IOException
+	 */
+	@RequestMapping(value = "/inventory/import/correctionInventory", method = RequestMethod.POST)
+	@ResponseBody
+	public CommonResponse correctionInventory(@RequestParam(value = "file", required = false) MultipartFile file
+			,Long userId ,Long warehouseId) throws IOException {
+		CommonResponse cr = new CommonResponse();
+		InputStream inputStream = file.getInputStream();
+		ExcelListener excelListener = new ExcelListener();
+		EasyExcelFactory.readBySax(inputStream, new Sheet(1, 1, OutProcurementPoi.class), excelListener);
+		int count = procurementService.correctionInventory(excelListener, userId, warehouseId);
+		inputStream.close();
+		cr.setMessage("成功导入"+count+"条出库单");
+		return cr;
+	}
 	
 
 }

@@ -153,11 +153,11 @@ public class GroupAction {
 		Date startTime = DatesUtil.getfristDayOftime(ProTypeUtils.countAllotTime(temporarilyDate));
 		Date endTime = DatesUtil.getLastDayOftime(ProTypeUtils.countAllotTime(temporarilyDate));
 		Group group = groupService.findOne(id);
-		List<Temporarily> temporarilyList = temporarilyDao.findByTypeAndTemporarilyDateAndGroupId(group.getType(),startTime,id);
+		List<Temporarily> temporarilyList = temporarilyDao.findByTypeAndGroupIdAndTemporarilyDate(group.getType(),id,startTime);
 		List<Map<String, Object>> userList = new ArrayList<>();
 		List<Map<String, Object>> temporarilyUserList = new ArrayList<>();
 		//平板模式下，按打卡记录显示正式工作人员
-//		if(UnUtil.isFromMobile(request)){
+		if(UnUtil.isFromMobile(request)){
 			List<User> userGroupList = userService.findByGroupId(id);
 			String sourceMachineFinal = sourceMachine;
 			userGroupList = userGroupList.stream().filter(user->{
@@ -215,6 +215,8 @@ public class GroupAction {
 					//根据签到时间实时显示工作时长
 					if(attendanceList.size()>0){
 						attendanceIn = attendanceList.get(0);
+						time = DatesUtil.getTime(attendanceIn.getTime(), new Date());
+						timeH =DatesUtil.getTimeHourPick(attendanceIn.getTime(),new Date());
 						flag = 1;
 					}
 					if(attendanceIn.getManualTime()==null){
@@ -224,8 +226,6 @@ public class GroupAction {
 							timeH =DatesUtil.getTimeHourPick(attendanceIn.getTime(), attendanceOut.getTime());
 							//当签入签出时长小于25，不满半个小时不计算工作状态
 							if(time<25){
-								time = DatesUtil.getTime(attendanceIn.getTime(), new Date());
-								timeH =DatesUtil.getTimeHourPick(attendanceIn.getTime(),new Date());
 								flag = 1;
 							}else{
 								flag = 0;
@@ -250,54 +250,54 @@ public class GroupAction {
 				}
 				groupMap.put("userList", userList);
 			}
-//		}else{
-//			//pc模式下
-//			List<AttendancePay> attendancePayList = attendancePayDao.findByGroupIdAndTypeAndAllotTimeBetween(id,group.getType(), startTime, endTime);
-//			if (temporarilyList.size() > 0) {
-//				for (Temporarily temporarily : temporarilyList) {
-//					// 查询出该分组临时员工的出勤数据
-//					if (temporarily.getTemporaryUserId() != null) {
-//						Map<String, Object>  temporarilyUserMap = new HashMap<>();
-//						temporarilyUserMap.put("id", temporarily.getTemporaryUserId());
-//						temporarilyUserMap.put("userId", temporarily.getId());
-//						temporarilyUserMap.put("secondment", 0);
-//						temporarilyUserMap.put("groupId", temporarily.getGroupId());
-//						temporarilyUserMap.put("name",temporarily.getTemporaryUser().getUserName());
-//						temporarilyUserMap.put("time",temporarily.getWorkTime());
-//						temporarilyUserMap.put("status",1);
-//						temporarilyUserList.add(temporarilyUserMap);
-//					}
-//					// 查询出该分组本厂借调员工的出勤数据
-//					if (temporarily.getUserId() != null) {
-//						Map<String, Object>  userMap = new HashMap<>();
-//						userMap.put("id", temporarily.getUserId());
-//						userMap.put("userId", temporarily.getId());
-//						userMap.put("secondment", 0);
-//						userMap.put("groupId", temporarily.getGroupId());
-//						userMap.put("name",temporarily.getUser().getUserName());
-//						userMap.put("time",temporarily.getWorkTime());
-//						userMap.put("status",1);
-//						userList.add(userMap);
-//					}
-//				} 
-//				groupMap.put("temporarilyUser", temporarilyUserList);
-//			}
-//			if (attendancePayList.size() > 0) {
-//				// 查询出该分组本厂员工的出勤数据
-//				for (AttendancePay attendancePay : attendancePayList) {
-//					Map<String, Object>  userMap = new HashMap<>();
-//					userMap.put("id", attendancePay.getUserId());
-//					userMap.put("userId", attendancePay.getId());
-//					userMap.put("secondment", 1);
-//					userMap.put("groupId", attendancePay.getGroupId());
-//					userMap.put("name",attendancePay.getUserName());
-//					userMap.put("time",attendancePay.getWorkTime());
-//					userMap.put("status",1);
-//					userList.add(userMap);
-//				}
-//				groupMap.put("userList", userList);
-//			}
-//		}
+		}else{
+			//pc模式下
+			List<AttendancePay> attendancePayList = attendancePayDao.findByGroupIdAndTypeAndAllotTimeBetween(id,group.getType(), startTime, endTime);
+			if (temporarilyList.size() > 0) {
+				for (Temporarily temporarily : temporarilyList) {
+					// 查询出该分组临时员工的出勤数据
+					if (temporarily.getTemporaryUserId() != null) {
+						Map<String, Object>  temporarilyUserMap = new HashMap<>();
+						temporarilyUserMap.put("id", temporarily.getTemporaryUserId());
+						temporarilyUserMap.put("userId", temporarily.getId());
+						temporarilyUserMap.put("secondment", 0);
+						temporarilyUserMap.put("groupId", temporarily.getGroupId());
+						temporarilyUserMap.put("name",temporarily.getTemporaryUser().getUserName());
+						temporarilyUserMap.put("time",temporarily.getWorkTime());
+						temporarilyUserMap.put("status",1);
+						temporarilyUserList.add(temporarilyUserMap);
+					}
+					// 查询出该分组本厂借调员工的出勤数据
+					if (temporarily.getUserId() != null) {
+						Map<String, Object>  userMap = new HashMap<>();
+						userMap.put("id", temporarily.getUserId());
+						userMap.put("userId", temporarily.getId());
+						userMap.put("secondment", 0);
+						userMap.put("groupId", temporarily.getGroupId());
+						userMap.put("name",temporarily.getUser().getUserName());
+						userMap.put("time",temporarily.getWorkTime());
+						userMap.put("status",1);
+						userList.add(userMap);
+					}
+				} 
+				groupMap.put("temporarilyUser", temporarilyUserList);
+			}
+			if (attendancePayList.size() > 0) {
+				// 查询出该分组本厂员工的出勤数据
+				for (AttendancePay attendancePay : attendancePayList) {
+					Map<String, Object>  userMap = new HashMap<>();
+					userMap.put("id", attendancePay.getUserId());
+					userMap.put("userId", attendancePay.getId());
+					userMap.put("secondment", 1);
+					userMap.put("groupId", attendancePay.getGroupId());
+					userMap.put("name",attendancePay.getUserName());
+					userMap.put("time",attendancePay.getWorkTime());
+					userMap.put("status",1);
+					userList.add(userMap);
+				}
+				groupMap.put("userList", userList);
+			}
+		}
 
 		cr.setData(groupMap);
 		cr.setMessage("查询成功");
@@ -310,16 +310,17 @@ public class GroupAction {
 	 */
 	@RequestMapping(value = "/production/updateManualTime", method = RequestMethod.GET)
 	@ResponseBody
-	public CommonResponse updateManualTime(Long id,Integer status) {
+	public CommonResponse updateManualTime(Long id,Integer status,Date time) {
 		CommonResponse cr = new CommonResponse();
 		if(id!=null){
 			Attendance attendance = attendanceService.findOne(id);
 			if(status==0){
-				attendance.setManualTime(new Date());
+				attendance.setManualTime(time);
 			}
 			if(status==1){
 				attendance.setManualTime(null);
 			}
+			attendanceService.save(attendance);
 		}
 		cr.setMessage("修改成功");
 		return cr;

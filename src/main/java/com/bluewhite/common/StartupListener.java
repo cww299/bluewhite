@@ -1,5 +1,7 @@
 package com.bluewhite.common;
 
+import java.net.InetAddress;
+import java.net.UnknownHostException;
 import java.util.ResourceBundle;
 import java.util.Timer;
 import java.util.TimerTask;
@@ -9,6 +11,7 @@ import org.springframework.context.ApplicationListener;
 import org.springframework.context.event.ContextRefreshedEvent;
 import org.springframework.stereotype.Service;
 
+import com.bluewhite.common.utils.IpUtil;
 import com.bluewhite.common.utils.ZkemUtils.SDKRunnable;
 import com.bluewhite.personnel.attendance.service.AttendanceServiceImpl;
 
@@ -21,8 +24,9 @@ public class StartupListener implements ApplicationListener<ContextRefreshedEven
 	public void onApplicationEvent(ContextRefreshedEvent event) {
 		if (event.getApplicationContext().getParent() == null) {
 		} else {
-			System.out.println("执行我最后2");
-			regEvent();
+			if(IpUtil.getLocalIP().equals("192.168.1.74")){
+				regEvent();
+			}
 		}
 	}
 
@@ -34,7 +38,7 @@ public class StartupListener implements ApplicationListener<ContextRefreshedEven
 				ResourceBundle resource = ResourceBundle.getBundle("resources");
 				String key = resource.getString("attendance.ip");
 				for (String address : key.split(",")) {
-					new Thread(new SDKRunnable(address),"thread:"+address).start();
+					new Thread(new SDKRunnable(address), "thread:" + address).start();
 				}
 			}
 		}, 300);

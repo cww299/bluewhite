@@ -77,7 +77,7 @@ public class ProductServiceImpl  extends BaseServiceImpl<Product, Long> implemen
 			product.setOriginDepartment(Constants.PRODUCT_FRIST_QUALITY);
 		}
 		//包装
-		if(cu.getRole().contains(Constants.PRODUCT_FRIST_PACK)){
+		if(cu.getRole().contains(Constants.PRODUCT_FRIST_PACK) ||  cu.getRole().contains("packScene") ){
 			product.setOriginDepartment(Constants.PRODUCT_FRIST_PACK);
 		}
 		//针工

@@ -196,10 +196,16 @@ public class ZkemSDKUtils {
 						attendance.setUserId(user.get().getId());
 					}
 				}
+				//根据编号查找用户
+				List<Map<String, Object>> mapString = getUserInfoByNumber(enrollNumber.trim());
+				if(mapString.size()>0){
+					attendance.setUserName(String.valueOf(mapString.get(0).get("name")));
+				}
 				attendance.setInOutMode(1);
 				strList.add(attendance);
 			}
-		} while (newresult == true);
+		} 
+		while (newresult == true);
 		return strList;
 	}
 
@@ -239,9 +245,6 @@ public class ZkemSDKUtils {
 			if (index > -1) {
 				name = name.substring(0, index);
 			}
-			// if (sName.getStringRef().length() > 4) {
-			// name = sName.getStringRef().substring(0, 4);
-			// }
 			// 如果没有名字，跳过。
 			if (name.trim().length() == 0)
 				continue;
@@ -334,9 +337,43 @@ public class ZkemSDKUtils {
 			if (index > -1) {
 				name = name.substring(0, index);
 			}
-			// if (sName.getStringRef().length() > 4) {
-			// name = sName.getStringRef().substring(0, 4);
-			// }
+			Map<String, Object> m = new HashMap<String, Object>();
+			m.put("number", number);
+			m.put("name", name.trim());
+			m.put("privilege", iPrivilege.getIntRef());
+			m.put("enabled", bEnabled.getBooleanRef());
+			resultList.add(m);
+		}
+		return resultList;
+	}
+	
+
+	/**
+	 * 根据考勤号码获取用户信息
+	 *
+	 * @param number
+	 *            考勤号码
+	 * @return
+	 */
+	public static List<Map<String, Object>> getUserInfoByNumber(String number, ActiveXComponent zkem) {
+		Variant v0 = new Variant(1);
+		Variant sdwEnrollNumber = new Variant(number, true);
+		Variant sName = new Variant("", true);
+		Variant sPassword = new Variant("", true);
+		Variant iPrivilege = new Variant(0, true);
+		Variant bEnabled = new Variant(false, true);
+		boolean result = zkem.invoke("SSR_GetUserInfo", v0, sdwEnrollNumber, sName, sPassword, iPrivilege, bEnabled)
+				.getBoolean();
+		List<Map<String, Object>> resultList = new ArrayList<Map<String, Object>>();
+		if (result) {
+			// 由于名字后面会产生乱码，所以这里采用了截取字符串的办法把后面的乱码去掉了，以后有待考察更好的办法。
+			// 只支持2位、3位、4位长度的中文名字。
+			String name = sName.getStringRef();
+			int index = name.indexOf("\0");
+			String newStr = "";
+			if (index > -1) {
+				name = name.substring(0, index);
+			}
 			Map<String, Object> m = new HashMap<String, Object>();
 			m.put("number", number);
 			m.put("name", name.trim());
