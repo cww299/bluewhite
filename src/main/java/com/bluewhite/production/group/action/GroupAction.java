@@ -153,7 +153,7 @@ public class GroupAction {
 		Date startTime = DatesUtil.getfristDayOftime(ProTypeUtils.countAllotTime(temporarilyDate));
 		Date endTime = DatesUtil.getLastDayOftime(ProTypeUtils.countAllotTime(temporarilyDate));
 		Group group = groupService.findOne(id);
-		List<Temporarily> temporarilyList = temporarilyDao.findByTypeAndTemporarilyDateAndGroupId(group.getType(),startTime,id);
+		List<Temporarily> temporarilyList = temporarilyDao.findByTypeAndGroupIdAndTemporarilyDate(group.getType(),id,startTime);
 		List<Map<String, Object>> userList = new ArrayList<>();
 		List<Map<String, Object>> temporarilyUserList = new ArrayList<>();
 		//平板模式下，按打卡记录显示正式工作人员
