@@ -86,7 +86,7 @@ public interface TemporarilyDao extends BaseRepository<Temporarily, Long>{
 	 * @param temporarilyDate
 	 * @return
 	 */
-	public List<Temporarily> findByTypeAndTemporarilyDateAndGroupId(Integer type, Date temporarilyDate, Long id);
+	public List<Temporarily> findByTypeAndGroupIdAndTemporarilyDate(Integer type, Long id,Date temporarilyDate);
 	/**
 	 * 根据分组查询
 	 * @param type

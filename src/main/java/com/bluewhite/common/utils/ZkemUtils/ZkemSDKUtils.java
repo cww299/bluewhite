@@ -197,10 +197,10 @@ public class ZkemSDKUtils {
 					}
 				}
 				//根据编号查找用户
-//				List<Map<String, Object>> mapString = getUserInfoByNumber(enrollNumber.trim());
-//				if(mapString.size()>0){
-//					attendance.setUserName(String.valueOf(mapString.get(0).get("name")));
-//				}
+				List<Map<String, Object>> mapString = getUserInfoByNumber(enrollNumber.trim());
+				if(mapString.size()>0){
+					attendance.setUserName(String.valueOf(mapString.get(0).get("name")));
+				}
 				attendance.setInOutMode(1);
 				strList.add(attendance);
 			}

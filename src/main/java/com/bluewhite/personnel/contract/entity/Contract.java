@@ -1,16 +1,24 @@
 package com.bluewhite.personnel.contract.entity;
 
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 
 import com.bluewhite.base.BaseEntity;
 import com.bluewhite.basedata.entity.BaseData;
+import com.bluewhite.system.sys.entity.Files;
 /**
  * 合同实体
  * @author zhangliang
@@ -49,16 +57,23 @@ public class Contract extends BaseEntity<Long>{
 	private BaseData contractType;
 	
 	/**
+	 * 签订公司
+	 */
+	@Column(name = "company")
+	private String company;
+	
+	/**
 	 * 合同年限
 	 */
 	@Column(name = "duration")
 	private Double duration;
 	
 	/**
-	 * 合同照片url
+	 * 合同照片
 	 */
-	@Column(name = "picture_url")
-	private String pictureUrl;
+	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY,orphanRemoval = true)
+	@JoinColumn(name = "contract_id")
+	private Set<Files> fileSet = new HashSet<>();
 	
 	/**
 	 * 开始时间
@@ -79,7 +94,7 @@ public class Contract extends BaseEntity<Long>{
 	private String content;
 	
 	/**
-	 * 保险金额
+	 * 合同金额
 	 */
 	@Column(name = "amount")
 	private Double amount;
@@ -93,13 +108,45 @@ public class Contract extends BaseEntity<Long>{
 	/**
 	 * 查询字段
 	 */
+	@Transient
 	private Date orderTimeBegin;
 	/**
 	 * 查询字段
 	 */
+	@Transient
 	private Date orderTimeEnd;
 	
+	/**
+	 * 照片ids
+	 */
+	@Transient
+	private String fileIds;
 	
+	
+
+	public String getFileIds() {
+		return fileIds;
+	}
+
+	public void setFileIds(String fileIds) {
+		this.fileIds = fileIds;
+	}
+
+	public Set<Files> getFileSet() {
+		return fileSet;
+	}
+
+	public void setFileSet(Set<Files> fileSet) {
+		this.fileSet = fileSet;
+	}
+
+	public String getCompany() {
+		return company;
+	}
+
+	public void setCompany(String company) {
+		this.company = company;
+	}
 
 	public Integer getFlag() {
 		return flag;
@@ -171,14 +218,6 @@ public class Contract extends BaseEntity<Long>{
 
 	public void setDuration(Double duration) {
 		this.duration = duration;
-	}
-
-	public String getPictureUrl() {
-		return pictureUrl;
-	}
-
-	public void setPictureUrl(String pictureUrl) {
-		this.pictureUrl = pictureUrl;
 	}
 
 	public Date getStarTime() {
