@@ -19,6 +19,7 @@ import com.bluewhite.common.entity.CommonResponse;
 import com.bluewhite.common.entity.PageParameter;
 import com.bluewhite.personnel.contract.entity.Contract;
 import com.bluewhite.personnel.contract.service.ContractService;
+import com.bluewhite.system.sys.entity.Files;
 
 @Controller
 public class ContractAction {
@@ -29,7 +30,8 @@ public class ContractAction {
 	private ClearCascadeJSON clearCascadeJSON;
 	{
 		clearCascadeJSON = ClearCascadeJSON.get().addRetainTerm(Contract.class, "id", "contractKind", "contractType",
-				"duration", "pictureUrl", "starTime", "endTime", "content","amount","flag","company")
+				"duration", "pictureUrl", "starTime", "endTime", "content","amount","flag","company","fileSet")
+				.addRetainTerm(Files.class, "id", "url")
 				.addRetainTerm(BaseData.class, "id", "name");
 	}
 
