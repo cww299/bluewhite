@@ -120,7 +120,8 @@ layui.config({
 			if(ret.code==0){
 				for(var key in ret.data.rows){
 					var d = ret.data.rows[key];
-					d.userName = d.user?d.user.userName:'---';
+					d.name = d.user?d.user.userName:'---';
+					d.userName = d.userName || '---';
 				}
 			}
 			return { code : ret.code, msg : ret.message, data : ret.data.rows, count:ret.data.total,} 
@@ -130,7 +131,8 @@ layui.config({
 		limit:15,
 		cols: [[
 		        {align:'center',field:'number',title:'员工编号'},
-		        {align:'center',field:'userName',title:'员工姓名',},
+		        {align:'center',field:'name',title:'员工姓名',},
+		        {align:'center',field:'userName',title:'考勤姓名',}, 
 		        {align:'center',field:'time',title:'签到时间'},
 		        {align:'center',field:'mode',title:'验证方式',templet: getMode()},
 		        {align:'center',field:'status',title:'签到状态',templet: getStatu(),filter:true,},
