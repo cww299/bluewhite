@@ -45,7 +45,7 @@
 </body>
 <!-- 新增修改模板 -->
 <script type="text/html" id="addEditTpl">
-<div class="layui-form" style="padding:20px;">
+<div class="layui-form layui-form-pane" style="padding:20px;">
   <div class="layui-form-item">
     <label class="layui-form-label">合同种类</label>
     <div class="layui-input-block">
@@ -87,25 +87,33 @@
     </div>
   </div>
   <div class="layui-form-item">
-    <label class="layui-form-label">保险金额</label>
+    <label class="layui-form-label">合同金额</label>
     <div class="layui-input-block">
       <input type="text" name="amount"  value="{{ d.amount }}" 
 			lay-verify="number" placeholder="请输入保险金额" class="layui-input">
     </div>
   </div>
   <div class="layui-form-item">
+    <label class="layui-form-label">公司</label>
+    <div class="layui-input-block">
+      <input type="text" name="company"  value="{{ d.company }}" 
+			 placeholder="请输入公司" class="layui-input">
+    </div>
+  </div>
+  <div class="layui-form-item" pane>
     <label class="layui-form-label">是否有效</label>
     <div class="layui-input-block">
       <input type="checkbox" name="flag" value="1" lay-text="有效|无效" lay-skin="switch" {{ d.flag==1?'checked':'' }}>
     </div>
   </div>
-  <div class="layui-form-item">
+  <div class="layui-form-item" pane>
     <label class="layui-form-label">是否有效</label>
     <div class="layui-input-block">
       <button type="button" class="layui-btn layui-btn-sm" id="uploadPic">
   			<i class="layui-icon">&#xe67c;</i>上传图片</button>
     </div>
   </div>
+ 
 
   <input type="hidden" name="id" value="{{d.id}}">
   <span style="display:none;" id="sureBtn" lay-submit lay-filter="sureBtn"></span>
@@ -211,6 +219,7 @@ layui.config({
 			cols:[[
 			       {type:'checkbox',},
 			       {title:'合同种类',   field:'contractKind_name',	},
+			       {title:'公司',   		field:'company',	},
 			       {title:'合同类型',   field:'contractType_name',	},
 			       {title:'合同年限',   field:'duration',	},
 			       {title:'开始时间',   field:'starTime',	},
@@ -262,7 +271,7 @@ layui.config({
 		
 		function addEdit(type){
 			var data={ id:'',contractKind:{name:''},contractType:{name:''},duration:'',
-					starTime:'',endTime:'',content:'',amount:'',flag:1 },
+					starTime:'',endTime:'',content:'',amount:'',flag:1,company:'', },
 			choosed=layui.table.checkStatus('tableData').data,
 			tpl=addEditTpl.innerHTML,
 			title='新增合同',
@@ -283,7 +292,7 @@ layui.config({
 			var addEditWin=layer.open({
 				type:1,
 				title:title,
-				area:['40%','65%'],
+				area:['40%','75%'],
 				content:html,
 				btn:['确定','取消'],
 				btnAlign :'c',
