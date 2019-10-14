@@ -457,7 +457,7 @@ layui.config({
 					[ { field: "userName", title: "人名", align: 'center',
 					},{ field: "leaveDetails", title: "请假详情", align: 'center',
 					},{ field: "belateDetails", title: "迟到详情", align: 'center', width:'50%'
-					},{ field: "leaveTime", title: "请假时长", align: 'center',
+					},{ field: "dutyWork", title: "请假时长", align: 'center',
 					},{ field: "turnWork", title: "出勤时长", align: 'center',
 					},{ field: "ordinaryOvertime", title: "普通加班时长", align: 'center',
 					},{ field: "productionOvertime", title: "生产加班时长", align: 'center',
