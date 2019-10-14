@@ -3,6 +3,8 @@ package com.bluewhite.common.utils.ZkemUtils;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.List;
+import java.util.Map;
 
 import javax.annotation.PostConstruct;
 
@@ -23,12 +25,12 @@ import com.jacob.com.Variant;
 
 @Component
 public class SensorEvents {
-	
-	
+
 	private ActiveXComponent zkem;
 
-	public  SensorEvents(){};
-	
+	public SensorEvents() {
+	};
+
 	public SensorEvents(ActiveXComponent zkem) {
 		this.zkem = zkem;
 	}
@@ -84,6 +86,7 @@ public class SensorEvents {
 		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 		try {
 			Date date = sdf.parse(time);
+			attendance.setTime(date);
 		} catch (ParseException e) {
 			e.printStackTrace();
 		}
@@ -91,13 +94,14 @@ public class SensorEvents {
 		if (user != null) {
 			attendance.setUserId(user.getId());
 		}
-		attendance.setTime(new Date());
+		List<Map<String, Object>> mapString = ZkemSDKUtils.getUserInfoByNumber(attendance.getNumber(), zkem);
+		attendance.setUserName(String.valueOf(mapString.get(0).get("name")));
 		// 考勤状态
 		attendance.setInOutMode(Integer.valueOf(String.valueOf(arge[2])));
 		// 验证方式
 		attendance.setVerifyMode(Integer.valueOf(String.valueOf(arge[3])));
 		System.out.println(Thread.currentThread().getName());
-		String address = ZkemSDKUtils.GetDeviceIP(0,zkem);
+		String address = ZkemSDKUtils.GetDeviceIP(0, zkem);
 		String sourceMachine = null;
 		if (Constants.THREE_FLOOR.equals(address)) {
 			sourceMachine = "THREE_FLOOR";

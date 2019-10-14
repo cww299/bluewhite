@@ -66,7 +66,7 @@ public class AttendanceAction {
 	private ClearCascadeJSON clearCascadeJSON;
 	{
 		clearCascadeJSON = ClearCascadeJSON.get()
-				.addRetainTerm(Attendance.class, "number", "user", "time", "inOutMode", "verifyMode")
+				.addRetainTerm(Attendance.class, "number", "user", "time", "inOutMode", "verifyMode","userName","sourceMachine")
 				.addRetainTerm(User.class, "id", "userName", "number");
 	}
 

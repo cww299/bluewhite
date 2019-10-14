@@ -310,12 +310,12 @@ public class GroupAction {
 	 */
 	@RequestMapping(value = "/production/updateManualTime", method = RequestMethod.GET)
 	@ResponseBody
-	public CommonResponse updateManualTime(Long id,Integer status) {
+	public CommonResponse updateManualTime(Long id,Integer status,Date time) {
 		CommonResponse cr = new CommonResponse();
 		if(id!=null){
 			Attendance attendance = attendanceService.findOne(id);
 			if(status==0){
-				attendance.setManualTime(new Date());
+				attendance.setManualTime(time);
 			}
 			if(status==1){
 				attendance.setManualTime(null);
