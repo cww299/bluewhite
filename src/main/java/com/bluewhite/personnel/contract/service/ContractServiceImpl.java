@@ -4,8 +4,10 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import javax.persistence.criteria.Predicate;
 
@@ -21,6 +23,8 @@ import com.bluewhite.common.utils.DatesUtil;
 import com.bluewhite.common.utils.StringUtil;
 import com.bluewhite.personnel.contract.dao.ContractDao;
 import com.bluewhite.personnel.contract.entity.Contract;
+import com.bluewhite.system.sys.dao.FilesDao;
+import com.bluewhite.system.sys.entity.Files;
 
 @Service
 public class ContractServiceImpl extends BaseServiceImpl<Contract, Long> implements ContractService {
@@ -28,12 +32,24 @@ public class ContractServiceImpl extends BaseServiceImpl<Contract, Long> impleme
 	@Autowired
 	private ContractDao dao;
 
+	@Autowired
+	private FilesDao filesDao;
+
 	@Override
 	public void addContract(Contract contract) {
 		if (contract.getId() != null) {
 			Contract ot = dao.findOne(contract.getId());
 			update(contract, ot);
 		} else {
+			if(!StringUtils.isEmpty(contract.getFileIds())){
+				String[] fileIds = contract.getFileIds().split(",");
+				Set<Files> fileSet = new HashSet<>();
+				for(String idString : fileIds){
+					Files files = filesDao.findOne(Long.parseLong(idString));
+					fileSet.add(files);
+				}
+				contract.setFileSet(fileSet);
+			}
 			contract.setFlag(1);
 			save(contract);
 		}

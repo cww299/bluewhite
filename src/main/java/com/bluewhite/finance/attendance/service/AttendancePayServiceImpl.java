@@ -246,19 +246,19 @@ public class AttendancePayServiceImpl extends BaseServiceImpl<AttendancePay, Lon
 		oldAttendancePay.setWorkTime(NumUtils.sum(oldAttendancePay.getTurnWorkTime(), oldAttendancePay.getOverTime()));
 		oldAttendancePay.setPayNumber(NumUtils.mul(oldAttendancePay.getWorkPrice(), oldAttendancePay.getWorkTime()));
 		dao.save(oldAttendancePay);
-		if (oldAttendancePay.getType() == 2) {
+//		if (oldAttendancePay.getType() == 2) {
 			// 获取该员工当天做过的所有任务
-			List<Task> taskList = taskService.findByUserIdAndAllotTime(String.valueOf(oldAttendancePay.getUserId()),
-					DatesUtil.getfristDayOftime(oldAttendancePay.getAllotTime()),
-					DatesUtil.getLastDayOftime(oldAttendancePay.getAllotTime()));
-			if (taskList.size() > 0) {
-				for (Task task : taskList) {
-					String[] arrayRefVar = { String.valueOf(task.getProcedureId()) };
-					task.setProcedureIds(arrayRefVar);
-					taskService.addTask(task,null);
-				}
-			}
-		}
+//			List<Task> taskList = taskService.findByUserIdAndAllotTime(String.valueOf(oldAttendancePay.getUserId()),
+//					DatesUtil.getfristDayOftime(oldAttendancePay.getAllotTime()),
+//					DatesUtil.getLastDayOftime(oldAttendancePay.getAllotTime()));
+//			if (taskList.size() > 0) {
+//				for (Task task : taskList) {
+//					String[] arrayRefVar = { String.valueOf(task.getProcedureId()) };
+//					task.setProcedureIds(arrayRefVar);
+//					taskService.addTask(task,null);
+//				}
+//			}
+//		}
 	}
 
 	@Override

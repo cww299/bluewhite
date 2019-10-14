@@ -238,8 +238,7 @@ public class TaskServiceImpl extends BaseServiceImpl<Task, Long> implements Task
 							payB = new PayB();
 							payB.setUserId(userIdP);
 							if (!UnUtil.isFromMobile(request)) {
-								payB.setGroupId(
-										attendancePay != null ? attendancePay.getGroupId() : temporarily.getGroupId());
+								payB.setGroupId(attendancePay != null ? attendancePay.getGroupId() : temporarily.getGroupId());
 								payB.setUserName(attendancePay != null ? attendancePay.getUserName()
 										: temporarily.getUser().getUserName());
 							} else {
