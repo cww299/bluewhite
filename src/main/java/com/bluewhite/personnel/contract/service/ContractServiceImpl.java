@@ -37,22 +37,19 @@ public class ContractServiceImpl extends BaseServiceImpl<Contract, Long> impleme
 
 	@Override
 	public void addContract(Contract contract) {
-		if (contract.getId() != null) {
-			Contract ot = dao.findOne(contract.getId());
-			update(contract, ot);
-		} else {
-			if(!StringUtils.isEmpty(contract.getFileIds())){
-				String[] fileIds = contract.getFileIds().split(",");
-				Set<Files> fileSet = new HashSet<>();
-				for(String idString : fileIds){
-					Files files = filesDao.findOne(Long.parseLong(idString));
-					fileSet.add(files);
-				}
-				contract.setFileSet(fileSet);
+		if (!StringUtils.isEmpty(contract.getFileIds())) {
+			String[] fileIds = contract.getFileIds().split(",");
+			Set<Files> fileSet = new HashSet<>();
+			for (String idString : fileIds) {
+				Files files = filesDao.findOne(Long.parseLong(idString));
+				fileSet.add(files);
 			}
-			contract.setFlag(1);
-			save(contract);
+			contract.setFileSet(fileSet);
 		}
+		if(contract.getId()==null){
+			contract.setFlag(1);
+		}
+		save(contract);
 	}
 
 	@Override
@@ -72,7 +69,7 @@ public class ContractServiceImpl extends BaseServiceImpl<Contract, Long> impleme
 			if (param.getContractTypeId() != null) {
 				predicate.add(cb.equal(root.get("contractTypeId").as(Long.class), param.getContractTypeId()));
 			}
-			//是否有效
+			// 是否有效
 			if (param.getFlag() != null) {
 				predicate.add(cb.equal(root.get("flag").as(Integer.class), param.getFlag()));
 			}
@@ -103,13 +100,14 @@ public class ContractServiceImpl extends BaseServiceImpl<Contract, Long> impleme
 
 	@Override
 	public List<Map<String, Object>> remindContract() {
-		List<Map<String , Object>> contractEndList = new ArrayList<Map<String , Object>>();
+		List<Map<String, Object>> contractEndList = new ArrayList<Map<String, Object>>();
 		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
 		List<Contract> contractList = dao.findByFlag(1);
-		for(Contract contract : contractList){
-			Map<String,Object> us = new HashMap<String,Object>();
-			long co = DatesUtil.getDaySub( DatesUtil.getfristDayOftime(new Date()),DatesUtil.getfristDayOftime(contract.getEndTime()));
-			if(co<=45){
+		for (Contract contract : contractList) {
+			Map<String, Object> us = new HashMap<String, Object>();
+			long co = DatesUtil.getDaySub(DatesUtil.getfristDayOftime(new Date()),
+					DatesUtil.getfristDayOftime(contract.getEndTime()));
+			if (co <= 45) {
 				us.put("id", contract.getId());
 				us.put("content", contract.getContent());
 				us.put("kind", contract.getContractKind().getName());
