@@ -46,6 +46,9 @@
 		.layui-layer-loading .layui-layer-content{
 			width:auto !important;
 		}
+		.transparentLayer{
+			background-color: #ffffff00 !important;
+		}
 	
 	</style>
 </head>
@@ -324,6 +327,8 @@ layui.config({
 							shadeClose:true,
 							type:1,
 							area:['100%','100%'],
+							title:'查看照片',
+							skin: 'transparentLayer',
 							btn:['旋转','关闭','上一张','下一张',],
 							content:'<div style="text-align:center;" id="imgDivLook"><img style="max-width:50%;max-height:100%;" src="'+$(obj.target).attr('src')+'"'+
 									' data-id="'+$(obj.target).data('id')+'">',
