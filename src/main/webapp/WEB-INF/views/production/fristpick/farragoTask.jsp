@@ -142,6 +142,25 @@
 							<input type="text" class="form-control bacth">
 						</div>
 					</div>
+					
+					<div class="form-group visible-sm">
+						<label class="col-sm-3 control-label">开始时间</label>
+						<div class="col-sm-6">
+							<input id="startTimes" placeholder="请输入开始时间"
+								class="form-control laydate-icon"
+								onClick="laydate({elem: '#startTimes', istime: true, format: 'YYYY-MM-DD hh:mm:ss'})">
+						</div>
+					</div>
+					
+					<div class="form-group visible-sm">
+						<label class="col-sm-3 control-label">结束时间</label>
+						<div class="col-sm-6">
+							<input id="endTimes" placeholder="请输入结束时间"
+								class="form-control laydate-icon"
+								onClick="laydate({elem: '#endTimes', istime: true, format: 'YYYY-MM-DD hh:mm:ss'})">
+						</div>
+					</div>
+					
 					<div class="form-group">
 
 						<label class="col-sm-3 control-label">工序名</label>
@@ -273,6 +292,20 @@
 					}
 				var firstdate = year + '-' +month + '-01'+' '+'00:00:00';
 				var lastdate = year + '-' +month + '-' + day.getDate() +' '+'23:59:59'; 
+				function p(s) {
+					return s < 10 ? '0' + s: s;
+					}
+				var myDate2 = new Date(new Date().getTime());
+				var year2=myDate2.getFullYear();
+				//获取当前月
+				var month2=myDate2.getMonth()+1;
+				//获取当前日
+				var date2=myDate2.getDate();
+				var h=myDate.getHours();              //获取当前小时数(0-23)
+				var m=myDate.getMinutes();          //获取当前分钟数(0-59)
+				var s=myDate.getSeconds();
+				var now=year2+'-'+p(month2)+"-"+p(date2)+" "+p(h)+':'+p(m)+":"+p(s);//当前时间
+				$("#startTimes").val(now)
 			 layui.use(['laydate'],function(){
 					var laydate = layui.laydate;
 					laydate.render({
@@ -819,10 +852,14 @@
 									success:function(result){
 										$(result.data).each(function(i,o){
 										$(o.userList).each(function(i,o){
+											if(o.status==1){
 											htmltwo +='<div class="input-group"><input type="checkbox" class="stuCheckBoxtt" value="'+o.userId+'" data-secondment='+o.secondment+' data-id="'+o.id+'" data-username="'+o.name+'">'+o.name+'</input></div>'
+											}
 										})
 										$(o.temporarilyUser).each(function(i,o){
+											if(o.status==1){
 											htmltwh +='<div class="input-group"><input type="checkbox" class="stuCheckBoxtt" value="'+o.userId+'" data-secondment='+o.secondment+' data-id="t-'+o.id+'" data-username="'+o.name+'">'+o.name+'</input></div>'
+											}
 										})
 										})
 										var s="<div class='input-group'><input type='checkbox' class='checkalltt'>全选</input></div>"
@@ -876,7 +913,7 @@
 					_index = layer.open({
 						  type: 1,
 						  skin: 'layui-layer-rim', //加上边框
-						  area: ['580px', '500px'], 
+						  area: ['580px', '610px'], 
 						  btnAlign: 'c',//宽高
 						  maxmin: true,
 						  title:"新增杂工",
@@ -915,6 +952,8 @@
 									  name:$(".sumnumber").val(),
 									  time:$(".timedata").val(),
 									  remarks:$(".remarks").val(),
+									  startTime:$("#startTimes").val(),
+									  endTime:$("#endTimes").val(),
 									  performance:performance,
 									  performanceNumber:performanceNumber,
 									  userIds:arr,
