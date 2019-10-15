@@ -8,6 +8,39 @@
 	<script src="${ctx}/static/layui-v2.4.5/layui/layui.js"></script>
 	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 	<title>合同文件</title>
+	<style type="text/css">
+		.imgDiv{
+			width:100px;
+			float:left;
+			margin:5px;
+			height:100px;
+			border: 3px solid gray;
+		}
+		.imgDiv:hover{
+			border-color: #ff0000b8;
+			cursor: pointer;
+		}
+		.imgDiv img{
+			max-width:100%;
+			height:100%;
+		}
+		#addEditImgDiv{
+			height: 120px;
+		    overflow-x: auto;
+			margin:10px 0;
+			padding:10px;
+		}
+		.closeBtn{
+		    position: absolute;
+		    cursor: pointer;
+		    margin-top: 1px;
+		    margin-left: -18px;
+		    border: 1px solid gray;
+		    border-radius: 11px;
+		    background: #9E9E9E;
+		}
+	
+	</style>
 </head>
 <body>
 
@@ -112,6 +145,9 @@
       <button type="button" class="layui-btn layui-btn-sm" id="uploadPic">
   			<i class="layui-icon">&#xe67c;</i>上传图片</button>
     </div>
+  </div>
+  <div id="addEditImgDiv">
+    
   </div>
  
 
@@ -262,16 +298,32 @@ layui.config({
 			}
 		})
 		table.on('tool(tableData)',function(obj){
+			var html = '<div style="padding:10px;">';
+			var img = obj.data.fileSet;
+			for(var i in img){
+				html+='<div class="imgDiv"><img src="'+img[i].url+'"></div>';
+			}
 			layer.open({
 				type:1,
 				area:['50%','50%'],
-				content:'<div><img src="${ctx}'+obj.data.pictureUrl+'"></div>'
+				content: html+'</div>',
+				shadeClose:true,
+				success:function(){
+					$('.imgDiv').on('click',function(obj){
+						layer.open({
+							shadeClose:true,
+							offset:'lt',
+							type:3,
+							content:'<div style="text-align:center;margin-top:20px;"><img src="'+$(obj.target).attr('src')+'">',
+						})
+					})
+				}
 			})
 		})
 		
 		function addEdit(type){
 			var data={ id:'',contractKind:{name:''},contractType:{name:''},duration:'',
-					starTime:'',endTime:'',content:'',amount:'',flag:1,company:'', },
+					starTime:'',endTime:'',content:'',amount:'',flag:1,company:'', fileSet:[],},
 			choosed=layui.table.checkStatus('tableData').data,
 			tpl=addEditTpl.innerHTML,
 			title='新增合同',
@@ -288,15 +340,34 @@ layui.config({
 			laytpl(tpl).render(data,function(h){
 				html=h;
 			})
-			var picUrl = '';
+			
+			var fileIds = [];
+			var fileUrl = [];
+			for(var i in data.fileSet){
+				fileUrl.push(data.fileSet[i].url);
+				fileIds.push(data.fileSet[i].id);
+			}
 			var addEditWin=layer.open({
 				type:1,
 				title:title,
-				area:['40%','75%'],
+				offset:'10px',
+				area:['40%','90%'],
 				content:html,
 				btn:['确定','取消'],
 				btnAlign :'c',
 				success: function(){
+					var img = data.fileSet;
+					var html = '';
+					for(var i in img){
+						html+='<div class="imgDiv"><img src="'+img[i].url+'"><i data-id="'+img[i].id+
+								'" class="layui-icon layui-icon-close closeBtn"></i></div>';
+					}
+					$('#addEditImgDiv').append(html);
+					$('.closeBtn').unbind().on('click',function(obj){
+						var id = $(obj.target).data('id');
+						fileIds.splice(fileIds.indexOf(id),1);
+						$(obj.target).parent().remove();
+					})
 					var kid = data.contractKind.id || 0;
 					var tid = data.contractType.id || 0;
 					$("select[name='contractKindId']").append(allKind);
@@ -315,11 +386,17 @@ layui.config({
 					})
 					upload.render({
 					   elem: '#uploadPic' //绑定元素
-					   ,url: '/upload' 
+					   ,url: '${ctx}/upload' 
 					   ,data:{ filesTypeId:361, }
 					   ,done: function(res, index, upload){
 					    if(res.code == 0){
-					    	picUrl = res.data.url;
+					    	fileIds.push(res.data.id);
+					    	$('#addEditImgDiv').append('<div class="imgDiv"><img src="'+res.data.url+'"><i class="layui-icon layui-icon-close closeBtn"></i></div>');
+					    	$('.closeBtn').unbind().on('click',function(obj){
+								var id = $(obj.target).data('id');
+								fileIds.splice(fileIds.indexOf(id),1);
+								$(obj.target).parent().remove();
+							})
 					    }else
 					   		myutil.emsg(res.message);
 					  }
@@ -328,7 +405,7 @@ layui.config({
 						obj.field.starTime += ' 00:00:00';
 						obj.field.endTime += ' 00:00:00';
 						obj.field.flag = obj.field.flag || 0;
-						obj.field.pictureUrl = picUrl;
+					    obj.field.fileIds = fileIds.join(',');
 						myutil.saveAjax({
 							url:'/contract/addContract',
 							data:obj.field,
