@@ -145,7 +145,7 @@
   <div class="layui-form-item">
     <label class="layui-form-label">付款日期</label>
     <div class="layui-input-block">
-      <input type="text" name="paymentTime" id="paymentTime" value="{{ d.paymentTime }}" placeholder="请输入付款日期" class="layui-input">
+      <input type="text" name="paymentTime" id="paymentTime" placeholder="请输入付款日期" class="layui-input">
     </div>
   </div>
   <div class="layui-form-item">
@@ -281,11 +281,11 @@ layui.config({
 			       {title:'公司',   		field:'company',	},
 			       {title:'合同类型',   field:'contractType_name',	},
 			       {title:'合同年限',   field:'duration',	},
-			       {title:'开始时间',   field:'startTime',	},
-			       {title:'结束时间',   field:'endTime',	},
+			       {title:'开始时间',   field:'startTime',	type:'date', },
+			       {title:'结束时间',   field:'endTime',	 type:'date', },
 			       {title:'合同内容',   field:'content',	},
 			       {title:'保险金额',   field:'amount',	},
-			       {title:'付款日期',   field:'paymentTime',	},
+			       {title:'付款日期',   field:'paymentTime',	type:'date', },
 			       {title:'付款方式',   field:'paymentWay',	},
 			       {title:'是否有效',   field:'flag',	 transData:{data:['无效','有效']} },
 			       {title:'查看',   templet:getLookBtn(),event:'lookPic' },
@@ -404,7 +404,7 @@ layui.config({
 				type:1,
 				title:title,
 				offset:'10px',
-				area:['40%','90%'],
+				area:['40%','100%'],
 				content:html,
 				btn:['确定','取消'],
 				btnAlign :'c',
@@ -432,6 +432,7 @@ layui.config({
 						type:'date',
 						value: data.startTime?data.startTime.split(' ')[0]:'',
 					})
+					console.log(data.paymentTime?data.paymentTime.split(' ')[0]:'')
 					laydate.render({
 						elem:'#endTime',
 						type:'date',
