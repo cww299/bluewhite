@@ -88,7 +88,8 @@ public abstract class BaseServiceImpl<T extends AbstractEntity<ID>, ID extends S
     	List<T> tList = new ArrayList<>();
 		String[] arrIds = ids.split(",");
 		for (int i = 0; i < arrIds.length; i++) {
-			T t = baseRepository.findOne((ID) arrIds[i]);
+			Long id = Long.parseLong(arrIds[i]);
+			T t = baseRepository.findOne((ID)id);
 			tList.add(t);
 		}
 		baseRepository.deleteInBatch(tList);
