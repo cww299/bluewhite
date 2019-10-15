@@ -108,7 +108,7 @@
   <div class="layui-form-item">
     <label class="layui-form-label">开始时间</label>
     <div class="layui-input-block">
-      <input type="text" name="starTime" id="starTime"  
+      <input type="text" name="startTime" id="startTime"  
 			lay-verify="required" placeholder="请输入开始时间" class="layui-input">
     </div>
   </div>
@@ -259,13 +259,14 @@ layui.config({
 			url:'${ctx}/contract/findContract',
 			where:{ flag:1 },
 			toolbar:'#tableTool',
+			ifNull:'---',
 			cols:[[
 			       {type:'checkbox',},
 			       {title:'合同种类',   field:'contractKind_name',	},
 			       {title:'公司',   		field:'company',	},
 			       {title:'合同类型',   field:'contractType_name',	},
 			       {title:'合同年限',   field:'duration',	},
-			       {title:'开始时间',   field:'starTime',	},
+			       {title:'开始时间',   field:'startTime',	},
 			       {title:'结束时间',   field:'endTime',	},
 			       {title:'合同内容',   field:'content',	},
 			       {title:'保险金额',   field:'amount',	},
@@ -279,10 +280,10 @@ layui.config({
 			}
 		}
 		form.on('submit(search)',function(obj){
-			obj.field.starTime = '';
+			obj.field.startTime = '';
 			obj.field.endTime = '';
 			if(obj.field.searchTimeType == 'star'){
-				obj.field.starTime = '2019-09-29 00:00:00';
+				obj.field.startTime = '2019-09-29 00:00:00';
 			}else
 				obj.field.endTime = '2019-09-29 00:00:00';
 			delete obj.field.searchTimeType;
@@ -355,7 +356,7 @@ layui.config({
 		
 		function addEdit(type){
 			var data={ id:'',contractKind:{name:''},contractType:{name:''},duration:'',
-					starTime:'',endTime:'',content:'',amount:'',flag:1,company:'', fileSet:[],},
+					startTime:'',endTime:'',content:'',amount:'',flag:1,company:'', fileSet:[],},
 			choosed=layui.table.checkStatus('tableData').data,
 			tpl=addEditTpl.innerHTML,
 			title='新增合同',
@@ -407,9 +408,9 @@ layui.config({
 					$("select[name='contractKindId']").find('option[value="'+kid+'"]').prop('selected','selected');
 					$("select[name='contractTypeId']").find('option[value="'+tid+'"]').prop('selected','selected');
 					laydate.render({
-						elem:'#starTime',
+						elem:'#startTime',
 						type:'date',
-						value: data.starTime?data.starTime.split(' ')[0]:'',
+						value: data.startTime?data.startTime.split(' ')[0]:'',
 					})
 					laydate.render({
 						elem:'#endTime',
@@ -434,7 +435,7 @@ layui.config({
 					  }
 					});
 					form.on('submit(sureBtn)',function(obj){
-						obj.field.starTime += ' 00:00:00';
+						obj.field.startTime += ' 00:00:00';
 						obj.field.endTime += ' 00:00:00';
 						obj.field.flag = obj.field.flag || 0;
 					    obj.field.fileIds = fileIds.join(',');
