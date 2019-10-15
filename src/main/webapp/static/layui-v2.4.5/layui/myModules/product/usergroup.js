@@ -148,7 +148,7 @@ layui.config({
 					if(obj.event == 'addAllot'){
 						var area = ['28%','40%'];
 						if(isSmall)
-							area = ['80%','40%'];
+							area = ['80%','60%'];
 						var html = '';
 						laytpl(ADDNEW_TPL).render({},function(h){
 							html = h;
@@ -247,7 +247,9 @@ layui.config({
 								elem:'#lookoverTable',
 								url: opt.ctx+'/production/allGroup?id='+obj.data.id,
 								where:{ temporarilyDate: day,  },
-								toolbar:'<div><span class="layui-btn layui-btn-danger layui-btn-sm" lay-event="deletes">批量删除</span></div>',
+								toolbar:'<div><span class="layui-btn layui-btn-danger layui-btn-sm" lay-event="deletes">批量删除</span>'+
+								        '<span class="layui-btn layui-btn-sm" lay-event="oneKeyRest">一键休息</span>'+
+								        '<span class="layui-btn layui-btn-sm" lay-event="oneKeyWork">一键工作</span></div>',
 								cols:[ [
 									{ type:'checkbox', },
 									{ field:'name', title:'人名' },
@@ -279,48 +281,58 @@ layui.config({
 										            '<div style="padding:15px;">',
 										                '<h3 style="text-align: center;color: gray;padding: 10px 0;">',
 										                	'是否确认修改:'+trData.name+' 工作时长：'+trData.time+' 的工作状态？<h3>',
-										                	'<form class="layui-form layui-form-pane" action="">',
-										                	  '<div class="layui-form-item" pane>',
-										                	    '<label class="layui-form-label">签出时间</label>',
-										                	    '<div class="layui-input-block">',
-										                	      '<input type="text" id="outTime" class="layui-input">',
-										                	    '</div>',
-										                	  '</div>',
-										                	'</form>',
-										                '</h2>',
+									                	'<form class="layui-form layui-form-pane" action="">',
+									                	  '<div class="layui-form-item" pane>',
+									                	    '<label class="layui-form-label">签出时间</label>',
+									                	    '<div class="layui-input-block">',
+									                	      '<input type="text" id="outTime" class="layui-input">',
+									                	    '</div>',
+									                	  '</div>',
+									                	'</form>',
 										            '</div>',
 										            ].join(' ');
-										var confirm = layer.open({
-											type:1,
-											content: html,
-											offset:'100px',
-											area: ['45%','30%'],
-											btn:['确定','取消'],
-											success:function(){
-												laydate.render({
-													elem: '#outTime',
-													type: 'datetime',
-													value: new Date().format('yyyy-MM-dd hh:mm:ss'),
-												})
-											},
-											yes: function(){
-												myutil.saveAjax({
-													url: '/production/updateManualTime',
-													type: 'get',
-													data:{
-														id: trData.userId,
-														status: data.elem.checked?1:0,
-														time: $('#outTime').val(),
-													},
-													success:function(){
-														layer.close(confirm);
-													}
-												})
-											},
-											end:function(){
-												table.reload('lookoverTable');
-											}
-										})
+										if(data.elem.checked){
+											myutil.saveAjax({
+												url: '/production/updateManualTime',
+												type: 'get',
+												data:{
+													id: trData.userId,
+													status: data.elem.checked?1:0,
+												},
+											})
+										}else{
+											var confirm = layer.open({
+												type:1,
+												content: html,
+												offset:'100px',
+												area: ['45%','30%'],
+												btn:['确定','取消'],
+												success:function(){
+													laydate.render({
+														elem: '#outTime',
+														type: 'datetime',
+														value: new Date().format('yyyy-MM-dd hh:mm:ss'),
+													})
+												},
+												yes: function(){
+													myutil.saveAjax({
+														url: '/production/updateManualTime',
+														type: 'get',
+														data:{
+															id: trData.userId,
+															status: data.elem.checked?1:0,
+															time: $('#outTime').val(),
+														},
+														success:function(){
+															layer.close(confirm);
+														}
+													})
+												},
+												end:function(){
+													table.reload('lookoverTable');
+												}
+											})
+										}
 									})
 								}
 							})
@@ -336,9 +348,14 @@ layui.config({
 							}
 							table.on('toolbar(lookoverTable)',function(obj){
 								var checked = layui.table.checkStatus('lookoverTable').data;
-								if(obj.event=='deletes'){
-									if(checked.length==0)
-										return myutil.emsg('请选择信息删除');
+								if(checked.length==0)
+									return myutil.emsg('请选择相关信息');
+								switch(obj.evnet){
+								case 'deletest': deletest(); break;
+								case 'oneKeyWork': oneKeyWork(); break;
+								case 'oneKeyRest': oneKeyRest(); break;
+								}
+								function deletest(){
 									var temporarilyIds = [];
 									for(var i in checked)
 										if(checked[i].secondment=='1')
@@ -349,6 +366,62 @@ layui.config({
 										url: '/production/deleteTemporarily',
 										ids: temporarilyIds.join(','),
 										success:function(){
+											table.reload('lookoverTable');
+										}
+									})
+								}
+								function oneKeyWork(){
+									for(var i in checked){
+										myutil.saveAjax({
+											url: '/production/updateManualTime',
+											type: 'get',
+											data:{
+												id: checked[i].userId,
+												status: 1,
+											},
+										})
+									}
+								}
+								function oneKeyRest(){
+									var html = [
+									            '<div style="padding:15px;">',
+								                	'<form class="layui-form layui-form-pane" action="">',
+								                	  '<div class="layui-form-item" pane>',
+								                	    '<label class="layui-form-label">签出时间</label>',
+								                	    '<div class="layui-input-block">',
+								                	      '<input type="text" id="outTime" class="layui-input">',
+								                	    '</div>',
+								                	  '</div>',
+								                	'</form>',
+									            '</div>',
+									            ].join(' ');
+									var confirm = layer.open({
+										type:1,
+										content: html,
+										offset:'100px',
+										area: ['45%','30%'],
+										btn:['确定','取消'],
+										success:function(){
+											laydate.render({
+												elem: '#outTime',
+												type: 'datetime',
+												value: new Date().format('yyyy-MM-dd hh:mm:ss'),
+											})
+										},
+										yes: function(){
+											for(var i in checked)
+												myutil.saveAjax({
+													url: '/production/updateManualTime',
+													type: 'get',
+													data:{
+														id: checked[i].userId,
+														status: 0,
+														time: $('#outTime').val(),
+													},
+												})
+											layer.close(confirm);
+										},
+										end:function(){
 											table.reload('lookoverTable');
 										}
 									})
