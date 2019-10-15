@@ -60,6 +60,8 @@ public class AttendanceServiceImpl extends BaseServiceImpl<Attendance, Long> imp
 		if (flag) {
 			userList = sdk.getUserInfo();
 		}
+		sdk.release();
+		sdk.disConnect();
 		return userList;
 	}
 
@@ -112,6 +114,8 @@ public class AttendanceServiceImpl extends BaseServiceImpl<Attendance, Long> imp
 		if (flag) {
 			flag = sdk.delectUserById(number);
 		}
+		sdk.release();
+		sdk.disConnect();
 		return flag;
 	}
 
@@ -123,6 +127,8 @@ public class AttendanceServiceImpl extends BaseServiceImpl<Attendance, Long> imp
 		if (flag) {
 			user = sdk.getUserInfoByNumber(number);
 		}
+		sdk.release();
+		sdk.disConnect();
 		return user;
 	}
 
@@ -168,6 +174,8 @@ public class AttendanceServiceImpl extends BaseServiceImpl<Attendance, Long> imp
 			a.setSourceMachine(sourceMachineFina);
 		});
 		batchSave(attendanceListAll);
+		sdk.release();
+		sdk.disConnect();
 		return attendanceListAll;
 	}
 
@@ -290,6 +298,8 @@ public class AttendanceServiceImpl extends BaseServiceImpl<Attendance, Long> imp
 		if (flag) {
 			user = sdk.getUserInfoTmp(number);
 		}
+		sdk.release();
+		sdk.disConnect();
 		return user;
 	}
 
