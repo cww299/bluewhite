@@ -350,7 +350,7 @@ layui.config({
 								var checked = layui.table.checkStatus('lookoverTable').data;
 								if(checked.length==0)
 									return myutil.emsg('请选择相关信息');
-								switch(obj.evnet){
+								switch(obj.event){
 								case 'deletest': deletest(); break;
 								case 'oneKeyWork': oneKeyWork(); break;
 								case 'oneKeyRest': oneKeyRest(); break;
@@ -381,6 +381,7 @@ layui.config({
 											},
 										})
 									}
+									table.reload('lookoverTable');
 								}
 								function oneKeyRest(){
 									var html = [
