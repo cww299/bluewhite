@@ -409,12 +409,12 @@ layui.config({
 					laydate.render({
 						elem:'#starTime',
 						type:'date',
-						value: data.starTime.split(' ')[0]
+						value: data.starTime?data.starTime.split(' ')[0]:'',
 					})
 					laydate.render({
 						elem:'#endTime',
 						type:'date',
-						value: data.endTime.split(' ')[0]
+						value: data.endTime?data.endTime.split(' ')[0]:'',
 					})
 					upload.render({
 					   elem: '#uploadPic' //绑定元素
