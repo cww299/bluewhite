@@ -84,7 +84,7 @@ layui.config({
 				count:['phone','idCard','bankCard1'],
 			},
 			toolbar:['<span class="layui-btn layui-btn-sm" lay-event="onekey">一键添加考勤</span>',
-			         '<span class="layui-btn layui-btn-sm" id="date">2019-10-04 ~ 2019-10-04</span>'].join(' '),
+			         '<span class="layui-btn layui-btn-sm layui-btn-primary" id="date">2019-10-04 ~ 2019-10-04</span>'].join(' '),
 			curd:{
 				otherBtn: function(obj){
 					if(obj.event =='onekey'){
@@ -121,12 +121,13 @@ layui.config({
 			       { type:'select',  title:'分组',   field:'group_id',	select:{ data: allGroup, }  },
 			       ]],
 			done:function(){
-				var lastDay = myutil.getSubDay(1,'yyyy-MM-dd');
+				var isSmall = window.screen.width<1400;
+				var day = myutil.getSubDay(isSmall?0:1,'yyyy-MM-dd');
 				laydate.render({
 					elem:'#date',
 					type:'date',
 					range:"~",
-					value: lastDay+' ~ '+lastDay,
+					value: day+' ~ '+day,
 				})
 				form.on('switch(status)', function(data){
 					var value = 1;

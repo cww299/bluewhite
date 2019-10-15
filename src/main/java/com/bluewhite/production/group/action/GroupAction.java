@@ -158,10 +158,11 @@ public class GroupAction {
 		List<Map<String, Object>> temporarilyUserList = new ArrayList<>();
 		//平板模式下，按打卡记录显示正式工作人员
 		if(UnUtil.isFromMobile(request)){
+			Date startTimeSix = DatesUtil.dayTime(startTime, "05:00:00");
 			List<User> userGroupList = userService.findByGroupId(id);
 			String sourceMachineFinal = sourceMachine;
 			userGroupList = userGroupList.stream().filter(user->{
-				List<Attendance>  attendanceList = attendanceService.findByUserIdAndSourceMachineAndTimeBetween(user.getId(), sourceMachineFinal, startTime, endTime);
+				List<Attendance>  attendanceList = attendanceService.findByUserIdAndSourceMachineAndTimeBetween(user.getId(), sourceMachineFinal, startTimeSix, endTime);
 				if(attendanceList.size()>0){
 					return true;
 				}else{
@@ -170,7 +171,7 @@ public class GroupAction {
 			}).collect(Collectors.toList());
 			
 			if (temporarilyList.size() > 0) {
-				for (Temporarily temporarily : temporarilyList) {
+				for (Temporarily temporarily : temporarilyList) {	
 					// 查询出该分组临时员工的出勤数据
 					if (temporarily.getTemporaryUserId() != null) {
 						Map<String, Object>  temporarilyUserMap = new HashMap<>();
@@ -214,26 +215,12 @@ public class GroupAction {
 					int flag = 0;
 					//根据签到时间实时显示工作时长
 					if(attendanceList.size()>0){
+						flag = 1;
 						attendanceIn = attendanceList.get(0);
 						time = DatesUtil.getTime(attendanceIn.getTime(), new Date());
 						timeH =DatesUtil.getTimeHourPick(attendanceIn.getTime(),new Date());
-						flag = 1;
 					}
-					if(attendanceIn.getManualTime()==null){
-						if(attendanceList.size()>1){
-							attendanceOut = attendanceList.get(attendanceList.size()-1);
-							time = DatesUtil.getTime(attendanceIn.getTime(), attendanceOut.getTime());
-							timeH =DatesUtil.getTimeHourPick(attendanceIn.getTime(), attendanceOut.getTime());
-							//当签入签出时长小于25，不满半个小时不计算工作状态
-							if(time<25){
-								flag = 1;
-							}else{
-								flag = 0;
-								attendanceIn.setManualTime(attendanceOut.getTime());
-								attendanceService.save(attendanceIn);
-							}
-						}
-					}else{
+					if(attendanceIn.getManualTime()!=null){
 						flag = 0;
 						time = DatesUtil.getTime(attendanceIn.getTime(), attendanceIn.getManualTime());
 						timeH =DatesUtil.getTimeHourPick(attendanceIn.getTime(), attendanceIn.getManualTime());
@@ -314,9 +301,11 @@ public class GroupAction {
 		CommonResponse cr = new CommonResponse();
 		if(id!=null){
 			Attendance attendance = attendanceService.findOne(id);
+			//休息
 			if(status==0){
 				attendance.setManualTime(time);
 			}
+			//工作
 			if(status==1){
 				attendance.setManualTime(null);
 			}

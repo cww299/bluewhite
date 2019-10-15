@@ -8,6 +8,49 @@
 	<script src="${ctx}/static/layui-v2.4.5/layui/layui.js"></script>
 	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 	<title>合同文件</title>
+	<style type="text/css">
+		.imgDiv{
+			width:100px;
+			float:left;
+			margin:5px;
+			height:100px;
+			border: 3px solid gray;
+		}
+		.imgDiv:hover{
+			border-color: #ff0000b8;
+			cursor: pointer;
+		}
+		.imgDiv img{
+			max-width:100%;
+			height:100%;
+			float:left;
+		}
+		#addEditImgDiv{
+			height: 120px;
+		    overflow-x: auto;
+			margin:10px 0;
+			padding:10px;
+		}
+		.closeBtn{
+		    cursor: pointer;
+		    margin-top: 1px;
+		    margin-left: -18px;
+		    border: 1px solid gray;
+		    border-radius: 11px;
+		    background: #9E9E9E;
+		    float: right;
+		}
+		.closeBtn:hover{
+		    background: #8080804f;
+		}
+		.layui-layer-loading .layui-layer-content{
+			width:auto !important;
+		}
+		.transparentLayer{
+			background-color: #ffffff00 !important;
+		}
+	
+	</style>
 </head>
 <body>
 
@@ -68,7 +111,7 @@
   <div class="layui-form-item">
     <label class="layui-form-label">开始时间</label>
     <div class="layui-input-block">
-      <input type="text" name="starTime" id="starTime"  
+      <input type="text" name="startTime" id="startTime"  
 			lay-verify="required" placeholder="请输入开始时间" class="layui-input">
     </div>
   </div>
@@ -89,8 +132,7 @@
   <div class="layui-form-item">
     <label class="layui-form-label">合同金额</label>
     <div class="layui-input-block">
-      <input type="text" name="amount"  value="{{ d.amount }}" 
-			lay-verify="number" placeholder="请输入保险金额" class="layui-input">
+      <input type="text" name="amount"  value="{{ d.amount }}" placeholder="请输入合同金额" class="layui-input">
     </div>
   </div>
   <div class="layui-form-item">
@@ -100,6 +142,19 @@
 			 placeholder="请输入公司" class="layui-input">
     </div>
   </div>
+  <div class="layui-form-item">
+    <label class="layui-form-label">付款日期</label>
+    <div class="layui-input-block">
+      <input type="text" name="paymentTime" id="paymentTime" placeholder="请输入付款日期" class="layui-input">
+    </div>
+  </div>
+  <div class="layui-form-item">
+    <label class="layui-form-label">付款方式</label>
+    <div class="layui-input-block">
+      <input type="text" name="paymentWay"  value="{{ d.paymentWay }}" 
+			 placeholder="请输入付款方式" class="layui-input">
+    </div>
+  </div>
   <div class="layui-form-item" pane>
     <label class="layui-form-label">是否有效</label>
     <div class="layui-input-block">
@@ -107,11 +162,14 @@
     </div>
   </div>
   <div class="layui-form-item" pane>
-    <label class="layui-form-label">是否有效</label>
+    <label class="layui-form-label">上传图片</label>
     <div class="layui-input-block">
       <button type="button" class="layui-btn layui-btn-sm" id="uploadPic">
   			<i class="layui-icon">&#xe67c;</i>上传图片</button>
     </div>
+  </div>
+  <div id="addEditImgDiv">
+    
   </div>
  
 
@@ -216,16 +274,19 @@ layui.config({
 			url:'${ctx}/contract/findContract',
 			where:{ flag:1 },
 			toolbar:'#tableTool',
+			ifNull:'---',
 			cols:[[
 			       {type:'checkbox',},
 			       {title:'合同种类',   field:'contractKind_name',	},
 			       {title:'公司',   		field:'company',	},
 			       {title:'合同类型',   field:'contractType_name',	},
 			       {title:'合同年限',   field:'duration',	},
-			       {title:'开始时间',   field:'starTime',	},
-			       {title:'结束时间',   field:'endTime',	},
+			       {title:'开始时间',   field:'startTime',	type:'date', },
+			       {title:'结束时间',   field:'endTime',	 type:'date', },
 			       {title:'合同内容',   field:'content',	},
 			       {title:'保险金额',   field:'amount',	},
+			       {title:'付款日期',   field:'paymentTime',	type:'date', },
+			       {title:'付款方式',   field:'paymentWay',	},
 			       {title:'是否有效',   field:'flag',	 transData:{data:['无效','有效']} },
 			       {title:'查看',   templet:getLookBtn(),event:'lookPic' },
 			       ]]
@@ -236,10 +297,10 @@ layui.config({
 			}
 		}
 		form.on('submit(search)',function(obj){
-			obj.field.starTime = '';
+			obj.field.startTime = '';
 			obj.field.endTime = '';
 			if(obj.field.searchTimeType == 'star'){
-				obj.field.starTime = '2019-09-29 00:00:00';
+				obj.field.startTime = '2019-09-29 00:00:00';
 			}else
 				obj.field.endTime = '2019-09-29 00:00:00';
 			delete obj.field.searchTimeType;
@@ -262,16 +323,60 @@ layui.config({
 			}
 		})
 		table.on('tool(tableData)',function(obj){
+			var html = '<div style="padding:10px;">';
+			var img = obj.data.fileSet;
+			var length = img.length;
+			for(var i in img){
+				html+='<div class="imgDiv"><img src="'+img[i].url+'" data-id="'+i+'"></div>';
+			}
 			layer.open({
 				type:1,
 				area:['50%','50%'],
-				content:'<div><img src="${ctx}'+obj.data.pictureUrl+'"></div>'
+				content: html+'</div>',
+				shadeClose:true,
+				success:function(){
+					var deg = 0;
+					$('.imgDiv').on('click',function(obj){
+						var lookoverWin = layer.open({
+							shadeClose:true,
+							type:1,
+							area:['100%','100%'],
+							title:'查看照片',
+							skin: 'transparentLayer',
+							btn:['旋转','关闭','上一张','下一张',],
+							content:'<div style="text-align:center;height: 90%;" id="imgDivLook"><img style="max-width:50%;max-height:100%;" src="'+$(obj.target).attr('src')+'"'+
+									' data-id="'+$(obj.target).data('id')+'">',
+							yes: function(index, layero){
+								deg+=90;
+								$('#imgDivLook').find('img').css('transform','rotate('+deg+'deg)');
+						    },
+							btn2: function(index, layero){
+						    },
+						    btn3: function(index, layero){
+						    	var id = $('#imgDivLook').find('img').attr('data-id');
+						    	id = (id-1)<0?length-1:id-1;
+						    	$('#imgDivLook').find('img').attr('src',img[id].url);
+						    	$('#imgDivLook').find('img').attr('data-id',id);
+						    	return false;
+						    },
+						    btn4: function(){ 
+						    	$('#imgDivLook').find('img').data('id');
+						    	var id = $('#imgDivLook').find('img').attr('data-id');
+						    	id = (id-(-1))%length;
+						    	$('#imgDivLook').find('img').attr('src',img[id].url);
+						    	$('#imgDivLook').find('img').attr('data-id',id);
+						    	return false;
+							}
+						})
+					})
+				}
 			})
 		})
 		
 		function addEdit(type){
 			var data={ id:'',contractKind:{name:''},contractType:{name:''},duration:'',
-					starTime:'',endTime:'',content:'',amount:'',flag:1,company:'', },
+					startTime:'',endTime:'',content:'',amount:'',flag:1,company:'', fileSet:[],
+					paymentTime:'', paymentWay:'', },
 			choosed=layui.table.checkStatus('tableData').data,
 			tpl=addEditTpl.innerHTML,
 			title='新增合同',
@@ -288,15 +393,34 @@ layui.config({
 			laytpl(tpl).render(data,function(h){
 				html=h;
 			})
-			var picUrl = '';
+			
+			var fileIds = [];
+			var fileUrl = [];
+			for(var i in data.fileSet){
+				fileUrl.push(data.fileSet[i].url);
+				fileIds.push(data.fileSet[i].id);
+			}
 			var addEditWin=layer.open({
 				type:1,
 				title:title,
-				area:['40%','75%'],
+				offset:'10px',
+				area:['40%','100%'],
 				content:html,
 				btn:['确定','取消'],
 				btnAlign :'c',
 				success: function(){
+					var img = data.fileSet;
+					var html = '';
+					for(var i in img){
+						html+='<div class="imgDiv"><img src="'+img[i].url+'"><i data-id="'+img[i].id+
+								'" class="layui-icon layui-icon-close closeBtn"></i></div>';
+					}
+					$('#addEditImgDiv').append(html);
+					$('.closeBtn').unbind().on('click',function(obj){
+						var id = $(obj.target).data('id');
+						fileIds.splice(fileIds.indexOf(id),1);
+						$(obj.target).parent().remove();
+					})
 					var kid = data.contractKind.id || 0;
 					var tid = data.contractType.id || 0;
 					$("select[name='contractKindId']").append(allKind);
@@ -304,31 +428,45 @@ layui.config({
 					$("select[name='contractKindId']").find('option[value="'+kid+'"]').prop('selected','selected');
 					$("select[name='contractTypeId']").find('option[value="'+tid+'"]').prop('selected','selected');
 					laydate.render({
-						elem:'#starTime',
+						elem:'#startTime',
 						type:'date',
-						value: data.starTime.split(' ')[0]
+						value: data.startTime?data.startTime.split(' ')[0]:'',
 					})
+					console.log(data.paymentTime?data.paymentTime.split(' ')[0]:'')
 					laydate.render({
 						elem:'#endTime',
 						type:'date',
-						value: data.endTime.split(' ')[0]
+						value: data.endTime?data.endTime.split(' ')[0]:'',
+					})
+					laydate.render({
+						elem:'#paymentTime',
+						type:'date',
+						value: data.paymentTime?data.paymentTime.split(' ')[0]:'',
 					})
 					upload.render({
 					   elem: '#uploadPic' //绑定元素
-					   ,url: '/upload' 
+					   ,url: '${ctx}/upload' 
 					   ,data:{ filesTypeId:361, }
 					   ,done: function(res, index, upload){
 					    if(res.code == 0){
-					    	picUrl = res.data.url;
+					    	fileIds.push(res.data.id);
+					    	$('#addEditImgDiv').append('<div class="imgDiv"><img src="'+res.data.url+'"><i class="layui-icon layui-icon-close closeBtn"></i></div>');
+					    	$('.closeBtn').unbind().on('click',function(obj){
+								var id = $(obj.target).data('id');
+								fileIds.splice(fileIds.indexOf(id),1);
+								$(obj.target).parent().remove();
+							})
 					    }else
 					   		myutil.emsg(res.message);
 					  }
 					});
 					form.on('submit(sureBtn)',function(obj){
-						obj.field.starTime += ' 00:00:00';
+						obj.field.startTime += ' 00:00:00';
 						obj.field.endTime += ' 00:00:00';
+						if(obj.field.paymentTime)
+							obj.field.paymentTime += ' 00:00:00';
 						obj.field.flag = obj.field.flag || 0;
-						obj.field.pictureUrl = picUrl;
+					    obj.field.fileIds = fileIds.join(',');
 						myutil.saveAjax({
 							url:'/contract/addContract',
 							data:obj.field,
