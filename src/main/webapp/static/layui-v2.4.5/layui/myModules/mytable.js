@@ -97,7 +97,7 @@ layui.extend({
 							return getSelectHtml(res);
 						}				
 						else if(item2.type && item2.type=='date'){			//开启日期
-							return res.split(' ')[0];
+							return res?res.split(' ')[0]:(typeof(opt.ifNull)!='undefined'?opt.ifNull:'');
 						}
 						if(item2.transData)
 							return transData(res);	//数据转换
