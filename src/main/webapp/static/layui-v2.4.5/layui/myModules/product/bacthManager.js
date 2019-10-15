@@ -646,18 +646,20 @@ layui.config({
 										if(groupPeople.temporarilyUser && groupPeople.temporarilyUser.length>0){
 											var t = groupPeople.temporarilyUser;
 											for(var k in t)
-												data.children.push({
-													id: 't-'+t[k].id+'~'+t[k].userId,
-													name: t[k].name+' ---- <span class="layui-badge">临</span>',
-												});
+												if(t[k].status==1)
+													data.children.push({
+														id: 't-'+t[k].id+'~'+t[k].userId,
+														name: t[k].name+' ---- <span class="layui-badge">临</span>',
+													});
 										}
 										if(groupPeople.userList && groupPeople.userList.length>0){
 											var t = groupPeople.userList;
 											for(var k in t)
-												data.children.push({
-													id: t[k].id+'~'+t[k].userId,
-													name: t[k].name+' ---- <span class="layui-badge layui-bg-green">正</span>',
-												})
+												if(t[k].status==1)
+													data.children.push({
+														id: t[k].id+'~'+t[k].userId,
+														name: t[k].name+' ---- <span class="layui-badge layui-bg-green">正</span>',
+													})
 										}
 										allUser.push(data);
 									}
