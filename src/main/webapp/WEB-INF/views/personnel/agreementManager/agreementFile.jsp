@@ -23,6 +23,7 @@
 		.imgDiv img{
 			max-width:100%;
 			height:100%;
+			float:left;
 		}
 		#addEditImgDiv{
 			height: 120px;
@@ -31,13 +32,16 @@
 			padding:10px;
 		}
 		.closeBtn{
-		    position: absolute;
 		    cursor: pointer;
 		    margin-top: 1px;
 		    margin-left: -18px;
 		    border: 1px solid gray;
 		    border-radius: 11px;
 		    background: #9E9E9E;
+		    float: right;
+		}
+		.closeBtn:hover{
+		    background: #8080804f;
 		}
 	
 	</style>
