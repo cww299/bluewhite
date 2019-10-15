@@ -132,8 +132,7 @@
   <div class="layui-form-item">
     <label class="layui-form-label">合同金额</label>
     <div class="layui-input-block">
-      <input type="text" name="amount"  value="{{ d.amount }}" 
-			lay-verify="number" placeholder="请输入合同金额" class="layui-input">
+      <input type="text" name="amount"  value="{{ d.amount }}" placeholder="请输入合同金额" class="layui-input">
     </div>
   </div>
   <div class="layui-form-item">
@@ -141,6 +140,19 @@
     <div class="layui-input-block">
       <input type="text" name="company"  value="{{ d.company }}" 
 			 placeholder="请输入公司" class="layui-input">
+    </div>
+  </div>
+  <div class="layui-form-item">
+    <label class="layui-form-label">付款日期</label>
+    <div class="layui-input-block">
+      <input type="text" name="paymentTime" id="paymentTime" value="{{ d.paymentTime }}" placeholder="请输入付款日期" class="layui-input">
+    </div>
+  </div>
+  <div class="layui-form-item">
+    <label class="layui-form-label">付款方式</label>
+    <div class="layui-input-block">
+      <input type="text" name="paymentWay"  value="{{ d.paymentWay }}" 
+			 placeholder="请输入付款方式" class="layui-input">
     </div>
   </div>
   <div class="layui-form-item" pane>
@@ -273,6 +285,8 @@ layui.config({
 			       {title:'结束时间',   field:'endTime',	},
 			       {title:'合同内容',   field:'content',	},
 			       {title:'保险金额',   field:'amount',	},
+			       {title:'付款日期',   field:'paymentTime',	},
+			       {title:'付款方式',   field:'paymentWay',	},
 			       {title:'是否有效',   field:'flag',	 transData:{data:['无效','有效']} },
 			       {title:'查看',   templet:getLookBtn(),event:'lookPic' },
 			       ]]
@@ -361,7 +375,8 @@ layui.config({
 		
 		function addEdit(type){
 			var data={ id:'',contractKind:{name:''},contractType:{name:''},duration:'',
-					startTime:'',endTime:'',content:'',amount:'',flag:1,company:'', fileSet:[],},
+					startTime:'',endTime:'',content:'',amount:'',flag:1,company:'', fileSet:[],
+					paymentTime:'', paymentWay:'', },
 			choosed=layui.table.checkStatus('tableData').data,
 			tpl=addEditTpl.innerHTML,
 			title='新增合同',
@@ -422,6 +437,11 @@ layui.config({
 						type:'date',
 						value: data.endTime?data.endTime.split(' ')[0]:'',
 					})
+					laydate.render({
+						elem:'#paymentTime',
+						type:'date',
+						value: data.paymentTime?data.paymentTime.split(' ')[0]:'',
+					})
 					upload.render({
 					   elem: '#uploadPic' //绑定元素
 					   ,url: '${ctx}/upload' 
@@ -442,6 +462,8 @@ layui.config({
 					form.on('submit(sureBtn)',function(obj){
 						obj.field.startTime += ' 00:00:00';
 						obj.field.endTime += ' 00:00:00';
+						if(obj.field.paymentTime)
+							obj.field.paymentTime += ' 00:00:00';
 						obj.field.flag = obj.field.flag || 0;
 					    obj.field.fileIds = fileIds.join(',');
 						myutil.saveAjax({
