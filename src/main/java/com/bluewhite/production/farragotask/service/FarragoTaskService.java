@@ -3,6 +3,8 @@ package com.bluewhite.production.farragotask.service;
 import java.util.Date;
 import java.util.List;
 
+import javax.servlet.http.HttpServletRequest;
+
 import org.springframework.stereotype.Service;
 
 import com.bluewhite.base.BaseCRUDService;
@@ -19,7 +21,7 @@ public interface FarragoTaskService extends BaseCRUDService<FarragoTask,Long>{
 	 * @param farragoTask
 	 * @return
 	 */
-	public FarragoTask addFarragoTask(FarragoTask farragoTask);
+	public FarragoTask addFarragoTask(FarragoTask farragoTask,HttpServletRequest request);
 	
 	/**
 	 * 修改杂工任务

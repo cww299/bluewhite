@@ -74,7 +74,7 @@ public class ContractServiceImpl extends BaseServiceImpl<Contract, Long> impleme
 				predicate.add(cb.equal(root.get("flag").as(Integer.class), param.getFlag()));
 			}
 			// 按开始日期
-			if (!StringUtils.isEmpty(param.getStarTime()) && !StringUtils.isEmpty(param.getOrderTimeBegin())
+			if (!StringUtils.isEmpty(param.getStartTime()) && !StringUtils.isEmpty(param.getOrderTimeBegin())
 					&& !StringUtils.isEmpty(param.getOrderTimeEnd())) {
 				predicate.add(cb.between(root.get("starTime").as(Date.class), param.getOrderTimeBegin(),
 						param.getOrderTimeEnd()));

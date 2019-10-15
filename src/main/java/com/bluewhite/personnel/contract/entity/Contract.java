@@ -78,14 +78,20 @@ public class Contract extends BaseEntity<Long>{
 	/**
 	 * 开始时间
 	 */
-	@Column(name = "star_time")
-	private Date starTime;
+	@Column(name = "start_time")
+	private Date startTime;
 	
 	/**
 	 * 结束时间
 	 */
 	@Column(name = "end_time")
 	private Date endTime;
+	
+	/**
+	 * 付款时间
+	 */
+	@Column(name = "payment_time")
+	private Date paymentTime;
 	
 	/**
 	 * 合同内容
@@ -97,7 +103,7 @@ public class Contract extends BaseEntity<Long>{
 	 * 合同金额
 	 */
 	@Column(name = "amount")
-	private Double amount;
+	private String amount;
 	
 	/**
 	 * 是否有效（0=无效，1=有效）
@@ -220,12 +226,20 @@ public class Contract extends BaseEntity<Long>{
 		this.duration = duration;
 	}
 
-	public Date getStarTime() {
-		return starTime;
+	public Date getStartTime() {
+		return startTime;
 	}
 
-	public void setStarTime(Date starTime) {
-		this.starTime = starTime;
+	public void setStartTime(Date startTime) {
+		this.startTime = startTime;
+	}
+
+	public Date getPaymentTime() {
+		return paymentTime;
+	}
+
+	public void setPaymentTime(Date paymentTime) {
+		this.paymentTime = paymentTime;
 	}
 
 	public String getContent() {
@@ -236,13 +250,15 @@ public class Contract extends BaseEntity<Long>{
 		this.content = content;
 	}
 
-	public Double getAmount() {
+	public String getAmount() {
 		return amount;
 	}
 
-	public void setAmount(Double amount) {
+	public void setAmount(String amount) {
 		this.amount = amount;
 	}
+
+	
 	
 	
 	

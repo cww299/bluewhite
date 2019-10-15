@@ -441,7 +441,7 @@ public class CollectPayServiceImpl extends BaseServiceImpl<CollectPay, Long> imp
 				//考勤总时间
 				double sunTime = list.stream().mapToDouble(AttendancePay::getWorkTime).sum();
 				//分组人员B工资总和
-				double sumBPay = payBList.stream().filter(PayB->PayB.getGroupId() != null && PayB.getGroupId().equals(group.getId())).mapToDouble(PayB::getPayNumber).sum();
+				double sumBPay = payBList.stream().filter(PayB->PayB.getGroupId() != null && PayB.getGroupId().equals(group.getId()) && PayB.getPayNumber()!=null).mapToDouble(PayB::getPayNumber).sum();
 				//分组人员杂工工资总和
 				double sumfarragoTaskPay = farragoTaskPayList.stream().filter(
 						FarragoTaskPay->FarragoTaskPay.getGroupId() !=null 
