@@ -94,6 +94,12 @@ public class Contract extends BaseEntity<Long>{
 	private Date paymentTime;
 	
 	/**
+	 * 付款方式
+	 */
+	@Column(name = "payment_way")
+	private String paymentWay;
+	
+	/**
 	 * 合同内容
 	 */
 	@Column(name = "content")
@@ -129,6 +135,14 @@ public class Contract extends BaseEntity<Long>{
 	private String fileIds;
 	
 	
+
+	public String getPaymentWay() {
+		return paymentWay;
+	}
+
+	public void setPaymentWay(String paymentWay) {
+		this.paymentWay = paymentWay;
+	}
 
 	public String getFileIds() {
 		return fileIds;
