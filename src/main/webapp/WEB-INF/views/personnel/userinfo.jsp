@@ -1100,7 +1100,7 @@ jQuery(function($){
 												layer.close(index);
 										  }
 									  });
-				      				$('.userName').val(o.userName);
+				      				$('.username').val(o.userName);
 				      				$('.number').val(o.number);
 				      				$('.phone').val(o.phone);
 				      				$('.email').val(o.email);
@@ -1867,7 +1867,7 @@ jQuery(function($){
 												layer.close(index);
 										  }
 									  });
-				      				$('.userName').val(o.userName);
+				      				$('.username').val(o.userName);
 				      				$('.number').val(o.number);
 				      				$('.phone').val(o.phone);
 				      				$('.email').val(o.email);
