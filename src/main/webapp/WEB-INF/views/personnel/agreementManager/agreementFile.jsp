@@ -43,6 +43,9 @@
 		.closeBtn:hover{
 		    background: #8080804f;
 		}
+		.layui-layer-loading .layui-layer-content{
+			width:auto !important;
+		}
 	
 	</style>
 </head>
@@ -127,7 +130,7 @@
     <label class="layui-form-label">合同金额</label>
     <div class="layui-input-block">
       <input type="text" name="amount"  value="{{ d.amount }}" 
-			lay-verify="number" placeholder="请输入保险金额" class="layui-input">
+			lay-verify="number" placeholder="请输入合同金额" class="layui-input">
     </div>
   </div>
   <div class="layui-form-item">
@@ -144,7 +147,7 @@
     </div>
   </div>
   <div class="layui-form-item" pane>
-    <label class="layui-form-label">是否有效</label>
+    <label class="layui-form-label">上传图片</label>
     <div class="layui-input-block">
       <button type="button" class="layui-btn layui-btn-sm" id="uploadPic">
   			<i class="layui-icon">&#xe67c;</i>上传图片</button>
@@ -304,8 +307,9 @@ layui.config({
 		table.on('tool(tableData)',function(obj){
 			var html = '<div style="padding:10px;">';
 			var img = obj.data.fileSet;
+			var length = img.length;
 			for(var i in img){
-				html+='<div class="imgDiv"><img src="'+img[i].url+'"></div>';
+				html+='<div class="imgDiv"><img src="'+img[i].url+'" data-id="'+i+'"></div>';
 			}
 			layer.open({
 				type:1,
@@ -313,12 +317,36 @@ layui.config({
 				content: html+'</div>',
 				shadeClose:true,
 				success:function(){
+					var deg = 0;
 					$('.imgDiv').on('click',function(obj){
-						layer.open({
+						var lookoverWin = layer.open({
 							shadeClose:true,
-							offset:'lt',
-							type:3,
-							content:'<div style="text-align:center;margin-top:20px;"><img src="'+$(obj.target).attr('src')+'">',
+							type:1,
+							area:['100%','100%'],
+							btn:['旋转','关闭','上一张','下一张',],
+							content:'<div style="text-align:center;" id="imgDivLook"><img style="max-width:50%;max-height:100%;" src="'+$(obj.target).attr('src')+'"'+
+									' data-id="'+$(obj.target).data('id')+'">',
+							yes: function(index, layero){
+								deg+=90;
+								$('#imgDivLook').find('img').css('transform','rotate('+deg+'deg)');
+						    },
+							btn2: function(index, layero){
+						    },
+						    btn3: function(index, layero){
+						    	var id = $('#imgDivLook').find('img').attr('data-id');
+						    	id = (id-1)<0?length-1:id-1;
+						    	$('#imgDivLook').find('img').attr('src',img[id].url);
+						    	$('#imgDivLook').find('img').attr('data-id',id);
+						    	return false;
+						    },
+						    btn4: function(){ 
+						    	$('#imgDivLook').find('img').data('id');
+						    	var id = $('#imgDivLook').find('img').attr('data-id');
+						    	id = (id-(-1))%length;
+						    	$('#imgDivLook').find('img').attr('src',img[id].url);
+						    	$('#imgDivLook').find('img').attr('data-id',id);
+						    	return false;
+							}
 						})
 					})
 				}
