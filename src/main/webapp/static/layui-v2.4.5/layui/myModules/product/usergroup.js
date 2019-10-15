@@ -351,23 +351,26 @@ layui.config({
 								if(checked.length==0)
 									return myutil.emsg('请选择相关信息');
 								switch(obj.event){
-								case 'deletest': deletest(); break;
+								case 'deletes': deletes(); break;
 								case 'oneKeyWork': oneKeyWork(); break;
 								case 'oneKeyRest': oneKeyRest(); break;
 								}
-								function deletest(){
+								function deletes(){
 									var temporarilyIds = [];
 									for(var i in checked)
 										if(checked[i].secondment=='1')
 											return myutil.emsg('不能删除正式包装员工，请去工资总汇删除');
 										else
 											temporarilyIds.push(checked[i].userId);
-									myutil.deleteAjax({
-										url: '/production/deleteTemporarily',
-										ids: temporarilyIds.join(','),
-										success:function(){
-											table.reload('lookoverTable');
-										}
+									var con = layer.confirm('是否确认删除？',{offset:'20px'},function(){
+										myutil.deleteAjax({
+											url: '/production/deleteTemporarily',
+											ids: temporarilyIds.join(','),
+											success:function(){
+												table.reload('lookoverTable');
+												layer.close(con);
+											}
+										})
 									})
 								}
 								function oneKeyWork(){
