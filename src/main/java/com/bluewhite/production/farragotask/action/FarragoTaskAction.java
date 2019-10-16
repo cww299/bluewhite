@@ -62,7 +62,7 @@ public class FarragoTaskAction {
 	{
 		clearCascadeJSON = ClearCascadeJSON.get().addRetainTerm(FarragoTask.class, "id", "bacth", "name", "price",
 				"time", "allotTime", "userIds", "performance", "performanceNumber", "performancePrice", "remarks",
-				"number", "procedureTime", "payB","startTime","endTime","ids","temporaryIds");
+				"number", "procedureTime", "payB","startTime","endTime","ids","temporaryIds","status");
 	}
 
 	/**
@@ -137,7 +137,7 @@ public class FarragoTaskAction {
 				farragoTaskService.addFarragoTask(oldTask, request);
 				//生成未完成的新任务
 				farragoTask.setStatus(0);
-				farragoTask.setEndTime(new Date());
+				farragoTask.setStartTime(new Date());
 				farragoTaskService.addFarragoTask(farragoTask, request);
 			}
 			cr.setMessage("成功");
