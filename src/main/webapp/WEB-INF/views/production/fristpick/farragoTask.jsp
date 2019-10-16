@@ -1087,7 +1087,7 @@ window.onload = function(){
 										
 										success:function(result){
 											if(0==result.code){
-											layer.msg("添加成功！", {icon: 1});
+											layer.msg("修改成功！", {icon: 1});
 											var orderTime=$("#startTime").val().split('~');
 											var data={
 													page:self.getCount(),
@@ -1103,7 +1103,7 @@ window.onload = function(){
 											 $('.addDictDivTypeForm')[0].reset();
 												
 											}else{
-												layer.msg("添加失败", {icon: 2});
+												layer.msg(result.message, {icon: 2});
 											}
 											
 											layer.close(index);
@@ -1547,7 +1547,7 @@ window.onload = function(){
 										 $('.addDictDivTypeForm')[0].reset();
 											
 										}else{
-											layer.msg("添加失败", {icon: 2});
+											layer.msg(result.message, {icon: 2});
 										}
 										
 										layer.close(index);
