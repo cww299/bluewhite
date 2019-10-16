@@ -347,7 +347,9 @@ public class TaskServiceImpl extends BaseServiceImpl<Task, Long> implements Task
 					listDouble.add(a.getProcedure().getWorkingTime());
 				}
 			});
-			bacthDepartmentPrice = ProTypeUtils.sumProTypePrice(NumUtils.sum(listDouble), bacth.getType());
+			if(listDouble.size()>0){
+				bacthDepartmentPrice = ProTypeUtils.sumProTypePrice(NumUtils.sum(listDouble), bacth.getType());
+			}
 		}
 		for (Task ta : bacth.getTasks()) {
 			sumTaskPrice += ta.getTaskPrice();
