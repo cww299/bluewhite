@@ -12,6 +12,7 @@
 <title>杂工管理</title>
 <meta name="description" content="">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+<link rel="stylesheet" href="${ctx }/static/sxjg/index.css">
 <link rel="stylesheet" href="${ctx }/static/plugins/bootstrap/css/bootstrap.min.css">
 <link rel="stylesheet" href="${ctx }/static/layui-v2.4.5/layui/css/layui.css" media="all">
 	<script src="${ctx }/static/js/vendor/jquery-3.3.1.min.js"></script>
@@ -49,6 +50,9 @@
 				<td>&nbsp;&nbsp;&nbsp;&nbsp;</td> 
 				<td><span class="input-group-btn">
 					<button type="button"class="btn btn-success  btn-sm btn-3d addDict">加绩</button></span></td>
+				<td>&nbsp;&nbsp;&nbsp;&nbsp;</td> 
+				<td class="visible-sm"><span class="input-group-btn">
+					<button type="button"class="btn btn-success  btn-sm btn-3d update">杂工修改</button></span></td>	
 			</tr>
 		</table>
 		<h1 class="page-header"></h1>		
@@ -68,6 +72,7 @@
 					<th class="text-center">添加工价</th>
 					<th class="text-center">加绩工资</th>
 					<th class="text-center">人员详情</th>
+					<th class="text-center visible-sm">状态</th>
 					<th class="text-center">操作</th>
 				</tr>
 			</thead>
@@ -176,10 +181,10 @@
 						</div>
 					</div>
 
-					<div class="form-group">
+					<!-- <div class="form-group">
 						<label class="col-sm-3 control-label">加绩工序选择</label>
 						<div class="col-sm-6 working"></div>
-					</div>
+					</div> -->
 					<div class="form-group">
 						<label class="col-sm-3 control-label">完成人</label>
 						<div class="col-sm-6 completetw">
@@ -187,6 +192,19 @@
 						</div>
 						<div class="col-sm-2 selecttw"></div>
 					</div>
+					<!-- <div class="form-group">
+						<div class="to__block">
+				        <div class="to__left">
+				            <div class="to__arrow"><span>←</span><span>→</span></div>
+				            <div class="to__title">选择组织架构</div>
+				            <div class="to__content" id="leftCont"></div>
+				        </div>
+				        <div class="to__right">
+				            <div class="to__title">已选择</div>
+				            <div class="to__content" id="rightCont"></div>
+				        </div>
+    					</div>
+					</div>	 -->
 					<div class="form-group">
 						<label class="col-sm-3 control-label">备注</label>
 						<div class="col-sm-6">
@@ -245,7 +263,211 @@
 	</div>
 	<!--隐藏框 查看加价结束  -->
 <script src="${ctx}/static/layui-v2.4.5/layui/layui.js"></script>
+<!-- <script type="text/javascript">
+var checkedList = [] // 选中列表
+
+
+// 节点单击事件
+function domClick(e){
+    // 选中子元素所有input框
+    var subItem = e.parentNode.nextElementSibling
+    var inputList = subItem.querySelectorAll(".to__item")
+    for(var i = 0; i < inputList.length; i++){
+        var item = inputList[i]
+        item.querySelector("input").checked = !e.querySelector("input").checked
+        var subName = item.querySelector(".to__name").innerHTML
+    }
+    
+    // 选中当前input框
+    e.querySelector("input").checked = !e.querySelector("input").checked
+    select(e)
+}
+
+// 冒泡事件
+function checkboxClick(e){
+    e.checked = !e.checked
+}
+
+// checkedbox选中事件
+function select(){
+    // 筛选在右侧区域需要遍历的内容
+    checkedList = []
+    var cList = document.getElementsByName("cName")
+    for( var i = 0; i < cList.length; i++){
+        var classArr = (cList[i].parentNode.parentNode.className).split(' ')
+        var className = classArr[classArr.length - 1]
+        var level = parseInt(className.replace(/\w+-/g,'')) // 
+
+        // 设置显示的级别
+        var levelArr = document.querySelectorAll("[class^='to__item level-']")
+        var max = 1
+
+        for (var a = 0; a < levelArr.length; a++) {
+            var item = levelArr[a];
+            var arr = item.className.split('-')
+            if(parseInt(arr[1]) > max){
+                max = parseInt(arr[1])
+            }
+        }
+        if(level == max && cList[i].checked == true){
+            checkedList.push(cList[i].value)
+        }
+    }
+
+    // 右侧区域添加选中内容
+    var dom = document.getElementById("rightCont")
+    dom.innerHTML = ""
+    for (var i = 0; i < checkedList.length; i++) {
+        var item = checkedList[i];
+        var div = document.createElement("div")
+        div.className = "to__item"
+        div.innerHTML = '<span>' + item + '</span><span class="to__close" onclick="cancel(this)"><i>+</i></span>'
+        dom.appendChild(div)
+    }
+}
+
+// 取消选中事件
+function cancel(dom){
+    var cList = document.getElementsByName("cName")
+    for (var i = 0; i < cList.length; i++) {
+        var item = cList[i];
+        if(item.value == dom.previousElementSibling.innerHTML)
+        {
+            item.checked = false
+            select();
+            break;
+        }
+    }
+}
+
+// 下拉框点击事件
+function dropClick(dom){
+    // 切换样式状态
+    if(dom.className.indexOf("to__roate") > -1){
+        dom.className = ""
+    }
+    else{
+        dom.className = "to__roate"
+    }
+    
+    // 显示隐藏内容
+    var domShow = dom.parentNode.parentNode.nextElementSibling
+    if(domShow.className.indexOf("to__show") > -1){
+        domShow.className = "to__subItem"
+    }
+    else{
+        domShow.className = "to__subItem to__show"
+    }
+}
+
+window.onload = function(){
+    // 模拟数据
+    var html=""
+					var htmlth=""
+					var data={
+							type:2
+					}
+					//遍历人名组别
+				    $.ajax({
+					      url:"${ctx}/production/getGroup",
+					      data:data,
+					      type:"GET",
+			      		  success: function (result) {
+			      			  $(result.data).each(function(k,j){
+			      				  console.log(j.name)
+			      				htmlth +='<option value="'+j.id+'">'+j.name+'</option>'
+			      			  });  
+					      }
+					  });
+    
+    var data = [
+        {
+            name : "员工分组",
+            child: [
+                {
+                    name : "程序部",
+                    child : [
+                        {
+                            name : "小明",
+                            child : [],
+                            id:5,
+                        },
+                        {
+                            name : "小红",
+                            child : [],
+                            id:6,
+                        }
+                    ]
+                },
+                {
+                    name : "技术部",
+                    child : [
+                        {
+                            name : "小白",
+                            child : []
+                        },
+                        {
+                            name : "小黑",
+                            child : []
+                        }
+                    ]
+                },
+                {
+                    name : "UI部",
+                    child : []
+                }
+            ]
+        }
+    ]
+    
+    var endHtml = 0
+    var html = ""
+    var level = 1
+
+    // 遍历树形结构
+    function getData(data, dom){
+        if(Object.prototype.toString.call(data) === '[object Array]'){
+            for(var i = 0; i < data.length; i++){
+
+                // 添加标题
+                var item = document.createElement("div")
+                var arrow = '<span class="to__dropdownList" ><i onclick="dropClick(this)"><svg t="1550632829702" class="icon" style="" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="1783" xmlns:xlink="http://www.w3.org/1999/xlink" width="100%" height="100%"><defs><style type="text/css"></style></defs><path d="M959.52557 254.29773 511.674589 702.334953 63.824631 254.29773Z" p-id="1784"></path></svg></i></span>'
+
+                // 设置显示级别
+                if(level == 3){
+                    arrow = ""
+                }
+                item.innerHTML = '<div class="to__item level-' + level + '">' + arrow + '<span onclick="domClick(this)"><input type="checkbox" name="cName" value="' +data[i].name+ '" data-id="'+data[i].id+'" onclick="checkboxClick(this)" /><div class="to__name">' +data[i].name+ '</div></span></div>'
+                dom.appendChild(item)
+                
+                // 添加子元素
+                var subItem = document.createElement("div")
+                subItem.className = "to__subItem"
+                item.appendChild(subItem)
+
+                if(data[i].child.length > 0){
+                    level++
+                    getData(data[i].child,subItem)
+                }
+                else{
+                    if(i == data.length - 1){
+                        level--
+                    }
+                }
+            }
+        }
+    }
+
+    // 赋值
+    var baseDom = document.createElement("div")
+    getData(data,baseDom)
+    document.getElementById("leftCont").innerHTML =  baseDom.innerHTML
+    
+}
+
+    </script> -->
 	<script>
+	
    jQuery(function($){
 	   //判断当前设备的UA
 	   var ua = navigator.userAgent.toLocaleLowerCase();
@@ -350,14 +572,15 @@
 		      				+'<td class="text-center edit name">'+o.bacth+'</td>'
 		      				+'<td class="text-center edit name">'+o.allotTime+'</td>'
 		      				+'<td class="text-center edit name">'+o.name+'</td>'
-		      				+'<td class="text-center edit name">'+o.time+'</td>'
+		      				+'<td class="text-center edit name">'+(o.time==null ? 0 :o.time)+'</td>'
 		      				+'<td class="text-center edit name">'+o.remarks+'</td>'
-		      				+'<td class="text-center edit name hidden-sm">'+parseFloat((o.price).toFixed(3))+'</td>'
+		      				+'<td class="text-center edit name hidden-sm">'+parseFloat((o.price==null ? 0 : o.price).toFixed(3))+'</td>'
 		      				+'<td class="text-center edit name hidden-sm">'+parseFloat((o.payB).toFixed(3))+'</td>'
 		      				+'<td class="text-center "><button class="btn btn-primary btn-trans btn-sm savemodePerformance" data-toggle="modal" data-target="#myModaltw" data-id="'+o.id+'")">查看加价</button></td>'
-		      				+'<td class="text-center edit name">'+parseFloat((o.performancePrice).toFixed(3))+'</td>'
+		      				+'<td class="text-center edit name">'+parseFloat((o.performancePrice==null ? 0 : o.performancePrice).toFixed(3))+'</td>'
 		      				+'<td class="text-center"><button class="btn btn-primary btn-trans btn-sm savemode" data-toggle="modal" data-target="#myModal" data-id="'+o.id+'")">查看人员</button></td>'
-							+'<td class="text-center"><button class="btn btn-sm btn-danger btn-trans delete" data-id='+o.id+'>删除</button></td></tr>'
+		      				+'<td class="text-center edit visible-sm">'+(o.status==0 ? "进行中" : "完成")+'</td>'
+		      				+'<td class="text-center"><button class="btn btn-sm btn-danger btn-trans delete" data-id='+o.id+'>删除</button></td></tr>'
 							
 		      			}); 
 		      			self.setCount(result.data.pageNum)
@@ -560,6 +783,348 @@
 				  	}
 		            self.loadPagination(data);
 				});
+				//杂工修改
+				$(".update").on('click',function(){
+					var arrs=new Array()
+					var html=""
+						var htmlth=""
+						var data={
+								type:2
+						}
+						//遍历人名组别
+					    $.ajax({
+						      url:"${ctx}/production/getGroup",
+						      data:data,
+						      type:"GET",
+						      async:false,
+				      		  success: function (result) {
+				      			  $(result.data).each(function(k,j){
+				      				  arrs.push(j.id)
+				      				htmlth +='<option value="'+j.id+'">'+j.name+'</option>'
+				      				arrs.push
+				      			  });  
+				      			 $('.completetw').html("<select class='form-control selectcompletee'><option value="+0+">请选择</option>"+htmlth+"</select>") 
+						      }
+						  });
+					
+					
+					var  thae=$(".table-hover");
+					thae.parent().parent().parent().parent().parent().find(".checkboxId:checked").each(function(j,k) {
+					var id=$(this).val();
+					var ids="";
+					var user="";
+						data={
+							id:id,
+						}
+						$.ajax({
+						      url:"${ctx}/farragoTask/allFarragoTask",
+						      data:data,
+						      type:"GET",
+						      async:false,
+						      beforeSend:function(){
+							 	  index = layer.load(1, {
+								  shade: [0.1,'#fff'] //0.1透明度的白色背景
+								  });
+							  }, 
+				      		  success: function (result) {
+				      			 $(result.data.rows).each(function(i,o){
+				      				$("#Time").val(o.allotTime)
+				      				$(".bacth").val(o.bacth)
+				      				$("#startTimes").val(o.startTime)
+				      				$("#endTimes").val(o.endTime)
+				      				$(".sumnumber").val(o.name)
+				      				$(".timedata").val(o.time)
+				      				user=o.userIds.split(',')
+				      				users=o.temporaryUserIds.split(',')
+				      				ids=o.userIds.split(',')[0]
+				      				temporaryUserIds=o.temporaryUserIds.split(',')[0]
+				      			}); 
+							   	layer.close(index);
+						      },error:function(){
+									layer.msg("加载失败！", {icon: 2});
+									layer.close(index);
+							  }
+						  });
+						var s="";
+						var h="";
+						for (var i = 0; i < arrs.length; i++) {
+						$.ajax({
+						      url:"${ctx}/production/allGroup",
+						      data:{
+						    	  id:arrs[i],
+						    	  type:2,
+						      },
+						      type:"GET",
+						      async:false,
+						      beforeSend:function(){
+							 	  index = layer.load(1, {
+								  shade: [0.1,'#fff'] //0.1透明度的白色背景
+								  });
+							  }, 
+				      		  success: function (result) {
+				      			$(result.data).each(function(i,o){
+				      			$(o.userList).each(function(i,o){
+									if(o.id==ids){
+										h=o.groupId	
+									}
+								})
+								$(o.temporarilyUser).each(function(i,o){
+									if(o.id==temporaryUserIds){
+										h=o.groupId	
+									}		
+										})
+				      			})
+							   	layer.close(index);
+						      },error:function(){
+									layer.msg("加载失败！", {icon: 2});
+									layer.close(index);
+							  }
+						  });
+						}
+						 $(".selectcompletee").each(function(j,k){
+								$(k).val(h);
+			      			  })
+			      			var htmltwo = "";
+		      				var  htmltwh = "";
+		      				/* var	id=$(this).val() */
+							   var data={
+		      							type:2,
+									 	id:h,
+									 	temporarilyDate:$('#Time').val(),
+							   }
+		      				if(id==0){
+		      					$('.selecttw').html("");
+		      				}else{
+		      				$.ajax({
+								url:"${ctx}/production/allGroup",
+								data:data,
+								type:"GET",
+								async:false,
+								beforeSend:function(){
+									index = layer.load(1, {
+										  shade: [0.1,'#fff'] //0.1透明度的白色背景
+										});
+								},
+								
+								success:function(result){
+									$(result.data).each(function(i,o){
+									$(o.userList).each(function(i,o){
+										if(o.status==1){
+										htmltwo +='<div class="input-group"><input type="checkbox" class="stuCheckBoxtt" value="'+o.userId+'" data-value='+o.userId+' data-secondment='+o.secondment+' data-id="'+o.id+'" data-username="'+o.name+'">'+o.name+'</input></div>'
+										}
+									})
+									$(o.temporarilyUser).each(function(i,o){
+										if(o.status==1){
+										htmltwh +='<div class="input-group"><input type="checkbox" class="stuCheckBoxtt" value='+o.userId+' data-value='+o.userId+' data-secondment='+o.secondment+' data-id="t-'+o.id+'" data-username="'+o.name+'">'+o.name+'</input></div>'
+										}
+									})
+									})
+									var s="<div class='input-group'><input type='checkbox' class='checkalltt'>全选</input></div>"
+									console.log(users)
+									$('.selecttw').html(s+htmltwo+htmltwh)
+										 for (var i = 0; i < user.length; i++) {
+											$(".stuCheckBoxtt").each(function(j,k){
+												var a=$(this).data('id').split('-')[1]
+												 if(a==user[i]){
+													$(k).attr("checked","true"); 
+												}
+							      			  })
+										} 
+									for (var i = 0; i < users.length; i++) {
+										$(".stuCheckBoxtt").each(function(j,k){
+											var a=$(this).data('id').split('-')[1]
+											 if(a==users[i]){
+												$(k).attr("checked","true"); 
+											}
+						      			  })
+									}
+									$(".checkalltt").on('click',function(){
+						                    if($(this).is(':checked')){ 
+									 			$('.stuCheckBoxtt').each(function(){  
+						                    //此处如果用attr，会出现第三次失效的情况  
+						                     		$(this).prop("checked",true);
+									 			})
+						                    }else{
+						                    	$('.stuCheckBoxtt').each(function(){ 
+						                    		$(this).prop("checked",false);
+						                    		
+						                    	})
+						                    }
+						                });
+									layer.close(index);
+								},error:function(){
+									layer.msg("操作失败！", {icon: 2});
+									layer.close(index);
+								}
+							});
+		      				}	  
+			      			  
+						//改变事件
+		      			 $(".selectcompletee").change(function(){
+		      				var htmltwo = "";
+		      				var  htmltwh = "";
+		      				var	id=$(this).val()
+							   var data={
+		      							type:2,
+									 	id:id,
+									 	temporarilyDate:$('#Time').val(),
+							   }
+		      				if(id==0){
+		      					$('.selecttw').html("");
+		      				}else{
+		      				$.ajax({
+								url:"${ctx}/production/allGroup",
+								data:data,
+								type:"GET",
+								beforeSend:function(){
+									index = layer.load(1, {
+										  shade: [0.1,'#fff'] //0.1透明度的白色背景
+										});
+								},
+								
+								success:function(result){
+									$(result.data).each(function(i,o){
+									$(o.userList).each(function(i,o){
+										if(o.status==1){
+										htmltwo +='<div class="input-group"><input type="checkbox" class="stuCheckBoxtt" value="'+o.userId+'" data-secondment='+o.secondment+' data-id="'+o.id+'" data-username="'+o.name+'">'+o.name+'</input></div>'
+										}
+									})
+									$(o.temporarilyUser).each(function(i,o){
+										if(o.status==1){
+										htmltwh +='<div class="input-group"><input type="checkbox" class="stuCheckBoxtt" value="'+o.userId+'" data-secondment='+o.secondment+' data-id="t-'+o.id+'" data-username="'+o.name+'">'+o.name+'</input></div>'
+										}
+									})
+									})
+									var s="<div class='input-group'><input type='checkbox' class='checkalltt'>全选</input></div>"
+									$('.selecttw').html(s+htmltwo+htmltwh)
+									$(".checkalltt").on('click',function(){
+						                    if($(this).is(':checked')){ 
+									 			$('.stuCheckBoxtt').each(function(){  
+						                    //此处如果用attr，会出现第三次失效的情况  
+						                     		$(this).prop("checked",true);
+									 			})
+						                    }else{
+						                    	$('.stuCheckBoxtt').each(function(){ 
+						                    		$(this).prop("checked",false);
+						                    		
+						                    	})
+						                    }
+						                });
+									layer.close(index);
+								},error:function(){
+									layer.msg("操作失败！", {icon: 2});
+									layer.close(index);
+								}
+							});
+		      				}
+						 }) 
+						
+						var dicDiv=$('#addDictDivType');
+						_index = layer.open({
+							  type: 1,
+							  skin: 'layui-layer-rim', //加上边框
+							  area: ['580px', '610px'], 
+							  btnAlign: 'c',//宽高
+							  maxmin: true,
+							  title:"修改杂工",
+							  offset:'30px',
+							  content: dicDiv,
+							  btn: ['确定', '取消'],
+							  yes:function(index, layero){
+								  var performanceNumber=$(".selectchang").val();
+								  var performance=$(".selectchang option:selected").text();
+								 if(performance=="请选择"){
+									 performance="";
+								 }
+								 var arr=new Array()
+								 var arrtem=new Array()
+								 var ids=new Array()
+								 var temporaryIds=new Array()
+								 $(".stuCheckBoxtt:checked").each(function() {   
+										var id = $(this).data('id');
+										if(String(id).indexOf('-')>0){
+									   		arrtem.push($(this).data('value'));
+									   		temporaryIds.push(id.split('-')[1]);
+										}else{
+										    arr.push($(this).val()); 
+										    ids.push($(this).data('id'));
+										}
+									});
+								  
+								   if(arr.length<=0 && arrtem.length<=0){
+									 return layer.msg("领取人不能为空", {icon:2 });
+								  } 
+								  if($(".sumnumber").val()==""){
+										 return layer.msg("工序不能为空", {icon:2 });
+									  }
+								  postData={
+										  id:id,
+										  allotTime:$("#Time").val(),
+										  name:$(".sumnumber").val(),
+										  time:$(".timedata").val(),
+										  remarks:$(".remarks").val(),
+										  startTime:$("#startTimes").val(),
+										  endTime:$("#endTimes").val(),
+										  performance:performance,
+										  performanceNumber:performanceNumber,
+										  ids:arr,
+										  temporaryIds:arrtem,
+										  userIds:ids,
+										  temporaryUserIds:temporaryIds,
+										  bacth:$(".bacth").val(),
+										  type:2,
+								  }
+								  $.ajax({
+										url:"${ctx}/farragoTask/updateFarragoTask",
+										data:postData,
+							            traditional: true,
+										type:"post",
+										beforeSend:function(){
+											index = layer.load(1, {
+												  shade: [0.1,'#fff'] //0.1透明度的白色背景
+												});
+										},
+										
+										success:function(result){
+											if(0==result.code){
+											layer.msg("添加成功！", {icon: 1});
+											var orderTime=$("#startTime").val().split('~');
+											var data={
+													page:self.getCount(),
+											  		size:13,	
+											  		type:2,
+											  		name:$('#name').val(),
+										  			bacth:$('#number').val(),
+										  			orderTimeBegin:orderTime[0],
+										  			orderTimeEnd:orderTime[1], 
+											} 
+											 self.loadPagination(data); 
+											 layer.close(_index);
+											 $('.addDictDivTypeForm')[0].reset();
+												
+											}else{
+												layer.msg("添加失败", {icon: 2});
+											}
+											
+											layer.close(index);
+										},error:function(){
+											layer.msg("操作失败！", {icon: 2});
+											layer.close(index);
+										}
+									});
+								},
+							  end:function(){
+								  $('#addDictDivType').hide();
+							
+								  $('.addDictDivTypeForm')[0].reset(); 
+								
+							  }
+						});
+						
+					});
+				})
+				
+				
 				//加绩
 				$('.addDict').on('click',function(){
 					var  thae=$(".table-hover");
@@ -956,10 +1521,10 @@
 									  endTime:$("#endTimes").val(),
 									  performance:performance,
 									  performanceNumber:performanceNumber,
-									  userIds:arr,
-									  temporaryUserIds:arrtem,
-									  ids:ids,
-									  temporaryIds:temporaryIds,
+									  ids:arr,
+									  temporaryIds:arrtem,
+									  userIds:ids,
+									  temporaryUserIds:temporaryIds,
 									  bacth:$(".bacth").val(),
 									  type:2,
 							  }

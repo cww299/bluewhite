@@ -8,7 +8,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-import javax.persistence.Column;
 import javax.servlet.http.HttpServletRequest;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,7 +21,6 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.support.ByteArrayMultipartFileEditor;
 
-import com.bluewhite.common.BeanCopyUtils;
 import com.bluewhite.common.ClearCascadeJSON;
 import com.bluewhite.common.DateTimePattern;
 import com.bluewhite.common.Log;
@@ -62,7 +60,7 @@ public class FarragoTaskAction {
 	{
 		clearCascadeJSON = ClearCascadeJSON.get().addRetainTerm(FarragoTask.class, "id", "bacth", "name", "price",
 				"time", "allotTime", "userIds", "performance", "performanceNumber", "performancePrice", "remarks",
-				"number", "procedureTime", "payB","startTime","endTime","ids","temporaryIds","status");
+				"number", "procedureTime", "payB","startTime","endTime","ids","temporaryUserIds","temporaryIds","status");
 	}
 
 	/**
@@ -94,6 +92,8 @@ public class FarragoTaskAction {
 			}
 			if(farragoTask.getTime()!=null){
 				farragoTask.setStatus(1);
+			}else{
+				farragoTask.setStatus(0);
 			}
 			farragoTaskService.addFarragoTask(farragoTask, request);
 			cr.setMessage("任务分配成功");
@@ -126,26 +126,39 @@ public class FarragoTaskAction {
 				
 			}
 			//获取原任务员工数量
-			int userIdsOld = oldTask.getUserIds().split(",").length;
-			//获取原任务临时员工数量
-			int temporaryUserIdsOld = oldTask.getTemporaryUserIds().split(",").length;
-			//获取当前任务员工数量
-			int userIds = farragoTask.getUserIds().split(",").length;
-			//获取当前任务临时员工数量
-			int temporaryUserIds = farragoTask.getTemporaryUserIds().split(",").length;
-			//人员数量不想等，说明该任务发生过人员调动，将原任务结束重新生成新任务
-			if(userIdsOld!=userIds || temporaryUserIdsOld!=temporaryUserIds){
-				oldTask.setEndTime(new Date());
-				if (oldTask.getStartTime() != null && oldTask.getEndTime() != null) {
-					oldTask.setTime(DatesUtil.getTime(oldTask.getStartTime(), oldTask.getEndTime()));
-				}
-				oldTask.setStatus(1);
-				farragoTaskService.addFarragoTask(oldTask, request);
-				//生成未完成的新任务
-				farragoTask.setStatus(0);
-				farragoTask.setStartTime(new Date());
-				farragoTaskService.addFarragoTask(farragoTask, request);
+			Integer userIdsOld = 0;
+			if(!StringUtils.isEmpty(oldTask.getUserIds())){
+				 userIdsOld = oldTask.getUserIds().split(",").length;
 			}
+			//获取原任务临时员工数量
+			Integer temporaryUserIdsOld = 0;
+			if(!StringUtils.isEmpty(oldTask.getTemporaryUserIds())){
+				temporaryUserIdsOld = oldTask.getTemporaryUserIds().split(",").length;
+			}
+			//获取当前任务员工数量
+			Integer userIds = 0;
+			if(!StringUtils.isEmpty(farragoTask.getUserIds())){
+				userIds = farragoTask.getUserIds().split(",").length;
+			}
+			//获取当前任务临时员工数量
+			Integer temporaryUserIds=0;
+			if(!StringUtils.isEmpty(farragoTask.getTemporaryUserIds())){
+				temporaryUserIds = farragoTask.getTemporaryUserIds().split(",").length;
+			}
+			//人员数量不想等，说明该任务发生过人员调动，将原任务结束重新生成新任务
+				if(userIdsOld!=userIds || temporaryUserIdsOld!=temporaryUserIds){
+					oldTask.setEndTime(new Date());
+					if (oldTask.getStartTime() != null && oldTask.getEndTime() != null) {
+						oldTask.setTime(DatesUtil.getTime(oldTask.getStartTime(), oldTask.getEndTime()));
+					}
+					oldTask.setStatus(1);
+					farragoTaskService.addFarragoTask(oldTask, request);
+					//生成未完成的新任务
+					farragoTask.setStatus(0);
+					farragoTask.setStartTime(new Date());
+					farragoTask.setId(null);
+					farragoTaskService.addFarragoTask(farragoTask, request);
+				}
 			cr.setMessage("成功");
 		}else{
 			cr.setCode(ErrorCode.ILLEGAL_ARGUMENT.getCode());

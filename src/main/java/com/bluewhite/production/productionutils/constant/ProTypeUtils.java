@@ -645,6 +645,7 @@ public  class ProTypeUtils {
 	 */
 	public static Double sumBPrice(Double BPrice, Integer type) {
 		Double sumBPrice = 0.0 ;
+		BPrice = (BPrice == null ? 0:BPrice);
 		switch (type) {
 		case 1:// 生产部一楼质检
 			sumBPrice = NumUtils.div(BPrice,proTypeUtils.service.findByExcelNameAndType("AC7" , 1).getNumber(),5);
