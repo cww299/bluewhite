@@ -43,6 +43,11 @@
 		.closeBtn:hover{
 		    background: #8080804f;
 		}
+		#imgDivLook{
+			text-align:center;
+			/* height: 90%; */
+			/* overflow-y: scroll; */
+		}
 		.layui-layer-loading .layui-layer-content{
 			width:auto !important;
 		}
@@ -344,7 +349,7 @@ layui.config({
 							title:'查看照片',
 							skin: 'transparentLayer',
 							btn:['旋转','关闭','上一张','下一张',],
-							content:'<div style="text-align:center;height: 90%;" id="imgDivLook"><img style="max-width:50%;max-height:100%;" src="'+$(obj.target).attr('src')+'"'+
+							content:'<div id="imgDivLook"><img style="max-width:50%;max-height:100%;" src="'+$(obj.target).attr('src')+'"'+
 									' data-id="'+$(obj.target).data('id')+'">',
 							yes: function(index, layero){
 								deg+=90;
