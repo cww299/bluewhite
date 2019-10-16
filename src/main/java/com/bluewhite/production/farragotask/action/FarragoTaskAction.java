@@ -24,9 +24,12 @@ import com.bluewhite.common.BeanCopyUtils;
 import com.bluewhite.common.ClearCascadeJSON;
 import com.bluewhite.common.DateTimePattern;
 import com.bluewhite.common.Log;
+import com.bluewhite.common.SessionManager;
 import com.bluewhite.common.entity.CommonResponse;
+import com.bluewhite.common.entity.CurrentUser;
 import com.bluewhite.common.entity.ErrorCode;
 import com.bluewhite.common.entity.PageParameter;
+import com.bluewhite.common.utils.DatesUtil;
 import com.bluewhite.common.utils.NumUtils;
 import com.bluewhite.production.farragotask.entity.FarragoTask;
 import com.bluewhite.production.farragotask.service.FarragoTaskService;
@@ -87,14 +90,19 @@ private static final Log log = Log.getLog(FarragoTaskAction.class);
 		//修改
 		if(!StringUtils.isEmpty(farragoTask.getId())){
 			FarragoTask oldTask = farragoTaskService.findOne(farragoTask.getId());
-			BeanCopyUtils.copyNullProperties(oldTask,farragoTask);
-			farragoTask.setCreatedAt(oldTask.getCreatedAt());
-			farragoTaskService.save(farragoTask);
-			cr.setMessage("新增成功");
+			BeanCopyUtils.copyNotEmpty(farragoTask,oldTask,"");
+			if(oldTask.getStartTime()!=null && oldTask.getEndTime()!=null){
+				oldTask.setTime(DatesUtil.getTime(oldTask.getStartTime(), oldTask.getEndTime()));
+			}
+			farragoTaskService.addFarragoTask(oldTask,request);
+			cr.setMessage("修改成功");
 		}else{
 			//新增
 			if(!StringUtils.isEmpty(farragoTask.getIds()) ||!StringUtils.isEmpty(farragoTask.getTemporaryIds())){
 				farragoTask.setAllotTime(ProTypeUtils.countAllotTime(farragoTask.getAllotTime()));
+				if(farragoTask.getStartTime()!=null && farragoTask.getEndTime()!=null){
+					farragoTask.setTime(DatesUtil.getTime(farragoTask.getStartTime(), farragoTask.getEndTime()));
+				}
 				farragoTaskService.addFarragoTask(farragoTask,request);
 				cr.setMessage("任务分配成功");
 			}else{
@@ -115,6 +123,10 @@ private static final Log log = Log.getLog(FarragoTaskAction.class);
 	@ResponseBody
 	public CommonResponse allTask(HttpServletRequest request,FarragoTask farragoTask,PageParameter page) {
 		CommonResponse cr = new CommonResponse();
+		CurrentUser cu = SessionManager.getUserSession();
+		if (!cu.getRole().contains("superAdmin") && !cu.getRole().contains("personnel")) {
+			farragoTask.setUserId(cu.getId());
+		}
 		cr.setData(clearCascadeJSON.format(farragoTaskService.findPages(farragoTask, page)).toJSON());
 		cr.setMessage("查询成功");
 		return cr;

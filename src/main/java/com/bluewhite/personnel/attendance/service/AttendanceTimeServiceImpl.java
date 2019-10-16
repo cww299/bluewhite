@@ -359,8 +359,7 @@ public class AttendanceTimeServiceImpl extends BaseServiceImpl<AttendanceTime, L
 					// 当休息日有打卡记录时，不需要申请加班的人自动算加班时长
 					if (rout) {
 						attendanceTime.setFlag(3);
-						if (attendanceInit.getOverTimeType() == 2 && attendanceTime.getCheckIn() != null
-								&& attendanceTime.getCheckOut() != null) {
+						if (attendanceInit.getOverTimeType() == 2 && attendanceTime.getCheckIn() != null && attendanceTime.getCheckOut() != null) {
 							if (attendanceInit.getRestTimeWork() == 3) {
 								attendanceTime.setOvertime(
 										DatesUtil.getTimeHour(attendanceTime.getCheckIn().before(workTime) ? workTime
@@ -371,6 +370,10 @@ public class AttendanceTimeServiceImpl extends BaseServiceImpl<AttendanceTime, L
 												: attendanceTime.getCheckIn(), attendanceTime.getCheckOut()),
 										attendanceTime.getCheckOut().after(restEndTime) ? restTime : 0));
 							}
+							if (attendanceInit.isEarthWork() && DatesUtil.getTime(attendanceTime.getCheckIn(), workTime) >= 20) {
+								attendanceTime.setOvertime(NumUtils.sum(attendanceTime.getOvertime(),0.5));
+							}
+							
 							// 设定加班后可以晚到岗加班时间
 							if (sign) {
 								if (attendanceTime.getCheckIn().compareTo(DatesUtil.getDaySum(workTime, minute)) != 1) {
