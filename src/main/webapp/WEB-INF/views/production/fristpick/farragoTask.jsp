@@ -793,19 +793,75 @@ window.onload = function(){
 						      url:"${ctx}/production/getGroup",
 						      data:data,
 						      type:"GET",
+						      async:false,
 				      		  success: function (result) {
 				      			  $(result.data).each(function(k,j){
 				      				htmlth +='<option value="'+j.id+'">'+j.name+'</option>'
 				      			  });  
 				      			 $('.completetw').html("<select class='form-control selectcompletee'><option value="+0+">请选择</option>"+htmlth+"</select>") 
-								//改变事件
-				      			 $(".selectcompletee").change(function(){
-				      				var htmltwo = "";
+						      }
+						  });
+					
+					
+					var  thae=$(".table-hover");
+					thae.parent().parent().parent().parent().parent().find(".checkboxId:checked").each(function(j,k) {
+					var id=$(this).val();
+					var ids="";
+					var user="";
+						data={
+							id:id,
+						}
+						$.ajax({
+						      url:"${ctx}/farragoTask/allFarragoTask",
+						      data:data,
+						      type:"GET",
+						      async:false,
+						      beforeSend:function(){
+							 	  index = layer.load(1, {
+								  shade: [0.1,'#fff'] //0.1透明度的白色背景
+								  });
+							  }, 
+				      		  success: function (result) {
+				      			 $(result.data.rows).each(function(i,o){
+				      				$("#Time").val(o.allotTime)
+				      				$(".bacth").val(o.bacth)
+				      				$("#startTimes").val(o.startTime)
+				      				$("#endTimes").val(o.endTime)
+				      				$(".sumnumber").val(o.name)
+				      				$(".timedata").val(o.time)
+				      				user=o.ids.split(',')
+				      				ids=o.ids.split(',')[0]
+				      			}); 
+							   	layer.close(index);
+						      },error:function(){
+									layer.msg("加载失败！", {icon: 2});
+									layer.close(index);
+							  }
+						  });
+						
+						$.ajax({
+						      url:"${ctx}/finance/attendancePayOne",
+						      data:{
+						    	  id:ids
+						      },
+						      type:"GET",
+						      async:false,
+						      beforeSend:function(){
+							 	  index = layer.load(1, {
+								  shade: [0.1,'#fff'] //0.1透明度的白色背景
+								  });
+							  }, 
+				      		  success: function (result) {
+				      			  console.log(result.data.groupId)
+				      			  $(".selectcompletee").each(function(j,k){
+									$(k).val(37);
+				      			  })
+				      			var htmltwo = "";
 				      				var  htmltwh = "";
-				      				var	id=$(this).val()
+				      				/* var	id=$(this).val() */
 									   var data={
 				      							type:2,
-											 	id:id,
+											 	id:37,
 											 	temporarilyDate:$('#Time').val(),
 									   }
 				      				if(id==0){
@@ -856,36 +912,6 @@ window.onload = function(){
 										}
 									});
 				      				}
-								 }) 
-						      }
-						  });
-					
-					
-					var  thae=$(".table-hover");
-					thae.parent().parent().parent().parent().parent().find(".checkboxId:checked").each(function(j,k) {
-					var id=$(this).val();
-						data={
-							id:id,
-						}
-						$.ajax({
-						      url:"${ctx}/farragoTask/allFarragoTask",
-						      data:data,
-						      type:"GET",
-						      async:false,
-						      beforeSend:function(){
-							 	  index = layer.load(1, {
-								  shade: [0.1,'#fff'] //0.1透明度的白色背景
-								  });
-							  }, 
-				      		  success: function (result) {
-				      			 $(result.data.rows).each(function(i,o){
-				      				$("#Time").val(o.allotTime)
-				      				$(".bacth").val(o.bacth)
-				      				$("#startTimes").val(o.startTime)
-				      				$("#endTimes").val(o.endTime)
-				      				$(".sumnumber").val(o.name)
-				      				$(".timedata").val(o.time)
-				      			}); 
 							   	layer.close(index);
 						      },error:function(){
 									layer.msg("加载失败！", {icon: 2});
@@ -893,7 +919,65 @@ window.onload = function(){
 							  }
 						  });
 						
-						
+						//改变事件
+		      			 $(".selectcompletee").change(function(){
+		      				var htmltwo = "";
+		      				var  htmltwh = "";
+		      				var	id=$(this).val()
+							   var data={
+		      							type:2,
+									 	id:id,
+									 	temporarilyDate:$('#Time').val(),
+							   }
+		      				if(id==0){
+		      					$('.selecttw').html("");
+		      				}else{
+		      				$.ajax({
+								url:"${ctx}/production/allGroup",
+								data:data,
+								type:"GET",
+								beforeSend:function(){
+									index = layer.load(1, {
+										  shade: [0.1,'#fff'] //0.1透明度的白色背景
+										});
+								},
+								
+								success:function(result){
+									$(result.data).each(function(i,o){
+									$(o.userList).each(function(i,o){
+										if(o.status==1){
+										htmltwo +='<div class="input-group"><input type="checkbox" class="stuCheckBoxtt" value="'+o.userId+'" data-secondment='+o.secondment+' data-id="'+o.id+'" data-username="'+o.name+'">'+o.name+'</input></div>'
+										}
+									})
+									$(o.temporarilyUser).each(function(i,o){
+										if(o.status==1){
+										htmltwh +='<div class="input-group"><input type="checkbox" class="stuCheckBoxtt" value="'+o.userId+'" data-secondment='+o.secondment+' data-id="t-'+o.id+'" data-username="'+o.name+'">'+o.name+'</input></div>'
+										}
+									})
+									})
+									var s="<div class='input-group'><input type='checkbox' class='checkalltt'>全选</input></div>"
+									$('.selecttw').html(s+htmltwo+htmltwh)
+									$(".checkalltt").on('click',function(){
+						                    if($(this).is(':checked')){ 
+									 			$('.stuCheckBoxtt').each(function(){  
+						                    //此处如果用attr，会出现第三次失效的情况  
+						                     		$(this).prop("checked",true);
+									 			})
+						                    }else{
+						                    	$('.stuCheckBoxtt').each(function(){ 
+						                    		$(this).prop("checked",false);
+						                    		
+						                    	})
+						                    }
+						                });
+									layer.close(index);
+								},error:function(){
+									layer.msg("操作失败！", {icon: 2});
+									layer.close(index);
+								}
+							});
+		      				}
+						 }) 
 						
 						var dicDiv=$('#addDictDivType');
 						_index = layer.open({
