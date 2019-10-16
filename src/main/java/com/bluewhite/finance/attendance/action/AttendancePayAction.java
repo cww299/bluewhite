@@ -1,6 +1,8 @@
 package com.bluewhite.finance.attendance.action;
 
 import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -20,8 +22,13 @@ import com.bluewhite.common.DateTimePattern;
 import com.bluewhite.common.Log;
 import com.bluewhite.common.entity.CommonResponse;
 import com.bluewhite.common.entity.ErrorCode;
+import com.bluewhite.common.utils.DatesUtil;
 import com.bluewhite.finance.attendance.entity.AttendancePay;
 import com.bluewhite.finance.attendance.service.AttendancePayService;
+import com.bluewhite.production.farragotask.entity.FarragoTask;
+import com.bluewhite.production.farragotask.service.FarragoTaskService;
+import com.bluewhite.production.task.entity.Task;
+import com.bluewhite.production.task.service.TaskService;
 import com.bluewhite.system.user.service.UserService;
 
 /**
@@ -39,6 +46,10 @@ public class AttendancePayAction {
 	private AttendancePayService attendancePayService;
 	@Autowired
 	private UserService userService;
+	@Autowired
+	private TaskService taskService;
+	@Autowired
+	private FarragoTaskService farragoTaskService;
 
 	/**
 	 * 添加考情工资(A工资)
@@ -109,8 +120,19 @@ public class AttendancePayAction {
 		if (!StringUtils.isEmpty(ids)) {
 			for (int i = 0; i < ids.length; i++) {
 				Long id = Long.parseLong(ids[i]);
-				attendancePayService.delete(id);
-				count++;
+				AttendancePay attendancePay = attendancePayService.findOne(id);
+				Date orderTimeBegin = DatesUtil.getfristDayOftime(attendancePay.getAllotTime());
+				Date orderTimeEnd = DatesUtil.getLastDayOftime(attendancePay.getAllotTime());
+				List<Task> taskList = taskService.findInSetIds(ids[i],orderTimeBegin,orderTimeEnd);
+				List<FarragoTask> farragoTaskList = farragoTaskService.findInSetIds(ids[i], orderTimeBegin, orderTimeEnd);
+				if(taskList.size()>0 || farragoTaskList.size()>0){
+					cr.setCode(ErrorCode.ILLEGAL_ARGUMENT.getCode());
+					cr.setMessage(attendancePay.getUserName()+"当天考勤已分配任务，无法删除，需删除，请先删除任务");
+					return cr;
+				}else{
+					attendancePayService.delete(id);
+					count++;
+				}
 			}
 		}
 		cr.setMessage("成功删除" + count + "条");

@@ -9,6 +9,7 @@ import java.util.stream.Collectors;
 
 import javax.persistence.criteria.Predicate;
 import javax.servlet.http.HttpServletRequest;
+import javax.validation.constraints.Null;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -117,11 +118,11 @@ public class TaskServiceImpl extends BaseServiceImpl<Task, Long> implements Task
 							.filter(AttendancePay -> AttendancePay.getId().equals(id)
 									&& AttendancePay.getUserId().equals(usersId))
 							.collect(Collectors.toList());
+					Temporarily temporarily = null;
 					if (attendancePayListOne.size() == 0) {
-						Temporarily temporarily = temporarilyDao.findByIdAndUserId(idsList.get(i), userIdsList.get(i));
-						sumTime += attendancePayListOne.size() == 0 ? temporarily.getWorkTime()
-								: attendancePayListOne.get(0).getWorkTime();
+						temporarily = temporarilyDao.findByIdAndUserId(idsList.get(i), userIdsList.get(i));
 					}
+					sumTime += attendancePayListOne.size() == 0 ? temporarily.getWorkTime() : attendancePayListOne.get(0).getWorkTime();
 				}
 			}
 			// 临时员工
@@ -280,8 +281,13 @@ public class TaskServiceImpl extends BaseServiceImpl<Task, Long> implements Task
 				}
 
 				// 临时员工
-				if (temporaryIdList.size() > 0) {
-					for (Long idLong : temporaryIdList) {
+				if (temporaryUserIdList.size() > 0) {
+					for (int j = 0; j < temporaryUserIdList.size(); j++) {
+						//临时员工出勤记录id
+						Long idLong = temporaryIdList.get(j);
+						//临时员工id
+						Long userIdLong = temporaryUserIdList.get(j);
+						//获取临时员工出勤记录
 						List<Temporarily> temporarilyListOne = temporarilyList.stream()
 								.filter(Temporarily -> Temporarily.getId().equals(idLong)).collect(Collectors.toList());
 						PayB payB = null;
@@ -699,6 +705,16 @@ public class TaskServiceImpl extends BaseServiceImpl<Task, Long> implements Task
 	@Override
 	public List<Task> findByTypeAndAllotTimeBetween(Integer type, Date startTime, Date endTime) {
 		return dao.findByTypeAndAllotTimeBetween(type, startTime, endTime);
+	}
+
+	@Override
+	public List<Task> findInSetIds(String ids, Date beginTime, Date endTime) {
+		return dao.findInSetIds(ids, beginTime, endTime);
+	}
+
+	@Override
+	public List<Task> findInSetTemporaryIds(String id, Date startTime, Date endTime) {
+		return dao.findInSetTemporaryIds(id, startTime, endTime);
 	}
 
 }

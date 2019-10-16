@@ -11,6 +11,7 @@ import com.bluewhite.base.BaseCRUDService;
 import com.bluewhite.common.entity.PageParameter;
 import com.bluewhite.common.entity.PageResult;
 import com.bluewhite.production.farragotask.entity.FarragoTask;
+import com.bluewhite.production.task.entity.Task;
 
 @Service
 public interface FarragoTaskService extends BaseCRUDService<FarragoTask,Long>{
@@ -43,5 +44,16 @@ public interface FarragoTaskService extends BaseCRUDService<FarragoTask,Long>{
 	 * @return
 	 */
 	List<FarragoTask> findByTypeAndAllotTimeBetween(Integer type,Date startTime,Date endTime);
+	/**
+	 * 根据正式考勤id模糊查找任务
+	 * @param id
+	 */
+	public List<FarragoTask> findInSetIds(String id,Date startTime,Date endTime);
+	
+	/**
+	 * 根据临时考勤id模糊查找任务
+	 * @param id
+	 */
+	public List<FarragoTask> findInSetTemporaryIds(String id,Date startTime,Date endTime);
 
 }

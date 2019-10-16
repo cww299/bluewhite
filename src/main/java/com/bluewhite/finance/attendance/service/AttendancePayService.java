@@ -60,5 +60,5 @@ public interface AttendancePayService  extends BaseCRUDService<AttendancePay,Lon
 	 * @return
 	 */
 	List<AttendancePay> findByTypeAndAllotTimeBetween(Integer type,Date startTime,Date endTime);
-
+	
 }

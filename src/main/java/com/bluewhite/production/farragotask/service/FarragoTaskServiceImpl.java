@@ -54,6 +54,10 @@ public class FarragoTaskServiceImpl extends BaseServiceImpl<FarragoTask, Long> i
 			if (param.getId() != null) {
 				predicate.add(cb.equal(root.get("id").as(Long.class), param.getId()));
 			}
+			// 按分配人过滤
+			if (param.getUserId() != null) {
+				predicate.add(cb.equal(root.get("userId").as(Long.class), param.getUserId()));
+			}
 			// 按类型
 			if (!StringUtils.isEmpty(param.getType())) {
 				predicate.add(cb.equal(root.get("type").as(Integer.class), param.getType()));
@@ -108,16 +112,17 @@ public class FarragoTaskServiceImpl extends BaseServiceImpl<FarragoTask, Long> i
 					farragoTask.getType(), farragoTask.getNumber()), null));
 		}
 		// 杂工任务价值
-		farragoTask.setPrice(NumUtils.round(
-				ProTypeUtils.sumTaskPrice(farragoTask.getTime(), farragoTask.getType(), 0, farragoTask.getAC5()),
-				null));
+		if(farragoTask.getTime()!=null){
+			farragoTask.setPrice(NumUtils.round(
+					ProTypeUtils.sumTaskPrice(farragoTask.getTime(), farragoTask.getType(), 0, farragoTask.getAC5()),
+					null));
+			// B工资净值
+			farragoTask.setPayB(NumUtils.round(ProTypeUtils.sumBPrice(farragoTask.getPrice(), farragoTask.getType()), null));
+		}
 		// 杂工加绩具体数值
 		if (farragoTask.getPerformanceNumber() != null) {
 			farragoTask.setPerformancePrice(NumUtils.round(ProTypeUtils.sumPerformancePrice(farragoTask), null));
 		}
-		// B工资净值
-		farragoTask
-				.setPayB(NumUtils.round(ProTypeUtils.sumBPrice(farragoTask.getPrice(), farragoTask.getType()), null));
 		farragoTask = dao.save(farragoTask);
 		// 将杂工工资统计成流水
 		int userSize = userIds != null ? userIds.length : 0;
@@ -149,7 +154,8 @@ public class FarragoTaskServiceImpl extends BaseServiceImpl<FarragoTask, Long> i
 							.setUserId(attendancePay == null ? temporarily.getUserId() : attendancePay.getUserId());
 					farragoTaskPay
 							.setGroupId(attendancePay == null ? temporarily.getGroupId() : attendancePay.getGroupId());
-					farragoTaskPay.setUserName(attendancePay == null ? temporarily.getUser().getUserName() : attendancePay.getUserName());
+					farragoTaskPay.setUserName(
+							attendancePay == null ? temporarily.getUser().getUserName() : attendancePay.getUserName());
 				} else {
 					farragoTaskPay.setUserId(user.getId());
 					farragoTaskPay.setGroupId(user.getGroupId());
@@ -196,8 +202,6 @@ public class FarragoTaskServiceImpl extends BaseServiceImpl<FarragoTask, Long> i
 
 	@Override
 	public FarragoTask updateFarragoTask(FarragoTask farragoTask) {
-		// farragoTaskPayDao.findByTaskId();
-
 		return null;
 	}
 
@@ -216,4 +220,13 @@ public class FarragoTaskServiceImpl extends BaseServiceImpl<FarragoTask, Long> i
 		return dao.findByTypeAndAllotTimeBetween(type, startTime, endTime);
 	}
 
+	@Override
+	public List<FarragoTask> findInSetIds(String ids, Date beginTime, Date endTime) {
+		return dao.findInSetIds(ids, beginTime, endTime);
+	}
+
+	@Override
+	public List<FarragoTask> findInSetTemporaryIds(String id, Date startTime, Date endTime) {
+		return dao.findInSetTemporaryIds(id, startTime, endTime);
+	}
 }
