@@ -854,14 +854,14 @@ window.onload = function(){
 				      		  success: function (result) {
 				      			  console.log(result.data.groupId)
 				      			  $(".selectcompletee").each(function(j,k){
-									$(k).val(37);
+									$(k).val(52);
 				      			  })
 				      			var htmltwo = "";
 				      				var  htmltwh = "";
 				      				/* var	id=$(this).val() */
 									   var data={
 				      							type:2,
-											 	id:37,
+											 	id:52,
 											 	temporarilyDate:$('#Time').val(),
 									   }
 				      				if(id==0){
@@ -871,6 +871,7 @@ window.onload = function(){
 										url:"${ctx}/production/allGroup",
 										data:data,
 										type:"GET",
+										async:false,
 										beforeSend:function(){
 											index = layer.load(1, {
 												  shade: [0.1,'#fff'] //0.1透明度的白色背景
@@ -892,6 +893,15 @@ window.onload = function(){
 											})
 											var s="<div class='input-group'><input type='checkbox' class='checkalltt'>全选</input></div>"
 											$('.selecttw').html(s+htmltwo+htmltwh)
+												for (var i = 0; i < user.length; i++) {
+													$(".stuCheckBoxtt").each(function(j,k){
+														var a=$(this).val()
+														$(k).val(user[i]);
+														 if(a=user[i]){
+															$(k).attr("checked","true"); 
+														} 
+									      			  })
+												}
 											$(".checkalltt").on('click',function(){
 								                    if($(this).is(':checked')){ 
 											 			$('.stuCheckBoxtt').each(function(){  
