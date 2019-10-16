@@ -1369,6 +1369,7 @@ window.onload = function(){
 					var firstdate = year + '-' + '0'+month + '-01'+' '+'00:00:00';
 					var lastdate = year + '-' + '0'+month + '-' + day.getDate() +' '+'23:59:59';
 					var now=year+'-'+p(month)+"-"+p(date)+" "+p(h)+':'+p(m)+":"+p(s);//当前时间
+					$("#startTimes").val(now)
 					if(mobileType==true){
 						$("#Time").val(now)
 					}
