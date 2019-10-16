@@ -123,6 +123,7 @@ public class FarragoTaskAction {
 				cr.setCode(ErrorCode.ILLEGAL_ARGUMENT.getCode());
 				cr.setMessage("已完成，无法修改");
 				return cr;
+				
 			}
 			//获取原任务员工数量
 			int userIdsOld = oldTask.getUserIds().split(",").length;
