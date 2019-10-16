@@ -96,10 +96,12 @@ public class FarragoTaskServiceImpl extends BaseServiceImpl<FarragoTask, Long> i
 		// 领取记录
 		String[] userIds = null;
 		if (!StringUtils.isEmpty(farragoTask.getUserIds())) {
+			farragoTask.setIds(farragoTask.getUserIds());
 			userIds = farragoTask.getUserIds().split(",");
 		}
 		String[] temporaryUserIds = null;
 		if (!StringUtils.isEmpty(farragoTask.getTemporaryUserIds())) {
+			farragoTask.setTemporaryIds(farragoTask.getTemporaryUserIds());
 			temporaryUserIds = farragoTask.getTemporaryUserIds().split(",");
 		}
 
