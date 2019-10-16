@@ -524,7 +524,8 @@ public class GroupAction {
 							orderTimeEnd);
 					if (taskList.size() > 0 || farragoTaskList.size() > 0) {
 						cr.setCode(ErrorCode.ILLEGAL_ARGUMENT.getCode());
-						cr.setMessage(temporarily.getUser().getUserName() + "当天考勤已分配任务，无法删除，需删除，请先删除任务");
+						cr.setMessage(temporarily.getTemporaryUser().getUserName() + "当天考勤已分配任务，无法删除，需删除，请先删除任务");
+						return cr;
 					}else{
 						temporarilyDao.delete(Long.parseLong(id));
 						count++;
