@@ -541,7 +541,7 @@
 								  	}
 									self.loadPaginationth(data);
 									}else{
-										layer.msg("修改失败！", {icon: 1});
+										layer.msg(result.message, {icon: 1});
 										layer.close(index);
 									}
 								},error:function(){
@@ -591,7 +591,7 @@
 								self.loadPaginationth(data)
 								layer.close(index);
 								}else{
-									layer.msg("删除失败！", {icon: 2});
+									layer.msg(result.message, {icon: 2});
 									layer.close(index);
 								}
 							},error:function(){
