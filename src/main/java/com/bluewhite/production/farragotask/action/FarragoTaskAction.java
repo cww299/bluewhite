@@ -119,6 +119,11 @@ public class FarragoTaskAction {
 		CommonResponse cr = new CommonResponse();
 		if (farragoTask.getId()!=null) {
 			FarragoTask oldTask = farragoTaskService.findOne(farragoTask.getId());
+			if(oldTask.getStatus() == 1){
+				cr.setCode(ErrorCode.ILLEGAL_ARGUMENT.getCode());
+				cr.setMessage("已完成，无法修改");
+				return cr;
+			}
 			//获取原任务员工数量
 			int userIdsOld = oldTask.getUserIds().split(",").length;
 			//获取原任务临时员工数量
@@ -142,6 +147,7 @@ public class FarragoTaskAction {
 			}
 			cr.setMessage("成功");
 		}else{
+			cr.setCode(ErrorCode.ILLEGAL_ARGUMENT.getCode());
 			cr.setMessage("任务不能为空");
 		}
 		return cr;
