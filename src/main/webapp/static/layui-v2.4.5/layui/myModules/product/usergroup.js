@@ -248,8 +248,8 @@ layui.config({
 								url: opt.ctx+'/production/allGroup?id='+obj.data.id,
 								where:{ temporarilyDate: day,  },
 								toolbar:'<div><span class="layui-btn layui-btn-danger layui-btn-sm" lay-event="deletes">批量删除</span>'+
-								        '<span class="layui-btn layui-btn-sm" lay-event="oneKeyRest">一键休息</span>'+
-								        '<span class="layui-btn layui-btn-sm" lay-event="oneKeyWork">一键工作</span></div>',
+								        (isSmall?'<span class="layui-btn layui-btn-sm" lay-event="oneKeyRest">一键休息</span>'+
+								        '<span class="layui-btn layui-btn-sm" lay-event="oneKeyWork">一键工作</span>':'')+'</div>',
 								cols:[ [
 									{ type:'checkbox', },
 									{ field:'name', title:'人名' },
