@@ -783,6 +783,7 @@ window.onload = function(){
 				});
 				//杂工修改
 				$(".update").on('click',function(){
+					var arrs=new Array()
 					var html=""
 						var htmlth=""
 						var data={
@@ -796,7 +797,9 @@ window.onload = function(){
 						      async:false,
 				      		  success: function (result) {
 				      			  $(result.data).each(function(k,j){
+				      				  arrs.push(j.id)
 				      				htmlth +='<option value="'+j.id+'">'+j.name+'</option>'
+				      				arrs.push
 				      			  });  
 				      			 $('.completetw').html("<select class='form-control selectcompletee'><option value="+0+">请选择</option>"+htmlth+"</select>") 
 						      }
@@ -829,8 +832,8 @@ window.onload = function(){
 				      				$("#endTimes").val(o.endTime)
 				      				$(".sumnumber").val(o.name)
 				      				$(".timedata").val(o.time)
-				      				user=o.ids.split(',')
-				      				ids=o.ids.split(',')[0]
+				      				user=o.userIds.split(',')
+				      				ids=o.userIds.split(',')[0]
 				      			}); 
 							   	layer.close(index);
 						      },error:function(){
@@ -838,11 +841,14 @@ window.onload = function(){
 									layer.close(index);
 							  }
 						  });
-						
+						var s="";
+						var h="";
+						for (var i = 0; i < arrs.length; i++) {
 						$.ajax({
-						      url:"${ctx}/finance/attendancePayOne",
+						      url:"${ctx}/production/allGroup",
 						      data:{
-						    	  id:ids
+						    	  id:arrs[i],
+						    	  type:2,
 						      },
 						      type:"GET",
 						      async:false,
@@ -852,83 +858,96 @@ window.onload = function(){
 								  });
 							  }, 
 				      		  success: function (result) {
-				      			  console.log(result.data.groupId)
-				      			  $(".selectcompletee").each(function(j,k){
-									$(k).val(52);
-				      			  })
-				      			var htmltwo = "";
-				      				var  htmltwh = "";
-				      				/* var	id=$(this).val() */
-									   var data={
-				      							type:2,
-											 	id:52,
-											 	temporarilyDate:$('#Time').val(),
-									   }
-				      				if(id==0){
-				      					$('.selecttw').html("");
-				      				}else{
-				      				$.ajax({
-										url:"${ctx}/production/allGroup",
-										data:data,
-										type:"GET",
-										async:false,
-										beforeSend:function(){
-											index = layer.load(1, {
-												  shade: [0.1,'#fff'] //0.1透明度的白色背景
-												});
-										},
-										
-										success:function(result){
-											$(result.data).each(function(i,o){
-											$(o.userList).each(function(i,o){
-												if(o.status==1){
-												htmltwo +='<div class="input-group"><input type="checkbox" class="stuCheckBoxtt" value="'+o.userId+'" data-secondment='+o.secondment+' data-id="'+o.id+'" data-username="'+o.name+'">'+o.name+'</input></div>'
-												}
-											})
-											$(o.temporarilyUser).each(function(i,o){
-												if(o.status==1){
-												htmltwh +='<div class="input-group"><input type="checkbox" class="stuCheckBoxtt" value="'+o.userId+'" data-secondment='+o.secondment+' data-id="t-'+o.id+'" data-username="'+o.name+'">'+o.name+'</input></div>'
-												}
-											})
-											})
-											var s="<div class='input-group'><input type='checkbox' class='checkalltt'>全选</input></div>"
-											$('.selecttw').html(s+htmltwo+htmltwh)
-												for (var i = 0; i < user.length; i++) {
-													$(".stuCheckBoxtt").each(function(j,k){
-														var a=$(this).val()
-														$(k).val(user[i]);
-														 if(a=user[i]){
-															$(k).attr("checked","true"); 
-														} 
-									      			  })
-												}
-											$(".checkalltt").on('click',function(){
-								                    if($(this).is(':checked')){ 
-											 			$('.stuCheckBoxtt').each(function(){  
-								                    //此处如果用attr，会出现第三次失效的情况  
-								                     		$(this).prop("checked",true);
-											 			})
-								                    }else{
-								                    	$('.stuCheckBoxtt').each(function(){ 
-								                    		$(this).prop("checked",false);
-								                    		
-								                    	})
-								                    }
-								                });
-											layer.close(index);
-										},error:function(){
-											layer.msg("操作失败！", {icon: 2});
-											layer.close(index);
-										}
-									});
-				      				}
+				      			$(result.data).each(function(i,o){
+				      			$(o.userList).each(function(i,o){
+									if(o.id==ids){
+										h=o.groupId	
+									}
+								})
+								$(o.temporarilyUser).each(function(i,o){
+									if(o.id==ids){
+										h=o.groupId	
+									}		
+										})
+				      			})
 							   	layer.close(index);
 						      },error:function(){
 									layer.msg("加载失败！", {icon: 2});
 									layer.close(index);
 							  }
 						  });
+						}
 						
+						 $(".selectcompletee").each(function(j,k){
+								$(k).val(h);
+			      			  })
+			      			var htmltwo = "";
+		      				var  htmltwh = "";
+		      				/* var	id=$(this).val() */
+							   var data={
+		      							type:2,
+									 	id:h,
+									 	temporarilyDate:$('#Time').val(),
+							   }
+		      				if(id==0){
+		      					$('.selecttw').html("");
+		      				}else{
+		      				$.ajax({
+								url:"${ctx}/production/allGroup",
+								data:data,
+								type:"GET",
+								async:false,
+								beforeSend:function(){
+									index = layer.load(1, {
+										  shade: [0.1,'#fff'] //0.1透明度的白色背景
+										});
+								},
+								
+								success:function(result){
+									$(result.data).each(function(i,o){
+									$(o.userList).each(function(i,o){
+										if(o.status==1){
+										htmltwo +='<div class="input-group"><input type="checkbox" class="stuCheckBoxtt" value="'+o.userId+'" data-secondment='+o.secondment+' data-id="'+o.id+'" data-username="'+o.name+'">'+o.name+'</input></div>'
+										}
+									})
+									$(o.temporarilyUser).each(function(i,o){
+										if(o.status==1){
+										htmltwh +='<div class="input-group"><input type="checkbox" class="stuCheckBoxtt" value="'+o.userId+'" data-secondment='+o.secondment+' data-id="t-'+o.id+'" data-username="'+o.name+'">'+o.name+'</input></div>'
+										}
+									})
+									})
+									var s="<div class='input-group'><input type='checkbox' class='checkalltt'>全选</input></div>"
+									$('.selecttw').html(s+htmltwo+htmltwh)
+										for (var i = 0; i < user.length; i++) {
+											$(".stuCheckBoxtt").each(function(j,k){
+												var a=$(this).val()
+												$(k).val(user[i]);
+												 if(a=user[i]){
+													$(k).attr("checked","true"); 
+												} 
+							      			  })
+										}
+									$(".checkalltt").on('click',function(){
+						                    if($(this).is(':checked')){ 
+									 			$('.stuCheckBoxtt').each(function(){  
+						                    //此处如果用attr，会出现第三次失效的情况  
+						                     		$(this).prop("checked",true);
+									 			})
+						                    }else{
+						                    	$('.stuCheckBoxtt').each(function(){ 
+						                    		$(this).prop("checked",false);
+						                    		
+						                    	})
+						                    }
+						                });
+									layer.close(index);
+								},error:function(){
+									layer.msg("操作失败！", {icon: 2});
+									layer.close(index);
+								}
+							});
+		      				}	  
+			      			  
 						//改变事件
 		      			 $(".selectcompletee").change(function(){
 		      				var htmltwo = "";
@@ -996,7 +1015,7 @@ window.onload = function(){
 							  area: ['580px', '610px'], 
 							  btnAlign: 'c',//宽高
 							  maxmin: true,
-							  title:"新增杂工",
+							  title:"修改杂工",
 							  offset:'30px',
 							  content: dicDiv,
 							  btn: ['确定', '取消'],
@@ -1028,6 +1047,7 @@ window.onload = function(){
 										 return layer.msg("工序不能为空", {icon:2 });
 									  }
 								  postData={
+										  id:id,
 										  allotTime:$("#Time").val(),
 										  name:$(".sumnumber").val(),
 										  time:$(".timedata").val(),
@@ -1036,15 +1056,15 @@ window.onload = function(){
 										  endTime:$("#endTimes").val(),
 										  performance:performance,
 										  performanceNumber:performanceNumber,
-										  userIds:arr,
-										  temporaryUserIds:arrtem,
-										  ids:ids,
-										  temporaryIds:temporaryIds,
+										  ids:arr,
+										  temporaryIds:arrtem,
+										  userIds:ids,
+										  temporaryUserIds:temporaryIds,
 										  bacth:$(".bacth").val(),
 										  type:2,
 								  }
 								  $.ajax({
-										url:"${ctx}/farragoTask/addFarragoTask",
+										url:"${ctx}/farragoTask/updateFarragoTask",
 										data:postData,
 							            traditional: true,
 										type:"post",
@@ -1473,16 +1493,17 @@ window.onload = function(){
 								  }
 							  postData={
 									  allotTime:$("#Time").val(),
+									  name:$(".sumnumber").val(),
 									  time:$(".timedata").val(),
 									  remarks:$(".remarks").val(),
 									  startTime:$("#startTimes").val(),
 									  endTime:$("#endTimes").val(),
 									  performance:performance,
 									  performanceNumber:performanceNumber,
-									  userIds:arr,
-									  temporaryUserIds:arrtem,
-									  ids:ids,
-									  temporaryIds:temporaryIds,
+									  ids:arr,
+									  temporaryIds:arrtem,
+									  userIds:ids,
+									  temporaryUserIds:temporaryIds,
 									  bacth:$(".bacth").val(),
 									  type:2,
 							  }
