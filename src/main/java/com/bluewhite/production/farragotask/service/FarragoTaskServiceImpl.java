@@ -94,25 +94,20 @@ public class FarragoTaskServiceImpl extends BaseServiceImpl<FarragoTask, Long> i
 		CurrentUser cu = SessionManager.getUserSession();
 		farragoTask.setUserId(cu.getId());
 		// 领取记录
-		String[] userIds = null;
-		if (!StringUtils.isEmpty(farragoTask.getUserIds())) {
-			farragoTask.setIds(farragoTask.getUserIds());
-			userIds = farragoTask.getUserIds().split(",");
-		}
-		String[] temporaryUserIds = null;
-		if (!StringUtils.isEmpty(farragoTask.getTemporaryUserIds())) {
-			farragoTask.setTemporaryIds(farragoTask.getTemporaryUserIds());
-			temporaryUserIds = farragoTask.getTemporaryUserIds().split(",");
-		}
-
-		// 将用户变成string类型储存
+		String[] ids = null;
 		if (!StringUtils.isEmpty(farragoTask.getIds())) {
-			farragoTask.setUsersIds(farragoTask.getIds().split(","));
-			farragoTask.setUserIds(farragoTask.getIds());
+			ids = farragoTask.getIds().split(",");
 		}
+		String[] temporaryIds = null;
 		if (!StringUtils.isEmpty(farragoTask.getTemporaryIds())) {
-			farragoTask.setTemporaryUsersIds(farragoTask.getTemporaryIds().split(","));
-			farragoTask.setTemporaryUserIds(farragoTask.getTemporaryIds());
+			temporaryIds = farragoTask.getTemporaryIds().split(",");
+		}
+		// 将用户变成string类型储存
+		if (!StringUtils.isEmpty(farragoTask.getUserIds())) {
+			farragoTask.setUsersIds(farragoTask.getUserIds().split(","));
+		}
+		if (!StringUtils.isEmpty(farragoTask.getTemporaryUserIds())) {
+			farragoTask.setTemporaryUsersIds(farragoTask.getTemporaryUserIds().split(","));
 		}
 		// 当数量和单只完成时间不为null，计算出实际完成时间
 		if (farragoTask.getNumber() != null && farragoTask.getProcedureTime() != null) {
@@ -130,8 +125,8 @@ public class FarragoTaskServiceImpl extends BaseServiceImpl<FarragoTask, Long> i
 		dao.save(farragoTask);
 
 		// 将杂工工资统计成流水
-		int userSize = userIds != null ? userIds.length : 0;
-		int temporaryUserSize = temporaryUserIds != null ? temporaryUserIds.length : 0;
+		int userSize = ids != null ? ids.length : 0;
+		int temporaryUserSize = temporaryIds != null ? temporaryIds.length : 0;
 		List<FarragoTaskPay> farragoTaskPayList = new ArrayList<>();
 		if (farragoTask.getId() != null) {
 			farragoTaskPayList = farragoTaskPayDao.findByTaskId(farragoTask.getId());
@@ -139,7 +134,7 @@ public class FarragoTaskServiceImpl extends BaseServiceImpl<FarragoTask, Long> i
 		if (farragoTask.getUsersIds() != null && farragoTask.getUsersIds().length > 0) {
 			for (int j = 0; j < farragoTask.getUsersIds().length; j++) {
 				// 任务人员出勤记录id
-				Long id = Long.parseLong(userIds[j]);
+				Long id = Long.parseLong(ids[j]);
 				// 任务人员id
 				Long userId = Long.parseLong(farragoTask.getUsersIds()[j]);
 				AttendancePay attendancePay = null;
@@ -186,9 +181,9 @@ public class FarragoTaskServiceImpl extends BaseServiceImpl<FarragoTask, Long> i
 		}
 
 		// 将杂工工资统计成流水
-		if (temporaryUserIds != null && temporaryUserIds.length > 0) {
-			for (int j = 0; j < temporaryUserIds.length; j++) {
-				Long id = Long.parseLong(temporaryUserIds[j]);
+		if (temporaryIds != null && temporaryIds.length > 0) {
+			for (int j = 0; j < temporaryIds.length; j++) {
+				Long id = Long.parseLong(temporaryIds[j]);
 				Temporarily temporarily = temporarilyDao.findOne(id);
 
 				FarragoTaskPay farragoTaskPay = null;
