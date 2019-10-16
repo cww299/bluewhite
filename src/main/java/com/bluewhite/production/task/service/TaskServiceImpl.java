@@ -343,7 +343,9 @@ public class TaskServiceImpl extends BaseServiceImpl<Task, Long> implements Task
 		if (bacth.getTasks().size() > 0) {
 			List<Double> listDouble = new ArrayList<>();
 			bacth.getTasks().stream().filter(SalesUtils.distinctByKey(Task::getProcedureId)).forEach(a -> {
-				listDouble.add(a.getProcedure().getWorkingTime());
+				if(a.getProcedure()!=null && a.getProcedure().getWorkingTime()!=null){
+					listDouble.add(a.getProcedure().getWorkingTime());
+				}
 			});
 			bacthDepartmentPrice = ProTypeUtils.sumProTypePrice(NumUtils.sum(listDouble), bacth.getType());
 		}
@@ -354,8 +356,7 @@ public class TaskServiceImpl extends BaseServiceImpl<Task, Long> implements Task
 					count += ta.getNumber();
 				}
 			}
-		}
-		;
+		};
 		if (bacth.getNumber() == count) {
 			bacth.setStatus(1);
 			bacth.setStatusTime(task.getAllotTime());
