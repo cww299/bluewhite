@@ -187,15 +187,17 @@ public class TaskServiceImpl extends BaseServiceImpl<Task, Long> implements Task
 						5));
 				// B工资净值
 				newTask.setPayB(NumUtils.round(ProTypeUtils.sumBPrice(newTask.getTaskPrice(), procedure.getType()), 5));
+				newTask.setPerformanceNumber(0.0);
+				newTask.setPerformancePrice(0.0);
 				dao.save(newTask);
 
 				// 查出该任务的所有b工资
 				List<PayB> payBList = new ArrayList<>();
-				int userInt = task.getUsersIds() != null && task.getUsersIds().length > 0 ? task.getUsersIds().length
+				int userInt = newTask.getUsersIds() != null && newTask.getUsersIds().length > 0 ? newTask.getUsersIds().length
 						: 0;
-				int temporaryUsersInt = task.getTemporaryUsersIds() != null && task.getTemporaryUsersIds().length > 0
-						? task.getTemporaryUsersIds().length : 0;
-				if (task.getId() != null) {
+				int temporaryUsersInt = newTask.getTemporaryUsersIds() != null && newTask.getTemporaryUsersIds().length > 0
+						? newTask.getTemporaryUsersIds().length : 0;
+				if (newTask.getId() != null) {
 					payBList = payBDao.findByTaskId(task.getId());
 				}
 				/// 员工和任务形成多对多关系
@@ -258,7 +260,7 @@ public class TaskServiceImpl extends BaseServiceImpl<Task, Long> implements Task
 							}
 						}
 						// 计算B工资数值
-						if (!UnUtil.isFromMobile(request) && task.getType() == 2) {
+						if (!UnUtil.isFromMobile(request) && newTask.getType() == 2) {
 							// 包装分配任务，员工b工资根据考情占比分配，其他部门是均分
 							// 该员工实际工作时长
 							Double workTime = attendancePay != null ? attendancePay.getWorkTime()
@@ -287,7 +289,7 @@ public class TaskServiceImpl extends BaseServiceImpl<Task, Long> implements Task
 								.filter(Temporarily -> Temporarily.getId().equals(idLong)).collect(Collectors.toList());
 						PayB payB = null;
 						// 给予每个员工b工资
-						if (task.getId() != null) {
+						if (newTask.getId() != null) {
 							List<PayB> payBOneList = payBList.stream().filter(PayB -> PayB.getTemporaryUserId().equals(temporarilyListOne.get(0).getTemporaryUserId()))
 									.collect(Collectors.toList());
 							if (payBOneList.size() > 0) {
@@ -316,7 +318,7 @@ public class TaskServiceImpl extends BaseServiceImpl<Task, Long> implements Task
 							}
 						}
 						// 计算B工资数值
-						if (!UnUtil.isFromMobile(request) && task.getType() == 2) {
+						if (!UnUtil.isFromMobile(request) && newTask.getType() == 2) {
 							// 包装分配任务，员工b工资根据考情占比分配，其他部门是均分
 							// 该员工实际工作时长
 							Double workTime = temporarilyListOne.get(0).getWorkTime();
@@ -343,8 +345,9 @@ public class TaskServiceImpl extends BaseServiceImpl<Task, Long> implements Task
 		if (bacth.getTasks().size() > 0) {
 			List<Double> listDouble = new ArrayList<>();
 			bacth.getTasks().stream().filter(SalesUtils.distinctByKey(Task::getProcedureId)).forEach(a -> {
-				if(a.getProcedure()!=null && a.getProcedure().getWorkingTime()!=null){
-					listDouble.add(a.getProcedure().getWorkingTime());
+				if(a.getProcedureId()!=null ){
+					Procedure procedure  = procedureDao.findOne(a.getProcedureId());
+					listDouble.add(procedure.getWorkingTime());
 				}
 			});
 			if(listDouble.size()>0){
