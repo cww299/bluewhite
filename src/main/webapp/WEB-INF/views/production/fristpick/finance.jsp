@@ -307,7 +307,7 @@
 		      				+'<td class="text-center edit ">'+o.task.procedureName+'</td>'
 		      				+'<td class="text-center edit ">'+o.allotTime+'</td>'
 		      				+'<td class="text-center edit ">'+parseFloat((a).toFixed(4))+'</td>'
-		      				+'<td class="text-center edit ">'+parseFloat((o.payNumber).toFixed(4))+'</td></tr>'
+		      				+'<td class="text-center edit ">'+parseFloat((o.payNumber==null ? 0 : o.payNumber).toFixed(4))+'</td></tr>'
 							
 		      			}); 
 				        //显示分页
