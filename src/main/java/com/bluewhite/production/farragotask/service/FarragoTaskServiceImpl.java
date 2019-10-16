@@ -29,7 +29,6 @@ import com.bluewhite.production.farragotask.dao.FarragoTaskDao;
 import com.bluewhite.production.farragotask.entity.FarragoTask;
 import com.bluewhite.production.finance.dao.FarragoTaskPayDao;
 import com.bluewhite.production.finance.entity.FarragoTaskPay;
-import com.bluewhite.production.finance.entity.PayB;
 import com.bluewhite.production.group.dao.TemporarilyDao;
 import com.bluewhite.production.group.entity.Temporarily;
 import com.bluewhite.production.productionutils.constant.ProTypeUtils;

@@ -51,7 +51,7 @@
 				<td><span class="input-group-btn">
 					<button type="button"class="btn btn-success  btn-sm btn-3d addDict">加绩</button></span></td>
 				<td>&nbsp;&nbsp;&nbsp;&nbsp;</td> 
-				<td><span class="input-group-btn">
+				<td class="visible-sm"><span class="input-group-btn">
 					<button type="button"class="btn btn-success  btn-sm btn-3d update">杂工修改</button></span></td>	
 			</tr>
 		</table>
@@ -72,6 +72,7 @@
 					<th class="text-center">添加工价</th>
 					<th class="text-center">加绩工资</th>
 					<th class="text-center">人员详情</th>
+					<th class="text-center visible-sm">状态</th>
 					<th class="text-center">操作</th>
 				</tr>
 			</thead>
@@ -571,14 +572,15 @@ window.onload = function(){
 		      				+'<td class="text-center edit name">'+o.bacth+'</td>'
 		      				+'<td class="text-center edit name">'+o.allotTime+'</td>'
 		      				+'<td class="text-center edit name">'+o.name+'</td>'
-		      				+'<td class="text-center edit name">'+o.time+'</td>'
+		      				+'<td class="text-center edit name">'+(o.time==null ? 0 :o.time)+'</td>'
 		      				+'<td class="text-center edit name">'+o.remarks+'</td>'
-		      				+'<td class="text-center edit name hidden-sm">'+parseFloat((o.price).toFixed(3))+'</td>'
+		      				+'<td class="text-center edit name hidden-sm">'+parseFloat((o.price==null ? 0 : o.price).toFixed(3))+'</td>'
 		      				+'<td class="text-center edit name hidden-sm">'+parseFloat((o.payB).toFixed(3))+'</td>'
 		      				+'<td class="text-center "><button class="btn btn-primary btn-trans btn-sm savemodePerformance" data-toggle="modal" data-target="#myModaltw" data-id="'+o.id+'")">查看加价</button></td>'
 		      				+'<td class="text-center edit name">'+parseFloat((o.performancePrice==null ? 0 : o.performancePrice).toFixed(3))+'</td>'
 		      				+'<td class="text-center"><button class="btn btn-primary btn-trans btn-sm savemode" data-toggle="modal" data-target="#myModal" data-id="'+o.id+'")">查看人员</button></td>'
-							+'<td class="text-center"><button class="btn btn-sm btn-danger btn-trans delete" data-id='+o.id+'>删除</button></td></tr>'
+		      				+'<td class="text-center edit visible-sm">'+(o.status==0 ? "进行中" : "完成")+'</td>'
+		      				+'<td class="text-center"><button class="btn btn-sm btn-danger btn-trans delete" data-id='+o.id+'>删除</button></td></tr>'
 							
 		      			}); 
 		      			self.setCount(result.data.pageNum)
@@ -833,7 +835,9 @@ window.onload = function(){
 				      				$(".sumnumber").val(o.name)
 				      				$(".timedata").val(o.time)
 				      				user=o.userIds.split(',')
+				      				users=o.temporaryUserIds.split(',')
 				      				ids=o.userIds.split(',')[0]
+				      				temporaryUserIds=o.temporaryUserIds.split(',')[0]
 				      			}); 
 							   	layer.close(index);
 						      },error:function(){
@@ -865,7 +869,7 @@ window.onload = function(){
 									}
 								})
 								$(o.temporarilyUser).each(function(i,o){
-									if(o.id==ids){
+									if(o.id==temporaryUserIds){
 										h=o.groupId	
 									}		
 										})
@@ -877,7 +881,6 @@ window.onload = function(){
 							  }
 						  });
 						}
-						
 						 $(".selectcompletee").each(function(j,k){
 								$(k).val(h);
 			      			  })
@@ -907,26 +910,34 @@ window.onload = function(){
 									$(result.data).each(function(i,o){
 									$(o.userList).each(function(i,o){
 										if(o.status==1){
-										htmltwo +='<div class="input-group"><input type="checkbox" class="stuCheckBoxtt" value="'+o.userId+'" data-secondment='+o.secondment+' data-id="'+o.id+'" data-username="'+o.name+'">'+o.name+'</input></div>'
+										htmltwo +='<div class="input-group"><input type="checkbox" class="stuCheckBoxtt" value="'+o.userId+'" data-value='+o.userId+' data-secondment='+o.secondment+' data-id="'+o.id+'" data-username="'+o.name+'">'+o.name+'</input></div>'
 										}
 									})
 									$(o.temporarilyUser).each(function(i,o){
 										if(o.status==1){
-										htmltwh +='<div class="input-group"><input type="checkbox" class="stuCheckBoxtt" value="'+o.userId+'" data-secondment='+o.secondment+' data-id="t-'+o.id+'" data-username="'+o.name+'">'+o.name+'</input></div>'
+										htmltwh +='<div class="input-group"><input type="checkbox" class="stuCheckBoxtt" value='+o.userId+' data-value='+o.userId+' data-secondment='+o.secondment+' data-id="t-'+o.id+'" data-username="'+o.name+'">'+o.name+'</input></div>'
 										}
 									})
 									})
 									var s="<div class='input-group'><input type='checkbox' class='checkalltt'>全选</input></div>"
+									console.log(users)
 									$('.selecttw').html(s+htmltwo+htmltwh)
-										for (var i = 0; i < user.length; i++) {
+										 for (var i = 0; i < user.length; i++) {
 											$(".stuCheckBoxtt").each(function(j,k){
-												var a=$(this).val()
-												$(k).val(user[i]);
-												 if(a=user[i]){
+												var a=$(this).data('id').split('-')[1]
+												 if(a==user[i]){
 													$(k).attr("checked","true"); 
-												} 
+												}
 							      			  })
-										}
+										} 
+									for (var i = 0; i < users.length; i++) {
+										$(".stuCheckBoxtt").each(function(j,k){
+											var a=$(this).data('id').split('-')[1]
+											 if(a==users[i]){
+												$(k).attr("checked","true"); 
+											}
+						      			  })
+									}
 									$(".checkalltt").on('click',function(){
 						                    if($(this).is(':checked')){ 
 									 			$('.stuCheckBoxtt').each(function(){  
@@ -1032,7 +1043,7 @@ window.onload = function(){
 								 $(".stuCheckBoxtt:checked").each(function() {   
 										var id = $(this).data('id');
 										if(String(id).indexOf('-')>0){
-									   		arrtem.push($(this).val());
+									   		arrtem.push($(this).data('value'));
 									   		temporaryIds.push(id.split('-')[1]);
 										}else{
 										    arr.push($(this).val()); 
@@ -1077,6 +1088,16 @@ window.onload = function(){
 										success:function(result){
 											if(0==result.code){
 											layer.msg("添加成功！", {icon: 1});
+											var orderTime=$("#startTime").val().split('~');
+											var data={
+													page:self.getCount(),
+											  		size:13,	
+											  		type:2,
+											  		name:$('#name').val(),
+										  			bacth:$('#number').val(),
+										  			orderTimeBegin:orderTime[0],
+										  			orderTimeEnd:orderTime[1], 
+											} 
 											 self.loadPagination(data); 
 											 layer.close(_index);
 											 $('.addDictDivTypeForm')[0].reset();
