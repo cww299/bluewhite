@@ -406,7 +406,7 @@
 			      				+'<td class="text-center edit ">'+o.userName+'</td>'
 			      				+'<td class="text-center edit ">'+o.taskName+'</td>'
 			      				+'<td class="text-center edit ">'+o.allotTime+'</td>'
-			      				+'<td class="text-center edit ">'+parseFloat((o.payNumber).toFixed(3))+'</td></tr>'
+			      				+'<td class="text-center edit ">'+parseFloat((o.payNumber==null ? : o.payNumber).toFixed(3))+'</td></tr>'
 								
 			      			}); 
 					        //显示分页
