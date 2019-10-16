@@ -3,8 +3,11 @@ package com.bluewhite.production.group.dao;
 import java.util.Date;
 import java.util.List;
 
+import org.springframework.data.jpa.repository.Query;
+
 import com.bluewhite.base.BaseRepository;
 import com.bluewhite.production.group.entity.Temporarily;
+import com.bluewhite.production.task.entity.Task;
 
 public interface TemporarilyDao extends BaseRepository<Temporarily, Long>{
 	/**
@@ -19,7 +22,7 @@ public interface TemporarilyDao extends BaseRepository<Temporarily, Long>{
 	 * @param getfristDayOftime
 	 * @return
 	 */
-	public Temporarily findByUserIdAndTemporarilyDateAndType(Long userId, Date getfristDayOftime,Integer type);
+	public List<Temporarily> findByUserIdAndTemporarilyDateAndType(Long userId, Date getfristDayOftime,Integer type);
 	/**
 	 * 根据员工id和日期
 	 * @param userId
@@ -27,6 +30,16 @@ public interface TemporarilyDao extends BaseRepository<Temporarily, Long>{
 	 * @return
 	 */
 	public Temporarily findByTemporaryUserIdAndTemporarilyDateAndType(Long userId, Date getfristDayOftime,Integer type);
+	
+	/**
+	 * 根据人员ids,日期,查询
+	 * 
+	 * @param type
+	 * @param orderTimeBegin
+	 * @param orderTimeEnd
+	 * @return
+	 */
+	List<Temporarily> findByTemporaryUserIdInAndTemporarilyDateAndType(List<Long> temporaryUserIds,Date orderTimeBegin,Integer type);
 	
 	/**
 	 * 根据人员ids,日期,查询
