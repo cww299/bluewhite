@@ -37,7 +37,7 @@ public interface FarragoTaskDao extends BaseRepository<FarragoTask, Long>{
 	 * @param endTime
 	 * @return
 	 */
-	@Query(nativeQuery=true,value ="SELECT * FROM pro_farrago_task where find_in_set(?1,temporaryIds) AND allot_time BETWEEN ?2 AND ?3")
+	@Query(nativeQuery=true,value ="SELECT * FROM pro_farrago_task where find_in_set(?1,temporary_ids) AND allot_time BETWEEN ?2 AND ?3")
 	List<FarragoTask> findInSetTemporaryIds(String temporaryIds,Date beginTime,Date endTime);
 
 }
