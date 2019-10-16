@@ -53,6 +53,6 @@ public interface TaskDao  extends BaseRepository<Task, Long>{
 	 * @param endTime
 	 * @return
 	 */
-	@Query(nativeQuery=true,value ="SELECT * FROM pro_task where find_in_set(?1,temporaryIds) AND allot_time BETWEEN ?2 AND ?3")
+	@Query(nativeQuery=true,value ="SELECT * FROM pro_task where find_in_set(?1,temporary_ids) AND allot_time BETWEEN ?2 AND ?3")
 	List<Task> findInSetTemporaryIds(String temporaryIds,Date beginTime,Date endTime);
 }

@@ -97,6 +97,22 @@ public class FinanceAction {
 		cr.setMessage("查询成功");
 		return cr;
 	}
+	
+	
+	/**
+	 * 查询考情工资流水(A工资)
+	 * 
+	 */
+	@RequestMapping(value = "/finance/attendancePayOne", method = RequestMethod.GET)
+	@ResponseBody
+	public CommonResponse allAttendancePay(Long id) {
+		CommonResponse cr = new CommonResponse();
+		cr.setData(ClearCascadeJSON.get()
+				.addRetainTerm(AttendancePay.class, "id", "groupId")
+				.format(attendancePayService.findOne(id)).toJSON());
+		cr.setMessage("查询成功");
+		return cr;
+	}
 
 	/**
 	 * 查询b工资流水(正常任务)(包括加绩)

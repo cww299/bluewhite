@@ -125,6 +125,12 @@ public class FarragoTask extends BaseEntity<Long> {
 	 */
 	@Column(name = "end_time")
 	private Date endTime;
+	
+	/**
+	 * 实时环境下任务状态(0=开始,1=结束)
+	 */
+	@Column(name = "status")
+	private Integer status;
 
 	/**
 	 * 备注
@@ -180,6 +186,14 @@ public class FarragoTask extends BaseEntity<Long> {
 	@Transient
 	private Double AC5;
 	
+
+	public Integer getStatus() {
+		return status;
+	}
+
+	public void setStatus(Integer status) {
+		this.status = status;
+	}
 
 	public Date getStartTime() {
 		return startTime;
