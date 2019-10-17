@@ -27,6 +27,14 @@
 							<td><input  style="width: 250px;"  name="name" placeholder="请输入物品名" class="layui-input">
 							</td>
 							<td>&nbsp;&nbsp;</td>
+							<td>仓位:</td>
+							<td><input  style="width: 250px;"  name="location" placeholder="请输入仓位名" class="layui-input">
+							</td>
+							<td>&nbsp;&nbsp;</td>
+							<td>面试时间:</td>
+							<td><input id="startTime" style="width: 300px;" name="startTime" placeholder="请输入面试时间" class="layui-input laydate-icon">
+							</td>
+							<td>&nbsp;&nbsp;</td>
 							<td>
 								<div class="layui-inline">
 									<button class="layui-btn layuiadmin-btn-admin" id="LAY-search5" lay-submit lay-filter="LAY-search">
@@ -184,6 +192,11 @@
 						elem: '#time2',
 						type: 'datetime',
 					});
+					laydate.render({
+						elem: '#startTime',
+						type: 'datetime',
+						range: '~',
+					});
 					var getdataa={type:"officeUnit",}
 					var htmls= '<option value="">请选择</option>';
 				    $.ajax({
@@ -297,6 +310,7 @@
 							},{
 								field: "location",
 								title: "仓位",
+								filter:true,
 								align: 'center',
 								edit: 'text',
 							},{
@@ -584,6 +598,9 @@
 					//监听搜索
 					form.on('submit(LAY-search)', function(obj) {		//修改此处
 						var field = obj.field;
+						var orderTime=field.startTime.split('~');
+						field.orderTimeBegin=orderTime[0];
+						field.orderTimeEnd=orderTime[1];
 						table.reload('tableData', {
 							where: field,
 							 page: { curr : 1 }
