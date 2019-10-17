@@ -568,7 +568,7 @@ window.onload = function(){
 		      			$("#totaltw").text(result.data.statData.stateCount)
 		      			  $("#totale").text(result.data.statData.statAmount)
 		      			 $(result.data.rows).each(function(i,o){
-		      				html +='<tr><td class="center reste"><label> <input type="checkbox" class="ace checkboxId" data-procedurename="'+o.name+'" value="'+o.id+'" data-proname="'+o.productName+'"  data-performance="'+o.performance+'"/><span class="lbl"></span></label></td>'
+		      				html +='<tr><td class="center reste"><label> <input type="checkbox" class="ace checkboxId" data-procedurename="'+o.name+'" value="'+o.id+'" data-proname="'+o.productName+'"  data-performance="'+o.performance+'" data-status="'+o.status+'"/><span class="lbl"></span></label></td>'
 		      				+'<td class="text-center edit name">'+o.bacth+'</td>'
 		      				+'<td class="text-center edit name">'+o.allotTime+'</td>'
 		      				+'<td class="text-center edit name">'+o.name+'</td>'
@@ -785,6 +785,7 @@ window.onload = function(){
 				});
 				//杂工修改
 				$(".update").on('click',function(){
+					
 					var arrs=new Array()
 					var html=""
 						var htmlth=""
@@ -809,8 +810,17 @@ window.onload = function(){
 					
 					
 					var  thae=$(".table-hover");
+					var Arrys=new Array()
 					thae.parent().parent().parent().parent().parent().find(".checkboxId:checked").each(function(j,k) {
+						Arrys.push($(this).val())
+						if(Arrys.length!=1){
+							return layer.msg("只能选择一条任务进行修改", {icon: 2});
+						}
 					var id=$(this).val();
+					var status=$(this).data('status');
+					if(status==1){
+						return layer.msg("当前任务已完成", {icon: 2});
+					}
 					var ids="";
 					var user="";
 						data={
@@ -853,6 +863,7 @@ window.onload = function(){
 						      data:{
 						    	  id:arrs[i],
 						    	  type:2,
+						    	  temporarilyDate:$('#Time').val(),
 						      },
 						      type:"GET",
 						      async:false,
@@ -865,6 +876,7 @@ window.onload = function(){
 				      			$(result.data).each(function(i,o){
 				      			$(o.userList).each(function(i,o){
 									if(o.id==ids){
+										alert(1)
 										h=o.groupId	
 									}
 								})
@@ -920,7 +932,6 @@ window.onload = function(){
 									})
 									})
 									var s="<div class='input-group'><input type='checkbox' class='checkalltt'>全选</input></div>"
-									console.log(users)
 									$('.selecttw').html(s+htmltwo+htmltwh)
 										 for (var i = 0; i < user.length; i++) {
 											$(".stuCheckBoxtt").each(function(j,k){
