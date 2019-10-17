@@ -184,6 +184,22 @@
 <script src="${ctx}/static/layui-v2.4.5/layui/layui.js"></script>
 	<script>
    jQuery(function($){
+	   
+	   var ua = navigator.userAgent.toLocaleLowerCase();
+	      var pf = navigator.platform.toLocaleLowerCase();
+	      var isAndroid = (/android/i).test(ua)||((/iPhone|iPod|iPad/i).test(ua) && (/linux/i).test(pf))
+	          || (/ucweb.*linux/i.test(ua));
+	      var isIOS =(/iPhone|iPod|iPad/i).test(ua) && !isAndroid;
+	      var isWinPhone = (/Windows Phone|ZuneWP7/i).test(ua);
+	  
+	      var mobileType = {
+	         pc:!isAndroid && !isIOS && !isWinPhone,
+	         ios:isIOS,
+	         android:isAndroid,
+	         winPhone:isWinPhone
+	   };
+	      var mobileType=mobileType.android;
+	   
    	var Login = function(){
 			var self = this;
 			//表单jsonArray
@@ -768,14 +784,18 @@
 						$('#type').html(htm)
 			      			
 						}
-					
-				    
+					var a
+					if(mobileType==true){
+				    	 a=['90%', '400px']
+					}else{
+						 a=['650px', '400px']
+					}
 					var postData
 					var dicDiv=$('#addDictDivTypetw');
 					_index = layer.open({
 						  type: 1,
 						  skin: 'layui-layer-rim', //加上边框
-						  area: ['60%', '400px'], 
+						  area: a, 
 						  btnAlign: 'c',//宽高
 						  maxmin: true,
 						  offset:(parent.document.documentElement.scrollTop+100)+'px',
