@@ -1,6 +1,6 @@
 package com.bluewhite.common.utils.ZkemUtils;
 
-public class SDKRunnable implements Runnable {
+public class SDKRunnable extends Thread {
 
 	private String address;
 

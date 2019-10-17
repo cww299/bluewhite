@@ -34,6 +34,8 @@ import com.bluewhite.common.entity.PageParameter;
 import com.bluewhite.common.utils.DatesUtil;
 import com.bluewhite.finance.attendance.dao.AttendancePayDao;
 import com.bluewhite.finance.attendance.entity.AttendancePay;
+import com.bluewhite.production.bacth.entity.Bacth;
+import com.bluewhite.production.bacth.service.BacthService;
 import com.bluewhite.production.finance.dao.PayBDao;
 import com.bluewhite.production.finance.entity.PayB;
 import com.bluewhite.production.group.dao.TemporarilyDao;
@@ -71,6 +73,8 @@ public class TaskAction {
 	private PayBDao payBDao;
 	@Autowired
 	private TemporaryUserService temporaryUserService;
+	@Autowired
+	private BacthService bacthService;
 
 	private ClearCascadeJSON clearCascadeJSON;
 
@@ -106,6 +110,18 @@ public class TaskAction {
 		CommonResponse cr = new CommonResponse();
 		// 新增
 		if (!StringUtils.isEmpty(task.getUserIds()) || !StringUtils.isEmpty(task.getTemporaryUserIds())) {
+			Bacth bacth = bacthService.findOne(task.getBacthId());
+			for (int i = 0; i < task.getProcedureIds().length; i++) {
+				int num = i;
+				//获取该工序的已分配的任务数量
+				int count = bacth.getTasks().stream().filter(Task->Task.getProcedureId().equals(task.getProcedureIds()[num])).mapToInt(Task::getNumber).sum();
+				//当前分配数量加已分配数量大于批次总数量则不通过
+				if((task.getNumber()+count)>bacth.getNumber()){
+					cr.setCode(ErrorCode.ILLEGAL_ARGUMENT.getCode());
+					cr.setMessage("当前数量剩余不足，请确认数量");
+					return cr;
+				}
+			}
 			task.setAllotTime(ProTypeUtils.countAllotTime(task.getAllotTime()));
 			taskService.addTask(task, request);
 			cr.setMessage("任务分配成功");
