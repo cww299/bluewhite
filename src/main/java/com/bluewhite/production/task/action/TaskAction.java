@@ -108,26 +108,31 @@ public class TaskAction {
 	@ResponseBody
 	public CommonResponse addTask(HttpServletRequest request, Task task) {
 		CommonResponse cr = new CommonResponse();
-		// 新增
-		if (!StringUtils.isEmpty(task.getUserIds()) || !StringUtils.isEmpty(task.getTemporaryUserIds())) {
-			Bacth bacth = bacthService.findOne(task.getBacthId());
-			for (int i = 0; i < task.getProcedureIds().length; i++) {
-				int num = i;
-				//获取该工序的已分配的任务数量
-				int count = bacth.getTasks().stream().filter(Task->Task.getProcedureId().equals(task.getProcedureIds()[num])).mapToInt(Task::getNumber).sum();
-				//当前分配数量加已分配数量大于批次总数量则不通过
-				if((task.getNumber()+count)>bacth.getNumber()){
-					cr.setCode(ErrorCode.ILLEGAL_ARGUMENT.getCode());
-					cr.setMessage("当前数量剩余不足，请确认数量");
-					return cr;
+		// 同步锁
+		synchronized (this) {
+			// 新增
+			if (!StringUtils.isEmpty(task.getUserIds()) || !StringUtils.isEmpty(task.getTemporaryUserIds())) {
+				Bacth bacth = bacthService.findOne(task.getBacthId());
+				for (int i = 0; i < task.getProcedureIds().length; i++) {
+					int num = i;
+					// 获取该工序的已分配的任务数量
+					int count = bacth.getTasks().stream()
+							.filter(Task -> Task.getProcedureId().equals(task.getProcedureIds()[num]))
+							.mapToInt(Task::getNumber).sum();
+					// 当前分配数量加已分配数量大于批次总数量则不通过
+					if ((task.getNumber() + count) > bacth.getNumber()) {
+						cr.setCode(ErrorCode.ILLEGAL_ARGUMENT.getCode());
+						cr.setMessage("当前数量剩余不足，请确认数量");
+						return cr;
+					}
 				}
+				task.setAllotTime(ProTypeUtils.countAllotTime(task.getAllotTime()));
+				taskService.addTask(task, request);
+				cr.setMessage("任务分配成功");
+			} else {
+				cr.setCode(ErrorCode.ILLEGAL_ARGUMENT.getCode());
+				cr.setMessage("领取人不能为空");
 			}
-			task.setAllotTime(ProTypeUtils.countAllotTime(task.getAllotTime()));
-			taskService.addTask(task, request);
-			cr.setMessage("任务分配成功");
-		} else {
-			cr.setCode(ErrorCode.ILLEGAL_ARGUMENT.getCode());
-			cr.setMessage("领取人不能为空");
 		}
 		return cr;
 	}
@@ -155,7 +160,7 @@ public class TaskAction {
 				return cr;
 			}
 			BeanCopyUtils.copyNotEmpty(task, oldTask, "");
-			String[] arrayRefVar = { String.valueOf(task.getProcedureId()) };
+			String[] arrayRefVar = { String.valueOf(oldTask.getProcedureId()) };
 			oldTask.setProcedureIds(arrayRefVar);
 			taskService.addTask(oldTask, request);
 			cr.setMessage("修改成功");

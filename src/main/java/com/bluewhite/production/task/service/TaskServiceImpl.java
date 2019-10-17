@@ -224,7 +224,7 @@ public class TaskServiceImpl extends BaseServiceImpl<Task, Long> implements Task
 						PayB payB = null;
 						if (task.getId() != null) {
 							// 给予每个员工b工资
-							List<PayB> payBOneList = payBList.stream().filter(PayB -> PayB.getUserId().equals(userIdP))
+							List<PayB> payBOneList = payBList.stream().filter(PayB ->PayB.getUserId()!=null && PayB.getUserId().equals(userIdP))
 									.collect(Collectors.toList());
 							if (payBOneList.size() > 0) {
 								payB = payBOneList.get(0);
