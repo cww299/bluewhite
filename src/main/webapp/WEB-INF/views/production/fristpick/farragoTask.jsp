@@ -1037,7 +1037,7 @@ window.onload = function(){
 						_index = layer.open({
 							  type: 1,
 							  skin: 'layui-layer-rim', //加上边框
-							  area: ['580px', '610px'], 
+							  area: ['580px', '550px'], 
 							  btnAlign: 'c',//宽高
 							  maxmin: true,
 							  title:"修改杂工",
@@ -1493,7 +1493,7 @@ window.onload = function(){
 					_index = layer.open({
 						  type: 1,
 						  skin: 'layui-layer-rim', //加上边框
-						  area: ['580px', '610px'], 
+						  area: ['580px', '550px'], 
 						  btnAlign: 'c',//宽高
 						  maxmin: true,
 						  title:"新增杂工",
@@ -1527,6 +1527,9 @@ window.onload = function(){
 							  if($(".sumnumber").val()==""){
 									 return layer.msg("工序不能为空", {icon:2 });
 								  }
+							  if($("#startTimes").val()!="" && $(".timedata").val()!=""){
+								  return layer.msg("填写开始时间后不能填写现场管理时间", {icon:2 });
+							  }
 							  postData={
 									  allotTime:$("#Time").val(),
 									  name:$(".sumnumber").val(),
