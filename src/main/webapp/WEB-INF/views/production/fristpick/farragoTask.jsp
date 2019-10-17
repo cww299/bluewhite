@@ -935,7 +935,7 @@ window.onload = function(){
 									$('.selecttw').html(s+htmltwo+htmltwh)
 										 for (var i = 0; i < user.length; i++) {
 											$(".stuCheckBoxtt").each(function(j,k){
-												var a=$(this).data('id').split('-')[1]
+												var a=$(this).data('id')
 												 if(a==user[i]){
 													$(k).attr("checked","true"); 
 												}
