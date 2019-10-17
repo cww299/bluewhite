@@ -666,7 +666,7 @@ layui.config({
 			url:'${ctx}/system/user/getPositiveUser',
 			success:function(r){
 				if(r.code==0){
-					if(r.data.length>0){
+					if(r.data!=null){
 						$('#lookoverBecome').html('待转正人员  <span class="layui-badge">'+r.data.length+'</span>')
 						positiveNumber=r.data.length;
 					}
@@ -1257,7 +1257,7 @@ jQuery(function($){
 										  	id:id,
 										  	agreementId:numberr,
 											commitmentId:values,
-										 	userName:$('.userName').val(),
+										 	userName:$('#username').val(),
 											//number:$('.number').val(),
 											nation:$('.nation').val(),
 											phone:$('.phone').val(),
@@ -2053,7 +2053,7 @@ jQuery(function($){
 										  	id:id,
 										  	agreementId:numberr,
 											commitmentId:values,
-										 	userName:$('.userName').val(),
+										 	userName:$('.username').val(),
 											//number:$('.number').val(),
 											nation:$('.nation').val(),
 											phone:$('.phone').val(),

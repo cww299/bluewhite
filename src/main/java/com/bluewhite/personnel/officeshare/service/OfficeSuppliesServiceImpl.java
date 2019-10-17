@@ -1,6 +1,7 @@
 package com.bluewhite.personnel.officeshare.service;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import javax.persistence.criteria.Predicate;
@@ -36,6 +37,16 @@ public class OfficeSuppliesServiceImpl extends BaseServiceImpl<OfficeSupplies, L
 			// 按辦公用品名称过滤
 			if (!StringUtils.isEmpty(param.getName())) {
 				predicate.add(cb.like(root.get("name").as(String.class), "%" + param.getName() + "%"));
+			}
+			// 按仓位过滤
+			if (!StringUtils.isEmpty(param.getLocation())) {
+				predicate.add(cb.like(root.get("location").as(String.class), "%" + param.getLocation() + "%"));
+			}
+			if(!StringUtils.isEmpty(param.getCreatedAt())){
+				if (!StringUtils.isEmpty(param.getOrderTimeBegin()) && !StringUtils.isEmpty(param.getOrderTimeEnd())) {
+					predicate.add(cb.between(root.get("createdAt").as(Date.class), param.getOrderTimeBegin(),
+							param.getOrderTimeEnd()));
+				}			
 			}
 			Predicate[] pre = new Predicate[predicate.size()];
 			query.where(predicate.toArray(pre));
