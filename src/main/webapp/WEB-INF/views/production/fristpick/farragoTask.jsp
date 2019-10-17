@@ -876,7 +876,6 @@ window.onload = function(){
 				      			$(result.data).each(function(i,o){
 				      			$(o.userList).each(function(i,o){
 									if(o.id==ids){
-										alert(1)
 										h=o.groupId	
 									}
 								})
