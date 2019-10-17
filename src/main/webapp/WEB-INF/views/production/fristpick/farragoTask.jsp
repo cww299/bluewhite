@@ -186,6 +186,13 @@
 						<div class="col-sm-6 working"></div>
 					</div> -->
 					<div class="form-group">
+						<label class="col-sm-3 control-label">备注</label>
+						<div class="col-sm-6">
+							<input type="text" class="form-control remarks">
+						</div>
+					</div>
+					
+					<div class="form-group">
 						<label class="col-sm-3 control-label">完成人</label>
 						<div class="col-sm-6 completetw">
 							<input type="text" class="form-control">
@@ -205,12 +212,7 @@
 				        </div>
     					</div>
 					</div>	 -->
-					<div class="form-group">
-						<label class="col-sm-3 control-label">备注</label>
-						<div class="col-sm-6">
-							<input type="text" class="form-control remarks">
-						</div>
-					</div>
+					
 				</div>
 		</div>
 
@@ -1127,7 +1129,7 @@ window.onload = function(){
 								},
 							  end:function(){
 								  $('#addDictDivType').hide();
-							
+								$('.selecttw').text(' ');
 								  $('.addDictDivTypeForm')[0].reset(); 
 								
 							  }
