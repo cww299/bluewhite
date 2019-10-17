@@ -86,9 +86,9 @@ public class TaskServiceImpl extends BaseServiceImpl<Task, Long> implements Task
 		if (!StringUtils.isEmpty(task.getUserIds())) {
 			task.setUsersIds(task.getUserIds().split(","));
 			String[] idStrings = task.getIds().split(",");
-			// 正式员工ids
-			idsList = Arrays.asList(idStrings).stream().map(a -> Long.parseLong(a)).collect(Collectors.toList());
 			// 正式员工出勤记录ids
+			idsList = Arrays.asList(idStrings).stream().map(a -> Long.parseLong(a)).collect(Collectors.toList());
+			// 正式员工ids
 			userIdsList = Arrays.asList(task.getUsersIds()).stream().map(a -> Long.parseLong(a))
 					.collect(Collectors.toList());
 		}
@@ -98,6 +98,8 @@ public class TaskServiceImpl extends BaseServiceImpl<Task, Long> implements Task
 			String[] temporaryIds = task.getTemporaryIds().split(",");
 			// 临时员工出勤记录ids
 			temporaryIdList = Arrays.asList(temporaryIds).stream().map(a -> Long.parseLong(a))
+					.collect(Collectors.toList());
+			temporaryUserIdList =  Arrays.asList(task.getTemporaryUsersIds()).stream().map(a -> Long.parseLong(a))
 					.collect(Collectors.toList());
 
 		}
@@ -187,8 +189,6 @@ public class TaskServiceImpl extends BaseServiceImpl<Task, Long> implements Task
 						5));
 				// B工资净值
 				newTask.setPayB(NumUtils.round(ProTypeUtils.sumBPrice(newTask.getTaskPrice(), procedure.getType()), 5));
-				newTask.setPerformanceNumber(0.0);
-				newTask.setPerformancePrice(0.0);
 				dao.save(newTask);
 
 				// 查出该任务的所有b工资
@@ -290,7 +290,7 @@ public class TaskServiceImpl extends BaseServiceImpl<Task, Long> implements Task
 						PayB payB = null;
 						// 给予每个员工b工资
 						if (newTask.getId() != null) {
-							List<PayB> payBOneList = payBList.stream().filter(PayB -> PayB.getTemporaryUserId().equals(temporarilyListOne.get(0).getTemporaryUserId()))
+							List<PayB> payBOneList = payBList.stream().filter(PayB -> PayB.getTemporaryUserId()!=null && PayB.getTemporaryUserId().equals(temporarilyListOne.get(0).getTemporaryUserId()))
 									.collect(Collectors.toList());
 							if (payBOneList.size() > 0) {
 								payB = payBOneList.get(0);
@@ -655,7 +655,7 @@ public class TaskServiceImpl extends BaseServiceImpl<Task, Long> implements Task
 								Long userid = Long.parseLong(ids[j]);
 								PayB payB = payBDao.findByTaskIdAndUserId(task.getId(), userid);
 								if (payB == null) {
-									payB = payBDao.findByTaskIdAndTemporaryUserId(id, userid);
+									payB = payBDao.findByTaskIdAndTemporaryUserId(task.getId(), userid);
 								}
 								payB.setPerformance(task.getPerformance());
 								payB.setPerformanceNumber(task.getPerformanceNumber());
