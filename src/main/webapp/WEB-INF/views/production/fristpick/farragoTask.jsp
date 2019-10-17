@@ -921,33 +921,35 @@ window.onload = function(){
 									$(result.data).each(function(i,o){
 									$(o.userList).each(function(i,o){
 										if(o.status==1){
-										htmltwo +='<div class="input-group"><input type="checkbox" class="stuCheckBoxtt" value="'+o.userId+'" data-value='+o.userId+' data-secondment='+o.secondment+' data-id="'+o.id+'" data-username="'+o.name+'">'+o.name+'</input></div>'
+										htmltwo +='<div class="input-group"><input type="checkbox" class="stuCheckBoxtt" value="'+o.userId+'" data-value='+o.userId+' data-secondment='+o.secondment+' data-id="'+o.id+'" data-ids="'+o.id+'" data-username="'+o.name+'">'+o.name+'</input></div>'
 										}
 									})
 									$(o.temporarilyUser).each(function(i,o){
 										if(o.status==1){
-										htmltwh +='<div class="input-group"><input type="checkbox" class="stuCheckBoxtt" value='+o.userId+' data-value='+o.userId+' data-secondment='+o.secondment+' data-id="t-'+o.id+'" data-username="'+o.name+'">'+o.name+'</input></div>'
+										htmltwh +='<div class="input-group"><input type="checkbox" class="stuCheckBoxtt" value='+o.userId+' data-value='+o.userId+' data-secondment='+o.secondment+' data-id="t-'+o.id+'" data-ids="'+o.id+'" data-username="'+o.name+'">'+o.name+'</input></div>'
 										}
 									})
 									})
 									var s="<div class='input-group'><input type='checkbox' class='checkalltt'>全选</input></div>"
 									$('.selecttw').html(s+htmltwo+htmltwh)
-										 for (var i = 0; i < user.length; i++) {
-											$(".stuCheckBoxtt").each(function(j,k){
-												var a=$(this).data('id')
+											/* $(".stuCheckBoxtt").each(function(j,k){
+												
+							      			  }) */
+										$(".stuCheckBoxtt").each(function(j,k){
+											 for (var i = 0; i < user.length; i++) {
+												 var a=$(this).data('ids')
 												 if(a==user[i]){
 													$(k).attr("checked","true"); 
 												}
-							      			  })
-										} 
-									for (var i = 0; i < users.length; i++) {
-										$(".stuCheckBoxtt").each(function(j,k){
-											var a=$(this).data('id').split('-')[1]
-											 if(a==users[i]){
-												$(k).attr("checked","true"); 
+											 } 
+											for (var i = 0; i < users.length; i++) {
+												var a=$(this).data('ids')
+												 if(a==users[i]){
+													$(k).attr("checked","true"); 
+											}
+												
 											}
 						      			  })
-									}
 									$(".checkalltt").on('click',function(){
 						                    if($(this).is(':checked')){ 
 									 			$('.stuCheckBoxtt').each(function(){  
