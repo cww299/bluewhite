@@ -29,6 +29,12 @@
 				<td>下单时间：</td>
 				<td><input type="text" class="layui-input" id="searchTime"></td>
 				<td>&nbsp;&nbsp;&nbsp;</td>
+				<td>产品名：</td>
+				<td><input type="text" class="layui-input" name="productName"></td>
+				<td>&nbsp;&nbsp;&nbsp;</td>
+				<td>产品编号：</td>
+				<td><input type="text" class="layui-input" name="productNumber"></td>
+				<td>&nbsp;&nbsp;&nbsp;</td>
 				<td><button type="button" class="layui-btn layui-btn-sm" lay-submit lay-filter="search">搜索</button></td>
 			</tr>
 		</table>
