@@ -103,7 +103,7 @@ public class OrderMaterial extends BaseEntity<Long> {
 	/**
 	 * 状态（1=库存充足，2无库存，3有库存量不足）
 	 */
-	@Transient
+	@Column(name = "state")
 	private Integer state;
 
 	/**
