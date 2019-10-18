@@ -27,13 +27,13 @@ layui.define(['mytable','form'],function(exports){
 	            '</tr></table>',
 	            '<table id="materialsTable" lay-filter="materialsTable"></table>'
 	            ].join(' ');
-	var allOverstock = myutil.getDataSync({ url:'/product/getBaseOne?type=overstock', });
+	var allOverstock = myutil.getDataSync({ url: myutil.config.ctx+'/product/getBaseOne?type=overstock', });
 	var allMaterielSelect = '';
 	var materials = {	//模块
 			
 	};
 	myutil.getData({ 
-		url:'/product/getMateriel?materielTypeId=321',
+		url: myutil.config.ctx+'/product/getMateriel?materielTypeId=321',
 		success:function(data){
 			layui.each(data,function(index,item){
 				allMaterielSelect += '<dd data-value="'+item.id+'" data-convertPrice="'+item.convertPrice+'" data-convertUnit="'+item.convertPrice+'">'+
@@ -98,7 +98,7 @@ layui.define(['mytable','form'],function(exports){
 		}
 		else
 			myutil.getData({
-				url:'/product/getMateriel?materielTypeId=321',
+				url: myutil.config.ctx+'/product/getMateriel?materielTypeId=321',
 				data:{ name: name },
 				success:function(data){
 					if(data.length==0)

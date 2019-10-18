@@ -130,7 +130,7 @@ layui.define(['mytable','element'],function(exports){
 	var dot = '<span class="layui-badge-dot"></span>';		//小圆点标志
 	var allOrdinaryLaser = [];
 	myutil.getDataSync({
-		url:'/product/getBaseThree',
+		url: myutil.config.ctx+'/product/getBaseThree',
 		success:function(data){
 			layui.each(data,function(index,item){
 				allOrdinaryLaser.push({
