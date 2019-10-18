@@ -113,17 +113,17 @@ layui.config({
 	
 	Class.prototype.render = function(opt){
 		var isSmall = false;
-		var allProcedure = [],allUser = [],allGroup = [],nullGroupUser = [],nullProcedure = [{id:-1,name:'全部',children:[]}];
+		var allProcedure = [],allUser = [],allGroup = [],nullGroupUser = [],nullProcedure = [{id:'no-0',name:'全部',children:[]}];
 		myutil.getData({		//获取所有工序
 			url:opt.ctx+'/basedata/list?type='+baseType[opt.type],
 			success: function(d){
 				allProcedure = d;
 				for(var i in allProcedure){
 					nullProcedure[0].children.push({
-						id:-1,
+						id:'no-'+allProcedure[i].id,
 						name:allProcedure[i].name,
 						children:[
-						          	{id:-1,name:'<span style="color:gray;">获取数据中.....</span>',}
+						          	{id:'no-0',name:'<span style="color:gray;">获取数据中.....</span>',}
 						          ]
 					})
 				}
@@ -135,10 +135,10 @@ layui.config({
 				allGroup = d;
 				for(var i in allGroup){
 					nullGroupUser.push({
-						id:-1,
+						id:'no-'+allGroup[i].id,
 						name:allGroup[i].name,
 						children:[
-						   {id:-1,name:'<span style="color:gray;">获取数据中.....</span>',}
+						   {id:'no-0',name:'<span style="color:gray;">获取数据中.....</span>',}
 						],
 					})
 				}
@@ -416,7 +416,7 @@ layui.config({
 							return myutil.emsg(msg);
 						}
 						for(var i in userTreeId){	
-							if(userTreeId[i]!=-1){	//区分是否为临时员工,临时员工的id： t-id~userId
+							if(!isNaN(userTreeId[i])){	//区分是否为临时员工,临时员工的id： t-id~userId
 								if(userTreeId[i].indexOf('-')>0){
 									var t = userTreeId[i].split('-')[1].split('~');
 									temporaryIds.push(t[0]);
@@ -429,7 +429,7 @@ layui.config({
 							}
 						}
 						for(var i in procedureTreeId){
-							if(procedureTreeId[i]!=-1){	
+							if(!isNaN(procedureTreeId[i])){	
 								var id = procedureTreeId[i].split('-');
 								if(id[1]==0){
 									layer.close(load);
@@ -484,11 +484,11 @@ layui.config({
 				})
 				function getAllProcedureTree(){	//获取所有工序的树形结构
 					procedureTree = [{
-						id:-1,name:'全部',children:[],
+						id:'no-0',name:'全部',children:[],
 					}];
 					for(var k in allProcedure){
 						(function(name,id){
-							var da = { id:-1, name:name, children:[] }
+							var da = { id:'no-'+id, name:name, children:[] }
 							$.ajax({
 								url: opt.ctx+'/production/typeToProcedure',
 								data: {
@@ -653,11 +653,11 @@ layui.config({
 		function getUserData(day){ //获取所有分组用户的树形结构数据
 			allUser = [];
 			for(var k in allGroup){
-				(function(name){
+				(function(name,id){
 					$.ajax({
 						url: opt.ctx+'/production/allGroup',
 						data:{
-							id: allGroup[k].id,
+							id: id,
 							type: opt.type,
 							temporarilyDate: day,
 						},
@@ -665,7 +665,7 @@ layui.config({
 							if(r.code==0){
 								var groupPeople = r.data;
 								var data = {
-										id:-1,
+										id:'no-'+id,
 										name: name,
 										children:[]
 								};
@@ -689,6 +689,18 @@ layui.config({
 								}
 								allUser.push(data);
 								if(allUser.length==allGroup.length){
+									var t = [];
+									while(t.length<allGroup.length && allUser.length>0){
+										var minId = allUser[0].id.split('-')[1], minCurr = 0;
+										for(var i=1;i<allUser.length;i++){
+											var thisId = allUser[i].id.split('-')[1];
+											if(minId>thisId)
+												minCurr = i;
+										}
+										t.push(allUser[minCurr]);
+										allUser.splice(minCurr,1);
+									}
+									allUser = t;
 									menuTree.reload('userTree',{
 										data: allUser,
 									})
@@ -696,7 +708,7 @@ layui.config({
 							}
 						}
 					})
-				})(allGroup[k].name);
+				})(allGroup[k].name,allGroup[k].id);
 			}
 		}
 	}//end render
