@@ -52,7 +52,14 @@ public class OrderProcurementServiceIpml extends BaseServiceImpl<OrderProcuremen
 		return 0;
 	}
 
-
-
+	@Override
+	public void saveOrderProcurement(OrderProcurement orderProcurement) {
+		OrderMaterial orderMaterial = orderMaterialDao.findOne(orderProcurement.getOrderMaterialId());
+		//生成新编号
+		orderProcurement.setOrderProcurementNumber(	orderMaterial.getOrder().getBacthNumber()+"/"+orderMaterial.getOrder().getProductName()+"/"
+						+orderMaterial.getMateriel().getName()+"/"+orderProcurement.getNewCode());
+		orderProcurement.setMaterielId(orderMaterial.getMaterielId());
+		dao.save(orderProcurement);
+	}
 
 }
