@@ -338,7 +338,7 @@ public class LedgerAction {
 	 *        
 	 * @return
 	 */
-	@RequestMapping(value = "/ledger/scatteredOutbound", method = RequestMethod.POST)
+	@RequestMapping(value = "/ledger/saveScatteredOutbound", method = RequestMethod.GET)
 	@ResponseBody
 	public CommonResponse scatteredOutbound(String ids) {
 		CommonResponse cr = new CommonResponse();
