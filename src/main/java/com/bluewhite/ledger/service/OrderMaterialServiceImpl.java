@@ -1,5 +1,7 @@
 package com.bluewhite.ledger.service;
 
+import static org.springframework.test.web.client.response.MockRestResponseCreators.withSuccess;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -25,6 +27,7 @@ import com.bluewhite.product.primecost.materials.entity.ProductMaterials;
 import com.bluewhite.product.primecost.materials.service.ProductMaterialsService;
 import com.bluewhite.product.primecost.tailor.entity.Tailor;
 import com.bluewhite.product.primecost.tailor.service.TailorService;
+import com.bluewhite.product.primecostbasedata.dao.MaterielDao;
 
 @Service
 public class OrderMaterialServiceImpl extends BaseServiceImpl<OrderMaterial, Long> implements OrderMaterialService {
@@ -39,6 +42,8 @@ public class OrderMaterialServiceImpl extends BaseServiceImpl<OrderMaterial, Lon
 	private ProductMaterialsService productMaterialsService;
 	@Autowired
 	private TailorService tailorService;
+	@Autowired
+	private MaterielDao materielDao;
 		
 	@Override
 	public PageResult<OrderMaterial> findPages(OrderMaterial param, PageParameter page) {
@@ -168,6 +173,12 @@ public class OrderMaterialServiceImpl extends BaseServiceImpl<OrderMaterial, Lon
 				for (int i = 0; i < idArr.length; i++) {
 					Long id = Long.parseLong(idArr[i]);
 					OrderMaterial ot = findOne(id);
+					if(ot.getOrderProcurements().size()>0){
+//						ot.getOrderProcurements().stream().filter(OrderProcurement->OrderProcurement.getArrivalNumber()!=null)
+//						.mapToDouble(OrderProcurement::get)
+						
+					}
+					
 					ot.setAudit(1);
 					save(ot);
 					count++;
@@ -175,6 +186,11 @@ public class OrderMaterialServiceImpl extends BaseServiceImpl<OrderMaterial, Lon
 			}
 		}
 		return count;
+	}
+
+	private Object getArrivalNumber() {
+		// TODO Auto-generated method stub
+		return null;
 	}
 
 }

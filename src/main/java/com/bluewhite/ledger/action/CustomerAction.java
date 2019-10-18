@@ -42,6 +42,11 @@ public class CustomerAction {
 				.addRetainTerm(User.class, "userName","id")
 				.addRetainTerm(RegionAddress.class, "regionName","id");
 	}
+	private ClearCascadeJSON clearCascadeJSONGet;
+	{
+		clearCascadeJSONGet = ClearCascadeJSON
+				.get().addRetainTerm(Customer.class, "id", "name");
+	}
 
 	/**
 	 * 分页查看客户
@@ -68,6 +73,21 @@ public class CustomerAction {
 	public CommonResponse allCustomer() {
 		CommonResponse cr = new CommonResponse();
 		cr.setData(clearCascadeJSON.format(customrService.findAll()).toJSON());
+		cr.setMessage("查询成功");
+		return cr;
+	}
+	
+	/**
+	 * 
+	 * 查看客户
+	 * 
+	 * @return cr
+	 */
+	@RequestMapping(value = "/ledger/getCustomer", method = RequestMethod.GET)
+	@ResponseBody
+	public CommonResponse getCustomer(Customer customer) {
+		CommonResponse cr = new CommonResponse();
+		cr.setData(clearCascadeJSONGet.format(customrService.getCustomer(customer)).toJSON());
 		cr.setMessage("查询成功");
 		return cr;
 	}
