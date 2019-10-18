@@ -153,7 +153,7 @@ public class OrderServiceImpl extends BaseServiceImpl<Order, Long> implements Or
 			}
 			// 按下单日期
 			if (!StringUtils.isEmpty(param.getOrderTimeBegin()) && !StringUtils.isEmpty(param.getOrderTimeEnd())) {
-				predicate.add(cb.between(root.get("packingDate").as(Date.class), param.getOrderTimeBegin(),
+				predicate.add(cb.between(root.get("orderDate").as(Date.class), param.getOrderTimeBegin(),
 						param.getOrderTimeEnd()));
 			}
 			Predicate[] pre = new Predicate[predicate.size()];
@@ -162,5 +162,6 @@ public class OrderServiceImpl extends BaseServiceImpl<Order, Long> implements Or
 		});
 		return result;
 	}
+
 
 }
