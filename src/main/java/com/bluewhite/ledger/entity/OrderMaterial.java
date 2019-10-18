@@ -99,7 +99,7 @@ public class OrderMaterial extends BaseEntity<Long> {
 	 */
 	@OneToMany(mappedBy = "orderMaterial", cascade = CascadeType.ALL, orphanRemoval = true)
 	private Set<OrderProcurement> orderProcurements = new HashSet<OrderProcurement>();
-
+	
 	/**
 	 * 状态（1=库存充足，2无库存，3有库存量不足）
 	 */
