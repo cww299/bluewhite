@@ -126,10 +126,10 @@
 <!-- 表格工具栏模板 -->
 <script type="text/html" id="agreementToolbar">
 <div>
-	<span lay-event="add"  class="layui-btn layui-btn-sm" >新增</span>
-	<span lay-event="delete"  class="layui-btn layui-btn-sm layui-btn-danger" >删除</span>
-	<span lay-event="update"  class="layui-btn layui-btn-sm" >修改</span>
-	<span lay-event="productUseup"  class="layui-btn layui-btn-sm" >生成耗料订单</span>
+	<span lay-event="add"  class="layui-btn layui-btn-sm" >新增合同</span>
+	<span lay-event="delete"  class="layui-btn layui-btn-sm layui-btn-danger" >删除合同</span>
+	<span lay-event="update"  class="layui-btn layui-btn-sm" >修改合同</span>
+	<span lay-event="productUseup"  class="layui-btn layui-btn-sm layui-btn-normal" >生成耗料订单</span>
 	<span lay-event="lookoverUseup"  class="layui-btn layui-btn-sm" >查看耗料订单</span>
 </div>
 </script>
