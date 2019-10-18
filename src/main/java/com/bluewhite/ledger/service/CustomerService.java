@@ -1,5 +1,7 @@
 package com.bluewhite.ledger.service;
 
+import java.util.List;
+
 import com.bluewhite.base.BaseCRUDService;
 import com.bluewhite.common.entity.PageParameter;
 import com.bluewhite.common.entity.PageResult;
@@ -27,4 +29,11 @@ public interface CustomerService extends BaseCRUDService<Customer, Long> {
 	 * @param onlineCustomer
 	 */
 	public void saveCustomer(Customer customer);
+	
+	/**
+	 * 查看客户
+	 * @param Customr
+	 * @return
+	 */
+	public List<Customer> getCustomer(Customer Customr);
 }
