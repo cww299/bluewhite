@@ -457,7 +457,10 @@ layui.extend({
 	}
 	function parseDataPage(){		//分页请求数据解析
 		return function(ret){
-			return {  msg:ret.message,  code:ret.code , data:ret.data.rows, count:ret.data.total }; 
+			if(ret.code==0)
+				return {  msg:ret.message,  code:ret.code , data:ret.data.rows, count:ret.data.total }; 
+			else
+				return {  msg:ret.message,  code:ret.code , data:[], count:0 }; 
 		}
 	}
 	function isCount(val){	//验证是否为正整数
