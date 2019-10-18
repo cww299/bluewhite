@@ -129,6 +129,8 @@
 	<span lay-event="add"  class="layui-btn layui-btn-sm" >新增</span>
 	<span lay-event="delete"  class="layui-btn layui-btn-sm layui-btn-danger" >删除</span>
 	<span lay-event="update"  class="layui-btn layui-btn-sm" >修改</span>
+	<span lay-event="productUseup"  class="layui-btn layui-btn-sm" >生成耗料订单</span>
+	<span lay-event="lookoverUseup"  class="layui-btn layui-btn-sm" >查看耗料订单</span>
 </div>
 </script>
 <!-- 表格工具栏模板 -->
@@ -203,8 +205,57 @@ layui.config({
 			case 'add':		add();		break;
 			case 'update':	edit(); 	break;
 			case 'delete':	deletes();			break;
+			case 'lookoverUseup': lookoverUseup(); break;
+			case 'productUseup': productUseup(); break;
 			} 
 		})
+		function lookoverUseup(){
+			var checked = layui.table.checkStatus('tableAgreement').data;
+			if(checked.length!=1)
+				return myutil.esmg('只能查看一条信息');
+			layer.open({
+				type:1,
+				title:'耗料订单',
+				content:[
+				         '<div style="">',
+				         	'<table id="lookoverTable" lay-filter="lookoverTable"><table>',
+				         '</div>',
+				         ].join(' '),
+				area:['50%','50%'],
+				success:function(){
+					table.render({
+						elem:'#lookoverTable',
+						data:[],
+						toolbar:'<div><span class="layui-btn layui-btn-sm layui-btn-danger" lay-event="deleteLook">删除</span></div>',
+						cols:[[
+							   { type:'checkbox', },
+						       { align:'center', title:'裁片名',   field:'order',	},
+						       { align:'center', title:'物料编号',   field:'materiel',   },
+						       { align:'center', title:'物料名',   field:'receiveMode', 	},
+						       { align:'center', title:'当批用价',   field:'user',	},
+						       { align:'center', title:'压货环节',   field:'unit',	},
+						       ]],
+						 done:function(){
+							 table.on('toolbar(lookoverTable)',function(obj){
+								 if(obj.event=='deleteLook'){
+									 myutil.deleTableIds({
+											url:'/ledger/deleteOrderMaterial',
+											table:'lookoverTable',
+										})
+								 }
+							 })
+						 }
+					})
+				},
+			})
+		}
+		function productUseup(){
+			myutil.deleTableIds({
+				url:'/ledger/confirmOrderMaterial',
+				table:'tableAgreement',
+				text:'请选择相关信息|是否确认生成耗料表',
+			})
+		}
 		function add(){
 			var productList = [];	//记录复选框选中的值，用于回显复选框选中
 			var defaultTime = '', defaultRemark = '';
