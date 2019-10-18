@@ -22,7 +22,7 @@ import com.bluewhite.system.user.entity.User;
  *
  */
 @Entity
-@Table(name = "ledger_order_material")
+@Table(name = "ledger_order_procurement")
 public class OrderProcurement extends BaseEntity<Long> {
 
 	/**
