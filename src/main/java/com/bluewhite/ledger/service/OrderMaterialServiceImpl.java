@@ -48,6 +48,10 @@ public class OrderMaterialServiceImpl extends BaseServiceImpl<OrderMaterial, Lon
 			if (param.getOrderId()!=null){
 				predicate.add(cb.equal(root.get("orderId").as(Long.class),param.getOrderId()));
 			}
+			// 是否审核
+			if (param.getAudit()!=null){
+				predicate.add(cb.equal(root.get("audit").as(Integer.class),param.getAudit()));
+			}
 			// 按产品名称
 			if (!StringUtils.isEmpty(param.getProductName())){
 				predicate.add(cb.like(root.get("order").get("product").get("name").as(String.class),"%"+StringUtil.specialStrKeyword(param.getProductName())+"%") );
@@ -82,6 +86,7 @@ public class OrderMaterialServiceImpl extends BaseServiceImpl<OrderMaterial, Lon
 								cutPartsService.countComposite(c);
 								OrderMaterial orderMaterial = new OrderMaterial();
 								orderMaterial.setOrderId(id);
+								orderMaterial.setAudit(0);
 								orderMaterial.setMaterielId(c.getMaterielId());
 								orderMaterial.setUnitId(c.getUnitId());
 								orderMaterial.setDosage(c.getBatchMaterial());
@@ -90,8 +95,10 @@ public class OrderMaterialServiceImpl extends BaseServiceImpl<OrderMaterial, Lon
 								orderMaterialList.add(orderMaterial);
 								if(c.getComposite()==1){
 									OrderMaterial orderMaterialComposite = new OrderMaterial();
+									orderMaterial.setOrderId(id);
 									orderMaterial.setMaterielId(c.getComplexMaterielId());
 									orderMaterial.setUnitId(c.getUnitId());
+									orderMaterial.setAudit(0);
 									orderMaterial.setDosage(c.getComplexBatchMaterial());
 									orderMaterial.setReceiveModeId(tailor.getTailorTypeId());
 									orderMaterialList.add(orderMaterialComposite);
@@ -107,6 +114,7 @@ public class OrderMaterialServiceImpl extends BaseServiceImpl<OrderMaterial, Lon
 								m.setNumber(order.getNumber());
 								productMaterialsService.countComposite(m);
 								OrderMaterial orderMaterial = new OrderMaterial();
+								orderMaterial.setAudit(0);
 								orderMaterial.setOrderId(id);
 								orderMaterial.setMaterielId(m.getMaterielId());
 								orderMaterial.setUnitId(m.getUnitId());
@@ -133,18 +141,40 @@ public class OrderMaterialServiceImpl extends BaseServiceImpl<OrderMaterial, Lon
 
 	@Override
 	public int deleteOrderMaterial(String ids) {
-//		int count = 0;
-//		if (!StringUtils.isEmpty(ids)) {
-//			String[] idArr = ids.split(",");
-//			if (idArr.length > 0) {
-//				for (int i = 0; i < idArr.length; i++) {
-//					Long id = Long.parseLong(idArr[i]);
-//				}
-//			}
-//		}
-		return delete(ids);
+		int count = 0;
+		if (!StringUtils.isEmpty(ids)) {
+			String[] idArr = ids.split(",");
+			if (idArr.length > 0) {
+				for (int i = 0; i < idArr.length; i++) {
+					Long id = Long.parseLong(idArr[i]);
+					OrderMaterial ot = findOne(id);
+					if(ot.getAudit()==1){
+						throw new ServiceException("第"+(i+1)+"条耗料已审核，无法删除");
+					}
+					delete(id);
+					count++;
+				}
+			}
+		}
+		return count;
 	}
 
-	
+	@Override
+	public int auditOrderMaterial(String ids) {
+		int count = 0;
+		if (!StringUtils.isEmpty(ids)) {
+			String[] idArr = ids.split(",");
+			if (idArr.length > 0) {
+				for (int i = 0; i < idArr.length; i++) {
+					Long id = Long.parseLong(idArr[i]);
+					OrderMaterial ot = findOne(id);
+					ot.setAudit(1);
+					save(ot);
+					count++;
+				}
+			}
+		}
+		return count;
+	}
 
 }

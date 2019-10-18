@@ -122,12 +122,9 @@ public class LedgerAction {
 	{
 		clearCascadeJSONOrder = ClearCascadeJSON.get()
 				.addRetainTerm(Order.class, "id", "remark", "orderDate", "customer", "bacthNumber", "product", "number",
-						"price", "surplusNumber","orderMaterials")
+						"price")
 				.addRetainTerm(Customer.class, "id", "name")
-				.addRetainTerm(Product.class, "id", "name", "number")
-				.addRetainTerm(OrderMaterial.class, "order", "materiel","receiveMode", "unit","dosage")
-				.addRetainTerm(BaseOne.class, "id", "name")
-				.addRetainTerm(Materiel.class, "id", "name","number");
+				.addRetainTerm(Product.class, "id", "name", "number");
 	}
 
 	private ClearCascadeJSON clearCascadeJSONMixed;
@@ -154,7 +151,7 @@ public class LedgerAction {
 	private ClearCascadeJSON clearCascadeJSONOrderMaterial;
 	{
 		clearCascadeJSONOrderMaterial = ClearCascadeJSON.get()
-				.addRetainTerm(OrderMaterial.class, "order", "materiel","receiveMode", "user", "unit","dosage","flag")
+				.addRetainTerm(OrderMaterial.class,"id","order", "materiel","receiveMode", "user", "unit","dosage","audit")
 				.addRetainTerm(Order.class, "id", "bacthNumber","product","number","remark")
 				.addRetainTerm(Materiel.class, "id", "name","number","orderProcurements","inventoryNumber")
 				.addRetainTerm(OrderProcurement.class, "id", "orderProcurementNumber","placeOrderNumber","arrivalNumber")
@@ -297,6 +294,21 @@ public class LedgerAction {
 		cr.setMessage("成功删除" + count + "条耗料");
 		return cr;
 	}
+	
+	/**
+	 * （生产计划部）审核耗料表
+	 * 
+	 * @param order
+	 * @return
+	 */
+	@RequestMapping(value = "/ledger/auditOrderMaterial", method = RequestMethod.GET)
+	@ResponseBody
+	public CommonResponse auditOrderMaterial(String ids) {
+		CommonResponse cr = new CommonResponse();
+		int count = orderMaterialService.auditOrderMaterial(ids);
+		cr.setMessage("成功审核" + count + "条耗料表");
+		return cr;
+	}
 
 	
 	/**
@@ -320,6 +332,20 @@ public class LedgerAction {
 	}
 	
 	
+	/**
+	 * （采购部）将所有已有库存的耗料表生成分散出库记录
+	 *        
+	 * @return
+	 */
+	@RequestMapping(value = "/ledger/scatteredOutbound", method = RequestMethod.POST)
+	@ResponseBody
+	public CommonResponse scatteredOutbound(String ids) {
+		CommonResponse cr = new CommonResponse();
+		
+		
+		
+		return cr;
+	}
 	
 	
 	
