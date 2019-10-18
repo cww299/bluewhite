@@ -217,7 +217,7 @@ layui.config({
 				type:1,
 				title:'耗料订单',
 				content:[
-				         '<div style="">',
+				         '<div style="padding:10px;">',
 				         	'<table id="lookoverTable" lay-filter="lookoverTable"><table>',
 				         '</div>',
 				         ].join(' '),
@@ -229,11 +229,10 @@ layui.config({
 						toolbar:'<div><span class="layui-btn layui-btn-sm layui-btn-danger" lay-event="deleteLook">删除</span></div>',
 						cols:[[
 							   { type:'checkbox', },
-						       { align:'center', title:'裁片名',   field:'order',	},
-						       { align:'center', title:'物料编号',   field:'materiel',   },
-						       { align:'center', title:'物料名',   field:'receiveMode', 	},
-						       { align:'center', title:'当批用价',   field:'user',	},
-						       { align:'center', title:'压货环节',   field:'unit',	},
+						       { align:'center', title:'物料名',   field:'materiel_name',	},
+						       { align:'center', title:'单位',   field:'unit',   },
+						       { align:'center', title:'领取用量',   field:'dosage', 	},
+						       { align:'center', title:'领取模式',   field:'receiveMode',	},
 						       ]],
 						 done:function(){
 							 table.on('toolbar(lookoverTable)',function(obj){
@@ -254,6 +253,12 @@ layui.config({
 				url:'/ledger/confirmOrderMaterial',
 				table:'tableAgreement',
 				text:'请选择相关信息|是否确认生成耗料表',
+				verify:function(choosed){
+					for(var i in choosed){
+						if(choosed[i].orderMaterials.length>0)
+							return choosed[i].product.name+'已经生成耗料表，不能重复生产';
+					}
+				}
 			})
 		}
 		function add(){
