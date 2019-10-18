@@ -68,15 +68,21 @@ public class OrderMaterial extends BaseEntity<Long>{
 	@JoinColumn(name = "receive_mode_id", referencedColumnName = "id", insertable = false, updatable = false)
 	private BaseOne receiveMode;
 	
+	/**
+	 * 领取人
+	 */
+	@Column(name = "receive_user")
+    private String receiveUser;
+	
    	/**
-	 *  领取人id
+	 *  跟单人id
 	 * 
 	 */
 	@Column(name = "user_id")
 	private Long userId;
 
 	/**
-	 *  领取人
+	 *  跟单人
 	 */
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "user_id", referencedColumnName = "id", insertable = false, updatable = false)
@@ -139,6 +145,16 @@ public class OrderMaterial extends BaseEntity<Long>{
 	
 	
 	
+
+	public String getReceiveUser() {
+		return receiveUser;
+	}
+
+
+	public void setReceiveUser(String receiveUser) {
+		this.receiveUser = receiveUser;
+	}
+
 
 	public Set<OrderProcurement> getOrderProcurements() {
 		return orderProcurements;

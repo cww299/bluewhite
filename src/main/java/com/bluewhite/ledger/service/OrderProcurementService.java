@@ -22,6 +22,6 @@ public interface OrderProcurementService extends BaseCRUDService<OrderProcuremen
 	 * @param ids
 	 * @return
 	 */
-	public int confirmOrderProcurement(String ids);
+	public int confirmOrderProcurement(OrderProcurement orderProcurement);
 
 }
