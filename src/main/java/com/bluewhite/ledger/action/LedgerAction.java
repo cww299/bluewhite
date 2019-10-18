@@ -122,8 +122,10 @@ public class LedgerAction {
 	{
 		clearCascadeJSONOrder = ClearCascadeJSON.get()
 				.addRetainTerm(Order.class, "id", "remark", "orderDate", "customer", "bacthNumber", "product", "number",
-						"price", "surplusNumber")
-				.addRetainTerm(Customer.class, "id", "name").addRetainTerm(Product.class, "id", "name", "number");
+						"price", "surplusNumber","orderMaterials")
+				.addRetainTerm(Customer.class, "id", "name")
+				.addRetainTerm(Product.class, "id", "name", "number")
+				.addRetainTerm(OrderMaterial.class, "order", "materiel","receiveMode","receiveUser","user", "unit","dosage","flag");
 	}
 
 	private ClearCascadeJSON clearCascadeJSONMixed;
@@ -296,21 +298,34 @@ public class LedgerAction {
 	/**
 	 * （采购部）确认库存不足的面料
 	 *        生成采购订单
-	 * 
-	 * @param order
+	 *        需要自动新增物料编号
+	 *        1.自动生成带克重的新物料编号
+	 *        填写了平方克重 （ 面料-“花2大”119{平方克重:190克}）
+	 *        2.自动生成新物料编号 （辅料-“花1大”54）
+	 *        
 	 * @return
 	 */
 	@RequestMapping(value = "/ledger/confirmOrderProcurement", method = RequestMethod.POST)
 	@ResponseBody
-	public CommonResponse confirmOrderProcurement(String ids) {
+	public CommonResponse confirmOrderProcurement(OrderProcurement orderProcurement) {
 		CommonResponse cr = new CommonResponse();
-		orderProcurementService.confirmOrderProcurement(ids);
+		orderProcurementService.save(orderProcurement);
+		
+//		orderProcurementService.confirmOrderProcurement(orderProcurement);
 		return cr;
 	}
 	
 	
 	
-
+	
+	
+	
+	
+	
+	
+	
+	
+	
 	/**
 	 * 分页查看贴包单
 	 * 
