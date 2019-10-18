@@ -175,6 +175,8 @@ public class LedgerAction {
 		cr.setMessage("查看成功");
 		return cr;
 	}
+	
+	
 
 	/**
 	 * 查看订单
@@ -326,8 +328,7 @@ public class LedgerAction {
 	public CommonResponse confirmOrderProcurement(OrderProcurement orderProcurement) {
 		CommonResponse cr = new CommonResponse();
 		orderProcurementService.save(orderProcurement);
-		
-//		orderProcurementService.confirmOrderProcurement(orderProcurement);
+		cr.setMessage("新增采购订单成功");
 		return cr;
 	}
 	
@@ -346,6 +347,8 @@ public class LedgerAction {
 		
 		return cr;
 	}
+	
+	
 	
 	
 	
