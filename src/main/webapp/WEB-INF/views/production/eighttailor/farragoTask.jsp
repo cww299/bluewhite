@@ -507,10 +507,10 @@
 									  remarks:$(".remarks").val(),
 									  performance:performance,
 									  performanceNumber:performanceNumber,
-									  userIds:arr,
-									  temporaryUserIds:arrtem,
-									  ids:ids,
-									  temporaryIds:temporaryIds,
+									  ids:arr,
+									  temporaryIds:arrtem,
+									  userIds:ids,
+									  temporaryUserIds:temporaryIds,
 									  bacth:$(".bacth").val(),
 									  type:5,
 							  }
@@ -532,7 +532,7 @@
 											 $('.addDictDivTypeForm')[0].reset();
 											 layer.close(_index);
 										}else{
-											layer.msg("添加失败", {icon: 2});
+											layer.msg(result.message, {icon: 2});
 										}
 										
 										layer.close(index);

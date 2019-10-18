@@ -161,10 +161,10 @@
 						</div>
 					</div>
 
-					<div class="form-group">
+					<!-- <div class="form-group">
 						<label class="col-sm-3 control-label">加绩工序选择</label>
 						<div class="col-sm-6 working"></div>
-					</div>
+					</div> -->
 					<div class="form-group">
 						<label class="col-sm-3 control-label">完成人</label>
 						<div class="col-sm-6 complete">
@@ -243,9 +243,9 @@
 		      				+'<td class="text-center edit name">'+o.time+'</td>'
 		      				+'<td class="text-center edit name">'+o.remarks+'</td>'
 		      				+'<td class="text-center edit name">'+o.performance+'</td>'
-		      				+'<td class="text-center edit name">'+parseFloat((o.price).toFixed(3))+'</td>'
+		      				+'<td class="text-center edit name">'+parseFloat((o.price ==null ? 0 : o.price).toFixed(3))+'</td>'
 		      				+'<td class="text-center edit name">'+parseFloat((o.payB).toFixed(3))+'</td>'
-		      				+'<td class="text-center edit name">'+parseFloat((o.performancePrice).toFixed(3))+'</td>'
+		      				+'<td class="text-center edit name">'+parseFloat((o.performancePrice==null ? 0 : o.performancePrice).toFixed(3))+'</td>'
 		      				+'<td class="text-center"><button class="btn btn-primary btn-trans btn-sm savemode" data-toggle="modal" data-target="#myModal" data-id="'+o.id+'")">查看人员</button></td>'
 							+'<td class="text-center"><button class="btn btn-sm btn-danger btn-trans delete" data-id='+o.id+'>删除</button></td></tr>'
 							
@@ -464,7 +464,7 @@
 							 }) 
 					      }
 					  });
-					//遍历杂工加绩比值
+					/* //遍历杂工加绩比值
 					$.ajax({
 						url:"${ctx}/farragoTask/farragoTaskPerformance",
 						type:"GET",
@@ -485,7 +485,7 @@
 							layer.msg("操作失败！", {icon: 2});
 							layer.close(index);
 						}
-					});
+					}); */
 					
 					_index = layer.open({
 						  type: 1,
@@ -534,10 +534,10 @@
 									  remarks:$(".remarks").val(),
 									  performance:performance,
 									  performanceNumber:performanceNumber,
-									  userIds:arr,
-									  temporaryUserIds:arrtem,
-									  ids:ids,
-									  temporaryIds:temporaryIds,
+									  ids:arr,
+									  temporaryIds:arrtem,
+									  userIds:ids,
+									  temporaryUserIds:temporaryIds,
 									  bacth:$(".bacth").val(),
 									  type:1,
 							  }

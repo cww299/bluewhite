@@ -375,8 +375,8 @@
 			      				+'<td class="text-center edit ">'+o.userName+'</td>'
 			      				+'<td class="text-center edit ">'+o.taskName+'</td>'
 			      				+'<td class="text-center edit ">'+o.allotTime+'</td>'
-			      				+'<td class="text-center edit ">'+parseFloat((o.performancePayNumber).toFixed(3))+'</td>'
-			      				+'<td class="text-center edit ">'+parseFloat((o.payNumber).toFixed(3))+'</td></tr>'
+			      				+'<td class="text-center edit ">'+parseFloat((o.performancePayNumber==null ? 0 :o.performancePayNumber).toFixed(3))+'</td>'
+			      				+'<td class="text-center edit ">'+parseFloat((o.payNumber==null ? 0 : o.payNumber ).toFixed(3))+'</td></tr>'
 								
 			      			}); 
 					        //显示分页
@@ -541,7 +541,7 @@
 								  	}
 									self.loadPaginationth(data);
 									}else{
-										layer.msg("修改失败！", {icon: 1});
+										layer.msg(result.message, {icon: 1});
 										layer.close(index);
 									}
 								},error:function(){
@@ -591,7 +591,7 @@
 								self.loadPaginationth(data)
 								layer.close(index);
 								}else{
-									layer.msg("删除失败！", {icon: 2});
+									layer.msg(result.message, {icon: 2});
 									layer.close(index);
 								}
 							},error:function(){

@@ -2,6 +2,8 @@ package com.bluewhite.production.task.action;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -29,8 +31,15 @@ import com.bluewhite.common.entity.CommonResponse;
 import com.bluewhite.common.entity.CurrentUser;
 import com.bluewhite.common.entity.ErrorCode;
 import com.bluewhite.common.entity.PageParameter;
+import com.bluewhite.common.utils.DatesUtil;
+import com.bluewhite.finance.attendance.dao.AttendancePayDao;
+import com.bluewhite.finance.attendance.entity.AttendancePay;
+import com.bluewhite.production.bacth.entity.Bacth;
+import com.bluewhite.production.bacth.service.BacthService;
 import com.bluewhite.production.finance.dao.PayBDao;
 import com.bluewhite.production.finance.entity.PayB;
+import com.bluewhite.production.group.dao.TemporarilyDao;
+import com.bluewhite.production.group.entity.Temporarily;
 import com.bluewhite.production.procedure.dao.ProcedureDao;
 import com.bluewhite.production.procedure.entity.Procedure;
 import com.bluewhite.production.procedure.service.ProcedureService;
@@ -51,6 +60,10 @@ public class TaskAction {
 	@Autowired
 	private TaskService taskService;
 	@Autowired
+	private AttendancePayDao attendancePayDao;
+	@Autowired
+	private TemporarilyDao temporarilyDao;
+	@Autowired
 	private ProcedureDao procedureDao;
 	@Autowired
 	private ProcedureService procedureService;
@@ -60,6 +73,8 @@ public class TaskAction {
 	private PayBDao payBDao;
 	@Autowired
 	private TemporaryUserService temporaryUserService;
+	@Autowired
+	private BacthService bacthService;
 
 	private ClearCascadeJSON clearCascadeJSON;
 
@@ -88,20 +103,36 @@ public class TaskAction {
 	/**
 	 * 给批次添加任务
 	 * 
-	 * 
 	 */
 	@RequestMapping(value = "/task/addTask", method = RequestMethod.POST)
 	@ResponseBody
 	public CommonResponse addTask(HttpServletRequest request, Task task) {
 		CommonResponse cr = new CommonResponse();
-		// 新增
-		if (!StringUtils.isEmpty(task.getUserIds()) || !StringUtils.isEmpty(task.getTemporaryUserIds())) {
-			task.setAllotTime(ProTypeUtils.countAllotTime(task.getAllotTime()));
-			taskService.addTask(task, request);
-			cr.setMessage("任务分配成功");
-		} else {
-			cr.setCode(ErrorCode.ILLEGAL_ARGUMENT.getCode());
-			cr.setMessage("领取人不能为空");
+		// 同步锁
+		synchronized (this) {
+			// 新增
+			if (!StringUtils.isEmpty(task.getUserIds()) || !StringUtils.isEmpty(task.getTemporaryUserIds())) {
+				Bacth bacth = bacthService.findOne(task.getBacthId());
+				for (int i = 0; i < task.getProcedureIds().length; i++) {
+					int num = i;
+					// 获取该工序的已分配的任务数量
+					int count = bacth.getTasks().stream()
+							.filter(Task -> Task.getProcedureId().equals(task.getProcedureIds()[num]))
+							.mapToInt(Task::getNumber).sum();
+					// 当前分配数量加已分配数量大于批次总数量则不通过
+					if ((task.getNumber() + count) > bacth.getNumber()) {
+						cr.setCode(ErrorCode.ILLEGAL_ARGUMENT.getCode());
+						cr.setMessage("当前数量剩余不足，请确认数量");
+						return cr;
+					}
+				}
+				task.setAllotTime(ProTypeUtils.countAllotTime(task.getAllotTime()));
+				taskService.addTask(task, request);
+				cr.setMessage("任务分配成功");
+			} else {
+				cr.setCode(ErrorCode.ILLEGAL_ARGUMENT.getCode());
+				cr.setMessage("领取人不能为空");
+			}
 		}
 		return cr;
 	}
@@ -115,25 +146,23 @@ public class TaskAction {
 	@ResponseBody
 	public CommonResponse upTask(HttpServletRequest request, Task task) {
 		CommonResponse cr = new CommonResponse();
-		if (!StringUtils.isEmpty(task.getId())) {
+		if (task.getId() != null) {
 			int count = 0;
-			Task tk = taskService.findOne(task.getId());
-			for (Task ta : tk.getBacth().getTasks()) {
-				if (ta.getProcedureId().equals(tk.getProcedureId())) {
+			Task oldTask = taskService.findOne(task.getId());
+			for (Task ta : oldTask.getBacth().getTasks()) {
+				if (ta.getProcedureId().equals(oldTask.getProcedureId())) {
 					count += ta.getNumber();
 				}
 			}
-			if ((count - tk.getNumber() + task.getNumber()) > tk.getBacth().getNumber()) {
+			if ((count - oldTask.getNumber() + task.getNumber()) > oldTask.getBacth().getNumber()) {
 				cr.setCode(ErrorCode.ILLEGAL_ARGUMENT.getCode());
-				cr.setMessage("修改数量不能超过该批次总数:" + tk.getBacth().getNumber());
+				cr.setMessage("修改数量不能超过该批次总数:" + oldTask.getBacth().getNumber());
 				return cr;
 			}
-			Task oldTask = taskService.findOne(task.getId());
-			BeanCopyUtils.copyNullProperties(oldTask, task);
-			task.setCreatedAt(oldTask.getCreatedAt());
-			String[] arrayRefVar = { String.valueOf(task.getProcedureId()) };
-			task.setProcedureIds(arrayRefVar);
-			taskService.addTask(task, request);
+			BeanCopyUtils.copyNotEmpty(task, oldTask, "");
+			String[] arrayRefVar = { String.valueOf(oldTask.getProcedureId()) };
+			oldTask.setProcedureIds(arrayRefVar);
+			taskService.addTask(oldTask, request);
 			cr.setMessage("修改成功");
 		} else {
 			cr.setCode(ErrorCode.ILLEGAL_ARGUMENT.getCode());
@@ -177,7 +206,7 @@ public class TaskAction {
 	public CommonResponse allTask(HttpServletRequest request, Task task, PageParameter page) {
 		CommonResponse cr = new CommonResponse();
 		CurrentUser cu = SessionManager.getUserSession();
-		if(!cu.getRole().contains("superAdmin") && !cu.getRole().contains("personnel")){
+		if (!cu.getRole().contains("superAdmin") && !cu.getRole().contains("personnel")) {
 			task.setUserId(cu.getId());
 		}
 		cr.setData(clearCascadeJSON.format(taskService.findPages(task, page)).toJSON());
@@ -231,7 +260,7 @@ public class TaskAction {
 					}
 				}
 			}
-			if(!StringUtils.isEmpty(task.getTemporaryUserIds())){
+			if (!StringUtils.isEmpty(task.getTemporaryUserIds())) {
 				String[] idArr = task.getTemporaryUserIds().split(",");
 				if (idArr.length > 0) {
 					for (int i = 0; i < idArr.length; i++) {
@@ -266,35 +295,37 @@ public class TaskAction {
 		if (procedureId != null) {
 			Procedure procedure = procedureService.findOne(procedureId);
 			if (procedure != null) {
-				if (procedure.getName().indexOf("发货位堆放") != -1 || procedure.getName().indexOf("推包到发货位") != -1 || procedure.getName().indexOf("推箱到发货位") != -1 ) {
-					mapList.stream().forEach(m->{
-						if(String.valueOf(m.get("name")).equals("推货工序")){
+				if (procedure.getName().indexOf("发货位堆放") != -1 || procedure.getName().indexOf("推包到发货位") != -1
+						|| procedure.getName().indexOf("推箱到发货位") != -1) {
+					mapList.stream().forEach(m -> {
+						if (String.valueOf(m.get("name")).equals("推货工序")) {
 							m.put("checked", 1);
 						}
 					});
 				}
 
 				if (procedure.getName().indexOf("写编码") != -1) {
-					mapList.stream().forEach(m->{
-						if(String.valueOf(m.get("name")).equals("精细填写工序")){
+					mapList.stream().forEach(m -> {
+						if (String.valueOf(m.get("name")).equals("精细填写工序")) {
 							m.put("checked", 1);
 						}
 					});
 				}
 
-				if (procedure.getName().indexOf("大包堆放原打包位") != -1 || procedure.getName().indexOf("压包") != -1 || procedure.getName().indexOf("点数") != -1
-						|| procedure.getName().indexOf("绞口") != -1 || procedure.getName().indexOf("套袋") != -1 || procedure.getName().indexOf("封箱") != -1
+				if (procedure.getName().indexOf("大包堆放原打包位") != -1 || procedure.getName().indexOf("压包") != -1
+						|| procedure.getName().indexOf("点数") != -1 || procedure.getName().indexOf("绞口") != -1
+						|| procedure.getName().indexOf("套袋") != -1 || procedure.getName().indexOf("封箱") != -1
 						|| procedure.getName().indexOf("封空箱") != -1 || procedure.getName().indexOf("原打包位") != -1) {
-					mapList.stream().forEach(m->{
-						if(String.valueOf(m.get("name")).equals("装箱装包工序")){
+					mapList.stream().forEach(m -> {
+						if (String.valueOf(m.get("name")).equals("装箱装包工序")) {
 							m.put("checked", 1);
 						}
 					});
 				}
 
 				if (procedure.getName().indexOf("大包上车") != -1 || procedure.getName().indexOf("箱上车") != -1) {
-					mapList.stream().forEach(m->{
-						if(String.valueOf(m.get("name")).equals("上下车力工工序")){
+					mapList.stream().forEach(m -> {
+						if (String.valueOf(m.get("name")).equals("上下车力工工序")) {
 							m.put("checked", 1);
 						}
 					});

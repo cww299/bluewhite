@@ -11,111 +11,116 @@ import javax.persistence.Transient;
 
 import com.bluewhite.base.BaseEntity;
 import com.bluewhite.basedata.entity.BaseData;
+import com.bluewhite.system.user.entity.User;
 
 /**
  * 工序实体
+ * 
  * @author zhangliang
  *
  */
 @Entity
-@Table(name = "pro_procedure",indexes = {	@Index(columnList = "product_id"),
-											@Index(columnList = "flag")})
+@Table(name = "pro_procedure", indexes = { @Index(columnList = "product_id"), @Index(columnList = "flag") })
 public class Procedure extends BaseEntity<Long> {
-	
+
 	/**
 	 * 工序名称
 	 */
 	@Column(name = "name")
 	private String name;
-	
+
 	/**
 	 * 工序时间
 	 */
 	@Column(name = "working_time")
 	private Double workingTime;
-	
+
 	/**
 	 * 产品id
 	 */
 	@Column(name = "product_id")
 	private Long productId;
-	
-//	/**
-//	 * 产品
-//	 */
-//	@ManyToOne(fetch = FetchType.LAZY)
-//	@JoinColumn(name = "product_id", referencedColumnName = "id", insertable = false, updatable = false)
-//	private Product product;
-//	
+
 	/**
 	 * 是否删除
 	 */
 	@Column(name = "isDel")
 	private Integer isDel;
-	
+
 	/**
 	 * 工序类型id
 	 */
 	@Column(name = "procedure_type_id")
 	private Long procedureTypeId;
-	
+
 	/**
 	 * 工序
 	 */
 	@ManyToOne(fetch = FetchType.EAGER)
 	@JoinColumn(name = "procedure_type_id", referencedColumnName = "id", insertable = false, updatable = false)
 	private BaseData procedureType;
-	
-	
+
 	/**
 	 * 针工价格
 	 */
 	@Column(name = "deedle_price")
 	private Double deedlePrice;
-	
+
 	/**
 	 * 外发价格
 	 */
 	@Column(name = "hairPrice")
 	private Double hairPrice;
-	
-    /**
-     * 部门生产预计单价
-     */
+
+	/**
+	 * 部门生产预计单价
+	 */
 	@Column(name = "department_price")
-    private Double departmentPrice;
-	
-	
+	private Double departmentPrice;
+
 	/**
 	 * 工序所属部门类型 (1=一楼质检，2=一楼包装，3=二楼针工，4=机工，5=8号裁剪)
 	 */
 	@Column(name = "type")
 	private Integer type;
-	
+
 	/**
 	 * 是否是返工标识符（0=不是，1=是）
 	 */
 	@Column(name = "flag")
 	private Integer flag;
-	
-	
+
 	/**
 	 * 八号仓库特殊业务，同一种产品会有会有激光和冲床两种类型工序，同时会产生不同的外发单价（0=激光，1=冲床）
 	 */
 	@Column(name = "sign")
-	private Integer sign ;
-	
+	private Integer sign;
+
 	/**
 	 * 保存工序类型
 	 */
 	@Column(name = "sourg")
 	private String sourg;
+	
+	/**
+	 * 工序添加人id
+	 */
+	@Column(name = "user_id")
+	private Long userId;
+
+	/**
+	 * 工序添加人
+	 */
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "user_id", referencedColumnName = "id", insertable = false, updatable = false)
+	private User user;
+
 	/**
 	 * 批次id（用于确定总数量，和任务）
 	 */
 	@Transient
 	private Long bacthId;
-	
+
 	/**
 	 * 剩余数量
 	 */
@@ -241,8 +246,5 @@ public class Procedure extends BaseEntity<Long> {
 	public void setProcedureType(BaseData procedureType) {
 		this.procedureType = procedureType;
 	}
-	
-	
-
 
 }

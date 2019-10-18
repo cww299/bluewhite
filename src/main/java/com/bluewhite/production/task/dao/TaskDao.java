@@ -6,9 +6,7 @@ import java.util.List;
 import org.springframework.data.jpa.repository.Query;
 
 import com.bluewhite.base.BaseRepository;
-import com.bluewhite.production.bacth.entity.Bacth;
 import com.bluewhite.production.task.entity.Task;
-import java.lang.String;
 
 public interface TaskDao  extends BaseRepository<Task, Long>{
 	
@@ -37,4 +35,24 @@ public interface TaskDao  extends BaseRepository<Task, Long>{
 	 * @return
 	 */
 	List<Task> findByTypeAndAllotTimeBetween(Integer type,Date startTime,Date endTime);
+	
+	/**
+	 * 根据id查询所有任务
+	 * @param userids
+	 * @param beginTime
+	 * @param endTime
+	 * @return
+	 */
+	@Query(nativeQuery=true,value ="SELECT * FROM pro_task where find_in_set(?1,ids) AND allot_time BETWEEN ?2 AND ?3")
+	List<Task> findInSetIds(String ids,Date beginTime,Date endTime);
+	
+	/**
+	 * 根据id查询所有任务
+	 * @param userids
+	 * @param beginTime
+	 * @param endTime
+	 * @return
+	 */
+	@Query(nativeQuery=true,value ="SELECT * FROM pro_task where find_in_set(?1,temporary_ids) AND allot_time BETWEEN ?2 AND ?3")
+	List<Task> findInSetTemporaryIds(String temporaryIds,Date beginTime,Date endTime);
 }

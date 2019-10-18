@@ -47,6 +47,11 @@ public class InventoryDetailServiceImpl extends BaseServiceImpl<InventoryDetail,
 				predicate.add(
 						cb.like(root.get("OfficeSupplies").get("name").as(String.class), "%" + param.getName() + "%"));
 			}
+			// 按备注过滤
+			if (!StringUtils.isEmpty(param.getRemark())) {
+				predicate.add(
+						cb.like(root.get("remark").as(String.class), "%" + param.getRemark() + "%"));
+			}
 			// 按部门
 			if (param.getOrgNameId() != null) {
 				predicate.add(cb.equal(root.get("orgNameId").as(Long.class), param.getOrgNameId()));

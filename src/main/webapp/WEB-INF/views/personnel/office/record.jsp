@@ -42,6 +42,10 @@
 									<option  value="1">入库</option>
 							</select></td>
 							<td>&nbsp;&nbsp;</td>
+							<td>备注:</td>
+							<td><input  style="width: 250px;"  name=remark placeholder="请输入备注" class="layui-input">
+							</td>
+							<td>&nbsp;&nbsp;</td>
 							<td>
 								<div class="layui-inline">
 									<button class="layui-btn layuiadmin-btn-admin" id="LAY-search5" lay-submit lay-filter="LAY-search">

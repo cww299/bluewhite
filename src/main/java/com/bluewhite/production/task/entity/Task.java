@@ -57,6 +57,18 @@ public class Task extends BaseEntity<Long> {
 	 */
 	@Column(name = "temporaryUserIds")
 	private String temporaryUserIds;
+	
+	/**
+	 * 正式员工领取记录ids
+	 */
+	@Column(name = "ids")
+	private String ids;
+
+	/**
+	 * 临时员工领取记录ids
+	 */
+	@Column(name = "temporary_ids")
+	private String temporaryIds;
 
 	/**
 	 * 产品名称
@@ -220,18 +232,6 @@ public class Task extends BaseEntity<Long> {
 	@Transient
 	private String[] temporaryUsersIds;
 	
-	/**
-	 * 领取记录ids
-	 */
-	@Transient
-	private String ids;
-
-	/**
-	 * 领取记录ids
-	 */
-	@Transient
-	private String temporaryIds;
-
 	/**
 	 * 工序ids
 	 */

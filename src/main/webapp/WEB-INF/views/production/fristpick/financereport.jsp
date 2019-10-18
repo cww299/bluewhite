@@ -659,7 +659,7 @@
 											self.loadPaginationfv(_date);
 										layer.close(index);
 										}else{
-											layer.msg("修改失败！", {icon: 2});
+											layer.msg(result.message, {icon: 2});
 											layer.close(index);
 										}
 									},error:function(){
@@ -735,7 +735,7 @@
 									that.parent().parent().find('.timePaytw').text(result.data.timePay)
 									layer.close(index);
 									}else{
-										layer.msg("修改失败！", {icon: 1});
+										layer.msg(result.message, {icon: 1});
 										layer.close(index);
 									}
 								},error:function(){
