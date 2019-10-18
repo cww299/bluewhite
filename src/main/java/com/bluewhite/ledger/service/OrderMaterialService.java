@@ -37,6 +37,13 @@ public interface OrderMaterialService extends BaseCRUDService<OrderMaterial, Lon
 	 */
 	public int deleteOrderMaterial(String ids);
 	
+	/**
+	 * 审核订单耗料
+	 * @param ids
+	 * @return
+	 */
+	public int auditOrderMaterial(String ids);
+	
 
 
 }
