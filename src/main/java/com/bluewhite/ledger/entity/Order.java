@@ -1,12 +1,16 @@
 package com.bluewhite.ledger.entity;
 
 import java.util.Date;
+import java.util.HashSet;
+import java.util.Set;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 
@@ -23,7 +27,6 @@ import com.bluewhite.product.product.entity.Product;
 @Table(name = "ledger_order")
 public class Order extends BaseEntity<Long>{
 	
-	
 	/**
 	 * 客户id
 	 * 
@@ -31,7 +34,6 @@ public class Order extends BaseEntity<Long>{
 	@Column(name = "customer_id")
 	private Long customerId;
 	
-
 	/**
 	 * 客户
 	 */
@@ -58,6 +60,12 @@ public class Order extends BaseEntity<Long>{
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "product_id", referencedColumnName = "id", insertable = false, updatable = false)
 	private Product product;
+	
+	/**
+	 * 面料的订购记录(一个订单耗料可以拥有多个采购单)
+	 */
+	@OneToMany(mappedBy = "order",cascade = CascadeType.ALL, orphanRemoval = true)
+	private Set<OrderMaterial> orderMaterials = new HashSet<OrderMaterial>();
 	
 	/**
 	 * 产品编号
@@ -141,6 +149,16 @@ public class Order extends BaseEntity<Long>{
 	
 	
 	
+	public Set<OrderMaterial> getOrderMaterials() {
+		return orderMaterials;
+	}
+
+
+	public void setOrderMaterials(Set<OrderMaterial> orderMaterials) {
+		this.orderMaterials = orderMaterials;
+	}
+
+
 	public Integer getAudit() {
 		return audit;
 	}
