@@ -56,7 +56,13 @@ public class OrderProcurement extends BaseEntity<Long> {
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "materiel_id", referencedColumnName = "id", insertable = false, updatable = false)
 	private Materiel materiel;
-
+	
+	/**
+	 * 平方克重
+	 */
+	@Column(name = "square_gram")
+    private Double SquareGram;
+	
 	/**
 	 * 下单数量
 	 */

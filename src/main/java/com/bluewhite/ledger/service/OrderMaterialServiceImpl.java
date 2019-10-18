@@ -2,7 +2,6 @@ package com.bluewhite.ledger.service;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Set;
 
 import javax.persistence.criteria.Predicate;
 
@@ -12,6 +11,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
 import com.bluewhite.base.BaseServiceImpl;
+import com.bluewhite.common.ServiceException;
 import com.bluewhite.common.entity.PageParameter;
 import com.bluewhite.common.entity.PageResult;
 import com.bluewhite.common.utils.StringUtil;
@@ -19,7 +19,6 @@ import com.bluewhite.ledger.dao.OrderDao;
 import com.bluewhite.ledger.dao.OrderMaterialDao;
 import com.bluewhite.ledger.entity.Order;
 import com.bluewhite.ledger.entity.OrderMaterial;
-import com.bluewhite.ledger.entity.OrderProcurement;
 import com.bluewhite.product.primecost.cutparts.entity.CutParts;
 import com.bluewhite.product.primecost.cutparts.service.CutPartsService;
 import com.bluewhite.product.primecost.materials.entity.ProductMaterials;
@@ -47,7 +46,7 @@ public class OrderMaterialServiceImpl extends BaseServiceImpl<OrderMaterial, Lon
 			List<Predicate> predicate = new ArrayList<>();
 			// 按订单
 			if (param.getOrderId()!=null){
-				predicate.add(cb.equal(root.get("orderId").as(Long.class),param.getOrderId()) );
+				predicate.add(cb.equal(root.get("orderId").as(Long.class),param.getOrderId()));
 			}
 			// 按产品名称
 			if (!StringUtils.isEmpty(param.getProductName())){
@@ -94,6 +93,8 @@ public class OrderMaterialServiceImpl extends BaseServiceImpl<OrderMaterial, Lon
 									orderMaterialList.add(orderMaterialComposite);
 								}
 							});
+						}else{
+							throw new ServiceException("当前产品暂无面料，请联系相关人员添加");
 						}
 						//将辅料的耗料添加
 						List<ProductMaterials> productMaterialsList = productMaterialsService.findByProductId(order.getProductId());
