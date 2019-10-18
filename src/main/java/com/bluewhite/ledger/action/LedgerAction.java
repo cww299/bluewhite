@@ -125,7 +125,8 @@ public class LedgerAction {
 						"price", "surplusNumber","orderMaterials")
 				.addRetainTerm(Customer.class, "id", "name")
 				.addRetainTerm(Product.class, "id", "name", "number")
-				.addRetainTerm(OrderMaterial.class, "order", "materiel","receiveMode","receiveUser","user", "unit","dosage","flag");
+				.addRetainTerm(OrderMaterial.class, "order", "materiel","receiveMode", "unit","dosage")
+				.addRetainTerm(Materiel.class, "id", "name","number");
 	}
 
 	private ClearCascadeJSON clearCascadeJSONMixed;
@@ -236,6 +237,7 @@ public class LedgerAction {
 
 	/**
 	 * （生产计划部）查看耗料订单
+	 * 
 	 * 
 	 * @param order
 	 * @return

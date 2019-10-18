@@ -70,6 +70,9 @@ public class OrderMaterialServiceImpl extends BaseServiceImpl<OrderMaterial, Lon
 				for (int i = 0; i < idArr.length; i++) {
 					Long id = Long.parseLong(idArr[i]);
 					Order order = orderDao.findOne(id);
+					if(order.getOrderMaterials().size()>0){
+						throw new ServiceException("第"+(i+1)+"条下单合同，已生成耗料用料，请勿多次生成");
+					}
 					if(order.getProductId()!=null){
 						//将裁片的耗料添加
 						List<CutParts> cutPartsList = cutPartsService.findByProductId(order.getProductId());
@@ -78,6 +81,7 @@ public class OrderMaterialServiceImpl extends BaseServiceImpl<OrderMaterial, Lon
 								c.setNumber(order.getNumber());
 								cutPartsService.countComposite(c);
 								OrderMaterial orderMaterial = new OrderMaterial();
+								orderMaterial.setOrderId(id);
 								orderMaterial.setMaterielId(c.getMaterielId());
 								orderMaterial.setUnitId(c.getUnitId());
 								orderMaterial.setDosage(c.getBatchMaterial());
@@ -103,6 +107,7 @@ public class OrderMaterialServiceImpl extends BaseServiceImpl<OrderMaterial, Lon
 								m.setNumber(order.getNumber());
 								productMaterialsService.countComposite(m);
 								OrderMaterial orderMaterial = new OrderMaterial();
+								orderMaterial.setOrderId(id);
 								orderMaterial.setMaterielId(m.getMaterielId());
 								orderMaterial.setUnitId(m.getUnitId());
 								orderMaterial.setDosage(m.getBatchMaterial());
