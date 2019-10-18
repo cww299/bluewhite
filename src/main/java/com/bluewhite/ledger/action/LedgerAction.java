@@ -294,7 +294,8 @@ public class LedgerAction {
 
 	
 	/**
-	 * （采购部）确认库存不足的面料采购订单
+	 * （采购部）确认库存不足的面料
+	 *        生成采购订单
 	 * 
 	 * @param order
 	 * @return

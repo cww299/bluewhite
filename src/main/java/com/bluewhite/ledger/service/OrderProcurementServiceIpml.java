@@ -51,9 +51,14 @@ public class OrderProcurementServiceIpml extends BaseServiceImpl<OrderProcuremen
 			for(String id : idStrings ){
 				Long orderMaterialId = Long.valueOf(id);
 				OrderMaterial orderMaterial = orderMaterialDao.findOne(orderMaterialId);
+				//生成采购订单
 				OrderProcurement orderProcurement = new OrderProcurement();
 				orderProcurement.setOrderMaterialId(orderMaterialId);
 				orderProcurement.setMaterielId(orderMaterial.getMaterielId());
+				
+				
+				
+				
 			}
 		}
 		return 0;

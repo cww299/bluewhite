@@ -151,7 +151,7 @@ public class FarragoTaskServiceImpl extends BaseServiceImpl<FarragoTask, Long> i
 				if (farragoTask.getId() != null) {
 					// 给予每个员工b工资
 					List<FarragoTaskPay> farragoTaskPayOneList = farragoTaskPayList.stream()
-							.filter(FarragoTaskPay -> FarragoTaskPay.getUserId().equals(userId))
+							.filter(FarragoTaskPay ->FarragoTaskPay.getUserId()!=null && FarragoTaskPay.getUserId().equals(userId))
 							.collect(Collectors.toList());
 					if (farragoTaskPayOneList.size() > 0) {
 						farragoTaskPay = farragoTaskPayOneList.get(0);
@@ -189,7 +189,7 @@ public class FarragoTaskServiceImpl extends BaseServiceImpl<FarragoTask, Long> i
 				if (farragoTask.getId() != null) {
 					// 给予每个员工b工资
 					List<FarragoTaskPay> farragoTaskPayOneList = farragoTaskPayList.stream()
-							.filter(FarragoTaskPay -> FarragoTaskPay.getTemporaryUserId().equals(id))
+							.filter(FarragoTaskPay -> FarragoTaskPay.getTemporaryUserId()!=null &&  FarragoTaskPay.getTemporaryUserId().equals(id))
 							.collect(Collectors.toList());
 					if (farragoTaskPayOneList.size() > 0) {
 						farragoTaskPay = farragoTaskPayOneList.get(0);
