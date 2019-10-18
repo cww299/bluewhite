@@ -145,10 +145,9 @@
 layui.config({
 	base : '${ctx}/static/layui-v2.4.5/'
 }).extend({
-	tablePlug : 'tablePlug/tablePlug',
-	myutil : 'layui/myModules/myutil',
+	mytable : 'layui/myModules/mytable',
 }).define(
-	['tablePlug','myutil','laydate'],
+	['mytable','laydate'],
 	function(){
 		var $ = layui.jquery
 		, layer = layui.layer 				
@@ -157,7 +156,7 @@ layui.config({
 		, laydate = layui.laydate
 		, laytpl = layui.laytpl
 		, myutil = layui.myutil
-		, tablePlug = layui.tablePlug;
+		, mytable = layui.mytable;
 		myutil.config.ctx = '${ctx}';
 		myutil.clickTr();
 		//myutil.config.msgOffset = '150px';
@@ -209,7 +208,18 @@ layui.config({
 			case 'productUseup': productUseup(); break;
 			} 
 		})
+		var mode = [];
 		function lookoverUseup(){
+			if(mode.length==0){
+				mode = myutil.getDataSync({ url: '${ctx}/product/getBaseOne?type=overstock' });
+				myutil.getDataSync({ 
+					url: '${ctx}/product/getBaseOne?type=tailor',
+					success:function(d){
+						for(var i in d)
+							mode.push(d[i]);
+					}
+				});
+			}
 			var checked = layui.table.checkStatus('tableAgreement').data;
 			if(checked.length!=1)
 				return myutil.esmg('只能查看一条信息');
@@ -221,29 +231,44 @@ layui.config({
 				         	'<table id="lookoverTable" lay-filter="lookoverTable"><table>',
 				         '</div>',
 				         ].join(' '),
-				area:['50%','50%'],
+				area:['80%','80%'],
+				shadeClose:true,
 				success:function(){
-					table.render({
+					mytable.render({
 						elem:'#lookoverTable',
-						data:[],
-						toolbar:'<div><span class="layui-btn layui-btn-sm layui-btn-danger" lay-event="deleteLook">删除</span></div>',
+						url:'${ctx}/ledger/getOrderMaterial?orderId='+checked[0].id,
+						toolbar:'<span class="layui-btn layui-btn-sm" lay-event="onekey">一键审核</span>',
+						size:'lg',
+						limit:15,
+						limits:[10,15,20,50,],
+						curd:{
+							btn:[4],
+							otherBtn:function(obj){
+								if(obj.event=="onekey"){
+									myutil.deleTableIds({
+										url:'/ledger/auditOrderMaterial',
+										table:'lookoverTable',
+										text:'请选择相关信息|是否确认？',
+									})
+								}
+							}
+						},
+						autoUpdate:{
+							isReload:true,
+							deleUrl:'/ledger/deleteOrderMaterial',
+							updateUrl:'/ledger/updateOrderMaterial',
+							field:{
+								receiveMode_id:'receiveModeId',
+							},
+						},
 						cols:[[
 							   { type:'checkbox', },
-						       { align:'center', title:'物料名',   field:'materiel_name',	},
-						       { align:'center', title:'单位',   field:'unit',   },
-						       { align:'center', title:'领取用量',   field:'dosage', 	},
-						       { align:'center', title:'领取模式',   field:'receiveMode',	},
+						       { title:'物料名',   field:'materiel_name', },
+						       { title:'单位',   field:'unit_name',  },
+						       { title:'领取用量',   field:'dosage', 	},
+						       { title:'领取模式',   field:'receiveMode_id', type:'select', select:{ data:mode },	},
+						       { title:'审核状态', field:'audit', transData:{ data:['未审核','审核'] }},
 						       ]],
-						 done:function(){
-							 table.on('toolbar(lookoverTable)',function(obj){
-								 if(obj.event=='deleteLook'){
-									 myutil.deleTableIds({
-											url:'/ledger/deleteOrderMaterial',
-											table:'lookoverTable',
-										})
-								 }
-							 })
-						 }
 					})
 				},
 			})
@@ -253,12 +278,6 @@ layui.config({
 				url:'/ledger/confirmOrderMaterial',
 				table:'tableAgreement',
 				text:'请选择相关信息|是否确认生成耗料表',
-				verify:function(choosed){
-					for(var i in choosed){
-						if(choosed[i].orderMaterials.length>0)
-							return choosed[i].product.name+'已经生成耗料表，不能重复生产';
-					}
-				}
 			})
 		}
 		function add(){
