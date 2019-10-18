@@ -321,14 +321,13 @@ public class LedgerAction {
 	 *        1.自动生成带克重的新物料编号
 	 *        填写了平方克重 （ 面料-“花2大”119{平方克重:190克}）
 	 *        2.自动生成新物料编号 （辅料-“花1大”54）
-	 *        
 	 * @return
 	 */
 	@RequestMapping(value = "/ledger/confirmOrderProcurement", method = RequestMethod.POST)
 	@ResponseBody
 	public CommonResponse confirmOrderProcurement(OrderProcurement orderProcurement) {
 		CommonResponse cr = new CommonResponse();
-		orderProcurementService.save(orderProcurement);
+		orderProcurementService.saveOrderProcurement(orderProcurement);
 		cr.setMessage("新增采购订单成功");
 		return cr;
 	}
@@ -346,13 +345,11 @@ public class LedgerAction {
 		
 		
 		
+		
+		
+		
 		return cr;
 	}
-	
-	
-	
-	
-	
 	
 	
 	
