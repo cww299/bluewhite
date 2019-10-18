@@ -113,13 +113,37 @@ layui.config({
 	
 	Class.prototype.render = function(opt){
 		var isSmall = false;
-		var allProcedure = [],allUser = [];
-		myutil.getData({
+		var allProcedure = [],allUser = [],allGroup = [],nullGroupUser = [],nullProcedure = [{id:-1,name:'全部',children:[]}];
+		myutil.getData({		//获取所有工序
 			url:opt.ctx+'/basedata/list?type='+baseType[opt.type],
 			success: function(d){
 				allProcedure = d;
+				for(var i in allProcedure){
+					nullProcedure[0].children.push({
+						id:-1,
+						name:allProcedure[i].name,
+						children:[
+						          	{id:-1,name:'<span style="color:gray;">获取数据中.....</span>',}
+						          ]
+					})
+				}
 			}
 		});
+		myutil.getData({	//获取所有分组
+			url: opt.ctx+'/production/getGroup?type='+opt.type,
+			success:function(d){
+				allGroup = d;
+				for(var i in allGroup){
+					nullGroupUser.push({
+						id:-1,
+						name:allGroup[i].name,
+						children:[
+						   {id:-1,name:'<span style="color:gray;">获取数据中.....</span>',}
+						],
+					})
+				}
+			},
+		})
 		laytpl(TPL_MAIN).render({},function(h){
 			$(opt.elem).append(h);
 			if($('#isSmallScreen').css('display')=='none')
@@ -248,7 +272,6 @@ layui.config({
 				})
 				var now = myutil.getSubDay( isSmall ? 0 : 1,'yyyy-MM-dd' );
 				var procedureTree = [];
-				getAllProcedureTree();
 				var area = isSmall?['100%','80%']:['60%','80%'];
 				var allotWin = layer.open({		//分配弹窗
 					type:1,
@@ -259,21 +282,17 @@ layui.config({
 					btn:['确定','取消'],
 					btnAlign: 'c',
 					success:function(){
-						getUserData(now+' 00:00:00');
 						laydate.render({
 							elem:'#allotTime',
 							value:now,
 							type:'date',
 							done: function(value){
 								getUserData(value+' 00:00:00');
-								menuTree.reload('userTree',{
-									data: allUser,
-								})
 							}
 						});
 						menuTree.render({				
 				    	  elem:'#userTree',
-				    	  data : allUser,
+				    	  data : nullGroupUser,
 				    	  done: function(value){
 				    		  $('#userTree').val(value);
 				    		  if(opt.type==3){	//如果是针工默认展开 充棉和翻皮
@@ -306,54 +325,59 @@ layui.config({
 				    		  }
 				    	  }
 						})
-						var checked = [];
-						if(opt.type==2){	//如果是包装，默认选中包装工序的全部，除去上车
-							var t = procedureTree[0].children;
-							for(var i in t){
-								if(t[i].name=='包装'){
-									var card = [],noCard = [],choosedNoCard = true;
-									for(var k in t[i].children){
-										if(t[i].children[k].name.indexOf('上车')<0){
-											if(t[i].children[k].number!=0)		//如果有剩余数量不为0，则选择非上车的
-												choosedNoCard = false;
-											card.push(t[i].children[k].id);
-										}else{
-											if(t[i].children[k].number!=0)
-												noCard.push(t[i].children[k].id);
-										}
-									}
-									checked = choosedNoCard?noCard:card;
-								}
-							}
-						}
-						menuTree.render({				
+						var num = 0; //用来判断第几次进入
+						menuTree.render({		
 				    	  elem:'#procedureTree',
-				    	  data : procedureTree,
+				    	  data : nullProcedure,
 				    	  toolbar: [],
 				    	  otherToolbar: opt.type==1?'<input type="text" style="display:none;">':'',
 				    	  toolShow:true,
 		    			  hide: false,
-		    			  checked: checked,
+		    			  /*checked: checked,*/
 		    			  done:function(){
-		    				layui.each($('.procedureDiv').find('.layui-tree-grade').find('span'),function(index,item){
-		    					var text = $(item).html().split(' ');
-		    					if(text[0]=='贴破洞'){
-		    						$(item).parent().find('.menuControl').find('input').addClass('tiepodongNumber');
-		    						$('.tiepodongNumber').on('change',function(obj){
-		    							var val = $(obj.target).val().trim();
-		    							if(val=='')
-		    								val = 0;
-		    							if(isNaN(val)){
-		    								myutil.emsg('贴破洞数量只能为数字！');
-		    							}if(val%1!=0){
-		    								myutil.emsg('贴破洞数量只能为整数！');
-		    							}else{
-		    								tiepidongNumber = parseInt(val);
-		    							}
-		    							$(obj.target).val(tiepidongNumber)
-		    						})
-		    					}
-		    				})  
+		    				  num++;
+		    				  var checked = [];
+								if(opt.type==2 && num==2 && procedureTree.length>0){	//如果是包装，默认选中包装工序的全部，除去上车
+									var t = procedureTree[0].children;
+									for(var i in t){
+										if(t[i].name=='包装'){
+											var card = [],noCard = [],choosedNoCard = true;
+											for(var k in t[i].children){
+												if(t[i].children[k].name.indexOf('上车')<0){
+													if(t[i].children[k].number!=0)		//如果有剩余数量不为0，则选择非上车的
+														choosedNoCard = false;
+													card.push(t[i].children[k].id);
+												}else{
+													if(t[i].children[k].number!=0)
+														noCard.push(t[i].children[k].id);
+												}
+											}
+											checked = choosedNoCard?noCard:card;
+										}
+									}
+									menuTree.reload('procedureTree',{
+										checked:checked,
+									})
+								}
+			    				layui.each($('.procedureDiv').find('.layui-tree-grade').find('span'),function(index,item){
+			    					var text = $(item).html().split(' ');
+			    					if(text[0]=='贴破洞'){
+			    						$(item).parent().find('.menuControl').find('input').addClass('tiepodongNumber');
+			    						$('.tiepodongNumber').on('change',function(obj){
+			    							var val = $(obj.target).val().trim();
+			    							if(val=='')
+			    								val = 0;
+			    							if(isNaN(val)){
+			    								myutil.emsg('贴破洞数量只能为数字！');
+			    							}if(val%1!=0){
+			    								myutil.emsg('贴破洞数量只能为整数！');
+			    							}else{
+			    								tiepidongNumber = parseInt(val);
+			    							}
+			    							$(obj.target).val(tiepidongNumber)
+			    						})
+			    					}
+			    				})  
 		    			  },
 				    	  showName: function(data){
 				    		  if(isNaN(data.number))
@@ -365,6 +389,8 @@ layui.config({
 						if(opt.type==1 || opt.type==2){
 							$('#number').val(trData.number);
 						}
+						getAllProcedureTree();
+						getUserData(now+' 00:00:00');
 						form.render();
 					},
 					yes:function(){
@@ -465,7 +491,6 @@ layui.config({
 							var da = { id:-1, name:name, children:[] }
 							$.ajax({
 								url: opt.ctx+'/production/typeToProcedure',
-								async: false,
 								data: {
 									productId: trData.product.id,
 									bacthId: trData.id,
@@ -483,6 +508,11 @@ layui.config({
 											})
 										}
 										procedureTree[0].children.push(da);
+										if(procedureTree[0].children.length==allProcedure.length){
+											menuTree.reload('procedureTree',{
+												data: procedureTree,
+											})
+										}
 									}
 								}
 							})
@@ -620,55 +650,54 @@ layui.config({
 				return d[field]?d[field].toFixed(number):'---';
 			}
 		}
-		function getUserData(day){
+		function getUserData(day){ //获取所有分组用户的树形结构数据
 			allUser = [];
-			myutil.getDataSync({	//获取所有分组用户的树形结构数据
-				url: opt.ctx+'/production/getGroup?type='+opt.type,
-				success:function(allGroup){
-					for(var k in allGroup){
-						(function(name){
-							$.ajax({
-								url: opt.ctx+'/production/allGroup',
-								async: false,
-								data:{
-									id: allGroup[k].id,
-									type: opt.type,
-									temporarilyDate: day,
-								},
-								success:function(r){
-									if(r.code==0){
-										var groupPeople = r.data;
-										var data = {
-												id:-1,
-												name: name,
-												children:[]
-										};
-										if(groupPeople.temporarilyUser && groupPeople.temporarilyUser.length>0){
-											var t = groupPeople.temporarilyUser;
-											for(var k in t)
-												if(t[k].status==1)
-													data.children.push({
-														id: 't-'+t[k].id+'~'+t[k].userId,
-														name: t[k].name+' ---- <span class="layui-badge">临</span>',
-													});
-										}
-										if(groupPeople.userList && groupPeople.userList.length>0){
-											var t = groupPeople.userList;
-											for(var k in t)
-												if(t[k].status==1)
-													data.children.push({
-														id: t[k].id+'~'+t[k].userId,
-														name: t[k].name+' ---- <span class="layui-badge layui-bg-green">正</span>',
-													})
-										}
-										allUser.push(data);
-									}
+			for(var k in allGroup){
+				(function(name){
+					$.ajax({
+						url: opt.ctx+'/production/allGroup',
+						data:{
+							id: allGroup[k].id,
+							type: opt.type,
+							temporarilyDate: day,
+						},
+						success:function(r){
+							if(r.code==0){
+								var groupPeople = r.data;
+								var data = {
+										id:-1,
+										name: name,
+										children:[]
+								};
+								if(groupPeople.temporarilyUser && groupPeople.temporarilyUser.length>0){
+									var t = groupPeople.temporarilyUser;
+									for(var k in t)
+										if(t[k].status==1)
+											data.children.push({
+												id: 't-'+t[k].id+'~'+t[k].userId,
+												name: t[k].name+' ---- <span class="layui-badge">临</span>',
+											});
 								}
-							})
-						})(allGroup[k].name);
-					}
-				}
-			});
+								if(groupPeople.userList && groupPeople.userList.length>0){
+									var t = groupPeople.userList;
+									for(var k in t)
+										if(t[k].status==1)
+											data.children.push({
+												id: t[k].id+'~'+t[k].userId,
+												name: t[k].name+' ---- <span class="layui-badge layui-bg-green">正</span>',
+											})
+								}
+								allUser.push(data);
+								if(allUser.length==allGroup.length){
+									menuTree.reload('userTree',{
+										data: allUser,
+									})
+								}
+							}
+						}
+					})
+				})(allGroup[k].name);
+			}
 		}
 	}//end render
 	bacthManager.render = function(opt){
