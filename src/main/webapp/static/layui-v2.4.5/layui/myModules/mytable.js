@@ -421,6 +421,7 @@ layui.extend({
 									ids: ids,
 									success:function(){
 										table.reload(tableId);
+										opt.autoUpdate.success && opt.autoUpdate.success();
 									},
 								})
 						})
