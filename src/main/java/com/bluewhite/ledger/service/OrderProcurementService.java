@@ -23,5 +23,11 @@ public interface OrderProcurementService extends BaseCRUDService<OrderProcuremen
 	 * @return
 	 */
 	public int confirmOrderProcurement(OrderProcurement orderProcurement);
+	
+	/**
+	 * 新增采购单
+	 * @param orderProcurement
+	 */
+	public void saveOrderProcurement(OrderProcurement orderProcurement);
 
 }

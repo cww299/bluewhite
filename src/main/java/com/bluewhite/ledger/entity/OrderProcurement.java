@@ -26,7 +26,7 @@ import com.bluewhite.system.user.entity.User;
 public class OrderProcurement extends BaseEntity<Long> {
 
 	/**
-	 * 采购单编号(批次+产品名称+物料名称+订货客户名称)
+	 * 采购单编号(批次+产品名称+物料名称+订货客户名称生成的新编号)
 	 */
 	@Column(name = "order_procurement_number")
 	private String orderProcurementNumber;
@@ -61,7 +61,7 @@ public class OrderProcurement extends BaseEntity<Long> {
 	 * 平方克重
 	 */
 	@Column(name = "square_gram")
-    private Double SquareGram;
+    private Double squareGram;
 	
 	/**
 	 * 下单数量
@@ -74,6 +74,12 @@ public class OrderProcurement extends BaseEntity<Long> {
 	 */
 	@Column(name = "place_order_time")
 	private Date placeOrderTime;
+	
+	/**
+	 * 预计到货日期
+	 */
+	@Column(name = "expect_arrival_time")
+	private Date expectArrivalTime;  
 
 	/**
 	 * 到货日期
@@ -115,7 +121,6 @@ public class OrderProcurement extends BaseEntity<Long> {
 	@JoinColumn(name = "user_id", referencedColumnName = "id", insertable = false, updatable = false)
 	private User user;
 
-	
 	/**
 	 * 库位
 	 * 
@@ -128,6 +133,12 @@ public class OrderProcurement extends BaseEntity<Long> {
      */
 	@Column(name = "price")
     private Double price;
+	
+	/**
+	 * 根据客户来的新编号
+	 */
+	@Column(name = "new_code")
+	private String newCode;
 	
 
 	/**
@@ -150,6 +161,32 @@ public class OrderProcurement extends BaseEntity<Long> {
 	
 
 	
+	
+
+	public String getNewCode() {
+		return newCode;
+	}
+
+	public void setNewCode(String newCode) {
+		this.newCode = newCode;
+	}
+
+	public Double getSquareGram() {
+		return squareGram;
+	}
+
+	public void setSquareGram(Double squareGram) {
+		this.squareGram = squareGram;
+	}
+
+	public Date getExpectArrivalTime() {
+		return expectArrivalTime;
+	}
+
+	public void setExpectArrivalTime(Date expectArrivalTime) {
+		this.expectArrivalTime = expectArrivalTime;
+	}
+
 	public String getProductName() {
 		return productName;
 	}
