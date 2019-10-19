@@ -43,7 +43,7 @@ public class OrderProcurementServiceIpml extends BaseServiceImpl<OrderProcuremen
 			}
 			// 按合同id
 			if (param.getOrderId()!=null){
-				predicate.add(cb.equal(root.get("orderMaterial").get("orderId").as(Long.class),param.getProductName()));
+				predicate.add(cb.equal(root.get("orderMaterial").get("orderId").as(Long.class),param.getOrderId()));
 			}
 			Predicate[] pre = new Predicate[predicate.size()];
 			query.where(predicate.toArray(pre));
@@ -89,7 +89,7 @@ public class OrderProcurementServiceIpml extends BaseServiceImpl<OrderProcuremen
 					Long id = Long.parseLong(idArr[i]);
 					List<ScatteredOutbound> scatteredOutboundList = scatteredOutboundDao.findByOrderProcurementId(id);
 					if(scatteredOutboundList.size()>0){
-						throw new ServiceException("当前批次采购单已有出库记录，无法修改");
+						throw new ServiceException("当前批次采购单已有出库记录，无法删除");
 					}
 					delete(id);
 					count++;
