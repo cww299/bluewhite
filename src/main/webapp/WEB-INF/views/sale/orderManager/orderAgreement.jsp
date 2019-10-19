@@ -29,6 +29,12 @@
 				<td>下单时间：</td>
 				<td><input type="text" class="layui-input" id="searchTime"></td>
 				<td>&nbsp;&nbsp;&nbsp;</td>
+				<td>产品名：</td>
+				<td><input type="text" class="layui-input" name="productName"></td>
+				<td>&nbsp;&nbsp;&nbsp;</td>
+				<td>产品编号：</td>
+				<td><input type="text" class="layui-input" name="productNumber"></td>
+				<td>&nbsp;&nbsp;&nbsp;</td>
 				<td><button type="button" class="layui-btn layui-btn-sm" lay-submit lay-filter="search">搜索</button></td>
 			</tr>
 		</table>
@@ -126,9 +132,11 @@
 <!-- 表格工具栏模板 -->
 <script type="text/html" id="agreementToolbar">
 <div>
-	<span lay-event="add"  class="layui-btn layui-btn-sm" >新增</span>
-	<span lay-event="delete"  class="layui-btn layui-btn-sm layui-btn-danger" >删除</span>
-	<span lay-event="update"  class="layui-btn layui-btn-sm" >修改</span>
+	<span lay-event="add"  class="layui-btn layui-btn-sm" >新增合同</span>
+	<span lay-event="delete"  class="layui-btn layui-btn-sm layui-btn-danger" >删除合同</span>
+	<span lay-event="update"  class="layui-btn layui-btn-sm" >修改合同</span>
+	<span lay-event="productUseup"  class="layui-btn layui-btn-sm layui-btn-normal" >生成耗料订单</span>
+	<span lay-event="lookoverUseup"  class="layui-btn layui-btn-sm" >查看耗料订单</span>
 </div>
 </script>
 <!-- 表格工具栏模板 -->
@@ -143,10 +151,9 @@
 layui.config({
 	base : '${ctx}/static/layui-v2.4.5/'
 }).extend({
-	tablePlug : 'tablePlug/tablePlug',
-	myutil : 'layui/myModules/myutil',
+	mytable : 'layui/myModules/mytable',
 }).define(
-	['tablePlug','myutil','laydate'],
+	['mytable','laydate'],
 	function(){
 		var $ = layui.jquery
 		, layer = layui.layer 				
@@ -155,7 +162,7 @@ layui.config({
 		, laydate = layui.laydate
 		, laytpl = layui.laytpl
 		, myutil = layui.myutil
-		, tablePlug = layui.tablePlug;
+		, mytable = layui.mytable;
 		myutil.config.ctx = '${ctx}';
 		myutil.clickTr();
 		//myutil.config.msgOffset = '150px';
@@ -203,8 +210,82 @@ layui.config({
 			case 'add':		add();		break;
 			case 'update':	edit(); 	break;
 			case 'delete':	deletes();			break;
+			case 'lookoverUseup': lookoverUseup(); break;
+			case 'productUseup': productUseup(); break;
 			} 
 		})
+		var mode = [];
+		function lookoverUseup(){
+			if(mode.length==0){
+				mode = myutil.getDataSync({ url: '${ctx}/product/getBaseOne?type=overstock' });
+				myutil.getDataSync({ 
+					url: '${ctx}/product/getBaseOne?type=tailor',
+					success:function(d){
+						for(var i in d)
+							mode.push(d[i]);
+					}
+				});
+			}
+			var checked = layui.table.checkStatus('tableAgreement').data;
+			if(checked.length!=1)
+				return myutil.esmg('只能查看一条信息');
+			layer.open({
+				type:1,
+				title:'耗料订单',
+				content:[
+				         '<div style="padding:10px;">',
+				         	'<table id="lookoverTable" lay-filter="lookoverTable"><table>',
+				         '</div>',
+				         ].join(' '),
+				area:['80%','80%'],
+				shadeClose:true,
+				success:function(){
+					mytable.render({
+						elem:'#lookoverTable',
+						url:'${ctx}/ledger/getOrderMaterial?orderId='+checked[0].id,
+						toolbar:'<span class="layui-btn layui-btn-sm" lay-event="onekey">一键审核</span>',
+						size:'lg',
+						limit:15,
+						limits:[10,15,20,50,],
+						curd:{
+							btn:[4],
+							otherBtn:function(obj){
+								if(obj.event=="onekey"){
+									myutil.deleTableIds({
+										url:'/ledger/auditOrderMaterial',
+										table:'lookoverTable',
+										text:'请选择相关信息|是否确认？',
+									})
+								}
+							}
+						},
+						autoUpdate:{
+							isReload:true,
+							deleUrl:'/ledger/deleteOrderMaterial',
+							updateUrl:'/ledger/updateOrderMaterial',
+							field:{
+								receiveMode_id:'receiveModeId',
+							},
+						},
+						cols:[[
+							   { type:'checkbox', },
+						       { title:'物料名',   field:'materiel_name', },
+						       { title:'单位',   field:'unit_name',  },
+						       { title:'领取用量',   field:'dosage', 	},
+						       { title:'领取模式',   field:'receiveMode_id', type:'select', select:{ data:mode },	},
+						       { title:'审核状态', field:'audit', transData:{ data:['未审核','审核'] }},
+						       ]],
+					})
+				},
+			})
+		}
+		function productUseup(){
+			myutil.deleTableIds({
+				url:'/ledger/confirmOrderMaterial',
+				table:'tableAgreement',
+				text:'请选择相关信息|是否确认生成耗料表',
+			})
+		}
 		function add(){
 			var productList = [];	//记录复选框选中的值，用于回显复选框选中
 			var defaultTime = '', defaultRemark = '';
