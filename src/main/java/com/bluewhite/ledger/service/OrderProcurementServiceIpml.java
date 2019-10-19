@@ -65,4 +65,9 @@ public class OrderProcurementServiceIpml extends BaseServiceImpl<OrderProcuremen
 		dao.save(orderProcurement);
 	}
 
+	@Override
+	public int deleteOrderProcurement(String ids) {
+		return delete(ids);
+	}
+
 }

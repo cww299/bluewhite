@@ -336,6 +336,21 @@ public class LedgerAction {
 	
 	
 	/**
+	 * （生产计划部）删除采购单
+	 * 
+	 * @param order
+	 * @return
+	 */
+	@RequestMapping(value = "/ledger/deleteOrderProcurement", method = RequestMethod.GET)
+	@ResponseBody
+	public CommonResponse deleteOrderProcurement(String ids) {
+		CommonResponse cr = new CommonResponse();
+		int count = orderProcurementService.deleteOrderProcurement(ids);
+		cr.setMessage("成功删除" + count + "条采购单");
+		return cr;
+	}
+	
+	/**
 	 * （采购部）将所有已有库存的耗料表生成分散出库记录
 	 *        
 	 * @return
