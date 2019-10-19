@@ -298,14 +298,15 @@ layui.config({
 						var orderId = $('#orderIdSelect').val();
 						if(!orderId)
 							return myutil.emsg('请选择合同');
-						layer.open({
+						var allWin = layer.open({
 							title:'采购汇总',
+							type:1,
 							area:['90%','90%'],
-							shadeClose: true,
-							content:'<div><table id="allTable" lay-filter="allTable"></table></div>',
+							content:'<table id="allTable" lay-filter="allTable"></table>',
 							success:function(){
 								mytable.render({
 									elem: '#allTable',
+									colsWidth:[0,13,0,6,6,6,8,13],
 									url: '${ctx}/ledger/getOrderProcurement?orderId='+orderId,
 									curd:{
 										btn:[4],
@@ -314,13 +315,14 @@ layui.config({
 										deleUrl:'/ledger/deleteOrderProcurement',
 									},
 									cols:[[
-									       { title:'下单日期', field:'', type:'placeOrderTime', },
+										   { type:'checkbox' },
+									       { title:'下单日期', field:'placeOrderTime', },
+									       { title:'采购编号', field:'orderProcurementNumber', },
 									       { title:'采购数量', field:'placeOrderNumber', },
 									       { title:'预计价格', field:'price', },
-									       { title:'订购人', field:'user_id', type:'select', select:{ data:allUser, }, },
-									       { title:'采购编号', field:'orderProcurementNumber', },
-									       { title:'供应商', field:'customer_id', type:'select', select:{ data:allCustom, },},
-									       { title:'预计到货', field:'expectArrivalTime', type:'datetime', },
+									       { title:'订购人', field:'user_userName', },
+									       { title:'供应商', field:'customer_name', },
+									       { title:'预计到货', field:'expectArrivalTime',},
 									       ]]
 								})
 							}
