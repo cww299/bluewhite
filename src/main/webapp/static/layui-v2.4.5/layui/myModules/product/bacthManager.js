@@ -415,32 +415,30 @@ layui.config({
 							layer.close(load);
 							return myutil.emsg(msg);
 						}
-						for(var i in userTreeId){	
-							if(!isNaN(userTreeId[i])){	//区分是否为临时员工,临时员工的id： t-id~userId
-								if(userTreeId[i].indexOf('-')>0){
-									var t = userTreeId[i].split('-')[1].split('~');
-									temporaryIds.push(t[0]);
-									temporaryUserIds.push(t[1]);
-								}else{
-									var t = userTreeId[i].split('~');
-									ids.push(t[0]);
-									userIds.push(t[1]);
-								}
+						for(var i in userTreeId){	//区分是否为临时员工,临时员工的id： t-id~userId
+							if(userTreeId[i].indexOf('-')>0){
+								var t = userTreeId[i].split('-')[1].split('~');
+								if(t.length==1)
+									continue;
+								temporaryIds.push(t[0]);
+								temporaryUserIds.push(t[1]);
+							}else{
+								var t = userTreeId[i].split('~');
+								ids.push(t[0]);
+								userIds.push(t[1]);
 							}
 						}
 						for(var i in procedureTreeId){
-							if(!isNaN(procedureTreeId[i])){	
-								var id = procedureTreeId[i].split('-');
-								if(id[1]==0){
-									layer.close(load);
-									return myutil.emsg('选择的工序剩余数量不能为0');
-								}
-								if(id[1]-$('#number').val()<0){
-									layer.close(load);
-									return myutil.emsg('任务分配数量不能大于选择的工序剩余数量');
-								}
-								procedureIds.push(id[0]);
+							var id = procedureTreeId[i].split('-');
+							if(id[1]==0){
+								layer.close(load);
+								return myutil.emsg('选择的工序剩余数量不能为0');
 							}
+							if(id[1]-$('#number').val()<0){
+								layer.close(load);
+								return myutil.emsg('任务分配数量不能大于选择的工序剩余数量');
+							}
+							procedureIds.push(id[0]);
 						}
 						var saveData = {
 								type: opt.type,

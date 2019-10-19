@@ -195,9 +195,15 @@ layui.config({
 			})
 		}
 		form.on('select(agreementSelect)',function(obj){
-			table.reload('tableData',{
-				url:'${ctx}/ledger/getOrderMaterial?orderId='+obj.value,//&audit=1
-			})
+			if(obj.value!='')
+				table.reload('tableData',{
+					url:'${ctx}/ledger/getOrderMaterial?&orderId='+obj.value,//audit=1
+				})
+			else
+				table.reload('tableData',{
+					data:[],
+					url:'',
+				})
 		})
 		var tipProcurement = '', tipInventory = ''; 
 		$(document).on('mousedown', '', function (event) { //关闭提示窗
@@ -222,7 +228,7 @@ layui.config({
 			       { title:'用量',   field:'dosage',	},
 			       { title:'库存状态',   field:'state', transData:{ data:['-','库存充足','无库存','有库存量不足'],text:'未知' },	},
 			       { title:'库存数量',   field:'',	},
-			       { title:'是否采购',   field:'orderProcurements',	templet: '#procurementTpl', },
+			       { title:'是否采购',   field:'orderProcurements',	templet: '#procurementTpl', filter:true,},
 			       ]],
 			done:function(){
 				layui.each($('td[data-field=""]'),function(index,item){
@@ -292,23 +298,31 @@ layui.config({
 						var orderId = $('#orderIdSelect').val();
 						if(!orderId)
 							return myutil.emsg('请选择合同');
-						layer.open({
-							tyoe:1,
+						var allWin = layer.open({
 							title:'采购汇总',
+							type:1,
 							area:['90%','90%'],
-							content:'<div><table id="allTable" lay-filter="allTable"></table></div>',
+							content:'<table id="allTable" lay-filter="allTable"></table>',
 							success:function(){
 								mytable.render({
 									elem: '#allTable',
-									url: '/ledger/getOrderProcurement?orderId='+orderId,
+									colsWidth:[0,13,0,6,6,6,8,13],
+									url: '${ctx}/ledger/getOrderProcurement?orderId='+orderId,
+									curd:{
+										btn:[4],
+									},
+									autoUpdate:{
+										deleUrl:'/ledger/deleteOrderProcurement',
+									},
 									cols:[[
-									       { title:'下单日期', field:'', type:'placeOrderTime', },
+										   { type:'checkbox' },
+									       { title:'下单日期', field:'placeOrderTime', },
+									       { title:'采购编号', field:'orderProcurementNumber', },
 									       { title:'采购数量', field:'placeOrderNumber', },
 									       { title:'预计价格', field:'price', },
-									       { title:'订购人', field:'user_id', type:'select', select:{ data:allUser, }, },
-									       { title:'采购编号', field:'orderProcurementNumber', },
-									       { title:'供应商', field:'customer_id', type:'select', select:{ data:allCustom, },},
-									       { title:'预计到货', field:'expectArrivalTime', type:'datetime', },
+									       { title:'订购人', field:'user_userName', },
+									       { title:'供应商', field:'customer_name', },
+									       { title:'预计到货', field:'expectArrivalTime',},
 									       ]]
 								})
 							}
@@ -349,8 +363,8 @@ layui.config({
 					if(addOrEdit=='edit'){
 						var d = data.orderProcurements[0];
 						str = type+'- “'+d.customer.name+'“ '+number+' ';
-						if(data.squareGram)//如果有平方克重、再单独添加
-							str += '{ 平方克重:'+data.squareGram+'克 }';
+						if(d.squareGram)//如果有平方克重、再单独添加
+							str += '{ 平方克重:'+d.squareGram+'克 }';
 						//设置下拉框、输入框数据
 						$('#addEditId').val(d.id);
 						$('#supplierSelect').val(d.customer.id);
@@ -358,7 +372,7 @@ layui.config({
 						$('#placeOrderTime').val(d.placeOrderTime);
 						$('#placeOrderNumber').val(d.placeOrderNumber);
 						$('#addEditPrice').val(d.price);
-						$('#areaG').val();
+						$('#areaG').val(d.squareGram);
 						$('#comeDate').val(d.expectArrivalTime);
 					}
 					$('#autoNumber').val(str);
