@@ -2,6 +2,7 @@ package com.bluewhite.ledger.service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import javax.persistence.criteria.Predicate;
 
@@ -65,6 +66,10 @@ public class OrderMaterialServiceImpl extends BaseServiceImpl<OrderMaterial, Lon
 			return null;
 		}, page);
 		pages.getContent().stream().forEach(ot -> {
+			//过滤掉已经耗尽的物料采购单
+			ot.getMateriel().setOrderProcurements(
+					ot.getMateriel().getOrderProcurements().stream().filter(OrderProcurement->OrderProcurement.getUseUp()!=1).collect(Collectors.toSet())
+			);
 			// 审核时获取采购单的库存的剩余，进行库存状态的判断，以及有库存的直接生成库存分散单
 			double number = ot.getMateriel().getInventoryNumber()==null ? 0 : ot.getMateriel().getInventoryNumber();
 			// 库存充足
