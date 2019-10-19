@@ -97,9 +97,9 @@
 </div>
 </body>
 <script type="text/html" id="procurementTpl">
- {{# var color = 'gray',text="否"; 
+ {{# var color = 'blue',text="否"; 
      if(d.orderProcurements.length>0){
-        color='blue'; text = '是';
+        color=''; text = '是';
      }
  }}
  <span class="layui-badge layui-bg-{{color}}">{{ text }}</span>
