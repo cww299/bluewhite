@@ -349,8 +349,8 @@ layui.config({
 					if(addOrEdit=='edit'){
 						var d = data.orderProcurements[0];
 						str = type+'- “'+d.customer.name+'“ '+number+' ';
-						if(data.squareGram)//如果有平方克重、再单独添加
-							str += '{ 平方克重:'+data.squareGram+'克 }';
+						if(d.squareGram)//如果有平方克重、再单独添加
+							str += '{ 平方克重:'+d.squareGram+'克 }';
 						//设置下拉框、输入框数据
 						$('#addEditId').val(d.id);
 						$('#supplierSelect').val(d.customer.id);
@@ -358,7 +358,7 @@ layui.config({
 						$('#placeOrderTime').val(d.placeOrderTime);
 						$('#placeOrderNumber').val(d.placeOrderNumber);
 						$('#addEditPrice').val(d.price);
-						$('#areaG').val();
+						$('#areaG').val(d.squareGram);
 						$('#comeDate').val(d.expectArrivalTime);
 					}
 					$('#autoNumber').val(str);
