@@ -450,6 +450,7 @@ layui.config({
 				parseData: function(ret) { 
 					for(var k in ret.data){
 						ret.data[k].belateDetails = ret.data[k].belateDetails.split(',').join('。');
+						ret.data[k].leaveDetails = ret.data[k].leaveDetails.split(',').join('。');
 					}
 					return { code: ret.code, msg: ret.message, count:ret.data.total, data: ret.data } 
 				},
