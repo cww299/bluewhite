@@ -125,7 +125,6 @@ layui.config({
 					// 处理操作列
 					var fn1 = function(field) {
 						return function(d) {
-							console.log(d)
 							return [
 								'<select name="selectOne" lay-filter="lay_selecte2" lay-search="true" data-value="' +d.orgNameId+ '">',
 								htmls +
@@ -258,13 +257,9 @@ layui.config({
 			if(!obj.data.id)
 				return;
 			var field = obj.field;
-			if(isNaN(obj.value))
-				layer.msg('投放费用只能为数字',{icon:2});		
-			else{
 				var postData = { id:obj.data.id,};
 				postData[field] = obj.value;
 				updateAjax(postData);
-			}
 			table.reload('recruitTable');
 		})
 		function addTempData(){			//添加临时数据
