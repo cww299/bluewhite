@@ -146,6 +146,12 @@ public class OrderProcurement extends BaseEntity<Long> {
 	@Column(name = "use_up")
 	private Integer useUp;
 	
+	/**
+	 * 是否到货（0=否，1=是）
+	 */
+	@Column(name = "arrival")
+	private Integer arrival;
+	
 
 	/**
 	 * 产品name
@@ -175,6 +181,14 @@ public class OrderProcurement extends BaseEntity<Long> {
 
 	
 	
+
+	public Integer getArrival() {
+		return arrival;
+	}
+
+	public void setArrival(Integer arrival) {
+		this.arrival = arrival;
+	}
 
 	public Integer getUseUp() {
 		return useUp;
