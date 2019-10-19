@@ -23,6 +23,8 @@ public class FilesServiceImpl extends BaseServiceImpl<Files, Long> implements Fi
 	public Files upFile(MultipartFile file, HttpServletRequest request,Long filesTypeId) {
 		Files files = new Files();
 		String fileName = file.getOriginalFilename();
+		String suffix = fileName.substring(fileName.lastIndexOf(".") + 1);
+		fileName = System.currentTimeMillis()+"."+suffix;
 		String type = file.getContentType();
 		String filePath = "D:/upload/img/";
 		File targetFile = new File(filePath);
@@ -35,8 +37,6 @@ public class FilesServiceImpl extends BaseServiceImpl<Files, Long> implements Fi
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-		String suffix = fileName.substring(fileName.lastIndexOf(".") + 1);
-		fileName = System.currentTimeMillis()+"."+suffix;
 		files.setName(fileName);
 		files.setType(type);
 		files.setUrl("/upload/img/" + fileName);
