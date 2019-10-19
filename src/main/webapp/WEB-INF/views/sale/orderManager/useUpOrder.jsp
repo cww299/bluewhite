@@ -40,6 +40,7 @@
 <div style="display:none;padding:10px;" id="addBuyWin">
 	<form class="layui-form layui-form-pane" action="">
 	  <input type="hidden" name="orderMaterialId" id="orderMaterialId">
+	  <input type="hidden" name="id" id="addEditId">
 	  <div class="layui-form-item" pane>
 	    <label class="layui-form-label">下单日期：</label>
 	    <div class="layui-input-block">
@@ -351,6 +352,7 @@ layui.config({
 						if(data.squareGram)//如果有平方克重、再单独添加
 							str += '{ 平方克重:'+data.squareGram+'克 }';
 						//设置下拉框、输入框数据
+						$('#addEditId').val(d.id);
 						$('#supplierSelect').val(d.customer.id);
 						$('#userIdSelect').val(d.user.id);
 						$('#placeOrderTime').val(d.placeOrderTime);
@@ -393,6 +395,7 @@ layui.config({
 				},
 				end:function(){
 					$('#restBtn').click(); //重置弹窗内容
+					$('#addEditId').val('');
 				}
 			})
 		}
