@@ -70,9 +70,7 @@ public class OrderProcurementServiceIpml extends BaseServiceImpl<OrderProcuremen
 			if(scatteredOutboundList.size()>0){
 				throw new ServiceException("当前批次采购单已有出库记录，无法修改");
 			}
-			
 		}
-		
 		OrderMaterial orderMaterial = orderMaterialDao.findOne(orderProcurement.getOrderMaterialId());
 		//生成新编号,暂时不跟面料进行关联，当采购单实际入库后，关联面料
 		orderProcurement.setOrderProcurementNumber(	orderMaterial.getOrder().getBacthNumber()+"/"+orderMaterial.getOrder().getProduct().getName()+"/"
