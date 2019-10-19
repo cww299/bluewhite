@@ -119,7 +119,7 @@ public class Materiel extends BaseEntity<Long>{
 	 * 
 	 */
 	@Column(name = "inventory_number")
-	private Integer inventoryNumber;
+	private Double inventoryNumber;
 	
 	/**
 	 * 仓库种类id
@@ -207,11 +207,11 @@ public class Materiel extends BaseEntity<Long>{
 		this.unit = unit;
 	}
 
-	public Integer getInventoryNumber() {
+	public Double getInventoryNumber() {
 		return inventoryNumber;
 	}
 
-	public void setInventoryNumber(Integer inventoryNumber) {
+	public void setInventoryNumber(Double inventoryNumber) {
 		this.inventoryNumber = inventoryNumber;
 	}
 

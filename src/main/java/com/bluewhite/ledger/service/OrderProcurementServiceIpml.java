@@ -34,7 +34,11 @@ public class OrderProcurementServiceIpml extends BaseServiceImpl<OrderProcuremen
 			List<Predicate> predicate = new ArrayList<>();
 			// 按产品名称
 			if (!StringUtils.isEmpty(param.getProductName())){
-				predicate.add(cb.like(root.get("order").get("product").get("name").as(String.class),"%"+StringUtil.specialStrKeyword(param.getProductName())+"%") );
+				predicate.add(cb.like(root.get("orderMaterial").get("order").get("product").get("name").as(String.class),"%"+StringUtil.specialStrKeyword(param.getProductName())+"%") );
+			}
+			// 按合同id
+			if (param.getOrderId()!=null){
+				predicate.add(cb.equal(root.get("orderMaterial").get("orderId").as(Long.class),param.getProductName()));
 			}
 			Predicate[] pre = new Predicate[predicate.size()];
 			query.where(predicate.toArray(pre));
@@ -55,10 +59,9 @@ public class OrderProcurementServiceIpml extends BaseServiceImpl<OrderProcuremen
 	@Override
 	public void saveOrderProcurement(OrderProcurement orderProcurement) {
 		OrderMaterial orderMaterial = orderMaterialDao.findOne(orderProcurement.getOrderMaterialId());
-		//生成新编号
-		orderProcurement.setOrderProcurementNumber(	orderMaterial.getOrder().getBacthNumber()+"/"+orderMaterial.getOrder().getProductName()+"/"
+		//生成新编号,暂时不跟面料进行关联，当采购单实际入库后，关联面料
+		orderProcurement.setOrderProcurementNumber(	orderMaterial.getOrder().getBacthNumber()+"/"+orderMaterial.getOrder().getProduct().getName()+"/"
 						+orderMaterial.getMateriel().getName()+"/"+orderProcurement.getNewCode());
-		orderProcurement.setMaterielId(orderMaterial.getMaterielId());
 		dao.save(orderProcurement);
 	}
 
