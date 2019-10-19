@@ -520,6 +520,8 @@ public class RecruitServiceImpl extends BaseServiceImpl<Recruit, Long> implement
 					user.setPhone(recruit.getPhone());
 					user.setQuit(0);
 					user.setEntry(recruit.getTestTime());
+					user.setOrgNameId(recruit.getOrgNameId());
+					user.setPositionId(recruit.getPositionId());
 					userService.addUser(user);
 					recruit.setUserId(user.getId());
 					recruit.setState(state);
