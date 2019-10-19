@@ -11,13 +11,16 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
 import com.bluewhite.base.BaseServiceImpl;
+import com.bluewhite.common.ServiceException;
 import com.bluewhite.common.entity.PageParameter;
 import com.bluewhite.common.entity.PageResult;
 import com.bluewhite.common.utils.StringUtil;
 import com.bluewhite.ledger.dao.OrderMaterialDao;
 import com.bluewhite.ledger.dao.OrderProcurementDao;
+import com.bluewhite.ledger.dao.ScatteredOutboundDao;
 import com.bluewhite.ledger.entity.OrderMaterial;
 import com.bluewhite.ledger.entity.OrderProcurement;
+import com.bluewhite.ledger.entity.ScatteredOutbound;
 
 @Service
 public class OrderProcurementServiceIpml extends BaseServiceImpl<OrderProcurement, Long> implements OrderProcurementService {
@@ -26,6 +29,8 @@ public class OrderProcurementServiceIpml extends BaseServiceImpl<OrderProcuremen
 	private OrderProcurementDao dao;
 	@Autowired
 	private OrderMaterialDao orderMaterialDao;
+	@Autowired
+	private ScatteredOutboundDao scatteredOutboundDao;
 	
 	
 	@Override
@@ -58,10 +63,21 @@ public class OrderProcurementServiceIpml extends BaseServiceImpl<OrderProcuremen
 
 	@Override
 	public void saveOrderProcurement(OrderProcurement orderProcurement) {
+		//修改
+		if(orderProcurement.getId()!=null){
+			OrderProcurement ot = dao.findOne(orderProcurement.getId());
+			List<ScatteredOutbound> scatteredOutboundList = scatteredOutboundDao.findByOrderProcurementId(orderProcurement.getId());
+			if(scatteredOutboundList.size()>0){
+				throw new ServiceException("当前批次采购单已有出库记录，无法修改");
+			}
+			
+		}
+		
 		OrderMaterial orderMaterial = orderMaterialDao.findOne(orderProcurement.getOrderMaterialId());
 		//生成新编号,暂时不跟面料进行关联，当采购单实际入库后，关联面料
 		orderProcurement.setOrderProcurementNumber(	orderMaterial.getOrder().getBacthNumber()+"/"+orderMaterial.getOrder().getProduct().getName()+"/"
 						+orderMaterial.getMateriel().getName()+"/"+orderProcurement.getNewCode());
+		orderProcurement.setUseUp(0);
 		dao.save(orderProcurement);
 	}
 
