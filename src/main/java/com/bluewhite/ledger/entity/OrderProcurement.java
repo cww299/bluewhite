@@ -148,6 +148,13 @@ public class OrderProcurement extends BaseEntity<Long> {
 	private String productName;
 	
 	/**
+	 * 订单id
+	 * 
+	 */
+	@Transient
+	private Long orderId;
+	
+	/**
 	 * 查询字段
 	 */
 	@Transient
@@ -162,6 +169,14 @@ public class OrderProcurement extends BaseEntity<Long> {
 
 	
 	
+
+	public Long getOrderId() {
+		return orderId;
+	}
+
+	public void setOrderId(Long orderId) {
+		this.orderId = orderId;
+	}
 
 	public String getNewCode() {
 		return newCode;
