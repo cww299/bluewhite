@@ -430,15 +430,17 @@ layui.config({
 						}
 						for(var i in procedureTreeId){
 							var id = procedureTreeId[i].split('-');
-							if(id[1]==0){
-								layer.close(load);
-								return myutil.emsg('选择的工序剩余数量不能为0');
+							if(id[0]!='no'){
+								if(id[1]==0){
+									layer.close(load);
+									return myutil.emsg('选择的工序剩余数量不能为0');
+								}
+								if(id[1]-$('#number').val()<0){
+									layer.close(load);
+									return myutil.emsg('任务分配数量不能大于选择的工序剩余数量');
+								}
+								procedureIds.push(id[0]);
 							}
-							if(id[1]-$('#number').val()<0){
-								layer.close(load);
-								return myutil.emsg('任务分配数量不能大于选择的工序剩余数量');
-							}
-							procedureIds.push(id[0]);
 						}
 						var saveData = {
 								type: opt.type,
