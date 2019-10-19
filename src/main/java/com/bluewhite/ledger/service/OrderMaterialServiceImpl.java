@@ -64,8 +64,7 @@ public class OrderMaterialServiceImpl extends BaseServiceImpl<OrderMaterial, Lon
 			query.where(predicate.toArray(pre));
 			return null;
 		}, page);
-		PageResult<OrderMaterial> result = new PageResult<>(pages, page);
-		result.getRows().stream().forEach(ot -> {
+		pages.getContent().stream().forEach(ot -> {
 			// 审核时获取采购单的库存的剩余，进行库存状态的判断，以及有库存的直接生成库存分散单
 			double number = ot.getMateriel().getInventoryNumber()==null ? 0 : ot.getMateriel().getInventoryNumber();
 			// 库存充足
@@ -81,6 +80,7 @@ public class OrderMaterialServiceImpl extends BaseServiceImpl<OrderMaterial, Lon
 				ot.setState(3);
 			}
 		});
+		PageResult<OrderMaterial> result = new PageResult<>(pages, page);
 		return result;
 	}
 
