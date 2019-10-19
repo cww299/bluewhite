@@ -65,7 +65,7 @@ public class OrderProcurementServiceIpml extends BaseServiceImpl<OrderProcuremen
 	public void saveOrderProcurement(OrderProcurement orderProcurement) {
 		//修改
 		if(orderProcurement.getId()!=null){
-			OrderProcurement ot = dao.findOne(orderProcurement.getId());
+			OrderProcurement ot = findOne(orderProcurement.getId());
 			List<ScatteredOutbound> scatteredOutboundList = scatteredOutboundDao.findByOrderProcurementId(orderProcurement.getId());
 			if(scatteredOutboundList.size()>0){
 				throw new ServiceException("当前批次采购单已有出库记录，无法修改");
@@ -76,12 +76,27 @@ public class OrderProcurementServiceIpml extends BaseServiceImpl<OrderProcuremen
 		orderProcurement.setOrderProcurementNumber(	orderMaterial.getOrder().getBacthNumber()+"/"+orderMaterial.getOrder().getProduct().getName()+"/"
 						+orderMaterial.getMateriel().getName()+"/"+orderProcurement.getNewCode());
 		orderProcurement.setUseUp(0);
-		dao.save(orderProcurement);
+		save(orderProcurement);
 	}
 
 	@Override
 	public int deleteOrderProcurement(String ids) {
-		return delete(ids);
+		int count = 0;
+		if (!StringUtils.isEmpty(ids)) {
+			String[] idArr = ids.split(",");
+			if (idArr.length > 0) {
+				for (int i = 0; i < idArr.length; i++) {
+					Long id = Long.parseLong(idArr[i]);
+					List<ScatteredOutbound> scatteredOutboundList = scatteredOutboundDao.findByOrderProcurementId(id);
+					if(scatteredOutboundList.size()>0){
+						throw new ServiceException("当前批次采购单已有出库记录，无法修改");
+					}
+					delete(id);
+					count++;
+				}
+			}
+		}
+		return count;
 	}
 
 }
