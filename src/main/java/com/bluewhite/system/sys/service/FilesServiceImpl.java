@@ -11,6 +11,7 @@ import org.springframework.web.multipart.MultipartFile;
 import com.bluewhite.base.BaseServiceImpl;
 import com.bluewhite.system.sys.dao.FilesDao;
 import com.bluewhite.system.sys.entity.Files;
+import com.sun.star.util.Date;
 
 @Service
 public class FilesServiceImpl extends BaseServiceImpl<Files, Long> implements FilesService {
@@ -22,6 +23,8 @@ public class FilesServiceImpl extends BaseServiceImpl<Files, Long> implements Fi
 	public Files upFile(MultipartFile file, HttpServletRequest request,Long filesTypeId) {
 		Files files = new Files();
 		String fileName = file.getOriginalFilename();
+		String suffix = fileName.substring(fileName.lastIndexOf(".") + 1);
+		fileName = System.currentTimeMillis()+"."+suffix;
 		String type = file.getContentType();
 		String filePath = "D:/upload/img/";
 		File targetFile = new File(filePath);
@@ -42,5 +45,5 @@ public class FilesServiceImpl extends BaseServiceImpl<Files, Long> implements Fi
 		filesDao.save(files);
 		return files;
 	}
-
+	
 }

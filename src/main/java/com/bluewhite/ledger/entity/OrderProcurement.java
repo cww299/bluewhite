@@ -140,6 +140,12 @@ public class OrderProcurement extends BaseEntity<Long> {
 	@Column(name = "new_code")
 	private String newCode;
 	
+	/**
+	 * 是否耗尽（当批次的采购单全部使用完，将字段标记）0=否，1=是
+	 */
+	@Column(name = "use_up")
+	private Integer useUp;
+	
 
 	/**
 	 * 产品name
@@ -169,6 +175,14 @@ public class OrderProcurement extends BaseEntity<Long> {
 
 	
 	
+
+	public Integer getUseUp() {
+		return useUp;
+	}
+
+	public void setUseUp(Integer useUp) {
+		this.useUp = useUp;
+	}
 
 	public Long getOrderId() {
 		return orderId;

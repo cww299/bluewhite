@@ -156,6 +156,12 @@ public class Advertisement extends BaseEntity<Long> {
 	private Integer number4;
 	
 	/**
+	 * 备注
+	 */
+	@Column(name = "remarks")
+	private String remarks;
+	
+	/**
 	 * 查询字段应聘人名字
 	 */
 	@Transient
@@ -180,6 +186,14 @@ public class Advertisement extends BaseEntity<Long> {
 	
 
 	
+
+	public String getRemarks() {
+		return remarks;
+	}
+
+	public void setRemarks(String remarks) {
+		this.remarks = remarks;
+	}
 
 	public Long getPositionId() {
 		return positionId;

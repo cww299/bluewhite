@@ -37,6 +37,7 @@ import com.bluewhite.ledger.service.OrderService;
 import com.bluewhite.ledger.service.PackingService;
 import com.bluewhite.ledger.service.ReceivedMoneyService;
 import com.bluewhite.ledger.service.SaleService;
+import com.bluewhite.ledger.service.ScatteredOutboundService;
 import com.bluewhite.ledger.service.SendGoodsService;
 import com.bluewhite.product.primecostbasedata.entity.BaseOne;
 import com.bluewhite.product.primecostbasedata.entity.Materiel;
@@ -68,7 +69,9 @@ public class LedgerAction {
 	private OrderMaterialService orderMaterialService;
 	@Autowired
 	private OrderProcurementService orderProcurementService;
-
+	@Autowired
+	private ScatteredOutboundService scatteredOutboundService;
+	
 	private ClearCascadeJSON clearCascadeJSON;
 	{
 		clearCascadeJSON = ClearCascadeJSON.get()
@@ -154,14 +157,25 @@ public class LedgerAction {
 		clearCascadeJSONOrderMaterial = ClearCascadeJSON.get()
 				.addRetainTerm(OrderMaterial.class,"id","order", "materiel","receiveMode", "user", "unit","dosage","audit","orderProcurements","state")
 				.addRetainTerm(Order.class, "id", "bacthNumber","product","number","remark")
-				.addRetainTerm(Materiel.class, "id", "name","number","orderProcurements")
+				.addRetainTerm(Materiel.class, "id", "name","number","orderProcurements","inventoryNumber")
 				.addRetainTerm(OrderProcurement.class, "id", "orderProcurementNumber","placeOrderNumber","arrivalNumber",
-						"placeOrderTime","expectArrivalTime","arrivalTime","arrivalNumber","customer","user","materielLocation","price")
+						"placeOrderTime","expectArrivalTime","arrivalTime","customer","user","materielLocation","price")
 				.addRetainTerm(Customer.class, "id", "name")
 				.addRetainTerm(BaseOne.class, "id", "name")
 				.addRetainTerm(User.class, "id", "userName")
 				.addRetainTerm(Product.class, "id", "name");
 	}
+	
+	private ClearCascadeJSON clearCascadeJSONOrderProcurement;
+	{
+		clearCascadeJSONOrderProcurement = ClearCascadeJSON.get()
+				.addRetainTerm(OrderProcurement.class, "id", "orderProcurementNumber","placeOrderNumber","arrivalNumber",
+						"placeOrderTime","expectArrivalTime","arrivalTime","customer","user","materielLocation","price")
+				.addRetainTerm(Customer.class, "id", "name")
+				.addRetainTerm(BaseOne.class, "id", "name")
+				.addRetainTerm(User.class, "id", "userName");
+	}
+	
 
 	/**
 	 * 分页查看订单
@@ -316,6 +330,23 @@ public class LedgerAction {
 	}
 
 	
+	
+	/**
+	 * （采购部）查看采购订单
+	 * 
+	 * 
+	 * @param order
+	 * @return
+	 */
+	@RequestMapping(value = "/ledger/getOrderProcurement", method = RequestMethod.GET)
+	@ResponseBody
+	public CommonResponse getOrderProcurement(PageParameter page, OrderProcurement orderProcurement) {
+		CommonResponse cr = new CommonResponse();
+		cr.setData(clearCascadeJSONOrderProcurement.format(orderProcurementService.findPages(orderProcurement, page)).toJSON());
+		cr.setMessage("查看成功");
+		return cr;
+	}
+	
 	/**
 	 * （采购部）确认库存不足的面料
 	 *        生成采购订单
@@ -357,14 +388,9 @@ public class LedgerAction {
 	 */
 	@RequestMapping(value = "/ledger/saveScatteredOutbound", method = RequestMethod.GET)
 	@ResponseBody
-	public CommonResponse scatteredOutbound(String ids) {
+	public CommonResponse saveScatteredOutbound(String ids) {
 		CommonResponse cr = new CommonResponse();
-		
-		
-		
-		
-		
-		
+		scatteredOutboundService.saveScatteredOutbound(ids);
 		return cr;
 	}
 	
