@@ -17,7 +17,6 @@ import javax.persistence.Transient;
 import com.bluewhite.base.BaseEntity;
 import com.bluewhite.product.primecostbasedata.entity.BaseOne;
 import com.bluewhite.product.primecostbasedata.entity.Materiel;
-import com.bluewhite.system.user.entity.User;
 
 /**
  * （下单合同）生产用料表
