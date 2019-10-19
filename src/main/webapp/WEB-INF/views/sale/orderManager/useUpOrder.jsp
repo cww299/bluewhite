@@ -195,9 +195,15 @@ layui.config({
 			})
 		}
 		form.on('select(agreementSelect)',function(obj){
-			table.reload('tableData',{
-				url:'${ctx}/ledger/getOrderMaterial?orderId='+obj.value,//&audit=1
-			})
+			if(obj.value!='')
+				table.reload('tableData',{
+					url:'${ctx}/ledger/getOrderMaterial?&orderId='+obj.value,//audit=1
+				})
+			else
+				table.reload('tableData',{
+					data:[],
+					url:'',
+				})
 		})
 		var tipProcurement = '', tipInventory = ''; 
 		$(document).on('mousedown', '', function (event) { //关闭提示窗
@@ -222,7 +228,7 @@ layui.config({
 			       { title:'用量',   field:'dosage',	},
 			       { title:'库存状态',   field:'state', transData:{ data:['-','库存充足','无库存','有库存量不足'],text:'未知' },	},
 			       { title:'库存数量',   field:'',	},
-			       { title:'是否采购',   field:'orderProcurements',	templet: '#procurementTpl', },
+			       { title:'是否采购',   field:'orderProcurements',	templet: '#procurementTpl', filter:true,},
 			       ]],
 			done:function(){
 				layui.each($('td[data-field=""]'),function(index,item){
@@ -293,14 +299,20 @@ layui.config({
 						if(!orderId)
 							return myutil.emsg('请选择合同');
 						layer.open({
-							tyoe:1,
 							title:'采购汇总',
 							area:['90%','90%'],
+							shadeClose: true,
 							content:'<div><table id="allTable" lay-filter="allTable"></table></div>',
 							success:function(){
 								mytable.render({
 									elem: '#allTable',
-									url: '/ledger/getOrderProcurement?orderId='+orderId,
+									url: '${ctx}/ledger/getOrderProcurement?orderId='+orderId,
+									curd:{
+										btn:[4],
+									},
+									autoUpdate:{
+										deleUrl:'/ledger/deleteOrderProcurement',
+									},
 									cols:[[
 									       { title:'下单日期', field:'', type:'placeOrderTime', },
 									       { title:'采购数量', field:'placeOrderNumber', },
