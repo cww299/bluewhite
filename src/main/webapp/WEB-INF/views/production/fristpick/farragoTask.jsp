@@ -529,7 +529,6 @@ window.onload = function(){
 				var m=myDate.getMinutes();          //获取当前分钟数(0-59)
 				var s=myDate.getSeconds();
 				var now=year2+'-'+p(month2)+"-"+p(date2)+" "+p(h)+':'+p(m)+":"+p(s);//当前时间
-				$("#startTimes").val(now)
 			 layui.use(['laydate'],function(){
 					var laydate = layui.laydate;
 					laydate.render({
@@ -1383,8 +1382,8 @@ window.onload = function(){
 					var firstdate = year + '-' + '0'+month + '-01'+' '+'00:00:00';
 					var lastdate = year + '-' + '0'+month + '-' + day.getDate() +' '+'23:59:59';
 					var now=year+'-'+p(month)+"-"+p(date)+" "+p(h)+':'+p(m)+":"+p(s);//当前时间
-					$("#startTimes").val(now)
 					if(mobileType==true){
+					$("#startTimes").val(now)
 						$("#Time").val(now)
 					}
 					var _index
