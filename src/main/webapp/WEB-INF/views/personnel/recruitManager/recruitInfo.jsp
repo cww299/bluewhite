@@ -178,6 +178,7 @@ layui.config({
 			       {align:'center', title:'待定简历数',   field:'number2',edit: true,   }, 
 			       {align:'center', title:'不合格简历数',   field:'number3',edit: true,   }, 
 			       {align:'center', title:'收取简历数',   field:'number4',edit: true,   }, 
+			       {align:'center', title:'备注',   field:'remarks',edit: true,   },
 			       ]],
 			done:function(){
 				var tableView = this.elem.next();
