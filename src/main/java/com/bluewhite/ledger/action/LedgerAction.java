@@ -154,8 +154,10 @@ public class LedgerAction {
 		clearCascadeJSONOrderMaterial = ClearCascadeJSON.get()
 				.addRetainTerm(OrderMaterial.class,"id","order", "materiel","receiveMode", "user", "unit","dosage","audit","orderProcurements","state")
 				.addRetainTerm(Order.class, "id", "bacthNumber","product","number","remark")
-				.addRetainTerm(Materiel.class, "id", "name","number")
-				.addRetainTerm(OrderProcurement.class, "id", "orderProcurementNumber","placeOrderNumber","arrivalNumber")
+				.addRetainTerm(Materiel.class, "id", "name","number","orderProcurements")
+				.addRetainTerm(OrderProcurement.class, "id", "orderProcurementNumber","placeOrderNumber","arrivalNumber",
+						"placeOrderTime","expectArrivalTime","arrivalTime","arrivalNumber","customer","user","materielLocation","price")
+				.addRetainTerm(Customer.class, "id", "name")
 				.addRetainTerm(BaseOne.class, "id", "name")
 				.addRetainTerm(User.class, "id", "userName")
 				.addRetainTerm(Product.class, "id", "name");
@@ -332,6 +334,21 @@ public class LedgerAction {
 		return cr;
 	}
 	
+	
+	/**
+	 * （生产计划部）删除采购单
+	 * 
+	 * @param order
+	 * @return
+	 */
+	@RequestMapping(value = "/ledger/deleteOrderProcurement", method = RequestMethod.GET)
+	@ResponseBody
+	public CommonResponse deleteOrderProcurement(String ids) {
+		CommonResponse cr = new CommonResponse();
+		int count = orderProcurementService.deleteOrderProcurement(ids);
+		cr.setMessage("成功删除" + count + "条采购单");
+		return cr;
+	}
 	
 	/**
 	 * （采购部）将所有已有库存的耗料表生成分散出库记录
