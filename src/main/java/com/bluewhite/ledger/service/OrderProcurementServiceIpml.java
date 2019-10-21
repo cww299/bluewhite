@@ -59,7 +59,7 @@ public class OrderProcurementServiceIpml extends BaseServiceImpl<OrderProcuremen
 	
 				
 		return 0;
-	}
+	} 
 
 	@Override
 	public void saveOrderProcurement(OrderProcurement orderProcurement) {
@@ -77,6 +77,8 @@ public class OrderProcurementServiceIpml extends BaseServiceImpl<OrderProcuremen
 						+orderMaterial.getMateriel().getName()+"/"+orderProcurement.getNewCode());
 		//跟面料进行关联，进行虚拟入库，当采购单实际入库后，进行真实库存的确定
 		orderProcurement.setMaterielId(orderMaterial.getMaterielId());
+		//剩余数量
+		orderProcurement.setResidueNumber(orderProcurement.getPlaceOrderNumber());
 		save(orderProcurement);
 	}
 
