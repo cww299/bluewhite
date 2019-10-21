@@ -9,6 +9,8 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.JoinColumn;
+import javax.persistence.JoinTable;
+import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
@@ -17,7 +19,7 @@ import javax.persistence.Transient;
 import com.bluewhite.base.BaseEntity;
 import com.bluewhite.product.primecostbasedata.entity.BaseOne;
 import com.bluewhite.product.primecostbasedata.entity.Materiel;
-import com.bluewhite.system.user.entity.User;
+import com.bluewhite.system.user.entity.Role;
 
 /**
  * （下单合同）生产用料表
@@ -93,18 +95,33 @@ public class OrderMaterial extends BaseEntity<Long> {
 	 */
 	@Column(name = "audit")
 	private Integer audit;
-
+	
 	/**
-	 * 面料的订购记录(一个订单耗料可以拥有多个采购单)
+	 * 耗料的出库详情（使用采购单出库）ledger_order_material_procurement(耗料表占用采购单的实际表)
 	 */
-	@OneToMany(mappedBy = "orderMaterial", cascade = CascadeType.ALL, orphanRemoval = true)
+	@ManyToMany(fetch = FetchType.LAZY)
+	@JoinTable(name = "ledger_order_material_procurement", joinColumns = @JoinColumn(name = "order_material_id", referencedColumnName = "id"), 
+	inverseJoinColumns = @JoinColumn(name = "order_procurement_id", referencedColumnName = "id"))
 	private Set<OrderProcurement> orderProcurements = new HashSet<OrderProcurement>();
+	
+	
+	/**
+	 * 是否出库（0=否，1=是）
+	 */
+	@Column(name = "outbound")
+	private Integer outbound;
 	
 	/**
 	 * 状态（1=库存充足，2无库存，3有库存量不足）
 	 */
 	@Transient
 	private Integer state;
+	
+	/**
+	 * 库存总数
+	 */
+	@Transient
+	private Double inventoryTotal;
 
 	/**
 	 * 产品name
@@ -122,6 +139,24 @@ public class OrderMaterial extends BaseEntity<Long> {
 	 */
 	@Transient
 	private Date orderTimeEnd;
+	
+	
+
+	public Double getInventoryTotal() {
+		return inventoryTotal;
+	}
+
+	public void setInventoryTotal(Double inventoryTotal) {
+		this.inventoryTotal = inventoryTotal;
+	}
+
+	public Integer getOutbound() {
+		return outbound;
+	}
+
+	public void setOutbound(Integer outbound) {
+		this.outbound = outbound;
+	}
 
 	public Set<OrderProcurement> getOrderProcurements() {
 		return orderProcurements;

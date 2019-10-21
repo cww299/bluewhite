@@ -59,23 +59,29 @@ public class OrderProcurementServiceIpml extends BaseServiceImpl<OrderProcuremen
 	
 				
 		return 0;
-	}
+	} 
 
 	@Override
 	public void saveOrderProcurement(OrderProcurement orderProcurement) {
 		//修改
+		OrderMaterial orderMaterial = null;
 		if(orderProcurement.getId()!=null){
 			OrderProcurement ot = findOne(orderProcurement.getId());
 			List<ScatteredOutbound> scatteredOutboundList = scatteredOutboundDao.findByOrderProcurementId(orderProcurement.getId());
 			if(scatteredOutboundList.size()>0){
 				throw new ServiceException("当前批次采购单已有出库记录，无法修改");
 			}
+			orderMaterial = orderMaterialDao.findOne(ot.getOrderMaterialId());
+		}else{
+			orderMaterial = orderMaterialDao.findOne(orderProcurement.getOrderMaterialId());
 		}
-		OrderMaterial orderMaterial = orderMaterialDao.findOne(orderProcurement.getOrderMaterialId());
-		//生成新编号,暂时不跟面料进行关联，当采购单实际入库后，关联面料
-		orderProcurement.setOrderProcurementNumber(	orderMaterial.getOrder().getBacthNumber()+"/"+orderMaterial.getOrder().getProduct().getName()+"/"
+		//生成新编号
+		orderProcurement.setOrderProcurementNumber(orderMaterial.getOrder().getBacthNumber()+"/"+orderMaterial.getOrder().getProduct().getName()+"/"
 						+orderMaterial.getMateriel().getName()+"/"+orderProcurement.getNewCode());
-		orderProcurement.setUseUp(0);
+		//跟面料进行关联，进行虚拟入库，当采购单实际入库后，进行真实库存的确定
+		orderProcurement.setMaterielId(orderMaterial.getMaterielId());
+		//剩余数量
+		orderProcurement.setResidueNumber(orderProcurement.getPlaceOrderNumber());
 		save(orderProcurement);
 	}
 
@@ -89,7 +95,7 @@ public class OrderProcurementServiceIpml extends BaseServiceImpl<OrderProcuremen
 					Long id = Long.parseLong(idArr[i]);
 					List<ScatteredOutbound> scatteredOutboundList = scatteredOutboundDao.findByOrderProcurementId(id);
 					if(scatteredOutboundList.size()>0){
-						throw new ServiceException("当前批次采购单已有出库记录，无法删除");
+						throw new ServiceException("当前批次库存采购单已有出库记录，无法删除");
 					}
 					delete(id);
 					count++;
