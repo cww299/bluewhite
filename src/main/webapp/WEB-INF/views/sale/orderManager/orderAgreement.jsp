@@ -232,12 +232,13 @@ layui.config({
 			layer.open({
 				type:1,
 				title:'耗料订单',
-				content:[
-				         '<div style="padding:10px;">',
-				         	'<table id="lookoverTable" lay-filter="lookoverTable"><table>',
-				         '</div>',
-				         ].join(' '),
 				area:['80%','80%'],
+				content:[
+				          '<div style="padding:0px;">', 
+				         	 '<table id="lookoverTable" lay-filter="lookoverTable"></table>', 
+				          '</div>', 
+				         ].join(''),
+				
 				shadeClose:true,
 				success:function(){
 					mytable.render({
