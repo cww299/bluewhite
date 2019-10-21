@@ -43,7 +43,7 @@ public class OrderProcurementServiceIpml extends BaseServiceImpl<OrderProcuremen
 			}
 			// 按合同id
 			if (param.getOrderId()!=null){
-				predicate.add(cb.equal(root.get("orderMaterial").get("orderId").as(Long.class),param.getOrderId()));
+				predicate.add(cb.equal(root.get("orderId").as(Long.class),param.getOrderId()));
 			}
 			Predicate[] pre = new Predicate[predicate.size()];
 			query.where(predicate.toArray(pre));
@@ -75,6 +75,7 @@ public class OrderProcurementServiceIpml extends BaseServiceImpl<OrderProcuremen
 		}else{
 			orderMaterial = orderMaterialDao.findOne(orderProcurement.getOrderMaterialId());
 		}
+		orderProcurement.setOrderId(orderMaterial.getOrderId());
 		//生成新编号
 		orderProcurement.setOrderProcurementNumber(orderMaterial.getOrder().getBacthNumber()+"/"+orderMaterial.getOrder().getProduct().getName()+"/"
 						+orderMaterial.getMateriel().getName()+"/"+orderProcurement.getNewCode());
