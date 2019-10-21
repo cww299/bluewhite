@@ -394,9 +394,9 @@ public class LedgerAction {
 	 */
 	@RequestMapping(value = "/ledger/virtualOutbound", method = RequestMethod.GET)
 	@ResponseBody
-	public CommonResponse virtualOutbound(String orderMaterialIds) {
+	public CommonResponse virtualOutbound(String ids) {
 		CommonResponse cr = new CommonResponse();
-		int count = orderMaterialService.virtualOutbound(orderMaterialIds);
+		int count = orderMaterialService.virtualOutbound(ids);
 		cr.setMessage("成功出库" + count + "条耗料单");
 		return cr;
 	}
