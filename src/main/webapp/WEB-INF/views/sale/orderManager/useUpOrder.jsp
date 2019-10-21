@@ -208,6 +208,7 @@ layui.config({
 		$(document).on('mousedown', '', function (event) { //关闭提示窗
 			if($('.layui-layer-tips').length>0 && $(event.target).closest('.tipProcurement').length==0){
 				layer.close(tipProcurement);
+				layer.close(tipInventory);
 			}
 		});
 		mytable.render({
@@ -227,12 +228,36 @@ layui.config({
 			       { title:'单位',   field:'unit_name',	},
 			       { title:'用量',   field:'dosage',	},
 			       { title:'库存状态',   field:'state', transData:{ data:['-','库存充足','无库存','有库存量不足'],text:'未知' },	},
-			       { title:'库存数量',   field:'',	},
+			       { title:'库存数量',   field:'inventoryTotal',	},
 			       { title:'是否出库',   field:'orderProcurements',	templet: '#procurementTpl', filter:true,},
 			       ]],
 			done:function(){
-				layui.each($('td[data-field=""]'),function(index,item){
-					
+				layui.each($('td[data-field="inventoryTotal"]'),function(index,item){
+					$(item).on('mouseover',function(){
+						var elem = $(item);
+						var index = elem.closest('tr').data('index');
+						var trData = table.cache['tableData'][index];
+						var html = [
+						            '<div class="tipProcurement">',
+						            	(function(){
+						            		var html = '';
+						            		var d = trData.materiel.orderProcurements;
+						            		if(d.length==0)
+						            			html= '<p>无库存信息</p>';
+					            			else{
+					            				
+					            			
+					            			}
+						            		return html;
+						            	})(),
+						            '</div>',
+						            ].join('');
+						layer.close(tipProcurement)
+						tipInventory = layer.tips(html, elem,{
+							time:0,
+							tips: [4, 'rgb(95, 184, 120)'],
+						})
+					})
 				})
 				layui.each($('td[data-field="orderProcurements"]'),function(ind,item){
 					$(item).on('mouseover',function(){
@@ -256,8 +281,6 @@ layui.config({
 							            		      '<p>采购编号：'+d[i].orderProcurementNumber+'</p>',
 							            		      '<p>供应商：'+d[i].customer.name+'</p>',
 							            		      '<p>预计到货：'+d[i].expectArrivalTime+'</p>',
-							            		      /* '<p><span class="layui-btn layui-badge  deleteProcure" data-id="'+d[i].id+'">删除</span>',
-							            		      	  '<span class="layui-btn layui-badge layui-bg-blue editProcure" data-index="'+index+'">修改</span>', */
 							            		      '</p>',
 						            		    ].join('');
 						            	   }
@@ -265,32 +288,12 @@ layui.config({
 						               })(),
 						            '<div>',
 						            ].join(' ');
+						layer.close(tipInventory)
 						tipProcurement = layer.tips(html, elem,{
 							time:0,
 							tips: [4, 'rgb(95, 184, 120)'],
 						})
-						/* $('.editProcure').click(function(obj){
-							var trData = table.cache['tableData'][$(obj.target).data('index')];
-							addEditBuy('edit',trData);
-						})
-						$('.deleteProcure').click(function(obj){
-							var ids = $(obj.target).data('id');
-							layer.confirm('是否确认删除？',function(){
-								myutil.deleteAjax({
-									url: '/ledger/deleteOrderProcurement',
-									ids: ids,
-									success: function(){
-										layer.close(tipProcurement);
-										table.reload('tableData');
-									}
-								})
-							})
-						}) */
-					})/* .mouseover(function(){
-			    		$(this).css("cursor","pointer");								
-			    	}).mouseout(function (){  
-			    		$(this).css("cursor","default");
-			        }) */;
+					})
 				})
 				table.on('toolbar(tableData)',function(obj){
 					var checked = layui.table.checkStatus('tableData').data;
@@ -336,10 +339,6 @@ layui.config({
 									       { title:'预计到货', field:'expectArrivalTime',},
 									       ]]
 								})
-								/* $('.editProcure').click(function(obj){
-									var trData = table.cache['tableData'][$(obj.target).data('index')];
-									addEditBuy('edit',trData);
-								}) */
 							}
 						})
 					}else if(obj.event=="disperseOut"){
