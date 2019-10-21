@@ -262,19 +262,14 @@ layui.config({
 							}
 						},
 						autoUpdate:{
-							isReload:true,
 							deleUrl:'/ledger/deleteOrderMaterial',
-							updateUrl:'/ledger/updateOrderMaterial',
-							field:{
-								receiveMode_id:'receiveModeId',
-							},
 						},
 						cols:[[
 							   { type:'checkbox', },
 						       { title:'物料名',   field:'materiel_name', },
 						       { title:'单位',   field:'unit_name',  },
 						       { title:'领取用量',   field:'dosage', 	},
-						       { title:'领取模式',   field:'receiveMode_name', /* type:'select', select:{ data:mode }, */	},
+						       { title:'领取模式',   field:'receiveMode_name',	},
 						       { title:'审核状态', field:'audit', transData:{ data:['未审核','审核'] }},
 						       ]],
 					})
