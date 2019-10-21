@@ -198,7 +198,6 @@ public class GroupAction {
 						userList.add(userMap);
 					}
 				}
-				groupMap.put("temporarilyUser", temporarilyUserList);
 			}
 
 			if (userGroupList.size() > 0) {
@@ -235,7 +234,6 @@ public class GroupAction {
 					userMap.put("status", flag);
 					userList.add(userMap);
 				}
-				groupMap.put("userList", userList);
 			}
 		} else {
 			// pc模式下
@@ -268,7 +266,6 @@ public class GroupAction {
 						userList.add(userMap);
 					}
 				}
-				groupMap.put("temporarilyUser", temporarilyUserList);
 			}
 			if (attendancePayList.size() > 0) {
 				// 查询出该分组本厂员工的出勤数据
@@ -283,10 +280,10 @@ public class GroupAction {
 					userMap.put("status", 1);
 					userList.add(userMap);
 				}
-				groupMap.put("userList", userList);
 			}
 		}
-
+		groupMap.put("temporarilyUser", temporarilyUserList);
+		groupMap.put("userList", userList);
 		cr.setData(groupMap);
 		cr.setMessage("查询成功");
 		return cr;

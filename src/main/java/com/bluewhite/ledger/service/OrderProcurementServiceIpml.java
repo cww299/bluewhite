@@ -72,10 +72,11 @@ public class OrderProcurementServiceIpml extends BaseServiceImpl<OrderProcuremen
 			}
 		}
 		OrderMaterial orderMaterial = orderMaterialDao.findOne(orderProcurement.getOrderMaterialId());
-		//生成新编号,暂时不跟面料进行关联，当采购单实际入库后，关联面料
-		orderProcurement.setOrderProcurementNumber(	orderMaterial.getOrder().getBacthNumber()+"/"+orderMaterial.getOrder().getProduct().getName()+"/"
+		//生成新编号
+		orderProcurement.setOrderProcurementNumber(orderMaterial.getOrder().getBacthNumber()+"/"+orderMaterial.getOrder().getProduct().getName()+"/"
 						+orderMaterial.getMateriel().getName()+"/"+orderProcurement.getNewCode());
-		orderProcurement.setUseUp(0);
+		//跟面料进行关联，进行虚拟入库，当采购单实际入库后，进行真实库存的确定
+		orderProcurement.setMaterielId(orderMaterial.getMaterielId());
 		save(orderProcurement);
 	}
 
@@ -89,7 +90,7 @@ public class OrderProcurementServiceIpml extends BaseServiceImpl<OrderProcuremen
 					Long id = Long.parseLong(idArr[i]);
 					List<ScatteredOutbound> scatteredOutboundList = scatteredOutboundDao.findByOrderProcurementId(id);
 					if(scatteredOutboundList.size()>0){
-						throw new ServiceException("当前批次采购单已有出库记录，无法删除");
+						throw new ServiceException("当前批次库存采购单已有出库记录，无法删除");
 					}
 					delete(id);
 					count++;

@@ -21,6 +21,12 @@ import com.bluewhite.system.user.entity.User;
 public class ScatteredOutbound extends BaseEntity<Long>{
 	
 	/**
+	 * 分散出库编号
+	 */
+	@Column(name = "outbound_number")
+	private String outboundNumber;
+	
+	/**
 	 * 采购单id
 	 */
 	@Column(name = "order_procurement_id")
@@ -80,6 +86,14 @@ public class ScatteredOutbound extends BaseEntity<Long>{
 	
 	
 	
+
+	public String getOutboundNumber() {
+		return outboundNumber;
+	}
+
+	public void setOutboundNumber(String outboundNumber) {
+		this.outboundNumber = outboundNumber;
+	}
 
 	public Long getOrderMaterialId() {
 		return orderMaterialId;
