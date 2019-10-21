@@ -116,6 +116,12 @@ public class OrderMaterial extends BaseEntity<Long> {
 	 */
 	@Transient
 	private Integer state;
+	
+	/**
+	 * 库存总数
+	 */
+	@Transient
+	private Double inventoryTotal;
 
 	/**
 	 * 产品name
@@ -135,6 +141,14 @@ public class OrderMaterial extends BaseEntity<Long> {
 	private Date orderTimeEnd;
 	
 	
+
+	public Double getInventoryTotal() {
+		return inventoryTotal;
+	}
+
+	public void setInventoryTotal(Double inventoryTotal) {
+		this.inventoryTotal = inventoryTotal;
+	}
 
 	public Integer getOutbound() {
 		return outbound;
