@@ -509,6 +509,21 @@ layui.config({
 										}
 										procedureTree[0].children.push(da);
 										if(procedureTree[0].children.length==allProcedure.length){
+											var t = [];
+											while(t.length<allProcedure.length && procedureTree[0].children.length>0){
+												var minId = procedureTree[0].children[0].id.split('-')[1], minCurr = 0;
+												for(var i=1;i<procedureTree[0].children.length;i++){
+													var thisId = procedureTree[0].children[i].id.split('-')[1];
+													if(parseInt(minId)>parseInt(thisId)){
+														minCurr = i;
+														minId = thisId;
+													}
+												}
+												t.push(procedureTree[0].children[minCurr]);
+												procedureTree[0].children.splice(minCurr,1);
+											}
+											procedureTree[0].children = t;
+											console.log(procedureTree[0].children)
 											menuTree.reload('procedureTree',{
 												data: procedureTree,
 											})
@@ -694,13 +709,14 @@ layui.config({
 										var minId = allUser[0].id.split('-')[1], minCurr = 0;
 										for(var i=1;i<allUser.length;i++){
 											var thisId = allUser[i].id.split('-')[1];
-											if(minId>thisId)
+											if(parseInt(minId)>parseInt(thisId))
 												minCurr = i;
 										}
 										t.push(allUser[minCurr]);
 										allUser.splice(minCurr,1);
 									}
 									allUser = t;
+									console.log(allUser)
 									menuTree.reload('userTree',{
 										data: allUser,
 									})
