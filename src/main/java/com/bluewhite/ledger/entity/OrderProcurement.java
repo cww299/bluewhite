@@ -48,6 +48,20 @@ public class OrderProcurement extends BaseEntity<Long> {
 	private Materiel materiel;
 	
 	/**
+	 * 订单id
+	 * 
+	 */
+	@Column(name = "order_id")
+	private Long orderId;
+
+	/**
+	 * 订单
+	 */
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "order_id", referencedColumnName = "id", insertable = false, updatable = false)
+	private Order order;
+	
+	/**
 	 * 平方克重
 	 */
 	@Column(name = "square_gram")
@@ -162,13 +176,6 @@ public class OrderProcurement extends BaseEntity<Long> {
 	private String productName;
 	
 	/**
-	 * 订单id
-	 * 
-	 */
-	@Transient
-	private Long orderId;
-	
-	/**
 	 * 查询字段
 	 */
 	@Transient
@@ -184,6 +191,14 @@ public class OrderProcurement extends BaseEntity<Long> {
 	
 	
 
+
+	public Order getOrder() {
+		return order;
+	}
+
+	public void setOrder(Order order) {
+		this.order = order;
+	}
 
 	public Double getResidueNumber() {
 		return residueNumber;
