@@ -84,12 +84,12 @@ public class OrderMaterialServiceImpl extends BaseServiceImpl<OrderMaterial, Lon
 			if (number > ot.getDosage()) {
 				ot.setState(1);
 			}
-			// 库存不足
+			// 没有库存
 			if (number < 1) {
 				ot.setState(2);
 			}
-			// 量不足
-			if (number < ot.getDosage() && number < 1) {
+			// 库存量不足
+			if (number < ot.getDosage() && number > 1) {
 				ot.setState(3);
 			}
 		});
