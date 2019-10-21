@@ -50,7 +50,7 @@ public interface OrderMaterialService extends BaseCRUDService<OrderMaterial, Lon
 	 * @param orderMaterialIds
 	 * @return
 	 */
-	public int virtualOutbound(String orderMaterialIds);
+	public int virtualOutbound(String ids);
 	
 
 
