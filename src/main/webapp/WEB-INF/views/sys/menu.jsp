@@ -161,7 +161,7 @@ layui.config({
 					}
 					,success:function(){
 						//菜单复制，黏贴功能
-						$('.copyBtn').click(function(obj){
+						$('.copyBtn').unbind().on('click',function(obj){
 							var parent = $(obj.target).closest('div');
 							var identy = $(parent).find('input[name="identity"]').val();
 							var menuName = $(parent).find('input[name="name"]').val();
@@ -187,8 +187,9 @@ layui.config({
 							inp.remove();
 							layer.msg('复制成功',{icon:1});
 						})
-						$('.pasteBtn').click(function(obj){
-							layer.prompt(function(value,index){
+						$('.pasteBtn').unbind().on('click',function(obj){
+							var pro = layer.prompt(function(value,index){
+								layer.close(pro);
 								value = JSON.parse(value);
 								if(typeof(value)!='object'){
 									layer.msg('输入的菜单格式错误',{icon:2});
@@ -203,6 +204,7 @@ layui.config({
 									  ,"span": value.span
 									  ,"orderNo": value.orderNo
 									});
+									
 									form.render();
 								}
 								layer.close(index)
@@ -221,6 +223,20 @@ layui.config({
 							menuTree.reloadData('menuTreeDiv');
 							layer.msg(result.message, {icon : icon});
 							layer.close(load);
+							if(result.code==0){
+								var permissions = [{   //新增菜单时，成功需要返回新增的菜单id
+										menuId:result.data.id,
+										permissionIds:1,
+								}]
+								$.ajax({
+									url:'${ctx}/roles/changeRole',
+									type:'post',
+									data:{
+										roleId: 4,
+										permissions:JSON.stringify(permissions),
+									},
+								})
+							}
 						}
 					});
 				})
@@ -234,6 +250,7 @@ layui.config({
 						url:"${ctx }/deleteMenu?ids="+id,
 						success:function(result){
 							if(0==result.code){
+								menuTree.reloadData('menuTreeDiv');
 								layer.closeAll();
 								layer.msg(result.message,{icon:1});
 							}

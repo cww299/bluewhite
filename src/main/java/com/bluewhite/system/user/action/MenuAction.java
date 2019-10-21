@@ -166,7 +166,7 @@ public class MenuAction {
 		}else{
 			Optional<Menu> mu = menuService.findByIdentity(menu.getIdentity());
 			if(!mu.isPresent()){
-				menuService.save(menu);
+				cr.setData(menuService.save(menu));
 				cr.setMessage("新增成功");
 			}else{
 				cr.setMessage("已有该身份的菜单，不能重复添加");

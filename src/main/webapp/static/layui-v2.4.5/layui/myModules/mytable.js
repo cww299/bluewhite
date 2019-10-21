@@ -102,7 +102,7 @@ layui.extend({
 						if(item2.transData)
 							return transData(res);	//数据转换
 						if(typeof(opt.ifNull)!='undefined')
-							if(res==null || res=='')
+							if(res===null || res==='')
 								res = opt.ifNull;
 						return res; 		
 					};
