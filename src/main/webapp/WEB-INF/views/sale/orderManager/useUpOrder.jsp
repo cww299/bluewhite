@@ -30,7 +30,7 @@
 				<td>合同:</td>
 				<td style="width:500px;"><select name="orderId" disabled id="orderIdSelect" lay-search lay-filter="agreementSelect"></select></td>
 				<td>&nbsp;&nbsp;&nbsp;</td>
-				<td><span class="layui-badge">提示：查看采购详情与库存详情移入是否采购和库存数量单元格中</span></td>
+				<td><span class="layui-badge">提示：查看采购详情与库存详情移入是否出库和库存数量单元格中</span></td>
 			</tr>
 		</table>
 		<table id="tableData" lay-filter="tableData"></table>
@@ -156,7 +156,6 @@ layui.config({
 				form.render();
 			}
 		})
-		
 		var today = myutil.getSubDay(0,'yyyy-MM-dd');
 		laydate.render({
 			elem:'#searchTime',
@@ -217,6 +216,7 @@ layui.config({
 			ifNull:'---',
 			toolbar:'<div><span class="layui-btn layui-btn-sm" lay-event="addBuy">新增采购单</span>'+
 						'<span class="layui-btn layui-btn-sm layui-btn-normal" lay-event="disperseOut">分散出库</span>'+
+						'<span class="layui-btn layui-btn-sm layui-btn-danger" lay-event="inventedOut">虚拟出库</span>'+
 						'<span class="layui-btn layui-btn-sm layui-btn-warm" lay-event="allProcurement">采购汇总</span>'+
 					'</div>',
 			cols:[[
@@ -228,7 +228,7 @@ layui.config({
 			       { title:'用量',   field:'dosage',	},
 			       { title:'库存状态',   field:'state', transData:{ data:['-','库存充足','无库存','有库存量不足'],text:'未知' },	},
 			       { title:'库存数量',   field:'',	},
-			       { title:'是否采购',   field:'orderProcurements',	templet: '#procurementTpl', filter:true,},
+			       { title:'是否出库',   field:'orderProcurements',	templet: '#procurementTpl', filter:true,},
 			       ]],
 			done:function(){
 				layui.each($('td[data-field=""]'),function(index,item){
@@ -256,8 +256,8 @@ layui.config({
 							            		      '<p>采购编号：'+d[i].orderProcurementNumber+'</p>',
 							            		      '<p>供应商：'+d[i].customer.name+'</p>',
 							            		      '<p>预计到货：'+d[i].expectArrivalTime+'</p>',
-							            		      '<p><span class="layui-btn layui-badge  deleteProcure" data-id="'+d[i].id+'">删除</span>',
-							            		      	  '<span class="layui-btn layui-badge layui-bg-blue editProcure" data-index="'+index+'">修改</span>',
+							            		      /* '<p><span class="layui-btn layui-badge  deleteProcure" data-id="'+d[i].id+'">删除</span>',
+							            		      	  '<span class="layui-btn layui-badge layui-bg-blue editProcure" data-index="'+index+'">修改</span>', */
 							            		      '</p>',
 						            		    ].join('');
 						            	   }
@@ -269,7 +269,7 @@ layui.config({
 							time:0,
 							tips: [4, 'rgb(95, 184, 120)'],
 						})
-						$('.editProcure').click(function(obj){
+						/* $('.editProcure').click(function(obj){
 							var trData = table.cache['tableData'][$(obj.target).data('index')];
 							addEditBuy('edit',trData);
 						})
@@ -285,12 +285,12 @@ layui.config({
 									}
 								})
 							})
-						})
-					}).mouseover(function(){
+						}) */
+					})/* .mouseover(function(){
 			    		$(this).css("cursor","pointer");								
 			    	}).mouseout(function (){  
 			    		$(this).css("cursor","default");
-			        });
+			        }) */;
 				})
 				table.on('toolbar(tableData)',function(obj){
 					var checked = layui.table.checkStatus('tableData').data;
@@ -301,6 +301,7 @@ layui.config({
 						var allWin = layer.open({
 							title:'采购汇总',
 							type:1,
+							shadeClose:true,
 							area:['90%','90%'],
 							content:'<table id="allTable" lay-filter="allTable"></table>',
 							success:function(){
@@ -308,8 +309,18 @@ layui.config({
 									elem: '#allTable',
 									colsWidth:[0,13,0,6,6,6,8,13],
 									url: '${ctx}/ledger/getOrderProcurement?orderId='+orderId,
+									toolbar:['<span class="layui-btn layui-btn-sm" lay-event="updateProcurement">修改采购单</span>'].join(''),
 									curd:{
 										btn:[4],
+										otherBtn:function(obj){
+											var checked = layui.table.checkStatus('allTable').data;
+											if(checked.length!=1)
+												return myutil.emsg('只能修改一条数据');
+											if(obj.event=='updateProcurement'){
+												var trData = table.cache['tableData'][$(obj.target).data('index')];
+												addEditBuy('edit',checked[0]);
+											}
+										}
 									},
 									autoUpdate:{
 										deleUrl:'/ledger/deleteOrderProcurement',
@@ -325,6 +336,10 @@ layui.config({
 									       { title:'预计到货', field:'expectArrivalTime',},
 									       ]]
 								})
+								/* $('.editProcure').click(function(obj){
+									var trData = table.cache['tableData'][$(obj.target).data('index')];
+									addEditBuy('edit',trData);
+								}) */
 							}
 						})
 					}else if(obj.event=="disperseOut"){
@@ -339,6 +354,12 @@ layui.config({
 						if(checked[0].orderProcurements.length>0)
 							return myutil.emsg('该面料已经采购、请勿重复添加');
 						addEditBuy('add',checked[0]);
+					}else if(obj.event=='inventedOut'){
+						myutil.deleTableIds({
+							table:'tableData',
+							text:'请选择相关信息|是否确认虚拟出库?',
+							url:'',
+						});
 					}
 				})
 			}
@@ -357,14 +378,16 @@ layui.config({
 				content:$('#addBuyWin'),
 				area:['40%','70%'],
 				success:function(){
-					var number = data.materiel.number.replace(/[^0-9]/ig,"");	//面类、辅料编号
-					var type = data.materiel.number.replace(/\d/ig,"");		//面料、辅料类型
-					var str = type+'- “'+allCustom[0].name+'“ '+number+' ';	//拼接
-					if(addOrEdit=='edit'){
-						var d = data.orderProcurements[0];
-						str = type+'- “'+d.customer.name+'“ '+number+' ';
-						if(d.squareGram)//如果有平方克重、再单独添加
-							str += '{ 平方克重:'+d.squareGram+'克 }';
+					var srr = '';
+					if(addOrEdit=='add'){
+						var number = data.materiel.number.replace(/[^0-9]/ig,"");	//面类、辅料编号
+						var type = data.materiel.number.replace(/\d/ig,"");		//面料、辅料类型
+						str = type+'- “'+allCustom[0].name+'“ '+number+' ';	//拼接
+						$('#orderMaterialId').val(data.id);
+					}else if(addOrEdit=='edit'){
+						var d = data;
+						var t = d.orderProcurementNumber.split('/');
+						str = t[t.length-1];
 						//设置下拉框、输入框数据
 						$('#addEditId').val(d.id);
 						$('#supplierSelect').val(d.customer.id);
@@ -374,9 +397,9 @@ layui.config({
 						$('#addEditPrice').val(d.price);
 						$('#areaG').val(d.squareGram);
 						$('#comeDate').val(d.expectArrivalTime);
+						$('#orderMaterialId').val('');
 					}
 					$('#autoNumber').val(str);
-					$('#orderMaterialId').val(data.id);
 					form.on('select(supplierSelect)',function(obj){
 						var n = $(obj.elem).find('option[value="'+obj.value+'"]').html();
 						var old = $('#autoNumber').val().split('“');
