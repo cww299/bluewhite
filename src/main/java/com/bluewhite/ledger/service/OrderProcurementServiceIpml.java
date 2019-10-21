@@ -64,14 +64,17 @@ public class OrderProcurementServiceIpml extends BaseServiceImpl<OrderProcuremen
 	@Override
 	public void saveOrderProcurement(OrderProcurement orderProcurement) {
 		//修改
+		OrderMaterial orderMaterial = null;
 		if(orderProcurement.getId()!=null){
 			OrderProcurement ot = findOne(orderProcurement.getId());
 			List<ScatteredOutbound> scatteredOutboundList = scatteredOutboundDao.findByOrderProcurementId(orderProcurement.getId());
 			if(scatteredOutboundList.size()>0){
 				throw new ServiceException("当前批次采购单已有出库记录，无法修改");
 			}
+			orderMaterial = orderMaterialDao.findOne(ot.getOrderMaterialId());
+		}else{
+			orderMaterial = orderMaterialDao.findOne(orderProcurement.getOrderMaterialId());
 		}
-		OrderMaterial orderMaterial = orderMaterialDao.findOne(orderProcurement.getOrderMaterialId());
 		//生成新编号
 		orderProcurement.setOrderProcurementNumber(orderMaterial.getOrder().getBacthNumber()+"/"+orderMaterial.getOrder().getProduct().getName()+"/"
 						+orderMaterial.getMateriel().getName()+"/"+orderProcurement.getNewCode());
