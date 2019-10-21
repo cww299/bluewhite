@@ -101,9 +101,7 @@ public class CutPartsServiceImpl  extends BaseServiceImpl<CutParts, Long> implem
 		Materiel materiel  =  materielDao.findOne(cutParts.getMaterielId());
 		//当批各单片用料
 		if(cutParts.getComposite()==0){
-			cutParts.setBatchMaterial(NumUtils.div(NumUtils.mul(cutParts.getAddMaterial(), 
-					NumUtils.sum(cutParts.getManualLoss(),1),(double)cutParts.getCutPartsNumber()), 
-					NumUtils.mul(cutParts.getCutPartsNumber(),cutParts.getNumber()),3));
+			cutParts.setBatchMaterial(NumUtils.mul(cutParts.getAddMaterial(), NumUtils.sum(cutParts.getManualLoss(),1),(double)cutParts.getNumber()));
 			//当批各单片价格
 			cutParts.setBatchMaterialPrice(NumUtils.mul(cutParts.getBatchMaterial(),materiel.getPrice()));
 		}

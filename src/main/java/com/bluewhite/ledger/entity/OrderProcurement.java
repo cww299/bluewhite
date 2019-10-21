@@ -1,11 +1,14 @@
 package com.bluewhite.ledger.entity;
 
 import java.util.Date;
+import java.util.HashSet;
+import java.util.Set;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.JoinColumn;
+import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.persistence.Transient;
@@ -30,19 +33,6 @@ public class OrderProcurement extends BaseEntity<Long> {
 	 */
 	@Column(name = "order_procurement_number")
 	private String orderProcurementNumber;
-	
-	/**
-	 * 订单（下单合同）生产用料id
-	 */
-	@Column(name = "order_material_id")
-	private Long orderMaterialId;
-
-	/**
-	 * 订单（下单合同）生产用料
-	 */
-	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "order_material_id", referencedColumnName = "id", insertable = false, updatable = false)
-	private OrderMaterial orderMaterial;
 	
 	/**
 	 * 物料名id
@@ -92,6 +82,12 @@ public class OrderProcurement extends BaseEntity<Long> {
 	 */
 	@Column(name = "arrival_number")
 	private Double arrivalNumber;
+	
+	/**
+	 * 虚拟库存 剩余数量
+	 */
+	@Column(name = "residue_number")
+	private Double residueNumber;
 
 	/**
 	 * 客户id
@@ -141,17 +137,23 @@ public class OrderProcurement extends BaseEntity<Long> {
 	private String newCode;
 	
 	/**
-	 * 是否耗尽（当批次的采购单全部使用完，将字段标记）0=否，1=是
-	 */
-	@Column(name = "use_up")
-	private Integer useUp;
-	
-	/**
 	 * 是否到货（0=否，1=是）
 	 */
 	@Column(name = "arrival")
 	private Integer arrival;
 	
+	/**
+	 * 耗料集合
+	 */
+	@ManyToMany(mappedBy = "orderProcurements", fetch = FetchType.LAZY)
+	private Set<OrderMaterial> orderMaterials = new HashSet<OrderMaterial>();
+	
+	
+	/**
+	 * 订单（下单合同）生产用料id
+	 */
+	@Transient
+	private Long orderMaterialId;
 
 	/**
 	 * 产品name
@@ -182,20 +184,29 @@ public class OrderProcurement extends BaseEntity<Long> {
 	
 	
 
+
+	public Double getResidueNumber() {
+		return residueNumber;
+	}
+
+	public void setResidueNumber(Double residueNumber) {
+		this.residueNumber = residueNumber;
+	}
+
+	public Set<OrderMaterial> getOrderMaterials() {
+		return orderMaterials;
+	}
+
+	public void setOrderMaterials(Set<OrderMaterial> orderMaterials) {
+		this.orderMaterials = orderMaterials;
+	}
+
 	public Integer getArrival() {
 		return arrival;
 	}
 
 	public void setArrival(Integer arrival) {
 		this.arrival = arrival;
-	}
-
-	public Integer getUseUp() {
-		return useUp;
-	}
-
-	public void setUseUp(Integer useUp) {
-		this.useUp = useUp;
 	}
 
 	public Long getOrderId() {
@@ -332,14 +343,6 @@ public class OrderProcurement extends BaseEntity<Long> {
 
 	public void setOrderMaterialId(Long orderMaterialId) {
 		this.orderMaterialId = orderMaterialId;
-	}
-
-	public OrderMaterial getOrderMaterial() {
-		return orderMaterial;
-	}
-
-	public void setOrderMaterial(OrderMaterial orderMaterial) {
-		this.orderMaterial = orderMaterial;
 	}
 
 	public Date getPlaceOrderTime() {

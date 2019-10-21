@@ -366,6 +366,8 @@ public class LedgerAction {
 	}
 	
 	
+	
+	
 	/**
 	 * （生产计划部）删除采购单
 	 * 
@@ -380,6 +382,27 @@ public class LedgerAction {
 		cr.setMessage("成功删除" + count + "条采购单");
 		return cr;
 	}
+	
+	
+	/**
+	 * 虚拟库存 ，提前进行库存的入库和出库
+	 * （生产计划部）虚拟库存出库，将已经订购的采购单面料当作库存，进行出库，
+	 * 			冻结当前下单合同的当前耗料表对于库存的消耗
+	 * 
+	 * @param order
+	 * @return
+	 */
+	@RequestMapping(value = "/ledger/virtualOutbound", method = RequestMethod.GET)
+	@ResponseBody
+	public CommonResponse virtualOutbound(String orderMaterialIds) {
+		CommonResponse cr = new CommonResponse();
+		int count = orderMaterialService.virtualOutbound(orderMaterialIds);
+		cr.setMessage("成功出库" + count + "条耗料单");
+		return cr;
+	}
+	
+	
+	
 	
 	/**
 	 * （采购部）将所有已有库存的耗料表生成分散出库记录
