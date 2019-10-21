@@ -18,7 +18,7 @@ public interface OrderProcurementService extends BaseCRUDService<OrderProcuremen
 	public PageResult<OrderProcurement> findPages(OrderProcurement orderProcurement, PageParameter page);
 	
 	/**
-	 * （采购部）确认库存不足的面料采购订单
+	 * （采购部）确认入库单
 	 * @param ids
 	 * @return
 	 */
@@ -36,5 +36,6 @@ public interface OrderProcurementService extends BaseCRUDService<OrderProcuremen
 	 * @return
 	 */
 	public int deleteOrderProcurement(String ids);
+
 
 }

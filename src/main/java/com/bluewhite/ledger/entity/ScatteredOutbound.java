@@ -1,7 +1,5 @@
 package com.bluewhite.ledger.entity;
 
-import java.util.Date;
-
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -21,6 +19,12 @@ import com.bluewhite.system.user.entity.User;
 @Entity
 @Table(name = "ledger_scattered_outbound")
 public class ScatteredOutbound extends BaseEntity<Long>{
+	
+	/**
+	 * 分散出库编号
+	 */
+	@Column(name = "outbound_number")
+	private String outboundNumber;
 	
 	/**
 	 * 采购单id
@@ -82,6 +86,14 @@ public class ScatteredOutbound extends BaseEntity<Long>{
 	
 	
 	
+
+	public String getOutboundNumber() {
+		return outboundNumber;
+	}
+
+	public void setOutboundNumber(String outboundNumber) {
+		this.outboundNumber = outboundNumber;
+	}
 
 	public Long getOrderMaterialId() {
 		return orderMaterialId;
