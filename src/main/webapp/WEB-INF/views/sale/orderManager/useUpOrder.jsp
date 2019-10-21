@@ -10,8 +10,10 @@
 	<title>耗料订单</title>
 	<style>
 		.tipProcurement{
+		}
+		.fenge{
 			border-bottom: 1px dashed black;
-	    	padding-bottom: 10px;
+	    	margin: 8px 0;
 		}
 		.layui-layer-tips{
 			width: auto !important;
@@ -222,6 +224,9 @@ layui.config({
 						'<span class="layui-btn layui-btn-sm layui-btn-danger" lay-event="inventedOut">虚拟出库</span>'+
 						'<span class="layui-btn layui-btn-sm layui-btn-warm" lay-event="allProcurement">采购汇总</span>'+
 					'</div>',
+			colsWidth:[0,10,0,10,10,8,8,8,8],
+			limit:15,
+			limits:[10,15,30,50,100],
 			cols:[[
 			       { type:'checkbox',},
 			       { title:'用料编号', field:'materiel_number', },
@@ -249,14 +254,13 @@ layui.config({
 					            			else{
 					            				 for(var i in d){
 								            		   if(i!=0)
-								            			   html+='<br>';
+								            			   html+='<p class="fenge"></p>';
 								            		   html+=['<p>下单日期：'+d[i].placeOrderTime+'</p>',
 									            		      '<p>采购编号：'+d[i].orderProcurementNumber+'</p>',
 								            		          '<p>剩余数量：'+d[i].residueNumber+'</p>',
 								            		          '<p>预计价格：'+d[i].price+'</p>',
 								            		          '<p>订购人：'+d[i].user.userName+'</p>',
 									            		      '<p>供应商：'+d[i].customer.name+'</p>',
-									            		      '</p>',
 								            		    ].join('');
 								            	   }
 					            			}
@@ -285,15 +289,14 @@ layui.config({
 						            		   html = '<p>无出库详情</p>';
 						            	   for(var i in d){
 						            		   if(i!=0)
-						            			   html+='<br>';
+						            			   html+='<p class="fenge"></p>';
 						            		   html+=['<p>下单日期：'+d[i].placeOrderTime+'</p>',
-						            		          '<p>采购数量：'+d[i].placeOrderNumber+'</p>',
+							            		      '<p>采购编号：'+d[i].orderProcurementNumber+'</p>',
+						            		          '<p>出库数量：'+d[i].placeOrderNumber+'</p>',
 						            		          '<p>预计价格：'+d[i].price+'</p>',
 						            		          '<p>订购人：'+d[i].user.userName+'</p>',
-							            		      '<p>采购编号：'+d[i].orderProcurementNumber+'</p>',
 							            		      '<p>供应商：'+d[i].customer.name+'</p>',
 							            		      '<p>预计到货：'+d[i].expectArrivalTime+'</p>',
-							            		      '</p>',
 						            		    ].join('');
 						            	   }
 						            	   return html;
@@ -362,8 +365,8 @@ layui.config({
 					}else if(obj.event=='addBuy'){
 						if(checked.length!=1)
 							return myutil.emsg('只能选择一条信息增加');
-						if(checked[0].orderProcurements.length>0)
-							return myutil.emsg('该面料已经采购、请勿重复添加');
+						if(checked[0].state==1)
+							return myutil.emsg('库存量充足、无需采购');
 						addEditBuy('add',checked[0]);
 					}else if(obj.event=='inventedOut'){
 						myutil.deleTableIds({

@@ -230,7 +230,7 @@ layui.config({
 		}
 		mytable.render({
 			elem:'#tableData',
-			url: opt.ctx+'/bacth/allBacth?type='+opt.type,
+			url: opt.ctx+'/bacth/allBacth?type='+opt.type+(opt.type==3||opt.type==4?'&flag=0':''),
 			totalRow:['number','sumTaskPrice','time'],
 			parseData:function(ret){
 				if(ret.code==0)
