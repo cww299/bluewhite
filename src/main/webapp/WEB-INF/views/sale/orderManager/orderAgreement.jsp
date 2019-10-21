@@ -249,7 +249,7 @@ layui.config({
 						limit:15,
 						limits:[10,15,20,50,],
 						colsWidth:[0,0,10,10,20,10],
-						/* curd:{
+						curd:{
 							btn:[4],
 							otherBtn:function(obj){
 								if(obj.event=="onekey"){
@@ -268,7 +268,7 @@ layui.config({
 							field:{
 								receiveMode_id:'receiveModeId',
 							},
-						}, */
+						},
 						cols:[[
 							   { type:'checkbox', },
 						       { title:'物料名',   field:'materiel_name', },

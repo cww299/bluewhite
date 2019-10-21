@@ -355,7 +355,7 @@ layui.config({
 				offset:'50px',
 				btnAlign:'c',
 				content:$('#addBuyWin'),
-				area:['40%','60%'],
+				area:['40%','70%'],
 				success:function(){
 					var number = data.materiel.number.replace(/[^0-9]/ig,"");	//面类、辅料编号
 					var type = data.materiel.number.replace(/\d/ig,"");		//面料、辅料类型
