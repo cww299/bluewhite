@@ -10,6 +10,8 @@
 	<title>耗料订单</title>
 	<style>
 		.tipProcurement{
+			border-bottom: 1px dashed black;
+	    	padding-bottom: 10px;
 		}
 		.layui-layer-tips{
 			width: auto !important;
@@ -243,10 +245,20 @@ layui.config({
 						            		var html = '';
 						            		var d = trData.materiel.orderProcurements;
 						            		if(d.length==0)
-						            			html= '<p>无库存信息</p>';
+						            			html= '<p>无库存详情</p>';
 					            			else{
-					            				
-					            			
+					            				 for(var i in d){
+								            		   if(i!=0)
+								            			   html+='<br>';
+								            		   html+=['<p>下单日期：'+d[i].placeOrderTime+'</p>',
+									            		      '<p>采购编号：'+d[i].orderProcurementNumber+'</p>',
+								            		          '<p>剩余数量：'+d[i].residueNumber+'</p>',
+								            		          '<p>预计价格：'+d[i].price+'</p>',
+								            		          '<p>订购人：'+d[i].user.userName+'</p>',
+									            		      '<p>供应商：'+d[i].customer.name+'</p>',
+									            		      '</p>',
+								            		    ].join('');
+								            	   }
 					            			}
 						            		return html;
 						            	})(),
@@ -270,7 +282,7 @@ layui.config({
 						            	   var d = trData.orderProcurements;
 						            	   var html = '';
 						            	   if(d.length==0)
-						            		   html = '<p>无采购信息</p>';
+						            		   html = '<p>无出库详情</p>';
 						            	   for(var i in d){
 						            		   if(i!=0)
 						            			   html+='<br>';
@@ -357,7 +369,7 @@ layui.config({
 						myutil.deleTableIds({
 							table:'tableData',
 							text:'请选择相关信息|是否确认虚拟出库?',
-							url:'',
+							url:'/ledger/virtualOutbound',
 						});
 					}
 				})
