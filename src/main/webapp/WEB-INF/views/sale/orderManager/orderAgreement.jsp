@@ -84,43 +84,43 @@
 	<input type="hidden" name="id" value="{{d.id}}">
 	<input type="hidden" name="productId" value="{{d.product.id}}" id="editProductId" >
 	<input type="hidden" name="orderDate" value="{{d.orderDate}}">
-	<div class="layui-item">
+	<div class="layui-item" pane>
 		<label class="layui-form-label">客户</label>
 		<div class="layui-input-block">
 			<select id="editCustomSelect" name="customerId" lay-search></select>
 		</div>
 	</div>
-	<div class="layui-item">
+	<div class="layui-item" pane>
 		<label class="layui-form-label">批次号</label>
 		<div class="layui-input-block">
 			<input class="layui-input" name="bacthNumber" value="{{d.bacthNumber}}" lay-verify="required">
 		</div>
 	</div>
-	<div class="layui-item">
+	<div class="layui-item" pane>
 		<label class="layui-form-label">产品编号</label>
 		<div class="layui-input-block">
 			<input class="layui-input" value="{{d.product.number}}" readonly id="editProductNumber">
 		</div>
 	</div>
-	<div class="layui-item">
+	<div class="layui-item" pane>
 		<label class="layui-form-label">产品名称</label>
 		<div class="layui-input-block">
 			<input class="layui-input" value="{{d.product.name}}" readonly id="editProductName">
 		</div>
 	</div>
-	<div class="layui-item">
+	<div class="layui-item" pane>
 		<label class="layui-form-label">数量</label>
 		<div class="layui-input-block">
 			<input class="layui-input" name="number" value="{{d.number}}" lay-verify="number">
 		</div>
 	</div>
-	<div class="layui-item">
+	<div class="layui-item" pane>
 		<label class="layui-form-label">价格</label>
 		<div class="layui-input-block">
 			<input class="layui-input" name="price" value="{{d.price}}" lay-verify="number">
 		</div>
 	</div>
-	<div class="layui-item">
+	<div class="layui-item" pane>
 		<label class="layui-form-label">备注</label>
 		<div class="layui-input-block">
 			<input class="layui-input" name="remark" value="{{d.remark}}">
@@ -165,7 +165,7 @@ layui.config({
 		, mytable = layui.mytable;
 		myutil.config.ctx = '${ctx}';
 		myutil.clickTr();
-		//myutil.config.msgOffset = '150px';
+		myutil.config.msgOffset = '250px';
 		myutil.keyDownEntry(function(){   //监听回车事件
 			$('#searchBtn').click();
 		})
@@ -216,6 +216,9 @@ layui.config({
 		})
 		var mode = [];
 		function lookoverUseup(){
+			var checked = layui.table.checkStatus('tableAgreement').data;
+			if(checked.length!=1)
+				return myutil.emsg('只能查看一条信息');
 			if(mode.length==0){
 				mode = myutil.getDataSync({ url: '${ctx}/product/getBaseOne?type=overstock' });
 				myutil.getDataSync({ 
@@ -226,9 +229,6 @@ layui.config({
 					}
 				});
 			}
-			var checked = layui.table.checkStatus('tableAgreement').data;
-			if(checked.length!=1)
-				return myutil.esmg('只能查看一条信息');
 			layer.open({
 				type:1,
 				title:'耗料订单',
@@ -248,7 +248,8 @@ layui.config({
 						size:'lg',
 						limit:15,
 						limits:[10,15,20,50,],
-						curd:{
+						colsWidth:[0,0,10,10,20,10],
+						/* curd:{
 							btn:[4],
 							otherBtn:function(obj){
 								if(obj.event=="onekey"){
@@ -267,13 +268,13 @@ layui.config({
 							field:{
 								receiveMode_id:'receiveModeId',
 							},
-						},
+						}, */
 						cols:[[
 							   { type:'checkbox', },
 						       { title:'物料名',   field:'materiel_name', },
 						       { title:'单位',   field:'unit_name',  },
 						       { title:'领取用量',   field:'dosage', 	},
-						       { title:'领取模式',   field:'receiveMode_id', type:'select', select:{ data:mode },	},
+						       { title:'领取模式',   field:'receiveMode_name', /* type:'select', select:{ data:mode }, */	},
 						       { title:'审核状态', field:'audit', transData:{ data:['未审核','审核'] }},
 						       ]],
 					})
@@ -357,7 +358,7 @@ layui.config({
 				var chooseProductWin = layer.open({
 					title: '选择产品',
 					type:1,
-					area:['50%','70%'],
+					area:['50%','90%'],
 					content: $('#chooseProductWin')
 				})
 				table.render({
@@ -548,7 +549,8 @@ layui.config({
 				var chooseProductWin = layer.open({
 					title: '选择产品',
 					type:1,
-					area:['45%','70%'],
+					area:['45%','90%'],
+					shadeClose:true,
 					content: $('#chooseProductWin'),
 					success:function(){
 						$('#sureChoosed').hide();
@@ -602,7 +604,6 @@ layui.config({
 				})
 			})
 		}
-		
 		function getAllCustom(id,selected){
 			myutil.getSelectHtml({
 				url:'/ledger/allCustomer',
