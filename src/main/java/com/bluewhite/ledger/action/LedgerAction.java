@@ -29,6 +29,7 @@ import com.bluewhite.ledger.entity.PackingChild;
 import com.bluewhite.ledger.entity.PackingMaterials;
 import com.bluewhite.ledger.entity.ReceivedMoney;
 import com.bluewhite.ledger.entity.Sale;
+import com.bluewhite.ledger.entity.ScatteredOutbound;
 import com.bluewhite.ledger.entity.SendGoods;
 import com.bluewhite.ledger.service.MixedService;
 import com.bluewhite.ledger.service.OrderMaterialService;
@@ -384,7 +385,6 @@ public class LedgerAction {
 		return cr;
 	}
 	
-	
 	/**
 	 * 将已经订购的采购单面料当作库存，进行出库
 	 * 冻结当前下单合同的当前耗料表对于库存的消耗
@@ -397,8 +397,24 @@ public class LedgerAction {
 	public CommonResponse saveScatteredOutbound(String ids) {
 		CommonResponse cr = new CommonResponse();
 		int count = scatteredOutboundService.saveScatteredOutbound(ids);
+		cr.setMessage("成功出库" + count + "条耗料单");
 		return cr;
 	}
+	
+	/**
+	 * 分页查看分散出库单
+	 *        
+	 * @return
+	 */
+	@RequestMapping(value = "/ledger/getScatteredOutbound", method = RequestMethod.GET)
+	@ResponseBody
+	public CommonResponse getScatteredOutbound(PageParameter page, ScatteredOutbound scatteredOutbound) {
+		CommonResponse cr = new CommonResponse();
+		cr.setData(clearCascadeJSONOrderProcurement.format(scatteredOutboundService.findPages(scatteredOutbound, page)).toJSON());
+		cr.setMessage("查看成功");
+		return cr;
+	}
+	
 	
 	
 	
