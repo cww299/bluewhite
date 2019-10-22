@@ -563,7 +563,6 @@ layui.config({
 												procedureTree[0].children.splice(minCurr,1);
 											}
 											procedureTree[0].children = t;
-											console.log(procedureTree[0].children)
 											menuTree.reload('procedureTree',{
 												data: procedureTree,
 											})
@@ -792,8 +791,10 @@ layui.config({
 										var minId = allUser[0].id.split('-')[1], minCurr = 0;
 										for(var i=1;i<allUser.length;i++){
 											var thisId = allUser[i].id.split('-')[1];
-											if(parseInt(minId)>parseInt(thisId))
+											if(parseInt(minId)>parseInt(thisId)){
 												minCurr = i;
+												minId = thisId;
+											}
 										}
 										t.push(allUser[minCurr]);
 										allUser.splice(minCurr,1);
