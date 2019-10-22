@@ -117,6 +117,8 @@ layui.config({
 		              			'<td>产品名称：</td>',
 		              			'<td><input class="layui-input" name="" disabled id="addProductName" >',
 		              				'<input type="hidden" name="productId" id="addProductId">',
+		              				'<input type="hidden" name="bacthDepartmentPrice" id="addBacthDepartmentPrice">',
+		              				'<input type="hidden" name="bacthHairPrice" id="addBacthHairPrice">',
 		              				'<input type="hidden" name="flag" value="0">',
 		              				'<span style="display:none;" lay-submit lay-filter="addBtn" id="addBtn">',
 		              			'</td>',
@@ -603,6 +605,8 @@ layui.config({
 							$('#addBacthNumber').val(check[0].bacthNumber);
 							$('#addRemarks').val(check[0].remarks);
 							$('#addNumber').val(check[0].number);
+							$('#addBacthDepartmentPrice').val(check[0].bacthDepartmentPrice);
+							$('#addBacthHairPrice').val(check[0].bacthHairPrice);
 							form.render();
 							form.on('submit(addBtn)',function(obj){
 								obj.field.type = opt.type;
