@@ -23,6 +23,7 @@ import com.bluewhite.ledger.entity.Customer;
 import com.bluewhite.ledger.entity.Mixed;
 import com.bluewhite.ledger.entity.Order;
 import com.bluewhite.ledger.entity.OrderMaterial;
+import com.bluewhite.ledger.entity.OrderMaterialProcurement;
 import com.bluewhite.ledger.entity.OrderProcurement;
 import com.bluewhite.ledger.entity.Packing;
 import com.bluewhite.ledger.entity.PackingChild;
@@ -155,7 +156,9 @@ public class LedgerAction {
 	private ClearCascadeJSON clearCascadeJSONOrderMaterial;
 	{
 		clearCascadeJSONOrderMaterial = ClearCascadeJSON.get()
-				.addRetainTerm(OrderMaterial.class,"id","order", "materiel","receiveMode", "user", "unit","dosage","audit","orderProcurements","state","inventoryTotal")
+				.addRetainTerm(OrderMaterial.class,"id","order", "materiel","receiveMode", "user", "unit","dosage","audit",
+						"orderProcurements","state","inventoryTotal","orderMaterialProcurements")
+				.addRetainTerm(OrderMaterialProcurement.class, "id", "orderMaterial")
 				.addRetainTerm(Order.class, "id", "bacthNumber","product","number","remark")
 				.addRetainTerm(Materiel.class, "id", "name","number","orderProcurements","inventoryNumber")
 				.addRetainTerm(OrderProcurement.class, "id", "orderProcurementNumber","placeOrderNumber","arrivalNumber",
@@ -413,7 +416,7 @@ public class LedgerAction {
 	@ResponseBody
 	public CommonResponse saveScatteredOutbound(String ids) {
 		CommonResponse cr = new CommonResponse();
-		scatteredOutboundService.saveScatteredOutbound(ids);
+		int count = scatteredOutboundService.saveScatteredOutbound(ids);
 		return cr;
 	}
 	
