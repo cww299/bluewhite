@@ -155,7 +155,8 @@ public class LedgerAction {
 	private ClearCascadeJSON clearCascadeJSONOrderMaterial;
 	{
 		clearCascadeJSONOrderMaterial = ClearCascadeJSON.get()
-				.addRetainTerm(OrderMaterial.class,"id","order", "materiel","receiveMode", "user", "unit","dosage","audit","orderProcurements","state","inventoryTotal")
+				.addRetainTerm(OrderMaterial.class,"id","order", "materiel","receiveMode", "user", "unit","dosage","audit","outbound",
+						"state","inventoryTotal")
 				.addRetainTerm(Order.class, "id", "bacthNumber","product","number","remark")
 				.addRetainTerm(Materiel.class, "id", "name","number","orderProcurements","inventoryNumber")
 				.addRetainTerm(OrderProcurement.class, "id", "orderProcurementNumber","placeOrderNumber","arrivalNumber",
@@ -385,26 +386,8 @@ public class LedgerAction {
 	
 	
 	/**
-	 * 虚拟库存 ，提前进行库存的入库和出库
-	 * （生产计划部）虚拟库存出库，将已经订购的采购单面料当作库存，进行出库，
-	 * 			冻结当前下单合同的当前耗料表对于库存的消耗
-	 * 
-	 * @param order
-	 * @return
-	 */
-	@RequestMapping(value = "/ledger/virtualOutbound", method = RequestMethod.GET)
-	@ResponseBody
-	public CommonResponse virtualOutbound(String ids) {
-		CommonResponse cr = new CommonResponse();
-		int count = orderMaterialService.virtualOutbound(ids);
-		cr.setMessage("成功出库" + count + "条耗料单");
-		return cr;
-	}
-	
-	
-	
-	
-	/**
+	 * 将已经订购的采购单面料当作库存，进行出库
+	 * 冻结当前下单合同的当前耗料表对于库存的消耗
 	 * （采购部）将所有已有库存的耗料表生成分散出库记录
 	 *        
 	 * @return
@@ -413,7 +396,7 @@ public class LedgerAction {
 	@ResponseBody
 	public CommonResponse saveScatteredOutbound(String ids) {
 		CommonResponse cr = new CommonResponse();
-		scatteredOutboundService.saveScatteredOutbound(ids);
+		int count = scatteredOutboundService.saveScatteredOutbound(ids);
 		return cr;
 	}
 	

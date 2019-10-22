@@ -2,8 +2,6 @@ package com.bluewhite.production.task.action;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -31,15 +29,12 @@ import com.bluewhite.common.entity.CommonResponse;
 import com.bluewhite.common.entity.CurrentUser;
 import com.bluewhite.common.entity.ErrorCode;
 import com.bluewhite.common.entity.PageParameter;
-import com.bluewhite.common.utils.DatesUtil;
 import com.bluewhite.finance.attendance.dao.AttendancePayDao;
-import com.bluewhite.finance.attendance.entity.AttendancePay;
 import com.bluewhite.production.bacth.entity.Bacth;
 import com.bluewhite.production.bacth.service.BacthService;
 import com.bluewhite.production.finance.dao.PayBDao;
 import com.bluewhite.production.finance.entity.PayB;
 import com.bluewhite.production.group.dao.TemporarilyDao;
-import com.bluewhite.production.group.entity.Temporarily;
 import com.bluewhite.production.procedure.dao.ProcedureDao;
 import com.bluewhite.production.procedure.entity.Procedure;
 import com.bluewhite.production.procedure.service.ProcedureService;
@@ -50,7 +45,6 @@ import com.bluewhite.system.user.entity.TemporaryUser;
 import com.bluewhite.system.user.entity.User;
 import com.bluewhite.system.user.service.TemporaryUserService;
 import com.bluewhite.system.user.service.UserService;
-import com.fasterxml.jackson.annotation.JsonFormat.Value;
 
 @Controller
 public class TaskAction {
