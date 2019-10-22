@@ -235,7 +235,11 @@ layui.config({
 			       { title:'用量',   field:'dosage',	},
 			       { title:'库存状态',   field:'state', transData:{ data:['-','库存充足','无库存','有库存量不足'],text:'未知' },	},
 			       { title:'库存数量',   field:'inventoryTotal',	},
-			       { title:'是否出库',   field:'orderProcurements',	templet: '#procurementTpl', filter:true,},
+			       { title:'是否出库',   
+			    	   field:'outbound', transData:{ data:['否','是'],text:'未知' },
+			    	   /* field:'orderProcurements',	templet: '#procurementTpl',  */
+			    	   filter:true,
+			       },
 			       ]],
 			done:function(){
 				layui.each($('td[data-field="inventoryTotal"]'),function(index,item){
@@ -274,7 +278,7 @@ layui.config({
 						})
 					})
 				})
-				layui.each($('td[data-field="orderProcurements"]'),function(ind,item){
+				/* layui.each($('td[data-field="orderProcurements"]'),function(ind,item){
 					$(item).on('mouseover',function(){
 						var elem = $(item);
 						var index = elem.closest('tr').data('index');
@@ -308,7 +312,7 @@ layui.config({
 							tips: [4, 'rgb(95, 184, 120)'],
 						})
 					})
-				})
+				}) */
 				table.on('toolbar(tableData)',function(obj){
 					var checked = layui.table.checkStatus('tableData').data;
 					if(obj.event=='allProcurement'){

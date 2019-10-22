@@ -800,7 +800,6 @@ layui.config({
 										allUser.splice(minCurr,1);
 									}
 									allUser = t;
-									console.log(allUser)
 									menuTree.reload('userTree',{
 										data: allUser,
 									})
