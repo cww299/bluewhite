@@ -531,6 +531,7 @@ layui.config({
 							var da = { id:'no-'+id, name:name, children:[] }
 							$.ajax({
 								url: opt.ctx+'/production/typeToProcedure',
+								async:false,
 								data: {
 									productId: trData.product.id,
 									bacthId: trData.id,
@@ -754,6 +755,7 @@ layui.config({
 				(function(name,id){
 					$.ajax({
 						url: opt.ctx+'/production/allGroup',
+						async:false,
 						data:{
 							id: id,
 							type: opt.type,
