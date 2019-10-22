@@ -69,11 +69,12 @@ public class ScatteredOutboundServiceImpl extends BaseServiceImpl<ScatteredOutbo
 								scatteredOutbound.setDosage(orderProcurement.getResidueNumber());
 								orderProcurement.setResidueNumber((double) 0);
 								ot.setDosage(NumUtils.sub(ot.getDosage(), orderProcurement.getResidueNumber()));
+								ot.setOutbound(1);
 							}
 							if (orderProcurement.getResidueNumber() >= ot.getDosage()) {
 								scatteredOutbound.setDosage(ot.getDosage());
-								orderProcurement.setResidueNumber(
-										NumUtils.sub(orderProcurement.getResidueNumber(), ot.getDosage()));
+								orderProcurement.setResidueNumber(NumUtils.sub(orderProcurement.getResidueNumber(), ot.getDosage()));
+								ot.setOutbound(1);
 							}
 						}
 						orderMaterialDao.save(ot);
