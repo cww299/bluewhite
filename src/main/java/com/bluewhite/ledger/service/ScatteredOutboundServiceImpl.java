@@ -156,9 +156,29 @@ public class ScatteredOutboundServiceImpl extends BaseServiceImpl<ScatteredOutbo
 	}
 
 	@Override
-	public int auditScatteredOutbound(String ids) {
-		
-		return 0;
+	public int auditScatteredOutbound(String ids) { 
+		int count = 0;
+		if (!StringUtils.isEmpty(ids)) {
+			String[] idArr = ids.split(",");
+			if (idArr.length > 0) {
+				for (int i = 0; i < idArr.length; i++) {
+					Long id = Long.parseLong(idArr[i]);
+					ScatteredOutbound ot = findOne(id);
+					ot.setAudit(1);
+					
+					
+					
+					count++;
+				}
+			}
+		}
+		return count;
+	}
+
+	@Override
+	public void updateScatteredOutbound(ScatteredOutbound scatteredOutbound) {
+		ScatteredOutbound ot = findOne(scatteredOutbound.getId());
+		update(scatteredOutbound, ot, "");
 	}
 	
 	

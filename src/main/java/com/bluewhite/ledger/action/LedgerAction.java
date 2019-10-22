@@ -415,7 +415,34 @@ public class LedgerAction {
 		return cr;
 	}
 	
+	/**
+	 * 修改分散出库单
+	 *        
+	 * @return
+	 */
+	@RequestMapping(value = "/ledger/updateScatteredOutbound", method = RequestMethod.GET)
+	@ResponseBody
+	public CommonResponse updateScatteredOutbound(ScatteredOutbound scatteredOutbound) {
+		CommonResponse cr = new CommonResponse();
+		scatteredOutboundService.updateScatteredOutbound(scatteredOutbound);
+		cr.setMessage("修改成功");
+		return cr;
+	}
 	
+	/**
+	 * （生产计划部）审核分散出库单
+	 * 
+	 * @param order
+	 * @return
+	 */
+	@RequestMapping(value = "/ledger/auditScatteredOutbound", method = RequestMethod.GET)
+	@ResponseBody
+	public CommonResponse auditScatteredOutbound(String ids) {
+		CommonResponse cr = new CommonResponse();
+		int count = scatteredOutboundService.auditScatteredOutbound(ids);
+		cr.setMessage("成功审核" + count + "条分散出库单");
+		return cr;
+	}
 	
 	
 	
