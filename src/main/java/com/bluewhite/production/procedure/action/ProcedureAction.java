@@ -118,9 +118,8 @@ private static final Log log = Log.getLog(ProcedureAction.class);
 	 */
 	@RequestMapping(value = "/production/typeToProcedure", method = RequestMethod.GET)
 	@ResponseBody
-	public CommonResponse typeToProcedure(HttpServletRequest request,Procedure procedure) {
+	public CommonResponse typeToProcedure(Procedure procedure) {
 		CommonResponse cr = new CommonResponse();
-		
 		if(procedure.getType()==5){
 			Bacth bacth = bacthService.findOne(procedure.getBacthId());
 			procedure.setSign(bacth.getSign());

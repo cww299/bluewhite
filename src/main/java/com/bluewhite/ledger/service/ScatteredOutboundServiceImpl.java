@@ -1,17 +1,26 @@
 package com.bluewhite.ledger.service;
 
+import java.util.ArrayList;
 import java.util.Comparator;
+import java.util.Date;
+import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+import javax.persistence.criteria.Predicate;
+
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
 
 import com.bluewhite.base.BaseServiceImpl;
 import com.bluewhite.common.ServiceException;
+import com.bluewhite.common.entity.PageParameter;
+import com.bluewhite.common.entity.PageResult;
 import com.bluewhite.common.utils.NumUtils;
+import com.bluewhite.common.utils.StringUtil;
 import com.bluewhite.ledger.dao.OrderMaterialDao;
 import com.bluewhite.ledger.dao.OrderProcurementDao;
 import com.bluewhite.ledger.dao.ScatteredOutboundDao;
@@ -46,8 +55,8 @@ public class ScatteredOutboundServiceImpl extends BaseServiceImpl<ScatteredOutbo
 					// 出库单
 					ScatteredOutbound scatteredOutbound = new ScatteredOutbound();
 					scatteredOutbound.setOrderMaterialId(id);
-					scatteredOutbound
-							.setOutboundNumber(ot.getOrder().getBacthNumber() + ot.getOrder().getProduct().getName());
+					scatteredOutbound.setOutboundNumber(ot.getOrder().getBacthNumber() + ot.getOrder().getProduct().getName());
+					scatteredOutbound.setAudit(0);
 					// 按id排序，保证库存先入先出
 					// 遍历当前物料的库存采购单，一般只会存在一条，当库存量不足，需要重新下单采购单，会出现两条
 					Set<OrderProcurement> orderProcurementSet = ot.getMateriel().getOrderProcurements().stream()
@@ -88,4 +97,71 @@ public class ScatteredOutboundServiceImpl extends BaseServiceImpl<ScatteredOutbo
 		}
 		return count;
 	}
+
+	@Override
+	public PageResult<ScatteredOutbound> findPages(ScatteredOutbound param, PageParameter page) {
+		Page<ScatteredOutbound> pages = dao.findAll((root, query, cb) -> {
+			List<Predicate> predicate = new ArrayList<>();
+			// 按产品名称
+			if (!StringUtils.isEmpty(param.getProductName())){
+				predicate.add(cb.like(root.get("orderMaterial").get("order").get("product").get("name").as(String.class),"%"+StringUtil.specialStrKeyword(param.getProductName())+"%") );
+			}
+			// 按合同id
+			if (param.getOrderId()!=null){
+				predicate.add(cb.equal(root.get("orderMaterial").get("orderId").as(Long.class),param.getOrderId()));
+			}
+			// 按出库编号
+			if (!StringUtils.isEmpty(param.getOutboundNumber())){
+				predicate.add(cb.like(root.get("outboundNumber").as(String.class),"%"+StringUtil.specialStrKeyword(param.getOutboundNumber())+"%"));
+			}
+			// 按领取人
+			if (!StringUtils.isEmpty(param.getReceiveUser())){
+				predicate.add(cb.like(root.get("receiveUser").as(String.class),"%"+StringUtil.specialStrKeyword(param.getReceiveUser())+"%"));
+			}
+			// 按跟单人
+			if (!StringUtils.isEmpty(param.getReceiveUser())){
+				predicate.add(cb.like(root.get("receiveUser").as(String.class),"%"+StringUtil.specialStrKeyword(param.getReceiveUser())+"%"));
+			}
+			// 按审核日期
+			if (!StringUtils.isEmpty(param.getOrderTimeBegin()) && !StringUtils.isEmpty(param.getOrderTimeEnd())) {
+				predicate.add(cb.between(root.get("auditTime").as(Date.class), param.getOrderTimeBegin(),
+						param.getOrderTimeEnd()));
+			}
+			Predicate[] pre = new Predicate[predicate.size()];
+			query.where(predicate.toArray(pre));
+			return null;
+		}, page);
+		PageResult<ScatteredOutbound> result = new PageResult<>(pages, page);
+		return result;
+	}
+
+	@Override
+	public int deleteScatteredOutbound(String ids) {
+		int count = 0;
+		if (!StringUtils.isEmpty(ids)) {
+			String[] idArr = ids.split(",");
+			if (idArr.length > 0) {
+				for (int i = 0; i < idArr.length; i++) {
+					Long id = Long.parseLong(idArr[i]);
+					ScatteredOutbound ot = findOne(id);
+					if (ot.getAudit() == 1) {
+						throw new ServiceException("第" + (i + 1) + "条耗料已审核，无法删除");
+					}
+					delete(id);
+					count++;
+				}
+			}
+		}
+		return count;
+	}
+
+	@Override
+	public int auditScatteredOutbound(String ids) {
+		
+		return 0;
+	}
+	
+	
+	
+	
 }

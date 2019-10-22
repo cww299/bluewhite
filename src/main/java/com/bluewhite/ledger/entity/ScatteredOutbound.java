@@ -1,11 +1,14 @@
 package com.bluewhite.ledger.entity;
 
+import java.util.Date;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 
 import com.bluewhite.base.BaseEntity;
 import com.bluewhite.system.user.entity.User;
@@ -59,14 +62,14 @@ public class ScatteredOutbound extends BaseEntity<Long>{
     private String receiveUser;
 	
    	/**
-	 *  跟单人id
+	 * 跟单人id
 	 * 
 	 */
 	@Column(name = "user_id")
 	private Long userId;
 
 	/**
-	 *  跟单人
+	 * 跟单人
 	 */
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "user_id", referencedColumnName = "id", insertable = false, updatable = false)
@@ -84,8 +87,90 @@ public class ScatteredOutbound extends BaseEntity<Long>{
 	@Column(name = "remark")
     private String remark;
 	
+	/**
+	 * 是否审核
+	 */
+	@Column(name = "audit")
+    private Integer audit;
+	
+	/**
+	 * 审核正式出库时间（当所有材料库存准备就绪，填写完正式日期，审核成功过后通知到生产计划部）
+	 */
+	@Column(name = "audit_time")
+    private Date auditTime;
+	
+	/**
+	 * 产品name
+	 */
+	@Transient
+	private String productName;
+	
+	/**
+	 * 下单合同id
+	 */
+	@Transient
+	private Long orderId;
+	
+	/**
+	 * 查询字段
+	 */
+	@Transient
+	private Date orderTimeBegin;
+	/**
+	 * 查询字段
+	 */
+	@Transient
+	private Date orderTimeEnd;
 	
 	
+
+	public Integer getAudit() {
+		return audit;
+	}
+
+	public void setAudit(Integer audit) {
+		this.audit = audit;
+	}
+
+	public Date getAuditTime() {
+		return auditTime;
+	}
+
+	public void setAuditTime(Date auditTime) {
+		this.auditTime = auditTime;
+	}
+
+	public String getProductName() {
+		return productName;
+	}
+
+	public void setProductName(String productName) {
+		this.productName = productName;
+	}
+
+	public Long getOrderId() {
+		return orderId;
+	}
+
+	public void setOrderId(Long orderId) {
+		this.orderId = orderId;
+	}
+
+	public Date getOrderTimeBegin() {
+		return orderTimeBegin;
+	}
+
+	public void setOrderTimeBegin(Date orderTimeBegin) {
+		this.orderTimeBegin = orderTimeBegin;
+	}
+
+	public Date getOrderTimeEnd() {
+		return orderTimeEnd;
+	}
+
+	public void setOrderTimeEnd(Date orderTimeEnd) {
+		this.orderTimeEnd = orderTimeEnd;
+	}
 
 	public String getOutboundNumber() {
 		return outboundNumber;
