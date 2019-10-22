@@ -77,7 +77,7 @@ public class OrderMaterialServiceImpl extends BaseServiceImpl<OrderMaterial, Lon
 				ot.getMateriel().setOrderProcurements(ot.getMateriel().getOrderProcurements().stream()
 						.filter(OrderProcurement ->OrderProcurement.getResidueNumber()>0).collect(Collectors.toSet()));
 			}
-			// 审核时获取采购单的剩余库存，进行库存状态的判断
+			// 获取采购单的剩余库存，进行库存状态的判断
 			double number = ot.getMateriel().getOrderProcurements().stream().mapToDouble(OrderProcurement::getResidueNumber).sum();
 			ot.setInventoryTotal(number);
 			// 库存充足
@@ -220,15 +220,17 @@ public class OrderMaterialServiceImpl extends BaseServiceImpl<OrderMaterial, Lon
 				for (int i = 0; i < idArr.length; i++) {
 					Long id = Long.parseLong(idArr[i]);
 					OrderMaterial ot = findOne(id);
-					if(ot.getMateriel().getOrderProcurements().size()>0){
-						//遍历当前物料的采购单，一般只会存在一条，当库存不够吗，需要重新下单采购单，会出现两条
-						Set<OrderProcurement> orderProcurementSet = ot.getMateriel().getOrderProcurements().stream()
-								.filter(OrderProcurement ->OrderProcurement.getResidueNumber()>0).collect(Collectors.toSet());
-						ot.setOrderProcurements(orderProcurementSet);
-						for(OrderProcurement orderProcurement : ot.getMateriel().getOrderProcurements()){
-							//当耗料小于等于剩余数量是,改变
+					//遍历当前物料的采购单，一般只会存在一条，当库存量不足，需要重新下单采购单，会出现两条
+					Set<OrderProcurement> orderProcurementSet = ot.getMateriel().getOrderProcurements().stream()
+							.filter(OrderProcurement ->OrderProcurement.getResidueNumber()>0).collect(Collectors.toSet());
+					if(orderProcurementSet.size()>0){
+						for(OrderProcurement orderProcurement :orderProcurementSet){
+							//当耗料小于等于剩余数量
 							if(orderProcurement.getResidueNumber()>=ot.getDosage()){
 								orderProcurement.setResidueNumber(NumUtils.sub(orderProcurement.getResidueNumber(),ot.getDosage()));
+								
+								
+								
 							}
 							if(orderProcurement.getResidueNumber()<ot.getDosage()){
 								orderProcurement.setResidueNumber((double)0);
