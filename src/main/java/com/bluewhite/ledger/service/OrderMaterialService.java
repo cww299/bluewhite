@@ -44,14 +44,4 @@ public interface OrderMaterialService extends BaseCRUDService<OrderMaterial, Lon
 	 */
 	public int auditOrderMaterial(String ids);
 	
-	
-	/**
-	 * 对耗料进行虚拟出库，将库存占用冻结
-	 * @param orderMaterialIds
-	 * @return
-	 */
-	public int virtualOutbound(String ids);
-	
-
-
 }
