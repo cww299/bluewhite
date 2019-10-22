@@ -429,8 +429,10 @@ layui.config({
 						if(opt.type==1 || opt.type==2){
 							$('#number').val(trData.number);
 						}
-						getAllProcedureTree();
-						getUserData(now+' 00:00:00');
+						window.setTimeout(function() {
+							getAllProcedureTree();
+							getUserData(now+' 00:00:00');
+						},1)
 						form.render();
 					},
 					yes:function(){
@@ -550,7 +552,7 @@ layui.config({
 										}
 										procedureTree[0].children.push(da);
 										if(procedureTree[0].children.length==allProcedure.length){
-											var t = [];
+											/*var t = [];
 											while(t.length<allProcedure.length && procedureTree[0].children.length>0){
 												var minId = procedureTree[0].children[0].id.split('-')[1], minCurr = 0;
 												for(var i=1;i<procedureTree[0].children.length;i++){
@@ -563,7 +565,7 @@ layui.config({
 												t.push(procedureTree[0].children[minCurr]);
 												procedureTree[0].children.splice(minCurr,1);
 											}
-											procedureTree[0].children = t;
+											procedureTree[0].children = t;*/
 											menuTree.reload('procedureTree',{
 												data: procedureTree,
 											})
@@ -789,7 +791,7 @@ layui.config({
 								}
 								allUser.push(data);
 								if(allUser.length==allGroup.length){
-									var t = [];
+									/*var t = [];
 									while(t.length<allGroup.length && allUser.length>0){
 										var minId = allUser[0].id.split('-')[1], minCurr = 0;
 										for(var i=1;i<allUser.length;i++){
@@ -802,7 +804,7 @@ layui.config({
 										t.push(allUser[minCurr]);
 										allUser.splice(minCurr,1);
 									}
-									allUser = t;
+									allUser = t;*/
 									menuTree.reload('userTree',{
 										data: allUser,
 									})
