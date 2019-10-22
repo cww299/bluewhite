@@ -188,7 +188,8 @@ public class BacthServiceImpl extends BaseServiceImpl<Bacth, Long> implements Ba
 						Date orderTimeBegin = DatesUtil.getfristDayOftime(time);
 						Date orderTimeEnd = DatesUtil.getLastDayOftime(time);
 						Group group = groupDao.findByNameAndType(GROUP, bacth.getType());
-						List<User> userList = userDao.findByGroupId(group.getId());
+						List<AttendancePay> attendancePayList = attendancePayDao.findByGroupIdAndTypeAndAllotTimeBetween(group.getId(),
+								group.getType(), orderTimeBegin, orderTimeEnd);
 						List<Procedure> procedure = procedureDao.findByProductIdAndProcedureTypeIdAndType(
 								bacth.getProductId(), (long) 101, bacth.getType());
 						List<Task> taskList = bacth.getTasks().stream()
@@ -198,17 +199,8 @@ public class BacthServiceImpl extends BaseServiceImpl<Bacth, Long> implements Ba
 							if (procedure.size() > 0) {
 								Task task = new Task();
 								String[] pro = new String[] { String.valueOf(procedure.get(0).getId()) };
-								String userIds = userList.stream().map(u -> String.valueOf(u.getId())).collect(Collectors.joining(","));
-								List<Long> userIdsList = Arrays.asList(userIds.split(",")).stream().map(a -> Long.parseLong(a)).collect(Collectors.toList());
-								String attendancePayIds = "";
-								for(Long userid : userIdsList){
-									List<AttendancePay> attendancePayList = attendancePayDao
-											.findByUserIdAndTypeAndAllotTimeBetween(userid, bacth.getType(),
-													orderTimeBegin, orderTimeEnd);
-									if(attendancePayList.size()>0){
-										attendancePayIds+=attendancePayList.get(0).getId()+",";
-									}
-								}
+								String userIds = attendancePayList.stream().map(u -> String.valueOf(u.getUserId())).collect(Collectors.joining(","));
+								String attendancePayIds = attendancePayList.stream().map(u -> String.valueOf(u.getId())).collect(Collectors.joining(","));
 								task.setUserIds(userIds);
 								task.setIds(attendancePayIds);
 								task.setNumber(bacth.getNumber());
