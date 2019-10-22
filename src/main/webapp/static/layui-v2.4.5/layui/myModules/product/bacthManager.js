@@ -110,6 +110,39 @@ layui.config({
 	                  '</div>',
 	                  ].join(' ');
 	
+	var COPY_WIN = [
+	                '<div style="padding:15px;" class="layui-form">',
+		                '<table style="margin:auto;">',
+		              		'<tr>',
+		              			'<td>产品名称：</td>',
+		              			'<td><input class="layui-input" name="" disabled id="addProductName" >',
+		              				'<input type="hidden" name="productId" id="addProductId">',
+		              				'<input type="hidden" name="bacthDepartmentPrice" id="addBacthDepartmentPrice">',
+		              				'<input type="hidden" name="bacthHairPrice" id="addBacthHairPrice">',
+		              				'<input type="hidden" name="flag" value="0">',
+		              				'<span style="display:none;" lay-submit lay-filter="addBtn" id="addBtn">',
+		              			'</td>',
+		              		'</tr>',
+		              		'<tr>',
+		              			'<td>批次号：</td>',
+		              			'<td><input class="layui-input" name="bacthNumber" id="addBacthNumber"></td>',
+	              			'</tr>',
+		              		'<tr>',
+		              			'<td>数量：</td>',
+		              			'<td><input class="layui-input" name="number" id="addNumber" lay-verify="number"></td>',
+	              			'</tr>',
+		              		'<tr>',
+		              			'<td>备注:</td>',
+		              			'<td><input class="layui-input" name="remarks" id="addRemarks"></td>',
+	              			'</tr>',
+		              		'<tr>',
+		              			'<td>产品名称：</td>',
+		              			'<td><input class="layui-input" name="allotTime" id="addAllotTime"></td>',
+		              		'</tr>',
+		              	'</table>',
+	                '</div>',
+	                ].join(' ');
+	
 	
 	Class.prototype.render = function(opt){
 		var isSmall = false;
@@ -222,7 +255,14 @@ layui.config({
 		}
 		var statData = '';
 		var toolbar = ['<span class="layui-btn layui-btn-sm" lay-event="onekeyFinish">一键完成</span>',
-				          '<span class="layui-btn layui-btn-sm" lay-event="lookover">查看分配工序</span>'];
+				          '<span class="layui-btn layui-btn-sm" lay-event="lookover">查看分配工序</span>',
+				          (function(){
+				        	  var html = '';
+				        	  if(opt.type==2){
+				        		  html = '<span class="layui-btn layui-btn-sm" lay-event="copy">复制批次</span>';
+				        	  }
+				        	  return html;
+				          })(),];
 		if(opt.type==4){	//二楼机工增加导出按钮
 			toolbar.push(
 				'<span class="layui-btn layui-btn-sm" lay-event="export">导出工序</span>'
@@ -538,13 +578,57 @@ layui.config({
 		})
 		function finish(){
 			return function(obj){
-				var check = table.checkStatus('tableData').data;
 				switch(obj.event){
 				case 'onekeyFinish': onekeyFinish(); break;
 				case 'lookover': lookover(); break;
 				case 'export' : exportProcedure(); break;
+				case 'copy' : copy(); break;
+				}
+				function copy(){
+					var check = table.checkStatus('tableData').data;
+					if(check.length!=1)
+						return myutil.emsg('请选择一条数据进行复制');
+					var copyWin = layer.open({
+						type:1,
+						area:isSmall?['40%','40%']:['25%','40%'],
+						offset:'100px',
+						content: COPY_WIN,
+						btn:['确定','取消'],
+						success:function(){
+							laydate.render({
+								elem:'#addAllotTime',
+								type:'datetime',
+								value:check[0].allotTime,
+							})
+							$('#addProductId').val(check[0].product.id);
+							$('#addProductName').val(check[0].product.name);
+							$('#addBacthNumber').val(check[0].bacthNumber);
+							$('#addRemarks').val(check[0].remarks);
+							$('#addNumber').val(check[0].number);
+							$('#addBacthDepartmentPrice').val(check[0].bacthDepartmentPrice);
+							$('#addBacthHairPrice').val(check[0].bacthHairPrice);
+							form.render();
+							form.on('submit(addBtn)',function(obj){
+								obj.field.type = opt.type;
+								myutil.saveAjax({
+									url:'/bacth/addBacth',
+									data: obj.field,
+									success:function(){
+										layer.close(copyWin);
+										table.reload('tableData');
+									}
+								})
+							})
+						},
+						yes:function(){
+							$('#addBtn').click();
+						}
+					})
 				}
 				function onekeyFinish(){
+					var check = table.checkStatus('tableData').data;
+					if(check.length<1)
+						return myutil.emsg('请选择相关信息');
 					var inputTime = layer.open({
 						type:1,
 						area:['20%','20%'],
@@ -560,8 +644,6 @@ layui.config({
 							var time = $('#finishTime').val(), ids = [];
 							if(time)
 								time+=' 00:00:00'
-							if(check.length<1)
-								return myutil.emsg('请选择相关信息');
 							for(var k in check)
 								ids.push(check[k].id);
 							myutil.saveAjax({
@@ -582,6 +664,7 @@ layui.config({
 					})
 				}
 				function lookover(){	//查看分配工序弹窗
+					var check = table.checkStatus('tableData').data;
 					var html = '';
 					if(check.length<1)
 						return myutil.emsg('请选择相关信息');
