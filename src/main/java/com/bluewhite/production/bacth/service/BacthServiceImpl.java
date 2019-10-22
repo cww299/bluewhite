@@ -1,11 +1,14 @@
 package com.bluewhite.production.bacth.service;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import javax.persistence.criteria.Predicate;
+import javax.servlet.http.HttpServletRequest;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -20,37 +23,43 @@ import com.bluewhite.common.entity.CurrentUser;
 import com.bluewhite.common.entity.PageParameter;
 import com.bluewhite.common.entity.PageResult;
 import com.bluewhite.common.entity.PageResultStat;
+import com.bluewhite.common.utils.DatesUtil;
 import com.bluewhite.common.utils.NumUtils;
 import com.bluewhite.common.utils.SalesUtils;
 import com.bluewhite.common.utils.StringUtil;
+import com.bluewhite.finance.attendance.dao.AttendancePayDao;
+import com.bluewhite.finance.attendance.entity.AttendancePay;
 import com.bluewhite.production.bacth.dao.BacthDao;
 import com.bluewhite.production.bacth.entity.Bacth;
 import com.bluewhite.production.finance.dao.PayBDao;
 import com.bluewhite.production.finance.entity.PayB;
 import com.bluewhite.production.group.dao.GroupDao;
+import com.bluewhite.production.group.entity.Group;
 import com.bluewhite.production.procedure.dao.ProcedureDao;
 import com.bluewhite.production.procedure.entity.Procedure;
 import com.bluewhite.production.productionutils.constant.ProTypeUtils;
 import com.bluewhite.production.task.entity.Task;
 import com.bluewhite.production.task.service.TaskService;
+import com.bluewhite.system.user.dao.UserDao;
+import com.bluewhite.system.user.entity.User;
 
 @Service
 public class BacthServiceImpl extends BaseServiceImpl<Bacth, Long> implements BacthService {
 
 	@Autowired
 	private BacthDao dao;
-
+	@Autowired
+	private UserDao userDao;
 	@Autowired
 	private PayBDao payBDao;
-
 	@Autowired
 	private ProcedureDao procedureDao;
-
 	@Autowired
 	private GroupDao groupDao;
-
 	@Autowired
 	private TaskService taskService;
+	@Autowired
+	private AttendancePayDao attendancePayDao;
 
 	private static String GROUP = "返工组";
 
@@ -158,7 +167,7 @@ public class BacthServiceImpl extends BaseServiceImpl<Bacth, Long> implements Ba
 
 	@Override
 	@Transactional
-	public int statusBacth(String ids, Date time) {
+	public int statusBacth(String ids, Date time, HttpServletRequest request) {
 		int count = 0;
 		if (time == null) {
 			Calendar cal = Calendar.getInstance();
@@ -173,6 +182,45 @@ public class BacthServiceImpl extends BaseServiceImpl<Bacth, Long> implements Ba
 					Bacth bacth = dao.findOne(id);
 					if (bacth.getStatus() == 1) {
 						throw new ServiceException("批次编号为" + bacth.getBacthNumber() + "的任务已经完成,无需再次完成");
+					}
+					// 当批次完成为针工时，下货点到包装直接分配给返工组
+					if (bacth.getType() == 3 && bacth.getFlag() == 0) {
+						Date orderTimeBegin = DatesUtil.getfristDayOftime(time);
+						Date orderTimeEnd = DatesUtil.getLastDayOftime(time);
+						Group group = groupDao.findByNameAndType(GROUP, bacth.getType());
+						List<User> userList = userDao.findByGroupId(group.getId());
+						List<Procedure> procedure = procedureDao.findByProductIdAndProcedureTypeIdAndType(
+								bacth.getProductId(), (long) 101, bacth.getType());
+						List<Task> taskList = bacth.getTasks().stream()
+								.filter(Task -> Task.getProcedureId().equals(procedure.get(0).getId()))
+								.collect(Collectors.toList());
+						if (taskList.size() == 0) {
+							if (procedure.size() > 0) {
+								Task task = new Task();
+								String[] pro = new String[] { String.valueOf(procedure.get(0).getId()) };
+								String userIds = userList.stream().map(u -> String.valueOf(u.getId())).collect(Collectors.joining(","));
+								List<Long> userIdsList = Arrays.asList(userIds.split(",")).stream().map(a -> Long.parseLong(a)).collect(Collectors.toList());
+								String attendancePayIds = "";
+								for(Long userid : userIdsList){
+									List<AttendancePay> attendancePayList = attendancePayDao
+											.findByUserIdAndTypeAndAllotTimeBetween(userid, bacth.getType(),
+													orderTimeBegin, orderTimeEnd);
+									if(attendancePayList.size()>0){
+										attendancePayIds+=attendancePayList.get(0).getId()+",";
+									}
+								}
+								task.setUserIds(userIds);
+								task.setIds(attendancePayIds);
+								task.setNumber(bacth.getNumber());
+								task.setType(bacth.getType());
+								task.setAllotTime(ProTypeUtils.countAllotTime(time));
+								task.setBacthId(bacth.getId());
+								task.setProductName(bacth.getProduct().getName());
+								task.setBacthNumber(bacth.getBacthNumber());
+								task.setProcedureIds(pro);
+								taskService.addTask(task, request);
+							}
+						}
 					}
 					bacth.setStatus(1);
 					bacth.setStatusTime(time);
@@ -203,7 +251,8 @@ public class BacthServiceImpl extends BaseServiceImpl<Bacth, Long> implements Ba
 						bacth.setBacthHairPrice(procedureList.get(0).getHairPrice());
 						bacth.setBacthDepartmentPrice(procedureList.get(0).getDepartmentPrice());
 					} else {
-						throw new ServiceException("产品序号为" + oldBacth.getProductId() + oldBacth.getProduct().getName() + "未添加工序，无法接受，请先添加工序");
+						throw new ServiceException("产品序号为" + oldBacth.getProductId() + oldBacth.getProduct().getName()
+								+ "未添加工序，无法接受，请先添加工序");
 					}
 					bacth.setBacthNumber(oldBacth.getBacthNumber());
 					bacth.setAllotTime(oldBacth.getAllotTime());

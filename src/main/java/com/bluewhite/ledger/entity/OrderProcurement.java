@@ -4,12 +4,14 @@ import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 
@@ -157,13 +159,6 @@ public class OrderProcurement extends BaseEntity<Long> {
 	private Integer arrival;
 	
 	/**
-	 * 耗料集合
-	 */
-	@ManyToMany(mappedBy = "orderProcurements", fetch = FetchType.LAZY)
-	private Set<OrderMaterial> orderMaterials = new HashSet<OrderMaterial>();
-	
-	
-	/**
 	 * 订单（下单合同）生产用料id
 	 */
 	@Transient
@@ -206,14 +201,6 @@ public class OrderProcurement extends BaseEntity<Long> {
 
 	public void setResidueNumber(Double residueNumber) {
 		this.residueNumber = residueNumber;
-	}
-
-	public Set<OrderMaterial> getOrderMaterials() {
-		return orderMaterials;
-	}
-
-	public void setOrderMaterials(Set<OrderMaterial> orderMaterials) {
-		this.orderMaterials = orderMaterials;
 	}
 
 	public Integer getArrival() {

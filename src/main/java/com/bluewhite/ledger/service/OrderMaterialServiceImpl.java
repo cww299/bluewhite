@@ -49,7 +49,7 @@ public class OrderMaterialServiceImpl extends BaseServiceImpl<OrderMaterial, Lon
 	private MaterielDao materielDao;
 	@Autowired
 	private OrderProcurementDao orderProcurementDao;
-	
+
 	@Override
 	public PageResult<OrderMaterial> findPages(OrderMaterial param, PageParameter page) {
 		Page<OrderMaterial> pages = dao.findAll((root, query, cb) -> {
@@ -74,11 +74,14 @@ public class OrderMaterialServiceImpl extends BaseServiceImpl<OrderMaterial, Lon
 		pages.getContent().stream().forEach(ot -> {
 			// 过滤掉已经耗尽的物料采购单
 			if (ot.getMateriel().getOrderProcurements().size() > 0) {
-				ot.getMateriel().setOrderProcurements(ot.getMateriel().getOrderProcurements().stream()
-						.filter(OrderProcurement ->OrderProcurement.getResidueNumber()>0).collect(Collectors.toSet()));
+				ot.getMateriel()
+						.setOrderProcurements(ot.getMateriel().getOrderProcurements().stream()
+								.filter(OrderProcurement -> OrderProcurement.getResidueNumber() > 0)
+								.collect(Collectors.toSet()));
 			}
-			// 审核时获取采购单的剩余库存，进行库存状态的判断
-			double number = ot.getMateriel().getOrderProcurements().stream().mapToDouble(OrderProcurement::getResidueNumber).sum();
+			// 获取采购单的剩余库存，进行库存状态的判断
+			double number = ot.getMateriel().getOrderProcurements().stream()
+					.mapToDouble(OrderProcurement::getResidueNumber).sum();
 			ot.setInventoryTotal(number);
 			// 库存充足
 			if (number > ot.getDosage()) {
@@ -89,7 +92,7 @@ public class OrderMaterialServiceImpl extends BaseServiceImpl<OrderMaterial, Lon
 				ot.setState(2);
 			}
 			// 库存量不足
-			if (number > 1 && number < ot.getDosage() ) {
+			if (number > 1 && number < ot.getDosage()) {
 				ot.setState(3);
 			}
 		});
@@ -120,6 +123,7 @@ public class OrderMaterialServiceImpl extends BaseServiceImpl<OrderMaterial, Lon
 								OrderMaterial orderMaterial = new OrderMaterial();
 								orderMaterial.setOrderId(id);
 								orderMaterial.setAudit(0);
+								orderMaterial.setOutbound(0);
 								orderMaterial.setMaterielId(c.getMaterielId());
 								orderMaterial.setUnitId(c.getUnitId());
 								orderMaterial.setDosage(c.getBatchMaterial());
@@ -132,6 +136,7 @@ public class OrderMaterialServiceImpl extends BaseServiceImpl<OrderMaterial, Lon
 									orderMaterial.setMaterielId(c.getComplexMaterielId());
 									orderMaterial.setUnitId(c.getUnitId());
 									orderMaterial.setAudit(0);
+									orderMaterial.setOutbound(0);
 									orderMaterial.setDosage(c.getComplexBatchMaterial());
 									orderMaterial.setReceiveModeId(tailor.getTailorTypeId());
 									orderMaterialList.add(orderMaterialComposite);
@@ -149,6 +154,7 @@ public class OrderMaterialServiceImpl extends BaseServiceImpl<OrderMaterial, Lon
 								productMaterialsService.countComposite(m);
 								OrderMaterial orderMaterial = new OrderMaterial();
 								orderMaterial.setAudit(0);
+								orderMaterial.setOutbound(0);
 								orderMaterial.setOrderId(id);
 								orderMaterial.setMaterielId(m.getMaterielId());
 								orderMaterial.setUnitId(m.getUnitId());
@@ -204,41 +210,6 @@ public class OrderMaterialServiceImpl extends BaseServiceImpl<OrderMaterial, Lon
 					OrderMaterial ot = findOne(id);
 					ot.setAudit(1);
 					save(ot);
-					count++;
-				}
-			}
-		}
-		return count;
-	}
-
-	@Override
-	public int virtualOutbound(String ids) {
-		int count = 0;
-		if (!StringUtils.isEmpty(ids)) {
-			String[] idArr = ids.split(",");
-			if (idArr.length > 0) {
-				for (int i = 0; i < idArr.length; i++) {
-					Long id = Long.parseLong(idArr[i]);
-					OrderMaterial ot = findOne(id);
-					if(ot.getMateriel().getOrderProcurements().size()>0){
-						//遍历当前物料的采购单，一般只会存在一条，当库存不够吗，需要重新下单采购单，会出现两条
-						Set<OrderProcurement> orderProcurementSet = ot.getMateriel().getOrderProcurements().stream()
-								.filter(OrderProcurement ->OrderProcurement.getResidueNumber()>0).collect(Collectors.toSet());
-						ot.setOrderProcurements(orderProcurementSet);
-						for(OrderProcurement orderProcurement : ot.getMateriel().getOrderProcurements()){
-							//当耗料小于等于剩余数量是,改变
-							if(orderProcurement.getResidueNumber()>=ot.getDosage()){
-								orderProcurement.setResidueNumber(NumUtils.sub(orderProcurement.getResidueNumber(),ot.getDosage()));
-							}
-							if(orderProcurement.getResidueNumber()<ot.getDosage()){
-								orderProcurement.setResidueNumber((double)0);
-							}
-						}
-						materielDao.save(ot.getMateriel());
-						save(ot);
-					}else{
-						throw new ServiceException(ot.getMateriel().getNumber()+ot.getMateriel().getName()+"无库存，请先采购");
-					}
 					count++;
 				}
 			}
