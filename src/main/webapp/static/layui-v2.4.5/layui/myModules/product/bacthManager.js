@@ -531,6 +531,7 @@ layui.config({
 							var da = { id:'no-'+id, name:name, children:[] }
 							$.ajax({
 								url: opt.ctx+'/production/typeToProcedure',
+								async:false,
 								data: {
 									productId: trData.product.id,
 									bacthId: trData.id,
@@ -735,6 +736,7 @@ layui.config({
 					})//later open end
 				}
 				function exportProcedure(){	//导出工序
+					var check = table.checkStatus('tableData').data;
 					if(check.length!=1)
 						return myutil.emsg('只能选择一条信息导出！');
 					location.href= opt.ctx+'/excel/importExcel/DownBacth?id='+check[0].id;
@@ -753,6 +755,7 @@ layui.config({
 				(function(name,id){
 					$.ajax({
 						url: opt.ctx+'/production/allGroup',
+						async:false,
 						data:{
 							id: id,
 							type: opt.type,
