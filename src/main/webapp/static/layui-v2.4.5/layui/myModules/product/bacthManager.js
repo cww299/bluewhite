@@ -735,6 +735,7 @@ layui.config({
 					})//later open end
 				}
 				function exportProcedure(){	//导出工序
+					var check = table.checkStatus('tableData').data;
 					if(check.length!=1)
 						return myutil.emsg('只能选择一条信息导出！');
 					location.href= opt.ctx+'/excel/importExcel/DownBacth?id='+check[0].id;
