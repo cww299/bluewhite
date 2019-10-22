@@ -220,8 +220,7 @@ layui.config({
 			data:[],
 			ifNull:'---',
 			toolbar:'<div><span class="layui-btn layui-btn-sm" lay-event="addBuy">新增采购单</span>'+
-						'<span class="layui-btn layui-btn-sm layui-btn-normal" lay-event="disperseOut">分散出库</span>'+
-						'<span class="layui-btn layui-btn-sm layui-btn-danger" lay-event="inventedOut">虚拟出库</span>'+
+						'<span class="layui-btn layui-btn-sm layui-btn-danger" lay-event="inventedOut">分散出库</span>'+
 						'<span class="layui-btn layui-btn-sm layui-btn-warm" lay-event="allProcurement">采购汇总</span>'+
 					'</div>',
 			colsWidth:[0,10,0,10,10,8,8,8,8],
@@ -356,12 +355,6 @@ layui.config({
 								})
 							}
 						})
-					}else if(obj.event=="disperseOut"){
-						myutil.deleTableIds({
-							table:'tableData',
-							text:'请选择相关信息|是否确认分散出库?',
-							url:'',
-						});
 					}else if(obj.event=='addBuy'){
 						if(checked.length!=1)
 							return myutil.emsg('只能选择一条信息增加');
