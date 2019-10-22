@@ -19,7 +19,7 @@ import com.bluewhite.product.primecostbasedata.entity.BaseOne;
 import com.bluewhite.product.primecostbasedata.entity.Materiel;
 
 /**
- * （下单合同）生产用料表
+ * 下单合同的生产耗料表
  * 
  * @author zhangliang
  *
@@ -100,12 +100,6 @@ public class OrderMaterial extends BaseEntity<Long> {
 	private Integer outbound;
 	
 	/**
-	 * 虚拟库存实际出库单
-	 */
-	@OneToMany(mappedBy = "orderMaterial",cascade = CascadeType.ALL, orphanRemoval = true)
-	private Set<OrderMaterialProcurement> orderMaterialProcurements = new HashSet<OrderMaterialProcurement>();
-	
-	/**
 	 * 状态（1=库存充足，2无库存，3有库存量不足）
 	 */
 	@Transient
@@ -134,8 +128,7 @@ public class OrderMaterial extends BaseEntity<Long> {
 	@Transient
 	private Date orderTimeEnd;
 	
-	
-
+	 
 	public Double getInventoryTotal() {
 		return inventoryTotal;
 	}

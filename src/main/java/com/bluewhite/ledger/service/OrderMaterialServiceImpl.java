@@ -211,41 +211,4 @@ public class OrderMaterialServiceImpl extends BaseServiceImpl<OrderMaterial, Lon
 		return count;
 	}
 
-	@Override
-	public int virtualOutbound(String ids) {
-		int count = 0;
-		if (!StringUtils.isEmpty(ids)) {
-			String[] idArr = ids.split(",");
-			if (idArr.length > 0) {
-				for (int i = 0; i < idArr.length; i++) {
-					Long id = Long.parseLong(idArr[i]);
-					OrderMaterial ot = findOne(id);
-					//遍历当前物料的采购单，一般只会存在一条，当库存量不足，需要重新下单采购单，会出现两条
-					Set<OrderProcurement> orderProcurementSet = ot.getMateriel().getOrderProcurements().stream()
-							.filter(OrderProcurement ->OrderProcurement.getResidueNumber()>0).collect(Collectors.toSet());
-					if(orderProcurementSet.size()>0){
-						for(OrderProcurement orderProcurement :orderProcurementSet){
-							//当耗料小于等于剩余数量
-							if(orderProcurement.getResidueNumber()>=ot.getDosage()){
-								orderProcurement.setResidueNumber(NumUtils.sub(orderProcurement.getResidueNumber(),ot.getDosage()));
-								
-								
-								
-							}
-							if(orderProcurement.getResidueNumber()<ot.getDosage()){
-								orderProcurement.setResidueNumber((double)0);
-							}
-						}
-						materielDao.save(ot.getMateriel());
-						save(ot);
-					}else{
-						throw new ServiceException(ot.getMateriel().getNumber()+ot.getMateriel().getName()+"无库存，请先采购");
-					}
-					count++;
-				}
-			}
-		}
-		return count;
-	}
-
 }
