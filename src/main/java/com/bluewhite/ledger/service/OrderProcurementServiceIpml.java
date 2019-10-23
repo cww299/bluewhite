@@ -79,6 +79,7 @@ public class OrderProcurementServiceIpml extends BaseServiceImpl<OrderProcuremen
 			orderMaterial = orderMaterialDao.findOne(orderProcurement.getOrderMaterialId());
 		}
 		orderProcurement.setInOutError(0);
+		orderProcurement.setArrival(0);
 		orderProcurement.setOrderId(orderMaterial.getOrderId());
 		//生成新编号
 		orderProcurement.setOrderProcurementNumber(orderMaterial.getOrder().getBacthNumber()+"/"+orderMaterial.getOrder().getProduct().getName()+"/"
