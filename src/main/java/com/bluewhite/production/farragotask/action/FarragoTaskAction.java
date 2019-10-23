@@ -60,7 +60,8 @@ public class FarragoTaskAction {
 	{
 		clearCascadeJSON = ClearCascadeJSON.get().addRetainTerm(FarragoTask.class, "id", "bacth", "name", "price",
 				"time", "allotTime", "userIds", "performance", "performanceNumber", "performancePrice", "remarks",
-				"number", "procedureTime", "payB","startTime","endTime","ids","temporaryUserIds","temporaryIds","status");
+				"number", "procedureTime", "payB", "startTime", "endTime", "ids", "temporaryUserIds", "temporaryIds",
+				"status");
 	}
 
 	/**
@@ -90,9 +91,9 @@ public class FarragoTaskAction {
 			if (farragoTask.getStartTime() != null && farragoTask.getEndTime() != null) {
 				farragoTask.setTime(DatesUtil.getTime(farragoTask.getStartTime(), farragoTask.getEndTime()));
 			}
-			if(farragoTask.getTime()!=null){
+			if (farragoTask.getTime() != null) {
 				farragoTask.setStatus(1);
-			}else{
+			} else {
 				farragoTask.setStatus(0);
 			}
 			farragoTaskService.addFarragoTask(farragoTask, request);
@@ -105,11 +106,9 @@ public class FarragoTaskAction {
 	}
 
 	/**
-	 * 修改杂工任务 (实时)
-	 * 1.实时任务，存在不确定时间和人数的问题，
-	 * 当出现人数变动，获取当前时间作为任务结束时间，将之前的耗时计算出来，同时计算出之前的工资
-	 * 解决方案：
-	 *  当出现人员变动时,将之前的任务直接结算掉，同名新任务生成，同时将当前时间作为开始时间重新开始计算
+	 * 修改杂工任务 (实时) 1.实时任务，存在不确定时间和人数的问题，
+	 * 当出现人数变动，获取当前时间作为任务结束时间，将之前的耗时计算出来，同时计算出之前的工资 解决方案：
+	 * 当出现人员变动时,将之前的任务直接结算掉，同名新任务生成，同时将当前时间作为开始时间重新开始计算
 	 * 
 	 * 
 	 */
@@ -117,46 +116,48 @@ public class FarragoTaskAction {
 	@ResponseBody
 	public CommonResponse updateFarragoTask(HttpServletRequest request, FarragoTask farragoTask) {
 		CommonResponse cr = new CommonResponse();
-		if (farragoTask.getId()!=null) {
+		if (farragoTask.getId() != null) {
 			FarragoTask oldTask = farragoTaskService.findOne(farragoTask.getId());
-			if(oldTask.getStatus() == 1){
+			if (oldTask.getStatus() == 1) {
 				cr.setCode(ErrorCode.ILLEGAL_ARGUMENT.getCode());
 				cr.setMessage("已完成，无法修改");
 				return cr;
 			}
-			if(farragoTask.getStartTime().after(farragoTask.getEndTime())){
-				cr.setCode(ErrorCode.ILLEGAL_ARGUMENT.getCode());
-				cr.setMessage("结束时间不能比开始时间小，请重新设定结束时间");
-				return cr;
+			if (farragoTask.getStartTime() != null && farragoTask.getEndTime() != null) {
+				if (farragoTask.getStartTime().after(farragoTask.getEndTime())) {
+					cr.setCode(ErrorCode.ILLEGAL_ARGUMENT.getCode());
+					cr.setMessage("结束时间不能比开始时间小，请重新设定结束时间");
+					return cr;
+				}
 			}
-			
-			//获取原任务员工数量
+
+			// 获取原任务员工数量
 			Integer userIdsOld = 0;
-			if(!StringUtils.isEmpty(oldTask.getUserIds())){
-				 userIdsOld = oldTask.getUserIds().split(",").length;
+			if (!StringUtils.isEmpty(oldTask.getUserIds())) {
+				userIdsOld = oldTask.getUserIds().split(",").length;
 			}
-			//获取原任务临时员工数量
+			// 获取原任务临时员工数量
 			Integer temporaryUserIdsOld = 0;
-			if(!StringUtils.isEmpty(oldTask.getTemporaryUserIds())){
+			if (!StringUtils.isEmpty(oldTask.getTemporaryUserIds())) {
 				temporaryUserIdsOld = oldTask.getTemporaryUserIds().split(",").length;
 			}
-			//获取当前任务员工数量
+			// 获取当前任务员工数量
 			Integer userIds = 0;
-			if(!StringUtils.isEmpty(farragoTask.getUserIds())){
+			if (!StringUtils.isEmpty(farragoTask.getUserIds())) {
 				userIds = farragoTask.getUserIds().split(",").length;
 			}
-			//获取当前任务临时员工数量
-			Integer temporaryUserIds=0;
-			if(!StringUtils.isEmpty(farragoTask.getTemporaryUserIds())){
+			// 获取当前任务临时员工数量
+			Integer temporaryUserIds = 0;
+			if (!StringUtils.isEmpty(farragoTask.getTemporaryUserIds())) {
 				temporaryUserIds = farragoTask.getTemporaryUserIds().split(",").length;
 			}
-			//人员数量不想等，说明该任务发生过人员调动，将原任务结束重新生成新任务
-			if(userIdsOld!=userIds || temporaryUserIdsOld!=temporaryUserIds){
+			// 人员数量不想等，说明该任务发生过人员调动，将原任务结束重新生成新任务
+			if (userIdsOld != userIds || temporaryUserIdsOld != temporaryUserIds) {
 				oldTask.setEndTime(new Date());
 				if (oldTask.getStartTime() != null && oldTask.getEndTime() != null) {
 					oldTask.setTime(DatesUtil.getTime(oldTask.getStartTime(), oldTask.getEndTime()));
-				}else{
-					//生成未完成的新任务
+				} else {
+					// 生成未完成的新任务
 					farragoTask.setStatus(0);
 					farragoTask.setStartTime(new Date());
 					farragoTask.setId(null);
@@ -164,8 +165,8 @@ public class FarragoTaskAction {
 				}
 				oldTask.setStatus(1);
 				farragoTaskService.addFarragoTask(oldTask, request);
-			}else{
-				//当开始时间和结束时间同时不为空，说明任务结束
+			} else {
+				// 当开始时间和结束时间同时不为空，说明任务结束
 				if (farragoTask.getStartTime() != null && farragoTask.getEndTime() != null) {
 					oldTask.setTime(DatesUtil.getTime(farragoTask.getStartTime(), farragoTask.getEndTime()));
 					oldTask.setStatus(1);
@@ -173,7 +174,7 @@ public class FarragoTaskAction {
 				}
 			}
 			cr.setMessage("成功");
-		}else{
+		} else {
 			cr.setCode(ErrorCode.ILLEGAL_ARGUMENT.getCode());
 			cr.setMessage("任务不能为空");
 		}
