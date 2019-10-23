@@ -1,5 +1,7 @@
 package com.bluewhite.ledger.service;
 
+import java.util.Date;
+
 import com.bluewhite.base.BaseCRUDService;
 import com.bluewhite.common.entity.PageParameter;
 import com.bluewhite.common.entity.PageResult;
@@ -34,7 +36,7 @@ public interface ScatteredOutboundService extends BaseCRUDService<ScatteredOutbo
 	 * @param ids
 	 * @return
 	 */
-	public int auditScatteredOutbound(String ids);
+	public int auditScatteredOutbound(String ids,Date time);
 
 	/**
 	 * 修改出库单
@@ -42,4 +44,11 @@ public interface ScatteredOutboundService extends BaseCRUDService<ScatteredOutbo
 	 * @return
 	 */
 	public void updateScatteredOutbound(ScatteredOutbound scatteredOutbound);
+	
+	/**
+	 * 生成下单表
+	 * @param ids
+	 * @return
+	 */
+	public int generatePlaceOrder(String ids);
 }
