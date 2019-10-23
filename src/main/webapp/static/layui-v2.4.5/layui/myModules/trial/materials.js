@@ -33,7 +33,7 @@ layui.define(['mytable','form'],function(exports){
 			
 	};
 	myutil.getData({ 
-		url: myutil.config.ctx+'/product/getMateriel?materielTypeId=321',
+		url: myutil.config.ctx+'/product/getMateriel?materielTypeId=322',
 		success:function(data){
 			layui.each(data,function(index,item){
 				allMaterielSelect += '<dd data-value="'+item.id+'" data-convertPrice="'+item.convertPrice+'" data-convertUnit="'+item.convertPrice+'">'+
@@ -98,7 +98,7 @@ layui.define(['mytable','form'],function(exports){
 		}
 		else
 			myutil.getData({
-				url: myutil.config.ctx+'/product/getMateriel?materielTypeId=321',
+				url: myutil.config.ctx+'/product/getMateriel?materielTypeId=322',
 				data:{ name: name },
 				success:function(data){
 					if(data.length==0)
