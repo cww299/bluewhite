@@ -185,8 +185,9 @@ public class LedgerAction {
 	private ClearCascadeJSON clearCascadeJSONScatteredOutbound;
 	{
 		clearCascadeJSONScatteredOutbound = ClearCascadeJSON.get()
-				.addRetainTerm(ScatteredOutbound.class, "id", "outboundNumber","orderProcurement","orderMaterial",
+				.addRetainTerm(ScatteredOutbound.class, "id", "outboundNumber","orderMaterial","orderProcurement",
 						"receiveUser","user","dosage","remark","audit","auditTime","placeOrderTime")
+				.addRetainTerm(OrderProcurement.class, "id", "orderProcurementNumber")
 				.addRetainTerm(OrderMaterial.class,"id","receiveMode")
 				.addRetainTerm(Customer.class, "id", "name")	
 				.addRetainTerm(BaseOne.class, "id", "name")
@@ -468,7 +469,7 @@ public class LedgerAction {
 	 *        
 	 * @return
 	 */
-	@RequestMapping(value = "/ledger/updateScatteredOutbound", method = RequestMethod.GET)
+	@RequestMapping(value = "/ledger/updateScatteredOutbound", method = RequestMethod.POST)
 	@ResponseBody
 	public CommonResponse updateScatteredOutbound(ScatteredOutbound scatteredOutbound) {
 		CommonResponse cr = new CommonResponse();

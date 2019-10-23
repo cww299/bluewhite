@@ -184,6 +184,9 @@ public class ScatteredOutboundServiceImpl extends BaseServiceImpl<ScatteredOutbo
 					if (time != null) {
 						ot.setAuditTime(time);
 					}
+					if(ot.getAuditTime()==null){
+						throw new ServiceException("第" + (i + 1) + "条分散出库单未填写审核时间");
+					}
 					dao.save(ot);
 					count++;
 				}
