@@ -34,7 +34,7 @@
 				<td>合同:</td>
 				<td style="width:500px;"><select name="orderId" disabled id="orderIdSelect" lay-search lay-filter="agreementSelect"></select></td>
 				<td>&nbsp;&nbsp;&nbsp;</td>
-				<td><span class="layui-badge">提示：查看采购详情与库存详情移入是否出库和库存数量单元格中</span></td>
+				<td><span class="layui-badge">提示：查看库存详情移入库存数量单元格中</span></td>
 			</tr>
 		</table>
 		<table id="tableData" lay-filter="tableData"></table>
@@ -220,10 +220,22 @@ layui.config({
 			data:[],
 			ifNull:'---',
 			toolbar:'<div><span class="layui-btn layui-btn-sm" lay-event="addBuy">新增采购单</span>'+
-						'<span class="layui-btn layui-btn-sm layui-btn-danger" lay-event="inventedOut">分散出库</span>'+
-						'<span class="layui-btn layui-btn-sm layui-btn-warm" lay-event="allProcurement">采购汇总</span>'+
+						'<span class="layui-btn layui-btn-sm layui-btn-" lay-event="allProcurement">采购单</span>'+
+						'<span class="layui-btn layui-btn-sm layui-btn-normal" lay-event="inventedOut">新增出库单</span>'+
+						'<span class="layui-btn layui-btn-sm layui-btn-normal" lay-event="outOrder">出库单</span>'+
 					'</div>',
 			colsWidth:[0,10,0,10,10,8,8,8,8],
+			parseData:function(ret){
+				if(ret.code==0){
+					for(var i in ret.data.rows){
+						if(ret.data.rows[i].outbound)
+							ret.data.rows[i].state = 0;
+					}
+					return {  msg:ret.message,  code:ret.code , data:ret.data.rows, count:ret.data.total }; 
+				}
+				else
+					return {  msg:ret.message,  code:ret.code , data:[], count:0 }; 
+			},
 			limit:15,
 			limits:[10,15,30,50,100],
 			cols:[[
@@ -233,13 +245,8 @@ layui.config({
 			       { title:'领取模式',   field:'receiveMode_name',	},
 			       { title:'单位',   field:'unit_name',	},
 			       { title:'用量',   field:'dosage',	},
-			       { title:'库存状态',   field:'state', transData:{ data:['-','库存充足','无库存','有库存量不足'],text:'未知' },	},
+			       { title:'库存状态',   field:'state', transData:{ data:['已出库','库存充足','无库存','有库存量不足'],text:'未知' },	},
 			       { title:'库存数量',   field:'inventoryTotal',	},
-			       { title:'是否出库',   
-			    	   field:'outbound', transData:{ data:['否','是'],text:'未知' },
-			    	   /* field:'orderProcurements',	templet: '#procurementTpl',  */
-			    	   filter:true,
-			       },
 			       ]],
 			done:function(){
 				layui.each($('td[data-field="inventoryTotal"]'),function(index,item){
@@ -315,16 +322,93 @@ layui.config({
 				}) */
 				table.on('toolbar(tableData)',function(obj){
 					var checked = layui.table.checkStatus('tableData').data;
-					if(obj.event=='allProcurement'){
+					if(obj.event=='outOrder'){
 						var orderId = $('#orderIdSelect').val();
 						if(!orderId)
 							return myutil.emsg('请选择合同');
 						var allWin = layer.open({
-							title:'采购汇总',
+							title:'出库单',
 							type:1,
 							shadeClose:true,
 							area:['90%','90%'],
-							content:'<table id="allTable" lay-filter="allTable"></table>',
+							content:'<span class="layui-badge">提示：操作时请确认是否有下一页，请勿遗漏</span>'+
+									'<table id="outTable" lay-filter="outTable"></table>',
+							success:function(){
+								mytable.render({
+									elem: '#outTable',
+									colsWidth:[0,15,0,0,6,6],
+									url: '${ctx}/ledger/getScatteredOutbound?orderId='+orderId,
+									toolbar:['<span class="layui-btn layui-btn-sm" lay-event="audit">审核</span>'].join(''),
+									ifNull:'',
+									curd:{
+										btn:[4],
+										otherBtn:function(obj){
+											if(obj.event=='audit'){
+												var c = table.checkStatus('outTable').data;
+												if(c.length<1)
+													return myutil.emsg('请选择审核的信息');
+												var ids = [];
+												for(var i in c)
+													ids.push(c[i].id);
+												var auditWin = layer.open({
+													type:1,
+													area:['30%','20'],
+													btn:['确定','取消'],
+													content:['<div style="padding:20px;">',
+													         	'<span class="layui-badge">提示：如果填写时间则为统一审核时间，已填写时间将会被覆盖</span>',
+													         	'<input type="text" id="auditTime" class="layui-input">',
+													         '</div>',
+													         ].join(' '),
+													success:function(){
+														laydate.render({
+															elem:'#auditTime',
+															type:'datetime',
+															value: myutil.getSubDay(0,'yyyy-MM-dd hh:mm:ss'),
+														})	
+													},
+													yes:function(){
+														myutil.deleteAjax({
+															url:'/ledger/auditScatteredOutbound?time='+$('#auditTime').val(),
+															ids: ids.join(','),
+															success:function(){
+																layer.close(auditWin);
+																table.reload('outTable');
+															}
+														})
+													}
+												})
+											}
+										}
+									},
+									autoUpdate:{
+										deleUrl:'/ledger/deleteScatteredOutbound',
+										saveUrl:'/ledger/updateScatteredOutbound',
+									},
+									cols:[[
+										   { type:'checkbox' },
+									       { title:'出库时间',   field:'auditTime',	type:'dateTime', edit:true,},
+									       { title:'分散出库编号',   field:'outboundNumber',	},
+									       { title:'采购单编号',   field:'orderProcurement_orderProcurementNumber',  },
+									       { title:'领取用量',   field:'dosage',	},
+									       { title:'是否审核',   field:'audit', transData:{data:['否','是'],}	},
+									       ]]
+								})
+							},
+							end:function(){
+								table.reload('tableData');
+							}
+						})
+					}else if(obj.event=='allProcurement'){
+						var orderId = $('#orderIdSelect').val();
+						if(!orderId)
+							return myutil.emsg('请选择合同');
+						var allWin = layer.open({
+							title:'采购单',
+							type:1,
+							shadeClose:true,
+							area:['90%','90%'],
+							content:'<span class="layui-badge">提示：操作时请确认是否有下一页，请勿遗漏</span>'+
+									'<table id="allTable" lay-filter="allTable"></table>',
 							success:function(){
 								mytable.render({
 									elem: '#allTable',
@@ -334,12 +418,14 @@ layui.config({
 									curd:{
 										btn:[4],
 										otherBtn:function(obj){
-											var checked = layui.table.checkStatus('allTable').data;
-											if(checked.length!=1)
-												return myutil.emsg('只能修改一条数据');
-											if(obj.event=='updateProcurement'){
-												var trData = table.cache['tableData'][$(obj.target).data('index')];
-												addEditBuy('edit',checked[0]);
+											if(obj.event=="updateProcurement"){
+												var checked = layui.table.checkStatus('allTable').data;
+												if(checked.length!=1)
+													return myutil.emsg('只能修改一条数据');
+												if(obj.event=='updateProcurement'){
+													var trData = table.cache['tableData'][$(obj.target).data('index')];
+													addEditBuy('edit',checked[0]);
+												}
 											}
 										}
 									},
@@ -357,6 +443,9 @@ layui.config({
 									       { title:'预计到货', field:'expectArrivalTime',},
 									       ]]
 								})
+							},
+							end:function(){
+								table.reload('tableData');
 							}
 						})
 					}else if(obj.event=='addBuy'){
@@ -444,6 +533,7 @@ layui.config({
 				end:function(){
 					$('#restBtn').click(); //重置弹窗内容
 					$('#addEditId').val('');
+					table.reload('tableData');
 				}
 			})
 		}
