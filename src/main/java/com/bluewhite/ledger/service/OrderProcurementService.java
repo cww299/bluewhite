@@ -1,5 +1,7 @@
 package com.bluewhite.ledger.service;
 
+import java.util.List;
+
 import com.bluewhite.base.BaseCRUDService;
 import com.bluewhite.common.entity.PageParameter;
 import com.bluewhite.common.entity.PageResult;
@@ -36,6 +38,26 @@ public interface OrderProcurementService extends BaseCRUDService<OrderProcuremen
 	 * @return
 	 */
 	public int deleteOrderProcurement(String ids);
+
+	/**
+	 * 审核采购单
+	 * @param ids
+	 * @return
+	 */
+	public int auditOrderProcurement(String ids);
+	
+	/**
+	 * 库存不符预警
+	 * @return
+	 */
+	public List<OrderProcurement> warningOrderProcurement(Integer inOut);
+	
+	/**
+	 * 库存不符预警,一键修复
+	 * @param ids
+	 * @return
+	 */
+	public int fixOrderProcurement(String ids);
 
 
 }

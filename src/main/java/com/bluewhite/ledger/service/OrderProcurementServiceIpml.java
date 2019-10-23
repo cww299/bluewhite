@@ -15,6 +15,7 @@ import com.bluewhite.base.BaseServiceImpl;
 import com.bluewhite.common.ServiceException;
 import com.bluewhite.common.entity.PageParameter;
 import com.bluewhite.common.entity.PageResult;
+import com.bluewhite.common.utils.NumUtils;
 import com.bluewhite.common.utils.StringUtil;
 import com.bluewhite.ledger.dao.OrderMaterialDao;
 import com.bluewhite.ledger.dao.OrderProcurementDao;
@@ -77,6 +78,7 @@ public class OrderProcurementServiceIpml extends BaseServiceImpl<OrderProcuremen
 		}else{
 			orderMaterial = orderMaterialDao.findOne(orderProcurement.getOrderMaterialId());
 		}
+		orderProcurement.setInOutError(0);
 		orderProcurement.setOrderId(orderMaterial.getOrderId());
 		//生成新编号
 		orderProcurement.setOrderProcurementNumber(orderMaterial.getOrder().getBacthNumber()+"/"+orderMaterial.getOrder().getProduct().getName()+"/"
@@ -85,6 +87,7 @@ public class OrderProcurementServiceIpml extends BaseServiceImpl<OrderProcuremen
 		orderProcurement.setMaterielId(orderMaterial.getMaterielId());
 		//剩余数量
 		orderProcurement.setResidueNumber(orderProcurement.getPlaceOrderNumber());
+		
 		save(orderProcurement);
 	}
 
@@ -107,6 +110,50 @@ public class OrderProcurementServiceIpml extends BaseServiceImpl<OrderProcuremen
 			}
 		}
 		return count;
+	}
+
+	@Override
+	@Transactional
+	public int auditOrderProcurement(String ids) {
+		int count = 0;
+		if (!StringUtils.isEmpty(ids)) {
+			String[] idArr = ids.split(",");
+			if (idArr.length > 0) {
+				for (int i = 0; i < idArr.length; i++) {
+					Long id = Long.parseLong(idArr[i]);
+					OrderProcurement orderProcurement = dao.findOne(id);
+					//审核采购单进行入库，将实际的入库数值，修改后进行入库
+					//1.进行面料库存的更新
+					//2.标记入库数值和订购数值不同的采购单，做为库存预警表示
+					if(orderProcurement!=null){
+						if(orderProcurement.getArrival()==1){
+							throw new ServiceException("当前采购面料已成功入库，请不要多次审核");
+						}	
+						if(orderProcurement.getArrivalNumber()==null || orderProcurement.getArrivalTime() == null){
+							throw new ServiceException("当前采购面料未填写到库数值或日期，无法审核入库");
+						}
+						if(orderProcurement.getArrivalNumber()!=orderProcurement.getPlaceOrderNumber()){
+							orderProcurement.setInOutError(1);
+						}
+						orderProcurement.getMateriel().setInventoryNumber(NumUtils.mul(orderProcurement.getMateriel().getInventoryNumber(), orderProcurement.getArrivalNumber()));
+						save(orderProcurement);
+						count++;
+					}
+				}
+			}
+		}
+		return count;
+	}
+
+	@Override
+	public List<OrderProcurement> warningOrderProcurement(Integer inOut) {
+		return dao.findbyInOutError(inOut);
+	}
+
+	@Override
+	public int fixOrderProcurement(String ids) {
+		
+		return 0;
 	}
 
 }
