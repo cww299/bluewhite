@@ -147,7 +147,7 @@ public class OrderProcurementServiceIpml extends BaseServiceImpl<OrderProcuremen
 
 	@Override
 	public List<OrderProcurement> warningOrderProcurement(Integer inOut) {
-		return dao.findbyInOutError(inOut);
+		return dao.findByInOutError(inOut);
 	}
 
 	@Override
