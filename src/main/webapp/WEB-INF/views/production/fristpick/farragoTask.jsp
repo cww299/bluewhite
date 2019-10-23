@@ -31,10 +31,10 @@
 		<!--查询开始  -->	
 		<table>
 			<tr>
-				<td>批次名:</td>
-				<td><input type="text" name="number" id="number" placeholder="请输入批次号"
+				<td class="hidden-sm">批次名:</td>
+				<td class="hidden-sm"><input type="text" name="number" id="number" placeholder="请输入批次号"
 					class="form-control search-query number" /></td>
-				<td>&nbsp;&nbsp;</td>
+				<td class="hidden-sm">&nbsp;&nbsp;</td>
 				<td>工序名称:</td>
 				<td><input type="text" name="name" id="name" placeholder="请输入产品名称"
 					class="form-control search-query name" /></td>
@@ -53,6 +53,9 @@
 				<td>&nbsp;&nbsp;&nbsp;&nbsp;</td> 
 				<td class="visible-sm"><span class="input-group-btn">
 					<button type="button"class="btn btn-success  btn-sm btn-3d update">杂工修改</button></span></td>	
+				<td>&nbsp;&nbsp;&nbsp;&nbsp;</td> 
+				<td class="visible-sm"><span class="input-group-btn">
+					<button type="button"class="btn btn-success  btn-sm btn-3d endTast">结束任务</button></span></td>	
 			</tr>
 		</table>
 		<h1 class="page-header"></h1>		
@@ -157,14 +160,14 @@
 						</div>
 					</div>
 					
-					<div class="form-group visible-sm">
+					<!-- <div class="form-group visible-sm">
 						<label class="col-sm-3 control-label">结束时间</label>
 						<div class="col-sm-6">
 							<input id="endTimes" placeholder="请输入结束时间"
 								class="form-control laydate-icon"
 								onClick="laydate({elem: '#endTimes', istime: true, format: 'YYYY-MM-DD hh:mm:ss'})">
 						</div>
-					</div>
+					</div> -->
 					
 					<div class="form-group">
 
@@ -784,6 +787,79 @@ window.onload = function(){
 				  	}
 		            self.loadPagination(data);
 				});
+				//结束任务
+				$('.endTast').unbind().on('click',function(obj){
+					layui.use(['laydate','layer'],function(){
+						var laydate = layui.laydate
+							,layer = layui.layer;
+						if($('#tablecontent').find('input:checked').length!=1)
+							return layer.msg('只能选择一条任务进行结束',{icon:2,offset:'120px'});
+						var id = $($('#tablecontent').find('input:checked')[0]).val();
+						$.ajax({
+							url:'${ctx}/farragoTask/allFarragoTask?id='+id,
+							async:false,
+							success:function(r){
+								if(r.code==0){
+									var d = r.data.rows[0];
+									var endWin = layer.open({
+										type:1,
+										title:'结束时间',
+										offset:'120px',
+										area:['30%','20%'],
+										btn:['确定','取消'],
+										content:['<div>',
+										         	'<input id="endTime" placeholder="结束时间" class="form-control">',
+										         '</div>',].join(' '),
+										success:function(){
+											laydate.render({
+												elem: '#endTime',
+												type: 'datetime',
+												value : new Date(),
+											});
+										},
+										yes:function(){
+											var end = $('#endTime').val();
+											if(!end)
+												return layer.msg('请输入结束时间',{icon:2,offset:'120px'});
+											$.ajax({
+												url:'${ctx}/farragoTask/updateFarragoTask',
+												type:'post',
+												data:{
+													id: d.id,
+													startTime: d.startTime,
+													endTime: end,
+												},
+												success:function(r){
+													if(r.code==0){
+														layer.msg(r.message,{icon:1,offset:'120px'});
+														layer.close(endWin);
+														var orderTime=$("#startTime").val().split('~');
+														var data={
+																page:self.getCount(),
+														  		size:13,	
+														  		type:2,
+														  		name:$('#name').val(),
+													  			bacth:$('#number').val(),
+													  			orderTimeBegin:orderTime[0],
+													  			orderTimeEnd:orderTime[1], 
+														} 
+														self.loadPagination(data); 
+														layer.close(_index);
+													}else
+														layer.msg(r.message,{icon:2,offset:'120px'});
+												}
+											})
+										}
+									})
+								}else
+									layer.msg(r.message,{icon:2,offset:'120px'});
+							},
+							error:function(){
+								layer.msg('获取数据异常',{icon:2,offset:'120px'});
+							}
+						})
+				 	}) 
+				})
 				//杂工修改
 				$(".update").on('click',function(){
 					
