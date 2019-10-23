@@ -160,6 +160,13 @@ public class ScatteredOutboundServiceImpl extends BaseServiceImpl<ScatteredOutbo
 					if (ot.getAudit() == 1) {
 						throw new ServiceException("第" + (i + 1) + "条耗料已审核，无法删除");
 					}
+					//当删除出库单时，恢复出库情况和库存
+					OrderMaterial orderMaterial = ot.getOrderMaterial();
+					orderMaterial.setOutbound(0);
+					orderMaterialDao.save(orderMaterial);
+					OrderProcurement orderProcurement = ot.getOrderProcurement();
+					orderProcurement.setResidueNumber(NumUtils.mul(orderProcurement.getResidueNumber(), ot.getDosage()));
+					orderProcurementDao.save(orderProcurement);
 					delete(id);
 					count++;
 				}
@@ -198,6 +205,9 @@ public class ScatteredOutboundServiceImpl extends BaseServiceImpl<ScatteredOutbo
 	@Override
 	public void updateScatteredOutbound(ScatteredOutbound scatteredOutbound) {
 		ScatteredOutbound ot = findOne(scatteredOutbound.getId());
+		if(scatteredOutbound.getAuditTime()!=null && ot.getAudit()==1){
+			throw new ServiceException("已审核时间，无法修改");
+		}
 		update(scatteredOutbound, ot, "");
 	}
 
