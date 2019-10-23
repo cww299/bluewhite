@@ -123,8 +123,13 @@ public class FarragoTaskAction {
 				cr.setCode(ErrorCode.ILLEGAL_ARGUMENT.getCode());
 				cr.setMessage("已完成，无法修改");
 				return cr;
-				
 			}
+			if(farragoTask.getStartTime().after(farragoTask.getEndTime())){
+				cr.setCode(ErrorCode.ILLEGAL_ARGUMENT.getCode());
+				cr.setMessage("结束时间不能比开始时间小，请重新设定结束时间");
+				return cr;
+			}
+			
 			//获取原任务员工数量
 			Integer userIdsOld = 0;
 			if(!StringUtils.isEmpty(oldTask.getUserIds())){
@@ -146,19 +151,27 @@ public class FarragoTaskAction {
 				temporaryUserIds = farragoTask.getTemporaryUserIds().split(",").length;
 			}
 			//人员数量不想等，说明该任务发生过人员调动，将原任务结束重新生成新任务
-				if(userIdsOld!=userIds || temporaryUserIdsOld!=temporaryUserIds){
-					oldTask.setEndTime(new Date());
-					if (oldTask.getStartTime() != null && oldTask.getEndTime() != null) {
-						oldTask.setTime(DatesUtil.getTime(oldTask.getStartTime(), oldTask.getEndTime()));
-					}
-					oldTask.setStatus(1);
-					farragoTaskService.addFarragoTask(oldTask, request);
+			if(userIdsOld!=userIds || temporaryUserIdsOld!=temporaryUserIds){
+				oldTask.setEndTime(new Date());
+				if (oldTask.getStartTime() != null && oldTask.getEndTime() != null) {
+					oldTask.setTime(DatesUtil.getTime(oldTask.getStartTime(), oldTask.getEndTime()));
+				}else{
 					//生成未完成的新任务
 					farragoTask.setStatus(0);
 					farragoTask.setStartTime(new Date());
 					farragoTask.setId(null);
 					farragoTaskService.addFarragoTask(farragoTask, request);
 				}
+				oldTask.setStatus(1);
+				farragoTaskService.addFarragoTask(oldTask, request);
+			}else{
+				//当开始时间和结束时间同时不为空，说明任务结束
+				if (farragoTask.getStartTime() != null && farragoTask.getEndTime() != null) {
+					oldTask.setTime(DatesUtil.getTime(farragoTask.getStartTime(), farragoTask.getEndTime()));
+					oldTask.setStatus(1);
+					farragoTaskService.addFarragoTask(oldTask, request);
+				}
+			}
 			cr.setMessage("成功");
 		}else{
 			cr.setCode(ErrorCode.ILLEGAL_ARGUMENT.getCode());

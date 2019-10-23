@@ -27,7 +27,7 @@ import com.bluewhite.ledger.dao.ScatteredOutboundDao;
 import com.bluewhite.ledger.entity.OrderMaterial;
 import com.bluewhite.ledger.entity.OrderProcurement;
 import com.bluewhite.ledger.entity.ScatteredOutbound;
-import com.bluewhite.product.primecostbasedata.dao.MaterielDao;
+import com.bluewhite.product.primecostbasedata.  dao.MaterielDao;
 
 @Service
 public class ScatteredOutboundServiceImpl extends BaseServiceImpl<ScatteredOutbound, Long>
@@ -156,7 +156,7 @@ public class ScatteredOutboundServiceImpl extends BaseServiceImpl<ScatteredOutbo
 	}
 
 	@Override
-	public int auditScatteredOutbound(String ids) { 
+	public int auditScatteredOutbound(String ids,Date time) { 
 		int count = 0;
 		if (!StringUtils.isEmpty(ids)) {
 			String[] idArr = ids.split(",");
@@ -164,10 +164,14 @@ public class ScatteredOutboundServiceImpl extends BaseServiceImpl<ScatteredOutbo
 				for (int i = 0; i < idArr.length; i++) {
 					Long id = Long.parseLong(idArr[i]);
 					ScatteredOutbound ot = findOne(id);
+					if(ot.getOrderProcurement().getArrival()==0){
+						throw new ServiceException("第" + (i + 1) + "条分散出库单还未到货，无法审核");
+					}
 					ot.setAudit(1);
-					
-					
-					
+					if(time!=null){
+						ot.setAuditTime(time);
+					}
+					dao.save(ot);
 					count++;
 				}
 			}
@@ -179,6 +183,29 @@ public class ScatteredOutboundServiceImpl extends BaseServiceImpl<ScatteredOutbo
 	public void updateScatteredOutbound(ScatteredOutbound scatteredOutbound) {
 		ScatteredOutbound ot = findOne(scatteredOutbound.getId());
 		update(scatteredOutbound, ot, "");
+	}
+
+	@Override
+	public int generatePlaceOrder(String ids) {
+		int count = 0;
+		if (!StringUtils.isEmpty(ids)) {
+			String[] idArr = ids.split(",");
+			if (idArr.length > 0) {
+				for (int i = 0; i < idArr.length; i++) {
+					Long id = Long.parseLong(idArr[i]);
+					ScatteredOutbound ot = findOne(id);
+					if(ot.getUserId()==null){
+						throw new ServiceException("第" + (i + 1) + "条下单跟单人不能为空");
+					}
+					if(StringUtils.isEmpty(ot.getReceiveUser())){
+						throw new ServiceException("第" + (i + 1) + "条下单领取人不能为空");
+					}
+					dao.save(ot);
+					count++;
+				}
+			}
+		}
+		return count;
 	}
 	
 	

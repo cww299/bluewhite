@@ -16,7 +16,9 @@ import com.bluewhite.system.user.entity.User;
 /**
  * 分散出库记录
  * 
- * 采购部将所有已经拥有库存的耗料表生成出库分散记录表
+ * 采购部将所有已经拥有库存的耗料表生成分散出库记录表
+ * 
+ * 生产计划部使用分散出库记录表作为下单表使用
  *
  */
 @Entity
@@ -40,7 +42,7 @@ public class ScatteredOutbound extends BaseEntity<Long>{
 	 */
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "order_procurement_id", referencedColumnName = "id", insertable = false, updatable = false)
-	private OrderProcurement OrderProcurement;
+	private OrderProcurement orderProcurement;
 	
 	/**
 	 * 订单（下单合同）生产用料id
@@ -98,6 +100,12 @@ public class ScatteredOutbound extends BaseEntity<Long>{
 	 */
 	@Column(name = "audit_time")
     private Date auditTime;
+	
+	/**
+	 * 下单时间（生产计划部）
+	 */
+	@Column(name = "place_order_time")
+    private Date placeOrderTime;
 	
 	/**
 	 * 产品name
@@ -205,11 +213,11 @@ public class ScatteredOutbound extends BaseEntity<Long>{
 	}
 
 	public OrderProcurement getOrderProcurement() {
-		return OrderProcurement;
+		return orderProcurement;
 	}
 
 	public void setOrderProcurement(OrderProcurement orderProcurement) {
-		OrderProcurement = orderProcurement;
+		this.orderProcurement = orderProcurement;
 	}
 
 	public String getReceiveUser() {

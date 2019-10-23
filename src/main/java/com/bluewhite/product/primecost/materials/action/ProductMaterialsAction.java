@@ -122,13 +122,7 @@ public class ProductMaterialsAction {
 	public CommonResponse deleteProductMaterials(HttpServletRequest request,String ids) {
 		CommonResponse cr = new CommonResponse();
 		if (!StringUtils.isEmpty(ids)) {
-			String[] idArr = ids.split(",");
-			if (idArr.length>0) {
-				for (int i = 0; i < idArr.length; i++) {
-					Long id = Long.parseLong(idArr[i]);
-					productMaterialsService.deleteProductMaterials(id);
-				}
-			}
+			productMaterialsService.deleteProductMaterials(ids);
 				cr.setMessage("删除成功");
 			}else{
 				cr.setCode(ErrorCode.ILLEGAL_ARGUMENT.getCode());
