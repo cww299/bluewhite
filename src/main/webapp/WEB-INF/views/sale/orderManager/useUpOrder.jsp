@@ -225,6 +225,17 @@ layui.config({
 						'<span class="layui-btn layui-btn-sm layui-btn-normal" lay-event="outOrder">出库单</span>'+
 					'</div>',
 			colsWidth:[0,10,0,10,10,8,8,8,8],
+			parseData:function(ret){
+				if(ret.code==0){
+					for(var i in ret.data.rows){
+						if(ret.data.rows[i].outbound)
+							ret.data.rows[i].state = 0;
+					}
+					return {  msg:ret.message,  code:ret.code , data:ret.data.rows, count:ret.data.total }; 
+				}
+				else
+					return {  msg:ret.message,  code:ret.code , data:[], count:0 }; 
+			},
 			limit:15,
 			limits:[10,15,30,50,100],
 			cols:[[
@@ -234,13 +245,8 @@ layui.config({
 			       { title:'领取模式',   field:'receiveMode_name',	},
 			       { title:'单位',   field:'unit_name',	},
 			       { title:'用量',   field:'dosage',	},
-			       { title:'库存状态',   field:'state', transData:{ data:['-','库存充足','无库存','有库存量不足'],text:'未知' },	},
+			       { title:'库存状态',   field:'state', transData:{ data:['已出库','库存充足','无库存','有库存量不足'],text:'未知' },	},
 			       { title:'库存数量',   field:'inventoryTotal',	},
-			       { title:'是否出库',   
-			    	   field:'outbound', transData:{ data:['否','是'],text:'未知' },
-			    	   /* field:'orderProcurements',	templet: '#procurementTpl',  */
-			    	   filter:true,
-			       },
 			       ]],
 			done:function(){
 				layui.each($('td[data-field="inventoryTotal"]'),function(index,item){
@@ -329,19 +335,47 @@ layui.config({
 							success:function(){
 								mytable.render({
 									elem: '#outTable',
-									colsWidth:[0,13,0,6,6,6,8,13],
+									colsWidth:[0,15,0,0,6,6],
 									url: '${ctx}/ledger/getScatteredOutbound?orderId='+orderId,
 									toolbar:['<span class="layui-btn layui-btn-sm" lay-event="audit">审核</span>'].join(''),
+									ifNull:'',
 									curd:{
 										btn:[4],
 										otherBtn:function(obj){
-											/* myutil.deleTableIds({
-												table:'outTable',
-												text:'请选择相关信息|是否确认审核？',
-												url:'/ledger/auditScatteredOutbound',
-											}); */
 											if(obj.event=='audit'){
-												
+												var c = table.checkStatus('outTable').data;
+												if(c.length<1)
+													return myutil.emsg('请选择审核的信息');
+												var ids = [];
+												for(var i in c)
+													ids.push(c[i].id);
+												var auditWin = layer.open({
+													type:1,
+													area:['30%','20'],
+													btn:['确定','取消'],
+													content:['<div style="padding:20px;">',
+													         	'<span class="layui-badge">提示：如果填写时间则为统一审核时间，已填写时间将会被覆盖</span>',
+													         	'<input type="text" id="auditTime" class="layui-input">',
+													         '</div>',
+													         ].join(' '),
+													success:function(){
+														laydate.render({
+															elem:'#auditTime',
+															type:'datetime',
+															value: myutil.getSubDay(0,'yyyy-MM-dd hh:mm:ss'),
+														})	
+													},
+													yes:function(){
+														myutil.deleteAjax({
+															url:'/ledger/auditScatteredOutbound?time='+$('#auditTime').val(),
+															ids: ids.join(','),
+															success:function(){
+																layer.close(auditWin);
+																table.reload('outTable');
+															}
+														})
+													}
+												})
 											}
 										}
 									},
@@ -351,13 +385,16 @@ layui.config({
 									},
 									cols:[[
 										   { type:'checkbox' },
-									       { title:'出库时间',   field:'auditTime',	type:'datetime', },
+									       { title:'出库时间',   field:'auditTime',	type:'dateTime', edit:true,},
 									       { title:'分散出库编号',   field:'outboundNumber',	},
-									       { title:'采购单编号',   field:'outboundNumber_orderProcurementNumber',  },
+									       { title:'采购单编号',   field:'orderProcurement_orderProcurementNumber',  },
 									       { title:'领取用量',   field:'dosage',	},
 									       { title:'是否审核',   field:'audit', transData:{data:['否','是'],}	},
 									       ]]
 								})
+							},
+							end:function(){
+								table.reload('tableData');
 							}
 						})
 					}else if(obj.event=='allProcurement'){
@@ -379,12 +416,14 @@ layui.config({
 									curd:{
 										btn:[4],
 										otherBtn:function(obj){
-											var checked = layui.table.checkStatus('allTable').data;
-											if(checked.length!=1)
-												return myutil.emsg('只能修改一条数据');
-											if(obj.event=='updateProcurement'){
-												var trData = table.cache['tableData'][$(obj.target).data('index')];
-												addEditBuy('edit',checked[0]);
+											if(obj.event=="updateProcurement"){
+												var checked = layui.table.checkStatus('allTable').data;
+												if(checked.length!=1)
+													return myutil.emsg('只能修改一条数据');
+												if(obj.event=='updateProcurement'){
+													var trData = table.cache['tableData'][$(obj.target).data('index')];
+													addEditBuy('edit',checked[0]);
+												}
 											}
 										}
 									},
@@ -402,6 +441,9 @@ layui.config({
 									       { title:'预计到货', field:'expectArrivalTime',},
 									       ]]
 								})
+							},
+							end:function(){
+								table.reload('tableData');
 							}
 						})
 					}else if(obj.event=='addBuy'){
