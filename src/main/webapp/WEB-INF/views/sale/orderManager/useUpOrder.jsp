@@ -34,7 +34,7 @@
 				<td>合同:</td>
 				<td style="width:500px;"><select name="orderId" disabled id="orderIdSelect" lay-search lay-filter="agreementSelect"></select></td>
 				<td>&nbsp;&nbsp;&nbsp;</td>
-				<td><span class="layui-badge">提示：查看采购详情与库存详情移入是否出库和库存数量单元格中</span></td>
+				<td><span class="layui-badge">提示：查看库存详情移入库存数量单元格中</span></td>
 			</tr>
 		</table>
 		<table id="tableData" lay-filter="tableData"></table>
@@ -220,8 +220,8 @@ layui.config({
 			data:[],
 			ifNull:'---',
 			toolbar:'<div><span class="layui-btn layui-btn-sm" lay-event="addBuy">新增采购单</span>'+
-						'<span class="layui-btn layui-btn-sm layui-btn-danger" lay-event="inventedOut">生成出库</span>'+
-						'<span class="layui-btn layui-btn-sm layui-btn-warm" lay-event="allProcurement">采购汇总</span>'+
+						'<span class="layui-btn layui-btn-sm layui-btn-" lay-event="allProcurement">采购单</span>'+
+						'<span class="layui-btn layui-btn-sm layui-btn-normal" lay-event="inventedOut">新增出库单</span>'+
 						'<span class="layui-btn layui-btn-sm layui-btn-normal" lay-event="outOrder">出库单</span>'+
 					'</div>',
 			colsWidth:[0,10,0,10,10,8,8,8,8],
@@ -331,7 +331,8 @@ layui.config({
 							type:1,
 							shadeClose:true,
 							area:['90%','90%'],
-							content:'<table id="outTable" lay-filter="outTable"></table>',
+							content:'<span class="layui-badge">提示：操作时请确认是否有下一页，请勿遗漏</span>'+
+									'<table id="outTable" lay-filter="outTable"></table>',
 							success:function(){
 								mytable.render({
 									elem: '#outTable',
@@ -402,11 +403,12 @@ layui.config({
 						if(!orderId)
 							return myutil.emsg('请选择合同');
 						var allWin = layer.open({
-							title:'采购汇总',
+							title:'采购单',
 							type:1,
 							shadeClose:true,
 							area:['90%','90%'],
-							content:'<table id="allTable" lay-filter="allTable"></table>',
+							content:'<span class="layui-badge">提示：操作时请确认是否有下一页，请勿遗漏</span>'+
+									'<table id="allTable" lay-filter="allTable"></table>',
 							success:function(){
 								mytable.render({
 									elem: '#allTable',
@@ -531,6 +533,7 @@ layui.config({
 				end:function(){
 					$('#restBtn').click(); //重置弹窗内容
 					$('#addEditId').val('');
+					table.reload('tableData');
 				}
 			})
 		}
