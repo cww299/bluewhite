@@ -12,6 +12,6 @@ public interface OrderProcurementDao  extends BaseRepository<OrderProcurement, L
 	 * @param inOutError
 	 * @return
 	 */
-	List<OrderProcurement> findbyInOutError(Integer inOutError);
+	List<OrderProcurement> findByInOutError(Integer inOutError);
 
 }
