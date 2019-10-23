@@ -220,8 +220,9 @@ layui.config({
 			data:[],
 			ifNull:'---',
 			toolbar:'<div><span class="layui-btn layui-btn-sm" lay-event="addBuy">新增采购单</span>'+
-						'<span class="layui-btn layui-btn-sm layui-btn-danger" lay-event="inventedOut">分散出库</span>'+
+						'<span class="layui-btn layui-btn-sm layui-btn-danger" lay-event="inventedOut">生成出库</span>'+
 						'<span class="layui-btn layui-btn-sm layui-btn-warm" lay-event="allProcurement">采购汇总</span>'+
+						'<span class="layui-btn layui-btn-sm layui-btn-normal" lay-event="outOrder">出库单</span>'+
 					'</div>',
 			colsWidth:[0,10,0,10,10,8,8,8,8],
 			limit:15,
@@ -315,7 +316,51 @@ layui.config({
 				}) */
 				table.on('toolbar(tableData)',function(obj){
 					var checked = layui.table.checkStatus('tableData').data;
-					if(obj.event=='allProcurement'){
+					if(obj.event=='outOrder'){
+						var orderId = $('#orderIdSelect').val();
+						if(!orderId)
+							return myutil.emsg('请选择合同');
+						var allWin = layer.open({
+							title:'出库单',
+							type:1,
+							shadeClose:true,
+							area:['90%','90%'],
+							content:'<table id="outTable" lay-filter="outTable"></table>',
+							success:function(){
+								mytable.render({
+									elem: '#outTable',
+									colsWidth:[0,13,0,6,6,6,8,13],
+									url: '${ctx}/ledger/getScatteredOutbound?orderId='+orderId,
+									toolbar:['<span class="layui-btn layui-btn-sm" lay-event="audit">审核</span>'].join(''),
+									curd:{
+										btn:[4],
+										otherBtn:function(obj){
+											/* myutil.deleTableIds({
+												table:'outTable',
+												text:'请选择相关信息|是否确认审核？',
+												url:'/ledger/auditScatteredOutbound',
+											}); */
+											if(obj.event=='audit'){
+												
+											}
+										}
+									},
+									autoUpdate:{
+										deleUrl:'/ledger/deleteScatteredOutbound',
+										saveUrl:'/ledger/updateScatteredOutbound',
+									},
+									cols:[[
+										   { type:'checkbox' },
+									       { title:'出库时间',   field:'auditTime',	type:'datetime', },
+									       { title:'分散出库编号',   field:'outboundNumber',	},
+									       { title:'采购单编号',   field:'outboundNumber_orderProcurementNumber',  },
+									       { title:'领取用量',   field:'dosage',	},
+									       { title:'是否审核',   field:'audit', transData:{data:['否','是'],}	},
+									       ]]
+								})
+							}
+						})
+					}else if(obj.event=='allProcurement'){
 						var orderId = $('#orderIdSelect').val();
 						if(!orderId)
 							return myutil.emsg('请选择合同');
