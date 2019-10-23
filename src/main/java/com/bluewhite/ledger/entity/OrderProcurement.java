@@ -159,6 +159,12 @@ public class OrderProcurement extends BaseEntity<Long> {
 	private Integer arrival;
 	
 	/**
+	 * 入库库存是否有出入(0=否，1=是)
+	 */
+	@Column(name = "in_out_error")
+	private Integer inOutError;
+	
+	/**
 	 * 订单（下单合同）生产用料id
 	 */
 	@Transient
@@ -186,6 +192,14 @@ public class OrderProcurement extends BaseEntity<Long> {
 	
 	
 
+
+	public Integer getInOutError() {
+		return inOutError;
+	}
+
+	public void setInOutError(Integer inOutError) {
+		this.inOutError = inOutError;
+	}
 
 	public Order getOrder() {
 		return order;

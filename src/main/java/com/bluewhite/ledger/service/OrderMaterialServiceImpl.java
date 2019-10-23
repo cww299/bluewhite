@@ -10,6 +10,7 @@ import javax.persistence.criteria.Predicate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
 
 import com.bluewhite.base.BaseServiceImpl;
@@ -101,6 +102,7 @@ public class OrderMaterialServiceImpl extends BaseServiceImpl<OrderMaterial, Lon
 	}
 
 	@Override
+	@Transactional
 	public int confirmOrderMaterial(String ids) {
 		List<OrderMaterial> orderMaterialList = new ArrayList<>();
 		int count = 0;
@@ -180,6 +182,7 @@ public class OrderMaterialServiceImpl extends BaseServiceImpl<OrderMaterial, Lon
 	}
 
 	@Override
+	@Transactional
 	public int deleteOrderMaterial(String ids) {
 		int count = 0;
 		if (!StringUtils.isEmpty(ids)) {
@@ -200,6 +203,7 @@ public class OrderMaterialServiceImpl extends BaseServiceImpl<OrderMaterial, Lon
 	}
 
 	@Override
+	@Transactional
 	public int auditOrderMaterial(String ids) {
 		int count = 0;
 		if (!StringUtils.isEmpty(ids)) {

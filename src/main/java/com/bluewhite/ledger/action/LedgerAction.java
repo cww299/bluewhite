@@ -2,6 +2,7 @@ package com.bluewhite.ledger.action;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.propertyeditors.CustomDateEditor;
@@ -384,10 +385,8 @@ public class LedgerAction {
 	}
 	
 	
-	
-	
 	/**
-	 * （生产计划部）删除采购单
+	 * （采购部）删除采购单
 	 * 
 	 * @param order
 	 * @return
@@ -402,11 +401,9 @@ public class LedgerAction {
 	}
 	
 	/**
-	 * 生成分散出库单
-	 * 
+	 * （采购部）将所有已有库存的耗料表生成分散出库记录
 	 * 将已经订购的采购单面料当作库存，进行出库
 	 * 冻结当前下单合同的当前耗料表对于库存的消耗
-	 * （采购部）将所有已有库存的耗料表生成分散出库记录
 	 *        
 	 * @return
 	 */
@@ -435,7 +432,22 @@ public class LedgerAction {
 	}
 	
 	/**
-	 * （生产计划部）分页查看分散出库单
+	 * （采购部）删除分散出库单
+	 * 
+	 * @param order
+	 * @return
+	 */
+	@RequestMapping(value = "/ledger/deleteScatteredOutbound", method = RequestMethod.GET)
+	@ResponseBody
+	public CommonResponse deleteScatteredOutbound(String ids) {
+		CommonResponse cr = new CommonResponse();
+		int count = scatteredOutboundService.deleteScatteredOutbound(ids);
+		cr.setMessage("成功删除" + count + "条分散出库单");
+		return cr;
+	}
+	
+	/**
+	 * （采购部）（生产计划部）分页查看分散出库单 生产计划部查看的是审核之后的采购单
 	 *        
 	 * @return
 	 */
@@ -465,6 +477,38 @@ public class LedgerAction {
 		return cr;
 	}
 	
+	/**
+	 * （采购部）采购单出入不符预警
+	 * 采购单经过面辅料仓库审核入库后，将出入库数量不相同的进行标记预警
+	 * 
+	 * @param order
+	 * @return
+	 */
+	@RequestMapping(value = "/ledger/warningOrderProcurement", method = RequestMethod.GET)
+	@ResponseBody
+	public CommonResponse  warningOrderProcurement() {
+		CommonResponse cr = new CommonResponse();
+		cr.setData(clearCascadeJSONOrderProcurement.format(orderProcurementService.warningOrderProcurement(1)).toJSON());
+		cr.setMessage("查询成功");
+		return cr;
+	}
+	
+	/**
+	 * （采购部）当采购单出入不符预警
+	 * 进行一键修改订单数量
+	 * 
+	 * @param order
+	 * @return
+	 */
+	@RequestMapping(value = "/ledger/fixOrderProcurement", method = RequestMethod.GET)
+	@ResponseBody
+	public CommonResponse  fixOrderProcurement(String ids) {
+		CommonResponse cr = new CommonResponse();
+		orderProcurementService.fixOrderProcurement(ids);
+		cr.setMessage("查询成功");
+		return cr;
+	}
+	
 
 	
 	/**
@@ -484,6 +528,20 @@ public class LedgerAction {
 	
 	
 	
+	/**
+	 * （面辅料仓库）审核采购单入库，作为实际库存使用
+	 * 
+	 * @param order
+	 * @return
+	 */
+	@RequestMapping(value = "/ledger/auditOrderProcurement", method = RequestMethod.GET)
+	@ResponseBody
+	public CommonResponse  auditOrderProcurement(String ids) {
+		CommonResponse cr = new CommonResponse();
+		int count = orderProcurementService.auditOrderProcurement(ids);
+		cr.setMessage("成功生成" + count + "条生产订单");
+		return cr;
+	}
 	
 	
 	
