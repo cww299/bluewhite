@@ -182,15 +182,23 @@ layui.config({
 			       { align:'center', type:'checkbox',},
 			       { align:'center', title:'客户名称',	field:'customerId',	 width:'10%', templet:'<span>{{ d.customer?d.customer.name:""}}</span>'},
 			       { align:'center', title:'批次号',   	field:'bacthNumber', width:'12%'  	},
-			       { align:'center', title:'下单时间',   	field:'orderDate', width:'12%'  	},
-			       { align:'center', title:'产品编号',	field:'productNumber', width:'10%', 	templet:'<span>{{ d.product?d.product.number:""}}</span>'	},
+			       { align:'center', title:'下单时间',   	field:'orderDate', width:'8%',  templet:'<span>{{ d.orderDate?d.orderDate.split(" ")[0]:""}}</span>'  	},
+			       { align:'center', title:'产品编号',	field:'productNumber', width:'8%', 	templet:'<span>{{ d.product?d.product.number:""}}</span>'	},
 			       { align:'center', title:'产品名称',	field:'productName',	templet:'<span>{{ d.product?d.product.name:""}}</span>'},
-			       { align:'center', title:'数量',   field:'number',	 width:'6%'},
+			       { align:'center', title:'数量',   field:'number',	 width:'4%'},
 			       { align:'center', title:'剩余数量',   field:'surplusNumber',	 width:'6%'},
 			       { align:'center', title:'价格',   field:'price',  width:'6%'	 },
 			       { align:'center', title:'备注',   field:'remark',	 },
+			       { align:'center', title:'生成耗料单',   field:'',  width:'7%', templet:getTpl(),	 },
 			       ]]
 		})
+		function getTpl(){
+			return function(d){
+				if(d.orderMaterials && d.orderMaterials.length>0)
+					return '<span class="layui-badge layui-bg-">是</span>';
+				return '<span class="layui-badge layui-bg-blue">否</span>';
+			}
+		}
 		form.on('submit(search)',function(obj){
 			var time = $('#searchTime').val();
 			var begin='',end='';

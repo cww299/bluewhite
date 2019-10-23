@@ -368,8 +368,8 @@ layui.config({
 					}else if(obj.event=='inventedOut'){
 						myutil.deleTableIds({
 							table:'tableData',
-							text:'请选择相关信息|是否确认虚拟出库?',
-							url:'/ledger/virtualOutbound',
+							text:'请选择相关信息|是否确认分散出库?',
+							url:'/ledger/saveScatteredOutbound',
 						});
 					}
 				})
