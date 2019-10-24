@@ -47,6 +47,11 @@ public class OrderProcurementServiceIpml extends BaseServiceImpl<OrderProcuremen
 			if (param.getOrderId()!=null){
 				predicate.add(cb.equal(root.get("orderId").as(Long.class),param.getOrderId()));
 			}
+			// 是否到货
+			if (param.getArrival()!=null){
+				predicate.add(cb.equal(root.get("arrival").as(Integer.class),param.getArrival()));
+			}
+			
 			Predicate[] pre = new Predicate[predicate.size()];
 			query.where(predicate.toArray(pre));
 			return null;
@@ -159,8 +164,13 @@ public class OrderProcurementServiceIpml extends BaseServiceImpl<OrderProcuremen
 			if (idArr.length > 0) {
 				for (int i = 0; i < idArr.length; i++) {
 					Long id = Long.parseLong(idArr[i]);
-					
-					
+					//根据采购单id查询出所有使用了，该采购单id的
+					List<ScatteredOutbound> scatteredOutboundList = scatteredOutboundDao.findByOrderProcurementId(id);
+					if(scatteredOutboundList.size()>0){
+						
+						
+						
+					}
 					count++;
 				}
 			}

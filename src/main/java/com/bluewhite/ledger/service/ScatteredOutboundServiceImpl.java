@@ -59,9 +59,9 @@ public class ScatteredOutboundServiceImpl extends BaseServiceImpl<ScatteredOutbo
 					// 出库单
 					ScatteredOutbound scatteredOutbound = new ScatteredOutbound();
 					scatteredOutbound.setOrderMaterialId(id);
-					scatteredOutbound
-							.setOutboundNumber(ot.getOrder().getBacthNumber() + ot.getOrder().getProduct().getName());
+					scatteredOutbound.setOutboundNumber(ot.getOrder().getBacthNumber() + ot.getOrder().getProduct().getName());
 					scatteredOutbound.setAudit(0);
+					scatteredOutbound.setOpenOrderAudit(0);
 					// 按id排序，保证库存先入先出
 					// 遍历当前物料的库存采购单，一般只会存在一条，当库存量不足，需要重新下单采购单，会出现两条
 					Set<OrderProcurement> orderProcurementSet = ot.getMateriel().getOrderProcurements().stream()
@@ -214,6 +214,13 @@ public class ScatteredOutboundServiceImpl extends BaseServiceImpl<ScatteredOutbo
 		}
 		update(scatteredOutbound, ot, "");
 	}
+	
+	
+	@Override
+	public void updatePlaceOrder(ScatteredOutbound scatteredOutbound) {
+		ScatteredOutbound ot = findOne(scatteredOutbound.getId());
+		update(scatteredOutbound, ot, "");
+	}
 
 	@Override
 	public int generatePlaceOrder(String ids) {
@@ -230,6 +237,7 @@ public class ScatteredOutboundServiceImpl extends BaseServiceImpl<ScatteredOutbo
 					if (StringUtils.isEmpty(ot.getReceiveUser())) {
 						throw new ServiceException("第" + (i + 1) + "条下单领取人不能为空");
 					}
+					ot.setOpenOrderAudit(1);
 					dao.save(ot);
 					count++;
 				}
@@ -237,5 +245,7 @@ public class ScatteredOutboundServiceImpl extends BaseServiceImpl<ScatteredOutbo
 		}
 		return count;
 	}
+
+	
 
 }
