@@ -34,6 +34,8 @@
 				<td>合同:</td>
 				<td style="width:500px;"><select name="orderId" disabled id="orderIdSelect" lay-search lay-filter="agreementSelect"></select></td>
 				<td>&nbsp;&nbsp;&nbsp;</td>
+				<td><button type="button" id="warm" class="layui-btn">库存预警<span class="layui-badge" id="warmNumber">0</span></button></td>
+				<td>&nbsp;&nbsp;&nbsp;</td>
 				<td><span class="layui-badge">提示：查看库存详情移入库存数量单元格中</span></td>
 			</tr>
 		</table>
@@ -127,6 +129,49 @@ layui.config({
 		myutil.config.ctx = '${ctx}';
 		myutil.config.msgOffset = '120px';
 		myutil.clickTr();
+		
+		$('#warm').click(function(){
+			getWarm('click');
+		})
+		getWarm();
+		function getWarm(click){
+			myutil.getData({
+				url:'${ctx}/ledger/warningOrderProcurement',
+				success:function(d){
+					if(d.length>0){
+						layer.open({
+							type:1,
+							title:'库存预警',
+							content:'<table id="warmTable" lay-filter="warmTable"><table>',
+							success:function(){
+								mytable.renderNoPgae({
+									elem:'#warmTable',
+									curd:{ btn:[], 
+										otherBtn:function(obj){
+											if(obj.event=='onekeyUpdate'){
+												myutil.deleTableIds({
+													url:'/ledger/fixOrderProcurement',
+													table:'warmTable',
+													text:'请选择更新数据|是否确认更新？',
+												})
+											}
+										}
+									},
+									toolbar:'<span class="layui-btn layui-btn-sm" lay-event="onekeyUpdate">一键更新订单数量</span>',
+									cols:[[
+									       { },
+									       
+									       ]]
+								})
+							}
+							
+						})
+					}else if(click){
+						myutil.esmg('无库存预警！');
+					}
+				}
+			})
+		}
 		laydate.render({
 			elem: '#comeDate',
 			type:'datetime',
