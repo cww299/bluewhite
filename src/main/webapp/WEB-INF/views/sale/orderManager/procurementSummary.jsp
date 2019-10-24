@@ -57,12 +57,9 @@ layui.config({
 			$('#adminBtn').html(canUp?'角色:可编辑':'角色:不可编辑');
 			$('#adminBtn').show();
 			$('#adminBtn').click(function(){
-				layui.data('theTable',{key:'canUp', value:!canUp});
-				if(canUp)
-					$('#adminBtn').html('角色:不可编辑');
-				else
-					$('#adminBtn').html('角色:可编辑');
 				canUp = !canUp;
+				layui.data('theTable',{key:'canUp', value:canUp});
+				$('#adminBtn').html(canUp?'角色:可编辑':'角色:不可编辑');
 			})
 		}
 		mytable.render({
