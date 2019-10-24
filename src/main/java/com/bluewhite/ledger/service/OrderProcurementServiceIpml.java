@@ -135,13 +135,14 @@ public class OrderProcurementServiceIpml extends BaseServiceImpl<OrderProcuremen
 						if(orderProcurement.getArrival()==1){
 							throw new ServiceException("当前采购面料已成功入库，请不要多次审核");
 						}	
-						if(orderProcurement.getArrivalNumber()==null || orderProcurement.getArrivalTime() == null){
-							throw new ServiceException("当前采购面料未填写到库数值或日期，无法审核入库");
+						if(orderProcurement.getArrivalNumber()==null || orderProcurement.getArrivalTime() == null || orderProcurement.getUserStorageId()==null ){
+							throw new ServiceException("当前采购面料未填写到库数值或日期或入库人，无法审核入库");
 						}
 						if(orderProcurement.getArrivalNumber()!=orderProcurement.getPlaceOrderNumber()){
 							orderProcurement.setInOutError(1);
 						}
 						orderProcurement.getMateriel().setInventoryNumber(NumUtils.mul(orderProcurement.getMateriel().getInventoryNumber(), orderProcurement.getArrivalNumber()));
+						orderProcurement.setArrival(1);
 						save(orderProcurement);
 						count++;
 					}
@@ -176,6 +177,12 @@ public class OrderProcurementServiceIpml extends BaseServiceImpl<OrderProcuremen
 			}
 		}
 		return count;
+	}
+
+	@Override
+	public void updateOrderProcurement(OrderProcurement orderProcurement) {
+		OrderProcurement ot = findOne(orderProcurement.getId());
+		update(orderProcurement, ot, "");
 	}
 
 }

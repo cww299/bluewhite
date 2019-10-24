@@ -165,7 +165,8 @@ public class LedgerAction {
 				.addRetainTerm(Order.class, "id", "bacthNumber","product","number","remark")
 				.addRetainTerm(Materiel.class, "id", "name","number","orderProcurements","inventoryNumber")
 				.addRetainTerm(OrderProcurement.class, "id", "orderProcurementNumber","placeOrderNumber","arrivalNumber",
-						"placeOrderTime","expectArrivalTime","arrivalTime","customer","user","materielLocation","price","squareGram","residueNumber")
+						"placeOrderTime","expectArrivalTime","arrivalTime","customer","user"
+						,"materielLocation","price","squareGram","residueNumber")
 				.addRetainTerm(Customer.class, "id", "name")
 				.addRetainTerm(BaseOne.class, "id", "name")
 				.addRetainTerm(User.class, "id", "userName")
@@ -176,7 +177,8 @@ public class LedgerAction {
 	{
 		clearCascadeJSONOrderProcurement = ClearCascadeJSON.get()
 				.addRetainTerm(OrderProcurement.class, "id", "orderProcurementNumber","placeOrderNumber","arrivalNumber",
-						"placeOrderTime","expectArrivalTime","arrivalTime","customer","user","materielLocation","price","squareGram")
+						"placeOrderTime","expectArrivalTime","arrivalTime","customer","user"
+						,"materielLocation","price","squareGram","userStorage","arrival")
 				.addRetainTerm(Customer.class, "id", "name")
 				.addRetainTerm(BaseOne.class, "id", "name")
 				.addRetainTerm(User.class, "id", "userName");
@@ -543,6 +545,21 @@ public class LedgerAction {
 	}
 	
 	
+	/**
+	 * （面辅料仓库）修改采购单，作为实际入库单使用
+	 * 
+	 * @param order
+	 * @return
+	 */
+	@RequestMapping(value = "/ledger/updateOrderProcurement", method = RequestMethod.POST)
+	@ResponseBody
+	public CommonResponse  updateOrderProcurement(OrderProcurement orderProcurement) {
+		CommonResponse cr = new CommonResponse();
+		orderProcurementService.updateOrderProcurement(orderProcurement);
+		cr.setMessage("修改成功");
+		return cr;
+	}
+	
 	
 	/**
 	 * （面辅料仓库）审核采购单入库，作为实际库存使用
@@ -558,6 +575,8 @@ public class LedgerAction {
 		cr.setMessage("成功生成" + count + "条生产订单");
 		return cr;
 	}
+	
+	
 	
 	
 	
