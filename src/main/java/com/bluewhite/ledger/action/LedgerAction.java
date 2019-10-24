@@ -165,7 +165,8 @@ public class LedgerAction {
 				.addRetainTerm(Order.class, "id", "bacthNumber","product","number","remark")
 				.addRetainTerm(Materiel.class, "id", "name","number","orderProcurements","inventoryNumber")
 				.addRetainTerm(OrderProcurement.class, "id", "orderProcurementNumber","placeOrderNumber","arrivalNumber",
-						"placeOrderTime","expectArrivalTime","arrivalTime","customer","user","materielLocation","price","squareGram","residueNumber")
+						"placeOrderTime","expectArrivalTime","arrivalTime","customer","user"
+						,"materielLocation","price","squareGram","residueNumber")
 				.addRetainTerm(Customer.class, "id", "name")
 				.addRetainTerm(BaseOne.class, "id", "name")
 				.addRetainTerm(User.class, "id", "userName")
@@ -176,7 +177,8 @@ public class LedgerAction {
 	{
 		clearCascadeJSONOrderProcurement = ClearCascadeJSON.get()
 				.addRetainTerm(OrderProcurement.class, "id", "orderProcurementNumber","placeOrderNumber","arrivalNumber",
-						"placeOrderTime","expectArrivalTime","arrivalTime","customer","user","materielLocation","price","squareGram")
+						"placeOrderTime","expectArrivalTime","arrivalTime","customer","user"
+						,"materielLocation","price","squareGram","userStorage")
 				.addRetainTerm(Customer.class, "id", "name")
 				.addRetainTerm(BaseOne.class, "id", "name")
 				.addRetainTerm(User.class, "id", "userName");
