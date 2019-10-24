@@ -188,8 +188,8 @@ public class LedgerAction {
 				.addRetainTerm(ScatteredOutbound.class, "id", "outboundNumber","orderMaterial","orderProcurement",
 						"receiveUser","user","dosage","remark","audit","auditTime","placeOrderTime")
 				.addRetainTerm(OrderProcurement.class, "id", "orderProcurementNumber")
-				.addRetainTerm(OrderMaterial.class,"id","receiveMode")
-				.addRetainTerm(Customer.class, "id", "name")	
+				.addRetainTerm(OrderMaterial.class,"id","receiveMode","order")
+				.addRetainTerm(Order.class, "id", "bacthNumber","product","number","remark")
 				.addRetainTerm(BaseOne.class, "id", "name")
 				.addRetainTerm(User.class, "id", "userName");
 	}
@@ -466,14 +466,27 @@ public class LedgerAction {
 	/**
 	 * (采购部)
 	 * 修改分散出库单
-	 * (生产计划部)
-	 * 修改下单
 	 *        
 	 * @return
 	 */
 	@RequestMapping(value = "/ledger/updateScatteredOutbound", method = RequestMethod.POST)
 	@ResponseBody
 	public CommonResponse updateScatteredOutbound(ScatteredOutbound scatteredOutbound) {
+		CommonResponse cr = new CommonResponse();
+		scatteredOutboundService.updateScatteredOutbound(scatteredOutbound);
+		cr.setMessage("修改成功");
+		return cr;
+	}
+	
+	/**
+	 * (生产计划部)
+	 * 修改下单
+	 *        
+	 * @return
+	 */
+	@RequestMapping(value = "/ledger/updatePlaceOrder", method = RequestMethod.POST)
+	@ResponseBody
+	public CommonResponse updatePlaceOrder(ScatteredOutbound scatteredOutbound) {
 		CommonResponse cr = new CommonResponse();
 		scatteredOutboundService.updateScatteredOutbound(scatteredOutbound);
 		cr.setMessage("修改成功");
