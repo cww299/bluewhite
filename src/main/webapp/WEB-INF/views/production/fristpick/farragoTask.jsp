@@ -822,7 +822,7 @@ window.onload = function(){
 											if(!end)
 												return layer.msg('请输入结束时间',{icon:2,offset:'120px'});
 											$.ajax({
-												url:'${ctx}/farragoTask/updateFarragoTask',
+												url:'${ctx}/farragoTask/overFarragoTask',
 												type:'post',
 												data:{
 													id: d.id,

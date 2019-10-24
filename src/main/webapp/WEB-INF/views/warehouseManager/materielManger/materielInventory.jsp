@@ -62,6 +62,8 @@ layui.config({
 			elem:'#tableData',
 			url:'${ctx}/product/getMaterielPage',
 			ifNull:0,
+			limit:15,
+			limits:[15,25,50,100],
 			cols:[[
 			       { type:'checkbox',},
 			       { title:'物料编号',   field:'number',	},

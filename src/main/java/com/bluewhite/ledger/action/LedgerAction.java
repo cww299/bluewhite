@@ -479,21 +479,6 @@ public class LedgerAction {
 	}
 	
 	/**
-	 * (生产计划部)
-	 * 修改下单
-	 *        
-	 * @return
-	 */
-	@RequestMapping(value = "/ledger/updatePlaceOrder", method = RequestMethod.POST)
-	@ResponseBody
-	public CommonResponse updatePlaceOrder(ScatteredOutbound scatteredOutbound) {
-		CommonResponse cr = new CommonResponse();
-		scatteredOutboundService.updateScatteredOutbound(scatteredOutbound);
-		cr.setMessage("修改成功");
-		return cr;
-	}
-	
-	/**
 	 * （采购部）采购单出入不符预警
 	 * 采购单经过面辅料仓库审核入库后，将出入库数量不相同的进行标记预警
 	 * 
@@ -511,7 +496,7 @@ public class LedgerAction {
 	
 	/**
 	 * （采购部）当采购单出入不符预警
-	 * 进行一键修改订单数量
+	 * 进行一键更新订单数量
 	 * 
 	 * @param order
 	 * @return
@@ -521,14 +506,29 @@ public class LedgerAction {
 	public CommonResponse  fixOrderProcurement(String ids) {
 		CommonResponse cr = new CommonResponse();
 		orderProcurementService.fixOrderProcurement(ids);
-		cr.setMessage("查询成功");
+		cr.setMessage("更新成功");
 		return cr;
 	}
 	
 
+	/**
+	 * (生产计划部)
+	 * 修改下单
+	 *        
+	 * @return
+	 */
+	@RequestMapping(value = "/ledger/updatePlaceOrder", method = RequestMethod.POST)
+	@ResponseBody
+	public CommonResponse updatePlaceOrder(ScatteredOutbound scatteredOutbound) {
+		CommonResponse cr = new CommonResponse();
+		scatteredOutboundService.updatePlaceOrder(scatteredOutbound);
+		cr.setMessage("修改成功");
+		return cr;
+	}
+	
 	
 	/**
-	 * （生产计划部）将分散出库单审核成为下单表
+	 * （生产计划部）将分散出库下单审核成为开单表
 	 * 
 	 * @param order
 	 * @return
