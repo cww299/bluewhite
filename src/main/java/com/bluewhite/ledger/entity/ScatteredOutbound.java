@@ -107,6 +107,14 @@ public class ScatteredOutbound extends BaseEntity<Long>{
 	@Column(name = "place_order_time")
     private Date placeOrderTime;
 	
+	public Date getPlaceOrderTime() {
+		return placeOrderTime;
+	}
+
+	public void setPlaceOrderTime(Date placeOrderTime) {
+		this.placeOrderTime = placeOrderTime;
+	}
+
 	/**
 	 * 产品name
 	 */
