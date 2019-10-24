@@ -156,13 +156,12 @@ public class FarragoTaskAction {
 				oldTask.setEndTime(new Date());
 				if (oldTask.getStartTime() != null && oldTask.getEndTime() != null) {
 					oldTask.setTime(DatesUtil.getTime(oldTask.getStartTime(), oldTask.getEndTime()));
-				} else {
-					// 生成未完成的新任务
-					farragoTask.setStatus(0);
-					farragoTask.setStartTime(new Date());
-					farragoTask.setId(null);
-					farragoTaskService.addFarragoTask(farragoTask, request);
 				}
+				// 生成未完成的新任务
+				farragoTask.setStatus(0);
+				farragoTask.setStartTime(new Date());
+				farragoTask.setId(null);
+				farragoTaskService.addFarragoTask(farragoTask, request);
 				oldTask.setStatus(1);
 				farragoTaskService.addFarragoTask(oldTask, request);
 			} else {
@@ -180,6 +179,48 @@ public class FarragoTaskAction {
 		}
 		return cr;
 	}
+	
+	
+	
+	/**
+	 * 结束杂工任务 (实时) 
+	 * 
+	 */
+	@RequestMapping(value = "/farragoTask/overFarragoTask", method = RequestMethod.POST)
+	@ResponseBody
+	public CommonResponse overFarragoTask(HttpServletRequest request, FarragoTask farragoTask) {
+		CommonResponse cr = new CommonResponse();
+		if (farragoTask.getId() != null) {
+			FarragoTask oldTask = farragoTaskService.findOne(farragoTask.getId());
+			if (oldTask.getStatus() == 1) {
+				cr.setCode(ErrorCode.ILLEGAL_ARGUMENT.getCode());
+				cr.setMessage("已完成，无法修改");
+				return cr;
+			}
+			if (farragoTask.getStartTime() != null && farragoTask.getEndTime() != null) {
+				if (farragoTask.getStartTime().after(farragoTask.getEndTime())) {
+					cr.setCode(ErrorCode.ILLEGAL_ARGUMENT.getCode());
+					cr.setMessage("结束时间不能比开始时间小，请重新设定结束时间");
+					return cr;
+				}else{
+					oldTask.setTime(DatesUtil.getTime(farragoTask.getStartTime(), farragoTask.getEndTime()));
+					oldTask.setStatus(1);
+					farragoTaskService.addFarragoTask(oldTask, request);
+					cr.setMessage("成功");
+				}
+			}else{
+				cr.setCode(ErrorCode.ILLEGAL_ARGUMENT.getCode());
+				cr.setMessage("开始时间或结束时间不能为空");
+				return cr;
+			}
+		
+		} else {
+			cr.setCode(ErrorCode.ILLEGAL_ARGUMENT.getCode());
+			cr.setMessage("任务不能为空");
+		}
+		return cr;
+	}
+	
 
 	/**
 	 * 分页查询所有任务
