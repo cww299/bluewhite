@@ -52,6 +52,10 @@ public class ScatteredOutboundServiceImpl extends BaseServiceImpl<ScatteredOutbo
 				for (int i = 0; i < idArr.length; i++) {
 					Long id = Long.parseLong(idArr[i]);
 					OrderMaterial ot = orderMaterialDao.findOne(id);
+					if (ot.getOutbound()==1) {
+						throw new ServiceException(ot.getMateriel().getNumber() + ot.getMateriel().getName() + "已出库，请勿多次出库");
+					}
+					
 					// 出库单
 					ScatteredOutbound scatteredOutbound = new ScatteredOutbound();
 					scatteredOutbound.setOrderMaterialId(id);
