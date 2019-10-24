@@ -22,6 +22,8 @@
 				<td><input type="text" name="productNumber" class="layui-input"></td>
 				<td>&nbsp;&nbsp;&nbsp;</td>
 				<td><button type="button" class="layui-btn layui-btn-sm" lay-submit lay-filter="search">搜索</button></td>
+				<td>&nbsp;&nbsp;&nbsp;</td>
+				<td><button type="button" class="layui-btn layui-btn-sm" id="adminBtn" style="display:none;">角色:--</button></td>
 			</tr>
 		</table>
 		<table id="tableData" lay-filter="tableData"></table>
@@ -50,6 +52,19 @@ layui.config({
 		allUser.unshift({ id:'',userName:'请选择' });
 		var currentUser = myutil.getDataSync({url: '${ctx}/getCurrentUser'});
 		var canUp = true; //currentUser.orgNameId==51?true:false;
+		if(currentUser.isAdmin){	//增加admin调试模式
+			canUp = layui.data('theTable').canUp;
+			$('#adminBtn').html(canUp?'角色:可编辑':'角色:不可编辑');
+			$('#adminBtn').show();
+			$('#adminBtn').click(function(){
+				layui.data('theTable',{key:'canUp', value:!canUp});
+				if(canUp)
+					$('#adminBtn').html('角色:不可编辑');
+				else
+					$('#adminBtn').html('角色:可编辑');
+				canUp = !canUp;
+			})
+		}
 		mytable.render({
 			elem:'#tableData',
 			url:'${ctx}/ledger/getOrderProcurement',
@@ -84,6 +99,7 @@ layui.config({
 					{ title:'到货日期', field:'arrivalTime', edit:canUp, type:'dateTime', },
 					{ title:'到货数量', field:'arrivalNumber', edit:canUp,},
 					{ title:'入库人', field:'userStorage_id', type:'select', select:{ data:allUser, name:'userName',isDisabled:!canUp,unsearch:!canUp, }},
+					{ title:'是否入库',field:'arrival',transData:{data:['否','是'],}}
 			       ]]
 		})
 		form.on('submit(search)',function(obj){
