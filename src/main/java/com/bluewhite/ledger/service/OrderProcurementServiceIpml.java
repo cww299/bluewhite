@@ -178,4 +178,10 @@ public class OrderProcurementServiceIpml extends BaseServiceImpl<OrderProcuremen
 		return count;
 	}
 
+	@Override
+	public void updateOrderProcurement(OrderProcurement orderProcurement) {
+		OrderProcurement ot = findOne(orderProcurement.getId());
+		update(orderProcurement, ot, "");
+	}
+
 }
