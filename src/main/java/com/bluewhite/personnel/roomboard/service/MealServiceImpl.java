@@ -587,7 +587,7 @@ public class MealServiceImpl extends BaseServiceImpl<Meal, Long> implements Meal
 	// 根据打卡记录进行是否有早中晚餐记录
 	@Override
 	@Transactional
-	public int InitMeal(AttendanceTime attendanceTime) throws ParseException {
+	public int initMeal(AttendanceTime attendanceTime) throws ParseException {
 		// 检查当前月份属于夏令时或冬令时 flag=ture 为夏令时
 		boolean flag = DatesUtil.belongCalendar(attendanceTime.getOrderTimeBegin());
 		List<AttendanceTime> attendanceTimes = attendanceTimeService.findAttendanceTime(attendanceTime);

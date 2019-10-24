@@ -58,6 +58,12 @@ public interface OrderProcurementService extends BaseCRUDService<OrderProcuremen
 	 * @return
 	 */
 	public int fixOrderProcurement(String ids);
+	
+	/**
+	 * 面辅料库管修改采购入库单
+	 * @param orderProcurement
+	 */
+	public void updateOrderProcurement(OrderProcurement orderProcurement);
 
 
 }
