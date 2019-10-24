@@ -46,9 +46,32 @@ layui.config({
 		, mytable = layui.mytable;
 		myutil.config.ctx = '${ctx}';
 		myutil.clickTr();
+		var allUser = myutil.getDataSync({url: '${ctx}/system/user/findUserList?orgNameIds=51'});
+		allUser.unshift({ id:'',userName:'请选择' });
+		var currentUser = myutil.getDataSync({url: '${ctx}/getCurrentUser'});
+		var canUp = true; //currentUser.orgNameId==51?true:false;
 		mytable.render({
 			elem:'#tableData',
 			url:'${ctx}/ledger/getOrderProcurement',
+			size:'lg',
+			autoUpdate:{
+				saveUrl:'/ledger/updateOrderProcurement',
+				field:{ userStorage_id:'userStorageId', },
+			},
+			curd:{
+				btn:[],
+				otherBtn:function(obj){
+					if(obj.event=='audit'){
+						myutil.deleTableIds({
+							url:'/ledger/auditOrderProcurement',
+							table:'tableData',
+							text:'请选择信息|是否确认审核？',
+						})
+					}
+				}
+			},
+			ifNull:'',
+			toolbar: canUp?'<span lay-event="audit" class="layui-btn layui-btn-sm">审核入科</span>':'',
 			cols:[[
 					{ type:'checkbox' },
 					{ title:'下单日期', field:'placeOrderTime', },
@@ -58,6 +81,9 @@ layui.config({
 					{ title:'订购人', field:'user_userName', },
 					{ title:'供应商', field:'customer_name', },
 					{ title:'预计到货', field:'expectArrivalTime',},
+					{ title:'到货日期', field:'arrivalTime', edit:canUp, type:'dateTime', },
+					{ title:'到货数量', field:'arrivalNumber', edit:canUp,},
+					{ title:'入库人', field:'userStorage_id', type:'select', select:{ data:allUser, name:'userName',isDisabled:!canUp,unsearch:!canUp, }},
 			       ]]
 		})
 		form.on('submit(search)',function(obj){
