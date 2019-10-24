@@ -164,6 +164,21 @@ public class OrderProcurement extends BaseEntity<Long> {
 	@Column(name = "in_out_error")
 	private Integer inOutError;
 	
+	
+	/**
+	 * 入库操作人id
+	 * 
+	 */
+	@Column(name = "user_storage_id")
+	private Long userStorageId;
+
+	/**
+	 * 入库操作人
+	 */
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "user_storage_id", referencedColumnName = "id", insertable = false, updatable = false)
+	private User userStorage;
+	
 	/**
 	 * 订单（下单合同）生产用料id
 	 */
@@ -192,6 +207,22 @@ public class OrderProcurement extends BaseEntity<Long> {
 	
 	
 
+
+	public Long getUserStorageId() {
+		return userStorageId;
+	}
+
+	public void setUserStorageId(Long userStorageId) {
+		this.userStorageId = userStorageId;
+	}
+
+	public User getUserStorage() {
+		return userStorage;
+	}
+
+	public void setUserStorage(User userStorage) {
+		this.userStorage = userStorage;
+	}
 
 	public Integer getInOutError() {
 		return inOutError;
