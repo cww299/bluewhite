@@ -545,6 +545,21 @@ public class LedgerAction {
 	}
 	
 	
+	/**
+	 * （面辅料仓库）修改采购单，作为实际入库单使用
+	 * 
+	 * @param order
+	 * @return
+	 */
+	@RequestMapping(value = "/ledger/updateOrderProcurement", method = RequestMethod.POST)
+	@ResponseBody
+	public CommonResponse  updateOrderProcurement(OrderProcurement orderProcurement) {
+		CommonResponse cr = new CommonResponse();
+		orderProcurementService.updateOrderProcurement(orderProcurement);
+		cr.setMessage("修改成功");
+		return cr;
+	}
+	
 	
 	/**
 	 * （面辅料仓库）审核采购单入库，作为实际库存使用
