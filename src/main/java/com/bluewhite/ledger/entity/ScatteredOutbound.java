@@ -108,6 +108,12 @@ public class ScatteredOutbound extends BaseEntity<Long>{
     private Date placeOrderTime;
 	
 	/**
+	 * 出库下单审核成开单
+	 */
+	@Column(name = "open_order_audit")
+    private Integer openOrderAudit;
+	
+	/**
 	 * 产品name
 	 */
 	@Transient
@@ -131,6 +137,23 @@ public class ScatteredOutbound extends BaseEntity<Long>{
 	private Date orderTimeEnd;
 	
 	
+	
+
+	public Integer getOpenOrderAudit() {
+		return openOrderAudit;
+	}
+
+	public void setOpenOrderAudit(Integer openOrderAudit) {
+		this.openOrderAudit = openOrderAudit;
+	}
+
+	public Date getPlaceOrderTime() {
+		return placeOrderTime;
+	}
+
+	public void setPlaceOrderTime(Date placeOrderTime) {
+		this.placeOrderTime = placeOrderTime;
+	}
 
 	public Integer getAudit() {
 		return audit;
