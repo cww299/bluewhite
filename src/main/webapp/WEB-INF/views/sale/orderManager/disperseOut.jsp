@@ -107,13 +107,8 @@ layui.config({
 			data:[],
 			curd:{
 				btn:[],
-			},
-			ifNull:'',
-			colsWidth:[0,10,0,6,8,8,6,6,0,6],
-			autoUpdate:{
-				updateUrl:'/ledger/updatePlaceOrder',
 				otherBtn:function(obj){
-					if(obj.type=='onekey'){
+					if(obj.event=='onekey'){
 						myutil.deleTableIds({
 							table:'tableData',
 							text:'请选择相关信息|是否确认审核?',
@@ -121,6 +116,11 @@ layui.config({
 						});
 					}
 				},
+			},
+			ifNull:'',
+			colsWidth:[0,10,0,6,8,8,6,6,0,6],
+			autoUpdate:{
+				updateUrl:'/ledger/updatePlaceOrder',
 				field:{ receiveUser_id:'receiveUserId', user_id:'userId' },
 			},
 			toolbar:'<span class="layui-btn layui-btn-sm" lay-event="onekey">一键审核</span>',
