@@ -139,12 +139,13 @@ layui.config({
 				url:'${ctx}/ledger/warningOrderProcurement',
 				success:function(d){
 					if(d.length>0){
-						layer.open({
+						/* layer.open({
 							type:1,
 							title:'库存预警',
+							area:['30%','80%'],
 							content:'<table id="warmTable" lay-filter="warmTable"><table>',
 							success:function(){
-								mytable.renderNoPgae({
+								mytable.renderNoPage({
 									elem:'#warmTable',
 									curd:{ btn:[], 
 										otherBtn:function(obj){
@@ -163,9 +164,9 @@ layui.config({
 									       
 									       ]]
 								})
-							}
+							} 
 							
-						})
+						})*/
 					}else if(click){
 						myutil.esmg('无库存预警！');
 					}

@@ -140,7 +140,7 @@ public class OrderProcurementServiceIpml extends BaseServiceImpl<OrderProcuremen
 						if(orderProcurement.getArrivalNumber()!=orderProcurement.getPlaceOrderNumber()){
 							orderProcurement.setInOutError(1);
 						}
-						orderProcurement.getMateriel().setInventoryNumber(NumUtils.mul(orderProcurement.getMateriel().getInventoryNumber(), orderProcurement.getArrivalNumber()));
+						orderProcurement.getMateriel().setInventoryNumber(NumUtils.sum(orderProcurement.getMateriel().getInventoryNumber(), orderProcurement.getArrivalNumber()));
 						orderProcurement.setArrival(1);
 						save(orderProcurement);
 						count++;

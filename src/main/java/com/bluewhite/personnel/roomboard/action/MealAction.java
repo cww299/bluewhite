@@ -30,6 +30,7 @@ import com.bluewhite.personnel.attendance.entity.AttendanceTime;
 import com.bluewhite.personnel.attendance.entity.PersonVariable;
 import com.bluewhite.personnel.roomboard.entity.Meal;
 import com.bluewhite.personnel.roomboard.service.MealService;
+import com.bluewhite.system.user.entity.TemporaryUser;
 import com.bluewhite.system.user.entity.User;
 
 @Controller
@@ -37,38 +38,41 @@ public class MealAction {
 
 	@Autowired
 	private MealService service;
-	
+
 	@Autowired
 	private PersonVariableDao personVariableDao;
-	
+
 	private ClearCascadeJSON clearCascadeJSON;
 	{
 		clearCascadeJSON = ClearCascadeJSON.get()
-				.addRetainTerm(Attendance.class, "userId", "user", "mode", "tradeDaysTime", "price","modeOne","modeTwo","modeThree","summaryPrice")
-				.addRetainTerm(User.class, "id", "userName","orgName","orgNameId");
+				.addRetainTerm(Meal.class, "userId", "userName", "user","temporaryUser", "mode", "tradeDaysTime", "price")
+				.addRetainTerm(User.class, "id", "userName", "orgName", "orgNameId")
+				.addRetainTerm(TemporaryUser.class, "id", "userName");
 	}
 
 	/**
 	 * 分页查看报餐
 	 * 
-	 * @param request 请求
+	 * @param request
+	 *            请求
 	 * @return cr
 	 * @throws Exception
 	 */
 	@RequestMapping(value = "/personnel/getMeal", method = RequestMethod.GET)
 	@ResponseBody
-	public CommonResponse getContact(HttpServletRequest request,PageParameter page,Meal meal) {
+	public CommonResponse getContact(HttpServletRequest request, PageParameter page, Meal meal) {
 		CommonResponse cr = new CommonResponse();
-		PageResult<Meal>  mealList= service.findPage(meal, page); 
+		PageResult<Meal> mealList = service.findPage(meal, page);
 		cr.setData(clearCascadeJSON.format(mealList).toJSON());
 		cr.setMessage("查询成功");
 		return cr;
 	}
-	
+
 	/**
 	 * 新增修改
 	 * 
-	 * @param request 请求
+	 * @param request
+	 *            请求
 	 * @return cr
 	 * @throws Exception
 	 */
@@ -76,22 +80,23 @@ public class MealAction {
 	@ResponseBody
 	public CommonResponse addConsumption(HttpServletRequest request, Meal meal) {
 		CommonResponse cr = new CommonResponse();
-		if(meal.getId() != null){
-				Meal meal2 = service.findOne(meal.getId());
-				BeanCopyUtils.copyNullProperties(meal2, meal);
-				meal.setCreatedAt(meal2.getCreatedAt());
+		if (meal.getId() != null) {
+			Meal meal2 = service.findOne(meal.getId());
+			BeanCopyUtils.copyNullProperties(meal2, meal);
+			meal.setCreatedAt(meal2.getCreatedAt());
 			cr.setMessage("修改成功");
-		}else{
+		} else {
 			cr.setMessage("添加成功");
 		}
 		service.addMeal(meal);
 		return cr;
 	}
-	
+
 	/**
 	 * 删除
 	 * 
-	 * @param request 请求
+	 * @param request
+	 *            请求
 	 * @return cr
 	 * @throws Exception
 	 */
@@ -100,38 +105,40 @@ public class MealAction {
 	public CommonResponse deleteConsumption(HttpServletRequest request, String[] ids) {
 		CommonResponse cr = new CommonResponse();
 		int count = 0;
-		if(!StringUtils.isEmpty(ids)){
+		if (!StringUtils.isEmpty(ids)) {
 			for (int i = 0; i < ids.length; i++) {
 				Long id = Long.parseLong(ids[i]);
 				service.delete(id);
 				count++;
 			}
 		}
-		cr.setMessage("成功删除"+count+"条");
+		cr.setMessage("成功删除" + count + "条");
 		return cr;
 	}
-	
+
 	/**
 	 * 查看字典表报餐价格
 	 * 
-	 * @param request 请求
+	 * @param request
+	 *            请求
 	 * @return cr
 	 * @throws Exception
 	 */
 	@RequestMapping(value = "/personnel/getpersonVariabledao", method = RequestMethod.GET)
 	@ResponseBody
-	public CommonResponse getPersonVariabledao(HttpServletRequest request,PageParameter page,Integer type) {
+	public CommonResponse getPersonVariabledao(HttpServletRequest request, PageParameter page, Integer type) {
 		CommonResponse cr = new CommonResponse();
-		PersonVariable  personVariable= service.findByType(type); 
+		PersonVariable personVariable = service.findByType(type);
 		cr.setData(clearCascadeJSON.format(personVariable).toJSON());
 		cr.setMessage("查询成功");
 		return cr;
 	}
-	
+
 	/**
 	 * 新增修改
 	 * 
-	 * @param request 请求
+	 * @param request
+	 *            请求
 	 * @return cr
 	 * @throws Exception
 	 */
@@ -139,75 +146,79 @@ public class MealAction {
 	@ResponseBody
 	public CommonResponse updatePerson(HttpServletRequest request, PersonVariable personVariable) {
 		CommonResponse cr = new CommonResponse();
-		if(personVariable.getId() != null){
+		if (personVariable.getId() != null) {
 			PersonVariable personVariable2 = personVariableDao.findOne(personVariable.getId());
-				BeanCopyUtils.copyNullProperties(personVariable2, personVariable);
-				personVariable2.setCreatedAt(personVariable2.getCreatedAt());
+			BeanCopyUtils.copyNullProperties(personVariable2, personVariable);
+			personVariable2.setCreatedAt(personVariable2.getCreatedAt());
 			cr.setMessage("修改成功");
-		}else{
+		} else {
 			cr.setMessage("添加成功");
 		}
 		service.updateperson(personVariable);
 		return cr;
 	}
-	
+
 	/**
 	 * 报餐汇总
 	 * 
-	 * @param request 请求
+	 * @param request
+	 *            请求
 	 * @return cr
 	 * @throws Exception
 	 */
 	@RequestMapping(value = "/personnel/getSummaryMeal", method = RequestMethod.GET)
 	@ResponseBody
-	public CommonResponse getSummaryMeal(HttpServletRequest request,PageParameter page,Meal meal) {
+	public CommonResponse getSummaryMeal(HttpServletRequest request, PageParameter page, Meal meal) {
 		CommonResponse cr = new CommonResponse();
-		 List<Map<String, Object>> list = service.findMealSummary(meal); 
-		cr.setData(clearCascadeJSON.format(list).toJSON());
+		List<Map<String, Object>> list = service.findMealSummary(meal);
+		cr.setData(list);
 		cr.setMessage("查询成功");
 		return cr;
 	}
-	
+
 	/**
 	 * 水电
 	 * 
-	 * @param request 请求
+	 * @param request
+	 *            请求
 	 * @return cr
 	 * @throws Exception
 	 */
 	@RequestMapping(value = "/personnel/getfindElectric", method = RequestMethod.GET)
 	@ResponseBody
-	public CommonResponse getfindElectric(HttpServletRequest request,Meal meal) {
+	public CommonResponse getfindElectric(HttpServletRequest request, Meal meal) {
 		CommonResponse cr = new CommonResponse();
 		List<Map<String, Object>> list = service.findElectric(meal);
-		cr.setData(clearCascadeJSON.format(list).toJSON());
+		cr.setData(list);
 		cr.setMessage("查询成功");
 		return cr;
 	}
-	
+
 	/**
 	 * 每天汇总
 	 * 
-	 * @param request 请求
+	 * @param request
+	 *            请求
 	 * @return cr
 	 * @throws Exception
 	 */
 	@RequestMapping(value = "/personnel/getSummaryWage", method = RequestMethod.GET)
 	@ResponseBody
-	public CommonResponse getSummaryWage(HttpServletRequest request,PageParameter page,Meal meal) {
+	public CommonResponse getSummaryWage(HttpServletRequest request, PageParameter page, Meal meal) {
 		CommonResponse cr = new CommonResponse();
-		 List<Map<String, Object>> list = service.findWage(meal);
-		cr.setData(clearCascadeJSON.format(list).toJSON());
+		List<Map<String, Object>> list = service.findWage(meal);
+		cr.setData(list);
 		cr.setMessage("查询成功");
 		return cr;
 	}
-	
+
 	/**
 	 * 同步报餐记录
 	 * 
-	 * @param request 请求
+	 * @param request
+	 *            请求
 	 * @return cr
-	 * @throws ParseException 
+	 * @throws ParseException
 	 * @throws Exception
 	 */
 	@RequestMapping(value = "/personnel/getEatType", method = RequestMethod.GET)
@@ -215,9 +226,10 @@ public class MealAction {
 	public CommonResponse getEatType(AttendanceTime attendanceTime) throws ParseException {
 		CommonResponse cr = new CommonResponse();
 		int list = service.initMeal(attendanceTime);
-		cr.setMessage("成功同步"+list+"条吃饭记录");
+		cr.setMessage("成功同步" + list + "条吃饭记录");
 		return cr;
 	}
+
 	@InitBinder
 	protected void initBinder(WebDataBinder binder) {
 		SimpleDateFormat dateTimeFormat = new SimpleDateFormat(DateTimePattern.DATEHMS.getPattern());

@@ -202,6 +202,7 @@ public class UserAction {
 					return cr;
 				}
 			}
+			temporarilyNew.setStatus(1);
 			temporarilyList.add(temporarilyNew);
 		}
 		temporarilyDao.save(temporarilyList);
@@ -218,8 +219,21 @@ public class UserAction {
 	@ResponseBody
 	public CommonResponse findTemporaryUserTimePages(TemporaryUser temporaryUser, PageParameter page) {
 		CommonResponse cr = new CommonResponse();
-		cr.setData(
-				clearCascadeJSONTemporaryUser.format(temporaryUserService.getPagedUser(page, temporaryUser)).toJSON());
+		cr.setData(clearCascadeJSONTemporaryUser.format(temporaryUserService.getPagedUser(page, temporaryUser)).toJSON());
+		cr.setMessage("查询成功");
+		return cr;
+	}
+	
+	/**
+	 * 查看临时员工列表
+	 * 
+	 * @return
+	 */
+	@RequestMapping(value = "/findTemporaryUserTime", method = RequestMethod.GET)
+	@ResponseBody
+	public CommonResponse findTemporaryUserTime() {
+		CommonResponse cr = new CommonResponse();
+		cr.setData(clearCascadeJSONTemporaryUser.format(temporaryUserService.findAll()).toJSON());
 		cr.setMessage("查询成功");
 		return cr;
 	}
