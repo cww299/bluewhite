@@ -150,8 +150,8 @@ public class GroupAction {
 		Date startTime = DatesUtil.getfristDayOftime(ProTypeUtils.countAllotTime(temporarilyDate));
 		Date endTime = DatesUtil.getLastDayOftime(ProTypeUtils.countAllotTime(temporarilyDate));
 		Group group = groupService.findOne(id);
-		List<Temporarily> temporarilyList = temporarilyDao.findByTypeAndGroupIdAndTemporarilyDateBetween(group.getType(), id,
-				startTime,endTime);
+		List<Temporarily> temporarilyList = temporarilyDao
+				.findByTypeAndGroupIdAndTemporarilyDateBetween(group.getType(), id, startTime, endTime);
 		List<Map<String, Object>> userList = new ArrayList<>();
 		List<Map<String, Object>> temporarilyUserList = new ArrayList<>();
 		// 平板模式下，按打卡记录显示正式工作人员
@@ -299,7 +299,7 @@ public class GroupAction {
 	public CommonResponse updateManualTime(Long id, Integer status, Date time, Integer flag) {
 		CommonResponse cr = new CommonResponse();
 		if (id != null) {
-			if(flag == 1){
+			if (flag == 1) {
 				Attendance attendance = attendanceService.findOne(id);
 				// 休息
 				if (status == 0) {
@@ -311,15 +311,15 @@ public class GroupAction {
 				}
 				attendanceService.save(attendance);
 			}
-			if(flag == 0){
+			if (flag == 0) {
 				Temporarily temporarily = temporarilyDao.findOne(id);
 				// 休息
 				if (status == 0) {
 					temporarily.setStatus(0);
-					}
+				}
 				// 工作
 				if (status == 1) {
-					temporarily.setStatus(1);		
+					temporarily.setStatus(1);
 				}
 				temporarilyDao.save(temporarily);
 			}
@@ -537,9 +537,9 @@ public class GroupAction {
 							orderTimeEnd);
 					if (taskList.size() > 0 || farragoTaskList.size() > 0) {
 						cr.setCode(ErrorCode.ILLEGAL_ARGUMENT.getCode());
-						cr.setMessage(temporarily.getTemporaryUser().getUserName() + "当天考勤已分配任务，无法删除，需删除，请先删除任务");
+						cr.setMessage((temporarily.getTemporaryUser()==null ?temporarily.getUser().getUserName():temporarily.getTemporaryUser().getUserName())+"当天考勤已分配任务，无法删除，需删除，请先删除任务");
 						return cr;
-					}else{
+					} else {
 						temporarilyDao.delete(Long.parseLong(id));
 						count++;
 					}

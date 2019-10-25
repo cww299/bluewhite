@@ -45,7 +45,7 @@ public class MealAction {
 	private ClearCascadeJSON clearCascadeJSON;
 	{
 		clearCascadeJSON = ClearCascadeJSON.get()
-				.addRetainTerm(Meal.class, "userId", "userName", "user","temporaryUser", "mode", "tradeDaysTime", "price")
+				.addRetainTerm(Meal.class, "id","userName", "user","temporaryUser", "mode", "tradeDaysTime", "price")
 				.addRetainTerm(User.class, "id", "userName", "orgName", "orgNameId")
 				.addRetainTerm(TemporaryUser.class, "id", "userName");
 	}
@@ -81,9 +81,8 @@ public class MealAction {
 	public CommonResponse addConsumption(HttpServletRequest request, Meal meal) {
 		CommonResponse cr = new CommonResponse();
 		if (meal.getId() != null) {
-			Meal meal2 = service.findOne(meal.getId());
-			BeanCopyUtils.copyNullProperties(meal2, meal);
-			meal.setCreatedAt(meal2.getCreatedAt());
+			Meal ot = service.findOne(meal.getId());
+			service.update(meal, ot, "");
 			cr.setMessage("修改成功");
 		} else {
 			cr.setMessage("添加成功");
