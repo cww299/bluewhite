@@ -25,7 +25,7 @@
 						<tr>
 							<td>姓名:</td>
 							<td><select class="form-control" id="selectUserId" lay-search="true"  >
-							<option>请选择</option>
+							<option value="">请选择</option>
 							<optgroup label="正式员工" id="formal2">
 								
  							 </optgroup>
@@ -876,7 +876,13 @@
 						var orderTime=field.orderTimeBegin.split('~');
 						field.orderTimeBegin=orderTime[0];
 						field.orderTimeEnd=orderTime[1];
-						field.userName=$("#selectUserId").find("option:selected").text();
+						var a="";
+						if($("#selectUserId").find("option:selected").text()=="请选择"){
+							a=""
+						}else{
+							a=$("#selectUserId").find("option:selected").text()
+						}
+						field.userName=a;
 						table.reload('tableData', {
 							where: field,
 							 page: { curr : 1 }
