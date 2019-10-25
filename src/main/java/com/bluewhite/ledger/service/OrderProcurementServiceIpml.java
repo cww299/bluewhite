@@ -93,7 +93,6 @@ public class OrderProcurementServiceIpml extends BaseServiceImpl<OrderProcuremen
 		orderProcurement.setMaterielId(orderMaterial.getMaterielId());
 		//剩余数量
 		orderProcurement.setResidueNumber(orderProcurement.getPlaceOrderNumber());
-		
 		save(orderProcurement);
 	}
 
