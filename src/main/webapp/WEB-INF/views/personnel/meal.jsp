@@ -199,6 +199,7 @@
 				<span class="layui-btn layui-btn-sm layui-btn-danger" lay-event="deleteSome">批量删除</span>
 				<span class="layui-btn layui-btn-sm" lay-event="delayed">吃饭延时</span>
 				<span class="layui-btn layui-btn-sm" lay-event="eat">吃饭方式填写</span>
+				<span class="layui-btn layui-btn-sm" lay-event="update">报餐修改</span>
 			</div>
 	</script>
 
@@ -777,6 +778,50 @@
 							case 'cleanTempData':	
 									table.cleanTemp(tableId);
 							break;
+							case 'update':
+								var choosed=layui.table.checkStatus("tableData").data;
+								console.log(choosed)
+								var	dicDiv=$("#layuiadmin-form-admin2");
+								layer.open({
+									type:1,
+									title:'报餐修改',
+									area:['30%','60%'],
+									btn:['确认','取消'],
+									content:dicDiv,
+									id: 'LAY_layuipro' ,
+									btnAlign: 'c',
+								    moveType: 1, //拖拽模式，0或者1
+									success : function(layero, index) {
+							        	layero.addClass('layui-form');
+										// 将保存按钮改变成提交按钮
+										layero.find('.layui-layer-btn0').attr({
+											'lay-filter' : 'addRole',
+											'lay-submit' : ''
+										})
+							        },
+									yes:function(){
+										form.on('submit(addRole)', function(data) {
+										var id=$("#userId").find("option:selected").data('id')
+										if(id==0){
+											data.field.userId=$("#userId").val();
+											 mainJs.fAdd(data.field);  
+										}else{
+											if($("#orgNameId").val()==""){
+												return layer.msg("特急人员请填写部门",{icon:2})
+											}
+											data.field.orgNameId=$("#orgNameId").val();
+											data.field.temporaryUserId=$("#userId").val();
+											mainJs.fAdd(data.field); 
+										}
+											document.getElementById("layuiadmin-form-admin2").reset();
+								        	layui.form.render();
+										})
+									},end:function(){ 
+							        	document.getElementById("layuiadmin-form-admin2").reset();
+							        	layui.form.render();
+									  }
+								})
+								break;
 						}
 					});
 	
