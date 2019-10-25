@@ -140,6 +140,14 @@ public class Meal extends BaseEntity<Long> {
 
 	
 
+	public Long getTemporaryUserOrgId() {
+		return temporaryUserOrgId;
+	}
+
+	public void setTemporaryUserOrgId(Long temporaryUserOrgId) {
+		this.temporaryUserOrgId = temporaryUserOrgId;
+	}
+
 	public Long getTemporaryUserId() {
 		return temporaryUserId;
 	}

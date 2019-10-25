@@ -19,21 +19,32 @@
 			<table class="layui-form" style="margin:10px 0px;">
 				<tr>
 					<td>&nbsp;&nbsp;</td>
-					<td>员工姓名:</td>
-					<td><select id="userId" name="userId" lay-search><option value="">请选择</option></select></td>
+					<td>姓名:</td>
+					<td style="width:120px;"><select id="userId" name="userId" lay-search><option value="">请选择</option></select></td>
 					<td>&nbsp;&nbsp;</td>
-					<td>员工编号:</td>
+					<td>编号:</td>
 					<td><input type="text" id="number" name="number" class="layui-input" /></td>
 					<td>&nbsp;&nbsp;</td>
 					<shiro:lacksRole name="attendanceStatistician">
-						<td>员工部门:</td>
-						<td><select name="orgNameId" id="department" lay-search><option value="">请选择</option></select></td>
+						<td>部门:</td>
+						<td style="width:120px;"><select name="orgNameId" id="department" lay-search><option value="">请选择</option></select></td>
 						<td>&nbsp;&nbsp;</td>
 					</shiro:lacksRole>
-					<td>开始时间:</td>
+					<td>时间:</td>
 					<td><input id="startTime" placeholder="请输入查找时间" class="layui-input" ></td>
 					<td>&nbsp;&nbsp;</td>
-					<td>签到状态:</td>
+					<td>打卡机:</td>
+					<td style="width:120px;">
+						<select name="" id="addressSelect" class="layui-inline">
+							<option value="">请选择</option>
+							<option value="192.168.1.204">三楼打卡机</option>
+							<option value="192.168.1.250">二楼打卡机</option>
+							<option value="192.168.1.205">一楼打卡机</option>
+							<option value="192.168.7.123">面辅料打卡机</option>
+							<option value="192.168.6.73">成品打卡机</option>
+							<option value="192.168.14.201">11号打卡机</option></select></td>
+					<td>&nbsp;&nbsp;</td>
+					<td>状态:</td>
 					<td style="width:120px;">
 										<select name="inOutMode"><option value="">请选择</option>
 										<option value="1">正常签到</option>
@@ -156,6 +167,7 @@ layui.config({
 	})
 	$('#synchronization2').on('click',function(){
 		var val = $('#startTime').val();
+		var address = $('#addressSelect').val();
 		if(val=='')
 			return layer.msg('请选择时间范围',{icon:2});
 		layer.confirm('是否确认重置考勤？',function(){
@@ -166,6 +178,7 @@ layui.config({
 					startTime:val.split('~')[0]+'00:00:00',
 					endTime: val.split('~')[1]+' 23:59:59',
 					userId: $('#userId').val(),
+					address: address,
 				},
 				success: function(result){
 					var icon = 2;
@@ -186,13 +199,14 @@ layui.config({
 		var orderTimeBegin = '';
 		var orderTimeEnd = '';
 		var val = $('#startTime').val();
+		var address = $('#addressSelect').val();
 		isAttend && (orgNameId = orgId);
 		if(val!=''){
 			orderTimeBegin = val.split('~')[0]+'00:00:00';
 			orderTimeEnd = val.split('~')[1]+' 23:59:59';
 		}
 		location.href = "${ctx}/excel/importExcel/personnel/DownAttendanceSign?userId=" + (userId || "") + "&orgNameId=" + orgNameId + "&orderTimeBegin=" + orderTimeBegin
-				+ "&orderTimeEnd=" + orderTimeEnd + "" +"&number="+number;
+				+ "&orderTimeEnd=" + orderTimeEnd + "" +"&number="+number+"&address="+address;
 	});
 	function getMode(){
 		return function(d){

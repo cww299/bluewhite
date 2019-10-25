@@ -169,6 +169,7 @@ public class GroupAction {
 				}
 			}).collect(Collectors.toList());
 
+			/// secondment =0 临时, secondment = 1 正式
 			if (temporarilyList.size() > 0) {
 				for (Temporarily temporarily : temporarilyList) {
 					// 查询出该分组临时员工的出勤数据
@@ -182,7 +183,7 @@ public class GroupAction {
 						temporarilyUserMap.put("time",
 								temporarily.getWorkTime() == null ? 0 : temporarily.getWorkTime());
 						// 工作休息状态
-						temporarilyUserMap.put("status", 1);
+						temporarilyUserMap.put("status", temporarily.getStatus());
 						temporarilyUserList.add(temporarilyUserMap);
 					}
 					// 查询出该分组本厂借调员工的出勤数据
@@ -194,7 +195,7 @@ public class GroupAction {
 						userMap.put("groupId", temporarily.getGroupId());
 						userMap.put("name", temporarily.getUser().getUserName());
 						userMap.put("time", temporarily.getWorkTime() == null ? 0 : temporarily.getWorkTime());
-						userMap.put("status", 1);
+						userMap.put("status", temporarily.getStatus());
 						userList.add(userMap);
 					}
 				}
@@ -250,7 +251,7 @@ public class GroupAction {
 						temporarilyUserMap.put("groupId", temporarily.getGroupId());
 						temporarilyUserMap.put("name", temporarily.getTemporaryUser().getUserName());
 						temporarilyUserMap.put("time", temporarily.getWorkTime());
-						temporarilyUserMap.put("status", 1);
+						temporarilyUserMap.put("status", temporarily.getStatus());
 						temporarilyUserList.add(temporarilyUserMap);
 					}
 					// 查询出该分组本厂借调员工的出勤数据
@@ -262,7 +263,7 @@ public class GroupAction {
 						userMap.put("groupId", temporarily.getGroupId());
 						userMap.put("name", temporarily.getUser().getUserName());
 						userMap.put("time", temporarily.getWorkTime());
-						userMap.put("status", 1);
+						userMap.put("status", temporarily.getStatus());
 						userList.add(userMap);
 					}
 				}
@@ -295,19 +296,33 @@ public class GroupAction {
 	 */
 	@RequestMapping(value = "/production/updateManualTime", method = RequestMethod.GET)
 	@ResponseBody
-	public CommonResponse updateManualTime(Long id, Integer status, Date time) {
+	public CommonResponse updateManualTime(Long id, Integer status, Date time, Integer flag) {
 		CommonResponse cr = new CommonResponse();
 		if (id != null) {
-			Attendance attendance = attendanceService.findOne(id);
-			// 休息
-			if (status == 0) {
-				attendance.setManualTime(time);
+			if(flag == 1){
+				Attendance attendance = attendanceService.findOne(id);
+				// 休息
+				if (status == 0) {
+					attendance.setManualTime(time);
+				}
+				// 工作
+				if (status == 1) {
+					attendance.setManualTime(null);
+				}
+				attendanceService.save(attendance);
 			}
-			// 工作
-			if (status == 1) {
-				attendance.setManualTime(null);
+			if(flag == 0){
+				Temporarily temporarily = temporarilyDao.findOne(id);
+				// 休息
+				if (status == 0) {
+					temporarily.setStatus(0);
+					}
+				// 工作
+				if (status == 1) {
+					temporarily.setStatus(1);		
+				}
+				temporarilyDao.save(temporarily);
 			}
-			attendanceService.save(attendance);
 		}
 		cr.setMessage("修改成功");
 		return cr;
@@ -415,6 +430,7 @@ public class GroupAction {
 					return cr;
 				}
 			}
+			temporarilyNew.setStatus(1);
 			temporarilyList.add(temporarilyNew);
 		}
 		temporarilyDao.save(temporarilyList);

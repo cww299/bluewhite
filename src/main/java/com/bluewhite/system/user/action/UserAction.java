@@ -202,6 +202,7 @@ public class UserAction {
 					return cr;
 				}
 			}
+			temporarilyNew.setStatus(1);
 			temporarilyList.add(temporarilyNew);
 		}
 		temporarilyDao.save(temporarilyList);

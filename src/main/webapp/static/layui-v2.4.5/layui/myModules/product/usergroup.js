@@ -277,6 +277,7 @@ layui.config({
 									form.on('switch(changeStatus)',function(data){
 										var index = $(data.elem).closest('tr').data('index');
 										var trData = table.cache['lookoverTable'][index];
+										var flag = 0;
 										var html = [
 										            '<div style="padding:15px;">',
 										                '<h3 style="text-align: center;color: gray;padding: 10px 0;">',
@@ -298,6 +299,7 @@ layui.config({
 												data:{
 													id: trData.userId,
 													status: data.elem.checked?1:0,
+													flag: trData.secondment,
 												},
 											})
 										}else{
@@ -322,6 +324,7 @@ layui.config({
 															id: trData.userId,
 															status: data.elem.checked?1:0,
 															time: $('#outTime').val(),
+															flag: trData.secondment,
 														},
 														success:function(){
 															layer.close(confirm);
@@ -338,9 +341,9 @@ layui.config({
 							})
 							function getStatus(){
 								return function(d){
-									var disabled = 'disabled',checked = '';
-									if(isSmall && d.isTemp=='否')	//小屏且非临时，可修改
-										disabled = '';
+									var disabled = '',checked = '';
+									/*if(isSmall && d.isTemp=='否')	//小屏且非临时，可修改
+										disabled = '';*/
 									if(d.status==1)
 										checked = 'checked';
 									return '<input type="checkbox" lay-filter="changeStatus" lay-skin="switch" lay-text="工作|休息" '+checked+' '+disabled+'>';
