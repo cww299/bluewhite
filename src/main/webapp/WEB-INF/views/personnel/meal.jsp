@@ -122,15 +122,24 @@
 				</div>
 			</div>
 
-			<div class="layui-form-item">
+			<div class="layui-form-item" id="time1">
 				<label class="layui-form-label" style="width: 100px;">日期</label>
 					<div class="layui-input-inline">
 						<input type="text" 
-							style="width: 190px; position: absolute; float: left;" name="time"
-							id="tradeDaysTime" lay-verify="tradeDaysTime" placeholder="请输入日期"
+							style="width: 190px; position: absolute; float: left;" 
+							id="tradeDaysTime" placeholder="请输入日期"
 							class="layui-input laydate-icon">
 					</div>
 				</div>
+			<div class="layui-form-item" id="time2">
+				<label class="layui-form-label" style="width: 100px;">日期</label>
+					<div class="layui-input-inline">
+						<input type="text" 
+							style="width: 190px; position: absolute; float: left;" 
+							id="tradeDaysTime2"  placeholder="请输入日期"
+							class="layui-input laydate-icon">
+					</div>
+				</div>	
 		</div>
 	</form>
 
@@ -252,7 +261,10 @@
 				    type: 'date',
 				    range: '~',
 				  });
-				
+				  laydate.render({
+					    elem: '#tradeDaysTime2',
+					    type: 'datetime',
+					  });
 					$.ajax({
 						url: '${ctx}/system/user/findUserList',
 						type: "GET",
@@ -570,6 +582,8 @@
 						var tableId = config.id;
 						switch(obj.event) {
 							case 'addTempData':
+								$("#time2").hide();
+								$("#time1").show();
 								var	dicDiv=$("#layuiadmin-form-admin2");
 								layer.open({
 									type:1,
@@ -593,16 +607,19 @@
 										var id=$("#userId").find("option:selected").data('id')
 										if(id==0){
 											data.field.userId=$("#userId").val();
+											data.field.tradeDaysTime=$("#tradeDaysTime").val();
 											 mainJs.fAdd(data.field);  
+											 document.getElementById("layuiadmin-form-admin2").reset();
 										}else{
 											if($("#orgNameId").val()==""){
 												return layer.msg("特急人员请填写部门",{icon:2})
 											}
 											data.field.orgNameId=$("#orgNameId").val();
+											data.field.tradeDaysTime=$("#tradeDaysTime").val();
 											data.field.temporaryUserId=$("#userId").val();
 											mainJs.fAdd(data.field); 
-										}
 											document.getElementById("layuiadmin-form-admin2").reset();
+										}
 								        	layui.form.render();
 										})
 									},end:function(){ 
@@ -779,8 +796,30 @@
 									table.cleanTemp(tableId);
 							break;
 							case 'update':
+								$("#time1").hide();
+								$("#time2").show();
 								var choosed=layui.table.checkStatus("tableData").data;
-								console.log(choosed)
+								var orgNameId=choosed[0].orgNameId
+								var mode=choosed[0].mode
+								var tradeDaysTime=choosed[0].tradeDaysTime
+								var idr=choosed[0].id
+								var ids = '';
+								if(choosed[0].user!=null){
+										 ids=choosed[0].user.id
+								}else{
+									     ids=choosed[0].temporaryUser.id
+								}
+								$("#userId").val(ids);
+								layui.form.render();
+								
+							    $("#orgNameId").val(orgNameId);
+							    $("#mode").val(mode);
+							    layui.form.render();
+							   /*  $("#mode").each(function(j,k){
+									$(k).val(mode);
+									layui.form.render()
+				      			  }) */
+							    $("#tradeDaysTime2").val(tradeDaysTime)
 								var	dicDiv=$("#layuiadmin-form-admin2");
 								layer.open({
 									type:1,
@@ -804,14 +843,18 @@
 										var id=$("#userId").find("option:selected").data('id')
 										if(id==0){
 											data.field.userId=$("#userId").val();
-											 mainJs.fAdd(data.field);  
+											data.field.orgNameId=$("#orgNameId").val();
+											data.field.id=idr;
+											data.field.tradeDaysTime=$("#tradeDaysTime2").val();
+											mainJs.fAdd(data.field);  
+											document.getElementById("layuiadmin-form-admin2").reset();
 										}else{
-											if($("#orgNameId").val()==""){
-												return layer.msg("特急人员请填写部门",{icon:2})
-											}
 											data.field.orgNameId=$("#orgNameId").val();
 											data.field.temporaryUserId=$("#userId").val();
+											data.field.id=idr;
+											data.field.tradeDaysTime=$("#tradeDaysTime2").val();
 											mainJs.fAdd(data.field); 
+											document.getElementById("layuiadmin-form-admin2").reset();
 										}
 											document.getElementById("layuiadmin-form-admin2").reset();
 								        	layui.form.render();
@@ -994,6 +1037,7 @@
 								},
 								success: function(result) {
 									if(0 == result.code) {
+										layer.closeAll();
 									 	 table.reload("tableData", {
 							                page: {
 							                }
