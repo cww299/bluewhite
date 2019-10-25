@@ -66,6 +66,7 @@ layui.config({
 			elem:'#tableData',
 			url:'${ctx}/ledger/getOrderProcurement',
 			size:'lg',
+			colsWidth:[0,10,0,6,6,6,8,10,10,6,10,6],
 			autoUpdate:{
 				saveUrl:'/ledger/updateOrderProcurement',
 				field:{ userStorage_id:'userStorageId', },
@@ -83,7 +84,7 @@ layui.config({
 				}
 			},
 			ifNull:'',
-			toolbar: canUp?'<span lay-event="audit" class="layui-btn layui-btn-sm">审核入科</span>':'',
+			toolbar: canUp?'<span lay-event="audit" class="layui-btn layui-btn-sm">审核入库</span>':'',
 			cols:[[
 					{ type:'checkbox' },
 					{ title:'下单日期', field:'placeOrderTime', },
