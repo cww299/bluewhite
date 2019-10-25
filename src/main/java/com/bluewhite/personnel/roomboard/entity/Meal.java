@@ -51,10 +51,10 @@ public class Meal extends BaseEntity<Long> {
 	private TemporaryUser temporaryUser;
 	
 	/**
-	 * 临时人员部门id
+	 * 部门Id
 	 */
-	@Column(name = "temporary_user_org_id")
-	private Long temporaryUserOrgId;
+	@Column(name = "org_name_Id")
+	private Long orgNameId;
 	
 	/**
 	 *(1.早餐 2.中餐 3.晚餐4.夜宵) 
@@ -126,11 +126,6 @@ public class Meal extends BaseEntity<Long> {
 	@Transient
 	private Date orderTimeEnd;
 	
-	/**
-	 * 部门Id
-	 */
-	@Transient
-	private Long orgNameId;
 	
 	/**
 	 * 查询字段（部门）
@@ -139,14 +134,6 @@ public class Meal extends BaseEntity<Long> {
 	private String orgName;
 
 	
-
-	public Long getTemporaryUserOrgId() {
-		return temporaryUserOrgId;
-	}
-
-	public void setTemporaryUserOrgId(Long temporaryUserOrgId) {
-		this.temporaryUserOrgId = temporaryUserOrgId;
-	}
 
 	public Long getTemporaryUserId() {
 		return temporaryUserId;
