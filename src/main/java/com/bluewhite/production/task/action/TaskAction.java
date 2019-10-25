@@ -309,7 +309,8 @@ public class TaskAction {
 				if (procedure.getName().indexOf("大包堆放原打包位") != -1 || procedure.getName().indexOf("压包") != -1
 						|| procedure.getName().indexOf("点数") != -1 || procedure.getName().indexOf("绞口") != -1
 						|| procedure.getName().indexOf("套袋") != -1 || procedure.getName().indexOf("封箱") != -1
-						|| procedure.getName().indexOf("封空箱") != -1 || procedure.getName().indexOf("原打包位") != -1) {
+						|| procedure.getName().indexOf("封空箱") != -1 || procedure.getName().indexOf("原打包位") != -1
+						|| procedure.getName().indexOf("推箱") != -1 || procedure.getName().indexOf("码包") != -1) {
 					mapList.stream().forEach(m -> {
 						if (String.valueOf(m.get("name")).equals("装箱装包工序")) {
 							m.put("checked", 1);
@@ -317,7 +318,7 @@ public class TaskAction {
 					});
 				}
 
-				if (procedure.getName().indexOf("大包上车") != -1 || procedure.getName().indexOf("箱上车") != -1) {
+				if (procedure.getName().indexOf("上车") != -1) {
 					mapList.stream().forEach(m -> {
 						if (String.valueOf(m.get("name")).equals("上下车力工工序")) {
 							m.put("checked", 1);
