@@ -45,7 +45,7 @@ public class MealAction {
 	private ClearCascadeJSON clearCascadeJSON;
 	{
 		clearCascadeJSON = ClearCascadeJSON.get()
-				.addRetainTerm(Meal.class, "id","userName", "user","temporaryUser", "mode", "tradeDaysTime", "price")
+				.addRetainTerm(Meal.class, "id","userName", "user","temporaryUser", "mode", "tradeDaysTime", "price","orgNameId")
 				.addRetainTerm(User.class, "id", "userName", "orgName", "orgNameId")
 				.addRetainTerm(TemporaryUser.class, "id", "userName");
 	}
