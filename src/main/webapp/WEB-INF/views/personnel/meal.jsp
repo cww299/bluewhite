@@ -24,7 +24,15 @@
 					<table>
 						<tr>
 							<td>姓名:</td>
-							<td><select class="form-control" id="selectUserId" lay-search="true"  name="userId"></select></td>
+							<td><select class="form-control" id="selectUserId" lay-search="true"  >
+							<option>请选择</option>
+							<optgroup label="正式员工" id="formal2">
+								
+ 							 </optgroup>
+ 							 <optgroup label="特急人员" id="temporary2">
+ 							 	
+ 							 </optgroup>
+							</select></td>
 							<td>&nbsp;&nbsp;</td>
 							<td>日期:</td>
 							<td><input id="startTime" style="width: 300px;" name="orderTimeBegin" placeholder="请输入开始时间" class="layui-input laydate-icon">
@@ -81,7 +89,15 @@
 			<div class="layui-form-item">
 				<label class="layui-form-label" style="width: 100px;">姓名</label>
 				<div class="layui-input-inline">
-					<select name="userId" style="width:290px;" lay-filter="id" id="userId" lay-search="true"></select>
+					<select  style="width:290px;" lay-filter="id" id="userId" lay-search="true">
+							<option value="">请选择</option>
+							<optgroup label="正式员工" id="formal">
+								
+ 							 </optgroup>
+ 							 <optgroup label="特急人员" id="temporary">
+ 							 	
+ 							 </optgroup>
+					</select>
 				</div>
 			</div>
 
@@ -206,7 +222,7 @@
 				  		return _index;
 				  	}
 					//select全局变量
-					var htmls = '<option value="">请选择</option>';
+					var htmls = '';
 					var index = layer.load(1, {
 						shade: [0.1, '#fff'] //0.1透明度的白色背景
 					});
@@ -237,11 +253,34 @@
 						},
 						success: function(result) {
 							$(result.data).each(function(i, o) {
-								htmls += '<option value=' + o.id + '>' + o.userName + '</option>'
+								htmls += '<option value=' + o.id + ' data-id="0">' + o.userName + '</option>'
 							})
-							$("#selectUserId").html(htmls)
-							$("#userId").html(htmls)
-							$("#userIds").html(htmls)
+							$("#formal").html(htmls)
+							$("#formal2").html(htmls)
+							$("#userIds").html(htmls) 
+							layer.close(index);
+						},
+						error: function() {
+							layer.msg("操作失败！", {
+								icon: 2
+							});
+							layer.close(index);
+						}
+					});
+					var htmll="";
+					$.ajax({
+						url: '${ctx}/system/user/findTemporaryUserTime',
+						type: "GET",
+						async: false,
+						beforeSend: function() {
+							index;
+						},
+						success: function(result) {
+							$(result.data).each(function(i, o) {
+								htmll += '<option value=' + o.id + ' data-id="1">' + o.userName + '</option>'
+							})
+						 	$("#temporary").html(htmll)
+						 	$("#temporary2").html(htmll)
 							layer.close(index);
 						},
 						error: function() {
@@ -280,11 +319,19 @@
 					// 处理操作列
 					var fn1 = function(field) {
 						return function(d) {
+							if(d.user!=null){
 							return [
-								'<select name="selectOne" lay-filter="lay_selecte" lay-search="true" data-value="' + d.userId + '">' +
+								'<select name="selectOne" class="selectop" lay-filter="lay_selecte" lay-search="true" data-id="0" data-value="' + d.user.id + '">' +
 								htmls +
 								'</select>'
 							].join('');
+							}else{
+								return [
+								'<select name="selectOne" class="selectop" lay-filter="lay_selecte" lay-search="true" data-id="1" data-value="' + d.temporaryUser.id + '">' +
+								htmll +
+								'</select>'
+								].join('');
+							}
 
 						};
 					};
@@ -352,7 +399,7 @@
 								align: 'center',
 								fixed: 'left'
 							},{
-								field: "userId",
+								field: "userName",
 								title: "姓名",
 								align: 'center',
 								search: true,
@@ -426,19 +473,30 @@
 					
 					// 监听表格中的下拉选择将数据同步到table.cache中
 					form.on('select(lay_selecte)', function(data) {
+						
 						var selectElem = $(data.elem);
 						var tdElem = selectElem.closest('td');
 						var trElem = tdElem.closest('tr');
 						var tableView = trElem.closest('.layui-table-view');
 						var field = tdElem.data('field');
-						table.cache[tableView.attr('lay-id')][trElem.data('index')][tdElem.data('field')] = data.value;
 						var id = table.cache[tableView.attr('lay-id')][trElem.data('index')].id
-						var postData = {
-							id: id,
-							[field]:data.value
-						}
-						//调用新增修改
-						mainJs.fUpdate(postData);
+						var selectId=$(".selectop").find("option:selected").data('id')
+						table.cache[tableView.attr('lay-id')][trElem.data('index')][tdElem.data('field')] = data.value;
+					    var index = $(data.elem).closest('tr').data('index');
+						var trData = table.cache['tableData'][index];
+						if(selectId==0){
+						 var postData = {
+							id:id,
+							userId:data.value
+						} 
+						 mainJs.fUpdate(postData); 
+						}else{
+							var postData = {
+									id:id,
+									temporaryUserId:data.value
+								} 
+						mainJs.fUpdate(postData); 	
+						} 
 					});
 					//修改吃饭方式
 					form.on('select(lay_selecte2)', function(data) {
@@ -512,7 +570,14 @@
 							        },
 									yes:function(){
 										form.on('submit(addRole)', function(data) {
+										var id=$("#userId").find("option:selected").data('id')
+										if(id==0){
+											data.field.userId=$("#userId").val();
+											 mainJs.fAdd(data.field);  
+										}else{
+											data.field.temporaryUserId=$("#userId").val();
 											mainJs.fAdd(data.field); 
+										}
 											document.getElementById("layuiadmin-form-admin2").reset();
 								        	layui.form.render();
 										})
@@ -788,6 +853,7 @@
 						var orderTime=field.orderTimeBegin.split('~');
 						field.orderTimeBegin=orderTime[0];
 						field.orderTimeEnd=orderTime[1];
+						field.userName=$("#selectUserId").find("option:selected").text();
 						table.reload('tableData', {
 							where: field,
 							 page: { curr : 1 }
