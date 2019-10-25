@@ -124,6 +124,10 @@ public class ScatteredOutboundServiceImpl extends BaseServiceImpl<ScatteredOutbo
 			if (param.getAudit() != null) {
 				predicate.add(cb.equal(root.get("audit").as(Integer.class), param.getAudit()));
 			}
+			// 是否审核成下单，进入开单阶段
+			if (param.getOpenOrderAudit() != null) {
+				predicate.add(cb.equal(root.get("openOrderAudit").as(Integer.class), param.getOpenOrderAudit()));
+			}
 			// 按出库编号
 			if (!StringUtils.isEmpty(param.getOutboundNumber())) {
 				predicate.add(cb.like(root.get("outboundNumber").as(String.class),

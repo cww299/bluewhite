@@ -11,6 +11,7 @@ import javax.persistence.Table;
 import javax.persistence.Transient;
 
 import com.bluewhite.base.BaseEntity;
+import com.bluewhite.system.user.entity.TemporaryUser;
 import com.bluewhite.system.user.entity.User;
 
 /**
@@ -35,6 +36,25 @@ public class Meal extends BaseEntity<Long> {
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "user_id", referencedColumnName = "id", insertable = false, updatable = false)
 	private User user;
+	
+	/**
+	 * 临时人员id
+	 */
+	@Column(name = "temporary_user_id")
+	private Long temporaryUserId;
+	
+	/**
+	 * 临时人员
+	 */
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "temporary_user_id", referencedColumnName = "id", insertable = false, updatable = false)
+	private TemporaryUser temporaryUser;
+	
+	/**
+	 * 临时人员部门id
+	 */
+	@Column(name = "temporary_user_org_id")
+	private Long temporaryUserOrgId;
 	
 	/**
 	 *(1.早餐 2.中餐 3.晚餐4.夜宵) 
@@ -63,7 +83,7 @@ public class Meal extends BaseEntity<Long> {
 	/**
 	 * 员工姓名
 	 */
-	@Transient
+	@Column(name = "userName")
 	private String userName;
 	
 	/**
@@ -119,6 +139,22 @@ public class Meal extends BaseEntity<Long> {
 	private String orgName;
 
 	
+
+	public Long getTemporaryUserId() {
+		return temporaryUserId;
+	}
+
+	public void setTemporaryUserId(Long temporaryUserId) {
+		this.temporaryUserId = temporaryUserId;
+	}
+
+	public TemporaryUser getTemporaryUser() {
+		return temporaryUser;
+	}
+
+	public void setTemporaryUser(TemporaryUser temporaryUser) {
+		this.temporaryUser = temporaryUser;
+	}
 
 	public Integer getType() {
 		return type;

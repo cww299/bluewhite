@@ -136,7 +136,6 @@ public class AttendanceTimeServiceImpl extends BaseServiceImpl<AttendanceTime, L
 			// 开始汇总每个人的考勤
 			for (User us : userList) {
 				List<Attendance> attUserList = new ArrayList<>();
-				// 获取员工一天内的打卡记录并按照自然排序
 				List<Attendance> attUserListSort = allAttList.stream().filter(
 						Attendance -> Attendance.getUserId() != null && Attendance.getUserId().equals(us.getId()))
 						.collect(Collectors.toList());
@@ -146,6 +145,7 @@ public class AttendanceTimeServiceImpl extends BaseServiceImpl<AttendanceTime, L
 						attUserList.add(at);
 					}
 				}
+				// 获取员工一天内的打卡记录并按照自然排序
 				List<Attendance> attList = attUserList.stream().sorted(Comparator.comparing(Attendance::getTime))
 						.collect(Collectors.toList());
 				// 获取每个人当天的考勤记录
