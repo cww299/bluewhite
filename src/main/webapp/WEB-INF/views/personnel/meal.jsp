@@ -24,7 +24,15 @@
 					<table>
 						<tr>
 							<td>姓名:</td>
-							<td><select class="form-control" id="selectUserId" lay-search="true"  name="userId"></select></td>
+							<td><select class="form-control" id="selectUserId" lay-search="true"  >
+							<option>请选择</option>
+							<optgroup label="正式员工" id="formal2">
+								
+ 							 </optgroup>
+ 							 <optgroup label="特急人员" id="temporary2">
+ 							 	
+ 							 </optgroup>
+							</select></td>
 							<td>&nbsp;&nbsp;</td>
 							<td>日期:</td>
 							<td><input id="startTime" style="width: 300px;" name="orderTimeBegin" placeholder="请输入开始时间" class="layui-input laydate-icon">
@@ -82,7 +90,7 @@
 				<label class="layui-form-label" style="width: 100px;">姓名</label>
 				<div class="layui-input-inline">
 					<select  style="width:290px;" lay-filter="id" id="userId" lay-search="true">
-							<option>请选择</option>
+							<option value="">请选择</option>
 							<optgroup label="正式员工" id="formal">
 								
  							 </optgroup>
@@ -248,7 +256,7 @@
 								htmls += '<option value=' + o.id + ' data-id="0">' + o.userName + '</option>'
 							})
 							$("#formal").html(htmls)
-							 $("#selectUserId").html(htmls)
+							$("#formal2").html(htmls)
 							$("#userIds").html(htmls) 
 							layer.close(index);
 						},
@@ -271,7 +279,8 @@
 							$(result.data).each(function(i, o) {
 								htmll += '<option value=' + o.id + ' data-id="1">' + o.userName + '</option>'
 							})
-						 	$("#temporary").html(htmll) 
+						 	$("#temporary").html(htmll)
+						 	$("#temporary2").html(htmll)
 							layer.close(index);
 						},
 						error: function() {
@@ -844,6 +853,7 @@
 						var orderTime=field.orderTimeBegin.split('~');
 						field.orderTimeBegin=orderTime[0];
 						field.orderTimeEnd=orderTime[1];
+						field.userName=$("#selectUserId").find("option:selected").text();
 						table.reload('tableData', {
 							where: field,
 							 page: { curr : 1 }
