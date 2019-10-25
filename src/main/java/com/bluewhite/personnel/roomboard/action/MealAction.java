@@ -25,7 +25,6 @@ import com.bluewhite.common.entity.CommonResponse;
 import com.bluewhite.common.entity.PageParameter;
 import com.bluewhite.common.entity.PageResult;
 import com.bluewhite.personnel.attendance.dao.PersonVariableDao;
-import com.bluewhite.personnel.attendance.entity.Attendance;
 import com.bluewhite.personnel.attendance.entity.AttendanceTime;
 import com.bluewhite.personnel.attendance.entity.PersonVariable;
 import com.bluewhite.personnel.roomboard.entity.Meal;
@@ -86,8 +85,8 @@ public class MealAction {
 			cr.setMessage("修改成功");
 		} else {
 			cr.setMessage("添加成功");
+			service.addMeal(meal);
 		}
-		service.addMeal(meal);
 		return cr;
 	}
 
