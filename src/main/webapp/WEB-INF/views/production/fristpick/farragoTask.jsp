@@ -51,6 +51,7 @@
 				<td><span class="input-group-btn">
 					<button type="button"class="btn btn-success  btn-sm btn-3d addDict">加绩</button></span></td>
 				<td>&nbsp;&nbsp;&nbsp;&nbsp;</td> 
+				
 				<td class="visible-sm"><span class="input-group-btn">
 					<button type="button"class="btn btn-success  btn-sm btn-3d update">杂工修改</button></span></td>	
 			</tr>
