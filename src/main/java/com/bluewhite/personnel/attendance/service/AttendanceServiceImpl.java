@@ -314,4 +314,9 @@ public class AttendanceServiceImpl extends BaseServiceImpl<Attendance, Long> imp
 		return dao.findByUserIdAndSourceMachineAndTimeBetween(userId,sourceMachine,startTime,endTime);
 	}
 
+	@Override
+	public List<Attendance> findBySourceMachineAndTimeBetween(String sourceMachine, Date startTime, Date endTime) {
+		return dao.findBySourceMachineAndTimeBetween(sourceMachine,startTime,endTime);
+	}
+
 }

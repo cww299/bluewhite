@@ -168,7 +168,6 @@ public class GroupAction {
 					return false;
 				}
 			}).collect(Collectors.toList());
-
 			/// secondment =0 临时, secondment = 1 正式
 			if (temporarilyList.size() > 0) {
 				for (Temporarily temporarily : temporarilyList) {

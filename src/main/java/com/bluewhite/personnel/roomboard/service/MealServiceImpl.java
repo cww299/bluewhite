@@ -44,7 +44,9 @@ import com.bluewhite.personnel.roomboard.entity.Meal;
 import com.bluewhite.personnel.roomboard.entity.SingleMeal;
 import com.bluewhite.production.group.dao.TemporarilyDao;
 import com.bluewhite.production.group.entity.Temporarily;
+import com.bluewhite.system.user.entity.TemporaryUser;
 import com.bluewhite.system.user.entity.User;
+import com.bluewhite.system.user.service.TemporaryUserService;
 import com.bluewhite.system.user.service.UserService;
 
 @Service
@@ -72,6 +74,8 @@ public class MealServiceImpl extends BaseServiceImpl<Meal, Long> implements Meal
 	@Autowired
 	private TemporarilyDao temporarilyDao;
 	@Autowired
+	private TemporaryUserService temporaryUserService;
+	@Autowired
 	private BaseDataDao baseDataDao;
 
 	@Override
@@ -84,7 +88,7 @@ public class MealServiceImpl extends BaseServiceImpl<Meal, Long> implements Meal
 			}
 			// 按姓名查找
 			if (!StringUtils.isEmpty(param.getUserName())) {
-				predicate.add(cb.equal(root.get("user").get("userName").as(String.class), param.getUserName()));
+				predicate.add(cb.equal(root.get("userName").as(String.class), param.getUserName()));
 			}
 			// 按部门查找
 			if (!StringUtils.isEmpty(param.getOrgNameId())) {
@@ -120,7 +124,7 @@ public class MealServiceImpl extends BaseServiceImpl<Meal, Long> implements Meal
 			}
 			// 按姓名查找
 			if (!StringUtils.isEmpty(param.getUserName())) {
-				predicate.add(cb.equal(root.get("user").get("userName").as(String.class), param.getUserName()));
+				predicate.add(cb.equal(root.get("userName").as(String.class), param.getUserName()));
 			}
 			// 按部门查找
 			if (!StringUtils.isEmpty(param.getOrgNameId())) {
@@ -158,24 +162,32 @@ public class MealServiceImpl extends BaseServiceImpl<Meal, Long> implements Meal
 		if (meal.getMode() == 4) {
 			meal.setPrice(Double.valueOf(variable.getKeyValue()));
 		}
-		if (meal.getId() == null) {
-			String date = meal.getTime();
-			String[] addDate = date.split("~");
-			List<Date> dateList = DatesUtil.getPerDaysByStartAndEndDate(addDate[0], addDate[1], "yyyy-MM-dd");
-			List<Meal> meals = new ArrayList<Meal>();
-			for (Date date2 : dateList) {
-				Meal meal2 = new Meal();
-				meal2.setTradeDaysTime(date2);
-				meal2.setPrice(meal.getPrice());
-				meal2.setMode(meal.getMode());
-				meal2.setUserName(meal.getUserName());
+		String date = meal.getTime();
+		String[] addDate = date.split("~");
+		List<Date> dateList = DatesUtil.getPerDaysByStartAndEndDate(addDate[0], addDate[1], "yyyy-MM-dd");
+		List<Meal> meals = new ArrayList<Meal>();
+		for (Date date2 : dateList) {
+			Meal meal2 = new Meal();
+			meal2.setTradeDaysTime(date2);
+			meal2.setPrice(meal.getPrice());
+			meal2.setMode(meal.getMode());
+			meal2.setType(1);
+			if(meal.getUserId()!=null){
+				User user = userService.findOne(meal.getUserId());
 				meal2.setUserId(meal.getUserId());
-				meals.add(meal2);
+				meal2.setUserName(user.getUserName());
+				meal2.setOrgNameId(user.getOrgNameId());
 			}
-			dao.save(meals);
-		} else {
-			dao.save(meal);
+			if(meal.getTemporaryUserId()!=null){
+				TemporaryUser temporaryUser = temporaryUserService.findOne(meal.getTemporaryUserId());
+				meal2.setTemporaryUserId(meal.getTemporaryUserId());
+				meal2.setUserName(temporaryUser.getUserName());
+				meal2.setOrgNameId(meal.getOrgNameId());
+			}
+			meals.add(meal2);
 		}
+		dao.save(meals);
+
 		return meal;
 	}
 
@@ -619,7 +631,7 @@ public class MealServiceImpl extends BaseServiceImpl<Meal, Long> implements Meal
 			double sumPrice = NumUtils.sum(modeOnePrice, modeTwoPrice, modeThreePrice, modeFourPrice);
 			BaseData org = baseDataDao.findOne(psList1.get(0).getOrgNameId());
 			allMap.put("username", psList1.get(0).getUserName());
-			allMap.put("orgName", org.getName());                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                              
+			allMap.put("orgName", org.getName());
 			allMap.put("modeOne", modeOne);
 			allMap.put("modeTwo", modeTwo);
 			allMap.put("modeThree", modeThree);
