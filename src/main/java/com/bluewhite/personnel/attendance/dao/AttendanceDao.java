@@ -62,5 +62,14 @@ public interface AttendanceDao extends BaseRepository<Attendance, Long>{
 	 */
 	public List<Attendance> findByUserIdAndSourceMachineAndTimeBetween(Long userId, String sourceMachine,
 			Date startTime, Date endTime);
+	
+	/**
+	 *  打卡时间和打卡地点来源查找
+	 * @param sourceMachine
+	 * @param startTime
+	 * @param endTime
+	 * @return
+	 */
+	public List<Attendance> findBySourceMachineAndTimeBetween(String sourceMachine, Date startTime, Date endTime);
 
 }
