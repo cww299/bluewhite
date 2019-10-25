@@ -139,34 +139,54 @@ layui.config({
 				url:'${ctx}/ledger/warningOrderProcurement',
 				success:function(d){
 					if(d.length>0){
-						/* layer.open({
+						$('#warm').find('span').html(d.length);
+						layer.open({
 							type:1,
 							title:'库存预警',
-							area:['30%','80%'],
-							content:'<table id="warmTable" lay-filter="warmTable"><table>',
+							area:['80%','80%'],
+							shadeClose:true,
+							content:'<table id="warmTable" lay-filter="warmTable"></table>',
 							success:function(){
 								mytable.renderNoPage({
 									elem:'#warmTable',
-									curd:{ btn:[], 
-										otherBtn:function(obj){
-											if(obj.event=='onekeyUpdate'){
-												myutil.deleTableIds({
-													url:'/ledger/fixOrderProcurement',
-													table:'warmTable',
-													text:'请选择更新数据|是否确认更新？',
-												})
+									data: d,
+									curd:{ 	btn:[], 
+											otherBtn:function(obj){
+												if(obj.event=='onekeyUpdate'){
+													myutil.deleTableIds({
+														url:'/ledger/fixOrderProcurement',
+														table:'warmTable',
+														text:'请选择更新数据|是否确认更新？',
+														success:function(){
+															myutil.getData({
+																url:'${ctx}/ledger/warningOrderProcurement',
+																success:function(d){
+																	$('#warm').find('span').html(d.length);
+																	table.reload('warmTable',{
+																		data:d,
+																	})
+																}
+															})
+														},
+													})
+												}
 											}
-										}
 									},
+									colsWidth:[0,0,7,13,7,13,7],
 									toolbar:'<span class="layui-btn layui-btn-sm" lay-event="onekeyUpdate">一键更新订单数量</span>',
 									cols:[[
-									       { },
-									       
+									       { type:'checkbox' },
+									       { title:'采购单编号', field:'orderProcurementNumber' },
+									       { title:'采购数量', field:'placeOrderNumber', },
+									       { title:'采购时间', field:'placeOrderTime', },
+									       { title:'入库数量', field:'arrivalNumber',style:'color:red;'},
+									       { title:'入库时间', field:'arrivalTime' },
+									       { title:'入库人', field:'userStorage_userName' },
 									       ]]
 								})
 							} 
 							
-						})*/
+						})
 					}else if(click){
 						myutil.esmg('无库存预警！');
 					}
