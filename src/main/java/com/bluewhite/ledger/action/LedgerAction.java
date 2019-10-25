@@ -201,7 +201,6 @@ public class LedgerAction {
 	 * 分页查看订单
 	 * 
 	 * 
-	 * 
 	 * @param page
 	 * @param order
 	 * @return
@@ -572,9 +571,15 @@ public class LedgerAction {
 	public CommonResponse  auditOrderProcurement(String ids) {
 		CommonResponse cr = new CommonResponse();
 		int count = orderProcurementService.auditOrderProcurement(ids);
-		cr.setMessage("成功生成" + count + "条生产订单");
+		cr.setMessage("成功审核" + count + "条采购单，进行入库");
 		return cr;
 	}
+	
+	
+	
+	
+	
+	
 	
 	
 	
