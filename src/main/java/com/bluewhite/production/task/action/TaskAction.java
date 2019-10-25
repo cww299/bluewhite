@@ -107,17 +107,19 @@ public class TaskAction {
 			// 新增
 			if (!StringUtils.isEmpty(task.getUserIds()) || !StringUtils.isEmpty(task.getTemporaryUserIds())) {
 				Bacth bacth = bacthService.findOne(task.getBacthId());
-				for (int i = 0; i < task.getProcedureIds().length; i++) {
-					int num = i;
-					// 获取该工序的已分配的任务数量
-					int count = bacth.getTasks().stream()
-							.filter(Task -> Task.getProcedureId().equals(task.getProcedureIds()[num]))
-							.mapToInt(Task::getNumber).sum();
-					// 当前分配数量加已分配数量大于批次总数量则不通过
-					if ((task.getNumber() + count) > bacth.getNumber()) {
-						cr.setCode(ErrorCode.ILLEGAL_ARGUMENT.getCode());
-						cr.setMessage("当前数量剩余不足，请确认数量");
-						return cr;
+				if(bacth.getFlag()==0){
+					for (int i = 0; i < task.getProcedureIds().length; i++) {
+						int num = i;
+						// 获取该工序的已分配的任务数量
+						int count = bacth.getTasks().stream()
+								.filter(Task -> Task.getProcedureId().equals(task.getProcedureIds()[num]))
+								.mapToInt(Task::getNumber).sum();
+						// 当前分配数量加已分配数量大于批次总数量则不通过
+						if ((task.getNumber() + count) > bacth.getNumber()) {
+							cr.setCode(ErrorCode.ILLEGAL_ARGUMENT.getCode());
+							cr.setMessage("当前数量剩余不足，请确认数量");
+							return cr;
+						}
 					}
 				}
 				task.setAllotTime(ProTypeUtils.countAllotTime(task.getAllotTime()));
@@ -309,7 +311,8 @@ public class TaskAction {
 				if (procedure.getName().indexOf("大包堆放原打包位") != -1 || procedure.getName().indexOf("压包") != -1
 						|| procedure.getName().indexOf("点数") != -1 || procedure.getName().indexOf("绞口") != -1
 						|| procedure.getName().indexOf("套袋") != -1 || procedure.getName().indexOf("封箱") != -1
-						|| procedure.getName().indexOf("封空箱") != -1 || procedure.getName().indexOf("原打包位") != -1) {
+						|| procedure.getName().indexOf("封空箱") != -1 || procedure.getName().indexOf("原打包位") != -1
+						|| procedure.getName().indexOf("推箱") != -1 || procedure.getName().indexOf("码包") != -1) {
 					mapList.stream().forEach(m -> {
 						if (String.valueOf(m.get("name")).equals("装箱装包工序")) {
 							m.put("checked", 1);
@@ -317,7 +320,7 @@ public class TaskAction {
 					});
 				}
 
-				if (procedure.getName().indexOf("大包上车") != -1 || procedure.getName().indexOf("箱上车") != -1) {
+				if (procedure.getName().indexOf("上车") != -1) {
 					mapList.stream().forEach(m -> {
 						if (String.valueOf(m.get("name")).equals("上下车力工工序")) {
 							m.put("checked", 1);

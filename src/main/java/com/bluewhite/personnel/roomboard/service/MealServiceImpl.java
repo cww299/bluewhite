@@ -171,6 +171,7 @@ public class MealServiceImpl extends BaseServiceImpl<Meal, Long> implements Meal
 			meal2.setTradeDaysTime(date2);
 			meal2.setPrice(meal.getPrice());
 			meal2.setMode(meal.getMode());
+			meal2.setType(1);
 			if(meal.getUserId()!=null){
 				User user = userService.findOne(meal.getUserId());
 				meal2.setUserId(meal.getUserId());

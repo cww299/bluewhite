@@ -1,7 +1,6 @@
 package com.bluewhite.production.bacth.service;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
@@ -27,10 +26,8 @@ import com.bluewhite.common.utils.DatesUtil;
 import com.bluewhite.common.utils.NumUtils;
 import com.bluewhite.common.utils.SalesUtils;
 import com.bluewhite.common.utils.StringUtil;
-import com.bluewhite.common.utils.UnUtil;
 import com.bluewhite.finance.attendance.dao.AttendancePayDao;
 import com.bluewhite.finance.attendance.entity.AttendancePay;
-import com.bluewhite.personnel.attendance.entity.Attendance;
 import com.bluewhite.personnel.attendance.service.AttendanceService;
 import com.bluewhite.production.bacth.dao.BacthDao;
 import com.bluewhite.production.bacth.entity.Bacth;
@@ -44,7 +41,6 @@ import com.bluewhite.production.productionutils.constant.ProTypeUtils;
 import com.bluewhite.production.task.entity.Task;
 import com.bluewhite.production.task.service.TaskService;
 import com.bluewhite.system.user.dao.UserDao;
-import com.bluewhite.system.user.entity.User;
 
 @Service
 public class BacthServiceImpl extends BaseServiceImpl<Bacth, Long> implements BacthService {
@@ -223,10 +219,6 @@ public class BacthServiceImpl extends BaseServiceImpl<Bacth, Long> implements Ba
 //					if (bacth.getType() == 2 && bacth.getFlag() == 0 && UnUtil.isFromMobile(request) ) {
 //						List<Attendance> attendanceList = attendanceService.findBySourceMachineAndTimeBetween(
 //								 "ELEVEN_WAREHOUSE", , );
-//						
-//						
-//						
-//						
 //					}
 					
 					bacth.setStatus(1);

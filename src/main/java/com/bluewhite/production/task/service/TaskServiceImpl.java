@@ -156,7 +156,7 @@ public class TaskServiceImpl extends BaseServiceImpl<Task, Long> implements Task
 				}
 				newTask.setProcedureId(id);
 				newTask.setProcedureName(procedure.getName());
-				// 二楼特殊业务，当存在实际不为null的时候，先 计算出任务数量
+				// 二楼特殊业务，当存在实际时间不为null的时候，先 计算出任务数量
 				if (task.getTaskTime() != null && task.getType() == 3) {
 					newTask.setNumber(NumUtils.roundTwo(ProTypeUtils.getTaskNumber(newTask.getTaskTime(),
 							newTask.getType(), procedure.getWorkingTime())));
