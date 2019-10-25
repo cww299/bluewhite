@@ -100,7 +100,15 @@
 					</select>
 				</div>
 			</div>
-
+			
+			<div class="layui-form-item">
+				<label class="layui-form-label" style="width: 100px;">部门</label>
+				<div class="layui-input-inline">
+					<select  style="width:290px;"   lay-filter="id" id="orgNameId" lay-search="true">
+					</select>
+				</div>
+			</div>
+			
 			<div class="layui-form-item">
 				<label class="layui-form-label" style="width: 100px;">报餐类型</label>
 				<div class="layui-input-inline">
@@ -308,6 +316,7 @@
 			      				htmlfrn +='<option value="'+j.id+'">'+j.name+'</option>'
 			      			  });
 			      			$("#orgName").html(htmlfrn);
+			      			$("#orgNameId").html(htmlfrn);
 			      			$("#orgNameIds").html(htmlfrn);
 			      			layer.close(indextwo);
 					      }
@@ -317,7 +326,7 @@
 					
 					
 					// 处理操作列
-					var fn1 = function(field) {
+					/* var fn1 = function(field) {
 						return function(d) {
 							if(d.user!=null){
 							return [
@@ -334,9 +343,9 @@
 							}
 
 						};
-					};
+					}; */
 
-					var fn2 = function(field) {
+					/* var fn2 = function(field) {
 						return function(d) {
 							return ['<select name="selectTwo" class="selectTwo" lay-filter="lay_selecte" lay-search="true" data-value="' + d.mode + '">',
 								'<option value="">请选择</option>',
@@ -348,7 +357,7 @@
 							].join('');
 						};
 						form.render(); 
-					};
+					}; */
 					
 					var fn3 = function(field) {
 						return function(d) {
@@ -404,20 +413,30 @@
 								align: 'center',
 								search: true,
 								edit: false,
-								type: 'normal',
-								templet: fn1('selectOne')
 							},{
 								field: "mode",
 								title: "报餐类型",
 								align: 'center',
 								search: true,
 								edit: false,
-								type: 'normal',
-								templet: fn2('selectTwo')
+								templet:function(d){
+									if(d.mode==1){
+										return "早餐"
+									}
+									if(d.mode==2){
+										return "中餐"
+									}
+									if(d.mode==3){
+										return "晚餐"
+									}
+									if(d.mode==4){
+										return "夜宵餐"
+									}
+								}
 							},{
 								field: "tradeDaysTime",
 								title: "日期",
-								edit: 'text'
+								edit: false
 							}]
 						],
 						done: function() {
@@ -444,7 +463,7 @@
 							});
 							form.render();
 							// 初始化laydate
-							layui.each(tableView.find('td[data-field="tradeDaysTime"]'), function(index, tdElem) {
+							/* layui.each(tableView.find('td[data-field="tradeDaysTime"]'), function(index, tdElem) {
 								tdElem.onclick = function(event) {
 									layui.stope(event)
 								};
@@ -461,7 +480,7 @@
 											mainJs.fUpdate(postData);
 												}
 											})
-										})
+										}) */
 									},
 								});
 					
@@ -575,6 +594,10 @@
 											data.field.userId=$("#userId").val();
 											 mainJs.fAdd(data.field);  
 										}else{
+											if($("#orgNameId").val()==""){
+												return layer.msg("特急人员请填写部门",{icon:2})
+											}
+											data.field.orgNameId=$("#orgNameId").val();
 											data.field.temporaryUserId=$("#userId").val();
 											mainJs.fAdd(data.field); 
 										}
