@@ -19,6 +19,8 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
 
 import com.bluewhite.base.BaseServiceImpl;
+import com.bluewhite.basedata.dao.BaseDataDao;
+import com.bluewhite.basedata.entity.BaseData;
 import com.bluewhite.common.ServiceException;
 import com.bluewhite.common.entity.PageParameter;
 import com.bluewhite.common.entity.PageResult;
@@ -29,7 +31,6 @@ import com.bluewhite.finance.wage.dao.WageDao;
 import com.bluewhite.finance.wage.entity.Wage;
 import com.bluewhite.personnel.attendance.dao.AttendanceInitDao;
 import com.bluewhite.personnel.attendance.dao.PersonVariableDao;
-import com.bluewhite.personnel.attendance.entity.Attendance;
 import com.bluewhite.personnel.attendance.entity.AttendanceInit;
 import com.bluewhite.personnel.attendance.entity.AttendanceTime;
 import com.bluewhite.personnel.attendance.entity.PersonVariable;
@@ -70,6 +71,8 @@ public class MealServiceImpl extends BaseServiceImpl<Meal, Long> implements Meal
 	private CostLivingDao costLivingDao;
 	@Autowired
 	private TemporarilyDao temporarilyDao;
+	@Autowired
+	private BaseDataDao baseDataDao;
 
 	@Override
 	public PageResult<Meal> findPage(Meal param, PageParameter page) {
@@ -85,7 +88,7 @@ public class MealServiceImpl extends BaseServiceImpl<Meal, Long> implements Meal
 			}
 			// 按部门查找
 			if (!StringUtils.isEmpty(param.getOrgNameId())) {
-				predicate.add(cb.equal(root.get("user").get("orgNameId").as(Long.class), param.getOrgNameId()));
+				predicate.add(cb.equal(root.get("orgNameId").as(Long.class), param.getOrgNameId()));
 			}
 			// 按报餐类型
 			if (param.getMode() != null) {
@@ -121,7 +124,7 @@ public class MealServiceImpl extends BaseServiceImpl<Meal, Long> implements Meal
 			}
 			// 按部门查找
 			if (!StringUtils.isEmpty(param.getOrgNameId())) {
-				predicate.add(cb.equal(root.get("user").get("orgNameId").as(Long.class), param.getOrgNameId()));
+				predicate.add(cb.equal(root.get("orgNameId").as(Long.class), param.getOrgNameId()));
 			}
 			// 按报餐类型
 			if (param.getMode() != null) {
@@ -473,7 +476,8 @@ public class MealServiceImpl extends BaseServiceImpl<Meal, Long> implements Meal
 			}
 		} else {
 			List<SingleMeal> list2 = singleMealDao.findByTimeBetween(meal.getOrderTimeBegin(), meal.getOrderTimeEnd());
-			List<SingleMeal> list1 = list2.stream().filter(SingleMeal -> SingleMeal.getOrgNameId() == null).collect(Collectors.toList());
+			List<SingleMeal> list1 = list2.stream().filter(SingleMeal -> SingleMeal.getOrgNameId() == null)
+					.collect(Collectors.toList());
 			if (list1.size() == 0) {
 				throw new ServiceException("选择时间内，没有添加食材记录，请先添加");
 			}
@@ -560,9 +564,9 @@ public class MealServiceImpl extends BaseServiceImpl<Meal, Long> implements Meal
 		double g = NumUtils.sum(NumUtils.division(NumUtils.div(f, a1 == 0 ? 1 : a1, 2)), q1); // 早餐平均
 		double i = NumUtils.sum(NumUtils.division(NumUtils.div(z, a2 == 0 ? 1 : a2, 2)), q1);// 中餐平均
 		double n = NumUtils.sum(NumUtils.division(NumUtils.div(x, a3 == 0 ? 1 : a3, 2)), q1);// 晚餐平均
-		double h = NumUtils.sum(NumUtils.division(NumUtils.div(c, r == 0 ? 1 : r, 2)), q1);
-		;// 夜宵平均
+		double h = NumUtils.sum(NumUtils.division(NumUtils.div(c, r == 0 ? 1 : r, 2)), q1);// 夜宵平均
 
+		// 获取用餐记录
 		List<Meal> mealsList = findMeal(meal);
 		Map<Long, List<Meal>> mealMap = mealsList.stream().filter(Meal -> Meal.getUserId() != null)
 				.collect(Collectors.groupingBy(Meal::getUserId, Collectors.toList()));
@@ -570,24 +574,52 @@ public class MealServiceImpl extends BaseServiceImpl<Meal, Long> implements Meal
 			allMap = new HashMap<>();
 			// 获取单一员工日期区间所有的报餐数据
 			List<Meal> psList1 = mealMap.get(ps1);
-			double modeOne = psList1.stream()
-					.filter(Meal -> Meal.getUserId().equals(Meal.getUserId()) && Meal.getMode() == 1).count();
-			double modeTwo = psList1.stream()
-					.filter(Meal -> Meal.getUserId().equals(Meal.getUserId()) && Meal.getMode() == 2).count();
-			double modeThree = psList1.stream()
-					.filter(Meal -> Meal.getUserId().equals(Meal.getUserId()) && Meal.getMode() == 3).count();
-			double modeFour = psList1.stream()
-					.filter(Meal -> Meal.getUserId().equals(Meal.getUserId()) && Meal.getMode() == 4).count();
+			double modeOne = psList1.stream().filter(Meal -> Meal.getMode() == 1).count();
+			double modeTwo = psList1.stream().filter(Meal -> Meal.getMode() == 2).count();
+			double modeThree = psList1.stream().filter(Meal -> Meal.getMode() == 3).count();
+			double modeFour = psList1.stream().filter(Meal -> Meal.getMode() == 4).count();
 			double modeOnePrice = NumUtils.mul(modeOne, g);
 			double modeTwoPrice = NumUtils.mul(modeTwo, i);
 			double modeThreePrice = NumUtils.mul(modeThree, n);
 			double modeFourPrice = NumUtils.mul(modeFour, h);
 			double sumPrice = NumUtils.sum(modeOnePrice, modeTwoPrice, modeThreePrice, modeFourPrice);
-			User user = userService.findOne(ps1);
-			String aString = user.getUserName();
-			String org = user.getOrgName().getName();
-			allMap.put("username", aString);
-			allMap.put("orgName", org);
+			BaseData org = baseDataDao.findOne(psList1.get(0).getOrgNameId());
+			allMap.put("username", psList1.get(0).getUserName());
+			allMap.put("orgName", org.getName());
+			allMap.put("modeOne", modeOne);
+			allMap.put("modeTwo", modeTwo);
+			allMap.put("modeThree", modeThree);
+			allMap.put("modeFour", modeFour);
+			allMap.put("modeOnePrice", modeOnePrice);
+			allMap.put("modeTwoPrice", modeTwoPrice);
+			allMap.put("modeThreePrice", modeThreePrice);
+			allMap.put("modeFourPrice", modeFourPrice);
+			allMap.put("modeOneVal", g);
+			allMap.put("modeTwoVal", i);
+			allMap.put("modeThreeVal", n);
+			allMap.put("modeFourVal", h);
+			allMap.put("sumPrice", sumPrice);
+			allList.add(allMap);
+		}
+
+		Map<Long, List<Meal>> mealMapUser = mealsList.stream().filter(Meal -> Meal.getTemporaryUserId() != null)
+				.collect(Collectors.groupingBy(Meal::getTemporaryUserId, Collectors.toList()));
+		for (Long ps1 : mealMapUser.keySet()) {
+			allMap = new HashMap<>();
+			// 获取单一员工日期区间所有的报餐数据
+			List<Meal> psList1 = mealMapUser.get(ps1);
+			double modeOne = psList1.stream().filter(Meal -> Meal.getMode() == 1).count();
+			double modeTwo = psList1.stream().filter(Meal -> Meal.getMode() == 2).count();
+			double modeThree = psList1.stream().filter(Meal -> Meal.getMode() == 3).count();
+			double modeFour = psList1.stream().filter(Meal -> Meal.getMode() == 4).count();
+			double modeOnePrice = NumUtils.mul(modeOne, g);
+			double modeTwoPrice = NumUtils.mul(modeTwo, i);
+			double modeThreePrice = NumUtils.mul(modeThree, n);
+			double modeFourPrice = NumUtils.mul(modeFour, h);
+			double sumPrice = NumUtils.sum(modeOnePrice, modeTwoPrice, modeThreePrice, modeFourPrice);
+			BaseData org = baseDataDao.findOne(psList1.get(0).getOrgNameId());
+			allMap.put("username", psList1.get(0).getUserName());
+			allMap.put("orgName", org.getName());                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                              
 			allMap.put("modeOne", modeOne);
 			allMap.put("modeTwo", modeTwo);
 			allMap.put("modeThree", modeThree);
@@ -770,6 +802,8 @@ public class MealServiceImpl extends BaseServiceImpl<Meal, Long> implements Meal
 		meal.setTradeDaysTime(attendanceTime.getTime());
 		meal.setUserId(attendanceTime.getUserId());
 		meal.setUserName(attendanceTime.getUserName());
+		User user = userService.findOne(attendanceTime.getUserId());
+		meal.setOrgNameId(user.getOrgNameId());
 		meal.setType(2);
 		meal.setMode(mode);
 		return meal;
@@ -791,16 +825,16 @@ public class MealServiceImpl extends BaseServiceImpl<Meal, Long> implements Meal
 		Long temporaryUserOrgId = null;
 		switch (temporarily.getType()) {
 		case 1:
-			temporaryUserOrgId =(long)48;
+			temporaryUserOrgId = (long) 48;
 			break;
 		case 2:
-			temporaryUserOrgId =(long)79;
+			temporaryUserOrgId = (long) 79;
 			break;
 		case 3:
-			temporaryUserOrgId = (long)84;
+			temporaryUserOrgId = (long) 84;
 			break;
 		}
-		meal.setTemporaryUserOrgId(temporaryUserOrgId);
+		meal.setOrgNameId(temporaryUserOrgId);
 		meal.setType(2);
 		meal.setMode(mode);
 		return meal;
