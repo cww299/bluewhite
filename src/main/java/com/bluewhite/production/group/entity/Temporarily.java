@@ -82,6 +82,12 @@ public class Temporarily extends BaseEntity<Long>{
 	private Group group;
 	
 	/**
+	 * 工作状态 0=休息 1=工作
+	 */
+	@Column(name = "status")
+	private Integer status;
+	
+	/**
 	 * 分组
 	 */
 	@Transient
@@ -124,6 +130,16 @@ public class Temporarily extends BaseEntity<Long>{
 	
 	
 	
+
+	public Integer getStatus() {
+		return status;
+	}
+
+
+	public void setStatus(Integer status) {
+		this.status = status;
+	}
+
 
 	public Long getTemporaryUserId() {
 		return temporaryUserId;
