@@ -25,6 +25,8 @@ import com.bluewhite.common.Log;
 import com.bluewhite.common.annotation.SysLogAspectAnnotation;
 import com.bluewhite.common.entity.CommonResponse;
 import com.bluewhite.common.entity.PageParameter;
+import com.bluewhite.ledger.entity.Customer;
+import com.bluewhite.ledger.entity.OrderProcurement;
 import com.bluewhite.product.primecost.cutparts.entity.CutParts;
 import com.bluewhite.product.primecost.cutparts.service.CutPartsService;
 import com.bluewhite.product.primecost.materials.entity.ProductMaterials;
@@ -194,7 +196,12 @@ public class BaseOneAction {
 		CommonResponse cr = new CommonResponse();
 		cr.setData(ClearCascadeJSON
 				.get()
-				.addRetainTerm(Materiel.class,"id","number","name","price","type","unit","changePrice","count","convertUnit","convertPrice")
+				.addRetainTerm(Materiel.class,"id","number","name","price","type","unit",
+						"materielType","count","convertUnit","convertPrice",
+						"convertNumber","inventoryNumber","warehouseType","orderProcurements")
+				.addRetainTerm(OrderProcurement.class, "id", "orderProcurementNumber","placeOrderNumber","arrivalNumber",
+						"placeOrderTime","expectArrivalTime","arrivalTime","customer","user","materielLocation","price","squareGram")
+				.addRetainTerm(BaseData.class, "id", "name")
 				.format(materielService.findMaterielPages(materiel,page)).toJSON());
 		cr.setMessage("成功");
 		return cr;

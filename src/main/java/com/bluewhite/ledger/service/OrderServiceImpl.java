@@ -111,11 +111,11 @@ public class OrderServiceImpl extends BaseServiceImpl<Order, Long> implements Or
 				Order orderNew = new Order();
 				JSONObject jsonObject = jsonArray.getJSONObject(i);
 				orderNew.setOrderDate(order.getOrderDate()!=null ? order.getOrderDate() : new Date());
-				Order oldOrder = dao.findByBacthNumber(jsonObject.getString("bacthNumber"));
+				Order oldOrder = dao.findByBacthNumber(jsonObject.getString("bacthNumber").trim());
 				if(oldOrder!=null){
 					throw new ServiceException("系统已有"+jsonObject.getString("bacthNumber")+"批次号下单合同，请不要重复添加");
 				}
-				orderNew.setBacthNumber(jsonObject.getString("bacthNumber"));
+				orderNew.setBacthNumber(jsonObject.getString("bacthNumber").trim());
 				orderNew.setProductId(jsonObject.getLong("productId"));
 				orderNew.setCustomerId(order.getCustomerId());
 				//判定是否属于电子商务部的订单合同
@@ -153,7 +153,7 @@ public class OrderServiceImpl extends BaseServiceImpl<Order, Long> implements Or
 			}
 			// 按下单日期
 			if (!StringUtils.isEmpty(param.getOrderTimeBegin()) && !StringUtils.isEmpty(param.getOrderTimeEnd())) {
-				predicate.add(cb.between(root.get("packingDate").as(Date.class), param.getOrderTimeBegin(),
+				predicate.add(cb.between(root.get("orderDate").as(Date.class), param.getOrderTimeBegin(),
 						param.getOrderTimeEnd()));
 			}
 			Predicate[] pre = new Predicate[predicate.size()];
@@ -162,5 +162,6 @@ public class OrderServiceImpl extends BaseServiceImpl<Order, Long> implements Or
 		});
 		return result;
 	}
+
 
 }

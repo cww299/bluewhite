@@ -3,6 +3,7 @@ package com.bluewhite.personnel.roomboard.service;
 import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Comparator;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -28,6 +29,7 @@ import com.bluewhite.finance.wage.dao.WageDao;
 import com.bluewhite.finance.wage.entity.Wage;
 import com.bluewhite.personnel.attendance.dao.AttendanceInitDao;
 import com.bluewhite.personnel.attendance.dao.PersonVariableDao;
+import com.bluewhite.personnel.attendance.entity.Attendance;
 import com.bluewhite.personnel.attendance.entity.AttendanceInit;
 import com.bluewhite.personnel.attendance.entity.AttendanceTime;
 import com.bluewhite.personnel.attendance.entity.PersonVariable;
@@ -39,6 +41,8 @@ import com.bluewhite.personnel.roomboard.dao.SingleMealDao;
 import com.bluewhite.personnel.roomboard.entity.CostLiving;
 import com.bluewhite.personnel.roomboard.entity.Meal;
 import com.bluewhite.personnel.roomboard.entity.SingleMeal;
+import com.bluewhite.production.group.dao.TemporarilyDao;
+import com.bluewhite.production.group.entity.Temporarily;
 import com.bluewhite.system.user.entity.User;
 import com.bluewhite.system.user.service.UserService;
 
@@ -64,6 +68,8 @@ public class MealServiceImpl extends BaseServiceImpl<Meal, Long> implements Meal
 	private AttendanceInitDao attendanceInitDao;
 	@Autowired
 	private CostLivingDao costLivingDao;
+	@Autowired
+	private TemporarilyDao temporarilyDao;
 
 	@Override
 	public PageResult<Meal> findPage(Meal param, PageParameter page) {
@@ -594,13 +600,13 @@ public class MealServiceImpl extends BaseServiceImpl<Meal, Long> implements Meal
 	// 根据打卡记录进行是否有早中晚餐记录
 	@Override
 	@Transactional
-	public int InitMeal(AttendanceTime attendanceTime) throws ParseException {
+	public int initMeal(AttendanceTime attendanceTime) throws ParseException {
 		// 检查当前月份属于夏令时或冬令时 flag=ture 为夏令时
 		boolean flag = DatesUtil.belongCalendar(attendanceTime.getOrderTimeBegin());
+		Date startDate = DatesUtil.getFirstDayOfMonth(attendanceTime.getOrderTimeBegin());
+		Date endDate  = DatesUtil.getLastDayOfMonth(attendanceTime.getOrderTimeBegin());
 		List<AttendanceTime> attendanceTimes = attendanceTimeService.findAttendanceTime(attendanceTime);
-		List<Meal> list = dao.findByTypeAndTradeDaysTimeBetween(2,
-				DatesUtil.getFirstDayOfMonth(attendanceTime.getOrderTimeBegin()),
-				DatesUtil.getLastDayOfMonth(attendanceTime.getOrderTimeBegin()));
+		List<Meal> list = dao.findByTypeAndTradeDaysTimeBetween(2,startDate,endDate);
 		if (list.size() > 0) {
 			List<Long> idLong = list.stream().map(Meal::getId).collect(Collectors.toList());
 			// 同步删除自动添加的报餐数据
@@ -711,6 +717,31 @@ public class MealServiceImpl extends BaseServiceImpl<Meal, Long> implements Meal
 				}
 			}
 		}
+		//手动处理临时人员的打卡吃饭次数，获取车间手动填写的特急人员考勤
+		List<Temporarily> temporarilyList = temporarilyDao.findByTemporarilyDateBetween(startDate, endDate);
+		//按日期排序
+		temporarilyList = temporarilyList.stream().sorted(Comparator.comparing(Temporarily::getTemporarilyDate))
+				.filter(Temporarily->Temporarily.getTemporaryUserId()!=null).collect(Collectors.toList());
+			for(Temporarily t : temporarilyList){
+				//中餐
+				if(t.getWorkTime()>4.5){
+					//中晚餐
+					if(t.getWorkTime()>9){
+						//中晚夜宵
+						if(t.getWorkTime()>11){
+							meals.add(addMealTemporary(t.getTemporarilyDate(),t.getTemporaryUserId(),t.getTemporaryUser().getUserName(), 2));
+							meals.add(addMealTemporary(t.getTemporarilyDate(),t.getTemporaryUserId(),t.getTemporaryUser().getUserName(), 3));
+							meals.add(addMealTemporary(t.getTemporarilyDate(),t.getTemporaryUserId(),t.getTemporaryUser().getUserName(),4));
+							continue;
+						}
+						meals.add(addMealTemporary(t.getTemporarilyDate(),t.getTemporaryUserId(),t.getTemporaryUser().getUserName(),2));
+						meals.add(addMealTemporary(t.getTemporarilyDate(),t.getTemporaryUserId(),t.getTemporaryUser().getUserName(),3));
+						continue;
+					} 
+					meals.add(addMealTemporary(t.getTemporarilyDate(),t.getTemporaryUserId(),t.getTemporaryUser().getUserName(),2));
+					continue;
+				} 
+			}
 		batchSave(meals);
 		return meals.size();
 	}
@@ -732,6 +763,25 @@ public class MealServiceImpl extends BaseServiceImpl<Meal, Long> implements Meal
 		meal.setMode(mode);
 		return meal;
 	}
+	
+	/**
+	 * 添加报餐记录
+	 * 
+	 * @param attendanceTime
+	 * @param mode
+	 * @param variable
+	 * @return
+	 */
+	private Meal addMealTemporary(Date time, Long id,String username ,Integer mode) {
+		Meal meal = new Meal();
+		meal.setTradeDaysTime(time);
+		meal.setTemporaryUserId(id);
+		meal.setUserName(username);
+		meal.setType(2);
+		meal.setMode(mode);
+		return meal;
+	}
+	
 
 	@Override
 	public List<Map<String, Object>> findWage(Meal meal) {

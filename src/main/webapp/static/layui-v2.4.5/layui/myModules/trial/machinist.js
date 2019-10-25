@@ -52,9 +52,9 @@ layui.define(['mytable','element',['form']],function(exports){
 	var allMaterial = [];		//所有除裁片以外物料
 	var allCutparts = []; 		//所有裁片或上道
 	var choosedPrice = [ {id: 1, name: '电脑推算价格' }, {id: 2, name: '试制费用价格'}, ];
-	var allNeedlesize = myutil.getDataSync({ url:'/product/getBaseOne?type=needlesize'});
-	var allWiresize  = myutil.getDataSync({ url:'/product/getBaseOne?type=wiresize'});
-	var allNeedlespur  = myutil.getDataSync({ url:'/product/getBaseOne?type=needlespur'});
+	var allNeedlesize = myutil.getDataSync({ url: myutil.config.ctx+'/product/getBaseOne?type=needlesize'});
+	var allWiresize  = myutil.getDataSync({ url: myutil.config.ctx+'/product/getBaseOne?type=wiresize'});
+	var allNeedlespur  = myutil.getDataSync({ url: myutil.config.ctx+'/product/getBaseOne?type=needlespur'});
 	
 	machinist.render = function(opt){
 		var elem = opt.elem,

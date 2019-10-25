@@ -39,7 +39,6 @@ public class BeanCopyUtils {
 				return false;
 			}
 			Object value = src.getPropertyValue(pd.getName());
-			System.out.println(value);
 			return value == null || (value instanceof Collection && ((Collection<?>) value).size() == 0);
 		}).flatMap(pd -> Arrays.asList(pd.getName()).stream()).collect(Collectors.toList()).toArray(new String[] {});
 		BeanUtils.copyProperties(source, target, arr);

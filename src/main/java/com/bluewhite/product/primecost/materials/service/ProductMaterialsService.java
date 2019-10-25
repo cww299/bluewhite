@@ -32,7 +32,7 @@ public interface ProductMaterialsService extends BaseCRUDService<ProductMaterial
 	 * 删除dd除裁片以外的所有生产用料
 	 * @param productMaterials
 	 */
-	public void deleteProductMaterials(Long id);
+	public int deleteProductMaterials(String ids);
 	
 
 	public List<ProductMaterials> findByProductIdAndOverstockId(Long productId, Long id);

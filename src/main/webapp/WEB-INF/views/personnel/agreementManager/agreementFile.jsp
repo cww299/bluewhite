@@ -298,7 +298,7 @@ layui.config({
 		})
 		function getLookBtn(){
 			return function(d){
-				return '<p><span class="layui-btn layui-btn-sm" data-pic="'+d.pictureUrl+'">查看照片</span></p>';
+				return '<p><span class="layui-btn layui-btn-sm">查看照片</span></p>';
 			}
 		}
 		form.on('submit(search)',function(obj){
@@ -328,6 +328,7 @@ layui.config({
 			}
 		})
 		table.on('tool(tableData)',function(obj){
+			console.log(obj)
 			var html = '<div style="padding:10px;">';
 			var img = obj.data.fileSet;
 			var length = img.length;
@@ -342,6 +343,11 @@ layui.config({
 				success:function(){
 					var deg = 0;
 					$('.imgDiv').on('click',function(obj){
+						var imgElem = null;
+						if($(obj.target).find('img').length>0)
+							imgElem = $(obj.target).find('img');
+						else
+							imgElem = $(obj.target);
 						var lookoverWin = layer.open({
 							shadeClose:true,
 							type:1,
@@ -349,8 +355,8 @@ layui.config({
 							title:'查看照片',
 							skin: 'transparentLayer',
 							btn:['旋转','关闭','上一张','下一张',],
-							content:'<div id="imgDivLook"><img style="max-width:50%;max-height:100%;" src="'+$(obj.target).attr('src')+'"'+
-									' data-id="'+$(obj.target).data('id')+'">',
+							content:'<div id="imgDivLook"><img style="max-width:50%;max-height:100%;" src="'+$(imgElem).attr('src')+'"'+
+									' data-id="'+$(imgElem).data('id')+'">',
 							yes: function(index, layero){
 								deg+=90;
 								$('#imgDivLook').find('img').css('transform','rotate('+deg+'deg)');
@@ -437,7 +443,6 @@ layui.config({
 						type:'date',
 						value: data.startTime?data.startTime.split(' ')[0]:'',
 					})
-					console.log(data.paymentTime?data.paymentTime.split(' ')[0]:'')
 					laydate.render({
 						elem:'#endTime',
 						type:'date',

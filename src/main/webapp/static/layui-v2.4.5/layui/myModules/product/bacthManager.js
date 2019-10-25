@@ -110,16 +110,73 @@ layui.config({
 	                  '</div>',
 	                  ].join(' ');
 	
+	var COPY_WIN = [
+	                '<div style="padding:15px;" class="layui-form">',
+		                '<table style="margin:auto;">',
+		              		'<tr>',
+		              			'<td>产品名称：</td>',
+		              			'<td><input class="layui-input" name="" disabled id="addProductName" >',
+		              				'<input type="hidden" name="productId" id="addProductId">',
+		              				'<input type="hidden" name="bacthDepartmentPrice" id="addBacthDepartmentPrice">',
+		              				'<input type="hidden" name="bacthHairPrice" id="addBacthHairPrice">',
+		              				'<input type="hidden" name="flag" value="0">',
+		              				'<span style="display:none;" lay-submit lay-filter="addBtn" id="addBtn">',
+		              			'</td>',
+		              		'</tr>',
+		              		'<tr>',
+		              			'<td>批次号：</td>',
+		              			'<td><input class="layui-input" name="bacthNumber" id="addBacthNumber"></td>',
+	              			'</tr>',
+		              		'<tr>',
+		              			'<td>数量：</td>',
+		              			'<td><input class="layui-input" name="number" id="addNumber" lay-verify="number"></td>',
+	              			'</tr>',
+		              		'<tr>',
+		              			'<td>备注:</td>',
+		              			'<td><input class="layui-input" name="remarks" id="addRemarks"></td>',
+	              			'</tr>',
+		              		'<tr>',
+		              			'<td>产品名称：</td>',
+		              			'<td><input class="layui-input" name="allotTime" id="addAllotTime"></td>',
+		              		'</tr>',
+		              	'</table>',
+	                '</div>',
+	                ].join(' ');
+	
 	
 	Class.prototype.render = function(opt){
 		var isSmall = false;
-		var allProcedure = [],allUser = [];
-		myutil.getData({
+		var allProcedure = [],allUser = [],allGroup = [],nullGroupUser = [],nullProcedure = [{id:'no-0',name:'全部',children:[]}];
+		myutil.getData({		//获取所有工序
 			url:opt.ctx+'/basedata/list?type='+baseType[opt.type],
 			success: function(d){
 				allProcedure = d;
+				for(var i in allProcedure){
+					nullProcedure[0].children.push({
+						id:'no-'+allProcedure[i].id,
+						name:allProcedure[i].name,
+						children:[
+						          	{id:'no-0',name:'<span style="color:gray;">获取数据中.....</span>',}
+						          ]
+					})
+				}
 			}
 		});
+		myutil.getData({	//获取所有分组
+			url: opt.ctx+'/production/getGroup?type='+opt.type,
+			success:function(d){
+				allGroup = d;
+				for(var i in allGroup){
+					nullGroupUser.push({
+						id:'no-'+allGroup[i].id,
+						name:allGroup[i].name,
+						children:[
+						   {id:'no-0',name:'<span style="color:gray;">获取数据中.....</span>',}
+						],
+					})
+				}
+			},
+		})
 		laytpl(TPL_MAIN).render({},function(h){
 			$(opt.elem).append(h);
 			if($('#isSmallScreen').css('display')=='none')
@@ -198,7 +255,14 @@ layui.config({
 		}
 		var statData = '';
 		var toolbar = ['<span class="layui-btn layui-btn-sm" lay-event="onekeyFinish">一键完成</span>',
-				          '<span class="layui-btn layui-btn-sm" lay-event="lookover">查看分配工序</span>'];
+				          '<span class="layui-btn layui-btn-sm" lay-event="lookover">查看分配工序</span>',
+				          (function(){
+				        	  var html = '';
+				        	  if(opt.type==2){
+				        		  html = '<span class="layui-btn layui-btn-sm" lay-event="copy">复制批次</span>';
+				        	  }
+				        	  return html;
+				          })(),];
 		if(opt.type==4){	//二楼机工增加导出按钮
 			toolbar.push(
 				'<span class="layui-btn layui-btn-sm" lay-event="export">导出工序</span>'
@@ -206,7 +270,7 @@ layui.config({
 		}
 		mytable.render({
 			elem:'#tableData',
-			url: opt.ctx+'/bacth/allBacth?type='+opt.type,
+			url: opt.ctx+'/bacth/allBacth?type='+opt.type+(opt.type==3||opt.type==4?'&flag=0':''),
 			totalRow:['number','sumTaskPrice','time'],
 			parseData:function(ret){
 				if(ret.code==0)
@@ -248,7 +312,6 @@ layui.config({
 				})
 				var now = myutil.getSubDay( isSmall ? 0 : 1,'yyyy-MM-dd' );
 				var procedureTree = [];
-				getAllProcedureTree();
 				var area = isSmall?['100%','80%']:['60%','80%'];
 				var allotWin = layer.open({		//分配弹窗
 					type:1,
@@ -259,21 +322,17 @@ layui.config({
 					btn:['确定','取消'],
 					btnAlign: 'c',
 					success:function(){
-						getUserData(now+' 00:00:00');
 						laydate.render({
 							elem:'#allotTime',
 							value:now,
 							type:'date',
 							done: function(value){
 								getUserData(value+' 00:00:00');
-								menuTree.reload('userTree',{
-									data: allUser,
-								})
 							}
 						});
 						menuTree.render({				
 				    	  elem:'#userTree',
-				    	  data : allUser,
+				    	  data : nullGroupUser,
 				    	  done: function(value){
 				    		  $('#userTree').val(value);
 				    		  if(opt.type==3){	//如果是针工默认展开 充棉和翻皮
@@ -306,54 +365,59 @@ layui.config({
 				    		  }
 				    	  }
 						})
-						var checked = [];
-						if(opt.type==2){	//如果是包装，默认选中包装工序的全部，除去上车
-							var t = procedureTree[0].children;
-							for(var i in t){
-								if(t[i].name=='包装'){
-									var card = [],noCard = [],choosedNoCard = true;
-									for(var k in t[i].children){
-										if(t[i].children[k].name.indexOf('上车')<0){
-											if(t[i].children[k].number!=0)		//如果有剩余数量不为0，则选择非上车的
-												choosedNoCard = false;
-											card.push(t[i].children[k].id);
-										}else{
-											if(t[i].children[k].number!=0)
-												noCard.push(t[i].children[k].id);
-										}
-									}
-									checked = choosedNoCard?noCard:card;
-								}
-							}
-						}
-						menuTree.render({				
+						var num = 0; //用来判断第几次进入
+						menuTree.render({		
 				    	  elem:'#procedureTree',
-				    	  data : procedureTree,
+				    	  data : nullProcedure,
 				    	  toolbar: [],
 				    	  otherToolbar: opt.type==1?'<input type="text" style="display:none;">':'',
 				    	  toolShow:true,
 		    			  hide: false,
-		    			  checked: checked,
+		    			  /*checked: checked,*/
 		    			  done:function(){
-		    				layui.each($('.procedureDiv').find('.layui-tree-grade').find('span'),function(index,item){
-		    					var text = $(item).html().split(' ');
-		    					if(text[0]=='贴破洞'){
-		    						$(item).parent().find('.menuControl').find('input').addClass('tiepodongNumber');
-		    						$('.tiepodongNumber').on('change',function(obj){
-		    							var val = $(obj.target).val().trim();
-		    							if(val=='')
-		    								val = 0;
-		    							if(isNaN(val)){
-		    								myutil.emsg('贴破洞数量只能为数字！');
-		    							}if(val%1!=0){
-		    								myutil.emsg('贴破洞数量只能为整数！');
-		    							}else{
-		    								tiepidongNumber = parseInt(val);
-		    							}
-		    							$(obj.target).val(tiepidongNumber)
-		    						})
-		    					}
-		    				})  
+		    				  num++;
+		    				  var checked = [];
+								if(opt.type==2 && num==2 && procedureTree.length>0){	//如果是包装，默认选中包装工序的全部，除去上车
+									var t = procedureTree[0].children;
+									for(var i in t){
+										if(t[i].name=='包装'){
+											var card = [],noCard = [],choosedNoCard = true;
+											for(var k in t[i].children){
+												if(t[i].children[k].name.indexOf('上车')<0){
+													if(t[i].children[k].number!=0)		//如果有剩余数量不为0，则选择非上车的
+														choosedNoCard = false;
+													card.push(t[i].children[k].id);
+												}else{
+													if(t[i].children[k].number!=0)
+														noCard.push(t[i].children[k].id);
+												}
+											}
+											checked = choosedNoCard?noCard:card;
+										}
+									}
+									menuTree.reload('procedureTree',{
+										checked:checked,
+									})
+								}
+			    				layui.each($('.procedureDiv').find('.layui-tree-grade').find('span'),function(index,item){
+			    					var text = $(item).html().split(' ');
+			    					if(text[0]=='贴破洞'){
+			    						$(item).parent().find('.menuControl').find('input').addClass('tiepodongNumber');
+			    						$('.tiepodongNumber').on('change',function(obj){
+			    							var val = $(obj.target).val().trim();
+			    							if(val=='')
+			    								val = 0;
+			    							if(isNaN(val)){
+			    								myutil.emsg('贴破洞数量只能为数字！');
+			    							}if(val%1!=0){
+			    								myutil.emsg('贴破洞数量只能为整数！');
+			    							}else{
+			    								tiepidongNumber = parseInt(val);
+			    							}
+			    							$(obj.target).val(tiepidongNumber)
+			    						})
+			    					}
+			    				})  
 		    			  },
 				    	  showName: function(data){
 				    		  if(isNaN(data.number))
@@ -365,6 +429,10 @@ layui.config({
 						if(opt.type==1 || opt.type==2){
 							$('#number').val(trData.number);
 						}
+						window.setTimeout(function() {
+							getAllProcedureTree();
+							getUserData(now+' 00:00:00');
+						},1)
 						form.render();
 					},
 					yes:function(){
@@ -389,22 +457,22 @@ layui.config({
 							layer.close(load);
 							return myutil.emsg(msg);
 						}
-						for(var i in userTreeId){	
-							if(userTreeId[i]!=-1){	//区分是否为临时员工,临时员工的id： t-id~userId
-								if(userTreeId[i].indexOf('-')>0){
-									var t = userTreeId[i].split('-')[1].split('~');
-									temporaryIds.push(t[0]);
-									temporaryUserIds.push(t[1]);
-								}else{
-									var t = userTreeId[i].split('~');
-									ids.push(t[0]);
-									userIds.push(t[1]);
-								}
+						for(var i in userTreeId){	//区分是否为临时员工,临时员工的id： t-id~userId
+							if(userTreeId[i].indexOf('-')>0){
+								var t = userTreeId[i].split('-')[1].split('~');
+								if(t.length==1)
+									continue;
+								temporaryIds.push(t[0]);
+								temporaryUserIds.push(t[1]);
+							}else{
+								var t = userTreeId[i].split('~');
+								ids.push(t[0]);
+								userIds.push(t[1]);
 							}
 						}
 						for(var i in procedureTreeId){
-							if(procedureTreeId[i]!=-1){	
-								var id = procedureTreeId[i].split('-');
+							var id = procedureTreeId[i].split('-');
+							if(id[0]!='no'){
 								if(id[1]==0){
 									layer.close(load);
 									return myutil.emsg('选择的工序剩余数量不能为0');
@@ -458,14 +526,14 @@ layui.config({
 				})
 				function getAllProcedureTree(){	//获取所有工序的树形结构
 					procedureTree = [{
-						id:-1,name:'全部',children:[],
+						id:'no-0',name:'全部',children:[],
 					}];
 					for(var k in allProcedure){
 						(function(name,id){
-							var da = { id:-1, name:name, children:[] }
+							var da = { id:'no-'+id, name:name, children:[] }
 							$.ajax({
 								url: opt.ctx+'/production/typeToProcedure',
-								async: false,
+								async:false,
 								data: {
 									productId: trData.product.id,
 									bacthId: trData.id,
@@ -483,6 +551,25 @@ layui.config({
 											})
 										}
 										procedureTree[0].children.push(da);
+										if(procedureTree[0].children.length==allProcedure.length){
+											/*var t = [];
+											while(t.length<allProcedure.length && procedureTree[0].children.length>0){
+												var minId = procedureTree[0].children[0].id.split('-')[1], minCurr = 0;
+												for(var i=1;i<procedureTree[0].children.length;i++){
+													var thisId = procedureTree[0].children[i].id.split('-')[1];
+													if(parseInt(minId)>parseInt(thisId)){
+														minCurr = i;
+														minId = thisId;
+													}
+												}
+												t.push(procedureTree[0].children[minCurr]);
+												procedureTree[0].children.splice(minCurr,1);
+											}
+											procedureTree[0].children = t;*/
+											menuTree.reload('procedureTree',{
+												data: procedureTree,
+											})
+										}
 									}
 								}
 							})
@@ -493,13 +580,57 @@ layui.config({
 		})
 		function finish(){
 			return function(obj){
-				var check = table.checkStatus('tableData').data;
 				switch(obj.event){
 				case 'onekeyFinish': onekeyFinish(); break;
 				case 'lookover': lookover(); break;
 				case 'export' : exportProcedure(); break;
+				case 'copy' : copy(); break;
+				}
+				function copy(){
+					var check = table.checkStatus('tableData').data;
+					if(check.length!=1)
+						return myutil.emsg('请选择一条数据进行复制');
+					var copyWin = layer.open({
+						type:1,
+						area:isSmall?['40%','40%']:['25%','40%'],
+						offset:'100px',
+						content: COPY_WIN,
+						btn:['确定','取消'],
+						success:function(){
+							laydate.render({
+								elem:'#addAllotTime',
+								type:'datetime',
+								value:check[0].allotTime,
+							})
+							$('#addProductId').val(check[0].product.id);
+							$('#addProductName').val(check[0].product.name);
+							$('#addBacthNumber').val(check[0].bacthNumber);
+							$('#addRemarks').val(check[0].remarks);
+							$('#addNumber').val(check[0].number);
+							$('#addBacthDepartmentPrice').val(check[0].bacthDepartmentPrice);
+							$('#addBacthHairPrice').val(check[0].bacthHairPrice);
+							form.render();
+							form.on('submit(addBtn)',function(obj){
+								obj.field.type = opt.type;
+								myutil.saveAjax({
+									url:'/bacth/addBacth',
+									data: obj.field,
+									success:function(){
+										layer.close(copyWin);
+										table.reload('tableData');
+									}
+								})
+							})
+						},
+						yes:function(){
+							$('#addBtn').click();
+						}
+					})
 				}
 				function onekeyFinish(){
+					var check = table.checkStatus('tableData').data;
+					if(check.length<1)
+						return myutil.emsg('请选择相关信息');
 					var inputTime = layer.open({
 						type:1,
 						area:['20%','20%'],
@@ -515,8 +646,6 @@ layui.config({
 							var time = $('#finishTime').val(), ids = [];
 							if(time)
 								time+=' 00:00:00'
-							if(check.length<1)
-								return myutil.emsg('请选择相关信息');
 							for(var k in check)
 								ids.push(check[k].id);
 							myutil.saveAjax({
@@ -537,6 +666,7 @@ layui.config({
 					})
 				}
 				function lookover(){	//查看分配工序弹窗
+					var check = table.checkStatus('tableData').data;
 					var html = '';
 					if(check.length<1)
 						return myutil.emsg('请选择相关信息');
@@ -608,6 +738,7 @@ layui.config({
 					})//later open end
 				}
 				function exportProcedure(){	//导出工序
+					var check = table.checkStatus('tableData').data;
 					if(check.length!=1)
 						return myutil.emsg('只能选择一条信息导出！');
 					location.href= opt.ctx+'/excel/importExcel/DownBacth?id='+check[0].id;
@@ -620,55 +751,69 @@ layui.config({
 				return d[field]?d[field].toFixed(number):'---';
 			}
 		}
-		function getUserData(day){
+		function getUserData(day){ //获取所有分组用户的树形结构数据
 			allUser = [];
-			myutil.getDataSync({	//获取所有分组用户的树形结构数据
-				url: opt.ctx+'/production/getGroup?type='+opt.type,
-				success:function(allGroup){
-					for(var k in allGroup){
-						(function(name){
-							$.ajax({
-								url: opt.ctx+'/production/allGroup',
-								async: false,
-								data:{
-									id: allGroup[k].id,
-									type: opt.type,
-									temporarilyDate: day,
-								},
-								success:function(r){
-									if(r.code==0){
-										var groupPeople = r.data;
-										var data = {
-												id:-1,
-												name: name,
-												children:[]
-										};
-										if(groupPeople.temporarilyUser && groupPeople.temporarilyUser.length>0){
-											var t = groupPeople.temporarilyUser;
-											for(var k in t)
-												if(t[k].status==1)
-													data.children.push({
-														id: 't-'+t[k].id+'~'+t[k].userId,
-														name: t[k].name+' ---- <span class="layui-badge">临</span>',
-													});
-										}
-										if(groupPeople.userList && groupPeople.userList.length>0){
-											var t = groupPeople.userList;
-											for(var k in t)
-												if(t[k].status==1)
-													data.children.push({
-														id: t[k].id+'~'+t[k].userId,
-														name: t[k].name+' ---- <span class="layui-badge layui-bg-green">正</span>',
-													})
-										}
-										allUser.push(data);
-									}
+			for(var k in allGroup){
+				(function(name,id){
+					$.ajax({
+						url: opt.ctx+'/production/allGroup',
+						async:false,
+						data:{
+							id: id,
+							type: opt.type,
+							temporarilyDate: day,
+						},
+						success:function(r){
+							if(r.code==0){
+								var groupPeople = r.data;
+								var data = {
+										id:'no-'+id,
+										name: name,
+										children:[]
+								};
+								if(groupPeople.temporarilyUser && groupPeople.temporarilyUser.length>0){
+									var t = groupPeople.temporarilyUser;
+									for(var k in t)
+										if(t[k].status==1)
+											data.children.push({
+												id: 't-'+t[k].id+'~'+t[k].userId,
+												name: t[k].name+' ---- <span class="layui-badge">临</span>',
+											});
 								}
-							})
-						})(allGroup[k].name);
-					}
-				}
-			});
+								if(groupPeople.userList && groupPeople.userList.length>0){
+									var t = groupPeople.userList;
+									for(var k in t)
+										if(t[k].status==1)
+											data.children.push({
+												id: t[k].id+'~'+t[k].userId,
+												name: t[k].name+' ---- <span class="layui-badge layui-bg-green">正</span>',
+											})
+								}
+								allUser.push(data);
+								if(allUser.length==allGroup.length){
+									/*var t = [];
+									while(t.length<allGroup.length && allUser.length>0){
+										var minId = allUser[0].id.split('-')[1], minCurr = 0;
+										for(var i=1;i<allUser.length;i++){
+											var thisId = allUser[i].id.split('-')[1];
+											if(parseInt(minId)>parseInt(thisId)){
+												minCurr = i;
+												minId = thisId;
+											}
+										}
+										t.push(allUser[minCurr]);
+										allUser.splice(minCurr,1);
+									}
+									allUser = t;*/
+									menuTree.reload('userTree',{
+										data: allUser,
+									})
+								}
+							}
+						}
+					})
+				})(allGroup[k].name,allGroup[k].id);
+			}
 		}
 	}//end render
 	bacthManager.render = function(opt){

@@ -29,6 +29,12 @@
 				<td>下单时间：</td>
 				<td><input type="text" class="layui-input" id="searchTime"></td>
 				<td>&nbsp;&nbsp;&nbsp;</td>
+				<td>产品名：</td>
+				<td><input type="text" class="layui-input" name="productName"></td>
+				<td>&nbsp;&nbsp;&nbsp;</td>
+				<td>产品编号：</td>
+				<td><input type="text" class="layui-input" name="productNumber"></td>
+				<td>&nbsp;&nbsp;&nbsp;</td>
 				<td><button type="button" class="layui-btn layui-btn-sm" lay-submit lay-filter="search">搜索</button></td>
 			</tr>
 		</table>
@@ -78,43 +84,43 @@
 	<input type="hidden" name="id" value="{{d.id}}">
 	<input type="hidden" name="productId" value="{{d.product.id}}" id="editProductId" >
 	<input type="hidden" name="orderDate" value="{{d.orderDate}}">
-	<div class="layui-item">
+	<div class="layui-item" pane>
 		<label class="layui-form-label">客户</label>
 		<div class="layui-input-block">
 			<select id="editCustomSelect" name="customerId" lay-search></select>
 		</div>
 	</div>
-	<div class="layui-item">
+	<div class="layui-item" pane>
 		<label class="layui-form-label">批次号</label>
 		<div class="layui-input-block">
 			<input class="layui-input" name="bacthNumber" value="{{d.bacthNumber}}" lay-verify="required">
 		</div>
 	</div>
-	<div class="layui-item">
+	<div class="layui-item" pane>
 		<label class="layui-form-label">产品编号</label>
 		<div class="layui-input-block">
 			<input class="layui-input" value="{{d.product.number}}" readonly id="editProductNumber">
 		</div>
 	</div>
-	<div class="layui-item">
+	<div class="layui-item" pane>
 		<label class="layui-form-label">产品名称</label>
 		<div class="layui-input-block">
 			<input class="layui-input" value="{{d.product.name}}" readonly id="editProductName">
 		</div>
 	</div>
-	<div class="layui-item">
+	<div class="layui-item" pane>
 		<label class="layui-form-label">数量</label>
 		<div class="layui-input-block">
 			<input class="layui-input" name="number" value="{{d.number}}" lay-verify="number">
 		</div>
 	</div>
-	<div class="layui-item">
+	<div class="layui-item" pane>
 		<label class="layui-form-label">价格</label>
 		<div class="layui-input-block">
 			<input class="layui-input" name="price" value="{{d.price}}" lay-verify="number">
 		</div>
 	</div>
-	<div class="layui-item">
+	<div class="layui-item" pane>
 		<label class="layui-form-label">备注</label>
 		<div class="layui-input-block">
 			<input class="layui-input" name="remark" value="{{d.remark}}">
@@ -126,9 +132,11 @@
 <!-- 表格工具栏模板 -->
 <script type="text/html" id="agreementToolbar">
 <div>
-	<span lay-event="add"  class="layui-btn layui-btn-sm" >新增</span>
-	<span lay-event="delete"  class="layui-btn layui-btn-sm layui-btn-danger" >删除</span>
-	<span lay-event="update"  class="layui-btn layui-btn-sm" >修改</span>
+	<span lay-event="add"  class="layui-btn layui-btn-sm" >新增合同</span>
+	<span lay-event="delete"  class="layui-btn layui-btn-sm layui-btn-danger" >删除合同</span>
+	<span lay-event="update"  class="layui-btn layui-btn-sm" >修改合同</span>
+	<span lay-event="productUseup"  class="layui-btn layui-btn-sm layui-btn-normal" >生成耗料订单</span>
+	<span lay-event="lookoverUseup"  class="layui-btn layui-btn-sm" >查看耗料订单</span>
 </div>
 </script>
 <!-- 表格工具栏模板 -->
@@ -143,10 +151,9 @@
 layui.config({
 	base : '${ctx}/static/layui-v2.4.5/'
 }).extend({
-	tablePlug : 'tablePlug/tablePlug',
-	myutil : 'layui/myModules/myutil',
+	mytable : 'layui/myModules/mytable',
 }).define(
-	['tablePlug','myutil','laydate'],
+	['mytable','laydate'],
 	function(){
 		var $ = layui.jquery
 		, layer = layui.layer 				
@@ -155,10 +162,10 @@ layui.config({
 		, laydate = layui.laydate
 		, laytpl = layui.laytpl
 		, myutil = layui.myutil
-		, tablePlug = layui.tablePlug;
+		, mytable = layui.mytable;
 		myutil.config.ctx = '${ctx}';
 		myutil.clickTr();
-		//myutil.config.msgOffset = '150px';
+		myutil.config.msgOffset = '250px';
 		myutil.keyDownEntry(function(){   //监听回车事件
 			$('#searchBtn').click();
 		})
@@ -175,15 +182,23 @@ layui.config({
 			       { align:'center', type:'checkbox',},
 			       { align:'center', title:'客户名称',	field:'customerId',	 width:'10%', templet:'<span>{{ d.customer?d.customer.name:""}}</span>'},
 			       { align:'center', title:'批次号',   	field:'bacthNumber', width:'12%'  	},
-			       { align:'center', title:'下单时间',   	field:'orderDate', width:'12%'  	},
-			       { align:'center', title:'产品编号',	field:'productNumber', width:'10%', 	templet:'<span>{{ d.product?d.product.number:""}}</span>'	},
+			       { align:'center', title:'下单时间',   	field:'orderDate', width:'8%',  templet:'<span>{{ d.orderDate?d.orderDate.split(" ")[0]:""}}</span>'  	},
+			       { align:'center', title:'产品编号',	field:'productNumber', width:'8%', 	templet:'<span>{{ d.product?d.product.number:""}}</span>'	},
 			       { align:'center', title:'产品名称',	field:'productName',	templet:'<span>{{ d.product?d.product.name:""}}</span>'},
-			       { align:'center', title:'数量',   field:'number',	 width:'6%'},
+			       { align:'center', title:'数量',   field:'number',	 width:'4%'},
 			       { align:'center', title:'剩余数量',   field:'surplusNumber',	 width:'6%'},
 			       { align:'center', title:'价格',   field:'price',  width:'6%'	 },
 			       { align:'center', title:'备注',   field:'remark',	 },
+			       { align:'center', title:'生成耗料单',   field:'',  width:'7%', templet:getTpl(),	 },
 			       ]]
 		})
+		function getTpl(){
+			return function(d){
+				if(d.orderMaterials && d.orderMaterials.length>0)
+					return '<span class="layui-badge layui-bg-">是</span>';
+				return '<span class="layui-badge layui-bg-blue">否</span>';
+			}
+		}
 		form.on('submit(search)',function(obj){
 			var time = $('#searchTime').val();
 			var begin='',end='';
@@ -203,8 +218,79 @@ layui.config({
 			case 'add':		add();		break;
 			case 'update':	edit(); 	break;
 			case 'delete':	deletes();			break;
+			case 'lookoverUseup': lookoverUseup(); break;
+			case 'productUseup': productUseup(); break;
 			} 
 		})
+		var mode = [];
+		function lookoverUseup(){
+			var checked = layui.table.checkStatus('tableAgreement').data;
+			if(checked.length!=1)
+				return myutil.emsg('只能查看一条信息');
+			if(mode.length==0){
+				mode = myutil.getDataSync({ url: '${ctx}/product/getBaseOne?type=overstock' });
+				myutil.getDataSync({ 
+					url: '${ctx}/product/getBaseOne?type=tailor',
+					success:function(d){
+						for(var i in d)
+							mode.push(d[i]);
+					}
+				});
+			}
+			layer.open({
+				type:1,
+				title:'耗料订单',
+				area:['80%','80%'],
+				content:[
+				          '<div style="padding:0px;">', 
+				         	 '<table id="lookoverTable" lay-filter="lookoverTable"></table>', 
+				          '</div>', 
+				         ].join(''),
+				
+				shadeClose:true,
+				success:function(){
+					mytable.render({
+						elem:'#lookoverTable',
+						url:'${ctx}/ledger/getOrderMaterial?orderId='+checked[0].id,
+						toolbar:'<span class="layui-btn layui-btn-sm" lay-event="onekey">一键审核</span>',
+						size:'lg',
+						limit:15,
+						limits:[10,15,20,50,],
+						colsWidth:[0,0,10,10,20,10],
+						curd:{
+							btn:[4],
+							otherBtn:function(obj){
+								if(obj.event=="onekey"){
+									myutil.deleTableIds({
+										url:'/ledger/auditOrderMaterial',
+										table:'lookoverTable',
+										text:'请选择相关信息|是否确认？',
+									})
+								}
+							}
+						},
+						autoUpdate:{
+							deleUrl:'/ledger/deleteOrderMaterial',
+						},
+						cols:[[
+							   { type:'checkbox', },
+						       { title:'物料名',   field:'materiel_name', },
+						       { title:'单位',   field:'unit_name',  },
+						       { title:'领取用量',   field:'dosage', 	},
+						       { title:'领取模式',   field:'receiveMode_name',	},
+						       { title:'审核状态', field:'audit', transData:{ data:['未审核','审核'] }},
+						       ]],
+					})
+				},
+			})
+		}
+		function productUseup(){
+			myutil.deleTableIds({
+				url:'/ledger/confirmOrderMaterial',
+				table:'tableAgreement',
+				text:'请选择相关信息|是否确认生成耗料表',
+			})
+		}
 		function add(){
 			var productList = [];	//记录复选框选中的值，用于回显复选框选中
 			var defaultTime = '', defaultRemark = '';
@@ -275,7 +361,7 @@ layui.config({
 				var chooseProductWin = layer.open({
 					title: '选择产品',
 					type:1,
-					area:['50%','70%'],
+					area:['50%','90%'],
 					content: $('#chooseProductWin')
 				})
 				table.render({
@@ -466,7 +552,8 @@ layui.config({
 				var chooseProductWin = layer.open({
 					title: '选择产品',
 					type:1,
-					area:['45%','70%'],
+					area:['45%','90%'],
+					shadeClose:true,
 					content: $('#chooseProductWin'),
 					success:function(){
 						$('#sureChoosed').hide();
@@ -520,7 +607,6 @@ layui.config({
 				})
 			})
 		}
-		
 		function getAllCustom(id,selected){
 			myutil.getSelectHtml({
 				url:'/ledger/allCustomer',

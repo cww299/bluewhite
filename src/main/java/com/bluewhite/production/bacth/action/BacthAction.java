@@ -132,9 +132,9 @@ public class BacthAction {
 	 */
 	@RequestMapping(value = "/bacth/statusBacth", method = RequestMethod.GET)
 	@ResponseBody
-	public CommonResponse statusBacth(String ids, Date time) {
+	public CommonResponse statusBacth(HttpServletRequest request,String ids, Date time) {
 		CommonResponse cr = new CommonResponse();
-		int count = bacthService.statusBacth(ids, time);
+		int count = bacthService.statusBacth(ids,time,request);
 		cr.setMessage("成功完成"+ count +"批次");
 		return cr;
 	}

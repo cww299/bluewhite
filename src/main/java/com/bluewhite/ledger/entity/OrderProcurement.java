@@ -1,12 +1,17 @@
 package com.bluewhite.ledger.entity;
 
 import java.util.Date;
+import java.util.HashSet;
+import java.util.Set;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.JoinColumn;
+import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 
@@ -22,27 +27,14 @@ import com.bluewhite.system.user.entity.User;
  *
  */
 @Entity
-@Table(name = "ledger_order_material")
+@Table(name = "ledger_order_procurement")
 public class OrderProcurement extends BaseEntity<Long> {
 
 	/**
-	 * 采购单编号(批次+产品名称+物料名称+订货客户名称)
+	 * 采购单编号(批次+产品名称+物料名称+订货客户名称生成的新编号)
 	 */
 	@Column(name = "order_procurement_number")
 	private String orderProcurementNumber;
-	
-	/**
-	 * 订单（下单合同）生产用料id
-	 */
-	@Column(name = "order_material_id")
-	private Long orderMaterialId;
-
-	/**
-	 * 订单（下单合同）生产用料
-	 */
-	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "order_material_id", referencedColumnName = "id", insertable = false, updatable = false)
-	private OrderMaterial orderMaterial;
 	
 	/**
 	 * 物料名id
@@ -56,7 +48,27 @@ public class OrderProcurement extends BaseEntity<Long> {
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "materiel_id", referencedColumnName = "id", insertable = false, updatable = false)
 	private Materiel materiel;
+	
+	/**
+	 * 订单id
+	 * 
+	 */
+	@Column(name = "order_id")
+	private Long orderId;
 
+	/**
+	 * 订单
+	 */
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "order_id", referencedColumnName = "id", insertable = false, updatable = false)
+	private Order order;
+	
+	/**
+	 * 平方克重
+	 */
+	@Column(name = "square_gram")
+    private Double squareGram;
+	
 	/**
 	 * 下单数量
 	 */
@@ -68,6 +80,12 @@ public class OrderProcurement extends BaseEntity<Long> {
 	 */
 	@Column(name = "place_order_time")
 	private Date placeOrderTime;
+	
+	/**
+	 * 预计到货日期
+	 */
+	@Column(name = "expect_arrival_time")
+	private Date expectArrivalTime;  
 
 	/**
 	 * 到货日期
@@ -80,6 +98,12 @@ public class OrderProcurement extends BaseEntity<Long> {
 	 */
 	@Column(name = "arrival_number")
 	private Double arrivalNumber;
+	
+	/**
+	 * 虚拟库存 剩余数量
+	 */
+	@Column(name = "residue_number")
+	private Double residueNumber;
 
 	/**
 	 * 客户id
@@ -109,7 +133,6 @@ public class OrderProcurement extends BaseEntity<Long> {
 	@JoinColumn(name = "user_id", referencedColumnName = "id", insertable = false, updatable = false)
 	private User user;
 
-	
 	/**
 	 * 库位
 	 * 
@@ -123,6 +146,44 @@ public class OrderProcurement extends BaseEntity<Long> {
 	@Column(name = "price")
     private Double price;
 	
+	/**
+	 * 根据客户来的新编号
+	 */
+	@Column(name = "new_code")
+	private String newCode;
+	
+	/**
+	 * 是否到货（0=否，1=是）
+	 */
+	@Column(name = "arrival")
+	private Integer arrival;
+	
+	/**
+	 * 入库库存是否有出入(0=否，1=是)
+	 */
+	@Column(name = "in_out_error")
+	private Integer inOutError;
+	
+	
+	/**
+	 * 入库操作人id
+	 * 
+	 */
+	@Column(name = "user_storage_id")
+	private Long userStorageId;
+
+	/**
+	 * 入库操作人
+	 */
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "user_storage_id", referencedColumnName = "id", insertable = false, updatable = false)
+	private User userStorage;
+	
+	/**
+	 * 订单（下单合同）生产用料id
+	 */
+	@Transient
+	private Long orderMaterialId;
 
 	/**
 	 * 产品name
@@ -144,6 +205,89 @@ public class OrderProcurement extends BaseEntity<Long> {
 	
 
 	
+	
+
+
+	public Long getUserStorageId() {
+		return userStorageId;
+	}
+
+	public void setUserStorageId(Long userStorageId) {
+		this.userStorageId = userStorageId;
+	}
+
+	public User getUserStorage() {
+		return userStorage;
+	}
+
+	public void setUserStorage(User userStorage) {
+		this.userStorage = userStorage;
+	}
+
+	public Integer getInOutError() {
+		return inOutError;
+	}
+
+	public void setInOutError(Integer inOutError) {
+		this.inOutError = inOutError;
+	}
+
+	public Order getOrder() {
+		return order;
+	}
+
+	public void setOrder(Order order) {
+		this.order = order;
+	}
+
+	public Double getResidueNumber() {
+		return residueNumber;
+	}
+
+	public void setResidueNumber(Double residueNumber) {
+		this.residueNumber = residueNumber;
+	}
+
+	public Integer getArrival() {
+		return arrival;
+	}
+
+	public void setArrival(Integer arrival) {
+		this.arrival = arrival;
+	}
+
+	public Long getOrderId() {
+		return orderId;
+	}
+
+	public void setOrderId(Long orderId) {
+		this.orderId = orderId;
+	}
+
+	public String getNewCode() {
+		return newCode;
+	}
+
+	public void setNewCode(String newCode) {
+		this.newCode = newCode;
+	}
+
+	public Double getSquareGram() {
+		return squareGram;
+	}
+
+	public void setSquareGram(Double squareGram) {
+		this.squareGram = squareGram;
+	}
+
+	public Date getExpectArrivalTime() {
+		return expectArrivalTime;
+	}
+
+	public void setExpectArrivalTime(Date expectArrivalTime) {
+		this.expectArrivalTime = expectArrivalTime;
+	}
+
 	public String getProductName() {
 		return productName;
 	}
@@ -246,14 +390,6 @@ public class OrderProcurement extends BaseEntity<Long> {
 
 	public void setOrderMaterialId(Long orderMaterialId) {
 		this.orderMaterialId = orderMaterialId;
-	}
-
-	public OrderMaterial getOrderMaterial() {
-		return orderMaterial;
-	}
-
-	public void setOrderMaterial(OrderMaterial orderMaterial) {
-		this.orderMaterial = orderMaterial;
 	}
 
 	public Date getPlaceOrderTime() {

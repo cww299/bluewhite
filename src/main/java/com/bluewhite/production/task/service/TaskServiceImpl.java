@@ -86,9 +86,9 @@ public class TaskServiceImpl extends BaseServiceImpl<Task, Long> implements Task
 		if (!StringUtils.isEmpty(task.getUserIds())) {
 			task.setUsersIds(task.getUserIds().split(","));
 			String[] idStrings = task.getIds().split(",");
-			// 正式员工ids
-			idsList = Arrays.asList(idStrings).stream().map(a -> Long.parseLong(a)).collect(Collectors.toList());
 			// 正式员工出勤记录ids
+			idsList = Arrays.asList(idStrings).stream().map(a -> Long.parseLong(a)).collect(Collectors.toList());
+			// 正式员工ids
 			userIdsList = Arrays.asList(task.getUsersIds()).stream().map(a -> Long.parseLong(a))
 					.collect(Collectors.toList());
 		}
@@ -98,6 +98,8 @@ public class TaskServiceImpl extends BaseServiceImpl<Task, Long> implements Task
 			String[] temporaryIds = task.getTemporaryIds().split(",");
 			// 临时员工出勤记录ids
 			temporaryIdList = Arrays.asList(temporaryIds).stream().map(a -> Long.parseLong(a))
+					.collect(Collectors.toList());
+			temporaryUserIdList =  Arrays.asList(task.getTemporaryUsersIds()).stream().map(a -> Long.parseLong(a))
 					.collect(Collectors.toList());
 
 		}
@@ -191,11 +193,11 @@ public class TaskServiceImpl extends BaseServiceImpl<Task, Long> implements Task
 
 				// 查出该任务的所有b工资
 				List<PayB> payBList = new ArrayList<>();
-				int userInt = task.getUsersIds() != null && task.getUsersIds().length > 0 ? task.getUsersIds().length
+				int userInt = newTask.getUsersIds() != null && newTask.getUsersIds().length > 0 ? newTask.getUsersIds().length
 						: 0;
-				int temporaryUsersInt = task.getTemporaryUsersIds() != null && task.getTemporaryUsersIds().length > 0
-						? task.getTemporaryUsersIds().length : 0;
-				if (task.getId() != null) {
+				int temporaryUsersInt = newTask.getTemporaryUsersIds() != null && newTask.getTemporaryUsersIds().length > 0
+						? newTask.getTemporaryUsersIds().length : 0;
+				if (newTask.getId() != null) {
 					payBList = payBDao.findByTaskId(task.getId());
 				}
 				/// 员工和任务形成多对多关系
@@ -222,7 +224,7 @@ public class TaskServiceImpl extends BaseServiceImpl<Task, Long> implements Task
 						PayB payB = null;
 						if (task.getId() != null) {
 							// 给予每个员工b工资
-							List<PayB> payBOneList = payBList.stream().filter(PayB -> PayB.getUserId().equals(userIdP))
+							List<PayB> payBOneList = payBList.stream().filter(PayB ->PayB.getUserId()!=null && PayB.getUserId().equals(userIdP))
 									.collect(Collectors.toList());
 							if (payBOneList.size() > 0) {
 								payB = payBOneList.get(0);
@@ -258,7 +260,7 @@ public class TaskServiceImpl extends BaseServiceImpl<Task, Long> implements Task
 							}
 						}
 						// 计算B工资数值
-						if (!UnUtil.isFromMobile(request) && task.getType() == 2) {
+						if (!UnUtil.isFromMobile(request) && newTask.getType() == 2) {
 							// 包装分配任务，员工b工资根据考情占比分配，其他部门是均分
 							// 该员工实际工作时长
 							Double workTime = attendancePay != null ? attendancePay.getWorkTime()
@@ -287,8 +289,8 @@ public class TaskServiceImpl extends BaseServiceImpl<Task, Long> implements Task
 								.filter(Temporarily -> Temporarily.getId().equals(idLong)).collect(Collectors.toList());
 						PayB payB = null;
 						// 给予每个员工b工资
-						if (task.getId() != null) {
-							List<PayB> payBOneList = payBList.stream().filter(PayB -> PayB.getTemporaryUserId().equals(temporarilyListOne.get(0).getTemporaryUserId()))
+						if (newTask.getId() != null) {
+							List<PayB> payBOneList = payBList.stream().filter(PayB -> PayB.getTemporaryUserId()!=null && PayB.getTemporaryUserId().equals(temporarilyListOne.get(0).getTemporaryUserId()))
 									.collect(Collectors.toList());
 							if (payBOneList.size() > 0) {
 								payB = payBOneList.get(0);
@@ -316,7 +318,7 @@ public class TaskServiceImpl extends BaseServiceImpl<Task, Long> implements Task
 							}
 						}
 						// 计算B工资数值
-						if (!UnUtil.isFromMobile(request) && task.getType() == 2) {
+						if (!UnUtil.isFromMobile(request) && newTask.getType() == 2) {
 							// 包装分配任务，员工b工资根据考情占比分配，其他部门是均分
 							// 该员工实际工作时长
 							Double workTime = temporarilyListOne.get(0).getWorkTime();
@@ -343,11 +345,14 @@ public class TaskServiceImpl extends BaseServiceImpl<Task, Long> implements Task
 		if (bacth.getTasks().size() > 0) {
 			List<Double> listDouble = new ArrayList<>();
 			bacth.getTasks().stream().filter(SalesUtils.distinctByKey(Task::getProcedureId)).forEach(a -> {
-				if(a.getProcedure()!=null && a.getProcedure().getWorkingTime()!=null){
-					listDouble.add(a.getProcedure().getWorkingTime());
+				if(a.getProcedureId()!=null ){
+					Procedure procedure  = procedureDao.findOne(a.getProcedureId());
+					listDouble.add(procedure.getWorkingTime());
 				}
 			});
-			bacthDepartmentPrice = ProTypeUtils.sumProTypePrice(NumUtils.sum(listDouble), bacth.getType());
+			if(listDouble.size()>0){
+				bacthDepartmentPrice = ProTypeUtils.sumProTypePrice(NumUtils.sum(listDouble), bacth.getType());
+			}
 		}
 		for (Task ta : bacth.getTasks()) {
 			sumTaskPrice += ta.getTaskPrice();
@@ -650,7 +655,7 @@ public class TaskServiceImpl extends BaseServiceImpl<Task, Long> implements Task
 								Long userid = Long.parseLong(ids[j]);
 								PayB payB = payBDao.findByTaskIdAndUserId(task.getId(), userid);
 								if (payB == null) {
-									payB = payBDao.findByTaskIdAndTemporaryUserId(id, userid);
+									payB = payBDao.findByTaskIdAndTemporaryUserId(task.getId(), userid);
 								}
 								payB.setPerformance(task.getPerformance());
 								payB.setPerformanceNumber(task.getPerformanceNumber());

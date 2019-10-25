@@ -363,8 +363,7 @@ public class ProcurementServiceImpl extends BaseServiceImpl<Procurement, Long> i
 						}
 						if (p.getParentId() != null) {
 							ProcurementChild parentProcurementChild = procurementChildDao.findOne(p.getParentId());
-							parentProcurementChild
-									.setResidueNumber(parentProcurementChild.getResidueNumber() + p.getNumber());
+							parentProcurementChild.setResidueNumber(parentProcurementChild.getResidueNumber() + p.getNumber());
 							parentProcurementChild.getProcurement().setResidueNumber(
 									parentProcurementChild.getProcurement().getResidueNumber() + p.getNumber());
 						}
@@ -655,8 +654,7 @@ public class ProcurementServiceImpl extends BaseServiceImpl<Procurement, Long> i
 						// 创建商品的库存
 						Set<Inventory> inventorys = commodity.getProduct().getInventorys();
 						// 获取库存
-						Inventory inventory = inventoryDao
-								.findByProductIdAndWarehouseId(p.getCommodity().getProductId(), p.getWarehouseId());
+						Inventory inventory = inventoryDao.findByProductIdAndWarehouseId(p.getCommodity().getProductId(), p.getWarehouseId());
 						if (inventory == null) {
 							inventory = new Inventory();
 							inventory.setCommodityId(p.getCommodityId());
@@ -690,8 +688,7 @@ public class ProcurementServiceImpl extends BaseServiceImpl<Procurement, Long> i
 			}
 			BeanCopyUtils.copyNotEmpty(procurementChild, pc, "");
 			// 更新主单总数
-			int number = pc.getProcurement().getProcurementChilds().stream().mapToInt(ProcurementChild::getNumber)
-					.sum();
+			int number = pc.getProcurement().getProcurementChilds().stream().mapToInt(ProcurementChild::getNumber).sum();
 			pc.getProcurement().setNumber(number);
 			pc.getProcurement().setResidueNumber(number);
 			// 更新上级转换的子单数量

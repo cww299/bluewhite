@@ -31,7 +31,7 @@ public class RoleUtil {
 		if (role.contains(Constants.EIGHTFINISHEDWAREHOUSE)) {
 			id = 275;
 		}
-		return Long.valueOf(id);
+		return id == null ? null : Long.valueOf(id);
 	}
 
 }

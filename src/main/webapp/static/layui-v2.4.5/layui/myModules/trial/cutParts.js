@@ -10,8 +10,8 @@ layui.define(['mytable'],function(exports){
 	var html = [
 	            '<table id="cutPartTable" lay-filter="cutPartTable"></table>'
 	            ].join(' ');
-	var allUnit = myutil.getDataSync({ url:'/product/getBaseOne?type=unit', });		//获取所有单位
-	var allOverstock = myutil.getDataSync({ url:'/product/getBaseOne?type=overstock', }); //获取所有压货
+	var allUnit = myutil.getDataSync({ url: myutil.config.ctx+'/product/getBaseOne?type=unit', });		//获取所有单位
+	var allOverstock = myutil.getDataSync({ url: myutil.config.ctx+'/product/getBaseOne?type=overstock', }); //获取所有压货
 	var allMaterielSelect = '', allReuniteSelect = '' ;//获取所有面料下拉框的值进行记录。减少搜索次数
 	var cutParts = {	//模块
 			
@@ -21,7 +21,7 @@ layui.define(['mytable'],function(exports){
 	getSelectData(324);
 	function getSelectData(type){
 		myutil.getData({ 
-			url:'/product/getMateriel?materielTypeId='+type,	
+			url: myutil.config.ctx+'/product/getMateriel?materielTypeId='+type,	
 			success:function(data){
 				var allSelect = '';
 				layui.each(data,function(index,item){
@@ -100,7 +100,7 @@ layui.define(['mytable'],function(exports){
 				else
 					t = 324;
 				myutil.getData({
-					url:'/product/getMateriel?type='+t,
+					url: myutil.config.ctx+'/product/getMateriel?type='+t,
 					data:{ name: name },
 					success:function(data){
 						if(data.length==0)

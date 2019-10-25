@@ -60,7 +60,7 @@
 				<table class="layui-form">
 					<tr>
 						<td>产品名：</td>
-						<td><input type="text" class="layui-input"></td>
+						<td><input type="text" class="layui-input" name="name"></td>
 						<td>&nbsp;&nbsp;</td>
 						<td><button type="button" class="layui-btn layui-btn-sm" lay-submit lay-filter="searchBtn">搜索</button></td>
 					</tr>
@@ -99,8 +99,9 @@ layui.config({
 	base : '${ctx}/static/layui-v2.4.5/'
 }).extend({
 	mytable: 'layui/myModules/mytable',
-}).use(['mytable'],function(){
+}).use(['mytable','form'],function(){
 	var $ = layui.jquery,
+		form = layui.form
 		myutil = layui.myutil,
 		mytable = layui.mytable;
 	
@@ -116,6 +117,11 @@ layui.config({
 		       { title:'产品名称',   	field:'name',	},
 		      // { title:'成本',   	field:'primeCost',	},
 		       ]],
+	})
+	form.on('submit(searchBtn)',function(obj){
+		table.reload('productTable',{
+			where: obj.field
+		})
 	})
 	$('#productBtn').on('click',function(){
 		$('#productBtn').css('color','red');

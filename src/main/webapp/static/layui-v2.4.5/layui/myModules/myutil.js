@@ -186,7 +186,7 @@ layui.define(['jquery','layer','form','table'],function(exports){
 	};
 	
 	myutil.deleTableIds = function(opt){
-		/*url: '', id:'id', table:'', text:'', offset:'', success */
+		/*url: '', id:'id', table:'', text:'', offset:'', success,verify(checked) */
 		if(!opt.table)
 			return console.warn('请给定操作表格');
 		var tid = opt.table, text = opt.text || '请选择相关信息删除|是否确认删除？',offset = opt.offset || '',ids = [];
@@ -200,6 +200,10 @@ layui.define(['jquery','layer','form','table'],function(exports){
 			})
 			ids.push(val);
 		})
+		var msg = '';
+		opt.verify && (msg = opt.verify(choosed));
+		if(msg)
+			return myutil.emsg(msg);
 		layer.confirm(text.split('|')[1],{ offset:offset },function(){
 			myutil.deleteAjax({
 				url: opt.url,
