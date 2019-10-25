@@ -379,11 +379,11 @@ public class MealServiceImpl extends BaseServiceImpl<Meal, Long> implements Meal
 		long q = meals.stream().filter(Meal -> Meal.getMode() != null && Meal.getMode().equals(2)).count();// 中餐数
 		long w = meals.stream().filter(Meal -> Meal.getMode() != null && Meal.getMode().equals(3)).count();// 晚餐数
 		long r = meals.stream().filter(Meal -> Meal.getMode() != null && Meal.getMode().equals(4)).count();// 夜宵数
-		long t = meals.stream().filter(Meal -> Meal.getMode() != null && Meal.getMode().equals(1) && Meal.getOrgNameId()!=null && Meal.getOrgNameId()==1).count();// 总经办早餐数
-		long y = meals.stream().filter(Meal -> Meal.getMode() != null && Meal.getMode().equals(2) && Meal.getOrgNameId()!=null && Meal.getOrgNameId()==1).count();// 总经办中数
-		long u = meals.stream().filter(Meal -> Meal.getMode() != null && Meal.getMode().equals(3) && Meal.getOrgNameId()!=null &&  Meal.getOrgNameId()==1).count();// 总经办晚餐数
+		long t = meals.stream().filter(Meal -> Meal.getMode() != null && Meal.getMode().equals(1) && Meal.getUserId()!=null && Meal.getUserId().equals((long)3)).count();// 总经办早餐数
+		long y = meals.stream().filter(Meal -> Meal.getMode() != null && Meal.getMode().equals(2) && Meal.getUserId()!=null && Meal.getUserId().equals((long)3)).count();// 总经办中数
+		long u = meals.stream().filter(Meal -> Meal.getMode() != null && Meal.getMode().equals(3) && Meal.getUserId()!=null &&  Meal.getUserId().equals((long)3)).count();// 总经办晚餐数
 		//食材费用
-		if (meal.getOrgNameId()!=null && meal.getOrgNameId().equals(1)) {
+		if ((meal.getOrgNameId()!=null) && (meal.getOrgNameId().equals((long)1))) {
 			//总经办
 		List<SingleMeal> list = singleMealDao.findByTimeBetweenAndOrgNameId(meal.getOrderTimeBegin(), meal.getOrderTimeEnd(),(long)1);
 			if (list.size() == 0) {
@@ -533,11 +533,18 @@ public class MealServiceImpl extends BaseServiceImpl<Meal, Long> implements Meal
 		double c = NumUtils.sum(budget4);// 夜宵 食材 
 		
 		double q1=	NumUtils.div(sumd, meals.size(),2);//水电早餐的平均价格
-		
-		double g = NumUtils.sum(NumUtils.division(NumUtils.div(f, l, 2)), q1); // 早餐平均 
-		double i =  NumUtils.sum(NumUtils.division(NumUtils.div(z, q, 2)), q1);// 中餐平均
-		double n = NumUtils.sum(NumUtils.division(NumUtils.div(x, w, 2)), q1);// 晚餐平均
-		double h =NumUtils.sum(NumUtils.division(NumUtils.div(c, r, 2)), q1); ;// 夜宵平均
+		long a1=l;
+		long a2=q;
+		long a3=w;
+		if((meal.getOrgNameId()!=null) && (meal.getOrgNameId().equals((long)1))){
+			a1=t;
+			a2=y;
+			a3=u;
+		}
+		double g = NumUtils.sum(NumUtils.division(NumUtils.div(f, a1==0 ? 1 : a1, 2)), q1); // 早餐平均 
+		double i =  NumUtils.sum(NumUtils.division(NumUtils.div(z, a2==0 ? 1 : a2, 2)), q1);// 中餐平均
+		double n = NumUtils.sum(NumUtils.division(NumUtils.div(x, a3==0 ? 1 : a3, 2)), q1);// 晚餐平均
+		double h =NumUtils.sum(NumUtils.division(NumUtils.div(c, r==0 ? 1 : r, 2)), q1); ;// 夜宵平均
 		
 		List<Meal> mealsList = findMeal(meal);
 		Map<Long, List<Meal>> mealMap = mealsList.stream().filter(Meal -> Meal.getUserId() != null)
