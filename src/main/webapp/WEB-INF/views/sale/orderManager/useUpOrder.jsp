@@ -215,7 +215,7 @@ layui.config({
 			}
 		})
 		myutil.getData({
-			url: '${ctx}/system/user/findUserList',
+			url: '${ctx}/system/user/findUserList?orgNameIds=20',
 			success:function(d){
 				var html = '';
 				allUser = d;
