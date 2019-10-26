@@ -231,6 +231,10 @@
 				range: '~',
 				value : firstdate+' ~ '+lastdate,
 			});
+			laydate.render({
+				elem: '#startTimes',
+				type: 'datetime',
+			});
 			//select全局变量
 			var htmls = '<option value="0">请选择</option>';
 			var htmlsh = '<option value="0">请选择</option>';
@@ -557,7 +561,6 @@
 													},
 													success:function(r){
 														$(r.data).each(function(j,k){
-															console.log()
 															var children=new Array()
 															$(k.userList).each(function(i,o){
 																if(o.status==1){
@@ -582,9 +585,10 @@
 															})
 															layer.close(index);
 															var	fals=false;
-															if(jQuery.isEmptyObject(r.data)==true){
+															if(jQuery.isEmptyObject(r.data.temporarilyUser)==true && jQuery.isEmptyObject(r.data.userList)==true){
 																fals=true
 															}
+															console.log(fals)
 														arr.push({
 															title:name,
 															id:ids,

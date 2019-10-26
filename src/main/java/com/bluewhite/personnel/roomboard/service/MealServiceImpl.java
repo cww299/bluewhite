@@ -407,11 +407,11 @@ public class MealServiceImpl extends BaseServiceImpl<Meal, Long> implements Meal
 		long w = meals.stream().filter(Meal -> Meal.getMode() != null && Meal.getMode().equals(3)).count();// 晚餐数
 		long r = meals.stream().filter(Meal -> Meal.getMode() != null && Meal.getMode().equals(4)).count();// 夜宵数
 		long t = meals.stream().filter(Meal -> Meal.getMode() != null && Meal.getMode().equals(1)
-				&& Meal.getUserId() != null && Meal.getUserId().equals((long) 3)).count();// 总经办早餐数
+				&& Meal.getUserId() != null && Meal.getOrgNameId().equals((long) 1)).count();// 总经办早餐数
 		long y = meals.stream().filter(Meal -> Meal.getMode() != null && Meal.getMode().equals(2)
-				&& Meal.getUserId() != null && Meal.getUserId().equals((long) 3)).count();// 总经办中数
+				&& Meal.getUserId() != null && Meal.getOrgNameId().equals((long) 1)).count();// 总经办中数
 		long u = meals.stream().filter(Meal -> Meal.getMode() != null && Meal.getMode().equals(3)
-				&& Meal.getUserId() != null && Meal.getUserId().equals((long) 3)).count();// 总经办晚餐数
+				&& Meal.getUserId() != null && Meal.getOrgNameId().equals((long) 1)).count();// 总经办晚餐数
 		// 食材费用
 		if ((meal.getOrgNameId() != null) && (meal.getOrgNameId().equals((long) 1))) {
 			// 总经办
@@ -586,6 +586,9 @@ public class MealServiceImpl extends BaseServiceImpl<Meal, Long> implements Meal
 			allMap = new HashMap<>();
 			// 获取单一员工日期区间所有的报餐数据
 			List<Meal> psList1 = mealMap.get(ps1);
+			if(meal.getOrgNameId()==null && psList1.get(0).getOrgNameId().equals((long) 1)){
+				
+			}else{
 			double modeOne = psList1.stream().filter(Meal -> Meal.getMode() == 1).count();
 			double modeTwo = psList1.stream().filter(Meal -> Meal.getMode() == 2).count();
 			double modeThree = psList1.stream().filter(Meal -> Meal.getMode() == 3).count();
@@ -612,6 +615,7 @@ public class MealServiceImpl extends BaseServiceImpl<Meal, Long> implements Meal
 			allMap.put("modeFourVal", h);
 			allMap.put("sumPrice", sumPrice);
 			allList.add(allMap);
+			}
 		}
 
 		Map<Long, List<Meal>> mealMapUser = mealsList.stream().filter(Meal -> Meal.getTemporaryUserId() != null)

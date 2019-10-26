@@ -32,8 +32,13 @@
 .tiepodongNumber:focus{
 	outline: 1px solid #0000ff70;
 }
+@media screen and (min-width: 1200px){
+	.bigHidden{
+		display:none;
+	}
+}
 @media screen and (max-width: 1200px){
-	/* Ð¡ÆÁÄ»ÑùÊ½  */
+	/* Ð¡ï¿½ï¿½Ä»ï¿½ï¿½Ê½  */
 	.leftDiv{
 		float: inherit;
    		width: 50%;
