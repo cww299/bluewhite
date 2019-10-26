@@ -178,6 +178,9 @@ public class OrderMaterialServiceImpl extends BaseServiceImpl<OrderMaterial, Lon
 	@Override
 	public void updateOrderMaterial(OrderMaterial orderMaterial) {
 		OrderMaterial ot = findOne(orderMaterial.getId());
+		if (ot.getAudit() == 1) {
+			throw new ServiceException("耗料已审核，无法修改");
+		}
 		update(orderMaterial, ot);
 	}
 
@@ -212,6 +215,9 @@ public class OrderMaterialServiceImpl extends BaseServiceImpl<OrderMaterial, Lon
 				for (int i = 0; i < idArr.length; i++) {
 					Long id = Long.parseLong(idArr[i]);
 					OrderMaterial ot = findOne(id);
+					if (ot.getAudit() == 1) {
+						throw new ServiceException("第" + (i + 1) + "条耗料已审核，请勿重复审核");
+					}
 					ot.setAudit(1);
 					save(ot);
 					count++;

@@ -164,17 +164,22 @@ public class OrderProcurementServiceIpml extends BaseServiceImpl<OrderProcuremen
 			if (idArr.length > 0) {
 				for (int i = 0; i < idArr.length; i++) {
 					Long id = Long.parseLong(idArr[i]);
+					//采购单审核入库后入库数量和下单数量不符
 					//根据采购单id查询出所有使用了该采购单的所有分散出库单
 					List<ScatteredOutbound> scatteredOutboundList = scatteredOutboundDao.findByOrderProcurementId(id);
+					OrderProcurement orderProcurement = findOne(id);
 					if(scatteredOutboundList.size()>0){
-						
-						
-						
+						//采购生成的所有出库单总耗料
+						Double sumDosage = scatteredOutboundList.stream().mapToDouble(ScatteredOutbound::getDosage).sum();
+						if(orderProcurement.getArrivalNumber()<sumDosage){
+							throw new ServiceException(orderProcurement.getOrderProcurementNumber()+"采购单生成的分散出库单所消耗总量小于采购单实际到货数量，无法审核");
+						}
 					}
+					orderProcurement.setPlaceOrderNumber(orderProcurement.getArrivalNumber());
+					orderProcurement.setInOutError(0);
+					save(orderProcurement);
 					count++;
 				}
-				
-				
 			}
 		}
 		return count;
@@ -183,6 +188,9 @@ public class OrderProcurementServiceIpml extends BaseServiceImpl<OrderProcuremen
 	@Override
 	public void updateOrderProcurement(OrderProcurement orderProcurement) {
 		OrderProcurement ot = findOne(orderProcurement.getId());
+		if(ot.getArrival()==1){
+			throw new ServiceException(orderProcurement.getOrderProcurementNumber()+"采购单已审核，无法修改");
+		}
 		update(orderProcurement, ot, "");
 	}
 

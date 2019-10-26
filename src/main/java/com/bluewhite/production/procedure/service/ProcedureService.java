@@ -60,6 +60,6 @@ public interface ProcedureService extends BaseCRUDService<Procedure,Long>{
 	 * 保存
 	 * @param procedureList
 	 */
-	public Procedure add(Procedure procedure);
+	public void add(Procedure procedure);
 
 }

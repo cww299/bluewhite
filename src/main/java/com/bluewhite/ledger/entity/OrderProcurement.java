@@ -57,7 +57,7 @@ public class OrderProcurement extends BaseEntity<Long> {
 	private Long orderId;
 
 	/**
-	 * 订单
+	 * 订单（该订单所定的采购单）
 	 */
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "order_id", referencedColumnName = "id", insertable = false, updatable = false)

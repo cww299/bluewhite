@@ -97,7 +97,7 @@ public class Procedure extends BaseEntity<Long> {
 	private Integer sign;
 
 	/**
-	 * 保存工序类型
+	 * 保存工序类型(用于仓库量化，对于重复工序批量一键添加)
 	 */
 	@Column(name = "sourg")
 	private String sourg;
