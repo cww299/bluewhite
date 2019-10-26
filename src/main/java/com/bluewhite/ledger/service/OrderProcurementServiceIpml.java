@@ -137,7 +137,7 @@ public class OrderProcurementServiceIpml extends BaseServiceImpl<OrderProcuremen
 						if(orderProcurement.getArrivalNumber()==null || orderProcurement.getArrivalTime() == null || orderProcurement.getUserStorageId()==null ){
 							throw new ServiceException("当前采购面料未填写到库数值或日期或入库人，无法审核入库");
 						}
-						if(orderProcurement.getArrivalNumber()!=orderProcurement.getPlaceOrderNumber()){
+						if(!orderProcurement.getArrivalNumber().equals(orderProcurement.getPlaceOrderNumber())){
 							orderProcurement.setInOutError(1);
 						}
 						orderProcurement.getMateriel().setInventoryNumber(NumUtils.sum(orderProcurement.getMateriel().getInventoryNumber(), orderProcurement.getArrivalNumber()));
@@ -164,7 +164,7 @@ public class OrderProcurementServiceIpml extends BaseServiceImpl<OrderProcuremen
 			if (idArr.length > 0) {
 				for (int i = 0; i < idArr.length; i++) {
 					Long id = Long.parseLong(idArr[i]);
-					//根据采购单id查询出所有使用了，该采购单id的
+					//根据采购单id查询出所有使用了该采购单的所有分散出库单
 					List<ScatteredOutbound> scatteredOutboundList = scatteredOutboundDao.findByOrderProcurementId(id);
 					if(scatteredOutboundList.size()>0){
 						
@@ -173,6 +173,8 @@ public class OrderProcurementServiceIpml extends BaseServiceImpl<OrderProcuremen
 					}
 					count++;
 				}
+				
+				
 			}
 		}
 		return count;
