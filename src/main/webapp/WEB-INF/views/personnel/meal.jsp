@@ -112,7 +112,7 @@
 			<div class="layui-form-item">
 				<label class="layui-form-label" style="width: 100px;">报餐类型</label>
 				<div class="layui-input-inline">
-					<select name="mode" style="width:290px;"  lay-filter="mode" id="mode" lay-search="true">
+					<select  style="width:290px;"  lay-filter="mode" id="mode" lay-search="true">
 						<option value="">请选择</option>
 						<option value="1">早餐</option>
 						<option value="2">中餐</option>
@@ -443,7 +443,7 @@
 										return "晚餐"
 									}
 									if(d.mode==4){
-										return "夜宵餐"
+										return "夜宵"
 									}
 								}
 							},{
@@ -607,7 +607,8 @@
 										var id=$("#userId").find("option:selected").data('id')
 										if(id==0){
 											data.field.userId=$("#userId").val();
-											data.field.tradeDaysTime=$("#tradeDaysTime").val();
+											data.field.time=$("#tradeDaysTime").val();
+											 data.field.mode=$("#mode").val();
 											 mainJs.fAdd(data.field);  
 											 document.getElementById("layuiadmin-form-admin2").reset();
 										}else{
@@ -615,8 +616,9 @@
 												return layer.msg("特急人员请填写部门",{icon:2})
 											}
 											data.field.orgNameId=$("#orgNameId").val();
-											data.field.tradeDaysTime=$("#tradeDaysTime").val();
+											data.field.time=$("#tradeDaysTime").val();
 											data.field.temporaryUserId=$("#userId").val();
+											data.field.mode=$("#mode").val();
 											mainJs.fAdd(data.field); 
 											document.getElementById("layuiadmin-form-admin2").reset();
 										}
@@ -799,11 +801,22 @@
 								$("#time1").hide();
 								$("#time2").show();
 								var choosed=layui.table.checkStatus("tableData").data;
+								var length=choosed.length
 								var orgNameId=choosed[0].orgNameId
 								var mode=choosed[0].mode
 								var tradeDaysTime=choosed[0].tradeDaysTime
 								var idr=choosed[0].id
 								var ids = '';
+								var fal=false;
+								var userName=choosed[0].userName
+								$(choosed).each(function(j,k){
+									if(k.userName!=userName){
+										fal=true;
+									}
+								})
+								if(fal){
+								return	layer.msg("请选择相同的人",{icon:2})
+								}
 								if(choosed[0].user!=null){
 										 ids=choosed[0].user.id
 								}else{
@@ -813,13 +826,17 @@
 								layui.form.render();
 								
 							    $("#orgNameId").val(orgNameId);
+							    layui.form.render();
+							    if(length==1){
+							    $("#tradeDaysTime2").val(tradeDaysTime)
+							    $("#tradeDaysTime2").removeAttr("disabled","disabled");
+							    $("#mode").removeAttr("disabled","disabled");
 							    $("#mode").val(mode);
 							    layui.form.render();
-							   /*  $("#mode").each(function(j,k){
-									$(k).val(mode);
-									layui.form.render()
-				      			  }) */
-							    $("#tradeDaysTime2").val(tradeDaysTime)
+							    }else{
+							    	$("#tradeDaysTime2").attr("disabled","disabled");
+							    	$("#mode").attr("disabled","disabled");
+							    }
 								var	dicDiv=$("#layuiadmin-form-admin2");
 								layer.open({
 									type:1,
@@ -841,21 +858,38 @@
 									yes:function(){
 										form.on('submit(addRole)', function(data) {
 										var id=$("#userId").find("option:selected").data('id')
-										if(id==0){
-											data.field.userId=$("#userId").val();
-											data.field.orgNameId=$("#orgNameId").val();
-											data.field.id=idr;
-											data.field.tradeDaysTime=$("#tradeDaysTime2").val();
-											mainJs.fAdd(data.field);  
-											document.getElementById("layuiadmin-form-admin2").reset();
-										}else{
-											data.field.orgNameId=$("#orgNameId").val();
-											data.field.temporaryUserId=$("#userId").val();
-											data.field.id=idr;
-											data.field.tradeDaysTime=$("#tradeDaysTime2").val();
-											mainJs.fAdd(data.field); 
-											document.getElementById("layuiadmin-form-admin2").reset();
-										}
+										$(choosed).each(function(j,k){
+											
+											if(id==0){
+												if(length==1){
+													data.field.userId=$("#userId").val();
+													data.field.orgNameId=$("#orgNameId").val();
+													data.field.id=k.id;
+													data.field.tradeDaysTime=$("#tradeDaysTime2").val();
+													data.field.mode=$("#mode").val();
+													mainJs.fAdd(data.field);  
+												}else{
+													data.field.userId=$("#userId").val();
+													data.field.orgNameId=$("#orgNameId").val();
+													data.field.id=k.id;
+													mainJs.fAdd(data.field);  
+												}
+											}else{
+												if(length==1){
+													data.field.orgNameId=$("#orgNameId").val();
+													data.field.temporaryUserId=$("#userId").val();
+													data.field.id=k.id;
+													data.field.tradeDaysTime=$("#tradeDaysTime2").val();
+													data.field.mode=$("#mode").val();
+													mainJs.fAdd(data.field); 
+												}else{
+													data.field.orgNameId=$("#orgNameId").val();
+													data.field.temporaryUserId=$("#userId").val();
+													data.field.id=k.id;
+													mainJs.fAdd(data.field); 
+												}
+											}
+										})
 											document.getElementById("layuiadmin-form-admin2").reset();
 								        	layui.form.render();
 										})
