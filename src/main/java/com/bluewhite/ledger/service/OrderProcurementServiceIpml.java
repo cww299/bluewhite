@@ -176,6 +176,7 @@ public class OrderProcurementServiceIpml extends BaseServiceImpl<OrderProcuremen
 						}
 					}
 					orderProcurement.setPlaceOrderNumber(orderProcurement.getArrivalNumber());
+					orderProcurement.setInOutError(0);
 					save(orderProcurement);
 					count++;
 				}
@@ -187,6 +188,9 @@ public class OrderProcurementServiceIpml extends BaseServiceImpl<OrderProcuremen
 	@Override
 	public void updateOrderProcurement(OrderProcurement orderProcurement) {
 		OrderProcurement ot = findOne(orderProcurement.getId());
+		if(ot.getArrival()==1){
+			throw new ServiceException(orderProcurement.getOrderProcurementNumber()+"采购单已审核，无法修改");
+		}
 		update(orderProcurement, ot, "");
 	}
 

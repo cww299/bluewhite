@@ -57,4 +57,10 @@ public interface ScatteredOutboundService extends BaseCRUDService<ScatteredOutbo
 	 * @return
 	 */
 	public void updatePlaceOrder(ScatteredOutbound scatteredOutbound);
+	
+	/**
+	 * 修改开单
+	 * @param scatteredOutbound
+	 */
+	public void updateOpenOrder(ScatteredOutbound scatteredOutbound);
 }

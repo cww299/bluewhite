@@ -24,6 +24,7 @@ import com.bluewhite.ledger.entity.Customer;
 import com.bluewhite.ledger.entity.Mixed;
 import com.bluewhite.ledger.entity.Order;
 import com.bluewhite.ledger.entity.OrderMaterial;
+import com.bluewhite.ledger.entity.OrderOutSource;
 import com.bluewhite.ledger.entity.OrderProcurement;
 import com.bluewhite.ledger.entity.Packing;
 import com.bluewhite.ledger.entity.PackingChild;
@@ -34,6 +35,7 @@ import com.bluewhite.ledger.entity.ScatteredOutbound;
 import com.bluewhite.ledger.entity.SendGoods;
 import com.bluewhite.ledger.service.MixedService;
 import com.bluewhite.ledger.service.OrderMaterialService;
+import com.bluewhite.ledger.service.OrderOutSourceService;
 import com.bluewhite.ledger.service.OrderProcurementService;
 import com.bluewhite.ledger.service.OrderService;
 import com.bluewhite.ledger.service.PackingService;
@@ -73,6 +75,8 @@ public class LedgerAction {
 	private OrderProcurementService orderProcurementService;
 	@Autowired
 	private ScatteredOutboundService scatteredOutboundService;
+	@Autowired
+	private OrderOutSourceService orderOutSourceService;
 	
 	private ClearCascadeJSON clearCascadeJSON;
 	{
@@ -188,7 +192,7 @@ public class LedgerAction {
 	{
 		clearCascadeJSONScatteredOutbound = ClearCascadeJSON.get()
 				.addRetainTerm(ScatteredOutbound.class, "id", "outboundNumber","orderMaterial","orderProcurement",
-						"receiveUser","user","dosage","remark","audit","auditTime","placeOrderTime")
+						"receiveUser","user","dosage","remark","audit","auditTime","placeOrderTime","openOrderAudit")
 				.addRetainTerm(OrderProcurement.class, "id", "orderProcurementNumber")
 				.addRetainTerm(OrderMaterial.class,"id","receiveMode","order")
 				.addRetainTerm(Order.class, "id", "bacthNumber","product","number","remark")
@@ -435,6 +439,7 @@ public class LedgerAction {
 		return cr;
 	}
 	
+	
 	/**
 	 * （采购部）删除分散出库单
 	 * 
@@ -529,7 +534,7 @@ public class LedgerAction {
 	
 	
 	/**
-	 * （生产计划部）将分散出库下单审核成为开单表
+	 * （生产计划部）将分散出库单，变成下单，同时审核成为外发单
 	 * 
 	 * @param order
 	 * @return
@@ -539,9 +544,44 @@ public class LedgerAction {
 	public CommonResponse generatePlaceOrder(String ids) {
 		CommonResponse cr = new CommonResponse();
 		int count = scatteredOutboundService.generatePlaceOrder(ids);
-		cr.setMessage("成功生成" + count + "条生产订单");
+		cr.setMessage("成功生成" + count + "条外发单");
 		return cr;
 	}
+	
+	/**
+	 * （生产计划部）修改下单内容
+	 * 
+	 * @param order
+	 * @return
+	 */
+	@RequestMapping(value = "/ledger/updateOpenOrder", method = RequestMethod.POST)
+	@ResponseBody
+	public CommonResponse updateOpenOrder(ScatteredOutbound scatteredOutbound) {
+		CommonResponse cr = new CommonResponse();
+		scatteredOutboundService.updateOpenOrder(scatteredOutbound);
+		cr.setMessage("修改成功");
+		return cr;
+	}
+	
+	
+	/**
+	 * （生产计划部）新增外发单
+	 * 
+	 * @param order
+	 * @return
+	 */
+	@RequestMapping(value = "/ledger/saveOrderOutSource", method = RequestMethod.POST)
+	@ResponseBody
+	public CommonResponse saveOrderOutSource(OrderOutSource OrderOutSource) {
+		CommonResponse cr = new CommonResponse();
+		orderOutSourceService.saveOrderOutSource(OrderOutSource);
+		cr.setMessage("生成成功");
+		return cr;
+	}
+	
+	
+	
+	
 	
 	
 	/**

@@ -196,7 +196,7 @@ public class ScatteredOutboundServiceImpl extends BaseServiceImpl<ScatteredOutbo
 						throw new ServiceException("第" + (i + 1) + "条分散出库单还未到货，无法审核");
 					}
 					if (ot.getOrderProcurement().getInOutError() == 1) {
-						throw new ServiceException(ot.getOrderProcurement().getOrderProcurementNumber() + "采购单实际库存预警，无法审核");
+						throw new ServiceException(ot.getOrderProcurement().getOrderProcurementNumber() + "采购单实际数量和下单数量不相符，无法审核，请先修正数量");
 					}
 					ot.setAudit(1);
 					if (time != null) {
@@ -217,7 +217,10 @@ public class ScatteredOutboundServiceImpl extends BaseServiceImpl<ScatteredOutbo
 	public void updateScatteredOutbound(ScatteredOutbound scatteredOutbound) {
 		ScatteredOutbound ot = findOne(scatteredOutbound.getId());
 		if(scatteredOutbound.getAuditTime()!=null && ot.getAudit()==1){
-			throw new ServiceException("已审核时间，无法修改");
+			throw new ServiceException("已审核，无法修改");
+		}
+		if(ot.getOpenOrderAudit()==1){
+			throw new ServiceException("生产计划部已审核处理此分散出库单，无法修改");
 		}
 		update(scatteredOutbound, ot, "");
 	}
@@ -226,6 +229,9 @@ public class ScatteredOutboundServiceImpl extends BaseServiceImpl<ScatteredOutbo
 	@Override
 	public void updatePlaceOrder(ScatteredOutbound scatteredOutbound) {
 		ScatteredOutbound ot = findOne(scatteredOutbound.getId());
+		if(ot.getOpenOrderAudit()==1){
+			throw new ServiceException("已审核，无法修改");
+		}
 		update(scatteredOutbound, ot, "");
 	}
 
@@ -244,6 +250,9 @@ public class ScatteredOutboundServiceImpl extends BaseServiceImpl<ScatteredOutbo
 					if (StringUtils.isEmpty(ot.getReceiveUser())) {
 						throw new ServiceException("第" + (i + 1) + "条下单领取人不能为空");
 					}
+					if(ot.getOpenOrderAudit()==1){
+						throw new ServiceException("第" + (i + 1) + "条下单已审核，请勿多次审核");
+					}
 					ot.setOpenOrderAudit(1);
 					dao.save(ot);
 					count++;
@@ -251,6 +260,12 @@ public class ScatteredOutboundServiceImpl extends BaseServiceImpl<ScatteredOutbo
 			}
 		}
 		return count;
+	}
+
+	@Override
+	public void updateOpenOrder(ScatteredOutbound scatteredOutbound) {
+		ScatteredOutbound ot = findOne(scatteredOutbound.getId());
+		update(scatteredOutbound, ot, "");
 	}
 
 	
