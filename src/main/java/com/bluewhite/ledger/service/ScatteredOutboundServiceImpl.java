@@ -195,6 +195,9 @@ public class ScatteredOutboundServiceImpl extends BaseServiceImpl<ScatteredOutbo
 					if (ot.getOrderProcurement().getArrival() == 0) {
 						throw new ServiceException("第" + (i + 1) + "条分散出库单还未到货，无法审核");
 					}
+					if (ot.getOrderProcurement().getInOutError() == 1) {
+						throw new ServiceException(ot.getOrderProcurement().getOrderProcurementNumber() + "采购单实际库存预警，无法审核");
+					}
 					ot.setAudit(1);
 					if (time != null) {
 						ot.setAuditTime(time);
