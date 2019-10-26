@@ -83,9 +83,9 @@ public class MealAction {
 			Meal ot = service.findOne(meal.getId());
 			service.update(meal, ot, "");
 			cr.setMessage("修改成功");
-		} else {
-			cr.setMessage("添加成功");
+		}else {
 			service.addMeal(meal);
+			cr.setMessage("添加成功");
 		}
 		return cr;
 	}
