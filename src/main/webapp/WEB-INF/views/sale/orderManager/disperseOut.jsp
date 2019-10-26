@@ -93,7 +93,7 @@ layui.config({
 		})
 		var allUser = [];
 		myutil.getDataSync({
-			url: '${ctx}/system/user/findUserList',
+			url: '${ctx}/system/user/findUserList?orgNameIds=20,23',
 			success:function(d){
 				allUser = d;
 				allUser.unshift({
