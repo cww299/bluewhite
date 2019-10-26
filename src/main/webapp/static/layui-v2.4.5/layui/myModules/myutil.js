@@ -226,12 +226,22 @@ layui.define(['jquery','layer','form','table'],function(exports){
 	};
 	
 	myutil.emsg = function(msg,opt){
-		var iconAndOffset = { icon:2,};
+		var tips = '';
+		var iconAndOffset = { 
+				icon:2,
+				time:0,
+				shadeClose:true,
+				btn: ['关闭',],
+				btnAlign:'c',
+				yes:function(){
+					layer.close(tips);
+				}
+		};
 		if(myutil.config.msgOffset)
 			iconAndOffset.offset = myutil.config.msgOffset;
 		if(opt)
 			iconAndOffset = $.extend({},iconAndOffset,opt);
-		layer.msg(msg,iconAndOffset);
+		tips = layer.msg(msg,iconAndOffset);
 	};
 	
 	myutil.getSelectHtml = function(options,init){
