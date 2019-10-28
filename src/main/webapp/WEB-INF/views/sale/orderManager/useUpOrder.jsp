@@ -215,7 +215,7 @@ layui.config({
 			}
 		})
 		myutil.getData({
-			url: '${ctx}/system/user/findUserList',
+			url: '${ctx}/system/user/findUserList?orgNameIds=20',
 			success:function(d){
 				var html = '';
 				allUser = d;
@@ -266,7 +266,7 @@ layui.config({
 		form.on('select(agreementSelect)',function(obj){
 			if(obj.value!='')
 				table.reload('tableData',{
-					url:'${ctx}/ledger/getOrderMaterial?&orderId='+obj.value,//audit=1
+					url:'${ctx}/ledger/getOrderMaterial?audit=1&orderId='+obj.value,//
 				})
 			else
 				table.reload('tableData',{
@@ -285,9 +285,9 @@ layui.config({
 			elem:'#tableData',
 			data:[],
 			ifNull:'---',
-			toolbar:'<div><span class="layui-btn layui-btn-sm" lay-event="addBuy">新增采购单</span>'+
+			toolbar:'<div><span class="layui-btn layui-btn-sm" lay-event="addBuy">生成采购单</span>'+
 						'<span class="layui-btn layui-btn-sm layui-btn-" lay-event="allProcurement">采购单</span>'+
-						'<span class="layui-btn layui-btn-sm layui-btn-normal" lay-event="inventedOut">新增出库单</span>'+
+						'<span class="layui-btn layui-btn-sm layui-btn-normal" lay-event="inventedOut">生成出库单</span>'+
 						'<span class="layui-btn layui-btn-sm layui-btn-normal" lay-event="outOrder">出库单</span>'+
 					'</div>',
 			colsWidth:[0,10,0,10,10,8,8,8,8],
