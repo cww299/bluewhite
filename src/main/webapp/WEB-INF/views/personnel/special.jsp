@@ -239,9 +239,11 @@
 						        },
 								yes:function(){
 									form.on('submit(addRole)', function(data) {
-										if(!(/^1[3456789]\d{9}$/.test(data.field.phone))){ 
-											return layer.msg("手机号码有误,请重新填写",{icon: 2}) 
-									    }
+										if(data.field.phone!=""){
+											if(!(/^1[3456789]\d{9}$/.test(data.field.phone))){ 
+												return layer.msg("手机号码有误,请重新填写",{icon: 2}) 
+										    }
+										}
 										 mainJs.fUpdate(data.field); 
 										document.getElementById("layuiadmin-form-admin3").reset();
 										layer.close(index);
@@ -317,10 +319,13 @@
 							data = obj.data ,//得到所在行所有键值
 							field = obj.field, //得到字段
 							id = data.id;
+						console.log(value)
 						if(field=='phone'){
-							if(!(/^1[3456789]\d{9}$/.test(value))){ 
-								return layer.msg("手机号码有误,请重新填写",{icon: 2}) 
-						    }
+							if(value!=""){
+								if(!(/^1[3456789]\d{9}$/.test(value))){ 
+									return layer.msg("手机号码有误,请重新填写",{icon: 2}) 
+							    }
+							}
 						}
 							var postData = {
 								id:id,
