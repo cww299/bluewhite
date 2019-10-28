@@ -74,13 +74,14 @@
 </div>
 
 <form action="" id="layuiadmin-form-admin2"
-		style="padding: 20px 0px 0 50px; display:none;  text-align:">
+		style="display:none;  text-align:">
 		<div class="layui-form" lay-filter="layuiadmin-form-admin">
+		<div style="position: relative; padding-top: 15px;">
 			<div class="layui-form-item">
 				<label class="layui-form-label" style="width: 100px;">日期</label>
 					<div class="layui-input-inline">
 						<input type="text" 
-							style="width: 190px; position: absolute; float: left;" name="allotTime"
+							style="width: 190px;" name="allotTime"
 							id="allotTime" lay-verify="tradeDaysTime" placeholder="请输入日期"
 							class="layui-input laydate-icon">
 					</div>
@@ -96,7 +97,7 @@
 			<label class="layui-form-label bigHidden" style="width: 100px; ">开始时间</label>
 					<div class="layui-input-inline">
 						<input type="text" 
-							style="width: 190px; position: absolute; float: left;" name="startTime"
+							style="width: 190px;" name="startTime"
 							id="startTimes" lay-verify="tradeDaysTime" placeholder="开始时间"
 							class="layui-input laydate-icon">
 					</div>
@@ -120,15 +121,16 @@
 					<input name="remarks" style="width:190px;" lay-filter="id" id="remarks" lay-search="true" class="layui-input laydate-icon">
 				</div>
 			</div>
-			<div class="layui-form-item" style="float: left;">
-				<label class="layui-form-label" style="width: 100px;">完成人</label>
-				<div class="layui-input-inline" id="test7">
+			</div><div style="position: absolute; left: 360px; top: 10px;border:0px solid; width: 270px; height:380px; overflow-y:scroll;" >
+			<div class="layui-form-item" >
+				<label class="layui-form-label">完成人</label>
+				<div class="layui-input-inline" id="test7" style="margin-left: 50px;">
 					<div id="test7" class="demo-tree"></div>
-					<fieldset class="layui-elem-field layui-field-title" style="margin-top: 30px;">
+					<fieldset class="layui-elem-field layui-field-title">
 					</fieldset>
 				</div>
 			</div>
-			
+			</div>
 		</div>
 	</form>
 
@@ -152,6 +154,7 @@
 				<span class="layui-btn layui-btn-sm" lay-event="add">新增杂工管理</span>
 				<span class="layui-btn layui-btn-sm bigHidden" lay-event="update">修改杂工管理</span>
 				<span class="layui-btn layui-btn-sm" lay-event="addIp">加绩</span>
+				<span class="layui-btn layui-btn-sm" lay-event="endTask">结束任务</span>
 			</div>
 </script>
 <script type="text/html" id="barDemo">
@@ -333,7 +336,7 @@
 					  {field: "performance",title: "加绩选择",width:'11%',align: 'center',toolbar: '#barDemo3',},
 					  {field: "performancePrice",title: "加绩工资",align: 'center',templet:function(d){return parseFloat((d.performancePrice==null ? 0 : d.performancePrice).toFixed(3))}},
 					  {field: "",title: "人员详情",align: 'center',width:'11%',toolbar: '#barDemo',},
-					  {field: "status",title: "人员详情",align: 'center',width:'11%',templet:function(d){return d.status==0 ? "进行中" :"完成"}},
+					  {field: "status",title: "人员详情",align: 'center',width:'11%',templet:function(d){return d.status==0 ? "<span class='layui-badge '>进行中</span>" :"<span class='layui-badge layui-bg-green'>完成</span> "}},
 					  {field: "",title: "操作",align: 'center',toolbar:'#barDemo2',}
 				 ]
 			 }
@@ -588,7 +591,6 @@
 															if(jQuery.isEmptyObject(r.data.temporarilyUser)==true && jQuery.isEmptyObject(r.data.userList)==true){
 																fals=true
 															}
-															console.log(fals)
 														arr.push({
 															title:name,
 															id:ids,
@@ -639,7 +641,7 @@
 						var index=layer.open({
 								type:1,
 								title:'新增杂工',
-								area:['580px','500px'],
+								area:['630px','500px'],
 								btn:['确认','取消'],
 								content:dicDiv,
 								id: 'LAY_layuipro' ,
@@ -783,7 +785,7 @@
 															})
 															layer.close(index);
 															var	fals=false;
-															if(jQuery.isEmptyObject(r.data)==true){
+															if(jQuery.isEmptyObject(r.data.temporarilyUser)==true && jQuery.isEmptyObject(r.data.userList)==true){
 																fals=true
 															}
 														arr.push({
@@ -837,7 +839,7 @@
 						var index=layer.open({
 								type:1,
 								title:'修改杂工',
-								area:['580px','500px'],
+								area:['630px','500px'],
 								btn:['确认','取消'],
 								content:dicDiv,
 								id: 'LAY_layuipro' ,
@@ -1083,6 +1085,58 @@
 							})
 							
 							break;
+							
+						case 'endTask':
+							var choosed=layui.table.checkStatus("tableData").data;
+							if(choosed.length==0){
+								layer.msg("请选择一条信息进行编辑",{icon:2});
+								return;
+							}
+							if(choosed.length>1){
+								layer.msg("无法同时编辑多条信息",{icon:2});
+								return;
+							}
+							var index=layer.open({
+								type:1,
+								title:'结束任务',
+								area:['250px','200px'],
+								btn:['确认','取消'],
+								content:['<div>',
+						         	'<input id="endTime" placeholder="结束时间" class="layui-input laydate-icon">',
+							         '</div>',].join(' '),
+								id: 'LAY_layuipro2' ,
+								btnAlign: 'c',
+							    moveType: 1, //拖拽模式，0或者1
+								success : function(layero, index) {
+									laydate.render({
+										elem: '#endTime',
+										type: 'datetime',
+										value : new Date(),
+									});
+						        	layero.addClass('layui-form');
+									// 将保存按钮改变成提交按钮
+									layero.find('.layui-layer-btn0').attr({
+										'lay-filter' : 'addRole',
+										'lay-submit' : ''
+									})
+						        },
+								yes:function(){
+									form.on('submit(addRole)', function(data) {
+										var end = $('#endTime').val();
+										 var data={
+											id: choosed[0].id,
+											startTime: choosed[0].startTime,
+											endTime: end,
+										}
+										  mainJs.endTask(data);  
+										layer.close(index);
+									})
+								},end:function(){ 
+						        	document.getElementById("layuiadmin-form-admin2").reset();
+						        	layui.form.render();
+								  }
+							})
+							break;
 						} 
 			});
 			
@@ -1182,6 +1236,42 @@
 			    	layer.close(index);
 			    },
 			    
+			    endTask : function(data){
+			    	$.ajax({
+						url: "${ctx}/farragoTask/overFarragoTask",
+						data: data,
+						type: "POST",
+						traditional: true,
+						beforeSend: function() {
+							index;
+						},
+						success: function(result) {
+							if(0 == result.code) {
+							 	 table.reload("tableData", {
+					                page: {
+					                }
+					              }) 
+								layer.msg(result.message, {
+									icon: 1,
+									time:800
+								});
+							
+							} else {
+								layer.msg(result.message, {
+									icon: 2,
+									time:800
+								});
+							}
+						},
+						error: function() {
+							layer.msg("操作失败！请重试", {
+								icon: 2
+							});
+						},
+					});
+			    	layer.close(index);
+			    },
+			    
 			    fupdateTask : function(data){
 			    	$.ajax({
 						url: "${ctx}/farragoTask/giveTaskPerformance",
@@ -1224,10 +1314,6 @@
 							where:data,
 							url: '${ctx}/farragoTask/taskUser',
 							data:[],
-							request:{
-								pageName: 'page' ,
-								limitName: 'size' 
-							},
 							loading: true,
 							toolbar: '#toolbar5', //开启工具栏，此处显示默认图标，可以自定义模板，详见文档
 							totalRow: true,		 //开启合计行 */

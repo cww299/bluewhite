@@ -829,13 +829,14 @@
 							    layui.form.render();
 							    if(length==1){
 							    $("#tradeDaysTime2").val(tradeDaysTime)
+							    $("#mode").val(mode);
 							    $("#tradeDaysTime2").removeAttr("disabled","disabled");
 							    $("#mode").removeAttr("disabled","disabled");
-							    $("#mode").val(mode);
 							    layui.form.render();
 							    }else{
 							    	$("#tradeDaysTime2").attr("disabled","disabled");
 							    	$("#mode").attr("disabled","disabled");
+							    	 layui.form.render();
 							    }
 								var	dicDiv=$("#layuiadmin-form-admin2");
 								layer.open({
