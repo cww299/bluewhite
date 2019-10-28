@@ -169,8 +169,8 @@ public class OrderProcurementServiceIpml extends BaseServiceImpl<OrderProcuremen
 					List<ScatteredOutbound> scatteredOutboundList = scatteredOutboundDao.findByOrderProcurementId(id);
 					OrderProcurement orderProcurement = findOne(id);
 					if(scatteredOutboundList.size()>0){
-						//采购生成的所有出库单总耗料
-						Double sumDosage = scatteredOutboundList.stream().mapToDouble(ScatteredOutbound::getDosage).sum();
+						//采购生成的所有出库单总耗料未审核
+						double sumDosage = scatteredOutboundList.stream().filter(ScatteredOutbound->ScatteredOutbound.getAudit()==0).mapToDouble(ScatteredOutbound::getDosage).sum();
 						if(orderProcurement.getArrivalNumber()<sumDosage){
 							throw new ServiceException(orderProcurement.getOrderProcurementNumber()+"采购单生成的分散出库单所消耗总量小于采购单实际到货数量，无法审核");
 						}
