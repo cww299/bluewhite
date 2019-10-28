@@ -36,7 +36,7 @@ public class OrderOutSource extends BaseEntity<Long> {
 	private String fillRemark;
 
 	/**
-	 * 任务工序
+	 * 任务工序（）
 	 */
 	@Column(name = "process")
 	private String process;
@@ -59,7 +59,7 @@ public class OrderOutSource extends BaseEntity<Long> {
 
 	@Column(name = "remark")
 	private String remark;
-
+  
 	/**
 	 * 加工点id
 	 * 

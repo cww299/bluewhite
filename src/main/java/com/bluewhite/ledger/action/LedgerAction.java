@@ -565,6 +565,24 @@ public class LedgerAction {
 	
 	
 	/**
+	 *  （生产计划部） 分页查看外发单
+	 * 
+	 * 
+	 * @param page
+	 * @param order
+	 * @return
+	 */
+	@RequestMapping(value = "/ledger/orderOutSourcePage", method = RequestMethod.GET)
+	@ResponseBody
+	public CommonResponse orderOutSourcePage(PageParameter page,OrderOutSource orderOutSource) {
+		CommonResponse cr = new CommonResponse();
+		cr.setData(clearCascadeJSONOrder.format(orderOutSourceService.findPages(orderOutSource, page)).toJSON());
+		cr.setMessage("查看成功");
+		return cr;
+	}
+	
+	
+	/**
 	 * （生产计划部）新增外发单
 	 * 
 	 * @param order
@@ -572,14 +590,12 @@ public class LedgerAction {
 	 */
 	@RequestMapping(value = "/ledger/saveOrderOutSource", method = RequestMethod.POST)
 	@ResponseBody
-	public CommonResponse saveOrderOutSource(OrderOutSource OrderOutSource) {
+	public CommonResponse saveOrderOutSource(OrderOutSource orderOutSource) {
 		CommonResponse cr = new CommonResponse();
-		orderOutSourceService.saveOrderOutSource(OrderOutSource);
-		cr.setMessage("生成成功");
+		orderOutSourceService.saveOrderOutSource(orderOutSource);
+		cr.setMessage("新增成功");
 		return cr;
 	}
-	
-	
 	
 	
 	
