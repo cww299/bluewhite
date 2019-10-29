@@ -233,11 +233,11 @@
 		      				+'<td class="text-center edit name">'+o.bacth+'</td>'
 		      				+'<td class="text-center edit name">'+o.allotTime+'</td>'
 		      				+'<td class="text-center edit name">'+o.name+'</td>'
-		      				+'<td class="text-center edit name">'+o.time+'</td>'
+		      				+'<td class="text-center edit name">'+(o.time==null ? "" : o.time)+'</td>'
 		      				+'<td class="text-center edit name">'+o.number+'</td>'
 		      				+'<td class="text-center edit name">'+o.remarks+'</td>'
-		      				+'<td class="text-center edit name">'+parseFloat((o.price).toFixed(3))+'</td>'
-		      				+'<td class="text-center edit name">'+parseFloat((o.payB).toFixed(3))+'</td>'
+		      				+'<td class="text-center edit name">'+parseFloat((o.price*1).toFixed(3))+'</td>'
+		      				+'<td class="text-center edit name">'+parseFloat((o.payB*1).toFixed(3))+'</td>'
 		      				+'<td class="text-center"><button class="btn btn-primary btn-trans btn-sm savemode" data-toggle="modal" data-target="#myModal" data-id="'+o.id+'")">查看人员</button></td>'
 							+'<td class="text-center"><button class="btn btn-sm btn-danger btn-trans delete" data-id='+o.id+'>删除</button></td></tr>'
 							
@@ -496,6 +496,9 @@
 							  if($(".bacth").val()==""){
 									 return layer.msg("批次号不能为空", {icon:2 });
 								  }
+							  if($(".timedata").val()=="" && $(".timeone").val()==""){
+								  return layer.msg("一只净时间 或者现场管理时间 不能同时为空", {icon:2 });
+							  }
 							  postData={
 									  procedureTime:$(".timeone").val(),
 									  number:$(".onenumber").val(),
