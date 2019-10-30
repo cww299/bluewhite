@@ -983,8 +983,8 @@
 						if(obj.event=='mod10'){
 							$(obj.data.mod10).each(function(j,k){
 								newArr.push(k);
-								k.position=k.position.name;
-								k.platform=k.platform.name;
+								k.position=(k.position==null ? "":k.position.name==null ? "" :k.position.name);
+								k.platform=(k.platform==null ? "":k.platform.name==null ? "" :k.platform.name);
 								k.entry=(k.user==null ? "":k.user.entry==null ? "" :k.user.entry);
 								k.quitDate=(k.user==null ? "":k.user.quitDate==null ? "":k.user.quitDate);
 								k.reason=(k.user==null ? "":k.user.reason==null ? "":k.user.reason);
@@ -993,8 +993,8 @@
 						if(obj.event=='mod11'){
 							$(obj.data.mod11).each(function(j,k){
 								newArr.push(k);
-								k.position=k.position.name;
-								k.platform=k.platform.name;
+								k.position=(k.position==null ? "":k.position.name==null ? "" :k.position.name);
+								k.platform=(k.platform==null ? "":k.platform.name==null ? "" :k.platform.name);
 								k.entry=(k.user==null ? "":k.user.entry==null ? "" :k.user.entry);
 								k.quitDate=(k.user==null ? "":k.user.quitDate==null ? "":k.user.quitDate);
 								k.reason=(k.user==null ? "":k.user.reason==null ? "":k.user.reason);
@@ -1003,8 +1003,8 @@
 						if(obj.event=='mod12'){
 							$(obj.data.mod12).each(function(j,k){
 								newArr.push(k);
-								k.position=k.position.name;
-								k.platform=k.platform.name;
+								k.position=(k.position==null ? "":k.position.name==null ? "" :k.position.name);
+								k.platform=(k.platform==null ? "":k.platform.name==null ? "" :k.platform.name);
 								k.entry=(k.user==null ? "":k.user.entry==null ? "" :k.user.entry);
 								k.quitDate=(k.user==null ? "":k.user.quitDate==null ? "":k.user.quitDate);
 								k.reason=(k.user==null ? "":k.user.reason==null ? "":k.user.reason);
@@ -1013,8 +1013,8 @@
 						if(obj.event=='mod13'){
 							$(obj.data.mod13).each(function(j,k){
 								newArr.push(k);
-								k.position=k.position.name;
-								k.platform=k.platform.name;
+								k.position=(k.position==null ? "":k.position.name==null ? "" :k.position.name);
+								k.platform=(k.platform==null ? "":k.platform.name==null ? "" :k.platform.name);
 								k.entry=(k.user==null ? "":k.user.entry==null ? "" :k.user.entry);
 								k.quitDate=(k.user==null ? "":k.user.quitDate==null ? "":k.user.quitDate);
 								k.reason=(k.user==null ? "":k.user.reason==null ? "":k.user.reason);
@@ -1023,8 +1023,8 @@
 						if(obj.event=='mod14'){
 							$(obj.data.mod14).each(function(j,k){
 								newArr.push(k);
-								k.position=k.position.name;
-								k.platform=k.platform.name;
+								k.position=(k.position==null ? "":k.position.name==null ? "" :k.position.name);
+								k.platform=(k.platform==null ? "":k.platform.name==null ? "" :k.platform.name);
 								k.entry=(k.user==null ? "":k.user.entry==null ? "" :k.user.entry);
 								k.quitDate=(k.user==null ? "":k.user.quitDate==null ? "":k.user.quitDate);
 								k.reason=(k.user==null ? "":k.user.reason==null ? "":k.user.reason);
@@ -1033,8 +1033,8 @@
 						if(obj.event=='mod15'){
 							$(obj.data.mod15).each(function(j,k){
 								newArr.push(k);
-								k.position=k.position.name;
-								k.platform=k.platform.name;
+								k.position=(k.position==null ? "":k.position.name==null ? "" :k.position.name);
+								k.platform=(k.platform==null ? "":k.platform.name==null ? "" :k.platform.name);
 								k.entry=(k.user==null ? "":k.user.entry==null ? "" :k.user.entry);
 								k.quitDate=(k.user==null ? "":k.user.quitDate==null ? "":k.user.quitDate);
 								k.reason=(k.user==null ? "":k.user.reason==null ? "":k.user.reason);
@@ -1043,8 +1043,8 @@
 						if(obj.event=='mod16'){
 							$(obj.data.mod16).each(function(j,k){
 								newArr.push(k);
-								k.position=k.position.name;
-								k.platform=k.platform.name;
+								k.position=(k.position==null ? "":k.position.name==null ? "" :k.position.name);
+								k.platform=(k.platform==null ? "":k.platform.name==null ? "" :k.platform.name);
 								k.entry=(k.user==null ? "":k.user.entry==null ? "" :k.user.entry);
 								k.quitDate=(k.user==null ? "":k.user.quitDate==null ? "":k.user.quitDate);
 								k.reason=(k.user==null ? "":k.user.reason==null ? "":k.user.reason);
