@@ -66,8 +66,6 @@
 	<span class="layui-btn layui-btn-sm layui-btn-danger" lay-event="cleanTempData">清空新增行</span>
 	<span class="layui-btn layui-btn-sm layui-btn-warm" lay-event="saveTempData">批量保存</span>
 	<span class="layui-btn layui-btn-sm layui-btn-danger" lay-event="deleteSome">批量删除</span>
-	<span class="layui-btn layui-btn-sm" lay-event="lookoverTotal">费用汇总</span>
-	<span class="layui-btn layui-btn-sm" lay-event="departmentTotal">部门招聘成本</span>
 </div>
 </script>
 
