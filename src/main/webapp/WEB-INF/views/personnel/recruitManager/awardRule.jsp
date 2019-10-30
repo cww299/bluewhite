@@ -361,6 +361,12 @@ layui.config({
 			layer.close(load);
 			return result;
 		}
+		$(document).on('click', '.layui-table-view tbody tr', function(event) {
+			var elemTemp = $(this);
+			var tableView = elemTemp.closest('.layui-table-view');
+			var trIndex = elemTemp.data('index');
+			tableView.find('tr[data-index="' + trIndex + '"]').find('[name="layTableCheckbox"]+').last().click();
+		})
 	}//end define function
 )//endedefine
 </script>

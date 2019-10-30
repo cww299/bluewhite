@@ -319,7 +319,6 @@
 							data = obj.data ,//得到所在行所有键值
 							field = obj.field, //得到字段
 							id = data.id;
-						console.log(value)
 						if(field=='phone'){
 							if(value!=""){
 								if(!(/^1[3456789]\d{9}$/.test(value))){ 
