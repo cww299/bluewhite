@@ -139,34 +139,54 @@ layui.config({
 				url:'${ctx}/ledger/warningOrderProcurement',
 				success:function(d){
 					if(d.length>0){
-						/* layer.open({
+						$('#warm').find('span').html(d.length);
+						layer.open({
 							type:1,
 							title:'库存预警',
-							area:['30%','80%'],
-							content:'<table id="warmTable" lay-filter="warmTable"><table>',
+							area:['80%','80%'],
+							shadeClose:true,
+							content:'<table id="warmTable" lay-filter="warmTable"></table>',
 							success:function(){
 								mytable.renderNoPage({
 									elem:'#warmTable',
-									curd:{ btn:[], 
-										otherBtn:function(obj){
-											if(obj.event=='onekeyUpdate'){
-												myutil.deleTableIds({
-													url:'/ledger/fixOrderProcurement',
-													table:'warmTable',
-													text:'请选择更新数据|是否确认更新？',
-												})
+									data: d,
+									curd:{ 	btn:[], 
+											otherBtn:function(obj){
+												if(obj.event=='onekeyUpdate'){
+													myutil.deleTableIds({
+														url:'/ledger/fixOrderProcurement',
+														table:'warmTable',
+														text:'请选择更新数据|是否确认更新？',
+														success:function(){
+															myutil.getData({
+																url:'${ctx}/ledger/warningOrderProcurement',
+																success:function(d){
+																	$('#warm').find('span').html(d.length);
+																	table.reload('warmTable',{
+																		data:d,
+																	})
+																}
+															})
+														},
+													})
+												}
 											}
-										}
 									},
+									colsWidth:[0,0,7,13,7,13,7],
 									toolbar:'<span class="layui-btn layui-btn-sm" lay-event="onekeyUpdate">一键更新订单数量</span>',
 									cols:[[
-									       { },
-									       
+									       { type:'checkbox' },
+									       { title:'采购单编号', field:'orderProcurementNumber' },
+									       { title:'采购数量', field:'placeOrderNumber', },
+									       { title:'采购时间', field:'placeOrderTime', },
+									       { title:'入库数量', field:'arrivalNumber',style:'color:red;'},
+									       { title:'入库时间', field:'arrivalTime' },
+									       { title:'入库人', field:'userStorage_userName' },
 									       ]]
 								})
 							} 
 							
-						})*/
+						})
 					}else if(click){
 						myutil.esmg('无库存预警！');
 					}
@@ -195,7 +215,7 @@ layui.config({
 			}
 		})
 		myutil.getData({
-			url: '${ctx}/system/user/findUserList',
+			url: '${ctx}/system/user/findUserList?orgNameIds=20',
 			success:function(d){
 				var html = '';
 				allUser = d;
@@ -246,7 +266,7 @@ layui.config({
 		form.on('select(agreementSelect)',function(obj){
 			if(obj.value!='')
 				table.reload('tableData',{
-					url:'${ctx}/ledger/getOrderMaterial?&orderId='+obj.value,//audit=1
+					url:'${ctx}/ledger/getOrderMaterial?audit=1&orderId='+obj.value,//
 				})
 			else
 				table.reload('tableData',{
@@ -265,9 +285,9 @@ layui.config({
 			elem:'#tableData',
 			data:[],
 			ifNull:'---',
-			toolbar:'<div><span class="layui-btn layui-btn-sm" lay-event="addBuy">新增采购单</span>'+
+			toolbar:'<div><span class="layui-btn layui-btn-sm" lay-event="addBuy">生成采购单</span>'+
 						'<span class="layui-btn layui-btn-sm layui-btn-" lay-event="allProcurement">采购单</span>'+
-						'<span class="layui-btn layui-btn-sm layui-btn-normal" lay-event="inventedOut">新增出库单</span>'+
+						'<span class="layui-btn layui-btn-sm layui-btn-normal" lay-event="inventedOut">生成出库单</span>'+
 						'<span class="layui-btn layui-btn-sm layui-btn-normal" lay-event="outOrder">出库单</span>'+
 					'</div>',
 			colsWidth:[0,10,0,10,10,8,8,8,8],

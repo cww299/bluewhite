@@ -93,7 +93,7 @@ layui.config({
 		})
 		var allUser = [];
 		myutil.getDataSync({
-			url: '${ctx}/system/user/findUserList',
+			url: '${ctx}/system/user/findUserList?orgNameIds=20,23',
 			success:function(d){
 				allUser = d;
 				allUser.unshift({
@@ -134,7 +134,7 @@ layui.config({
 			       { title:'领取用量',   field:'dosage',	},
 			       { title:'下单数量',   field:'orderMaterial_order_number',	},
 			       { title:'备注',   field:'remark', edit:true, },
-			       { title:'是否审核',   field:'audit', transData:{data:['否','是'],}	},
+			       { title:'是否审核',   field:'openOrderAudit', transData:{data:['否','是'],}	},
 			       ]]
 		})
 	}//end define function

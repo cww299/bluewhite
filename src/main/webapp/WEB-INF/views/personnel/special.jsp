@@ -26,16 +26,6 @@
 						<td>姓名:</td>
 						<td><input type="text" name="userName" id="firstNames"
 							class="layui-input search-query name" /></td>
-						<td>&nbsp&nbsp</td>
-						<td>归属车间:
-						<td><select class="layui-input" name="type">
-								<option value="">请选择</option>
-								<option value="1">一楼质检</option>
-								<option value="2">一楼包装</option>
-								<option value="3">二楼针工</option>
-								<option value="4">二楼机工</option>
-								<option value="5">8号仓库</option>
-						</select></td>
 						<td>&nbsp;&nbsp;</td>
 						<td>
 							<div class="layui-inline">
@@ -52,9 +42,40 @@
 	</div>
 </div>
 
+<form action="" id="layuiadmin-form-admin3"
+		style="padding-top:10px;padding-right:10px; display:none;  text-align:">
+		<div class="layui-form" lay-filter="layuiadmin-form-admin3">
+			<div class="layui-form-item">
+				<label class="layui-form-label" style="width: 100px;">姓名：</label>
+				<div class="layui-input-inline">
+					<input name="userName" style="width:190px;" lay-filter="required" i lay-search="true" class="layui-input">
+				</div>
+			</div>
+			<div class="layui-form-item">
+				<label class="layui-form-label" style="width: 100px;">手机号：</label>
+				<div class="layui-input-inline">
+					<input name="phone" style="width:190px;"  placeholder="可不填"  lay-search="true" class="layui-input">
+				</div>
+			</div>
+			<div class="layui-form-item">
+				<label class="layui-form-label" style="width: 100px;">身份证：</label>
+				<div class="layui-input-inline">
+					<input name="idCard" style="width:190px;"  placeholder="可不填" lay-search="true" class="layui-input">
+				</div>
+			</div>
+			<div class="layui-form-item">
+				<label class="layui-form-label" style="width: 100px;">银行卡号：</label>
+				<div class="layui-input-inline">
+					<input name="bankCard1" style="width:190px;"  placeholder="可不填" lay-search="true" class="layui-input">
+				</div>
+			</div>
+		</div>
+	</form>
+
 	<script type="text/html" id="toolbar">
 			<div class="layui-btn-container layui-inline">
-				<span class="layui-btn layui-btn-sm" lay-event="becomeFull">一键转正</span>
+				<span class="layui-btn layui-btn-sm" lay-event="add">新增</span>
+				<span class="layui-btn layui-btn-sm layui-btn-danger" lay-event="deleteSome">批量删除</span>
 			</div>
 		</script>
 
@@ -99,60 +120,12 @@
 						type: 'datetime',
 					});
 				 
-					$.ajax({
-						url: '${ctx}/system/user/findAllUser',
-						type: "GET",
-						async: false,
-						beforeSend: function() {
-							index;
-						},
-						success: function(result) {
-							$(result.data).each(function(i, o) {
-								htmls += '<option value=' + o.id + '>' + o.userName + '</option>'
-							})
-							layer.close(index);
-						},
-						error: function() {
-							layer.msg("操作失败！", {
-								icon: 2
-							});
-							layer.close(index);
-						}
-					});
-					
-					// 处理操作列
-					var fn1 = function(field) {
-						return function(d) {
-							return [
-								'<select name="selectOne" lay-filter="lay_selecte" lay-search="true" data-value="' + d.id + '">' +
-								htmls +
-								'</select>'
-							].join('');
-
-						};
-					};
-
-					var fn3 = function(field) {
-						return function(d) {
-							return ['<select name="selectThree" lay-filter="lay_selecte" lay-search="true" data-value="' + d.type+ '">',
-								'<option value="1">一楼质检</option>',
-								'<option value="2">一楼包装</option>',
-								'<option value="3">二楼针工</option>',
-								'<option value="4">二楼机工</option>',
-								'<option value="5">8号仓库</option>',
-								'</select>'
-							].join('');
-
-						};
-					};
-					
+					layer.close(index);
+					tablePlug.smartReload.enable(true); 
 					table.render({
 						elem: '#tableData',
 						size:'lg',
-						url: '${ctx}/system/user/foreignsPages',
-						where:{
-							foreigns:1,
-						},
+						url: '${ctx}/system/user/findTemporaryUserTimePages',
 						request:{
 							pageName: 'page' ,//页码的参数名称，默认：page
 							limitName: 'size' //每页数据量的参数名，默认：limit
@@ -189,23 +162,11 @@
 								title: "身份证",
 								align: 'center',
 								edit: 'text',
-							}, {
+							},{
 								field: "bankCard1",
 								title: "银行卡号",
 								align: 'center',
 								edit: 'text',
-							}, {
-								field: "type",
-								title: "归属车间",
-								align: 'center',
-								search: true,
-								edit: false,
-								type: 'normal',
-								templet: fn3('selectThree')
-							}, {
-								field: "price",
-								title: "到岗预计小时收入",
-								edit: 'text'
 							}]
 						],
 						done: function() {
@@ -257,15 +218,51 @@
 						var btnElem = $(this);
 						var tableId = config.id;
 						switch(obj.event) {
-							/* case 'deleteSome':
+						case 'add':
+							var	dicDiv=$("#layuiadmin-form-admin3");
+							var index=layer.open({
+								type:1,
+								title:'加绩',
+								area:['430px','400px'],
+								btn:['确认','取消'],
+								content:dicDiv,
+								id: 'LAY_layuipro2' ,
+								btnAlign: 'c',
+							    moveType: 1, //拖拽模式，0或者1
+								success : function(layero, index) {
+						        	layero.addClass('layui-form');
+									// 将保存按钮改变成提交按钮
+									layero.find('.layui-layer-btn0').attr({
+										'lay-filter' : 'addRole',
+										'lay-submit' : ''
+									})
+						        },
+								yes:function(){
+									form.on('submit(addRole)', function(data) {
+										if(data.field.phone!=""){
+											if(!(/^1[3456789]\d{9}$/.test(data.field.phone))){ 
+												return layer.msg("手机号码有误,请重新填写",{icon: 2}) 
+										    }
+										}
+										 mainJs.fUpdate(data.field); 
+										document.getElementById("layuiadmin-form-admin3").reset();
+										layer.close(index);
+									})
+								},end:function(){ 
+						        	document.getElementById("layuiadmin-form-admin3").reset();
+						        	layui.form.render();
+								  }
+							})
+							break;
+							case 'deleteSome':
 								// 获得当前选中的
 								var checkedIds = tablePlug.tableCheck.getChecked(tableId);
 								layer.confirm('您是否确定要删除选中的' + checkedIds.length + '条记录？', function() {
 									var postData = {
-										id: checkedIds,
+										ids: checkedIds,
 									}
 									$.ajax({
-										url: "${ctx}/system/user/deleteUser",
+										url: "${ctx}/system/user/deleteTemporaryUser",
 										data: postData,
 										traditional: true,
 										type: "GET",
@@ -306,37 +303,9 @@
 									});
 									layer.close(index);
 								});
-								break; */
+								break; 
 							case 'becomeFull': 
-								var choosed = layui.table.checkStatus('tableData').data;
-								if(choosed.length<1){
-									layer.msg('请选择人员',{icon:2});
-									return;
-								}
-								if(choosed[0].phone==''){
-									layer.msg('转正人员需要填写号码！',{icon:2});
-									return;
-								}
-								layer.confirm('是否确认转正？',function(){
-									var positiveUser='';
-									for(var i=0;i<choosed.length;i++){
-										positiveUser+=(choosed[i].id+',');
-									}
-									var load=layer.load(1);
-									$.ajax({
-										url:'${ctx}/system/user/positiveUser?positiveUser='+positiveUser,
-										success:function(result){
-											if(0==result.code){
-												table.reload('tableData');
-												layer.close(load);
-												layer.msg(result.message,{icon:1});
-											}else{
-												layer.msg(result.message,{icon:2});
-											}
-											layer.close(load);
-										}
-									})
-								})//end confirm
+								
 								break;
 							case 'cleanTempData':	
 									table.cleanTemp(tableId);
@@ -350,6 +319,14 @@
 							data = obj.data ,//得到所在行所有键值
 							field = obj.field, //得到字段
 							id = data.id;
+						console.log(value)
+						if(field=='phone'){
+							if(value!=""){
+								if(!(/^1[3456789]\d{9}$/.test(value))){ 
+									return layer.msg("手机号码有误,请重新填写",{icon: 2}) 
+							    }
+							}
+						}
 							var postData = {
 								id:id,
 								[field]:value
@@ -375,7 +352,7 @@
 				    		return;
 				    	}
 				    	$.ajax({
-							url: "${ctx}/system/user/updateForeigns",
+							url: "${ctx}/system/user/addTemporaryUser",
 							data: data,
 							type: "POST",
 							beforeSend: function() {

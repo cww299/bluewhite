@@ -19,6 +19,8 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
 
 import com.bluewhite.base.BaseServiceImpl;
+import com.bluewhite.basedata.dao.BaseDataDao;
+import com.bluewhite.basedata.entity.BaseData;
 import com.bluewhite.common.ServiceException;
 import com.bluewhite.common.entity.PageParameter;
 import com.bluewhite.common.entity.PageResult;
@@ -29,7 +31,6 @@ import com.bluewhite.finance.wage.dao.WageDao;
 import com.bluewhite.finance.wage.entity.Wage;
 import com.bluewhite.personnel.attendance.dao.AttendanceInitDao;
 import com.bluewhite.personnel.attendance.dao.PersonVariableDao;
-import com.bluewhite.personnel.attendance.entity.Attendance;
 import com.bluewhite.personnel.attendance.entity.AttendanceInit;
 import com.bluewhite.personnel.attendance.entity.AttendanceTime;
 import com.bluewhite.personnel.attendance.entity.PersonVariable;
@@ -43,7 +44,9 @@ import com.bluewhite.personnel.roomboard.entity.Meal;
 import com.bluewhite.personnel.roomboard.entity.SingleMeal;
 import com.bluewhite.production.group.dao.TemporarilyDao;
 import com.bluewhite.production.group.entity.Temporarily;
+import com.bluewhite.system.user.entity.TemporaryUser;
 import com.bluewhite.system.user.entity.User;
+import com.bluewhite.system.user.service.TemporaryUserService;
 import com.bluewhite.system.user.service.UserService;
 
 @Service
@@ -70,6 +73,10 @@ public class MealServiceImpl extends BaseServiceImpl<Meal, Long> implements Meal
 	private CostLivingDao costLivingDao;
 	@Autowired
 	private TemporarilyDao temporarilyDao;
+	@Autowired
+	private TemporaryUserService temporaryUserService;
+	@Autowired
+	private BaseDataDao baseDataDao;
 
 	@Override
 	public PageResult<Meal> findPage(Meal param, PageParameter page) {
@@ -81,11 +88,11 @@ public class MealServiceImpl extends BaseServiceImpl<Meal, Long> implements Meal
 			}
 			// 按姓名查找
 			if (!StringUtils.isEmpty(param.getUserName())) {
-				predicate.add(cb.equal(root.get("user").get("userName").as(String.class), param.getUserName()));
+				predicate.add(cb.equal(root.get("userName").as(String.class), param.getUserName()));
 			}
 			// 按部门查找
 			if (!StringUtils.isEmpty(param.getOrgNameId())) {
-				predicate.add(cb.equal(root.get("user").get("orgNameId").as(Long.class), param.getOrgNameId()));
+				predicate.add(cb.equal(root.get("orgNameId").as(Long.class), param.getOrgNameId()));
 			}
 			// 按报餐类型
 			if (param.getMode() != null) {
@@ -117,11 +124,11 @@ public class MealServiceImpl extends BaseServiceImpl<Meal, Long> implements Meal
 			}
 			// 按姓名查找
 			if (!StringUtils.isEmpty(param.getUserName())) {
-				predicate.add(cb.equal(root.get("user").get("userName").as(String.class), param.getUserName()));
+				predicate.add(cb.equal(root.get("userName").as(String.class), param.getUserName()));
 			}
 			// 按部门查找
 			if (!StringUtils.isEmpty(param.getOrgNameId())) {
-				predicate.add(cb.equal(root.get("user").get("orgNameId").as(Long.class), param.getOrgNameId()));
+				predicate.add(cb.equal(root.get("orgNameId").as(Long.class), param.getOrgNameId()));
 			}
 			// 按报餐类型
 			if (param.getMode() != null) {
@@ -155,24 +162,32 @@ public class MealServiceImpl extends BaseServiceImpl<Meal, Long> implements Meal
 		if (meal.getMode() == 4) {
 			meal.setPrice(Double.valueOf(variable.getKeyValue()));
 		}
-		if (meal.getId() == null) {
-			String date = meal.getTime();
-			String[] addDate = date.split("~");
-			List<Date> dateList = DatesUtil.getPerDaysByStartAndEndDate(addDate[0], addDate[1], "yyyy-MM-dd");
-			List<Meal> meals = new ArrayList<Meal>();
-			for (Date date2 : dateList) {
-				Meal meal2 = new Meal();
-				meal2.setTradeDaysTime(date2);
-				meal2.setPrice(meal.getPrice());
-				meal2.setMode(meal.getMode());
-				meal2.setUserName(meal.getUserName());
+		String date = meal.getTime();
+		String[] addDate = date.split("~");
+		List<Date> dateList = DatesUtil.getPerDaysByStartAndEndDate(addDate[0], addDate[1], "yyyy-MM-dd");
+		List<Meal> meals = new ArrayList<Meal>();
+		for (Date date2 : dateList) {
+			Meal meal2 = new Meal();
+			meal2.setTradeDaysTime(date2);
+			meal2.setPrice(meal.getPrice());
+			meal2.setMode(meal.getMode());
+			meal2.setType(1);
+			if(meal.getUserId()!=null){
+				User user = userService.findOne(meal.getUserId());
 				meal2.setUserId(meal.getUserId());
-				meals.add(meal2);
+				meal2.setUserName(user.getUserName());
+				meal2.setOrgNameId(user.getOrgNameId());
 			}
-			dao.save(meals);
-		} else {
-			dao.save(meal);
+			if(meal.getTemporaryUserId()!=null){
+				TemporaryUser temporaryUser = temporaryUserService.findOne(meal.getTemporaryUserId());
+				meal2.setTemporaryUserId(meal.getTemporaryUserId());
+				meal2.setUserName(temporaryUser.getUserName());
+				meal2.setOrgNameId(meal.getOrgNameId());
+			}
+			meals.add(meal2);
 		}
+		dao.save(meals);
+
 		return meal;
 	}
 
@@ -392,11 +407,11 @@ public class MealServiceImpl extends BaseServiceImpl<Meal, Long> implements Meal
 		long w = meals.stream().filter(Meal -> Meal.getMode() != null && Meal.getMode().equals(3)).count();// 晚餐数
 		long r = meals.stream().filter(Meal -> Meal.getMode() != null && Meal.getMode().equals(4)).count();// 夜宵数
 		long t = meals.stream().filter(Meal -> Meal.getMode() != null && Meal.getMode().equals(1)
-				&& Meal.getUserId() != null && Meal.getUserId().equals((long) 3)).count();// 总经办早餐数
+				&& Meal.getUserId() != null && Meal.getOrgNameId().equals((long) 1)).count();// 总经办早餐数
 		long y = meals.stream().filter(Meal -> Meal.getMode() != null && Meal.getMode().equals(2)
-				&& Meal.getUserId() != null && Meal.getUserId().equals((long) 3)).count();// 总经办中数
+				&& Meal.getUserId() != null && Meal.getOrgNameId().equals((long) 1)).count();// 总经办中数
 		long u = meals.stream().filter(Meal -> Meal.getMode() != null && Meal.getMode().equals(3)
-				&& Meal.getUserId() != null && Meal.getUserId().equals((long) 3)).count();// 总经办晚餐数
+				&& Meal.getUserId() != null && Meal.getOrgNameId().equals((long) 1)).count();// 总经办晚餐数
 		// 食材费用
 		if ((meal.getOrgNameId() != null) && (meal.getOrgNameId().equals((long) 1))) {
 			// 总经办
@@ -473,7 +488,8 @@ public class MealServiceImpl extends BaseServiceImpl<Meal, Long> implements Meal
 			}
 		} else {
 			List<SingleMeal> list2 = singleMealDao.findByTimeBetween(meal.getOrderTimeBegin(), meal.getOrderTimeEnd());
-			List<SingleMeal> list1 = list2.stream().filter(SingleMeal -> SingleMeal.getOrgNameId() == null).collect(Collectors.toList());
+			List<SingleMeal> list1 = list2.stream().filter(SingleMeal -> SingleMeal.getOrgNameId() == null)
+					.collect(Collectors.toList());
 			if (list1.size() == 0) {
 				throw new ServiceException("选择时间内，没有添加食材记录，请先添加");
 			}
@@ -560,9 +576,9 @@ public class MealServiceImpl extends BaseServiceImpl<Meal, Long> implements Meal
 		double g = NumUtils.sum(NumUtils.division(NumUtils.div(f, a1 == 0 ? 1 : a1, 2)), q1); // 早餐平均
 		double i = NumUtils.sum(NumUtils.division(NumUtils.div(z, a2 == 0 ? 1 : a2, 2)), q1);// 中餐平均
 		double n = NumUtils.sum(NumUtils.division(NumUtils.div(x, a3 == 0 ? 1 : a3, 2)), q1);// 晚餐平均
-		double h = NumUtils.sum(NumUtils.division(NumUtils.div(c, r == 0 ? 1 : r, 2)), q1);
-		;// 夜宵平均
+		double h = NumUtils.sum(NumUtils.division(NumUtils.div(c, r == 0 ? 1 : r, 2)), q1);// 夜宵平均
 
+		// 获取用餐记录
 		List<Meal> mealsList = findMeal(meal);
 		Map<Long, List<Meal>> mealMap = mealsList.stream().filter(Meal -> Meal.getUserId() != null)
 				.collect(Collectors.groupingBy(Meal::getUserId, Collectors.toList()));
@@ -570,24 +586,56 @@ public class MealServiceImpl extends BaseServiceImpl<Meal, Long> implements Meal
 			allMap = new HashMap<>();
 			// 获取单一员工日期区间所有的报餐数据
 			List<Meal> psList1 = mealMap.get(ps1);
-			double modeOne = psList1.stream()
-					.filter(Meal -> Meal.getUserId().equals(Meal.getUserId()) && Meal.getMode() == 1).count();
-			double modeTwo = psList1.stream()
-					.filter(Meal -> Meal.getUserId().equals(Meal.getUserId()) && Meal.getMode() == 2).count();
-			double modeThree = psList1.stream()
-					.filter(Meal -> Meal.getUserId().equals(Meal.getUserId()) && Meal.getMode() == 3).count();
-			double modeFour = psList1.stream()
-					.filter(Meal -> Meal.getUserId().equals(Meal.getUserId()) && Meal.getMode() == 4).count();
+			if(meal.getOrgNameId()==null && psList1.get(0).getOrgNameId().equals((long) 1)){
+				
+			}else{
+			double modeOne = psList1.stream().filter(Meal -> Meal.getMode() == 1).count();
+			double modeTwo = psList1.stream().filter(Meal -> Meal.getMode() == 2).count();
+			double modeThree = psList1.stream().filter(Meal -> Meal.getMode() == 3).count();
+			double modeFour = psList1.stream().filter(Meal -> Meal.getMode() == 4).count();
 			double modeOnePrice = NumUtils.mul(modeOne, g);
 			double modeTwoPrice = NumUtils.mul(modeTwo, i);
 			double modeThreePrice = NumUtils.mul(modeThree, n);
 			double modeFourPrice = NumUtils.mul(modeFour, h);
 			double sumPrice = NumUtils.sum(modeOnePrice, modeTwoPrice, modeThreePrice, modeFourPrice);
-			User user = userService.findOne(ps1);
-			String aString = user.getUserName();
-			String org = user.getOrgName().getName();
-			allMap.put("username", aString);
-			allMap.put("orgName", org);
+			BaseData org = baseDataDao.findOne(psList1.get(0).getOrgNameId());
+			allMap.put("username", psList1.get(0).getUserName());
+			allMap.put("orgName", org.getName());
+			allMap.put("modeOne", modeOne);
+			allMap.put("modeTwo", modeTwo);
+			allMap.put("modeThree", modeThree);
+			allMap.put("modeFour", modeFour);
+			allMap.put("modeOnePrice", modeOnePrice);
+			allMap.put("modeTwoPrice", modeTwoPrice);
+			allMap.put("modeThreePrice", modeThreePrice);
+			allMap.put("modeFourPrice", modeFourPrice);
+			allMap.put("modeOneVal", g);
+			allMap.put("modeTwoVal", i);
+			allMap.put("modeThreeVal", n);
+			allMap.put("modeFourVal", h);
+			allMap.put("sumPrice", sumPrice);
+			allList.add(allMap);
+			}
+		}
+
+		Map<Long, List<Meal>> mealMapUser = mealsList.stream().filter(Meal -> Meal.getTemporaryUserId() != null)
+				.collect(Collectors.groupingBy(Meal::getTemporaryUserId, Collectors.toList()));
+		for (Long ps1 : mealMapUser.keySet()) {
+			allMap = new HashMap<>();
+			// 获取单一员工日期区间所有的报餐数据
+			List<Meal> psList1 = mealMapUser.get(ps1);
+			double modeOne = psList1.stream().filter(Meal -> Meal.getMode() == 1).count();
+			double modeTwo = psList1.stream().filter(Meal -> Meal.getMode() == 2).count();
+			double modeThree = psList1.stream().filter(Meal -> Meal.getMode() == 3).count();
+			double modeFour = psList1.stream().filter(Meal -> Meal.getMode() == 4).count();
+			double modeOnePrice = NumUtils.mul(modeOne, g);
+			double modeTwoPrice = NumUtils.mul(modeTwo, i);
+			double modeThreePrice = NumUtils.mul(modeThree, n);
+			double modeFourPrice = NumUtils.mul(modeFour, h);
+			double sumPrice = NumUtils.sum(modeOnePrice, modeTwoPrice, modeThreePrice, modeFourPrice);
+			BaseData org = baseDataDao.findOne(psList1.get(0).getOrgNameId());
+			allMap.put("username", psList1.get(0).getUserName());
+			allMap.put("orgName", org.getName());
 			allMap.put("modeOne", modeOne);
 			allMap.put("modeTwo", modeTwo);
 			allMap.put("modeThree", modeThree);
@@ -770,6 +818,8 @@ public class MealServiceImpl extends BaseServiceImpl<Meal, Long> implements Meal
 		meal.setTradeDaysTime(attendanceTime.getTime());
 		meal.setUserId(attendanceTime.getUserId());
 		meal.setUserName(attendanceTime.getUserName());
+		User user = userService.findOne(attendanceTime.getUserId());
+		meal.setOrgNameId(user.getOrgNameId());
 		meal.setType(2);
 		meal.setMode(mode);
 		return meal;
@@ -791,16 +841,16 @@ public class MealServiceImpl extends BaseServiceImpl<Meal, Long> implements Meal
 		Long temporaryUserOrgId = null;
 		switch (temporarily.getType()) {
 		case 1:
-			temporaryUserOrgId =(long)48;
+			temporaryUserOrgId = (long) 48;
 			break;
 		case 2:
-			temporaryUserOrgId =(long)79;
+			temporaryUserOrgId = (long) 79;
 			break;
 		case 3:
-			temporaryUserOrgId = (long)84;
+			temporaryUserOrgId = (long) 84;
 			break;
 		}
-		meal.setTemporaryUserOrgId(temporaryUserOrgId);
+		meal.setOrgNameId(temporaryUserOrgId);
 		meal.setType(2);
 		meal.setMode(mode);
 		return meal;

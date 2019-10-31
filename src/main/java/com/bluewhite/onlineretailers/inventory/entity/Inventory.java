@@ -83,7 +83,6 @@ public class Inventory extends BaseEntity<Long>{
 	@JoinColumn(name = "warehouse_type_id", referencedColumnName = "id", insertable = false, updatable = false)
 	private BaseData warehouseType;
 	
-
 	/**
 	 * 商品编号（sku）
 	 * 

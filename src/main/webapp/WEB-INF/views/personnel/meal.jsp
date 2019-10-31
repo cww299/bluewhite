@@ -24,7 +24,15 @@
 					<table>
 						<tr>
 							<td>姓名:</td>
-							<td><select class="form-control" id="selectUserId" lay-search="true"  name="userId"></select></td>
+							<td><select class="form-control" id="selectUserId" lay-search="true"  >
+							<option value="">请选择</option>
+							<optgroup label="正式员工" id="formal2">
+								
+ 							 </optgroup>
+ 							 <optgroup label="特急人员" id="temporary2">
+ 							 	
+ 							 </optgroup>
+							</select></td>
 							<td>&nbsp;&nbsp;</td>
 							<td>日期:</td>
 							<td><input id="startTime" style="width: 300px;" name="orderTimeBegin" placeholder="请输入开始时间" class="layui-input laydate-icon">
@@ -81,14 +89,30 @@
 			<div class="layui-form-item">
 				<label class="layui-form-label" style="width: 100px;">姓名</label>
 				<div class="layui-input-inline">
-					<select name="userId" style="width:290px;" lay-filter="id" id="userId" lay-search="true"></select>
+					<select  style="width:290px;" lay-filter="id" id="userId" lay-search="true">
+							<option value="">请选择</option>
+							<optgroup label="正式员工" id="formal">
+								
+ 							 </optgroup>
+ 							 <optgroup label="特急人员" id="temporary">
+ 							 	
+ 							 </optgroup>
+					</select>
 				</div>
 			</div>
-
+			
+			<div class="layui-form-item">
+				<label class="layui-form-label" style="width: 100px;">部门</label>
+				<div class="layui-input-inline">
+					<select  style="width:290px;"   lay-filter="id" id="orgNameId" lay-search="true">
+					</select>
+				</div>
+			</div>
+			
 			<div class="layui-form-item">
 				<label class="layui-form-label" style="width: 100px;">报餐类型</label>
 				<div class="layui-input-inline">
-					<select name="mode" style="width:290px;"  lay-filter="mode" id="mode" lay-search="true">
+					<select  style="width:290px;"  lay-filter="mode" id="mode" lay-search="true">
 						<option value="">请选择</option>
 						<option value="1">早餐</option>
 						<option value="2">中餐</option>
@@ -98,15 +122,24 @@
 				</div>
 			</div>
 
-			<div class="layui-form-item">
+			<div class="layui-form-item" id="time1">
 				<label class="layui-form-label" style="width: 100px;">日期</label>
 					<div class="layui-input-inline">
 						<input type="text" 
-							style="width: 190px; position: absolute; float: left;" name="time"
-							id="tradeDaysTime" lay-verify="tradeDaysTime" placeholder="请输入日期"
+							style="width: 190px; position: absolute; float: left;" 
+							id="tradeDaysTime" placeholder="请输入日期"
 							class="layui-input laydate-icon">
 					</div>
 				</div>
+			<div class="layui-form-item" id="time2">
+				<label class="layui-form-label" style="width: 100px;">日期</label>
+					<div class="layui-input-inline">
+						<input type="text" 
+							style="width: 190px; position: absolute; float: left;" 
+							id="tradeDaysTime2"  placeholder="请输入日期"
+							class="layui-input laydate-icon">
+					</div>
+				</div>	
 		</div>
 	</form>
 
@@ -175,6 +208,7 @@
 				<span class="layui-btn layui-btn-sm layui-btn-danger" lay-event="deleteSome">批量删除</span>
 				<span class="layui-btn layui-btn-sm" lay-event="delayed">吃饭延时</span>
 				<span class="layui-btn layui-btn-sm" lay-event="eat">吃饭方式填写</span>
+				<span class="layui-btn layui-btn-sm" lay-event="update">报餐修改</span>
 			</div>
 	</script>
 
@@ -206,7 +240,7 @@
 				  		return _index;
 				  	}
 					//select全局变量
-					var htmls = '<option value="">请选择</option>';
+					var htmls = '';
 					var index = layer.load(1, {
 						shade: [0.1, '#fff'] //0.1透明度的白色背景
 					});
@@ -227,7 +261,10 @@
 				    type: 'date',
 				    range: '~',
 				  });
-				
+				  laydate.render({
+					    elem: '#tradeDaysTime2',
+					    type: 'datetime',
+					  });
 					$.ajax({
 						url: '${ctx}/system/user/findUserList',
 						type: "GET",
@@ -237,11 +274,34 @@
 						},
 						success: function(result) {
 							$(result.data).each(function(i, o) {
-								htmls += '<option value=' + o.id + '>' + o.userName + '</option>'
+								htmls += '<option value=' + o.id + ' data-id="0">' + o.userName + '</option>'
 							})
-							$("#selectUserId").html(htmls)
-							$("#userId").html(htmls)
-							$("#userIds").html(htmls)
+							$("#formal").html(htmls)
+							$("#formal2").html(htmls)
+							$("#userIds").html(htmls) 
+							layer.close(index);
+						},
+						error: function() {
+							layer.msg("操作失败！", {
+								icon: 2
+							});
+							layer.close(index);
+						}
+					});
+					var htmll="";
+					$.ajax({
+						url: '${ctx}/system/user/findTemporaryUserTime',
+						type: "GET",
+						async: false,
+						beforeSend: function() {
+							index;
+						},
+						success: function(result) {
+							$(result.data).each(function(i, o) {
+								htmll += '<option value=' + o.id + ' data-id="1">' + o.userName + '</option>'
+							})
+						 	$("#temporary").html(htmll)
+						 	$("#temporary2").html(htmll)
 							layer.close(index);
 						},
 						error: function() {
@@ -269,6 +329,7 @@
 			      				htmlfrn +='<option value="'+j.id+'">'+j.name+'</option>'
 			      			  });
 			      			$("#orgName").html(htmlfrn);
+			      			$("#orgNameId").html(htmlfrn);
 			      			$("#orgNameIds").html(htmlfrn);
 			      			layer.close(indextwo);
 					      }
@@ -278,18 +339,26 @@
 					
 					
 					// 处理操作列
-					var fn1 = function(field) {
+					/* var fn1 = function(field) {
 						return function(d) {
+							if(d.user!=null){
 							return [
-								'<select name="selectOne" lay-filter="lay_selecte" lay-search="true" data-value="' + d.userId + '">' +
+								'<select name="selectOne" class="selectop" lay-filter="lay_selecte" lay-search="true" data-id="0" data-value="' + d.user.id + '">' +
 								htmls +
 								'</select>'
 							].join('');
+							}else{
+								return [
+								'<select name="selectOne" class="selectop" lay-filter="lay_selecte" lay-search="true" data-id="1" data-value="' + d.temporaryUser.id + '">' +
+								htmll +
+								'</select>'
+								].join('');
+							}
 
 						};
-					};
+					}; */
 
-					var fn2 = function(field) {
+					/* var fn2 = function(field) {
 						return function(d) {
 							return ['<select name="selectTwo" class="selectTwo" lay-filter="lay_selecte" lay-search="true" data-value="' + d.mode + '">',
 								'<option value="">请选择</option>',
@@ -301,7 +370,7 @@
 							].join('');
 						};
 						form.render(); 
-					};
+					}; */
 					
 					var fn3 = function(field) {
 						return function(d) {
@@ -352,25 +421,35 @@
 								align: 'center',
 								fixed: 'left'
 							},{
-								field: "userId",
+								field: "userName",
 								title: "姓名",
 								align: 'center',
 								search: true,
 								edit: false,
-								type: 'normal',
-								templet: fn1('selectOne')
 							},{
 								field: "mode",
 								title: "报餐类型",
 								align: 'center',
 								search: true,
 								edit: false,
-								type: 'normal',
-								templet: fn2('selectTwo')
+								templet:function(d){
+									if(d.mode==1){
+										return "早餐"
+									}
+									if(d.mode==2){
+										return "中餐"
+									}
+									if(d.mode==3){
+										return "晚餐"
+									}
+									if(d.mode==4){
+										return "夜宵"
+									}
+								}
 							},{
 								field: "tradeDaysTime",
 								title: "日期",
-								edit: 'text'
+								edit: false
 							}]
 						],
 						done: function() {
@@ -397,7 +476,7 @@
 							});
 							form.render();
 							// 初始化laydate
-							layui.each(tableView.find('td[data-field="tradeDaysTime"]'), function(index, tdElem) {
+							/* layui.each(tableView.find('td[data-field="tradeDaysTime"]'), function(index, tdElem) {
 								tdElem.onclick = function(event) {
 									layui.stope(event)
 								};
@@ -414,7 +493,7 @@
 											mainJs.fUpdate(postData);
 												}
 											})
-										})
+										}) */
 									},
 								});
 					
@@ -426,19 +505,30 @@
 					
 					// 监听表格中的下拉选择将数据同步到table.cache中
 					form.on('select(lay_selecte)', function(data) {
+						
 						var selectElem = $(data.elem);
 						var tdElem = selectElem.closest('td');
 						var trElem = tdElem.closest('tr');
 						var tableView = trElem.closest('.layui-table-view');
 						var field = tdElem.data('field');
-						table.cache[tableView.attr('lay-id')][trElem.data('index')][tdElem.data('field')] = data.value;
 						var id = table.cache[tableView.attr('lay-id')][trElem.data('index')].id
-						var postData = {
-							id: id,
-							[field]:data.value
-						}
-						//调用新增修改
-						mainJs.fUpdate(postData);
+						var selectId=$(".selectop").find("option:selected").data('id')
+						table.cache[tableView.attr('lay-id')][trElem.data('index')][tdElem.data('field')] = data.value;
+					    var index = $(data.elem).closest('tr').data('index');
+						var trData = table.cache['tableData'][index];
+						if(selectId==0){
+						 var postData = {
+							id:id,
+							userId:data.value
+						} 
+						 mainJs.fUpdate(postData); 
+						}else{
+							var postData = {
+									id:id,
+									temporaryUserId:data.value
+								} 
+						mainJs.fUpdate(postData); 	
+						} 
 					});
 					//修改吃饭方式
 					form.on('select(lay_selecte2)', function(data) {
@@ -492,6 +582,8 @@
 						var tableId = config.id;
 						switch(obj.event) {
 							case 'addTempData':
+								$("#time2").hide();
+								$("#time1").show();
 								var	dicDiv=$("#layuiadmin-form-admin2");
 								layer.open({
 									type:1,
@@ -512,8 +604,24 @@
 							        },
 									yes:function(){
 										form.on('submit(addRole)', function(data) {
+										var id=$("#userId").find("option:selected").data('id')
+										if(id==0){
+											data.field.userId=$("#userId").val();
+											data.field.time=$("#tradeDaysTime").val();
+											 data.field.mode=$("#mode").val();
+											 mainJs.fAdd(data.field);  
+											 document.getElementById("layuiadmin-form-admin2").reset();
+										}else{
+											if($("#orgNameId").val()==""){
+												return layer.msg("特急人员请填写部门",{icon:2})
+											}
+											data.field.orgNameId=$("#orgNameId").val();
+											data.field.time=$("#tradeDaysTime").val();
+											data.field.temporaryUserId=$("#userId").val();
+											data.field.mode=$("#mode").val();
 											mainJs.fAdd(data.field); 
 											document.getElementById("layuiadmin-form-admin2").reset();
+										}
 								        	layui.form.render();
 										})
 									},end:function(){ 
@@ -689,6 +797,109 @@
 							case 'cleanTempData':	
 									table.cleanTemp(tableId);
 							break;
+							case 'update':
+								$("#time1").hide();
+								$("#time2").show();
+								var choosed=layui.table.checkStatus("tableData").data;
+								var length=choosed.length
+								var orgNameId=choosed[0].orgNameId
+								var mode=choosed[0].mode
+								var tradeDaysTime=choosed[0].tradeDaysTime
+								var idr=choosed[0].id
+								var ids = '';
+								var fal=false;
+								var userName=choosed[0].userName
+								$(choosed).each(function(j,k){
+									if(k.userName!=userName){
+										fal=true;
+									}
+								})
+								if(fal){
+								return	layer.msg("请选择相同的人",{icon:2})
+								}
+								if(choosed[0].user!=null){
+										 ids=choosed[0].user.id
+								}else{
+									     ids=choosed[0].temporaryUser.id
+								}
+								$("#userId").val(ids);
+								layui.form.render();
+								
+							    $("#orgNameId").val(orgNameId);
+							    layui.form.render();
+							    if(length==1){
+							    $("#tradeDaysTime2").val(tradeDaysTime)
+							    $("#mode").val(mode);
+							    $("#tradeDaysTime2").removeAttr("disabled","disabled");
+							    $("#mode").removeAttr("disabled","disabled");
+							    layui.form.render();
+							    }else{
+							    	$("#tradeDaysTime2").attr("disabled","disabled");
+							    	$("#mode").attr("disabled","disabled");
+							    	 layui.form.render();
+							    }
+								var	dicDiv=$("#layuiadmin-form-admin2");
+								layer.open({
+									type:1,
+									title:'报餐修改',
+									area:['30%','60%'],
+									btn:['确认','取消'],
+									content:dicDiv,
+									id: 'LAY_layuipro' ,
+									btnAlign: 'c',
+								    moveType: 1, //拖拽模式，0或者1
+									success : function(layero, index) {
+							        	layero.addClass('layui-form');
+										// 将保存按钮改变成提交按钮
+										layero.find('.layui-layer-btn0').attr({
+											'lay-filter' : 'addRole',
+											'lay-submit' : ''
+										})
+							        },
+									yes:function(){
+										form.on('submit(addRole)', function(data) {
+										var id=$("#userId").find("option:selected").data('id')
+										$(choosed).each(function(j,k){
+											
+											if(id==0){
+												if(length==1){
+													data.field.userId=$("#userId").val();
+													data.field.orgNameId=$("#orgNameId").val();
+													data.field.id=k.id;
+													data.field.tradeDaysTime=$("#tradeDaysTime2").val();
+													data.field.mode=$("#mode").val();
+													mainJs.fAdd(data.field);  
+												}else{
+													data.field.userId=$("#userId").val();
+													data.field.orgNameId=$("#orgNameId").val();
+													data.field.id=k.id;
+													mainJs.fAdd(data.field);  
+												}
+											}else{
+												if(length==1){
+													data.field.orgNameId=$("#orgNameId").val();
+													data.field.temporaryUserId=$("#userId").val();
+													data.field.id=k.id;
+													data.field.tradeDaysTime=$("#tradeDaysTime2").val();
+													data.field.mode=$("#mode").val();
+													mainJs.fAdd(data.field); 
+												}else{
+													data.field.orgNameId=$("#orgNameId").val();
+													data.field.temporaryUserId=$("#userId").val();
+													data.field.id=k.id;
+													mainJs.fAdd(data.field); 
+												}
+											}
+										})
+											document.getElementById("layuiadmin-form-admin2").reset();
+								        	layui.form.render();
+										})
+									},end:function(){ 
+							        	document.getElementById("layuiadmin-form-admin2").reset();
+							        	layui.form.render();
+									  }
+								})
+								break;
 						}
 					});
 	
@@ -788,6 +999,13 @@
 						var orderTime=field.orderTimeBegin.split('~');
 						field.orderTimeBegin=orderTime[0];
 						field.orderTimeEnd=orderTime[1];
+						var a="";
+						if($("#selectUserId").find("option:selected").text()=="请选择"){
+							a=""
+						}else{
+							a=$("#selectUserId").find("option:selected").text()
+						}
+						field.userName=a;
 						table.reload('tableData', {
 							where: field,
 							 page: { curr : 1 }
@@ -854,6 +1072,7 @@
 								},
 								success: function(result) {
 									if(0 == result.code) {
+										layer.closeAll();
 									 	 table.reload("tableData", {
 							                page: {
 							                }

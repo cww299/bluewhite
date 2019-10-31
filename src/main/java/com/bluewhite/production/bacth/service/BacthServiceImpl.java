@@ -1,7 +1,6 @@
 package com.bluewhite.production.bacth.service;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
@@ -29,6 +28,7 @@ import com.bluewhite.common.utils.SalesUtils;
 import com.bluewhite.common.utils.StringUtil;
 import com.bluewhite.finance.attendance.dao.AttendancePayDao;
 import com.bluewhite.finance.attendance.entity.AttendancePay;
+import com.bluewhite.personnel.attendance.service.AttendanceService;
 import com.bluewhite.production.bacth.dao.BacthDao;
 import com.bluewhite.production.bacth.entity.Bacth;
 import com.bluewhite.production.finance.dao.PayBDao;
@@ -41,7 +41,6 @@ import com.bluewhite.production.productionutils.constant.ProTypeUtils;
 import com.bluewhite.production.task.entity.Task;
 import com.bluewhite.production.task.service.TaskService;
 import com.bluewhite.system.user.dao.UserDao;
-import com.bluewhite.system.user.entity.User;
 
 @Service
 public class BacthServiceImpl extends BaseServiceImpl<Bacth, Long> implements BacthService {
@@ -60,6 +59,8 @@ public class BacthServiceImpl extends BaseServiceImpl<Bacth, Long> implements Ba
 	private TaskService taskService;
 	@Autowired
 	private AttendancePayDao attendancePayDao;
+	@Autowired
+	private AttendanceService attendanceService;
 
 	private static String GROUP = "返工组";
 
@@ -214,6 +215,12 @@ public class BacthServiceImpl extends BaseServiceImpl<Bacth, Long> implements Ba
 							}
 						}
 					}
+					//当批次完成为针工时，上车工序直接分配完成，分配给当天所有正式员工
+//					if (bacth.getType() == 2 && bacth.getFlag() == 0 && UnUtil.isFromMobile(request) ) {
+//						List<Attendance> attendanceList = attendanceService.findBySourceMachineAndTimeBetween(
+//								 "ELEVEN_WAREHOUSE", , );
+//					}
+					
 					bacth.setStatus(1);
 					bacth.setStatusTime(time);
 					dao.save(bacth);

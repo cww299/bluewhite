@@ -1,4 +1,4 @@
-package com.bluewhite.common.utils.ZkemUtils;
+package com.bluewhite.common.utils.zkemUtils;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -74,7 +74,6 @@ public class SensorEvents {
 	 */
 	public void OnAttTransactionEx(Variant[] arge) {
 		Attendance attendance = new Attendance();
-		System.out.println(arge[0]);
 		attendance.setNumber(String.valueOf(arge[0]));
 		String year = arge[4].toString();
 		String month = arge[5].toString();
@@ -101,7 +100,11 @@ public class SensorEvents {
 		// 验证方式
 		attendance.setVerifyMode(Integer.valueOf(String.valueOf(arge[3])));
 		System.out.println(Thread.currentThread().getName());
-		String address = ZkemSDKUtils.GetDeviceIP(0, zkem);
+		String[] adressString = Thread.currentThread().getName().split(":");
+		String address = "";
+		if(adressString.length>0){
+			address = adressString[1];
+		}
 		String sourceMachine = null;
 		if (Constants.THREE_FLOOR.equals(address)) {
 			sourceMachine = "THREE_FLOOR";
