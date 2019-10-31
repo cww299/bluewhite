@@ -53,7 +53,7 @@ public class ScatteredOutbound extends BaseEntity<Long>{
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "order_material_id", referencedColumnName = "id", insertable = false, updatable = false)
 	private OrderMaterial orderMaterial;
-	
+	   
 	/**
 	 * 领取用量
 	 */

@@ -75,8 +75,12 @@ public class OfficeSuppliesAction {
 	@ResponseBody
 	public CommonResponse addOfficeSupplies(OfficeSupplies officeSupplies) {
 		CommonResponse cr = new CommonResponse();
+		if(officeSupplies.getId()!=null){
+			cr.setMessage("修改成功");
+		}else{
+			cr.setMessage("新增成功");
+		}
 		officeSuppliesService.addOfficeSupplies(officeSupplies);
-		cr.setMessage("新增成功");
 		return cr;
 	}
 	
