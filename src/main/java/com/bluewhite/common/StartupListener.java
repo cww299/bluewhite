@@ -1,7 +1,5 @@
 package com.bluewhite.common;
 
-import java.net.InetAddress;
-import java.net.UnknownHostException;
 import java.util.ResourceBundle;
 import java.util.Timer;
 import java.util.TimerTask;
@@ -12,7 +10,7 @@ import org.springframework.context.event.ContextRefreshedEvent;
 import org.springframework.stereotype.Service;
 
 import com.bluewhite.common.utils.IpUtil;
-import com.bluewhite.common.utils.ZkemUtils.SDKRunnable;
+import com.bluewhite.common.utils.zkemUtils.SDKRunnable;
 import com.bluewhite.personnel.attendance.service.AttendanceServiceImpl;
 
 @Service

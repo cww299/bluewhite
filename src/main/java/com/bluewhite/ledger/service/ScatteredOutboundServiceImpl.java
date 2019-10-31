@@ -55,13 +55,11 @@ public class ScatteredOutboundServiceImpl extends BaseServiceImpl<ScatteredOutbo
 					if (ot.getOutbound()==1) {
 						throw new ServiceException(ot.getMateriel().getNumber() + ot.getMateriel().getName() + "已出库，请勿多次出库");
 					}
-					
 					// 出库单
 					ScatteredOutbound scatteredOutbound = new ScatteredOutbound();
 					scatteredOutbound.setOrderMaterialId(id);
 					scatteredOutbound.setOutboundNumber(ot.getOrder().getBacthNumber() + ot.getOrder().getProduct().getName());
 					scatteredOutbound.setAudit(0);
-					scatteredOutbound.setOpenOrderAudit(0);
 					// 按id排序，保证库存先入先出
 					// 遍历当前物料的库存采购单，一般只会存在一条，当库存量不足，需要重新下单采购单，会出现两条
 					Set<OrderProcurement> orderProcurementSet = ot.getMateriel().getOrderProcurements().stream()
@@ -124,24 +122,10 @@ public class ScatteredOutboundServiceImpl extends BaseServiceImpl<ScatteredOutbo
 			if (param.getAudit() != null) {
 				predicate.add(cb.equal(root.get("audit").as(Integer.class), param.getAudit()));
 			}
-			// 是否审核成下单，进入开单阶段
-			if (param.getOpenOrderAudit() != null) {
-				predicate.add(cb.equal(root.get("openOrderAudit").as(Integer.class), param.getOpenOrderAudit()));
-			}
 			// 按出库编号
 			if (!StringUtils.isEmpty(param.getOutboundNumber())) {
 				predicate.add(cb.like(root.get("outboundNumber").as(String.class),
 						"%" + StringUtil.specialStrKeyword(param.getOutboundNumber()) + "%"));
-			}
-			// 按领取人
-			if (!StringUtils.isEmpty(param.getReceiveUser())) {
-				predicate.add(cb.like(root.get("receiveUser").as(String.class),
-						"%" + StringUtil.specialStrKeyword(param.getReceiveUser()) + "%"));
-			}
-			// 按跟单人
-			if (!StringUtils.isEmpty(param.getReceiveUser())) {
-				predicate.add(cb.like(root.get("receiveUser").as(String.class),
-						"%" + StringUtil.specialStrKeyword(param.getReceiveUser()) + "%"));
 			}
 			// 按审核日期
 			if (!StringUtils.isEmpty(param.getOrderTimeBegin()) && !StringUtils.isEmpty(param.getOrderTimeEnd())) {
@@ -195,6 +179,9 @@ public class ScatteredOutboundServiceImpl extends BaseServiceImpl<ScatteredOutbo
 					if (ot.getOrderProcurement().getArrival() == 0) {
 						throw new ServiceException("第" + (i + 1) + "条分散出库单还未到货，无法审核");
 					}
+					if (ot.getOrderProcurement().getInOutError() == 1) {
+						throw new ServiceException(ot.getOrderProcurement().getOrderProcurementNumber() + "采购单实际数量和下单数量不相符，无法审核，请先修正数量");
+					}
 					ot.setAudit(1);
 					if (time != null) {
 						ot.setAuditTime(time);
@@ -214,7 +201,7 @@ public class ScatteredOutboundServiceImpl extends BaseServiceImpl<ScatteredOutbo
 	public void updateScatteredOutbound(ScatteredOutbound scatteredOutbound) {
 		ScatteredOutbound ot = findOne(scatteredOutbound.getId());
 		if(scatteredOutbound.getAuditTime()!=null && ot.getAudit()==1){
-			throw new ServiceException("已审核时间，无法修改");
+			throw new ServiceException("已审核，无法修改");
 		}
 		update(scatteredOutbound, ot, "");
 	}
@@ -226,28 +213,12 @@ public class ScatteredOutboundServiceImpl extends BaseServiceImpl<ScatteredOutbo
 		update(scatteredOutbound, ot, "");
 	}
 
+
+
 	@Override
-	public int generatePlaceOrder(String ids) {
-		int count = 0;
-		if (!StringUtils.isEmpty(ids)) {
-			String[] idArr = ids.split(",");
-			if (idArr.length > 0) {
-				for (int i = 0; i < idArr.length; i++) {
-					Long id = Long.parseLong(idArr[i]);
-					ScatteredOutbound ot = findOne(id);
-					if (ot.getUserId() == null) {
-						throw new ServiceException("第" + (i + 1) + "条下单跟单人不能为空");
-					}
-					if (StringUtils.isEmpty(ot.getReceiveUser())) {
-						throw new ServiceException("第" + (i + 1) + "条下单领取人不能为空");
-					}
-					ot.setOpenOrderAudit(1);
-					dao.save(ot);
-					count++;
-				}
-			}
-		}
-		return count;
+	public void updateOpenOrder(ScatteredOutbound scatteredOutbound) {
+		ScatteredOutbound ot = findOne(scatteredOutbound.getId());
+		update(scatteredOutbound, ot, "");
 	}
 
 	

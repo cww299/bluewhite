@@ -126,7 +126,7 @@ public class ProductServiceImpl  extends BaseServiceImpl<Product, Long> implemen
 				query.where(predicate.toArray(pre));
 	        	return null;
 	        }, page);
-		  		
+		  	//展示外发单价和当部门预计生产单价，针工价格
 			  if(product.getOriginDepartment()!=null){
 				  for(Product pro : pages.getContent()){
 					  List<Procedure> procedureList = procedureDao.findByProductIdAndTypeAndFlag(pro.getId(), product.getType(),0);

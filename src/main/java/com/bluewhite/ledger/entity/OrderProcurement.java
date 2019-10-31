@@ -1,17 +1,12 @@
 package com.bluewhite.ledger.entity;
 
 import java.util.Date;
-import java.util.HashSet;
-import java.util.Set;
 
-import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.JoinColumn;
-import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
-import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 
@@ -57,7 +52,7 @@ public class OrderProcurement extends BaseEntity<Long> {
 	private Long orderId;
 
 	/**
-	 * 订单
+	 * 订单（该订单所定的采购单）
 	 */
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "order_id", referencedColumnName = "id", insertable = false, updatable = false)

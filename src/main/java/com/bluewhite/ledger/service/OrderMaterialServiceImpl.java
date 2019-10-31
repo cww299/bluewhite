@@ -2,7 +2,6 @@ package com.bluewhite.ledger.service;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Set;
 import java.util.stream.Collectors;
 
 import javax.persistence.criteria.Predicate;
@@ -17,7 +16,6 @@ import com.bluewhite.base.BaseServiceImpl;
 import com.bluewhite.common.ServiceException;
 import com.bluewhite.common.entity.PageParameter;
 import com.bluewhite.common.entity.PageResult;
-import com.bluewhite.common.utils.NumUtils;
 import com.bluewhite.common.utils.StringUtil;
 import com.bluewhite.ledger.dao.OrderDao;
 import com.bluewhite.ledger.dao.OrderMaterialDao;
@@ -178,6 +176,9 @@ public class OrderMaterialServiceImpl extends BaseServiceImpl<OrderMaterial, Lon
 	@Override
 	public void updateOrderMaterial(OrderMaterial orderMaterial) {
 		OrderMaterial ot = findOne(orderMaterial.getId());
+		if (ot.getAudit() == 1) {
+			throw new ServiceException("耗料已审核，无法修改");
+		}
 		update(orderMaterial, ot);
 	}
 
@@ -212,6 +213,9 @@ public class OrderMaterialServiceImpl extends BaseServiceImpl<OrderMaterial, Lon
 				for (int i = 0; i < idArr.length; i++) {
 					Long id = Long.parseLong(idArr[i]);
 					OrderMaterial ot = findOne(id);
+					if (ot.getAudit() == 1) {
+						throw new ServiceException("第" + (i + 1) + "条耗料已审核，请勿重复审核");
+					}
 					ot.setAudit(1);
 					save(ot);
 					count++;

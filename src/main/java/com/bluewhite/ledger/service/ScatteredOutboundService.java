@@ -44,17 +44,16 @@ public interface ScatteredOutboundService extends BaseCRUDService<ScatteredOutbo
 	 * @return
 	 */
 	public void updateScatteredOutbound(ScatteredOutbound scatteredOutbound);
-	
-	/**
-	 * 生成下单表
-	 * @param ids
-	 * @return
-	 */
-	public int generatePlaceOrder(String ids);
 	/**
 	 * 修改出库单
 	 * @param ids
 	 * @return
 	 */
 	public void updatePlaceOrder(ScatteredOutbound scatteredOutbound);
+	
+	/**
+	 * 修改开单
+	 * @param scatteredOutbound
+	 */
+	public void updateOpenOrder(ScatteredOutbound scatteredOutbound);
 }

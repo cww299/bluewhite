@@ -1,4 +1,4 @@
-package com.bluewhite.common.utils.ZkemUtils;
+package com.bluewhite.common.utils.zkemUtils;
 
 public class TranCharset {
 
