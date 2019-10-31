@@ -205,7 +205,6 @@ public class ProductAction {
 		//裁剪
 		if(cu.getRole().contains(Constants.PRODUCT_RIGHT_TAILOR)){
 			product.setOriginDepartment(Constants.PRODUCT_RIGHT_TAILOR);
-			
 		}
 		
 		if(StringUtils.isEmpty(product.getDepartmentNumber()) && StringUtils.isEmpty(product.getName())){
@@ -217,16 +216,6 @@ public class ProductAction {
 		//通过传入的部门产品编号查询是否存在编号为此的产品。如果存在则不能添加。在这里控制产品共同编号的唯一性
 		Product products = dao.findByNumber(product.getDepartmentNumber());
 		Product products1 = dao.findByDepartmentNumber(product.getDepartmentNumber());
-		
-		//如果后期出现需求，一个产品在各个地方所用的所有费用，这个时候无法用产品编号进行查询
-		//产品名称在包装环境中不会变动
-		//所以可以通过产品名称来查询。同时保证在拥有产品编号的产品中 保证产品名称的唯一性
-//		Product ps = dao.findByNumberNotNullAndName(product.getName());
-//		if(ps!=null){
-//			cr.setCode(ErrorCode.ILLEGAL_ARGUMENT.getCode());
-//			cr.setMessage("已有该产品，请检查后再次添加");
-//			return cr;
-//		}
 		
 		//下面存入各部门产品编号
 		if(products!=null || products1!=null){
@@ -357,7 +346,6 @@ public class ProductAction {
     	primeCost.setId(null);
     	primeCost.setProductId(id);
         product.setPrimeCost(primeCost);
-        session.clear();//清除缓存	
         productService.save(product);
         
 		//裁片
@@ -390,8 +378,6 @@ public class ProductAction {
 		packList.stream().forEach(Pack->Pack.setId(null));
 		packList.stream().forEach(Pack->Pack.setProductId(id));
 		
-		session.clear();//清除缓存	
-		
 		//保存新实体
 		cutPartsService.save(cutPartsList);
 		embroideryService.save(embroideryList);
@@ -417,7 +403,6 @@ public class ProductAction {
 			}
 			tailorList.add(tailor);
 		}
-		session.clear();//清除缓存	
 		tailorService.save(tailorList);
 	
 		
@@ -430,7 +415,6 @@ public class ProductAction {
 			ordinaryLaser.setTailorId(tr.getId());
 			cutParts.setTailorId(tr.getId());
 			embroidery.setTailorId(tr.getId());
-			session.clear();//清除缓存	
 			cutPartsService.save(cutParts);
 			embroideryService.save(embroidery);
 			ordinaryLaserService.save(ordinaryLaser);
@@ -439,38 +423,6 @@ public class ProductAction {
 		return cr;
 	}
 	
-	
-	
-	
-	
-	/**
-	 * (成本价格表中) 根据不同菜单跳转不同的jsp（同时将产品id放入session中，
-	 * 通过引入通用的<%@include file="../../decorator/leftbar.jsp"%> 获取到
-	 */
-	@RequestMapping(value = "product/menusToUrl", method = RequestMethod.GET)
-	public String menusToJsp(HttpServletRequest request,String url, String paramNum) {
-		HttpSession session = request.getSession();
-		Product productOne = productService.findOne(Long.valueOf(paramNum));
-		session.setAttribute("number", productOne.getPrimeCost()!=null ? productOne.getPrimeCost().getNumber():null);
-		session.setAttribute("productName", productOne.getName());
-		session.setAttribute("productId", paramNum);
-		return url;
-	}
-	
-	/**
-	 * 清除当前产品session
-	 * @param request 请求
-	 * @return cr
-	 */
-	@RequestMapping(value = "/cleanProduct", method = RequestMethod.POST)
-	@ResponseBody
-	public CommonResponse cleanProduct(HttpServletRequest request) {
-		CommonResponse cr = new CommonResponse();
-		HttpSession session = request.getSession();
-		//从session中删除当前产品属性 
-		session.removeAttribute("productId");
-		cr.setMessage("清除成功");
-		return cr;
-	}
+
 	
 }

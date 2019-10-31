@@ -1,6 +1,5 @@
-package com.bluewhite.common.utils.ZkemUtils;
+package com.bluewhite.common.utils.zkemUtils;
 
-import java.io.UnsupportedEncodingException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;

@@ -1,4 +1,4 @@
-package com.bluewhite.common.utils.ZkemUtils;
+package com.bluewhite.common.utils.zkemUtils;
 
 public class SDKRunnable extends Thread {
 
@@ -16,7 +16,6 @@ public class SDKRunnable extends Thread {
 			ZkemSDKUtils.regEvent(address);
 		} catch (InterruptedException e) {
 		}
-		System.out.println("Thread结束=====");
 	}
 
 }

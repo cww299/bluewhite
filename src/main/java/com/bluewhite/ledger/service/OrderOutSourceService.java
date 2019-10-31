@@ -30,5 +30,18 @@ public interface OrderOutSourceService extends BaseCRUDService<OrderOutSource, L
 	 * @param orderOutSource
 	 */
 	public int deleteOrderOutSource(String ids);
+	/**
+	 * 修改外发单
+	 * 
+	 * @param orderOutSource
+	 */
+	public void updateOrderOutSource(OrderOutSource orderOutSource);
 
+	/**
+	 * 作废外发单
+	 * @param ids
+	 * @return
+	 */
+	public int invalidOrderOutSource(String ids);
+	
 }

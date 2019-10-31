@@ -11,14 +11,11 @@ import javax.persistence.Table;
 import javax.persistence.Transient;
 
 import com.bluewhite.base.BaseEntity;
-import com.bluewhite.system.user.entity.User;
 
 /**
  * 分散出库记录
  * 
  * 采购部将所有已经拥有库存的耗料表生成分散出库记录表
- * 
- * 生产计划部使用分散出库记录表作为下单表使用
  *
  */
 @Entity
@@ -58,26 +55,6 @@ public class ScatteredOutbound extends BaseEntity<Long>{
 	private OrderMaterial orderMaterial;
 	
 	/**
-	 * 领取人
-	 */
-	@Column(name = "receive_user")
-    private String receiveUser;
-	
-   	/**
-	 * 跟单人id
-	 * 
-	 */
-	@Column(name = "user_id")
-	private Long userId;
-
-	/**
-	 * 跟单人
-	 */
-	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "user_id", referencedColumnName = "id", insertable = false, updatable = false)
-	private User user;
-	
-	/**
 	 * 领取用量
 	 */
 	@Column(name = "dosage")
@@ -100,18 +77,6 @@ public class ScatteredOutbound extends BaseEntity<Long>{
 	 */
 	@Column(name = "audit_time")
     private Date auditTime;
-	
-	/**
-	 * 下单时间（生产计划部）
-	 */
-	@Column(name = "place_order_time")
-    private Date placeOrderTime;
-	
-	/**
-	 * 出库下单审核成开单
-	 */
-	@Column(name = "open_order_audit")
-    private Integer openOrderAudit;
 	
 	/**
 	 * 产品name
@@ -138,22 +103,6 @@ public class ScatteredOutbound extends BaseEntity<Long>{
 	
 	
 	
-
-	public Integer getOpenOrderAudit() {
-		return openOrderAudit;
-	}
-
-	public void setOpenOrderAudit(Integer openOrderAudit) {
-		this.openOrderAudit = openOrderAudit;
-	}
-
-	public Date getPlaceOrderTime() {
-		return placeOrderTime;
-	}
-
-	public void setPlaceOrderTime(Date placeOrderTime) {
-		this.placeOrderTime = placeOrderTime;
-	}
 
 	public Integer getAudit() {
 		return audit;
@@ -241,30 +190,6 @@ public class ScatteredOutbound extends BaseEntity<Long>{
 
 	public void setOrderProcurement(OrderProcurement orderProcurement) {
 		this.orderProcurement = orderProcurement;
-	}
-
-	public String getReceiveUser() {
-		return receiveUser;
-	}
-
-	public void setReceiveUser(String receiveUser) {
-		this.receiveUser = receiveUser;
-	}
-
-	public Long getUserId() {
-		return userId;
-	}
-
-	public void setUserId(Long userId) {
-		this.userId = userId;
-	}
-
-	public User getUser() {
-		return user;
-	}
-
-	public void setUser(User user) {
-		this.user = user;
 	}
 
 	public Double getDosage() {

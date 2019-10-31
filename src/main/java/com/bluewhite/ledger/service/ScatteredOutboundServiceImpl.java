@@ -60,7 +60,6 @@ public class ScatteredOutboundServiceImpl extends BaseServiceImpl<ScatteredOutbo
 					scatteredOutbound.setOrderMaterialId(id);
 					scatteredOutbound.setOutboundNumber(ot.getOrder().getBacthNumber() + ot.getOrder().getProduct().getName());
 					scatteredOutbound.setAudit(0);
-					scatteredOutbound.setOpenOrderAudit(0);
 					// 按id排序，保证库存先入先出
 					// 遍历当前物料的库存采购单，一般只会存在一条，当库存量不足，需要重新下单采购单，会出现两条
 					Set<OrderProcurement> orderProcurementSet = ot.getMateriel().getOrderProcurements().stream()
@@ -123,24 +122,10 @@ public class ScatteredOutboundServiceImpl extends BaseServiceImpl<ScatteredOutbo
 			if (param.getAudit() != null) {
 				predicate.add(cb.equal(root.get("audit").as(Integer.class), param.getAudit()));
 			}
-			// 是否审核成下单，进入开单阶段
-			if (param.getOpenOrderAudit() != null) {
-				predicate.add(cb.equal(root.get("openOrderAudit").as(Integer.class), param.getOpenOrderAudit()));
-			}
 			// 按出库编号
 			if (!StringUtils.isEmpty(param.getOutboundNumber())) {
 				predicate.add(cb.like(root.get("outboundNumber").as(String.class),
 						"%" + StringUtil.specialStrKeyword(param.getOutboundNumber()) + "%"));
-			}
-			// 按领取人
-			if (!StringUtils.isEmpty(param.getReceiveUser())) {
-				predicate.add(cb.like(root.get("receiveUser").as(String.class),
-						"%" + StringUtil.specialStrKeyword(param.getReceiveUser()) + "%"));
-			}
-			// 按跟单人
-			if (!StringUtils.isEmpty(param.getReceiveUser())) {
-				predicate.add(cb.like(root.get("receiveUser").as(String.class),
-						"%" + StringUtil.specialStrKeyword(param.getReceiveUser()) + "%"));
 			}
 			// 按审核日期
 			if (!StringUtils.isEmpty(param.getOrderTimeBegin()) && !StringUtils.isEmpty(param.getOrderTimeEnd())) {
@@ -218,9 +203,6 @@ public class ScatteredOutboundServiceImpl extends BaseServiceImpl<ScatteredOutbo
 		if(scatteredOutbound.getAuditTime()!=null && ot.getAudit()==1){
 			throw new ServiceException("已审核，无法修改");
 		}
-		if(ot.getOpenOrderAudit()==1){
-			throw new ServiceException("生产计划部已审核处理此分散出库单，无法修改");
-		}
 		update(scatteredOutbound, ot, "");
 	}
 	
@@ -228,38 +210,10 @@ public class ScatteredOutboundServiceImpl extends BaseServiceImpl<ScatteredOutbo
 	@Override
 	public void updatePlaceOrder(ScatteredOutbound scatteredOutbound) {
 		ScatteredOutbound ot = findOne(scatteredOutbound.getId());
-		if(ot.getOpenOrderAudit()==1){
-			throw new ServiceException("已审核，无法修改");
-		}
 		update(scatteredOutbound, ot, "");
 	}
 
-	@Override
-	public int generatePlaceOrder(String ids) {
-		int count = 0;
-		if (!StringUtils.isEmpty(ids)) {
-			String[] idArr = ids.split(",");
-			if (idArr.length > 0) {
-				for (int i = 0; i < idArr.length; i++) {
-					Long id = Long.parseLong(idArr[i]);
-					ScatteredOutbound ot = findOne(id);
-					if (ot.getUserId() == null) {
-						throw new ServiceException("第" + (i + 1) + "条下单跟单人不能为空");
-					}
-					if (StringUtils.isEmpty(ot.getReceiveUser())) {
-						throw new ServiceException("第" + (i + 1) + "条下单领取人不能为空");
-					}
-					if(ot.getOpenOrderAudit()==1){
-						throw new ServiceException("第" + (i + 1) + "条下单已审核，请勿多次审核");
-					}
-					ot.setOpenOrderAudit(1);
-					dao.save(ot);
-					count++;
-				}
-			}
-		}
-		return count;
-	}
+
 
 	@Override
 	public void updateOpenOrder(ScatteredOutbound scatteredOutbound) {

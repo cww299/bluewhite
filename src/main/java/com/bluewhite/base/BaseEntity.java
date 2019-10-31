@@ -1,12 +1,13 @@
 package com.bluewhite.base;
 
+import java.io.Serializable;
+import java.util.Date;
+
 import javax.persistence.Column;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.MappedSuperclass;
-import java.io.Serializable;
-import java.util.Date;
 
 /**
  * <p> 抽象实体基类，提供统一的ID，和相关的基本功能方法
@@ -14,9 +15,6 @@ import java.util.Date;
 @MappedSuperclass
 public abstract class BaseEntity<ID extends Serializable> extends AbstractEntity<ID> {
 
-    /**
-	 * 
-	 */
 	private static final long serialVersionUID = 1L;
 	
 	@Id

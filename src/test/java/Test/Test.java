@@ -1,6 +1,6 @@
 package Test;
 
-import com.bluewhite.common.utils.ZkemUtils.ZkemSDKUtils;
+import com.bluewhite.common.utils.zkemUtils.ZkemSDKUtils;
 
 public class Test {
 	
