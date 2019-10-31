@@ -15,20 +15,6 @@ import java.util.stream.Collectors;
 
 public class DatesUtil {
 
-	public static int getDay(Date date, Integer type) {
-		// 2、获取date对应的Calendar对象
-		Calendar ca = Calendar.getInstance();
-		ca.setTime(date);
-		// 3、可以从ca中获取各种该日期的属性值：
-		if (type == 1) {
-			int month = ca.get(Calendar.MONTH);// 第几个月
-			return month;
-		} else {
-			int year = ca.get(Calendar.YEAR);// 年份数值
-			return year;
-		}
-	}
-
 	/**
 	 * 获得该月第一天
 	 * 
@@ -38,13 +24,12 @@ public class DatesUtil {
 	 * @throws ParseException
 	 */
 	public static Date getFirstDayOfMonth(Date dates) {
-		int month = DatesUtil.getDay(dates, 1);
-		int year = DatesUtil.getDay(dates, 2);
 		Calendar cal = Calendar.getInstance();
+		cal.setTime(dates);
 		// 设置年份
-		cal.set(Calendar.YEAR, year);
+		cal.set(Calendar.YEAR, cal.get(Calendar.YEAR));
 		// 设置月份
-		cal.set(Calendar.MONTH, month);
+		cal.set(Calendar.MONTH, cal.get(Calendar.MONTH));
 		cal.set(Calendar.HOUR_OF_DAY, 0);// 设置时为0点
 		cal.set(Calendar.MINUTE, 0);// 设置分钟为0分
 		cal.set(Calendar.SECOND, 0);// 设置秒为0秒
@@ -66,13 +51,12 @@ public class DatesUtil {
 	 * @throws ParseException
 	 */
 	public static Date getCentreDayOfMonth(Date dates) {
-		int month = DatesUtil.getDay(dates, 1);
-		int year = DatesUtil.getDay(dates, 2);
 		Calendar cal = Calendar.getInstance();
+		cal.setTime(dates);
 		// 设置年份
-		cal.set(Calendar.YEAR, year);
+		cal.set(Calendar.YEAR, cal.get(Calendar.YEAR));
 		// 设置月份
-		cal.set(Calendar.MONTH, month);
+		cal.set(Calendar.MONTH, cal.get(Calendar.MONTH));
 		cal.set(Calendar.HOUR_OF_DAY, 23);// 设置时为0点
 		cal.set(Calendar.MINUTE, 59);// 设置分钟为0分
 		cal.set(Calendar.SECOND, 59);// 设置秒为0秒
@@ -92,13 +76,12 @@ public class DatesUtil {
 	 * @throws ParseException
 	 */
 	public static Date getLastDayOfMonth(Date dates) {
-		int month = DatesUtil.getDay(dates, 1);
-		int year = DatesUtil.getDay(dates, 2);
 		Calendar cal = Calendar.getInstance();
+		cal.setTime(dates);
 		// 设置年份
-		cal.set(Calendar.YEAR, year);
+		cal.set(Calendar.YEAR, cal.get(Calendar.YEAR));
 		// 设置月份
-		cal.set(Calendar.MONTH, month);
+		cal.set(Calendar.MONTH, cal.get(Calendar.MONTH));
 		cal.set(Calendar.HOUR_OF_DAY, 23);
 		cal.set(Calendar.MINUTE, 59);
 		cal.set(Calendar.SECOND, 59);
@@ -111,6 +94,13 @@ public class DatesUtil {
 		return lastDayOfMonth;
 	}
 	
+	
+	public static void main(String[] args) throws ParseException {
+		String date = "2019-09-01 00:00:00";
+		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+		System.out.println(getLastDayOfMonth(sdf.parse(date)));
+	}
+	
 	/**
 	 * 获取前一个月第一天
 	 * 
@@ -118,17 +108,18 @@ public class DatesUtil {
 	 * @return
 	 */
 	public static Date getFristDayOfLastMonth(Date dates) {
-		Calendar calendar1 = Calendar.getInstance();
-		int month = DatesUtil.getDay(dates, 1);
-		int year = DatesUtil.getDay(dates, 2);
-		calendar1.set(Calendar.YEAR, year);
-		calendar1.set(Calendar.MONTH, month-1);
-		calendar1.set(Calendar.DAY_OF_MONTH, 1);
-		calendar1.set(Calendar.HOUR_OF_DAY, 0);// 设置时为0点
-		calendar1.set(Calendar.MINUTE, 0);// 设置分钟为0分
-		calendar1.set(Calendar.SECOND, 0);// 设置秒为0秒
-		calendar1.set(Calendar.MILLISECOND, 000);// 设置毫秒为000
-		return calendar1.getTime();
+		Calendar cal = Calendar.getInstance();
+		cal.setTime(dates);
+		// 设置年份
+		cal.set(Calendar.YEAR, cal.get(Calendar.YEAR));
+		// 设置月份
+		cal.set(Calendar.MONTH, cal.get(Calendar.MONTH)-1);
+		cal.set(Calendar.DAY_OF_MONTH, 1);
+		cal.set(Calendar.HOUR_OF_DAY, 0);// 设置时为0点
+		cal.set(Calendar.MINUTE, 0);// 设置分钟为0分
+		cal.set(Calendar.SECOND, 0);// 设置秒为0秒
+		cal.set(Calendar.MILLISECOND, 000);// 设置毫秒为000
+		return cal.getTime();
 
 	}
 
@@ -139,17 +130,18 @@ public class DatesUtil {
 	 * @return
 	 */
 	public static Date getLastDayOLastMonth(Date dates) {
-		Calendar calendar = Calendar.getInstance();
-		int month = DatesUtil.getDay(dates, 1);
-		int year = DatesUtil.getDay(dates, 2);
-		calendar.set(Calendar.YEAR, year);
-		calendar.set(Calendar.MONTH, month);
-		calendar.set(Calendar.DAY_OF_MONTH, 0);
-		calendar.set(Calendar.HOUR_OF_DAY, 23);
-		calendar.set(Calendar.MINUTE, 59);
-		calendar.set(Calendar.SECOND, 59);
-		calendar.set(Calendar.MILLISECOND, 999);
-		return calendar.getTime();
+		Calendar cal = Calendar.getInstance();
+		cal.setTime(dates);
+		// 设置年份
+		cal.set(Calendar.YEAR, cal.get(Calendar.YEAR));
+		// 设置月份
+		cal.set(Calendar.MONTH, cal.get(Calendar.MONTH)-1);
+		cal.set(Calendar.DAY_OF_MONTH, 0);
+		cal.set(Calendar.HOUR_OF_DAY, 23);
+		cal.set(Calendar.MINUTE, 59);
+		cal.set(Calendar.SECOND, 59);
+		cal.set(Calendar.MILLISECOND, 999);
+		return cal.getTime();
 	}
 
 	/**
