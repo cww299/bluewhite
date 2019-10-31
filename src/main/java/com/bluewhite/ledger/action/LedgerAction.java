@@ -586,10 +586,8 @@ public class LedgerAction {
 		cr.setMessage("成功审核"+count+"条外发单");
 		return cr;
 	}
-
 	
-	
-	
+	/******************************库存管理**************************/
 
 	/**
 	 * （面辅料仓库）修改采购单，作为实际入库单使用
@@ -621,6 +619,36 @@ public class LedgerAction {
 		return cr;
 	}
 	
+	
+	/**
+	 * （1.成品仓库，2.皮壳仓库）修改外发单
+	 * 
+	 * @param order
+	 * @return
+	 */
+	@RequestMapping(value = "/ledger/inventory/updateInventoryOrderOutSource", method = RequestMethod.POST)
+	@ResponseBody
+	public CommonResponse updateInventoryOrderOutSource(OrderOutSource orderOutSource) {
+		CommonResponse cr = new CommonResponse();
+		orderOutSourceService.updateInventoryOrderOutSource(orderOutSource);
+		cr.setMessage("修改成功");
+		return cr;
+	}
+	
+	/**
+	 *
+	 * （1.成品仓库，2.皮壳仓库）对发外单进行确认回库，增加库存操作
+	 * 
+	 * @return
+	 */
+	@RequestMapping(value = "/ledger/inventory/confirmOrderOutSource", method = RequestMethod.GET)
+	@ResponseBody
+	public CommonResponse confirmOrderOutSource(String ids) {
+		CommonResponse cr = new CommonResponse();
+		int count = orderOutSourceService.confirmOrderOutSource(ids);
+		cr.setMessage("成功审核" + count + "条外发单，进行入库");
+		return cr;
+	}
 	
 	
 	

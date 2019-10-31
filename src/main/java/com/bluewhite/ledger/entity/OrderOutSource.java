@@ -8,8 +8,10 @@ import javax.persistence.FetchType;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 
 import com.bluewhite.base.BaseEntity;
+import com.bluewhite.basedata.entity.BaseData;
 import com.bluewhite.system.user.entity.User;
 
 /**
@@ -23,7 +25,7 @@ import com.bluewhite.system.user.entity.User;
 public class OrderOutSource extends BaseEntity<Long> {
 
 	/**
-	 * 工艺单内容填充，用于打印开单 1.填充样棉花
+	 * 工艺单内容填充，用于打印开单 1.填充样棉花类型
 	 */
 	@Column(name = "fill")
 	private String fill;
@@ -33,6 +35,13 @@ public class OrderOutSource extends BaseEntity<Long> {
 	 */
 	@Column(name = "fill_remark")
 	private String fillRemark;
+	
+	/**
+	 * 任务编号
+	 * 
+	 */
+	@Column(name = "out_source_number")
+	private String outSourceNumber;
 
 	/**
 	 * 任务工序
@@ -137,9 +146,87 @@ public class OrderOutSource extends BaseEntity<Long> {
 	@Column(name = "product_type")
 	private Integer productType;
 	
+	/**
+	 * 仓库种类id
+	 */
+	@Column(name = "warehouse_type_id")
+	private Long warehouseTypeId;
+	
+	/**
+	 * 仓库种类
+	 */
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "warehouse_type_id", referencedColumnName = "id", insertable = false, updatable = false)
+	private BaseData warehouseType;
+	
+	/**
+	 * 产品name
+	 */
+	@Transient
+	private String productName;
+	
+	/**
+	 * 查询字段
+	 */
+	@Transient
+	private Date orderTimeBegin;
+	/**
+	 * 查询字段
+	 */
+	@Transient
+	private Date orderTimeEnd;
 	
 	
 	
+	
+
+	public String getOutSourceNumber() {
+		return outSourceNumber;
+	}
+
+	public void setOutSourceNumber(String outSourceNumber) {
+		this.outSourceNumber = outSourceNumber;
+	}
+
+	public Long getWarehouseTypeId() {
+		return warehouseTypeId;
+	}
+
+	public void setWarehouseTypeId(Long warehouseTypeId) {
+		this.warehouseTypeId = warehouseTypeId;
+	}
+
+	public BaseData getWarehouseType() {
+		return warehouseType;
+	}
+
+	public void setWarehouseType(BaseData warehouseType) {
+		this.warehouseType = warehouseType;
+	}
+
+	public String getProductName() {
+		return productName;
+	}
+
+	public void setProductName(String productName) {
+		this.productName = productName;
+	}
+
+	public Date getOrderTimeBegin() {
+		return orderTimeBegin;
+	}
+
+	public void setOrderTimeBegin(Date orderTimeBegin) {
+		this.orderTimeBegin = orderTimeBegin;
+	}
+
+	public Date getOrderTimeEnd() {
+		return orderTimeEnd;
+	}
+
+	public void setOrderTimeEnd(Date orderTimeEnd) {
+		this.orderTimeEnd = orderTimeEnd;
+	}
 
 	public Integer getAudit() {
 		return audit;
