@@ -77,7 +77,7 @@ public class LedgerAction {
 	private ScatteredOutboundService scatteredOutboundService;
 	@Autowired
 	private OrderOutSourceService orderOutSourceService;
-	
+
 	private ClearCascadeJSON clearCascadeJSON;
 	{
 		clearCascadeJSON = ClearCascadeJSON.get()
@@ -98,10 +98,8 @@ public class LedgerAction {
 						"deliveryNumber", "deliveryDate", "disputeNumber", "disputeRemark", "deliveryCollectionDate",
 						"offshorePay", "acceptPay", "disputePay", "deliveryStatus", "warehouse", "warehouseType",
 						"confirm", "confirmNumber")
-				.addRetainTerm(BaseData.class, "id", "name")
-				.addRetainTerm(Customer.class, "id", "name", "user")
-				.addRetainTerm(User.class, "id", "userName")
-				.addRetainTerm(Product.class, "id", "name", "number");
+				.addRetainTerm(BaseData.class, "id", "name").addRetainTerm(Customer.class, "id", "name", "user")
+				.addRetainTerm(User.class, "id", "userName").addRetainTerm(Product.class, "id", "name", "number");
 	}
 
 	private ClearCascadeJSON clearCascadeJSONChild;
@@ -126,17 +124,15 @@ public class LedgerAction {
 		clearCascadeJSONSendGoods = ClearCascadeJSON.get()
 				.addRetainTerm(SendGoods.class, "id", "customer", "bacthNumber", "product", "number", "sendNumber",
 						"surplusNumber", "sendDate", "orderId")
-				.addRetainTerm(Customer.class, "id", "name")
-				.addRetainTerm(Product.class, "name", "number");
+				.addRetainTerm(Customer.class, "id", "name").addRetainTerm(Product.class, "name", "number");
 	}
 
 	private ClearCascadeJSON clearCascadeJSONOrder;
 	{
 		clearCascadeJSONOrder = ClearCascadeJSON.get()
 				.addRetainTerm(Order.class, "id", "remark", "orderDate", "customer", "bacthNumber", "product", "number",
-						"price","orderMaterials")
-				.addRetainTerm(OrderMaterial.class, "id")
-				.addRetainTerm(Customer.class, "id", "name")
+						"price", "orderMaterials")
+				.addRetainTerm(OrderMaterial.class, "id").addRetainTerm(Customer.class, "id", "name")
 				.addRetainTerm(Product.class, "id", "name", "number");
 	}
 
@@ -156,50 +152,45 @@ public class LedgerAction {
 
 	private ClearCascadeJSON clearCascadeJSONReceivedMoney;
 	{
-		clearCascadeJSONReceivedMoney = ClearCascadeJSON.get()
-				.addRetainTerm(ReceivedMoney.class, "id", "customer","receivedMoneyDate", "receivedMoney", "receivedRemark")
-				.addRetainTerm(Customer.class, "id", "name");
+		clearCascadeJSONReceivedMoney = ClearCascadeJSON.get().addRetainTerm(ReceivedMoney.class, "id", "customer",
+				"receivedMoneyDate", "receivedMoney", "receivedRemark").addRetainTerm(Customer.class, "id", "name");
 	}
-	
+
 	private ClearCascadeJSON clearCascadeJSONOrderMaterial;
 	{
 		clearCascadeJSONOrderMaterial = ClearCascadeJSON.get()
-				.addRetainTerm(OrderMaterial.class,"id","order", "materiel","receiveMode", "user", "unit","dosage","audit","outbound",
-						"state","inventoryTotal")
-				.addRetainTerm(Order.class, "id", "bacthNumber","product","number","remark")
-				.addRetainTerm(Materiel.class, "id", "name","number","orderProcurements","inventoryNumber")
-				.addRetainTerm(OrderProcurement.class, "id", "orderProcurementNumber","placeOrderNumber","arrivalNumber",
-						"placeOrderTime","expectArrivalTime","arrivalTime","customer","user"
-						,"materielLocation","price","squareGram","residueNumber")
-				.addRetainTerm(Customer.class, "id", "name")
-				.addRetainTerm(BaseOne.class, "id", "name")
-				.addRetainTerm(User.class, "id", "userName")
-				.addRetainTerm(Product.class, "id", "name");
+				.addRetainTerm(OrderMaterial.class, "id", "order", "materiel", "receiveMode", "user", "unit", "dosage",
+						"audit", "outbound", "state", "inventoryTotal")
+				.addRetainTerm(Order.class, "id", "bacthNumber", "product", "number", "remark")
+				.addRetainTerm(Materiel.class, "id", "name", "number", "orderProcurements", "inventoryNumber")
+				.addRetainTerm(OrderProcurement.class, "id", "orderProcurementNumber", "placeOrderNumber",
+						"arrivalNumber", "placeOrderTime", "expectArrivalTime", "arrivalTime", "customer", "user",
+						"materielLocation", "price", "squareGram", "residueNumber")
+				.addRetainTerm(Customer.class, "id", "name").addRetainTerm(BaseOne.class, "id", "name")
+				.addRetainTerm(User.class, "id", "userName").addRetainTerm(Product.class, "id", "name");
 	}
-	
+
 	private ClearCascadeJSON clearCascadeJSONOrderProcurement;
 	{
 		clearCascadeJSONOrderProcurement = ClearCascadeJSON.get()
-				.addRetainTerm(OrderProcurement.class, "id", "orderProcurementNumber","placeOrderNumber","arrivalNumber",
-						"placeOrderTime","expectArrivalTime","arrivalTime","customer","user"
-						,"materielLocation","price","squareGram","userStorage","arrival")
-				.addRetainTerm(Customer.class, "id", "name")
-				.addRetainTerm(BaseOne.class, "id", "name")
+				.addRetainTerm(OrderProcurement.class, "id", "orderProcurementNumber", "placeOrderNumber",
+						"arrivalNumber", "placeOrderTime", "expectArrivalTime", "arrivalTime", "customer", "user",
+						"materielLocation", "price", "squareGram", "userStorage", "arrival")
+				.addRetainTerm(Customer.class, "id", "name").addRetainTerm(BaseOne.class, "id", "name")
 				.addRetainTerm(User.class, "id", "userName");
 	}
-	
+
 	private ClearCascadeJSON clearCascadeJSONScatteredOutbound;
 	{
 		clearCascadeJSONScatteredOutbound = ClearCascadeJSON.get()
-				.addRetainTerm(ScatteredOutbound.class, "id", "outboundNumber","orderMaterial","orderProcurement",
-						"receiveUser","user","dosage","remark","audit","auditTime","placeOrderTime","openOrderAudit")
+				.addRetainTerm(ScatteredOutbound.class, "id", "outboundNumber", "orderMaterial", "orderProcurement",
+						"receiveUser", "user", "dosage", "remark", "audit", "auditTime", "placeOrderTime",
+						"openOrderAudit")
 				.addRetainTerm(OrderProcurement.class, "id", "orderProcurementNumber")
-				.addRetainTerm(OrderMaterial.class,"id","receiveMode","order")
-				.addRetainTerm(Order.class, "id", "bacthNumber","product","number","remark")
-				.addRetainTerm(BaseOne.class, "id", "name")
-				.addRetainTerm(User.class, "id", "userName");
+				.addRetainTerm(OrderMaterial.class, "id", "receiveMode", "order")
+				.addRetainTerm(Order.class, "id", "bacthNumber", "product", "number", "remark")
+				.addRetainTerm(BaseOne.class, "id", "name").addRetainTerm(User.class, "id", "userName");
 	}
-	
 
 	/**
 	 * 分页查看订单
@@ -217,8 +208,6 @@ public class LedgerAction {
 		cr.setMessage("查看成功");
 		return cr;
 	}
-	
-	
 
 	/**
 	 * 查看订单
@@ -338,7 +327,7 @@ public class LedgerAction {
 		cr.setMessage("成功删除" + count + "条耗料");
 		return cr;
 	}
-	
+
 	/**
 	 * （生产计划部）审核耗料表
 	 * 
@@ -354,8 +343,6 @@ public class LedgerAction {
 		return cr;
 	}
 
-	
-	
 	/**
 	 * （采购部）查看采购订单
 	 * 
@@ -367,18 +354,16 @@ public class LedgerAction {
 	@ResponseBody
 	public CommonResponse getOrderProcurement(PageParameter page, OrderProcurement orderProcurement) {
 		CommonResponse cr = new CommonResponse();
-		cr.setData(clearCascadeJSONOrderProcurement.format(orderProcurementService.findPages(orderProcurement, page)).toJSON());
+		cr.setData(clearCascadeJSONOrderProcurement.format(orderProcurementService.findPages(orderProcurement, page))
+				.toJSON());
 		cr.setMessage("查看成功");
 		return cr;
 	}
-	
+
 	/**
-	 * （采购部）确认库存不足的面料
-	 *        生成采购订单
-	 *        需要自动新增物料编号
-	 *        1.自动生成带克重的新物料编号
-	 *        填写了平方克重 （ 面料-“花2大”119{平方克重:190克}）
-	 *        2.自动生成新物料编号 （辅料-“花1大”54）
+	 * （采购部）确认库存不足的面料 生成采购订单 需要自动新增物料编号 1.自动生成带克重的新物料编号 填写了平方克重 （
+	 * 面料-“花2大”119{平方克重:190克}） 2.自动生成新物料编号 （辅料-“花1大”54）
+	 * 
 	 * @return
 	 */
 	@RequestMapping(value = "/ledger/confirmOrderProcurement", method = RequestMethod.POST)
@@ -388,11 +373,9 @@ public class LedgerAction {
 		orderProcurementService.saveOrderProcurement(orderProcurement);
 		cr.setMessage("新增采购订单成功");
 		return cr;
-		
-		
+
 	}
-	
-	
+
 	/**
 	 * （采购部）删除采购单
 	 * 
@@ -407,12 +390,10 @@ public class LedgerAction {
 		cr.setMessage("成功删除" + count + "条采购单");
 		return cr;
 	}
-	
+
 	/**
-	 * （采购部）将所有已有库存的耗料表生成分散出库记录
-	 * 将已经订购的采购单面料当作库存，进行出库
-	 * 冻结当前下单合同的当前耗料表对于库存的消耗
-	 *        
+	 * （采购部）将所有已有库存的耗料表生成分散出库记录 将已经订购的采购单面料当作库存，进行出库 冻结当前下单合同的当前耗料表对于库存的消耗
+	 * 
 	 * @return
 	 */
 	@RequestMapping(value = "/ledger/saveScatteredOutbound", method = RequestMethod.GET)
@@ -423,7 +404,7 @@ public class LedgerAction {
 		cr.setMessage("成功出库" + count + "条耗料单");
 		return cr;
 	}
-	
+
 	/**
 	 * （采购部）审核分散出库单
 	 * 
@@ -432,14 +413,13 @@ public class LedgerAction {
 	 */
 	@RequestMapping(value = "/ledger/auditScatteredOutbound", method = RequestMethod.GET)
 	@ResponseBody
-	public CommonResponse auditScatteredOutbound(String ids,Date time) {
+	public CommonResponse auditScatteredOutbound(String ids, Date time) {
 		CommonResponse cr = new CommonResponse();
-		int count = scatteredOutboundService.auditScatteredOutbound(ids,time);
+		int count = scatteredOutboundService.auditScatteredOutbound(ids, time);
 		cr.setMessage("成功审核" + count + "条分散出库单");
 		return cr;
 	}
-	
-	
+
 	/**
 	 * （采购部）删除分散出库单
 	 * 
@@ -454,25 +434,25 @@ public class LedgerAction {
 		cr.setMessage("成功删除" + count + "条分散出库单");
 		return cr;
 	}
-	
+
 	/**
 	 * （采购部）（生产计划部）分页查看分散出库单 生产计划部查看的是审核之后的采购单
-	 *        
+	 * 
 	 * @return
 	 */
 	@RequestMapping(value = "/ledger/getScatteredOutbound", method = RequestMethod.GET)
 	@ResponseBody
 	public CommonResponse getScatteredOutbound(PageParameter page, ScatteredOutbound scatteredOutbound) {
 		CommonResponse cr = new CommonResponse();
-		cr.setData(clearCascadeJSONScatteredOutbound.format(scatteredOutboundService.findPages(scatteredOutbound, page)).toJSON());
+		cr.setData(clearCascadeJSONScatteredOutbound.format(scatteredOutboundService.findPages(scatteredOutbound, page))
+				.toJSON());
 		cr.setMessage("查看成功");
 		return cr;
 	}
-	
+
 	/**
-	 * (采购部)
-	 * 修改分散出库单
-	 *        
+	 * (采购部) 修改分散出库单
+	 * 
 	 * @return
 	 */
 	@RequestMapping(value = "/ledger/updateScatteredOutbound", method = RequestMethod.POST)
@@ -483,44 +463,42 @@ public class LedgerAction {
 		cr.setMessage("修改成功");
 		return cr;
 	}
-	
+
 	/**
-	 * （采购部）采购单出入不符预警
-	 * 采购单经过面辅料仓库审核入库后，将出入库数量不相同的进行标记预警
+	 * （采购部）采购单出入不符预警 采购单经过面辅料仓库审核入库后，将出入库数量不相同的进行标记预警
 	 * 
 	 * @param order
 	 * @return
 	 */
 	@RequestMapping(value = "/ledger/warningOrderProcurement", method = RequestMethod.GET)
 	@ResponseBody
-	public CommonResponse  warningOrderProcurement() {
+	public CommonResponse warningOrderProcurement() {
 		CommonResponse cr = new CommonResponse();
-		cr.setData(clearCascadeJSONOrderProcurement.format(orderProcurementService.warningOrderProcurement(1)).toJSON());
+		cr.setData(
+				clearCascadeJSONOrderProcurement.format(orderProcurementService.warningOrderProcurement(1)).toJSON());
 		cr.setMessage("查询成功");
 		return cr;
 	}
-	
+
 	/**
-	 * （采购部）当采购单出入不符预警
-	 * 进行一键更新订单数量
+	 * （采购部）当采购单出入不符预警 进行一键更新订单数量
 	 * 
 	 * @param order
 	 * @return
 	 */
 	@RequestMapping(value = "/ledger/fixOrderProcurement", method = RequestMethod.GET)
 	@ResponseBody
-	public CommonResponse  fixOrderProcurement(String ids) {
+	public CommonResponse fixOrderProcurement(String ids) {
 		CommonResponse cr = new CommonResponse();
 		orderProcurementService.fixOrderProcurement(ids);
 		cr.setMessage("更新成功");
 		return cr;
 	}
-	
 
 	/**
-	 * (生产计划部)
-	 * 修改下单
-	 *        
+	 * 
+	 * (生产计划部) 修改下单
+	 * 
 	 * @return
 	 */
 	@RequestMapping(value = "/ledger/updatePlaceOrder", method = RequestMethod.POST)
@@ -531,42 +509,9 @@ public class LedgerAction {
 		cr.setMessage("修改成功");
 		return cr;
 	}
-	
-	
+
 	/**
-	 * （生产计划部）将分散出库单，变成下单，同时审核成为外发单
-	 * 
-	 * @param order
-	 * @return
-	 */
-	@RequestMapping(value = "/ledger/generatePlaceOrder", method = RequestMethod.GET)
-	@ResponseBody
-	public CommonResponse generatePlaceOrder(String ids) {
-		CommonResponse cr = new CommonResponse();
-		int count = scatteredOutboundService.generatePlaceOrder(ids);
-		cr.setMessage("成功生成" + count + "条外发单");
-		return cr;
-	}
-	
-	/**
-	 * （生产计划部）修改下单内容
-	 * 
-	 * @param order
-	 * @return
-	 */
-	@RequestMapping(value = "/ledger/updateOpenOrder", method = RequestMethod.POST)
-	@ResponseBody
-	public CommonResponse updateOpenOrder(ScatteredOutbound scatteredOutbound) {
-		CommonResponse cr = new CommonResponse();
-		scatteredOutboundService.updateOpenOrder(scatteredOutbound);
-		cr.setMessage("修改成功");
-		return cr;
-	}
-	
-	
-	/**
-	 *  （生产计划部） 分页查看外发单
-	 * 
+	 * （生产计划部） 分页查看外发单
 	 * 
 	 * @param page
 	 * @param order
@@ -574,14 +519,14 @@ public class LedgerAction {
 	 */
 	@RequestMapping(value = "/ledger/orderOutSourcePage", method = RequestMethod.GET)
 	@ResponseBody
-	public CommonResponse orderOutSourcePage(PageParameter page,OrderOutSource orderOutSource) {
+	public CommonResponse orderOutSourcePage(PageParameter page, OrderOutSource orderOutSource) {
 		CommonResponse cr = new CommonResponse();
 		cr.setData(clearCascadeJSONOrder.format(orderOutSourceService.findPages(orderOutSource, page)).toJSON());
 		cr.setMessage("查看成功");
 		return cr;
 	}
 	
-	
+
 	/**
 	 * （生产计划部）新增外发单
 	 * 
@@ -597,9 +542,38 @@ public class LedgerAction {
 		return cr;
 	}
 	
+	/**
+	 * （生产计划部）修改外发单
+	 * 
+	 * @param order
+	 * @return
+	 */
+	@RequestMapping(value = "/ledger/updateOrderOutSource", method = RequestMethod.POST)
+	@ResponseBody
+	public CommonResponse updateOrderOutSource(OrderOutSource orderOutSource) {
+		CommonResponse cr = new CommonResponse();
+		orderOutSourceService.updateOrderOutSource(orderOutSource);
+		cr.setMessage("修改成功");
+		return cr;
+	}
+	
+	/**
+	 * （生产计划部）作废外发单
+	 * 
+	 * @param order
+	 * @return
+	 */
+	@RequestMapping(value = "/ledger/invalidOrderOutSource", method = RequestMethod.POST)
+	@ResponseBody
+	public CommonResponse invalidOrderOutSource(String ids) {
+		CommonResponse cr = new CommonResponse();
+		int count = orderOutSourceService.invalidOrderOutSource(ids);
+		cr.setMessage("成功作废"+count+"外发单");
+		return cr;
+	}
 	
 	
-	
+
 	/**
 	 * （面辅料仓库）修改采购单，作为实际入库单使用
 	 * 
@@ -608,14 +582,13 @@ public class LedgerAction {
 	 */
 	@RequestMapping(value = "/ledger/updateOrderProcurement", method = RequestMethod.POST)
 	@ResponseBody
-	public CommonResponse  updateOrderProcurement(OrderProcurement orderProcurement) {
+	public CommonResponse updateOrderProcurement(OrderProcurement orderProcurement) {
 		CommonResponse cr = new CommonResponse();
 		orderProcurementService.updateOrderProcurement(orderProcurement);
 		cr.setMessage("修改成功");
 		return cr;
 	}
-	
-	
+
 	/**
 	 * （面辅料仓库）审核采购单入库，作为实际库存使用
 	 * 
@@ -624,7 +597,7 @@ public class LedgerAction {
 	 */
 	@RequestMapping(value = "/ledger/auditOrderProcurement", method = RequestMethod.GET)
 	@ResponseBody
-	public CommonResponse  auditOrderProcurement(String ids) {
+	public CommonResponse auditOrderProcurement(String ids) {
 		CommonResponse cr = new CommonResponse();
 		int count = orderProcurementService.auditOrderProcurement(ids);
 		cr.setMessage("成功审核" + count + "条采购单，进行入库");
@@ -638,17 +611,7 @@ public class LedgerAction {
 	
 	
 	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
+
 	/**
 	 * 分页查看贴包单
 	 * 

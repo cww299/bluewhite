@@ -26,7 +26,6 @@ import com.bluewhite.common.entity.CommonResponse;
 import com.bluewhite.common.entity.ErrorCode;
 import com.bluewhite.common.entity.PageParameter;
 import com.bluewhite.common.utils.DatesUtil;
-import com.bluewhite.common.utils.ZkemUtils.ZkemSDKUtils;
 import com.bluewhite.personnel.attendance.dao.PersonVariableDao;
 import com.bluewhite.personnel.attendance.entity.ApplicationLeave;
 import com.bluewhite.personnel.attendance.entity.Attendance;
@@ -657,9 +656,11 @@ public class AttendanceAction {
 	 */
 	@RequestMapping(value = "/personnel/regEvent", method = RequestMethod.GET)
 	@ResponseBody
-	public void regEvent(HttpServletRequest request) {
-		ZkemSDKUtils sdk = new ZkemSDKUtils();
-		sdk.disConnect();
+	public void regEvent() {
+		
+		
+		
+		
 	}
 
 	@InitBinder

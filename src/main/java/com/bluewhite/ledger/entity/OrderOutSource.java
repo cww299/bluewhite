@@ -13,7 +13,7 @@ import com.bluewhite.base.BaseEntity;
 import com.bluewhite.system.user.entity.User;
 
 /**
- * 生产计划部 外发单
+ * 生产计划部 外发单(外发单在加工点完成后，回库处理)
  * 
  * @author zhangliang
  *
@@ -36,7 +36,8 @@ public class OrderOutSource extends BaseEntity<Long> {
 	private String fillRemark;
 
 	/**
-	 * 任务工序（）
+	 * 任务工序
+	 * 
 	 */
 	@Column(name = "process")
 	private String process;
@@ -56,10 +57,9 @@ public class OrderOutSource extends BaseEntity<Long> {
 	/**
 	 * 备注
 	 */
-
 	@Column(name = "remark")
 	private String remark;
-  
+
 	/**
 	 * 加工点id
 	 * 
@@ -107,6 +107,52 @@ public class OrderOutSource extends BaseEntity<Long> {
 	 */
 	@Column(name = "open_order_time")
 	private Date openOrderTime;
+
+	/**
+	 * 是否整单
+	 */
+	@Column(name = " whole_list")
+	private Integer wholeList;
+
+	/**
+	 * 是否作废
+	 */
+	@Column(name = "flag")
+	private Integer flag;
+
+	/**
+	 * 分类(1=成品，2=皮壳)
+	 */
+	@Column(name = "product_type")
+	private Integer productType;
+	
+	
+	
+	
+
+	public Integer getProductType() {
+		return productType;
+	}
+
+	public void setProductType(Integer productType) {
+		this.productType = productType;
+	}
+
+	public Integer getWholeList() {
+		return wholeList;
+	}
+
+	public void setWholeList(Integer wholeList) {
+		this.wholeList = wholeList;
+	}
+
+	public Integer getFlag() {
+		return flag;
+	}
+
+	public void setFlag(Integer flag) {
+		this.flag = flag;
+	}
 
 	public String getFill() {
 		return fill;
