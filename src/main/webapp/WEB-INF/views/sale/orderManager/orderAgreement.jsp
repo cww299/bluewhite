@@ -129,6 +129,72 @@
 	<p style="display:none;"><button lay-submit lay-filter="sureEdit" id="sureEdit">确定</button></p>
 </div>
 </script>
+<!-- 生成外发单模板 -->
+<script type="text/html" id="addOutOrderTpl">
+<div class="layui-form layui-form-pane" style="padding:20px;">
+	<div class="layui-item" pane>
+		<label class="layui-form-label">任务编号</label>
+		<div class="layui-input-block">
+			<input class="layui-input" name="outSourceNumber" id="outSourceNumber" readonly>
+		</div>
+	</div>
+	<div class="layui-item" pane>
+		<label class="layui-form-label">棉花类型</label>
+		<div class="layui-input-block">
+			<input class="layui-input" name="fill">
+		</div>
+	</div>
+	<div class="layui-item" pane>
+		<label class="layui-form-label">棉花备注</label>
+		<div class="layui-input-block">
+			<input class="layui-input" name="fillRemark">
+		</div>
+	</div>
+	<div class="layui-item" pane>
+		<label class="layui-form-label">任务工序</label>
+		<div class="layui-input-block">
+			<input class="layui-input" name="process">
+		</div>
+	</div>
+	<div class="layui-item" pane>
+		<label class="layui-form-label">任务数量</label>
+		<div class="layui-input-block">
+			<input class="layui-input" name="processNumber">
+		</div>
+	</div>
+	<div class="layui-item" pane>
+		<label class="layui-form-label">克重</label>
+		<div class="layui-input-block">
+			<input class="layui-input" name="gramWeight">
+		</div>
+	</div>
+	<div class="layui-item" pane>
+		<label class="layui-form-label">加工点</label>
+		<div class="layui-input-block">
+			<select lay-search name="customerId" id="customerId"><option value="">请选择</option></select>
+		</div>
+	</div>
+	<div class="layui-item" pane>
+		<label class="layui-form-label">跟单人</label>
+		<div class="layui-input-block">
+			<select lay-search name="userId" id="userId"><option value="">请选择</option></select>
+		</div>
+	</div>
+	<div class="layui-item" pane>
+		<label class="layui-form-label">开单时间</label>
+		<div class="layui-input-block">
+			<input class="layui-input" name="openOrderTime" id="openOrderTime">
+		</div>
+	</div>
+	<div class="layui-item" pane>
+		<label class="layui-form-label">外发时间</label>
+		<div class="layui-input-block">
+			<input class="layui-input" name="outGoingTime" id="outGoingTime">
+		</div>
+	</div>
+	<p style="display:none;"><button lay-submit lay-filter="sureAddOutOrder" id="sureAddOutOrder">确定</button></p>
+</div>
+</script>
 <!-- 表格工具栏模板 -->
 <script type="text/html" id="agreementToolbar">
 <div>
@@ -137,6 +203,7 @@
 	<span lay-event="update"  class="layui-btn layui-btn-sm" >修改合同</span>
 	<span lay-event="productUseup"  class="layui-btn layui-btn-sm layui-btn-normal" >生成耗料订单</span>
 	<span lay-event="lookoverUseup"  class="layui-btn layui-btn-sm" >查看耗料订单</span>
+	<span lay-event="outOrder"  class="layui-btn layui-btn-sm layui-btn-warm" >生成外发单</span>
 </div>
 </script>
 <!-- 表格工具栏模板 -->
@@ -169,6 +236,7 @@ layui.config({
 		myutil.keyDownEntry(function(){   //监听回车事件
 			$('#searchBtn').click();
 		})
+		var customerSelectHtml = '',userSelectHtml = '';
 		laydate.render({ elem:'#searchTime', range:'~' })
 		table.render({
 			elem:'#tableAgreement',
@@ -220,8 +288,44 @@ layui.config({
 			case 'delete':	deletes();			break;
 			case 'lookoverUseup': lookoverUseup(); break;
 			case 'productUseup': productUseup(); break;
+			case 'outOrder': outOrder(); break;
 			} 
 		})
+		function outOrder(){
+			var checked = layui.table.checkStatus('tableAgreement').data;
+			if(checked.length!=1)
+				return myutil.emsg('只能选择一条信息进行生成');
+			var win = layer.open({
+				type:1,
+				content:$('#addOutOrderTpl').html(),
+				area:['30%','80%'],
+				btn:['确定','取消'],
+				title:'生成外发单',
+				btnAlign:'c',
+				success:function(){
+					$('#outSourceNumber').val(checked[0].bacthNumber+checked[0].product.name);
+					laydate.render({ elem:'#openOrderTime', type:'datetime', });
+					laydate.render({ elem:'#outGoingTime', type:'datetime', });
+					form.on('submit(sureAddOutOrder)',function(obj){
+						obj.field.orderId = checked[0].id;
+						myutil.saveAjax({
+							url:'/ledger/saveOrderOutSource',
+							data: obj.field,
+							success:function(){
+								layer.close(win);
+							}
+						})
+					})
+					$('#customerId').append(customerSelectHtml);
+					$('#userId').append(userSelectHtml);
+					form.render();
+				},
+				yes:function(){
+					$('#sureAddOutOrder').click();
+				}
+			})
+			
+		}
 		var mode = [];
 		function lookoverUseup(){
 			var checked = layui.table.checkStatus('tableAgreement').data;
@@ -621,6 +725,22 @@ layui.config({
 				}
 			})
 		}
+		myutil.getData({
+			url:'${ctx}/system/user/findUserList?orgNameIds=20,23',
+			success:function(d){
+				for(var i=0,len=d.length;i<len;i++){
+					userSelectHtml += '<option value="'+d[i].id+'">'+d[i].userName+'</option>';
+				}
+			}
+		})
+		myutil.getData({
+			url:'${ctx}/ledger/allCustomer?type=5',
+			success:function(d){
+				for(var i=0,len=d.length;i<len;i++){
+					customerSelectHtml += '<option value="'+d[i].id+'">'+d[i].name+'</option>';
+				}
+			}
+		})
 	}//end define function
 )//endedefine
 </script>
