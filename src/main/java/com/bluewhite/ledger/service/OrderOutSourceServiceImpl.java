@@ -41,6 +41,8 @@ public class OrderOutSourceServiceImpl extends BaseServiceImpl<OrderOutSource, L
 			if(NumUtils.sum(sumNumber,orderOutSource.getProcessNumber()) > order.getNumber()){
 				throw new ServiceException("外发总数量不能大于下单合同数量，请核实后填写");
 			}
+			orderOutSource.setFlag(0);
+			orderOutSource.setAudit(0);
 			save(orderOutSource);
 		}else{
 			throw new ServiceException("生产下单合同不能为空");
@@ -119,6 +121,24 @@ public class OrderOutSourceServiceImpl extends BaseServiceImpl<OrderOutSource, L
 					Long id = Long.parseLong(idArr[i]);
 					OrderOutSource orderOutSource = findOne(id);
 					orderOutSource.setFlag(1);
+					save(orderOutSource);
+					count++;
+				}
+			}
+		}
+		return count;
+	}
+
+	@Override
+	public int auditOrderOutSource(String ids) {
+		int count = 0;
+		if (!StringUtils.isEmpty(ids)) {
+			String[] idArr = ids.split(",");
+			if (idArr.length > 0) {
+				for (int i = 0; i < idArr.length; i++) {
+					Long id = Long.parseLong(idArr[i]);
+					OrderOutSource orderOutSource = findOne(id);
+					orderOutSource.setAudit(1);
 					save(orderOutSource);
 					count++;
 				}

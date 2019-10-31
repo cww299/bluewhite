@@ -563,14 +563,31 @@ public class LedgerAction {
 	 * @param order
 	 * @return
 	 */
-	@RequestMapping(value = "/ledger/invalidOrderOutSource", method = RequestMethod.POST)
+	@RequestMapping(value = "/ledger/invalidOrderOutSource", method = RequestMethod.GET)
 	@ResponseBody
 	public CommonResponse invalidOrderOutSource(String ids) {
 		CommonResponse cr = new CommonResponse();
 		int count = orderOutSourceService.invalidOrderOutSource(ids);
-		cr.setMessage("成功作废"+count+"外发单");
+		cr.setMessage("成功作废"+count+"条外发单");
 		return cr;
 	}
+	
+	/**
+	 * （生产计划部） 审核外发单
+	 * 
+	 * @param order
+	 * @return
+	 */
+	@RequestMapping(value = "/ledger/auditOrderOutSource", method = RequestMethod.GET)
+	@ResponseBody
+	public CommonResponse auditOrderOutSource(String ids) {
+		CommonResponse cr = new CommonResponse();
+		int count = orderOutSourceService.auditOrderOutSource(ids);
+		cr.setMessage("成功审核"+count+"条外发单");
+		return cr;
+	}
+
+	
 	
 	
 
