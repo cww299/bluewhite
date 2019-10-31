@@ -336,7 +336,7 @@ layui.extend({
 							return field;
 						})();
 						table.addTemp(tableId,field,function(trElem){
-							opt.curd.addTempAfter && opt.curd.addTempAfter();
+							opt.curd.addTempAfter && opt.curd.addTempAfter(trElem);
 							renderData(dateField,'date');
 							renderData(dateTimeField,'datetime');
 							function renderData(data,type){
