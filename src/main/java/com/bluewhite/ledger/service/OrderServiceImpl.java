@@ -129,6 +129,7 @@ public class OrderServiceImpl extends BaseServiceImpl<Order, Long> implements Or
 				orderNew.setPrice(jsonObject.getDouble("price"));
 				orderNew.setRemark(jsonObject.getString("remark"));
 				orderNew.setOrderDate(jsonObject.getDate("orderDate")!= null ? jsonObject.getDate("orderDate"): new Date());
+				orderNew.setPrepareEnough(0);
 				orderList.add(orderNew);
 			}
 		}

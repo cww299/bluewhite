@@ -117,6 +117,12 @@ public class Order extends BaseEntity<Long>{
 	private Integer audit;
 	
 	/**
+	 * 是否备料充足，可以进行外发单的生成
+	 */
+	@Column(name = "prepare_enough")
+	private Integer PrepareEnough;
+	
+	/**
 	 * 客户name
 	 * 
 	 */
@@ -149,6 +155,16 @@ public class Order extends BaseEntity<Long>{
 	
 	
 	
+	public Integer getPrepareEnough() {
+		return PrepareEnough;
+	}
+
+
+	public void setPrepareEnough(Integer prepareEnough) {
+		PrepareEnough = prepareEnough;
+	}
+
+
 	public Set<OrderMaterial> getOrderMaterials() {
 		return orderMaterials;
 	}
