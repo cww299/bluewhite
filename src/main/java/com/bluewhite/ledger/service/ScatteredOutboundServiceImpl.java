@@ -41,6 +41,8 @@ public class ScatteredOutboundServiceImpl extends BaseServiceImpl<ScatteredOutbo
 	private OrderMaterialDao orderMaterialDao;
 	@Autowired
 	private MaterielDao materielDao;
+	@Autowired
+	private OrderService orderService;
 
 	@Override
 	@Transactional
@@ -192,8 +194,19 @@ public class ScatteredOutboundServiceImpl extends BaseServiceImpl<ScatteredOutbo
 					dao.save(ot);
 					count++;
 				}
+				//对订单的备料状态进行更新
+				ScatteredOutbound scatteredOutbound = findOne(Long.parseLong(idArr[0]));
+				if(scatteredOutbound!=null && scatteredOutbound.getOrderMaterial().getOrder()!=null){
+					
+					
+					
+				}
 			}
 		}
+		
+		
+		
+		
 		return count;
 	}
 
