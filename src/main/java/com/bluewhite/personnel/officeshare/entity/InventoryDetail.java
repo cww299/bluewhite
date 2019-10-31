@@ -15,7 +15,7 @@ import com.bluewhite.basedata.entity.BaseData;
 import com.bluewhite.system.user.entity.User;
 
 /**
- * 办公用品出入库明细
+ * 出入库明细
  * @author zhangliang
  *
  */
@@ -111,9 +111,21 @@ public class InventoryDetail extends BaseEntity<Long>{
 	@Transient
 	private Date orderTimeEnd;
 	
+	/**
+	 * 物品类型
+	 */
+	@Transient
+	private Integer type;
 	
 	
 
+	public Integer getType() {
+		return type;
+	}
+
+	public void setType(Integer type) {
+		this.type = type;
+	}
 
 	public Double getOutboundCost() {
 		return outboundCost;
