@@ -51,4 +51,18 @@ public interface OrderOutSourceService extends BaseCRUDService<OrderOutSource, L
 	 */
 	public int auditOrderOutSource(String ids);
 	
+	/**
+	 * （1.成品仓库，2.皮壳仓库）修改外发单
+	 * @param orderOutSource
+	 */
+	public void updateInventoryOrderOutSource(OrderOutSource orderOutSource);
+	
+	/**
+	 *
+	 * （1.成品仓库，2.皮壳仓库）对发外单进行确认回库，增加库存操作
+	 * 
+	 * @return
+	 */
+	public int confirmOrderOutSource(String ids);
+	
 }

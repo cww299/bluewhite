@@ -41,6 +41,7 @@ public class OrderOutSourceServiceImpl extends BaseServiceImpl<OrderOutSource, L
 			if(NumUtils.sum(sumNumber,orderOutSource.getProcessNumber()) > order.getNumber()){
 				throw new ServiceException("外发总数量不能大于下单合同数量，请核实后填写");
 			}
+			orderOutSource.setRemark(order.getRemark());
 			orderOutSource.setFlag(0);
 			orderOutSource.setAudit(0);
 			save(orderOutSource);
@@ -140,6 +141,36 @@ public class OrderOutSourceServiceImpl extends BaseServiceImpl<OrderOutSource, L
 					OrderOutSource orderOutSource = findOne(id);
 					orderOutSource.setAudit(1);
 					save(orderOutSource);
+					count++;
+				}
+			}
+		}
+		return count;
+	}
+
+	@Override
+	public void updateInventoryOrderOutSource(OrderOutSource orderOutSource) {
+		if(orderOutSource.getId()!=null){
+			OrderOutSource ot = findOne(orderOutSource.getId());
+			update(orderOutSource, ot, "");
+		}
+	}
+
+	@Override
+	public int confirmOrderOutSource(String ids) {
+		int count = 0;
+		if (!StringUtils.isEmpty(ids)) {
+			String[] idArr = ids.split(",");
+			if (idArr.length > 0) {
+				for (int i = 0; i < idArr.length; i++) {
+					Long id = Long.parseLong(idArr[i]);
+					OrderOutSource orderOutSource = findOne(id);
+					if(orderOutSource.getWarehouseTypeId()==null){
+						throw new ServiceException("未填写入库仓库，无法入库，请先确认入库仓库");
+					}
+					
+					
+					
 					count++;
 				}
 			}
