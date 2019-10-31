@@ -109,6 +109,12 @@ public class OrderOutSource extends BaseEntity<Long> {
 	private Date openOrderTime;
 
 	/**
+	 * 外发时间
+	 */
+	@Column(name = "out_going_time")
+	private Date outGoingTime;
+	
+	/**
 	 * 是否整单
 	 */
 	@Column(name = " whole_list")
@@ -129,6 +135,14 @@ public class OrderOutSource extends BaseEntity<Long> {
 	
 	
 	
+
+	public Date getOutGoingTime() {
+		return outGoingTime;
+	}
+
+	public void setOutGoingTime(Date outGoingTime) {
+		this.outGoingTime = outGoingTime;
+	}
 
 	public Integer getProductType() {
 		return productType;

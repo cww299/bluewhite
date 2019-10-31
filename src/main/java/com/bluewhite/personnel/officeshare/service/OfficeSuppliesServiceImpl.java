@@ -34,9 +34,13 @@ public class OfficeSuppliesServiceImpl extends BaseServiceImpl<OfficeSupplies, L
 			if (param.getId() != null) {
 				predicate.add(cb.equal(root.get("id").as(Long.class), param.getId()));
 			}
-			// 按辦公用品名称过滤
+			// 按名称过滤
 			if (!StringUtils.isEmpty(param.getName())) {
 				predicate.add(cb.like(root.get("name").as(String.class), "%" + param.getName() + "%"));
+			}
+			// 按类型
+			if (param.getType()!=null) {
+				predicate.add(cb.equal(root.get("type").as(Integer.class), param.getType()));
 			}
 			// 按仓位过滤
 			if (!StringUtils.isEmpty(param.getLocation())) {
