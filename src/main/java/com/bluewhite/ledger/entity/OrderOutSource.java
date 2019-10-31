@@ -31,7 +31,6 @@ public class OrderOutSource extends BaseEntity<Long> {
 	/**
 	 * 工艺单内容填充，用于打印开单 1.填充样棉花备注
 	 */
-
 	@Column(name = "fill_remark")
 	private String fillRemark;
 
@@ -125,6 +124,12 @@ public class OrderOutSource extends BaseEntity<Long> {
 	 */
 	@Column(name = "flag")
 	private Integer flag;
+	
+	/**
+	 * 是否审核
+	 */
+	@Column(name = "audit")
+	private Integer audit;
 
 	/**
 	 * 分类(1=成品，2=皮壳)
@@ -135,6 +140,14 @@ public class OrderOutSource extends BaseEntity<Long> {
 	
 	
 	
+
+	public Integer getAudit() {
+		return audit;
+	}
+
+	public void setAudit(Integer audit) {
+		this.audit = audit;
+	}
 
 	public Date getOutGoingTime() {
 		return outGoingTime;

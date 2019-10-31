@@ -44,4 +44,11 @@ public interface OrderOutSourceService extends BaseCRUDService<OrderOutSource, L
 	 */
 	public int invalidOrderOutSource(String ids);
 	
+	/**
+	 * 审核外发单
+	 * @param ids
+	 * @return
+	 */
+	public int auditOrderOutSource(String ids);
+	
 }
