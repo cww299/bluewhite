@@ -207,6 +207,11 @@ public class BasicsServiceImpl extends BaseServiceImpl<Basics, Long>
 			Long f=psList1.stream().filter(Recruit->Recruit.getOrgNameId().equals(Recruit.getOrgNameId()) && Recruit.getState().equals(1) /*&& Recruit.getUser().getQuit().equals(0)*/).count();//已入职且在职
 			//得到入职且在职的人
 			List<Recruit> list2= psList1.stream().filter(Recruit->Recruit.getOrgNameId().equals(Recruit.getOrgNameId()) && Recruit.getState().equals(1) && Recruit.getUser().getQuit().equals(0)).collect(Collectors.toList());
+			List<Plan> plans= planDao.findByTimeBetweenAndOrgNameId(DatesUtil.getFirstDayOfMonth(basics.getTime()), DatesUtil.getLastDayOfMonth(basics.getTime()), ps1);
+			double sum3 = 0;
+			for (Plan plan : plans) {
+				sum3=NumUtils.sum(sum3, NumUtils.mul(plan.getNumber(),plan.getCoefficient()));
+			}
 			BaseData baseData=baseDataDao.findOne(ps1);
 			String string= baseData.getName();
 		    List<Advertisement> list3=advertisementDao.findByOrgNameIdAndType(ps1, 0);
@@ -246,7 +251,7 @@ public class BasicsServiceImpl extends BaseServiceImpl<Basics, Long>
 				}
 			}
 			double d= NumUtils.mul(basics2.getSharePrice(),f);//占到的应聘费用
-			double plan= NumUtils.mul(basics2.getPlanPrice(),f);//计划的应聘费用
+			double plan= NumUtils.mul(basics2.getPlanPrice(),sum3);//计划的应聘费用
 			double ReceivePrice=0;//奖金
 			double trainPrice=0;//培训费
 			if (list2.size()>0) {
