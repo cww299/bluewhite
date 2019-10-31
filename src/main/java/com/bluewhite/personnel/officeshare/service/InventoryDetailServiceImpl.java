@@ -44,8 +44,7 @@ public class InventoryDetailServiceImpl extends BaseServiceImpl<InventoryDetail,
 			}
 			// 按办公用品名称过滤
 			if (!StringUtils.isEmpty(param.getName())) {
-				predicate.add(
-						cb.like(root.get("OfficeSupplies").get("name").as(String.class), "%" + param.getName() + "%"));
+				predicate.add(cb.like(root.get("OfficeSupplies").get("name").as(String.class), "%" + param.getName() + "%"));
 			}
 			// 按备注过滤
 			if (!StringUtils.isEmpty(param.getRemark())) {
@@ -59,6 +58,10 @@ public class InventoryDetailServiceImpl extends BaseServiceImpl<InventoryDetail,
 			// 按出库入库
 			if (param.getFlag() != null) {
 				predicate.add(cb.equal(root.get("flag").as(Integer.class), param.getFlag()));
+			}
+			// 按类型
+			if (param.getType()!=null) {
+				predicate.add(cb.equal(root.get("OfficeSupplies").get("type").as(Integer.class), param.getType()));
 			}
 			// 按日期
 			if (!StringUtils.isEmpty(param.getOrderTimeBegin()) && !StringUtils.isEmpty(param.getOrderTimeEnd())) {
@@ -132,14 +135,17 @@ public class InventoryDetailServiceImpl extends BaseServiceImpl<InventoryDetail,
 		List<Map<String, Object>> mapList = new ArrayList<>();
 		List<InventoryDetail> onventoryDetailList = dao.findByFlagAndTimeBetween(0, onventoryDetail.getOrderTimeBegin(),
 				onventoryDetail.getOrderTimeEnd());
-		double sumCostList = onventoryDetailList.stream().mapToDouble(InventoryDetail::getOutboundCost).sum();
+		double sumCostList = onventoryDetailList.stream().filter(InventoryDetail->InventoryDetail.getOfficeSupplies().getType()
+				.equals(onventoryDetail.getType())).mapToDouble(InventoryDetail::getOutboundCost).sum();
 		// 按人员分组
 		Map<Long, List<InventoryDetail>> mapAttendance = onventoryDetailList.stream()
-				.filter(InventoryDetail -> InventoryDetail.getOrgNameId() != null)
+				.filter(InventoryDetail -> InventoryDetail.getOrgNameId() != null 
+				&& InventoryDetail.getOfficeSupplies().getType().equals(onventoryDetail.getType()))
 				.collect(Collectors.groupingBy(InventoryDetail::getOrgNameId, Collectors.toList()));
 		// 后勤部费用分摊到所有部门
 		double logisticsCost = onventoryDetailList.stream()
-				.filter(InventoryDetail -> InventoryDetail.getOutboundCost() == 60)
+				.filter(InventoryDetail -> InventoryDetail.getOutboundCost() == 60
+				&& InventoryDetail.getOfficeSupplies().getType().equals(onventoryDetail.getType()))
 				.mapToDouble(InventoryDetail::getOutboundCost).sum();
 		if (mapAttendance.size() > 0) {
 			//均分费用
