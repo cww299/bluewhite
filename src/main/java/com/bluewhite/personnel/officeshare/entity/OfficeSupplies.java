@@ -49,7 +49,7 @@ public class OfficeSupplies extends BaseEntity<Long>{
 	private BaseData unit;
 	
 	/**
-     * 类型
+     * 类型(1.办公用品，2.机械配件)
      */
 	@Column(name = "type")
     private String type;
