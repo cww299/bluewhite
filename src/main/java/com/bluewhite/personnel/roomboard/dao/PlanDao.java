@@ -9,4 +9,7 @@ import com.bluewhite.personnel.roomboard.entity.Plan;
 public interface PlanDao extends BaseRepository<Plan, Long>{
 	/*根据 时间 查询 */
 	public List<Plan> findByTimeBetween(Date beginDate, Date endDate);
+	
+	/*根据 部门 查询 */
+	public List<Plan> findByTimeBetweenAndOrgNameId(Date beginDate, Date endDate,Long orgNameId);
 }
