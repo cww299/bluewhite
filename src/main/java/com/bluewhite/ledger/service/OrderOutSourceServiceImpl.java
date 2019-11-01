@@ -37,9 +37,11 @@ public class OrderOutSourceServiceImpl extends BaseServiceImpl<OrderOutSource, L
 		if(orderOutSource.getOrderId()!=null){
 			Order order = orderDao.findOne(orderOutSource.getOrderId());
 			List<OrderOutSource> orderOutSourceList = dao.findByOrderIdAndFlag(orderOutSource.getOrderId(),1);
-			double sumNumber = orderOutSourceList.stream().mapToDouble(OrderOutSource::getProcessNumber).sum();
-			if(NumUtils.sum(sumNumber,orderOutSource.getProcessNumber()) > order.getNumber()){
-				throw new ServiceException("外发总数量不能大于下单合同数量，请核实后填写");
+			if(orderOutSourceList.size()>0){
+				double sumNumber = orderOutSourceList.stream().mapToDouble(OrderOutSource::getProcessNumber).sum();
+				if(NumUtils.sum(sumNumber,orderOutSource.getProcessNumber()) > order.getNumber()){
+					throw new ServiceException("外发总数量不能大于下单合同数量，请核实后填写");
+				}
 			}
 			orderOutSource.setRemark(order.getRemark());
 			orderOutSource.setFlag(0);
