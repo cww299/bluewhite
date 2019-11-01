@@ -91,16 +91,6 @@ layui.config({
 					url:'',
 				})
 		})
-		var allUser = [];
-		myutil.getDataSync({
-			url: '${ctx}/system/user/findUserList?orgNameIds=20,23',
-			success:function(d){
-				allUser = d;
-				allUser.unshift({
-					id:'',userName:'请选择'
-				})
-			}
-		})
 		mytable.render({
 			elem:'#tableData',
 			size:'lg',
@@ -118,23 +108,17 @@ layui.config({
 				},
 			},
 			ifNull:'',
-			colsWidth:[0,10,0,6,8,8,6,6,0,6],
-			autoUpdate:{
-				updateUrl:'/ledger/updatePlaceOrder',
-				field:{ receiveUser_id:'receiveUserId', user_id:'userId' },
-			},
+			colsWidth:[0,10,0,6,8,8,0,6],
 			toolbar:'<span class="layui-btn layui-btn-sm" lay-event="onekey">一键审核</span>',
 			cols:[[
 			       { type:'checkbox',},
-			       { title:'下单日期',   field:'placeOrderTime', type:'dateTime', edit:true,	},
+			       { title:'审核日期',   field:'auditTime', type:'dateTime', },
 			       { title:'分散出库编号',   field:'outboundNumber',	},
-			       { title:'领取人',   field:'receiveUser', edit:true,  },
 			       { title:'领取模式',   field:'orderMaterial_receiveMode_name',  },
-			       { title:'跟单人',   field:'user_id',	type:'select', select:{ data:allUser,name:'userName' }, },
 			       { title:'领取用量',   field:'dosage',	},
 			       { title:'下单数量',   field:'orderMaterial_order_number',	},
-			       { title:'备注',   field:'remark', edit:true, },
-			       { title:'是否审核',   field:'openOrderAudit', transData:{data:['否','是'],}	},
+			       { title:'备注',   field:'remark',  },
+			       { title:'是否审核',   field:'audit', transData:{data:['否','是'],}	},
 			       ]]
 		})
 	}//end define function
