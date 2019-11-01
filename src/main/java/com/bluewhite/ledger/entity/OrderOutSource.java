@@ -25,7 +25,7 @@ import com.bluewhite.system.user.entity.User;
 public class OrderOutSource extends BaseEntity<Long> {
 
 	/**
-	 * 工艺单内容填充，用于打印开单 1.
+	 * 工艺单内容填充，用于打印开单 1.填充样棉花
 	 * 填充样棉花类型
 	 */
 	@Column(name = "fill")
