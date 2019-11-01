@@ -25,7 +25,8 @@ import com.bluewhite.system.user.entity.User;
 public class OrderOutSource extends BaseEntity<Long> {
 
 	/**
-	 * 工艺单内容填充，用于打印开单 1.填充样棉花类型
+	 * 工艺单内容填充，用于打印开单 1.
+	 * 填充样棉花类型
 	 */
 	@Column(name = "fill")
 	private String fill;
@@ -44,14 +45,14 @@ public class OrderOutSource extends BaseEntity<Long> {
 	private String outSourceNumber;
 
 	/**
-	 * 任务工序
+	 * 外发工序
 	 * 
 	 */
 	@Column(name = "process")
 	private String process;
 
 	/**
-	 * 任务数量
+	 * 外发数量
 	 */
 	@Column(name = "process_number")
 	private Integer processNumber;
@@ -147,7 +148,8 @@ public class OrderOutSource extends BaseEntity<Long> {
 	private Integer productType;
 	
 	/**
-	 * 仓库种类id
+	 * 外发指定
+	 * 预计仓库种类id
 	 */
 	@Column(name = "warehouse_type_id")
 	private Long warehouseTypeId;
@@ -159,11 +161,59 @@ public class OrderOutSource extends BaseEntity<Long> {
 	@JoinColumn(name = "warehouse_type_id", referencedColumnName = "id", insertable = false, updatable = false)
 	private BaseData warehouseType;
 	
+	
+	/**
+	 * 仓管指定
+	 * 入库仓库种类id
+	 */
+	@Column(name = "in_warehouse_type_id")
+	private Long inWarehouseTypeId;
+	
+	/**
+	 * 入库仓库种类
+	 */
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "in_warehouse_type_id", referencedColumnName = "id", insertable = false, updatable = false)
+	private BaseData inWarehouseType;
+	
+	/**
+	 * 库存
+	 * 是否到货
+	 */
+	@Column(name = "arrival")
+	private Integer arrival;
+	
+	/**
+	 * 到货日期
+	 */
+	@Column(name = "arrival_time")
+	private Date arrivalTime;  
+	
+	/**
+	 * 到货数量
+	 */
+	@Column(name = "arrival_number")
+	private Integer arrivalNumber;
+	
 	/**
 	 * 产品name
 	 */
 	@Transient
 	private String productName;
+	
+	/**
+	 * 跟单人name
+	 * 
+	 */
+	@Transient
+	private String userName;
+	
+	/**
+	 * 加工点name
+	 * 
+	 */
+	@Transient
+	private String customerName;	
 	
 	/**
 	 * 查询字段
@@ -179,6 +229,63 @@ public class OrderOutSource extends BaseEntity<Long> {
 	
 	
 	
+
+	public String getUserName() {
+		return userName;
+	}
+
+	public void setUserName(String userName) {
+		this.userName = userName;
+	}
+
+	public String getCustomerName() {
+		return customerName;
+	}
+
+	public void setCustomerName(String customerName) {
+		this.customerName = customerName;
+	}
+
+	public Long getInWarehouseTypeId() {
+		return inWarehouseTypeId;
+	}
+
+	public void setInWarehouseTypeId(Long inWarehouseTypeId) {
+		this.inWarehouseTypeId = inWarehouseTypeId;
+	}
+
+	public BaseData getInWarehouseType() {
+		return inWarehouseType;
+	}
+
+	public void setInWarehouseType(BaseData inWarehouseType) {
+		this.inWarehouseType = inWarehouseType;
+	}
+
+	public Integer getArrival() {
+		return arrival;
+	}
+
+	public void setArrival(Integer arrival) {
+		this.arrival = arrival;
+	}
+
+	public Date getArrivalTime() {
+		return arrivalTime;
+	}
+
+	public void setArrivalTime(Date arrivalTime) {
+		this.arrivalTime = arrivalTime;
+	}
+
+
+	public Integer getArrivalNumber() {
+		return arrivalNumber;
+	}
+
+	public void setArrivalNumber(Integer arrivalNumber) {
+		this.arrivalNumber = arrivalNumber;
+	}
 
 	public String getOutSourceNumber() {
 		return outSourceNumber;

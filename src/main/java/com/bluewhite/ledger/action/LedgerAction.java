@@ -191,6 +191,20 @@ public class LedgerAction {
 				.addRetainTerm(Order.class, "id", "bacthNumber", "product", "number", "remark")
 				.addRetainTerm(BaseOne.class, "id", "name").addRetainTerm(User.class, "id", "userName");
 	}
+	
+	private ClearCascadeJSON clearCascadeJSONSOutSource;
+	{
+		clearCascadeJSONSOutSource = ClearCascadeJSON.get()
+				.addRetainTerm(OrderOutSource.class, "id", "fill", "fillRemark", "outSourceNumber",
+						"order", "user", "customer", "remark", "gramWeight", "processNumber", "process",
+						"openOrderTime","outGoingTime","wholeList","flag","audit","productType","warehouseType",
+						"inWarehouseType","arrival","arrivalTime","arrivalNumber")
+				.addRetainTerm(Order.class, "id", "bacthNumber", "product", "number", "remark")
+				.addRetainTerm(Product.class, "id", "name","number")
+				.addRetainTerm(BaseOne.class, "id", "name")
+				.addRetainTerm(User.class, "id", "userName");
+	}
+
 
 	/**
 	 * 分页查看订单
@@ -572,8 +586,24 @@ public class LedgerAction {
 		return cr;
 	}
 	
+	
 	/**
-	 * （生产计划部） 审核外发单
+	 * （生产计划部）删除外发单
+	 * 
+	 * @param order
+	 * @return
+	 */
+	@RequestMapping(value = "/ledger/deleteOrderOutSource", method = RequestMethod.GET)
+	@ResponseBody
+	public CommonResponse deleteOrderOutSource(String ids) {
+		CommonResponse cr = new CommonResponse();
+		int count = orderOutSourceService.deleteOrderOutSource(ids);
+		cr.setMessage("成功删除"+count+"条外发单");
+		return cr;
+	}
+	
+	/**
+	 * （生产计划部） 审核外发单，审核成功后，仓库可见
 	 * 
 	 * @param order
 	 * @return

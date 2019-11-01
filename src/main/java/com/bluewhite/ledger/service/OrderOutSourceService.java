@@ -3,7 +3,6 @@ package com.bluewhite.ledger.service;
 import com.bluewhite.base.BaseCRUDService;
 import com.bluewhite.common.entity.PageParameter;
 import com.bluewhite.common.entity.PageResult;
-import com.bluewhite.ledger.entity.Order;
 import com.bluewhite.ledger.entity.OrderOutSource;
 
 public interface OrderOutSourceService extends BaseCRUDService<OrderOutSource, Long> {
@@ -25,7 +24,7 @@ public interface OrderOutSourceService extends BaseCRUDService<OrderOutSource, L
 	public PageResult<OrderOutSource> findPages(OrderOutSource orderOutSource, PageParameter page);
 
 	/**
-	 * 新增外发单
+	 * 删除外发单
 	 * 
 	 * @param orderOutSource
 	 */
