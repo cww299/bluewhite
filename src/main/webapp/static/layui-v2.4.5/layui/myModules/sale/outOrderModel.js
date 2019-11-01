@@ -123,8 +123,11 @@ layui.define(['jquery','layer','form','laytpl','laydate'],function(exports){
 				laydate.render({ elem:'#openOrderTime', type:'datetime', });
 				laydate.render({ elem:'#outGoingTime', type:'datetime', });
 				form.on('submit(sureAddOutOrder)',function(obj){
+					var url = '/ledger/saveOrderOutSource';
+					if(data.id)
+						url = '/ledger/updateOrderOutSource'
 					myutil.saveAjax({
-						url:'/ledger/saveOrderOutSource',
+						url: url,
 						data: obj.field,
 						success:function(){
 							layer.close(win);
