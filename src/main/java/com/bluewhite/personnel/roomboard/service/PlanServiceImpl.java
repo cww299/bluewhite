@@ -12,16 +12,22 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
 import com.bluewhite.base.BaseServiceImpl;
+import com.bluewhite.common.ServiceException;
 import com.bluewhite.common.entity.PageParameter;
 import com.bluewhite.common.entity.PageResult;
+import com.bluewhite.common.utils.NumUtils;
 import com.bluewhite.personnel.roomboard.dao.PlanDao;
+import com.bluewhite.personnel.roomboard.dao.coeffcientDao;
 import com.bluewhite.personnel.roomboard.entity.Plan;
+import com.bluewhite.personnel.roomboard.entity.coefficient;
 
 @Service
 public class PlanServiceImpl extends BaseServiceImpl<Plan, Long>
 		implements PlanService {
 	@Autowired
 	private PlanDao dao;
+	@Autowired
+	private coeffcientDao coeffcientDao ;
 	/*
 	 *分页查询
 	 */
@@ -47,8 +53,18 @@ public class PlanServiceImpl extends BaseServiceImpl<Plan, Long>
 	 */
 	@Override
 	public Plan addPlan(Plan plan) {
-		
-		return dao.save(plan);
+		if (plan.getId()==null) {
+		 coefficient coefficient=coeffcientDao.findByOrgNameIdAndPositionId(plan.getOrgNameId(), plan.getPositionId());
+		 if (coefficient!=null) {
+			 double coefficients= NumUtils.sum(coefficient.getBasics(),coefficient.getBasics1(),coefficient.getBasics2(),coefficient.getBasics3());
+			 plan.setCoefficient(coefficients);
+			 return dao.save(plan);
+		}else{
+			throw new ServiceException("该岗位没有设置基础系数");
+		}
+		}else{
+		  return dao.save(plan);
+		}
 	}
 	/*
 	 *删除

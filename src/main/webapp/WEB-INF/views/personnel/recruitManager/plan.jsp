@@ -44,15 +44,20 @@
 		</div>
 	</div>
 	
-
 <div style="display: none;" id="layuiShare">
 			<div class="layui-form layui-card-header layuiadmin-card-header-auto">
 				<div class="layui-form-item">
 					<table>
 						<tr>
-							<td>查询日期:</td>
-							<td><input id="monthDate9" style="width: 180px;" name="time" placeholder="请输入开始时间" class="layui-input laydate-icon">
-							</td>
+							<td>部门:</td>
+							<td><select class="form-control" lay-filter="orgNameIds" name="orgNameId" lay-search="true" id="orgNames">
+									
+							</select></td>
+							<td>&nbsp;&nbsp;</td>
+							<td>职位:</td>
+							<td><select class="form-control" name="positionId" lay-search="true" id="positionss">
+									
+							</select></td>
 							<td>&nbsp;&nbsp;</td>
 							<td>
 								<div class="layui-inline">
@@ -68,16 +73,25 @@
 			<table id="layuiShare2"  class="table_th_search" lay-filter="layuiShare"></table>
 </div>	
 	
-	
 	<script type="text/html" id="toolbar">
 			<div class="layui-btn-container layui-inline">
 				<span class="layui-btn layui-btn-sm" lay-event="addTempData">新增一行</span>
 				<span class="layui-btn layui-btn-sm layui-btn-danger" lay-event="cleanTempData">清空新增行</span>
 				<span class="layui-btn layui-btn-sm layui-btn-warm" lay-event="saveTempData">批量保存</span>
 				<span class="layui-btn layui-btn-sm layui-btn-danger" lay-event="deleteSome">批量删除</span>
+				<span class="layui-btn layui-btn-sm " lay-event="coefficient">基础系数</span>
 			</div>
 	</script>
-
+	
+	<script type="text/html" id="toolbar2">
+			<div class="layui-btn-container layui-inline">
+				<span class="layui-btn layui-btn-sm" lay-event="add">新增一行</span>
+				<span class="layui-btn layui-btn-sm layui-btn-danger" lay-event="cleanTemp">清空新增行</span>
+				<span class="layui-btn layui-btn-sm layui-btn-warm" lay-event="save">批量保存</span>
+				<span class="layui-btn layui-btn-sm layui-btn-danger" lay-event="delete">批量删除</span>
+			</div>
+	</script>
+	
 	<script>
 			layui.config({
 				base: '${ctx}/static/layui-v2.4.5/'
@@ -134,10 +148,26 @@
 			      				htmls +='<option value="'+j.id+'">'+j.name+'</option>'
 			      			  });
 			      			  $("#siteTypeId").html(htmls)
+			      			  $("#orgNames").html(htmls)
 			      			layer.close(indextwo);
 					      }
 					  });
-					
+				    form.on('select(orgNameIds)', function(data){
+						 var html=""
+			      			$.ajax({								//获取当前部门下拉框选择的子数据：职位
+							      url:"${ctx}/basedata/children",
+							      data:{id:data.value},
+							      type:"GET",
+							      async:false,
+					      		  success: function (result) {				//填充职位下拉框
+					      			  	$(result.data).each(function(i,o){
+						      				  html +='<option  value="'+o.id+'">'+o.name+'</option>'
+					      				});  
+					      			$("#positionss").html(html); 
+					      			layui.form.render()
+							      }
+							  });
+					 })
 					var htmlfrn= '<option value="">请选择</option>';
 					
 				    form.on('select(lay_selecte2)', function(data){
@@ -275,7 +305,7 @@
 								field: "coefficient",
 								title: "系数",
 								align: 'center',
-								edit: 'text',
+								edit: false,
 							}]
 						],
 						//下拉框回显赋值
@@ -431,9 +461,218 @@
 							case '': 
 								table.cleanTemp('tableData');
 							break;
+							case 'coefficient':
+								var dicDiv=$('#layuiShare');
+								layer.open({
+							         type: 1
+							        ,title: '基础系数' //不显示标题栏
+							        ,closeBtn: false
+							        ,zindex:-1
+							        ,area:['70%', '90%']
+							        ,shade: 0.5
+							        ,id: 'LAY_layuipro26' //设定一个id，防止重复弹出
+							        ,btn: ['取消']
+							        ,btnAlign: 'c'
+							        ,moveType: 1 //拖拽模式，0或者1
+							        ,content:dicDiv
+							        ,success : function(layero, index) {
+							        	layero.addClass('layui-form');
+										// 将保存按钮改变成提交按钮
+										layero.find('.layui-layer-btn0').attr({
+											'lay-filter' : 'addRole2',
+											'lay-submit' : ''
+										})
+							        }
+							        ,end:function(){
+							        	$("#layuiShare").hide();
+									  } 
+							      });
+								
+								table.render({
+									elem: '#layuiShare2',
+									size: 'lg',
+									url: '${ctx}/personnel/getCoefficeient' ,
+									request:{
+										pageName: 'page' ,//页码的参数名称，默认：page
+										limitName: 'size' //每页数据量的参数名，默认：limit
+									},
+									page: {
+									},//开启分页
+									loading: true,
+									toolbar: '#toolbar2', //开启工具栏，此处显示默认图标，可以自定义模板，详见文档
+									//totalRow: true,		 //开启合计行 */
+									cellMinWidth: 90,
+									colFilterRecord: true,
+									smartReloadModel: true,// 开启智能重载
+									parseData: function(ret) {
+										return {
+											code: ret.code,
+											msg: ret.message,
+											count:ret.data.total,
+											data: ret.data.rows
+										}
+									},
+									cols: [
+										[{
+											type: 'checkbox',
+											align: 'center',
+											fixed: 'left'
+										},{
+											field:"orgNameId",
+											title: "部门",
+											align: 'center',
+											search: true,
+											edit: false,
+											type: 'normal',
+											templet: fn1('selectOne')
+										},{
+											field: "positionId",
+											title: "职位",
+											align: 'center',
+											search: true,
+											edit: false,
+											type: 'normal',
+											templet: fn2('selectTwo')
+										},{
+											field: "basics",
+											title: "基础系数",
+											align: 'center',
+										},{
+											field: "basics1",
+											title: "专业系数",
+											align: 'center',
+										},{
+											field: "basics2",
+											title: "技术系数",
+											align: 'center',
+										},{
+											field: "basics3",
+											title: "加班系数",
+											align: 'center',
+										}]
+									],
+									//下拉框回显赋值
+									done: function(res, curr, count) {
+										var tableView = this.elem.next();
+										var tableElem = this.elem.next('.layui-table-view');
+										layui.each(tableElem.find('.layui-table-box').find('select'), function(index, item) {
+											var elem = $(item);
+											elem.val(elem.data('value'));
+										});
+										form.render();
+										// 初始化laydate
+										layui.each(tableView.find('td[data-field="time"]'), function(index, tdElem) {
+											tdElem.onclick = function(event) {
+												layui.stope(event)
+											};
+											laydate.render({
+												elem: tdElem.children[0],
+												type:'month',
+												done: function(value, date) {
+														var id = table.cache[tableView.attr('lay-id')][index].id
+														var postData = {
+															id: id,
+															time: value+'-01 00:00:00',
+														};
+														//调用新增修改
+														mainJs.fUpdate(postData);
+														form.render();
+															}
+														})
+													})
+												},
+											});
+								
+							break;
 						}
 					});
-	
+					
+					//监听头工具栏事件
+					table.on('toolbar(layuiShare)', function(obj) {
+						var config = obj.config;
+						var btnElem = $(this);
+						var tableId = config.id;
+						switch(obj.event) {
+						case 'add':
+							allField = {id: '',time:''};
+							table.addTemp(tableId,allField,function(trElem) {
+								// 进入回调的时候this是当前的表格的config
+								var that = this;
+							});
+							break;
+							case 'save':
+								var data = table.getTemp(tableId).data;
+								var flag=false;
+								var a=0;
+								data.forEach(function(postData,i){
+							    	a++;
+							    	if(a==data.length){
+							    		flag=true
+							    	}
+									})
+								if(flag==true){
+								data.forEach(function(postData,i){
+									mainJs.fAddCoefficient(postData); 
+									table.cleanTemp(tableId);
+									})	
+								}
+						          break;
+							case 'delete':
+								// 获得当前选中的
+								var checkedIds = tablePlug.tableCheck.getChecked(tableId);
+								layer.confirm('您是否确定要删除选中的' + checkedIds.length + '条记录？', function() {
+									var postData = {
+										ids: checkedIds,
+									}
+									$.ajax({
+										url: "${ctx}/personnel/deleteCoefficient",
+										data: postData,
+										traditional: true,
+										type: "GET",
+										beforeSend: function() {
+											index;
+										},
+										success: function(result) {
+											if(0 == result.code) {
+												var configTemp = tablePlug.getConfig("tableData");
+									            if (configTemp.page && configTemp.page.curr > 1) {
+									              table.reload("layuiShare2", {
+									                page: {
+									                  curr: configTemp.page.curr - 1
+									                }
+									              })
+									            }else{
+									            	table.reload("layuiShare2", {
+										                page: {
+										                }
+										              })
+									            };
+												layer.msg(result.message, {
+													icon: 1,
+													time:800
+												});
+											} else {
+												layer.msg(result.message, {
+													icon: 2,
+													time:800
+												});
+											}
+										},
+										error: function() {
+											layer.msg("操作失败！", {
+												icon: 2
+											});
+										}
+									});
+									layer.close(index);
+								});
+								break;
+							case '': 
+								table.cleanTemp('tableData');
+							break;
+						}
+					});
+					
 					//监听单元格编辑
 					table.on('edit(tableData)', function(obj) {
 						var value = obj.value ,//得到修改后的值
@@ -461,6 +700,14 @@
 							where: field,
 							 page: { curr : 1 }
 						});  
+					});
+					//监听搜索
+					form.on('submit(LAY-search2)', function(obj) {		//修改此处
+						var field = obj.field;
+						table.reload('layuiShare2', {
+							where: field,
+							 page: { curr : 1 }
+						}); 
 					});
 					$(document).on('click', '.layui-table-view tbody tr', function(event) {
 						var elemTemp = $(this);
@@ -543,7 +790,41 @@
 							},
 						});
 						layer.close(index);
-				    }
+				    },
+				    fAddCoefficient : function(data){
+				    	$.ajax({
+							url: "${ctx}/personnel/addCoefficient",
+							data: data,
+							type: "POST",
+							beforeSend: function() {
+								index;
+							},
+							success: function(result) {
+								if(0 == result.code) {
+								 	 table.reload("layuiShare2", {
+						                page: {
+						                }
+						              }) 
+									layer.msg(result.message, {
+										icon: 1,
+										time:800
+									});
+								
+								} else {
+									layer.msg(result.message, {
+										icon: 2,
+										time:800
+									});
+								}
+							},
+							error: function() {
+								layer.msg("操作失败！请重试", {
+									icon: 2
+								});
+							},
+						});
+						layer.close(index);
+				    },
 					}
 
 				}

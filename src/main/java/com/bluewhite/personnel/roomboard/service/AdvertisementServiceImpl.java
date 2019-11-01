@@ -58,10 +58,10 @@ public class AdvertisementServiceImpl extends BaseServiceImpl<Advertisement, Lon
 						advertisement.getOrderTimeEnd()));
 			}
 			// 按日期
-			if (!StringUtils.isEmpty(advertisement.getOrderTimeBegin2()) && !StringUtils.isEmpty(advertisement.getOrderTimeEnd2())) {
+			/*if (!StringUtils.isEmpty(advertisement.getOrderTimeBegin2()) && !StringUtils.isEmpty(advertisement.getOrderTimeEnd2())) {
 				predicate.add(cb.between(root.get("endTime").as(Date.class), advertisement.getOrderTimeBegin2(),
 						advertisement.getOrderTimeEnd2()));
-			}
+			}*/
 			Predicate[] pre = new Predicate[predicate.size()];
 			query.where(predicate.toArray(pre));
 			return null;

@@ -197,22 +197,24 @@ public class BasicsServiceImpl extends BaseServiceImpl<Basics, Long>
 		List<Recruit> list= recruitDao.findByTimeBetween(DatesUtil.getFirstDayOfMonth(basics.getTime()), DatesUtil.getLastDayOfMonth(basics.getTime()));
 		List<Map<String, Object>> allList = new ArrayList<>();
 		Map<String, Object> allMap =null;
-		Map<Long, List<Recruit>> map = list.stream()
+		/*Map<Long, List<Recruit>> map = list.stream()
 				.filter(Recruit -> Recruit.getOrgNameId() != null)
-				.collect(Collectors.groupingBy(Recruit::getOrgNameId, Collectors.toList()));
+				.collect(Collectors.groupingBy(Recruit::getOrgNameId, Collectors.toList()));*/
 		Basics basics2= findBasics(basics);
-		for (Long ps1 : map.keySet()) {
+		List<BaseData> baseDatas= baseDataDao.findByType("orgName");
+		for (BaseData baseData : baseDatas) {
+			long ps1=baseData.getId();
+			if(ps1!=2 && ps1!=1 && ps1!=3){
 			allMap =new HashMap<>();
-			List<Recruit> psList1 = map.get(ps1);
-			Long f=psList1.stream().filter(Recruit->Recruit.getOrgNameId().equals(Recruit.getOrgNameId()) && Recruit.getState().equals(1) /*&& Recruit.getUser().getQuit().equals(0)*/).count();//已入职且在职
+			Long f=list.stream().filter(Recruit->Recruit.getOrgNameId().equals(baseData.getId()) && Recruit.getState().equals(1) /*&& Recruit.getUser().getQuit().equals(0)*/).count();//已入职且在职
 			//得到入职且在职的人
-			List<Recruit> list2= psList1.stream().filter(Recruit->Recruit.getOrgNameId().equals(Recruit.getOrgNameId()) && Recruit.getState().equals(1) && Recruit.getUser().getQuit().equals(0)).collect(Collectors.toList());
-			List<Plan> plans= planDao.findByTimeBetweenAndOrgNameId(DatesUtil.getFirstDayOfMonth(basics.getTime()), DatesUtil.getLastDayOfMonth(basics.getTime()), ps1);
+			List<Recruit> list2= list.stream().filter(Recruit->Recruit.getOrgNameId().equals(baseData.getId()) && Recruit.getState().equals(1) && Recruit.getUser().getQuit().equals(0)).collect(Collectors.toList());
+			List<Plan> plans= planDao.findByTimeBetweenAndOrgNameId(DatesUtil.getFirstDayOfMonth(basics.getTime()), DatesUtil.getLastDayOfMonth(basics.getTime()), baseData.getId());
 			double sum3 = 0;
 			for (Plan plan : plans) {
 				sum3=NumUtils.sum(sum3, NumUtils.mul(plan.getNumber(),plan.getCoefficient()));
 			}
-			BaseData baseData=baseDataDao.findOne(ps1);
+			/*BaseData baseData=baseDataDao.findOne(ps1);*/
 			String string= baseData.getName();
 		    List<Advertisement> list3=advertisementDao.findByOrgNameIdAndType(ps1, 0);
 		    Date orderTimeBegin=DatesUtil.getFirstDayOfMonth(basics.getTime()); 
@@ -308,6 +310,7 @@ public class BasicsServiceImpl extends BaseServiceImpl<Basics, Long>
 			allMap.put("directional",advertisementPrice);
 			allList.add(allMap);
 			}
+		}
 		return allList;
 	}
 

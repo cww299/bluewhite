@@ -19,16 +19,28 @@
 				<td><select lay-search id="searchName" lay-filter="searchName"><option value="">获取数据中...</option></select></td>
 				<td>&nbsp;&nbsp;&nbsp;</td>
 				<td>招聘人：</td>
-				<td><input type="text" readonly class="layui-input" id="recruitName"></td>
+				<td><input type="text" readonly class="layui-input" style="width: 150px;" id="recruitName"></td>
 				<td>&nbsp;&nbsp;&nbsp;</td>
 				<td>摊到招聘费用：&nbsp;</td>
-				<td><input type="text" readonly class="layui-input" id="recruitMoney" value="0"></td>
+				<td><input type="text" readonly class="layui-input" style="width: 150px;" id="recruitMoney" value="0"></td>
 				<td>&nbsp;&nbsp;&nbsp;</td>
 				<td>培训费用：&nbsp;</td>
-				<td><input type="text" readonly class="layui-input" id="trainMoney" value="0"></td>
+				<td><input type="text" readonly class="layui-input" style="width: 150px;" id="trainMoney" value="0"></td>
 				<td>&nbsp;&nbsp;&nbsp;</td>
 				<td>招聘人的奖励金额：&nbsp;</td>
-				<td><input type="text" readonly class="layui-input" id="awardMoney" value="0"></td>
+				<td><input type="text" readonly class="layui-input" style="width: 150px;" id="awardMoney" value="0"></td>
+				<td>&nbsp;&nbsp;</td>
+				<td>开始时间:</td>
+				<td><input id="startTime" style="width: 190px;"  placeholder="请输入面试时间" class="layui-input laydate-icon">
+				</td>
+				<td>&nbsp;&nbsp;</td>
+							<td>
+								<div class="layui-inline">
+									<button class="layui-btn layuiadmin-btn-admin" lay-submit lay-filter="LAY-search">
+										<i class="layui-icon layui-icon-search layuiadmin-button-btn"></i>
+									</button>
+								</div>
+							</td>
 			</tr>
 		</table>
 		<table class="layui-form" id="trainTable" lay-filter="trainTable"></table>
@@ -91,7 +103,16 @@ layui.config({
 		
 		var allPlatform = []
 			,allTeacher = [];
-		
+		laydate.render({
+			elem: '#startTime',
+			type: 'date',
+			range: '~',
+		});
+		laydate.render({
+			elem: '#endTime',
+			type: 'date',
+			range: '~',
+		});
 		getRecruit();		
 		allTeacher = myutil.getDataSync({ url:'${ctx}/system/user/findUserList?isAdmin=0&quit=0',	 })
 	 	tablePlug.smartReload.enable(true);  
@@ -318,6 +339,20 @@ layui.config({
 	 		elem: '#totalTime',
 	 		type: 'month',
 	 	})
+	 	//监听搜索
+		form.on('submit(LAY-search)', function(data) {
+			var field = data.field;
+			var orderTime=$("#startTime").val().split('~');
+			var endTime=$("#endTime").val().split('~');
+			field.orderTimeBegin=orderTime[0]+' '+'00:00:00';
+			field.orderTimeEnd=orderTime[1]+' '+'23:59:59';
+			table.reload('trainTable', {
+				where: field,
+				page: {
+					curr:1
+                }
+			});
+		});
 		function addTempData(){
 	 		if($('#searchName').val()==''){
 	 			layer.msg('请选择应聘对象',{icon:2});
