@@ -137,6 +137,7 @@
 	<span lay-event="update"  class="layui-btn layui-btn-sm" >修改合同</span>
 	<span lay-event="productUseup"  class="layui-btn layui-btn-sm layui-btn-normal" >生成耗料订单</span>
 	<span lay-event="lookoverUseup"  class="layui-btn layui-btn-sm" >查看耗料订单</span>
+	<span lay-event="outOrder"  class="layui-btn layui-btn-sm layui-btn-warm" >生成外发单</span>
 </div>
 </script>
 <!-- 表格工具栏模板 -->
@@ -152,8 +153,9 @@ layui.config({
 	base : '${ctx}/static/layui-v2.4.5/'
 }).extend({
 	mytable : 'layui/myModules/mytable',
+	outOrderModel : 'layui/myModules/sale/outOrderModel' ,
 }).define(
-	['mytable','laydate'],
+	['mytable','laydate','outOrderModel'],
 	function(){
 		var $ = layui.jquery
 		, layer = layui.layer 				
@@ -162,13 +164,16 @@ layui.config({
 		, laydate = layui.laydate
 		, laytpl = layui.laytpl
 		, myutil = layui.myutil
+		, outOrderModel = layui.outOrderModel
 		, mytable = layui.mytable;
 		myutil.config.ctx = '${ctx}';
 		myutil.clickTr();
 		myutil.config.msgOffset = '250px';
+		outOrderModel.init();
 		myutil.keyDownEntry(function(){   //监听回车事件
 			$('#searchBtn').click();
 		})
+		var customerSelectHtml = '',userSelectHtml = '';
 		laydate.render({ elem:'#searchTime', range:'~' })
 		table.render({
 			elem:'#tableAgreement',
@@ -220,8 +225,20 @@ layui.config({
 			case 'delete':	deletes();			break;
 			case 'lookoverUseup': lookoverUseup(); break;
 			case 'productUseup': productUseup(); break;
+			case 'outOrder': outOrder(); break;
 			} 
 		})
+		function outOrder(){
+			var checked = layui.table.checkStatus('tableAgreement').data;
+			if(checked.length!=1)
+				return myutil.emsg('只能选择一条信息进行生成');
+			outOrderModel.add({
+				data:{ 
+					orderId:checked[0].id, 
+					outSourceNumber: checked[0].bacthNumber+checked[0].product.name,
+				}
+			})
+		}
 		var mode = [];
 		function lookoverUseup(){
 			var checked = layui.table.checkStatus('tableAgreement').data;

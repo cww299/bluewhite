@@ -387,10 +387,6 @@
 				<span class="layui-btn layui-btn-sm layui-btn-success" lay-event="soon">即将入职</span>
 				<span class="layui-btn layui-btn-sm layui-btn-success" lay-event="audit">一键入职</span>
 				<span class="layui-btn layui-btn-sm layui-btn-success" lay-event="onaudit">拒绝入职</span>
-				<span class="layui-btn layui-btn-sm layui-btn-success" lay-event="summary">招聘汇总</span>
-				<span class="layui-btn layui-btn-sm layui-btn-success" lay-event="short">短期离职</span>
-				<span class="layui-btn layui-btn-sm layui-btn-success" lay-event="quit">离职人员</span>
-				<span class="layui-btn layui-btn-sm layui-btn-success" lay-event="analysis">招聘分析</span>
 				<span class="layui-btn layui-btn-sm layui-btn-success" lay-event="sumday">每日分析</span>
 			</div>
 		</script>
@@ -1681,7 +1677,12 @@
 					
 					
 					
-					
+					$(document).on('click', '.layui-table-view tbody tr', function(event) {
+						var elemTemp = $(this);
+						var tableView = elemTemp.closest('.layui-table-view');
+						var trIndex = elemTemp.data('index');
+						tableView.find('tr[data-index="' + trIndex + '"]').find('[name="layTableCheckbox"]+').last().click();
+					})
 					
 
 					function addEidt(type){

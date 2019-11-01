@@ -122,14 +122,12 @@ public class AttendanceTimeServiceImpl extends BaseServiceImpl<AttendanceTime, L
 				userList.addAll(list);
 			}
 			// 满足于输入时间内离职和入职
-			userList =userList
-					.stream()
+			userList = userList.stream()
 					.filter(User -> (User.getQuit() != null && User.getQuit() == 0) || (User.getQuitDate() != null
-					&& User.getQuitDate().compareTo(attendance.getOrderTimeBegin()) != -1))
-					.collect(Collectors.toList())
-					.stream()
+							&& User.getQuitDate().compareTo(attendance.getOrderTimeBegin()) != -1))
+					.collect(Collectors.toList()).stream()
 					.filter(User -> User.getEntry() != null && User.getEntry()
-					.compareTo(DatesUtil.getLastDayOfMonth(attendance.getOrderTimeBegin())) != 1)
+							.compareTo(DatesUtil.getLastDayOfMonth(attendance.getOrderTimeBegin())) != 1)
 					.collect(Collectors.toList());
 
 			String exUser = "";
@@ -359,7 +357,8 @@ public class AttendanceTimeServiceImpl extends BaseServiceImpl<AttendanceTime, L
 					// 当休息日有打卡记录时，不需要申请加班的人自动算加班时长
 					if (rout) {
 						attendanceTime.setFlag(3);
-						if (attendanceInit.getOverTimeType() == 2 && attendanceTime.getCheckIn() != null && attendanceTime.getCheckOut() != null) {
+						if (attendanceInit.getOverTimeType() == 2 && attendanceTime.getCheckIn() != null
+								&& attendanceTime.getCheckOut() != null) {
 							if (attendanceInit.getRestTimeWork() == 3) {
 								attendanceTime.setOvertime(
 										DatesUtil.getTimeHour(attendanceTime.getCheckIn().before(workTime) ? workTime
@@ -370,10 +369,11 @@ public class AttendanceTimeServiceImpl extends BaseServiceImpl<AttendanceTime, L
 												: attendanceTime.getCheckIn(), attendanceTime.getCheckOut()),
 										attendanceTime.getCheckOut().after(restEndTime) ? restTime : 0));
 							}
-							if (attendanceInit.isEarthWork() && DatesUtil.getTime(attendanceTime.getCheckIn(), workTime) >= 20) {
-								attendanceTime.setOvertime(NumUtils.sum(attendanceTime.getOvertime(),0.5));
+							if (attendanceInit.isEarthWork()
+									&& DatesUtil.getTime(attendanceTime.getCheckIn(), workTime) >= 20) {
+								attendanceTime.setOvertime(NumUtils.sum(attendanceTime.getOvertime(), 0.5));
 							}
-							
+
 							// 设定加班后可以晚到岗加班时间
 							if (sign) {
 								if (attendanceTime.getCheckIn().compareTo(DatesUtil.getDaySum(workTime, minute)) != 1) {
@@ -624,7 +624,7 @@ public class AttendanceTimeServiceImpl extends BaseServiceImpl<AttendanceTime, L
 			// 获取单一员工日期区间所有的考勤
 			List<AttendanceTime> psList1 = mapAttendanceTime.get(ps1);
 			// 获取员工考勤的初始化参数
-			AttendanceInit attendanceInit =psList1.get(0).getAttendanceInit();
+			AttendanceInit attendanceInit = psList1.get(0).getAttendanceInit();
 			// 查找出申请时间是当月的有符合该员工请假事项
 			List<ApplicationLeave> applicationLeave = applicationLeaveDao.findByUserIdAndWriteTimeBetween(ps1,
 					DatesUtil.getFirstDayOfMonth(psList1.get(0).getTime()),
@@ -655,7 +655,7 @@ public class AttendanceTimeServiceImpl extends BaseServiceImpl<AttendanceTime, L
 					}
 
 					// 请假
-					if (al.isHoliday() && dateArr.length >= 2) { 
+					if (al.isHoliday() && dateArr.length >= 2) {
 						// 获取请假所有日期
 						List<Date> dateList = DatesUtil.getPerDaysByStartAndEndDate(dateArr[0], dateArr[1],
 								"yyyy-MM-dd");
@@ -691,7 +691,8 @@ public class AttendanceTimeServiceImpl extends BaseServiceImpl<AttendanceTime, L
 										}
 									}
 
-									if (oneAtList.get(0).getDutytimMinute() !=null && NumUtils.mul(time, 60) < oneAtList.get(0).getDutytimMinute()) {
+									if (oneAtList.get(0).getDutytimMinute() != null
+											&& NumUtils.mul(time, 60) < oneAtList.get(0).getDutytimMinute()) {
 										if (oneAtList.get(0).getDutytimMinute() > 30) {
 											oneAtList.get(0).setBelate(1);
 											oneAtList.get(0).setBelateTime(NumUtils
@@ -705,7 +706,8 @@ public class AttendanceTimeServiceImpl extends BaseServiceImpl<AttendanceTime, L
 								oneAtList.get(0).setFlag(2);
 								oneAtList.get(0).setHolidayType(al.getHolidayType());
 								oneAtList.get(0).setDutytime(time >= turnWorkTime ? turnWorkTime : time);
-								oneAtList.get(0).setTurnWorkTime(NumUtils.sub(turnWorkTime, oneAtList.get(0).getDutytime()));
+								oneAtList.get(0)
+										.setTurnWorkTime(NumUtils.sub(turnWorkTime, oneAtList.get(0).getDutytime()));
 								if (time >= turnWorkTime) {
 									time = NumUtils.sub(time, turnWorkTime);
 									oneAtList.get(0).setLeaveTime(turnWorkTime);
@@ -720,39 +722,48 @@ public class AttendanceTimeServiceImpl extends BaseServiceImpl<AttendanceTime, L
 					// 加班
 					if (al.isApplyOvertime()) {
 						Date inTime = dateLeave;
-						AttendanceTime at = psList1.stream().filter(AttendanceTime -> (AttendanceTime.getTime().compareTo(inTime)) == 0).collect(Collectors.toList()).get(0);
-						if (al.getOvertimeType() == 2) {
-							at.setOvertime(NumUtils.sub(NumUtils.setzro(at.getOvertime()), time));
-						} else {
-							at.setOvertime(NumUtils.sum(NumUtils.setzro(at.getOvertime()), time));
-						}
+						List<AttendanceTime> applyAttendanceTime = psList1.stream()
+								.filter(AttendanceTime -> (AttendanceTime.getTime().compareTo(inTime)) == 0)
+								.collect(Collectors.toList());
+						if (applyAttendanceTime.size() > 0) {
+							AttendanceTime at = applyAttendanceTime.get(0);
+							if (al.getOvertimeType() == 2) {
+								at.setOvertime(NumUtils.sub(NumUtils.setzro(at.getOvertime()), time));
+							} else {
+								at.setOvertime(NumUtils.sum(NumUtils.setzro(at.getOvertime()), time));
+							}
 
-						if (al.getOvertimeType() == 1) {
-							at.setOrdinaryOvertime(NumUtils.sum(NumUtils.setzro(at.getOrdinaryOvertime()), time));
-						}
-						if (al.getOvertimeType() == 3) {
-							at.setProductionOvertime(NumUtils.sum(NumUtils.setzro(at.getProductionOvertime()), time));
+							if (al.getOvertimeType() == 1) {
+								at.setOrdinaryOvertime(NumUtils.sum(NumUtils.setzro(at.getOrdinaryOvertime()), time));
+							}
+							if (al.getOvertimeType() == 3) {
+								at.setProductionOvertime(
+										NumUtils.sum(NumUtils.setzro(at.getProductionOvertime()), time));
+							}
 						}
 					}
 
 					// 调休且员工出勤时间等于调休到的那一天
 					if (al.isTradeDays()) {
 						Date inTime = dateLeave;
-						AttendanceTime at = psList1.stream()
+						List<AttendanceTime> applyAttendanceTime = psList1.stream()
 								.filter(AttendanceTime -> (AttendanceTime.getTime().compareTo(inTime)) == 0)
-								.collect(Collectors.toList()).get(0);
-						at.setTakeWork(NumUtils.sum(NumUtils.setzro(at.getTakeWork()), time));
-						if (at.getDutytime() != 0) {
-							at.setTurnWorkTime(NumUtils.sum(at.getTurnWorkTime(), time));
-							at.setDutytime(NumUtils.sub(at.getDutytime(), time));
-						}
-						// 当调休时间大于或等于迟到时间，
-						if (NumUtils.mul(time, 60) >= at.getBelateTime()
-								|| NumUtils.mul(time, 60) >= at.getLeaveEarlyTime()) {
-							at.setBelate(0);
-							at.setBelateTime(0.0);
-							at.setLeaveEarly(0);
-							at.setLeaveEarlyTime(0.0);
+								.collect(Collectors.toList());
+						if (applyAttendanceTime.size() > 0) {
+							AttendanceTime at = applyAttendanceTime.get(0);
+							at.setTakeWork(NumUtils.sum(NumUtils.setzro(at.getTakeWork()), time));
+							if (at.getDutytime() != 0) {
+								at.setTurnWorkTime(NumUtils.sum(at.getTurnWorkTime(), time));
+								at.setDutytime(NumUtils.sub(at.getDutytime(), time));
+							}
+							// 当调休时间大于或等于迟到时间，
+							if (NumUtils.mul(time, 60) >= at.getBelateTime()
+									|| NumUtils.mul(time, 60) >= at.getLeaveEarlyTime()) {
+								at.setBelate(0);
+								at.setBelateTime(0.0);
+								at.setLeaveEarly(0);
+								at.setLeaveEarlyTime(0.0);
+							}
 						}
 					}
 				}

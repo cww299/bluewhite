@@ -19,7 +19,19 @@
 			<div class="layui-form">
 				<div class="layui-form-item">
 					<table>
-						
+						<tr>
+							<td>查询月份:</td>
+							<td><input id="monthDate" style="width: 180px;" name="time" placeholder="请输入开始时间" class="layui-input laydate-icon">
+							</td>
+							<td>&nbsp;&nbsp;</td>
+							<td>
+								<div class="layui-inline">
+									<button class="layui-btn layuiadmin-btn-admin"  lay-submit lay-filter="LAY-search">
+										<i class="layui-icon layui-icon-search layuiadmin-button-btn"></i>
+									</button>
+								</div>
+							</td>
+						</tr>
 					</table>
 				</div>
 			</div>
@@ -48,6 +60,14 @@
 				</div>
 			</div>
 			<table id="layuiShare2"  class="table_th_search" lay-filter="layuiShare"></table>
+</div>
+
+<div style="display: none;" id="layuitable">
+			<table id="layuitable2"  class="table_th_search" lay-filter="layuitable2"></table>
+</div>
+
+<div style="display: none;" id="layuiShow">
+			<table id="layuiShow2"  class="table_th_search" lay-filter="layuiShow2"></table>
 </div>
 
 <div style="display: none;" id="layuiSharequit">
@@ -145,177 +165,36 @@
 			</div>
 			<table id="analysisRecuitsumday"  class="table_th_search" lay-filter="layuiShare10"></table>
 </div>
-
-<div style="display: none;" id="userSum">
-			<div class="layui-form layui-card-header layuiadmin-card-header-auto">
-				<div class="layui-form-item">
-					<table class="table table-hover">
-							<thead>
-								<tr>
-									<th class="text-center">人名</th>
-									<th class="text-center">职位</th>
-									<th class="text-center">面试时间</th>
-									<th class="text-center">平台</th>
-									<th class="text-center">招聘人</th>
-									<th class="text-center">入职时间</th>
-									<th class="text-center">离职时间</th>
-									<th class="text-center">离职原因</th>
-									<th class="text-center">备注</th>
-								</tr>
-							</thead>
-							<tbody id="tableUserSum">
-									
-							</tbody>
-						</table>
-				</div>
-			</div>
+<!-- 查看汇总弹窗 -->
+<div style="display:none;padding:4px;" id="lookoverDiv">
+	<table class="layui-form">
+		<tr>
+			<td><input type="text" name="time" id="totalTime" lay-verify="required" class="layui-input"></td>
+			<td> &nbsp;&nbsp;</td>
+			<td><button type="button" lay-filter="searchTotal"  lay-submit class="layui-btn layui-btn-sm">搜索</button> </td>
+		</tr>
+	</table>
+	<table class="layui-table" id="totalTable" lay-filter="totalTable"></table>
 </div>
-
-	<script type="text/html" id="addEditTpl">
-	<form action="" id="layuiadmin-form-admin"
-		style="padding: 20px 30px 0 60px; text-align:">
-		<div class="layui-form" lay-filter="layuiadmin-form-admin">
-			<input type="text" name="id" id="usID" style="display:none;">
-
-			<div class="layui-form-item">
-				<label class="layui-form-label" style="width: 130px;">面试日期</label>
-				<div class="layui-input-inline">
-					<input type="text" value="{{ (d.time).split(" ")[0] }}" name="time" 
-						id="time" lay-verify="required"
-						 class="layui-input">
-				</div>
-			</div>
-			<div class="layui-form-item">
-				<label class="layui-form-label" style="width: 130px;">面试时间</label>
-				<div class="layui-input-inline">
-					<select id="tplTime"><option value="">请选择</option>
-						{{# for(var i=8;i<=17;i++){ 
-								var time = (d.time).split(" ")[1];
-								var value1 = (i>9?i:"0"+i)+":00:00";
-								var value2 = (i>9?i:"0"+i)+":30:00";
-						}}
-							<option  value=" {{ value1 }}" {{ value1 == time?'selected':'' }}> {{ i>9?i:"0"+i }}:00 </option>
-							<option  value=" {{ value2 }}" {{ value2 == time?'selected':'' }}> {{ i>9?i:"0"+i }}:30 </option>
-						{{# } }}
-					</select>
-				</div>
-			</div>
-			<div class="layui-form-item">
-				<label class="layui-form-label" style="width: 130px;">面试人</label>
-				<div class="layui-input-inline">
-						<input type="text" value="{{d.name }}" name="name" id="userId" {{d.state==1 ? 'disabled' : ''}}
-						 lay-verify="required"  placeholder="请输入姓名"
-						class="layui-input laydate-icon" data-provide="typeahead">
-				</div>
-			</div>
-			
-			<div class="layui-form-item">
-				<label class="layui-form-label" style="width: 130px;">招聘人</label>
-				<div class="layui-input-inline">
-						<select name="recruitId" {{d.state==1 ? 'disabled' : ''}} lay-filter="recruitId" lay-verify="required" id="recruitId" lay-search="true">
-								
-						</select>
-
-					</div>
-			</div>
-
-			<div class="layui-form-item">
-					<label class="layui-form-label" style="width: 130px;">邀约平台</label>
-					<div class="layui-input-inline">
-						<select name="platformId" {{d.state==1 ? 'disabled' : ''}} lay-verify="required"  lay-filter="platformId" id="platformId">
-							
-						</select>
-					</div>
-			</div>	
-			
-			<div class="layui-form-item">
-					<label class="layui-form-label" style="width: 130px;">部门</label>
-					<div class="layui-input-inline">
-						<select name="orgNameId" lay-filter="orgNameId"  id="orgNameId" lay-search="true">
-								
-						</select>
-					</div>
-			</div>
-
-			<div class="layui-form-item">
-					<label class="layui-form-label" style="width: 130px;">职位</label>
-					<div class="layui-input-inline" >
-					<select name="positionId" lay-filter="positionId" id="position" lay-search="true">
-								
-						</select>
-
-								
-						</select>
-
-					</div>
-			</div>			
-
-
-			<div class="layui-form-item">
-					<label class="layui-form-label" style="width: 130px;">性别</label>
-					<div class="layui-input-inline">
-						<select name="gender" lay-filter="gender" 
-							id="gender" lay-search="true"><option value="">请选择</option>
-							<option {{d.gender==0 ? "selected" : ""}} value="0">男</option>
-							<option {{d.gender==1 ? "selected" : ""}} value="1">女</option>
-							</select>
-					</div>
-			</div>			
-
-			<div class="layui-form-item">
-				<label class="layui-form-label" style="width: 130px;">电话</label>
-				<div class="layui-input-inline">
-					<input type="text" value="{{d.phone }}" {{d.state==1 ? 'disabled' : ''}} name="phone" id="phone"
-						lay-verify="required" placeholder="请输入内容"
-						class="layui-input laydate-icon">
-				</div>
-			</div>
-			
-			
-
-			<div class="layui-form-item">
-				<label class="layui-form-label" style="width: 130px;">现居住地址</label>
-				<div class="layui-input-inline">
-					<input type="text" value="{{d.livingAddress }}" name="livingAddress" id="livingAddress"
-						lay-verify="required" placeholder="请输入现居住地址"
-						class="layui-input laydate-icon">
-				</div>
-			</div>
-
-
-			<div class="layui-form-item">
-					<label class="layui-form-label" style="width: 130px;">是否应面</label>
-					<div class="layui-input-inline">
-						<select name="type" {{d.state==1 ? 'disabled' : ''}} lay-filter="type" 
-							id="type" lay-search="true"><option value="">请选择</option>
-							<option {{d.type==0 ? "selected" : ""}} value="0">否</option>
-							<option {{d.type==1 ? "selected" : ""}} value="1">是</option>
-							</select>
-					</div>
-			</div>		  
-
-		   <div class="layui-form-item">
-				<label class="layui-form-label" style="width: 130px;">备注</label>
-				<div class="layui-input-inline">
-					<input type="text" value="{{d.remarks }}" name="remarks"
-						id="remarks" 
-						 class="layui-input">
-				</div>
-			</div>
-			<input  type="hidden" value="{{d.state }}" name="state">
-		</div>
-	</form>	
-	
-	</script>
-	
-	
+<!-- 查看部门汇总弹窗 -->
+<div style="display:none;padding:4px;" id="departmentDiv">
+	<table class="layui-form">
+		<tr>
+			<td><input type="text" name="time" id="totalDepartmentTime" lay-verify="required" class="layui-input"></td>
+			<td> &nbsp;&nbsp;</td>
+			<td><button type="button" lay-filter="searchDepartmentTotal"  lay-submit class="layui-btn layui-btn-sm">搜索</button> </td>
+		</tr>
+	</table>
+	<table class="layui-table" id="totalDepartmentTable" lay-filter="totalDepartmentTable"></table>
+</div>
 	<script type="text/html" id="toolbar">
 			<div class="layui-btn-container layui-inline">
-				<span class="layui-btn layui-btn-sm layui-btn-success" lay-event="summary">招聘汇总</span>
 				<span class="layui-btn layui-btn-sm layui-btn-success" lay-event="short">短期离职</span>
 				<span class="layui-btn layui-btn-sm layui-btn-success" lay-event="quit">离职人员</span>
-				<span class="layui-btn layui-btn-sm layui-btn-success" lay-event="analysis">招聘分析</span>
+				<span class="layui-btn layui-btn-sm layui-btn-success" lay-event="analysis">招聘数据汇总分析</span>
 				<span class="layui-btn layui-btn-sm layui-btn-success" lay-event="sumday">每日分析</span>
+				<span class="layui-btn layui-btn-sm" lay-event="lookoverTotal">招聘费用汇总</span>
+				<span class="layui-btn layui-btn-sm" lay-event="departmentTotal">部门招聘成本</span>
 			</div>
 		</script>
 
@@ -348,7 +227,7 @@
 					var index = layer.load(1, {
 						shade: [0.1, '#fff'] //0.1透明度的白色背景
 					});
-					
+					layer.close(index);
 					
 					function p(s) { return s < 10 ? '0' + s: s; }
 					var myDate = new Date();
@@ -366,6 +245,7 @@
 					var lastdate = year + '-' + p(month) + '-' + day.getDate() +' '+'23:59:59';
 					var firstdate2 = year + '-' + p(month) + '-'+ x+date+' '+'00:00:00';
 					var lastdate2 = year + '-' + p(month) + '-' + x+date+' '+'23:59:59';
+					var firstdate3=year + '-' + p(month);
 					laydate.render({
 						elem: '#startTime',
 						type: 'datetime',
@@ -373,6 +253,15 @@
 						value : firstdate+' ~ '+lastdate,
 					});
 					form.render();
+					laydate.render({
+						elem: '#monthDate',
+						type : 'month',
+						value:firstdate3,
+					}); 
+					laydate.render({
+				 		elem: '#totalTime',
+				 		type: 'month',
+				 	})
 					 laydate.render({
 						elem: '#monthDate3',
 						type : 'month',
@@ -395,87 +284,7 @@
 						range: '~',
 						value : firstdate2+' ~ '+lastdate2,
 					}); 
-					 var getdata={type:"orgName",}
-		      			$.ajax({								//获取部门列表数据，部门下拉框的填充
-						      url:"${ctx}/basedata/list",
-						      data:getdata,
-						      type:"GET",
-						      async:false,
-						      beforeSend:function(){
-						    	  indextwo = layer.load(1, {
-								  shade: [0.1,'#fff'] //0.1透明度的白色背景
-								  });
-							  }, 
-				      		  success: function (result) {				//初始填充部门
-				      			  $(result.data).each(function(k,j){
-				      				htmls +='<option value="'+j.id+'">'+j.name+'</option>'
-				      			  });
-				      		  $("#orgNames").html(htmls)
-				      			layer.close(indextwo);
-						      }
-						  });
-					 form.on('select(orgNameIds)', function(data){
-						 var html=""
-			      			$.ajax({								//获取当前部门下拉框选择的子数据：职位
-							      url:"${ctx}/basedata/children",
-							      data:{id:data.value},
-							      type:"GET",
-							      async:false,
-					      		  success: function (result) {				//填充职位下拉框
-					      			  	$(result.data).each(function(i,o){
-						      				  html +='<option  value="'+o.id+'">'+o.name+'</option>'
-					      				});  
-					      			$("#positionss").html(html); 
-					      			layui.form.render()
-							      }
-							  });
-					 })
-					 
-					 var getdata={type:"platform",}
-		      			$.ajax({								//获取部门列表数据，部门下拉框的填充
-						      url:"${ctx}/basedata/list",
-						      data:getdata,
-						      type:"GET",
-						      async:false,
-						      beforeSend:function(){
-						    	  indextwo = layer.load(1, {
-								  shade: [0.1,'#fff'] //0.1透明度的白色背景
-								  });
-							  }, 
-				      		  success: function (result) {				//初始填充部门
-				      			  $(result.data).each(function(k,j){
-				      				htmlth +='<option value="'+j.id+'">'+j.name+'</option>'
-				      			  });
-				      		  $("#platform").html(htmlth);
-				      			layui.form.render()
-				      			layer.close(indextwo);
-						      }
-						  });
-					var userId;
-					 $.ajax({
-							url:'${ctx}/getCurrentUser',		//获取当前登录用户
-							async:false,
-							success:function(r){
-								if(0==r.code){
-									userId = r.data.id;
-								}
-							}
-						})
 					var data="";
-				
-					 var fn1 = function(field) {
-							return function(d) {
-								return ['<select name="selectTwo" style="outline: none;border: none; " class="selectTwo" lay-filter="lay_selecte" lay-search="true" data-value="' + d.adopt + '">',
-									'<option value="">请选择</option>',	
-									'<option value="0">不通过</option>',
-									'<option value="1">通过</option>',
-									'<option value="2">待定</option>',
-									'</select>'
-								].join('');
-
-							};
-						};
-					 
 				   	tablePlug.smartReload.enable(true); 
 					table.render({
 						elem: '#tableData',
@@ -483,12 +292,10 @@
 						where:{
 							time : firstdate,
 						},
-						size:'sm',
 						loading: true,
 						toolbar: '#toolbar', 
 						totalRow: true,
 						sort:true,
-						limits:[10,15,20,50,100,150],
 						colFilterRecord: true,
 						smartReloadModel: true,
 						parseData: function(ret) { 
@@ -545,79 +352,169 @@
 							}
 							]
 						],
-						//下拉框回显赋值
-						done: function(res, curr, count) {
-							var tableView = this.elem.next();
-							var tableElem = this.elem.next('.layui-table-view');
-							layui.each(tableElem.find('.layui-table-box').find('select'), function(index, item) {
-								var elem = $(item);
-								elem.val(elem.data('value'));
-							});
-							form.render();
-							// 初始化laydate
-							layui.each(tableView.find('td[data-field="testTime"]'), function(index, tdElem) {
-								tdElem.onclick = function(event) {
-									layui.stope(event)
-								};
-								laydate.render({
-									elem: tdElem.children[0],
-									format: 'yyyy-MM-dd HH:mm:ss',
-									done: function(value, date) {
-										var state=table.cache['tableData'][index].state
-										if(state==1){
-											table.reload('tableData');
-											return layer.msg("已入职不能修改",{icon: 2})
-										}
-										var id = table.cache['tableData'][index].id
-											var postData = {
-												id: id,
-												testTime:value,
-											};
-											//调用新增修改
-											mainJs.fUpdate(postData);
-												}
+						done:function(){
+							$(".layui-table-total").unbind().on('click',function(obj){
+								var className=obj.toElement.className
+								var name=className[className.length-1]
+								  var dicDiv=$('#layuiShow');
+									layer.open({
+								         type: 1
+								        ,title: '招聘人员情况汇总' //不显示标题栏
+								        ,closeBtn: false
+								        ,zindex:-1
+								        ,area:['70%', '90%']
+								        ,shade: 0.5
+								        ,id: 'LAY_layuipro2' //设定一个id，防止重复弹出
+								        ,btn: ['取消']
+								        ,btnAlign: 'c'
+								        ,moveType: 1 //拖拽模式，0或者1
+								        ,content:dicDiv
+								        ,success : function(layero, index) {
+								        	layero.addClass('layui-form');
+											// 将保存按钮改变成提交按钮
+											layero.find('.layui-layer-btn0').attr({
+												'lay-filter' : 'addRole2',
+												'lay-submit' : ''
 											})
-										})
+								        }
+								        ,end:function(){
+								        	$("#layuiShare").hide();
+										  } 
+								      });
+				      			table.render({
+									elem: '#layuiShow2',
+									url: '${ctx}/personnel/Statistics' ,
+									where:{
+										time : $("#monthDate").val()+'-01'+' '+'00:00:00',
 									},
-								});
-					
-					 form.on('switch()', function(obj){
-							var field=this.name
-							var id=this.value
-							var a=""
-							var state=$(this).data('id')
-							if(state==1){
-								table.reload('tableData');
-							return layer.msg("已入职不能修改",{icon: 2})
-							}
-							if(obj.elem.checked==true){
-								a=1
-							}else{
-								a=0
-							}
-						    var postData = {
-									id: id,
-									[field]:a
-								}
-								//调用新增修改
-								mainJs.fUpdate(postData);
-						  });
-					// 监听表格中的下拉选择将数据同步到table.cache中
-					form.on('select(lay_selecte)', function(data) {
-						var selectElem = $(data.elem);
-						var tdElem = selectElem.closest('td');
-						var trElem = tdElem.closest('tr');
-						var tableView = trElem.closest('.layui-table-view');
-						var field = tdElem.data('field');
-						table.cache[tableView.attr('lay-id')][trElem.data('index')][tdElem.data('field')] = data.value;
-						var id = table.cache[tableView.attr('lay-id')][trElem.data('index')].id
-						var postData = {
-							id: id,
-							adopt:data.value
+									loading: true,
+									toolbar: '#toolbar2', 
+									sort:true,
+									colFilterRecord: true,
+									smartReloadModel: true,
+									parseData: function(ret) { 
+										var newArr = [];
+										layui.each(ret.data,function(index,item){
+											if(name=="1"){
+												layui.each(item.mod10,function(j,k){
+													newArr.push(k);
+													k.position=k.position.name;
+													k.platform=k.platform.name;
+													k.entry=(k.user==null ? "":k.user.entry==null ? "" :k.user.entry);
+													k.quitDate=(k.user==null ? "":k.user.quitDate==null ? "":k.user.quitDate);
+													k.reason=(k.user==null ? "":k.user.reason==null ? "":k.user.reason);
+												})
+											}
+											if(name=="2"){
+												layui.each(item.mod11,function(j,k){
+													newArr.push(k);
+													k.position=k.position.name;
+													k.platform=k.platform.name;
+													k.entry=(k.user==null ? "":k.user.entry==null ? "" :k.user.entry);
+													k.quitDate=(k.user==null ? "":k.user.quitDate==null ? "":k.user.quitDate);
+													k.reason=(k.user==null ? "":k.user.reason==null ? "":k.user.reason);
+												})
+											}
+											if(name=="3"){
+												layui.each(item.mod12,function(j,k){
+													newArr.push(k);
+													k.position=k.position.name;
+													k.platform=k.platform.name;
+													k.entry=(k.user==null ? "":k.user.entry==null ? "" :k.user.entry);
+													k.quitDate=(k.user==null ? "":k.user.quitDate==null ? "":k.user.quitDate);
+													k.reason=(k.user==null ? "":k.user.reason==null ? "":k.user.reason);
+												})
+											}
+											if(name=="4"){
+												layui.each(item.mod13,function(j,k){
+													newArr.push(k);
+													k.position=k.position.name;
+													k.platform=k.platform.name;
+													k.entry=(k.user==null ? "":k.user.entry==null ? "" :k.user.entry);
+													k.quitDate=(k.user==null ? "":k.user.quitDate==null ? "":k.user.quitDate);
+													k.reason=(k.user==null ? "":k.user.reason==null ? "":k.user.reason);
+												})
+											}
+											if(name=="5"){
+												layui.each(item.mod14,function(j,k){
+													newArr.push(k);
+													k.position=k.position.name;
+													k.platform=k.platform.name;
+													k.entry=(k.user==null ? "":k.user.entry==null ? "" :k.user.entry);
+													k.quitDate=(k.user==null ? "":k.user.quitDate==null ? "":k.user.quitDate);
+													k.reason=(k.user==null ? "":k.user.reason==null ? "":k.user.reason);
+												})
+											}
+											if(name=="6"){
+												layui.each(item.mod15,function(j,k){
+													newArr.push(k);
+													k.position=k.position.name;
+													k.platform=k.platform.name;
+													k.entry=(k.user==null ? "":k.user.entry==null ? "" :k.user.entry);
+													k.quitDate=(k.user==null ? "":k.user.quitDate==null ? "":k.user.quitDate);
+													k.reason=(k.user==null ? "":k.user.reason==null ? "":k.user.reason);
+												})
+											}
+											if(name=="7"){
+												layui.each(item.mod16,function(j,k){
+													newArr.push(k);
+													k.position=k.position.name;
+													k.platform=k.platform.name;
+													k.entry=(k.user==null ? "":k.user.entry==null ? "" :k.user.entry);
+													k.quitDate=(k.user==null ? "":k.user.quitDate==null ? "":k.user.quitDate);
+													k.reason=(k.user==null ? "":k.user.reason==null ? "":k.user.reason);
+												})
+											}
+										})
+										return { code: ret.code, msg: ret.message, data:newArr } 
+									},
+									cols: [
+										[{
+											field: "name",
+											title: "人名",
+											align: 'center',
+										},{
+											field: "position",
+											title: "职位",
+											align: 'center',
+										},{
+											field: "time",
+											title: "面试时间",
+											align: 'center',
+											width:160
+										},{
+											field: "platform",
+											title: "平台",
+											align: 'center',
+										},{
+											field: "recruitName",
+											title: "招聘人",
+											align: 'center',
+										},{
+											field: "entry",
+											title: "入职时间",
+											align: 'center',
+											width:160
+										},{
+											field: "quitDate",
+											title: "离职时间",
+											align: 'center',
+											width:160
+										},{
+											field: "reason",
+											title: "离职原因",
+											align: 'center',
+										},{
+											field: "remarksOne",
+											title: "备注",
+											align: 'center',
+										}
+										]
+									],
+											});
+							})
 						}
-						//调用新增修改
-						mainJs.fUpdate(postData);
-					});
+								});
 					
 					//监听头工具栏事件
 					table.on('toolbar(tableData)', function(obj) {
@@ -649,34 +546,6 @@
 									mainJs.fUpdate2(postData);
 								});
 								break;
-							case 'summary':
-								var dicDiv=$('#layuiShare');
-								table.reload("layuiShare2");
-								layer.open({
-							         type: 1
-							        ,title: '招聘汇总' //不显示标题栏
-							        ,closeBtn: false
-							        ,zindex:-1
-							        ,area:['50%', '90%']
-							        ,shade: 0.5
-							        ,id: 'LAY_layuipro2' //设定一个id，防止重复弹出
-							        ,btn: ['取消']
-							        ,btnAlign: 'c'
-							        ,moveType: 1 //拖拽模式，0或者1
-							        ,content:dicDiv
-							        ,success : function(layero, index) {
-							        	layero.addClass('layui-form');
-										// 将保存按钮改变成提交按钮
-										layero.find('.layui-layer-btn0').attr({
-											'lay-filter' : 'addRole2',
-											'lay-submit' : ''
-										})
-							        }
-							        ,end:function(){
-							        	$("#layuiShare").hide();
-									  } 
-							      });
-								break;	
 							
 							case 'short':
 								var dicDiv=$('#layuiShare5');
@@ -798,7 +667,13 @@
 								
 							case 'update' :
 								 addEidt('edit')
-								break;	
+								break;
+							case 'lookoverTotal': 
+								lookoverTotal();
+							break;
+							case 'departmentTotal': 
+								departmentTotal();
+							break;
 						}
 					});
 					
@@ -1075,134 +950,19 @@
 							]
 						],
 								});
+					
 					table.on('tool(tableData)', function(obj) {
+						var modName=obj.event
 						var html="";
-						var dicDiv="";
-						if(obj.event=='mod10'){
-							$(obj.data.mod10).each(function(i,o){
-								html +='<tr>'
-			      				+'<td class="text-center">'+o.name+'</td>'
-			      				+'<td class="text-center"><input style="background:none;outline:none;border:0px;text-align:center;" value='+o.position.name+' /></td>'
-			      				+'<td class="text-center"><input style="background:none;outline:none;border:0px;text-align:center;" value='+o.time+' /></td>'
-			      				+'<td class="text-center"><input style="background:none;outline:none;border:0px;text-align:center;" value='+o.platform.name+' /></td>'
-			      				+'<td class="text-center"><input style="background:none;outline:none;border:0px;text-align:center;" value='+o.recruitName+' /></td>'
-			      				+'<td class="text-center"><input style="background:none;outline:none;border:0px;text-align:center;" value='+(o.user==null ? "":o.user.entry==null ? "" :o.user.entry)+' /></td>'
-			      				+'<td class="text-center"><input style="background:none;outline:none;border:0px;text-align:center;" value='+(o.user==null ? "":o.user.quitDate==null ? "":o.user.quitDate)+' /></td>'
-			      				+'<td class="text-center"><input style="background:none;outline:none;border:0px;text-align:center;" value='+(o.user==null ? "":o.user.reason==null ? "":o.user.reason)+' /></td>'
-			      				+'<td class="text-center"><input style="background:none;outline:none;border:0px;text-align:center;" value='+o.remarksOne+' /></td><tr>'
-							})
-							$('#tableUserSum').html(html);
-							 dicDiv=$('#userSum');
-						}
-						if(obj.event=='mod11'){
-							$(obj.data.mod11).each(function(i,o){
-								html +='<tr>'
-			      				+'<td class="text-center">'+o.name+'</td>'
-			      				+'<td class="text-center"><input style="background:none;outline:none;border:0px;text-align:center;" value='+o.position.name+' /></td>'
-			      				+'<td class="text-center"><input style="background:none;outline:none;border:0px;text-align:center;" value='+o.time+' /></td>'
-			      				+'<td class="text-center"><input style="background:none;outline:none;border:0px;text-align:center;" value='+o.platform.name+' /></td>'
-			      				+'<td class="text-center"><input style="background:none;outline:none;border:0px;text-align:center;" value='+o.recruitName+' /></td>'
-			      				+'<td class="text-center"><input style="background:none;outline:none;border:0px;text-align:center;" value='+(o.user==null ? "":o.user.entry==null ? "" :o.user.entry)+' /></td>'
-			      				+'<td class="text-center"><input style="background:none;outline:none;border:0px;text-align:center;" value='+(o.user==null ? "":o.user.quitDate==null ? "":o.user.quitDate)+' /></td>'
-			      				+'<td class="text-center"><input style="background:none;outline:none;border:0px;text-align:center;" value='+(o.user==null ? "":o.user.reason==null ? "":o.user.reason)+' /></td>'
-			      				+'<td class="text-center"><input style="background:none;outline:none;border:0px;text-align:center;" value='+o.remarksOne+' /></td><tr>'
-							})
-							$('#tableUserSum').html(html);
-							 dicDiv=$('#userSum');
-						}
-						if(obj.event=='mod12'){
-							$(obj.data.mod12).each(function(i,o){
-								html +='<tr>'
-			      				+'<td class="text-center">'+o.name+'</td>'
-			      				+'<td class="text-center"><input style="background:none;outline:none;border:0px;text-align:center;" value='+o.position.name+' /></td>'
-			      				+'<td class="text-center"><input style="background:none;outline:none;border:0px;text-align:center;" value='+o.time+' /></td>'
-			      				+'<td class="text-center"><input style="background:none;outline:none;border:0px;text-align:center;" value='+o.platform.name+' /></td>'
-			      				+'<td class="text-center"><input style="background:none;outline:none;border:0px;text-align:center;" value='+o.recruitName+' /></td>'
-			      				+'<td class="text-center"><input style="background:none;outline:none;border:0px;text-align:center;" value='+(o.user==null ? "":o.user.entry==null ? "" :o.user.entry)+' /></td>'
-			      				+'<td class="text-center"><input style="background:none;outline:none;border:0px;text-align:center;" value='+(o.user==null ? "":o.user.quitDate==null ? "":o.user.quitDate)+' /></td>'
-			      				+'<td class="text-center"><input style="background:none;outline:none;border:0px;text-align:center;" value='+(o.user==null ? "":o.user.reason==null ? "":o.user.reason)+' /></td>'
-			      				+'<td class="text-center"><input style="background:none;outline:none;border:0px;text-align:center;" value='+o.remarksOne+' /></td><tr>'
-							})
-							$('#tableUserSum').html(html);
-							 dicDiv=$('#userSum');
-						}
-						if(obj.event=='mod13'){
-							$(obj.data.mod13).each(function(i,o){
-								html +='<tr>'
-			      				+'<td class="text-center">'+o.name+'</td>'
-			      				+'<td class="text-center"><input style="background:none;outline:none;border:0px;text-align:center;" value='+o.position.name+' /></td>'
-			      				+'<td class="text-center"><input style="background:none;outline:none;border:0px;text-align:center;" value='+o.time+' /></td>'
-			      				+'<td class="text-center"><input style="background:none;outline:none;border:0px;text-align:center;" value='+o.platform.name+' /></td>'
-			      				+'<td class="text-center"><input style="background:none;outline:none;border:0px;text-align:center;" value='+o.recruitName+' /></td>'
-			      				+'<td class="text-center"><input style="background:none;outline:none;border:0px;text-align:center;" value='+(o.user==null ? "":o.user.entry==null ? "" :o.user.entry)+' /></td>'
-			      				+'<td class="text-center"><input style="background:none;outline:none;border:0px;text-align:center;" value='+(o.user==null ? "":o.user.quitDate==null ? "":o.user.quitDate)+' /></td>'
-			      				+'<td class="text-center"><input style="background:none;outline:none;border:0px;text-align:center;" value='+(o.user==null ? "":o.user.reason==null ? "":o.user.reason)+' /></td>'
-			      				+'<td class="text-center"><input style="background:none;outline:none;border:0px;text-align:center;" value='+o.remarksOne+' /></td><tr>'
-							})
-							$('#tableUserSum').html(html);
-							 dicDiv=$('#userSum');
-						}
-						if(obj.event=='mod14'){
-							$(obj.data.mod14).each(function(i,o){
-								html +='<tr>'
-			      				+'<td class="text-center">'+o.name+'</td>'
-			      				+'<td class="text-center"><input style="background:none;outline:none;border:0px;text-align:center;" value='+o.position.name+' /></td>'
-			      				+'<td class="text-center"><input style="background:none;outline:none;border:0px;text-align:center;" value='+o.time+' /></td>'
-			      				+'<td class="text-center"><input style="background:none;outline:none;border:0px;text-align:center;" value='+o.platform.name+' /></td>'
-			      				+'<td class="text-center"><input style="background:none;outline:none;border:0px;text-align:center;" value='+o.recruitName+' /></td>'
-			      				+'<td class="text-center"><input style="background:none;outline:none;border:0px;text-align:center;" value='+(o.user==null ? "":o.user.entry==null ? "" :o.user.entry)+' /></td>'
-			      				+'<td class="text-center"><input style="background:none;outline:none;border:0px;text-align:center;" value='+(o.user==null ? "":o.user.quitDate==null ? "":o.user.quitDate)+' /></td>'
-			      				+'<td class="text-center"><input style="background:none;outline:none;border:0px;text-align:center;" value='+(o.user==null ? "":o.user.reason==null ? "":o.user.reason)+' /></td>'
-			      				+'<td class="text-center"><input style="background:none;outline:none;border:0px;text-align:center;" value='+o.remarksOne+' /></td><tr>'
-							})
-							$('#tableUserSum').html(html);
-							 dicDiv=$('#userSum');
-						}
-						if(obj.event=='mod15'){
-							$(obj.data.mod15).each(function(i,o){
-								html +='<tr>'
-			      				+'<td class="text-center">'+o.name+'</td>'
-			      				+'<td class="text-center"><input style="background:none;outline:none;border:0px;text-align:center;" value='+o.position.name+' /></td>'
-			      				+'<td class="text-center"><input style="background:none;outline:none;border:0px;text-align:center;" value='+o.time+' /></td>'
-			      				+'<td class="text-center"><input style="background:none;outline:none;border:0px;text-align:center;" value='+o.platform.name+' /></td>'
-			      				+'<td class="text-center"><input style="background:none;outline:none;border:0px;text-align:center;" value='+o.recruitName+' /></td>'
-			      				+'<td class="text-center"><input style="background:none;outline:none;border:0px;text-align:center;" value='+(o.user==null ? "":o.user.entry==null ? "" :o.user.entry)+' /></td>'
-			      				+'<td class="text-center"><input style="background:none;outline:none;border:0px;text-align:center;" value='+(o.user==null ? "":o.user.quitDate==null ? "":o.user.quitDate)+' /></td>'
-			      				+'<td class="text-center"><input style="background:none;outline:none;border:0px;text-align:center;" value='+(o.user==null ? "":o.user.reason==null ? "":o.user.reason)+' /></td>'
-			      				+'<td class="text-center"><input style="background:none;outline:none;border:0px;text-align:center;" value='+o.remarksOne+' /></td><tr>'
-							})
-							$('#tableUserSum').html(html);
-							 dicDiv=$('#userSum');
-						}
-						if(obj.event=='mod16'){
-							alert(1)
-							$(obj.data.mod16).each(function(i,o){
-								html +='<tr>'
-			      				+'<td class="text-center">'+o.name+'</td>'
-			      				+'<td class="text-center"><input style="background:none;outline:none;border:0px;text-align:center;" value='+o.position.name+' /></td>'
-			      				+'<td class="text-center"><input style="background:none;outline:none;border:0px;text-align:center;" value='+o.time+' /></td>'
-			      				+'<td class="text-center"><input style="background:none;outline:none;border:0px;text-align:center;" value='+o.platform.name+' /></td>'
-			      				+'<td class="text-center"><input style="background:none;outline:none;border:0px;text-align:center;" value='+o.recruitName+' /></td>'
-			      				+'<td class="text-center"><input style="background:none;outline:none;border:0px;text-align:center;" value='+(o.user==null ? "":o.user.entry==null ? "" :o.user.entry)+' /></td>'
-			      				+'<td class="text-center"><input style="background:none;outline:none;border:0px;text-align:center;" value='+(o.user==null ? "":o.user.quitDate==null ? "":o.user.quitDate)+' /></td>'
-			      				+'<td class="text-center"><input style="background:none;outline:none;border:0px;text-align:center;" value='+(o.user==null ? "":o.user.reason==null ? "":o.user.reason)+' /></td>'
-			      				+'<td class="text-center"><input style="background:none;outline:none;border:0px;text-align:center;" value='+o.remarksOne+' /></td><tr>'
-							})
-							$('#tableUserSum').html(html);
-							 dicDiv=$('#userSum');
-						}
-						console.log(obj)
-						if(obj.event=='mod1'){
-							console.log(1)
-						}
+						var dicDiv=$('#layuitable');
 						layer.open({
 					         type: 1
-					        ,title: '人员详情' //不显示标题栏
+					        ,title: '招聘人员情况' //不显示标题栏
 					        ,closeBtn: false
 					        ,zindex:-1
-					        ,area:['86%', '90%']
+					        ,area:['70%', '90%']
 					        ,shade: 0.5
-					        ,id: 'LAY_layuipro10' //设定一个id，防止重复弹出
+					        ,id: 'LAY_layuipro26' //设定一个id，防止重复弹出
 					        ,btn: ['取消']
 					        ,btnAlign: 'c'
 					        ,moveType: 1 //拖拽模式，0或者1
@@ -1216,10 +976,132 @@
 								})
 					        }
 					        ,end:function(){
-					        	$("#userSum").hide();
+					        	$("#layuitable").hide();
 							  } 
 					      });
-						
+						var newArr = [];
+						if(obj.event=='mod10'){
+							$(obj.data.mod10).each(function(j,k){
+								newArr.push(k);
+								k.position=(k.position==null ? "":k.position.name==null ? "" :k.position.name);
+								k.platform=(k.platform==null ? "":k.platform.name==null ? "" :k.platform.name);
+								k.entry=(k.user==null ? "":k.user.entry==null ? "" :k.user.entry);
+								k.quitDate=(k.user==null ? "":k.user.quitDate==null ? "":k.user.quitDate);
+								k.reason=(k.user==null ? "":k.user.reason==null ? "":k.user.reason);
+							})
+						}
+						if(obj.event=='mod11'){
+							$(obj.data.mod11).each(function(j,k){
+								newArr.push(k);
+								k.position=(k.position==null ? "":k.position.name==null ? "" :k.position.name);
+								k.platform=(k.platform==null ? "":k.platform.name==null ? "" :k.platform.name);
+								k.entry=(k.user==null ? "":k.user.entry==null ? "" :k.user.entry);
+								k.quitDate=(k.user==null ? "":k.user.quitDate==null ? "":k.user.quitDate);
+								k.reason=(k.user==null ? "":k.user.reason==null ? "":k.user.reason);
+							})
+						}
+						if(obj.event=='mod12'){
+							$(obj.data.mod12).each(function(j,k){
+								newArr.push(k);
+								k.position=(k.position==null ? "":k.position.name==null ? "" :k.position.name);
+								k.platform=(k.platform==null ? "":k.platform.name==null ? "" :k.platform.name);
+								k.entry=(k.user==null ? "":k.user.entry==null ? "" :k.user.entry);
+								k.quitDate=(k.user==null ? "":k.user.quitDate==null ? "":k.user.quitDate);
+								k.reason=(k.user==null ? "":k.user.reason==null ? "":k.user.reason);
+							})
+						}
+						if(obj.event=='mod13'){
+							$(obj.data.mod13).each(function(j,k){
+								newArr.push(k);
+								k.position=(k.position==null ? "":k.position.name==null ? "" :k.position.name);
+								k.platform=(k.platform==null ? "":k.platform.name==null ? "" :k.platform.name);
+								k.entry=(k.user==null ? "":k.user.entry==null ? "" :k.user.entry);
+								k.quitDate=(k.user==null ? "":k.user.quitDate==null ? "":k.user.quitDate);
+								k.reason=(k.user==null ? "":k.user.reason==null ? "":k.user.reason);
+							})
+						}
+						if(obj.event=='mod14'){
+							$(obj.data.mod14).each(function(j,k){
+								newArr.push(k);
+								k.position=(k.position==null ? "":k.position.name==null ? "" :k.position.name);
+								k.platform=(k.platform==null ? "":k.platform.name==null ? "" :k.platform.name);
+								k.entry=(k.user==null ? "":k.user.entry==null ? "" :k.user.entry);
+								k.quitDate=(k.user==null ? "":k.user.quitDate==null ? "":k.user.quitDate);
+								k.reason=(k.user==null ? "":k.user.reason==null ? "":k.user.reason);
+							})
+						}
+						if(obj.event=='mod15'){
+							$(obj.data.mod15).each(function(j,k){
+								newArr.push(k);
+								k.position=(k.position==null ? "":k.position.name==null ? "" :k.position.name);
+								k.platform=(k.platform==null ? "":k.platform.name==null ? "" :k.platform.name);
+								k.entry=(k.user==null ? "":k.user.entry==null ? "" :k.user.entry);
+								k.quitDate=(k.user==null ? "":k.user.quitDate==null ? "":k.user.quitDate);
+								k.reason=(k.user==null ? "":k.user.reason==null ? "":k.user.reason);
+							})
+						}
+						if(obj.event=='mod16'){
+							$(obj.data.mod16).each(function(j,k){
+								newArr.push(k);
+								k.position=(k.position==null ? "":k.position.name==null ? "" :k.position.name);
+								k.platform=(k.platform==null ? "":k.platform.name==null ? "" :k.platform.name);
+								k.entry=(k.user==null ? "":k.user.entry==null ? "" :k.user.entry);
+								k.quitDate=(k.user==null ? "":k.user.quitDate==null ? "":k.user.quitDate);
+								k.reason=(k.user==null ? "":k.user.reason==null ? "":k.user.reason);
+							})
+						}
+						table.render({
+							elem: '#layuitable2',
+							loading: true,
+							toolbar: '#toolbar2', 
+							sort:true,
+							colFilterRecord: true,
+							smartReloadModel: true,
+							data:newArr,
+							cols: [
+								[{
+									field: "name",
+									title: "人名",
+									align: 'center',
+								},{
+									field: "position",
+									title: "职位",
+									align: 'center',
+								},{
+									field: "time",
+									title: "面试时间",
+									align: 'center',
+									width:160
+								},{
+									field: "platform",
+									title: "平台",
+									align: 'center',
+								},{
+									field: "recruitName",
+									title: "招聘人",
+									align: 'center',
+								},{
+									field: "entry",
+									title: "入职时间",
+									align: 'center',
+									width:160
+								},{
+									field: "quitDate",
+									title: "离职时间",
+									align: 'center',
+									width:160
+								},{
+									field: "reason",
+									title: "离职原因",
+									align: 'center',
+								},{
+									field: "remarksOne",
+									title: "备注",
+									align: 'center',
+								}
+								]
+							],
+									});
 					})
 					var eventd2=function(data){
 						table.reload("layuiShare6", {
@@ -1424,31 +1306,84 @@
 						check="off"
 						}
 					  });
+					var searchTime = '';  //记录搜索查询时间
+				 	form.on('submit(searchTotal)',function(obj){
+				 		searchTime = obj.field.time+'-01 00:00:00';
+				 		table.reload('totalTable',{
+					 		url: '${ctx}/personnel/getBasics',
+					 		where : { time : searchTime},
+				 		})
+				 	})
+					function lookoverTotal(){
+				 		layer.open({
+				 			type:1,
+				 			content: $('#lookoverDiv'),
+				 			shadeClose : true,
+				 			area : ['60%','60%'],
+				 		})
+				 		table.render({
+				 			elem: '#totalTable',
+				 			data: [],
+				 			toolbar: '#toolbar2',
+				 			parseData:function(ret){ 
+				 				var data = [];
+				 				data.push(ret.data);
+				 				return { data:data,  msg:ret.message, code:ret.code } 
+				 			},
+				 			cols: [[
+							       {align:'center', title:'宣传费',   field:'advertisementPrice',	  }, 
+							       {align:'center', title:'人工费用',   field:'recruitUserPrice',  edit: true,  },
+							       {align:'center', title:'培训费用',   field:'trainPrice',    },
+							       {align:'center', title:'招聘费用汇总',   field:'sumPrice',    },
+							       {align:'center', title:'招聘计划人数',   field:'planNumber',},
+							       {align:'center', title:'入职人员数量',   field:'admissionNum',  },
+							       {align:'center', title:'计划每人分到应聘费用',   field:'planPrice',},
+							       {align:'center', title:'每人占到应聘费用',   field:'sharePrice',},
+				 			        ]],
+				 		})
+				 	}
+				 	laydate.render({
+				 		elem: '#totalDepartmentTime',
+				 		type: 'month',
+				 	})
+					function departmentTotal(){
+				 		layer.open({
+				 			type:1,
+				 			content: $('#departmentDiv'),
+				 			shadeClose : true,
+				 			area : ['60%','60%'],
+				 		})
+				 		table.render({
+				 			elem: '#totalDepartmentTable',
+				 			data: [],
+				 			toolbar: '#toolbar2',
+				 			totalRow: true,
+							parseData:function(ret){ return { data:ret.data, msg:ret.message, code:ret.code } },
+							cols: [[
+							       {align:'center', title:'部门',   field:'username',	  }, 
+							       {align:'center', title:'部门招聘奖励金',   field:'ReceivePrice',},
+							       {align:'center', title:'培训费用',   field:'trainPrice',},
+							       {align:'center', title:'该部门占应聘费用',   field:'occupyPrice',totalRow: true,},
+							       {align:'center', title:'计划该部门占应聘费用',   field:'planPrice',totalRow: true,},
+							       {align:'center', title:'定向招聘费用',   field:'directional',},
+					 			]],
+				 		})
+				 	}
+				 	form.on('submit(searchDepartmentTotal)',function(obj){
+				 		table.reload('totalDepartmentTable',{
+					 		url: '${ctx}/personnel/findBasicsSummary',
+					 		where : { time : obj.field.time+'-01 00:00:00'},
+				 		})
+				 	})
 					//监听搜索
 					form.on('submit(LAY-search)', function(data) {
 						var field = data.field;
-						var orderTime=field.startTime.split('~');
-						field.orderTimeBegin=orderTime[0];
-						field.orderTimeEnd=orderTime[1];
-						field.time="2019-06-02 11:00:00";
-						/* if(check=="on"){
-						field.time="";
-						field.testTime="2019-06-02 11:00:00";
-						field.quit=0;
-						field.state=1;
-						}else{
-							field.testTime="";
-						} */
-						/* if(field.state!=""){
-							field.testTime="2019-06-02 11:00:00";
-							field.time="";
-						} */
+						var orderTime=field.time;
+						field.time=orderTime+"-01 00:00:00";
 						table.reload('tableData', {
 							where: field,
-							page: {
-								curr:1
-			                }
 						});
+						table.reload("layuitable2")
 					});
 					
 					

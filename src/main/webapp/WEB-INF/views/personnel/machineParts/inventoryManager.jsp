@@ -70,12 +70,12 @@
 			<tr>
 				<td>部门：</td>
 				<td>&nbsp;&nbsp;</td>
-				<td><select  name="orgNameId" id="addOrg"></select></td>
+				<td><select  name="orgNameId" id="addOrg" lay-search></select></td>
 			</tr>
 			<tr>
 				<td>领取人：</td>
 				<td>&nbsp;&nbsp;</td>
-				<td><select  name="userId" id="addUser"></select></td>
+				<td><select  name="userId" id="addUser" lay-search></select></td>
 			</tr>
 			<tr>
 				<td>备注：</td>
@@ -107,14 +107,14 @@ layui.config({
 		myutil.config.ctx = '${ctx}';
 		myutil.clickTr();
 		
-		var orgNameSelectHtml = '', userSelectHtml = '';
+		var orgNameSelectHtml = '<option value="">请选择</option>', userSelectHtml = '<option value="">请选择</option>';
 		var unitData = myutil.getDataSync({ url:'${ctx}/basedata/list?type=officeUnit' });
 		mytable.render({
 			elem:'#tableData',
 			url:'${ctx}/personnel/getOfficeSupplies?type=2',
 			curd:{
 				addTemp:{
-					type:2,createdAt:myutil.getSubDay(0,'yyyy-MM-dd'),location:'',name:'',price:'',inventoryNumber:'',libraryValue:'',
+					type:2,createdAt:myutil.getSubDay(0,'yyyy-MM-dd')+' 00:00:00',location:'',name:'',price:'',inventoryNumber:'',libraryValue:'',
 				},
 				addTempAfter:function(trElem){
 					var timeElem = $(trElem).find('td[data-field="createdAt"]')[0];
@@ -135,6 +135,7 @@ layui.config({
 				deleUrl:'/product/deleteOfficeSupplies',
 				field:{unit_id:'unitId', },
 			},
+			/* colsWidth:[0,10,10,15,10,10,10,10,0], */
 			cols:[[
 					{ type: 'checkbox', align: 'center', fixed: 'left',},
 					{ field: "createdAt", title: "时间", type:'date',edit:false, },
@@ -158,7 +159,7 @@ layui.config({
 						title: trData.name,
 						content: $('#inputWin').html(),
 						success:function(){
-							laydate.render({ elem:'#addInputTime', })
+							laydate.render({ elem:'#addInputTime',value:myutil.getSubDay(0,'yyyy-MM-dd'), })
 							form.on('submit(addInputBtn)',function(obj){
 								obj.field.officeSuppliesId = trData.id;
 								obj.field.time = obj.field.time+' 00:00:00';
@@ -189,10 +190,10 @@ layui.config({
 						title: trData.name,
 						content:$('#outWin').html(),
 						success:function(){
-							laydate.render({ elem:'#addOutTime', })
+							laydate.render({ elem:'#addOutTime', value:myutil.getSubDay(0,'yyyy-MM-dd'), })
 							$('#addOrg').html(orgNameSelectHtml);
 							$('#addUser').html(userSelectHtml);
-							form.on('submit(addInputBtn)',function(obj){
+							form.on('submit(addOutBtn)',function(obj){
 								obj.field.officeSuppliesId = trData.id;
 								obj.field.time = obj.field.time+' 00:00:00';
 								myutil.saveAjax({
@@ -232,7 +233,6 @@ layui.config({
 		myutil.getData({
 			url:'${ctx}/system/user/findUserList?foreigns=0&isAdmin=false',
 			success:function(d){
-				var html = '';
 				for(var i=0,len=d.length;i<len;i++){
 					userSelectHtml += '<option value="'+d[i].id+'">'+d[i].userName+'</option>';
 				}

@@ -184,8 +184,33 @@ public class Advertisement extends BaseEntity<Long> {
 	@Transient
 	private Date orderTimeEnd;
 	
-
+	/**
+	 * 查询字段
+	 */
+	@Transient
+	private Date orderTimeBegin2;
+	/**
+	 * 查询字段
+	 */
+	@Transient
+	private Date orderTimeEnd2;
 	
+	
+	public Date getOrderTimeBegin2() {
+		return orderTimeBegin2;
+	}
+
+	public void setOrderTimeBegin2(Date orderTimeBegin2) {
+		this.orderTimeBegin2 = orderTimeBegin2;
+	}
+
+	public Date getOrderTimeEnd2() {
+		return orderTimeEnd2;
+	}
+
+	public void setOrderTimeEnd2(Date orderTimeEnd2) {
+		this.orderTimeEnd2 = orderTimeEnd2;
+	}
 
 	public String getRemarks() {
 		return remarks;
