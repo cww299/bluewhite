@@ -133,7 +133,7 @@
 <script type="text/html" id="addOutOrderTpl">
 <div class="layui-form layui-form-pane" style="padding:20px;">
 	<div class="layui-item" pane>
-		<label class="layui-form-label">任务编号</label>
+		<label class="layui-form-label">外发编号</label>
 		<div class="layui-input-block">
 			<input class="layui-input" name="outSourceNumber" id="outSourceNumber" readonly>
 		</div>
@@ -151,13 +151,13 @@
 		</div>
 	</div>
 	<div class="layui-item" pane>
-		<label class="layui-form-label">任务工序</label>
+		<label class="layui-form-label">外发工序</label>
 		<div class="layui-input-block">
 			<input class="layui-input" name="process">
 		</div>
 	</div>
 	<div class="layui-item" pane>
-		<label class="layui-form-label">任务数量</label>
+		<label class="layui-form-label">外发数量</label>
 		<div class="layui-input-block">
 			<input class="layui-input" name="processNumber">
 		</div>
