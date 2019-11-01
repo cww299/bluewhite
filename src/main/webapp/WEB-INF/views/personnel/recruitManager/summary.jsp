@@ -1324,6 +1324,7 @@
 				 		table.render({
 				 			elem: '#totalTable',
 				 			data: [],
+				 			toolbar: '#toolbar2',
 				 			parseData:function(ret){ 
 				 				var data = [];
 				 				data.push(ret.data);
@@ -1355,13 +1356,15 @@
 				 		table.render({
 				 			elem: '#totalDepartmentTable',
 				 			data: [],
+				 			toolbar: '#toolbar2',
+				 			totalRow: true,
 							parseData:function(ret){ return { data:ret.data, msg:ret.message, code:ret.code } },
 							cols: [[
 							       {align:'center', title:'部门',   field:'username',	  }, 
 							       {align:'center', title:'部门招聘奖励金',   field:'ReceivePrice',},
 							       {align:'center', title:'培训费用',   field:'trainPrice',},
-							       {align:'center', title:'该部门占应聘费用',   field:'occupyPrice',},
-							       {align:'center', title:'计划该部门占应聘费用',   field:'planPrice',},
+							       {align:'center', title:'该部门占应聘费用',   field:'occupyPrice',totalRow: true,},
+							       {align:'center', title:'计划该部门占应聘费用',   field:'planPrice',totalRow: true,},
 							       {align:'center', title:'定向招聘费用',   field:'directional',},
 					 			]],
 				 		})

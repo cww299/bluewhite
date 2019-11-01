@@ -1,6 +1,7 @@
 package com.bluewhite.personnel.roomboard.service;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import javax.persistence.criteria.Predicate;
@@ -51,6 +52,16 @@ public class AdvertisementServiceImpl extends BaseServiceImpl<Advertisement, Lon
 			if(!StringUtils.isEmpty(advertisement.getRecruitmentName())){
 				predicate.add(cb.like(root.get("recruit").get("recruitName").as(String.class), "%"+advertisement.getRecruitmentName()+"%"));
 			}
+			// 按日期
+			if (!StringUtils.isEmpty(advertisement.getOrderTimeBegin()) && !StringUtils.isEmpty(advertisement.getOrderTimeEnd())) {
+				predicate.add(cb.between(root.get("startTime").as(Date.class), advertisement.getOrderTimeBegin(),
+						advertisement.getOrderTimeEnd()));
+			}
+			// 按日期
+			/*if (!StringUtils.isEmpty(advertisement.getOrderTimeBegin2()) && !StringUtils.isEmpty(advertisement.getOrderTimeEnd2())) {
+				predicate.add(cb.between(root.get("endTime").as(Date.class), advertisement.getOrderTimeBegin2(),
+						advertisement.getOrderTimeEnd2()));
+			}*/
 			Predicate[] pre = new Predicate[predicate.size()];
 			query.where(predicate.toArray(pre));
 			return null;
