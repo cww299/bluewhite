@@ -120,7 +120,7 @@ public class Order extends BaseEntity<Long>{
 	 * 是否备料充足，可以进行外发单的生成
 	 */
 	@Column(name = "prepare_enough")
-	private Integer PrepareEnough;
+	private Integer prepareEnough;
 	
 	/**
 	 * 客户name
@@ -155,13 +155,16 @@ public class Order extends BaseEntity<Long>{
 	
 	
 	
+	
+
+
 	public Integer getPrepareEnough() {
-		return PrepareEnough;
+		return prepareEnough;
 	}
 
 
 	public void setPrepareEnough(Integer prepareEnough) {
-		PrepareEnough = prepareEnough;
+		this.prepareEnough = prepareEnough;
 	}
 
 

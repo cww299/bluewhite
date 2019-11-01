@@ -24,6 +24,7 @@ import com.bluewhite.common.utils.StringUtil;
 import com.bluewhite.ledger.dao.OrderMaterialDao;
 import com.bluewhite.ledger.dao.OrderProcurementDao;
 import com.bluewhite.ledger.dao.ScatteredOutboundDao;
+import com.bluewhite.ledger.entity.Order;
 import com.bluewhite.ledger.entity.OrderMaterial;
 import com.bluewhite.ledger.entity.OrderProcurement;
 import com.bluewhite.ledger.entity.ScatteredOutbound;
@@ -196,17 +197,23 @@ public class ScatteredOutboundServiceImpl extends BaseServiceImpl<ScatteredOutbo
 				}
 				//对订单的备料状态进行更新
 				ScatteredOutbound scatteredOutbound = findOne(Long.parseLong(idArr[0]));
-				if(scatteredOutbound!=null && scatteredOutbound.getOrderMaterial().getOrder()!=null){
-					
-					
-					
+				Order order = scatteredOutbound.getOrderMaterial().getOrder();
+				if(scatteredOutbound!=null && order!=null){
+					List<ScatteredOutbound>  scatteredOutboundList = new ArrayList<>();
+					scatteredOutbound.getOrderMaterial().getOrder().getOrderMaterials().stream().forEach(om->{
+						List<ScatteredOutbound> so = dao.findByOrderMaterialId(om.getId());
+						scatteredOutboundList.addAll(so);
+					});
+					if(scatteredOutboundList.size()>0){
+						List<ScatteredOutbound>  auditScatteredOutboundList = scatteredOutboundList.stream().filter(ScatteredOutbound->ScatteredOutbound.getAudit()==0).collect(Collectors.toList());
+						if(auditScatteredOutboundList.size()==0){
+							order.setPrepareEnough(1);
+							orderService.save(order);
+						}
+					}
 				}
 			}
 		}
-		
-		
-		
-		
 		return count;
 	}
 
