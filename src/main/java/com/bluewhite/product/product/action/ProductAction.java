@@ -6,7 +6,6 @@ import java.util.stream.Collectors;
 
 import javax.persistence.EntityManager;
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpSession;
 
 import org.hibernate.Session;
 import org.hibernate.jpa.HibernateEntityManager;
@@ -17,6 +16,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import com.bluewhite.basedata.entity.BaseData;
 import com.bluewhite.common.BeanCopyUtils;
 import com.bluewhite.common.ClearCascadeJSON;
 import com.bluewhite.common.Constants;
@@ -26,6 +26,7 @@ import com.bluewhite.common.entity.CommonResponse;
 import com.bluewhite.common.entity.CurrentUser;
 import com.bluewhite.common.entity.ErrorCode;
 import com.bluewhite.common.entity.PageParameter;
+import com.bluewhite.onlineretailers.inventory.entity.Inventory;
 import com.bluewhite.product.primecost.cutparts.entity.CutParts;
 import com.bluewhite.product.primecost.cutparts.service.CutPartsService;
 import com.bluewhite.product.primecost.embroidery.entity.Embroidery;
@@ -126,29 +127,17 @@ public class ProductAction {
 	}
 	
 	/**
-	 * 分页查看所有的产品的成本报价
-	 * 
-	 * @param request 请求
-	 * @return cr
-	 * @throws Exception
+	 * 仓库查看库存
 	 */
-	@RequestMapping(value = "/getProductPages", method = RequestMethod.GET)
+	@RequestMapping(value = "/inventory/getProductPages", method = RequestMethod.GET)
 	@ResponseBody
-	public CommonResponse getProductPages(HttpServletRequest request,PageParameter page,Product product,Integer primeCostNumber) {
+	public CommonResponse getProductPages(PageParameter page,Product product) {
 		CommonResponse cr = new CommonResponse();
-		if(product.getId()!=null){
-			HttpSession session = request.getSession();
-			Product productOne = productService.findOne(product.getId());
-			session.setAttribute("productId", product.getId());
-			session.setAttribute("number", productOne.getPrimeCost()!=null ? productOne.getPrimeCost().getNumber():null);
-			session.setAttribute("productName", productOne.getName());
-		}
 		cr.setData(ClearCascadeJSON
 				.get()
-				.addRetainTerm(Product.class,"id","primeCost","name","number")
-				.addRetainTerm(PrimeCost.class,"number","cutPartsPrice","otherCutPartsPrice","cutPrice","machinistPrice","embroiderPrice"
-						,"embroiderPrice","needleworkPrice","packPrice","freightPrice","freightPrice","invoice","taxIncidence"
-						,"surplus","budget","budgetRate","actualCombat","actualCombatRate")
+				.addRetainTerm(Product.class,"id","inventorys","name","number")
+				.addRetainTerm(Inventory.class,"id","number","warehouse","warehouseType")
+				.addRetainTerm(BaseData.class,"id","name")
 				.format(productService.findPages(product,page)).toJSON());
 		cr.setMessage("查询成功");
 		return cr;
