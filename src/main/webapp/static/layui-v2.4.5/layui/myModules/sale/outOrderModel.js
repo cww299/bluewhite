@@ -15,7 +15,6 @@ layui.define(['jquery','layer','form','laytpl','laydate'],function(exports){
 		myutil = layui.myutil;
 	
 	var TPL = ['<div class="layui-form layui-form-pane" style="padding:20px;">',
-	            '<input type="hidden" name="orderId" value="{{ d.orderId }}">',
 				'<p style="display:none;"><button lay-submit lay-filter="sureAddOutOrder" id="sureAddOutOrder">确定</button></p>',
 				'<div class="layui-item" pane>',
 					'<label class="layui-form-label">开单时间</label>',
@@ -104,7 +103,7 @@ layui.define(['jquery','layer','form','laytpl','laydate'],function(exports){
 					'<input type="hidden" name="id" value="{{ d.id }}">',
 			        ].join(' ');
 		}else{
-			t = TPL;
+			t = TPL+'<input type="hidden" name="orderId" value="{{ d.orderId }}">';
 		}
 		t+='</div>';
 		var html = '';
