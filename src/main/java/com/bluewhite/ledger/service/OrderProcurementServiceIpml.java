@@ -1,6 +1,7 @@
 package com.bluewhite.ledger.service;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import javax.persistence.criteria.Predicate;
@@ -43,6 +44,10 @@ public class OrderProcurementServiceIpml extends BaseServiceImpl<OrderProcuremen
 			if (!StringUtils.isEmpty(param.getProductName())){
 				predicate.add(cb.like(root.get("orderMaterial").get("order").get("product").get("name").as(String.class),"%"+StringUtil.specialStrKeyword(param.getProductName())+"%") );
 			}
+			// 按采购单编号
+			if (!StringUtils.isEmpty(param.getOrderProcurementNumber())){
+				predicate.add(cb.like(root.get("orderProcurementNumber").as(String.class),"%"+StringUtil.specialStrKeyword(param.getOrderProcurementNumber())+"%") );
+			}
 			// 按合同id
 			if (param.getOrderId()!=null){
 				predicate.add(cb.equal(root.get("orderId").as(Long.class),param.getOrderId()));
@@ -51,7 +56,28 @@ public class OrderProcurementServiceIpml extends BaseServiceImpl<OrderProcuremen
 			if (param.getArrival()!=null){
 				predicate.add(cb.equal(root.get("arrival").as(Integer.class),param.getArrival()));
 			}
-			
+			// 按跟单人
+			if (!StringUtils.isEmpty(param.getUserName())) {
+				predicate.add(cb.like(root.get("user").get("userName").as(String.class), "%" + param.getUserName() + "%"));
+			}
+			// 按客户
+			if (!StringUtils.isEmpty(param.getCustomerName())) {
+				predicate.add(cb.like(root.get("customer").get("name").as(String.class),"%" + param.getCustomerName() + "%"));
+			}
+			// 按下单日期
+			if (param.getPlaceOrderTime() != null) {
+				if (!StringUtils.isEmpty(param.getOrderTimeBegin()) && !StringUtils.isEmpty(param.getOrderTimeEnd())) {
+					predicate.add(cb.between(root.get("placeOrderTime").as(Date.class), param.getOrderTimeBegin(),
+							param.getOrderTimeEnd()));
+				}
+			}
+			// 按到货日期
+			if (param.getArrivalTime() != null) {
+				if (!StringUtils.isEmpty(param.getOrderTimeBegin()) && !StringUtils.isEmpty(param.getOrderTimeEnd())) {
+					predicate.add(cb.between(root.get("arrivalTime").as(Date.class), param.getOrderTimeBegin(),
+							param.getOrderTimeEnd()));
+				}
+			}
 			Predicate[] pre = new Predicate[predicate.size()];
 			query.where(predicate.toArray(pre));
 			return null;
