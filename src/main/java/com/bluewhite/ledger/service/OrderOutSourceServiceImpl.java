@@ -49,7 +49,7 @@ public class OrderOutSourceServiceImpl extends BaseServiceImpl<OrderOutSource, L
 			if(order.getPrepareEnough()==0){
 				throw new ServiceException("当前下单合同备料不足，无法进行外发");
 			}
-			List<OrderOutSource> orderOutSourceList = dao.findByOrderIdAndFlag(orderOutSource.getOrderId(), 1);
+			List<OrderOutSource> orderOutSourceList = dao.findByOrderIdAndFlag(orderOutSource.getOrderId(), 0);
 			if (orderOutSourceList.size() > 0) {
 				double sumNumber = orderOutSourceList.stream().mapToDouble(OrderOutSource::getProcessNumber).sum();
 				if (NumUtils.sum(sumNumber, orderOutSource.getProcessNumber()) > order.getNumber()) {
