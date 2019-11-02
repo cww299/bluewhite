@@ -161,7 +161,7 @@ layui.config({
 			size:'lg',
 			url:'${ctx}/ledger/orderOutSourcePage',
 			autoUpdate:{
-				deleUrl:'',
+				deleUrl:'/ledger/deleteOrderOutSource',
 			},
 			curd:{
 				btn:[4],
