@@ -187,6 +187,18 @@ public class OrderProcurement extends BaseEntity<Long> {
 	private String productName;
 	
 	/**
+	 * 订料人
+	 */
+	@Transient
+	private String userName;
+	
+	/**
+	 * 客户
+	 */
+	@Transient
+	private String customerName;	
+	
+	/**
 	 * 查询字段
 	 */
 	@Transient
@@ -202,6 +214,22 @@ public class OrderProcurement extends BaseEntity<Long> {
 	
 	
 
+
+	public String getUserName() {
+		return userName;
+	}
+
+	public void setUserName(String userName) {
+		this.userName = userName;
+	}
+
+	public String getCustomerName() {
+		return customerName;
+	}
+
+	public void setCustomerName(String customerName) {
+		this.customerName = customerName;
+	}
 
 	public Long getUserStorageId() {
 		return userStorageId;
