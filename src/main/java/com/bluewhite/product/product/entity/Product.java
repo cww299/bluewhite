@@ -19,7 +19,6 @@ import org.hibernate.annotations.NotFoundAction;
 import com.bluewhite.base.BaseEntity;
 import com.bluewhite.onlineretailers.inventory.entity.Inventory;
 import com.bluewhite.product.primecost.primecost.entity.PrimeCost;
-import com.bluewhite.system.sys.entity.Files;
 
 /**
  * 蓝白产品
@@ -96,13 +95,13 @@ public class Product extends BaseEntity<Long>{
     private Double departmentPrice;
 	
     /**
-     * 产品本身外发价格()
+     * 产品本身外发价格
      */
 	@Transient
     private Double puncherHairPrice;
 	
     /**
-     * 当部门预计生产价格()
+     * 当部门预计生产价格
      */
 	@Transient
     private Double puncherDepartmentPrice;
@@ -119,9 +118,22 @@ public class Product extends BaseEntity<Long>{
 	@Transient
 	private Double deedlePrice;
 	
+	/**
+	 * 仓库种类id
+	 */
+	@Transient
+	private Long warehouseTypeId;
 	
 	
 	
+	public Long getWarehouseTypeId() {
+		return warehouseTypeId;
+	}
+
+	public void setWarehouseTypeId(Long warehouseTypeId) {
+		this.warehouseTypeId = warehouseTypeId;
+	}
+
 	public Set<Inventory> getInventorys() {
 		return inventorys;
 	}

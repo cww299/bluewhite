@@ -79,7 +79,7 @@ public class OrderOutSourceServiceImpl extends BaseServiceImpl<OrderOutSource, L
 			if (!StringUtils.isEmpty(param.getUserName())) {
 				predicate.add(cb.like(root.get("user").get("userName").as(String.class), "%" + param.getUserName() + "%"));
 			}
-			// 按编号
+			// 按客户
 			if (!StringUtils.isEmpty(param.getCustomerName())) {
 				predicate.add(cb.like(root.get("customer").get("name").as(String.class),"%" + param.getCustomerName() + "%"));
 			}
@@ -149,6 +149,9 @@ public class OrderOutSourceServiceImpl extends BaseServiceImpl<OrderOutSource, L
 	public void updateOrderOutSource(OrderOutSource orderOutSource) {
 		if (orderOutSource.getId() != null) {
 			OrderOutSource ot = findOne(orderOutSource.getId());
+			if(orderOutSource.getAudit()==1){
+				throw new ServiceException("已审核，无法修改");
+			}
 			update(orderOutSource, ot, "");
 		}
 		if (orderOutSource.getOrderId() != null) {
@@ -192,8 +195,17 @@ public class OrderOutSourceServiceImpl extends BaseServiceImpl<OrderOutSource, L
 				for (int i = 0; i < idArr.length; i++) {
 					Long id = Long.parseLong(idArr[i]);
 					OrderOutSource orderOutSource = findOne(id);
+					if(orderOutSource.getFlag()==1){
+						throw new ServiceException("第"+(i+1)+"条单据已作废，无法审核");
+					}
+					if(orderOutSource.getAudit()==1){
+						throw new ServiceException("第"+(i+1)+"条单据已审核，请勿重复审核");
+					}
+					if(orderOutSource.getOutGoingTime()==null){
+						throw new ServiceException("第"+(i+1)+"条单据无外发时间，无法审核");
+					}
 					if (orderOutSource.getWarehouseTypeId() == null) {
-						throw new ServiceException("未填写预计入库仓库，无法审核，请先确认入库仓库");
+						throw new ServiceException("第"+(i+1)+"条单据未填写预计入库仓库，无法审核，请先确认入库仓库");
 					}
 					orderOutSource.setAudit(1);
 					save(orderOutSource);
@@ -208,6 +220,9 @@ public class OrderOutSourceServiceImpl extends BaseServiceImpl<OrderOutSource, L
 	public void updateInventoryOrderOutSource(OrderOutSource orderOutSource) {
 		if (orderOutSource.getId() != null) {
 			OrderOutSource ot = findOne(orderOutSource.getId());
+			if(ot.getArrival()==1){
+				throw new ServiceException("已入库，无法修改");
+			}
 			update(orderOutSource, ot, "");
 		}
 	}
@@ -221,8 +236,11 @@ public class OrderOutSourceServiceImpl extends BaseServiceImpl<OrderOutSource, L
 				for (int i = 0; i < idArr.length; i++) {
 					Long id = Long.parseLong(idArr[i]);
 					OrderOutSource orderOutSource = findOne(id);
+					if(orderOutSource.getArrival()==1){
+						throw new ServiceException("第"+(i+1)+"条单据已入库，请勿重复入库");
+					}
 					if (orderOutSource.getInWarehouseTypeId() == null) {
-						throw new ServiceException("未填写入库仓库，无法入库，请先确认入库仓库");
+						throw new ServiceException("第"+(i+1)+"条单据未填写入库仓库，无法入库，请先确认入库仓库");
 					}
 					// 库存表
 					Inventory inventory = inventoryDao.findByProductIdAndWarehouseTypeId(
