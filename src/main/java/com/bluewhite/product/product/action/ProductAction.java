@@ -120,8 +120,7 @@ public class ProductAction {
 	@RequestMapping(value = "/getAllProduct", method = RequestMethod.GET)
 	@ResponseBody
 	public CommonResponse getAllProduct(Product product) {
-		CommonResponse cr = new CommonResponse(clearCascadeJSON1.format(productService.getAllProduct())
-				.toJSON());
+		CommonResponse cr = new CommonResponse(clearCascadeJSON1.format(productService.getAllProduct()).toJSON());
 		cr.setMessage("查询成功");
 		return cr;
 	}
