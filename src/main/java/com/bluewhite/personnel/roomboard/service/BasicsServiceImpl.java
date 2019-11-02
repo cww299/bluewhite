@@ -197,9 +197,7 @@ public class BasicsServiceImpl extends BaseServiceImpl<Basics, Long>
 		List<Recruit> list= recruitDao.findByTimeBetween(DatesUtil.getFirstDayOfMonth(basics.getTime()), DatesUtil.getLastDayOfMonth(basics.getTime()));
 		List<Map<String, Object>> allList = new ArrayList<>();
 		Map<String, Object> allMap =null;
-		/*Map<Long, List<Recruit>> map = list.stream()
-				.filter(Recruit -> Recruit.getOrgNameId() != null)
-				.collect(Collectors.groupingBy(Recruit::getOrgNameId, Collectors.toList()));*/
+		List<Reward> rewards=rewardDao.findByTypeAndTimeBetween(0,DatesUtil.getFirstDayOfMonth(basics.getTime()), DatesUtil.getLastDayOfMonth(basics.getTime()));
 		Basics basics2= findBasics(basics);
 		List<BaseData> baseDatas= baseDataDao.findByType("orgName");
 		for (BaseData baseData : baseDatas) {
@@ -258,7 +256,6 @@ public class BasicsServiceImpl extends BaseServiceImpl<Basics, Long>
 			double trainPrice=0;//培训费
 			if (list2.size()>0) {
 				for (Recruit recruit : list2) {
-					List<Reward> rewards=rewardDao.findBycoverRecruitIdAndTypeAndTimeBetween(recruit.getId(),0,DatesUtil.getFirstDayOfMonth(basics.getTime()), DatesUtil.getLastDayOfMonth(basics.getTime()));
 					/*
 					 * 查询单个人的培训汇总
 					 */
@@ -296,10 +293,11 @@ public class BasicsServiceImpl extends BaseServiceImpl<Basics, Long>
 						}
 					}
 					
-					for (Reward reward2 : rewards) {
-						ReceivePrice=ReceivePrice+reward2.getPrice();
-					}
 				}
+			}
+			List<Reward>rewards2=rewards.stream().filter(Reward->Reward.getRecruitName().getOrgNameId().equals(baseData.getId())).collect(Collectors.toList());
+			for (Reward reward2 : rewards2) {
+				ReceivePrice=ReceivePrice+reward2.getPrice();
 			}
 			
 			allMap.put("username", string);

@@ -129,8 +129,7 @@ public class ProductServiceImpl extends BaseServiceImpl<Product, Long> implement
 			}
 			// 按产品名称过滤
 			if (!StringUtils.isEmpty(param.getName())) {
-				predicate.add(cb.like(root.get("name").as(String.class),
-						"%" + StringUtil.specialStrKeyword(param.getName()) + "%"));
+				predicate.add(cb.like(root.get("name").as(String.class),"%" + StringUtil.specialStrKeyword(param.getName()) + "%"));
 			}
 			//按仓库种类
 			if(param.getWarehouseTypeId()!=null){
