@@ -230,7 +230,9 @@
 										text = "部分审核";
 									return text;
 								}
-							}]
+							},
+							{ field: "org",  title: "申请部门", width:'7%', templet:'<span>{{ d.orgName?d.orgName.name:""}}</span>', }, 
+							]
 						],
 								});
 

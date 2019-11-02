@@ -15,8 +15,13 @@ layui.define(['jquery','layer','form','laytpl','laydate'],function(exports){
 		myutil = layui.myutil;
 	
 	var TPL = ['<div class="layui-form layui-form-pane" style="padding:20px;">',
-	            '<input type="hidden" name="orderId" value="{{ d.orderId }}">',
 				'<p style="display:none;"><button lay-submit lay-filter="sureAddOutOrder" id="sureAddOutOrder">确定</button></p>',
+				'<div class="layui-item" pane>',
+					'<label class="layui-form-label">开单时间</label>',
+					'<div class="layui-input-block">',
+						'<input class="layui-input" lay-verify="required" name="openOrderTime" id="openOrderTime" value="{{ d.openOrderTime?d.openOrderTime:"" }}">',
+					'</div>',
+				'</div>',
 				'<div class="layui-item" pane>',
 					'<label class="layui-form-label">外发编号</label>',
 					'<div class="layui-input-block">',
@@ -65,18 +70,6 @@ layui.define(['jquery','layer','form','laytpl','laydate'],function(exports){
 						'<select lay-search name="userId" id="userId" data-value="{{ d.user?d.user.id:"" }}"><option value="">请选择</option></select>',
 					'</div>',
 				'</div>',
-				'<div class="layui-item" pane>',
-					'<label class="layui-form-label">开单时间</label>',
-					'<div class="layui-input-block">',
-						'<input class="layui-input" name="openOrderTime" id="openOrderTime" value="{{ d.openOrderTime?d.openOrderTime:"" }}">',
-					'</div>',
-				'</div>',
-				'<div class="layui-item" pane>',
-					'<label class="layui-form-label">外发时间</label>',
-					'<div class="layui-input-block">',
-						'<input class="layui-input" name="outGoingTime" id="outGoingTime" value="{{ d.outGoingTime?d.outGoingTime:"" }}">',
-					'</div>',
-				'</div>',
 	           ].join(' ');
 	
 	var outOrderModel = {}, allUser = [], allCustom = [], allWarehouse = [];
@@ -95,16 +88,22 @@ layui.define(['jquery','layer','form','laytpl','laydate'],function(exports){
 			title = "修改外发单"
 			t = TPL +[
 					'<div class="layui-item" pane>',
-						'<label class="layui-form-label">仓库类型</label>',
+						'<label class="layui-form-label">预计仓库</label>',
 						'<div class="layui-input-block">',
 							'<select name="warehouseTypeId" id="warehouseTypeId" lay-search data-value="{{ d.warehouseType?d.warehouseType.id:"" }}">',
 								'<option value="">请选择</option></select>',
 						'</div>',
 					'</div>',
+					'<div class="layui-item" pane>',
+						'<label class="layui-form-label">外发时间</label>',
+						'<div class="layui-input-block">',
+							'<input class="layui-input" name="outGoingTime" id="outGoingTime" value="{{ d.outGoingTime?d.outGoingTime:"" }}">',
+						'</div>',
+					'</div>',
 					'<input type="hidden" name="id" value="{{ d.id }}">',
 			        ].join(' ');
 		}else{
-			t = TPL;
+			t = TPL+'<input type="hidden" name="orderId" value="{{ d.orderId }}">';
 		}
 		t+='</div>';
 		var html = '';
