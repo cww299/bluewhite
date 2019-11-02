@@ -56,6 +56,7 @@ public class OrderOutSourceServiceImpl extends BaseServiceImpl<OrderOutSource, L
 			orderOutSource.setRemark(order.getRemark());
 			orderOutSource.setFlag(0);
 			orderOutSource.setAudit(0);
+			orderOutSource.setArrival(0);
 			save(orderOutSource);
 		} else {
 			throw new ServiceException("生产下单合同不能为空");
@@ -108,7 +109,7 @@ public class OrderOutSourceServiceImpl extends BaseServiceImpl<OrderOutSource, L
 			if (param.getFlag() != null) {
 				predicate.add(cb.equal(root.get("flag").as(Integer.class), param.getFlag()));
 			}
-			// 是否作废
+			// 是否审核
 			if (param.getAudit() != null) {
 				predicate.add(cb.equal(root.get("audit").as(Integer.class), param.getAudit()));
 			}

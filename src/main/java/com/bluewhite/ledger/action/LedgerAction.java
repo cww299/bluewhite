@@ -689,7 +689,7 @@ public class LedgerAction {
 	public CommonResponse confirmOrderOutSource(String ids) {
 		CommonResponse cr = new CommonResponse();
 		int count = orderOutSourceService.confirmOrderOutSource(ids);
-		cr.setMessage("成功审核" + count + "条外发单，进行入库");
+		cr.setMessage("成功审核" + count + "条外发入库单，进行入库");
 		return cr;
 	}
 	
@@ -701,10 +701,7 @@ public class LedgerAction {
 	
 	
 	
-	
-	
-	
-
+	/***********************包装******************************/
 	/**
 	 * 分页查看贴包单
 	 * 
