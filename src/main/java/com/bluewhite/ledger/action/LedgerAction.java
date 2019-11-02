@@ -503,8 +503,7 @@ public class LedgerAction {
 	@ResponseBody
 	public CommonResponse warningOrderProcurement() {
 		CommonResponse cr = new CommonResponse();
-		cr.setData(
-				clearCascadeJSONOrderProcurement.format(orderProcurementService.warningOrderProcurement(1)).toJSON());
+		cr.setData(clearCascadeJSONOrderProcurement.format(orderProcurementService.warningOrderProcurement(1)).toJSON());
 		cr.setMessage("查询成功");
 		return cr;
 	}
@@ -550,7 +549,7 @@ public class LedgerAction {
 	@ResponseBody
 	public CommonResponse orderOutSourcePage(PageParameter page, OrderOutSource orderOutSource) {
 		CommonResponse cr = new CommonResponse();
-		cr.setData(clearCascadeJSONOrder.format(orderOutSourceService.findPages(orderOutSource, page)).toJSON());
+		cr.setData(clearCascadeJSONSOutSource.format(orderOutSourceService.findPages(orderOutSource, page)).toJSON());
 		cr.setMessage("查看成功");
 		return cr;
 	}

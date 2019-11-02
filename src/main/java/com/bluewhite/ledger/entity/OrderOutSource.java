@@ -184,7 +184,7 @@ public class OrderOutSource extends BaseEntity<Long> {
 	private Integer arrival;
 	
 	/**
-	 * 到货日期
+	 * 到货时间
 	 */
 	@Column(name = "arrival_time")
 	private Date arrivalTime;  
