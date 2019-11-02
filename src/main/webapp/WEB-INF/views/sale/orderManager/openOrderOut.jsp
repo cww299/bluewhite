@@ -8,6 +8,11 @@
 	<script src="${ctx}/static/layui-v2.4.5/layui/layui.js"></script>
 	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 	<title>外发单</title>
+	<style>
+		.layui-form-pane .layui-item {
+		    margin-top: 10px;
+		}
+	</style>
 </head>
 <body>
 <div class="layui-card">
@@ -200,7 +205,7 @@ layui.config({
 				},
 			},
 			ifNull:'---',
-			colsWidth:[0,0,10,6,10,6,8,6,6,], 
+			colsWidth:[0,0,10,6,10,6,8,8,6,6,], 
 			toolbar:['<span class="layui-btn layui-btn-sm" lay-event="print">打印</span>',
 			         '<span class="layui-btn layui-btn-sm layui-btn-warm" lay-event="audit">审核</span>',
 			         '<span class="layui-btn layui-btn-sm layui-btn-normal" lay-event="flag">作废</span>',].join(' '),
@@ -212,6 +217,7 @@ layui.config({
 			       { title:'外发时间',   field:'openOrderTime', type:'date',},
 			       { title:'跟单人',   field:'user_userName',	},
 			       { title:'加工点',   field:'customer_name',	},
+			       { title:'预计仓库',   field:'warehouseType_name',	},
 			       { title:'是否作废',   field:'flag',	transData:{ data:['否','是'],}, },
 			       { title:'是否审核',   field:'audit',	transData:{ data:['否','是'],}, },
 			       ]]

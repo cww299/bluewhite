@@ -89,7 +89,7 @@ layui.define(['jquery','layer','form','laytpl','laydate'],function(exports){
 			title = "修改外发单"
 			t = TPL +[
 					'<div class="layui-item" pane>',
-						'<label class="layui-form-label">仓库类型</label>',
+						'<label class="layui-form-label">预计仓库</label>',
 						'<div class="layui-input-block">',
 							'<select name="warehouseTypeId" id="warehouseTypeId" lay-search data-value="{{ d.warehouseType?d.warehouseType.id:"" }}">',
 								'<option value="">请选择</option></select>',
