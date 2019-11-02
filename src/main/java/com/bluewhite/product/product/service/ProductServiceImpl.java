@@ -99,8 +99,9 @@ public class ProductServiceImpl extends BaseServiceImpl<Product, Long> implement
 		}
 		
 		Long warehouseTypeDeliveryId = RoleUtil.getWarehouseTypeDelivery(cu.getRole());
-		param.setWarehouseTypeId(warehouseTypeDeliveryId);
-		
+		if(warehouseTypeDeliveryId!=null){
+			param.setWarehouseTypeId(warehouseTypeDeliveryId);
+		}
 		Page<Product> pages = productDao.findAll((root, query, cb) -> {
 			List<Predicate> predicate = new ArrayList<>();
 			// 按id过滤
