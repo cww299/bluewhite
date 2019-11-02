@@ -164,16 +164,14 @@ public class OrderOutSourceServiceImpl extends BaseServiceImpl<OrderOutSource, L
 	@Override
 	@Transactional
 	public void updateOrderOutSource(OrderOutSource orderOutSource) {
-		if (orderOutSource.getId() != null) {
-			OrderOutSource ot = findOne(orderOutSource.getId());
-			if(orderOutSource.getAudit()==1){
-				throw new ServiceException("已审核，无法修改");
-			}
-			update(orderOutSource, ot, "");
+		OrderOutSource ot = findOne(orderOutSource.getId());
+		if(orderOutSource.getAudit()==1){
+			throw new ServiceException("已审核，无法修改");
 		}
-		if (orderOutSource.getOrderId() != null) {
-			Order order = orderDao.findOne(orderOutSource.getOrderId());
-			List<OrderOutSource> orderOutSourceList = dao.findByOrderIdAndFlag(orderOutSource.getOrderId(), 1);
+		update(orderOutSource, ot, "");
+		if (ot.getOrderId() != null) {
+			Order order = orderDao.findOne(ot.getOrderId());
+			List<OrderOutSource> orderOutSourceList = dao.findByOrderIdAndFlag(ot.getOrderId(), 1);
 			double sumNumber = orderOutSourceList.stream().mapToDouble(OrderOutSource::getProcessNumber).sum();
 			if (sumNumber > order.getNumber()) {
 				throw new ServiceException("外发总数量不能大于下单合同数量，请核实后填写");

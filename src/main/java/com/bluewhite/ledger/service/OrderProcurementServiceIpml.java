@@ -98,7 +98,6 @@ public class OrderProcurementServiceIpml extends BaseServiceImpl<OrderProcuremen
 	@Transactional
 	public void saveOrderProcurement(OrderProcurement orderProcurement) {
 		//修改
-		OrderMaterial orderMaterial = null;
 		if(orderProcurement.getId()!=null){
 			OrderProcurement ot = findOne(orderProcurement.getId());
 			List<ScatteredOutbound> scatteredOutboundList = scatteredOutboundDao.findByOrderProcurementId(orderProcurement.getId());
@@ -109,7 +108,7 @@ public class OrderProcurementServiceIpml extends BaseServiceImpl<OrderProcuremen
 			orderProcurement.setMaterielId(ot.getMaterielId());
 			orderProcurement.setOrderProcurementNumber(ot.getOrderProcurementNumber());
 		}else{
-			orderMaterial = orderMaterialDao.findOne(orderProcurement.getOrderMaterialId());
+			OrderMaterial orderMaterial = orderMaterialDao.findOne(orderProcurement.getOrderMaterialId());
 			orderProcurement.setOrderId(orderMaterial.getOrderId());
 			//跟面料进行关联，进行虚拟入库，当采购单实际入库后，进行真实库存的确定
 			orderProcurement.setMaterielId(orderMaterial.getMaterielId());
