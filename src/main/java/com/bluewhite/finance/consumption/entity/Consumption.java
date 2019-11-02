@@ -41,6 +41,13 @@ public class Consumption extends BaseEntity<Long> {
 	private Long orgNameId;
 	
 	/**
+	 * 报销部门
+	 */
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "orgName_id", referencedColumnName = "id", insertable = false, updatable = false)
+	private BaseData orgName;
+	
+	/**
 	 * 父id
 	 */
 	@Column(name = "parent_id")

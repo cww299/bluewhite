@@ -106,11 +106,12 @@ public class OrderProcurementServiceIpml extends BaseServiceImpl<OrderProcuremen
 			}
 		}else{
 			orderMaterial = orderMaterialDao.findOne(orderProcurement.getOrderMaterialId());
+			orderProcurement.setInOutError(0);
+			orderProcurement.setArrival(0);
+			orderProcurement.setOrderId(orderMaterial.getOrderId());
 			//生成新编号
 			orderProcurement.setOrderProcurementNumber(orderMaterial.getOrder().getBacthNumber()+"/"+orderMaterial.getOrder().getProduct().getName()+"/"
 					+orderMaterial.getMateriel().getName()+"/"+orderProcurement.getNewCode());
-			orderProcurement.setInOutError(0);
-			orderProcurement.setArrival(0);
 			//跟面料进行关联，进行虚拟入库，当采购单实际入库后，进行真实库存的确定
 			orderProcurement.setMaterielId(orderMaterial.getMaterielId());
 		}
