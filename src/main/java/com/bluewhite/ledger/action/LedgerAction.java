@@ -389,8 +389,9 @@ public class LedgerAction {
 	}
 
 	/**
-	 * （采购部）确认库存不足的面料 生成采购订单 需要自动新增物料编号 1.自动生成带克重的新物料编号 填写了平方克重 （
-	 * 面料-“花2大”119{平方克重:190克}） 2.自动生成新物料编号 （辅料-“花1大”54）
+	 * （采购部）确认库存不足的面料 生成采购订单 需要自动新增物料编号
+	 *  1.自动生成带克重的新物料编号 填写了平方克重 （面料-“花2大”119{平方克重:190克}） 
+	 *  2.自动生成新物料编号 （辅料-“花1大”54）
 	 * 
 	 * @return
 	 */
@@ -398,8 +399,12 @@ public class LedgerAction {
 	@ResponseBody
 	public CommonResponse confirmOrderProcurement(OrderProcurement orderProcurement) {
 		CommonResponse cr = new CommonResponse();
+		if(orderProcurement.getId()!=null){
+			cr.setMessage("修改成功");
+		}else{
+			cr.setMessage("新增成功");
+		}
 		orderProcurementService.saveOrderProcurement(orderProcurement);
-		cr.setMessage("新增采购订单成功");
 		return cr;
 
 	}
