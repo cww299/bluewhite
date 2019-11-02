@@ -588,6 +588,9 @@ layui.config({
 							success:function(){
 								table.reload('tableData');
 								layer.close(addNewOrder);
+								if(addOrEdit=='edit'){
+									table.reload('allTable');
+								}
 							}
 						})
 					})
