@@ -11,9 +11,7 @@
 </head>
 <body>
 <div class="layui-card">
-	<div class="layui-card-body" id="app">
-		
-	</div>
+	<div class="layui-card-body" id="app"></div>
 </div>
 </body>
 <script>
@@ -34,9 +32,7 @@ layui.config({
 			elem:'#app',
 			ctx:'${ctx}',
 		})
-		
 	}//end define function
 )//endedefine
 </script>
-
 </html>
