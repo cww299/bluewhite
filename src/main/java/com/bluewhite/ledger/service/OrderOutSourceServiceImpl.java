@@ -158,14 +158,29 @@ public class OrderOutSourceServiceImpl extends BaseServiceImpl<OrderOutSource, L
 	@Override
 	@Transactional
 	public int deleteOrderOutSource(String ids) {
-		return delete(ids);
+		int count = 0;
+		if (!StringUtils.isEmpty(ids)) {
+			String[] idArr = ids.split(",");
+			if (idArr.length > 0) {
+				for (int i = 0; i < idArr.length; i++) {
+					Long id = Long.parseLong(idArr[i]);
+					OrderOutSource orderOutSource = findOne(id);
+					if(orderOutSource.getAudit()==1){
+						throw new ServiceException("已审核，无法删除");
+					}
+					delete(id);
+					count++;
+				}
+			}
+		}
+		return count;
 	}
 
 	@Override
 	@Transactional
 	public void updateOrderOutSource(OrderOutSource orderOutSource) {
 		OrderOutSource ot = findOne(orderOutSource.getId());
-		if(orderOutSource.getAudit()==1){
+		if(ot.getAudit()==1){
 			throw new ServiceException("已审核，无法修改");
 		}
 		update(orderOutSource, ot, "");
