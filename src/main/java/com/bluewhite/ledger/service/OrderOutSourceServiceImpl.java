@@ -3,6 +3,8 @@ package com.bluewhite.ledger.service;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.stream.Collector;
+import java.util.stream.Collectors;
 
 import javax.persistence.criteria.Predicate;
 
@@ -27,6 +29,7 @@ import com.bluewhite.ledger.entity.Order;
 import com.bluewhite.ledger.entity.OrderOutSource;
 import com.bluewhite.onlineretailers.inventory.dao.InventoryDao;
 import com.bluewhite.onlineretailers.inventory.entity.Inventory;
+import com.bluewhite.product.product.entity.Product;
 
 @Service
 public class OrderOutSourceServiceImpl extends BaseServiceImpl<OrderOutSource, Long> implements OrderOutSourceService {
@@ -273,15 +276,22 @@ public class OrderOutSourceServiceImpl extends BaseServiceImpl<OrderOutSource, L
 						throw new ServiceException("第"+(i+1)+"条单据未填写入库仓库，无法入库，请先确认入库仓库");
 					}
 					// 库存表
-					Inventory inventory = inventoryDao.findByProductIdAndWarehouseTypeId(
-							orderOutSource.getOrder().getProductId(), orderOutSource.getInWarehouseTypeId());
-					if (inventory == null) {
-						inventory = new Inventory();
+					Product product = orderOutSource.getOrder().getProduct();
+					if(product!=null){
+						List<Inventory> inventoryList = product.getInventorys().stream().filter(Inventory->Inventory.getWarehouseTypeId().equals(orderOutSource.getInWarehouseTypeId())).collect(Collectors.toList());
+						//当前仓库只存在一种
+						Inventory inventory = null;
+						if(inventoryList.size()>0){
+							inventory = inventoryList.get(0);
+						}else{
+							inventory = new Inventory();
+						}
+						inventory.setNumber(NumUtils.setzro(inventory.getNumber()) + orderOutSource.getArrivalNumber());
+						inventory.setProductId(orderOutSource.getOrder().getProductId());
+						inventoryDao.save(inventory);
+						orderOutSource.setArrival(1);
+						save(orderOutSource);
 					}
-					inventory.setNumber(NumUtils.setzro(inventory.getNumber()) + orderOutSource.getArrivalNumber());
-					inventoryDao.save(inventory);
-					orderOutSource.setArrival(1);
-					save(orderOutSource);
 					count++;
 				}
 			}
