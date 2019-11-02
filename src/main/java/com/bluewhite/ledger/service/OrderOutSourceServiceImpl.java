@@ -285,9 +285,10 @@ public class OrderOutSourceServiceImpl extends BaseServiceImpl<OrderOutSource, L
 							inventory = inventoryList.get(0);
 						}else{
 							inventory = new Inventory();
+							inventory.setProductId(orderOutSource.getOrder().getProductId());
+							inventory.setWarehouseTypeId(orderOutSource.getInWarehouseTypeId());
 						}
 						inventory.setNumber(NumUtils.setzro(inventory.getNumber()) + orderOutSource.getArrivalNumber());
-						inventory.setProductId(orderOutSource.getOrder().getProductId());
 						inventoryDao.save(inventory);
 						orderOutSource.setArrival(1);
 						save(orderOutSource);
