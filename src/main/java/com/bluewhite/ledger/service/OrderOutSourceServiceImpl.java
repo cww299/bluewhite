@@ -14,9 +14,12 @@ import org.springframework.util.StringUtils;
 
 import com.bluewhite.base.BaseServiceImpl;
 import com.bluewhite.common.ServiceException;
+import com.bluewhite.common.SessionManager;
+import com.bluewhite.common.entity.CurrentUser;
 import com.bluewhite.common.entity.PageParameter;
 import com.bluewhite.common.entity.PageResult;
 import com.bluewhite.common.utils.NumUtils;
+import com.bluewhite.common.utils.RoleUtil;
 import com.bluewhite.common.utils.StringUtil;
 import com.bluewhite.ledger.dao.OrderDao;
 import com.bluewhite.ledger.dao.OrderOutSourceDao;
@@ -53,6 +56,7 @@ public class OrderOutSourceServiceImpl extends BaseServiceImpl<OrderOutSource, L
 			orderOutSource.setRemark(order.getRemark());
 			orderOutSource.setFlag(0);
 			orderOutSource.setAudit(0);
+			orderOutSource.setArrival(0);
 			save(orderOutSource);
 		} else {
 			throw new ServiceException("生产下单合同不能为空");
@@ -61,6 +65,11 @@ public class OrderOutSourceServiceImpl extends BaseServiceImpl<OrderOutSource, L
 
 	@Override
 	public PageResult<OrderOutSource> findPages(OrderOutSource param, PageParameter page) {
+		CurrentUser cu = SessionManager.getUserSession();
+		Long warehouseTypeDeliveryId = RoleUtil.getWarehouseTypeDelivery(cu.getRole());
+		if(warehouseTypeDeliveryId!=null){
+			param.setWarehouseTypeId(warehouseTypeDeliveryId);
+		}
 		Page<OrderOutSource> pages = dao.findAll((root, query, cb) -> {
 			List<Predicate> predicate = new ArrayList<>();
 			// 按id过滤
@@ -74,6 +83,14 @@ public class OrderOutSourceServiceImpl extends BaseServiceImpl<OrderOutSource, L
 			// 按跟单人id过滤
 			if (param.getUserId() != null) {
 				predicate.add(cb.equal(root.get("userId").as(Long.class), param.getUserId()));
+			}
+			// 按预计入库仓库
+			if (param.getWarehouseType() != null) {
+				predicate.add(cb.equal(root.get("warehouseType").as(Long.class), param.getWarehouseType()));
+			}
+			// 按入库仓库
+			if (param.getInWarehouseType() != null) {
+				predicate.add(cb.equal(root.get("inWarehouseType").as(Long.class), param.getInWarehouseType()));
 			}
 			// 按跟单人
 			if (!StringUtils.isEmpty(param.getUserName())) {
@@ -92,7 +109,7 @@ public class OrderOutSourceServiceImpl extends BaseServiceImpl<OrderOutSource, L
 			if (param.getFlag() != null) {
 				predicate.add(cb.equal(root.get("flag").as(Integer.class), param.getFlag()));
 			}
-			// 是否作废
+			// 是否审核
 			if (param.getAudit() != null) {
 				predicate.add(cb.equal(root.get("audit").as(Integer.class), param.getAudit()));
 			}

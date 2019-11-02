@@ -2,7 +2,6 @@ package com.bluewhite.ledger.action;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
-import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.propertyeditors.CustomDateEditor;
@@ -503,8 +502,7 @@ public class LedgerAction {
 	@ResponseBody
 	public CommonResponse warningOrderProcurement() {
 		CommonResponse cr = new CommonResponse();
-		cr.setData(
-				clearCascadeJSONOrderProcurement.format(orderProcurementService.warningOrderProcurement(1)).toJSON());
+		cr.setData(clearCascadeJSONOrderProcurement.format(orderProcurementService.warningOrderProcurement(1)).toJSON());
 		cr.setMessage("查询成功");
 		return cr;
 	}
@@ -550,7 +548,7 @@ public class LedgerAction {
 	@ResponseBody
 	public CommonResponse orderOutSourcePage(PageParameter page, OrderOutSource orderOutSource) {
 		CommonResponse cr = new CommonResponse();
-		cr.setData(clearCascadeJSONOrder.format(orderOutSourceService.findPages(orderOutSource, page)).toJSON());
+		cr.setData(clearCascadeJSONSOutSource.format(orderOutSourceService.findPages(orderOutSource, page)).toJSON());
 		cr.setMessage("查看成功");
 		return cr;
 	}
@@ -691,7 +689,7 @@ public class LedgerAction {
 	public CommonResponse confirmOrderOutSource(String ids) {
 		CommonResponse cr = new CommonResponse();
 		int count = orderOutSourceService.confirmOrderOutSource(ids);
-		cr.setMessage("成功审核" + count + "条外发单，进行入库");
+		cr.setMessage("成功审核" + count + "条外发入库单，进行入库");
 		return cr;
 	}
 	
@@ -703,10 +701,7 @@ public class LedgerAction {
 	
 	
 	
-	
-	
-	
-
+	/***********************包装******************************/
 	/**
 	 * 分页查看贴包单
 	 * 
