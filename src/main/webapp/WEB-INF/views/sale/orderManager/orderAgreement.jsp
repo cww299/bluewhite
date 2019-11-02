@@ -195,8 +195,16 @@ layui.config({
 			       { align:'center', title:'价格',   field:'price',  width:'6%'	 },
 			       { align:'center', title:'备注',   field:'remark',	 },
 			       { align:'center', title:'生成耗料单',   field:'',  width:'7%', templet:getTpl(),	 },
+			       { align:'center', title:'备料充足',   field:'prepareEnough',  width:'7%', templet:getTpl2(),	 },
 			       ]]
 		})
+		function getTpl2(){
+			return function(d){
+				if(d.prepareEnough)
+					return '<span class="layui-badge layui-bg-green">是</span>';
+				return '<span class="layui-badge">否</span>';
+			}
+		}
 		function getTpl(){
 			return function(d){
 				if(d.orderMaterials && d.orderMaterials.length>0)
