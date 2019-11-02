@@ -49,7 +49,7 @@ layui.define(['jquery','layer','form','laytpl','laydate'],function(exports){
 				'<div class="layui-item" pane>',
 					'<label class="layui-form-label">外发数量</label>',
 					'<div class="layui-input-block">',
-						'<input class="layui-input" name="processNumber" value="{{ d.processNumber?d.processNumber:"" }}">',
+						'<input class="layui-input" lay-verify="required" name="processNumber" value="{{ d.processNumber?d.processNumber:"" }}">',
 					'</div>',
 				'</div>',
 				'<div class="layui-item" pane>',
