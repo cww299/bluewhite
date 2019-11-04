@@ -268,6 +268,9 @@
 						elem: '#tableData',
 						size: 'lg',
 						url: '${ctx}/personnel/getOfficeSupplies' ,
+						where:{
+							type:1
+						},
 						request:{
 							pageName: 'page' ,//页码的参数名称，默认：page
 							limitName: 'size' //每页数据量的参数名，默认：limit
@@ -397,7 +400,8 @@
 							table.cache[tableView.attr('lay-id')][trElem.data('index')]['unitId'] = data.value;
 						var postData = {
 							id: id,
-							unitId:data.value
+							unitId:data.value,
+							type:1
 						}
 						//调用新增修改
 						mainJs.fUpdate(postData);
@@ -442,6 +446,7 @@
 									})
 								if(flag==true){
 								data.forEach(function(postData,i){
+									postData.type=1;
 									 mainJs.fAdd(postData);
 									table.cleanTemp(tableId);
 									})	
@@ -589,6 +594,7 @@
 							id = data.id;
 							var postData = {
 								id:id,
+								type:1,
 								[field]:value
 							}
 							//调用新增修改
