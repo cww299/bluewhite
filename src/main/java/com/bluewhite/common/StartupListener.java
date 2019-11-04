@@ -22,7 +22,7 @@ public class StartupListener implements ApplicationListener<ContextRefreshedEven
 	public void onApplicationEvent(ContextRefreshedEvent event) {
 		if (event.getApplicationContext().getParent() == null) {
 		} else {
-			if(IpUtil.getLocalIP().equals("192.168.1.74")){
+			if (IpUtil.getLocalIP().equals("192.168.1.74")) {
 				regEvent();
 			}
 		}
@@ -36,10 +36,21 @@ public class StartupListener implements ApplicationListener<ContextRefreshedEven
 				ResourceBundle resource = ResourceBundle.getBundle("resources");
 				String key = resource.getString("attendance.ip");
 				for (String address : key.split(",")) {
-					new Thread(new SDKRunnable(address), "thread:" + address).start();
+					String threadName = "thread:" + address;
+					new Thread(new SDKRunnable(address), "thread:" + threadName).start();
 				}
 			}
 		}, 300);
+	}
+
+	public static void timer(String threadName) {
+		Timer timer = new Timer();
+		timer.scheduleAtFixedRate(new TimerTask() {
+			public void run() {
+				System.out.println(threadName);
+				new Thread(new SDKRunnable("192.168.7.123"), threadName).start();
+			}
+		}, 0, 10000);// 这里设定将延时每隔1000毫秒执行一次
 	}
 
 }
