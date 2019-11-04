@@ -160,7 +160,7 @@ public class InventoryDetailServiceImpl extends BaseServiceImpl<InventoryDetail,
 					sumCost = NumUtils.sum(sumCost, averageLogisticsCost);
 					map.put("orgName", psList.get(0).getOrgName().getName());
 					map.put("sumCost", NumUtils.round(sumCost, 2));
-					map.put("accounted", NumUtils.mul(NumUtils.div(sumCost, sumCostList, 2), 100) + "%");
+					map.put("accounted", NumUtils.mul(NumUtils.div(sumCost, sumCostList, 4), 100) + "%");
 					mapList.add(map);
 				}
 			}
@@ -172,17 +172,16 @@ public class InventoryDetailServiceImpl extends BaseServiceImpl<InventoryDetail,
 						&& InventoryDetail.getOfficeSupplies().getType().equals(onventoryDetail.getType()))
 				.collect(Collectors.groupingBy(InventoryDetail::getRemark, Collectors.toList()));
 		if (mapAttendanceRemark.size() > 0) {
-			// 均分费用
-			double averageLogisticsCost = NumUtils.div(logisticsCost, mapAttendance.size(), 2);
 			for (String psRemark : mapAttendanceRemark.keySet()) {
 				Map<String, Object> map = new HashMap<>();
-				List<InventoryDetail> psList = mapAttendance.get(psRemark);
-				double sumCost = psList.stream().mapToDouble(InventoryDetail::getOutboundCost).sum();
-				sumCost = NumUtils.sum(sumCost, averageLogisticsCost);
-				map.put("orgName", psRemark);
-				map.put("sumCost", NumUtils.round(sumCost, 2));
-				map.put("accounted", NumUtils.mul(NumUtils.div(sumCost, sumCostList, 2), 100) + "%");
-				mapList.add(map);
+				List<InventoryDetail> psList = mapAttendanceRemark.get(psRemark);
+				if(!psRemark.equals("")){
+					double sumCost = psList.stream().mapToDouble(InventoryDetail::getOutboundCost).sum();
+					map.put("orgName", psRemark);
+					map.put("sumCost", NumUtils.round(sumCost, 2));
+					map.put("accounted", NumUtils.mul(NumUtils.div(sumCost, sumCostList, 4), 100) + "%");
+					mapList.add(map);
+				}
 			}
 		}
 		
