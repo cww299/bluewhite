@@ -238,7 +238,9 @@ layui.config({
 			title:{
 				text:'在职员工年龄分布',
 			},
-		    tooltip:{ formatter: "{a} <br/>{b} : {c} (人)",  },	//提示
+		    tooltip:{ 
+		    	trigger: 'axis',
+		    },	
 		    legend: {	//交互
 		        data:['年龄','男','女']
 		    },
