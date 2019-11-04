@@ -1,6 +1,8 @@
 package com.bluewhite.ledger.service;
 
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
 
@@ -16,12 +18,16 @@ import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.bluewhite.base.BaseServiceImpl;
+import com.bluewhite.basedata.dao.BaseDataDao;
+import com.bluewhite.basedata.entity.BaseData;
 import com.bluewhite.common.ServiceException;
 import com.bluewhite.common.entity.PageParameter;
 import com.bluewhite.common.entity.PageResult;
 import com.bluewhite.common.utils.StringUtil;
 import com.bluewhite.ledger.dao.OrderDao;
 import com.bluewhite.ledger.entity.Order;
+import com.bluewhite.ledger.entity.OrderChild;
+import com.bluewhite.ledger.entity.Packing;
 import com.bluewhite.onlineretailers.inventory.dao.ProcurementDao;
 import com.bluewhite.onlineretailers.inventory.entity.Procurement;
 
@@ -32,6 +38,8 @@ public class OrderServiceImpl extends BaseServiceImpl<Order, Long> implements Or
 	private OrderDao dao;
 	@Autowired
 	private ProcurementDao procurementDao;
+	@Autowired
+	private BaseDataDao baseDataDao;
 	
 	@Override
 	public PageResult<Order> findPages(Order param, PageParameter page) {
@@ -40,14 +48,6 @@ public class OrderServiceImpl extends BaseServiceImpl<Order, Long> implements Or
 			// 按id过滤
 			if (param.getId() != null) {
 				predicate.add(cb.equal(root.get("id").as(Long.class), param.getId()));
-			}
-			// 按客户id过滤
-			if (param.getCustomerId() != null) {
-				predicate.add(cb.equal(root.get("customerId").as(Long.class), param.getCustomerId()));
-			}
-			// 是否电子商务部下单合同
-			if (param.getInternal() != null) {
-				predicate.add(cb.equal(root.get("internal").as(Integer.class), param.getInternal()));
 			}
 			// 按客户名称
 			if (!StringUtils.isEmpty(param.getCustomerName())) {
@@ -102,38 +102,25 @@ public class OrderServiceImpl extends BaseServiceImpl<Order, Long> implements Or
 
 	@Override
 	@Transactional
-	public List<Order> addOrder(Order order) {
-		List<Order> orderList = new ArrayList<>();
+	public void addOrder(Order order) {
+		Order oldOrder = dao.findByBacthNumber(order.getBacthNumber());
+		if(oldOrder!=null){
+			throw new ServiceException("系统已有"+order.getBacthNumber()+"批次号下单合同，请不要重复添加");
+		}
 		// 新增子单
 		if (!StringUtils.isEmpty(order.getOrderChild())) { 
 			JSONArray jsonArray = JSON.parseArray(order.getOrderChild());
 			for (int i = 0; i < jsonArray.size(); i++) {
-				Order orderNew = new Order();
+				OrderChild orderChild = new OrderChild();
 				JSONObject jsonObject = jsonArray.getJSONObject(i);
-				orderNew.setOrderDate(order.getOrderDate()!=null ? order.getOrderDate() : new Date());
-				Order oldOrder = dao.findByBacthNumber(jsonObject.getString("bacthNumber").trim());
-				if(oldOrder!=null){
-					throw new ServiceException("系统已有"+jsonObject.getString("bacthNumber")+"批次号下单合同，请不要重复添加");
-				}
-				orderNew.setBacthNumber(jsonObject.getString("bacthNumber").trim());
-				orderNew.setProductId(jsonObject.getLong("productId"));
-				orderNew.setCustomerId(order.getCustomerId());
-				//判定是否属于电子商务部的订单合同
-				if(orderNew.getCustomerId().equals(1)){
-					orderNew.setInternal(1);
-				}else{
-					orderNew.setInternal(0);
-				}
-				orderNew.setNumber(jsonObject.getInteger("number"));
-				orderNew.setSurplusNumber(jsonObject.getInteger("number"));
-				orderNew.setPrice(jsonObject.getDouble("price"));
-				orderNew.setRemark(jsonObject.getString("remark"));
-				orderNew.setOrderDate(jsonObject.getDate("orderDate")!= null ? jsonObject.getDate("orderDate"): new Date());
-				orderNew.setPrepareEnough(0);
-				orderList.add(orderNew);
+				orderChild.setCustomerId(jsonObject.getLong("customerId"));
+				orderChild.setUserId(jsonObject.getLong("userId"));
+				orderChild.setChildNumber(jsonObject.getInteger("childNumber"));
+				orderChild.setChildRemark(jsonObject.getString("childRemark"));
 			}
 		}
-		return dao.save(orderList);
+		order.setPrepareEnough(0);
+		dao.save(order);
 	}
 
 	@Override
@@ -148,10 +135,6 @@ public class OrderServiceImpl extends BaseServiceImpl<Order, Long> implements Or
 			if (!StringUtils.isEmpty(param.getBacthNumber())) {
 				predicate.add(cb.like(root.get("bacthNumber").as(String.class), "%" + param.getBacthNumber() + "%"));
 			}
-			// 按客户id过滤
-			if (param.getCustomerId() != null) {
-				predicate.add(cb.equal(root.get("customrId").as(Long.class), param.getCustomerId()));
-			}
 			// 按下单日期
 			if (!StringUtils.isEmpty(param.getOrderTimeBegin()) && !StringUtils.isEmpty(param.getOrderTimeEnd())) {
 				predicate.add(cb.between(root.get("orderDate").as(Date.class), param.getOrderTimeBegin(),
@@ -162,6 +145,41 @@ public class OrderServiceImpl extends BaseServiceImpl<Order, Long> implements Or
 			return null;
 		});
 		return result;
+	}
+
+	@Override
+	public void updateOrder(Order order) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public String getOrderBacthNumber(Date time,Long typeId) {
+		List<Order> orderList = dao.findByOrderDate(time);
+		String numberDef = null;
+		List<Integer> numberList = new ArrayList<>();
+		orderList.stream().forEach(o -> {
+			String number = o.getBacthNumber().substring(o.getBacthNumber().length() - 2, o.getBacthNumber().length() - 1);
+			numberList.add(Integer.parseInt(number));
+		});
+		// 正序
+		numberList.sort(Comparator.naturalOrder());
+		for (int i = 0; i < numberList.size(); i++) {
+			if (numberList.get(i) != (i + 1)) {
+				numberDef = String.valueOf((i + 1));
+				break;
+			}
+		}
+		Calendar now = Calendar.getInstance();
+		now.setTime(time);
+		String year = String.valueOf(now.get(Calendar.YEAR));
+		String month = String.valueOf(now.get(Calendar.MONTH) + 1);
+		String day = String.valueOf(now.get(Calendar.DAY_OF_MONTH));
+		//获取下单类型
+		BaseData type = baseDataDao.findOne(typeId);
+		
+		String orderNumber = year + "-" + month + "-" + day + "-"+ (numberDef != null ? numberDef : (orderList.size() + 1)) + "";
+		return orderNumber;
 	}
 
 

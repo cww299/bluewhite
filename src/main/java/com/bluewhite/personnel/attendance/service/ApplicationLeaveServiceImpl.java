@@ -86,37 +86,22 @@ public class ApplicationLeaveServiceImpl extends BaseServiceImpl<ApplicationLeav
 	@Override
 	@Transactional
 	public ApplicationLeave saveApplicationLeave(ApplicationLeave applicationLeave) throws ParseException {
-		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-		ApplicationLeave oldApplicationLeave = null;
+		ApplicationLeave oldApplicationLeave = new ApplicationLeave();
+		oldApplicationLeave = applicationLeave;
 		if (applicationLeave.getId() != null) {
 			oldApplicationLeave = dao.findOne(applicationLeave.getId());
 			if (oldApplicationLeave.isAddSignIn()) {
-				JSONArray jsonArray = JSON.parseArray(oldApplicationLeave.getTime());
-				for (int i = 0; i < jsonArray.size(); i++) {
-					JSONObject jsonObject = jsonArray.getJSONObject(i);
-					String date = jsonObject.getString("date");
-					String time = jsonObject.getString("time");
-					// 获取时间区间
-					String[] addDate = date.split(",");
-					if (addDate.length > 0) {
-						for (String ad : addDate) {
-							List<Attendance> attendance = attendanceDao
-									.findByUserIdAndTime(oldApplicationLeave.getUserId(), sdf.parse(ad));
-							if (attendance.size() > 0) {
-								attendanceDao.delete(attendance);
-							}
-						}
-					}
+				List<Attendance> attendance = attendanceDao.findByApplicationLeaveId(applicationLeave.getId());
+				if (attendance.size() > 0) {
+					attendanceDao.delete(attendance);
 				}
 			}
 			BeanCopyUtils.copyNotEmpty(applicationLeave, oldApplicationLeave, "");
-		} else {
-			oldApplicationLeave = applicationLeave;
-		}
+		} 
 		setApp(oldApplicationLeave);
 		return dao.save(oldApplicationLeave);
 	}
-	
+
 	@Transactional
 	private ApplicationLeave setApp(ApplicationLeave applicationLeave) throws ParseException {
 		dao.save(applicationLeave);
@@ -174,7 +159,7 @@ public class ApplicationLeaveServiceImpl extends BaseServiceImpl<ApplicationLeav
 				if (attendanceInit == null) {
 					throw new ServiceException("该员工没有考勤设定数据，无法申请，请先添加考勤设定数据");
 				}
-				
+
 				// flag=ture 为夏令时
 				if (flag) {
 					String[] workTimeArr = attendanceInit.getWorkTimeSummer().split(" - ");
@@ -199,7 +184,7 @@ public class ApplicationLeaveServiceImpl extends BaseServiceImpl<ApplicationLeav
 					restEndTime = DatesUtil.dayTime(dateLeave, restTimeArr[1]);
 					restTime = attendanceInit.getRestWinter();
 				}
-				
+
 			}
 
 			if (applicationLeave.isHoliday()) {
@@ -246,7 +231,7 @@ public class ApplicationLeaveServiceImpl extends BaseServiceImpl<ApplicationLeav
 				attendanceDao.save(attendance);
 				holidayDetail += date + (time.equals("0") ? "补签入," : "补签出,");
 			}
-			//加班
+			// 加班
 			if (applicationLeave.isApplyOvertime()) {
 				if (attendanceTime == null) {
 					throw new ServiceException("该员工未统计考勤，无法比对加班时长，请先初始化该员工考勤");
@@ -307,7 +292,8 @@ public class ApplicationLeaveServiceImpl extends BaseServiceImpl<ApplicationLeav
 				}
 				// 加班申请
 				if (applicationLeave.isApplyOvertime()) {
-					if (attendanceTime.getCheckIn() != null && attendanceTime.getCheckOut() != null && actualOverTime < Double.valueOf(time)) {
+					if (attendanceTime.getCheckIn() != null && attendanceTime.getCheckOut() != null
+							&& actualOverTime < Double.valueOf(time)) {
 						throw new ServiceException("根据" + date + "的签到时间该员工加班时间为" + actualOverTime + "小时，加班申请时间有误请重新核对");
 					}
 					String overString = "";
