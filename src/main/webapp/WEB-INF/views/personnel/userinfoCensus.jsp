@@ -480,7 +480,7 @@ layui.config({
 		var jiaonalv = (safe/allUser.length*100).toFixed(2)+'%';
 		safeDiv.setOption({
 		    tooltip : {
-		        formatter: "{a} <br/>{b} : {c}%"
+		        formatter: "{a} <br/>{b} : "+jiaonalv
 		    },
 		    series: [
 		        {
