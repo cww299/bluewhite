@@ -336,6 +336,7 @@ layui.config({
             },
             tooltip: { 
             },
+            legend: {},
             dataRange: {
                 orient: "horizontal",
                 min: 0,
