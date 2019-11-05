@@ -102,6 +102,7 @@ layui.config({
 										orderTimeBegin: firstDay+' 00:00:00',
 										orderTimeEnd: nowDay+' 23:59:59',
 									},
+									totalRow:['sumCost','accounted'],
 									height:'450',
 									cols:[[
 									       { field:'orgName', title:'部门', },
