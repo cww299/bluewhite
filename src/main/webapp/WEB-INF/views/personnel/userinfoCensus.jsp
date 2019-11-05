@@ -27,6 +27,7 @@
 		    <div class="layui-col-md8" id="address" style="height:500px;"></div>
 		    <div class="layui-col-md4" id="safe" style="height:500px;"></div>
 		    <div class="layui-col-md12" id="orgName" style="height:500px;"></div>
+		    <!-- <div class="layui-col-md12" id="entryQuit" style="height:500px;"></div> -->
 		  </div>
 		</div> 
 	</div>
@@ -55,11 +56,12 @@ layui.config({
 		orgName = { name:[],value:[],other:0},
 		agreement = { name:[], value:[], other:0},
 		company = { lb:0,lc:0,other:0 },
-		safe = 0;
+		safe = 0,
+		entryAndQuit = {};
 		
 		var allOrg = [];
 		var allUser = myutil.getDataSync({ url: '${ctx}/system/user/pages?size=9999&quit=0', });
-		allUser = layui.sort(allUser,'age');
+		/* allUser = layui.sort(allUser,'age'); */
 		
 		for(var i=0,len=allUser.length;i<len;i++){
 			var d = allUser[i];
@@ -153,6 +155,14 @@ layui.config({
 				company.other++;
 			if(d.safe)
 				safe++;
+			if(d.entry){
+				var t = d.entry.split(' ')[0];
+				if(entryAndQuit[t]){
+					entryAndQuit[t].entry++;
+				}else
+					entryAndQuit[t] = { entry:1, quit:0, };
+			}
+				
 		}
 		
 		var educationDiv = echarts.init(document.getElementById('education'));
@@ -492,7 +502,124 @@ layui.config({
 		        }
 		    ]
 		});
-		
+		/* myutil.getData({
+			url:'${ctx}/system/user/pages?size=9999&quit=1',
+			success:function(d){
+				for(var i=0,len=d.length;i<len;i++){
+					if(d[i].entry){
+						var t = d[i].entry.split(' ')[0];
+						if(entryAndQuit[t])
+							entryAndQuit[t].entry++;
+						else
+							entryAndQuit[t] = { entry:1, quit:0 };
+					}
+					if(d[i].quitDate){
+						var t = d[i].quitDate.split(' ')[0];
+						if(entryAndQuit[t])
+							entryAndQuit[t].quit++;
+						else
+							entryAndQuit[t] = { entry:0, quit:1,  };
+					}
+				}
+				var allEntry = [],allQuit = [],allDate = [];
+				for(var i in entryAndQuit){
+					allEntry.push(entryAndQuit[i].entry)
+					allQuit.push(entryAndQuit[i].quit)
+					allDate.push(i)
+				}
+				var entryQuitDiv = echarts.init(document.getElementById('entryQuit'));
+				entryQuitDiv.setOption({
+				    title : {
+				        text: '员工入职、离职关系图',
+				        subtext: '关系图未计算入未登记的员工信息',
+				        x: 'center',
+				        align: 'right'
+				    },
+				    grid: {  bottom: 80 },
+				    toolbox: {
+				        feature: {
+				            dataZoom: { yAxisIndex: 'none' },
+				            restore: {},
+				            saveAsImage: {}
+				        }
+				    },
+				    tooltip : {
+				        trigger: 'axis',
+				        axisPointer: {
+				            type: 'cross',
+				            animation: false,
+				            label: {
+				                backgroundColor: '#505765'
+				            }
+				        }
+				    },
+				    legend: {
+				        data:['离职员工','入职员工'],
+				        x: 'left'
+				    },
+				    dataZoom: [
+				        {
+				            show: true,
+				            realtime: true,
+				            start: 65,
+				            end: 85
+				        },
+				        {
+				            type: 'inside',
+				            realtime: true,
+				            start: 65,
+				            end: 85
+				        }
+				    ],
+				    xAxis : [
+				        {
+				            type : 'category',
+				            boundaryGap : false,
+				            axisLine: {onZero: false},
+				            data : allDate
+				        }
+				    ],
+				    yAxis: [
+				        {
+				            name: '离职员工/人',
+				            type: 'value',
+				            max: 20
+				        },
+				        {
+				            name: '入职员工/人',
+				            nameLocation: 'start',
+				            max: 20,
+				            type: 'value',
+				            inverse: true
+				        }
+				    ],
+				    series: [
+				        {
+				            name:'离职员工',
+				            type:'line',
+				            animation: false,
+				            areaStyle: {
+				            },
+				            lineStyle: {
+				                width: 1
+				            },
+				            data: allQuit
+				        },
+				        {
+				            name:'入职员工',
+				            type:'line',
+				            yAxisIndex:1,
+				            animation: false,
+				            areaStyle: { },
+				            lineStyle: {
+				                width: 1
+				            },
+				            data: allEntry
+				        }
+				    ]
+				})
+			}
+		}) */
 		function searchUser(opt){
 			layer.open({
 				type:1,
