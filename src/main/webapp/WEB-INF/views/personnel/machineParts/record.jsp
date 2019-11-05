@@ -38,22 +38,40 @@
 	</div>
 </div>
 </body>
+<script type="text/html" id="partTpl">
+<div  style="width:50%;float:left;">
+	<table>
+		<tr>
+			<td>&nbsp;&nbsp;</td>
+			<td>时间：</td>
+			<td>&nbsp;&nbsp;</td>
+			<td><input type="text" class="layui-input" id="partTime">
+			<td>&nbsp;&nbsp;</td>
+			<td><span class="layui-btn" id="searchBtn">搜索</span></td>
+		</tr>
+	</table>
+	<table id="partTable" lay-filter="partTable"></table>
+</div>
+<div id="pieChart" style="width:50%;float:left;height:90%;"></div>
+</script>
 <script>
 layui.config({
 	base : '${ctx}/static/layui-v2.4.5/'
 }).extend({
 	mytable : 'layui/myModules/mytable' ,
+	echarts : 'layui/myModules/echarts/echarts' ,
 }).define(
 	['mytable'],
 	function(){
 		var $ = layui.jquery
-		, layer = layui.layer 				
+		, layer = layui.layer
 		, form = layui.form			 		
 		, table = layui.table 
 		, myutil = layui.myutil
 		, laydate = layui.laydate
 		, laytpl = layui.laytpl
 		, mytable = layui.mytable;
+		var echarts;
 		myutil.config.ctx = '${ctx}';
 		myutil.clickTr();
 		
@@ -68,13 +86,9 @@ layui.config({
 						layer.open({
 							type:1,
 							title:'部门分摊',
-							area:['45%','70%'],
+							area:['90%','70%'],
 							shadeClose:true,
-							content:[
-							         '<table><tr><td>时间：</td><td>&nbsp;&nbsp;</td><td><input type="text" class="layui-input" id="partTime">',
-							         	'<td>&nbsp;&nbsp;</td><td><span class="layui-btn" id="searchBtn">搜索</span></td></tr></table>',
-							         '<table id="partTable" lay-filter="partTable"></table>',
-							         ].join(''),
+							content: $('#partTpl').html(),
 							success:function(){
 								var firstDay = myutil.getSubDay(0,'yyyy-MM-01'),
 									nowDay = myutil.getSubDay(0,'yyyy-MM-dd');
@@ -88,12 +102,52 @@ layui.config({
 										orderTimeBegin: firstDay+' 00:00:00',
 										orderTimeEnd: nowDay+' 23:59:59',
 									},
+									height:'450',
 									cols:[[
 									       { field:'orgName', title:'部门', },
 									       { field:'sumCost', title:'部门费用', },
 									       { field:'accounted', title:'占比', },
 									       ]],
-								}) 
+									done:function(obj){
+										var data = obj.data,allOrg = [],allData = [];
+										var pieCharts = echarts.init(document.getElementById('pieChart'));
+										for(var i=0,len=data.length;i<len;i++){
+											allOrg.push(data[i].orgName);
+											allData.push({
+												name: data[i].orgName,
+												value: data[i].sumCost,
+											})
+										}
+										pieCharts.setOption({
+											title: {		
+								                text: '部门费用占比饼状图', x:'center',
+								            },
+								            legend: {		
+										        orient: 'vertical', x: 'left',
+										        data: allOrg,
+										    },
+										    toolbox: {
+									            show: true, left: 'right', top: 'top',
+									            feature: {
+									                restore: {},
+									                saveAsImage: {},
+									            }
+									        },
+								            tooltip: {
+								            	trigger: 'item',
+								        		formatter: "{a} <br/>{b} : {c}/元 (占比：{d}%)",  
+								            }, 
+										    series: [
+										        {
+										            name: '部门费用占比',
+										            selectedMode: 'single', 
+										            type: 'pie',
+										            data: allData,
+										        }
+										    ]
+										})
+									}
+								})
 								$('#searchBtn').unbind().on('click',function(){
 									var val = $('#partTime').val();
 									if(val=='')
@@ -130,7 +184,9 @@ layui.config({
 			       { field: "remark", title: "备注", },
 			       ]]
 		})
-		
+		layui.use('echarts',function(){	//页面渲染结束后再进行echarts加载。
+			echarts = layui.echarts;
+		});  
 		myutil.getData({
 			url:'${ctx}/basedata/list?type=orgName',
 			success:function(d){ 
@@ -161,5 +217,4 @@ layui.config({
 	}//end define function
 )//endedefine
 </script>
-
 </html>
