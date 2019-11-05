@@ -382,14 +382,17 @@
 								field: "orgName",
 								title: "部门",
 								align: 'center',
+								totalRowText: '合计'
 							},{
 								field: "sumCost",
 								title: "部门费用",
 								align: 'center',
+								totalRow: true	
 							},{
 								field: "accounted",
 								title: "占比",
 								align: 'center',
+								totalRow: true
 							}
 							]
 						],
