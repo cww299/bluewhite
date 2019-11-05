@@ -114,19 +114,20 @@ layui.config({
 			url:'${ctx}/personnel/getOfficeSupplies?type=2',
 			curd:{
 				addTemp:{
-					type:2,createdAt:myutil.getSubDay(0,'yyyy-MM-dd')+' 00:00:00',location:'',name:'',price:'',inventoryNumber:'',libraryValue:'',
+					type:2,
+					createdAt:myutil.getSubDay(0,'yyyy-MM-dd')+' 00:00:00',
+					location:'',name:'',price:'',inventoryNumber:'',libraryValue:'',
 				},
 				addTempAfter:function(trElem){
-					var timeElem = $(trElem).find('td[data-field="createdAt"]')[0];
+					var timeElem = $(trElem).find('td[data-field="createdAt"]').find('div')[0];
 					laydate.render({
 						elem: timeElem,
-						value:'',
 						done: function(val){
 							var index = $(this.elem).closest('tr').data('index');
 							table.cache['tableData'][index]['createdAt'] = val+' 00:00:00';
 						}
 					}) 
-				},
+				}, 
 			},
 			size:'lg',
 			totalRow:['libraryValue'],
@@ -138,7 +139,7 @@ layui.config({
 			/* colsWidth:[0,10,10,15,10,10,10,10,0], */
 			cols:[[
 					{ type: 'checkbox', align: 'center', fixed: 'left',},
-					{ field: "createdAt", title: "时间", type:'date',edit:false, },
+					{ field: "createdAt", title: "时间", type:'date',},
 					{ field: "location", title: "仓位", filter:true, edit: true, },
 					{ field: "name", title: "物品名", edit: true, },
 					{ field: "unit_id", title: "单位", type:'select', select:{data:unitData,}, },

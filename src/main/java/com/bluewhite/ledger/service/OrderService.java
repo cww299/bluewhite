@@ -1,5 +1,6 @@
 package com.bluewhite.ledger.service;
 
+import java.util.Date;
 import java.util.List;
 
 import com.bluewhite.base.BaseCRUDService;
@@ -29,7 +30,7 @@ public interface OrderService extends BaseCRUDService<Order,Long>{
 	 * 新增订单
 	 * @param order
 	 */
-	public List<Order> addOrder(Order order);
+	public void addOrder(Order order);
 	
 	/**
 	 * 删除订单
@@ -38,5 +39,17 @@ public interface OrderService extends BaseCRUDService<Order,Long>{
 	 * @throws Exception
 	 */
 	public int deleteOrder(String ids);
+	
+	/**
+	 * 修改订单
+	 * @param order
+	 */
+	public void updateOrder(Order order);
+	
+	/**
+	 * 根据日期获取编号规则
+	 * @param order
+	 */
+	public String getOrderBacthNumber(Date time,Long typeId);
 	
 }

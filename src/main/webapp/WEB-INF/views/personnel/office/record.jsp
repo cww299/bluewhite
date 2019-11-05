@@ -165,6 +165,9 @@
 						elem: '#tableData',
 						size: 'lg',
 						url: '${ctx}/personnel/getInventoryDetail' ,
+						where:{
+							type:1
+						},
 						request:{
 							pageName: 'page' ,//页码的参数名称，默认：page
 							limitName: 'size' //每页数据量的参数名，默认：limit
@@ -341,6 +344,7 @@
 						var orderTime=$("#monthDate").val().split('~');
 						onlyField.orderTimeBegin=orderTime[0];
 						onlyField.orderTimeEnd=orderTime[1].split(" ")[1] +" 23:59:59";
+						onlyField.type=1;
 						eventd(onlyField);
 						
 					})
@@ -411,48 +415,6 @@
 						var trIndex = elemTemp.data('index');
 						tableView.find('tr[data-index="' + trIndex + '"]').find('[name="layTableCheckbox"]+').last().click();
 					})
-					//封装ajax主方法
-					var mainJs = {
-					//修改							
-				    fUpdate : function(data){
-				    	if(data.id==""){
-				    		return;
-				    	}
-				    	$.ajax({
-							url: "${ctx}/personnel/addOfficeSupplies",
-							data: data,
-							type: "POST",
-							beforeSend: function() {
-								index;
-							},
-							success: function(result) {
-								if(0 == result.code) {
-								 	 table.reload("tableData", {
-						                page: {
-						                }
-						              }) 
-									layer.msg(result.message, {
-										icon: 1,
-										time:800
-									});
-								
-								} else {
-									layer.msg(result.message, {
-										icon: 2,
-										time:800
-									});
-								}
-							},
-							error: function() {
-								layer.msg("操作失败！请重试", {
-									icon: 2
-								});
-							},
-						});
-						layer.close(index);
-				    },
-					   
-					}
 
 				}
 			)

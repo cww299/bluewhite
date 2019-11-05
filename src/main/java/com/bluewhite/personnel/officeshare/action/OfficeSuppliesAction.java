@@ -94,7 +94,7 @@ public class OfficeSuppliesAction {
 	public CommonResponse deleteOfficeSupplies(String ids) {
 		CommonResponse cr = new CommonResponse();
 		int count = officeSuppliesService.deleteOfficeSupplies(ids);
-		cr.setMessage("成功删除"+count+"件办公用品");
+		cr.setMessage("成功删除"+count+"件物品");
 		return cr;
 	}
 	
