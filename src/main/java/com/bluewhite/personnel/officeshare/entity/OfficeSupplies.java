@@ -52,7 +52,7 @@ public class OfficeSupplies extends BaseEntity<Long>{
      * 类型(1.办公用品，2.机械配件)
      */
 	@Column(name = "type")
-    private String type;
+    private Integer type;
 	
 	/**
 	 * 库存数量
@@ -157,11 +157,12 @@ public class OfficeSupplies extends BaseEntity<Long>{
 		this.unit = unit;
 	}
 
-	public String getType() {
+
+	public Integer getType() {
 		return type;
 	}
 
-	public void setType(String type) {
+	public void setType(Integer type) {
 		this.type = type;
 	}
 

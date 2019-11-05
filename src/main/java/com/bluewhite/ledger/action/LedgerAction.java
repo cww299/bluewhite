@@ -276,7 +276,7 @@ public class LedgerAction {
 	@ResponseBody
 	public CommonResponse updateOrder(Order order) {
 		CommonResponse cr = new CommonResponse();
-		orderService.save(order);
+		orderService.updateOrder(order);
 		cr.setMessage("修改成功");
 		return cr;
 	}
