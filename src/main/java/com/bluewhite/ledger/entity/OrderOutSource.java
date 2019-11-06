@@ -12,10 +12,11 @@ import javax.persistence.Transient;
 
 import com.bluewhite.base.BaseEntity;
 import com.bluewhite.basedata.entity.BaseData;
+import com.bluewhite.onlineretailers.inventory.entity.Inventory;
 import com.bluewhite.system.user.entity.User;
 
 /**
- * 生产计划部 外发单(外发单在加工点完成后，回库处理)
+ * 生产计划部 外发单(外发单在加工点完成后，作为入库单回库处理)
  * 
  * @author zhangliang
  *
@@ -25,8 +26,7 @@ import com.bluewhite.system.user.entity.User;
 public class OrderOutSource extends BaseEntity<Long> {
 
 	/**
-	 * 工艺单内容填充，用于打印开单 1.填充样棉花
-	 * 填充样棉花类型
+	 * 工艺单内容填充，用于打印开单 1.填充样棉花 填充样棉花类型
 	 */
 	@Column(name = "fill")
 	private String fill;
@@ -36,7 +36,7 @@ public class OrderOutSource extends BaseEntity<Long> {
 	 */
 	@Column(name = "fill_remark")
 	private String fillRemark;
-	
+
 	/**
 	 * 任务编号
 	 * 
@@ -122,7 +122,7 @@ public class OrderOutSource extends BaseEntity<Long> {
 	 */
 	@Column(name = "out_going_time")
 	private Date outGoingTime;
-	
+
 	/**
 	 * 是否整单
 	 */
@@ -134,7 +134,7 @@ public class OrderOutSource extends BaseEntity<Long> {
 	 */
 	@Column(name = "flag")
 	private Integer flag;
-	
+
 	/**
 	 * 是否审核
 	 */
@@ -146,75 +146,96 @@ public class OrderOutSource extends BaseEntity<Long> {
 	 */
 	@Column(name = "product_type")
 	private Integer productType;
-	
+
 	/**
-	 * 外发指定
-	 * 预计仓库种类id
+	 * 外发指定 预计仓库种类id
 	 */
 	@Column(name = "warehouse_type_id")
 	private Long warehouseTypeId;
-	
+
 	/**
 	 * 仓库种类
 	 */
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "warehouse_type_id", referencedColumnName = "id", insertable = false, updatable = false)
 	private BaseData warehouseType;
-	
-	
+
 	/**
-	 * 仓管指定
-	 * 入库仓库种类id
+	 * 仓管指定 入库仓库种类id
 	 */
 	@Column(name = "in_warehouse_type_id")
 	private Long inWarehouseTypeId;
-	
+
 	/**
 	 * 入库仓库种类
 	 */
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "in_warehouse_type_id", referencedColumnName = "id", insertable = false, updatable = false)
 	private BaseData inWarehouseType;
-	
+
 	/**
-	 * 库存
-	 * 是否到货
+	 * 仓管指定 入库库存id
+	 */
+	@Column(name = "inventory_id")
+	private Long inventoryId;
+
+	/**
+	 * 入库库存
+	 */
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "inventory_id", referencedColumnName = "id", insertable = false, updatable = false)
+	private Inventory inventory;
+
+	/**
+	 * 库存 是否到货
 	 */
 	@Column(name = "arrival")
 	private Integer arrival;
-	
+
 	/**
 	 * 到货时间
 	 */
 	@Column(name = "arrival_time")
-	private Date arrivalTime;  
-	
+	private Date arrivalTime;
+
 	/**
 	 * 到货数量
 	 */
 	@Column(name = "arrival_number")
 	private Integer arrivalNumber;
-	
+
+	/**
+	 * 库位
+	 */
+	@Column(name = "location")
+	private String location;
+
+	/**
+	 * 出库后剩余数量
+	 */
+	@Column(name = "surplus_Number")
+	private Integer surplusNumber;
+
 	/**
 	 * 产品name
 	 */
 	@Transient
 	private String productName;
-	
+
 	/**
 	 * 跟单人name
 	 * 
 	 */
 	@Transient
 	private String userName;
-	
+
 	/**
 	 * 加工点name
 	 * 
 	 */
 	@Transient
-	private String customerName;	
-	
+	private String customerName;
+
 	/**
 	 * 查询字段
 	 */
@@ -227,8 +248,38 @@ public class OrderOutSource extends BaseEntity<Long> {
 	private Date orderTimeEnd;
 	
 	
-	
-	
+
+	public Long getInventoryId() {
+		return inventoryId;
+	}
+
+	public void setInventoryId(Long inventoryId) {
+		this.inventoryId = inventoryId;
+	}
+
+	public Inventory getInventory() {
+		return inventory;
+	}
+
+	public void setInventory(Inventory inventory) {
+		this.inventory = inventory;
+	}
+
+	public String getLocation() {
+		return location;
+	}
+
+	public void setLocation(String location) {
+		this.location = location;
+	}
+
+	public Integer getSurplusNumber() {
+		return surplusNumber;
+	}
+
+	public void setSurplusNumber(Integer surplusNumber) {
+		this.surplusNumber = surplusNumber;
+	}
 
 	public String getUserName() {
 		return userName;
@@ -277,7 +328,6 @@ public class OrderOutSource extends BaseEntity<Long> {
 	public void setArrivalTime(Date arrivalTime) {
 		this.arrivalTime = arrivalTime;
 	}
-
 
 	public Integer getArrivalNumber() {
 		return arrivalNumber;

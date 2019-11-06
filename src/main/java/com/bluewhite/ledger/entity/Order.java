@@ -65,6 +65,12 @@ public class Order extends BaseEntity<Long> {
 	 */
 	@OneToMany(mappedBy = "order", cascade = CascadeType.ALL, orphanRemoval = true)
 	private Set<OrderMaterial> orderMaterials = new HashSet<OrderMaterial>();
+	
+	/**
+	 * 销售子单
+	 */
+	@OneToMany(mappedBy = "order", cascade = CascadeType.ALL, orphanRemoval = true)
+	private Set<OrderChild> orderChilds = new HashSet<OrderChild>();
 
 	/**
 	 * 产品编号
@@ -140,6 +146,14 @@ public class Order extends BaseEntity<Long> {
 	
 	
 	
+
+	public Set<OrderChild> getOrderChilds() {
+		return orderChilds;
+	}
+
+	public void setOrderChilds(Set<OrderChild> orderChilds) {
+		this.orderChilds = orderChilds;
+	}
 
 	public Long getOrderTypeId() {
 		return orderTypeId;

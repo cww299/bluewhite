@@ -1,15 +1,21 @@
 package com.bluewhite.onlineretailers.inventory.entity;
 
+import java.util.HashSet;
+import java.util.Set;
+
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 
 import com.bluewhite.base.BaseEntity;
 import com.bluewhite.basedata.entity.BaseData;
+import com.bluewhite.ledger.entity.OrderOutSource;
 import com.bluewhite.product.product.entity.Product;
 
 /**
@@ -80,6 +86,12 @@ public class Inventory extends BaseEntity<Long> {
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "warehouse_type_id", referencedColumnName = "id", insertable = false, updatable = false)
 	private BaseData warehouseType;
+	
+	/**
+	 * 入库单
+	 */
+	@OneToMany(mappedBy = "inventory", cascade = CascadeType.ALL, orphanRemoval = true)
+	private Set<OrderOutSource> OrderOutSource = new HashSet<OrderOutSource>();
 
 	/**
 	 * 商品编号（sku）
@@ -87,6 +99,16 @@ public class Inventory extends BaseEntity<Long> {
 	 */
 	@Transient
 	private String skuCode;
+
+	
+	
+	public Set<OrderOutSource> getOrderOutSource() {
+		return OrderOutSource;
+	}
+
+	public void setOrderOutSource(Set<OrderOutSource> orderOutSource) {
+		OrderOutSource = orderOutSource;
+	}
 
 	public Long getCommodityId() {
 		return commodityId;
