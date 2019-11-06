@@ -72,11 +72,6 @@ public class Order extends BaseEntity<Long> {
 	@OneToMany(mappedBy = "order", cascade = CascadeType.ALL, orphanRemoval = true)
 	private Set<OrderChild> orderChilds = new HashSet<OrderChild>();
 
-	/**
-	 * 产品编号
-	 */
-	@Column(name = "product_number")
-	private String productNumber;
 
 	/**
 	 * 合同总数量
@@ -95,12 +90,6 @@ public class Order extends BaseEntity<Long> {
 	 */
 	@Column(name = "order_date")
 	private Date orderDate;
-
-	/**
-	 * 单只价格
-	 */
-	@Column(name = "price")
-	private Double price;
 
 	/**
 	 * 是否审核（0=未审核，1=已审核）（审核成功后进入生产计划环节）
@@ -144,6 +133,11 @@ public class Order extends BaseEntity<Long> {
 	@Transient
 	private String productName;
 	
+	/**
+	 * 产品编号
+	 */
+	@Transient
+	private String productNumber;
 	
 	
 
@@ -225,14 +219,6 @@ public class Order extends BaseEntity<Long> {
 
 	public void setProductNumber(String productNumber) {
 		this.productNumber = productNumber;
-	}
-
-	public Double getPrice() {
-		return price;
-	}
-
-	public void setPrice(Double price) {
-		this.price = price;
 	}
 
 	public Date getOrderTimeBegin() {

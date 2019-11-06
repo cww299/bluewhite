@@ -93,7 +93,6 @@ public class SendGoodsServiceImpl extends BaseServiceImpl<SendGoods, Long> imple
 			update(sendGoods, ot, "");
 		} else {
 			Order order = orderdao.findOne(sendGoods.getOrderId());
-			sendGoods.setBacthNumber(order.getBacthNumber());
 			sendGoods.setProductId(order.getProductId());
 			sendGoods.setSurplusNumber(sendGoods.getNumber());
 			dao.save(sendGoods);
@@ -129,7 +128,7 @@ public class SendGoodsServiceImpl extends BaseServiceImpl<SendGoods, Long> imple
 			}
 			// 按批次查找
 			if (!StringUtils.isEmpty(param.getBacthNumber())) {
-				predicate.add(cb.like(root.get("bacthNumber").as(String.class), "%" + param.getBacthNumber() + "%"));
+				predicate.add(cb.like(root.get("order").get("bacthNumber").as(String.class), "%" + param.getBacthNumber() + "%"));
 			}
 			// 按发货日期
 			if (!StringUtils.isEmpty(param.getSendDate())) {
