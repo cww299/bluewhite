@@ -114,7 +114,6 @@ public class OrderServiceImpl extends BaseServiceImpl<Order, Long> implements Or
 		}
 		order.setPrepareEnough(0);
 		order.setAudit(0);
-		Set<OrderChild> orderChildSet = new HashSet<>();
 		// 新增子单
 		if (!StringUtils.isEmpty(order.getOrderChild())) { 
 			JSONArray jsonArray = JSON.parseArray(order.getOrderChild());
@@ -125,10 +124,9 @@ public class OrderServiceImpl extends BaseServiceImpl<Order, Long> implements Or
 				orderChild.setUserId(jsonObject.getLong("userId"));
 				orderChild.setChildNumber(jsonObject.getInteger("childNumber"));
 				orderChild.setChildRemark(jsonObject.getString("childRemark"));
-				orderChildSet.add(orderChild);
+				order.getOrderChilds().add(orderChild);
 			}
 		}
-		order.setOrderChilds(orderChildSet);
 		dao.save(order);
 	}
 
