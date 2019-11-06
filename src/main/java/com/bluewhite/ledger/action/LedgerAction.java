@@ -700,6 +700,82 @@ public class LedgerAction {
 	
 	
 	
+	/**
+	 * 查看待发货单
+	 * 
+	 * @return cr
+	 */
+	@RequestMapping(value = "/ledger/getSendGoods", method = RequestMethod.GET)
+	@ResponseBody
+	public CommonResponse getSendGoods(PageParameter page, SendGoods sendGoods) {
+		CommonResponse cr = new CommonResponse();
+		cr.setData(clearCascadeJSONSendGoods.format(sendGoodsService.findPages(sendGoods, page)).toJSON());
+		cr.setMessage("查看成功");
+		return cr;
+	}
+
+	/**
+	 * 通过条件查找待发货单
+	 * 
+	 * @return cr
+	 */
+	@RequestMapping(value = "/ledger/getSearchSendGoods", method = RequestMethod.GET)
+	@ResponseBody
+	public CommonResponse getSearchSendGoods(SendGoods sendGoods) {
+		CommonResponse cr = new CommonResponse();
+		cr.setData(clearCascadeJSONSendGoods.format(sendGoodsService.findLists(sendGoods)).toJSON());
+		cr.setMessage("查看成功");
+		return cr;
+	}
+
+	/**
+	 * 新增修改待发货单
+	 * 
+	 * @return cr
+	 */
+	@RequestMapping(value = "/ledger/addSendGoods", method = RequestMethod.POST)
+	@ResponseBody
+	public CommonResponse addSendGoods(SendGoods sendGoods) {
+		CommonResponse cr = new CommonResponse();
+		if (sendGoods.getId() != null) {
+			cr.setMessage("修改成功");
+		} else {
+			cr.setMessage("新增成功");
+		}
+		sendGoodsService.addSendGoods(sendGoods);
+		return cr;
+	}
+	
+
+
+	/**
+	 * 删除待发货单
+	 * 
+	 * @return cr
+	 */
+	@RequestMapping(value = "/ledger/deleteSendGoods", method = RequestMethod.GET)
+	@ResponseBody
+	public CommonResponse deleteSendGoods(String ids) {
+		CommonResponse cr = new CommonResponse();
+		int count = sendGoodsService.deleteSendGoods(ids);
+		cr.setMessage("成功删除" + count + "待发货单");
+		return cr;
+	}
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
 	
 	
 	
@@ -805,65 +881,6 @@ public class LedgerAction {
 		return cr;
 	}
 
-	/**
-	 * 查看待发货单
-	 * 
-	 * @return cr
-	 */
-	@RequestMapping(value = "/ledger/getSendGoods", method = RequestMethod.GET)
-	@ResponseBody
-	public CommonResponse getSendGoods(PageParameter page, SendGoods sendGoods) {
-		CommonResponse cr = new CommonResponse();
-		cr.setData(clearCascadeJSONSendGoods.format(sendGoodsService.findPages(sendGoods, page)).toJSON());
-		cr.setMessage("查看成功");
-		return cr;
-	}
-
-	/**
-	 * 通过条件查找待发货单
-	 * 
-	 * @return cr
-	 */
-	@RequestMapping(value = "/ledger/getSearchSendGoods", method = RequestMethod.GET)
-	@ResponseBody
-	public CommonResponse getSearchSendGoods(SendGoods sendGoods) {
-		CommonResponse cr = new CommonResponse();
-		cr.setData(clearCascadeJSONSendGoods.format(sendGoodsService.findLists(sendGoods)).toJSON());
-		cr.setMessage("查看成功");
-		return cr;
-	}
-
-	/**
-	 * 新增修改待发货单
-	 * 
-	 * @return cr
-	 */
-	@RequestMapping(value = "/ledger/addSendGoods", method = RequestMethod.POST)
-	@ResponseBody
-	public CommonResponse addSendGoods(SendGoods sendGoods) {
-		CommonResponse cr = new CommonResponse();
-		if (sendGoods.getId() != null) {
-			cr.setMessage("修改成功");
-		} else {
-			cr.setMessage("新增成功");
-		}
-		sendGoodsService.addSendGoods(sendGoods);
-		return cr;
-	}
-
-	/**
-	 * 删除待发货单
-	 * 
-	 * @return cr
-	 */
-	@RequestMapping(value = "/ledger/deleteSendGoods", method = RequestMethod.GET)
-	@ResponseBody
-	public CommonResponse deleteSendGoods(String ids) {
-		CommonResponse cr = new CommonResponse();
-		int count = sendGoodsService.deleteSendGoods(ids);
-		cr.setMessage("成功删除" + count + "待发货单");
-		return cr;
-	}
 
 	/***************************** 财务 **********************************/
 

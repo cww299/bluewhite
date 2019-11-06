@@ -41,6 +41,13 @@ public class SendGoods extends BaseEntity<Long>{
 	 */
 	@Column(name = "order_id")
 	private Long orderId;
+	
+	/**
+	 * 订单合同
+	 */
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "order_id", referencedColumnName = "id", insertable = false, updatable = false)
+	private Order order;
 
 	/**
 	 * 批次号

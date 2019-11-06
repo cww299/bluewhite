@@ -126,7 +126,23 @@ public class Product extends BaseEntity<Long>{
 	private Long warehouseTypeId;
 	
 	
+	/**
+	 * 照片ids
+	 */
+	@Transient
+	private String fileIds;
 	
+	
+	
+	
+	public String getFileIds() {
+		return fileIds;
+	}
+
+	public void setFileIds(String fileIds) {
+		this.fileIds = fileIds;
+	}
+
 	public Long getWarehouseTypeId() {
 		return warehouseTypeId;
 	}
