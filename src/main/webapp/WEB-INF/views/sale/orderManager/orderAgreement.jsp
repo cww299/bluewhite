@@ -178,15 +178,18 @@ layui.config({
 }).extend({
 	mytable : 'layui/myModules/mytable',
 	outOrderModel : 'layui/myModules/sale/outOrderModel' ,
+	mytable : 'layui/myModules/mytable',
+	orderAgreementTpl:'layui/tpl/sale/orderAgreementTpl',
 }).define(
-	['mytable','laydate','outOrderModel'],
+	['mytable','laydate','outOrderModel','orderAgreementTpl'],
 	function(){
 		var $ = layui.jquery
 		, layer = layui.layer 				
-		, form = layui.form			 		
+		, form = layui.form
 		, table = layui.table 
 		, laydate = layui.laydate
 		, laytpl = layui.laytpl
+		, orderAgreementTpl = layui.orderAgreementTpl
 		, myutil = layui.myutil
 		, outOrderModel = layui.outOrderModel
 		, mytable = layui.mytable;
@@ -652,7 +655,8 @@ layui.config({
 		}
 		function edit(){
 			var choosed=layui.table.checkStatus('tableAgreement').data,
-			tpl=editTpl.innerHTML,
+			tpl = orderAgreementTpl.editTpl,
+			//tpl=editTpl.innerHTML,
 			html='';
 			var msg = '';
 			choosed.length>1 && (msg = "不能同时编辑多条信息");
