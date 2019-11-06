@@ -177,7 +177,7 @@ layui.config({
 						type:1,
 						area:['50%','50%'],
 						content: html+'</div>',
-						btn:['新增','保存','取消'],
+						btn:['上传','保存','取消'],
 						yes:function(){
 							$('#uploadPic').click();
 							return false;

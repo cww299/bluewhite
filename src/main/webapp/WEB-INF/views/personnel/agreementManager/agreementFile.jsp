@@ -289,7 +289,7 @@ layui.config({
 			       {title:'开始时间',   field:'startTime',	type:'date', },
 			       {title:'结束时间',   field:'endTime',	 type:'date', },
 			       {title:'合同内容',   field:'content',	},
-			       {title:'保险金额',   field:'amount',	},
+			       {title:'合同金额',   field:'amount',	},
 			       {title:'付款日期',   field:'paymentTime',	type:'date', },
 			       {title:'付款方式',   field:'paymentWay',	},
 			       {title:'是否有效',   field:'flag',	 transData:{data:['无效','有效']} },
@@ -328,7 +328,6 @@ layui.config({
 			}
 		})
 		table.on('tool(tableData)',function(obj){
-			console.log(obj)
 			var html = '<div style="padding:10px;">';
 			var img = obj.data.fileSet;
 			var length = img.length;
@@ -383,7 +382,6 @@ layui.config({
 				}
 			})
 		})
-		
 		function addEdit(type){
 			var data={ id:'',contractKind:{name:''},contractType:{name:''},duration:'',
 					startTime:'',endTime:'',content:'',amount:'',flag:1,company:'', fileSet:[],
@@ -492,9 +490,7 @@ layui.config({
 					$('#sureBtn').click();
 				}
 			})
-			
 		}
-		
 	}//end define function
 )//endedefine
 </script>
