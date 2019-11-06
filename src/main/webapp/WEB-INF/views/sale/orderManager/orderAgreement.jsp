@@ -48,20 +48,30 @@
 <div style="padding:10px;display:none;" id="addWin">
 	<table class="layui-form">
 		<tr>
-			<td>客户选择：</td>
-			<td><select id="customSelect" lay-search><option value="">请选择</option></select></td>
+			<td>商品选择：</td>
+			<td><input readonly placeholder="点击选择商品" class="layui-input" id="chooseProductInput">
+				<input type="hidden" name="productId" id="productIdHidden"></td>
+			<td>&nbsp;&nbsp;</td>
+			<td>订单类型：</td>
+			<td style="width:100px;"><select id="orderTypeSelect"></select></td>
 			<td>&nbsp;&nbsp;</td>
 			<td>订单时间：</td>
-			<td><input type="text" id="addDefaultTime" class="layui-input" ></td>
+			<td><input type="text" id="orderTime" class="layui-input" ></td>
 			<td>&nbsp;&nbsp;</td>
-			<td>默认备注：</td>
-			<td><input type="text" id="defaultRemark" class="layui-input" ></td>
+			<td>批次号：</td>
+			<td><input type="text" id="bacthNumber" class="layui-input" ></td>
+			<td>&nbsp;&nbsp;</td>
+			<td>订单备注：</td>
+			<td><input type="text" id="orderRemak" class="layui-input" ></td>
+			<td>&nbsp;&nbsp;</td>
+			<td>订单数量：</td>
+			<td style="width:80px;"><input type="text" id="orderNumber" value="0" readonly class="layui-input" ></td>
 		</tr>
 	</table>
 	<table id="addTable" lay-filter="addTable"></table>
 </div>
 <!-- 商品选择弹窗 -->
-<div style="padding:10px;display:none;" id="chooseProductWin">
+<div style="padding:10px;display:none;" id="chooseProductWinNew">
 	<table class="layui-form">
 		<tr>
 			<td>商品名称：</td>
@@ -69,6 +79,20 @@
 			<td>&nbsp;&nbsp;</td>
 			<td>商品编号：</td>
 			<td><input class="layui-input" type="text" name="number"></td>
+			<td>&nbsp;&nbsp;</td>
+			<td><span class="layui-btn layui-btn-sm" lay-submit lay-filter="searchProductBtn" >搜索</span></td>
+			<td>&nbsp;&nbsp;</td>
+			<td><span class="layui-badge">双击选择</span></td>
+		</tr>
+	</table>
+	<table id="chooseProductTable" lay-filter="chooseProductTable"></table>
+</div>
+<!-- 客户选择弹窗 -->
+<div style="padding:10px;display:none;" id="chooseProductWin">
+	<table class="layui-form">
+		<tr>
+			<td>客户名称：</td>
+			<td><input class="layui-input" type="text" name="name"></td>
 			<td>&nbsp;&nbsp;</td>
 			<td><span class="layui-btn layui-btn-sm" lay-submit lay-filter="searchProduct" id="searchBtn">搜索</span></td>
 			<td>&nbsp;&nbsp;</td>
@@ -143,8 +167,8 @@
 <!-- 表格工具栏模板 -->
 <script type="text/html" id="addTableToolbar">
 <div>
-	<span lay-event="add"  class="layui-btn layui-btn-sm">商品选择</span>
-	<span lay-event="delete"  class="layui-btn layui-btn-sm layui-btn-danger" >删除商品</span>
+	<span lay-event="add"  class="layui-btn layui-btn-sm">选择客户</span>
+	<span lay-event="delete"  class="layui-btn layui-btn-sm layui-btn-danger" >删除客户</span>
 	<span lay-event="sureAdd" class="layui-btn layui-btn-sm">确定新增</span>
 </div>
 </script>
@@ -173,7 +197,25 @@ layui.config({
 		myutil.keyDownEntry(function(){   //监听回车事件
 			$('#searchBtn').click();
 		})
-		var customerSelectHtml = '',userSelectHtml = '';
+		var allUserSelectHtml = '<option value="">请选择</option>';
+		myutil.getData({
+			url:"${ctx}/basedata/list?type=orderNumberType",
+			success:function(d){
+				var html = '';
+				for(var i =0,len=d.length;i<len;i++){
+					html += '<option value="'+d[i].id+'">'+d[i].name+'</option>'
+				}
+				$('#orderTypeSelect').html(html);
+				form.render();
+			}
+		})
+		myutil.getData({
+			url:'${ctx}/system/user/findUserList',
+			success:function(d){
+				for(var i=0,len=d.length;i<len;i++)
+					allUserSelectHtml+= '<option value="'+d[i].id+'">'+d[i].userName+'</option>';
+			}
+		})
 		laydate.render({ elem:'#searchTime', range:'~' })
 		table.render({
 			elem:'#tableAgreement',
@@ -271,7 +313,6 @@ layui.config({
 				         	 '<table id="lookoverTable" lay-filter="lookoverTable"></table>', 
 				          '</div>', 
 				         ].join(''),
-				
 				shadeClose:true,
 				success:function(){
 					mytable.render({
@@ -318,14 +359,57 @@ layui.config({
 				text:'请选择相关信息|是否确认生成耗料表',
 			})
 		}
+		
 		function add(){
 			var productList = [];	//记录复选框选中的值，用于回显复选框选中
 			var defaultTime = '', defaultRemark = '';
 			var addWin = layer.open({
-				title: '新增',
+				title: '新增合同',
 				type:1,
-				area:['90%','90%'],
-				content: $('#addWin')
+				area:['90%','100%'],
+				content: $('#addWin'),
+				success:function(){
+					laydate.render({
+						elem:'#orderTime',
+						type:'datetime',
+					})
+					$('#chooseProductInput').unbind().on('click',function(){
+						var chooseProductWinNew = layer.open({
+							type:1,
+							title:'商品选择',
+							area:['50%','70%'],
+							content: $('#chooseProductWinNew'),
+							shadeClose:true,
+							success:function(){
+								mytable.render({
+									elem:'#chooseProductTable',
+									url:'${ctx}/productPages',
+									cols:[[
+										{title:'产品编号',field:'number',},
+										{title:'产品名称',field:'name',},
+									]],
+									done:function(){
+										
+									}
+								})
+								form.on('submit(searchProductBtn)',function(obj){
+									table.reload('chooseProductTable',{
+										where:obj.field,
+										page:{
+											curr:1,
+										}
+									})
+								})
+								table.on('row(chooseProductTable)', function(obj){
+									var data = obj.data;
+									$('#productIdHidden').val(data.id);
+									$('#chooseProductInput').val(data.name);
+								  	layer.close(chooseProductWinNew);
+								});
+							}
+						})
+					})
+				}
 			})
 			$('#defaultRemark').on('blur',function(obj){
 				var val = $(this).val();
@@ -348,34 +432,52 @@ layui.config({
 					table.reload('addTable');
 				}
 			})
-			table.render({
+			mytable.render({
 				elem: '#addTable',
 				toolbar: '#addTableToolbar',
 				page: true,
+				size:'lg',
 				data:[],
 				cols:[[
-						{ align:'center', type:'checkbox',},
-						{ align:'center', title:'批次号',   	field:'bacthNumber',  edit:true,width:'10%'	},
-						{ align:'center', title:'下单时间',   field:'orderDateTime', width:'10%',edit:false,	},
-						{ align:'center', title:'产品编号',	field:'productNumber', width:'10%'},
-						{ align:'center', title:'产品名称',	field:'name',	  },
-						{ align:'center', title:'产品价格',	field:'price',	edit:true,width:'8%'	},
-						{ align:'center', title:'数量',   	field:'number',  edit:true,width:'8%'	},
-						{ align:'center', title:'备注',   	field:'remark', edit:true, 	},
+						{ type:'checkbox',},
+						{ title:'客户',   	field:'name', 	},
+						{ title:'下单人',    field:'',    templet: getUserSelect(),},
+						{ title:'数量',   	field:'number',  	edit:true, },
+						{ title:'备注',   	field:'remark',	edit:true, },
 				       ]],
-				done: function(){
-					layui.each($('#addTable').next().find('td[data-field="orderDateTime"]'),function(index,item){
-						item.children[0].onclick = function(event) { layui.stope(event) };
-						laydate.render({
-							elem: item.children[0],
-							done: function(val){
-								var index = $(this.elem).closest('tr').attr('data-index');
-								table.cache['addTable'][index]['orderDateTime'] = val;
-							}
-						})
+				done:function(){
+					layui.each($('.userSelect'),function(index,item){
+						var cache = table.cache['addTable'];
+						$(item).find('option[value="'+cache[index].userId+'"]').attr('selected','selected');
 					})
+					form.on('select(userSelect)',function(obj){
+						var index = $(obj.elem).closest('tr').data('index');
+						var trData = table.cache['addTable'][index];
+						trData.userId = obj.value;
+					})
+					table.on('edit(addTable)',function(obj){
+						if(obj.field == "number"){
+							var data = obj.data;
+							if(isNaN(data.number)){
+								data.number = 0;
+								myutil.emsg('请确证填写数量！');
+							}
+							var sum = 0;
+							var cache = table.cache['addTable'];
+							for(var i in cache){
+								sum -= -cache[i].number;
+							}
+							$('#orderNumber').val(sum);
+						}
+					})
+					form.render();
 				}
 			})
+			function getUserSelect(){
+				return function(d){
+					return '<select lay-search lay-filter="userSelect" class="userSelect">'+allUserSelectHtml+'</select>';
+				}
+			}
 			table.on('toolbar(addTable)',function(obj){
 				switch(obj.event){
 				case 'add':		choosedProduct();		break;
@@ -386,21 +488,18 @@ layui.config({
 			function choosedProduct(){
 				productList = [];
 				var chooseProductWin = layer.open({
-					title: '选择产品',
+					title: '选择客户',
 					type:1,
 					area:['50%','90%'],
 					content: $('#chooseProductWin')
 				})
-				table.render({
+				mytable.render({
 					elem: '#choosedTable',
-					page: true,
-					url:'${ctx}/productPages',
-					request:{ pageName:'page', limitName:'size' },
-					parseData:function(ret){ return { data:ret.data.rows, count:ret.data.total, msg:ret.message, code:ret.code } },
+					url:'${ctx}/ledger/customerPage?', //type=1
 					cols:[[
-							{ align:'center', type:'checkbox',},
-							{ align:'center', title:'产品编号',	field:'number',	},
-							{ align:'center', title:'产品名称',	field:'name',	},
+							{ type:'checkbox',},
+							{ title:'客户编号',	field:'id',	},
+							{ title:'客户名称',	field:'name',	},
 					       ]],
 					done: function(res, curr, count){		//回显复选框选中
 						for(var i=0;i< res.data.length;i++){
@@ -421,7 +520,7 @@ layui.config({
 	                     }
 					}
 				})
-				table.on('checkbox(choosedTable)', function (obj) {		//监听复选框事件
+				table.on('checkbox(choosedTable)', function (obj) {	//监听复选框事件
 					var currPageData = table.cache['choosedTable'];
 					if(obj.checked==true){
 					    if(obj.type=='one')
@@ -464,59 +563,69 @@ layui.config({
 				})
 				$('#sureChoosed').unbind().on('click',function(){
 					var t = table.cache['addTable'];
-					var newPro = [];
+					var newCus = [];
 					var isHas = false;
 					layui.each(productList,function(index1,item1){
 						if(isHas)
 							return;
 						for(var i=0;i<t.length;i++)
-							if(t[i].id == item1.id){
+							if(t[i].customerId == item1.id){
 								isHas = true;
-								myutil.emsg(item1.number+':'+item1.name+'已存在请勿重复添加商品');
+								myutil.emsg('客户:'+item1.name+' 已存在请勿重复添加客户');
 							}
-						newPro.push({
-							id: item1.id,
-							name: item1.name,
-							productNumber: item1.number,
-							bacthNumber: '',
-							price: 0,
-							remark: defaultRemark,
-							number: 1,
-							orderDateTime: defaultTime,
+						newCus.push({
+							userId: '',
+							name:item1.name,
+							remark: '',
+							number: 0,
+							customerId: item1.id,
 						})
 					})
 					if(isHas)
 						return;
-					table.reload('addTable',{ data: t.concat(newPro) })
+					table.reload('addTable',{ data: t.concat(newCus) })
 					layer.close(chooseProductWin);
 				})
 			}// end choosedProduct
 			function sureAdd(){
 				var orderChild = [];
 				var msg = '';
-				var customerId = $('#customSelect').val();
-				if(customerId == '')
+				var productId = $('#productIdHidden').val();
+				var bacthNumber = $('#bacthNumber').val();
+				if(productId == '')
 					return myutil.emsg('请选择客户!');
 				layui.each(table.cache['addTable'],function(index,item){
 					orderChild.push({
-						productId: item.id,
-						bacthNumber: item.bacthNumber,
-						price: item.price,
-						remark: item.remark,
-						number: item.number,
-						orderDate: item.orderDateTime,
+						childNumber: item.number,
+						userId: item.userId,
+						customerId: item.customerId,
+						childRemark: item.remark,
 					})
-					if(item.bacthNumber=='')
-						return msg = '批次号不能为空!';
+					if(item.userId=='' || item.customerId=="" ||  item.numbe=="" || bacthNumber==""){
+						return msg = '数量、跟单人、批次号不能为空!';
+					}
+					if(isNaN(item.number)|| item.number<0)
+						return msg = '请正确填写数量!';
 				})	
-				orderChild.length==0 && (msg = '请选择商品');
+				orderChild.length==0 && (msg = '请选择客户');
+				var orderDate = $('#orderTime').val();
+				if(!orderDate)
+					msg = '订单时间不能为空!';
 				if(msg!='')
 					return myutil.emsg(msg);
 				orderChild = JSON.stringify(orderChild);
+					
 				myutil.saveAjax({
 					url: '/ledger/addOrder',
-					data: { orderChild: orderChild,
-							customerId: customerId},
+					data: { 
+						productId: productId,
+						bacthNumber: bacthNumber,
+						orderChild: orderChild,
+						remark: $('#orderRemark').val(),
+						orderDate: orderDate,
+						number: $('#orderNumber').val(),
+						orderTypeId: $('#orderTypeSelect').val(),
+					},
 					success:function(r){
 						table.reload('tableAgreement');
 						layer.close(addWin);
