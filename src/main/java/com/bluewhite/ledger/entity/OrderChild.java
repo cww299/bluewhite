@@ -16,7 +16,7 @@ import com.bluewhite.system.user.entity.User;
  *
  */
 @Entity
-@Table(name = "ledger_order")
+@Table(name = "ledger_order_child")
 public class OrderChild extends BaseEntity<Long> {
 	
 	/**
