@@ -107,6 +107,7 @@ public class OrderServiceImpl extends BaseServiceImpl<Order, Long> implements Or
 		if(oldOrder!=null){
 			throw new ServiceException("系统已有"+order.getBacthNumber()+"批次号下单合同，请不要重复添加");
 		}
+		order.setPrepareEnough(0);
 		// 新增子单
 		if (!StringUtils.isEmpty(order.getOrderChild())) { 
 			JSONArray jsonArray = JSON.parseArray(order.getOrderChild());
@@ -117,9 +118,9 @@ public class OrderServiceImpl extends BaseServiceImpl<Order, Long> implements Or
 				orderChild.setUserId(jsonObject.getLong("userId"));
 				orderChild.setChildNumber(jsonObject.getInteger("childNumber"));
 				orderChild.setChildRemark(jsonObject.getString("childRemark"));
+				order.getOrderChilds().add(orderChild);
 			}
 		}
-		order.setPrepareEnough(0);
 		dao.save(order);
 	}
 
@@ -177,6 +178,9 @@ public class OrderServiceImpl extends BaseServiceImpl<Order, Long> implements Or
 		String day = String.valueOf(now.get(Calendar.DAY_OF_MONTH));
 		//获取下单类型
 		BaseData type = baseDataDao.findOne(typeId);
+		
+		
+		
 		
 		String orderNumber = year + "-" + month + "-" + day + "-"+ (numberDef != null ? numberDef : (orderList.size() + 1)) + "";
 		return orderNumber;

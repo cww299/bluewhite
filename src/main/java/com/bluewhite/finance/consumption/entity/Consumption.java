@@ -35,13 +35,13 @@ public class Consumption extends BaseEntity<Long> {
 	
 	
 	/**
-	 * 来源部门
+	 * 来源部门Id
 	 */
 	@Column(name = "orgName_id")
 	private Long orgNameId;
 	
 	/**
-	 * 报销部门
+	 * 来源部门
 	 */
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "orgName_id", referencedColumnName = "id", insertable = false, updatable = false)
@@ -77,13 +77,6 @@ public class Consumption extends BaseEntity<Long> {
 	 */
 	@Column(name = "custom_id")
 	private Long customId;
-
-	/**
-	 * 消费对象
-	 */
-	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "custom_id", referencedColumnName = "id", insertable = false, updatable = false)
-	private Custom custom;
 
 	/**
 	 * 消费内容
@@ -142,15 +135,15 @@ public class Consumption extends BaseEntity<Long> {
 	/**
 	 * 客户Id
 	 */
-	@Column(name = "contact_id")
-	private Long contactId;
+	@Column(name = "customer_id")
+	private Long customerId;
 	
 	/**
 	 * 客户对象
 	 */
 	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "contact_id", referencedColumnName = "id", insertable = false, updatable = false)
-	private Customer contact;
+	@JoinColumn(name = "customer_id", referencedColumnName = "id", insertable = false, updatable = false)
+	private Customer customer;
 	
 	/**
 	 * 扣款事由填写
@@ -183,9 +176,6 @@ public class Consumption extends BaseEntity<Long> {
 	private Integer flag;
 
 	/**
-	 * 报销预算必要字段
-	 */
-	/**
 	 * 实际消费时间
 	 */
 	@Column(name = "reality_date")
@@ -216,6 +206,10 @@ public class Consumption extends BaseEntity<Long> {
 	@Transient
 	private String contactName;
 	
+	
+	@Transient
+	private String flags;
+	
 	/**
 	 * 查询字段
 	 */
@@ -226,26 +220,33 @@ public class Consumption extends BaseEntity<Long> {
 	 */
 	@Transient
 	private Date orderTimeEnd;
-	
-	@Transient
-	private String flags;
+
 	
 	
 	
-	public Custom getCustom() {
-		return custom;
+
+	public BaseData getOrgName() {
+		return orgName;
 	}
 
-	public void setCustom(Custom custom) {
-		this.custom = custom;
+	public void setOrgName(BaseData orgName) {
+		this.orgName = orgName;
 	}
 
-	public Customer getContact() {
-		return contact;
+	public Long getCustomerId() {
+		return customerId;
 	}
 
-	public void setContact(Customer contact) {
-		this.contact = contact;
+	public void setCustomerId(Long customerId) {
+		this.customerId = customerId;
+	}
+
+	public Customer getCustomer() {
+		return customer;
+	}
+
+	public void setCustomer(Customer customer) {
+		this.customer = customer;
 	}
 
 	public String getFlags() {
@@ -296,14 +297,6 @@ public class Consumption extends BaseEntity<Long> {
 
 	public void setLogisticsDate(Date logisticsDate) {
 		this.logisticsDate = logisticsDate;
-	}
-
-	public Long getContactId() {
-		return contactId;
-	}
-
-	public void setContactId(Long contactId) {
-		this.contactId = contactId;
 	}
 
 	public Long getOrgNameId() {

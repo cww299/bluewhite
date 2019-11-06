@@ -19,6 +19,7 @@ import org.hibernate.annotations.NotFoundAction;
 import com.bluewhite.base.BaseEntity;
 import com.bluewhite.onlineretailers.inventory.entity.Inventory;
 import com.bluewhite.product.primecost.primecost.entity.PrimeCost;
+import com.bluewhite.system.sys.entity.Files;
 
 /**
  * 蓝白产品
@@ -41,11 +42,11 @@ public class Product extends BaseEntity<Long>{
 	@Column(name = "name")
     private String name;
 	
-    /**
-     * 产品图片地址
-     */
-	@Column(name = "url")
-    private String url;
+	/**
+	 * 产品照片
+	 */
+	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY,orphanRemoval = true)
+	private Set<Files> fileSet = new HashSet<>();
 	
     @OneToOne(fetch=FetchType.LAZY,cascade = CascadeType.ALL) 
     @JoinColumn(name="prime_cost_id",referencedColumnName="id",nullable=true)
@@ -246,13 +247,15 @@ public class Product extends BaseEntity<Long>{
 		this.name = name;
 	}
 
-	public String getUrl() {
-		return url;
+	public Set<Files> getFileSet() {
+		return fileSet;
 	}
 
-	public void setUrl(String url) {
-		this.url = url;
+	public void setFileSet(Set<Files> fileSet) {
+		this.fileSet = fileSet;
 	}
+
+
 	
 
 }
