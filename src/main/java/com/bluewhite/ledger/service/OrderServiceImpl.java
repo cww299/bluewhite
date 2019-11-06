@@ -4,7 +4,9 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Comparator;
 import java.util.Date;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import javax.persistence.criteria.Predicate;
 
@@ -27,7 +29,6 @@ import com.bluewhite.common.utils.StringUtil;
 import com.bluewhite.ledger.dao.OrderDao;
 import com.bluewhite.ledger.entity.Order;
 import com.bluewhite.ledger.entity.OrderChild;
-import com.bluewhite.ledger.entity.Packing;
 import com.bluewhite.onlineretailers.inventory.dao.ProcurementDao;
 import com.bluewhite.onlineretailers.inventory.entity.Procurement;
 
@@ -113,6 +114,7 @@ public class OrderServiceImpl extends BaseServiceImpl<Order, Long> implements Or
 		}
 		order.setPrepareEnough(0);
 		order.setAudit(0);
+		Set<OrderChild> orderChildSet = new HashSet<>();
 		// 新增子单
 		if (!StringUtils.isEmpty(order.getOrderChild())) { 
 			JSONArray jsonArray = JSON.parseArray(order.getOrderChild());
@@ -123,9 +125,10 @@ public class OrderServiceImpl extends BaseServiceImpl<Order, Long> implements Or
 				orderChild.setUserId(jsonObject.getLong("userId"));
 				orderChild.setChildNumber(jsonObject.getInteger("childNumber"));
 				orderChild.setChildRemark(jsonObject.getString("childRemark"));
-				order.getOrderChilds().add(orderChild);
+				orderChildSet.add(orderChild);
 			}
 		}
+		order.setOrderChilds(orderChildSet);
 		dao.save(order);
 	}
 
