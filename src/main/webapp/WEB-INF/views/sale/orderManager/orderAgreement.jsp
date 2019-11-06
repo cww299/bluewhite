@@ -15,7 +15,6 @@
 </style>
 </head>
 <body>
-
 <div class="layui-card">
 	<div class="layui-card-body">
 		<table class="layui-form">
@@ -41,144 +40,13 @@
 		<table id="tableAgreement" lay-filter="tableAgreement"></table>
 	</div>
 </div>
-
 </body>
-
-<!-- 新增弹窗 -->
-<div style="padding:10px;display:none;" id="addWin">
-	<table class="layui-form">
-		<tr>
-			<td>商品选择：</td>
-			<td><input readonly placeholder="点击选择商品" class="layui-input" id="chooseProductInput">
-				<input type="hidden" name="productId" id="productIdHidden"></td>
-			<td>&nbsp;&nbsp;</td>
-			<td>订单类型：</td>
-			<td style="width:100px;"><select id="orderTypeSelect"></select></td>
-			<td>&nbsp;&nbsp;</td>
-			<td>订单时间：</td>
-			<td><input type="text" id="orderTime" class="layui-input" ></td>
-			<td>&nbsp;&nbsp;</td>
-			<td>批次号：</td>
-			<td><input type="text" id="bacthNumber" class="layui-input" ></td>
-			<td>&nbsp;&nbsp;</td>
-			<td>订单备注：</td>
-			<td><input type="text" id="orderRemak" class="layui-input" ></td>
-			<td>&nbsp;&nbsp;</td>
-			<td>订单数量：</td>
-			<td style="width:80px;"><input type="text" id="orderNumber" value="0" readonly class="layui-input" ></td>
-		</tr>
-	</table>
-	<table id="addTable" lay-filter="addTable"></table>
-</div>
-<!-- 商品选择弹窗 -->
-<div style="padding:10px;display:none;" id="chooseProductWinNew">
-	<table class="layui-form">
-		<tr>
-			<td>商品名称：</td>
-			<td><input class="layui-input" type="text" name="name"></td>
-			<td>&nbsp;&nbsp;</td>
-			<td>商品编号：</td>
-			<td><input class="layui-input" type="text" name="number"></td>
-			<td>&nbsp;&nbsp;</td>
-			<td><span class="layui-btn layui-btn-sm" lay-submit lay-filter="searchProductBtn" >搜索</span></td>
-			<td>&nbsp;&nbsp;</td>
-			<td><span class="layui-badge">双击选择</span></td>
-		</tr>
-	</table>
-	<table id="chooseProductTable" lay-filter="chooseProductTable"></table>
-</div>
-<!-- 客户选择弹窗 -->
-<div style="padding:10px;display:none;" id="chooseProductWin">
-	<table class="layui-form">
-		<tr>
-			<td>客户名称：</td>
-			<td><input class="layui-input" type="text" name="name"></td>
-			<td>&nbsp;&nbsp;</td>
-			<td><span class="layui-btn layui-btn-sm" lay-submit lay-filter="searchProduct" id="searchBtn">搜索</span></td>
-			<td>&nbsp;&nbsp;</td>
-			<td><span class="layui-btn layui-btn-sm" id="sureChoosed">确定</span></td>
-			<td><span class="layui-badge" id="tipDouble" style="display:none;">双击选择</span></td>
-		</tr>
-	</table>
-	<table id="choosedTable" lay-filter="choosedTable"></table>
-</div>
-<!-- 修改模板 -->
-<script type="text/html" id="editTpl">
-<div class="layui-form layui-form-pane" style="padding:20px;">
-	<input type="hidden" name="id" value="{{d.id}}">
-	<input type="hidden" name="productId" value="{{d.product.id}}" id="editProductId" >
-	<input type="hidden" name="orderDate" value="{{d.orderDate}}">
-	<div class="layui-item" pane>
-		<label class="layui-form-label">客户</label>
-		<div class="layui-input-block">
-			<select id="editCustomSelect" name="customerId" lay-search></select>
-		</div>
-	</div>
-	<div class="layui-item" pane>
-		<label class="layui-form-label">批次号</label>
-		<div class="layui-input-block">
-			<input class="layui-input" name="bacthNumber" value="{{d.bacthNumber}}" lay-verify="required">
-		</div>
-	</div>
-	<div class="layui-item" pane>
-		<label class="layui-form-label">产品编号</label>
-		<div class="layui-input-block">
-			<input class="layui-input" value="{{d.product.number}}" readonly id="editProductNumber">
-		</div>
-	</div>
-	<div class="layui-item" pane>
-		<label class="layui-form-label">产品名称</label>
-		<div class="layui-input-block">
-			<input class="layui-input" value="{{d.product.name}}" readonly id="editProductName">
-		</div>
-	</div>
-	<div class="layui-item" pane>
-		<label class="layui-form-label">数量</label>
-		<div class="layui-input-block">
-			<input class="layui-input" name="number" value="{{d.number}}" lay-verify="number">
-		</div>
-	</div>
-	<div class="layui-item" pane>
-		<label class="layui-form-label">价格</label>
-		<div class="layui-input-block">
-			<input class="layui-input" name="price" value="{{d.price}}" lay-verify="number">
-		</div>
-	</div>
-	<div class="layui-item" pane>
-		<label class="layui-form-label">备注</label>
-		<div class="layui-input-block">
-			<input class="layui-input" name="remark" value="{{d.remark}}">
-		</div>
-	</div>
-	<p style="display:none;"><button lay-submit lay-filter="sureEdit" id="sureEdit">确定</button></p>
-</div>
-</script>
-<!-- 表格工具栏模板 -->
-<script type="text/html" id="agreementToolbar">
-<div>
-	<span lay-event="add"  class="layui-btn layui-btn-sm" >新增合同</span>
-	<span lay-event="delete"  class="layui-btn layui-btn-sm layui-btn-danger" >删除合同</span>
-	<span lay-event="update"  class="layui-btn layui-btn-sm" >修改合同</span>
-	<span lay-event="productUseup"  class="layui-btn layui-btn-sm layui-btn-normal" >生成耗料订单</span>
-	<span lay-event="lookoverUseup"  class="layui-btn layui-btn-sm" >查看耗料订单</span>
-	<span lay-event="outOrder"  class="layui-btn layui-btn-sm layui-btn-warm" >生成外发单</span>
-</div>
-</script>
-<!-- 表格工具栏模板 -->
-<script type="text/html" id="addTableToolbar">
-<div>
-	<span lay-event="add"  class="layui-btn layui-btn-sm">选择客户</span>
-	<span lay-event="delete"  class="layui-btn layui-btn-sm layui-btn-danger" >删除客户</span>
-	<span lay-event="sureAdd" class="layui-btn layui-btn-sm">确定新增</span>
-</div>
-</script>
 <script>
 layui.config({
 	base : '${ctx}/static/layui-v2.4.5/'
 }).extend({
 	mytable : 'layui/myModules/mytable',
 	outOrderModel : 'layui/myModules/sale/outOrderModel' ,
-	mytable : 'layui/myModules/mytable',
 	orderAgreementTpl:'layui/tpl/sale/orderAgreementTpl',
 }).define(
 	['mytable','laydate','outOrderModel','orderAgreementTpl'],
@@ -197,21 +65,7 @@ layui.config({
 		myutil.clickTr();
 		myutil.config.msgOffset = '250px';
 		outOrderModel.init();
-		myutil.keyDownEntry(function(){   //监听回车事件
-			$('#searchBtn').click();
-		})
 		var allUserSelectHtml = '<option value="">请选择</option>';
-		myutil.getData({
-			url:"${ctx}/basedata/list?type=orderNumberType",
-			success:function(d){
-				var html = '';
-				for(var i =0,len=d.length;i<len;i++){
-					html += '<option value="'+d[i].id+'">'+d[i].name+'</option>'
-				}
-				$('#orderTypeSelect').html(html);
-				form.render();
-			}
-		})
 		myutil.getData({
 			url:'${ctx}/system/user/findUserList',
 			success:function(d){
@@ -223,7 +77,7 @@ layui.config({
 		table.render({
 			elem:'#tableAgreement',
 			url:'${ctx}/ledger/orderPage',
-			toolbar:'#agreementToolbar',
+			toolbar: orderAgreementTpl.agreementToolbar,
 			page:true,
 			size:'lg',
 			request:{ pageName:'page', limitName:'size' },
@@ -370,7 +224,7 @@ layui.config({
 				title: '新增合同',
 				type:1,
 				area:['90%','100%'],
-				content: $('#addWin'),
+				content: orderAgreementTpl.addTpl,
 				success:function(){
 					laydate.render({
 						elem:'#orderTime',
@@ -381,7 +235,7 @@ layui.config({
 							type:1,
 							title:'商品选择',
 							area:['50%','70%'],
-							content: $('#chooseProductWinNew'),
+							content: orderAgreementTpl.chooseProduct,
 							shadeClose:true,
 							success:function(){
 								mytable.render({
@@ -408,9 +262,50 @@ layui.config({
 									$('#productIdHidden').val(data.id);
 									$('#chooseProductInput').val(data.name);
 								  	layer.close(chooseProductWinNew);
-								});
+								});s
 							}
 						})
+					})
+					mytable.render({
+						elem: '#addTable',
+						toolbar: orderAgreementTpl.addTableToolbar,
+						page: true,
+						size:'lg',
+						data:[],
+						cols:[[
+								{ type:'checkbox',},
+								{ title:'客户',   	field:'name', 	},
+								{ title:'下单人',    field:'',    templet: getUserSelect(),},
+								{ title:'数量',   	field:'number',  	edit:true, },
+								{ title:'备注',   	field:'remark',	edit:true, },
+						       ]],
+						done:function(){
+							layui.each($('.userSelect'),function(index,item){
+								var cache = table.cache['addTable'];
+								$(item).find('option[value="'+cache[index].userId+'"]').attr('selected','selected');
+							})
+							form.on('select(userSelect)',function(obj){
+								var index = $(obj.elem).closest('tr').data('index');
+								var trData = table.cache['addTable'][index];
+								trData.userId = obj.value;
+							})
+							table.on('edit(addTable)',function(obj){
+								if(obj.field == "number"){
+									var data = obj.data;
+									if(isNaN(data.number)){
+										data.number = 0;
+										myutil.emsg('请确证填写数量！');
+									}
+									var sum = 0;
+									var cache = table.cache['addTable'];
+									for(var i in cache){
+										sum -= -cache[i].number;
+									}
+									$('#orderNumber').val(sum);
+								}
+							})
+							form.render();
+						}
 					})
 				}
 			})
@@ -435,47 +330,7 @@ layui.config({
 					table.reload('addTable');
 				}
 			})
-			mytable.render({
-				elem: '#addTable',
-				toolbar: '#addTableToolbar',
-				page: true,
-				size:'lg',
-				data:[],
-				cols:[[
-						{ type:'checkbox',},
-						{ title:'客户',   	field:'name', 	},
-						{ title:'下单人',    field:'',    templet: getUserSelect(),},
-						{ title:'数量',   	field:'number',  	edit:true, },
-						{ title:'备注',   	field:'remark',	edit:true, },
-				       ]],
-				done:function(){
-					layui.each($('.userSelect'),function(index,item){
-						var cache = table.cache['addTable'];
-						$(item).find('option[value="'+cache[index].userId+'"]').attr('selected','selected');
-					})
-					form.on('select(userSelect)',function(obj){
-						var index = $(obj.elem).closest('tr').data('index');
-						var trData = table.cache['addTable'][index];
-						trData.userId = obj.value;
-					})
-					table.on('edit(addTable)',function(obj){
-						if(obj.field == "number"){
-							var data = obj.data;
-							if(isNaN(data.number)){
-								data.number = 0;
-								myutil.emsg('请确证填写数量！');
-							}
-							var sum = 0;
-							var cache = table.cache['addTable'];
-							for(var i in cache){
-								sum -= -cache[i].number;
-							}
-							$('#orderNumber').val(sum);
-						}
-					})
-					form.render();
-				}
-			})
+			
 			function getUserSelect(){
 				return function(d){
 					return '<select lay-search lay-filter="userSelect" class="userSelect">'+allUserSelectHtml+'</select>';
@@ -656,7 +511,6 @@ layui.config({
 		function edit(){
 			var choosed=layui.table.checkStatus('tableAgreement').data,
 			tpl = orderAgreementTpl.editTpl,
-			//tpl=editTpl.innerHTML,
 			html='';
 			var msg = '';
 			choosed.length>1 && (msg = "不能同时编辑多条信息");
@@ -676,7 +530,7 @@ layui.config({
 					$('#sureEdit').click();
 				}
 			})
-			getAllCustom('editCustomSelect',choosed[0].customer.id);
+			getAllCustom('editCustomSelect',choosed[0].customer?choosed[0].customer.id:"");
 			form.render();
 			form.on('submit(sureEdit)',function(obj){
 				myutil.saveAjax({
