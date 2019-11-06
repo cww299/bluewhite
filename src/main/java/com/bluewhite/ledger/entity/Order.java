@@ -1,7 +1,9 @@
 package com.bluewhite.ledger.entity;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 import javax.persistence.CascadeType;
@@ -69,8 +71,9 @@ public class Order extends BaseEntity<Long> {
 	/**
 	 * 销售子单
 	 */
-	@OneToMany(mappedBy = "order", cascade = CascadeType.ALL, orphanRemoval = true)
-	private Set<OrderChild> orderChilds = new HashSet<OrderChild>();
+	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY,orphanRemoval = true)
+	@JoinColumn(name = "order_id")
+	private List<OrderChild> orderChilds = new ArrayList<>();
 
 
 	/**
@@ -141,11 +144,13 @@ public class Order extends BaseEntity<Long> {
 	
 	
 
-	public Set<OrderChild> getOrderChilds() {
+
+
+	public List<OrderChild> getOrderChilds() {
 		return orderChilds;
 	}
 
-	public void setOrderChilds(Set<OrderChild> orderChilds) {
+	public void setOrderChilds(List<OrderChild> orderChilds) {
 		this.orderChilds = orderChilds;
 	}
 
