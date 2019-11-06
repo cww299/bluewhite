@@ -28,24 +28,15 @@ import com.bluewhite.common.utils.NumUtils;
 import com.bluewhite.common.utils.StringUtil;
 import com.bluewhite.common.utils.excel.ExcelListener;
 import com.bluewhite.finance.consumption.dao.ConsumptionDao;
-import com.bluewhite.finance.consumption.dao.CustomDao;
 import com.bluewhite.finance.consumption.entity.Consumption;
 import com.bluewhite.finance.consumption.entity.ConsumptionPoi;
-import com.bluewhite.finance.consumption.entity.Custom;
 import com.bluewhite.system.user.dao.UserDao;
-import com.bluewhite.system.user.entity.User;
 
 @Service
 public class ConsumptionServiceImpl extends BaseServiceImpl<Consumption, Long> implements ConsumptionService {
 
 	@Autowired
 	private ConsumptionDao dao;
-
-	@Autowired
-	private CustomDao customDao;
-
-	@Autowired
-	private CustomDao contactDao;
 
 	@Autowired
 	private UserDao userDao;
@@ -190,6 +181,7 @@ public class ConsumptionServiceImpl extends BaseServiceImpl<Consumption, Long> i
 
 		boolean flag = true;
 		switch (consumption.getType()) {
+		//报销
 		case 1:
 			flag = false;
 			//表示不是修改金额时自动跳过
@@ -223,28 +215,11 @@ public class ConsumptionServiceImpl extends BaseServiceImpl<Consumption, Long> i
 					}
 				
 			}
-
 			if (consumption.getPaymentMoney() != null && consumption.getPaymentMoney() > consumption.getMoney()) {
 				throw new ServiceException("放款金额不能大于申请金额");
 			}
 			break;
 		case 2:
-			if (consumption.getId() == null && consumption.getCustomId() == null) {
-				if (!StringUtils.isEmpty(consumption.getCustomerName())) {
-					Custom custom = customDao.findByTypeAndName(consumption.getType(), consumption.getCustomerName());
-					if (custom != null) {
-						consumption.setCustomId(custom.getId());
-					}
-				}
-			}
-			if (consumption.getId() == null && consumption.getUserId() == null) {
-				if (!StringUtils.isEmpty(consumption.getUsername())) {
-					User user = userDao.findByUserName(consumption.getUsername());
-					if (user != null) {
-						consumption.setUserId(user.getId());
-					}
-				}
-			}
 			break;
 		case 3:
 			flag = false;
@@ -252,12 +227,6 @@ public class ConsumptionServiceImpl extends BaseServiceImpl<Consumption, Long> i
 		case 4:
 			break;
 		case 5:
-			if (consumption.getContactId() == null) {
-				Custom contact = new Custom();
-				contact.setName(consumption.getContactName());
-				contactDao.save(contact);
-				consumption.setContactId(contact.getId());
-			}
 			break;
 		case 6:
 			break;
@@ -268,13 +237,6 @@ public class ConsumptionServiceImpl extends BaseServiceImpl<Consumption, Long> i
 		case 9:
 			flag = false;
 			break;
-		}
-		if (flag && (consumption.getCustomId() == null || consumption.getCustomId() == 0)) {
-			Custom custom = new Custom();
-			custom.setName(consumption.getCustomerName());
-			custom.setType(consumption.getType());
-			customDao.save(custom);
-			consumption.setCustomId(custom.getId());
 		}
 
 		if (consumption.getExpenseDate() == null) {

@@ -155,17 +155,15 @@ public class InventoryDetailServiceImpl extends BaseServiceImpl<InventoryDetail,
 			for (Long ps1 : mapAttendance.keySet()) {
 				Map<String, Object> map = new HashMap<>();
 				List<InventoryDetail> psList = mapAttendance.get(ps1);
-				if (psList.get(0).getOrgName().getId() != 60) {
-					double sumCost = psList.stream().mapToDouble(InventoryDetail::getOutboundCost).sum();
-					sumCost = NumUtils.sum(sumCost, averageLogisticsCost);
-					map.put("orgName", psList.get(0).getOrgName().getName());
-					map.put("sumCost", NumUtils.round(sumCost, 2));
-					map.put("accounted", NumUtils.mul(NumUtils.div(sumCost, sumCostList, 4), 100) + "%");
-					mapList.add(map);
-				}
+				double sumCost = psList.stream().mapToDouble(InventoryDetail::getOutboundCost).sum();
+				sumCost = NumUtils.sum(sumCost, averageLogisticsCost);
+				map.put("orgName", psList.get(0).getOrgName().getName());
+				map.put("sumCost", NumUtils.round(sumCost, 2));
+				map.put("accounted", NumUtils.mul(NumUtils.div(sumCost, sumCostList, 4), 100) + "%");
+				mapList.add(map);
 			}
 		}
-		
+
 		// 按备注分组
 		Map<String, List<InventoryDetail>> mapAttendanceRemark = onventoryDetailList.stream()
 				.filter(InventoryDetail -> InventoryDetail.getOrgNameId() == null
@@ -175,7 +173,7 @@ public class InventoryDetailServiceImpl extends BaseServiceImpl<InventoryDetail,
 			for (String psRemark : mapAttendanceRemark.keySet()) {
 				Map<String, Object> map = new HashMap<>();
 				List<InventoryDetail> psList = mapAttendanceRemark.get(psRemark);
-				if(!psRemark.equals("")){
+				if (!psRemark.equals("")) {
 					double sumCost = psList.stream().mapToDouble(InventoryDetail::getOutboundCost).sum();
 					map.put("orgName", psRemark);
 					map.put("sumCost", NumUtils.round(sumCost, 2));
@@ -184,7 +182,7 @@ public class InventoryDetailServiceImpl extends BaseServiceImpl<InventoryDetail,
 				}
 			}
 		}
-		
+
 		return mapList;
 	}
 

@@ -37,7 +37,7 @@ public class StartupListener implements ApplicationListener<ContextRefreshedEven
 				String key = resource.getString("attendance.ip");
 				for (String address : key.split(",")) {
 					String threadName = "thread:" + address;
-					new Thread(new SDKRunnable(address), "thread:" + threadName).start();
+					new Thread(new SDKRunnable(address),threadName).start();
 				}
 			}
 		}, 300);

@@ -297,6 +297,7 @@ public class BasicsServiceImpl extends BaseServiceImpl<Basics, Long>
 			}
 			List<Reward>rewards2=rewards.stream().filter(Reward->Reward.getRecruitName().getOrgNameId().equals(baseData.getId())).collect(Collectors.toList());
 			for (Reward reward2 : rewards2) {
+				
 				ReceivePrice=ReceivePrice+reward2.getPrice();
 			}
 			
