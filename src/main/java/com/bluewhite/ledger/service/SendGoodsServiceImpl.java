@@ -87,11 +87,10 @@ public class SendGoodsServiceImpl extends BaseServiceImpl<SendGoods, Long> imple
 		if (sendGoods.getId() != null) {
 			List<PackingChild> sendGoodsList = packingChildDao.findBySendGoodsId(sendGoods.getId());
 			if (sendGoodsList.size() > 0) {
-				throw new ServiceException("该待发货单已有贴包发货单，无法修改，请先核对贴包发货单");
+				throw new ServiceException("该发货单已有贴包发货单，无法修改，请先核对贴包发货单");
 			}
 			SendGoods ot = dao.findOne(sendGoods.getId());
-			BeanCopyUtils.copyNotEmpty(sendGoods, ot, "");
-			dao.save(ot);
+			update(sendGoods, ot, "");
 		} else {
 			Order order = orderdao.findOne(sendGoods.getOrderId());
 			sendGoods.setBacthNumber(order.getBacthNumber());
@@ -163,7 +162,7 @@ public class SendGoodsServiceImpl extends BaseServiceImpl<SendGoods, Long> imple
 					Long id = Long.parseLong(idArr[i]);
 					List<PackingChild> sendGoodsList = packingChildDao.findBySendGoodsId(id);
 					if (sendGoodsList.size() > 0) {
-						throw new ServiceException("该待发货单已有贴包发货单，无法删除，请先核对贴包发货单");
+						throw new ServiceException("该发货单已有贴包发货单，无法删除，请先核对贴包发货单");
 					}
 					SendGoods sendGoods = dao.findOne(id);
 					dao.delete(sendGoods);

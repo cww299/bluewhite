@@ -1,7 +1,9 @@
 package com.bluewhite.product.product.action;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 import javax.persistence.EntityManager;
@@ -49,6 +51,7 @@ import com.bluewhite.product.product.entity.Product;
 import com.bluewhite.product.product.service.ProductService;
 import com.bluewhite.production.procedure.entity.Procedure;
 import com.bluewhite.production.procedure.service.ProcedureService;
+import com.bluewhite.system.sys.dao.FilesDao;
 import com.bluewhite.system.sys.entity.Files;
 import com.bluewhite.system.sys.entity.SysLog;
 
@@ -79,6 +82,8 @@ public class ProductAction {
 	private TailorService tailorService;
 	@Autowired
 	private OrdinaryLaserService ordinaryLaserService;
+	@Autowired
+	private FilesDao filesDao;
 
 	private ClearCascadeJSON clearCascadeJSON;
 	{
@@ -212,8 +217,7 @@ public class ProductAction {
 			if (product.getDepartmentNumber().length() == 7) {
 				product.setNumber(product.getDepartmentNumber());
 				product.setOriginDepartment(null);
-			}
-			;
+			};
 			productService.save(product);
 			cr.setMessage("添加成功");
 		}
@@ -250,6 +254,15 @@ public class ProductAction {
 			BeanCopyUtils.copyNullProperties(oldProduct, product);
 			product.setNumber(product.getDepartmentNumber());
 			product.setCreatedAt(oldProduct.getCreatedAt());
+			if (!StringUtils.isEmpty(product.getFileIds())) {
+				String[] fileIds = product.getFileIds().split(",");
+				Set<Files> fileSet = new HashSet<>();
+				for (String idString : fileIds) {
+					Files files = filesDao.findOne(Long.parseLong(idString));
+					fileSet.add(files);
+				}
+				product.setFileSet(fileSet);
+			}
 			productService.save(product);
 
 			// 各部门修改产品不同处理方案
