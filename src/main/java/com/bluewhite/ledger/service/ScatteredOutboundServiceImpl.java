@@ -234,13 +234,6 @@ public class ScatteredOutboundServiceImpl extends BaseServiceImpl<ScatteredOutbo
 	}
 
 
-
-	@Override
-	public void updateOpenOrder(ScatteredOutbound scatteredOutbound) {
-		ScatteredOutbound ot = findOne(scatteredOutbound.getId());
-		update(scatteredOutbound, ot, "");
-	}
-
 	
 
 }

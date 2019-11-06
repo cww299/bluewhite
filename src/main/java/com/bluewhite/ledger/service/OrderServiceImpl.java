@@ -49,6 +49,10 @@ public class OrderServiceImpl extends BaseServiceImpl<Order, Long> implements Or
 			if (param.getId() != null) {
 				predicate.add(cb.equal(root.get("id").as(Long.class), param.getId()));
 			}
+			// 按是否审核
+			if (param.getAudit() != null) {
+				predicate.add(cb.equal(root.get("audit").as(Integer.class), param.getAudit()));
+			}
 			// 按客户名称
 			if (!StringUtils.isEmpty(param.getCustomerName())) {
 				predicate.add(cb.like(root.get("customer").get("name").as(String.class), "%" + param.getCustomerName() + "%"));
@@ -108,6 +112,7 @@ public class OrderServiceImpl extends BaseServiceImpl<Order, Long> implements Or
 			throw new ServiceException("系统已有"+order.getBacthNumber()+"批次号下单合同，请不要重复添加");
 		}
 		order.setPrepareEnough(0);
+		order.setAudit(0);
 		// 新增子单
 		if (!StringUtils.isEmpty(order.getOrderChild())) { 
 			JSONArray jsonArray = JSON.parseArray(order.getOrderChild());
@@ -177,13 +182,37 @@ public class OrderServiceImpl extends BaseServiceImpl<Order, Long> implements Or
 		String month = String.valueOf(now.get(Calendar.MONTH) + 1);
 		String day = String.valueOf(now.get(Calendar.DAY_OF_MONTH));
 		//获取下单类型
-		BaseData type = baseDataDao.findOne(typeId);
-		
-		
-		
-		
-		String orderNumber = year + "-" + month + "-" + day + "-"+ (numberDef != null ? numberDef : (orderList.size() + 1)) + "";
+		String orderNumberSuffix = "";
+		BaseData numberType = baseDataDao.findOne(typeId);
+		if(numberType!=null){
+			String[] numberString = numberType.getName().split("-");
+			if(numberString.length>0){
+				orderNumberSuffix = numberString[1];
+			}
+		}
+		String orderNumber = year + "-" + month + "-" + day + "-"+ (numberDef != null ? numberDef : (orderList.size() + 1)) + orderNumberSuffix;
 		return orderNumber;
+	}
+
+	@Override
+	public int auditOrder(String ids) {
+		int count = 0;
+		if (!StringUtils.isEmpty(ids)) {
+			String[] idArr = ids.split(",");
+			if (idArr.length > 0) {
+				for (int i = 0; i < idArr.length; i++) {
+					Long id = Long.parseLong(idArr[i]);
+					Order order =  dao.findOne(id);
+					if(order.getAudit()==1){
+						throw new ServiceException("编号为"+order.getBacthNumber()+"的下单合同已审核请勿多次审核");
+					}
+					order.setAudit(1);
+					dao.save(order);
+					count++;
+				}
+			}
+		}
+		return count;
 	}
 
 

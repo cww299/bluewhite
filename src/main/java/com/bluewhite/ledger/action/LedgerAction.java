@@ -22,6 +22,7 @@ import com.bluewhite.ledger.entity.Bill;
 import com.bluewhite.ledger.entity.Customer;
 import com.bluewhite.ledger.entity.Mixed;
 import com.bluewhite.ledger.entity.Order;
+import com.bluewhite.ledger.entity.OrderChild;
 import com.bluewhite.ledger.entity.OrderMaterial;
 import com.bluewhite.ledger.entity.OrderOutSource;
 import com.bluewhite.ledger.entity.OrderProcurement;
@@ -42,6 +43,7 @@ import com.bluewhite.ledger.service.ReceivedMoneyService;
 import com.bluewhite.ledger.service.SaleService;
 import com.bluewhite.ledger.service.ScatteredOutboundService;
 import com.bluewhite.ledger.service.SendGoodsService;
+import com.bluewhite.onlineretailers.inventory.entity.Inventory;
 import com.bluewhite.product.primecostbasedata.entity.BaseOne;
 import com.bluewhite.product.primecostbasedata.entity.Materiel;
 import com.bluewhite.product.product.entity.Product;
@@ -137,11 +139,15 @@ public class LedgerAction {
 	private ClearCascadeJSON clearCascadeJSONOrder;
 	{
 		clearCascadeJSONOrder = ClearCascadeJSON.get()
-				.addRetainTerm(Order.class, "id", "remark", "orderDate", "customer", "bacthNumber", "product", "number",
-						"price", "orderMaterials","prepareEnough")
+				.addRetainTerm(Order.class, "id", "remark", "orderDate", "bacthNumber", "product", "number",
+						"price", "orderMaterials","prepareEnough","orderChilds")
 				.addRetainTerm(OrderMaterial.class, "id")
+				.addRetainTerm(OrderChild.class, "id","customer","user","childNumber","childRemark")
 				.addRetainTerm(Customer.class, "id", "name")
-				.addRetainTerm(Product.class, "id", "name", "number");
+				.addRetainTerm(User.class, "id", "userName")
+				.addRetainTerm(Product.class, "id", "name", "number","inventorys")
+				.addRetainTerm(Inventory.class, "id", "number","orderOutSource")
+				.addRetainTerm(OrderOutSource.class, "id", "surplusNumber");
 	}
 
 	private ClearCascadeJSON clearCascadeJSONMixed;
@@ -253,7 +259,7 @@ public class LedgerAction {
 	}
 
 	/**
-	 * 新增订单
+	 * (销售部)新增订单
 	 * 
 	 * @param order
 	 * @return
@@ -268,7 +274,7 @@ public class LedgerAction {
 	}
 
 	/**
-	 * 修改订单
+	 * (销售部)修改订单
 	 * 
 	 * @return cr
 	 */
@@ -282,7 +288,7 @@ public class LedgerAction {
 	}
 
 	/**
-	 * 删除订单
+	 *(销售部) 删除订单
 	 * 
 	 * @return cr
 	 */
@@ -292,6 +298,20 @@ public class LedgerAction {
 		CommonResponse cr = new CommonResponse();
 		int count = orderService.deleteOrder(ids);
 		cr.setMessage("成功删除" + count + "订单合同");
+		return cr;
+	}
+	
+	/**
+	 *(销售部) 审核订单
+	 * 
+	 * @return cr
+	 */
+	@RequestMapping(value = "/ledger/auditOrder", method = RequestMethod.GET)
+	@ResponseBody
+	public CommonResponse auditOrder(String ids) {
+		CommonResponse cr = new CommonResponse();
+		int count = orderService.auditOrder(ids);
+		cr.setMessage("成功审核" + count + "订单合同");
 		return cr;
 	}
 
@@ -701,7 +721,7 @@ public class LedgerAction {
 	
 	
 	/**
-	 * 查看待发货单
+	 * 查看发货单
 	 * 
 	 * @return cr
 	 */
@@ -715,7 +735,7 @@ public class LedgerAction {
 	}
 
 	/**
-	 * 通过条件查找待发货单
+	 * 通过条件查找发货单
 	 * 
 	 * @return cr
 	 */
@@ -729,7 +749,7 @@ public class LedgerAction {
 	}
 
 	/**
-	 * 新增修改待发货单
+	 * (销售部)新增修改发货单
 	 * 
 	 * @return cr
 	 */
@@ -749,7 +769,7 @@ public class LedgerAction {
 
 
 	/**
-	 * 删除待发货单
+	 * 删除发货单
 	 * 
 	 * @return cr
 	 */
