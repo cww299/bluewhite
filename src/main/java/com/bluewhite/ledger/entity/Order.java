@@ -111,7 +111,7 @@ public class Order extends BaseEntity<Long> {
 	private String customerName;
 
 	/**
-	 * 批量新增
+	 * 子单新增
 	 */
 	@Transient
 	private String orderChild;
