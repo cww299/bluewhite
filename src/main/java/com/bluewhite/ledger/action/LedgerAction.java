@@ -242,7 +242,7 @@ public class LedgerAction {
 		cr.setMessage("查看成功");
 		return cr;
 	}
-
+	
 	/**
 	 * 查看订单
 	 * 
@@ -270,6 +270,21 @@ public class LedgerAction {
 		CommonResponse cr = new CommonResponse();
 		orderService.addOrder(order);
 		cr.setMessage("新增成功");
+		return cr;
+	}
+	
+	/**
+	 * (销售部)获取编号
+	 * 
+	 * @param order
+	 * @return
+	 */
+	@RequestMapping(value = "/ledger/getOrderBacthNumber", method = RequestMethod.GET)
+	@ResponseBody
+	public CommonResponse getOrderBacthNumber(Order order) {
+		CommonResponse cr = new CommonResponse();
+		cr.setData(orderService.getOrderBacthNumber(order.getOrderDate(),order.getOrderTypeId()));
+		cr.setMessage("成功");
 		return cr;
 	}
 
