@@ -79,6 +79,7 @@ public class SendGoods extends BaseEntity<Long>{
 	@Column(name = "surplus_Number")
 	private Integer surplusNumber;
 	
+	
 	/**
 	 * 客户name
 	 * 

@@ -3,7 +3,6 @@ package com.bluewhite.finance.consumption.action;
 import java.io.IOException;
 import java.io.InputStream;
 import java.text.SimpleDateFormat;
-import java.util.Date;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -32,9 +31,7 @@ import com.bluewhite.common.entity.PageResult;
 import com.bluewhite.common.utils.excel.ExcelListener;
 import com.bluewhite.finance.consumption.entity.Consumption;
 import com.bluewhite.finance.consumption.entity.ConsumptionPoi;
-import com.bluewhite.finance.consumption.entity.Custom;
 import com.bluewhite.finance.consumption.service.ConsumptionService;
-import com.bluewhite.finance.consumption.service.CustomService;
 import com.bluewhite.system.user.entity.User;
 
 @Controller
@@ -42,21 +39,18 @@ public class ConsumptionAction {
 
 	@Autowired
 	private ConsumptionService consumptionService;
-	@Autowired
-	private CustomService customService;
 
 	private ClearCascadeJSON clearCascadeJSON;
 
 	{
 		clearCascadeJSON = ClearCascadeJSON
 				.get()
-				.addRetainTerm(Consumption.class, "id", "user","content","userId"
+				.addRetainTerm(Consumption.class, "id", "user","customer","userId"
 				,"budget","money","expenseDate","paymentMoney","paymentDate","withholdReason","remark"
-				,"withholdMoney","settleAccountsMode","remark","flag","taxPoint","custom","user"
+				,"withholdMoney","settleAccountsMode","remark","flag","taxPoint","user"
 				,"contact","logisticsDate","contactName","batchNumber","realityDate","deleteFlag","orgName")
 				.addRetainTerm(User.class, "userName")
-				.addRetainTerm(BaseData.class,"id","name")
-				.addRetainTerm(Custom.class, "name");
+				.addRetainTerm(BaseData.class,"id","name");
 	}
 
 	/**
@@ -178,68 +172,6 @@ public class ConsumptionAction {
 		double totalAmount = consumptionService.totalAmount(consumption);
 		cr.setData(totalAmount);
 		cr.setMessage("查询成功");
-		return cr;
-	}
-	
-	
-	
-	
-	/**
-	 * 分頁获取客户
-	 * @param request
-	 * @return cr
-	 */
-	@RequestMapping(value = "/fince/findCustomPage", method = RequestMethod.GET)
-	@ResponseBody
-	public CommonResponse findCustomPage( PageParameter page,Custom custom) {
-		CommonResponse cr = new CommonResponse();
-		cr.setData(ClearCascadeJSON.get()
-				.addRetainTerm(Custom.class, "id", "name","type")
-				.format(customService.findPages(custom, page)).toJSON());
-		return cr;
-	}
-	
-	/**
-	 * 根据类型获取客户
-	 * @param request
-	 * @return cr
-	 */
-	@RequestMapping(value = "/fince/findCustom", method = RequestMethod.GET)
-	@ResponseBody
-	public CommonResponse findCustom(HttpServletRequest request,Integer type,String name) {
-		CommonResponse cr = new CommonResponse();
-		cr.setData(ClearCascadeJSON.get()
-				.addRetainTerm(Custom.class, "id", "name")
-				.format(customService.findCustom(type,name)).toJSON());
-		return cr;
-	}
-	
-	/**
-	 * 根据类型
-	 * @param request
-	 * @return cr
-	 */
-	@RequestMapping(value = "/fince/findCustomBytype", method = RequestMethod.GET)
-	@ResponseBody
-	public CommonResponse findCustomBytype(HttpServletRequest request,Integer type) {
-		CommonResponse cr = new CommonResponse();
-		cr.setData(ClearCascadeJSON.get()
-				.addRetainTerm(Custom.class, "id", "name")
-				.format(customService.findByType(type)).toJSON());
-		return cr;
-	}
-	
-	/**
-	 * 删除客户
-	 * @param request
-	 * @return cr
-	 */
-	@RequestMapping(value = "/fince/deleteCustom", method = RequestMethod.GET)
-	@ResponseBody
-	public CommonResponse deleteCustom(HttpServletRequest request,String ids) {
-		CommonResponse cr = new CommonResponse();
-		int count = customService.delete(ids);
-		cr.setMessage("成功删除"+count+"条");
 		return cr;
 	}
 	
