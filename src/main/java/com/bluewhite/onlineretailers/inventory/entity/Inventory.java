@@ -91,7 +91,7 @@ public class Inventory extends BaseEntity<Long> {
 	 * 入库单
 	 */
 	@OneToMany(mappedBy = "inventory", cascade = CascadeType.ALL, orphanRemoval = true)
-	private Set<OrderOutSource> OrderOutSource = new HashSet<OrderOutSource>();
+	private Set<OrderOutSource> orderOutSource = new HashSet<OrderOutSource>();
 
 	/**
 	 * 商品编号（sku）
@@ -102,12 +102,14 @@ public class Inventory extends BaseEntity<Long> {
 
 	
 	
+
+
 	public Set<OrderOutSource> getOrderOutSource() {
-		return OrderOutSource;
+		return orderOutSource;
 	}
 
 	public void setOrderOutSource(Set<OrderOutSource> orderOutSource) {
-		OrderOutSource = orderOutSource;
+		this.orderOutSource = orderOutSource;
 	}
 
 	public Long getCommodityId() {

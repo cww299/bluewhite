@@ -52,4 +52,10 @@ public interface OrderService extends BaseCRUDService<Order,Long>{
 	 */
 	public String getOrderBacthNumber(Date time,Long typeId);
 	
+	/**
+	 * 审核订单
+	 * @param order
+	 */
+	public int auditOrder(String ids);
+	
 }
