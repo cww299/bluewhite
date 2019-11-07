@@ -92,6 +92,8 @@ public class SendGoodsServiceImpl extends BaseServiceImpl<SendGoods, Long> imple
 			SendGoods ot = dao.findOne(sendGoods.getId());
 			update(sendGoods, ot, "");
 		} else {
+			//根据下单合同进行成品发货单
+			
 			Order order = orderdao.findOne(sendGoods.getOrderId());
 			sendGoods.setProductId(order.getProductId());
 			sendGoods.setSurplusNumber(sendGoods.getNumber());

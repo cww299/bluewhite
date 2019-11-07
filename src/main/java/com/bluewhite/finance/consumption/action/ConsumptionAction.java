@@ -45,7 +45,7 @@ public class ConsumptionAction {
 	{
 		clearCascadeJSON = ClearCascadeJSON
 				.get()
-				.addRetainTerm(Consumption.class, "id", "user","customer","userId"
+				.addRetainTerm(Consumption.class, "id", "user","customer","userId","content"
 				,"budget","money","expenseDate","paymentMoney","paymentDate","withholdReason","remark"
 				,"withholdMoney","settleAccountsMode","remark","flag","taxPoint","user"
 				,"contact","logisticsDate","contactName","batchNumber","realityDate","deleteFlag","orgName")
