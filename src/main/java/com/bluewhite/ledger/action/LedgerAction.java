@@ -85,7 +85,7 @@ public class LedgerAction {
 	{
 		clearCascadeJSONOrder = ClearCascadeJSON.get()
 				.addRetainTerm(Order.class, "id", "remark", "orderDate", "bacthNumber", "product", "number",
-						"price", "orderMaterials","prepareEnough","orderChilds","audit")
+						"orderMaterials","prepareEnough","orderChilds","audit")
 				.addRetainTerm(OrderMaterial.class, "id")
 				.addRetainTerm(OrderChild.class, "id","customer","user","childNumber","childRemark")
 				.addRetainTerm(Customer.class, "id", "name")
@@ -580,7 +580,8 @@ public class LedgerAction {
 	}
 
 	/**
-	 * （生产计划部） 分页查看外发单
+	 * （生产计划部） 分页查看
+	 * （仓库）查看 库存详情单----外发单对于仓库来说是库存详情单
 	 * 
 	 * @param page
 	 * @param order

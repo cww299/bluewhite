@@ -4,10 +4,10 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Comparator;
 import java.util.Date;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
+import javax.persistence.criteria.Join;
+import javax.persistence.criteria.JoinType;
 import javax.persistence.criteria.Predicate;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,10 +27,12 @@ import com.bluewhite.common.entity.PageParameter;
 import com.bluewhite.common.entity.PageResult;
 import com.bluewhite.common.utils.StringUtil;
 import com.bluewhite.ledger.dao.OrderDao;
+import com.bluewhite.ledger.entity.Customer;
 import com.bluewhite.ledger.entity.Order;
 import com.bluewhite.ledger.entity.OrderChild;
 import com.bluewhite.onlineretailers.inventory.dao.ProcurementDao;
 import com.bluewhite.onlineretailers.inventory.entity.Procurement;
+import com.bluewhite.onlineretailers.inventory.entity.ProcurementChild;
 
 @Service
 public class OrderServiceImpl extends BaseServiceImpl<Order, Long> implements OrderService {
@@ -56,7 +58,9 @@ public class OrderServiceImpl extends BaseServiceImpl<Order, Long> implements Or
 			}
 			// 按客户名称
 			if (!StringUtils.isEmpty(param.getCustomerName())) {
-				predicate.add(cb.like(root.get("customer").get("name").as(String.class), "%" + param.getCustomerName() + "%"));
+				Join<Order, OrderChild> join = root.join(root.getModel().getList("orderChilds", OrderChild.class), JoinType.LEFT);
+				predicate.add(cb.like(join.get("customer").get("name").as(String.class),
+						"%" + StringUtil.specialStrKeyword(param.getCustomerName()) + "%"));
 			}
 			// 按批次
 			if (!StringUtils.isEmpty(param.getBacthNumber())) {

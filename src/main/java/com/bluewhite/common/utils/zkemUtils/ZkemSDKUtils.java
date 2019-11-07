@@ -90,7 +90,7 @@ public class ZkemSDKUtils {
 	 * 启动事件监听
 	 */
 	public static void regEvent(String address) {
-		ActiveXComponent zkem = new ActiveXComponent("zkemkeeper.ZKEM.1");
+		ActiveXComponent zkem = new ActiveXComponent("zkemkeeper.ZKEM");
 		System.out.println("考勤机实时事件启动");
 		boolean result = zkem.invoke("Connect_NET", address, 4370).getBoolean();
 		if (!result) {
