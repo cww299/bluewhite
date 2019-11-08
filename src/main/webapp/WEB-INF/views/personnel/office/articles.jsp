@@ -266,6 +266,7 @@
 				   	tablePlug.smartReload.enable(true); 
 					table.render({
 						elem: '#tableData',
+						limits:[10,50,100,200,500,1000],
 						size: 'lg',
 						url: '${ctx}/personnel/getOfficeSupplies' ,
 						where:{

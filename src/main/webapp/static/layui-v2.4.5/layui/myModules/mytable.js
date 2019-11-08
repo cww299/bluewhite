@@ -251,7 +251,8 @@ layui.extend({
 					var field = $(obj.elem).closest('td').data('field');
 					var trData = layui.table.cache[tableId][index];
 					var f = field;
-					opt.autoUpdate.field[f] && ( f = opt.autoUpdate.field[f]);
+					opt.autoUpdate && opt.autoUpdate.field[f] && ( f = opt.autoUpdate.field[f]);
+					trData[f] = obj.value; //修改本地数据缓存值
 					if(opt.autoUpdate){
 						if(index>=0){
 							if(notNull.indexOf(field)>=0 && isNull(obj.value))
