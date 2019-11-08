@@ -12,6 +12,9 @@
 .layui-form-pane .layui-item{
 	margin-top:10px;
 }
+.layui-table tbody tr:hover, .layui-table-hover {
+	background-color: transparent; 
+}
 </style>
 </head>
 <body>
@@ -183,7 +186,6 @@ layui.config({
 		, myutil = layui.myutil
 		, mytable = layui.mytable;
 		myutil.config.ctx = '${ctx}';
-		myutil.clickTr();
 		myutil.getLastData();
 		myutil.config.msgOffset = '250px';
 		
@@ -245,7 +247,6 @@ layui.config({
 			       { title:'跟单人',   field:'childUser_userName',	},
 			       ]],
 			done:function(){
-				
 				merge('0');
 				merge('bacthNumber');
 				merge('orderDate');
@@ -257,10 +258,12 @@ layui.config({
 				function merge(field){
 					var rowspan = 1,mainCols=0;
 					var cache = table.cache['tableAgreement'];
-					var allCol = $('td[data-field="'+field+'"]');
+					var allCol = $('#tableAgreement').next().find('td[data-field="'+field+'"]');
 					layui.each(allCol,function(index,item){
 						if(index!=0){
-							var thisData = cache[index],lastData = index!=0?cache[index-1]:{};
+							var thisData = cache[index],lastData = index!=0?cache[index-1]:{id:-1};
+							if(!thisData)
+								return;
 							if(thisData.id!=lastData.id){
 								$(allCol[mainCols]).attr('rowspan',rowspan)
 								mainCols = index;
