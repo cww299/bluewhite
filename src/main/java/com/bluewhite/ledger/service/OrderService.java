@@ -47,12 +47,6 @@ public interface OrderService extends BaseCRUDService<Order,Long>{
 	public void updateOrder(Order order);
 	
 	/**
-	 * 根据日期获取编号规则
-	 * @param order
-	 */
-	public String getOrderBacthNumber(Date time,Long typeId);
-	
-	/**
 	 * 审核订单
 	 * @param order
 	 */

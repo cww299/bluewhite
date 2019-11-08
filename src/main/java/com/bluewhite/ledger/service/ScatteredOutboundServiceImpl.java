@@ -113,8 +113,7 @@ public class ScatteredOutboundServiceImpl extends BaseServiceImpl<ScatteredOutbo
 			List<Predicate> predicate = new ArrayList<>();
 			// 按产品名称
 			if (!StringUtils.isEmpty(param.getProductName())) {
-				predicate
-						.add(cb.like(root.get("orderMaterial").get("order").get("product").get("name").as(String.class),
+				predicate.add(cb.like(root.get("orderMaterial").get("order").get("product").get("name").as(String.class),
 								"%" + StringUtil.specialStrKeyword(param.getProductName()) + "%"));
 			}
 			// 按合同id
