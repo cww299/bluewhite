@@ -28,6 +28,7 @@ import com.bluewhite.common.entity.CommonResponse;
 import com.bluewhite.common.entity.CurrentUser;
 import com.bluewhite.common.entity.ErrorCode;
 import com.bluewhite.common.entity.PageParameter;
+import com.bluewhite.ledger.entity.OrderOutSource;
 import com.bluewhite.onlineretailers.inventory.entity.Inventory;
 import com.bluewhite.product.primecost.cutparts.entity.CutParts;
 import com.bluewhite.product.primecost.cutparts.service.CutPartsService;
@@ -138,9 +139,12 @@ public class ProductAction {
 	@ResponseBody
 	public CommonResponse getProductPages(PageParameter page, Product product) {
 		CommonResponse cr = new CommonResponse();
-		cr.setData(ClearCascadeJSON.get().addRetainTerm(Product.class, "id", "inventorys", "name", "number")
+		cr.setData(ClearCascadeJSON.get()
+				.addRetainTerm(Product.class, "id", "inventorys", "name", "number")
 				.addRetainTerm(Inventory.class, "id", "number", "warehouse", "warehouseType")
-				.addRetainTerm(BaseData.class, "id", "name").format(productService.findPages(product, page)).toJSON());
+				.addRetainTerm(OrderOutSource.class, "id", "surplusNumber","location")
+				.addRetainTerm(BaseData.class, "id", "name")
+				.format(productService.findPages(product, page)).toJSON());
 		cr.setMessage("查询成功");
 		return cr;
 	}

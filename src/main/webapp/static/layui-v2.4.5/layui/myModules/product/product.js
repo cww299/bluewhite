@@ -262,7 +262,7 @@ layui.config({
 							mytable.renderNoPage({
 								elem:'#addProduceTable',
 								size:'lg',
-								url:'/production/getProcedure?productId='+checked[0].id+'&type='+opt.type+'&flag='+flag,
+								url: opt.ctx+'/production/getProcedure?productId='+checked[0].id+'&type='+opt.type+'&flag='+flag,
 								autoUpdate:{
 									saveUrl:'/production/addProcedure',
 									deleUrl:'/production/delete',
@@ -292,7 +292,7 @@ layui.config({
 								done:function(){
 									upload.render({
 									    elem: '#export',
-									    url: '/excel/importMachinistProcedure',
+									    url: opt.ctx+'/excel/importMachinistProcedure',
 									    data:{
 									    	productId: checked[0].id,
 									    	flag: flag,

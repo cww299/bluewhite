@@ -9,6 +9,53 @@
 	<script src="${ctx}/static/layui-v2.4.5/layui/layui.js"></script>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <title>产品管理</title>
+<style type="text/css">
+		.imgDiv{
+			width:100px;
+			float:left;
+			margin:5px;
+			height:100px;
+			border: 3px solid gray;
+		}
+		.imgDiv:hover{
+			border-color: #ff0000b8;
+			cursor: pointer;
+		}
+		.imgDiv img{
+			max-width:100%;
+			height:100%;
+			float:left;
+		}
+		#addEditImgDiv{
+			height: 120px;
+		    overflow-x: auto;
+			margin:10px 0;
+			padding:10px;
+		}
+		.closeBtn{
+		    cursor: pointer;
+		    margin-top: 1px;
+		    margin-left: -18px;
+		    border: 1px solid gray;
+		    border-radius: 11px;
+		    background: #9E9E9E;
+		    float: right;
+		}
+		.closeBtn:hover{
+		    background: #8080804f;
+		}
+		#imgDivLook{
+			text-align:center;
+			/* height: 90%; */
+			/* overflow-y: scroll; */
+		}
+		.layui-layer-loading .layui-layer-content{
+			width:auto !important;
+		}
+		.transparentLayer{
+			background-color: #ffffff00 !important;
+		}
+	</style>
 </head>
 <body>
 <div class="layui-card">
@@ -60,20 +107,20 @@
 layui.config({
 	base:'${ctx}/static/layui-v2.4.5/'
 }).extend({
-	tablePlug : 'tablePlug/tablePlug'
+	mytable: 'layui/myModules/mytable',
 }).define(
-	['tablePlug','upload'],
+	['mytable','upload'],
 	function(){
 		var $ = layui.jquery
 		, table = layui.table
 		, laytpl = layui.laytpl
 		, layer = layui.layer
 		, form = layui.form
+		, mytable = layui.mytable
 		, upload = layui.upload
-		, tablePlug = layui.tablePlug; 		
-
+		, myutil = layui.myutil; 		
+		myutil.clickTr();
 		form.on('submit(find)',function(obj){
-			console.log(obj.field)
 			table.reload('productTable',{
 				url:"${ctx}/productPages?",
 				where:{
@@ -83,51 +130,104 @@ layui.config({
 				}
 			});
 		})
-		
 		upload.render({
 		   	  elem: '#uploadData'
 		   	  ,url: '${ctx}/excel/importProduct'
-		 	  ,before: function(obj){ 	//obj参数包含的信息，跟 choose回调完全一致，可参见上文。
-		 		layer.load(1); //上传loading
+		 	  ,before: function(obj){
+		 		layer.load(1); 
 			  }
-		   	  ,done: function(res, index, upload){ //上传后的回调
+		   	  ,done: function(res, index, upload){ 
 		   		layer.closeAll();
 		   		layer.msg(res.message);
 		   		table.reload('productTable');
 		   	  } 
-		   	  ,accept: 'file' //允许上传的文件类型
+		   	  ,accept: 'file' 
 		   	  ,exts: 'xlsx'
 		})
-		
-		table.render({
+		var fileIds = [];
+		var fileUrl = [];
+		var img = [];
+		mytable.render({
 			elem:'#productTable',
-			page:{},
 			size:'lg',
-			loading:true,
 			url:"${ctx}/productPages",
-			colFilterRecord : true,	
 			toolbar:"#toolbarOfProduct",
-			height:'700',
-			request:{
-				pageName: 'page' ,		
-				limitName: 'size' 		
-			},
-			parseData:function(ret){
-				return{
-					code : ret.code,
-					msg : ret.message,
-					count : ret.data.total, 
-					data : ret.data.rows,
-				}
-			},
 			cols : [[  
 			            {type: 'checkbox',align : 'center',fixed: 'left'},
-						{field : "id",title : "ID",align : 'center',sort : true}, 
-						{field : "departmentNumber",title : "产品编号",align : 'center',sort : true}, 
-						{field : "name",title : "产品名",align : 'center'}, 
-						{field : "url",title : "图片",align : 'center'}, 
-					]] 
+						{field : "id",title : "ID", sort : true}, 
+						{field : "departmentNumber",title : "产品编号", sort : true}, 
+						{field : "name",title : "产品名",}, 
+						{field : "url",title : "图片", templet:getTpl(),}, 
+					]],
+			done:function(){
+				$('.lookoverPic').unbind().on('click',function(obj){
+					var index = $(obj.target).closest('tr').data('index');
+					var trData = table.cache['productTable'][index];
+					var html = '<div style="padding:10px;" id="allImgDiv"><span style="display:none;" id="uploadPic">上传</span>';
+					var length = img.length;
+					img = trData.fileSet;
+					fileIds = [];
+					fileUrl = [];
+					for(var i in img){
+						html+='<div class="imgDiv"><img src="'+img[i].url+'" data-id="'+i+'"><i class="layui-icon layui-icon-close closeBtn"></i></div>';
+						fileUrl.push(img[i].url);
+						fileIds.push(img[i].id);
+					}
+					layer.open({
+						type:1,
+						area:['50%','50%'],
+						content: html+'</div>',
+						btn:['上传','保存','取消'],
+						yes:function(){
+							$('#uploadPic').click();
+							return false;
+						},
+						btn2:function(){
+							myutil.saveAjax({
+								url:"${ctx}/updateProduct",
+								type:"post",
+								data:{
+									id: trData.id,
+									fileIds: fileIds.join(','),
+								},
+								success:function(result){
+									if(result.code==0){
+										layer.closeAll();
+										layer.msg(result.message,{icon:1});
+										table.reload('productTable');
+									}
+									else
+										layer.msg(result.code+' '+result.message,{icon:2});
+								}
+							})
+							return false;
+						},
+						btn3:function(){ },
+						shadeClose:true,
+						success:function(){
+							upload.render({
+							   elem: '#uploadPic' 
+							   ,url: '${ctx}/upload' 
+							   ,data:{ filesTypeId: 382, }
+							   ,done: function(res, index, upload){
+							    if(res.code == 0){
+							    	fileIds.push(res.data.id);
+							    	$('#allImgDiv').append('<div class="imgDiv"><img src="'+res.data.url+'"><i class="layui-icon layui-icon-close closeBtn"></i></div>');
+									lookOverBigPic();
+							    }else
+							   		myutil.emsg(res.message);
+							  }
+							});
+							lookOverBigPic();
+						}
+					})
+				})
+			}
 		})
+		
+		function getTpl(){
+			return '<div><span class="layui-btn layui-btn-sm lookoverPic">查看照片</span></div>';
+		}
 		table.on('toolbar(productTable)',function(obj){	
 			switch(obj.event){
 			case 'add': addEdit('add'); break;
@@ -135,7 +235,6 @@ layui.config({
 			case 'delete': deletes(); break;
 			}
 		})
-		
 		function addEdit(type){
 			console.table(layui.table.checkStatus('productTable').data)
 			var choosed=layui.table.checkStatus('productTable').data
@@ -164,9 +263,7 @@ layui.config({
 				area:['30%','30%']
 			})
 			form.render();
-			
 			var url=type=='add'?'addProduct':'updateProduct';
-			
 			form.on('submit(sure)',function(obj){
 				//去除空格
 				obj.field.name=obj.field.name.replace(/\s*/g,"");
@@ -189,7 +286,6 @@ layui.config({
 				})
 			})
 		}
-		
 		function deletes(){
 			var choosed=layui.table.checkStatus('productTable').data;
 			if(choosed.length<1){
@@ -227,15 +323,54 @@ layui.config({
 				layer.close(load);
 			})
 		}
-		// tr点击触发复选列点击
-		$(document).on('click', '.layui-table-view tbody tr', function(event) {
-			var elemTemp = $(this);
-			var tableView = elemTemp.closest('.layui-table-view');
-			var trIndex = elemTemp.data('index');
-			tableView.find('tr[data-index="' + trIndex + '"]').find('[name="layTableCheckbox"]+').last().click();
-		})
+		
+		function lookOverBigPic(){
+			$('.closeBtn').unbind().on('click',function(obj){
+				var id = $(obj.target).data('id');
+				fileIds.splice(fileIds.indexOf(id),1);
+				$(obj.target).parent().remove();
+			})
+			$('.imgDiv').unbind().on('click',function(obj){
+				var deg = 0;
+				var imgElem = null;
+				if($(obj.target).find('img').length>0)
+					imgElem = $(obj.target).find('img');
+				else
+					imgElem = $(obj.target);
+				var lookoverWin = layer.open({
+					shadeClose:true,
+					type:1,
+					area:['100%','100%'],
+					title:'查看照片',
+					skin: 'transparentLayer',
+					btn:['旋转','关闭',],	//'上一张','下一张',
+					content:'<div id="imgDivLook"><img style="max-width:50%;max-height:100%;" src="'+$(imgElem).attr('src')+'"'+
+							' data-id="'+$(imgElem).data('id')+'">',
+					yes: function(index, layero){
+						deg+=90;
+						$('#imgDivLook').find('img').css('transform','rotate('+deg+'deg)');
+				    },
+					btn2: function(index, layero){
+				    },
+				   /*  btn3: function(index, layero){
+				    	var id = $('#imgDivLook').find('img').attr('data-id');
+				    	id = (id-1)<0?length-1:id-1;
+				    	$('#imgDivLook').find('img').attr('src',img[id].url);
+				    	$('#imgDivLook').find('img').attr('data-id',id);
+				    	return false;
+				    },
+				    btn4: function(){ 
+				    	$('#imgDivLook').find('img').data('id');
+				    	var id = $('#imgDivLook').find('img').attr('data-id');
+				    	id = (id-(-1))%length;
+				    	$('#imgDivLook').find('img').attr('src',img[id].url);
+				    	$('#imgDivLook').find('img').attr('data-id',id);
+				    	return false;
+					} */
+				})
+			})
+		}
 	}
 )
-
 </script>
 </html>
