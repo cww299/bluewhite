@@ -250,7 +250,7 @@ layui.config({
 		});
 		function getAgreementSelect(data){
 			myutil.getDataSync({
-				url:'${ctx}/ledger/getOrder',
+				url:'${ctx}/ledger/getOrder?consumption=1',
 				data: data,
 				success:function(d){
 					var html = '<option value="">请选择</option>';

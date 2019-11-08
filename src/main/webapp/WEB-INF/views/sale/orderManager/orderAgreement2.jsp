@@ -82,12 +82,8 @@ layui.config({
 		laydate.render({ elem:'#searchTime', range:'~' })
 		mytable.render({
 			elem:'#tableAgreement',
-			url:'${ctx}/ledger/orderPage',
+			url:'${ctx}/ledger/orderPage?audit=1',
 			toolbar: $('#toolbar').html(),
-			page:true,
-			size:'lg',
-			request:{ pageName:'page', limitName:'size' },
-			parseData:function(ret){ return { data:ret.data.rows, count:ret.data.total, msg:ret.message, code:ret.code } },
 			cols:[[
 			       { type:'checkbox',},
 			       { title:'批次号',   	field:'bacthNumber', 	},
