@@ -16,26 +16,45 @@ import com.bluewhite.onlineretailers.inventory.entity.Inventory;
 import com.bluewhite.system.user.entity.User;
 
 /**
- * 生产计划部 外发单(外发单在加工点完成后，作为入库单回库处理)
- * 
+ * 生产计划部  加工单
+ * 1.加工单
+ * 2.外发加工单
  * @author zhangliang
  *
  */
 @Entity
 @Table(name = "ledger_order_outsource")
 public class OrderOutSource extends BaseEntity<Long> {
+	
+	/**
+	 * 开单时间
+	 */
+	@Column(name = "open_order_time")
+	private Date openOrderTime;
 
 	/**
-	 * 工艺单内容填充，用于打印开单 1.填充样棉花 填充样棉花类型
+	 * 工艺单内容填充，用于打印开单 1.棉花规格
 	 */
 	@Column(name = "fill")
 	private String fill;
 
 	/**
-	 * 工艺单内容填充，用于打印开单 1.填充样棉花备注
+	 * 工艺单内容填充，用于打印开单 1.棉花备注
 	 */
 	@Column(name = "fill_remark")
 	private String fillRemark;
+	
+	/**
+	 *工艺单内容填充，用于打印开单  棉花克重
+	 */
+	@Column(name = "gram_weight")
+	private Double gramWeight;
+	
+	/**
+	 *工艺单内容填充，用于打印开单  棉花总克重（千克）
+	 */
+	@Column(name = "kilogram_weight")
+	private Double kilogramWeight;
 
 	/**
 	 * 任务编号
@@ -45,30 +64,38 @@ public class OrderOutSource extends BaseEntity<Long> {
 	private String outSourceNumber;
 
 	/**
-	 * 外发工序
+	 * 任务工序
 	 * 
 	 */
 	@Column(name = "process")
 	private String process;
+	
+	/**
+	 * 任务工序ids
+	 * 
+	 */
+	@Column(name = "process_ids")
+	private String processIds;
 
 	/**
-	 * 外发数量
+	 * 任务数量
 	 */
 	@Column(name = "process_number")
 	private Integer processNumber;
-
-	/**
-	 * 克重
-	 */
-	@Column(name = "gram_weight")
-	private String gramWeight;
 
 	/**
 	 * 备注
 	 */
 	@Column(name = "remark")
 	private String remark;
-
+	
+	/**
+	 * 是否外发
+	 * 
+	 */
+	@Column(name = "outsource")
+	private Integer outsource;
+	
 	/**
 	 * 加工点id
 	 * 
@@ -112,22 +139,16 @@ public class OrderOutSource extends BaseEntity<Long> {
 	private Order order;
 
 	/**
-	 * 开单时间
-	 */
-	@Column(name = "open_order_time")
-	private Date openOrderTime;
-
-	/**
 	 * 外发时间
 	 */
 	@Column(name = "out_going_time")
 	private Date outGoingTime;
 
 	/**
-	 * 是否整单
+	 * 分类(1=成品，2=皮壳)
 	 */
-	@Column(name = " whole_list")
-	private Integer wholeList;
+	@Column(name = "product_type")
+	private Integer productType;
 
 	/**
 	 * 是否作废
@@ -142,13 +163,7 @@ public class OrderOutSource extends BaseEntity<Long> {
 	private Integer audit;
 
 	/**
-	 * 分类(1=成品，2=皮壳)
-	 */
-	@Column(name = "product_type")
-	private Integer productType;
-
-	/**
-	 * 外发指定 预计仓库种类id
+	 * 外发指定 预计入库仓库种类id
 	 */
 	@Column(name = "warehouse_type_id")
 	private Long warehouseTypeId;
@@ -211,12 +226,6 @@ public class OrderOutSource extends BaseEntity<Long> {
 	private String location;
 
 	/**
-	 * 出库后剩余数量
-	 */
-	@Column(name = "surplus_Number")
-	private Integer surplusNumber;
-
-	/**
 	 * 产品name
 	 */
 	@Transient
@@ -249,6 +258,22 @@ public class OrderOutSource extends BaseEntity<Long> {
 	
 	
 
+	public Integer getOutsource() {
+		return outsource;
+	}
+
+	public void setOutsource(Integer outsource) {
+		this.outsource = outsource;
+	}
+
+	public String getProcessIds() {
+		return processIds;
+	}
+
+	public void setProcessIds(String processIds) {
+		this.processIds = processIds;
+	}
+
 	public Long getInventoryId() {
 		return inventoryId;
 	}
@@ -271,14 +296,6 @@ public class OrderOutSource extends BaseEntity<Long> {
 
 	public void setLocation(String location) {
 		this.location = location;
-	}
-
-	public Integer getSurplusNumber() {
-		return surplusNumber;
-	}
-
-	public void setSurplusNumber(Integer surplusNumber) {
-		this.surplusNumber = surplusNumber;
 	}
 
 	public String getUserName() {
@@ -409,14 +426,6 @@ public class OrderOutSource extends BaseEntity<Long> {
 		this.productType = productType;
 	}
 
-	public Integer getWholeList() {
-		return wholeList;
-	}
-
-	public void setWholeList(Integer wholeList) {
-		this.wholeList = wholeList;
-	}
-
 	public Integer getFlag() {
 		return flag;
 	}
@@ -441,12 +450,21 @@ public class OrderOutSource extends BaseEntity<Long> {
 		this.fillRemark = fillRemark;
 	}
 
-	public String getGramWeight() {
+
+	public Double getGramWeight() {
 		return gramWeight;
 	}
 
-	public void setGramWeight(String gramWeight) {
+	public void setGramWeight(Double gramWeight) {
 		this.gramWeight = gramWeight;
+	}
+
+	public Double getKilogramWeight() {
+		return kilogramWeight;
+	}
+
+	public void setKilogramWeight(Double kilogramWeight) {
+		this.kilogramWeight = kilogramWeight;
 	}
 
 	public String getRemark() {

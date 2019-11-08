@@ -74,8 +74,6 @@ public class Commodity extends BaseEntity<Long>{
 	@Column(name = "pic_url")
     private String picUrl;
 	
-
-	
 	/**
 	 * 商品详情描述，可包含图片中心的图片URL
 	 * 

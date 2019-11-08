@@ -160,44 +160,18 @@ public class OrderServiceImpl extends BaseServiceImpl<Order, Long> implements Or
 
 	@Override
 	public void updateOrder(Order order) {
-		
-		
+		if(order.getId()!=null){
+			Order ot = findOne(order.getId());
+			if(ot.getAudit()==1){
+				throw new ServiceException("批次号为"+ot.getBacthNumber()+"下单合同已审核，请勿重复审核");
+			}
+			
+			
+			
+			
+		}
 	}
 
-	@Override
-	public String getOrderBacthNumber(Date time,Long typeId) {
-		List<Order> orderList = dao.findByOrderDate(time);
-		String numberDef = null;
-		List<Integer> numberList = new ArrayList<>();
-		orderList.stream().forEach(o -> {
-			String number = o.getBacthNumber().substring(o.getBacthNumber().length() - 2, o.getBacthNumber().length() - 1);
-			numberList.add(Integer.parseInt(number));
-		});
-		// 正序
-		numberList.sort(Comparator.naturalOrder());
-		for (int i = 0; i < numberList.size(); i++) {
-			if (numberList.get(i) != (i + 1)) {
-				numberDef = String.valueOf((i + 1));
-				break;
-			}
-		}
-		Calendar now = Calendar.getInstance();
-		now.setTime(time);
-		String year = String.valueOf(now.get(Calendar.YEAR));
-		String month = String.valueOf(now.get(Calendar.MONTH) + 1);
-		String day = String.valueOf(now.get(Calendar.DAY_OF_MONTH));
-		//获取下单类型
-		String orderNumberSuffix = "";
-		BaseData numberType = baseDataDao.findOne(typeId);
-		if(numberType!=null){
-			String[] numberString = numberType.getName().split("-");
-			if(numberString.length>0){
-				orderNumberSuffix = numberString[1];
-			}
-		}
-		String orderNumber = year + "-" + month + "-" + day + "-"+ (numberDef != null ? numberDef : (orderList.size() + 1)) + orderNumberSuffix;
-		return orderNumber;
-	}
 
 	@Override
 	public int auditOrder(String ids) {
