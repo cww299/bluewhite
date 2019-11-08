@@ -171,6 +171,7 @@ layui.config({
 			},
 			ifNull:'--',
 			totalRow:['number','outboundCost'],
+			limits:[10,50,100,200,500,1000],
 			toolbar:'<span class="layui-btn layui-btn-sm" lay-event="partPrice">部门分摊费用</span>',
 			cols:[[
 			       { type: 'checkbox', fixed: 'left', },
