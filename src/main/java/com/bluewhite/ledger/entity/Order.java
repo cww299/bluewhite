@@ -21,7 +21,9 @@ import com.bluewhite.basedata.entity.BaseData;
 import com.bluewhite.product.product.entity.Product;
 
 /**
- * 订单（下单合同）
+ * 订单（下单合同）生产计划单
+ * 
+ * 
  * 
  * @author zhangliang
  *

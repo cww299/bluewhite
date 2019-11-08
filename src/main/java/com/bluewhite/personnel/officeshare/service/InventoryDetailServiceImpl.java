@@ -16,6 +16,8 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
 
 import com.bluewhite.base.BaseServiceImpl;
+import com.bluewhite.basedata.entity.BaseData;
+import com.bluewhite.basedata.service.BaseDataService;
 import com.bluewhite.common.ServiceException;
 import com.bluewhite.common.entity.PageParameter;
 import com.bluewhite.common.entity.PageResult;
@@ -33,6 +35,8 @@ public class InventoryDetailServiceImpl extends BaseServiceImpl<InventoryDetail,
 	private InventoryDetailDao dao;
 	@Autowired
 	private OfficeSuppliesDao officeSuppliesDao;
+	@Autowired
+	private BaseDataService baseDataService;
 
 	@Override
 	public PageResult<InventoryDetail> findPages(InventoryDetail param, PageParameter page) {
@@ -138,26 +142,32 @@ public class InventoryDetailServiceImpl extends BaseServiceImpl<InventoryDetail,
 		double sumCostList = onventoryDetailList.stream().filter(
 				InventoryDetail -> InventoryDetail.getOfficeSupplies().getType().equals(onventoryDetail.getType()))
 				.mapToDouble(InventoryDetail::getOutboundCost).sum();
+
 		// 按部门分组
 		Map<Long, List<InventoryDetail>> mapAttendance = onventoryDetailList.stream()
 				.filter(InventoryDetail -> InventoryDetail.getOrgNameId() != null
 						&& InventoryDetail.getOfficeSupplies().getType().equals(onventoryDetail.getType()))
 				.collect(Collectors.groupingBy(InventoryDetail::getOrgNameId, Collectors.toList()));
-
 		// 后勤部费用分摊到所有部门
 		double logisticsCost = onventoryDetailList.stream()
 				.filter(InventoryDetail -> InventoryDetail.getOutboundCost() == 60
 						&& InventoryDetail.getOfficeSupplies().getType().equals(onventoryDetail.getType()))
 				.mapToDouble(InventoryDetail::getOutboundCost).sum();
-		if (mapAttendance.size() > 0) {
-			// 均分费用
-			double averageLogisticsCost = NumUtils.div(logisticsCost, mapAttendance.size(), 2);
-			for (Long ps1 : mapAttendance.keySet()) {
+
+		// 查询出所有的部门
+		List<BaseData> baseDatas = baseDataService.getBaseDataTreeByType("orgName");
+		for (BaseData bData : baseDatas) {
+			if (mapAttendance.size() > 0) {
+				// 均分费用
+				double averageLogisticsCost = NumUtils.div(logisticsCost, mapAttendance.size(), 2);
 				Map<String, Object> map = new HashMap<>();
-				List<InventoryDetail> psList = mapAttendance.get(ps1);
+				List<InventoryDetail> psList = onventoryDetailList.stream()
+						.filter(InventoryDetail ->  InventoryDetail.getOrgNameId() != null && InventoryDetail.getOrgNameId().equals(bData.getId())
+								&& InventoryDetail.getOfficeSupplies().getType().equals(onventoryDetail.getType()))
+						.collect(Collectors.toList());
 				double sumCost = psList.stream().mapToDouble(InventoryDetail::getOutboundCost).sum();
 				sumCost = NumUtils.sum(sumCost, averageLogisticsCost);
-				map.put("orgName", psList.get(0).getOrgName().getName());
+				map.put("orgName",bData.getName());
 				map.put("sumCost", NumUtils.round(sumCost, 2));
 				map.put("accounted", NumUtils.mul(NumUtils.div(sumCost, sumCostList, 4), 100) + "%");
 				mapList.add(map);

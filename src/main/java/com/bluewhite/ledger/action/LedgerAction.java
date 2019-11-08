@@ -85,15 +85,13 @@ public class LedgerAction {
 	{
 		clearCascadeJSONOrder = ClearCascadeJSON.get()
 				.addRetainTerm(Order.class, "id", "remark", "orderDate", "bacthNumber", "product", "number",
-						"price", "orderMaterials","prepareEnough","orderChilds","audit")
+						"orderMaterials","prepareEnough","orderChilds","audit")
 				.addRetainTerm(OrderMaterial.class, "id")
 				.addRetainTerm(OrderChild.class, "id","customer","user","childNumber","childRemark")
 				.addRetainTerm(Customer.class, "id", "name")
 				.addRetainTerm(User.class, "id", "userName")
-				.addRetainTerm(Product.class, "id", "name", "number","inventorys")
-				.addRetainTerm(Inventory.class, "id", "number","orderOutSource")
-				.addRetainTerm(OrderOutSource.class, "id", "surplusNumber");
-	}
+				.addRetainTerm(Product.class, "id", "name", "number","inventorys");
+		}
 
 	private ClearCascadeJSON clearCascadeJSONPacking;
 	{
@@ -247,6 +245,8 @@ public class LedgerAction {
 	
 	/**
 	 * 查看订单
+	 * 1.生产计划部查看订单，有耗料单才可以查看
+	 * 2.查看出库下单
 	 * 
 	 * @param order
 	 * @return
@@ -275,21 +275,6 @@ public class LedgerAction {
 		return cr;
 	}
 	
-	/**
-	 * (销售部)获取编号
-	 * 
-	 * @param order
-	 * @return
-	 */
-	@RequestMapping(value = "/ledger/getOrderBacthNumber", method = RequestMethod.GET)
-	@ResponseBody
-	public CommonResponse getOrderBacthNumber(Order order) {
-		CommonResponse cr = new CommonResponse();
-		cr.setData(orderService.getOrderBacthNumber(order.getOrderDate(),order.getOrderTypeId()));
-		cr.setMessage("成功");
-		return cr;
-	}
-
 	/**
 	 * (销售部)修改订单
 	 * 
@@ -580,7 +565,8 @@ public class LedgerAction {
 	}
 
 	/**
-	 * （生产计划部） 分页查看外发单
+	 * （生产计划部） 分页查看
+	 * （仓库）查看 库存详情单----外发单对于仓库来说是库存详情单
 	 * 
 	 * @param page
 	 * @param order

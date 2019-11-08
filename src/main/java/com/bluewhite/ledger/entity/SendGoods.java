@@ -74,8 +74,10 @@ public class SendGoods extends BaseEntity<Long>{
 	@Column(name = "send_date")
 	private Date sendDate;
 	
+	
+	
 	/**
-	 * 剩余数量
+	 * (包装)剩余数量
 	 */
 	@Column(name = "surplus_Number")
 	private Integer surplusNumber;
