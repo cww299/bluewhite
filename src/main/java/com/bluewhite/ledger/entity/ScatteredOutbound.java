@@ -13,7 +13,8 @@ import javax.persistence.Transient;
 import com.bluewhite.base.BaseEntity;
 
 /**
- * 分散出库记录
+ * 耗料分散出库记录
+ *（领取耗料单）
  * 
  * 采购部将所有已经拥有库存的耗料表生成分散出库记录表
  *
@@ -23,7 +24,7 @@ import com.bluewhite.base.BaseEntity;
 public class ScatteredOutbound extends BaseEntity<Long>{
 	
 	/**
-	 * 分散出库编号
+	 * 领料单编号（SCLL+日期+数量）
 	 */
 	@Column(name = "outbound_number")
 	private String outboundNumber;

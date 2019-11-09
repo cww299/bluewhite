@@ -1,8 +1,6 @@
 package com.bluewhite.ledger.service;
 
 import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
 
@@ -21,18 +19,16 @@ import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.bluewhite.base.BaseServiceImpl;
 import com.bluewhite.basedata.dao.BaseDataDao;
-import com.bluewhite.basedata.entity.BaseData;
 import com.bluewhite.common.ServiceException;
 import com.bluewhite.common.entity.PageParameter;
 import com.bluewhite.common.entity.PageResult;
 import com.bluewhite.common.utils.StringUtil;
 import com.bluewhite.ledger.dao.OrderDao;
-import com.bluewhite.ledger.entity.Customer;
 import com.bluewhite.ledger.entity.Order;
 import com.bluewhite.ledger.entity.OrderChild;
 import com.bluewhite.onlineretailers.inventory.dao.ProcurementDao;
 import com.bluewhite.onlineretailers.inventory.entity.Procurement;
-import com.bluewhite.onlineretailers.inventory.entity.ProcurementChild;
+import com.sun.tools.classfile.Opcode.Set;
 
 @Service
 public class OrderServiceImpl extends BaseServiceImpl<Order, Long> implements OrderService {
@@ -151,6 +147,10 @@ public class OrderServiceImpl extends BaseServiceImpl<Order, Long> implements Or
 				predicate.add(cb.between(root.get("orderDate").as(Date.class), param.getOrderTimeBegin(),
 						param.getOrderTimeEnd()));
 			}
+			//按是否生成耗料
+			if(param.getConsumption()!=null){
+				predicate.add(cb.isNotEmpty(root.get("orderMaterials")));
+			}
 			Predicate[] pre = new Predicate[predicate.size()];
 			query.where(predicate.toArray(pre));
 			return null;
@@ -183,7 +183,7 @@ public class OrderServiceImpl extends BaseServiceImpl<Order, Long> implements Or
 					Long id = Long.parseLong(idArr[i]);
 					Order order =  dao.findOne(id);
 					if(order.getAudit()==1){
-						throw new ServiceException("编号为"+order.getBacthNumber()+"的下单合同已审核请勿多次审核");
+						throw new ServiceException("编号为"+order.getBacthNumber()+"的下单合同已审核,请勿多次审核");
 					}
 					order.setAudit(1);
 					dao.save(order);

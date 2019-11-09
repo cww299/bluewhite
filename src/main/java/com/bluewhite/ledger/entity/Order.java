@@ -109,6 +109,13 @@ public class Order extends BaseEntity<Long> {
 	private Integer prepareEnough;
 
 	/**
+	 * 是否生成耗料单
+	 * 
+	 */
+	@Transient
+	private Integer consumption;
+	
+	/**
 	 * 客户name
 	 * 
 	 */
@@ -147,6 +154,14 @@ public class Order extends BaseEntity<Long> {
 	
 
 
+
+	public Integer getConsumption() {
+		return consumption;
+	}
+
+	public void setConsumption(Integer consumption) {
+		this.consumption = consumption;
+	}
 
 	public List<OrderChild> getOrderChilds() {
 		return orderChilds;
