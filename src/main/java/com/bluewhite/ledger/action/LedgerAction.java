@@ -227,7 +227,7 @@ public class LedgerAction {
 
 
 	/**
-	 * 分页查看订单
+	 * 分页查看生产计划单
 	 * 
 	 * 
 	 * @param page
@@ -244,7 +244,8 @@ public class LedgerAction {
 	}
 	
 	/**
-	 * 查看订单
+	 * 查看生产计划单
+	 * 当订单已经被销售部审核，且已经生成耗料单
 	 * 1.生产计划部查看订单，有耗料单才可以查看
 	 * 2.查看出库下单
 	 * 
@@ -261,7 +262,7 @@ public class LedgerAction {
 	}
 
 	/**
-	 * (销售部)新增订单
+	 * (销售部)新增生产计划单
 	 * 
 	 * @param order
 	 * @return
@@ -276,7 +277,7 @@ public class LedgerAction {
 	}
 	
 	/**
-	 * (销售部)修改订单
+	 * (销售部)修改生产计划单
 	 * 
 	 * @return cr
 	 */
@@ -290,7 +291,7 @@ public class LedgerAction {
 	}
 
 	/**
-	 *(销售部) 删除订单
+	 *(销售部) 删除生产计划单
 	 * 
 	 * @return cr
 	 */
@@ -304,7 +305,7 @@ public class LedgerAction {
 	}
 	
 	/**
-	 *(销售部) 审核订单
+	 *(销售部) 审核生产计划单
 	 * 
 	 * @return cr
 	 */

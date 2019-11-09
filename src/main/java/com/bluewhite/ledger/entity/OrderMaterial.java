@@ -15,7 +15,7 @@ import com.bluewhite.product.primecostbasedata.entity.BaseOne;
 import com.bluewhite.product.primecostbasedata.entity.Materiel;
 
 /**
- * 下单合同的生产耗料表
+ * 生产耗料单
  * 
  * @author zhangliang
  *
@@ -84,7 +84,8 @@ public class OrderMaterial extends BaseEntity<Long> {
 	private Double dosage;
 
 	/**
-	 * 是否审核（0=未审核，1=已审核）审核成功后0采购部可以正常查看
+	 * 是否审核（0=未审核，1=已审核）审核成功后
+	 * 采购部可以正常查看
 	 */
 	@Column(name = "audit")
 	private Integer audit;

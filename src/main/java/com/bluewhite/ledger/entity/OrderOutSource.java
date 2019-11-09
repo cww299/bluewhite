@@ -1,11 +1,15 @@
 package com.bluewhite.ledger.entity;
 
 import java.util.Date;
+import java.util.HashSet;
+import java.util.Set;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.JoinColumn;
+import javax.persistence.JoinTable;
+import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.persistence.Transient;
@@ -13,6 +17,7 @@ import javax.persistence.Transient;
 import com.bluewhite.base.BaseEntity;
 import com.bluewhite.basedata.entity.BaseData;
 import com.bluewhite.onlineretailers.inventory.entity.Inventory;
+import com.bluewhite.system.user.entity.Role;
 import com.bluewhite.system.user.entity.User;
 
 /**
@@ -25,6 +30,20 @@ import com.bluewhite.system.user.entity.User;
 @Entity
 @Table(name = "ledger_order_outsource")
 public class OrderOutSource extends BaseEntity<Long> {
+	
+	/**
+	 * 生产计划单id
+	 * 
+	 */
+	@Column(name = "order_id")
+	private Long orderId;
+
+	/**
+	 * 生产计划单
+	 */
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "order_id", referencedColumnName = "id", insertable = false, updatable = false)
+	private Order order;
 	
 	/**
 	 * 开单时间
@@ -45,13 +64,13 @@ public class OrderOutSource extends BaseEntity<Long> {
 	private String fillRemark;
 	
 	/**
-	 *工艺单内容填充，用于打印开单  棉花克重
+	 * 工艺单内容填充，用于打印开单  棉花克重
 	 */
 	@Column(name = "gram_weight")
 	private Double gramWeight;
 	
 	/**
-	 *工艺单内容填充，用于打印开单  棉花总克重（千克）
+	 * 工艺单内容填充，用于打印开单  棉花总克重（千克）
 	 */
 	@Column(name = "kilogram_weight")
 	private Double kilogramWeight;
@@ -59,24 +78,17 @@ public class OrderOutSource extends BaseEntity<Long> {
 	/**
 	 * 任务编号
 	 * 
-	 */
+	 */  
 	@Column(name = "out_source_number")
 	private String outSourceNumber;
 
 	/**
-	 * 任务工序
-	 * 
+	 * 任务工序多对多
 	 */
-	@Column(name = "process")
-	private String process;
+	@ManyToMany(fetch = FetchType.LAZY)
+	@JoinTable(name = "sys_outsource_task", joinColumns = @JoinColumn(name = "outsource_id", referencedColumnName = "id"), inverseJoinColumns = @JoinColumn(name = "task_id", referencedColumnName = "id"))
+	private Set<BaseData> outsourceTask = new HashSet<BaseData>();
 	
-	/**
-	 * 任务工序ids
-	 * 
-	 */
-	@Column(name = "process_ids")
-	private String processIds;
-
 	/**
 	 * 任务数量
 	 */
@@ -124,19 +136,6 @@ public class OrderOutSource extends BaseEntity<Long> {
 	@JoinColumn(name = "user_id", referencedColumnName = "id", insertable = false, updatable = false)
 	private User user;
 
-	/**
-	 * 订单id
-	 * 
-	 */
-	@Column(name = "order_id")
-	private Long orderId;
-
-	/**
-	 * 订单
-	 */
-	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "order_id", referencedColumnName = "id", insertable = false, updatable = false)
-	private Order order;
 
 	/**
 	 * 外发时间
@@ -258,20 +257,20 @@ public class OrderOutSource extends BaseEntity<Long> {
 	
 	
 
+	public Set<BaseData> getOutsourceTask() {
+		return outsourceTask;
+	}
+
+	public void setOutsourceTask(Set<BaseData> outsourceTask) {
+		this.outsourceTask = outsourceTask;
+	}
+
 	public Integer getOutsource() {
 		return outsource;
 	}
 
 	public void setOutsource(Integer outsource) {
 		this.outsource = outsource;
-	}
-
-	public String getProcessIds() {
-		return processIds;
-	}
-
-	public void setProcessIds(String processIds) {
-		this.processIds = processIds;
 	}
 
 	public Long getInventoryId() {
@@ -537,14 +536,6 @@ public class OrderOutSource extends BaseEntity<Long> {
 
 	public void setOpenOrderTime(Date openOrderTime) {
 		this.openOrderTime = openOrderTime;
-	}
-
-	public String getProcess() {
-		return process;
-	}
-
-	public void setProcess(String process) {
-		this.process = process;
 	}
 
 }
