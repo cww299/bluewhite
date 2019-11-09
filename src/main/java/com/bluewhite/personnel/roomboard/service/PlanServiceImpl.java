@@ -56,7 +56,7 @@ public class PlanServiceImpl extends BaseServiceImpl<Plan, Long>
 		if (plan.getId()==null) {
 		 coefficient coefficient=coeffcientDao.findByOrgNameIdAndPositionId(plan.getOrgNameId(), plan.getPositionId());
 		 if (coefficient!=null) {
-			 double coefficients= NumUtils.sum(coefficient.getBasics(),coefficient.getBasics1(),coefficient.getBasics2(),coefficient.getBasics3());
+			 double coefficients= NumUtils.sum(coefficient.getBasics()==null ? 0 :coefficient.getBasics(),coefficient.getBasics1()==null ? 0 :coefficient.getBasics1(),coefficient.getBasics2()==null ? 0 :coefficient.getBasics2(),coefficient.getBasics3()==null ? 0 :coefficient.getBasics3());
 			 plan.setCoefficient(coefficients);
 			 return dao.save(plan);
 		}else{
