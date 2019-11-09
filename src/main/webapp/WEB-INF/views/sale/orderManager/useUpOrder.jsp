@@ -287,9 +287,8 @@ layui.config({
 			ifNull:'---',
 			toolbar:'<div><span class="layui-btn layui-btn-sm" lay-event="addBuy">生成采购单</span>'+
 						'<span class="layui-btn layui-btn-sm layui-btn-" lay-event="allProcurement">采购单</span>'+
-						'<span class="layui-btn layui-btn-sm layui-btn-warm" lay-event="useUpOut">耗料出库</span>'+
-						'<span class="layui-btn layui-btn-sm layui-btn-normal" lay-event="inventedOut">生成领料单</span>'+
-						'<span class="layui-btn layui-btn-sm layui-btn-normal" lay-event="outOrder">领料单</span>'+
+						'<span class="layui-btn layui-btn-sm layui-btn-normal" lay-event="inventedOut">生成出库单</span>'+
+						'<span class="layui-btn layui-btn-sm layui-btn-normal" lay-event="outOrder">出库单</span>'+
 					'</div>',
 			colsWidth:[0,10,0,10,10,8,8,8,8],
 			parseData:function(ret){
@@ -394,7 +393,7 @@ layui.config({
 						if(!orderId)
 							return myutil.emsg('请选择合同');
 						var allWin = layer.open({
-							title:'领料单',
+							title:'出库单',
 							type:1,
 							shadeClose:true,
 							area:['90%','90%'],
@@ -453,8 +452,8 @@ layui.config({
 									},
 									cols:[[
 										   { type:'checkbox' },
-									       { title:'审核时间',   field:'auditTime',	type:'dateTime', edit:true,},
-									       { title:'领料编号',   field:'outboundNumber',	},
+									       { title:'出库时间',   field:'auditTime',	type:'dateTime', edit:true,},
+									       { title:'分散出库编号',   field:'outboundNumber',	},
 									       { title:'采购单编号',   field:'orderProcurement_orderProcurementNumber',  },
 									       { title:'领取用量',   field:'dosage',	},
 									       { title:'是否审核',   field:'audit', transData:{data:['否','是'],}	},
@@ -524,14 +523,8 @@ layui.config({
 					}else if(obj.event=='inventedOut'){
 						myutil.deleTableIds({
 							table:'tableData',
-							text:'请选择相关信息|是否确认领料?',
+							text:'请选择相关信息|是否确认分散出库?',
 							url:'/ledger/saveScatteredOutbound',
-						});
-					}else if(obj.event=="useUpOut"){
-						myutil.deleTableIds({
-							table:'tableData',
-							text:'请选择相关信息|是否确认耗料出库?',
-							url:'/ledger/outboundOrderMaterial',
 						});
 					}
 				})
