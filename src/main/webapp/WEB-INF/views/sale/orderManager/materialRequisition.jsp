@@ -7,7 +7,7 @@
 	<link rel="stylesheet" href="${ctx }/static/layui-v2.4.5/layui/css/layui.css" media="all">
 	<script src="${ctx}/static/layui-v2.4.5/layui/layui.js"></script>
 	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-	<title>耗料出库出库</title>
+	<title>领料单</title>
 </head>
 <body>
 <div class="layui-card">
@@ -34,7 +34,7 @@
 		</tr>
     	<tr>
     		<td>数量：</td>
-    		<td><input type="text" class="layui-input" name="processNumber" lay-verify="required"></td>
+    		<td><input type="text" class="layui-input" name="processNumber" id="processNumber" lay-verify="required"></td>
     	</tr>
     	<tr>
     		<td>领取人：</td>
@@ -42,9 +42,8 @@
     	</tr>
     	<tr>
     		<td>备注：</td>
-    		<td><input type="text" name="remark" class="layui-input">
-				<input type="hidden" value="1" name="type">
-				<input type="hidden" value="0" name="outsource">
+    		<td><input type="text" name="remark" id="remark" class="layui-input">
+				<input type="hidden" id="editId" name="id">
 				<span style="display:none;" lay-submit id="addPicking" lay-filter="addPicking"></span></td>
     	</tr>
     </table>
@@ -59,7 +58,7 @@
 		</tr>
     	<tr>
     		<td>数量：</td>
-    		<td><input type="text" name="processNumber"  class="layui-input" lay-verify="number"></td>
+    		<td><input type="text" name="processNumber" id="processNumber" class="layui-input" lay-verify="number"></td>
     	</tr>
     	<tr>
     		<td>加工点：</td>
@@ -67,14 +66,14 @@
     	</tr>
     	<tr>
     		<td>备注：</td>
-    		<td><input type="text" name="remark"  class="layui-input">
-				<input type="hidden" value="1" name="type">
-				<input type="hidden" value="1" name="outsource">
+    		<td><input type="text" name="remark"  class="layui-input" id="remark">
+				<input type="hidden" id="editId" name="id">
 				<span style="display:none;" lay-submit id="addOut" lay-filter="addOut"></span></td>
     	</tr>
     </table>
 </div>
 </script>
+</body>
 <script>
 layui.config({
 	base : '${ctx}/static/layui-v2.4.5/'
@@ -84,10 +83,10 @@ layui.config({
 	['mytable','laydate'],
 	function(){
 		var $ = layui.jquery
-		, layer = layui.layer
-		, laydate = layui.laydate
+		, layer = layui.layer 				
 		, form = layui.form			 		
-		, table = layui.table 
+		, table = layui.table
+		, laydate = layui.laydate
 		, myutil = layui.myutil
 		, laytpl = layui.laytpl
 		, mytable = layui.mytable;
@@ -151,7 +150,7 @@ layui.config({
 		form.on('select(agreementSelect)',function(obj){
 			if(obj.value!='')
 				table.reload('tableData',{
-					url:'${ctx}/ledger/getScatteredOutbound?audit=1&orderId='+obj.value,//
+					url:'${ctx}/ledger/getMaterialRequisition', //
 				})
 			else
 				table.reload('tableData',{
@@ -159,47 +158,52 @@ layui.config({
 					url:'',
 				})
 		})
+		
 		mytable.render({
 			elem:'#tableData',
-			size:'lg',
-			data:[],
 			curd:{
-				btn:[],
+				btn:[4],
 				otherBtn:function(obj){
-					if(obj.event=='onekey'){
-						myutil.deleTableIds({
-							table:'tableData',
-							text:'请选择相关信息|是否确认审核?',
-							url:'/ledger/generatePlaceOrder',
-						});
-					}else if(obj.event=='picikingOrder'){
-						picikingOrder();
-					}else if(obj.event=='outOrder'){
-						outOrder();
+					if(obj.event=="addEdit"){
+						var check = table.checkStatus('tableData').data;
+						if(check.length!=1)
+							return myutil.emsg('只能修改一条数据！');
+						if(check[0].outsource)
+							outOrder(check[0]);
+						else
+							picikingOrder(check[0]);
 					}
-				},
+						
+				}
 			},
-			ifNull:'',
-			colsWidth:[0,10,0,6,8,8,10,6],
-			toolbar:['<span class="layui-btn layui-btn-sm" lay-event="onekey">一键审核</span>',
-				     '<span class="layui-btn layui-btn-sm layui-btn-normal" lay-event="picikingOrder">领料单</span>',
-					 '<span class="layui-btn layui-btn-sm layui-btn-warm" lay-event="outOrder">外发领料单</span>',
-					].join(''),
+			autoUpdate:{
+				deleUrl:'/ledger/deleteMaterialRequisition',
+			},
+			data:[],
+			toolbar:'<span class="layui-btn layui-btn-sm" lay-event="addEdit">修改</span>',
+			colsWidth:[0,12,0,8,8,8,12,8],
 			cols:[[
 			       { type:'checkbox',},
-			       { title:'审核日期',   field:'auditTime', type:'dateTime', },
-			       { title:'分散出库编号',   field:'orderProcurement_orderProcurementNumber',	},
-			       { title:'领取模式',   field:'orderMaterial_receiveMode_name',  },
+			       { title:'开单时间',   field:'openOrderTime',	type:'datetime'},
+			       { title:'库存单编号',   field:'scatteredOutbound_orderProcurement_orderProcurementNumber',},
+			       { title:'领取人',   field:'name', templet: getName(),   },
+			       { title:'任务数量',   field:'processNumber', 	},
 			       { title:'领取用量',   field:'dosage',	},
-			       { title:'下单数量',   field:'orderMaterial_order_number',	},
-			       { title:'备注',   field:'remark',  },
-			       { title:'是否审核',   field:'audit', transData:{data:['否','是'],}	},
-			       ]]
+			       { title:'备注',   field:'remark',	},
+			       { title:'是否外发',   field:'outsource', transData:{data:['领料单','外发领料单']}	},
+		    ]]
 		})
-		function picikingOrder(){
-			var check = table.checkStatus('tableData').data;
-			if(check.length!=1)
-				return myutil.emsg('领料单只能选择一条数据进行领取');
+		function getName(){
+			return function(d){
+				if(d.user)
+					return d.user.userName;
+				if(d.customer)
+					return d.customer.name;
+				else
+					return "";
+			}
+		}
+		function picikingOrder(d){
 			var addWin = layer.open({
 				type:1,
 				title:'领料单',
@@ -209,16 +213,20 @@ layui.config({
 				area:['40%','40%'],
 				content:$('#pickingTpl').html(),
 				success:function(){
-					laydate.render({ elem:'#openOrderTime',type:'datetime',value:myutil.getSubDay(0,'yyyy-MM-dd hh:mm:ss'), });
+					laydate.render({ elem:'#openOrderTime',type:'datetime',});
 					$('#addUserSelect').append(allUserSelect);
+					$('#openOrderTime').val(d.openOrderTime || "");
+					$('#processNumber').val(d.processNumber);
+					$('#remark').val(d.remark);
+					$('#editId').val(d.id);
+					$('#addUserSelect').find('option[value="'+(d.userId || 0)+'"]').attr('selected','selected');
 					form.on('submit(addPicking)',function(obj){
-						obj.field.orderId = $('#orderIdSelect').val();
-						obj.field.scatteredOutboundId = check[0].id;
 						myutil.saveAjax({
-							url:'/ledger/saveMaterialRequisition',
+							url:'/ledger/updateMaterialRequisition',
 							data:obj.field,
 							success:function(){
 								layer.close(addWin);
+								table.reload('tableData');
 							}
 						})
 					})
@@ -230,10 +238,7 @@ layui.config({
 			})
 			
 		}
-		function outOrder(){
-			var check = table.checkStatus('tableData').data;
-			if(check.length!=1)
-				return myutil.emsg('领料单只能选择一条数据进行领取');
+		function outOrder(d){
 			var addWin = layer.open({
 				type:1,
 				title:'外发领料单',
@@ -243,16 +248,20 @@ layui.config({
 				area:['40%','40%'],
 				content:$('#outTpl').html(),
 				success:function(){
-					laydate.render({ elem:'#openOrderTime',type:'datetime',value:myutil.getSubDay(0,'yyyy-MM-dd hh:mm:ss'), });
+					laydate.render({ elem:'#openOrderTime',type:'datetime', });
 					$('#addCustomerSelect').append(allCustomSelect);
+					$('#openOrderTime').val(d.openOrderTime || "");
+					$('#processNumber').val(d.processNumber);
+					$('#remark').val(d.remark);
+					$('#editId').val(d.id);
+					$('#addCustomerSelect').find('option[value="'+(d.customerId || 0)+'"]').attr('selected','selected');
 					form.on('submit(addOut)',function(obj){
-						obj.field.orderId = $('#orderIdSelect').val();
-						obj.field.scatteredOutboundId = check[0].id;
 						myutil.saveAjax({
-							url:'/ledger/saveMaterialRequisition',
+							url:'/ledger/updateMaterialRequisition',
 							data:obj.field,
 							success:function(){
 								layer.close(addWin);
+								table.reload('tableData');
 							}
 						})
 					})
@@ -267,5 +276,4 @@ layui.config({
 	}//end define function
 )//endedefine
 </script>
-
 </html>
