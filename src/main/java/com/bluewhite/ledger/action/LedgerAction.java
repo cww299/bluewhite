@@ -570,6 +570,7 @@ public class LedgerAction {
 	
 	/**
 	 * (生产计划部)查看领料单
+	 * (面辅料仓库）查看出库单 --- 领料单对于仓库来说是出库单
 	 * 
 	 * @return
 	 */
@@ -634,7 +635,7 @@ public class LedgerAction {
 
 	/**
 	 * （生产计划部） 分页查看加工单
-	 * （仓库）查看 库存详情单----加工单对于仓库来说是入库单
+	 * （仓库）查看 入库单 --- 加工单对于仓库来说是入库单
 	 * 
 	 * @param page
 	 * @param order
@@ -647,7 +648,9 @@ public class LedgerAction {
 		cr.setData(clearCascadeJSONSOutSource.format(orderOutSourceService.findPages(orderOutSource, page)).toJSON());
 		cr.setMessage("查看成功");
 		return cr;
-	}
+	} 
+	
+	
 	
 
 	/**
@@ -692,6 +695,8 @@ public class LedgerAction {
 	public CommonResponse invalidOrderOutSource(String ids) {
 		CommonResponse cr = new CommonResponse();
 		int count = orderOutSourceService.invalidOrderOutSource(ids);
+		
+		
 		cr.setMessage("成功作废"+count+"条外发单");
 		return cr;
 	}
@@ -727,8 +732,13 @@ public class LedgerAction {
 		return cr;
 	}
 	
+	
+	
+	
+	
+	
+	
 	/******************************库存管理**************************/
-
 	/**
 	 * （面辅料仓库）修改采购单，作为实际入库单使用
 	 * 
@@ -772,6 +782,11 @@ public class LedgerAction {
 		cr.setMessage("成功审核" + count + "领料单，进行出库");
 		return cr;
 	}   
+	
+	
+	
+	
+	
 	
 	
 	/**
@@ -851,7 +866,6 @@ public class LedgerAction {
 		sendGoodsService.addSendGoods(sendGoods);
 		return cr;
 	}
-	
 
 
 	/**
