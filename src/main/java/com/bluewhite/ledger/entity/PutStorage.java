@@ -16,7 +16,7 @@ import com.bluewhite.product.product.entity.Product;
 
 /**
  * 
- * 入库单
+ * 入库单（对于所有入库行为生成的入库数据）
  * 
  * @author zhangliang
  *
@@ -93,5 +93,96 @@ public class PutStorage extends BaseEntity<Long> {
 	 */
 	@Column(name = "surplus_Number")
 	private Integer surplusNumber;
+
+	public Long getProductId() {
+		return productId;
+	}
+
+	public void setProductId(Long productId) {
+		this.productId = productId;
+	}
+
+	public Product getProduct() {
+		return product;
+	}
+
+	public void setProduct(Product product) {
+		this.product = product;
+	}
+
+	public Integer getInStatus() {
+		return inStatus;
+	}
+
+	public void setInStatus(Integer inStatus) {
+		this.inStatus = inStatus;
+	}
+
+	public Long getInWarehouseTypeId() {
+		return inWarehouseTypeId;
+	}
+
+	public void setInWarehouseTypeId(Long inWarehouseTypeId) {
+		this.inWarehouseTypeId = inWarehouseTypeId;
+	}
+
+	public BaseData getInWarehouseType() {
+		return inWarehouseType;
+	}
+
+	public void setInWarehouseType(BaseData inWarehouseType) {
+		this.inWarehouseType = inWarehouseType;
+	}
+
+	public Long getInventoryId() {
+		return inventoryId;
+	}
+
+	public void setInventoryId(Long inventoryId) {
+		this.inventoryId = inventoryId;
+	}
+
+	public Inventory getInventory() {
+		return inventory;
+	}
+
+	public void setInventory(Inventory inventory) {
+		this.inventory = inventory;
+	}
+
+	public Date getArrivalTime() {
+		return arrivalTime;
+	}
+
+	public void setArrivalTime(Date arrivalTime) {
+		this.arrivalTime = arrivalTime;
+	}
+
+	public Integer getArrivalNumber() {
+		return arrivalNumber;
+	}
+
+	public void setArrivalNumber(Integer arrivalNumber) {
+		this.arrivalNumber = arrivalNumber;
+	}
+
+	public String getLocation() {
+		return location;
+	}
+
+	public void setLocation(String location) {
+		this.location = location;
+	}
+
+	public Integer getSurplusNumber() {
+		return surplusNumber;
+	}
+
+	public void setSurplusNumber(Integer surplusNumber) {
+		this.surplusNumber = surplusNumber;
+	}
+	
+	
+	
 
 }
