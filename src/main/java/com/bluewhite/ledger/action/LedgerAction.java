@@ -416,7 +416,7 @@ public class LedgerAction {
 	 * 
 	 * @return
 	 */
-	@RequestMapping(value = "/ledger/outboundOrderMaterial", method = RequestMethod.GET)
+	@RequestMapping(value = "/ledger/saveScatteredOutbound", method = RequestMethod.GET)
 	@ResponseBody
 	public CommonResponse outboundOrderMaterial(String ids) {
 		CommonResponse cr = new CommonResponse();
