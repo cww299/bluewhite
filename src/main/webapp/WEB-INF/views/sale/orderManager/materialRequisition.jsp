@@ -172,16 +172,22 @@ layui.config({
 							outOrder(check[0]);
 						else
 							picikingOrder(check[0]);
+					}else if(obj.event=="audit"){
+						myutil.deleTableIds({
+							table:'tableData',
+							text:'请选择相关信息|是否确认审核?',
+							url:'/ledger/auditMaterialRequisition',
+						});
 					}
-						
 				}
 			},
 			autoUpdate:{
 				deleUrl:'/ledger/deleteMaterialRequisition',
 			},
 			data:[],
-			toolbar:'<span class="layui-btn layui-btn-sm" lay-event="addEdit">修改</span>',
-			colsWidth:[0,12,0,8,8,8,12,8],
+			toolbar:['<span class="layui-btn layui-btn-sm" lay-event="addEdit">修改</span>',
+					 '<span class="layui-btn layui-btn-sm" lay-event="audit">审核</span>',].join(' '),
+			colsWidth:[0,12,0,8,8,8,12,8,8],
 			cols:[[
 			       { type:'checkbox',},
 			       { title:'开单时间',   field:'openOrderTime',	type:'datetime'},
@@ -191,6 +197,7 @@ layui.config({
 			       { title:'领取用量',   field:'dosage',	},
 			       { title:'备注',   field:'remark',	},
 			       { title:'是否外发',   field:'outsource', transData:{data:['领料单','外发领料单']}	},
+			       { title:'是否审核',   field:'outsource', transData:{data:['否','是']}	},
 		    ]]
 		})
 		function getName(){
