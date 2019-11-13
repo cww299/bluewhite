@@ -75,6 +75,7 @@
 	<span lay-event="addAgreement"  class="layui-btn layui-btn-sm" >新增合同</span>
 	<span lay-event="delete"  class="layui-btn layui-btn-sm layui-btn-danger" >删除合同</span>
 	<span lay-event="update"  class="layui-btn layui-btn-sm" >修改合同</span>
+	<span lay-event="auditAgreement"  class="layui-btn layui-btn-sm layui-btn-normal" >审核</span>
 </div>
 </script>
 <script  id="addTableToolbar" type="text/html">
@@ -297,6 +298,13 @@ layui.config({
 			case 'addAgreement': addAgreement();		break;
 			case 'update':	edit(); 	break;
 			case 'delete':	deletes();			break;
+			case 'auditAgreement': 
+				myutil.deleTableIds({
+					table:'tableAgreement',
+					text:'请选择相关信息|是否确认审核?',
+					url:'/ledger/auditOrder',
+				});
+				break;
 			} 
 		})
 		//新增合同

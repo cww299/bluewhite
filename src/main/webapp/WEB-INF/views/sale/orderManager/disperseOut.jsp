@@ -7,7 +7,7 @@
 	<link rel="stylesheet" href="${ctx }/static/layui-v2.4.5/layui/css/layui.css" media="all">
 	<script src="${ctx}/static/layui-v2.4.5/layui/layui.js"></script>
 	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-	<title>出库下单</title>
+	<title>耗料出库出库</title>
 </head>
 <body>
 <div class="layui-card">
@@ -109,7 +109,10 @@ layui.config({
 			},
 			ifNull:'',
 			colsWidth:[0,10,0,6,8,8,0,6],
-			toolbar:'<span class="layui-btn layui-btn-sm" lay-event="onekey">一键审核</span>',
+			toolbar:['<span class="layui-btn layui-btn-sm" lay-event="onekey">一键审核</span>',
+				     '<span class="layui-btn layui-btn-sm layui-btn-normal" lay-event="">领料单</span>',
+					 '<span class="layui-btn layui-btn-sm layui-btn-warm" lay-event="">外发领料单</span>',
+					].join(''),
 			cols:[[
 			       { type:'checkbox',},
 			       { title:'审核日期',   field:'auditTime', type:'dateTime', },

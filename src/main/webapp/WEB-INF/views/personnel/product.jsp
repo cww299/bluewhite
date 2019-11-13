@@ -152,6 +152,12 @@ layui.config({
 			size:'lg',
 			url:"${ctx}/productPages",
 			toolbar:"#toolbarOfProduct",
+			curd:{
+				btn:[4],	
+			},
+			autoUpdate:{
+				deleUrl:'${ctx}/deleteProduct',
+			},
 			cols : [[  
 			            {type: 'checkbox',align : 'center',fixed: 'left'},
 						{field : "id",title : "ID", sort : true}, 
