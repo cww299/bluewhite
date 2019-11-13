@@ -184,7 +184,7 @@ public class OrderServiceImpl extends BaseServiceImpl<Order, Long> implements Or
 					Long id = Long.parseLong(idArr[i]);
 					Order order =  dao.findOne(id);
 					if(order.getAudit()==1){
-						throw new ServiceException("编号为"+order.getBacthNumber()+"的下单合同已审核,请勿多次审核");
+						throw new ServiceException(order.getOrderNumber()+"的下单合同已审核,请勿多次审核");
 					}
 					order.setAudit(1);
 					dao.save(order);
