@@ -21,6 +21,13 @@ import com.bluewhite.system.user.entity.User;
 @Entity
 @Table(name = "ledger_material_requisition")
 public class MaterialRequisition extends BaseEntity<Long> {
+	
+	
+	/**
+	 * 开单时间
+	 */
+	@Column(name = "open_order_time")
+	private Date openOrderTime;
 
 	/**
 	 * 生产计划单id
@@ -170,6 +177,32 @@ public class MaterialRequisition extends BaseEntity<Long> {
 	private Date orderTimeEnd;
 
 	
+	
+	
+	public Date getOpenOrderTime() {
+		return openOrderTime;
+	}
+
+	public void setOpenOrderTime(Date openOrderTime) {
+		this.openOrderTime = openOrderTime;
+	}
+
+	public Integer getType() {
+		return type;
+	}
+
+	public void setType(Integer type) {
+		this.type = type;
+	}
+
+	public Integer getFlag() {
+		return flag;
+	}
+
+	public void setFlag(Integer flag) {
+		this.flag = flag;
+	}
+
 	public Integer getRequisition() {
 		return requisition;
 	}

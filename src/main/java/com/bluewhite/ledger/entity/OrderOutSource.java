@@ -120,9 +120,24 @@ public class OrderOutSource extends BaseEntity<Long> {
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "customer_id", referencedColumnName = "id", insertable = false, updatable = false)
 	private Customer customer;
+	
+	/**
+	 * （在家加工）加工人id
+	 * 
+	 */
+	@Column(name = "processing_user_id")
+	private Long processingUserId;
 
 	/**
-	 * 跟单人id
+	 * 加工人
+	 */
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "processing_user_id", referencedColumnName = "id", insertable = false, updatable = false)
+	private User processingUser;
+	
+
+	/**
+	 * 跟单人id（外协）
 	 * 
 	 */
 	@Column(name = "user_id")
@@ -222,7 +237,8 @@ public class OrderOutSource extends BaseEntity<Long> {
 	 */
 	@Column(name = "location")
 	private String location;
-
+	
+	
 	/**
 	 * 产品name
 	 */

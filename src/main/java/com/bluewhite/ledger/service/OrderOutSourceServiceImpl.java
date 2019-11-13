@@ -52,13 +52,15 @@ public class OrderOutSourceServiceImpl extends BaseServiceImpl<OrderOutSource, L
 			if(order.getPrepareEnough()==0){
 				throw new ServiceException("当前下单合同备料不足，无法进行外发");
 			}
-			List<OrderOutSource> orderOutSourceList = dao.findByOrderIdAndFlag(orderOutSource.getOrderId(), 0);
-			if (orderOutSourceList.size() > 0) {
-				double sumNumber = orderOutSourceList.stream().mapToDouble(OrderOutSource::getProcessNumber).sum();
-				if (NumUtils.sum(sumNumber, orderOutSource.getProcessNumber()) > order.getNumber()) {
-					throw new ServiceException("外发总数量不能大于下单合同数量，请核实后填写");
-				}
-			}
+			//对加工单数量进行限制判断，加工单数量和工序挂钩，每个工序最大数量为订单数量，无法超出
+			//工序可以由不同的加工单加工，但是不能超出订单数量
+//			List<OrderOutSource> orderOutSourceList = dao.findByOrderIdAndFlag(orderOutSource.getOrderId(), 0);
+//			if (orderOutSourceList.size() > 0) {
+//				double sumNumber = orderOutSourceList.stream().mapToDouble(OrderOutSource::getProcessNumber).sum();
+//				if (NumUtils.sum(sumNumber, orderOutSource.getProcessNumber()) > order.getNumber()) {
+//					throw new ServiceException("外发总数量不能大于下单合同数量，请核实后填写");
+//				}
+//			}
 			//将工序任务变成set存入
 			if(!StringUtils.isEmpty(orderOutSource.getOutsourceTaskIds())){
 				String[] idStrings = orderOutSource.getOutsourceTaskIds().split(",");
