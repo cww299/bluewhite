@@ -570,7 +570,7 @@ public class LedgerAction {
 	
 	/**
 	 * (生产计划部)查看领料单
-	 * (面辅料仓库）查看出库单 --- 领料单对于仓库来说是出库单
+	 * (面辅料仓库)查看出库单 --- 领料单对于仓库来说是出库单
 	 * 
 	 * @return
 	 */
@@ -593,7 +593,7 @@ public class LedgerAction {
 	 * 
 	 * @return
 	 */
-	@RequestMapping(value = "/ledger/saveMaterialRequisition", method = RequestMethod.GET)
+	@RequestMapping(value = "/ledger/saveMaterialRequisition", method = RequestMethod.POST)
 	@ResponseBody
 	public CommonResponse saveMaterialRequisition(MaterialRequisition materialRequisition) {
 		CommonResponse cr = new CommonResponse();
@@ -603,7 +603,6 @@ public class LedgerAction {
 	}
 	
 	/**
-	 * 
 	 * (生产计划部) 修改领料单
 	 * 
 	 * @return
@@ -695,8 +694,6 @@ public class LedgerAction {
 	public CommonResponse invalidOrderOutSource(String ids) {
 		CommonResponse cr = new CommonResponse();
 		int count = orderOutSourceService.invalidOrderOutSource(ids);
-		
-		
 		cr.setMessage("成功作废"+count+"条外发单");
 		return cr;
 	}
@@ -718,7 +715,7 @@ public class LedgerAction {
 	}
 	
 	/**
-	 * （生产计划部） 审核外发单，审核成功后，仓库可见
+	 * （生产计划部） 审核加工单，审核成功后，仓库可见
 	 * 
 	 * @param order
 	 * @return
