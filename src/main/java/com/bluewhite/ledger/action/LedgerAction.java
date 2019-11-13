@@ -20,6 +20,7 @@ import com.bluewhite.common.entity.CommonResponse;
 import com.bluewhite.common.entity.PageParameter;
 import com.bluewhite.ledger.entity.Bill;
 import com.bluewhite.ledger.entity.Customer;
+import com.bluewhite.ledger.entity.MaterialRequisition;
 import com.bluewhite.ledger.entity.Mixed;
 import com.bluewhite.ledger.entity.Order;
 import com.bluewhite.ledger.entity.OrderChild;
@@ -33,6 +34,7 @@ import com.bluewhite.ledger.entity.ReceivedMoney;
 import com.bluewhite.ledger.entity.Sale;
 import com.bluewhite.ledger.entity.ScatteredOutbound;
 import com.bluewhite.ledger.entity.SendGoods;
+import com.bluewhite.ledger.service.MaterialRequisitionService;
 import com.bluewhite.ledger.service.MixedService;
 import com.bluewhite.ledger.service.OrderMaterialService;
 import com.bluewhite.ledger.service.OrderOutSourceService;
@@ -43,7 +45,6 @@ import com.bluewhite.ledger.service.ReceivedMoneyService;
 import com.bluewhite.ledger.service.SaleService;
 import com.bluewhite.ledger.service.ScatteredOutboundService;
 import com.bluewhite.ledger.service.SendGoodsService;
-import com.bluewhite.onlineretailers.inventory.entity.Inventory;
 import com.bluewhite.product.primecostbasedata.entity.BaseOne;
 import com.bluewhite.product.primecostbasedata.entity.Materiel;
 import com.bluewhite.product.product.entity.Product;
@@ -78,6 +79,8 @@ public class LedgerAction {
 	private ScatteredOutboundService scatteredOutboundService;
 	@Autowired
 	private OrderOutSourceService orderOutSourceService;
+	@Autowired
+	private MaterialRequisitionService materialRequisitionService;
 	
 	
 	
@@ -220,14 +223,26 @@ public class LedgerAction {
 						"openOrderTime","outGoingTime","wholeList","flag","audit","productType","warehouseType",
 						"inWarehouseType","arrival","arrivalTime","arrivalNumber")
 				.addRetainTerm(Order.class, "id", "bacthNumber", "product", "number", "remark")
+				.addRetainTerm(Customer.class, "id", "name")
 				.addRetainTerm(Product.class, "id", "name","number")
+				.addRetainTerm(BaseOne.class, "id", "name")
+				.addRetainTerm(User.class, "id", "userName");
+	}
+	
+	private ClearCascadeJSON clearCascadeJSONMaterialRequisition;
+	{
+		clearCascadeJSONMaterialRequisition = ClearCascadeJSON.get()
+				.addRetainTerm(MaterialRequisition.class, "id", "order", "type", "requisitionNumber",
+						"scatteredOutbound", "customer", "user", "outsource", "processNumber", "dosage", "remark",
+						"audit","requisitionTime","requisition","flag")
+				.addRetainTerm(Order.class, "id", "bacthNumber", "product", "number", "remark")
 				.addRetainTerm(BaseOne.class, "id", "name")
 				.addRetainTerm(User.class, "id", "userName");
 	}
 
 
 	/**
-	 * 分页查看订单
+	 * 分页查看生产计划单
 	 * 
 	 * 
 	 * @param page
@@ -244,7 +259,8 @@ public class LedgerAction {
 	}
 	
 	/**
-	 * 查看订单
+	 * 查看生产计划单
+	 * 当订单已经被销售部审核，且已经生成耗料单
 	 * 1.生产计划部查看订单，有耗料单才可以查看
 	 * 2.查看出库下单
 	 * 
@@ -261,7 +277,7 @@ public class LedgerAction {
 	}
 
 	/**
-	 * (销售部)新增订单
+	 * (销售部)新增生产计划单
 	 * 
 	 * @param order
 	 * @return
@@ -276,7 +292,7 @@ public class LedgerAction {
 	}
 	
 	/**
-	 * (销售部)修改订单
+	 * (销售部)修改生产计划单
 	 * 
 	 * @return cr
 	 */
@@ -290,7 +306,7 @@ public class LedgerAction {
 	}
 
 	/**
-	 *(销售部) 删除订单
+	 *(销售部) 删除生产计划单
 	 * 
 	 * @return cr
 	 */
@@ -304,7 +320,7 @@ public class LedgerAction {
 	}
 	
 	/**
-	 *(销售部) 审核订单
+	 *(销售部) 审核生产计划单
 	 * 
 	 * @return cr
 	 */
@@ -392,6 +408,22 @@ public class LedgerAction {
 		cr.setMessage("成功审核" + count + "条耗料表");
 		return cr;
 	}
+	
+	/**
+	 * （采购部）将所有已有库存的耗料表生成分散出库记录 将已经订购的采购单面料当作库存，
+	 * 进行出库 
+	 * 冻结当前下单合同的当前耗料表对于库存的消耗
+	 * 
+	 * @return
+	 */
+	@RequestMapping(value = "/ledger/outboundOrderMaterial", method = RequestMethod.GET)
+	@ResponseBody
+	public CommonResponse outboundOrderMaterial(String ids) {
+		CommonResponse cr = new CommonResponse();
+		int count = scatteredOutboundService.saveScatteredOutbound(ids);
+		cr.setMessage("成功出库" + count + "条耗料单");
+		return cr;
+	}
 
 	/**
 	 * （采购部）查看采购订单
@@ -443,20 +475,6 @@ public class LedgerAction {
 		CommonResponse cr = new CommonResponse();
 		int count = orderProcurementService.deleteOrderProcurement(ids);
 		cr.setMessage("成功删除" + count + "条采购单");
-		return cr;
-	}
-
-	/**
-	 * （采购部）将所有已有库存的耗料表生成分散出库记录 将已经订购的采购单面料当作库存，进行出库 冻结当前下单合同的当前耗料表对于库存的消耗
-	 * 
-	 * @return
-	 */
-	@RequestMapping(value = "/ledger/saveScatteredOutbound", method = RequestMethod.GET)
-	@ResponseBody
-	public CommonResponse saveScatteredOutbound(String ids) {
-		CommonResponse cr = new CommonResponse();
-		int count = scatteredOutboundService.saveScatteredOutbound(ids);
-		cr.setMessage("成功出库" + count + "条耗料单");
 		return cr;
 	}
 
@@ -535,7 +553,7 @@ public class LedgerAction {
 	}
 
 	/**
-	 * （采购部）当采购单出入不符预警 进行一键更新订单数量
+	 * （采购部）当采购单出入不符预警 进行一键更新采购单数量
 	 * 
 	 * @param order
 	 * @return
@@ -548,25 +566,75 @@ public class LedgerAction {
 		cr.setMessage("更新成功");
 		return cr;
 	}
-
+	
+	
 	/**
-	 * 
-	 * (生产计划部) 修改下单
+	 * (生产计划部)查看领料单
 	 * 
 	 * @return
 	 */
-	@RequestMapping(value = "/ledger/updatePlaceOrder", method = RequestMethod.POST)
+	@RequestMapping(value = "/ledger/getMaterialRequisition", method = RequestMethod.GET)
 	@ResponseBody
-	public CommonResponse updatePlaceOrder(ScatteredOutbound scatteredOutbound) {
+	public CommonResponse getMaterialRequisition(PageParameter page,MaterialRequisition materialRequisition) {
 		CommonResponse cr = new CommonResponse();
-		scatteredOutboundService.updatePlaceOrder(scatteredOutbound);
+		cr.setData(clearCascadeJSONScatteredOutbound.format(materialRequisitionService.findPages(page,materialRequisition))
+				.toJSON());
+		cr.setMessage("查看成功");
+		return cr;
+	}
+	
+	
+	/**
+	 * (生产计划部)生成领料单
+	 * 1.领料单
+	 * 2.外发领料单
+	 * 在生成领料单的时候，耗料单一定是已经审核出库的数据
+	 * 
+	 * @return
+	 */
+	@RequestMapping(value = "/ledger/saveMaterialRequisition", method = RequestMethod.GET)
+	@ResponseBody
+	public CommonResponse saveMaterialRequisition(MaterialRequisition materialRequisition) {
+		CommonResponse cr = new CommonResponse();
+		materialRequisitionService.saveMaterialRequisition(materialRequisition);
+		cr.setMessage("成功生成领料单");
+		return cr;
+	}
+	
+	/**
+	 * 
+	 * (生产计划部) 修改领料单
+	 * 
+	 * @return
+	 */
+	@RequestMapping(value = "/ledger/updateMaterialRequisition", method = RequestMethod.POST)
+	@ResponseBody
+	public CommonResponse updateMaterialRequisition(MaterialRequisition materialRequisition) {
+		CommonResponse cr = new CommonResponse();
+		materialRequisitionService.updateMaterialRequisition(materialRequisition);
 		cr.setMessage("修改成功");
 		return cr;
 	}
+	
+	
+	/**
+	 * (生产计划部) 删除领料单
+	 * 
+	 * @return cr
+	 */
+	@RequestMapping(value = "/ledger/deleteMaterialRequisition", method = RequestMethod.GET)
+	@ResponseBody
+	public CommonResponse deleteMaterialRequisition(String ids) {
+		CommonResponse cr = new CommonResponse();
+		int count = materialRequisitionService.deleteMaterialRequisition(ids);
+		cr.setMessage("成功删除" + count + "领料单");
+		return cr;
+	}
+	
 
 	/**
-	 * （生产计划部） 分页查看
-	 * （仓库）查看 库存详情单----外发单对于仓库来说是库存详情单
+	 * （生产计划部） 分页查看加工单
+	 * （仓库）查看 库存详情单----加工单对于仓库来说是入库单
 	 * 
 	 * @param page
 	 * @param order
@@ -583,8 +651,9 @@ public class LedgerAction {
 	
 
 	/**
-	 * （生产计划部）新增外发单
-	 * 
+	 * （生产计划部）新增加工单
+	 * 1.加工单
+	 * 2.外发加工单
 	 * @param order
 	 * @return
 	 */
@@ -597,8 +666,8 @@ public class LedgerAction {
 		return cr;
 	}
 	
-	/**
-	 * （生产计划部）修改外发单
+	/**	
+	 * （生产计划部）修改加工单
 	 * 
 	 * @param order
 	 * @return
@@ -613,7 +682,7 @@ public class LedgerAction {
 	}
 	
 	/**
-	 * （生产计划部）作废外发单
+	 * （生产计划部）作废加工单
 	 * 
 	 * @param order
 	 * @return
@@ -629,7 +698,7 @@ public class LedgerAction {
 	
 	
 	/**
-	 * （生产计划部）删除外发单
+	 * （生产计划部）删除加工单
 	 * 
 	 * @param order
 	 * @return
@@ -690,9 +759,23 @@ public class LedgerAction {
 		return cr;
 	}
 	
+	/**
+	 * （面辅料仓库）审核领料单出库
+	 * @param order
+	 * @return
+	 */
+	@RequestMapping(value = "/ledger/auditMaterialRequisition", method = RequestMethod.GET)
+	@ResponseBody
+	public CommonResponse auditMaterialRequisition(String ids) {
+		CommonResponse cr = new CommonResponse();
+		int count = materialRequisitionService.auditMaterialRequisition(ids);
+		cr.setMessage("成功审核" + count + "领料单，进行出库");
+		return cr;
+	}   
+	
 	
 	/**
-	 * （1.成品仓库，2.皮壳仓库）修改外发单
+	 * （1.成品仓库，2.皮壳仓库）修改加工入库单
 	 * 
 	 * @param order
 	 * @return
