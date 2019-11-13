@@ -16,6 +16,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
 
 import com.bluewhite.base.BaseServiceImpl;
+import com.bluewhite.common.Constants;
 import com.bluewhite.common.ServiceException;
 import com.bluewhite.common.entity.PageParameter;
 import com.bluewhite.common.entity.PageResult;
@@ -79,7 +80,7 @@ public class ScatteredOutboundServiceImpl extends BaseServiceImpl<ScatteredOutbo
 							ScatteredOutbound scatteredOutbound = new ScatteredOutbound();
 							// 关联耗料单
 							scatteredOutbound.setOrderMaterialId(id);
-//							scatteredOutbound.setOutboundNumber(Constants.SCLL + StringUtil.getDate());
+							scatteredOutbound.setOutboundNumber(Constants.FSCK + StringUtil.getDate());
 							scatteredOutbound.setAudit(0);
 							scatteredOutbound.setOrderProcurementId(orderProcurement.getId());
 							// 领料分为两种情况，

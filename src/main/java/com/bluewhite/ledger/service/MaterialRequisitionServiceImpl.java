@@ -57,7 +57,7 @@ public class MaterialRequisitionServiceImpl extends BaseServiceImpl<MaterialRequ
 
 	@Override
 	public void updateMaterialRequisition(MaterialRequisition materialRequisition) {
-
+		update(materialRequisition, findOne(materialRequisition.getId()), "");
 	}
 
 	@Override
