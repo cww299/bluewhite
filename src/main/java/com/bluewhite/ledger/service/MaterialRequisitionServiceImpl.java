@@ -3,6 +3,7 @@ package com.bluewhite.ledger.service;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import javax.persistence.criteria.Predicate;
 
@@ -18,9 +19,14 @@ import com.bluewhite.common.entity.PageResult;
 import com.bluewhite.common.utils.NumUtils;
 import com.bluewhite.ledger.dao.MaterialRequisitionDao;
 import com.bluewhite.ledger.dao.OrderMaterialDao;
+import com.bluewhite.ledger.dao.OrderProcurementDao;
 import com.bluewhite.ledger.dao.ScatteredOutboundDao;
 import com.bluewhite.ledger.entity.MaterialRequisition;
+import com.bluewhite.ledger.entity.OrderProcurement;
 import com.bluewhite.ledger.entity.ScatteredOutbound;
+import com.bluewhite.onlineretailers.inventory.entity.Inventory;
+import com.bluewhite.product.primecostbasedata.dao.MaterielDao;
+import com.bluewhite.product.product.entity.Product;
 
 @Service
 public class MaterialRequisitionServiceImpl extends BaseServiceImpl<MaterialRequisition, Long>
@@ -32,6 +38,8 @@ public class MaterialRequisitionServiceImpl extends BaseServiceImpl<MaterialRequ
 	private OrderMaterialDao orderMaterialDao;
 	@Autowired
 	private ScatteredOutboundDao scatteredOutboundDao;
+	@Autowired
+	private MaterielDao materielDao;
 
 	@Override
 	public void saveMaterialRequisition(MaterialRequisition materialRequisition) {
@@ -50,6 +58,8 @@ public class MaterialRequisitionServiceImpl extends BaseServiceImpl<MaterialRequ
 			}
 			scatteredOutbound.setResidueDosage(
 					NumUtils.sub(scatteredOutbound.getResidueDosage(), materialRequisition.getDosage()));
+			materialRequisition.setAudit(0);
+			materialRequisition.setRequisition(0);
 			scatteredOutboundDao.save(scatteredOutbound);
 			save(materialRequisition);
 		}
@@ -119,6 +129,28 @@ public class MaterialRequisitionServiceImpl extends BaseServiceImpl<MaterialRequ
 						throw new ServiceException("第" + (i + 1) + "条领料单已审核，无法删除");
 					}
 					delete(id);
+					count++;
+				}
+			}
+		}
+		return count;
+	}
+
+	@Override
+	public int outboundMaterialRequisition(String ids) {
+		int count = 0;
+		if (!StringUtils.isEmpty(ids)) {
+			String[] idArr = ids.split(",");
+			if (idArr.length > 0) {
+				for (int i = 0; i < idArr.length; i++) {
+					Long id = Long.parseLong(idArr[i]);
+					MaterialRequisition materialRequisition = findOne(id);
+					//面辅料仓库获取采购库存单，更新采购单实际库存
+					OrderProcurement orderProcurement = materialRequisition.getScatteredOutbound().getOrderProcurement();
+					orderProcurement.getMateriel().setInventoryNumber(NumUtils.sub(orderProcurement.getMateriel().getInventoryNumber(), materialRequisition.getDosage()));
+					materielDao.save(orderProcurement.getMateriel());
+					materialRequisition.setRequisition(1);
+					save(materialRequisition);
 					count++;
 				}
 			}
