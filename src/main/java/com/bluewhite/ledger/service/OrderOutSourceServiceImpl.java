@@ -3,7 +3,6 @@ package com.bluewhite.ledger.service;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-import java.util.stream.Collector;
 import java.util.stream.Collectors;
 
 import javax.persistence.criteria.Predicate;
@@ -15,6 +14,8 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
 
 import com.bluewhite.base.BaseServiceImpl;
+import com.bluewhite.basedata.dao.BaseDataDao;
+import com.bluewhite.basedata.entity.BaseData;
 import com.bluewhite.common.ServiceException;
 import com.bluewhite.common.SessionManager;
 import com.bluewhite.common.entity.CurrentUser;
@@ -40,6 +41,8 @@ public class OrderOutSourceServiceImpl extends BaseServiceImpl<OrderOutSource, L
 	private OrderDao orderDao;
 	@Autowired
 	private InventoryDao inventoryDao;
+	@Autowired
+	private BaseDataDao baseDataDao;
 
 	@Override
 	@Transactional
@@ -56,7 +59,18 @@ public class OrderOutSourceServiceImpl extends BaseServiceImpl<OrderOutSource, L
 					throw new ServiceException("外发总数量不能大于下单合同数量，请核实后填写");
 				}
 			}
-			orderOutSource.setRemark(order.getRemark());
+			//将工序任务变成set存入
+			if(!StringUtils.isEmpty(orderOutSource.getOutsourceTaskIds())){
+				String[] idStrings = orderOutSource.getOutsourceTaskIds().split(",");
+				if(idStrings.length>0){
+					for(String ids : idStrings ){
+						Long id = Long.parseLong(ids);
+						BaseData baseData = baseDataDao.findOne(id);
+						orderOutSource.getOutsourceTask().add(baseData);
+					}
+					
+				}
+			}
 			orderOutSource.setFlag(0);
 			orderOutSource.setAudit(0);
 			orderOutSource.setArrival(0);

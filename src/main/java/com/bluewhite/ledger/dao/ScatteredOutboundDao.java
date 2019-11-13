@@ -20,6 +20,6 @@ public interface ScatteredOutboundDao extends BaseRepository<ScatteredOutbound, 
 	 * @param orderprocurementid
 	 * @return
 	 */
-	List<ScatteredOutbound> findByOrderMaterialId(Long orderprocurementid);
+	List<ScatteredOutbound> findByOrderMaterialId(Long orderMaterialId);
 
 }

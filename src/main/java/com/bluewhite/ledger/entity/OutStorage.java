@@ -1,10 +1,4 @@
 package com.bluewhite.ledger.entity;
-/**
- * 
- * 出库单
- * @author zhangliang
- *
- */
 
 import java.util.Date;
 
@@ -19,6 +13,12 @@ import com.bluewhite.base.BaseEntity;
 import com.bluewhite.basedata.entity.BaseData;
 import com.bluewhite.product.product.entity.Product;
 
+/**
+ * 出库单
+ * 
+ * @author zhangliang
+ *
+ */
 @Entity
 @Table(name = "ledger_out_storage")
 public class OutStorage extends BaseEntity<Long> {
@@ -41,7 +41,7 @@ public class OutStorage extends BaseEntity<Long> {
 	 */
 	@Column(name = "out_status")
 	private Integer outStatus;
-	
+
 	/**
 	 * 仓管指定 出库仓库种类id
 	 */
@@ -54,8 +54,7 @@ public class OutStorage extends BaseEntity<Long> {
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "out_warehouse_type_id", referencedColumnName = "id", insertable = false, updatable = false)
 	private BaseData inWarehouseType;
-	
-	
+
 	/**
 	 * 出库时间
 	 */
@@ -67,7 +66,7 @@ public class OutStorage extends BaseEntity<Long> {
 	 */
 	@Column(name = "arrival_number")
 	private Integer arrivalNumber;
-	
+
 	/**
 	 * 库位
 	 */

@@ -13,22 +13,21 @@ import javax.persistence.Transient;
 import com.bluewhite.base.BaseEntity;
 
 /**
- * 耗料分散出库记录
- *（领取耗料单）
+ * 耗料出库记录 （采购单虚拟库存）
  * 
  * 采购部将所有已经拥有库存的耗料表生成分散出库记录表
  *
  */
 @Entity
 @Table(name = "ledger_scattered_outbound")
-public class ScatteredOutbound extends BaseEntity<Long>{
-	
+public class ScatteredOutbound extends BaseEntity<Long> {
+
 	/**
-	 * 领料单编号（SCLL+日期+数量）
+	 * 分散出库编号
 	 */
 	@Column(name = "outbound_number")
 	private String outboundNumber;
-	
+
 	/**
 	 * 采购单id
 	 */
@@ -41,7 +40,7 @@ public class ScatteredOutbound extends BaseEntity<Long>{
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "order_procurement_id", referencedColumnName = "id", insertable = false, updatable = false)
 	private OrderProcurement orderProcurement;
-	
+
 	/**
 	 * 订单（下单合同）生产用料id
 	 */
@@ -54,43 +53,49 @@ public class ScatteredOutbound extends BaseEntity<Long>{
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "order_material_id", referencedColumnName = "id", insertable = false, updatable = false)
 	private OrderMaterial orderMaterial;
-	   
+
 	/**
 	 * 领取用量
 	 */
 	@Column(name = "dosage")
-    private Double dosage;
+	private Double dosage;
 	
+	/**
+	 * 剩余领取用量
+	 */
+	@Column(name = "residue_dosage")
+	private Double residueDosage;
+
 	/**
 	 * 备注
 	 */
 	@Column(name = "remark")
-    private String remark;
-	
+	private String remark;
+
 	/**
 	 * 是否审核
 	 */
 	@Column(name = "audit")
-    private Integer audit;
-	
+	private Integer audit;
+
 	/**
 	 * 审核正式出库时间（当所有材料库存准备就绪，填写完正式日期，审核成功过后通知到生产计划部）
 	 */
 	@Column(name = "audit_time")
-    private Date auditTime;
-	
+	private Date auditTime;
+
 	/**
 	 * 产品name
 	 */
 	@Transient
 	private String productName;
-	
+
 	/**
 	 * 下单合同id
 	 */
 	@Transient
 	private Long orderId;
-	
+
 	/**
 	 * 查询字段
 	 */
@@ -103,7 +108,14 @@ public class ScatteredOutbound extends BaseEntity<Long>{
 	private Date orderTimeEnd;
 	
 	
-	
+
+	public Double getResidueDosage() {
+		return residueDosage;
+	}
+
+	public void setResidueDosage(Double residueDosage) {
+		this.residueDosage = residueDosage;
+	}
 
 	public Integer getAudit() {
 		return audit;
@@ -209,9 +221,5 @@ public class ScatteredOutbound extends BaseEntity<Long>{
 		this.remark = remark;
 	}
 	
-	
-	
-	
-
 
 }

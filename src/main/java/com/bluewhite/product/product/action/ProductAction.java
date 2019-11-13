@@ -325,9 +325,9 @@ public class ProductAction {
 	 */
 	@RequestMapping(value = "/deleteProduct", method = RequestMethod.GET)
 	@ResponseBody
-	public CommonResponse deleteProduct(Long id) {
+	public CommonResponse deleteProduct(String ids) {
 		CommonResponse cr = new CommonResponse();
-		productService.delete(id);
+		productService.delete(ids);
 		cr.setMessage("删除成功");
 		return cr;
 	}

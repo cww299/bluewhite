@@ -52,7 +52,7 @@ public class OrderMaterial extends BaseEntity<Long> {
 	private Materiel materiel;
 
 	/**
-	 * 领取模式id(手选裁剪方式id或者压货环节id) 有复合物的就是物料2次加工采购领取（采领）
+	 * 领取模式id(手选裁剪方式id或者压货环节id) 有复合物的就是物料2次加工采购领取（复合物需要在复合厂进行二次处理，所以是采购领取）
 	 */
 	@Column(name = "receive_mode_id")
 	private Long receiveModeId;
@@ -92,6 +92,7 @@ public class OrderMaterial extends BaseEntity<Long> {
 	
 	/**
 	 * 是否出库（0=否，1=是）
+	 * 是否生成领料单
 	 */
 	@Column(name = "outbound")
 	private Integer outbound;
