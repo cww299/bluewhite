@@ -544,6 +544,7 @@ layui.config({
 						orderDate: orderDate,
 						number: $('#orderNumber').val(),
 						orderTypeId: typeId,
+						orderNumber: bacthNumber+$('#chooseProductInput').val(),
 					},
 					success:function(){
 						table.reload('tableAgreement');
