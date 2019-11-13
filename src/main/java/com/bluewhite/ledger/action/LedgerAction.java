@@ -88,7 +88,7 @@ public class LedgerAction {
 	{
 		clearCascadeJSONOrder = ClearCascadeJSON.get()
 				.addRetainTerm(Order.class, "id", "remark", "orderDate", "bacthNumber", "product", "number",
-						"orderMaterials","prepareEnough","orderChilds","audit")
+						"orderMaterials","prepareEnough","orderChilds","audit","orderNumber")
 				.addRetainTerm(OrderMaterial.class, "id")
 				.addRetainTerm(OrderChild.class, "id","customer","user","childNumber","childRemark")
 				.addRetainTerm(Customer.class, "id", "name")
@@ -180,7 +180,7 @@ public class LedgerAction {
 		clearCascadeJSONOrderMaterial = ClearCascadeJSON.get()
 				.addRetainTerm(OrderMaterial.class, "id", "order", "materiel", "receiveMode", "user", "unit", "dosage",
 						"audit", "outbound", "state", "inventoryTotal")
-				.addRetainTerm(Order.class, "id", "bacthNumber", "product", "number", "remark")
+				.addRetainTerm(Order.class, "id", "bacthNumber", "product", "number", "remark","orderNumber")
 				.addRetainTerm(Materiel.class, "id", "name", "number", "orderProcurements", "inventoryNumber")
 				.addRetainTerm(OrderProcurement.class, "id", "orderProcurementNumber", "placeOrderNumber",
 						"arrivalNumber", "placeOrderTime", "expectArrivalTime", "arrivalTime", "customer", "user",
@@ -210,7 +210,7 @@ public class LedgerAction {
 						"openOrderAudit")
 				.addRetainTerm(OrderProcurement.class, "id", "orderProcurementNumber")
 				.addRetainTerm(OrderMaterial.class, "id", "receiveMode", "order")
-				.addRetainTerm(Order.class, "id", "bacthNumber", "product", "number", "remark")
+				.addRetainTerm(Order.class, "id", "bacthNumber", "product", "number", "remark","orderNumber")
 				.addRetainTerm(BaseOne.class, "id", "name")
 				.addRetainTerm(User.class, "id", "userName");
 	}
@@ -222,7 +222,7 @@ public class LedgerAction {
 						"order", "user", "customer", "remark", "gramWeight", "processNumber", "process",
 						"openOrderTime","outGoingTime","wholeList","flag","audit","productType","warehouseType",
 						"inWarehouseType","arrival","arrivalTime","arrivalNumber")
-				.addRetainTerm(Order.class, "id", "bacthNumber", "product", "number", "remark")
+				.addRetainTerm(Order.class, "id", "bacthNumber", "product", "number", "remark","orderNumber")
 				.addRetainTerm(Customer.class, "id", "name")
 				.addRetainTerm(Product.class, "id", "name","number")
 				.addRetainTerm(BaseOne.class, "id", "name")
@@ -235,7 +235,7 @@ public class LedgerAction {
 				.addRetainTerm(MaterialRequisition.class, "id", "order", "type", "requisitionNumber",
 						"scatteredOutbound", "customer", "user", "outsource", "processNumber", "dosage", "remark",
 						"audit","requisitionTime","requisition","flag")
-				.addRetainTerm(Order.class, "id", "bacthNumber", "product", "number", "remark")
+				.addRetainTerm(Order.class, "id", "bacthNumber", "product", "number", "remark","orderNumber")
 				.addRetainTerm(BaseOne.class, "id", "name")
 				.addRetainTerm(User.class, "id", "userName");
 	}
