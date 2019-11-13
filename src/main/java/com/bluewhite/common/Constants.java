@@ -129,5 +129,6 @@ public class Constants {
      */
     //生产领料
     public final static String  SCLL = "SCLL";
+    public final static String  FSCK = "FSCK";
 
 }
