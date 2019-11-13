@@ -144,7 +144,7 @@ public class MaterialRequisition extends BaseEntity<Long> {
 	 */
 	@Column(name = "flag")
 	private Integer flag;
-
+	
 	/**
 	 * 产品name
 	 */
