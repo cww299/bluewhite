@@ -1,11 +1,15 @@
 package com.bluewhite.ledger.entity;
 
 import java.util.Date;
+import java.util.HashSet;
+import java.util.Set;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.JoinColumn;
+import javax.persistence.JoinTable;
+import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.persistence.Transient;
@@ -27,6 +31,20 @@ import com.bluewhite.system.user.entity.User;
 public class OrderOutSource extends BaseEntity<Long> {
 	
 	/**
+	 * 生产计划单id
+	 * 
+	 */
+	@Column(name = "order_id")
+	private Long orderId;
+
+	/**
+	 * 生产计划单
+	 */
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "order_id", referencedColumnName = "id", insertable = false, updatable = false)
+	private Order order;
+	
+	/**
 	 * 开单时间
 	 */
 	@Column(name = "open_order_time")
@@ -45,13 +63,13 @@ public class OrderOutSource extends BaseEntity<Long> {
 	private String fillRemark;
 	
 	/**
-	 *工艺单内容填充，用于打印开单  棉花克重
+	 * 工艺单内容填充，用于打印开单  棉花克重
 	 */
 	@Column(name = "gram_weight")
 	private Double gramWeight;
 	
 	/**
-	 *工艺单内容填充，用于打印开单  棉花总克重（千克）
+	 * 工艺单内容填充，用于打印开单  棉花总克重（千克）
 	 */
 	@Column(name = "kilogram_weight")
 	private Double kilogramWeight;
@@ -59,24 +77,17 @@ public class OrderOutSource extends BaseEntity<Long> {
 	/**
 	 * 任务编号
 	 * 
-	 */
+	 */  
 	@Column(name = "out_source_number")
 	private String outSourceNumber;
 
 	/**
-	 * 任务工序
-	 * 
+	 * 任务工序多对多
 	 */
-	@Column(name = "process")
-	private String process;
+	@ManyToMany(fetch = FetchType.LAZY)
+	@JoinTable(name = "sys_outsource_task", joinColumns = @JoinColumn(name = "outsource_id", referencedColumnName = "id"), inverseJoinColumns = @JoinColumn(name = "task_id", referencedColumnName = "id"))
+	private Set<BaseData> outsourceTask = new HashSet<BaseData>();
 	
-	/**
-	 * 任务工序ids
-	 * 
-	 */
-	@Column(name = "process_ids")
-	private String processIds;
-
 	/**
 	 * 任务数量
 	 */
@@ -109,9 +120,24 @@ public class OrderOutSource extends BaseEntity<Long> {
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "customer_id", referencedColumnName = "id", insertable = false, updatable = false)
 	private Customer customer;
+	
+	/**
+	 * （在家加工）加工人id
+	 * 
+	 */
+	@Column(name = "processing_user_id")
+	private Long processingUserId;
 
 	/**
-	 * 跟单人id
+	 * 加工人
+	 */
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "processing_user_id", referencedColumnName = "id", insertable = false, updatable = false)
+	private User processingUser;
+	
+
+	/**
+	 * 跟单人id（外协）
 	 * 
 	 */
 	@Column(name = "user_id")
@@ -124,19 +150,6 @@ public class OrderOutSource extends BaseEntity<Long> {
 	@JoinColumn(name = "user_id", referencedColumnName = "id", insertable = false, updatable = false)
 	private User user;
 
-	/**
-	 * 订单id
-	 * 
-	 */
-	@Column(name = "order_id")
-	private Long orderId;
-
-	/**
-	 * 订单
-	 */
-	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "order_id", referencedColumnName = "id", insertable = false, updatable = false)
-	private Order order;
 
 	/**
 	 * 外发时间
@@ -224,7 +237,8 @@ public class OrderOutSource extends BaseEntity<Long> {
 	 */
 	@Column(name = "location")
 	private String location;
-
+	
+	
 	/**
 	 * 产品name
 	 */
@@ -244,6 +258,12 @@ public class OrderOutSource extends BaseEntity<Long> {
 	 */
 	@Transient
 	private String customerName;
+	
+	/**
+	 * 工序ids
+	 */
+	@Transient
+	private String outsourceTaskIds;
 
 	/**
 	 * 查询字段
@@ -257,6 +277,23 @@ public class OrderOutSource extends BaseEntity<Long> {
 	private Date orderTimeEnd;
 	
 	
+	
+
+	public String getOutsourceTaskIds() {
+		return outsourceTaskIds;
+	}
+
+	public void setOutsourceTaskIds(String outsourceTaskIds) {
+		this.outsourceTaskIds = outsourceTaskIds;
+	}
+
+	public Set<BaseData> getOutsourceTask() {
+		return outsourceTask;
+	}
+
+	public void setOutsourceTask(Set<BaseData> outsourceTask) {
+		this.outsourceTask = outsourceTask;
+	}
 
 	public Integer getOutsource() {
 		return outsource;
@@ -264,14 +301,6 @@ public class OrderOutSource extends BaseEntity<Long> {
 
 	public void setOutsource(Integer outsource) {
 		this.outsource = outsource;
-	}
-
-	public String getProcessIds() {
-		return processIds;
-	}
-
-	public void setProcessIds(String processIds) {
-		this.processIds = processIds;
 	}
 
 	public Long getInventoryId() {
@@ -537,14 +566,6 @@ public class OrderOutSource extends BaseEntity<Long> {
 
 	public void setOpenOrderTime(Date openOrderTime) {
 		this.openOrderTime = openOrderTime;
-	}
-
-	public String getProcess() {
-		return process;
-	}
-
-	public void setProcess(String process) {
-		this.process = process;
 	}
 
 }

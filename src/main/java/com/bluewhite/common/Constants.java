@@ -123,5 +123,11 @@ public class Constants {
     public final static String  AB = "阿宝";
     public final static String  ZMJ = "芝麻街";
     public final static String  XXYJN = "熊熊遇见你";
+    
+    /**
+     * 生产计划中的编号前缀
+     */
+    //生产领料
+    public final static String  SCLL = "SCLL";
 
 }

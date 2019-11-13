@@ -3,7 +3,6 @@ package com.bluewhite.ledger.service;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-import java.util.stream.Collector;
 import java.util.stream.Collectors;
 
 import javax.persistence.criteria.Predicate;
@@ -15,6 +14,8 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
 
 import com.bluewhite.base.BaseServiceImpl;
+import com.bluewhite.basedata.dao.BaseDataDao;
+import com.bluewhite.basedata.entity.BaseData;
 import com.bluewhite.common.ServiceException;
 import com.bluewhite.common.SessionManager;
 import com.bluewhite.common.entity.CurrentUser;
@@ -40,6 +41,8 @@ public class OrderOutSourceServiceImpl extends BaseServiceImpl<OrderOutSource, L
 	private OrderDao orderDao;
 	@Autowired
 	private InventoryDao inventoryDao;
+	@Autowired
+	private BaseDataDao baseDataDao;
 
 	@Override
 	@Transactional
@@ -49,14 +52,27 @@ public class OrderOutSourceServiceImpl extends BaseServiceImpl<OrderOutSource, L
 			if(order.getPrepareEnough()==0){
 				throw new ServiceException("当前下单合同备料不足，无法进行外发");
 			}
-			List<OrderOutSource> orderOutSourceList = dao.findByOrderIdAndFlag(orderOutSource.getOrderId(), 0);
-			if (orderOutSourceList.size() > 0) {
-				double sumNumber = orderOutSourceList.stream().mapToDouble(OrderOutSource::getProcessNumber).sum();
-				if (NumUtils.sum(sumNumber, orderOutSource.getProcessNumber()) > order.getNumber()) {
-					throw new ServiceException("外发总数量不能大于下单合同数量，请核实后填写");
+			//对加工单数量进行限制判断，加工单数量和工序挂钩，每个工序最大数量为订单数量，无法超出
+			//工序可以由不同的加工单加工，但是不能超出订单数量
+//			List<OrderOutSource> orderOutSourceList = dao.findByOrderIdAndFlag(orderOutSource.getOrderId(), 0);
+//			if (orderOutSourceList.size() > 0) {
+//				double sumNumber = orderOutSourceList.stream().mapToDouble(OrderOutSource::getProcessNumber).sum();
+//				if (NumUtils.sum(sumNumber, orderOutSource.getProcessNumber()) > order.getNumber()) {
+//					throw new ServiceException("外发总数量不能大于下单合同数量，请核实后填写");
+//				}
+//			}
+			//将工序任务变成set存入
+			if(!StringUtils.isEmpty(orderOutSource.getOutsourceTaskIds())){
+				String[] idStrings = orderOutSource.getOutsourceTaskIds().split(",");
+				if(idStrings.length>0){
+					for(String ids : idStrings ){
+						Long id = Long.parseLong(ids);
+						BaseData baseData = baseDataDao.findOne(id);
+						orderOutSource.getOutsourceTask().add(baseData);
+					}
+					
 				}
 			}
-			orderOutSource.setRemark(order.getRemark());
 			orderOutSource.setFlag(0);
 			orderOutSource.setAudit(0);
 			orderOutSource.setArrival(0);
@@ -115,10 +131,6 @@ public class OrderOutSourceServiceImpl extends BaseServiceImpl<OrderOutSource, L
 			// 是否审核
 			if (param.getAudit() != null) {
 				predicate.add(cb.equal(root.get("audit").as(Integer.class), param.getAudit()));
-			}
-			// 按外发工序过滤
-			if (param.getProcess() != null) {
-				predicate.add(cb.equal(root.get("process").as(String.class), param.getProcess()));
 			}
 			// 按产品名称
 			if (!StringUtils.isEmpty(param.getProductName())) {

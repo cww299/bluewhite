@@ -1,7 +1,9 @@
 package com.bluewhite.ledger.service;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 import javax.persistence.criteria.Predicate;
@@ -16,6 +18,7 @@ import com.bluewhite.base.BaseServiceImpl;
 import com.bluewhite.common.ServiceException;
 import com.bluewhite.common.entity.PageParameter;
 import com.bluewhite.common.entity.PageResult;
+import com.bluewhite.common.utils.NumUtils;
 import com.bluewhite.common.utils.StringUtil;
 import com.bluewhite.ledger.dao.OrderDao;
 import com.bluewhite.ledger.dao.OrderMaterialDao;
@@ -27,7 +30,6 @@ import com.bluewhite.product.primecost.cutparts.entity.CutParts;
 import com.bluewhite.product.primecost.cutparts.service.CutPartsService;
 import com.bluewhite.product.primecost.materials.entity.ProductMaterials;
 import com.bluewhite.product.primecost.materials.service.ProductMaterialsService;
-import com.bluewhite.product.primecost.tailor.entity.Tailor;
 import com.bluewhite.product.primecost.tailor.service.TailorService;
 import com.bluewhite.product.primecostbasedata.dao.MaterielDao;
 
@@ -127,18 +129,18 @@ public class OrderMaterialServiceImpl extends BaseServiceImpl<OrderMaterial, Lon
 								orderMaterial.setMaterielId(c.getMaterielId());
 								orderMaterial.setUnitId(c.getUnitId());
 								orderMaterial.setDosage(c.getBatchMaterial());
-								Tailor tailor = tailorService.findOne(c.getTailorId());
-								orderMaterial.setReceiveModeId(tailor.getTailorTypeId());
+								orderMaterial.setReceiveModeId(c.getOverstockId());
 								orderMaterialList.add(orderMaterial);
 								if (c.getComposite() == 1) {
 									OrderMaterial orderMaterialComposite = new OrderMaterial();
-									orderMaterial.setOrderId(id);
-									orderMaterial.setMaterielId(c.getComplexMaterielId());
-									orderMaterial.setUnitId(c.getUnitId());
-									orderMaterial.setAudit(0);
-									orderMaterial.setOutbound(0);
-									orderMaterial.setDosage(c.getComplexBatchMaterial());
-									orderMaterial.setReceiveModeId(tailor.getTailorTypeId());
+									orderMaterialComposite.setOrderId(id);
+									orderMaterialComposite.setMaterielId(c.getComplexMaterielId());
+									orderMaterialComposite.setUnitId(c.getUnitId());
+									orderMaterialComposite.setAudit(0);
+									orderMaterialComposite.setOutbound(0);
+									orderMaterialComposite.setDosage(c.getComplexBatchMaterial());
+									//采购复合领取
+									orderMaterialComposite.setReceiveModeId((long)84);
 									orderMaterialList.add(orderMaterialComposite);
 								}
 							});

@@ -120,6 +120,20 @@ public class StringUtil {
 		}
 		return documentNumber;
 	}
+	
+	
+	/**
+	 * 获取固定日期格式
+	 * 
+	 * @author lin
+	 * @param address
+	 * @return
+	 */
+	public static String getDate() {
+		SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd");
+		String time = sdf.format(new Date());
+		return time;
+	}
 
 	// 判断一个字符串是否含有数字
 	public static boolean HasDigit(String content) {
