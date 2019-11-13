@@ -8,11 +8,6 @@
 	<script src="${ctx}/static/layui-v2.4.5/layui/layui.js"></script>
 	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 	<title>下单合同</title>
-<style>
-.layui-form-pane .layui-item{
-	margin-top:10px;
-}
-</style>
 </head>
 <body>
 <div class="layui-card">
@@ -45,7 +40,6 @@
 <div>
 	<span lay-event="productUseup" class="layui-btn layui-btn-sm" >生成耗料单</span>
 	<span lay-event="lookoverUseup" class="layui-btn layui-btn-sm layui-btn-normal" >查看耗料单</span>
-	<span lay-event="outOrder" class="layui-btn layui-btn-sm" >生成外发单</span>
 </div>
 </script>
 <script>
@@ -53,9 +47,8 @@ layui.config({
 	base : '${ctx}/static/layui-v2.4.5/'
 }).extend({
 	mytable : 'layui/myModules/mytable',
-	outOrderModel : 'layui/myModules/sale/outOrderModel' ,
 }).define(
-	['mytable','laydate','outOrderModel',],
+	['mytable','laydate',],
 	function(){
 		var $ = layui.jquery
 		, layer = layui.layer 				
@@ -65,12 +58,11 @@ layui.config({
 		, laytpl = layui.laytpl
 		, orderAgreementTpl = layui.orderAgreementTpl
 		, myutil = layui.myutil
-		, outOrderModel = layui.outOrderModel
 		, mytable = layui.mytable;
 		myutil.config.ctx = '${ctx}';
 		myutil.clickTr();
 		myutil.config.msgOffset = '250px';
-		outOrderModel.init();
+		
 		var allUserSelectHtml = '<option value="">请选择</option>';
 		myutil.getData({
 			url:'${ctx}/system/user/findUserList',
@@ -121,20 +113,8 @@ layui.config({
 			switch(obj.event){
 			case 'lookoverUseup': lookoverUseup(); break;
 			case 'productUseup': productUseup(); break;
-			case 'outOrder': outOrder(); break;
 			} 
 		})
-		function outOrder(){
-			var checked = layui.table.checkStatus('tableAgreement').data;
-			if(checked.length!=1)
-				return myutil.emsg('只能选择一条信息进行生成');
-			outOrderModel.add({
-				data:{ 
-					orderId:checked[0].id, 
-					outSourceNumber: checked[0].bacthNumber+checked[0].product.name,
-				}
-			})
-		}
 		var mode = [];
 		function lookoverUseup(){
 			var checked = layui.table.checkStatus('tableAgreement').data;

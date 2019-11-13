@@ -8,6 +8,11 @@
 	<script src="${ctx}/static/layui-v2.4.5/layui/layui.js"></script>
 	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 	<title>领料单</title>
+	<style>
+		.layui-form-pane .layui-item{
+			margin-top:10px;
+		}
+	</style>
 </head>
 <body>
 <div class="layui-card">
@@ -79,20 +84,22 @@ layui.config({
 	base : '${ctx}/static/layui-v2.4.5/'
 }).extend({
 	mytable : 'layui/myModules/mytable' ,
+	outOrderModel : 'layui/myModules/sale/outOrderModel' ,
 }).define(
-	['mytable','laydate'],
+	['mytable','laydate','outOrderModel'],
 	function(){
 		var $ = layui.jquery
 		, layer = layui.layer 				
 		, form = layui.form			 		
 		, table = layui.table
 		, laydate = layui.laydate
+		, outOrderModel = layui.outOrderModel
 		, myutil = layui.myutil
 		, laytpl = layui.laytpl
 		, mytable = layui.mytable;
 		myutil.config.ctx = '${ctx}';
 		myutil.clickTr();
-		
+		outOrderModel.init();
 		var allUserSelect,allCustomSelect;
 		myutil.getData({
 			url:'${ctx}/system/user/findUserList',
@@ -178,6 +185,17 @@ layui.config({
 							text:'请选择相关信息|是否确认审核?',
 							url:'/ledger/auditMaterialRequisition',
 						});
+					}else if(obj.event=='outOrder'){
+						var id = $('#orderIdSelect').val();
+						if(!id)
+							return myutil.emsg('请选择合同');
+						var name = $('#orderIdSelect').find('option[value="'+id+'"]').html();
+						outOrderModel.add({
+							data:{ 
+								orderId: id, 
+								outSourceNumber: name,
+							}
+						})
 					}
 				}
 			},
@@ -186,7 +204,9 @@ layui.config({
 			},
 			data:[],
 			toolbar:['<span class="layui-btn layui-btn-sm" lay-event="addEdit">修改</span>',
-					 '<span class="layui-btn layui-btn-sm" lay-event="audit">审核</span>',].join(' '),
+					 '<span class="layui-btn layui-btn-sm" lay-event="audit">审核</span>',
+					 '<span lay-event="outOrder" class="layui-btn layui-btn-sm" >加工单</span>',
+					 '<span lay-event="outOrder" class="layui-btn layui-btn-sm" >外发加工单</span>',].join(' '),
 			colsWidth:[0,12,0,8,8,8,12,8,8],
 			cols:[[
 			       { type:'checkbox',},
