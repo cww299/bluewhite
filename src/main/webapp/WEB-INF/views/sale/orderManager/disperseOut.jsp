@@ -25,6 +25,56 @@
 	</div>
 </div>
 </body>
+<script type="text/html" id="pickingTpl">
+<div style="padding:20px;text-align: center;">
+    <table class="layui-form" style="margin: auto;">
+    	<tr>
+			<td>下单时间：</td>
+			<td><input type="text" class="layui-input" id="openOrderTime" name="openOrderTime"></td>
+		</tr>
+    	<tr>
+    		<td>数量：</td>
+    		<td><input type="text" class="layui-input" name="processNumber" lay-verify="required"></td>
+    	</tr>
+    	<tr>
+    		<td>领取人：</td>
+    		<td><select name="userId"  lay-search id="addUserSelect"><option value="">请选择</option></select></td>
+    	</tr>
+    	<tr>
+    		<td>备注：</td>
+    		<td><input type="text" name="remark" class="layui-input" lay-verify="required">
+				<input type="hidden" value="1" name="type">
+				<input type="hidden" value="0" name="outsource">
+				<span style="display:none;" lay-submit id="addPicking" lay-filter="addPicking"></span></td>
+    	</tr>
+    </table>
+</div>
+</script>
+<script type="text/html" id="outTpl">
+<div style="padding:20px;text-align: center;">
+    <table class="layui-form" style="margin: auto;">
+    	<tr>
+			<td>下单时间：</td>
+			<td><input type="text" name="openOrderTime" id="openOrderTime" class="layui-input"></td>
+		</tr>
+    	<tr>
+    		<td>数量：</td>
+    		<td><input type="text" name="processNumber"  class="layui-input" lay-verify="number"></td>
+    	</tr>
+    	<tr>
+    		<td>加工点：</td>
+    		<td><select name="customerId" lay-search id="addCustomerSelect"><option value="">请选择</option></select></td>
+    	</tr>
+    	<tr>
+    		<td>备注：</td>
+    		<td><input type="text" name="remark"  class="layui-input">
+				<input type="hidden" value="1" name="type">
+				<input type="hidden" value="1" name="outsource">
+				<span style="display:none;" lay-submit id="addOut" lay-filter="addOut"></span></td>
+    	</tr>
+    </table>
+</div>
+</script>
 <script>
 layui.config({
 	base : '${ctx}/static/layui-v2.4.5/'
@@ -43,6 +93,24 @@ layui.config({
 		, mytable = layui.mytable;
 		myutil.config.ctx = '${ctx}';
 		myutil.clickTr();
+		
+		var allUserSelect,allCustomSelect;
+		myutil.getData({
+			url:'${ctx}/system/user/findUserList',
+			success:function(d){
+				for(var i=0,len=d.length;i<len;i++){
+					allUserSelect += '<option value="'+d[i].id+'">'+d[i].userName+'</option>';
+				}
+			}
+		})
+		myutil.getData({
+			url:'${ctx}/ledger/allCustomer?type=5',
+			success:function(d){
+				for(var i=0,len=d.length;i<len;i++){
+					allCustomSelect += '<option value="'+d[i].id+'">'+d[i].name+'</option>';
+				}
+			}
+		})
 		var today = myutil.getSubDay(0,'yyyy-MM-dd');
 		laydate.render({
 			elem:'#searchTime',
@@ -72,7 +140,7 @@ layui.config({
 				success:function(d){
 					var html = '<option value="">请选择</option>';
 					for(var i in d){
-						html += '<option value="'+d[i].id+'">'+d[i].bacthNumber+' ~ '+d[i].product.name+'</option>';
+						html += '<option value="'+d[i].id+'">'+d[i].orderNumber+'</option>';
 					}
 					$('#orderIdSelect').html(html);
 					$('#orderIdSelect').removeAttr('disabled');
@@ -104,19 +172,23 @@ layui.config({
 							text:'请选择相关信息|是否确认审核?',
 							url:'/ledger/generatePlaceOrder',
 						});
+					}else if(obj.event=='picikingOrder'){
+						picikingOrder();
+					}else if(obj.event=='outOrder'){
+						outOrder();
 					}
 				},
 			},
 			ifNull:'',
-			colsWidth:[0,10,0,6,8,8,0,6],
+			colsWidth:[0,10,0,6,8,8,10,6],
 			toolbar:['<span class="layui-btn layui-btn-sm" lay-event="onekey">一键审核</span>',
-				     '<span class="layui-btn layui-btn-sm layui-btn-normal" lay-event="">领料单</span>',
-					 '<span class="layui-btn layui-btn-sm layui-btn-warm" lay-event="">外发领料单</span>',
+				     '<span class="layui-btn layui-btn-sm layui-btn-normal" lay-event="picikingOrder">领料单</span>',
+					 '<span class="layui-btn layui-btn-sm layui-btn-warm" lay-event="outOrder">外发领料单</span>',
 					].join(''),
 			cols:[[
 			       { type:'checkbox',},
 			       { title:'审核日期',   field:'auditTime', type:'dateTime', },
-			       { title:'分散出库编号',   field:'outboundNumber',	},
+			       { title:'分散出库编号',   field:'orderProcurement_orderProcurementNumber',	},
 			       { title:'领取模式',   field:'orderMaterial_receiveMode_name',  },
 			       { title:'领取用量',   field:'dosage',	},
 			       { title:'下单数量',   field:'orderMaterial_order_number',	},
@@ -124,6 +196,68 @@ layui.config({
 			       { title:'是否审核',   field:'audit', transData:{data:['否','是'],}	},
 			       ]]
 		})
+		function picikingOrder(){
+			var check = table.checkStatus('tableData').data;
+			if(check.length!=1)
+				return myutil.emsg('领料单只能选择一条数据进行领取');
+			layer.open({
+				type:1,
+				title:'领料单',
+				offset:'80px',
+				btn:['确定','取消'],
+				btnAlign:'c',
+				area:['40%','40%'],
+				content:$('#pickingTpl').html(),
+				success:function(){
+					laydate.render({ elem:'#openOrderTime',type:'datetime',value:myutil.getSubDay(0,'yyyy-MM-dd hh:mm:ss'), });
+					$('#addUserSelect').append(allUserSelect);
+					form.on('submit(addPicking)',function(obj){
+						obj.field.orderId = $('#orderIdSelect').val();
+						obj.field.scatteredOutboundId = check[0].id;
+						myutil.saveAjax({
+							url:'/ledger/saveMaterialRequisition',
+							data:obj.field,
+						})
+					})
+					form.render();
+				},
+				yes:function(){
+					$('#addPicking').click();
+				}
+			})
+			
+		}
+		function outOrder(){
+			var check = table.checkStatus('tableData').data;
+			if(check.length!=1)
+				return myutil.emsg('领料单只能选择一条数据进行领取');
+			layer.open({
+				type:1,
+				title:'外发领料单',
+				offset:'80px',
+				btn:['确定','取消'],
+				btnAlign:'c',
+				area:['40%','40%'],
+				content:$('#outTpl').html(),
+				success:function(){
+					laydate.render({ elem:'#openOrderTime',type:'datetime',value:myutil.getSubDay(0,'yyyy-MM-dd hh:mm:ss'), });
+					$('#addCustomerSelect').append(allCustomSelect);
+					form.on('submit(addOut)',function(obj){
+						obj.field.orderId = $('#orderIdSelect').val();
+						obj.field.scatteredOutboundId = check[0].id;
+						myutil.saveAjax({
+							url:'/ledger/saveMaterialRequisition',
+							data:obj.field,
+						})
+					})
+					form.render();
+				},
+				yes:function(){
+					$('#addOut').click();
+				}
+			})
+			
+		}
 	}//end define function
 )//endedefine
 </script>

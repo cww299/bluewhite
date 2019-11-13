@@ -255,7 +255,7 @@ layui.config({
 				success:function(d){
 					var html = '<option value="">请选择</option>';
 					for(var i in d){
-						html += '<option value="'+d[i].id+'">'+d[i].bacthNumber+' ~ '+d[i].product.name+'</option>';
+						html += '<option value="'+d[i].id+'">'+d[i].orderNumber+'</option>';
 					}
 					$('#orderIdSelect').html(html);
 					$('#orderIdSelect').removeAttr('disabled');

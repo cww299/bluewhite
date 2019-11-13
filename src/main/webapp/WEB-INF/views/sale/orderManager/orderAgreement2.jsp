@@ -99,8 +99,8 @@ layui.config({
 		function getTpl(){
 			return function(d){
 				if(d.orderMaterials && d.orderMaterials.length>0)
-					return '<span class="layui-badge layui-bg-">是</span>';
-				return '<span class="layui-badge layui-bg-blue">否</span>';
+					return '<span class="layui-badge layui-bg-blue">是</span>';
+				return '<span class="layui-badge layui-bg-">否</span>';
 			}
 		}
 		form.on('submit(search)',function(obj){
