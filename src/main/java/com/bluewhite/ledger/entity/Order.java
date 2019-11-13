@@ -31,6 +31,12 @@ import com.bluewhite.product.product.entity.Product;
 @Entity
 @Table(name = "ledger_order")
 public class Order extends BaseEntity<Long> {
+	
+	/**
+	 * 生产计划单号
+	 */
+	@Column(name = "order_number")
+	private String orderNumber;
 
 	/**
 	 * 批次号
@@ -50,7 +56,7 @@ public class Order extends BaseEntity<Long> {
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "product_id", referencedColumnName = "id", insertable = false, updatable = false)
 	private Product product;
-	
+
 	/**
 	 * 下单类型id
 	 */
@@ -69,14 +75,13 @@ public class Order extends BaseEntity<Long> {
 	 */
 	@OneToMany(mappedBy = "order", cascade = CascadeType.ALL, orphanRemoval = true)
 	private Set<OrderMaterial> orderMaterials = new HashSet<OrderMaterial>();
-	
+
 	/**
 	 * 销售子单
 	 */
-	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY,orphanRemoval = true)
+	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, orphanRemoval = true)
 	@JoinColumn(name = "order_id")
 	private List<OrderChild> orderChilds = new ArrayList<>();
-
 
 	/**
 	 * 合同总数量
@@ -109,12 +114,18 @@ public class Order extends BaseEntity<Long> {
 	private Integer prepareEnough;
 
 	/**
+	 * 产品分类(1=成品，2=皮壳)
+	 */
+	@Column(name = "product_type")
+	private Integer productType;
+
+	/**
 	 * 是否生成耗料单
 	 * 
 	 */
 	@Transient
 	private Integer consumption;
-	
+
 	/**
 	 * 客户name
 	 * 
@@ -144,7 +155,7 @@ public class Order extends BaseEntity<Long> {
 	 */
 	@Transient
 	private String productName;
-	
+
 	/**
 	 * 产品编号
 	 */
@@ -153,7 +164,21 @@ public class Order extends BaseEntity<Long> {
 	
 	
 
+	public String getOrderNumber() {
+		return orderNumber;
+	}
 
+	public void setOrderNumber(String orderNumber) {
+		this.orderNumber = orderNumber;
+	}
+
+	public Integer getProductType() {
+		return productType;
+	}
+
+	public void setProductType(Integer productType) {
+		this.productType = productType;
+	}
 
 	public Integer getConsumption() {
 		return consumption;

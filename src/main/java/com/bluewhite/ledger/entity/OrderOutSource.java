@@ -17,7 +17,6 @@ import javax.persistence.Transient;
 import com.bluewhite.base.BaseEntity;
 import com.bluewhite.basedata.entity.BaseData;
 import com.bluewhite.onlineretailers.inventory.entity.Inventory;
-import com.bluewhite.system.user.entity.Role;
 import com.bluewhite.system.user.entity.User;
 
 /**
@@ -243,6 +242,12 @@ public class OrderOutSource extends BaseEntity<Long> {
 	 */
 	@Transient
 	private String customerName;
+	
+	/**
+	 * 工序ids
+	 */
+	@Transient
+	private String outsourceTaskIds;
 
 	/**
 	 * 查询字段
@@ -256,6 +261,15 @@ public class OrderOutSource extends BaseEntity<Long> {
 	private Date orderTimeEnd;
 	
 	
+	
+
+	public String getOutsourceTaskIds() {
+		return outsourceTaskIds;
+	}
+
+	public void setOutsourceTaskIds(String outsourceTaskIds) {
+		this.outsourceTaskIds = outsourceTaskIds;
+	}
 
 	public Set<BaseData> getOutsourceTask() {
 		return outsourceTask;
