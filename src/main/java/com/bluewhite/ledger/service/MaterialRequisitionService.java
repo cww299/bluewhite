@@ -37,5 +37,12 @@ public interface MaterialRequisitionService  extends BaseCRUDService<MaterialReq
 	 * @return
 	 */
 	public int deleteMaterialRequisition(String ids);
+	
+	/**
+	 * 审核出库
+	 * @param ids
+	 * @return
+	 */
+	public int outboundMaterialRequisition(String ids);
 
 }
