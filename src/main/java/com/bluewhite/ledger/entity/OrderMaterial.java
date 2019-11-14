@@ -23,6 +23,12 @@ import com.bluewhite.product.primecostbasedata.entity.Materiel;
 @Entity
 @Table(name = "ledger_order_material")
 public class OrderMaterial extends BaseEntity<Long> {
+	/**
+	 * 耗料单编号
+	 * 
+	 */
+	@Column(name = "order_material_number")
+	private String orderMaterialNumber;
 
 	/**
 	 * 订单id
@@ -126,7 +132,17 @@ public class OrderMaterial extends BaseEntity<Long> {
 	@Transient
 	private Date orderTimeEnd;
 	
+	
+	
 	 
+	public String getOrderMaterialNumber() {
+		return orderMaterialNumber;
+	}
+
+	public void setOrderMaterialNumber(String orderMaterialNumber) {
+		this.orderMaterialNumber = orderMaterialNumber;
+	}
+
 	public Double getInventoryTotal() {
 		return inventoryTotal;
 	}
