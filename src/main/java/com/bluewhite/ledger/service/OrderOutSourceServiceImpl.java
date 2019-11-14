@@ -202,6 +202,18 @@ public class OrderOutSourceServiceImpl extends BaseServiceImpl<OrderOutSource, L
 		if(ot.getAudit()==1){
 			throw new ServiceException("已审核，无法修改");
 		}
+		//将工序任务变成set存入
+		if(!StringUtils.isEmpty(orderOutSource.getOutsourceTaskIds())){
+			String[] idStrings = orderOutSource.getOutsourceTaskIds().split(",");
+			if(idStrings.length>0){
+				for(String ids : idStrings ){
+					Long id = Long.parseLong(ids);
+					BaseData baseData = baseDataDao.findOne(id);
+					orderOutSource.getOutsourceTask().add(baseData);
+				}
+				
+			}
+		}
 		update(orderOutSource, ot, "");
 	}
 
