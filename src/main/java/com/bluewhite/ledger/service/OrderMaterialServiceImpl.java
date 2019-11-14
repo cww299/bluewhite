@@ -75,8 +75,7 @@ public class OrderMaterialServiceImpl extends BaseServiceImpl<OrderMaterial, Lon
 		pages.getContent().stream().forEach(ot -> {
 			// 过滤掉已经耗尽的物料采购单
 			if (ot.getMateriel().getOrderProcurements().size() > 0) {
-				ot.getMateriel()
-						.setOrderProcurements(ot.getMateriel().getOrderProcurements().stream()
+				ot.getMateriel().setOrderProcurements(ot.getMateriel().getOrderProcurements().stream()
 								.filter(OrderProcurement -> OrderProcurement.getResidueNumber() > 0)
 								.collect(Collectors.toSet()));
 			}

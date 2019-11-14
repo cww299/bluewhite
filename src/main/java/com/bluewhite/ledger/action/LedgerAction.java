@@ -207,7 +207,7 @@ public class LedgerAction {
 		clearCascadeJSONScatteredOutbound = ClearCascadeJSON.get()
 				.addRetainTerm(ScatteredOutbound.class, "id", "outboundNumber", "orderMaterial", "orderProcurement",
 						"receiveUser", "user", "dosage", "remark", "audit", "auditTime", "placeOrderTime",
-						"openOrderAudit")
+						"openOrderAudit","residueDosage")
 				.addRetainTerm(OrderProcurement.class, "id", "orderProcurementNumber")
 				.addRetainTerm(OrderMaterial.class, "id", "receiveMode", "order")
 				.addRetainTerm(Order.class, "id", "bacthNumber","number", "remark","orderNumber")

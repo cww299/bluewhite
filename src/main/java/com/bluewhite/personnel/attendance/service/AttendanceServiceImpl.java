@@ -136,7 +136,11 @@ public class AttendanceServiceImpl extends BaseServiceImpl<Attendance, Long> imp
 	@Transactional
 	public List<Attendance> allAttendance(String address, Date startTime, Date endTime, Long userId) {
 		sdk.initSTA();
-		sdk.connect(address, 4370);
+		try {
+			sdk.connect(address, 4370);
+		} catch (Exception e) {
+			
+		}
 		List<Attendance> attendanceListAll = new ArrayList<>();
 		boolean flag = sdk.readGeneralLogData(0);
 		if (flag) {
