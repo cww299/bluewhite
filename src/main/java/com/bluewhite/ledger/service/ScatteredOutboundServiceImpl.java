@@ -85,21 +85,21 @@ public class ScatteredOutboundServiceImpl extends BaseServiceImpl<ScatteredOutbo
 							scatteredOutbound.setOrderProcurementId(orderProcurement.getId());
 							// 领料分为两种情况，
 							// 1.当库存量不足，补充库存后，出现两条采购单(采购库存单剩余数量小于领料单领取数量)
-							if (orderProcurement.getResidueNumber() < ot.getDosage()) {
+							// 2.库存充足只存在一条采购单(采购库存单剩余数量大于或者领料单领取数量)
+							double dosage = ot.getDosage();
+							if (orderProcurement.getResidueNumber() < dosage) {
 								scatteredOutbound.setDosage(orderProcurement.getResidueNumber());
 								scatteredOutbound.setResidueDosage(orderProcurement.getResidueNumber());
 								orderProcurement.setResidueNumber((double) 0);
-								ot.setDosage(NumUtils.sub(ot.getDosage(), orderProcurement.getResidueNumber()));
-								ot.setOutbound(1);
-							}
-							// 2.库存充足只存在一条采购单(采购库存单剩余数量大于或者领料单领取数量)
-							if (orderProcurement.getResidueNumber() >= ot.getDosage()) {
-								scatteredOutbound.setDosage(ot.getDosage());
-								scatteredOutbound.setResidueDosage(ot.getDosage());
+								//将剩余需要分配的用量更新到下一单
+								dosage = NumUtils.sub(dosage, orderProcurement.getResidueNumber());
+							}else if (orderProcurement.getResidueNumber() >= dosage) {
+								scatteredOutbound.setDosage(dosage);
+								scatteredOutbound.setResidueDosage(dosage);
 								orderProcurement.setResidueNumber(
-										NumUtils.sub(orderProcurement.getResidueNumber(), ot.getDosage()));
-								ot.setOutbound(1);
+										NumUtils.sub(orderProcurement.getResidueNumber(), dosage));
 							}
+							ot.setOutbound(1);
 							save(scatteredOutbound);
 						}
 						orderMaterialDao.save(ot);
