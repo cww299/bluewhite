@@ -111,6 +111,10 @@ public class OrderOutSourceServiceImpl extends BaseServiceImpl<OrderOutSource, L
 			if (param.getInWarehouseType() != null) {
 				predicate.add(cb.equal(root.get("inWarehouseType").as(Long.class), param.getInWarehouseType()));
 			}
+			// 是否外发
+			if (param.getOutsource()!=null) {
+				predicate.add(cb.equal(root.get("outsource").as(Integer.class), param.getOutsource()));
+			}
 			// 按跟单人
 			if (!StringUtils.isEmpty(param.getUserName())) {
 				predicate.add(cb.like(root.get("user").get("userName").as(String.class), "%" + param.getUserName() + "%"));
@@ -199,17 +203,6 @@ public class OrderOutSourceServiceImpl extends BaseServiceImpl<OrderOutSource, L
 			throw new ServiceException("已审核，无法修改");
 		}
 		update(orderOutSource, ot, "");
-		if (ot.getOrderId() != null) {
-			Order order = orderDao.findOne(ot.getOrderId());
-			List<OrderOutSource> orderOutSourceList = dao.findByOrderIdAndFlag(ot.getOrderId(), 1);
-			double sumNumber = orderOutSourceList.stream().mapToDouble(OrderOutSource::getProcessNumber).sum();
-			if (sumNumber > order.getNumber()) {
-				throw new ServiceException("外发总数量不能大于下单合同数量，请核实后填写");
-			}
-		} else {
-			throw new ServiceException("生产下单合同不能为空");
-		}
-
 	}
 
 	@Override
