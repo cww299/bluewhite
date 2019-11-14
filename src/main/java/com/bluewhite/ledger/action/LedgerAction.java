@@ -210,7 +210,7 @@ public class LedgerAction {
 						"openOrderAudit")
 				.addRetainTerm(OrderProcurement.class, "id", "orderProcurementNumber")
 				.addRetainTerm(OrderMaterial.class, "id", "receiveMode", "order")
-				.addRetainTerm(Order.class, "id", "bacthNumber", "product", "number", "remark","orderNumber")
+				.addRetainTerm(Order.class, "id", "bacthNumber","number", "remark","orderNumber")
 				.addRetainTerm(BaseOne.class, "id", "name")
 				.addRetainTerm(User.class, "id", "userName");
 	}
