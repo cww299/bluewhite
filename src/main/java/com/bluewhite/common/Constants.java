@@ -127,8 +127,11 @@ public class Constants {
     /**
      * 生产计划中的编号前缀
      */
+    //生产耗料
+    public final static String  SCHL = "SCHL";
     //生产领料
     public final static String  SCLL = "SCLL";
-    public final static String  FSCK = "FSCK";
+    //耗料出库
+    public final static String  HLCK = "HLCK";
 
 }

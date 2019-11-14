@@ -80,7 +80,7 @@ public class ScatteredOutboundServiceImpl extends BaseServiceImpl<ScatteredOutbo
 							ScatteredOutbound scatteredOutbound = new ScatteredOutbound();
 							// 关联耗料单
 							scatteredOutbound.setOrderMaterialId(id);
-							scatteredOutbound.setOutboundNumber(Constants.FSCK + StringUtil.getDate());
+							scatteredOutbound.setOutboundNumber(Constants.SCHL + StringUtil.getDate());
 							scatteredOutbound.setAudit(0);
 							scatteredOutbound.setOrderProcurementId(orderProcurement.getId());
 							// 领料分为两种情况，
@@ -159,7 +159,7 @@ public class ScatteredOutboundServiceImpl extends BaseServiceImpl<ScatteredOutbo
 					Long id = Long.parseLong(idArr[i]);
 					ScatteredOutbound ot = findOne(id);
 					if (ot.getAudit() == 1) {
-						throw new ServiceException("第" + (i + 1) + "条耗料已审核，无法删除");
+						throw new ServiceException("第" + (i + 1) + "条耗料出库单已审核，无法删除");
 					}
 					// 当删除出库单时，恢复出库情况和库存
 					OrderMaterial orderMaterial = ot.getOrderMaterial();
@@ -186,6 +186,9 @@ public class ScatteredOutboundServiceImpl extends BaseServiceImpl<ScatteredOutbo
 				for (int i = 0; i < idArr.length; i++) {
 					Long id = Long.parseLong(idArr[i]);
 					ScatteredOutbound ot = findOne(id);
+					if (ot.getAudit() == 1) {
+						throw new ServiceException("第" + (i + 1) + "条领料单已审核，请勿多次审核");
+					}
 					if (ot.getOrderProcurement().getArrival() == 0) {
 						throw new ServiceException("第" + (i + 1) + "条领料单，物料未到货，无法审核");
 					}
