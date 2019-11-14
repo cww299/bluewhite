@@ -185,7 +185,7 @@ layui.config({
 				},
 			},
 			ifNull:'',
-			colsWidth:[0,10,0,6,8,8,10,6],
+			colsWidth:[0,10,0,6,8,8,6],
 			toolbar:['<span class="layui-btn layui-btn-sm" lay-event="onekey">一键审核</span>',
 				     '<span class="layui-btn layui-btn-sm layui-btn-normal" lay-event="picikingOrder">领料单</span>',
 					 '<span class="layui-btn layui-btn-sm layui-btn-warm" lay-event="outOrder">外发领料单</span>',
@@ -196,8 +196,7 @@ layui.config({
 			       { title:'分散出库编号',   field:'orderProcurement_orderProcurementNumber',	},
 			       { title:'领取模式',   field:'orderMaterial_receiveMode_name',  },
 			       { title:'领取用量',   field:'dosage',	},
-			       { title:'剩余领取用量',   field:'residueDosage',	},
-			       { title:'备注',   field:'remark',  },
+			       { title:'剩余领取用量',   field:'residueDosage',style:'color:red;', },
 			       { title:'是否审核',   field:'audit', transData:{data:['否','是'],}	},
 			       ]]
 		})
@@ -223,6 +222,7 @@ layui.config({
 							url:'/ledger/saveMaterialRequisition',
 							data:obj.field,
 							success:function(){
+								table.reload('tableData');
 								layer.close(addWin);
 							}
 						})
