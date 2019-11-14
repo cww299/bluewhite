@@ -158,7 +158,7 @@ layui.config({
 		form.on('select(agreementSelect)',function(obj){
 			if(obj.value!='')
 				table.reload('tableData',{
-					url:'${ctx}/ledger/getMaterialRequisition', //
+					url:'${ctx}/ledger/getMaterialRequisition?&orderId='+$('#orderIdSelect').val(),
 				})
 			else
 				table.reload('tableData',{

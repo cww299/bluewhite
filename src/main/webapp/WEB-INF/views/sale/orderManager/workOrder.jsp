@@ -171,7 +171,7 @@ layui.config({
 		form.on('select(agreementSelect)',function(obj){
 			if(obj.value!='')
 				table.reload('tableData',{
-					url:'${ctx}/ledger/orderOutSourcePage?outsource=0',
+					url:'${ctx}/ledger/orderOutSourcePage?outsource=0&orderId='+$('#orderIdSelect').val(),
 				})
 			else
 				table.reload('tableData',{

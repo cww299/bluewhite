@@ -402,7 +402,6 @@ layui.config({
 							success:function(){
 								mytable.render({
 									elem: '#outTable',
-									colsWidth:[0,15,0,0,6,6],
 									url: '${ctx}/ledger/getScatteredOutbound?orderId='+orderId,
 									toolbar:['<span class="layui-btn layui-btn-sm" lay-event="audit">审核</span>'].join(''),
 									ifNull:'',
@@ -450,9 +449,10 @@ layui.config({
 										deleUrl:'/ledger/deleteScatteredOutbound',
 										saveUrl:'/ledger/updateScatteredOutbound',
 									},
+									colsWidth:[0,15,15,0,6,6],
 									cols:[[
 										   { type:'checkbox' },
-									       { title:'出库时间',   field:'auditTime',	type:'dateTime', edit:true,},
+									       { title:'出库日期',   field:'auditTime',	type:'dateTime', edit:true,},
 									       { title:'分散出库编号',   field:'outboundNumber',	},
 									       { title:'采购单编号',   field:'orderProcurement_orderProcurementNumber',  },
 									       { title:'领取用量',   field:'dosage',	},

@@ -8,6 +8,11 @@
 	<script src="${ctx}/static/layui-v2.4.5/layui/layui.js"></script>
 	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 	<title>耗料出库出库</title>
+	<style>
+		.pickingDiv td{
+			padding: 5px 0;
+		}
+	</style>
 </head>
 <body>
 <div class="layui-card">
@@ -27,7 +32,7 @@
 </body>
 <script type="text/html" id="pickingTpl">
 <div style="padding:20px;text-align: center;">
-    <table class="layui-form" style="margin: auto;">
+    <table class="layui-form pickingDiv" style="margin: auto;">
     	<tr>
 			<td>下单时间：</td>
 			<td><input type="text" class="layui-input" id="openOrderTime" name="openOrderTime"></td>
@@ -52,7 +57,7 @@
 </script>
 <script type="text/html" id="outTpl">
 <div style="padding:20px;text-align: center;">
-    <table class="layui-form" style="margin: auto;">
+    <table class="layui-form pickingDiv" style="margin: auto;">
     	<tr>
 			<td>下单时间：</td>
 			<td><input type="text" name="openOrderTime" id="openOrderTime" class="layui-input"></td>
@@ -170,7 +175,7 @@ layui.config({
 						myutil.deleTableIds({
 							table:'tableData',
 							text:'请选择相关信息|是否确认审核?',
-							url:'/ledger/generatePlaceOrder',
+							url:'/ledger/auditScatteredOutbound',
 						});
 					}else if(obj.event=='picikingOrder'){
 						picikingOrder();
@@ -187,11 +192,11 @@ layui.config({
 					].join(''),
 			cols:[[
 			       { type:'checkbox',},
-			       { title:'审核日期',   field:'auditTime', type:'dateTime', },
+			       { title:'出库日期',   field:'auditTime', type:'dateTime', },
 			       { title:'分散出库编号',   field:'orderProcurement_orderProcurementNumber',	},
 			       { title:'领取模式',   field:'orderMaterial_receiveMode_name',  },
 			       { title:'领取用量',   field:'dosage',	},
-			       { title:'下单数量',   field:'orderMaterial_order_number',	},
+			       { title:'剩余领取用量',   field:'residueDosage',	},
 			       { title:'备注',   field:'remark',  },
 			       { title:'是否审核',   field:'audit', transData:{data:['否','是'],}	},
 			       ]]
@@ -267,5 +272,4 @@ layui.config({
 	}//end define function
 )//endedefine
 </script>
-
 </html>
