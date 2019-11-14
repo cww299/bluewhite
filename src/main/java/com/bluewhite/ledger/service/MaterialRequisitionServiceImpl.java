@@ -128,6 +128,9 @@ public class MaterialRequisitionServiceImpl extends BaseServiceImpl<MaterialRequ
 					if (materialRequisition.getAudit() == 1) {
 						throw new ServiceException("第" + (i + 1) + "条领料单已审核，无法删除");
 					}
+					ScatteredOutbound scatteredOutbound = materialRequisition.getScatteredOutbound();
+					scatteredOutbound.setResidueDosage(NumUtils.sum(scatteredOutbound.getResidueDosage(),materialRequisition.getDosage()));
+					scatteredOutboundDao.save(scatteredOutbound);
 					delete(id);
 					count++;
 				}
