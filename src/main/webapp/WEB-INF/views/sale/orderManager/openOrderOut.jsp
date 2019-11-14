@@ -5,9 +5,10 @@
 <html>
 <head>
 	<link rel="stylesheet" href="${ctx }/static/layui-v2.4.5/layui/css/layui.css" media="all">
+	<link rel="stylesheet" href="${ctx }/static/layui-v2.4.5/formSelect/formSelects-v4.css" />
 	<script src="${ctx}/static/layui-v2.4.5/layui/layui.js"></script>
 	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-	<title>外发单</title>
+	<title>外发加工单</title>
 	<style>
 		.layui-form-pane .layui-item {
 		    margin-top: 10px;
@@ -19,32 +20,11 @@
 	<div class="layui-card-body">
 		<table class="layui-form">
 			<tr>
-				<td>日期:</td>
-				<td><input type="text" id="searchTime" class="layui-input"></td>
-				<td>&nbsp;&nbsp;</td>
-				<td>编号:</td>
-				<td><input type="text" name="outSourceNumber" class="layui-input"></td>
-				<td>&nbsp;&nbsp;</td>
-				<td>工序:</td>
-				<td><input type="text" name="process" class="layui-input"></td>
-				<td>&nbsp;&nbsp;</td>
-				<td>跟单人:</td>
-				<td><input type="text" name="userName" class="layui-input"></td>
-				<td>&nbsp;&nbsp;</td>
-				<td>加工点:</td>
-				<td><input type="text" name="customerName" class="layui-input"></td>
-				<td>&nbsp;&nbsp;</td>
-				<td>是否作废:</td>
-				<td style="width:100px;"><select name="flag"><option value="">请选择</option>
-									<option value="0">否</option>
-									<option value="1">是</option></select></td>
-				<td>&nbsp;&nbsp;</td>
-				<td>是否审核:</td>
-				<td style="width:100px;"><select name="audit"><option value="">请选择</option>
-									<option value="0">否</option>
-									<option value="1">是</option></select></td>
-				<td>&nbsp;&nbsp;</td>
-				<td><span class="layui-btn" lay-submit lay-filter="search">搜索</span></td>
+				<td>合同日期:</td>
+				<td><input type="text" name="orderTimeBegin" id="searchTime" class="layui-input"></td>
+				<td>&nbsp;&nbsp;&nbsp;</td>
+				<td>合同:</td>
+				<td style="width:500px;"><select name="orderId" disabled id="orderIdSelect" lay-search lay-filter="agreementSelect"></select></td>
 			</tr>
 		</table>
 		<table id="tableData" lay-filter="tableData"></table>
@@ -149,17 +129,60 @@ layui.config({
 		, laytpl = layui.laytpl
 		, mytable = layui.mytable;
 		myutil.config.ctx = '${ctx}';
-		myutil.timeFormat();
+		myutil.clickTr();
 		outOrderModel.init();
+		var today = myutil.getSubDay(0,'yyyy-MM-dd');
 		laydate.render({
 			elem:'#searchTime',
 			range:'~',
+			value: today+' ~ '+today,
+			done:function(val){
+				if(val){
+					val = val.split(' ~ ');
+					getAgreementSelect({
+						orderTimeBegin:val[0]+' 00:00:00',
+						orderTimeEnd:val[1]+' 23:59:59',
+					});
+				}else{
+					$('#orderIdSelect').attr('disabled','disabled');
+					form.render();
+				}
+			}
 		})
-		var allUser = [],allCustom = [];
+		getAgreementSelect({
+			orderTimeBegin: today+' 00:00:00',
+			orderTimeEnd: today+' 23:59:59',
+		});
+		function getAgreementSelect(data){
+			myutil.getDataSync({
+				url:'${ctx}/ledger/getOrder',
+				data: data,
+				success:function(d){
+					var html = '<option value="">请选择</option>';
+					for(var i in d){
+						html += '<option value="'+d[i].id+'">'+d[i].orderNumber+'</option>';
+					}
+					$('#orderIdSelect').html(html);
+					$('#orderIdSelect').removeAttr('disabled');
+					form.render();
+				}
+			})
+		}
+		form.on('select(agreementSelect)',function(obj){
+			if(obj.value!='')
+				table.reload('tableData',{
+					url:'${ctx}/ledger/orderOutSourcePage?outsource=1',
+				})
+			else
+				table.reload('tableData',{
+					data:[],
+					url:'',
+				})
+		})
 		mytable.render({
 			elem:'#tableData',
 			size:'lg',
-			url:'${ctx}/ledger/orderOutSourcePage',
+			data:[],
 			autoUpdate:{
 				deleUrl:'/ledger/deleteOrderOutSource',
 			},
@@ -179,28 +202,14 @@ layui.config({
 							text:'请选择相关信息进行作废|是否确认作废？',
 						})
 					}else if(obj.event=='print'){
+						printWin();
+					}else if(obj.event=="edit"){
 						var check = layui.table.checkStatus('tableData').data;
-						if(check.length<1)
-							return myutil.emsg('请选择相应的数据打印');
-						var html = '';
-						laytpl($('#printTpl').html()).render(check,function(h){
-							html = h;
-						})
-						layer.open({
-							type:1,
-							title:'打印信息',
-							content:html,
-							area:['80%','80%'],
-							btn:['打印','取消'],
-							btnAlign:'c',
-							shadeClose:true,
-							yes: function(myDiv){    
-								var printHtml = document.getElementById('printWin').innerHTML;
-								var wind = window.open("",'newwindow', 'height=800, width=1500, top=100, left=100, toolbar=no, menubar=no, scrollbars=no, resizable=no,location=n o, status=no');
-								wind.document.body.innerHTML = printHtml;
-								wind.print();
-							},
-						})
+						if(check.length!=1)
+							return myutil.emsg('只能选择一条数据编辑！');
+						outOrderModel.update({
+							data:check[0]
+						});
 					}
 				},
 			},
@@ -208,10 +217,11 @@ layui.config({
 			colsWidth:[0,0,10,6,10,6,8,8,6,6,], 
 			toolbar:['<span class="layui-btn layui-btn-sm" lay-event="print">打印</span>',
 			         '<span class="layui-btn layui-btn-sm layui-btn-warm" lay-event="audit">审核</span>',
-			         '<span class="layui-btn layui-btn-sm layui-btn-normal" lay-event="flag">作废</span>',].join(' '),
+			         '<span class="layui-btn layui-btn-sm layui-btn-normal" lay-event="flag">作废</span>',
+			         '<span class="layui-btn layui-btn-sm" lay-event="edit">编辑</span>',].join(' '),
 			cols:[[
 			       { type:'checkbox',},
-			       { title:'外发编号',   field:'outSourceNumber',	},
+			       { title:'外发编号',   field:'order_orderNumber',	},
 			       { title:'外发工序',   field:'process',	},
 			       { title:'外发数量',   field:'processNumber',	},
 			       { title:'外发时间',   field:'openOrderTime', type:'date',},
@@ -222,32 +232,31 @@ layui.config({
 			       { title:'是否审核',   field:'audit',	transData:{ data:['否','是'],}, },
 			       ]]
 		})
-		$(document).on('click', '.layui-table-view tbody tr', function(event) {
-			var trIndex = $(this).data('index');
-			var trData = table.cache['tableData'][trIndex];
-			outOrderModel.update({
-				data:trData,
-				success:function(){
-					table.reload('tableData');
-				}
+		
+		function printWin(){
+			var check = layui.table.checkStatus('tableData').data;
+			if(check.length<1)
+				return myutil.emsg('请选择相应的数据打印');
+			var html = '';
+			laytpl($('#printTpl').html()).render(check,function(h){
+				html = h;
 			})
-		})
-		form.on('submit(search)',function(obj){
-			var t = $('#searchTime').val();
-			if(t!=''){
-				t = t.split(' ~ ');
-				t[0] += ' 00:00:00';
-				t[1] += ' 23:59:59';
-			}else
-				t = ['',''];
-			obj.field.orderTimeBegin = t[0];
-			obj.field.orderTimeEnd = t[1];
-			table.reload('tableData',{
-				where: obj.field,
-				page: { curr:1 },
+			layer.open({
+				type:1,
+				title:'打印信息',
+				content:html,
+				area:['80%','80%'],
+				btn:['打印','取消'],
+				btnAlign:'c',
+				shadeClose:true,
+				yes: function(myDiv){    
+					var printHtml = document.getElementById('printWin').innerHTML;
+					var wind = window.open("",'newwindow', 'height=800, width=1500, top=100, left=100, toolbar=no, menubar=no, scrollbars=no, resizable=no,location=n o, status=no');
+					wind.document.body.innerHTML = printHtml;
+					wind.print();
+				},
 			})
-			
-		})
+		}
 	}//end define function
 )//endedefine
 </script>
