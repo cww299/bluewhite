@@ -205,8 +205,8 @@ layui.define(['mytable','form'],function(exports){
 			    	   select:{ data: [{id:0,name:'不转换'},{id:1,name:'转换'}],layFilter:'convertUnitSelect',unsearch:true, } ,},
 			       { title:'单只用料',   	field:'oneMaterial',	edit:true, },
 			       { title:'手动损耗', 		field:'manualLoss',  	edit:true, },
-			       { title:'当批当品种用量',  field:'batchMaterial',	edit:true, },
-			       { title:'当批当品种价格',  field:'batchMaterialPrice',   edit:true, },
+			       { title:'当批当品种用量',  field:'batchMaterial',	edit:false, },
+			       { title:'当批当品种价格',  field:'batchMaterialPrice',   edit:false, },
 			       { title:'压货环节',   	field:'overstock_id', type:'select', select:{ data: allOverstock } ,},
 			       ]],
 	        done:function(){

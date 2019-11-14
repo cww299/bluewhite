@@ -42,7 +42,7 @@ layui.extend({
 					'<label class="layui-form-label">外发工序</label>',
 					'<div class="layui-input-block">',
 						'<select id="processSelect" lay-search name="outsourceTaskIds" xm-select="processSelect"',
-						   'xm-select-show-count="4">',
+						   'xm-select-show-count="5">',
 							'<option value="">请选择</option>',
 						'</select>',
 					'</div>',
@@ -71,14 +71,14 @@ layui.extend({
 				'<div class="layui-item" pane>',
 					'<label class="layui-form-label">加工点</label>',
 					'<div class="layui-input-block">',
-						'<select lay-search name="customerId" id="customerId" data-value="{{ d.customer?d.customer.id:"" }}">',
+						'<select lay-search name="customerId" id="customerId">',
 							'<option value="">请选择</option></select>',
 					'</div>',
 				'</div>',
 				'<div class="layui-item" pane>',
 					'<label class="layui-form-label">跟单人</label>',
 					'<div class="layui-input-block">',
-						'<select lay-search name="userId" id="userId" data-value="{{ d.user?d.user.id:"" }}">',
+						'<select lay-search name="userId" id="userId">',
 							'<option value="">请选择</option></select>',
 					'</div>',
 				'</div>',
@@ -106,7 +106,7 @@ layui.extend({
 					'<div class="layui-item" pane>',
 						'<label class="layui-form-label">预计仓库</label>',
 						'<div class="layui-input-block">',
-							'<select name="warehouseTypeId" id="warehouseTypeId" lay-search data-value="{{ d.warehouseType?d.warehouseType.id:"" }}">',
+							'<select name="warehouseTypeId" id="warehouseTypeId" lay-search>',
 								'<option value="">请选择</option></select>',
 						'</div>',
 					'</div>',
@@ -130,7 +130,7 @@ layui.extend({
 		var win = layer.open({
 			type:1,
 			content:html,
-			area:['30%','80%'],
+			area:['32%','80%'],
 			btn:['确定','取消'],
 			title: title,
 			shadeClose:true,
@@ -158,6 +158,28 @@ layui.extend({
 					}
 					$('#gWeight').val(val*1000);
 				})
+				$('#userId').append(allOrgUser);
+				if(data.outsource==1){
+					$('#customerId').append(allCustom);
+				}else{
+					$('#customerId').append(allUser);
+					$('#customerId').attr('name','processingUserId');
+				}
+				$('#warehouseTypeId').append(allWarehouse);
+				$('#processSelect').append(allProcess);
+				formSelects.render();
+				if(data.id){	//如果存在id，进行数据回显
+					var processIds = [];
+					for(var i=0,len=data.outsourceTask.length;i<len;i++)
+						processIds.push(data.outsourceTask[i].id);
+					formSelects.value('processSelect',processIds); 
+					$('#userId').val(data.user?data.user.id:'');
+					$('#warehouseTypeId').val(data.warehouseType?data.warehouseType.id:'');
+					if(data.outsource==1)
+						$('#customerId').val(data.customer?data.customer.id:'');
+					else
+						$('#customerId').val(data.processingUser?data.processingUser.id:"");
+				}
 				form.on('submit(sureAddOutOrder)',function(obj){
 					var url = '/ledger/saveOrderOutSource';
 					if(data.id)
@@ -171,22 +193,7 @@ layui.extend({
 						}
 					})
 				})
-				$('#userId').append(allOrgUser);
-				if(data.outsource==1){
-					$('#customerId').append(allCustom);
-				}else{
-					$('#customerId').append(allUser);
-					$('#customerId').attr('name','processingUserId');
-				}
-				$('#warehouseTypeId').append(allWarehouse);
-				$('#processSelect').append(allProcess);
-				
-				
-				/*$('#customerId').val($('#customerId').data('value'));
-				$('#userId').val($('#userId').data('value'));
-				$('#warehouseTypeId').val($('#warehouseTypeId').data('value'));*/
 				form.render();
-				formSelects.render();
 			},
 			yes:function(){
 				$('#sureAddOutOrder').click();

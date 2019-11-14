@@ -8,7 +8,7 @@
 	<link rel="stylesheet" href="${ctx }/static/layui-v2.4.5/formSelect/formSelects-v4.css" />
 	<script src="${ctx}/static/layui-v2.4.5/layui/layui.js"></script>
 	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-	<title>外发加工单</title>
+	<title>加工单</title>
 	<style>
 		.layui-form-pane .layui-item {
 		    margin-top: 10px;
@@ -171,7 +171,7 @@ layui.config({
 		form.on('select(agreementSelect)',function(obj){
 			if(obj.value!='')
 				table.reload('tableData',{
-					url:'${ctx}/ledger/orderOutSourcePage?outsource=1',
+					url:'${ctx}/ledger/orderOutSourcePage?outsource=0',
 				})
 			else
 				table.reload('tableData',{
@@ -228,7 +228,7 @@ layui.config({
 			       { title:'数量',   field:'processNumber',	},
 			       { title:'时间',   field:'openOrderTime', type:'date',},
 			       { title:'跟单人',   field:'user_userName',	},
-			       { title:'加工点',   field:'customer_name',	},
+			       { title:'加工点',   field:'processingUser_userName',	},
 			       { title:'棉花类型',   field:'fill',	},
 			       { title:'千克',   field:'kilogramWeight',	},
 			       { title:'克重',   field:'gramWeight',	},
