@@ -93,7 +93,7 @@ public class LedgerAction {
 				.addRetainTerm(OrderChild.class, "id","customer","user","childNumber","childRemark")
 				.addRetainTerm(Customer.class, "id", "name")
 				.addRetainTerm(User.class, "id", "userName")
-				.addRetainTerm(Product.class, "id", "name", "number","inventorys");
+				.addRetainTerm(Product.class, "id", "name", "number");
 		}
 
 	private ClearCascadeJSON clearCascadeJSONPacking;
