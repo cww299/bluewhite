@@ -221,7 +221,7 @@ public class LedgerAction {
 				.addRetainTerm(OrderOutSource.class, "id", "fill", "fillRemark", "outSourceNumber",
 						"order", "user", "customer", "remark", "gramWeight", "processNumber", "process",
 						"openOrderTime","outGoingTime","wholeList","flag","audit","productType","warehouseType",
-						"inWarehouseType","arrival","arrivalTime","arrivalNumber")
+						"inWarehouseType","arrival","arrivalTime","arrivalNumber","outsourceTask","gramWeight","kilogramWeight")
 				.addRetainTerm(Order.class, "id", "bacthNumber", "product", "number", "remark","orderNumber")
 				.addRetainTerm(Customer.class, "id", "name")
 				.addRetainTerm(Product.class, "id", "name","number")

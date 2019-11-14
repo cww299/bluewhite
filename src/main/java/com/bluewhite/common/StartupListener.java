@@ -43,14 +43,4 @@ public class StartupListener implements ApplicationListener<ContextRefreshedEven
 		}, 300);
 	}
 
-	public static void timer(String threadName) {
-		Timer timer = new Timer();
-		timer.scheduleAtFixedRate(new TimerTask() {
-			public void run() {
-				System.out.println(threadName);
-				new Thread(new SDKRunnable("192.168.7.123"), threadName).start();
-			}
-		}, 0, 10000);// 这里设定将延时每隔1000毫秒执行一次
-	}
-
 }
