@@ -221,7 +221,7 @@ public class LedgerAction {
 				.addRetainTerm(OrderOutSource.class, "id", "fill", "fillRemark", "outSourceNumber",
 						"order", "user", "customer", "remark", "gramWeight", "processNumber", "process",
 						"openOrderTime","outGoingTime","wholeList","flag","audit","productType","warehouseType",
-						"inWarehouseType","arrival","arrivalTime","arrivalNumber")
+						"inWarehouseType","arrival","arrivalTime","arrivalNumber","outsourceTask","gramWeight","kilogramWeight")
 				.addRetainTerm(Order.class, "id", "bacthNumber", "product", "number", "remark","orderNumber")
 				.addRetainTerm(Customer.class, "id", "name")
 				.addRetainTerm(Product.class, "id", "name","number")
@@ -631,6 +631,20 @@ public class LedgerAction {
 		return cr;
 	}
 	
+	/**
+	 * （生产计划部）审核领料单
+	 * @param order
+	 * @return
+	 */
+	@RequestMapping(value = "/ledger/auditMaterialRequisition", method = RequestMethod.GET)
+	@ResponseBody
+	public CommonResponse auditMaterialRequisition(String ids) {
+		CommonResponse cr = new CommonResponse();
+		int count = materialRequisitionService.auditMaterialRequisition(ids);
+		cr.setMessage("成功审核" + count + "领料单");
+		return cr;
+	}   
+	
 
 	/**
 	 * （生产计划部） 分页查看加工单
@@ -767,16 +781,16 @@ public class LedgerAction {
 	}
 	
 	/**
-	 * （面辅料仓库）审核领料单出库
+	 * （面辅料仓库）审核领料单出库(确认已被领取)
 	 * @param order
 	 * @return
 	 */
-	@RequestMapping(value = "/ledger/auditMaterialRequisition", method = RequestMethod.GET)
+	@RequestMapping(value = "/ledger/outboundMaterialRequisition", method = RequestMethod.GET)
 	@ResponseBody
-	public CommonResponse auditMaterialRequisition(String ids) {
+	public CommonResponse outboundMaterialRequisition(String ids) {
 		CommonResponse cr = new CommonResponse();
-		int count = materialRequisitionService.auditMaterialRequisition(ids);
-		cr.setMessage("成功审核" + count + "领料单，进行出库");
+		int count = materialRequisitionService.outboundMaterialRequisition(ids);
+		cr.setMessage("成功审核" + count + "领料单，领取出库");
 		return cr;
 	}   
 	
