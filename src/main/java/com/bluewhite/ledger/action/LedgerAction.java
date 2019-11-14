@@ -410,22 +410,6 @@ public class LedgerAction {
 	}
 	
 	/**
-	 * （采购部）将所有已有库存的耗料表生成分散出库记录 将已经订购的采购单面料当作库存，
-	 * 进行出库 
-	 * 冻结当前下单合同的当前耗料表对于库存的消耗
-	 * 
-	 * @return
-	 */
-	@RequestMapping(value = "/ledger/saveScatteredOutbound", method = RequestMethod.GET)
-	@ResponseBody
-	public CommonResponse outboundOrderMaterial(String ids) {
-		CommonResponse cr = new CommonResponse();
-		int count = scatteredOutboundService.saveScatteredOutbound(ids);
-		cr.setMessage("成功出库" + count + "条耗料单");
-		return cr;
-	}
-
-	/**
 	 * （采购部）查看采购订单
 	 * 
 	 * 
@@ -477,6 +461,22 @@ public class LedgerAction {
 		cr.setMessage("成功删除" + count + "条采购单");
 		return cr;
 	}
+	
+	/**
+	 * （采购部）将所有已有库存的耗料表生成分散出库记录 将已经订购的采购单面料当作库存，
+	 * 进行出库 
+	 * 冻结当前下单合同的当前耗料表对于库存的消耗
+	 * 
+	 * @return
+	 */
+	@RequestMapping(value = "/ledger/saveScatteredOutbound", method = RequestMethod.GET)
+	@ResponseBody
+	public CommonResponse outboundOrderMaterial(String ids) {
+		CommonResponse cr = new CommonResponse();
+		int count = scatteredOutboundService.saveScatteredOutbound(ids);
+		cr.setMessage("成功出库" + count + "条耗料单");
+		return cr;
+	}
 
 	/**
 	 * （采购部）审核分散出库单
@@ -494,7 +494,7 @@ public class LedgerAction {
 	}
 
 	/**
-	 * （采购部）删除分散出库单
+	 * （采购部）清除分散出库单
 	 * 
 	 * @param order
 	 * @return
@@ -523,19 +523,6 @@ public class LedgerAction {
 		return cr;
 	}
 
-	/**
-	 * (采购部) 修改分散出库单
-	 * 
-	 * @return
-	 */
-	@RequestMapping(value = "/ledger/updateScatteredOutbound", method = RequestMethod.POST)
-	@ResponseBody
-	public CommonResponse updateScatteredOutbound(ScatteredOutbound scatteredOutbound) {
-		CommonResponse cr = new CommonResponse();
-		scatteredOutboundService.updateScatteredOutbound(scatteredOutbound);
-		cr.setMessage("修改成功");
-		return cr;
-	}
 
 	/**
 	 * （采购部）采购单出入不符预警 采购单经过面辅料仓库审核入库后，将出入库数量不相同的进行标记预警

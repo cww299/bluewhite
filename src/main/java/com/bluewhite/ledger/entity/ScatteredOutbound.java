@@ -53,7 +53,13 @@ public class ScatteredOutbound extends BaseEntity<Long> {
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "order_material_id", referencedColumnName = "id", insertable = false, updatable = false)
 	private OrderMaterial orderMaterial;
-
+	
+	/**
+	 * 领取用量对应数量
+	 */
+	@Column(name = "dosageNumber")
+	private Integer dosageNumber;
+	
 	/**
 	 * 领取用量
 	 */
@@ -65,12 +71,6 @@ public class ScatteredOutbound extends BaseEntity<Long> {
 	 */
 	@Column(name = "residue_dosage")
 	private Double residueDosage;
-
-	/**
-	 * 备注
-	 */
-	@Column(name = "remark")
-	private String remark;
 
 	/**
 	 * 是否审核
@@ -108,6 +108,14 @@ public class ScatteredOutbound extends BaseEntity<Long> {
 	private Date orderTimeEnd;
 	
 	
+
+	public Integer getDosageNumber() {
+		return dosageNumber;
+	}
+
+	public void setDosageNumber(Integer dosageNumber) {
+		this.dosageNumber = dosageNumber;
+	}
 
 	public Double getResidueDosage() {
 		return residueDosage;
@@ -212,14 +220,5 @@ public class ScatteredOutbound extends BaseEntity<Long> {
 	public void setDosage(Double dosage) {
 		this.dosage = dosage;
 	}
-
-	public String getRemark() {
-		return remark;
-	}
-
-	public void setRemark(String remark) {
-		this.remark = remark;
-	}
-	
 
 }
