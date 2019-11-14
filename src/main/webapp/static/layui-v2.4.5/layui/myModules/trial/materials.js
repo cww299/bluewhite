@@ -27,6 +27,7 @@ layui.define(['mytable','form'],function(exports){
 	            '</tr></table>',
 	            '<table id="materialsTable" lay-filter="materialsTable"></table>'
 	            ].join(' ');
+	var allUnit = myutil.getDataSync({ url: myutil.config.ctx+'/product/getBaseOne?type=unit', });		//获取所有单位
 	var allOverstock = myutil.getDataSync({ url: myutil.config.ctx+'/product/getBaseOne?type=overstock', });
 	var allMaterielSelect = '';
 	var materials = {	//模块
@@ -163,7 +164,7 @@ layui.define(['mytable','form'],function(exports){
 			autoUpdate:{
 				saveUrl:'/product/updateProductMaterials',
 				deleUrl:'/product/deleteProductMaterials',
-				field: { materiel:'materielId', overstock_id:'overstockId'},
+				field: { materiel:'materielId', overstock_id:'overstockId',unit_id:'unitId'},
 			}, 
 			curd:{
 				addTemp:{
@@ -197,10 +198,11 @@ layui.define(['mytable','form'],function(exports){
 				notNull: ['materiel'],
 				price:['oneMaterial','manualLoss','batchMaterial','batchMaterialPrice'] 
 			},
-			colsWidth:[0,0,8,6,8,8,8,15],
+			colsWidth:[0,0,6,8,6,8,8,8,15],
 			cols:[[
 			       { type:'checkbox',},
 			       { title:'物料编号/名称/价格/单位',   	field:'materiel',	templet: getSelectHtml(), edit:false, },
+			       { title:'单位',   		field:'unit_id',		 type:'select', select:{ data: allUnit }  },
 			       { title:'是否转换',   	field:'convertUnit', type:'select',
 			    	   select:{ data: [{id:0,name:'不转换'},{id:1,name:'转换'}],layFilter:'convertUnitSelect',unsearch:true, } ,},
 			       { title:'单只用料',   	field:'oneMaterial',	edit:true, },
