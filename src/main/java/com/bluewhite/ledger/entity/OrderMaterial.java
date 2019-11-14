@@ -98,7 +98,7 @@ public class OrderMaterial extends BaseEntity<Long> {
 	
 	/**
 	 * 是否出库（0=否，1=是）
-	 * 是否生成领料单
+	 * 是否生成出库单
 	 */
 	@Column(name = "outbound")
 	private Integer outbound;
