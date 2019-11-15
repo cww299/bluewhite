@@ -207,12 +207,13 @@ public class LedgerAction {
 		clearCascadeJSONScatteredOutbound = ClearCascadeJSON.get()
 				.addRetainTerm(ScatteredOutbound.class, "id", "outboundNumber", "orderMaterial", "orderProcurement",
 						"receiveUser", "user", "dosage", "remark", "audit", "auditTime", "placeOrderTime",
-						"openOrderAudit","residueDosage")
+						"openOrderAudit","residueDosage","dosageNumber","residueDosageNumber")
 				.addRetainTerm(OrderProcurement.class, "id", "orderProcurementNumber")
 				.addRetainTerm(OrderMaterial.class, "id", "receiveMode", "order")
 				.addRetainTerm(Order.class, "id", "bacthNumber","number", "remark","orderNumber")
 				.addRetainTerm(BaseOne.class, "id", "name")
-				.addRetainTerm(User.class, "id", "userName");
+				.addRetainTerm(User.class, "id", "userName")
+				.addRetainTerm(Customer.class, "id", "name");
 	}
 	
 	private ClearCascadeJSON clearCascadeJSONSOutSource;
@@ -650,8 +651,6 @@ public class LedgerAction {
 		return cr;
 	} 
 	
-	
-	
 
 	/**
 	 * （生产计划部）新增加工单
@@ -668,6 +667,22 @@ public class LedgerAction {
 		cr.setMessage("新增成功");
 		return cr;
 	}
+	
+	
+	/**
+	 * （生产计划部）判断是否可以新增加工单
+	 * @param order
+	 * @return
+	 */
+	@RequestMapping(value = "/ledger/judgeOrderOutSource", method = RequestMethod.GET)
+	@ResponseBody
+	public CommonResponse judgeOrderOutSource(Long orderId) {
+		CommonResponse cr = new CommonResponse();
+		cr.setData(orderOutSourceService.judgeOrderOutSource(orderId));
+		cr.setMessage("验证");
+		return cr;
+	}
+	
 	
 	/**	
 	 * （生产计划部）修改加工单

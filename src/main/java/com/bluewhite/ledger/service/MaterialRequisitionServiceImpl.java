@@ -3,7 +3,6 @@ package com.bluewhite.ledger.service;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-import java.util.stream.Collectors;
 
 import javax.persistence.criteria.Predicate;
 
@@ -19,14 +18,11 @@ import com.bluewhite.common.entity.PageResult;
 import com.bluewhite.common.utils.NumUtils;
 import com.bluewhite.ledger.dao.MaterialRequisitionDao;
 import com.bluewhite.ledger.dao.OrderMaterialDao;
-import com.bluewhite.ledger.dao.OrderProcurementDao;
 import com.bluewhite.ledger.dao.ScatteredOutboundDao;
 import com.bluewhite.ledger.entity.MaterialRequisition;
 import com.bluewhite.ledger.entity.OrderProcurement;
 import com.bluewhite.ledger.entity.ScatteredOutbound;
-import com.bluewhite.onlineretailers.inventory.entity.Inventory;
 import com.bluewhite.product.primecostbasedata.dao.MaterielDao;
-import com.bluewhite.product.product.entity.Product;
 
 @Service
 public class MaterialRequisitionServiceImpl extends BaseServiceImpl<MaterialRequisition, Long>
@@ -51,13 +47,16 @@ public class MaterialRequisitionServiceImpl extends BaseServiceImpl<MaterialRequ
 			}
 			materialRequisition.setDosage(
 					NumUtils.div(NumUtils.mul(scatteredOutbound.getDosage(), materialRequisition.getProcessNumber()),
-							scatteredOutbound.getOrderMaterial().getOrder().getNumber(), 5));
+							scatteredOutbound.getDosageNumber(), 2));
 			// 获取该耗料单所有的领取用料
 			if (materialRequisition.getDosage() > scatteredOutbound.getResidueDosage()) {
 				throw new ServiceException("当前领料单已超出耗料剩余数量，无法生成，请核实");
 			}
+			//剩余耗料
 			scatteredOutbound.setResidueDosage(
 					NumUtils.sub(scatteredOutbound.getResidueDosage(), materialRequisition.getDosage()));
+			//剩余任务数量
+			scatteredOutbound.setResidueDosageNumber(scatteredOutbound.getResidueDosageNumber()-materialRequisition.getProcessNumber());
 			materialRequisition.setAudit(0);
 			materialRequisition.setRequisition(0);
 			scatteredOutboundDao.save(scatteredOutbound);
@@ -67,7 +66,34 @@ public class MaterialRequisitionServiceImpl extends BaseServiceImpl<MaterialRequ
 
 	@Override
 	public void updateMaterialRequisition(MaterialRequisition materialRequisition) {
-		update(materialRequisition, findOne(materialRequisition.getId()), "");
+		if(materialRequisition.getId()!=null){
+			MaterialRequisition ot = findOne(materialRequisition.getId());
+			if(ot.getAudit()==1){
+				throw new ServiceException("已审核无法修改");
+			}
+		}
+		if (materialRequisition.getScatteredOutboundId() != null) {
+			ScatteredOutbound scatteredOutbound = scatteredOutboundDao.findOne(materialRequisition.getScatteredOutboundId());
+			// 查询是否已耗料出库（采购单虚拟库存）
+			if (scatteredOutbound == null) {
+				throw new ServiceException("还未分散出库，无法生成领料单");
+			}
+			materialRequisition.setDosage(
+					NumUtils.div(NumUtils.mul(scatteredOutbound.getDosage(), materialRequisition.getProcessNumber()),
+							scatteredOutbound.getOrderMaterial().getOrder().getNumber(), 2));
+			// 获取该耗料单所有的领取用料
+			if (materialRequisition.getDosage() > scatteredOutbound.getResidueDosage()) {
+				throw new ServiceException("当前领料单已超出耗料剩余数量，无法生成，请核实");
+			}
+			//剩余耗料
+			scatteredOutbound.setResidueDosage(NumUtils.sub(scatteredOutbound.getResidueDosage(), materialRequisition.getDosage()));
+			//剩余任务数量
+			scatteredOutbound.setResidueDosageNumber(scatteredOutbound.getResidueDosageNumber()-materialRequisition.getProcessNumber());
+			materialRequisition.setAudit(0);
+			materialRequisition.setRequisition(0);
+			scatteredOutboundDao.save(scatteredOutbound);
+			save(materialRequisition);
+		}
 	}
 
 	@Override
@@ -130,6 +156,7 @@ public class MaterialRequisitionServiceImpl extends BaseServiceImpl<MaterialRequ
 					}
 					ScatteredOutbound scatteredOutbound = materialRequisition.getScatteredOutbound();
 					scatteredOutbound.setResidueDosage(NumUtils.sum(scatteredOutbound.getResidueDosage(),materialRequisition.getDosage()));
+					scatteredOutbound.setResidueDosageNumber(scatteredOutbound.getResidueDosageNumber()+materialRequisition.getProcessNumber());
 					scatteredOutboundDao.save(scatteredOutbound);
 					delete(id);
 					count++;

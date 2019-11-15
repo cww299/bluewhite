@@ -61,6 +61,12 @@ public class ScatteredOutbound extends BaseEntity<Long> {
 	private Integer dosageNumber;
 	
 	/**
+	 * 领取用量对应数量
+	 */
+	@Column(name = "residue_dosageNumber")
+	private Integer residueDosageNumber;
+	
+	/**
 	 * 领取用量
 	 */
 	@Column(name = "dosage")
@@ -108,6 +114,14 @@ public class ScatteredOutbound extends BaseEntity<Long> {
 	private Date orderTimeEnd;
 	
 	
+
+	public Integer getResidueDosageNumber() {
+		return residueDosageNumber;
+	}
+
+	public void setResidueDosageNumber(Integer residueDosageNumber) {
+		this.residueDosageNumber = residueDosageNumber;
+	}
 
 	public Integer getDosageNumber() {
 		return dosageNumber;
