@@ -220,7 +220,7 @@ layui.config({
 			       { title:'领取用量',   field:'dosage',	},
 			       { title:'备注',   field:'remark',	},
 			       { title:'是否外发',   field:'outsource', transData:{data:['领料单','外发领料单']}	},
-			       { title:'是否审核',   field:'outsource', transData:{data:['否','是']}	},
+			       { title:'是否审核',   field:'audit', transData:{data:['否','是']}	},
 		    ]]
 		})
 		function getName(){
