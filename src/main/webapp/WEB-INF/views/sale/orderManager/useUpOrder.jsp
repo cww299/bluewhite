@@ -485,7 +485,7 @@ layui.config({
 						}
 					})
 				}else if(obj.event=='audit'){
-					var c = table.checkStatus('outTable').data;
+					var c = table.checkStatus('tableData').data;
 					if(c.length<1)
 						return myutil.emsg('请选择审核的信息');
 					var ids = [];

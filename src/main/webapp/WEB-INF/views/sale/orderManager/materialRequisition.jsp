@@ -209,11 +209,12 @@ layui.config({
 					 '<span class="layui-btn layui-btn-sm" lay-event="audit">审核</span>',
 					 '<span lay-event="outOrder" class="layui-btn layui-btn-sm" >加工单</span>',
 					 '<span lay-event="outOrderWaifa" class="layui-btn layui-btn-sm" >外发加工单</span>',].join(' '),
-			colsWidth:[0,12,0,8,8,8,12,8,8],
+			colsWidth:[0,12,0,7,8,8,8,12,8,8],
 			cols:[[
 			       { type:'checkbox',},
 			       { title:'开单时间',   field:'openOrderTime',	type:'datetime'},
 			       { title:'库存单编号',   field:'scatteredOutbound_orderProcurement_orderProcurementNumber',},
+			       { title:'领取模式',   field:'scatteredOutbound_orderMaterial_receiveMode_name',  },
 			       { title:'领取人',   field:'name', templet: getName(),   },
 			       { title:'任务数量',   field:'processNumber', 	},
 			       { title:'领取用量',   field:'dosage',	},

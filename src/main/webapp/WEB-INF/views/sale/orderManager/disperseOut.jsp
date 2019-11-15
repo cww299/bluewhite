@@ -184,8 +184,8 @@ layui.config({
 					}
 				},
 			},
-			ifNull:'',
-			colsWidth:[0,10,0,6,8,8,6],
+			ifNull:'-',
+			colsWidth:[0,10,0,6,8,8,6,8,6],
 			toolbar:['<span class="layui-btn layui-btn-sm" lay-event="onekey">一键审核</span>',
 				     '<span class="layui-btn layui-btn-sm layui-btn-normal" lay-event="picikingOrder">领料单</span>',
 					 '<span class="layui-btn layui-btn-sm layui-btn-warm" lay-event="outOrder">外发领料单</span>',
@@ -197,6 +197,8 @@ layui.config({
 			       { title:'领取模式',   field:'orderMaterial_receiveMode_name',  },
 			       { title:'领取用量',   field:'dosage',	},
 			       { title:'剩余领取用量',   field:'residueDosage',style:'color:red;', },
+			       { title:'任务数量',   field:'dosageNumber',  },
+			       { title:'剩余任务数量',   field:'residueDosageNumber',  },
 			       { title:'是否审核',   field:'audit', transData:{data:['否','是'],}	},
 			       ]]
 		})
@@ -258,6 +260,7 @@ layui.config({
 							data:obj.field,
 							success:function(){
 								layer.close(addWin);
+								table.reload('tableData');
 							}
 						})
 					})
