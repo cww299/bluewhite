@@ -99,14 +99,12 @@ public class ScatteredOutboundServiceImpl extends BaseServiceImpl<ScatteredOutbo
 							} else if (orderProcurement.getResidueNumber() >= dosage) {
 								scatteredOutbound.setDosage(dosage);
 								scatteredOutbound.setResidueDosage(dosage);
-								orderProcurement
-										.setResidueNumber(NumUtils.sub(orderProcurement.getResidueNumber(), dosage));
+								orderProcurement.setResidueNumber(NumUtils.sub(orderProcurement.getResidueNumber(), dosage));
 							}
 							int dosageNumber = NumUtils.roundTwo(NumUtils.div(
 									NumUtils.mul(dosageSumNumber, scatteredOutbound.getDosage()), ot.getDosage(), 1));
 							scatteredOutbound.setDosageNumber(dosageNumber);
 							save(scatteredOutbound);
-
 							ot.setOutbound(1);
 						}
 						orderMaterialDao.save(ot);
@@ -174,8 +172,7 @@ public class ScatteredOutboundServiceImpl extends BaseServiceImpl<ScatteredOutbo
 							throw new ServiceException("第" + (j + 1) + "条耗料单已审核，无法清除出库单");
 						}
 						OrderProcurement orderProcurement = s.getOrderProcurement();
-						orderProcurement
-								.setResidueNumber(NumUtils.sum(orderProcurement.getResidueNumber(), s.getDosage()));
+						orderProcurement.setResidueNumber(NumUtils.sum(orderProcurement.getResidueNumber(), s.getDosage()));
 						orderProcurementDao.save(orderProcurement);
 					});
 					// 当删除出库单时，恢复出库情况和库存
