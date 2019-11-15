@@ -25,8 +25,10 @@ import com.bluewhite.common.entity.PageResult;
 import com.bluewhite.common.utils.NumUtils;
 import com.bluewhite.common.utils.RoleUtil;
 import com.bluewhite.common.utils.StringUtil;
+import com.bluewhite.ledger.dao.MaterialRequisitionDao;
 import com.bluewhite.ledger.dao.OrderDao;
 import com.bluewhite.ledger.dao.OrderOutSourceDao;
+import com.bluewhite.ledger.entity.MaterialRequisition;
 import com.bluewhite.ledger.entity.Order;
 import com.bluewhite.ledger.entity.OrderOutSource;
 import com.bluewhite.onlineretailers.inventory.dao.InventoryDao;
@@ -44,6 +46,8 @@ public class OrderOutSourceServiceImpl extends BaseServiceImpl<OrderOutSource, L
 	private InventoryDao inventoryDao;
 	@Autowired
 	private BaseDataDao baseDataDao;
+	@Autowired
+	private MaterialRequisitionDao materialRequisitionDao;
 
 	@Override
 	@Transactional
@@ -320,5 +324,19 @@ public class OrderOutSourceServiceImpl extends BaseServiceImpl<OrderOutSource, L
 			}
 		}
 		return count;
+	}
+
+	@Override
+	public int judgeOrderOutSource(Long orderid) {
+		List<MaterialRequisition> materialRequisitionList = materialRequisitionDao.findByOrderId(orderid);
+		if(materialRequisitionList.size()>0){
+			long size = materialRequisitionList.stream().filter( MaterialRequisition->MaterialRequisition.getAudit()==0).count();
+			if(size>0){
+				return -1;
+			}
+		}else{
+			return 0;
+		}
+		return 1;
 	}
 }

@@ -668,6 +668,22 @@ public class LedgerAction {
 		return cr;
 	}
 	
+	
+	/**
+	 * （生产计划部）判断是否可以新增加工单
+	 * @param order
+	 * @return
+	 */
+	@RequestMapping(value = "/ledger/judgeOrderOutSource", method = RequestMethod.GET)
+	@ResponseBody
+	public CommonResponse judgeOrderOutSource(Long orderId) {
+		CommonResponse cr = new CommonResponse();
+		cr.setData(orderOutSourceService.judgeOrderOutSource(orderId));
+		cr.setMessage("验证");
+		return cr;
+	}
+	
+	
 	/**	
 	 * （生产计划部）修改加工单
 	 * 

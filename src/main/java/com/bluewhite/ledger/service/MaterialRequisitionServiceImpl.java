@@ -47,7 +47,7 @@ public class MaterialRequisitionServiceImpl extends BaseServiceImpl<MaterialRequ
 			}
 			materialRequisition.setDosage(
 					NumUtils.div(NumUtils.mul(scatteredOutbound.getDosage(), materialRequisition.getProcessNumber()),
-							scatteredOutbound.getOrderMaterial().getOrder().getNumber(), 5));
+							scatteredOutbound.getDosageNumber(), 2));
 			// 获取该耗料单所有的领取用料
 			if (materialRequisition.getDosage() > scatteredOutbound.getResidueDosage()) {
 				throw new ServiceException("当前领料单已超出耗料剩余数量，无法生成，请核实");
@@ -80,7 +80,7 @@ public class MaterialRequisitionServiceImpl extends BaseServiceImpl<MaterialRequ
 			}
 			materialRequisition.setDosage(
 					NumUtils.div(NumUtils.mul(scatteredOutbound.getDosage(), materialRequisition.getProcessNumber()),
-							scatteredOutbound.getOrderMaterial().getOrder().getNumber(), 5));
+							scatteredOutbound.getOrderMaterial().getOrder().getNumber(), 2));
 			// 获取该耗料单所有的领取用料
 			if (materialRequisition.getDosage() > scatteredOutbound.getResidueDosage()) {
 				throw new ServiceException("当前领料单已超出耗料剩余数量，无法生成，请核实");
