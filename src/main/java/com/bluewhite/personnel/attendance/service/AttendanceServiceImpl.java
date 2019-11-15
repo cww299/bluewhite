@@ -202,6 +202,11 @@ public class AttendanceServiceImpl extends BaseServiceImpl<Attendance, Long> imp
 			if (!StringUtils.isEmpty(param.getNumber())) {
 				predicate.add(cb.equal(root.get("number").as(String.class), param.getNumber()));
 			}
+			
+			// 按打卡地点
+			if (!StringUtils.isEmpty(param.getSourceMachine())) {
+				predicate.add(cb.equal(root.get("sourceMachine").as(String.class), param.getSourceMachine()));
+			}
 
 			// 按姓名查找
 			if (!StringUtils.isEmpty(param.getUserName())) {

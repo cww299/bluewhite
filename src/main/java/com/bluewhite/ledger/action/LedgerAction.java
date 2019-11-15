@@ -207,12 +207,13 @@ public class LedgerAction {
 		clearCascadeJSONScatteredOutbound = ClearCascadeJSON.get()
 				.addRetainTerm(ScatteredOutbound.class, "id", "outboundNumber", "orderMaterial", "orderProcurement",
 						"receiveUser", "user", "dosage", "remark", "audit", "auditTime", "placeOrderTime",
-						"openOrderAudit","residueDosage")
+						"openOrderAudit","residueDosage","dosageNumber","residueDosageNumber")
 				.addRetainTerm(OrderProcurement.class, "id", "orderProcurementNumber")
 				.addRetainTerm(OrderMaterial.class, "id", "receiveMode", "order")
 				.addRetainTerm(Order.class, "id", "bacthNumber","number", "remark","orderNumber")
 				.addRetainTerm(BaseOne.class, "id", "name")
-				.addRetainTerm(User.class, "id", "userName");
+				.addRetainTerm(User.class, "id", "userName")
+				.addRetainTerm(Customer.class, "id", "name");
 	}
 	
 	private ClearCascadeJSON clearCascadeJSONSOutSource;
@@ -649,8 +650,6 @@ public class LedgerAction {
 		cr.setMessage("查看成功");
 		return cr;
 	} 
-	
-	
 	
 
 	/**
