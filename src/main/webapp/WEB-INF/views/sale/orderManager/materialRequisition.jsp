@@ -209,17 +209,18 @@ layui.config({
 					 '<span class="layui-btn layui-btn-sm" lay-event="audit">审核</span>',
 					 '<span lay-event="outOrder" class="layui-btn layui-btn-sm" >加工单</span>',
 					 '<span lay-event="outOrderWaifa" class="layui-btn layui-btn-sm" >外发加工单</span>',].join(' '),
-			colsWidth:[0,12,0,8,8,8,12,8,8],
+			colsWidth:[0,12,0,7,8,8,8,12,8,8],
 			cols:[[
 			       { type:'checkbox',},
 			       { title:'开单时间',   field:'openOrderTime',	type:'datetime'},
 			       { title:'库存单编号',   field:'scatteredOutbound_orderProcurement_orderProcurementNumber',},
+			       { title:'领取模式',   field:'scatteredOutbound_orderMaterial_receiveMode_name',  },
 			       { title:'领取人',   field:'name', templet: getName(),   },
 			       { title:'任务数量',   field:'processNumber', 	},
 			       { title:'领取用量',   field:'dosage',	},
 			       { title:'备注',   field:'remark',	},
 			       { title:'是否外发',   field:'outsource', transData:{data:['领料单','外发领料单']}	},
-			       { title:'是否审核',   field:'outsource', transData:{data:['否','是']}	},
+			       { title:'是否审核',   field:'audit', transData:{data:['否','是']}	},
 		    ]]
 		})
 		function getName(){

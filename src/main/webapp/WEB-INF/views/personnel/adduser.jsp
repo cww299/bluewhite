@@ -35,14 +35,14 @@
 					<td>&nbsp;&nbsp;</td>
 					<td>打卡机:</td>
 					<td style="width:120px;">
-						<select name="" id="addressSelect" class="layui-inline">
+						<select name="sourceMachine" id="addressSelect" class="layui-inline">
 							<option value="">请选择</option>
-							<option value="192.168.1.204">三楼打卡机</option>
-							<option value="192.168.1.250">二楼打卡机</option>
-							<option value="192.168.1.205">一楼打卡机</option>
-							<option value="192.168.7.123">面辅料打卡机</option>
-							<option value="192.168.6.73">成品打卡机</option>
-							<option value="192.168.14.201">11号打卡机</option></select></td>
+							<option value="THREE_FLOOR">三楼打卡机</option>
+							<option value="TWO_FLOOR">二楼打卡机</option>
+							<option value="ONE_FLOOR">一楼打卡机</option>
+							<option value="EIGHT_WAREHOUSE">面辅料打卡机</option>
+							<option value="NEW_IGHT_WAREHOUSE">成品打卡机</option>
+							<option value="ELEVEN_WAREHOUSE">11号打卡机</option></select></td>
 					<td>&nbsp;&nbsp;</td>
 					<td>状态:</td>
 					<td style="width:120px;">
