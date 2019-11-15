@@ -64,4 +64,10 @@ public interface OrderOutSourceService extends BaseCRUDService<OrderOutSource, L
 	 */
 	public int confirmOrderOutSource(String ids);
 	
+	/**
+	 * （生产计划部）判断是否可以新增加工单
+	 * @param orderId
+	 */
+	public int judgeOrderOutSource(Long orderId);
+	
 }
