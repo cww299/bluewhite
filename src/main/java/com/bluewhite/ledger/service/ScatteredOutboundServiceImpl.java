@@ -74,6 +74,10 @@ public class ScatteredOutboundServiceImpl extends BaseServiceImpl<ScatteredOutbo
 						throw new ServiceException(
 								ot.getMateriel().getNumber() + ot.getMateriel().getName() + "库存不足，无法出库，请核对库存采购后进行出库");
 					}
+					// 该物料总耗料
+					double dosage = ot.getDosage();
+					// 该物料总数量
+					int dosageSumNumber = ot.getOrder().getNumber();
 					if (orderProcurementSet.size() > 0) {
 						for (OrderProcurement orderProcurement : orderProcurementSet) {
 							// 耗料出库单
@@ -86,16 +90,12 @@ public class ScatteredOutboundServiceImpl extends BaseServiceImpl<ScatteredOutbo
 							// 领料分为两种情况，
 							// 1.当库存量不足，补充库存后，出现两条采购单(采购库存单剩余数量小于领料单领取数量)
 							// 2.库存充足只存在一条采购单(采购库存单剩余数量大于或者领料单领取数量)
-							// 该物料总耗料
-							double dosage = ot.getDosage();
-							// 该物料总数量
-							int dosageSumNumber = ot.getOrder().getNumber();
 							if (orderProcurement.getResidueNumber() < dosage) {
 								scatteredOutbound.setDosage(orderProcurement.getResidueNumber());
 								scatteredOutbound.setResidueDosage(orderProcurement.getResidueNumber());
-								orderProcurement.setResidueNumber((double) 0);
 								// 将剩余需要分配的用量更新到下一单
 								dosage = NumUtils.sub(dosage, orderProcurement.getResidueNumber());
+								orderProcurement.setResidueNumber((double) 0);
 							} else if (orderProcurement.getResidueNumber() >= dosage) {
 								scatteredOutbound.setDosage(dosage);
 								scatteredOutbound.setResidueDosage(dosage);
@@ -171,15 +171,15 @@ public class ScatteredOutboundServiceImpl extends BaseServiceImpl<ScatteredOutbo
 						if (s.getAudit() == 1) {
 							throw new ServiceException("第" + (j + 1) + "条耗料单已审核，无法清除出库单");
 						}
+						// 当删除出库单时，恢复出库情况和库存
 						OrderProcurement orderProcurement = s.getOrderProcurement();
 						orderProcurement.setResidueNumber(NumUtils.sum(orderProcurement.getResidueNumber(), s.getDosage()));
 						orderProcurementDao.save(orderProcurement);
 					});
-					// 当删除出库单时，恢复出库情况和库存
+					dao.delete(scatteredOutboundList);
 					OrderMaterial orderMaterial = orderMaterialDao.findOne(id);
 					orderMaterial.setOutbound(0);
 					orderMaterialDao.save(orderMaterial);
-					delete(id);
 					count++;
 				}
 			}
