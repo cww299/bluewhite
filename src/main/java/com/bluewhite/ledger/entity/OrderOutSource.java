@@ -85,7 +85,7 @@ public class OrderOutSource extends BaseEntity<Long> {
 	 * 任务工序多对多
 	 */
 	@ManyToMany(fetch = FetchType.LAZY)
-	@JoinTable(name = "sys_outsource_task", joinColumns = @JoinColumn(name = "outsource_id", referencedColumnName = "id"), inverseJoinColumns = @JoinColumn(name = "task_id", referencedColumnName = "id"))
+	@JoinTable(name = "ledger_outsource_task", joinColumns = @JoinColumn(name = "outsource_id", referencedColumnName = "id"), inverseJoinColumns = @JoinColumn(name = "task_id", referencedColumnName = "id"))
 	private Set<BaseData> outsourceTask = new HashSet<BaseData>();
 	
 	/**
