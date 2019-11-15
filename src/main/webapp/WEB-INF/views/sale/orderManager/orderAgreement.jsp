@@ -12,6 +12,9 @@
 .layui-form-pane .layui-item{
 	margin-top:10px;
 }
+.layui-table tbody tr:hover, .layui-table-hover {
+	background-color: transparent; 
+}
 </style>
 </head>
 <body>
@@ -72,6 +75,7 @@
 	<span lay-event="addAgreement"  class="layui-btn layui-btn-sm" >新增合同</span>
 	<span lay-event="delete"  class="layui-btn layui-btn-sm layui-btn-danger" >删除合同</span>
 	<span lay-event="update"  class="layui-btn layui-btn-sm" >修改合同</span>
+	<span lay-event="auditAgreement"  class="layui-btn layui-btn-sm layui-btn-normal" >审核</span>
 </div>
 </script>
 <script  id="addTableToolbar" type="text/html">
@@ -183,7 +187,6 @@ layui.config({
 		, myutil = layui.myutil
 		, mytable = layui.mytable;
 		myutil.config.ctx = '${ctx}';
-		myutil.clickTr();
 		myutil.getLastData();
 		myutil.config.msgOffset = '250px';
 		
@@ -245,7 +248,6 @@ layui.config({
 			       { title:'跟单人',   field:'childUser_userName',	},
 			       ]],
 			done:function(){
-				
 				merge('0');
 				merge('bacthNumber');
 				merge('orderDate');
@@ -257,10 +259,12 @@ layui.config({
 				function merge(field){
 					var rowspan = 1,mainCols=0;
 					var cache = table.cache['tableAgreement'];
-					var allCol = $('td[data-field="'+field+'"]');
+					var allCol = $('#tableAgreement').next().find('td[data-field="'+field+'"]');
 					layui.each(allCol,function(index,item){
 						if(index!=0){
-							var thisData = cache[index],lastData = index!=0?cache[index-1]:{};
+							var thisData = cache[index],lastData = index!=0?cache[index-1]:{id:-1};
+							if(!thisData)
+								return;
 							if(thisData.id!=lastData.id){
 								$(allCol[mainCols]).attr('rowspan',rowspan)
 								mainCols = index;
@@ -294,6 +298,13 @@ layui.config({
 			case 'addAgreement': addAgreement();		break;
 			case 'update':	edit(); 	break;
 			case 'delete':	deletes();			break;
+			case 'auditAgreement': 
+				myutil.deleTableIds({
+					table:'tableAgreement',
+					text:'请选择相关信息|是否确认审核?',
+					url:'/ledger/auditOrder',
+				});
+				break;
 			} 
 		})
 		//新增合同
@@ -533,6 +544,7 @@ layui.config({
 						orderDate: orderDate,
 						number: $('#orderNumber').val(),
 						orderTypeId: typeId,
+						orderNumber: bacthNumber+$('#chooseProductInput').val(),
 					},
 					success:function(){
 						table.reload('tableAgreement');
