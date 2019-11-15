@@ -3,6 +3,7 @@ package com.bluewhite.ledger.service;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 import javax.persistence.criteria.Predicate;
@@ -52,15 +53,7 @@ public class OrderOutSourceServiceImpl extends BaseServiceImpl<OrderOutSource, L
 			if(order.getPrepareEnough()==0){
 				throw new ServiceException("当前下单合同备料不足，无法进行外发");
 			}
-			//对加工单数量进行限制判断，加工单数量和工序挂钩，每个工序最大数量为订单数量，无法超出
-			//工序可以由不同的加工单加工，但是不能超出订单数量
-//			List<OrderOutSource> orderOutSourceList = dao.findByOrderIdAndFlag(orderOutSource.getOrderId(), 0);
-//			if (orderOutSourceList.size() > 0) {
-//				double sumNumber = orderOutSourceList.stream().mapToDouble(OrderOutSource::getProcessNumber).sum();
-//				if (NumUtils.sum(sumNumber, orderOutSource.getProcessNumber()) > order.getNumber()) {
-//					throw new ServiceException("外发总数量不能大于下单合同数量，请核实后填写");
-//				}
-//			}
+			List<OrderOutSource> orderOutSourceList = dao.findByOrderIdAndFlag(orderOutSource.getOrderId(), 0);
 			//将工序任务变成set存入
 			if(!StringUtils.isEmpty(orderOutSource.getOutsourceTaskIds())){
 				String[] idStrings = orderOutSource.getOutsourceTaskIds().split(",");
@@ -68,9 +61,20 @@ public class OrderOutSourceServiceImpl extends BaseServiceImpl<OrderOutSource, L
 					for(String ids : idStrings ){
 						Long id = Long.parseLong(ids);
 						BaseData baseData = baseDataDao.findOne(id);
+						//对加工单数量进行限制判断，加工单数量和工序挂钩，每个工序最大数量为订单数量，无法超出
+						//工序可以由不同的加工单加工，但是不能超出订单数量
+						double sum = orderOutSourceList.stream().filter(o->{
+							Set<BaseData> baseDataSet = o.getOutsourceTask().stream().filter(BaseData->baseData.getId().equals(id)).collect(Collectors.toSet());
+							if(baseDataSet.size()>0){
+								return true;
+							}
+							return false;
+						}).mapToInt(OrderOutSource::getProcessNumber).sum();
+						if((sum+orderOutSource.getProcessNumber()) > order.getNumber()){
+							throw new ServiceException(baseData.getName()+"的任务工序数量不足，无法生成加工单 ");
+						}
 						orderOutSource.getOutsourceTask().add(baseData);
 					}
-					
 				}
 			}
 			orderOutSource.setFlag(0);

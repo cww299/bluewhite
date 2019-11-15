@@ -104,6 +104,7 @@ public class ScatteredOutboundServiceImpl extends BaseServiceImpl<ScatteredOutbo
 							int dosageNumber = NumUtils.roundTwo(NumUtils.div(
 									NumUtils.mul(dosageSumNumber, scatteredOutbound.getDosage()), ot.getDosage(), 1));
 							scatteredOutbound.setDosageNumber(dosageNumber);
+							scatteredOutbound.setResidueDosageNumber(dosageNumber);
 							save(scatteredOutbound);
 							ot.setOutbound(1);
 						}
