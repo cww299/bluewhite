@@ -190,12 +190,22 @@ layui.config({
 						var id = $('#orderIdSelect').val();
 						if(!id)
 							return myutil.emsg('请选择合同');
-						var outsource = obj.event=='outOrder'?0:1;
-						var name = $('#orderIdSelect').find('option[value="'+id+'"]').html();
-						outOrderModel.add({
-							data:{ 
-								orderId: id,
-								outsource: outsource,
+						myutil.getDataSync({
+							url:'${ctx}/ledger/judgeOrderOutSource?orderId='+id,
+							success:function(d){
+								if(d>0){
+									var outsource = obj.event=='outOrder'?0:1;
+									var name = $('#orderIdSelect').find('option[value="'+id+'"]').html();
+									outOrderModel.add({
+										data:{ 
+											orderId: id,
+											outsource: outsource,
+										}
+									})
+								}else if(d==0){
+									return myutil.emsg('当前生产计划单未生成领料单，无法生成加工单');
+								}else if(d<0)
+									return myutil.emsg('当前生产计划单存在领料单未审核，无法新增加工单。请先审核');
 							}
 						})
 					}
