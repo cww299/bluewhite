@@ -35,7 +35,7 @@
 					<td>&nbsp;&nbsp;</td>
 					<td>打卡机:</td>
 					<td style="width:120px;">
-						<select name="" id="addressSelect" class="layui-inline">
+						<select name="sourceMachine" id="addressSelect" class="layui-inline">
 							<option value="">请选择</option>
 							<option value="192.168.1.204">三楼打卡机</option>
 							<option value="192.168.1.250">二楼打卡机</option>
