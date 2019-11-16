@@ -13,6 +13,9 @@
 		.layui-form-pane .layui-item{
 			margin-top:10px;
 		}
+		.pickingDiv td{
+			padding: 5px 0;
+		}
 	</style>
 </head>
 <body>
@@ -33,7 +36,7 @@
 </body>
 <script type="text/html" id="pickingTpl">
 <div style="padding:20px;text-align: center;">
-    <table class="layui-form" style="margin: auto;">
+    <table class="layui-form pickingDiv" style="margin: auto;">
     	<tr>
 			<td>下单时间：</td>
 			<td><input type="text" class="layui-input" id="openOrderTime" name="openOrderTime"></td>

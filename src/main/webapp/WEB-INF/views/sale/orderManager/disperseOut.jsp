@@ -198,7 +198,7 @@ layui.config({
 			       { title:'领取用量',   field:'dosage',	},
 			       { title:'剩余领取用量',   field:'residueDosage',style:'color:red;', },
 			       { title:'任务数量',   field:'dosageNumber',  },
-			       { title:'剩余任务数量',   field:'residueDosageNumber',  },
+			       { title:'剩余任务数量',   field:'residueDosageNumber', style:'color:red;', },
 			       { title:'是否审核',   field:'audit', transData:{data:['否','是'],}	},
 			       ]]
 		})
