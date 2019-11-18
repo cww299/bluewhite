@@ -1,14 +1,8 @@
 package com.bluewhite.schedulertask.task;
 
-import java.util.Calendar;
-import java.util.Date;
-
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
-import com.bluewhite.common.Constants;
-import com.bluewhite.common.utils.DatesUtil;
 import com.bluewhite.personnel.attendance.service.AttendanceService;
 import com.bluewhite.production.finance.service.CollectInformationService;
 
@@ -37,6 +31,9 @@ public class Task {
 //		attendanceService.allAttendance(Constants.ELEVEN_WAREHOUSE, startTime, endTime,null);
 //	}
 
-
+//	@Scheduled(cron = "0 0/3 * * * ?") // 3分钟触发一次
+//	public void attendanceTask() {
+//		
+//	}
 
 }

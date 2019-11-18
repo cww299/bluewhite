@@ -279,6 +279,22 @@ public class OrderOutSource extends BaseEntity<Long> {
 	
 	
 
+	public Long getProcessingUserId() {
+		return processingUserId;
+	}
+
+	public void setProcessingUserId(Long processingUserId) {
+		this.processingUserId = processingUserId;
+	}
+
+	public User getProcessingUser() {
+		return processingUser;
+	}
+
+	public void setProcessingUser(User processingUser) {
+		this.processingUser = processingUser;
+	}
+
 	public String getOutsourceTaskIds() {
 		return outsourceTaskIds;
 	}

@@ -1,11 +1,6 @@
 package com.bluewhite.common.utils.zkemUtils;
 
-import java.util.Calendar;
-import java.util.Date;
-import java.util.Timer;
-import java.util.TimerTask;
-
-public class SDKRunnable extends Thread {
+public class SDKRunnable implements Runnable {
 
 	private String address;
 
@@ -20,9 +15,9 @@ public class SDKRunnable extends Thread {
 			Thread.sleep(2000);
 			ZkemSDKUtils.regEvent(address);
 		} catch (InterruptedException e) {
-			
+
 		}
-	} 
+	}
 
 
 

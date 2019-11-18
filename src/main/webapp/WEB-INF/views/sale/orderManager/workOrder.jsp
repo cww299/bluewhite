@@ -217,10 +217,12 @@ layui.config({
 			},
 			ifNull:'---',
 			colsWidth:[0,0,18,4,7,6,8,7,4,4,8,4,4], 
-			toolbar:['<span class="layui-btn layui-btn-sm" lay-event="print">打印</span>',
+			toolbar:[
+					 '<span class="layui-btn layui-btn-sm" lay-event="edit">修改加工单</span>',
+					 '<span class="layui-btn layui-btn-sm" lay-event="print">打印</span>',
 			         '<span class="layui-btn layui-btn-sm layui-btn-warm" lay-event="audit">审核</span>',
 			         '<span class="layui-btn layui-btn-sm layui-btn-normal" lay-event="flag">作废</span>',
-			         '<span class="layui-btn layui-btn-sm" lay-event="edit">修改加工单</span>',].join(' '),
+			         ].join(' '),
 			cols:[[
 			       { type:'checkbox',},
 			       { title:'编号',   field:'order_orderNumber',	},
