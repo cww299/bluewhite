@@ -67,6 +67,12 @@ layui.config({
 							table:'tableData',
 							text:'请选择信息|是否确认验货？',
 						})
+					}else if(obj.event=="audit"){
+						myutil.deleTableIds({
+							url:'/ledger/arrivalOrderProcurement',
+							table:'tableData',
+							text:'请选择信息|是否确认审核入库？',
+						})
 					}
 				}
 			},
@@ -74,7 +80,8 @@ layui.config({
 				count:['arrivalNumber','returnNumber'],
 			},
 			ifNull:'',
-			toolbar: ['<span lay-event="verify" class="layui-btn layui-btn-sm">验货</span>',],
+			toolbar: [ '<span lay-event="verify" class="layui-btn layui-btn-sm">入库</span>',
+					   '<span lay-event="verify" class="layui-btn layui-btn-sm layui-btn-normal">验货</span>',],
 			cols:[[
 					{ type:'checkbox',fixed:'left' },
 					{ title:'下单日期', field:'placeOrderTime', type:'date'},
