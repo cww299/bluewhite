@@ -18,6 +18,7 @@ import com.bluewhite.common.entity.PageParameter;
 import com.bluewhite.common.entity.PageResult;
 import com.bluewhite.common.utils.NumUtils;
 import com.bluewhite.common.utils.StringUtil;
+import com.bluewhite.finance.consumption.service.ConsumptionService;
 import com.bluewhite.ledger.dao.OrderMaterialDao;
 import com.bluewhite.ledger.dao.OrderProcurementDao;
 import com.bluewhite.ledger.dao.ScatteredOutboundDao;
@@ -34,6 +35,8 @@ public class OrderProcurementServiceIpml extends BaseServiceImpl<OrderProcuremen
 	private OrderMaterialDao orderMaterialDao;
 	@Autowired
 	private ScatteredOutboundDao scatteredOutboundDao;
+	@Autowired
+	private ConsumptionService consumptionService;
 	
 	
 	@Override
@@ -51,6 +54,10 @@ public class OrderProcurementServiceIpml extends BaseServiceImpl<OrderProcuremen
 			// 按合同id
 			if (param.getOrderId()!=null){
 				predicate.add(cb.equal(root.get("orderId").as(Long.class),param.getOrderId()));
+			}
+			// 是否审核
+			if (param.getAudit()!=null){
+				predicate.add(cb.equal(root.get("audit").as(Integer.class),param.getAudit()));
 			}
 			// 是否到货
 			if (param.getArrival()!=null){
@@ -219,8 +226,11 @@ public class OrderProcurementServiceIpml extends BaseServiceImpl<OrderProcuremen
 	@Override
 	public void updateOrderProcurement(OrderProcurement orderProcurement) {
 		OrderProcurement ot = findOne(orderProcurement.getId());
-		if(ot.getArrival()==1){
-			throw new ServiceException(orderProcurement.getOrderProcurementNumber()+"采购单已审核已生成账单，无法修改");
+		if(ot.getInspection()==1){
+			throw new ServiceException(ot.getOrderProcurementNumber()+"采购单已审核已验货，无法修改");
+		}
+		if(ot.getArrival() == 0 || orderProcurement.getReturnNumber()!=null || orderProcurement.getReturnTime()!=null || orderProcurement.getReturnRemark()!=null){
+			throw new ServiceException(ot.getOrderProcurementNumber()+"采购单未入库，无法退货，清先入库");
 		}
 		update(orderProcurement, ot, "");
 	}
@@ -272,11 +282,38 @@ public class OrderProcurementServiceIpml extends BaseServiceImpl<OrderProcuremen
 	}
 
 	@Override
-	public void returnOrderProcurement(OrderProcurement orderProcurement) {
-		if(orderProcurement.getId()!=null){
-			OrderProcurement ot = dao.findOne(orderProcurement.getId());
-			update(orderProcurement, ot, "");
+	public int billOrderProcurement(String ids) {
+		int count = 0;
+		if (!StringUtils.isEmpty(ids)) {
+			String[] idArr = ids.split(",");
+			if (idArr.length > 0) {
+				for (int i = 0; i < idArr.length; i++) {
+					Long id = Long.parseLong(idArr[i]);
+					OrderProcurement orderProcurement = dao.findOne(id);
+					if(orderProcurement!=null){
+						if(orderProcurement.getBill()==1){
+							throw new ServiceException("当前采购单已生成采购应付账单，请勿重复生成");
+						}
+						
+						
+						
+						
+						orderProcurement.setBill(1);
+						save(orderProcurement);
+						count++;
+					}
+				}
+			}
 		}
+		return count;
+	}
+
+	@Override
+	public void updateBillOrderProcurement(OrderProcurement orderProcurement) {
+		
+		
+		
+		
 	}
 
 }

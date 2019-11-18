@@ -197,7 +197,10 @@ public class LedgerAction {
 				.addRetainTerm(OrderProcurement.class, "id", "orderProcurementNumber", "placeOrderNumber",
 						"arrivalNumber", "placeOrderTime", "expectArrivalTime", "arrivalTime", "customer", "user",
 						"materielLocation", "price", "squareGram", "userStorage", "arrival","audit",
-						"expectPaymentTime","actualPaymentTime")
+						"expectPaymentTime","actualPaymentTime","materiel","returnNumber",
+						"partDelayNumber","partDelayTime","gramPrice","interest","paymentMoney","bill",
+						"conventionPrice","conventionSquareGram")
+				.addRetainTerm(Materiel.class, "id", "name", "number", "materialQualitative")
 				.addRetainTerm(Customer.class, "id", "name")
 				.addRetainTerm(BaseOne.class, "id", "name")
 				.addRetainTerm(User.class, "id", "userName");
@@ -450,6 +453,23 @@ public class LedgerAction {
 
 	}
 	
+	
+	/**
+	 * （采购部）修改采购单，对于账单的实际情况作为修改
+	 * 
+	 * @return
+	 */
+	@RequestMapping(value = "/ledger/updateBillOrderProcurement", method = RequestMethod.POST)
+	@ResponseBody
+	public CommonResponse updateBillOrderProcurement(OrderProcurement orderProcurement) {
+		CommonResponse cr = new CommonResponse();
+		orderProcurementService.updateBillOrderProcurement(orderProcurement);
+		cr.setMessage("修改成功");
+		return cr;
+
+	}
+	
+	
 	/**
 	 * （采购部）审核采购单，进入面辅料仓库
 	 * @param order
@@ -570,6 +590,22 @@ public class LedgerAction {
 		cr.setMessage("更新成功");
 		return cr;
 	}
+	
+	/**
+	 * （采购部）生成采购应付账单
+	 * 
+	 * @param order
+	 * @return
+	 */
+	@RequestMapping(value = "/ledger/billOrderProcurement", method = RequestMethod.GET)
+	@ResponseBody
+	public CommonResponse billOrderProcurement(String ids) {
+		CommonResponse cr = new CommonResponse();
+		int count = orderProcurementService.billOrderProcurement(ids);
+		cr.setMessage("更新成功");
+		return cr;
+	}
+	
 	
 	
 	/**
@@ -769,7 +805,7 @@ public class LedgerAction {
 	
 	/******************************库存管理**************************/
 	/**
-	 * （面辅料仓库）修改采购单，作为实际入库单使用
+	 * （面辅料仓库）修改采购单，作为实际入库单使用（入库后验货）
 	 * 
 	 * @param order
 	 * @return
@@ -794,24 +830,10 @@ public class LedgerAction {
 	public CommonResponse arrivalOrderProcurement(String ids) {
 		CommonResponse cr = new CommonResponse();
 		int count = orderProcurementService.arrivalOrderProcurement(ids);
-		cr.setMessage("成功审核" + count + "条采购单，进行入库");
+		cr.setMessage("成功审核" + count + "条采购入库单，进行入库");
 		return cr;
 	}
 	
-	/**
-	 * （面辅料仓库）对采购单进行退货处理 
-	 * 
-	 * @param order
-	 * @return
-	 */
-	@RequestMapping(value = "/ledger/returnOrderProcurement", method = RequestMethod.GET)
-	@ResponseBody
-	public CommonResponse returnOrderProcurement(OrderProcurement orderProcurement) {
-		CommonResponse cr = new CommonResponse();
-		orderProcurementService.returnOrderProcurement(orderProcurement);
-		cr.setMessage("成功生成退货单");
-		return cr;
-	}
 	
 	
 	/**
@@ -1348,6 +1370,8 @@ public class LedgerAction {
 		cr.setMessage("成功取消审核" + count + "条入库单");
 		return cr;
 	}
+	
+	
 
 	@InitBinder
 	protected void initBinder(WebDataBinder binder) {
