@@ -127,7 +127,7 @@
         </div>
         <div class="layui-tab" lay-unauto lay-allowClose="true" lay-filter="layadmin-layout-tabs">
           <ul class="layui-tab-title" id="LAY_app_tabsheader">
-            <li lay-id="home/console.html" lay-attr="home/console.html" class="layui-this"><i class="layui-icon layui-icon-home"></i></li>
+            <li lay-id="home/index" lay-attr="${ctx}/menusToUrl?url=home/index" class="layui-this"><i class="layui-icon layui-icon-home"></i></li>
           </ul>
         </div>
       </div>
@@ -136,7 +136,7 @@
       <!-- 主体内容 -->
       <div class="layui-body" id="LAY_app_body">
         <div class="layadmin-tabsbody-item layui-show">
-         <!--  <iframe src="home/console.html" frameborder="0" class="layadmin-iframe"></iframe> -->
+         <iframe src="${ctx}/menusToUrl?url=home/index" frameborder="0" class="layadmin-iframe"></iframe>
         </div>
       </div>
       

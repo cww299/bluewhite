@@ -7,28 +7,7 @@
 	<link rel="stylesheet" href="${ctx }/static/layui-v2.4.5/layui/css/layui.css" media="all">
 	<script src="${ctx}/static/layui-v2.4.5/layui/layui.js"></script>
 	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-	<title>采购单</title>
-	<style>
-		div::-webkit-scrollbar{
-		  width:10px;
-		  height:10px;
-		  /**/
-		}
-		div::-webkit-scrollbar-track{
-		  background: rgb(239, 239, 239);
-		  border-radius:2px;
-		}
-		div::-webkit-scrollbar-thumb{
-		  background: #bfbfbf42;
-		  border-radius:10px;
-		}
-		div::-webkit-scrollbar-thumb:hover{
-		  background: #bfbfbf;
-		}
-		div::-webkit-scrollbar-corner{
-		  background: #179a16;
-		}
-	</style>
+	<title>采购入库单</title>
 </head>
 <body>
 
@@ -49,6 +28,7 @@
 	</div>
 </div>
 </body>
+
 <script>
 layui.config({
 	base : '${ctx}/static/layui-v2.4.5/'
@@ -69,54 +49,56 @@ layui.config({
 		var allUser = myutil.getDataSync({url: '${ctx}/system/user/findUserList?orgNameIds=51'});
 		allUser.unshift({ id:'',userName:'请选择' });
 		var currentUser = myutil.getDataSync({url: '${ctx}/getCurrentUser'});
-		
 		mytable.render({
 			elem:'#tableData',
 			url:'${ctx}/ledger/getOrderProcurement',
 			size:'lg',
-			colsWidth:[0,10,0,6,6,6,6,6,6,8,10,10,6,6,8,10,10,10,10,10,10,10,10,10,10],
+			colsWidth:[0,8,0,6,6,6,8,10,10,6,8,6,6],
 			autoUpdate:{
 				saveUrl:'/ledger/updateOrderProcurement',
 				field:{ userStorage_id:'userStorageId', },
 			},
-			height:'500px',
 			curd:{
 				btn:[],
 				otherBtn:function(obj){
-					if(obj.event=='audit'){
+					if(obj.event=='verify'){
+						myutil.deleTableIds({
+							url:'/ledger/inspectionOrderProcurement',
+							table:'tableData',
+							text:'请选择信息|是否确认验货？',
+						})
+					}else if(obj.event=="audit"){
 						myutil.deleTableIds({
 							url:'/ledger/arrivalOrderProcurement',
 							table:'tableData',
-							text:'请选择信息|是否确认审核？',
+							text:'请选择信息|是否确认审核入库？',
 						})
 					}
 				}
 			},
+			verify:{
+				count:['arrivalNumber','returnNumber'],
+			},
 			ifNull:'',
-			toolbar: '<span lay-event="audit" class="layui-btn layui-btn-sm">审核入库</span>',
+			toolbar: [ '<span lay-event="verify" class="layui-btn layui-btn-sm">入库</span>',
+					   '<span lay-event="verify" class="layui-btn layui-btn-sm layui-btn-normal">验货</span>',],
 			cols:[[
 					{ type:'checkbox',fixed:'left' },
-					{ title:'物料名', field:'materiel_name', fixed:'left',},
-					{ title:'物料定性', field:'materiel_materialQualitative_name', },
-					{ title:'下单日期', field:'placeOrderTime', type:'date',},
+					{ title:'下单日期', field:'placeOrderTime', type:'date'},
 					{ title:'采购编号', field:'orderProcurementNumber', },
 					{ title:'采购数量', field:'placeOrderNumber', },
-					{ title:'预计价格', field:'conventionPrice', },
-					{ title:'实际价格', field:'price', },
-					{ title:'预计克重', field:'conventionSquareGram', },
-					{ title:'实际克重', field:'squareGram', },
+					{ title:'预计价格', field:'price', },
 					{ title:'订购人', field:'user_userName', },
 					{ title:'供应商', field:'customer_name', },
 					{ title:'预计到货', field:'expectArrivalTime',},
-					{ title:'到货日期', field:'arrivalTime',  type:'date', },
-					{ title:'到货数量', field:'arrivalNumber', },
-					{ title:'退货数量', field:'returnNumber', },
-					{ title:'延期付款数量', field:'partDelayNumber', },
-					{ title:'延期付款金额', field:'partDelayPrice', },
-					{ title:'延期付款日期', field:'partDelayTime', type:'date',},
-					{ title:'缺克重价值', field:'gramPrice;', },
-					{ title:'占用资金利息', field:'interest', },
-					{ title:'生成账单', field:'bill', fixed:'right',transData:{data:['否','是']}},
+					{ title:'到货日期', field:'arrivalTime', edit:true, type:'date', },
+					{ title:'到货数量', field:'arrivalNumber', edit:true,},
+					{ title:'入库人', field:'userStorage_id', type:'select', select:{ data:allUser, name:'userName', }},
+					{ title:'是否入库',field:'arrival',transData:{data:['否','是'],}},
+					{ title:'退货日期',field:'returnTime', edit:true, type:'date',minWidth:'120', },
+					{ title:'退货数量',field:'returnNumber',edit:true, minWidth:'120',},
+					{ title:'退货原因',field:'returnRemark', edit:true, minWidth:'120',},
+					{ title:'是否验货',field:'inspection',transData:{data:['否','是'],}, fixed:'right', },
 			       ]]
 		})
 		form.on('submit(search)',function(obj){
