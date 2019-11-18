@@ -7,7 +7,7 @@
 	<link rel="stylesheet" href="${ctx }/static/layui-v2.4.5/layui/css/layui.css" media="all">
 	<script src="${ctx}/static/layui-v2.4.5/layui/layui.js"></script>
 	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-	<title>采购汇总</title>
+	<title>采购单</title>
 </head>
 <body>
 
@@ -76,7 +76,7 @@ layui.config({
 				otherBtn:function(obj){
 					if(obj.event=='audit'){
 						myutil.deleTableIds({
-							url:'/ledger/auditOrderProcurement',
+							url:'/ledger/arrivalOrderProcurement',
 							table:'tableData',
 							text:'请选择信息|是否确认审核？',
 						})
