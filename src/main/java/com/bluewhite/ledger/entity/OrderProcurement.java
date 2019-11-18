@@ -11,6 +11,7 @@ import javax.persistence.Table;
 import javax.persistence.Transient;
 
 import com.bluewhite.base.BaseEntity;
+import com.bluewhite.basedata.entity.BaseData;
 import com.bluewhite.product.primecostbasedata.entity.Materiel;
 import com.bluewhite.system.user.entity.User;
 
@@ -18,6 +19,7 @@ import com.bluewhite.system.user.entity.User;
  * 采购（采购面辅料订单）(由生产下单用料转化得到) 当生产耗料库存不足时，生成采购单
  * 
  * 采购单作为库存记录单使用，所以一个物料的库存同时拥有多个采购单，采购单内容包括物料的库位，价格
+ * 
  * @author zhangliang
  *
  */
@@ -30,20 +32,20 @@ public class OrderProcurement extends BaseEntity<Long> {
 	 */
 	@Column(name = "order_procurement_number")
 	private String orderProcurementNumber;
-	
+
 	/**
 	 * 物料名id
 	 */
 	@Column(name = "materiel_id")
-    private Long materielId;
-	
+	private Long materielId;
+
 	/**
 	 * 物料
 	 */
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "materiel_id", referencedColumnName = "id", insertable = false, updatable = false)
 	private Materiel materiel;
-	
+
 	/**
 	 * 订单id
 	 * 
@@ -59,11 +61,29 @@ public class OrderProcurement extends BaseEntity<Long> {
 	private Order order;
 	
 	/**
-	 * 平方克重
+	 * 约定面料价格
+	 */
+	@Column(name = "convention_price")
+	private Double conventionPrice;
+	
+	/**
+	 * 实际面料价格
+	 */
+	@Column(name = "price")
+	private Double price;
+	
+	/**
+	 * 约定平方克重
+	 */
+	@Column(name = "convention_square_gram")
+	private Double conventionSquareGram;
+	
+	/**
+	 * 实际平方克重
 	 */
 	@Column(name = "square_gram")
-    private Double squareGram;
-	
+	private Double squareGram;
+
 	/**
 	 * 下单数量
 	 */
@@ -75,25 +95,20 @@ public class OrderProcurement extends BaseEntity<Long> {
 	 */
 	@Column(name = "place_order_time")
 	private Date placeOrderTime;
-	
+
 	/**
 	 * 预计到货日期
 	 */
 	@Column(name = "expect_arrival_time")
-	private Date expectArrivalTime;  
+	private Date expectArrivalTime;
 
 	/**
-	 * 到货日期
+	 * 预计付款日期
 	 */
-	@Column(name = "arrival_time")
-	private Date arrivalTime;  
-	
-	/**
-	 * 到货数量
-	 */
-	@Column(name = "arrival_number")
-	private Double arrivalNumber;
-	
+	@Column(name = "expect_payment_time")
+	private Date expectPaymentTime;
+
+
 	/**
 	 * 虚拟库存 剩余数量
 	 */
@@ -128,24 +143,26 @@ public class OrderProcurement extends BaseEntity<Long> {
 	@JoinColumn(name = "user_id", referencedColumnName = "id", insertable = false, updatable = false)
 	private User user;
 
-	/**
-	 * 库位
-	 * 
-	 */
-	@Column(name = "materiel_location")
-	private String materielLocation;
-	
-	/**
-     * 面料价格
-     */
-	@Column(name = "price")
-    private Double price;
 	
 	/**
 	 * 根据客户来的新编号
 	 */
 	@Column(name = "new_code")
 	private String newCode;
+
+	/**
+	 * 是否审核（0=未审核，1=已审核）审核成功后 物料仓库查看
+	 */
+	@Column(name = "audit")
+	private Integer audit;
+	
+	/****物料仓库参数****/
+	
+	/**
+	 * 是否验货
+	 */
+	@Column(name = "inspection")
+	private Integer inspection;
 	
 	/**
 	 * 是否到货（0=否，1=是）
@@ -154,11 +171,16 @@ public class OrderProcurement extends BaseEntity<Long> {
 	private Integer arrival;
 	
 	/**
-	 * 入库库存是否有出入(0=否，1=是)
+	 * 到货日期
 	 */
-	@Column(name = "in_out_error")
-	private Integer inOutError;
-	
+	@Column(name = "arrival_time")
+	private Date arrivalTime;
+
+	/**
+	 * 到货数量
+	 */
+	@Column(name = "arrival_number")
+	private Double arrivalNumber;
 	
 	/**
 	 * 入库操作人id
@@ -173,7 +195,75 @@ public class OrderProcurement extends BaseEntity<Long> {
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "user_storage_id", referencedColumnName = "id", insertable = false, updatable = false)
 	private User userStorage;
+
+	/**
+	 * 入库库存是否有出入(0=否，1=是)
+	 */
+	@Column(name = "in_out_error")
+	private Integer inOutError;
 	
+	/**
+	 * 库位
+	 * 
+	 */
+	@Column(name = "materiel_location")
+	private String materielLocation;
+	
+	/**
+	 * 是否接受不相符到货
+	 *  1.生产和销售接收
+	 *  2.退回供应商 
+	 *  3.降价接受 
+	 *  4.部分接受，部分退货 
+	 *  5.部分接受，部分延期付款
+	 */
+	@Column(name = "discrepancy_arrival")
+	private Integer discrepancyArrival;
+	
+	/**
+	 * 退货数量
+	 */
+	@Column(name = "return_number")
+	private Double returnNumber;
+	
+	/**
+	 * 部分接受延期付款数量
+	 */
+	@Column(name = "part_delay_number")
+	private Double partDelayNumber;
+	
+	/**
+	 * 部分接受延期付款日期
+	 */
+	@Column(name = "part_delay_time")
+	private Date part_delay_time;
+	
+	/**
+	 * 偷克重产生被偷价值
+	 */
+	@Column(name = "gram_price")
+	private Double gram_price;
+	
+	/**
+	 * 占用供应商资金利息 (日利息0.00022)
+	 */
+	@Column(name = "interest")
+	private Double interest;
+	
+
+	/**** 用于财务应付帐单参数 ****/
+
+	/**
+	 * 付款日要付金额
+	 */
+	@Column(name = "payment_money")
+	private Double paymentMoney;
+	
+	
+	
+	
+
+
 	/**
 	 * 订单（下单合同）生产用料id
 	 */
@@ -185,19 +275,19 @@ public class OrderProcurement extends BaseEntity<Long> {
 	 */
 	@Transient
 	private String productName;
-	
+
 	/**
 	 * 订料人
 	 */
 	@Transient
 	private String userName;
-	
+
 	/**
 	 * 客户
 	 */
 	@Transient
-	private String customerName;	
-	
+	private String customerName;
+
 	/**
 	 * 查询字段
 	 */
@@ -210,10 +300,63 @@ public class OrderProcurement extends BaseEntity<Long> {
 	private Date orderTimeEnd;
 	
 	
-
-	
 	
 
+	public Double getConventionPrice() {
+		return conventionPrice;
+	}
+
+	public void setConventionPrice(Double conventionPrice) {
+		this.conventionPrice = conventionPrice;
+	}
+
+	public Double getConventionSquareGram() {
+		return conventionSquareGram;
+	}
+
+	public void setConventionSquareGram(Double conventionSquareGram) {
+		this.conventionSquareGram = conventionSquareGram;
+	}
+
+	public Integer getInspection() {
+		return inspection;
+	}
+
+	public void setInspection(Integer inspection) {
+		this.inspection = inspection;
+	}
+
+	public Integer getDiscrepancyArrival() {
+		return discrepancyArrival;
+	}
+
+	public void setDiscrepancyArrival(Integer discrepancyArrival) {
+		this.discrepancyArrival = discrepancyArrival;
+	}
+
+	public Double getPaymentMoney() {
+		return paymentMoney;
+	}
+
+	public void setPaymentMoney(Double paymentMoney) {
+		this.paymentMoney = paymentMoney;
+	}
+
+	public Integer getAudit() {
+		return audit;
+	}
+
+	public void setAudit(Integer audit) {
+		this.audit = audit;
+	}
+
+	public Date getExpectPaymentTime() {
+		return expectPaymentTime;
+	}
+
+	public void setExpectPaymentTime(Date expectPaymentTime) {
+		this.expectPaymentTime = expectPaymentTime;
+	}
 
 	public String getUserName() {
 		return userName;

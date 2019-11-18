@@ -196,7 +196,8 @@ public class LedgerAction {
 		clearCascadeJSONOrderProcurement = ClearCascadeJSON.get()
 				.addRetainTerm(OrderProcurement.class, "id", "orderProcurementNumber", "placeOrderNumber",
 						"arrivalNumber", "placeOrderTime", "expectArrivalTime", "arrivalTime", "customer", "user",
-						"materielLocation", "price", "squareGram", "userStorage", "arrival")
+						"materielLocation", "price", "squareGram", "userStorage", "arrival","audit",
+						"expectPaymentTime","actualPaymentTime")
 				.addRetainTerm(Customer.class, "id", "name")
 				.addRetainTerm(BaseOne.class, "id", "name")
 				.addRetainTerm(User.class, "id", "userName");
@@ -222,8 +223,9 @@ public class LedgerAction {
 				.addRetainTerm(OrderOutSource.class, "id", "fill", "fillRemark", "outSourceNumber",
 						"order", "user", "customer", "remark", "gramWeight", "processNumber", "process",
 						"openOrderTime","outGoingTime","wholeList","flag","audit","productType","warehouseType",
-						"inWarehouseType","arrival","arrivalTime","arrivalNumber","outsourceTask","gramWeight","kilogramWeight")
-				.addRetainTerm(Order.class, "id", "bacthNumber", "product", "number", "remark","orderNumber","processingUser","outsource")
+						"inWarehouseType","arrival","arrivalTime","arrivalNumber","outsourceTask","gramWeight"
+						,"kilogramWeight","processingUser","outsource")
+				.addRetainTerm(Order.class, "id", "bacthNumber", "product", "number", "remark","orderNumber")
 				.addRetainTerm(Customer.class, "id", "name")
 				.addRetainTerm(Product.class, "id", "name","number")
 				.addRetainTerm(BaseOne.class, "id", "name")
@@ -447,6 +449,20 @@ public class LedgerAction {
 		return cr;
 
 	}
+	
+	/**
+	 * （采购部）审核采购单，进入面辅料仓库
+	 * @param order
+	 * @return
+	 */
+	@RequestMapping(value = "/ledger/auditOrderProcurement", method = RequestMethod.GET)
+	@ResponseBody
+	public CommonResponse auditOrderProcurement(String ids) {
+		CommonResponse cr = new CommonResponse();
+		int count = orderProcurementService.auditOrderProcurement(ids);
+		cr.setMessage("成功审核" + count + "条采购单");
+		return cr;
+	}
 
 	/**
 	 * （采购部）删除采购单
@@ -558,7 +574,7 @@ public class LedgerAction {
 	
 	/**
 	 * (生产计划部)查看领料单
-	 * (面辅料仓库)查看出库单 --- 领料单对于仓库来说是出库单
+	 * (面辅料仓库)查看出库单 --- 查看审核后的 领料单对于仓库来说是出库单
 	 * 
 	 * @return
 	 */
@@ -773,14 +789,63 @@ public class LedgerAction {
 	 * @param order
 	 * @return
 	 */
-	@RequestMapping(value = "/ledger/auditOrderProcurement", method = RequestMethod.GET)
+	@RequestMapping(value = "/ledger/arrivalOrderProcurement", method = RequestMethod.GET)
 	@ResponseBody
-	public CommonResponse auditOrderProcurement(String ids) {
+	public CommonResponse arrivalOrderProcurement(String ids) {
 		CommonResponse cr = new CommonResponse();
-		int count = orderProcurementService.auditOrderProcurement(ids);
+		int count = orderProcurementService.arrivalOrderProcurement(ids);
 		cr.setMessage("成功审核" + count + "条采购单，进行入库");
 		return cr;
 	}
+	
+	/**
+	 * （面辅料仓库）对采购单进行退货处理 
+	 * 
+	 * @param order
+	 * @return
+	 */
+	@RequestMapping(value = "/ledger/returnOrderProcurement", method = RequestMethod.GET)
+	@ResponseBody
+	public CommonResponse returnOrderProcurement(OrderProcurement orderProcurement) {
+		CommonResponse cr = new CommonResponse();
+		orderProcurementService.returnOrderProcurement(orderProcurement);
+		cr.setMessage("成功生成退货单");
+		return cr;
+	}
+	
+	
+	/**
+	 * （面辅料仓库）质检采购单，进行验货
+	 * 
+	 * @param order
+	 * @return
+	 */
+	@RequestMapping(value = "/ledger/inspectionOrderProcurement", method = RequestMethod.GET)
+	@ResponseBody
+	public CommonResponse inspectionOrderProcurement(String ids) {
+		CommonResponse cr = new CommonResponse();
+		int count = orderProcurementService.inspectionOrderProcurement(ids);
+		cr.setMessage("成功验货" + count + "条采购单");
+		return cr;
+	}
+	
+	
+	
+	/**
+	 * (面辅料仓库）修改领料单，作为实际出库单使用（领取时间）
+	 * @param order
+	 * @return
+	 */
+	@RequestMapping(value = "/ledger/updateiInventoryMaterialRequisition", method = RequestMethod.POST)
+	@ResponseBody
+	public CommonResponse updateiInventoryMaterialRequisition(MaterialRequisition materialRequisition) {
+		CommonResponse cr = new CommonResponse();
+		materialRequisitionService.updateiInventoryMaterialRequisition(materialRequisition);
+		cr.setMessage("修改成功");
+		return cr;
+	} 
+	
+	
 	
 	/**
 	 * （面辅料仓库）审核领料单出库(确认已被领取)
@@ -795,10 +860,6 @@ public class LedgerAction {
 		cr.setMessage("成功审核" + count + "领料单，领取出库");
 		return cr;
 	}   
-	
-	
-	
-	
 	
 	
 	

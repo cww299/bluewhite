@@ -14,7 +14,7 @@ import com.bluewhite.basedata.entity.BaseData;
 import com.bluewhite.product.product.entity.Product;
 
 /**
- * 出库单
+ * 出库单()
  * 
  * @author zhangliang
  *
@@ -72,5 +72,72 @@ public class OutStorage extends BaseEntity<Long> {
 	 */
 	@Column(name = "location")
 	private String location;
+
+	public Long getProductId() {
+		return productId;
+	}
+
+	public void setProductId(Long productId) {
+		this.productId = productId;
+	}
+
+	public Product getProduct() {
+		return product;
+	}
+
+	public void setProduct(Product product) {
+		this.product = product;
+	}
+
+	public Integer getOutStatus() {
+		return outStatus;
+	}
+
+	public void setOutStatus(Integer outStatus) {
+		this.outStatus = outStatus;
+	}
+
+	public Long getOutWarehouseTypeId() {
+		return outWarehouseTypeId;
+	}
+
+	public void setOutWarehouseTypeId(Long outWarehouseTypeId) {
+		this.outWarehouseTypeId = outWarehouseTypeId;
+	}
+
+	public BaseData getInWarehouseType() {
+		return inWarehouseType;
+	}
+
+	public void setInWarehouseType(BaseData inWarehouseType) {
+		this.inWarehouseType = inWarehouseType;
+	}
+
+	public Date getArrivalTime() {
+		return arrivalTime;
+	}
+
+	public void setArrivalTime(Date arrivalTime) {
+		this.arrivalTime = arrivalTime;
+	}
+
+	public Integer getArrivalNumber() {
+		return arrivalNumber;
+	}
+
+	public void setArrivalNumber(Integer arrivalNumber) {
+		this.arrivalNumber = arrivalNumber;
+	}
+
+	public String getLocation() {
+		return location;
+	}
+
+	public void setLocation(String location) {
+		this.location = location;
+	}
+	
+	
+	
 
 }

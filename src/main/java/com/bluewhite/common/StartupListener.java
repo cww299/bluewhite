@@ -4,19 +4,15 @@ import java.util.ResourceBundle;
 import java.util.Timer;
 import java.util.TimerTask;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationListener;
 import org.springframework.context.event.ContextRefreshedEvent;
 import org.springframework.stereotype.Service;
 
 import com.bluewhite.common.utils.IpUtil;
 import com.bluewhite.common.utils.zkemUtils.SDKRunnable;
-import com.bluewhite.personnel.attendance.service.AttendanceServiceImpl;
 
 @Service
 public class StartupListener implements ApplicationListener<ContextRefreshedEvent> {
-	@Autowired
-	private AttendanceServiceImpl attendanceServiceImpl;
 
 	@Override
 	public void onApplicationEvent(ContextRefreshedEvent event) {
@@ -40,7 +36,7 @@ public class StartupListener implements ApplicationListener<ContextRefreshedEven
 					new Thread(new SDKRunnable(address),threadName).start();
 				}
 			}
-		}, 300);
+		}, 3000);
 	}
 
 }

@@ -74,6 +74,19 @@ public class Materiel extends BaseEntity<Long>{
 	private BaseData materielType;
 	
 	/**
+	 * 物料定性id
+	 */
+	@Column(name = "material_qualitative_id")
+	private Long materialQualitativeId;
+	
+	/**
+	 * 物料定性
+	 */
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "material_qualitative_id", referencedColumnName = "id", insertable = false, updatable = false)
+	private BaseData materialQualitative;
+	
+	/**
 	 * 是否换算(0=是，1=否)
 	 * @return
 	 */
@@ -143,6 +156,22 @@ public class Materiel extends BaseEntity<Long>{
 	
 	
 	
+	public Long getMaterialQualitativeId() {
+		return materialQualitativeId;
+	}
+
+	public void setMaterialQualitativeId(Long materialQualitativeId) {
+		this.materialQualitativeId = materialQualitativeId;
+	}
+
+	public BaseData getMaterialQualitative() {
+		return materialQualitative;
+	}
+
+	public void setMaterialQualitative(BaseData materialQualitative) {
+		this.materialQualitative = materialQualitative;
+	}
+
 	public Set<OrderProcurement> getOrderProcurements() {
 		return orderProcurements;
 	}
