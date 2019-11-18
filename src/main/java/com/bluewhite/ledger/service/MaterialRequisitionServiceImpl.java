@@ -188,4 +188,14 @@ public class MaterialRequisitionServiceImpl extends BaseServiceImpl<MaterialRequ
 		return count;
 	}
 
+	@Override
+	public void updateiInventoryMaterialRequisition(MaterialRequisition materialRequisition) {
+		if(materialRequisition.getId()!=null){
+			MaterialRequisition ot = findOne(materialRequisition.getId());
+			if(ot.getRequisition()==1){
+				throw new ServiceException("已领取出库，无法修改");
+			}
+			update(materialRequisition, ot, "");
+		}
+	}
 }

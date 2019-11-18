@@ -115,7 +115,7 @@ public class AttendanceAction {
 	}
 
 	/**
-	 * 修改考勤机中的人员信息
+	 * 查询考勤机中的人员信息
 	 * 
 	 * @param request
 	 *            请求

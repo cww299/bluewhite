@@ -98,12 +98,10 @@ public class AttendanceServiceImpl extends BaseServiceImpl<Attendance, Long> imp
 		sdk.initSTA();
 		boolean flag = sdk.connect(address, 4370);
 		if (flag) {
-			// if(address.equals(Constants.EIGHT_WAREHOUSE) ||
-			// address.equals(Constants.NEW_IGHT_WAREHOUSE)){
-			// sdk.delectUserById(number);
-			// }
 			flag = sdk.setUserInfo(number, name, "", isPrivilege, enabled);
 		}
+		sdk.disConnect();
+		sdk.release();
 		return flag;
 	}
 
@@ -186,6 +184,29 @@ public class AttendanceServiceImpl extends BaseServiceImpl<Attendance, Long> imp
 	@Override
 	public PageResult<Attendance> findPageAttendance(Attendance param, PageParameter page) {
 		page.setSort(new Sort(Direction.DESC, "time"));
+		String sourceMachine = null;
+		if(!StringUtils.isEmpty(param.getSourceMachine())){
+			if (Constants.THREE_FLOOR.equals(param.getSourceMachine())) {
+				sourceMachine = "THREE_FLOOR";
+			}
+			if (Constants.TWO_FLOOR.equals(param.getSourceMachine())) {
+				sourceMachine = "TWO_FLOOR";
+			}
+			if (Constants.ONE_FLOOR.equals(param.getSourceMachine())) {
+				sourceMachine = "ONE_FLOOR";
+			}
+			if (Constants.EIGHT_WAREHOUSE.equals(param.getSourceMachine())) {
+				sourceMachine = "EIGHT_WAREHOUSE";
+			}
+			if (Constants.NEW_IGHT_WAREHOUSE.equals(param.getSourceMachine())) {
+				sourceMachine = "NEW_IGHT_WAREHOUSE";
+			}
+			if (Constants.ELEVEN_WAREHOUSE.equals(param.getSourceMachine())) {
+				sourceMachine = "ELEVEN_WAREHOUSE";
+			}
+			param.setSourceMachine(sourceMachine);
+		}
+		
 		Page<Attendance> pages = dao.findAll((root, query, cb) -> {
 			List<Predicate> predicate = new ArrayList<>();
 			// 按用户 id过滤
@@ -281,7 +302,7 @@ public class AttendanceServiceImpl extends BaseServiceImpl<Attendance, Long> imp
 		attendance.setUserId(userId);
 		List<Attendance> attendanceList = findPageAttendance(attendance, new PageParameter(0, Integer.MAX_VALUE))
 				.getRows().stream()
-				.filter(Attendance -> (Attendance.getInOutMode() == null || Attendance.getInOutMode() != 2))
+				.filter(Attendance -> (Attendance.getInOutMode() == null || Attendance.getInOutMode() == 1))
 				.collect(Collectors.toList());
 		if (attendanceList.size() > 0) {
 			dao.delete(attendanceList);

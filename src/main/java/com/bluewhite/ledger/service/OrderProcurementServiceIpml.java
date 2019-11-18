@@ -100,6 +100,9 @@ public class OrderProcurementServiceIpml extends BaseServiceImpl<OrderProcuremen
 		//修改
 		if(orderProcurement.getId()!=null){
 			OrderProcurement ot = findOne(orderProcurement.getId());
+			if(ot.getAudit()==1){
+				throw new ServiceException("当前批次采购单已审核，无法修改");
+			}
 			List<ScatteredOutbound> scatteredOutboundList = scatteredOutboundDao.findByOrderProcurementId(orderProcurement.getId());
 			if(scatteredOutboundList.size()>0){
 				throw new ServiceException("当前批次采购单已有出库记录，无法修改");
@@ -118,6 +121,7 @@ public class OrderProcurementServiceIpml extends BaseServiceImpl<OrderProcuremen
 		}
 		orderProcurement.setInOutError(0);
 		orderProcurement.setArrival(0);
+		orderProcurement.setAudit(0);
 		//剩余数量
 		orderProcurement.setResidueNumber(orderProcurement.getPlaceOrderNumber());
 		save(orderProcurement);
@@ -146,7 +150,7 @@ public class OrderProcurementServiceIpml extends BaseServiceImpl<OrderProcuremen
 
 	@Override
 	@Transactional
-	public int auditOrderProcurement(String ids) {
+	public int arrivalOrderProcurement(String ids) {
 		int count = 0;
 		if (!StringUtils.isEmpty(ids)) {
 			String[] idArr = ids.split(",");
@@ -216,9 +220,63 @@ public class OrderProcurementServiceIpml extends BaseServiceImpl<OrderProcuremen
 	public void updateOrderProcurement(OrderProcurement orderProcurement) {
 		OrderProcurement ot = findOne(orderProcurement.getId());
 		if(ot.getArrival()==1){
-			throw new ServiceException(orderProcurement.getOrderProcurementNumber()+"采购单已审核，无法修改");
+			throw new ServiceException(orderProcurement.getOrderProcurementNumber()+"采购单已审核已生成账单，无法修改");
 		}
 		update(orderProcurement, ot, "");
+	}
+
+	@Override
+	public int auditOrderProcurement(String ids) {
+		int count = 0;
+		if (!StringUtils.isEmpty(ids)) {
+			String[] idArr = ids.split(",");
+			if (idArr.length > 0) {
+				for (int i = 0; i < idArr.length; i++) {
+					Long id = Long.parseLong(idArr[i]);
+					OrderProcurement orderProcurement = dao.findOne(id);
+					if(orderProcurement!=null){
+						if(orderProcurement.getAudit()==1){
+							throw new ServiceException("当前采购单已审核，请勿重复审核");
+						}
+						orderProcurement.setAudit(1);
+						save(orderProcurement);
+						count++;
+					}
+				}
+			}
+		}
+		return count;
+	}
+
+	@Override
+	public int inspectionOrderProcurement(String ids) {
+		int count = 0;
+		if (!StringUtils.isEmpty(ids)) {
+			String[] idArr = ids.split(",");
+			if (idArr.length > 0) {
+				for (int i = 0; i < idArr.length; i++) {
+					Long id = Long.parseLong(idArr[i]);
+					OrderProcurement orderProcurement = dao.findOne(id);
+					if(orderProcurement!=null){
+						if(orderProcurement.getInspection()==1){
+							throw new ServiceException("当前采购入库单已检验，请勿重复检验");
+						}
+						orderProcurement.setInspection(1);
+						save(orderProcurement);
+						count++;
+					}
+				}
+			}
+		}
+		return count;
+	}
+
+	@Override
+	public void returnOrderProcurement(OrderProcurement orderProcurement) {
+		if(orderProcurement.getId()!=null){
+			OrderProcurement ot = dao.findOne(orderProcurement.getId());
+			update(orderProcurement, ot, "");
+		}
 	}
 
 }
