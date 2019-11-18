@@ -202,7 +202,7 @@ layui.extend({
 	}
 	
 	outOrderModel.init = function(){
-		myutil.getData({	//获取工序类型
+		myutil.getDataSync({	//获取工序类型
 			url: myutil.config.ctx+'/basedata/list?type=outsourceTask',
 			success:function(d){
 				for(var i=0,len=d.length;i<len;i++){
@@ -234,7 +234,7 @@ layui.extend({
 				}
 			}
 		})
-		myutil.getData({	//获取仓库类型
+		myutil.getDataSync({	//获取仓库类型
 			url: myutil.config.ctx+'/basedata/list?type=warehouseType&size=9999',
 			success:function(d){
 				for(var i=0,len=d.length;i<len;i++){

@@ -193,12 +193,12 @@ layui.config({
 			cols:[[
 			       { type:'checkbox',},
 			       { title:'出库日期',   field:'auditTime', type:'dateTime', },
-			       { title:'分散出库编号',   field:'orderProcurement_orderProcurementNumber',	},
+			       { title:'库存单编号',   field:'orderProcurement_orderProcurementNumber',	},
 			       { title:'领取模式',   field:'orderMaterial_receiveMode_name',  },
 			       { title:'领取用量',   field:'dosage',	},
 			       { title:'剩余领取用量',   field:'residueDosage',style:'color:red;', },
 			       { title:'任务数量',   field:'dosageNumber',  },
-			       { title:'剩余任务数量',   field:'residueDosageNumber',  },
+			       { title:'剩余任务数量',   field:'residueDosageNumber', style:'color:red;', },
 			       { title:'是否审核',   field:'audit', transData:{data:['否','是'],}	},
 			       ]]
 		})

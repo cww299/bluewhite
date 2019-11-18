@@ -13,6 +13,9 @@
 		.layui-form-pane .layui-item{
 			margin-top:10px;
 		}
+		.pickingDiv td{
+			padding: 5px 0;
+		}
 	</style>
 </head>
 <body>
@@ -33,7 +36,7 @@
 </body>
 <script type="text/html" id="pickingTpl">
 <div style="padding:20px;text-align: center;">
-    <table class="layui-form" style="margin: auto;">
+    <table class="layui-form pickingDiv" style="margin: auto;">
     	<tr>
 			<td>下单时间：</td>
 			<td><input type="text" class="layui-input" id="openOrderTime" name="openOrderTime"></td>
@@ -190,12 +193,22 @@ layui.config({
 						var id = $('#orderIdSelect').val();
 						if(!id)
 							return myutil.emsg('请选择合同');
-						var outsource = obj.event=='outOrder'?0:1;
-						var name = $('#orderIdSelect').find('option[value="'+id+'"]').html();
-						outOrderModel.add({
-							data:{ 
-								orderId: id,
-								outsource: outsource,
+						myutil.getDataSync({
+							url:'${ctx}/ledger/judgeOrderOutSource?orderId='+id,
+							success:function(d){
+								if(d>0){
+									var outsource = obj.event=='outOrder'?0:1;
+									var name = $('#orderIdSelect').find('option[value="'+id+'"]').html();
+									outOrderModel.add({
+										data:{ 
+											orderId: id,
+											outsource: outsource,
+										}
+									})
+								}else if(d==0){
+									return myutil.emsg('当前生产计划单未生成领料单，无法生成加工单');
+								}else if(d<0)
+									return myutil.emsg('当前生产计划单存在领料单未审核，无法新增加工单。请先审核');
 							}
 						})
 					}

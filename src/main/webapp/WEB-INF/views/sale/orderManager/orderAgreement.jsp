@@ -73,7 +73,7 @@
 <script id="toolbar" type="text/html">
 <div>
 	<span lay-event="addAgreement"  class="layui-btn layui-btn-sm" >新增合同</span>
-	<span lay-event="delete"  class="layui-btn layui-btn-sm layui-btn-danger" >删除合同</span>
+	<span lay-event="delete"  class="layui-btn layui-btn-sm layui-btn-danger" >批量删除</span>
 	<span lay-event="update"  class="layui-btn layui-btn-sm" >修改合同</span>
 	<span lay-event="auditAgreement"  class="layui-btn layui-btn-sm layui-btn-normal" >审核</span>
 </div>
