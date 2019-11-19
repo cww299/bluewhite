@@ -25,6 +25,7 @@
  * 增加默认导出假字段 exportField: true, //true为关闭、默认开启
  * 增加null值时的提示：ifNull:'', //返回值为null获取''时自动转换
  * 增加自动搜索功能：searchTable:{ elem:'存放搜索表格的elem',field:{表格字段:'转成上传字段'},time:{ type:'',range:true/false,name:'',},   },
+ *是否开启横向滚动：scrollX : true,
  */
 layui.extend({
 	myutil: 'layui/myModules/myutil',
@@ -429,7 +430,10 @@ layui.extend({
 								})
 						})
 					}
-				})	
+				})
+			if(opt.scrollX){
+				myutil.scrollX($(opt.elem).next().find('.layui-table-box').find('.layui-table-body')[0])
+			}
 			done && done(res, curr, cou);
 		}
 		opt.done = newDone;
