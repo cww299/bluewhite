@@ -48,7 +48,8 @@
   <div class="layui-form-item">
     <label class="layui-form-label">到货接收状态</label>
     <div class="layui-input-block">
-      <select name="" vlaue="{{}}" lay-filter="stateSelect"><option value="1">全部接收</option>
+      <select name="arrivalStatus" id="stateSelect" lay-filter="stateSelect">
+			  <option value="1">全部接收</option>
       	      <option disabled value="2">全部退货</option>
       	      <option value="3">降价接收</option>
       	      <option disabled value="4">部分接收，部分退货</option>
@@ -58,31 +59,32 @@
   <div class="layui-form-item showInState3">
     <label class="layui-form-label">面料价格</label>
     <div class="layui-input-block">
-      <input type="text" name="" class="layui-input" vlaue="{{}}" id="updatePrice">
+      <input type="text" name="price" class="layui-input" value="{{d.price}}" id="updatePrice">
     </div>
   </div>
   <div class="layui-form-item showInState3">
     <label class="layui-form-label">应付总价</label>
     <div class="layui-input-block">
-      <input type="text" name="PaymentMoney" class="layui-input" vlaue="{{}}" readOnly id="updatePay">
+      <input type="text" name="paymentMoney" class="layui-input" value="{{d.paymentMoney}}" readOnly id="updatePay">
     </div>
   </div>
   <div class="layui-form-item showInState5">
     <label class="layui-form-label">延期付款数量</label>
     <div class="layui-input-block">
-      <input type="text" name="" class="layui-input" vlaue="{{}}">
+      <input type="text" name="partDelayNumber" class="layui-input" value="{{d.partDelayNumber || '' }}">
     </div>
   </div>
   <div class="layui-form-item showInState5">
     <label class="layui-form-label">延期付款金额</label>
     <div class="layui-input-block">
-      <input type="text" name="" class="layui-input" vlaue="{{}}">
+      <input type="text" name="partDelayPrice" class="layui-input" value="{{ d.partDelayPrice || ''}}">
     </div>
   </div>
   <div class="layui-form-item showInState5">
     <label class="layui-form-label">延期付款日期</label>
     <div class="layui-input-block">
-      <input type="text" name="" class="layui-input" vlaue="{{}}" id="updateTime">
+      <input type="text" name="partDelayTime" class="layui-input" value="{{d.partDelayTime || ''}}" id="updateTime">
+	  <input type="hidden" name="id"  value="{{d.id}}">
       <span style="display:none;" lay-submit lay-filter="updateBtn" id="updateBtn">修改</span>
     </div>
   </div>
@@ -108,7 +110,7 @@ layui.config({
 		myutil.clickTr();
 		mytable.render({
 			elem:'#tableData',
-			url:'${ctx}/ledger/getOrderProcurement',
+			url:'${ctx}/ledger/getOrderProcurement?inspection=1',
 			size:'lg',
 			ifNull:'',
 			scrollX:true,
@@ -160,7 +162,7 @@ layui.config({
 					{ title:'延期付款日期', field:'partDelayTime', type:'date',},
 					{ title:'缺克重价值', field:'gramPrice', },
 					{ title:'占用资金利息', field:'interest', },
-					{ title:'加急补货', field:'replenishment', },
+					{ title:'加急补货', field:'replenishment', transData:{data:['正常','加急补货']}},
 					{ title:'生成账单', field:'bill', fixed:'right',transData:{data:['否','是']}},
 			       ]]
 		})
@@ -170,7 +172,7 @@ layui.config({
 			laytpl($('#updateTpl').html()).render(d,function(h){
 				html = h;
 			})
-			layer.open({
+			var win = layer.open({
 				type:1,
 				title:'修改采购单',
 				content: html,
@@ -178,8 +180,9 @@ layui.config({
 				area:['500px','300px'],
 				btn:['确定修改','取消'],
 				btnAlign:'c',
-				success:function(win){
+				success:function(){
 					laydate.render({ elem:'#updateTime'});
+					$('#stateSelect').val(d.arrivalStatus);
 					$('#updatePrice').unbind().blur(function(){
 						var price = $(this).val(),allPrice = 0;
 						if(isNaN(price) || price<0){
@@ -192,7 +195,6 @@ layui.config({
 						$('#updatePay').val(allPrice);
 					})
 					form.on('select(stateSelect)',function(obj){
-						
 						if(obj.value==3){
 							$('.showInState3').show();
 							$('.showInState5').hide();
@@ -202,10 +204,13 @@ layui.config({
 						}
 					})
 					form.on('submit(updateBtn)',function(obj){
-						
-						
 						myutil.saveAjax({
 							url:'/ledger/updateBillOrderProcurement',
+							data:obj.field,
+							success:function(){
+								layer.close(win);
+								table.reload('tableData');
+							}
 						})
 					})
 					form.render();

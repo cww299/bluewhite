@@ -17,7 +17,7 @@ import com.bluewhite.common.entity.ErrorCode;
  * 控制器异常处理，对表单提交返回的CommonResponse做了特殊处理。
  * 
  */
-@Component
+//@Component
 public class MyExceptionHandlerExceptionResolver implements HandlerExceptionResolver {
 
 	private static Logger logger = Logger.getLogger(MyExceptionHandlerExceptionResolver.class);

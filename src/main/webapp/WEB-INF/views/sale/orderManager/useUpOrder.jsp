@@ -69,7 +69,7 @@
 	  <div class="layui-form-item" pane>
 	    <label class="layui-form-label">约定价格：</label>
 	    <div class="layui-input-block">
-	      <input type="text" name="conventionPrice" class="layui-input" id="addEditPrice">
+	      <input type="text" name="price" class="layui-input" id="addEditPrice">
 	    </div>
 	  </div>
 	  <div class="layui-form-item" pane>
