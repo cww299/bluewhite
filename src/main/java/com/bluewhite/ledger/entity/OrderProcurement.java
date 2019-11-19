@@ -210,7 +210,7 @@ public class OrderProcurement extends BaseEntity<Long> {
 	private String materielLocation;
 	
 	/**
-	 * 是否接受不相符到货
+	 * 是否接受不相符到货(异常到货状态)
 	 *  1.生产和销售接收
 	 *  2.退回供应商 
 	 *  3.降价接受 
@@ -227,6 +227,18 @@ public class OrderProcurement extends BaseEntity<Long> {
 	private Double returnNumber;
 	
 	/**
+	 * 退货日期
+	 */
+	@Column(name = "return_time")
+	private Date returnTime;
+	
+	/**
+	 * 退货原因
+	 */
+	@Column(name = "return_remark")
+	private String returnRemark;
+	
+	/**
 	 * 部分接受延期付款数量
 	 */
 	@Column(name = "part_delay_number")
@@ -236,13 +248,19 @@ public class OrderProcurement extends BaseEntity<Long> {
 	 * 部分接受延期付款日期
 	 */
 	@Column(name = "part_delay_time")
-	private Date part_delay_time;
+	private Date partDelayTime;
 	
 	/**
-	 * 偷克重产生被偷价值
+	 * 延期付款日要付金额
+	 */
+	@Column(name = "part_delay_price")
+	private Date partDelayPrice;
+	
+	/**
+	 * 偷克重产生被偷价值(缺克重价值)
 	 */
 	@Column(name = "gram_price")
-	private Double gram_price;
+	private Double gramPrice;
 	
 	/**
 	 * 占用供应商资金利息 (日利息0.00022)
@@ -259,11 +277,13 @@ public class OrderProcurement extends BaseEntity<Long> {
 	@Column(name = "payment_money")
 	private Double paymentMoney;
 	
+	/**
+	 * 是否生成采购账单
+	 */
+	@Column(name = "bill")
+	private Integer bill;
 	
 	
-	
-
-
 	/**
 	 * 订单（下单合同）生产用料id
 	 */
@@ -301,6 +321,70 @@ public class OrderProcurement extends BaseEntity<Long> {
 	
 	
 	
+
+	public Date getReturnTime() {
+		return returnTime;
+	}
+
+	public void setReturnTime(Date returnTime) {
+		this.returnTime = returnTime;
+	}
+
+	public Date getPartDelayPrice() {
+		return partDelayPrice;
+	}
+
+	public void setPartDelayPrice(Date partDelayPrice) {
+		this.partDelayPrice = partDelayPrice;
+	}
+
+	public Double getReturnNumber() {
+		return returnNumber;
+	}
+
+	public void setReturnNumber(Double returnNumber) {
+		this.returnNumber = returnNumber;
+	}
+
+	public Double getPartDelayNumber() {
+		return partDelayNumber;
+	}
+
+	public void setPartDelayNumber(Double partDelayNumber) {
+		this.partDelayNumber = partDelayNumber;
+	}
+
+	public Date getPartDelayTime() {
+		return partDelayTime;
+	}
+
+	public void setPartDelayTime(Date partDelayTime) {
+		this.partDelayTime = partDelayTime;
+	}
+
+	public Double getGramPrice() {
+		return gramPrice;
+	}
+
+	public void setGramPrice(Double gramPrice) {
+		this.gramPrice = gramPrice;
+	}
+
+	public Double getInterest() {
+		return interest;
+	}
+
+	public void setInterest(Double interest) {
+		this.interest = interest;
+	}
+
+	public Integer getBill() {
+		return bill;
+	}
+
+	public void setBill(Integer bill) {
+		this.bill = bill;
+	}
 
 	public Double getConventionPrice() {
 		return conventionPrice;
@@ -589,5 +673,14 @@ public class OrderProcurement extends BaseEntity<Long> {
 	public void setCustomer(Customer customer) {
 		this.customer = customer;
 	}
+
+	public String getReturnRemark() {
+		return returnRemark;
+	}
+
+	public void setReturnRemark(String returnRemark) {
+		this.returnRemark = returnRemark;
+	}
+	
 
 }
