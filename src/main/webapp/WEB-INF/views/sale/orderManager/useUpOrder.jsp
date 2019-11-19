@@ -67,9 +67,9 @@
 	    </div>
 	  </div>
 	  <div class="layui-form-item" pane>
-	    <label class="layui-form-label">面料价格：</label>
+	    <label class="layui-form-label">约定价格：</label>
 	    <div class="layui-input-block">
-	      <input type="text" name="price" class="layui-input" id="addEditPrice" lay-verify="number">
+	      <input type="text" name="conventionPrice" class="layui-input" id="addEditPrice">
 	    </div>
 	  </div>
 	  <div class="layui-form-item" pane>
@@ -80,9 +80,9 @@
 	    </div>
 	  </div>
 	  <div class="layui-form-item" pane>
-	    <label class="layui-form-label">平方克重：</label>
+	    <label class="layui-form-label">约定克重：</label>
 	    <div class="layui-input-block">
-	      <input type="text" name="squareGram" class="layui-input" id="areaG">
+	      <input type="text" name="conventionSquareGram" class="layui-input" id="areaG">
 	    </div>
 	  </div>
 	  <div class="layui-form-item" pane>
@@ -450,7 +450,8 @@ layui.config({
 								elem: '#allTable',
 								colsWidth:[0,13,0,6,6,6,8,13],
 								url: '${ctx}/ledger/getOrderProcurement?orderId='+orderId,
-								toolbar:['<span class="layui-btn layui-btn-sm" lay-event="updateProcurement">修改采购单</span>'].join(''),
+								toolbar:['<span class="layui-btn layui-btn-sm" lay-event="updateProcurement">修改采购单</span>',
+										 '<span class="layui-btn layui-btn-sm" lay-event="auditProcurement">审核</span>'].join(''),
 								curd:{
 									btn:[4],
 									otherBtn:function(obj){
@@ -462,6 +463,12 @@ layui.config({
 												var trData = table.cache['tableData'][$(obj.target).data('index')];
 												addEditBuy('edit',checked[0]);
 											}
+										}else if(obj.event=="auditProcurement"){
+											myutil.deleTableIds({
+												table:'allTable',
+												text:'请选择相关信息|是否确认审核?',
+												url:'/ledger/auditOrderProcurement',
+											});
 										}
 									}
 								},
@@ -569,8 +576,8 @@ layui.config({
 						$('#userIdSelect').val(d.user.id);
 						$('#placeOrderTime').val(d.placeOrderTime);
 						$('#placeOrderNumber').val(d.placeOrderNumber);
-						$('#addEditPrice').val(d.price);
-						$('#areaG').val(d.squareGram);
+						$('#addEditPrice').val(d.conventionPrice);
+						$('#areaG').val(d.conventionSquareGram);
 						$('#comeDate').val(d.expectArrivalTime);
 						$('#orderMaterialId').val('');
 					}
