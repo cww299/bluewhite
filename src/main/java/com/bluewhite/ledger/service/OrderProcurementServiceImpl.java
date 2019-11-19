@@ -377,7 +377,7 @@ public class OrderProcurementServiceImpl extends BaseServiceImpl<OrderProcuremen
 		update(orderProcurement, ot, "");
 		//占用供应商资金利息
 		ot.setInterest(NumUtils.mul(
-				NumUtils.sum(ot.getPartDelayPrice(), ot.getPaymentMoney()),
+				NumUtils.sum(NumUtils.setzro(ot.getPartDelayPrice()), ot.getPaymentMoney()),
 				(double)DatesUtil.getDaySub(ot.getExpectPaymentTime(), ot.getArrivalTime()),
 				ot.getInterestday()));
 		save(ot);
