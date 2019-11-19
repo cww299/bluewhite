@@ -8,30 +8,8 @@
 	<script src="${ctx}/static/layui-v2.4.5/layui/layui.js"></script>
 	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 	<title>采购单</title>
-	<style>
-		div::-webkit-scrollbar{
-		  width:10px;
-		  height:10px;
-		  /**/
-		}
-		div::-webkit-scrollbar-track{
-		  background: rgb(239, 239, 239);
-		  border-radius:2px;
-		}
-		div::-webkit-scrollbar-thumb{
-		  background: #bfbfbf42;
-		  border-radius:10px;
-		}
-		div::-webkit-scrollbar-thumb:hover{
-		  background: #bfbfbf;
-		}
-		div::-webkit-scrollbar-corner{
-		  background: #179a16;
-		}
-	</style>
 </head>
 <body>
-
 <div class="layui-card">
 	<div class="layui-card-body">
 		<table class="layui-form">
@@ -66,20 +44,11 @@ layui.config({
 		, mytable = layui.mytable;
 		myutil.config.ctx = '${ctx}';
 		myutil.clickTr();
-		var allUser = myutil.getDataSync({url: '${ctx}/system/user/findUserList?orgNameIds=51'});
-		allUser.unshift({ id:'',userName:'请选择' });
-		var currentUser = myutil.getDataSync({url: '${ctx}/getCurrentUser'});
-		
 		mytable.render({
 			elem:'#tableData',
 			url:'${ctx}/ledger/getOrderProcurement',
 			size:'lg',
 			colsWidth:[0,10,0,6,6,6,6,6,6,8,10,10,6,6,8,10,10,10,10,10,10,10,10,10,10],
-			autoUpdate:{
-				saveUrl:'/ledger/updateOrderProcurement',
-				field:{ userStorage_id:'userStorageId', },
-			},
-			height:'500px',
 			curd:{
 				btn:[],
 				otherBtn:function(obj){
@@ -127,5 +96,4 @@ layui.config({
 	}//end define function
 )//endedefine
 </script>
-
 </html>

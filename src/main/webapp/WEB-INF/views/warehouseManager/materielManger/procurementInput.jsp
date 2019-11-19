@@ -46,6 +46,7 @@ layui.config({
 		, mytable = layui.mytable;
 		myutil.config.ctx = '${ctx}';
 		myutil.clickTr();
+		
 		var allUser = myutil.getDataSync({url: '${ctx}/system/user/findUserList?orgNameIds=51'});
 		allUser.unshift({ id:'',userName:'请选择' });
 		var currentUser = myutil.getDataSync({url: '${ctx}/getCurrentUser'});
@@ -80,8 +81,9 @@ layui.config({
 				count:['arrivalNumber','returnNumber'],
 			},
 			ifNull:'',
+			scrollX:true,
 			toolbar: [ '<span lay-event="verify" class="layui-btn layui-btn-sm">入库</span>',
-					   '<span lay-event="verify" class="layui-btn layui-btn-sm layui-btn-normal">验货</span>',],
+					   '<span lay-event="verify" class="layui-btn layui-btn-sm layui-btn-normal">验货</span>',].join(''),
 			cols:[[
 					{ type:'checkbox',fixed:'left' },
 					{ title:'下单日期', field:'placeOrderTime', type:'date'},
@@ -99,7 +101,7 @@ layui.config({
 					{ title:'退货数量',field:'returnNumber',edit:true, minWidth:'120',},
 					{ title:'退货原因',field:'returnRemark', edit:true, minWidth:'120',},
 					{ title:'是否验货',field:'inspection',transData:{data:['否','是'],}, fixed:'right', },
-			       ]]
+			       ]],
 		})
 		form.on('submit(search)',function(obj){
 			table.reload('tableData',{
@@ -109,5 +111,4 @@ layui.config({
 	}//end define function
 )//endedefine
 </script>
-
 </html>
