@@ -54,11 +54,10 @@ layui.config({
 			elem:'#tableData',
 			url:'${ctx}/ledger/getOrderProcurement',
 			size:'lg',
-			colsWidth:[0,8,0,6,6,6,8,10,10,6,8,6,6],
-			autoUpdate:{
-				saveUrl:'/ledger/updateOrderProcurement',
-				field:{ userStorage_id:'userStorageId', },
-			},
+			ifNull:'',
+			scrollX:true,
+			toolbar: [ '<span lay-event="verify" class="layui-btn layui-btn-sm">入库</span>',
+				   '<span lay-event="verify" class="layui-btn layui-btn-sm layui-btn-normal">验货</span>',].join(''),
 			curd:{
 				btn:[],
 				otherBtn:function(obj){
@@ -77,13 +76,15 @@ layui.config({
 					}
 				}
 			},
+			autoUpdate:{
+				saveUrl:'/ledger/updateOrderProcurement',
+				field:{ userStorage_id:'userStorageId', },
+			},
 			verify:{
 				count:['arrivalNumber','returnNumber'],
+				price:['squareGram'],
 			},
-			ifNull:'',
-			scrollX:true,
-			toolbar: [ '<span lay-event="verify" class="layui-btn layui-btn-sm">入库</span>',
-					   '<span lay-event="verify" class="layui-btn layui-btn-sm layui-btn-normal">验货</span>',].join(''),
+		    colsWidth:[0,8,10,6,6,6,8,8,8,6,8,6,6,6,8,6,8,8],
 			cols:[[
 					{ type:'checkbox',fixed:'left' },
 					{ title:'下单日期', field:'placeOrderTime', type:'date'},
@@ -92,11 +93,13 @@ layui.config({
 					{ title:'预计价格', field:'price', },
 					{ title:'订购人', field:'user_userName', },
 					{ title:'供应商', field:'customer_name', },
-					{ title:'预计到货', field:'expectArrivalTime',},
+					{ title:'预计到货', field:'expectArrivalTime',type:'date',},
 					{ title:'到货日期', field:'arrivalTime', edit:true, type:'date', },
 					{ title:'到货数量', field:'arrivalNumber', edit:true,},
 					{ title:'入库人', field:'userStorage_id', type:'select', select:{ data:allUser, name:'userName', }},
 					{ title:'是否入库',field:'arrival',transData:{data:['否','是'],}},
+					{ title:'约定克重', field:'conventionSquareGram', },
+					{ title:'实际克重', field:'squareGram', edit:true,},
 					{ title:'退货日期',field:'returnTime', edit:true, type:'date',minWidth:'120', },
 					{ title:'退货数量',field:'returnNumber',edit:true, minWidth:'120',},
 					{ title:'退货原因',field:'returnRemark', edit:true, minWidth:'120',},

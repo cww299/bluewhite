@@ -38,7 +38,7 @@
 	}
 }
 @media screen and (max-width: 1200px){
-	/* С��Ļ��ʽ  */
+	/* 小屏幕样式ʽ  */
 	.leftDiv{
 		float: inherit;
    		width: 50%;

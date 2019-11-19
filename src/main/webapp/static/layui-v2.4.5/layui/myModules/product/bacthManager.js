@@ -179,7 +179,10 @@ layui.config({
 		})
 		laytpl(TPL_MAIN).render({},function(h){
 			$(opt.elem).append(h);
-			if($('#isSmallScreen').css('display')=='none')
+			/*if($('#isSmallScreen').css('display')=='none')
+				isSmall = true;*/
+			var device = layui.device()
+			if(device.android===true || device.ios===true)
 				isSmall = true;
 		})
 		var todata = new Date().format('yyyy-MM-dd');

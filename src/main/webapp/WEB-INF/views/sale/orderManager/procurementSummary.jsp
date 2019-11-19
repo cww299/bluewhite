@@ -48,7 +48,7 @@ layui.config({
 			elem:'#tableData',
 			url:'${ctx}/ledger/getOrderProcurement',
 			size:'lg',
-			colsWidth:[0,10,0,6,6,6,6,6,6,8,10,10,6,6,8,10,10,10,10,10,10,10,10,10,10],
+			colsWidth:[0,10,8,8,8,6,6,6,6,6,8,8,8,6,6,8,8,8,8,8,6],
 			curd:{
 				btn:[],
 				otherBtn:function(obj){
@@ -58,11 +58,19 @@ layui.config({
 							table:'tableData',
 							text:'请选择信息|是否确认审核？',
 						})
+					}else if(obj.event=='creatBill'){
+						myutil.deleTableIds({
+							url:'/ledger/billOrderProcurement',
+							table:'tableData',
+							text:'请选择信息|是否确认生成账单？',
+						})
 					}
 				}
 			},
 			ifNull:'',
-			toolbar: '<span lay-event="audit" class="layui-btn layui-btn-sm">审核入库</span>',
+			scrollX:true,
+			toolbar: ['<span lay-event="audit" class="layui-btn layui-btn-sm">审核入库</span>',
+					  '<span lay-event="creatBill" class="layui-btn layui-btn-sm layui-btn-normal">生成账单</span>'].join(''),
 			cols:[[
 					{ type:'checkbox',fixed:'left' },
 					{ title:'物料名', field:'materiel_name', fixed:'left',},
@@ -70,20 +78,19 @@ layui.config({
 					{ title:'下单日期', field:'placeOrderTime', type:'date',},
 					{ title:'采购编号', field:'orderProcurementNumber', },
 					{ title:'采购数量', field:'placeOrderNumber', },
-					{ title:'预计价格', field:'conventionPrice', },
-					{ title:'实际价格', field:'price', },
-					{ title:'预计克重', field:'conventionSquareGram', },
+					{ title:'面料价格', field:'price', },
+					{ title:'约定克重', field:'conventionSquareGram', },
 					{ title:'实际克重', field:'squareGram', },
 					{ title:'订购人', field:'user_userName', },
 					{ title:'供应商', field:'customer_name', },
-					{ title:'预计到货', field:'expectArrivalTime',},
+					{ title:'预计到货', field:'expectArrivalTime',type:'date',},
 					{ title:'到货日期', field:'arrivalTime',  type:'date', },
 					{ title:'到货数量', field:'arrivalNumber', },
 					{ title:'退货数量', field:'returnNumber', },
 					{ title:'延期付款数量', field:'partDelayNumber', },
 					{ title:'延期付款金额', field:'partDelayPrice', },
 					{ title:'延期付款日期', field:'partDelayTime', type:'date',},
-					{ title:'缺克重价值', field:'gramPrice;', },
+					{ title:'缺克重价值', field:'gramPrice', },
 					{ title:'占用资金利息', field:'interest', },
 					{ title:'生成账单', field:'bill', fixed:'right',transData:{data:['否','是']}},
 			       ]]
