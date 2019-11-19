@@ -188,7 +188,7 @@ layui.config({
 							
 						})
 					}else if(click){
-						myutil.esmg('无库存预警！');
+						myutil.emsg('无库存预警！');
 					}
 				}
 			})

@@ -8,6 +8,21 @@
 	<script src="${ctx}/static/layui-v2.4.5/layui/layui.js"></script>
 	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 	<title>采购单</title>
+	<style>
+	.showInState3,.showInState5{
+		display:none;
+	}
+	.updateDiv{
+	    padding: 0 30px;
+    	padding-top: 10px;
+	}
+	.updateDiv .layui-form-label{
+		width: 110px;
+	}
+	.updateDiv .layui-input-block{
+		margin-left: 140px;
+	}
+	</style>
 </head>
 <body>
 <div class="layui-card">
@@ -27,18 +42,65 @@
 	</div>
 </div>
 </body>
+
+<script id="updateTpl" type="text/html">
+<div class="layui-form updateDiv" action="">
+  <div class="layui-form-item">
+    <label class="layui-form-label">到货接收状态</label>
+    <div class="layui-input-block">
+      <select name="" vlaue="{{}}" lay-filter="stateSelect"><option value="1">全部接收</option>
+      	      <option disabled value="2">全部退货</option>
+      	      <option value="3">降价接收</option>
+      	      <option disabled value="4">部分接收，部分退货</option>
+      	      <option value="5">部分接收，部分延期付款</option></select>
+    </div>
+  </div>
+  <div class="layui-form-item showInState3">
+    <label class="layui-form-label">面料价格</label>
+    <div class="layui-input-block">
+      <input type="text" name="" class="layui-input" vlaue="{{}}" id="updatePrice">
+    </div>
+  </div>
+  <div class="layui-form-item showInState3">
+    <label class="layui-form-label">应付总价</label>
+    <div class="layui-input-block">
+      <input type="text" name="PaymentMoney" class="layui-input" vlaue="{{}}" readOnly id="updatePay">
+    </div>
+  </div>
+  <div class="layui-form-item showInState5">
+    <label class="layui-form-label">延期付款数量</label>
+    <div class="layui-input-block">
+      <input type="text" name="" class="layui-input" vlaue="{{}}">
+    </div>
+  </div>
+  <div class="layui-form-item showInState5">
+    <label class="layui-form-label">延期付款金额</label>
+    <div class="layui-input-block">
+      <input type="text" name="" class="layui-input" vlaue="{{}}">
+    </div>
+  </div>
+  <div class="layui-form-item showInState5">
+    <label class="layui-form-label">延期付款日期</label>
+    <div class="layui-input-block">
+      <input type="text" name="" class="layui-input" vlaue="{{}}" id="updateTime">
+      <span style="display:none;" lay-submit lay-filter="updateBtn" id="updateBtn">修改</span>
+    </div>
+  </div>
+</div>
+</script>
 <script>
 layui.config({
 	base : '${ctx}/static/layui-v2.4.5/'
 }).extend({
 	mytable : 'layui/myModules/mytable' ,
 }).define(
-	['mytable'],
+	['mytable','laytpl','laydate'],
 	function(){
 		var $ = layui.jquery
 		, layer = layui.layer 				
 		, form = layui.form			 		
 		, table = layui.table 
+		, laydate = layui.laydate
 		, myutil = layui.myutil
 		, laytpl = layui.laytpl
 		, mytable = layui.mytable;
@@ -48,7 +110,11 @@ layui.config({
 			elem:'#tableData',
 			url:'${ctx}/ledger/getOrderProcurement',
 			size:'lg',
-			colsWidth:[0,10,8,8,8,6,6,6,6,6,8,8,8,6,6,8,8,8,8,8,6],
+			ifNull:'',
+			scrollX:true,
+			toolbar: ['<span lay-event="audit" class="layui-btn layui-btn-sm">审核入库</span>',
+					  '<span lay-event="creatBill" class="layui-btn layui-btn-sm layui-btn-normal">生成账单</span>',
+					  '<span lay-event="update" class="layui-btn layui-btn-sm">修改</span>',].join(''),
 			curd:{
 				btn:[],
 				otherBtn:function(obj){
@@ -64,13 +130,15 @@ layui.config({
 							table:'tableData',
 							text:'请选择信息|是否确认生成账单？',
 						})
+					}else if(obj.event=='update'){
+						var check = table.checkStatus('tableData').data;
+						if(check.length!=1)
+							return myutil.emsg('只能修改一条数据');
+						openUpdateWin(check[0]);
 					}
 				}
 			},
-			ifNull:'',
-			scrollX:true,
-			toolbar: ['<span lay-event="audit" class="layui-btn layui-btn-sm">审核入库</span>',
-					  '<span lay-event="creatBill" class="layui-btn layui-btn-sm layui-btn-normal">生成账单</span>'].join(''),
+			colsWidth:[0,10,8,8,8,6,6,6,6,6,8,8,8,6,6,8,8,8,8,8,8,6],
 			cols:[[
 					{ type:'checkbox',fixed:'left' },
 					{ title:'物料名', field:'materiel_name', fixed:'left',},
@@ -92,9 +160,61 @@ layui.config({
 					{ title:'延期付款日期', field:'partDelayTime', type:'date',},
 					{ title:'缺克重价值', field:'gramPrice', },
 					{ title:'占用资金利息', field:'interest', },
+					{ title:'加急补货', field:'replenishment', },
 					{ title:'生成账单', field:'bill', fixed:'right',transData:{data:['否','是']}},
 			       ]]
 		})
+		
+		function openUpdateWin(d){
+			var html = '';
+			laytpl($('#updateTpl').html()).render(d,function(h){
+				html = h;
+			})
+			layer.open({
+				type:1,
+				title:'修改采购单',
+				content: html,
+				offset:'80px',
+				area:['500px','300px'],
+				btn:['确定修改','取消'],
+				btnAlign:'c',
+				success:function(win){
+					laydate.render({ elem:'#updateTime'});
+					$('#updatePrice').unbind().blur(function(){
+						var price = $(this).val(),allPrice = 0;
+						if(isNaN(price) || price<0){
+							myutil.emsg('请正确输入价格！');
+							price = d.price;
+							allPrice = d.paymentMoney;
+						}else{
+							allPrice = price*d.arrivalNumber;
+						}
+						$('#updatePay').val(allPrice);
+					})
+					form.on('select(stateSelect)',function(obj){
+						
+						if(obj.value==3){
+							$('.showInState3').show();
+							$('.showInState5').hide();
+						}else if(obj.value==5){
+							$('.showInState5').show();
+							$('.showInState3').hide();
+						}
+					})
+					form.on('submit(updateBtn)',function(obj){
+						
+						
+						myutil.saveAjax({
+							url:'/ledger/updateBillOrderProcurement',
+						})
+					})
+					form.render();
+				},
+				yes: function(){
+					$('#updateBtn').click();
+				}
+			})
+		}
 		form.on('submit(search)',function(obj){
 			table.reload('tableData',{
 				where: obj.field,
