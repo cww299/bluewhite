@@ -105,7 +105,7 @@ public class ConsumptionServiceImpl extends BaseServiceImpl<Consumption, Long> i
 			// 按客户姓名查找
 			if (!StringUtils.isEmpty(param.getCustomerName())) {
 				predicate.add(
-						cb.like(root.get("custom").get("name").as(String.class), "%" + param.getCustomerName() + "%"));
+						cb.like(root.get("customer").get("name").as(String.class), "%" + param.getCustomerName() + "%"));
 			}
 			// 按报销內容查找
 			if (!StringUtils.isEmpty(param.getContent())) {
@@ -116,11 +116,6 @@ public class ConsumptionServiceImpl extends BaseServiceImpl<Consumption, Long> i
 			// 按报销金额查找
 			if (!StringUtils.isEmpty(param.getMoney())) {
 				predicate.add(cb.equal(root.get("money").as(Double.class), param.getMoney()));
-			}
-
-			// 按客户查找
-			if (!StringUtils.isEmpty(param.getCustomId())) {
-				predicate.add(cb.equal(root.get("customId").as(String.class), param.getCustomId()));
 			}
 
 			if (!StringUtils.isEmpty(param.getExpenseDate())) {
@@ -356,7 +351,6 @@ public class ConsumptionServiceImpl extends BaseServiceImpl<Consumption, Long> i
 		for (Object object : excelListenerList) {
 			ConsumptionPoi cPoi = (ConsumptionPoi) object;
 			Consumption consumption = new Consumption();
-			consumption.setBatchNumber(cPoi.getBatchNumber());
 			consumption.setContent(cPoi.getContent());
 			consumption.setCustomerName(cPoi.getCustomerName());
 			consumption.setUsername(cPoi.getUsername());
