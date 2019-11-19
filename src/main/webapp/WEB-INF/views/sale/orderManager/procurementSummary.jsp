@@ -71,13 +71,13 @@
   <div class="layui-form-item showInState5">
     <label class="layui-form-label">延期付款数量</label>
     <div class="layui-input-block">
-      <input type="text" name="partDelayNumber" class="layui-input" value="{{d.partDelayNumber || '' }}">
+      <input type="text" name="partDelayNumber" class="layui-input" value="{{d.partDelayNumber || '' }}" id="updatePrice5">
     </div>
   </div>
   <div class="layui-form-item showInState5">
     <label class="layui-form-label">延期付款金额</label>
     <div class="layui-input-block">
-      <input type="text" name="partDelayPrice" class="layui-input" value="{{ d.partDelayPrice || ''}}">
+      <input type="text" name="partDelayPrice" class="layui-input" value="{{ d.partDelayPrice || ''}}" readOnly id="updatePay5">
     </div>
   </div>
   <div class="layui-form-item showInState5">
@@ -140,7 +140,7 @@ layui.config({
 					}
 				}
 			},
-			colsWidth:[0,10,8,8,8,6,6,6,6,6,8,8,8,6,6,8,8,8,8,8,8,6],
+			colsWidth:[0,10,8,8,8,6,6,6,6,6,6,8,8,8,6,6,8,8,8,8,8,8,6],
 			cols:[[
 					{ type:'checkbox',fixed:'left' },
 					{ title:'物料名', field:'materiel_name', fixed:'left',},
@@ -149,6 +149,7 @@ layui.config({
 					{ title:'采购编号', field:'orderProcurementNumber', },
 					{ title:'采购数量', field:'placeOrderNumber', },
 					{ title:'面料价格', field:'price', },
+					{ title:'总价格', field:'paymentMoney', },
 					{ title:'约定克重', field:'conventionSquareGram', },
 					{ title:'实际克重', field:'squareGram', },
 					{ title:'订购人', field:'user_userName', },
@@ -166,7 +167,6 @@ layui.config({
 					{ title:'生成账单', field:'bill', fixed:'right',transData:{data:['否','是']}},
 			       ]]
 		})
-		
 		function openUpdateWin(d){
 			var html = '';
 			laytpl($('#updateTpl').html()).render(d,function(h){
@@ -181,8 +181,26 @@ layui.config({
 				btn:['确定修改','取消'],
 				btnAlign:'c',
 				success:function(){
-					laydate.render({ elem:'#updateTime'});
+					laydate.render({ elem:'#updateTime',type:'datetime'});
 					$('#stateSelect').val(d.arrivalStatus);
+					if(d.arrivalStatus==3)
+						$('.showInState3').show();
+					else if(d.arrivalStatus==5)
+						$('.showInState5').show();
+					else if(d.arrivalStatus==2 || d.arrivalStatus==4)
+						$('#stateSelect').attr('disabled','disabled');
+					
+					$('#updatePrice5').unbind().blur(function(){
+						var price = $(this).val(),allPrice = 0;
+						if(isNaN(price) || price<0){
+							myutil.emsg('请正确输入价格！');
+							price = d.price;
+							allPrice = d.paymentMoney;
+						}else{
+							allPrice = price*d.arrivalNumber;
+						}
+						$('#updatePay5').val(allPrice);
+					})
 					$('#updatePrice').unbind().blur(function(){
 						var price = $(this).val(),allPrice = 0;
 						if(isNaN(price) || price<0){
@@ -204,9 +222,17 @@ layui.config({
 						}
 					})
 					form.on('submit(updateBtn)',function(obj){
+						var data = obj.field;
+						if(data.arrivalStatus==5){
+							if(!data.partDelayNumber || !data.partDelayPrice || !data.partDelayTime)
+								return myutil.emsg('请正确填写数据！');
+						}else if(data.arrivalStatus==3){
+							if(!data.price || !data.paymentMoney)
+								return myutil.emsg('请正确填写数据！');
+						}
 						myutil.saveAjax({
 							url:'/ledger/updateBillOrderProcurement',
-							data:obj.field,
+							data: data,
 							success:function(){
 								layer.close(win);
 								table.reload('tableData');

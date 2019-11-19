@@ -97,6 +97,12 @@
 	      <input type="text" name="expectArrivalTime" class="layui-input" id="comeDate" lay-verify="required">
 	    </div>
 	  </div>
+	  <div class="layui-form-item" pane>
+	    <label class="layui-form-label">付款日期：</label>
+	    <div class="layui-input-block">
+	      <input type="text" name="expectPaymentTime" class="layui-input" id="exceptDate" lay-verify="required">
+	    </div>
+	  </div>
 	  <span style="display:none;" lay-filter="sureAdd" id="sureAdd" lay-submit>确定</span>
 	  <button style="display:none;" type="reset" id="restBtn">重置</button>
 	</form>
@@ -195,6 +201,10 @@ layui.config({
 		}
 		laydate.render({
 			elem: '#comeDate',
+			type:'datetime',
+		})
+		laydate.render({
+			elem: '#exceptDate',
 			type:'datetime',
 		})
 		laydate.render({
