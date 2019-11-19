@@ -26,6 +26,9 @@ import com.bluewhite.system.user.entity.User;
 @Entity
 @Table(name = "ledger_order_procurement")
 public class OrderProcurement extends BaseEntity<Long> {
+	
+	//日利息
+	private final static double interestDay = 0.00022;
 
 	/**
 	 * 采购单编号(批次+产品名称+物料名称+订货客户名称生成的新编号)
@@ -61,13 +64,7 @@ public class OrderProcurement extends BaseEntity<Long> {
 	private Order order;
 	
 	/**
-	 * 约定面料价格
-	 */
-	@Column(name = "convention_price")
-	private Double conventionPrice;
-	
-	/**
-	 * 实际面料价格
+	 * 面料价格
 	 */
 	@Column(name = "price")
 	private Double price;
@@ -210,15 +207,15 @@ public class OrderProcurement extends BaseEntity<Long> {
 	private String materielLocation;
 	
 	/**
-	 * 是否接受不相符到货(异常到货状态)
-	 *  1.生产和销售接收
-	 *  2.退回供应商 
-	 *  3.降价接受 
-	 *  4.部分接受，部分退货 
-	 *  5.部分接受，部分延期付款
+	 * 	到货接收状态
+	 *  1.全部接收
+	 *  2.全部退货
+	 *  3.降价接收 
+	 *  4.部分接收，部分退货 
+	 *  5.部分接收，部分延期付款
 	 */
-	@Column(name = "discrepancy_arrival")
-	private Integer discrepancyArrival;
+	@Column(name = "arrival_status")
+	private Integer arrivalStatus;
 	
 	/**
 	 * 退货数量
@@ -239,6 +236,14 @@ public class OrderProcurement extends BaseEntity<Long> {
 	private String returnRemark;
 	
 	/**
+	 * 是否加急补货
+	 * 加急补订
+	 */
+	@Column(name = "replenishment")
+	private Integer replenishment;
+	
+	
+	/**
 	 * 部分接受延期付款数量
 	 */
 	@Column(name = "part_delay_number")
@@ -254,7 +259,7 @@ public class OrderProcurement extends BaseEntity<Long> {
 	 * 延期付款日要付金额
 	 */
 	@Column(name = "part_delay_price")
-	private Date partDelayPrice;
+	private Double partDelayPrice;
 	
 	/**
 	 * 偷克重产生被偷价值(缺克重价值)
@@ -322,6 +327,26 @@ public class OrderProcurement extends BaseEntity<Long> {
 	
 	
 
+	public static double getInterestday() {
+		return interestDay;
+	}
+
+	public Integer getReplenishment() {
+		return replenishment;
+	}
+
+	public void setReplenishment(Integer replenishment) {
+		this.replenishment = replenishment;
+	}
+
+	public Integer getArrivalStatus() {
+		return arrivalStatus;
+	}
+
+	public void setArrivalStatus(Integer arrivalStatus) {
+		this.arrivalStatus = arrivalStatus;
+	}
+
 	public Date getReturnTime() {
 		return returnTime;
 	}
@@ -330,11 +355,11 @@ public class OrderProcurement extends BaseEntity<Long> {
 		this.returnTime = returnTime;
 	}
 
-	public Date getPartDelayPrice() {
+	public Double getPartDelayPrice() {
 		return partDelayPrice;
 	}
 
-	public void setPartDelayPrice(Date partDelayPrice) {
+	public void setPartDelayPrice(Double partDelayPrice) {
 		this.partDelayPrice = partDelayPrice;
 	}
 
@@ -386,14 +411,6 @@ public class OrderProcurement extends BaseEntity<Long> {
 		this.bill = bill;
 	}
 
-	public Double getConventionPrice() {
-		return conventionPrice;
-	}
-
-	public void setConventionPrice(Double conventionPrice) {
-		this.conventionPrice = conventionPrice;
-	}
-
 	public Double getConventionSquareGram() {
 		return conventionSquareGram;
 	}
@@ -408,14 +425,6 @@ public class OrderProcurement extends BaseEntity<Long> {
 
 	public void setInspection(Integer inspection) {
 		this.inspection = inspection;
-	}
-
-	public Integer getDiscrepancyArrival() {
-		return discrepancyArrival;
-	}
-
-	public void setDiscrepancyArrival(Integer discrepancyArrival) {
-		this.discrepancyArrival = discrepancyArrival;
 	}
 
 	public Double getPaymentMoney() {
