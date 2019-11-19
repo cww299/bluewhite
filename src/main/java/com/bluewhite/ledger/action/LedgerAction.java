@@ -199,7 +199,8 @@ public class LedgerAction {
 						"materielLocation", "price", "squareGram", "userStorage", "arrival","audit",
 						"expectPaymentTime","actualPaymentTime","materiel","returnNumber",
 						"partDelayNumber","partDelayTime","gramPrice","interest","paymentMoney","bill",
-						"conventionPrice","conventionSquareGram")
+						"conventionPrice","conventionSquareGram","partDelayPrice","returnRemark",
+						"inspection","arrivalStatus","replenishment")
 				.addRetainTerm(Materiel.class, "id", "name", "number", "materialQualitative")
 				.addRetainTerm(Customer.class, "id", "name")
 				.addRetainTerm(BaseOne.class, "id", "name")
@@ -466,7 +467,6 @@ public class LedgerAction {
 		orderProcurementService.updateBillOrderProcurement(orderProcurement);
 		cr.setMessage("修改成功");
 		return cr;
-
 	}
 	
 	
@@ -498,6 +498,54 @@ public class LedgerAction {
 		cr.setMessage("成功删除" + count + "条采购单");
 		return cr;
 	}
+	
+	
+	/**
+	 * （采购部）采购单出入不符预警 采购单经过面辅料仓库审核入库后，将出入库数量不相同的进行标记预警
+	 * 
+	 * @param order
+	 * @return
+	 */
+	@RequestMapping(value = "/ledger/warningOrderProcurement", method = RequestMethod.GET)
+	@ResponseBody
+	public CommonResponse warningOrderProcurement() {
+		CommonResponse cr = new CommonResponse();
+		cr.setData(clearCascadeJSONOrderProcurement.format(orderProcurementService.warningOrderProcurement(1)).toJSON());
+		cr.setMessage("查询成功");
+		return cr;
+	}
+
+	/**
+	 * （采购部）当采购单出入不符预警 进行一键更新采购单数量
+	 * 
+	 * @param order
+	 * @return
+	 */
+	@RequestMapping(value = "/ledger/fixOrderProcurement", method = RequestMethod.GET)
+	@ResponseBody
+	public CommonResponse fixOrderProcurement(String ids) {
+		CommonResponse cr = new CommonResponse();
+		orderProcurementService.fixOrderProcurement(ids);
+		cr.setMessage("更新成功");
+		return cr;
+	}
+	
+	/**
+	 * （采购部）生成采购应付账单
+	 * 
+	 * @param order
+	 * @return
+	 */
+	@RequestMapping(value = "/ledger/billOrderProcurement", method = RequestMethod.GET)
+	@ResponseBody
+	public CommonResponse billOrderProcurement(String ids) {
+		CommonResponse cr = new CommonResponse();
+		int count = orderProcurementService.billOrderProcurement(ids);
+		cr.setMessage("更新成功");
+		return cr;
+	}
+	
+	
 	
 	/**
 	 * （采购部）将所有已有库存的耗料表生成分散出库记录 将已经订购的采购单面料当作库存，
@@ -546,7 +594,9 @@ public class LedgerAction {
 	}
 
 	/**
-	 * （采购部）（生产计划部）分页查看分散出库单 生产计划部查看的是审核之后的采购单
+	 * （采购部）（生产计划部）
+	 * 分页查看分散出库单 
+	 * 生产计划部查看的是审核之后的采购单
 	 * 
 	 * @return
 	 */
@@ -559,54 +609,6 @@ public class LedgerAction {
 		cr.setMessage("查看成功");
 		return cr;
 	}
-
-
-	/**
-	 * （采购部）采购单出入不符预警 采购单经过面辅料仓库审核入库后，将出入库数量不相同的进行标记预警
-	 * 
-	 * @param order
-	 * @return
-	 */
-	@RequestMapping(value = "/ledger/warningOrderProcurement", method = RequestMethod.GET)
-	@ResponseBody
-	public CommonResponse warningOrderProcurement() {
-		CommonResponse cr = new CommonResponse();
-		cr.setData(clearCascadeJSONOrderProcurement.format(orderProcurementService.warningOrderProcurement(1)).toJSON());
-		cr.setMessage("查询成功");
-		return cr;
-	}
-
-	/**
-	 * （采购部）当采购单出入不符预警 进行一键更新采购单数量
-	 * 
-	 * @param order
-	 * @return
-	 */
-	@RequestMapping(value = "/ledger/fixOrderProcurement", method = RequestMethod.GET)
-	@ResponseBody
-	public CommonResponse fixOrderProcurement(String ids) {
-		CommonResponse cr = new CommonResponse();
-		orderProcurementService.fixOrderProcurement(ids);
-		cr.setMessage("更新成功");
-		return cr;
-	}
-	
-	/**
-	 * （采购部）生成采购应付账单
-	 * 
-	 * @param order
-	 * @return
-	 */
-	@RequestMapping(value = "/ledger/billOrderProcurement", method = RequestMethod.GET)
-	@ResponseBody
-	public CommonResponse billOrderProcurement(String ids) {
-		CommonResponse cr = new CommonResponse();
-		int count = orderProcurementService.billOrderProcurement(ids);
-		cr.setMessage("更新成功");
-		return cr;
-	}
-	
-	
 	
 	/**
 	 * (生产计划部)查看领料单
@@ -762,7 +764,7 @@ public class LedgerAction {
 	public CommonResponse invalidOrderOutSource(String ids) {
 		CommonResponse cr = new CommonResponse();
 		int count = orderOutSourceService.invalidOrderOutSource(ids);
-		cr.setMessage("成功作废"+count+"条外发单");
+		cr.setMessage("成功作废"+count+"条加工单");
 		return cr;
 	}
 	
@@ -778,7 +780,7 @@ public class LedgerAction {
 	public CommonResponse deleteOrderOutSource(String ids) {
 		CommonResponse cr = new CommonResponse();
 		int count = orderOutSourceService.deleteOrderOutSource(ids);
-		cr.setMessage("成功删除"+count+"条外发单");
+		cr.setMessage("成功删除"+count+"条加工单");
 		return cr;
 	}
 	
@@ -793,7 +795,7 @@ public class LedgerAction {
 	public CommonResponse auditOrderOutSource(String ids) {
 		CommonResponse cr = new CommonResponse();
 		int count = orderOutSourceService.auditOrderOutSource(ids);
-		cr.setMessage("成功审核"+count+"条外发单");
+		cr.setMessage("成功审核"+count+"条加工单");
 		return cr;
 	}
 	

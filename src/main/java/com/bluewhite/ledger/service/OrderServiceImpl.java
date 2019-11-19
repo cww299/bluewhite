@@ -38,7 +38,7 @@ public class OrderServiceImpl extends BaseServiceImpl<Order, Long> implements Or
 	private ProcurementDao procurementDao;
 	@Autowired
 	private BaseDataDao baseDataDao;
-	
+
 	@Override
 	public PageResult<Order> findPages(Order param, PageParameter page) {
 		Page<Order> pages = dao.findAll((root, query, cb) -> {
@@ -53,7 +53,8 @@ public class OrderServiceImpl extends BaseServiceImpl<Order, Long> implements Or
 			}
 			// 按客户名称
 			if (!StringUtils.isEmpty(param.getCustomerName())) {
-				Join<Order, OrderChild> join = root.join(root.getModel().getList("orderChilds", OrderChild.class), JoinType.LEFT);
+				Join<Order, OrderChild> join = root.join(root.getModel().getList("orderChilds", OrderChild.class),
+						JoinType.LEFT);
 				predicate.add(cb.like(join.get("customer").get("name").as(String.class),
 						"%" + StringUtil.specialStrKeyword(param.getCustomerName()) + "%"));
 			}
@@ -63,11 +64,13 @@ public class OrderServiceImpl extends BaseServiceImpl<Order, Long> implements Or
 			}
 			// 按产品name过滤
 			if (!StringUtils.isEmpty(param.getProductName())) {
-				predicate.add(cb.equal(root.get("product").get("name").as(String.class), "%" + StringUtil.specialStrKeyword(param.getProductName()) + "%"));
+				predicate.add(cb.equal(root.get("product").get("name").as(String.class),
+						"%" + StringUtil.specialStrKeyword(param.getProductName()) + "%"));
 			}
 			// 按产品编号过滤
 			if (!StringUtils.isEmpty(param.getProductNumber())) {
-				predicate.add(cb.equal(root.get("productNumber").as(String.class), "%" + param.getProductNumber() + "%"));
+				predicate.add(
+						cb.equal(root.get("productNumber").as(String.class), "%" + param.getProductNumber() + "%"));
 			}
 			// 按下单日期
 			if (!StringUtils.isEmpty(param.getOrderTimeBegin()) && !StringUtils.isEmpty(param.getOrderTimeEnd())) {
@@ -91,12 +94,13 @@ public class OrderServiceImpl extends BaseServiceImpl<Order, Long> implements Or
 			if (idArr.length > 0) {
 				for (int i = 0; i < idArr.length; i++) {
 					Long id = Long.parseLong(idArr[i]);
-					Order order =  dao.findOne(id);
+					Order order = dao.findOne(id);
 					Procurement procurement = procurementDao.findByOrderId(id);
-					if(procurement!=null){
-						throw new ServiceException("批次号："+order.getBacthNumber()+"产品名："+order.getProduct().getName() +"的下单合同已进行生成，无法删除");
+					if (procurement != null) {
+						throw new ServiceException("批次号：" + order.getBacthNumber() + "产品名："
+								+ order.getProduct().getName() + "的下单合同已进行生成，无法删除");
 					}
-					dao.delete(id); 
+					dao.delete(id);
 					count++;
 				}
 			}
@@ -108,13 +112,13 @@ public class OrderServiceImpl extends BaseServiceImpl<Order, Long> implements Or
 	@Transactional
 	public void addOrder(Order order) {
 		Order oldOrder = dao.findByBacthNumber(order.getBacthNumber());
-		if(oldOrder!=null){
-			throw new ServiceException("系统已有"+order.getBacthNumber()+"批次号下单合同，请不要重复添加");
+		if (oldOrder != null) {
+			throw new ServiceException("系统已有" + order.getBacthNumber() + "批次号下单合同，请不要重复添加");
 		}
 		order.setPrepareEnough(0);
 		order.setAudit(0);
 		// 新增子单
-		if (!StringUtils.isEmpty(order.getOrderChild())) { 
+		if (!StringUtils.isEmpty(order.getOrderChild())) {
 			JSONArray jsonArray = JSON.parseArray(order.getOrderChild());
 			for (int i = 0; i < jsonArray.size(); i++) {
 				OrderChild orderChild = new OrderChild();
@@ -146,8 +150,8 @@ public class OrderServiceImpl extends BaseServiceImpl<Order, Long> implements Or
 				predicate.add(cb.between(root.get("orderDate").as(Date.class), param.getOrderTimeBegin(),
 						param.getOrderTimeEnd()));
 			}
-			//按是否生成耗料
-			if(param.getConsumption()!=null){
+			// 按是否生成耗料
+			if (param.getConsumption() != null) {
 				predicate.add(cb.isNotEmpty(root.get("orderMaterials")));
 			}
 			Predicate[] pre = new Predicate[predicate.size()];
@@ -160,18 +164,19 @@ public class OrderServiceImpl extends BaseServiceImpl<Order, Long> implements Or
 	@Override
 	@Transactional
 	public void updateOrder(Order order) {
-		if(order.getId()!=null){
+		if (order.getId() != null) {
 			Order ot = findOne(order.getId());
-			if(ot.getAudit()==1){
-				throw new ServiceException("批次号为"+ot.getBacthNumber()+"下单合同已审核，无法修改");
+			if (ot.getAudit() == 1) {
+				throw new ServiceException("批次号为" + ot.getBacthNumber() + "下单合同已审核，无法修改");
+				
+				
+				
+				
+				
 			}
-			
-			
-			
-			
+
 		}
 	}
-
 
 	@Override
 	@Transactional
@@ -182,9 +187,9 @@ public class OrderServiceImpl extends BaseServiceImpl<Order, Long> implements Or
 			if (idArr.length > 0) {
 				for (int i = 0; i < idArr.length; i++) {
 					Long id = Long.parseLong(idArr[i]);
-					Order order =  dao.findOne(id);
-					if(order.getAudit()==1){
-						throw new ServiceException(order.getOrderNumber()+"的下单合同已审核,请勿多次审核");
+					Order order = dao.findOne(id);
+					if (order.getAudit() == 1) {
+						throw new ServiceException(order.getOrderNumber() + "的下单合同已审核,请勿多次审核");
 					}
 					order.setAudit(1);
 					dao.save(order);
@@ -194,6 +199,5 @@ public class OrderServiceImpl extends BaseServiceImpl<Order, Long> implements Or
 		}
 		return count;
 	}
-
 
 }
