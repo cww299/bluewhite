@@ -365,6 +365,7 @@ public class OrderProcurementServiceImpl extends BaseServiceImpl<OrderProcuremen
 						consumption.setCustomerId(orderProcurement.getCustomerId());
 						consumption.setMoney(orderProcurement.getPaymentMoney());
 						consumption.setExpenseDate(orderProcurement.getExpectPaymentTime());
+						consumption.setFlag(0);
 						consumption.setUserId(orderProcurement.getUserId());
 						consumptionService.save(consumption);
 						orderProcurement.setBill(1);
