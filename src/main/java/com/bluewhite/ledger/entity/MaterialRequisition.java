@@ -164,6 +164,12 @@ public class MaterialRequisition extends BaseEntity<Long> {
 	 */
 	@Transient
 	private String customerName;
+	
+	/**
+	 * 采购单编号(批次+产品名称+物料名称+订货客户名称生成的新编号)
+	 */
+	@Transient
+	private String orderProcurementNumber;
 
 	/**
 	 * 查询字段
@@ -179,6 +185,15 @@ public class MaterialRequisition extends BaseEntity<Long> {
 	
 	
 	
+	
+	public String getOrderProcurementNumber() {
+		return orderProcurementNumber;
+	}
+
+	public void setOrderProcurementNumber(String orderProcurementNumber) {
+		this.orderProcurementNumber = orderProcurementNumber;
+	}
+
 	public Date getOpenOrderTime() {
 		return openOrderTime;
 	}
