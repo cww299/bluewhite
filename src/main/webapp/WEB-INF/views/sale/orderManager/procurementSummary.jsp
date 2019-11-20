@@ -140,7 +140,7 @@ layui.config({
 					}
 				}
 			},
-			colsWidth:[0,10,8,8,8,6,6,6,6,6,6,8,8,8,6,6,8,8,8,8,8,8,6],
+			colsWidth:[0,10,8,8,40,6,6,6,6,6,6,8,8,8,6,6,8,8,8,8,8,8,6],
 			cols:[[
 					{ type:'checkbox',fixed:'left' },
 					{ title:'物料名', field:'materiel_name', fixed:'left',},
