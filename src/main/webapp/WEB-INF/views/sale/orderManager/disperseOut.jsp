@@ -171,13 +171,7 @@ layui.config({
 			curd:{
 				btn:[],
 				otherBtn:function(obj){
-					if(obj.event=='onekey'){
-						myutil.deleTableIds({
-							table:'tableData',
-							text:'请选择相关信息|是否确认审核?',
-							url:'/ledger/auditScatteredOutbound',
-						});
-					}else if(obj.event=='picikingOrder'){
+					if(obj.event=='picikingOrder'){
 						picikingOrder();
 					}else if(obj.event=='outOrder'){
 						outOrder();
@@ -186,7 +180,7 @@ layui.config({
 			},
 			ifNull:'-',
 			colsWidth:[0,10,0,6,8,8,6,8,6],
-			toolbar:['<span class="layui-btn layui-btn-sm" lay-event="onekey">一键审核</span>',
+			toolbar:[
 				     '<span class="layui-btn layui-btn-sm layui-btn-normal" lay-event="picikingOrder">领料单</span>',
 					 '<span class="layui-btn layui-btn-sm layui-btn-warm" lay-event="outOrder">外发领料单</span>',
 					].join(''),
