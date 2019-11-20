@@ -44,7 +44,9 @@ import com.bluewhite.production.finance.entity.MonthlyProduction;
 import com.bluewhite.production.finance.entity.NonLine;
 import com.bluewhite.production.finance.entity.PayB;
 import com.bluewhite.production.group.dao.GroupDao;
+import com.bluewhite.production.group.dao.TemporarilyDao;
 import com.bluewhite.production.group.entity.Group;
+import com.bluewhite.production.group.entity.Temporarily;
 import com.bluewhite.production.group.service.GroupService;
 import com.bluewhite.production.procedure.dao.ProcedureDao;
 import com.bluewhite.production.procedure.entity.Procedure;
@@ -70,42 +72,32 @@ public class CollectPayServiceImpl extends BaseServiceImpl<CollectPay, Long> imp
 	
 	@Autowired
 	private UserDao userDao;
-	
 	@Autowired
 	private TaskService taskService;
-	
 	@Autowired
 	private FarragoTaskService farragoTaskService;
-	
 	@Autowired
 	private AttendancePayService attendancePayService;
-	
 	@Autowired
 	private PayBService payBService;
-	
 	@Autowired
 	private FarragoTaskPayService farragoTaskPayService;
-	
 	@Autowired
 	private UsualConsumeService usualConsumeService;
-	
 	@Autowired
 	private GroupService groupService;
-	
 	@Autowired
 	private GroupDao groupDao;
-	
 	@Autowired
 	private NonLineDao nonLineDao;
-	
 	@Autowired
 	private PayBDao payBDao;
-	
 	@Autowired
 	private AttendancePayDao attendancePayDao;
-	
 	@Autowired
 	private FarragoTaskPayDao farragoTaskPayDao;
+	@Autowired
+	private TemporarilyDao temporarilyDao;
 	
 	private static String rework = "返工再验";
 	
@@ -225,8 +217,6 @@ public class CollectPayServiceImpl extends BaseServiceImpl<CollectPay, Long> imp
 		//考勤总时间
 		double time = list.stream().mapToDouble(AttendancePay::getWorkTime).sum();
 		monthlyProduction.setTime(time);
-		
-		
 		//当天产量
 		Bacth bacth = new Bacth();
 		bacth.setOrderTimeBegin(monthlyProduction.getOrderTimeBegin());
@@ -440,6 +430,12 @@ public class CollectPayServiceImpl extends BaseServiceImpl<CollectPay, Long> imp
 						).collect(Collectors.toList());
 				//考勤总时间
 				double sunTime = list.stream().mapToDouble(AttendancePay::getWorkTime).sum();
+				if(list.size()==0){
+					List<Temporarily> temporarilyList = temporarilyDao.findByTypeAndGroupIdAndTemporarilyDateBetween(3, group.getId(), monthlyProduction.getOrderTimeBegin(), monthlyProduction.getOrderTimeEnd());
+					if(temporarilyList.size()>0){
+						sunTime = temporarilyList.stream().mapToDouble(Temporarily::getWorkTime).sum();
+					}
+				}
 				//分组人员B工资总和
 				double sumBPay = payBList.stream().filter(PayB->PayB.getGroupId() != null && PayB.getGroupId().equals(group.getId()) && PayB.getPayNumber()!=null).mapToDouble(PayB::getPayNumber).sum();
 				//分组人员杂工工资总和
@@ -558,8 +554,6 @@ public class CollectPayServiceImpl extends BaseServiceImpl<CollectPay, Long> imp
 			//人为改变后产生的量化绩效出勤时间
 			nl.setChangeTime(nl.getAddition()*nl.getTime());
 		}
-	
-		
 		return nonLineDao.save(nl);
 	}
 	
@@ -797,7 +791,6 @@ public class CollectPayServiceImpl extends BaseServiceImpl<CollectPay, Long> imp
 				 map.put(groupList.get(1).getId(), 0);
 				 map.put(groupList.get(2).getId(), 0);
 				 map.put(groupList.get(3).getId(), 0);
-				 
 				 
 				 for(Task ta : psList1){
 					 if (!StringUtils.isEmpty(ta.getUserIds())) {

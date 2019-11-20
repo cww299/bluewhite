@@ -353,7 +353,7 @@ public class ReportExportAction {
 	}
 
 	/**
-	 * 导出各组产量报表
+	 * 导出检验组各组产量报表
 	 * 
 	 * @param request
 	 * @param response
