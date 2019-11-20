@@ -297,11 +297,10 @@ public class ConsumptionServiceImpl extends BaseServiceImpl<Consumption, Long> i
 				for (int i = 0; i < idArr.length; i++) {
 					Long id = Long.parseLong(idArr[i]);
 					Consumption consumption = dao.findOne(id);
-					if (consumption.getPaymentDate() == null
-							&& (consumption.getPaymentMoney() == null || consumption.getPaymentMoney() == 0)) {
+					if (consumption.getPaymentDate() == null && (consumption.getPaymentMoney() == null || consumption.getPaymentMoney() == 0)) {
 						throw new ServiceException("放款金额或放款时间不能为空或者为0");
 					}
-					if (consumption.getPaymentMoney() < consumption.getMoney()) {
+					if (consumption.getType()==1 && (consumption.getPaymentMoney() < consumption.getMoney())) {
 						flag = 2;
 					}
 					consumption.setFlag(flag);
