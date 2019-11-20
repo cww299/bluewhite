@@ -4,119 +4,124 @@
 <c:set var="ctx" value="${pageContext.request.contextPath }" />
 <!DOCTYPE html>
 <html class="no-js">
+<head>
 	<script src="${ctx }/static/layui-v2.4.5/layui/layui.js"></script>
 	<link rel="stylesheet" href="${ctx }/static/layui-v2.4.5/layui/css/layui.css" media="all">
-<head>
-<meta charset="utf-8">
-<meta http-equiv="X-UA-Compatible" content="IE=edge">
-<title>采购汇总</title>
-<meta name="description" content="">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+	<meta charset="utf-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<title>采购汇总</title>
+	<meta name="description" content="">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
 </head>
-
 <body>
-	<div class="layui-card">
-		<div class="layui-card-body">
-			<div class="layui-form layui-card-header layuiadmin-card-header-auto">
-				<div class="layui-form-item">
-					<table>
-						<tr>
-							<td>批次号:</td>
-							<td><input type="text" name="batchNumber" id="firstNames" class="layui-input" /></td>
-							<td>&nbsp;&nbsp;</td>
-							<td><select class="layui-input" name="selectone" id="selectone">
-									<option value="expenseDate">申请日期</option>
-								</select></td>
-							<td>&nbsp;&nbsp;</td>
-							<td><input id="startTime" style="width: 300px;" name="orderTimeBegin" placeholder="请输入时间" class="layui-input laydate-icon"></td>
-							<td>&nbsp;&nbsp;</td>
-							<td>需要支付总额:</td>
-							<td><input type="text" id="allPrice" disabled class="layui-input"  /></td>
-							<td>&nbsp;&nbsp;</td>
-							<td><button class="layui-btn layuiadmin-btn-admin" lay-submit lay-filter="LAY-search">
-									<i class="layui-icon layui-icon-search layuiadmin-button-btn"></i>
-								</button></td>
-						</tr>
-					</table>
-				</div>
-			</div>
-			<table id="tableData" class="table_th_search" lay-filter="tableData"></table>
-		</div>
+<div class="layui-card">
+	<div class="layui-card-body">
+		<table class="layui-form">
+			<tr>
+				<td style="width:130px;"><select class="layui-input" id="selectone">
+					<option value="expenseDate">预计付款日期</option>
+					<option value="paymentDate">实际付款日期</option></select></td>
+				<td><input id="startTime" name="orderTimeBegin" placeholder="请输入时间" class="layui-input "></td>
+				<td>&nbsp;&nbsp;</td>
+				<td>采购单编号:</td>
+				<td><input type="text" name="content" class="layui-input" /></td>
+				<td>&nbsp;&nbsp;</td>
+				<td>是否审核:</td>
+				<td style="width:100px;">
+					<select name="flag"><option value="">请选择</option><option value="0">未审核</option>
+						<option value="1">已审核</option></select></td>
+				<td>&nbsp;&nbsp;</td>
+				<td><span class="layui-btn" lay-submit lay-filter="LAY-search">
+						<i class="layui-icon layui-icon-search"></i></span></td>
+				<td>&nbsp;&nbsp;</td>
+				<td style="width:130px;"></td>
+				<td style="font-size: 20px;">未支付总额:</td>
+				<td id="allPrice" style="color:red;font-size: 20px;"></td>
+			</tr>
+		</table>
+		<table id="tableData" class="table_th_search" lay-filter="tableData"></table>
 	</div>
+</div>
 <script>
-	layui.config({
-		base: '${ctx}/static/layui-v2.4.5/'
-	}).extend({
-		tablePlug: 'tablePlug/tablePlug'
-	}).define(
-		['tablePlug', 'laydate',],
-		function() {
-			var $ = layui.jquery,
-				layer = layui.layer,
-				form = layui.form,
-				table = layui.table,
-				laydate = layui.laydate,
-				tablePlug = layui.tablePlug,
-				upload = layui.upload;
-			laydate.render({ elem: '#startTime', type: 'datetime', range: '~', });
-		   	
-			table.render({
-				elem: '#tableData',
-				size: 'lg',
-				height:'700px',
-				url: '${ctx}/fince/getConsumption?type=2' ,
-				where:{ flag:0, },
-				request:{
-					pageName: 'page',
-					limitName: 'size' 
-				},
-				page: {},
-				loading: true,
-				cellMinWidth: 90,
-				colFilterRecord: true,
-				smartReloadModel: true,// 开启智能重载
-				parseData: function(ret) {
-					$('#allPrice').val(ret.data.statData.statAmount)
-					return {
-						code: ret.code,
-						msg: ret.message,
-						count:ret.data.total,
-						data: ret.data.rows
-					}
-				},
-				cols:[[
-						{ align: 'center', field: "batchNumber", 	title: "批次号", 		width:'10%', },
-						{ align: 'center', field: "content", 		title: "内容",},
-						{ align: 'center', field: "", 				title: "客户",   		width:'12%', templet:function(d){ return d.custom.name; }}, 
-						{ align: 'center', field: "", 				title: "订料人",   		width:'6%',  templet:function(d){ return d.user==null?'':d.user.userName }},
-						{ align: 'center', field: "money", 			title: "金额", 			width:'6%',}, 
-						{ align: 'center', field: "expenseDate", 	title: "付款日期", 		width:'10%', },
-						{ align: 'center', field: "logisticsDate", 	title: "到货日",			width:'10%', },
-						{ align: 'center', field: "flag", 			title: "审核状态", 		width:'6%', templet:  function(d){ return d.flag==0?'未审核':'已审核';}}
-					 ]],
+layui.config({
+	base: '${ctx}/static/layui-v2.4.5/'
+}).extend({
+	mytable : 'layui/myModules/mytable' ,
+}).define(
+	['mytable', 'laydate',],
+	function() {
+		var $ = layui.jquery,
+		layer = layui.layer,
+		form = layui.form,
+		table = layui.table,
+		laydate = layui.laydate,
+		myutil = layui.myutil,
+		mytable = layui.mytable;
+		myutil.config.ctx = '${ctx}';
+		myutil.clickTr();
+		laydate.render({ elem: '#startTime', range: '~', });
+		mytable.render({
+			elem: '#tableData',
+			url: '${ctx}/fince/getConsumption?type=2' ,
+			cellMinWidth: 120,
+			ifNull:'',
+			scrollX:true,
+			cols:[[
+				   { field: "content", title: "采购单编号",width:'25%',fixed: 'left'},
+			       { field: "orderProcurement_order_bacthNumber", 	title: "批次号", 	 width:'10%',},
+			       { field: "customer_name", 	title: "客户",   	width:'8%', }, 
+			       { field: "user_userName",title: "订料人",  width:'8%',	},
+			       { field: "orderProcurement_gramPrice", 	title: "缺克重价值",  }, 
+			       { field: "orderProcurement_interest", 	title: "占用资金利息",  }, 
+			       { field: "orderProcurement_materiel_materialQualitative_name", 	title: "货物类别",  }, 
+			       { field: "orderProcurement_price", 		title: "单价", 			}, 
+			       { field: "orderProcurement_materielLocation", 		title: "库位", 			}, 
+			       { field: "money", 		title: "金额", 			}, 
+			       { field: "expenseDate", 	title: "付款日期", 	type:'date',	 },
+			       { field: "orderProcurement_arrivalTime",title: "到货时间",	type:'date', },
+			       { field: "orderProcurement_expectPaymentTime", 	title: "预计付款时间", 	type:'date' }, 
+			       { field: "paymentDate", 	title: "实际付款时间", 	type:'dateTime',fixed:'right', }, 
+			       { field: "paymentMoney",	title: "付款金额", 		 fixed:'right',},
+			       { field: "flag", 			title: "审核状态", 	 transData:{data:['未审核','审核'],},fixed:'right',}
+				 ]],
+		});
+		myutil.getData({
+			url:'${ctx}/fince/totalAmount?type=2&flag=0',
+			success:function(d){
+				$('#allPrice').html(d);
+			}
+		})
+		form.on('submit(LAY-search)', function(obj) {
+			var f = obj.field;
+			var timeType = $('#selectone').val();
+			if(f.orderTimeBegin){
+				var time = f.orderTimeBegin.split(' ~ ');
+				f.orderTimeBegin = time[0]+' 00:00:00';
+				f.orderTimeEnd = time[1]+' 23:59:59';
+			}else{
+				f.orderTimeEnd = '';
+			}
+			if(timeType=='expenseDate'){
+				f.expenseDate = '2019-11-20 17:18:34';
+				f.paymentDate = '';
+			}else{
+				f.expenseDate = '';
+				f.paymentDate = '2019-11-20 17:18:34';
+			}
+			table.reload('tableData', {
+				where: f
 			});
-
-			form.on('submit(LAY-search)', function(data) {
-				var field = data.field;
-				var orderTime=field.orderTimeBegin.split('~');
-				orderTimeBegin=orderTime[0];
-				orderTimeEnd=orderTime[1];
-				var post={
-					customerName:field.customerName,
-					flag:field.flag,
-					orderTimeBegin:orderTimeBegin,
-					orderTimeEnd:orderTimeEnd,
-					expenseDate:"2019-05-08 00:00:00",
-					batchNumber:field.batchNumber,
+			delete f.flag;
+			myutil.getData({
+				url:'${ctx}/fince/totalAmount?type=2&flag=0',
+				data: f,
+				success:function(d){
+					$('#allPrice').html(d);
 				}
-				table.reload('tableData', {
-					where: post
-				});
-			});
-			
-		}
-	)
+			})
+		});
+	}
+)
 </script>
 </body>
-
 </html>
