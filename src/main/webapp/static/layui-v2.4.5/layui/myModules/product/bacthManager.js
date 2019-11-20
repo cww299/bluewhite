@@ -179,7 +179,10 @@ layui.config({
 		})
 		laytpl(TPL_MAIN).render({},function(h){
 			$(opt.elem).append(h);
-			if($('#isSmallScreen').css('display')=='none')
+			/*if($('#isSmallScreen').css('display')=='none')
+				isSmall = true;*/
+			var device = layui.device()
+			if(device.android===true || device.ios===true)
 				isSmall = true;
 		})
 		var todata = new Date().format('yyyy-MM-dd');
@@ -699,6 +702,7 @@ layui.config({
 								},
 								cols:[[
 								       { type:'checkbox', },
+								       { title:'分配时间', field:'allotTime',width:'15%'},
 								       { title:'工序', field:'procedureName', },
 								       { title:'预计时间', field:'expectTime', templet: getFixed('expectTime',4), },
 								       { title:'任务价值', field:'expectTaskPrice', templet: getFixed('expectTaskPrice',4), },

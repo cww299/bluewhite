@@ -200,6 +200,9 @@ public class ScatteredOutboundServiceImpl extends BaseServiceImpl<ScatteredOutbo
 					// 耗料单的出库详细
 					int j = i;
 					List<ScatteredOutbound> scatteredOutboundList = dao.findByOrderMaterialId(id);
+					if(scatteredOutboundList.size()==0){
+						throw new ServiceException("第" + (j + 1) + "条耗料单未生成出库单，无法审核，请先生成出库单");
+					}
 					scatteredOutboundList.stream().forEach(ot -> {
 						if (ot.getAudit() == 1) {
 							throw new ServiceException("第" + (j + 1) + "条领料单已审核，请勿多次审核");

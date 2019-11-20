@@ -179,7 +179,7 @@ public class LedgerAction {
 	{
 		clearCascadeJSONOrderMaterial = ClearCascadeJSON.get()
 				.addRetainTerm(OrderMaterial.class, "id", "order", "materiel", "receiveMode", "user", "unit", "dosage",
-						"audit", "outbound", "state", "inventoryTotal")
+						"audit", "outbound", "state", "inventoryTotal","outAudit")
 				.addRetainTerm(Order.class, "id", "bacthNumber", "product", "number", "remark","orderNumber")
 				.addRetainTerm(Materiel.class, "id", "name", "number", "orderProcurements", "inventoryNumber")
 				.addRetainTerm(OrderProcurement.class, "id", "orderProcurementNumber", "placeOrderNumber",
@@ -197,7 +197,7 @@ public class LedgerAction {
 				.addRetainTerm(OrderProcurement.class, "id", "orderProcurementNumber", "placeOrderNumber",
 						"arrivalNumber", "placeOrderTime", "expectArrivalTime", "arrivalTime", "customer", "user",
 						"materielLocation", "price", "squareGram", "userStorage", "arrival","audit",
-						"expectPaymentTime","actualPaymentTime","materiel","returnNumber",
+						"expectPaymentTime","materiel","returnNumber",
 						"partDelayNumber","partDelayTime","gramPrice","interest","paymentMoney","bill",
 						"conventionPrice","conventionSquareGram","partDelayPrice","returnRemark",
 						"inspection","arrivalStatus","replenishment")
@@ -214,7 +214,8 @@ public class LedgerAction {
 						"receiveUser", "user", "dosage", "remark", "audit", "auditTime", "placeOrderTime",
 						"openOrderAudit","residueDosage","dosageNumber","residueDosageNumber")
 				.addRetainTerm(OrderProcurement.class, "id", "orderProcurementNumber")
-				.addRetainTerm(OrderMaterial.class, "id", "receiveMode", "order")
+				.addRetainTerm(OrderMaterial.class, "id", "receiveMode","materiel")
+				.addRetainTerm(Materiel.class, "id", "name", "number")
 				.addRetainTerm(Order.class, "id", "bacthNumber","number", "remark","orderNumber")
 				.addRetainTerm(BaseOne.class, "id", "name")
 				.addRetainTerm(User.class, "id", "userName")
@@ -835,8 +836,6 @@ public class LedgerAction {
 		cr.setMessage("成功审核" + count + "条采购入库单，进行入库");
 		return cr;
 	}
-	
-	
 	
 	/**
 	 * （面辅料仓库）质检采购单，进行验货

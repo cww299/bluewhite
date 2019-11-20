@@ -330,6 +330,11 @@ public class OrderProcurementServiceImpl extends BaseServiceImpl<OrderProcuremen
 								orderProcurement.setReplenishment(1);
 							}
 						}
+						//占用供应商资金利息
+						orderProcurement.setInterest(NumUtils.mul(
+								NumUtils.sum(NumUtils.setzro(orderProcurement.getPartDelayPrice()), orderProcurement.getPaymentMoney()),
+								(double)DatesUtil.getDaySub(orderProcurement.getExpectPaymentTime(), orderProcurement.getArrivalTime()),
+								orderProcurement.getInterestday()));
 						orderProcurement.setInspection(1);
 						save(orderProcurement);
 						count++;
@@ -360,6 +365,7 @@ public class OrderProcurementServiceImpl extends BaseServiceImpl<OrderProcuremen
 						consumption.setCustomerId(orderProcurement.getCustomerId());
 						consumption.setMoney(orderProcurement.getPaymentMoney());
 						consumption.setExpenseDate(orderProcurement.getExpectPaymentTime());
+						consumption.setUserId(orderProcurement.getUserId());
 						consumptionService.save(consumption);
 						orderProcurement.setBill(1);
 						save(orderProcurement);

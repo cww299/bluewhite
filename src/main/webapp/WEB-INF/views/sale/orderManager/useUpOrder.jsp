@@ -69,7 +69,7 @@
 	  <div class="layui-form-item" pane>
 	    <label class="layui-form-label">约定价格：</label>
 	    <div class="layui-input-block">
-	      <input type="text" name="conventionPrice" class="layui-input" id="addEditPrice">
+	      <input type="text" name="price" class="layui-input" id="addEditPrice">
 	    </div>
 	  </div>
 	  <div class="layui-form-item" pane>
@@ -95,6 +95,12 @@
 	    <label class="layui-form-label">到库日期：</label>
 	    <div class="layui-input-block">
 	      <input type="text" name="expectArrivalTime" class="layui-input" id="comeDate" lay-verify="required">
+	    </div>
+	  </div>
+	  <div class="layui-form-item" pane>
+	    <label class="layui-form-label">付款日期：</label>
+	    <div class="layui-input-block">
+	      <input type="text" name="expectPaymentTime" class="layui-input" id="exceptDate" lay-verify="required">
 	    </div>
 	  </div>
 	  <span style="display:none;" lay-filter="sureAdd" id="sureAdd" lay-submit>确定</span>
@@ -188,13 +194,17 @@ layui.config({
 							
 						})
 					}else if(click){
-						myutil.esmg('无库存预警！');
+						myutil.emsg('无库存预警！');
 					}
 				}
 			})
 		}
 		laydate.render({
 			elem: '#comeDate',
+			type:'datetime',
+		})
+		laydate.render({
+			elem: '#exceptDate',
 			type:'datetime',
 		})
 		laydate.render({
@@ -448,7 +458,6 @@ layui.config({
 						success:function(){
 							mytable.render({
 								elem: '#allTable',
-								colsWidth:[0,13,0,6,6,6,8,13],
 								url: '${ctx}/ledger/getOrderProcurement?orderId='+orderId,
 								toolbar:['<span class="layui-btn layui-btn-sm" lay-event="updateProcurement">修改采购单</span>',
 										 '<span class="layui-btn layui-btn-sm" lay-event="auditProcurement">审核</span>'].join(''),
@@ -475,6 +484,7 @@ layui.config({
 								autoUpdate:{
 									deleUrl:'/ledger/deleteOrderProcurement',
 								},
+								colsWidth:[0,13,0,6,6,6,8,13,13,8],
 								cols:[[
 									   { type:'checkbox' },
 								       { title:'下单日期', field:'placeOrderTime', },
@@ -484,6 +494,8 @@ layui.config({
 								       { title:'订购人', field:'user_userName', },
 								       { title:'供应商', field:'customer_name', },
 								       { title:'预计到货', field:'expectArrivalTime',},
+								       { title:'付款日期', field:'expectPaymentTime', },
+								       { title:'审核', field:'audit',transData:{data:['审核','审核'],}},
 								       ]]
 							})
 						},

@@ -151,9 +151,15 @@ layui.config({
 			elem:'#productTable',
 			size:'lg',
 			url:"${ctx}/productPages",
-			toolbar:"#toolbarOfProduct",
+			toolbar:$('#toolbarOfProduct').html(),
 			curd:{
-				btn:[4],	
+				btn:[4],
+				otherBtn:function(obj){
+					switch(obj.event){
+					case 'add': addEdit('add'); break;
+					case 'edit': addEdit('edit'); break;
+					}
+				}
 			},
 			autoUpdate:{
 				deleUrl:'${ctx}/deleteProduct',
@@ -234,13 +240,6 @@ layui.config({
 		function getTpl(){
 			return '<div><span class="layui-btn layui-btn-sm lookoverPic">查看照片</span></div>';
 		}
-		table.on('toolbar(productTable)',function(obj){	
-			switch(obj.event){
-			case 'add': addEdit('add'); break;
-			case 'edit': addEdit('edit'); break;
-			case 'delete': deletes(); break;
-			}
-		})
 		function addEdit(type){
 			console.table(layui.table.checkStatus('productTable').data)
 			var choosed=layui.table.checkStatus('productTable').data
@@ -292,44 +291,6 @@ layui.config({
 				})
 			})
 		}
-		function deletes(){
-			var choosed=layui.table.checkStatus('productTable').data;
-			if(choosed.length<1){
-				layer.msg("请选择至少一条数据删除",{icon:2});
-				return;
-			}
-			layer.confirm("是否确认删除"+choosed.length+'条数据',function(){
-				var load=layer.load(1);
-				var successDel=0;
-				var targetDel=choosed.length;
-				for(var i=0;i<choosed.length;i++){
-					$.ajax({
-						url:"${ctx}/deleteProduct",
-						data:{id:choosed[i].id},
-						async:false,
-						success:function(result){
-							if(0==result.code){
-								successDel++;
-							}	
-							else
-								layer.msg(result.code+' '+result.message,{icon:2});
-						},
-						error:function(result){
-							layer.msg(result.message,{icon:2});
-						}
-					})
-				}
-				if(successDel==targetDel){
-					layer.msg("成功删除"+choosed.length+'条数据',{icon:1});
-				}
-				else{
-					layer.msg("删除发生异常，删除目标数："+targetDel+' 实际删除数：'+successDel,{icon:2});
-				}
-				table.reload('productTable');
-				layer.close(load);
-			})
-		}
-		
 		function lookOverBigPic(){
 			$('.closeBtn').unbind().on('click',function(obj){
 				var id = $(obj.target).data('id');
