@@ -113,6 +113,9 @@ public class MaterialRequisitionServiceImpl extends BaseServiceImpl<MaterialRequ
 				predicate.add(cb.between(root.get("auditTime").as(Date.class), param.getOrderTimeBegin(),
 						param.getOrderTimeEnd()));
 			}
+			
+			
+			
 			Predicate[] pre = new Predicate[predicate.size()];
 			query.where(predicate.toArray(pre));
 			return null;
@@ -175,6 +178,9 @@ public class MaterialRequisitionServiceImpl extends BaseServiceImpl<MaterialRequ
 				for (int i = 0; i < idArr.length; i++) {
 					Long id = Long.parseLong(idArr[i]);
 					MaterialRequisition materialRequisition = findOne(id);
+					if(materialRequisition.getRequisitionTime()==null){
+						throw new ServiceException("领取时间未填写，无法审核领取");
+					}
 					//面辅料仓库获取采购库存单，更新采购单实际库存
 					OrderProcurement orderProcurement = materialRequisition.getScatteredOutbound().getOrderProcurement();
 					orderProcurement.getMateriel().setInventoryNumber(NumUtils.sub(orderProcurement.getMateriel().getInventoryNumber(), materialRequisition.getDosage()));
