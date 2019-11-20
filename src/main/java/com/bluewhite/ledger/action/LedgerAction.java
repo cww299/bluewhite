@@ -902,7 +902,6 @@ public class LedgerAction {
 	}
 	
 	/**
-	 *
 	 * （1.成品仓库，2.皮壳仓库）对发外单进行确认回库，增加库存操作
 	 * 
 	 * @return
@@ -915,6 +914,10 @@ public class LedgerAction {
 		cr.setMessage("成功审核" + count + "条外发入库单，进行入库");
 		return cr;
 	}
+	
+	
+	
+	
 	
 	
 	

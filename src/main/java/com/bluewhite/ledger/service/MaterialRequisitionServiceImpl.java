@@ -16,6 +16,7 @@ import com.bluewhite.common.ServiceException;
 import com.bluewhite.common.entity.PageParameter;
 import com.bluewhite.common.entity.PageResult;
 import com.bluewhite.common.utils.NumUtils;
+import com.bluewhite.common.utils.StringUtil;
 import com.bluewhite.ledger.dao.MaterialRequisitionDao;
 import com.bluewhite.ledger.dao.OrderMaterialDao;
 import com.bluewhite.ledger.dao.ScatteredOutboundDao;
@@ -40,7 +41,8 @@ public class MaterialRequisitionServiceImpl extends BaseServiceImpl<MaterialRequ
 	@Override
 	public void saveMaterialRequisition(MaterialRequisition materialRequisition) {
 		if (materialRequisition.getScatteredOutboundId() != null) {
-			ScatteredOutbound scatteredOutbound = scatteredOutboundDao.findOne(materialRequisition.getScatteredOutboundId());
+			ScatteredOutbound scatteredOutbound = scatteredOutboundDao
+					.findOne(materialRequisition.getScatteredOutboundId());
 			// 查询是否已耗料出库（采购单虚拟库存）
 			if (scatteredOutbound == null) {
 				throw new ServiceException("还未分散出库，无法生成领料单");
@@ -52,11 +54,12 @@ public class MaterialRequisitionServiceImpl extends BaseServiceImpl<MaterialRequ
 			if (materialRequisition.getDosage() > scatteredOutbound.getResidueDosage()) {
 				throw new ServiceException("当前领料单已超出耗料剩余数量，无法生成，请核实");
 			}
-			//剩余耗料
+			// 剩余耗料
 			scatteredOutbound.setResidueDosage(
 					NumUtils.sub(scatteredOutbound.getResidueDosage(), materialRequisition.getDosage()));
-			//剩余任务数量
-			scatteredOutbound.setResidueDosageNumber(scatteredOutbound.getResidueDosageNumber()-materialRequisition.getProcessNumber());
+			// 剩余任务数量
+			scatteredOutbound.setResidueDosageNumber(
+					scatteredOutbound.getResidueDosageNumber() - materialRequisition.getProcessNumber());
 			materialRequisition.setAudit(0);
 			materialRequisition.setRequisition(0);
 			scatteredOutboundDao.save(scatteredOutbound);
@@ -66,14 +69,15 @@ public class MaterialRequisitionServiceImpl extends BaseServiceImpl<MaterialRequ
 
 	@Override
 	public void updateMaterialRequisition(MaterialRequisition materialRequisition) {
-		if(materialRequisition.getId()!=null){
+		if (materialRequisition.getId() != null) {
 			MaterialRequisition ot = findOne(materialRequisition.getId());
-			if(ot.getAudit()==1){
+			if (ot.getAudit() == 1) {
 				throw new ServiceException("已审核无法修改");
 			}
 		}
 		if (materialRequisition.getScatteredOutboundId() != null) {
-			ScatteredOutbound scatteredOutbound = scatteredOutboundDao.findOne(materialRequisition.getScatteredOutboundId());
+			ScatteredOutbound scatteredOutbound = scatteredOutboundDao
+					.findOne(materialRequisition.getScatteredOutboundId());
 			// 查询是否已耗料出库（采购单虚拟库存）
 			if (scatteredOutbound == null) {
 				throw new ServiceException("还未分散出库，无法生成领料单");
@@ -85,10 +89,12 @@ public class MaterialRequisitionServiceImpl extends BaseServiceImpl<MaterialRequ
 			if (materialRequisition.getDosage() > scatteredOutbound.getResidueDosage()) {
 				throw new ServiceException("当前领料单已超出耗料剩余数量，无法生成，请核实");
 			}
-			//剩余耗料
-			scatteredOutbound.setResidueDosage(NumUtils.sub(scatteredOutbound.getResidueDosage(), materialRequisition.getDosage()));
-			//剩余任务数量
-			scatteredOutbound.setResidueDosageNumber(scatteredOutbound.getResidueDosageNumber()-materialRequisition.getProcessNumber());
+			// 剩余耗料
+			scatteredOutbound.setResidueDosage(
+					NumUtils.sub(scatteredOutbound.getResidueDosage(), materialRequisition.getDosage()));
+			// 剩余任务数量
+			scatteredOutbound.setResidueDosageNumber(
+					scatteredOutbound.getResidueDosageNumber() - materialRequisition.getProcessNumber());
 			materialRequisition.setAudit(0);
 			materialRequisition.setRequisition(0);
 			scatteredOutboundDao.save(scatteredOutbound);
@@ -108,14 +114,52 @@ public class MaterialRequisitionServiceImpl extends BaseServiceImpl<MaterialRequ
 			if (param.getAudit() != null) {
 				predicate.add(cb.equal(root.get("audit").as(Integer.class), param.getAudit()));
 			}
-			// 按审核日期
-			if (!StringUtils.isEmpty(param.getOrderTimeBegin()) && !StringUtils.isEmpty(param.getOrderTimeEnd())) {
-				predicate.add(cb.between(root.get("auditTime").as(Date.class), param.getOrderTimeBegin(),
-						param.getOrderTimeEnd()));
+			// 按采购单编号
+			if (!StringUtils.isEmpty(param.getOrderProcurementNumber())) {
+				predicate.add(cb.like(
+						root.get("scatteredOutbound").get("orderProcurement").get("orderProcurementNumber")
+								.as(String.class),
+						"%" + StringUtil.specialStrKeyword(param.getOrderProcurementNumber()) + "%"));
 			}
-			
-			
-			
+			// 按合同id
+			if (param.getOrderId() != null) {
+				predicate.add(cb.equal(root.get("orderId").as(Long.class), param.getOrderId()));
+			}
+			// 是否领取
+			if (param.getRequisition() != null) {
+				predicate.add(cb.equal(root.get("requisition").as(Integer.class), param.getAudit()));
+			}
+			// 按跟单人
+			if (!StringUtils.isEmpty(param.getUserName())) {
+				predicate.add(
+						cb.like(root.get("user").get("userName").as(String.class), "%" + param.getUserName() + "%"));
+			}
+			// 按客户
+			if (!StringUtils.isEmpty(param.getCustomerName())) {
+				predicate.add(cb.like(root.get("customer").get("name").as(String.class),
+						"%" + param.getCustomerName() + "%"));
+			}
+			// 按审核日期
+			if (!StringUtils.isEmpty(param.getAudit())) {
+				if (!StringUtils.isEmpty(param.getOrderTimeBegin()) && !StringUtils.isEmpty(param.getOrderTimeEnd())) {
+					predicate.add(cb.between(root.get("auditTime").as(Date.class), param.getOrderTimeBegin(),
+							param.getOrderTimeEnd()));
+				}
+			}
+			// 按领取日期
+			if (param.getRequisitionTime() != null) {
+				if (!StringUtils.isEmpty(param.getOrderTimeBegin()) && !StringUtils.isEmpty(param.getOrderTimeEnd())) {
+					predicate.add(cb.between(root.get("requisitionTime").as(Date.class), param.getOrderTimeBegin(),
+							param.getOrderTimeEnd()));
+				}
+			}
+			// 按下单日期
+			if (param.getOpenOrderTime() != null) {
+				if (!StringUtils.isEmpty(param.getOrderTimeBegin()) && !StringUtils.isEmpty(param.getOrderTimeEnd())) {
+					predicate.add(cb.between(root.get("openOrderTime").as(Date.class), param.getOrderTimeBegin(),
+							param.getOrderTimeEnd()));
+				}
+			}
 			Predicate[] pre = new Predicate[predicate.size()];
 			query.where(predicate.toArray(pre));
 			return null;
@@ -158,8 +202,10 @@ public class MaterialRequisitionServiceImpl extends BaseServiceImpl<MaterialRequ
 						throw new ServiceException("第" + (i + 1) + "条领料单已审核，无法删除");
 					}
 					ScatteredOutbound scatteredOutbound = materialRequisition.getScatteredOutbound();
-					scatteredOutbound.setResidueDosage(NumUtils.sum(scatteredOutbound.getResidueDosage(),materialRequisition.getDosage()));
-					scatteredOutbound.setResidueDosageNumber(scatteredOutbound.getResidueDosageNumber()+materialRequisition.getProcessNumber());
+					scatteredOutbound.setResidueDosage(
+							NumUtils.sum(scatteredOutbound.getResidueDosage(), materialRequisition.getDosage()));
+					scatteredOutbound.setResidueDosageNumber(
+							scatteredOutbound.getResidueDosageNumber() + materialRequisition.getProcessNumber());
 					scatteredOutboundDao.save(scatteredOutbound);
 					delete(id);
 					count++;
@@ -178,12 +224,17 @@ public class MaterialRequisitionServiceImpl extends BaseServiceImpl<MaterialRequ
 				for (int i = 0; i < idArr.length; i++) {
 					Long id = Long.parseLong(idArr[i]);
 					MaterialRequisition materialRequisition = findOne(id);
-					if(materialRequisition.getRequisitionTime()==null){
+					if(materialRequisition.getRequisition()==1){
+						throw new ServiceException("领料出库单已审核出库，请勿多次审核");
+					}
+					if (materialRequisition.getRequisitionTime() == null) {
 						throw new ServiceException("领取时间未填写，无法审核领取");
 					}
-					//面辅料仓库获取采购库存单，更新采购单实际库存
-					OrderProcurement orderProcurement = materialRequisition.getScatteredOutbound().getOrderProcurement();
-					orderProcurement.getMateriel().setInventoryNumber(NumUtils.sub(orderProcurement.getMateriel().getInventoryNumber(), materialRequisition.getDosage()));
+					// 面辅料仓库获取采购库存单，更新采购单实际库存
+					OrderProcurement orderProcurement = materialRequisition.getScatteredOutbound()
+							.getOrderProcurement();
+					orderProcurement.getMateriel().setInventoryNumber(NumUtils
+							.sub(orderProcurement.getMateriel().getInventoryNumber(), materialRequisition.getDosage()));
 					materielDao.save(orderProcurement.getMateriel());
 					materialRequisition.setRequisition(1);
 					save(materialRequisition);
@@ -196,9 +247,9 @@ public class MaterialRequisitionServiceImpl extends BaseServiceImpl<MaterialRequ
 
 	@Override
 	public void updateiInventoryMaterialRequisition(MaterialRequisition materialRequisition) {
-		if(materialRequisition.getId()!=null){
+		if (materialRequisition.getId() != null) {
 			MaterialRequisition ot = findOne(materialRequisition.getId());
-			if(ot.getRequisition()==1){
+			if (ot.getRequisition() == 1) {
 				throw new ServiceException("已领取出库，无法修改");
 			}
 			update(materialRequisition, ot, "");
