@@ -224,8 +224,8 @@ public class MaterialRequisitionServiceImpl extends BaseServiceImpl<MaterialRequ
 					// 面辅料仓库获取采购库存单，更新采购单实际库存
 					OrderProcurement orderProcurement = materialRequisition.getScatteredOutbound()
 							.getOrderProcurement();
-					orderProcurement.getMateriel().setInventoryNumber(NumUtils
-							.sub(orderProcurement.getMateriel().getInventoryNumber(), materialRequisition.getDosage()));
+					orderProcurement.setArrivalNumber(NumUtils.sub(orderProcurement.getArrivalNumber(), materialRequisition.getDosage()));
+					orderProcurement.getMateriel().setInventoryNumber(NumUtils.sub(orderProcurement.getMateriel().getInventoryNumber(), materialRequisition.getDosage()));
 					materielDao.save(orderProcurement.getMateriel());
 					materialRequisition.setRequisition(1);
 					save(materialRequisition);
