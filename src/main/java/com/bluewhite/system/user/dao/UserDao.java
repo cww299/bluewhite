@@ -77,3 +77,5 @@ public interface UserDao extends BaseRepository<User, Long> {
 	public List<User> findByGroupId(Long groupId);
 	
 }
+
+

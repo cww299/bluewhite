@@ -11,7 +11,6 @@ import javax.persistence.Table;
 import javax.persistence.Transient;
 
 import com.bluewhite.base.BaseEntity;
-import com.bluewhite.basedata.entity.BaseData;
 import com.bluewhite.product.primecostbasedata.entity.Materiel;
 import com.bluewhite.system.user.entity.User;
 
