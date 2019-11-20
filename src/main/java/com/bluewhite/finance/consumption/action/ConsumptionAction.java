@@ -51,7 +51,7 @@ public class ConsumptionAction {
 				.addRetainTerm(Consumption.class, "id", "user", "customer", "orderProcurement", "budget", "money",
 						"expenseDate", "paymentMoney", "paymentDate", "withholdReason", "remark", "withholdMoney",
 						"settleAccountsMode", "remark", "flag", "taxPoint", "contact", "logisticsDate", "contactName",
-						"batchNumber", "realityDate", "deleteFlag", "orgName")
+						"batchNumber", "realityDate", "deleteFlag", "orgName","content")
 				.addRetainTerm(User.class, "userName")
 				.addRetainTerm(Customer.class,"name")
 				.addRetainTerm(OrderProcurement.class,"orderProcurementNumber", "placeOrderNumber", "arrivalTime","order",
