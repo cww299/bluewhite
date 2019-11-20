@@ -179,7 +179,7 @@ public class LedgerAction {
 	{
 		clearCascadeJSONOrderMaterial = ClearCascadeJSON.get()
 				.addRetainTerm(OrderMaterial.class, "id", "order", "materiel", "receiveMode", "user", "unit", "dosage",
-						"audit", "outbound", "state", "inventoryTotal")
+						"audit", "outbound", "state", "inventoryTotal","outAudit")
 				.addRetainTerm(Order.class, "id", "bacthNumber", "product", "number", "remark","orderNumber")
 				.addRetainTerm(Materiel.class, "id", "name", "number", "orderProcurements", "inventoryNumber")
 				.addRetainTerm(OrderProcurement.class, "id", "orderProcurementNumber", "placeOrderNumber",
@@ -197,7 +197,7 @@ public class LedgerAction {
 				.addRetainTerm(OrderProcurement.class, "id", "orderProcurementNumber", "placeOrderNumber",
 						"arrivalNumber", "placeOrderTime", "expectArrivalTime", "arrivalTime", "customer", "user",
 						"materielLocation", "price", "squareGram", "userStorage", "arrival","audit",
-						"expectPaymentTime","actualPaymentTime","materiel","returnNumber",
+						"expectPaymentTime","materiel","returnNumber",
 						"partDelayNumber","partDelayTime","gramPrice","interest","paymentMoney","bill",
 						"conventionPrice","conventionSquareGram","partDelayPrice","returnRemark",
 						"inspection","arrivalStatus","replenishment")

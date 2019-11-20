@@ -1,9 +1,7 @@
 package com.bluewhite.ledger.service;
 
 import java.util.ArrayList;
-import java.util.Comparator;
 import java.util.List;
-import java.util.Set;
 import java.util.stream.Collectors;
 
 import javax.persistence.criteria.Predicate;
@@ -18,20 +16,22 @@ import com.bluewhite.base.BaseServiceImpl;
 import com.bluewhite.common.ServiceException;
 import com.bluewhite.common.entity.PageParameter;
 import com.bluewhite.common.entity.PageResult;
-import com.bluewhite.common.utils.NumUtils;
 import com.bluewhite.common.utils.StringUtil;
 import com.bluewhite.ledger.dao.OrderDao;
 import com.bluewhite.ledger.dao.OrderMaterialDao;
 import com.bluewhite.ledger.dao.OrderProcurementDao;
+import com.bluewhite.ledger.dao.ScatteredOutboundDao;
 import com.bluewhite.ledger.entity.Order;
 import com.bluewhite.ledger.entity.OrderMaterial;
 import com.bluewhite.ledger.entity.OrderProcurement;
+import com.bluewhite.ledger.entity.ScatteredOutbound;
 import com.bluewhite.product.primecost.cutparts.entity.CutParts;
 import com.bluewhite.product.primecost.cutparts.service.CutPartsService;
 import com.bluewhite.product.primecost.materials.entity.ProductMaterials;
 import com.bluewhite.product.primecost.materials.service.ProductMaterialsService;
 import com.bluewhite.product.primecost.tailor.service.TailorService;
 import com.bluewhite.product.primecostbasedata.dao.MaterielDao;
+import com.sun.xml.internal.xsom.impl.WildcardImpl.Other;
 
 @Service
 public class OrderMaterialServiceImpl extends BaseServiceImpl<OrderMaterial, Long> implements OrderMaterialService {
@@ -50,6 +50,8 @@ public class OrderMaterialServiceImpl extends BaseServiceImpl<OrderMaterial, Lon
 	private MaterielDao materielDao;
 	@Autowired
 	private OrderProcurementDao orderProcurementDao;
+	@Autowired
+	private ScatteredOutboundDao scatteredOutboundDao;
 
 	@Override
 	public PageResult<OrderMaterial> findPages(OrderMaterial param, PageParameter page) {
@@ -94,6 +96,10 @@ public class OrderMaterialServiceImpl extends BaseServiceImpl<OrderMaterial, Lon
 			// 库存量不足
 			if (number > 1 && number < ot.getDosage()) {
 				ot.setState(3);
+			}
+			List<ScatteredOutbound> scatteredOutbound = scatteredOutboundDao.findByOrderMaterialId(ot.getId());
+			if(scatteredOutbound.size()>0){
+				ot.setOutAudit(scatteredOutbound.get(0).getAudit());
 			}
 		});
 		PageResult<OrderMaterial> result = new PageResult<>(pages, page);
