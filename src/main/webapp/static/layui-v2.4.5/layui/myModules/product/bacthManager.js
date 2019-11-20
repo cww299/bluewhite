@@ -702,6 +702,7 @@ layui.config({
 								},
 								cols:[[
 								       { type:'checkbox', },
+								       { title:'分配时间', field:'allotTime',width:'15%'},
 								       { title:'工序', field:'procedureName', },
 								       { title:'预计时间', field:'expectTime', templet: getFixed('expectTime',4), },
 								       { title:'任务价值', field:'expectTaskPrice', templet: getFixed('expectTaskPrice',4), },

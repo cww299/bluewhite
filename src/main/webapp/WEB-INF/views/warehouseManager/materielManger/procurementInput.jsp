@@ -83,7 +83,7 @@ layui.config({
 					}
 				}
 			},
-			colsWidth:[0,8,0,6,6,6,8,10,10,6,8,6,6],
+			colsWidth:[0,8,42,6,6,6,8,10,10,6,8,6,6,6,8,6,6,6],
 			cols:[[
 					{ type:'checkbox',fixed:'left' },
 					{ title:'下单日期', field:'placeOrderTime', type:'date'},

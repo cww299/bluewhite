@@ -163,10 +163,17 @@ layui.config({
 					{ title:'延期付款日期', field:'partDelayTime', type:'date',},
 					{ title:'缺克重价值', field:'gramPrice', },
 					{ title:'占用资金利息', field:'interest', },
-					{ title:'加急补货', field:'replenishment', transData:{data:['正常','加急补货']}},
+					{ title:'加急补货', field:'replenishment', templet:getTpl(), },
 					{ title:'生成账单', field:'bill', fixed:'right',transData:{data:['否','是']}},
 			       ]]
 		})
+		function getTpl(){transData:{data:['正常','加急补货']}
+			return function(d){
+				if(d.replenishment==0)
+					return '<span class="layui-badge layui-bg-green">正常</span>';
+				return '<span class="layui-badge">正常加急补货</span>';
+			}
+		}
 		function openUpdateWin(d){
 			var html = '';
 			laytpl($('#updateTpl').html()).render(d,function(h){
