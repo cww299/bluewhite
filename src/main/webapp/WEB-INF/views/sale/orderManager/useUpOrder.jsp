@@ -458,7 +458,6 @@ layui.config({
 						success:function(){
 							mytable.render({
 								elem: '#allTable',
-								colsWidth:[0,13,0,6,6,6,8,13],
 								url: '${ctx}/ledger/getOrderProcurement?orderId='+orderId,
 								toolbar:['<span class="layui-btn layui-btn-sm" lay-event="updateProcurement">修改采购单</span>',
 										 '<span class="layui-btn layui-btn-sm" lay-event="auditProcurement">审核</span>'].join(''),
@@ -485,6 +484,7 @@ layui.config({
 								autoUpdate:{
 									deleUrl:'/ledger/deleteOrderProcurement',
 								},
+								colsWidth:[0,13,0,6,6,6,8,13,13,8],
 								cols:[[
 									   { type:'checkbox' },
 								       { title:'下单日期', field:'placeOrderTime', },
@@ -494,6 +494,8 @@ layui.config({
 								       { title:'订购人', field:'user_userName', },
 								       { title:'供应商', field:'customer_name', },
 								       { title:'预计到货', field:'expectArrivalTime',},
+								       { title:'付款日期', field:'expectPaymentTime', },
+								       { title:'审核', field:'audit',transData:{data:['审核','审核'],}},
 								       ]]
 							})
 						},
