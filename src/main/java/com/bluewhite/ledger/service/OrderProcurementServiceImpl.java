@@ -361,10 +361,12 @@ public class OrderProcurementServiceImpl extends BaseServiceImpl<OrderProcuremen
 						// 生成采购应付账单
 						Consumption consumption = new Consumption();
 						consumption.setType(2);
+						consumption.setContent(orderProcurement.getOrderProcurementNumber());
 						consumption.setOrderProcurementId(id);
 						consumption.setCustomerId(orderProcurement.getCustomerId());
 						consumption.setMoney(orderProcurement.getPaymentMoney());
 						consumption.setExpenseDate(orderProcurement.getExpectPaymentTime());
+						consumption.setFlag(0);
 						consumption.setUserId(orderProcurement.getUserId());
 						consumptionService.save(consumption);
 						orderProcurement.setBill(1);
