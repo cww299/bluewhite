@@ -214,7 +214,8 @@ public class LedgerAction {
 						"receiveUser", "user", "dosage", "remark", "audit", "auditTime", "placeOrderTime",
 						"openOrderAudit","residueDosage","dosageNumber","residueDosageNumber")
 				.addRetainTerm(OrderProcurement.class, "id", "orderProcurementNumber")
-				.addRetainTerm(OrderMaterial.class, "id", "receiveMode", "order")
+				.addRetainTerm(OrderMaterial.class, "id", "receiveMode","materiel")
+				.addRetainTerm(Materiel.class, "id", "name", "number")
 				.addRetainTerm(Order.class, "id", "bacthNumber","number", "remark","orderNumber")
 				.addRetainTerm(BaseOne.class, "id", "name")
 				.addRetainTerm(User.class, "id", "userName")
@@ -835,8 +836,6 @@ public class LedgerAction {
 		cr.setMessage("成功审核" + count + "条采购入库单，进行入库");
 		return cr;
 	}
-	
-	
 	
 	/**
 	 * （面辅料仓库）质检采购单，进行验货
