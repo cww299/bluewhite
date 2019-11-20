@@ -268,6 +268,9 @@ layui.extend({
 										if(opt.autoUpdate.isReload)
 											table.reload(tableId);
 										opt.autoUpdate.success && opt.autoUpdate.success();
+									},
+									error: function(){
+										table.reload(tableId);
 									}
 								})
 							}

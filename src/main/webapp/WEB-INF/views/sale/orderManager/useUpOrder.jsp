@@ -305,7 +305,7 @@ layui.config({
 					'<span class="layui-btn layui-btn-sm" lay-event="audit">审核出库单</span>'+
 					'<span class="layui-btn layui-btn-sm layui-btn-danger" lay-event="deletes">清除出库单</span>'+
 					'<span class="layui-btn layui-btn-sm layui-btn-normal" lay-event="outOrder">出库单</span>',
-			colsWidth:[0,10,0,10,10,8,8,8,8],
+			colsWidth:[0,10,0,10,10,8,8,8,8,8],
 			parseData:function(ret){
 				if(ret.code==0){
 					for(var i in ret.data.rows){
@@ -328,6 +328,7 @@ layui.config({
 			       { title:'用量',   field:'dosage',	},
 			       { title:'库存状态',   field:'state', transData:{ data:['已出库','库存充足','无库存','有库存量不足'],text:'未知' },	},
 			       { title:'库存数量',   field:'inventoryTotal',	},
+			       { title:'是否审核出库', field:'outAudit', transData:{ data:['未审核','审核'],}},
 			       ]],
 			done:function(){
 				layui.each($('td[data-field="inventoryTotal"]'),function(index,item){
@@ -421,18 +422,11 @@ layui.config({
 							mytable.render({
 								elem: '#outTable',
 								url: '${ctx}/ledger/getScatteredOutbound?orderId='+orderId,
-								//toolbar:[''].join(''),
 								ifNull:'',
-								curd:{
-									btn:[],
-								},
-								autoUpdate:{
-									saveUrl:'/ledger/updateScatteredOutbound',
-								},
 								colsWidth:[0,15,15,0,6,6],
 								cols:[[
 									   { type:'checkbox' },
-								       { title:'出库日期',   field:'auditTime',	type:'dateTime', edit:true,},
+								       { title:'出库日期',   field:'auditTime',	type:'dateTime',},
 								       { title:'分散出库编号',   field:'outboundNumber',	},
 								       { title:'采购单编号',   field:'orderProcurement_orderProcurementNumber',  },
 								       { title:'领取用量',   field:'dosage',	},
@@ -495,7 +489,7 @@ layui.config({
 								       { title:'供应商', field:'customer_name', },
 								       { title:'预计到货', field:'expectArrivalTime',},
 								       { title:'付款日期', field:'expectPaymentTime', },
-								       { title:'审核', field:'audit',transData:{data:['审核','审核'],}},
+								       { title:'审核', field:'audit',transData:{data:['审核','未审核'],}},
 								       ]]
 							})
 						},

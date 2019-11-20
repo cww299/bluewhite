@@ -80,7 +80,7 @@
             </a>
             <dl class="layui-nav-child">
               <!-- <dd><a lay-href="set/user/info.html">基本资料</a></dd> -->
-               <dd><a lay-href="${ctx}/menusToUrl?url=decorator/addresslist">通讯录</a></dd>
+               <!-- <dd><a lay-href="${ctx}/menusToUrl?url=decorator/addresslist">通讯录</a></dd> -->
               <dd><a lay-href="${ctx}/menusToUrl?url=decorator/updatePwd">修改密码</a></dd>
               <dd style="text-align: center;"><a id="logout">退出</a></dd>
             </dl>
@@ -205,7 +205,7 @@ layui.use(['form','element','layer','jquery','table'],function(){
     	var currUser = null; //当前登录用户
     	$('#lookoverWarn').on('click',warn);
     	$('#confluenceWarn').on('click',confluenceWarn);
-    	confluenceWarn();
+    	/* confluenceWarn(); */
     	warn();
     	function confluenceWarn(){
 			if(document.getElementById('warningConfluenceDiv')!=null){

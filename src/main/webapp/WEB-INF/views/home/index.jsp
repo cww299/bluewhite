@@ -22,18 +22,20 @@
   	}
   	h1{
   		color: #91addc;
+  		margin-left: -100px;
   	}
   	.day{
   		color: #91addc;
  		margin-top: 40px;
-    	font-size: 18px;
+ 		font-size: 26px;
+ 		margin-left: 60px;
   	}
   </style>
 </head>
 <body>
 <div class="main">
-	<h1>欢迎 <b id="userName">您</b> 使用蓝白管理系统！</h1>
-	<img src="${ctx }/static/img/welcome.png">
+	<img src="${ctx }/static/img/welcome.jpg" style="margin-top: -120px;">
+	<h1> <b id="userName">您</b> 欢迎您加入蓝白城堡！</h1>
 	<p class="day"></p>
 </div>
 <script src="${ctx }/static/layuiadmin/layui/layui.js"></script>

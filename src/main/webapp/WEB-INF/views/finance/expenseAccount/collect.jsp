@@ -115,7 +115,7 @@
 							layer.close(index);
 						}
 					});
-					getTotalAmount({flags: '0,2',type: 1});
+					getTotalAmount({flags: '0,2',});
 					function getTotalAmount(post){
 						$.ajax({
 							url: '${ctx}/fince/totalAmount?type=1',
