@@ -104,6 +104,12 @@ public class OrderMaterial extends BaseEntity<Long> {
 	private Integer outbound;
 	
 	/**
+	 * 当前耗料单的出库单是否被审核
+	 */
+	@Transient
+	private Integer outAudit;
+	
+	/**
 	 * 状态（1=库存充足，2无库存，3有库存量不足）
 	 */
 	@Transient
@@ -135,6 +141,14 @@ public class OrderMaterial extends BaseEntity<Long> {
 	
 	
 	 
+	public Integer getOutAudit() {
+		return outAudit;
+	}
+
+	public void setOutAudit(Integer outAudit) {
+		this.outAudit = outAudit;
+	}
+
 	public String getOrderMaterialNumber() {
 		return orderMaterialNumber;
 	}
