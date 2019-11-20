@@ -19,6 +19,7 @@ import com.bluewhite.common.utils.NumUtils;
 import com.bluewhite.common.utils.StringUtil;
 import com.bluewhite.ledger.dao.MaterialRequisitionDao;
 import com.bluewhite.ledger.dao.OrderMaterialDao;
+import com.bluewhite.ledger.dao.OrderProcurementDao;
 import com.bluewhite.ledger.dao.ScatteredOutboundDao;
 import com.bluewhite.ledger.entity.MaterialRequisition;
 import com.bluewhite.ledger.entity.OrderProcurement;
@@ -37,6 +38,8 @@ public class MaterialRequisitionServiceImpl extends BaseServiceImpl<MaterialRequ
 	private ScatteredOutboundDao scatteredOutboundDao;
 	@Autowired
 	private MaterielDao materielDao;
+	@Autowired
+	private OrderProcurementDao orderProcurementDao;
 
 	@Override
 	public void saveMaterialRequisition(MaterialRequisition materialRequisition) {
@@ -226,7 +229,7 @@ public class MaterialRequisitionServiceImpl extends BaseServiceImpl<MaterialRequ
 							.getOrderProcurement();
 					orderProcurement.setArrivalNumber(NumUtils.sub(orderProcurement.getArrivalNumber(), materialRequisition.getDosage()));
 					orderProcurement.getMateriel().setInventoryNumber(NumUtils.sub(orderProcurement.getMateriel().getInventoryNumber(), materialRequisition.getDosage()));
-					materielDao.save(orderProcurement.getMateriel());
+					orderProcurementDao.save(orderProcurement);
 					materialRequisition.setRequisition(1);
 					save(materialRequisition);
 					count++;
