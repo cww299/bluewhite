@@ -114,19 +114,13 @@ layui.config({
 			size:'lg',
 			ifNull:'',
 			scrollX:true,
-			toolbar: ['<span lay-event="audit" class="layui-btn layui-btn-sm">审核入库</span>',
+			toolbar: [
 					  '<span lay-event="creatBill" class="layui-btn layui-btn-sm layui-btn-normal">生成账单</span>',
 					  '<span lay-event="update" class="layui-btn layui-btn-sm">修改</span>',].join(''),
 			curd:{
 				btn:[],
 				otherBtn:function(obj){
-					if(obj.event=='audit'){
-						myutil.deleTableIds({
-							url:'/ledger/arrivalOrderProcurement',
-							table:'tableData',
-							text:'请选择信息|是否确认审核？',
-						})
-					}else if(obj.event=='creatBill'){
+					if(obj.event=='creatBill'){
 						myutil.deleTableIds({
 							url:'/ledger/billOrderProcurement',
 							table:'tableData',
