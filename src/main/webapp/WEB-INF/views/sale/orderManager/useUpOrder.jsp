@@ -69,7 +69,7 @@
 	  <div class="layui-form-item" pane>
 	    <label class="layui-form-label">约定价格：</label>
 	    <div class="layui-input-block">
-	      <input type="text" name="conventionPrice" class="layui-input" id="addEditPrice">
+	      <input type="text" name="price" class="layui-input" id="addEditPrice">
 	    </div>
 	  </div>
 	  <div class="layui-form-item" pane>
@@ -95,6 +95,12 @@
 	    <label class="layui-form-label">到库日期：</label>
 	    <div class="layui-input-block">
 	      <input type="text" name="expectArrivalTime" class="layui-input" id="comeDate" lay-verify="required">
+	    </div>
+	  </div>
+	  <div class="layui-form-item" pane>
+	    <label class="layui-form-label">付款日期：</label>
+	    <div class="layui-input-block">
+	      <input type="text" name="expectPaymentTime" class="layui-input" id="exceptDate" lay-verify="required">
 	    </div>
 	  </div>
 	  <span style="display:none;" lay-filter="sureAdd" id="sureAdd" lay-submit>确定</span>
@@ -188,13 +194,17 @@ layui.config({
 							
 						})
 					}else if(click){
-						myutil.esmg('无库存预警！');
+						myutil.emsg('无库存预警！');
 					}
 				}
 			})
 		}
 		laydate.render({
 			elem: '#comeDate',
+			type:'datetime',
+		})
+		laydate.render({
+			elem: '#exceptDate',
 			type:'datetime',
 		})
 		laydate.render({
