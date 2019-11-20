@@ -127,24 +127,15 @@ public class MaterialRequisitionServiceImpl extends BaseServiceImpl<MaterialRequ
 			}
 			// 是否领取
 			if (param.getRequisition() != null) {
-				predicate.add(cb.equal(root.get("requisition").as(Integer.class), param.getAudit()));
+				predicate.add(cb.equal(root.get("requisition").as(Integer.class), param.getRequisition()));
 			}
-			// 按跟单人
+			// 按领取人
 			if (!StringUtils.isEmpty(param.getUserName())) {
-				predicate.add(
-						cb.like(root.get("user").get("userName").as(String.class), "%" + param.getUserName() + "%"));
+				predicate.add(cb.like(root.get("user").get("userName").as(String.class), "%" + param.getUserName() + "%"));
 			}
-			// 按客户
+			// 按领取客户
 			if (!StringUtils.isEmpty(param.getCustomerName())) {
-				predicate.add(cb.like(root.get("customer").get("name").as(String.class),
-						"%" + param.getCustomerName() + "%"));
-			}
-			// 按审核日期
-			if (!StringUtils.isEmpty(param.getAudit())) {
-				if (!StringUtils.isEmpty(param.getOrderTimeBegin()) && !StringUtils.isEmpty(param.getOrderTimeEnd())) {
-					predicate.add(cb.between(root.get("auditTime").as(Date.class), param.getOrderTimeBegin(),
-							param.getOrderTimeEnd()));
-				}
+				predicate.add(cb.like(root.get("customer").get("name").as(String.class),"%" + param.getCustomerName() + "%"));
 			}
 			// 按领取日期
 			if (param.getRequisitionTime() != null) {
