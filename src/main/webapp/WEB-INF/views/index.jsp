@@ -43,6 +43,7 @@
     }
     .layui-nav-tree .layui-nav-item {
       display: none;
+      transition: .3s;
     }
     .layui-nav-tree .layui-nav-item.myMenu{
    	  display: block;
@@ -241,11 +242,23 @@ layui.use(['form','element','layer','jquery','table'],function(){
     	
     	form.on('switch(changeMenu)',function(obj){
     		if(obj.elem.checked){
-    			$('.allMenu').show();
-    			$('.myMenu').hide();
+    			$('.layui-nav-tree .layui-nav-item').css('margin-left','300px');
+    			setTimeout(function(){
+    				$('.myMenu').hide();
+    				setTimeout(function(){
+        				$('.allMenu').show();
+        				$('.layui-nav-tree .layui-nav-item').css('margin-left','0px');
+        			},300)
+    			},300)
     		}else{
-    			$('.allMenu').hide();
-    			$('.myMenu').show();
+    			$('.layui-nav-tree .layui-nav-item').css('margin-left','300px');
+    			setTimeout(function(){
+	    			$('.allMenu').hide();
+	    			setTimeout(function(){
+	    				$('.myMenu').show();
+	    				$('.layui-nav-tree .layui-nav-item').css('margin-left','0px');
+	    			},300)
+    			},300)
     		}
     	})
     	var tips;
