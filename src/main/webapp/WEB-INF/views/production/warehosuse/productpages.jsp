@@ -72,7 +72,7 @@
 	
 	<form action="" id="layuiadmin-form-admin2"
 		style="padding: 20px 0px 0 50px; display:none;  text-align:">
-		<div class="layui-form" lay-filter="layuiadmin-form-admin">
+		<div class="layui-form layui-form-pane" lay-filter="layuiadmin-form-admin">
 			<div class="layui-form-item">
 				<label class="layui-form-label" style="width: 100px;">产品名称</label>
 				<div class="layui-input-inline">
