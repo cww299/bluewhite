@@ -32,11 +32,9 @@ public class StartupListener implements ApplicationListener<ContextRefreshedEven
 				ResourceBundle resource = ResourceBundle.getBundle("resources");
 				String key = resource.getString("attendance.ip");
 				for (String address : key.split(",")) {
-					String threadName = "thread:" + address;
-					new Thread(new SDKRunnable(address),threadName).start();
+					new Thread(new SDKRunnable(address), "thread:" + address).start();
 				}
 			}
-		}, 3000);
+		}, 300);
 	}
-
 }
