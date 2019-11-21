@@ -22,7 +22,7 @@
   	}
   	h1{
   		color: #91addc;
-  		margin-left: -100px;
+  		margin-left: -327px;
   	}
   	.day{
   		color: #91addc;
@@ -34,8 +34,8 @@
 </head>
 <body>
 <div class="main">
-	<img src="${ctx }/static/img/welcome.jpg" style="margin-top: -120px;">
-	<h1> <b id="userName">您</b> 欢迎您加入蓝白城堡！</h1>
+	<img src="${ctx }/static/img/welcome.jpg" style="margin-top: -160px;">
+	<h1> <b id="userName">您</b> 欢迎您！</h1>
 	<p class="day"></p>
 </div>
 <script src="${ctx }/static/layuiadmin/layui/layui.js"></script>
@@ -59,7 +59,7 @@
 							var entry = new Date(Date.parse(thisUser.entry));
 							var now = new Date();
 							var day = (now.getTime()-entry.getTime())/1000/60/60/24;
-							$('.day').html('今天是您加入蓝白的第：<b>'+parseInt(day)+'</b>天');
+							$('.day').html('今天是您加入蓝白城堡的第：<b>'+parseInt(day)+'</b>天');
 						}
 					})
 				}
