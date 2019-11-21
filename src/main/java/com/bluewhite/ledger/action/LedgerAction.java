@@ -800,6 +800,20 @@ public class LedgerAction {
 		return cr;
 	}
 	
+	/**
+	 * （生产计划部） 审核加工单，审核成功后，仓库可见
+	 * 
+	 * @param order
+	 * @return
+	 */
+	@RequestMapping(value = "/ledger/returnOrderOutSource", method = RequestMethod.GET)
+	@ResponseBody
+	public CommonResponse returnOrderOutSource(OrderOutSource orderOutSource) {
+		CommonResponse cr = new CommonResponse();
+//		int count = orderOutSourceService.returnOrderOutSource(orderOutSource);
+		cr.setMessage("新增成功加工退货单");
+		return cr;
+	}
 	
 	
 	
