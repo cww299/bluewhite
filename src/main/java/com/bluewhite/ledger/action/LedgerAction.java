@@ -31,6 +31,7 @@ import com.bluewhite.ledger.entity.Packing;
 import com.bluewhite.ledger.entity.PackingChild;
 import com.bluewhite.ledger.entity.PackingMaterials;
 import com.bluewhite.ledger.entity.ReceivedMoney;
+import com.bluewhite.ledger.entity.RefundBills;
 import com.bluewhite.ledger.entity.Sale;
 import com.bluewhite.ledger.entity.ScatteredOutbound;
 import com.bluewhite.ledger.entity.SendGoods;
@@ -42,6 +43,7 @@ import com.bluewhite.ledger.service.OrderProcurementService;
 import com.bluewhite.ledger.service.OrderService;
 import com.bluewhite.ledger.service.PackingService;
 import com.bluewhite.ledger.service.ReceivedMoneyService;
+import com.bluewhite.ledger.service.RefundBillsService;
 import com.bluewhite.ledger.service.SaleService;
 import com.bluewhite.ledger.service.ScatteredOutboundService;
 import com.bluewhite.ledger.service.SendGoodsService;
@@ -81,6 +83,8 @@ public class LedgerAction {
 	private OrderOutSourceService orderOutSourceService;
 	@Autowired
 	private MaterialRequisitionService materialRequisitionService;
+	@Autowired
+	private RefundBillsService refundBillsService;
 	
 	
 	
@@ -801,17 +805,17 @@ public class LedgerAction {
 	}
 	
 	/**
-	 * （生产计划部） 审核加工单，审核成功后，仓库可见
+	 * （生产计划部）加工单退货
 	 * 
 	 * @param order
 	 * @return
 	 */
-	@RequestMapping(value = "/ledger/returnOrderOutSource", method = RequestMethod.GET)
+	@RequestMapping(value = "/ledger/saveRefundBills", method = RequestMethod.GET)
 	@ResponseBody
-	public CommonResponse returnOrderOutSource(OrderOutSource orderOutSource) {
+	public CommonResponse saveRefundBills(RefundBills refundBills) {
 		CommonResponse cr = new CommonResponse();
-//		int count = orderOutSourceService.returnOrderOutSource(orderOutSource);
-		cr.setMessage("新增成功加工退货单");
+		refundBillsService.saveRefundBills(refundBills);
+		cr.setMessage("新增加工退货单成功");
 		return cr;
 	}
 	
