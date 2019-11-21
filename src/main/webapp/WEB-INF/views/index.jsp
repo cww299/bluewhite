@@ -383,7 +383,6 @@ layui.use(['form','element','layer','jquery','table'],function(){
 					var html='';
 					var data=result.data;
 					for(var i=0;i<data.length;i++){
-						$("#nav").find('span.layui-nav-bar').remove();
 						if(data[i].url!='#'){
 							var href='${ctx}/menusToUrl?url='+data[i].url;
 				    		html+='<li data-name="'+data[i].identity+'" class="layui-nav-item layui-this layui-anim allMenu">'+
@@ -402,7 +401,6 @@ layui.use(['form','element','layer','jquery','table'],function(){
 						
 					}
 					$('#LAY-system-side-menu').append(html);
-					element.render();
 				}
 				
 			}
@@ -414,7 +412,6 @@ layui.use(['form','element','layer','jquery','table'],function(){
 					var html='';
 					var data=result.data;
 					for(var i=0;i<data.length;i++){
-						$("#nav").find('span.layui-nav-bar').remove();
 						if(data[i].url!='#'){
 							var href='${ctx}/menusToUrl?url='+data[i].url;
 				    		html+='<li data-name="'+data[i].identity+'" class="layui-nav-item layui-anim layui-this myMenu">'+
@@ -432,6 +429,7 @@ layui.use(['form','element','layer','jquery','table'],function(){
 						}
 					}
 					$('#LAY-system-side-menu').append(html);
+					$("#LAY-system-side-menu").find('span.layui-nav-bar').remove();
 					element.render();
 				}
 				
