@@ -12,10 +12,47 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=0">
   <link rel="stylesheet" href="${ctx }/static/layuiadmin/layui/css/layui.css" media="all">
   <link rel="stylesheet" href="${ctx }/static/layuiadmin/style/admin.css" media="all">
-
+  <style>
+    .layui-form-switch{
+      min-width: 0px;
+	  width: 26px;
+	  height: 10px;
+	  line-height: 10px;
+	  margin-top: 0px;
+	  padding: 0px;
+	  float: right;
+      margin-top: 19px;
+    }
+    .layui-form-switch i{
+      top: 0px;
+      width: 10px;
+      height: 10px;
+      margin-left: -5px;
+    }
+    .layui-form-onswitch em{
+      display:none !important;
+    }
+    .layui-form-switch em{
+      display:none !important;
+    }
+    .layui-form-onswitch i{
+      margin-left: -10px;
+    }
+    .layadmin-side-shrink .layui-form-switch{
+      display:none;
+    }
+    .layui-nav-tree .layui-nav-item {
+      display: none;
+    }
+    .layui-nav-tree .layui-nav-item.myMenu{
+   	  display: block;
+    }
+    .layui-layer-tips .layui-layer-content{
+      margin-top: -15px;
+    }
+  </style>
 </head>
 <body class="layui-layout-body">
-  
   <div id="LAY_app">
     <div class="layui-layout layui-layout-admin">
       <div class="layui-header">
@@ -101,8 +138,9 @@
       <!-- 侧边菜单 -->
       <div class="layui-side layui-side-menu">
         <div class="layui-side-scroll">
-          <div class="layui-logo">
+          <div class="layui-logo layui-form">
             <span>蓝白玩偶</span>
+            <input type="checkbox" name="zzz" lay-skin="switch" lay-filter="changeMenu" lay-text="&nbsp;|&nbsp;">
           </div>
           <ul class="layui-nav layui-nav-tree" lay-shrink="all" id="LAY-system-side-menu" lay-filter="layadmin-system-side-menu">
           </ul>
@@ -193,7 +231,7 @@ layui.use(['form','element','layer','jquery','table'],function(){
 		table = layui.table,
 		$ = layui.$;
     	layer = parent.layer === undefined ? layui.layer : top.layer;
-		
+    	form.render();
     	$('#logout').on('click',function(){
     		location.href = "${ctx}/logout";
     	})
@@ -201,6 +239,22 @@ layui.use(['form','element','layer','jquery','table'],function(){
     		$('#hiddenButton').click();
     	})
     	
+    	form.on('switch(changeMenu)',function(obj){
+    		if(obj.elem.checked){
+    			$('.allMenu').show();
+    			$('.myMenu').hide();
+    		}else{
+    			$('.allMenu').hide();
+    			$('.myMenu').show();
+    		}
+    	})
+    	var tips;
+    	$('.layui-form-switch').mouseover(function(){
+		  var that = this;
+		  tips = layer.tips('切换菜单显示', that,{time: 0});
+		}).mouseout(function(){
+			layer.close(tips);
+		});
     	//-------------------------广宣预警弹窗-------------------------
     	var currUser = null; //当前登录用户
     	$('#lookoverWarn').on('click',warn);
@@ -310,27 +364,24 @@ layui.use(['form','element','layer','jquery','table'],function(){
 				})
 			}
 		}
-    	
     	//--------------------广宣预警弹窗结束--------------------
-    	
     	$.ajax({
 			url:"${ctx}/getTreeMenuPage",
-			type:"GET", 
+			async:false,
 			success: function (result) {
 				if(0==result.code){
 					var html='';
 					var data=result.data;
 					for(var i=0;i<data.length;i++){
 						$("#nav").find('span.layui-nav-bar').remove();
-						
 						if(data[i].url!='#'){
 							var href='${ctx}/menusToUrl?url='+data[i].url;
-				    		html+='<li data-name="'+data[i].identity+'" class="layui-nav-item layui-this">'+
+				    		html+='<li data-name="'+data[i].identity+'" class="layui-nav-item layui-this" style="display:block;">'+
 				    					'<a lay-href="'+href+'" id="'+data[i].identity+'">'+
 				    					'<i class="layui-icon layui-icon-'+data[i].icon+'"></i>  '+
 										'<cite>'+data[i].name+'</cite></a></li>';
 						}else{
-							html+='<li data-name="'+data[i].identity+'" class="layui-nav-item" >'+
+							html+='<li data-name="'+data[i].identity+'" class="layui-nav-item allMenu" >'+
 									'<a href="javascript:;" lay-tips="'+data[i].name+'" lay-direction="2" id="'+data[i].identity+'">'+
 										'<i class="layui-icon layui-icon-'+data[i].icon+'"></i>  '+
 											'<cite>'+data[i].name+'</cite></a>'
@@ -346,7 +397,28 @@ layui.use(['form','element','layer','jquery','table'],function(){
 				
 			}
     	})
-
+    	$.ajax({
+			url:"${ctx}/menus",
+			success: function (result) {
+				if(0==result.code){
+					var html='';
+					var data=result.data;
+					for(var i=0;i<data.length;i++){
+						$("#nav").find('span.layui-nav-bar').remove();
+						html+='<li data-name="'+data[i].identity+'" class="layui-nav-item myMenu" >'+
+								'<a href="javascript:;" lay-tips="'+data[i].name+'" lay-direction="2" id="'+data[i].identity+'">'+
+									'<i class="layui-icon layui-icon-'+data[i].icon+'"></i>  '+
+										'<cite>'+data[i].name+'</cite></a>'
+						if(data[i].children!=null)
+							html+=getChildren(data[i].children);
+						html+='</li>';
+					}
+					$('#LAY-system-side-menu').append(html);
+					element.render();
+				}
+				
+			}
+    	})
     	function getChildren(child){
     		var html='<dl class="layui-nav-child">';
     		for(var i=0;i<child.length;i++){
