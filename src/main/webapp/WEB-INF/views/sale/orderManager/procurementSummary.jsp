@@ -114,19 +114,13 @@ layui.config({
 			size:'lg',
 			ifNull:'',
 			scrollX:true,
-			toolbar: ['<span lay-event="audit" class="layui-btn layui-btn-sm">审核入库</span>',
+			toolbar: [
 					  '<span lay-event="creatBill" class="layui-btn layui-btn-sm layui-btn-normal">生成账单</span>',
 					  '<span lay-event="update" class="layui-btn layui-btn-sm">修改</span>',].join(''),
 			curd:{
 				btn:[],
 				otherBtn:function(obj){
-					if(obj.event=='audit'){
-						myutil.deleTableIds({
-							url:'/ledger/arrivalOrderProcurement',
-							table:'tableData',
-							text:'请选择信息|是否确认审核？',
-						})
-					}else if(obj.event=='creatBill'){
+					if(obj.event=='creatBill'){
 						myutil.deleTableIds({
 							url:'/ledger/billOrderProcurement',
 							table:'tableData',
@@ -154,8 +148,8 @@ layui.config({
 					{ title:'实际克重', field:'squareGram', },
 					{ title:'订购人', field:'user_userName', },
 					{ title:'供应商', field:'customer_name', },
-					{ title:'预计到货', field:'expectArrivalTime',type:'date',},
-					{ title:'到货日期', field:'arrivalTime',  type:'date', },
+					{ title:'预计到货日期', field:'expectArrivalTime',type:'date',},
+					{ title:'实际到货日期', field:'arrivalTime',  type:'date', },
 					{ title:'到货数量', field:'arrivalNumber', },
 					{ title:'退货数量', field:'returnNumber', },
 					{ title:'延期付款数量', field:'partDelayNumber', },

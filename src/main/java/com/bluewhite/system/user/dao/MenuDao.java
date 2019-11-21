@@ -55,4 +55,11 @@ public interface MenuDao extends BaseRepository<Menu, Long> {
 	 * @return menu
 	 */
 	public Optional<Menu> findByIdentity(String identity);
+	
+	/**
+	 * 通过url查找
+	 * @param name 菜单名字
+	 * @return menu
+	 */
+	public Optional<Menu> findByUrl(String url);
 }
