@@ -127,7 +127,7 @@
         </div>
         <div class="layui-tab" lay-unauto lay-allowClose="true" lay-filter="layadmin-layout-tabs">
           <ul class="layui-tab-title" id="LAY_app_tabsheader">
-            <li lay-id="home/index" lay-attr="${ctx}/menusToUrl?url=home/index" class="layui-this"><i class="layui-icon layui-icon-home"></i></li>
+            <li lay-id="${ctx}/menusToUrl?url=home/index" lay-attr="${ctx}/menusToUrl?url=home/index" class="layui-this"><i class="layui-icon layui-icon-home"></i></li>
           </ul>
         </div>
       </div>
@@ -314,7 +314,7 @@ layui.use(['form','element','layer','jquery','table'],function(){
     	//--------------------广宣预警弹窗结束--------------------
     	
     	$.ajax({
-			url:"${ctx}/menus",
+			url:"${ctx}/getTreeMenuPage",
 			type:"GET", 
 			success: function (result) {
 				if(0==result.code){
@@ -322,13 +322,23 @@ layui.use(['form','element','layer','jquery','table'],function(){
 					var data=result.data;
 					for(var i=0;i<data.length;i++){
 						$("#nav").find('span.layui-nav-bar').remove();
-						html+='<li data-name="'+data[i].identity+'" class="layui-nav-item" >'+
-								'<a href="javascript:;" lay-tips="'+data[i].name+'" lay-direction="2" id="'+data[i].identity+'">'+
-									'<i class="layui-icon layui-icon-'+data[i].icon+'"></i>  '+
-										'<cite>'+data[i].name+'</cite></a>'
-						if(data[i].children!=null)
-							html+=getChildren(data[i].children);
-						html+='</li>';
+						
+						if(data[i].url!='#'){
+							var href='${ctx}/menusToUrl?url='+data[i].url;
+				    		html+='<li data-name="'+data[i].identity+'" class="layui-nav-item layui-this">'+
+				    					'<a lay-href="'+href+'" id="'+data[i].identity+'">'+
+				    					'<i class="layui-icon layui-icon-'+data[i].icon+'"></i>  '+
+										'<cite>'+data[i].name+'</cite></a></li>';
+						}else{
+							html+='<li data-name="'+data[i].identity+'" class="layui-nav-item" >'+
+									'<a href="javascript:;" lay-tips="'+data[i].name+'" lay-direction="2" id="'+data[i].identity+'">'+
+										'<i class="layui-icon layui-icon-'+data[i].icon+'"></i>  '+
+											'<cite>'+data[i].name+'</cite></a>'
+							if(data[i].children!=null)
+								html+=getChildren(data[i].children);
+							html+='</li>';
+						}
+						
 					}
 					$('#LAY-system-side-menu').append(html);
 					element.render();
