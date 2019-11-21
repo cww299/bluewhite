@@ -1,6 +1,7 @@
 package com.bluewhite.system.user.action;
 
 import java.util.List;
+import java.util.Optional;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -25,9 +26,11 @@ import com.bluewhite.common.SessionManager;
 import com.bluewhite.common.entity.CommonResponse;
 import com.bluewhite.common.entity.CurrentUser;
 import com.bluewhite.common.entity.ErrorCode;
+import com.bluewhite.system.user.dao.MenuDao;
 import com.bluewhite.system.user.entity.Menu;
 import com.bluewhite.system.user.entity.Role;
 import com.bluewhite.system.user.entity.User;
+import com.bluewhite.system.user.service.MenuService;
 import com.bluewhite.system.user.service.RoleService;
 import com.bluewhite.system.user.service.UserService;
 
@@ -48,7 +51,8 @@ public class IndexAction {
 	private CacheManager cacheManager;
 	@Autowired
 	private RoleService roleService;
-	
+	@Autowired
+	private MenuDao menuDao;
 	
 	/**
 	 * 跳转首页
@@ -65,6 +69,14 @@ public class IndexAction {
 	 */
 	@RequestMapping(value = "/menusToUrl", method = RequestMethod.GET)
 	public String menusToJsp(HttpServletRequest request,String url) {
+		Optional<Menu> menu = menuDao.findByUrl(url);
+		if(menu.isPresent()){
+			Subject subject = SecurityUtils.getSubject();
+			boolean permitted  = subject.isPermitted(menu.get().getIdentity()+":*");
+			if(!permitted ){
+				return  "error/401";
+			}
+		}
 		return url;
 	}
 	
@@ -72,6 +84,8 @@ public class IndexAction {
 	
 	/**
 	 * 普通用户登录
+	 * 
+	 * 
 	 * @param request 请求
 	 * @param reponse 回复
 	 * @param username 用户名
