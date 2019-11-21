@@ -203,7 +203,7 @@ layui.extend({
 	
 	outOrderModel.init = function(){
 		myutil.getDataSync({	//获取工序类型
-			url: myutil.config.ctx+'/basedata/list?type=outsourceTask',
+			url: myutil.config.ctx+'/basedata/list?type=taskProcessType',
 			success:function(d){
 				for(var i=0,len=d.length;i<len;i++){
 					allProcess += '<option value="'+d[i].id+'">'+d[i].name+'</option>';

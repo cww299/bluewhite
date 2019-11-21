@@ -41,15 +41,21 @@
     .layadmin-side-shrink .layui-form-switch{
       display:none;
     }
-    .layui-nav-tree .layui-nav-item {
-      display: none;
+    .layui-nav-tree .layui-nav-item.allMenu{
+   	  display:none;
     }
     .layui-nav-tree .layui-nav-item.myMenu{
-   	  display: block;
+   	  display:block;
     }
     .layui-layer-tips .layui-layer-content{
       margin-top: -15px;
     }
+    .layui-anim {
+	    -webkit-animation-duration: 1s;
+	    animation-duration: 1s;
+	    -webkit-animation-fill-mode: both;
+	    animation-fill-mode: both;
+	}
   </style>
 </head>
 <body class="layui-layout-body">
@@ -240,10 +246,14 @@ layui.use(['form','element','layer','jquery','table'],function(){
     	})
     	
     	form.on('switch(changeMenu)',function(obj){
+    		var anim = ['up','scale','upbit','fadein','rotate'];
+    		var type = 3;
     		if(obj.elem.checked){
+    			$('.allMenu').addClass('layui-anim-'+anim[type]);
     			$('.allMenu').show();
     			$('.myMenu').hide();
     		}else{
+    			$('.myMenu').addClass('layui-anim-'+anim[type]);
     			$('.allMenu').hide();
     			$('.myMenu').show();
     		}
@@ -376,12 +386,12 @@ layui.use(['form','element','layer','jquery','table'],function(){
 						$("#nav").find('span.layui-nav-bar').remove();
 						if(data[i].url!='#'){
 							var href='${ctx}/menusToUrl?url='+data[i].url;
-				    		html+='<li data-name="'+data[i].identity+'" class="layui-nav-item layui-this" style="display:block;">'+
+				    		html+='<li data-name="'+data[i].identity+'" class="layui-nav-item layui-this layui-anim allMenu">'+
 				    					'<a lay-href="'+href+'" id="'+data[i].identity+'">'+
 				    					'<i class="layui-icon layui-icon-'+data[i].icon+'"></i>  '+
 										'<cite>'+data[i].name+'</cite></a></li>';
 						}else{
-							html+='<li data-name="'+data[i].identity+'" class="layui-nav-item allMenu" >'+
+							html+='<li data-name="'+data[i].identity+'" class="layui-nav-item layui-anim allMenu" >'+
 									'<a href="javascript:;" lay-tips="'+data[i].name+'" lay-direction="2" id="'+data[i].identity+'">'+
 										'<i class="layui-icon layui-icon-'+data[i].icon+'"></i>  '+
 											'<cite>'+data[i].name+'</cite></a>'
@@ -405,13 +415,21 @@ layui.use(['form','element','layer','jquery','table'],function(){
 					var data=result.data;
 					for(var i=0;i<data.length;i++){
 						$("#nav").find('span.layui-nav-bar').remove();
-						html+='<li data-name="'+data[i].identity+'" class="layui-nav-item myMenu" >'+
-								'<a href="javascript:;" lay-tips="'+data[i].name+'" lay-direction="2" id="'+data[i].identity+'">'+
-									'<i class="layui-icon layui-icon-'+data[i].icon+'"></i>  '+
-										'<cite>'+data[i].name+'</cite></a>'
-						if(data[i].children!=null)
-							html+=getChildren(data[i].children);
-						html+='</li>';
+						if(data[i].url!='#'){
+							var href='${ctx}/menusToUrl?url='+data[i].url;
+				    		html+='<li data-name="'+data[i].identity+'" class="layui-nav-item layui-anim layui-this myMenu">'+
+				    					'<a lay-href="'+href+'" id="'+data[i].identity+'">'+
+				    					'<i class="layui-icon layui-icon-'+data[i].icon+'"></i>  '+
+										'<cite>'+data[i].name+'</cite></a></li>';
+						}else{
+							html+='<li data-name="'+data[i].identity+'" class="layui-nav-item layui-anim myMenu" >'+
+									'<a href="javascript:;" lay-tips="'+data[i].name+'" lay-direction="2" id="'+data[i].identity+'">'+
+										'<i class="layui-icon layui-icon-'+data[i].icon+'"></i>  '+
+											'<cite>'+data[i].name+'</cite></a>'
+							if(data[i].children!=null)
+								html+=getChildren(data[i].children);
+							html+='</li>';
+						}
 					}
 					$('#LAY-system-side-menu').append(html);
 					element.render();
