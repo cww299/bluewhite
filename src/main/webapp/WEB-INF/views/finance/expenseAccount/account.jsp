@@ -579,7 +579,7 @@ layui.config({
 		function fn1(field) {
 			return function(d) {
 				return [
-					'<select name="selectOne" lay-filter="lay_selecte" lay-search="true" data-value="' + d.userId + '">',
+					'<select name="selectOne" lay-filter="lay_selecte" lay-search="true" data-value="' + d.user?d.user.id:"" + '">',
 					htmls,
 					'</select>'
 				].join('');
