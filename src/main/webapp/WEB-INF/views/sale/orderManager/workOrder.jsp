@@ -37,7 +37,7 @@
 {{# for(var i in d){  }} 
 	<table style="margin: auto; width: 100%;page-break-before:always;">
 		<tr>
-			<td style="text-align:center;border: 1px solid;width:30%;">{{ d[i].customer?d[i].customer.name:"" }}</td>
+			<td style="text-align:center;border: 1px solid;width:30%;">{{ d[i].processingUser?d[i].processingUser.name:"" }}</td>
 			<td style="text-align:center;border: 1px solid;width:10%;">&nbsp;</td>
 			<td style="text-align:center;border: 1px solid;width:10%;">&nbsp;</td>
 			<td style="text-align:center;border: 1px solid;width:20%;">&nbsp;</td>
@@ -99,7 +99,7 @@
 			<td style="border: 1px solid;"></td>
 			<td style="border: 1px solid;text-align:center;">合计</td>
 			<td style="border: 1px solid;text-align:center;">{{# if(d[i].gramWeight &&  d[i].processNumber){   }}
-					{{ d[i].processNumber * parseFloat(d[i].gramWeight.split('g')[0]) /100+'kg' }}
+					{{ d[i].processNumber * parseFloat(d[i].gramWeight) /100+'kg' }}
 				{{# } }}
 			</td>
 			<td style="border: 1px solid;">&nbsp;</td>
@@ -194,12 +194,6 @@ layui.config({
 							table:'tableData',
 							text:'请选择相关信息进行审核|是否确认审核？',
 						})
-					}else if(obj.event=='flag'){
-						myutil.deleTableIds({
-							url:'/ledger/invalidOrderOutSource',
-							table:'tableData',
-							text:'请选择相关信息进行作废|是否确认作废？',
-						})
 					}else if(obj.event=='print'){
 						printWin();
 					}else if(obj.event=="edit"){
@@ -216,12 +210,11 @@ layui.config({
 				},
 			},
 			ifNull:'---',
-			colsWidth:[0,0,18,4,7,6,8,7,4,4,8,4,4], 
+			colsWidth:[0,0,18,4,7,6,8,7,4,4,8,4], 
 			toolbar:[
 					 '<span class="layui-btn layui-btn-sm" lay-event="edit">修改加工单</span>',
 					 '<span class="layui-btn layui-btn-sm" lay-event="print">打印</span>',
 			         '<span class="layui-btn layui-btn-sm layui-btn-warm" lay-event="audit">审核</span>',
-			         '<span class="layui-btn layui-btn-sm layui-btn-normal" lay-event="flag">作废</span>',
 			         ].join(' '),
 			cols:[[
 			       { type:'checkbox',},
@@ -235,7 +228,6 @@ layui.config({
 			       { title:'千克',   field:'kilogramWeight',	},
 			       { title:'克重',   field:'gramWeight',	},
 			       { title:'预计仓库',   field:'warehouseType_name',	},
-			       { title:'作废',   field:'flag',	transData:{ data:['否','是'],}, },
 			       { title:'审核',   field:'audit',	transData:{ data:['否','是'],}, },
 			       ]]
 		})
