@@ -100,11 +100,7 @@ public class SensorEvents {
 		// 验证方式
 		attendance.setVerifyMode(Integer.valueOf(String.valueOf(arge[3])));
 		System.out.println(Thread.currentThread().getName());
-		String[] adressString = Thread.currentThread().getName().split(":");
-		String address = "";
-		if(adressString.length>0){
-			address = adressString[1];
-		}
+		String address = ZkemSDKUtils.GetDeviceIP(1, zkem);
 		String sourceMachine = null;
 		if (Constants.THREE_FLOOR.equals(address)) {
 			sourceMachine = "THREE_FLOOR";
