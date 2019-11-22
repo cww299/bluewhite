@@ -40,8 +40,8 @@ public class AttendanceServiceImpl extends BaseServiceImpl<Attendance, Long> imp
 	@Autowired
 	private AttendanceDao dao;
 
-	@Autowired
-	private ZkemSDKUtils sdk;
+//	@Autowired
+	private ZkemSDKUtils sdk  = new ZkemSDKUtils();
 
 	@Autowired
 	private ApplicationLeaveDao applicationLeaveDao;
@@ -300,6 +300,7 @@ public class AttendanceServiceImpl extends BaseServiceImpl<Attendance, Long> imp
 		attendance.setOrderTimeBegin(startTime);
 		attendance.setOrderTimeEnd(endTime);
 		attendance.setUserId(userId);
+		attendance.setSourceMachine(address);
 		List<Attendance> attendanceList = findPageAttendance(attendance, new PageParameter(0, Integer.MAX_VALUE))
 				.getRows().stream()
 				.filter(Attendance -> (Attendance.getInOutMode() == null || Attendance.getInOutMode() != 2 || Attendance.getInOutMode() != 3))
