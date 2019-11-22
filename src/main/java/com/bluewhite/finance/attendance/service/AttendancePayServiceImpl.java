@@ -7,7 +7,6 @@ import java.util.List;
 import java.util.OptionalDouble;
 
 import javax.persistence.criteria.Predicate;
-import javax.servlet.http.HttpServletRequest;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -29,7 +28,6 @@ import com.bluewhite.common.utils.NumUtils;
 import com.bluewhite.common.utils.SalesUtils;
 import com.bluewhite.finance.attendance.dao.AttendancePayDao;
 import com.bluewhite.finance.attendance.entity.AttendancePay;
-import com.bluewhite.production.task.entity.Task;
 import com.bluewhite.production.task.service.TaskService;
 import com.bluewhite.system.user.entity.User;
 import com.bluewhite.system.user.service.UserService;
@@ -245,7 +243,7 @@ public class AttendancePayServiceImpl extends BaseServiceImpl<AttendancePay, Lon
 
 	@Override
 	@Transactional
-	public void updateAttendance(AttendancePay attendancePay,HttpServletRequest request) {
+	public void updateAttendance(AttendancePay attendancePay) {
 		AttendancePay oldAttendancePay = dao.findOne(attendancePay.getId());
 		BeanCopyUtils.copyNotEmpty(attendancePay, oldAttendancePay, "");
 		oldAttendancePay.setWorkTime(NumUtils.sum(oldAttendancePay.getTurnWorkTime(), oldAttendancePay.getOverTime()));
@@ -269,6 +267,20 @@ public class AttendancePayServiceImpl extends BaseServiceImpl<AttendancePay, Lon
 	@Override
 	public List<AttendancePay> findByTypeAndAllotTimeBetween(Integer type, Date startTime, Date endTime) {
 		return dao.findByTypeAndAllotTimeBetween(type, startTime, endTime);
+	}
+
+	@Override
+	public int checkAttendance(String ids) {
+		int count = 0;
+		String[] idStrings = ids.split(",");
+		for(String id : idStrings){
+			Long idLong = Long.parseLong(id);
+			AttendancePay attendancePay = dao.findOne(idLong);
+			attendancePay.setWarning(0);
+			dao.save(attendancePay);
+			count++;
+		}
+		return count;
 	}
 
 }
