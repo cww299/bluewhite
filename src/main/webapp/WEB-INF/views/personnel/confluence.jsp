@@ -185,10 +185,14 @@ layui.config({
 					}
 					if($('#startTime').val()=='')
 						return layer.msg('请填写日期',{icon:2});
+					var loads = layer.load(1,{shade: [0.5,'black'] });
 					var html = '获取对比数据异常';
 					$.ajax({
 						url: '${ctx}/personnel/workshopAttendanceContrast?orgNameId='+orgId+'&orderTimeBegin='+$('#startTime').val()+'-01 00:00:00',
 						async: false,
+						error:function(){
+							layer.close(loads);
+						},
 						success: function(r){
 							var userData = {};
 							if(r.code==0){
@@ -241,6 +245,7 @@ layui.config({
 								html = '<h3 style="text-align:center;color:#999;;">'+r.message+'</h3>';
 						}
 					})
+					layer.close(loads);
 					if(compareWin)
 						layer.close(compareWin);
 					compareWin = layer.open({
