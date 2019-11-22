@@ -2,7 +2,7 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
 <%@ taglib prefix="shiro" uri="http://shiro.apache.org/tags"%>
 <c:set var="ctx" value="${pageContext.request.contextPath }" />
-<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<!DOCTYPE html>
 <html>
 <head>
   <meta charset="utf-8">
@@ -56,6 +56,11 @@
 	    -webkit-animation-fill-mode: both;
 	    animation-fill-mode: both;
 	}
+	.layui-badge-number{
+        top: 27% !important;
+    	left: 67px;
+   	    border-radius: 10px;
+	}
   </style>
 </head>
 <body class="layui-layout-body">
@@ -91,13 +96,13 @@
            <!-- 广宣部门查看预警按钮 -->
           <shiro:hasAnyRoles name="superAdmin,propagateManager">
 	          <li class="layui-nav-item layui-hide-xs" lay-unselect>
-	            <a href="javascript:;" id='lookoverWarn' >仓库预警<span class="layui-badge" id='warnNumber'>0</span></a>
+	            <a href="javascript:;" id='lookoverWarn' >仓库预警<span class="layui-badge layui-badge-number" id='warnNumber'>0</span></a>
 	          </li>
           </shiro:hasAnyRoles> 
            <!-- 考勤预警按钮 -->
-          <shiro:hasAnyRoles name="superAdmin,productEightTailor,productTwoMachinist,productTwoDeedle,productFristPack,productFristQuality">
+          <shiro:hasAnyRoles name="superAdmin,personnel,productEightTailor,productTwoMachinist,productTwoDeedle,productFristPack,productFristQuality">
 	          <li class="layui-nav-item layui-hide-xs" lay-unselect>
-	            <a href="javascript:;" id='confluenceWarn' >错误考勤<span class="layui-badge" id='warnConfluenceNumber'>0</span></a>
+	            <a href="javascript:;" id='confluenceWarn' >错误考勤<span class="layui-badge layui-badge-number" id='warnConfluenceNumber'>0</span></a>
 	          </li>
           </shiro:hasAnyRoles> 
           
@@ -204,8 +209,11 @@
    		</div>
 	</shiro:hasAnyRoles> 
 	<!-- 考勤错误预警弹窗 -->
-	<shiro:hasAnyRoles name="superAdmin,productEightTailor,productTwoMachinist,productTwoDeedle,productFristPack,productFristQuality">
-   		<div id="warningConfluenceDiv" style="display:none;">
+	<shiro:hasAnyRoles name="superAdmin,personnel,productEightTailor,productTwoMachinist,productTwoDeedle,productFristPack,productFristQuality">
+   		<div id="warningConfluenceDiv" style="display:none;padding:10px;">
+   			<shiro:hasAnyRoles name="superAdmin,personnel">
+   				<span class="layui-btn" id="verifyBtn">核对</span>
+   			</shiro:hasAnyRoles>
 			<table id='warningConfluenceTable' lay-filter='warningConfluenceTable'></table>   		
    		</div>
 	</shiro:hasAnyRoles>
@@ -222,7 +230,6 @@
 }}
 <span style='margin-top: 10px;' class='layui-badge layui-bg-{{ color}}'>{{ text }}</span>
 </script>
-	
  <script src="${ctx }/static/layuiadmin/layui/layui.js"></script>
  <script>
  layui.config({
@@ -269,7 +276,7 @@ layui.use(['form','element','layer','jquery','table'],function(){
     	var currUser = null; //当前登录用户
     	$('#lookoverWarn').on('click',warn);
     	$('#confluenceWarn').on('click',confluenceWarn);
-    	/* confluenceWarn(); */
+    	confluenceWarn();
     	warn();
     	function confluenceWarn(){
 			if(document.getElementById('warningConfluenceDiv')!=null){
@@ -290,6 +297,7 @@ layui.use(['form','element','layer','jquery','table'],function(){
 						$('#warnConfluenceNumber').html(r.data.total);
 						return { code:r.code, data:r.data.rows, msg:r.message, count:r.data.total} },
 					cols:[[
+						   {type:'checkbox',},
 					       {align:'center', title:'时间', field:'allotTime',},
 					       {align:'center', title:'人员', field:'userName',},
 					       {align:'center', title:'工作时长', field:'workTime', },
@@ -304,6 +312,28 @@ layui.use(['form','element','layer','jquery','table'],function(){
 					area:['50%','60%'],
 					content:$('#warningConfluenceDiv'),
 					success:function(){
+						$('#verifyBtn').unbind().on('click',function(){
+							var check = layui.table.checkStatus('warningConfluenceTable').data;
+							if(check.length<1)
+								return layer.msg('请选择相关数据',{icon:2});
+							var ids = [];
+							for(var i in check)
+								ids.push(check[i].id);
+							var loads = layer.load(1,{shade: [0.5,'black'] });
+							$.ajax({
+								url:'${ctx}/finance/checkAttendance?ids='+ids.join(','),
+								async:false,
+								success:function(r){
+									var icon = 2;
+									if(r.code==0){
+										icon = 1;
+										table.reload('warningConfluenceTable');
+									}
+									layer.msg(r.message,{ icon:icon });
+								}
+							})
+							layer.close(loads);
+						})
 					}
 				})  
 				table.on('edit(warningConfluenceTable)',function(obj){
@@ -324,7 +354,10 @@ layui.use(['form','element','layer','jquery','table'],function(){
 						data: data,
 						success:function(r){
 							var icon = 2;
-							if(r.code==0) icon = 1;
+							if(r.code==0){
+								icon = 1;
+								table.reload('warningConfluenceTable');
+							}
 							layer.msg(r.message,{icon:icon});
 						}
 					})
@@ -499,11 +532,8 @@ layui.use(['form','element','layer','jquery','table'],function(){
 	   			}  
    			} 
    		});
-   		
-
 })
- </script>
-</body>
+</script>
 </html>
 
 

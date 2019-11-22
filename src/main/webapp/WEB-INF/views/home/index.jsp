@@ -12,29 +12,35 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=0">
   <link rel="stylesheet" href="${ctx }/static/layuiadmin/layui/css/layui.css" media="all">
   <style>
-  	body{
+  	body,html{
+  		height:100%;
   	    background: white;
   	}
   	.main{
- 		margin-top: 100px;
-	    text-align: center;
-	    padding: 50px;
+		margin: 0 auto;
+	    width: 80%;
+	    height: 80%;
+	    background:url(${ctx }/static/img/welcome.jpg) no-repeat center top;
+	    background-size: contain;
+  	}
+  	h1,.day{
+  		color: #91addc;
+	    position: absolute;
   	}
   	h1{
-  		color: #91addc;
-  		margin-left: -327px;
+	    bottom: 15%;
+	    left: 35%;
   	}
   	.day{
-  		color: #91addc;
- 		margin-top: 40px;
+	    bottom: 10%;
+	    left: 45%;
  		font-size: 26px;
- 		margin-left: 60px;
   	}
   </style>
 </head>
 <body>
 <div class="main">
-	<img src="${ctx }/static/img/welcome.jpg" style="margin-top: -160px;">
+	<%-- <img src="${ctx }/static/img/welcome.jpg" style="margin-top: -160px;"> --%>
 	<h1> <b id="userName">您</b> 欢迎您！</h1>
 	<p class="day"></p>
 </div>
@@ -43,7 +49,6 @@
  layui.use(['jquery','util'],function(){
 	var $ = layui.$,
 	util = layui.util;
-	
 	$.ajax({
 		url:'${ctx}/getCurrentUser',		//获取当前登录用户
 		async:false,
