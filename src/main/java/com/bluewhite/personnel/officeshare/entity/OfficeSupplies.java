@@ -52,7 +52,7 @@ public class OfficeSupplies extends BaseEntity<Long>{
      * 类型(1.办公用品，2.机械配件)
      */
 	@Column(name = "type")
-    private String type;
+    private Integer type;
 	
 	/**
 	 * 库存数量
@@ -60,19 +60,6 @@ public class OfficeSupplies extends BaseEntity<Long>{
 	 */
 	@Column(name = "inventory_number")
 	private Integer inventoryNumber;
-	
-	/**
-	 * 仓库种类id
-	 */
-	@Column(name = "warehouse_type_id")
-	private Long warehouseTypeId;
-	
-	/**
-	 * 仓库种类
-	 */
-	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "warehouse_type_id", referencedColumnName = "id", insertable = false, updatable = false)
-	private BaseData warehouseType;
 	
 	/**
 	 * 库位
@@ -157,11 +144,12 @@ public class OfficeSupplies extends BaseEntity<Long>{
 		this.unit = unit;
 	}
 
-	public String getType() {
+
+	public Integer getType() {
 		return type;
 	}
 
-	public void setType(String type) {
+	public void setType(Integer type) {
 		this.type = type;
 	}
 
@@ -171,22 +159,6 @@ public class OfficeSupplies extends BaseEntity<Long>{
 
 	public void setInventoryNumber(Integer inventoryNumber) {
 		this.inventoryNumber = inventoryNumber;
-	}
-
-	public Long getWarehouseTypeId() {
-		return warehouseTypeId;
-	}
-
-	public void setWarehouseTypeId(Long warehouseTypeId) {
-		this.warehouseTypeId = warehouseTypeId;
-	}
-
-	public BaseData getWarehouseType() {
-		return warehouseType;
-	}
-
-	public void setWarehouseType(BaseData warehouseType) {
-		this.warehouseType = warehouseType;
 	}
 
 	public String getLocation() {

@@ -87,14 +87,14 @@ public class SendGoodsServiceImpl extends BaseServiceImpl<SendGoods, Long> imple
 		if (sendGoods.getId() != null) {
 			List<PackingChild> sendGoodsList = packingChildDao.findBySendGoodsId(sendGoods.getId());
 			if (sendGoodsList.size() > 0) {
-				throw new ServiceException("该待发货单已有贴包发货单，无法修改，请先核对贴包发货单");
+				throw new ServiceException("该发货单已有贴包发货单，无法修改，请先核对贴包发货单");
 			}
 			SendGoods ot = dao.findOne(sendGoods.getId());
-			BeanCopyUtils.copyNotEmpty(sendGoods, ot, "");
-			dao.save(ot);
+			update(sendGoods, ot, "");
 		} else {
+			//根据下单合同进行成品发货
+			//发货单发货时选择库存详情发货
 			Order order = orderdao.findOne(sendGoods.getOrderId());
-			sendGoods.setBacthNumber(order.getBacthNumber());
 			sendGoods.setProductId(order.getProductId());
 			sendGoods.setSurplusNumber(sendGoods.getNumber());
 			dao.save(sendGoods);
@@ -130,7 +130,7 @@ public class SendGoodsServiceImpl extends BaseServiceImpl<SendGoods, Long> imple
 			}
 			// 按批次查找
 			if (!StringUtils.isEmpty(param.getBacthNumber())) {
-				predicate.add(cb.like(root.get("bacthNumber").as(String.class), "%" + param.getBacthNumber() + "%"));
+				predicate.add(cb.like(root.get("order").get("bacthNumber").as(String.class), "%" + param.getBacthNumber() + "%"));
 			}
 			// 按发货日期
 			if (!StringUtils.isEmpty(param.getSendDate())) {
@@ -163,7 +163,7 @@ public class SendGoodsServiceImpl extends BaseServiceImpl<SendGoods, Long> imple
 					Long id = Long.parseLong(idArr[i]);
 					List<PackingChild> sendGoodsList = packingChildDao.findBySendGoodsId(id);
 					if (sendGoodsList.size() > 0) {
-						throw new ServiceException("该待发货单已有贴包发货单，无法删除，请先核对贴包发货单");
+						throw new ServiceException("该发货单已有贴包发货单，无法删除，请先核对贴包发货单");
 					}
 					SendGoods sendGoods = dao.findOne(id);
 					dao.delete(sendGoods);

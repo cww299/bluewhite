@@ -1,47 +1,93 @@
 package com.bluewhite.ledger.entity;
 
 import java.util.Date;
+import java.util.HashSet;
+import java.util.Set;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.JoinColumn;
+import javax.persistence.JoinTable;
+import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 
 import com.bluewhite.base.BaseEntity;
+import com.bluewhite.basedata.entity.BaseData;
+import com.bluewhite.onlineretailers.inventory.entity.Inventory;
 import com.bluewhite.system.user.entity.User;
 
 /**
- * 生产计划部 外发单(外发单在加工点完成后，回库处理)
- * 
+ * 生产计划部  加工单
+ * 1.加工单
+ * 2.外发加工单
  * @author zhangliang
  *
  */
 @Entity
 @Table(name = "ledger_order_outsource")
 public class OrderOutSource extends BaseEntity<Long> {
+	
+	/**
+	 * 生产计划单id
+	 * 
+	 */
+	@Column(name = "order_id")
+	private Long orderId;
 
 	/**
-	 * 工艺单内容填充，用于打印开单 1.填充样棉花
+	 * 生产计划单
+	 */
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "order_id", referencedColumnName = "id", insertable = false, updatable = false)
+	private Order order;
+	
+	/**
+	 * 开单时间
+	 */
+	@Column(name = "open_order_time")
+	private Date openOrderTime;
+
+	/**
+	 * 工艺单内容填充，用于打印开单 1.棉花规格
 	 */
 	@Column(name = "fill")
 	private String fill;
 
 	/**
-	 * 工艺单内容填充，用于打印开单 1.填充样棉花备注
+	 * 工艺单内容填充，用于打印开单 1.棉花备注
 	 */
-
 	@Column(name = "fill_remark")
 	private String fillRemark;
+	
+	/**
+	 * 工艺单内容填充，用于打印开单  棉花克重
+	 */
+	@Column(name = "gram_weight")
+	private Double gramWeight;
+	
+	/**
+	 * 工艺单内容填充，用于打印开单  棉花总克重（千克）
+	 */
+	@Column(name = "kilogram_weight")
+	private Double kilogramWeight;
 
 	/**
-	 * 任务工序
+	 * 任务编号
 	 * 
-	 */
-	@Column(name = "process")
-	private String process;
+	 */  
+	@Column(name = "out_source_number")
+	private String outSourceNumber;
 
+	/**
+	 * 任务工序多对多
+	 */
+	@ManyToMany(fetch = FetchType.LAZY)
+	@JoinTable(name = "ledger_outsource_task", joinColumns = @JoinColumn(name = "outsource_id", referencedColumnName = "id"), inverseJoinColumns = @JoinColumn(name = "task_id", referencedColumnName = "id"))
+	private Set<BaseData> outsourceTask = new HashSet<BaseData>();
+	
 	/**
 	 * 任务数量
 	 */
@@ -49,17 +95,18 @@ public class OrderOutSource extends BaseEntity<Long> {
 	private Integer processNumber;
 
 	/**
-	 * 克重
-	 */
-	@Column(name = "gram_weight")
-	private String gramWeight;
-
-	/**
 	 * 备注
 	 */
 	@Column(name = "remark")
 	private String remark;
-
+	
+	/**
+	 * 是否外发
+	 * 
+	 */
+	@Column(name = "outsource")
+	private Integer outsource;
+	
 	/**
 	 * 加工点id
 	 * 
@@ -73,9 +120,24 @@ public class OrderOutSource extends BaseEntity<Long> {
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "customer_id", referencedColumnName = "id", insertable = false, updatable = false)
 	private Customer customer;
+	
+	/**
+	 * （在家加工）加工人id
+	 * 
+	 */
+	@Column(name = "processing_user_id")
+	private Long processingUserId;
 
 	/**
-	 * 跟单人id
+	 * 加工人
+	 */
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "processing_user_id", referencedColumnName = "id", insertable = false, updatable = false)
+	private User processingUser;
+	
+
+	/**
+	 * 跟单人id（外协）
 	 * 
 	 */
 	@Column(name = "user_id")
@@ -88,37 +150,18 @@ public class OrderOutSource extends BaseEntity<Long> {
 	@JoinColumn(name = "user_id", referencedColumnName = "id", insertable = false, updatable = false)
 	private User user;
 
-	/**
-	 * 订单id
-	 * 
-	 */
-	@Column(name = "order_id")
-	private Long orderId;
-
-	/**
-	 * 订单
-	 */
-	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "order_id", referencedColumnName = "id", insertable = false, updatable = false)
-	private Order order;
-
-	/**
-	 * 开单时间
-	 */
-	@Column(name = "open_order_time")
-	private Date openOrderTime;
 
 	/**
 	 * 外发时间
 	 */
 	@Column(name = "out_going_time")
 	private Date outGoingTime;
-	
+
 	/**
-	 * 是否整单
+	 * 分类(1=成品，2=皮壳)
 	 */
-	@Column(name = " whole_list")
-	private Integer wholeList;
+	@Column(name = "product_type")
+	private Integer productType;
 
 	/**
 	 * 是否作废
@@ -127,14 +170,290 @@ public class OrderOutSource extends BaseEntity<Long> {
 	private Integer flag;
 
 	/**
-	 * 分类(1=成品，2=皮壳)
+	 * 是否审核
 	 */
-	@Column(name = "product_type")
-	private Integer productType;
+	@Column(name = "audit")
+	private Integer audit;
+
+	/**
+	 * 外发指定 预计入库仓库种类id
+	 */
+	@Column(name = "warehouse_type_id")
+	private Long warehouseTypeId;
+
+	/**
+	 * 仓库种类
+	 */
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "warehouse_type_id", referencedColumnName = "id", insertable = false, updatable = false)
+	private BaseData warehouseType;
+
+	/**
+	 * 仓管指定 入库仓库种类id
+	 */
+	@Column(name = "in_warehouse_type_id")
+	private Long inWarehouseTypeId;
+
+	/**
+	 * 入库仓库种类
+	 */
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "in_warehouse_type_id", referencedColumnName = "id", insertable = false, updatable = false)
+	private BaseData inWarehouseType;
+
+	/**
+	 * 仓管指定 入库库存id
+	 */
+	@Column(name = "inventory_id")
+	private Long inventoryId;
+
+	/**
+	 * 入库库存
+	 */
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "inventory_id", referencedColumnName = "id", insertable = false, updatable = false)
+	private Inventory inventory;
+
+	/**
+	 * 库存 是否到货
+	 */
+	@Column(name = "arrival")
+	private Integer arrival;
+
+	/**
+	 * 到货时间
+	 */
+	@Column(name = "arrival_time")
+	private Date arrivalTime;
+
+	/**
+	 * 到货数量
+	 */
+	@Column(name = "arrival_number")
+	private Integer arrivalNumber;
+
+	/**
+	 * 库位
+	 */
+	@Column(name = "location")
+	private String location;
+	
+	
+	/**
+	 * 产品name
+	 */
+	@Transient
+	private String productName;
+
+	/**
+	 * 跟单人name
+	 * 
+	 */
+	@Transient
+	private String userName;
+
+	/**
+	 * 加工点name
+	 * 
+	 */
+	@Transient
+	private String customerName;
+	
+	/**
+	 * 工序ids
+	 */
+	@Transient
+	private String outsourceTaskIds;
+
+	/**
+	 * 查询字段
+	 */
+	@Transient
+	private Date orderTimeBegin;
+	/**
+	 * 查询字段
+	 */
+	@Transient
+	private Date orderTimeEnd;
 	
 	
 	
-	
+
+	public Long getProcessingUserId() {
+		return processingUserId;
+	}
+
+	public void setProcessingUserId(Long processingUserId) {
+		this.processingUserId = processingUserId;
+	}
+
+	public User getProcessingUser() {
+		return processingUser;
+	}
+
+	public void setProcessingUser(User processingUser) {
+		this.processingUser = processingUser;
+	}
+
+	public String getOutsourceTaskIds() {
+		return outsourceTaskIds;
+	}
+
+	public void setOutsourceTaskIds(String outsourceTaskIds) {
+		this.outsourceTaskIds = outsourceTaskIds;
+	}
+
+	public Set<BaseData> getOutsourceTask() {
+		return outsourceTask;
+	}
+
+	public void setOutsourceTask(Set<BaseData> outsourceTask) {
+		this.outsourceTask = outsourceTask;
+	}
+
+	public Integer getOutsource() {
+		return outsource;
+	}
+
+	public void setOutsource(Integer outsource) {
+		this.outsource = outsource;
+	}
+
+	public Long getInventoryId() {
+		return inventoryId;
+	}
+
+	public void setInventoryId(Long inventoryId) {
+		this.inventoryId = inventoryId;
+	}
+
+	public Inventory getInventory() {
+		return inventory;
+	}
+
+	public void setInventory(Inventory inventory) {
+		this.inventory = inventory;
+	}
+
+	public String getLocation() {
+		return location;
+	}
+
+	public void setLocation(String location) {
+		this.location = location;
+	}
+
+	public String getUserName() {
+		return userName;
+	}
+
+	public void setUserName(String userName) {
+		this.userName = userName;
+	}
+
+	public String getCustomerName() {
+		return customerName;
+	}
+
+	public void setCustomerName(String customerName) {
+		this.customerName = customerName;
+	}
+
+	public Long getInWarehouseTypeId() {
+		return inWarehouseTypeId;
+	}
+
+	public void setInWarehouseTypeId(Long inWarehouseTypeId) {
+		this.inWarehouseTypeId = inWarehouseTypeId;
+	}
+
+	public BaseData getInWarehouseType() {
+		return inWarehouseType;
+	}
+
+	public void setInWarehouseType(BaseData inWarehouseType) {
+		this.inWarehouseType = inWarehouseType;
+	}
+
+	public Integer getArrival() {
+		return arrival;
+	}
+
+	public void setArrival(Integer arrival) {
+		this.arrival = arrival;
+	}
+
+	public Date getArrivalTime() {
+		return arrivalTime;
+	}
+
+	public void setArrivalTime(Date arrivalTime) {
+		this.arrivalTime = arrivalTime;
+	}
+
+	public Integer getArrivalNumber() {
+		return arrivalNumber;
+	}
+
+	public void setArrivalNumber(Integer arrivalNumber) {
+		this.arrivalNumber = arrivalNumber;
+	}
+
+	public String getOutSourceNumber() {
+		return outSourceNumber;
+	}
+
+	public void setOutSourceNumber(String outSourceNumber) {
+		this.outSourceNumber = outSourceNumber;
+	}
+
+	public Long getWarehouseTypeId() {
+		return warehouseTypeId;
+	}
+
+	public void setWarehouseTypeId(Long warehouseTypeId) {
+		this.warehouseTypeId = warehouseTypeId;
+	}
+
+	public BaseData getWarehouseType() {
+		return warehouseType;
+	}
+
+	public void setWarehouseType(BaseData warehouseType) {
+		this.warehouseType = warehouseType;
+	}
+
+	public String getProductName() {
+		return productName;
+	}
+
+	public void setProductName(String productName) {
+		this.productName = productName;
+	}
+
+	public Date getOrderTimeBegin() {
+		return orderTimeBegin;
+	}
+
+	public void setOrderTimeBegin(Date orderTimeBegin) {
+		this.orderTimeBegin = orderTimeBegin;
+	}
+
+	public Date getOrderTimeEnd() {
+		return orderTimeEnd;
+	}
+
+	public void setOrderTimeEnd(Date orderTimeEnd) {
+		this.orderTimeEnd = orderTimeEnd;
+	}
+
+	public Integer getAudit() {
+		return audit;
+	}
+
+	public void setAudit(Integer audit) {
+		this.audit = audit;
+	}
 
 	public Date getOutGoingTime() {
 		return outGoingTime;
@@ -150,14 +469,6 @@ public class OrderOutSource extends BaseEntity<Long> {
 
 	public void setProductType(Integer productType) {
 		this.productType = productType;
-	}
-
-	public Integer getWholeList() {
-		return wholeList;
-	}
-
-	public void setWholeList(Integer wholeList) {
-		this.wholeList = wholeList;
 	}
 
 	public Integer getFlag() {
@@ -184,12 +495,21 @@ public class OrderOutSource extends BaseEntity<Long> {
 		this.fillRemark = fillRemark;
 	}
 
-	public String getGramWeight() {
+
+	public Double getGramWeight() {
 		return gramWeight;
 	}
 
-	public void setGramWeight(String gramWeight) {
+	public void setGramWeight(Double gramWeight) {
 		this.gramWeight = gramWeight;
+	}
+
+	public Double getKilogramWeight() {
+		return kilogramWeight;
+	}
+
+	public void setKilogramWeight(Double kilogramWeight) {
+		this.kilogramWeight = kilogramWeight;
 	}
 
 	public String getRemark() {
@@ -262,14 +582,6 @@ public class OrderOutSource extends BaseEntity<Long> {
 
 	public void setOpenOrderTime(Date openOrderTime) {
 		this.openOrderTime = openOrderTime;
-	}
-
-	public String getProcess() {
-		return process;
-	}
-
-	public void setProcess(String process) {
-		this.process = process;
 	}
 
 }

@@ -26,6 +26,7 @@ import com.bluewhite.common.entity.CommonResponse;
 import com.bluewhite.common.entity.ErrorCode;
 import com.bluewhite.common.entity.PageParameter;
 import com.bluewhite.common.utils.DatesUtil;
+import com.bluewhite.common.utils.zkemUtils.SDKRunnable;
 import com.bluewhite.personnel.attendance.dao.PersonVariableDao;
 import com.bluewhite.personnel.attendance.entity.ApplicationLeave;
 import com.bluewhite.personnel.attendance.entity.Attendance;
@@ -114,7 +115,7 @@ public class AttendanceAction {
 	}
 
 	/**
-	 * 修改考勤机中的人员信息
+	 * 查询考勤机中的人员信息
 	 * 
 	 * @param request
 	 *            请求
@@ -649,19 +650,15 @@ public class AttendanceAction {
 
 	/**
 	 * 启动考勤机实时监控
-	 * 
-	 * @param request
-	 *            请求
 	 * @return cr
 	 */
 	@RequestMapping(value = "/personnel/regEvent", method = RequestMethod.GET)
 	@ResponseBody
-	public void regEvent() {
-		
-		
-		
-		
+	public void regEvent(String address) {
+		new Thread(new SDKRunnable(address), "thread:" + address).start();
 	}
+	
+	
 
 	@InitBinder
 	protected void initBinder(WebDataBinder binder) {

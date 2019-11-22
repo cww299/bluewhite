@@ -75,8 +75,12 @@ public class OfficeSuppliesAction {
 	@ResponseBody
 	public CommonResponse addOfficeSupplies(OfficeSupplies officeSupplies) {
 		CommonResponse cr = new CommonResponse();
+		if(officeSupplies.getId()!=null){
+			cr.setMessage("修改成功");
+		}else{
+			cr.setMessage("新增成功");
+		}
 		officeSuppliesService.addOfficeSupplies(officeSupplies);
-		cr.setMessage("新增成功");
 		return cr;
 	}
 	
@@ -90,7 +94,7 @@ public class OfficeSuppliesAction {
 	public CommonResponse deleteOfficeSupplies(String ids) {
 		CommonResponse cr = new CommonResponse();
 		int count = officeSuppliesService.deleteOfficeSupplies(ids);
-		cr.setMessage("成功删除"+count+"件办公用品");
+		cr.setMessage("成功删除"+count+"件物品");
 		return cr;
 	}
 	

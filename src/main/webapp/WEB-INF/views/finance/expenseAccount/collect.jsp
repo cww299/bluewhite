@@ -115,7 +115,7 @@
 							layer.close(index);
 						}
 					});
-					getTotalAmount({flags: '0,2',type: 1});
+					getTotalAmount({flags: '0,2',});
 					function getTotalAmount(post){
 						$.ajax({
 							url: '${ctx}/fince/totalAmount?type=1',
@@ -230,7 +230,9 @@
 										text = "部分审核";
 									return text;
 								}
-							}]
+							},
+							{ field: "org",  title: "申请部门", width:'7%', templet:'<span>{{ d.orgName?d.orgName.name:""}}</span>', }, 
+							]
 						],
 								});
 

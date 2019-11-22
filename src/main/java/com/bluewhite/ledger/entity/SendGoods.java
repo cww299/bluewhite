@@ -22,14 +22,14 @@ import com.bluewhite.product.product.entity.Product;
 public class SendGoods extends BaseEntity<Long>{
 
 	/**
-	 * 客户id
+	 * 发货客户id
 	 * 
 	 */
 	@Column(name = "customer_id")
 	private Long customerId;
 
 	/**
-	 * 客户
+	 * 发货客户
 	 */
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "customer_id", referencedColumnName = "id", insertable = false, updatable = false)
@@ -41,12 +41,13 @@ public class SendGoods extends BaseEntity<Long>{
 	 */
 	@Column(name = "order_id")
 	private Long orderId;
-
+	
 	/**
-	 * 批次号
+	 * 订单合同
 	 */
-	@Column(name = "bacth_number")
-	private String bacthNumber;
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "order_id", referencedColumnName = "id", insertable = false, updatable = false)
+	private Order order;
 
 	/**
 	 * 产品id
@@ -73,11 +74,19 @@ public class SendGoods extends BaseEntity<Long>{
 	@Column(name = "send_date")
 	private Date sendDate;
 	
+	
+	
 	/**
-	 * 剩余数量
+	 * (包装)剩余数量
 	 */
 	@Column(name = "surplus_Number")
 	private Integer surplusNumber;
+	
+	/**
+	 * 批次号
+	 */
+	@Transient
+	private String bacthNumber;
 	
 	/**
 	 * 客户name

@@ -83,8 +83,8 @@ public class Constants {
      * 人事考勤机ip
      */
     public final static String THREE_FLOOR = "192.168.1.204";
-    public final static String TWO_FLOOR = "192.168.1.205";
-    public final static String ONE_FLOOR = "192.168.1.250";
+    public final static String ONE_FLOOR = "192.168.1.205";
+    public final static String TWO_FLOOR= "192.168.1.250";
     public final static String EIGHT_WAREHOUSE = "192.168.7.123";
     public final static String NEW_IGHT_WAREHOUSE = "192.168.6.73";
     public final static String ELEVEN_WAREHOUSE = "192.168.14.201";
@@ -123,5 +123,15 @@ public class Constants {
     public final static String  AB = "阿宝";
     public final static String  ZMJ = "芝麻街";
     public final static String  XXYJN = "熊熊遇见你";
+    
+    /**
+     * 生产计划中的编号前缀
+     */
+    //生产耗料
+    public final static String  SCHL = "SCHL";
+    //生产领料
+    public final static String  SCLL = "SCLL";
+    //耗料出库
+    public final static String  HLCK = "HLCK";
 
 }

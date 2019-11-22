@@ -42,11 +42,11 @@ public class Product extends BaseEntity<Long>{
 	@Column(name = "name")
     private String name;
 	
-    /**
-     * 产品图片地址
-     */
-	@Column(name = "url")
-    private String url;
+	/**
+	 * 产品照片
+	 */
+	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY,orphanRemoval = true)
+	private Set<Files> fileSet = new HashSet<>();
 	
     @OneToOne(fetch=FetchType.LAZY,cascade = CascadeType.ALL) 
     @JoinColumn(name="prime_cost_id",referencedColumnName="id",nullable=true)
@@ -96,13 +96,13 @@ public class Product extends BaseEntity<Long>{
     private Double departmentPrice;
 	
     /**
-     * 产品本身外发价格()
+     * 产品本身外发价格
      */
 	@Transient
     private Double puncherHairPrice;
 	
     /**
-     * 当部门预计生产价格()
+     * 当部门预计生产价格
      */
 	@Transient
     private Double puncherDepartmentPrice;
@@ -119,9 +119,38 @@ public class Product extends BaseEntity<Long>{
 	@Transient
 	private Double deedlePrice;
 	
+	/**
+	 * 仓库种类id
+	 */
+	@Transient
+	private Long warehouseTypeId;
+	
+	
+	/**
+	 * 照片ids
+	 */
+	@Transient
+	private String fileIds;
 	
 	
 	
+	
+	public String getFileIds() {
+		return fileIds;
+	}
+
+	public void setFileIds(String fileIds) {
+		this.fileIds = fileIds;
+	}
+
+	public Long getWarehouseTypeId() {
+		return warehouseTypeId;
+	}
+
+	public void setWarehouseTypeId(Long warehouseTypeId) {
+		this.warehouseTypeId = warehouseTypeId;
+	}
+
 	public Set<Inventory> getInventorys() {
 		return inventorys;
 	}
@@ -234,13 +263,15 @@ public class Product extends BaseEntity<Long>{
 		this.name = name;
 	}
 
-	public String getUrl() {
-		return url;
+	public Set<Files> getFileSet() {
+		return fileSet;
 	}
 
-	public void setUrl(String url) {
-		this.url = url;
+	public void setFileSet(Set<Files> fileSet) {
+		this.fileSet = fileSet;
 	}
+
+
 	
 
 }

@@ -15,7 +15,7 @@ import com.bluewhite.product.primecostbasedata.entity.BaseOne;
 import com.bluewhite.product.primecostbasedata.entity.Materiel;
 
 /**
- * 下单合同的生产耗料表
+ * 生产耗料单
  * 
  * @author zhangliang
  *
@@ -23,6 +23,12 @@ import com.bluewhite.product.primecostbasedata.entity.Materiel;
 @Entity
 @Table(name = "ledger_order_material")
 public class OrderMaterial extends BaseEntity<Long> {
+	/**
+	 * 耗料单编号
+	 * 
+	 */
+	@Column(name = "order_material_number")
+	private String orderMaterialNumber;
 
 	/**
 	 * 订单id
@@ -52,7 +58,7 @@ public class OrderMaterial extends BaseEntity<Long> {
 	private Materiel materiel;
 
 	/**
-	 * 领取模式id(手选裁剪方式id或者压货环节id) 有复合物的就是物料2次加工采购领取（采领）
+	 * 领取模式id(手选裁剪方式id或者压货环节id) 有复合物的就是物料2次加工采购领取（复合物需要在复合厂进行二次处理，所以是采购领取）
 	 */
 	@Column(name = "receive_mode_id")
 	private Long receiveModeId;
@@ -84,16 +90,24 @@ public class OrderMaterial extends BaseEntity<Long> {
 	private Double dosage;
 
 	/**
-	 * 是否审核（0=未审核，1=已审核）审核成功后0采购部可以正常查看
+	 * 是否审核（0=未审核，1=已审核）审核成功后
+	 * 采购部可以正常查看
 	 */
 	@Column(name = "audit")
 	private Integer audit;
 	
 	/**
 	 * 是否出库（0=否，1=是）
+	 * 是否生成出库单
 	 */
 	@Column(name = "outbound")
 	private Integer outbound;
+	
+	/**
+	 * 当前耗料单的出库单是否被审核
+	 */
+	@Transient
+	private Integer outAudit;
 	
 	/**
 	 * 状态（1=库存充足，2无库存，3有库存量不足）
@@ -124,7 +138,25 @@ public class OrderMaterial extends BaseEntity<Long> {
 	@Transient
 	private Date orderTimeEnd;
 	
+	
+	
 	 
+	public Integer getOutAudit() {
+		return outAudit;
+	}
+
+	public void setOutAudit(Integer outAudit) {
+		this.outAudit = outAudit;
+	}
+
+	public String getOrderMaterialNumber() {
+		return orderMaterialNumber;
+	}
+
+	public void setOrderMaterialNumber(String orderMaterialNumber) {
+		this.orderMaterialNumber = orderMaterialNumber;
+	}
+
 	public Double getInventoryTotal() {
 		return inventoryTotal;
 	}

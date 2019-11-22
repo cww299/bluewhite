@@ -12,10 +12,53 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=0">
   <link rel="stylesheet" href="${ctx }/static/layuiadmin/layui/css/layui.css" media="all">
   <link rel="stylesheet" href="${ctx }/static/layuiadmin/style/admin.css" media="all">
-
+  <style>
+    .layui-form-switch{
+      min-width: 0px;
+	  width: 26px;
+	  height: 10px;
+	  line-height: 10px;
+	  margin-top: 0px;
+	  padding: 0px;
+	  float: right;
+      margin-top: 19px;
+    }
+    .layui-form-switch i{
+      top: 0px;
+      width: 10px;
+      height: 10px;
+      margin-left: -5px;
+    }
+    .layui-form-onswitch em{
+      display:none !important;
+    }
+    .layui-form-switch em{
+      display:none !important;
+    }
+    .layui-form-onswitch i{
+      margin-left: -10px;
+    }
+    .layadmin-side-shrink .layui-form-switch{
+      display:none;
+    }
+    .layui-nav-tree .layui-nav-item.allMenu{
+   	  display:none;
+    }
+    .layui-nav-tree .layui-nav-item.myMenu{
+   	  display:block;
+    }
+    .layui-layer-tips .layui-layer-content{
+      margin-top: -15px;
+    }
+    .layui-anim {
+	    -webkit-animation-duration: 1s;
+	    animation-duration: 1s;
+	    -webkit-animation-fill-mode: both;
+	    animation-fill-mode: both;
+	}
+  </style>
 </head>
 <body class="layui-layout-body">
-  
   <div id="LAY_app">
     <div class="layui-layout layui-layout-admin">
       <div class="layui-header">
@@ -80,7 +123,7 @@
             </a>
             <dl class="layui-nav-child">
               <!-- <dd><a lay-href="set/user/info.html">基本资料</a></dd> -->
-               <dd><a lay-href="${ctx}/menusToUrl?url=decorator/addresslist">通讯录</a></dd>
+               <!-- <dd><a lay-href="${ctx}/menusToUrl?url=decorator/addresslist">通讯录</a></dd> -->
               <dd><a lay-href="${ctx}/menusToUrl?url=decorator/updatePwd">修改密码</a></dd>
               <dd style="text-align: center;"><a id="logout">退出</a></dd>
             </dl>
@@ -101,8 +144,9 @@
       <!-- 侧边菜单 -->
       <div class="layui-side layui-side-menu">
         <div class="layui-side-scroll">
-          <div class="layui-logo">
+          <div class="layui-logo layui-form">
             <span>蓝白玩偶</span>
+            <input type="checkbox" name="zzz" lay-skin="switch" lay-filter="changeMenu" lay-text="&nbsp;|&nbsp;">
           </div>
           <ul class="layui-nav layui-nav-tree" lay-shrink="all" id="LAY-system-side-menu" lay-filter="layadmin-system-side-menu">
           </ul>
@@ -127,7 +171,7 @@
         </div>
         <div class="layui-tab" lay-unauto lay-allowClose="true" lay-filter="layadmin-layout-tabs">
           <ul class="layui-tab-title" id="LAY_app_tabsheader">
-            <li lay-id="home/console.html" lay-attr="home/console.html" class="layui-this"><i class="layui-icon layui-icon-home"></i></li>
+            <li lay-id="${ctx}/menusToUrl?url=home/index" lay-attr="${ctx}/menusToUrl?url=home/index" class="layui-this"><i class="layui-icon layui-icon-home"></i></li>
           </ul>
         </div>
       </div>
@@ -136,7 +180,7 @@
       <!-- 主体内容 -->
       <div class="layui-body" id="LAY_app_body">
         <div class="layadmin-tabsbody-item layui-show">
-         <!--  <iframe src="home/console.html" frameborder="0" class="layadmin-iframe"></iframe> -->
+         <iframe src="${ctx}/menusToUrl?url=home/index" frameborder="0" class="layadmin-iframe"></iframe>
         </div>
       </div>
       
@@ -193,7 +237,7 @@ layui.use(['form','element','layer','jquery','table'],function(){
 		table = layui.table,
 		$ = layui.$;
     	layer = parent.layer === undefined ? layui.layer : top.layer;
-		
+    	form.render();
     	$('#logout').on('click',function(){
     		location.href = "${ctx}/logout";
     	})
@@ -201,11 +245,31 @@ layui.use(['form','element','layer','jquery','table'],function(){
     		$('#hiddenButton').click();
     	})
     	
+    	form.on('switch(changeMenu)',function(obj){
+    		var anim = ['up','scale','upbit','fadein','rotate'];
+    		var type = 3;
+    		if(obj.elem.checked){
+    			$('.allMenu').addClass('layui-anim-'+anim[type]);
+    			$('.allMenu').show();
+    			$('.myMenu').hide();
+    		}else{
+    			$('.myMenu').addClass('layui-anim-'+anim[type]);
+    			$('.allMenu').hide();
+    			$('.myMenu').show();
+    		}
+    	})
+    	var tips;
+    	$('.layui-form-switch').mouseover(function(){
+		  var that = this;
+		  tips = layer.tips('切换菜单显示', that,{time: 0});
+		}).mouseout(function(){
+			layer.close(tips);
+		});
     	//-------------------------广宣预警弹窗-------------------------
     	var currUser = null; //当前登录用户
     	$('#lookoverWarn').on('click',warn);
     	$('#confluenceWarn').on('click',confluenceWarn);
-    	confluenceWarn();
+    	/* confluenceWarn(); */
     	warn();
     	function confluenceWarn(){
 			if(document.getElementById('warningConfluenceDiv')!=null){
@@ -310,33 +374,67 @@ layui.use(['form','element','layer','jquery','table'],function(){
 				})
 			}
 		}
-    	
     	//--------------------广宣预警弹窗结束--------------------
-    	
     	$.ajax({
-			url:"${ctx}/menus",
-			type:"GET", 
+			url:"${ctx}/getTreeMenuPage",
+			async:false,
 			success: function (result) {
 				if(0==result.code){
 					var html='';
 					var data=result.data;
 					for(var i=0;i<data.length;i++){
-						$("#nav").find('span.layui-nav-bar').remove();
-						html+='<li data-name="'+data[i].identity+'" class="layui-nav-item" >'+
-								'<a href="javascript:;" lay-tips="'+data[i].name+'" lay-direction="2" id="'+data[i].identity+'">'+
-									'<i class="layui-icon layui-icon-'+data[i].icon+'"></i>  '+
-										'<cite>'+data[i].name+'</cite></a>'
-						if(data[i].children!=null)
-							html+=getChildren(data[i].children);
-						html+='</li>';
+						if(data[i].url!='#'){
+							var href='${ctx}/menusToUrl?url='+data[i].url;
+				    		html+='<li data-name="'+data[i].identity+'" class="layui-nav-item layui-this layui-anim allMenu">'+
+				    					'<a lay-href="'+href+'" id="'+data[i].identity+'">'+
+				    					'<i class="layui-icon layui-icon-'+data[i].icon+'"></i>  '+
+										'<cite>'+data[i].name+'</cite></a></li>';
+						}else{
+							html+='<li data-name="'+data[i].identity+'" class="layui-nav-item layui-anim allMenu" >'+
+									'<a href="javascript:;" lay-tips="'+data[i].name+'" lay-direction="2" id="'+data[i].identity+'">'+
+										'<i class="layui-icon layui-icon-'+data[i].icon+'"></i>  '+
+											'<cite>'+data[i].name+'</cite></a>'
+							if(data[i].children!=null)
+								html+=getChildren(data[i].children);
+							html+='</li>';
+						}
+						
 					}
 					$('#LAY-system-side-menu').append(html);
+				}
+				
+			}
+    	})
+    	$.ajax({
+			url:"${ctx}/menus",
+			success: function (result) {
+				if(0==result.code){
+					var html='';
+					var data=result.data;
+					for(var i=0;i<data.length;i++){
+						if(data[i].url!='#'){
+							var href='${ctx}/menusToUrl?url='+data[i].url;
+				    		html+='<li data-name="'+data[i].identity+'" class="layui-nav-item layui-anim layui-this myMenu">'+
+				    					'<a lay-href="'+href+'" id="'+data[i].identity+'">'+
+				    					'<i class="layui-icon layui-icon-'+data[i].icon+'"></i>  '+
+										'<cite>'+data[i].name+'</cite></a></li>';
+						}else{
+							html+='<li data-name="'+data[i].identity+'" class="layui-nav-item layui-anim myMenu" >'+
+									'<a href="javascript:;" lay-tips="'+data[i].name+'" lay-direction="2" id="'+data[i].identity+'">'+
+										'<i class="layui-icon layui-icon-'+data[i].icon+'"></i>  '+
+											'<cite>'+data[i].name+'</cite></a>'
+							if(data[i].children!=null)
+								html+=getChildren(data[i].children);
+							html+='</li>';
+						}
+					}
+					$('#LAY-system-side-menu').append(html);
+					$("#LAY-system-side-menu").find('span.layui-nav-bar').remove();
 					element.render();
 				}
 				
 			}
     	})
-
     	function getChildren(child){
     		var html='<dl class="layui-nav-child">';
     		for(var i=0;i<child.length;i++){

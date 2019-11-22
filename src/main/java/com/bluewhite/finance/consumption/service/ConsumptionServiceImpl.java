@@ -28,24 +28,15 @@ import com.bluewhite.common.utils.NumUtils;
 import com.bluewhite.common.utils.StringUtil;
 import com.bluewhite.common.utils.excel.ExcelListener;
 import com.bluewhite.finance.consumption.dao.ConsumptionDao;
-import com.bluewhite.finance.consumption.dao.CustomDao;
 import com.bluewhite.finance.consumption.entity.Consumption;
 import com.bluewhite.finance.consumption.entity.ConsumptionPoi;
-import com.bluewhite.finance.consumption.entity.Custom;
 import com.bluewhite.system.user.dao.UserDao;
-import com.bluewhite.system.user.entity.User;
 
 @Service
 public class ConsumptionServiceImpl extends BaseServiceImpl<Consumption, Long> implements ConsumptionService {
 
 	@Autowired
 	private ConsumptionDao dao;
-
-	@Autowired
-	private CustomDao customDao;
-
-	@Autowired
-	private CustomDao contactDao;
 
 	@Autowired
 	private UserDao userDao;
@@ -114,7 +105,7 @@ public class ConsumptionServiceImpl extends BaseServiceImpl<Consumption, Long> i
 			// 按客户姓名查找
 			if (!StringUtils.isEmpty(param.getCustomerName())) {
 				predicate.add(
-						cb.like(root.get("custom").get("name").as(String.class), "%" + param.getCustomerName() + "%"));
+						cb.like(root.get("customer").get("name").as(String.class), "%" + param.getCustomerName() + "%"));
 			}
 			// 按报销內容查找
 			if (!StringUtils.isEmpty(param.getContent())) {
@@ -125,11 +116,6 @@ public class ConsumptionServiceImpl extends BaseServiceImpl<Consumption, Long> i
 			// 按报销金额查找
 			if (!StringUtils.isEmpty(param.getMoney())) {
 				predicate.add(cb.equal(root.get("money").as(Double.class), param.getMoney()));
-			}
-
-			// 按客户查找
-			if (!StringUtils.isEmpty(param.getCustomId())) {
-				predicate.add(cb.equal(root.get("customId").as(String.class), param.getCustomId()));
 			}
 
 			if (!StringUtils.isEmpty(param.getExpenseDate())) {
@@ -190,6 +176,7 @@ public class ConsumptionServiceImpl extends BaseServiceImpl<Consumption, Long> i
 
 		boolean flag = true;
 		switch (consumption.getType()) {
+		//报销
 		case 1:
 			flag = false;
 			//表示不是修改金额时自动跳过
@@ -223,28 +210,11 @@ public class ConsumptionServiceImpl extends BaseServiceImpl<Consumption, Long> i
 					}
 				
 			}
-
 			if (consumption.getPaymentMoney() != null && consumption.getPaymentMoney() > consumption.getMoney()) {
 				throw new ServiceException("放款金额不能大于申请金额");
 			}
 			break;
 		case 2:
-			if (consumption.getId() == null && consumption.getCustomId() == null) {
-				if (!StringUtils.isEmpty(consumption.getCustomerName())) {
-					Custom custom = customDao.findByTypeAndName(consumption.getType(), consumption.getCustomerName());
-					if (custom != null) {
-						consumption.setCustomId(custom.getId());
-					}
-				}
-			}
-			if (consumption.getId() == null && consumption.getUserId() == null) {
-				if (!StringUtils.isEmpty(consumption.getUsername())) {
-					User user = userDao.findByUserName(consumption.getUsername());
-					if (user != null) {
-						consumption.setUserId(user.getId());
-					}
-				}
-			}
 			break;
 		case 3:
 			flag = false;
@@ -252,12 +222,6 @@ public class ConsumptionServiceImpl extends BaseServiceImpl<Consumption, Long> i
 		case 4:
 			break;
 		case 5:
-			if (consumption.getContactId() == null) {
-				Custom contact = new Custom();
-				contact.setName(consumption.getContactName());
-				contactDao.save(contact);
-				consumption.setContactId(contact.getId());
-			}
 			break;
 		case 6:
 			break;
@@ -268,13 +232,6 @@ public class ConsumptionServiceImpl extends BaseServiceImpl<Consumption, Long> i
 		case 9:
 			flag = false;
 			break;
-		}
-		if (flag && (consumption.getCustomId() == null || consumption.getCustomId() == 0)) {
-			Custom custom = new Custom();
-			custom.setName(consumption.getCustomerName());
-			custom.setType(consumption.getType());
-			customDao.save(custom);
-			consumption.setCustomId(custom.getId());
 		}
 
 		if (consumption.getExpenseDate() == null) {
@@ -340,11 +297,10 @@ public class ConsumptionServiceImpl extends BaseServiceImpl<Consumption, Long> i
 				for (int i = 0; i < idArr.length; i++) {
 					Long id = Long.parseLong(idArr[i]);
 					Consumption consumption = dao.findOne(id);
-					if (consumption.getPaymentDate() == null
-							&& (consumption.getPaymentMoney() == null || consumption.getPaymentMoney() == 0)) {
+					if (consumption.getPaymentDate() == null && (consumption.getPaymentMoney() == null || consumption.getPaymentMoney() == 0)) {
 						throw new ServiceException("放款金额或放款时间不能为空或者为0");
 					}
-					if (consumption.getPaymentMoney() < consumption.getMoney()) {
+					if (consumption.getType()==1 && (consumption.getPaymentMoney() < consumption.getMoney())) {
 						flag = 2;
 					}
 					consumption.setFlag(flag);
@@ -394,7 +350,6 @@ public class ConsumptionServiceImpl extends BaseServiceImpl<Consumption, Long> i
 		for (Object object : excelListenerList) {
 			ConsumptionPoi cPoi = (ConsumptionPoi) object;
 			Consumption consumption = new Consumption();
-			consumption.setBatchNumber(cPoi.getBatchNumber());
 			consumption.setContent(cPoi.getContent());
 			consumption.setCustomerName(cPoi.getCustomerName());
 			consumption.setUsername(cPoi.getUsername());

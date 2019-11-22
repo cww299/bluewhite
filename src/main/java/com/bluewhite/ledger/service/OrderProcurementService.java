@@ -40,11 +40,11 @@ public interface OrderProcurementService extends BaseCRUDService<OrderProcuremen
 	public int deleteOrderProcurement(String ids);
 
 	/**
-	 * 审核采购单
+	 * 审核采购单入库
 	 * @param ids
 	 * @return
 	 */
-	public int auditOrderProcurement(String ids);
+	public int arrivalOrderProcurement(String ids);
 	
 	/**
 	 * 库存不符预警
@@ -64,6 +64,33 @@ public interface OrderProcurementService extends BaseCRUDService<OrderProcuremen
 	 * @param orderProcurement
 	 */
 	public void updateOrderProcurement(OrderProcurement orderProcurement);
+	
+	/**
+	 * 审核采购单进入仓库
+	 * @param ids
+	 * @return
+	 */
+	public int auditOrderProcurement(String ids);
+	
+	/**
+	 * 对采购单进行验货
+	 * @param ids
+	 * @return
+	 */
+	public int inspectionOrderProcurement(String ids);
+	
+	/**
+	 * 生成采购账单
+	 * @param ids
+	 * @return
+	 */
+	public int billOrderProcurement(String ids);
+	
+	/**
+	 *  （采购部）修改采购单，对于账单的实际情况作为修改
+	 * @param orderProcurement
+	 */
+	public void updateBillOrderProcurement(OrderProcurement orderProcurement);
 
 
 }

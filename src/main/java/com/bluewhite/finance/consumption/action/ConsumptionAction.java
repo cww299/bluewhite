@@ -3,7 +3,6 @@ package com.bluewhite.finance.consumption.action;
 import java.io.IOException;
 import java.io.InputStream;
 import java.text.SimpleDateFormat;
-import java.util.Date;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -32,9 +31,11 @@ import com.bluewhite.common.entity.PageResult;
 import com.bluewhite.common.utils.excel.ExcelListener;
 import com.bluewhite.finance.consumption.entity.Consumption;
 import com.bluewhite.finance.consumption.entity.ConsumptionPoi;
-import com.bluewhite.finance.consumption.entity.Custom;
 import com.bluewhite.finance.consumption.service.ConsumptionService;
-import com.bluewhite.finance.consumption.service.CustomService;
+import com.bluewhite.ledger.entity.Customer;
+import com.bluewhite.ledger.entity.Order;
+import com.bluewhite.ledger.entity.OrderProcurement;
+import com.bluewhite.product.primecostbasedata.entity.Materiel;
 import com.bluewhite.system.user.entity.User;
 
 @Controller
@@ -42,21 +43,22 @@ public class ConsumptionAction {
 
 	@Autowired
 	private ConsumptionService consumptionService;
-	@Autowired
-	private CustomService customService;
 
 	private ClearCascadeJSON clearCascadeJSON;
 
 	{
-		clearCascadeJSON = ClearCascadeJSON
-				.get()
-				.addRetainTerm(Consumption.class, "id", "user","content","userId"
-				,"budget","money","expenseDate","paymentMoney","paymentDate","withholdReason","remark"
-				,"withholdMoney","settleAccountsMode","remark","flag","taxPoint","custom","user"
-				,"contact","logisticsDate","contactName","batchNumber","realityDate","deleteFlag")
-				.addRetainTerm(User.class, "userName")
-				.addRetainTerm(BaseData.class,"id","name")
-				.addRetainTerm(Custom.class, "name");
+		clearCascadeJSON = ClearCascadeJSON.get()
+				.addRetainTerm(Consumption.class, "id", "user", "customer", "orderProcurement", "budget", "money",
+						"expenseDate", "paymentMoney", "paymentDate", "withholdReason", "remark", "withholdMoney",
+						"settleAccountsMode", "remark", "flag", "taxPoint", "contact", "logisticsDate", "contactName",
+						"batchNumber", "realityDate", "deleteFlag", "orgName","content")
+				.addRetainTerm(User.class, "id","userName")
+				.addRetainTerm(Customer.class,"name")
+				.addRetainTerm(OrderProcurement.class,"orderProcurementNumber", "placeOrderNumber", "arrivalTime","order",
+						"materielLocation", "price","expectPaymentTime", "materiel", "gramPrice", "interest", "paymentMoney")
+				.addRetainTerm(Order.class,"bacthNumber")
+				.addRetainTerm(Materiel.class, "name", "number", "materialQualitative")
+				.addRetainTerm(BaseData.class, "id", "name");
 	}
 
 	/**
@@ -67,23 +69,20 @@ public class ConsumptionAction {
 	 */
 	@RequestMapping(value = "/fince/getConsumption", method = RequestMethod.GET)
 	@ResponseBody
-	public CommonResponse getConsumption(HttpServletRequest request, PageParameter page,
-			Consumption consumption) {
+	public CommonResponse getConsumption(HttpServletRequest request, PageParameter page, Consumption consumption) {
 		CommonResponse cr = new CommonResponse();
-		PageResult<Consumption> list = consumptionService.findPages(consumption, page);
-		cr.setData(clearCascadeJSON.format(list).toJSON());
+		cr.setData(clearCascadeJSON.format(consumptionService.findPages(consumption, page)).toJSON());
 		cr.setMessage("查询成功");
 		return cr;
 	}
-	
-	
+
 	/**
 	 * 人事部汇总报销金额
 	 * 
 	 * @param request
 	 * @return cr
 	 */
-	@RequestMapping(value = "/fince/countConsumptionMoney", method = RequestMethod.GET)  
+	@RequestMapping(value = "/fince/countConsumptionMoney", method = RequestMethod.GET)
 	@ResponseBody
 	public CommonResponse countConsumptionMoney(Consumption consumption) {
 		CommonResponse cr = new CommonResponse();
@@ -91,13 +90,10 @@ public class ConsumptionAction {
 		cr.setMessage("统计成功");
 		return cr;
 	}
-	
 
 	/**
-	 * 财务新增
-	 * 财务修改
-	 * （一）.未审核 1.填写页面可以修改
-	 * （二）.已审核 1.填写页面和出纳均不可修改
+	 * 财务新增 财务修改 （一）.未审核 1.填写页面可以修改 （二）.已审核 1.填写页面和出纳均不可修改
+	 * 
 	 * @param request
 	 * @return cr
 	 */
@@ -105,12 +101,12 @@ public class ConsumptionAction {
 	@ResponseBody
 	public CommonResponse addConsumption(HttpServletRequest request, Consumption consumption) {
 		CommonResponse cr = new CommonResponse();
-		if(consumption.getId() != null){
+		if (consumption.getId() != null) {
 			cr.setMessage("修改成功");
-		}else{
+		} else {
 			cr.setMessage("添加成功");
 		}
-		//同步锁，批量新增
+		// 同步锁，批量新增
 		synchronized (this) {
 			consumptionService.addConsumption(consumption);
 		}
@@ -123,19 +119,21 @@ public class ConsumptionAction {
 	 */
 	@RequestMapping(value = "/fince/excel/addConsumption", method = RequestMethod.POST)
 	@ResponseBody
-	public CommonResponse importConsumption(@RequestParam(value="file",required=false) MultipartFile file,HttpServletRequest request) throws IOException{
+	public CommonResponse importConsumption(@RequestParam(value = "file", required = false) MultipartFile file,
+			HttpServletRequest request) throws IOException {
 		CommonResponse cr = new CommonResponse();
 		InputStream inputStream = file.getInputStream();
 		ExcelListener excelListener = new ExcelListener();
-	    EasyExcelFactory.readBySax(inputStream, new Sheet(1, 1,ConsumptionPoi.class), excelListener);
-	    int count = consumptionService.excelAddConsumption(excelListener);
-	    inputStream.close();
-	    cr.setMessage("成功导入"+count+"条数据");
-	    return cr;
-	}	
-	
+		EasyExcelFactory.readBySax(inputStream, new Sheet(1, 1, ConsumptionPoi.class), excelListener);
+		int count = consumptionService.excelAddConsumption(excelListener);
+		inputStream.close();
+		cr.setMessage("成功导入" + count + "条数据");
+		return cr;
+	}
+
 	/**
 	 * 财务审核放款
+	 * 
 	 * @param request
 	 * @return cr
 	 */
@@ -143,13 +141,14 @@ public class ConsumptionAction {
 	@ResponseBody
 	public CommonResponse auditConsumption(HttpServletRequest request, String ids, Integer flag) {
 		CommonResponse cr = new CommonResponse();
-		int count = consumptionService.auditConsumption(ids,flag);
-		cr.setMessage("操作成功"+count+"条");
+		int count = consumptionService.auditConsumption(ids, flag);
+		cr.setMessage("操作成功" + count + "条");
 		return cr;
 	}
 
 	/**
 	 * 财务删除
+	 * 
 	 * @param request
 	 * @return cr
 	 */
@@ -166,83 +165,19 @@ public class ConsumptionAction {
 		}
 		return cr;
 	}
-	
-	
+
 	/**
 	 * 获取财务未付款的总金额
 	 */
 	@RequestMapping(value = "/fince/totalAmount", method = RequestMethod.GET)
 	@ResponseBody
-	public CommonResponse totalAmount( Consumption consumption) {
+	public CommonResponse totalAmount(Consumption consumption) {
 		CommonResponse cr = new CommonResponse();
 		double totalAmount = consumptionService.totalAmount(consumption);
 		cr.setData(totalAmount);
 		cr.setMessage("查询成功");
 		return cr;
 	}
-	
-	
-	
-	
-	/**
-	 * 分頁获取客户
-	 * @param request
-	 * @return cr
-	 */
-	@RequestMapping(value = "/fince/findCustomPage", method = RequestMethod.GET)
-	@ResponseBody
-	public CommonResponse findCustomPage( PageParameter page,Custom custom) {
-		CommonResponse cr = new CommonResponse();
-		cr.setData(ClearCascadeJSON.get()
-				.addRetainTerm(Custom.class, "id", "name","type")
-				.format(customService.findPages(custom, page)).toJSON());
-		return cr;
-	}
-	
-	/**
-	 * 根据类型获取客户
-	 * @param request
-	 * @return cr
-	 */
-	@RequestMapping(value = "/fince/findCustom", method = RequestMethod.GET)
-	@ResponseBody
-	public CommonResponse findCustom(HttpServletRequest request,Integer type,String name) {
-		CommonResponse cr = new CommonResponse();
-		cr.setData(ClearCascadeJSON.get()
-				.addRetainTerm(Custom.class, "id", "name")
-				.format(customService.findCustom(type,name)).toJSON());
-		return cr;
-	}
-	
-	/**
-	 * 根据类型
-	 * @param request
-	 * @return cr
-	 */
-	@RequestMapping(value = "/fince/findCustomBytype", method = RequestMethod.GET)
-	@ResponseBody
-	public CommonResponse findCustomBytype(HttpServletRequest request,Integer type) {
-		CommonResponse cr = new CommonResponse();
-		cr.setData(ClearCascadeJSON.get()
-				.addRetainTerm(Custom.class, "id", "name")
-				.format(customService.findByType(type)).toJSON());
-		return cr;
-	}
-	
-	/**
-	 * 删除客户
-	 * @param request
-	 * @return cr
-	 */
-	@RequestMapping(value = "/fince/deleteCustom", method = RequestMethod.GET)
-	@ResponseBody
-	public CommonResponse deleteCustom(HttpServletRequest request,String ids) {
-		CommonResponse cr = new CommonResponse();
-		int count = customService.delete(ids);
-		cr.setMessage("成功删除"+count+"条");
-		return cr;
-	}
-	
 
 	@InitBinder
 	protected void initBinder(WebDataBinder binder) {

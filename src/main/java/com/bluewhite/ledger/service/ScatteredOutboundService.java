@@ -38,22 +38,4 @@ public interface ScatteredOutboundService extends BaseCRUDService<ScatteredOutbo
 	 */
 	public int auditScatteredOutbound(String ids,Date time);
 
-	/**
-	 * 修改出库单
-	 * @param ids
-	 * @return
-	 */
-	public void updateScatteredOutbound(ScatteredOutbound scatteredOutbound);
-	/**
-	 * 修改出库单
-	 * @param ids
-	 * @return
-	 */
-	public void updatePlaceOrder(ScatteredOutbound scatteredOutbound);
-	
-	/**
-	 * 修改开单
-	 * @param scatteredOutbound
-	 */
-	public void updateOpenOrder(ScatteredOutbound scatteredOutbound);
 }

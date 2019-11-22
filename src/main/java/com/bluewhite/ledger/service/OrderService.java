@@ -29,7 +29,7 @@ public interface OrderService extends BaseCRUDService<Order,Long>{
 	 * 新增订单
 	 * @param order
 	 */
-	public List<Order> addOrder(Order order);
+	public void addOrder(Order order);
 	
 	/**
 	 * 删除订单
@@ -38,5 +38,18 @@ public interface OrderService extends BaseCRUDService<Order,Long>{
 	 * @throws Exception
 	 */
 	public int deleteOrder(String ids);
+	
+	/**
+	 * 修改订单
+	 * @param order
+	 */
+	public void updateOrder(Order order);
+	
+	/**
+	 * 审核订单
+	 * @param order
+	 */
+	public int auditOrder(String ids);
+	
 	
 }

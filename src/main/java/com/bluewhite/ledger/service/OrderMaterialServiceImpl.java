@@ -20,14 +20,15 @@ import com.bluewhite.common.utils.StringUtil;
 import com.bluewhite.ledger.dao.OrderDao;
 import com.bluewhite.ledger.dao.OrderMaterialDao;
 import com.bluewhite.ledger.dao.OrderProcurementDao;
+import com.bluewhite.ledger.dao.ScatteredOutboundDao;
 import com.bluewhite.ledger.entity.Order;
 import com.bluewhite.ledger.entity.OrderMaterial;
 import com.bluewhite.ledger.entity.OrderProcurement;
+import com.bluewhite.ledger.entity.ScatteredOutbound;
 import com.bluewhite.product.primecost.cutparts.entity.CutParts;
 import com.bluewhite.product.primecost.cutparts.service.CutPartsService;
 import com.bluewhite.product.primecost.materials.entity.ProductMaterials;
 import com.bluewhite.product.primecost.materials.service.ProductMaterialsService;
-import com.bluewhite.product.primecost.tailor.entity.Tailor;
 import com.bluewhite.product.primecost.tailor.service.TailorService;
 import com.bluewhite.product.primecostbasedata.dao.MaterielDao;
 
@@ -48,6 +49,8 @@ public class OrderMaterialServiceImpl extends BaseServiceImpl<OrderMaterial, Lon
 	private MaterielDao materielDao;
 	@Autowired
 	private OrderProcurementDao orderProcurementDao;
+	@Autowired
+	private ScatteredOutboundDao scatteredOutboundDao;
 
 	@Override
 	public PageResult<OrderMaterial> findPages(OrderMaterial param, PageParameter page) {
@@ -73,8 +76,7 @@ public class OrderMaterialServiceImpl extends BaseServiceImpl<OrderMaterial, Lon
 		pages.getContent().stream().forEach(ot -> {
 			// 过滤掉已经耗尽的物料采购单
 			if (ot.getMateriel().getOrderProcurements().size() > 0) {
-				ot.getMateriel()
-						.setOrderProcurements(ot.getMateriel().getOrderProcurements().stream()
+				ot.getMateriel().setOrderProcurements(ot.getMateriel().getOrderProcurements().stream()
 								.filter(OrderProcurement -> OrderProcurement.getResidueNumber() > 0)
 								.collect(Collectors.toSet()));
 			}
@@ -93,6 +95,10 @@ public class OrderMaterialServiceImpl extends BaseServiceImpl<OrderMaterial, Lon
 			// 库存量不足
 			if (number > 1 && number < ot.getDosage()) {
 				ot.setState(3);
+			}
+			List<ScatteredOutbound> scatteredOutbound = scatteredOutboundDao.findByOrderMaterialId(ot.getId());
+			if(scatteredOutbound.size()>0){
+				ot.setOutAudit(scatteredOutbound.get(0).getAudit());
 			}
 		});
 		PageResult<OrderMaterial> result = new PageResult<>(pages, page);
@@ -127,18 +133,18 @@ public class OrderMaterialServiceImpl extends BaseServiceImpl<OrderMaterial, Lon
 								orderMaterial.setMaterielId(c.getMaterielId());
 								orderMaterial.setUnitId(c.getUnitId());
 								orderMaterial.setDosage(c.getBatchMaterial());
-								Tailor tailor = tailorService.findOne(c.getTailorId());
-								orderMaterial.setReceiveModeId(tailor.getTailorTypeId());
+								orderMaterial.setReceiveModeId(c.getOverstockId());
 								orderMaterialList.add(orderMaterial);
 								if (c.getComposite() == 1) {
 									OrderMaterial orderMaterialComposite = new OrderMaterial();
-									orderMaterial.setOrderId(id);
-									orderMaterial.setMaterielId(c.getComplexMaterielId());
-									orderMaterial.setUnitId(c.getUnitId());
-									orderMaterial.setAudit(0);
-									orderMaterial.setOutbound(0);
-									orderMaterial.setDosage(c.getComplexBatchMaterial());
-									orderMaterial.setReceiveModeId(tailor.getTailorTypeId());
+									orderMaterialComposite.setOrderId(id);
+									orderMaterialComposite.setMaterielId(c.getComplexMaterielId());
+									orderMaterialComposite.setUnitId(c.getUnitId());
+									orderMaterialComposite.setAudit(0);
+									orderMaterialComposite.setOutbound(0);
+									orderMaterialComposite.setDosage(c.getComplexBatchMaterial());
+									//采购复合领取
+									orderMaterialComposite.setReceiveModeId((long)84);
 									orderMaterialList.add(orderMaterialComposite);
 								}
 							});

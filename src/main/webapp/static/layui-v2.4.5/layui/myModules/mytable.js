@@ -24,6 +24,8 @@
  * 增加列宽度字段： colsWidth:[0,10,0,20,1,对应的各个字段宽度] 0为自适应，只填数字默认百分比。开启checkbox时，第一个数字应为0保留复选框自适应
  * 增加默认导出假字段 exportField: true, //true为关闭、默认开启
  * 增加null值时的提示：ifNull:'', //返回值为null获取''时自动转换
+ * 增加自动搜索功能：searchTable:{ elem:'存放搜索表格的elem',field:{表格字段:'转成上传字段'},time:{ type:'',range:true/false,name:'',},   },
+ *是否开启横向滚动：scrollX : true,
  */
 layui.extend({
 	myutil: 'layui/myModules/myutil',
@@ -60,6 +62,7 @@ layui.extend({
 			count = [], 		//数量验证
 			notNull = [], 		//非空验证
 			china = [], 		//字段对应的中文名
+			search = [],		//可进行搜索字段
 			exportCols = [];	//导出字段
 		var tableId = opt.elem.split('#')[1];
 		layui.each(opt.cols,function(index1,item1){					//表头模板设置------------------------------------------------
@@ -249,7 +252,8 @@ layui.extend({
 					var field = $(obj.elem).closest('td').data('field');
 					var trData = layui.table.cache[tableId][index];
 					var f = field;
-					opt.autoUpdate.field[f] && ( f = opt.autoUpdate.field[f]);
+					opt.autoUpdate && opt.autoUpdate.field[f] && ( f = opt.autoUpdate.field[f]);
+					trData[f] = obj.value; //修改本地数据缓存值
 					if(opt.autoUpdate){
 						if(index>=0){
 							if(notNull.indexOf(field)>=0 && isNull(obj.value))
@@ -264,6 +268,9 @@ layui.extend({
 										if(opt.autoUpdate.isReload)
 											table.reload(tableId);
 										opt.autoUpdate.success && opt.autoUpdate.success();
+									},
+									error: function(){
+										table.reload(tableId);
 									}
 								})
 							}
@@ -336,7 +343,7 @@ layui.extend({
 							return field;
 						})();
 						table.addTemp(tableId,field,function(trElem){
-							opt.curd.addTempAfter && opt.curd.addTempAfter();
+							opt.curd.addTempAfter && opt.curd.addTempAfter(trElem);
 							renderData(dateField,'date');
 							renderData(dateTimeField,'datetime');
 							function renderData(data,type){
@@ -426,7 +433,10 @@ layui.extend({
 								})
 						})
 					}
-				})	
+				})
+			if(opt.scrollX){
+				myutil.scrollX($(opt.elem).next().find('.layui-table-box').find('.layui-table-body')[0])
+			}
 			done && done(res, curr, cou);
 		}
 		opt.done = newDone;

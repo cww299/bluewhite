@@ -90,7 +90,7 @@ public class ZkemSDKUtils {
 	 * 启动事件监听
 	 */
 	public static void regEvent(String address) {
-		ActiveXComponent zkem = new ActiveXComponent("zkemkeeper.ZKEM");
+		ActiveXComponent zkem = new ActiveXComponent("zkemkeeper.ZKEM.1");
 		System.out.println("考勤机实时事件启动");
 		boolean result = zkem.invoke("Connect_NET", address, 4370).getBoolean();
 		if (!result) {
@@ -98,8 +98,8 @@ public class ZkemSDKUtils {
 		} else {
 			System.out.println(address + ":连接成功");
 		}
-		Dispatch.call(zkem, "RegEvent", new Variant(1l), new Variant(65535l));
 		DispatchEvents de = new DispatchEvents(zkem.getObject(), new SensorEvents(zkem));
+		Dispatch.call(zkem, "RegEvent", new Variant(1l), new Variant(65535l));
 		new STA().doMessagePump();
 	}
 	
@@ -123,7 +123,6 @@ public class ZkemSDKUtils {
 	public boolean readLastestLogData(int machineNum, Date lastest) {
 		Calendar c = Calendar.getInstance();
 		c.setTime(lastest);
-
 		int year = c.get(Calendar.YEAR);
 		int month = c.get(Calendar.MONTH) + 1;
 		int day = c.get(Calendar.DAY_OF_MONTH);
@@ -276,7 +275,6 @@ public class ZkemSDKUtils {
 		Variant Password = new Variant(password, true);
 		Variant Privilege = new Variant(isPrivilege, true);
 		Variant Enabled = new Variant(enabled, true);
-
 		boolean result = zkem.invoke("SSR_SetUserInfo", v0, dwEnrollNumber, Name, Password, Privilege, Enabled)
 				.getBoolean();
 		return result;
@@ -478,6 +476,11 @@ public class ZkemSDKUtils {
 	    return result;
 	}
 	
+	/**
+	 * 获取实时事件
+	 * @param machineNumber
+	 * @return
+	 */
 	public static boolean GetRTLog(int machineNumber){
 	    boolean result = zkem.invoke("GetRTLog",new Variant(machineNumber)).getBoolean();
 	    return result;

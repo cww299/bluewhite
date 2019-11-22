@@ -15,7 +15,10 @@ public class SDKRunnable extends Thread {
 			Thread.sleep(2000);
 			ZkemSDKUtils.regEvent(address);
 		} catch (InterruptedException e) {
+
 		}
 	}
+
+
 
 }

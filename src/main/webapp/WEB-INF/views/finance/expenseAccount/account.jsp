@@ -173,7 +173,8 @@ layui.config({
 					 { field: "flag", title: "审核状态", edit: false,width:'6%', templet: function(d){ 
 						 												var text = '未放款'; if(d.flag==1) text='已放款';
 						 																	 else if(d.flag==2) text='部分放款';
-						 												return text; }}
+						 												return text; }},
+					 { field: "org",  title: "申请部门", width:'7%', templet:'<span>{{ d.orgName?d.orgName.name:""}}</span>', }, 
 					]];
 		renderTable({			//渲染预算表格
 			elem: '#tableData',
@@ -188,6 +189,7 @@ layui.config({
 						c[0].push({field: "realityDate", title: "实际时间", edit: false });
 					/* 	c[0].push({field: "applyTypeId", title: "报销类型", edit: false ,templet: getAccountType(),}); */
 						c[0].push({field: "deleteFlag",  title: "月底删除", edit: false ,templet: getDeleteFlag(), width:'7%',})
+						c[0].push({ field: "org",  title: "申请部门", width:'7%', templet:'<span>{{ d.orgName?d.orgName.name:""}}</span>', })
 						return c;
 					})(),
 			done:function(that){
@@ -577,7 +579,7 @@ layui.config({
 		function fn1(field) {
 			return function(d) {
 				return [
-					'<select name="selectOne" lay-filter="lay_selecte" lay-search="true" data-value="' + d.userId + '">',
+					'<select name="selectOne" lay-filter="lay_selecte" lay-search data-value="'+(d.user?d.user.id:0)+'">',
 					htmls,
 					'</select>'
 				].join('');

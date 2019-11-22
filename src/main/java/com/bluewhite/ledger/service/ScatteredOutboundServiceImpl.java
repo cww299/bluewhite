@@ -16,6 +16,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
 
 import com.bluewhite.base.BaseServiceImpl;
+import com.bluewhite.common.Constants;
 import com.bluewhite.common.ServiceException;
 import com.bluewhite.common.entity.PageParameter;
 import com.bluewhite.common.entity.PageResult;
@@ -24,6 +25,7 @@ import com.bluewhite.common.utils.StringUtil;
 import com.bluewhite.ledger.dao.OrderMaterialDao;
 import com.bluewhite.ledger.dao.OrderProcurementDao;
 import com.bluewhite.ledger.dao.ScatteredOutboundDao;
+import com.bluewhite.ledger.entity.Order;
 import com.bluewhite.ledger.entity.OrderMaterial;
 import com.bluewhite.ledger.entity.OrderProcurement;
 import com.bluewhite.ledger.entity.ScatteredOutbound;
@@ -41,6 +43,8 @@ public class ScatteredOutboundServiceImpl extends BaseServiceImpl<ScatteredOutbo
 	private OrderMaterialDao orderMaterialDao;
 	@Autowired
 	private MaterielDao materielDao;
+	@Autowired
+	private OrderService orderService;
 
 	@Override
 	@Transactional
@@ -52,16 +56,13 @@ public class ScatteredOutboundServiceImpl extends BaseServiceImpl<ScatteredOutbo
 				for (int i = 0; i < idArr.length; i++) {
 					Long id = Long.parseLong(idArr[i]);
 					OrderMaterial ot = orderMaterialDao.findOne(id);
-					if (ot.getOutbound()==1) {
-						throw new ServiceException(ot.getMateriel().getNumber() + ot.getMateriel().getName() + "已出库，请勿多次出库");
+					if (ot.getOutbound() == 1) {
+						throw new ServiceException(
+								ot.getMateriel().getNumber() + ot.getMateriel().getName() + "已生成耗料出库单，请勿多次生成");
 					}
-					// 出库单
-					ScatteredOutbound scatteredOutbound = new ScatteredOutbound();
-					scatteredOutbound.setOrderMaterialId(id);
-					scatteredOutbound.setOutboundNumber(ot.getOrder().getBacthNumber() + ot.getOrder().getProduct().getName());
-					scatteredOutbound.setAudit(0);
 					// 按id排序，保证库存先入先出
 					// 遍历当前物料的库存采购单，一般只会存在一条，当库存量不足，需要重新下单采购单，会出现两条
+					// 一条领料单会关连多条采购单（库存详情单）
 					Set<OrderProcurement> orderProcurementSet = ot.getMateriel().getOrderProcurements().stream()
 							.sorted(Comparator.comparing(OrderProcurement::getId))
 							.filter(OrderProcurement -> OrderProcurement.getResidueNumber() > 0)
@@ -73,30 +74,45 @@ public class ScatteredOutboundServiceImpl extends BaseServiceImpl<ScatteredOutbo
 						throw new ServiceException(
 								ot.getMateriel().getNumber() + ot.getMateriel().getName() + "库存不足，无法出库，请核对库存采购后进行出库");
 					}
+					// 该物料总耗料
+					double dosage = ot.getDosage();
+					// 该物料总数量
+					int dosageSumNumber = ot.getOrder().getNumber();
 					if (orderProcurementSet.size() > 0) {
 						for (OrderProcurement orderProcurement : orderProcurementSet) {
+							// 耗料出库单
+							ScatteredOutbound scatteredOutbound = new ScatteredOutbound();
+							// 关联耗料单
+							scatteredOutbound.setOrderMaterialId(id);
+							scatteredOutbound.setOutboundNumber(Constants.SCHL + StringUtil.getDate());
+							scatteredOutbound.setAudit(0);
 							scatteredOutbound.setOrderProcurementId(orderProcurement.getId());
-							// 出库分为两种情况，1.当库存量不足，补充库存后，出现两条采购单
-							// 2.库存充足只存在一条采购单
-							if (orderProcurement.getResidueNumber() < ot.getDosage()) {
+							// 领料分为两种情况，
+							// 1.当库存量不足，补充库存后，出现两条采购单(采购库存单剩余数量小于领料单领取数量)
+							// 2.库存充足只存在一条采购单(采购库存单剩余数量大于或者领料单领取数量)
+							if (orderProcurement.getResidueNumber() < dosage) {
 								scatteredOutbound.setDosage(orderProcurement.getResidueNumber());
+								scatteredOutbound.setResidueDosage(orderProcurement.getResidueNumber());
+								// 将剩余需要分配的用量更新到下一单
+								dosage = NumUtils.sub(dosage, orderProcurement.getResidueNumber());
 								orderProcurement.setResidueNumber((double) 0);
-								ot.setDosage(NumUtils.sub(ot.getDosage(), orderProcurement.getResidueNumber()));
-								ot.setOutbound(1);
+							} else if (orderProcurement.getResidueNumber() >= dosage) {
+								scatteredOutbound.setDosage(dosage);
+								scatteredOutbound.setResidueDosage(dosage);
+								orderProcurement.setResidueNumber(NumUtils.sub(orderProcurement.getResidueNumber(), dosage));
 							}
-							if (orderProcurement.getResidueNumber() >= ot.getDosage()) {
-								scatteredOutbound.setDosage(ot.getDosage());
-								orderProcurement.setResidueNumber(
-										NumUtils.sub(orderProcurement.getResidueNumber(), ot.getDosage()));
-								ot.setOutbound(1);
-							}
+							int dosageNumber = NumUtils.roundTwo(NumUtils.div(
+									NumUtils.mul(dosageSumNumber, scatteredOutbound.getDosage()), ot.getDosage(), 1));
+							scatteredOutbound.setDosageNumber(dosageNumber);
+							scatteredOutbound.setResidueDosageNumber(dosageNumber);
+							save(scatteredOutbound);
+							ot.setOutbound(1);
 						}
 						orderMaterialDao.save(ot);
 					} else {
 						throw new ServiceException(
 								ot.getMateriel().getNumber() + ot.getMateriel().getName() + "无库存，请先采购");
 					}
-					save(scatteredOutbound);
 					count++;
 				}
 			}
@@ -141,6 +157,7 @@ public class ScatteredOutboundServiceImpl extends BaseServiceImpl<ScatteredOutbo
 	}
 
 	@Override
+	@Transactional
 	public int deleteScatteredOutbound(String ids) {
 		int count = 0;
 		if (!StringUtils.isEmpty(ids)) {
@@ -148,18 +165,22 @@ public class ScatteredOutboundServiceImpl extends BaseServiceImpl<ScatteredOutbo
 			if (idArr.length > 0) {
 				for (int i = 0; i < idArr.length; i++) {
 					Long id = Long.parseLong(idArr[i]);
-					ScatteredOutbound ot = findOne(id);
-					if (ot.getAudit() == 1) {
-						throw new ServiceException("第" + (i + 1) + "条耗料已审核，无法删除");
-					}
-					//当删除出库单时，恢复出库情况和库存
-					OrderMaterial orderMaterial = ot.getOrderMaterial();
+					// 耗料单的出库详细
+					List<ScatteredOutbound> scatteredOutboundList = dao.findByOrderMaterialId(id);
+					int j = i;
+					scatteredOutboundList.stream().forEach(s -> {
+						if (s.getAudit() == 1) {
+							throw new ServiceException("第" + (j + 1) + "条耗料单已审核，无法清除出库单");
+						}
+						// 当删除出库单时，恢复出库情况和库存
+						OrderProcurement orderProcurement = s.getOrderProcurement();
+						orderProcurement.setResidueNumber(NumUtils.sum(orderProcurement.getResidueNumber(), s.getDosage()));
+						orderProcurementDao.save(orderProcurement);
+					});
+					dao.delete(scatteredOutboundList);
+					OrderMaterial orderMaterial = orderMaterialDao.findOne(id);
 					orderMaterial.setOutbound(0);
 					orderMaterialDao.save(orderMaterial);
-					OrderProcurement orderProcurement = ot.getOrderProcurement();
-					orderProcurement.setResidueNumber(NumUtils.mul(orderProcurement.getResidueNumber(), ot.getDosage()));
-					orderProcurementDao.save(orderProcurement);
-					delete(id);
 					count++;
 				}
 			}
@@ -168,6 +189,7 @@ public class ScatteredOutboundServiceImpl extends BaseServiceImpl<ScatteredOutbo
 	}
 
 	@Override
+	@Transactional
 	public int auditScatteredOutbound(String ids, Date time) {
 		int count = 0;
 		if (!StringUtils.isEmpty(ids)) {
@@ -175,52 +197,57 @@ public class ScatteredOutboundServiceImpl extends BaseServiceImpl<ScatteredOutbo
 			if (idArr.length > 0) {
 				for (int i = 0; i < idArr.length; i++) {
 					Long id = Long.parseLong(idArr[i]);
-					ScatteredOutbound ot = findOne(id);
-					if (ot.getOrderProcurement().getArrival() == 0) {
-						throw new ServiceException("第" + (i + 1) + "条分散出库单还未到货，无法审核");
+					// 耗料单的出库详细
+					int j = i;
+					List<ScatteredOutbound> scatteredOutboundList = dao.findByOrderMaterialId(id);
+					if(scatteredOutboundList.size()==0){
+						throw new ServiceException("第" + (j + 1) + "条耗料单未生成出库单，无法审核，请先生成出库单");
 					}
-					if (ot.getOrderProcurement().getInOutError() == 1) {
-						throw new ServiceException(ot.getOrderProcurement().getOrderProcurementNumber() + "采购单实际数量和下单数量不相符，无法审核，请先修正数量");
-					}
-					ot.setAudit(1);
-					if (time != null) {
-						ot.setAuditTime(time);
-					}
-					if(ot.getAuditTime()==null){
-						throw new ServiceException("第" + (i + 1) + "条分散出库单未填写审核时间");
-					}
-					dao.save(ot);
+					scatteredOutboundList.stream().forEach(ot -> {
+						if (ot.getAudit() == 1) {
+							throw new ServiceException("第" + (j + 1) + "条领料单已审核，请勿多次审核");
+						}
+						if (ot.getOrderProcurement().getArrival() == 0) {
+							throw new ServiceException("第" + (j + 1) + "条领料单，物料未到货，无法审核");
+						}
+						if (ot.getOrderProcurement().getInOutError() == 1) {
+							throw new ServiceException(ot.getOrderProcurement().getOrderProcurementNumber()
+									+ "采购单实际数量和下单数量不相符，无法审核，请先修正数量");
+						}
+						if (time != null) {
+							ot.setAuditTime(time);
+						}
+						if (ot.getAuditTime() == null) {
+							throw new ServiceException("第" + (j + 1) + "条分散出库单未填写审核时间");
+						}
+						ot.setAudit(1);
+						dao.save(ot);
+					});
 					count++;
+				}
+				// 对订单的备料状态进行更新
+				OrderMaterial orderMaterial = orderMaterialDao.findOne(Long.parseLong(idArr[0]));
+				Order order = orderMaterial.getOrder();
+				if (orderMaterial != null && order != null) {
+					List<ScatteredOutbound> scatteredOutboundList = new ArrayList<>();
+					order.getOrderMaterials().stream().forEach(om -> {
+						List<ScatteredOutbound> so = dao.findByOrderMaterialId(om.getId());
+						scatteredOutboundList.addAll(so);
+					});
+					if (scatteredOutboundList.size() > 0) {
+						List<ScatteredOutbound> auditScatteredOutboundList = scatteredOutboundList.stream()
+								.filter(ScatteredOutbound -> ScatteredOutbound.getAudit() == 0)
+								.collect(Collectors.toList());
+						if (auditScatteredOutboundList.size() == 0) {
+							order.setPrepareEnough(1);
+							orderService.save(order);
+						}
+					}
+
 				}
 			}
 		}
 		return count;
 	}
-
-	@Override
-	public void updateScatteredOutbound(ScatteredOutbound scatteredOutbound) {
-		ScatteredOutbound ot = findOne(scatteredOutbound.getId());
-		if(scatteredOutbound.getAuditTime()!=null && ot.getAudit()==1){
-			throw new ServiceException("已审核，无法修改");
-		}
-		update(scatteredOutbound, ot, "");
-	}
-	
-	
-	@Override
-	public void updatePlaceOrder(ScatteredOutbound scatteredOutbound) {
-		ScatteredOutbound ot = findOne(scatteredOutbound.getId());
-		update(scatteredOutbound, ot, "");
-	}
-
-
-
-	@Override
-	public void updateOpenOrder(ScatteredOutbound scatteredOutbound) {
-		ScatteredOutbound ot = findOne(scatteredOutbound.getId());
-		update(scatteredOutbound, ot, "");
-	}
-
-	
 
 }

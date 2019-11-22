@@ -304,10 +304,10 @@ public class PackingServiceImpl extends BaseServiceImpl<Packing, Long> implement
 					}
 					// 判定是否更换客户发货，更换客户发货变成新批次，->Y
 					Order order = orderDao.findByBacthNumber(pc.getBacthNumber());
-					if (order.getInternal() != 1 && order.getCustomerId() != pc.getCustomerId()) {
-						sale.setBacthNumber(pc.getBacthNumber().substring(0, pc.getBacthNumber().length() - 1) + "Y");
-						sale.setNewBacth(1);
-					}
+//					if (order.getInternal() != 1 && order.getCustomerId() != pc.getCustomerId()) {
+//						sale.setBacthNumber(pc.getBacthNumber().substring(0, pc.getBacthNumber().length() - 1) + "Y");
+//						sale.setNewBacth(1);
+//					}
 					saleDao.save(sale);
 				}
 				dao.save(packing);

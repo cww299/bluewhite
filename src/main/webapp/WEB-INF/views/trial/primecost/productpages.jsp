@@ -110,7 +110,7 @@ layui.config({
 	myutil.clickTr();
 	mytable.render({		//产品表格
 		elem:'#productTable',
-		url:'${ctx}/getProductPages',
+		url:'${ctx}/productPages',
 		cols:[[
 		       { type:'checkbox',},
 		       { title:'产品编号',   	field:'number',	},
