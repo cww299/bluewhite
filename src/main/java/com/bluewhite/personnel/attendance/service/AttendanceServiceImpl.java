@@ -40,8 +40,8 @@ public class AttendanceServiceImpl extends BaseServiceImpl<Attendance, Long> imp
 	@Autowired
 	private AttendanceDao dao;
 
-//	@Autowired
-	private ZkemSDKUtils sdk  = new ZkemSDKUtils();
+	@Autowired
+	private ZkemSDKUtils sdk;
 
 	@Autowired
 	private ApplicationLeaveDao applicationLeaveDao;
