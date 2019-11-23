@@ -50,7 +50,13 @@
     .layui-layer-tips .layui-layer-content{
       margin-top: -15px;
     }
-    .layui-anim {
+    .myMenu.layui-anim {
+	    -webkit-animation-duration: 1s;
+	    animation-duration: 1s;
+	    -webkit-animation-fill-mode: both;
+	    animation-fill-mode: both;
+	}
+	.allMenu.layui-anim {
 	    -webkit-animation-duration: 1s;
 	    animation-duration: 1s;
 	    -webkit-animation-fill-mode: both;
@@ -60,6 +66,12 @@
         top: 27% !important;
     	left: 67px;
    	    border-radius: 10px;
+	}
+	.layui-side-menu .layui-nav .layui-nav-child .layui-nav-child .layui-nav-child a{
+		padding-left:75px;
+	}
+	.layui-side-menu .layui-nav .layui-nav-item a:hover{
+		background-color: #0096883d !important
 	}
   </style>
 </head>
@@ -251,7 +263,9 @@ layui.use(['form','element','layer','jquery','table'],function(){
     	$('#updatePwd').on('click',function(){				//修改密码
     		$('#hiddenButton').click();
     	})
-    	
+    	$(document).on('click','a[lay-href]',function(){
+    		$(this).parent().addClass('layui-this');
+    	})
     	form.on('switch(changeMenu)',function(obj){
     		var anim = ['up','scale','upbit','fadein','rotate'];
     		var type = 3;

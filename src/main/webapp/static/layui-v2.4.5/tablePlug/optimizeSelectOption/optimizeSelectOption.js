@@ -10,7 +10,7 @@
 ;!function (factory) {
   'use strict';
   var modelName = 'optimizeSelectOption';
-  layui.define(['form'], function (exports) { //layui加载
+  layui.define(['form','layer','jquery'], function (exports) { //layui加载
     exports(modelName, factory(modelName));
   });
 }(function (modelName) {
@@ -172,10 +172,10 @@
                 close();
               });
 
-              $Temp(windowTemp.document).one('mousedown', function (event) {
-                console.log('mousedown');
+              //点击下拉不关闭
+             /* $Temp(windowTemp.document).one('mousedown', function (event) {
                 close();
-              });
+              });*/
 
               // 窗口resize的时候关掉表格中的下拉
               $Temp(windowTemp).one('resize', function (event) {
