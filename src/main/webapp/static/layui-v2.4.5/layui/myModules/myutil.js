@@ -29,13 +29,12 @@ layui.define(['jquery','layer','form','table'],function(exports){
 			options.url = myutil.config.ctx+options.url;
 		if(!options.closeLoad){
 			var load = layer.load(1,{
-				shade: [0.3,'black'],
+				shade: [0.5,'black'],
 			});
 		}
 		$.ajax({
 			url : options.url,
 			type : options.type || 'post',	//默认post方法
-			async : options.async || false,
 			traditional: options.traditional || false,
 			data : options.data,
 			success: function(r){
@@ -52,11 +51,17 @@ layui.define(['jquery','layer','form','table'],function(exports){
 					error && error();
 					options.error && options.error(r);
 				}
+				if(!options.closeLoad){
+					layer.close(load);
+				}
+			},
+			error:function(){
+				if(!options.closeLoad){
+					layer.close(load);
+					myutil.emsg('请求发生错误！');
+				}
 			}
 		})
-		if(!options.closeLoad){
-			layer.close(load);
-		}
 	}
 	
 	Class.prototype.deleteAjax = function(options,callback,error){
@@ -72,12 +77,11 @@ layui.define(['jquery','layer','form','table'],function(exports){
 		if(myutil.config.ctx!='')
 			options.url = myutil.config.ctx+options.url;
 		var load = layer.load(1,{
-			shade: [0.3,'black'], 
+			shade: [0.5,'black'], 
 		});
 		$.ajax({
 			url : options.url,
 			type : options.type || 'get',	
-			async : options.async || false,
 			traditional: options.traditional || false,
 			data : {ids: options.ids },
 			success: function(r){
@@ -93,6 +97,12 @@ layui.define(['jquery','layer','form','table'],function(exports){
 					myutil.emsg(msg);
 					error && error();
 					options.error && options.error(r);
+				}
+			},
+			error:function(){
+				if(!options.closeLoad){
+					layer.close(load);
+					myutil.emsg('请求发生错误！');
 				}
 			}
 		})
