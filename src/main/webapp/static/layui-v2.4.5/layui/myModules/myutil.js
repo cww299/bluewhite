@@ -58,8 +58,8 @@ layui.define(['jquery','layer','form','table'],function(exports){
 			error:function(){
 				if(!options.closeLoad){
 					layer.close(load);
-					myutil.emsg('请求发生错误！');
 				}
+				myutil.emsg('请求发生错误！');
 			}
 		})
 	}
@@ -102,8 +102,8 @@ layui.define(['jquery','layer','form','table'],function(exports){
 			error:function(){
 				if(!options.closeLoad){
 					layer.close(load);
-					myutil.emsg('请求发生错误！');
 				}
+				myutil.emsg('请求发生错误！');
 			}
 		})
 		layer.close(load);
