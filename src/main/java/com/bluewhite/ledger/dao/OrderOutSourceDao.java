@@ -13,6 +13,6 @@ public interface OrderOutSourceDao extends BaseRepository<OrderOutSource, Long>{
 	 * @param orderid
 	 * @return
 	 */
-	List<OrderOutSource> findByOrderIdAndFlag(Long orderid,Integer flag);
+	List<OrderOutSource> findByOrderId(Long orderid);
 
 }

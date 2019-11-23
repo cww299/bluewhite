@@ -31,6 +31,7 @@ import com.bluewhite.ledger.entity.Packing;
 import com.bluewhite.ledger.entity.PackingChild;
 import com.bluewhite.ledger.entity.PackingMaterials;
 import com.bluewhite.ledger.entity.ReceivedMoney;
+import com.bluewhite.ledger.entity.RefundBills;
 import com.bluewhite.ledger.entity.Sale;
 import com.bluewhite.ledger.entity.ScatteredOutbound;
 import com.bluewhite.ledger.entity.SendGoods;
@@ -42,6 +43,7 @@ import com.bluewhite.ledger.service.OrderProcurementService;
 import com.bluewhite.ledger.service.OrderService;
 import com.bluewhite.ledger.service.PackingService;
 import com.bluewhite.ledger.service.ReceivedMoneyService;
+import com.bluewhite.ledger.service.RefundBillsService;
 import com.bluewhite.ledger.service.SaleService;
 import com.bluewhite.ledger.service.ScatteredOutboundService;
 import com.bluewhite.ledger.service.SendGoodsService;
@@ -81,6 +83,8 @@ public class LedgerAction {
 	private OrderOutSourceService orderOutSourceService;
 	@Autowired
 	private MaterialRequisitionService materialRequisitionService;
+	@Autowired
+	private RefundBillsService refundBillsService;
 	
 	
 	
@@ -800,6 +804,35 @@ public class LedgerAction {
 		return cr;
 	}
 	
+	/**
+	 * （生产计划部）生成加工单退货
+	 * 
+	 * @param order
+	 * @return
+	 */
+	@RequestMapping(value = "/ledger/saveRefundBills", method = RequestMethod.GET)
+	@ResponseBody
+	public CommonResponse saveRefundBills(RefundBills refundBills) {
+		CommonResponse cr = new CommonResponse();
+		refundBillsService.saveRefundBills(refundBills);
+		cr.setMessage("新增加工退货单成功");
+		return cr;
+	}
+	
+	/**
+	 * （生产计划部）删除加工单退货
+	 * 
+	 * @param order
+	 * @return
+	 */
+	@RequestMapping(value = "/ledger/deleteRefundBills", method = RequestMethod.GET)
+	@ResponseBody
+	public CommonResponse deleteRefundBills(String ids) {
+		CommonResponse cr = new CommonResponse();
+		int count= refundBillsService.deleteRefundBills(ids);
+		cr.setMessage("成功删除"+count+"条加工退货单");
+		return cr;
+	}
 	
 	
 	

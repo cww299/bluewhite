@@ -57,8 +57,8 @@ public class OrderOutSourceServiceImpl extends BaseServiceImpl<OrderOutSource, L
 			if(order.getPrepareEnough()==0){
 				throw new ServiceException("当前下单合同备料不足，无法进行外发");
 			}
-			List<OrderOutSource> orderOutSourceList = dao.findByOrderIdAndFlag(orderOutSource.getOrderId(), 0);
-			//将工序任务变成set存入
+			List<OrderOutSource> orderOutSourceList = dao.findByOrderId(orderOutSource.getOrderId());
+			//将工序任务变成set存入，存在退货情况是，要去除退货数量
 			if(!StringUtils.isEmpty(orderOutSource.getOutsourceTaskIds())){
 				String[] idStrings = orderOutSource.getOutsourceTaskIds().split(",");
 				if(idStrings.length>0){
@@ -210,19 +210,33 @@ public class OrderOutSourceServiceImpl extends BaseServiceImpl<OrderOutSource, L
 		if(ot.getAudit()==1){
 			throw new ServiceException("已审核，无法修改");
 		}
+		update(orderOutSource, ot, "");
+		Order order = orderDao.findOne(ot.getOrderId());
+		List<OrderOutSource> orderOutSourceList = dao.findByOrderId(ot.getOrderId());
 		//将工序任务变成set存入
-		if(!StringUtils.isEmpty(orderOutSource.getOutsourceTaskIds())){
-			String[] idStrings = orderOutSource.getOutsourceTaskIds().split(",");
-			if(idStrings.length>0){
-				for(String ids : idStrings ){
-					Long id = Long.parseLong(ids);
-					BaseData baseData = baseDataDao.findOne(id);
-					orderOutSource.getOutsourceTask().add(baseData);
-				}
-				
+		if(!StringUtils.isEmpty(ot.getOutsourceTaskIds())){
+			String[] idStrings = ot.getOutsourceTaskIds().split(",");
+				if(idStrings.length>0){
+					for(String ids : idStrings ){
+						Long id = Long.parseLong(ids);
+						BaseData baseData = baseDataDao.findOne(id);
+						//对加工单数量进行限制判断，加工单数量和工序挂钩，每个工序最大数量为订单数量，无法超出
+						//工序可以由不同的加工单加工，但是不能超出订单数量
+						double sum = orderOutSourceList.stream().filter(o->{
+							Set<BaseData> baseDataSet = o.getOutsourceTask().stream().filter(BaseData->baseData.getId().equals(id)).collect(Collectors.toSet());
+							if(baseDataSet.size()>0){
+								return true;
+							}
+							return false;
+						}).mapToInt(OrderOutSource::getProcessNumber).sum();
+						if((sum+ot.getProcessNumber()) > order.getNumber()){
+							throw new ServiceException(baseData.getName()+"的任务工序数量不足，无法生成加工单 ");
+						}
+						ot.getOutsourceTask().add(baseData);
+					}
 			}
 		}
-		update(orderOutSource, ot, "");
+		save(ot);
 	}
 
 	@Override

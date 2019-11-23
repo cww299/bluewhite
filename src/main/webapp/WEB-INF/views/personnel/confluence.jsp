@@ -24,6 +24,7 @@
 }
 .compareTable tr:hover{
 	background-color: #dafdf3;
+	cursor: pointer;
 } 
 </style>
 </head>
@@ -186,9 +187,9 @@ layui.config({
 					if($('#startTime').val()=='')
 						return layer.msg('请填写日期',{icon:2});
 					var html = '获取对比数据异常';
+					var loads = layer.load(1,{shade: [0.5,'black'] });
 					$.ajax({
 						url: '${ctx}/personnel/workshopAttendanceContrast?orgNameId='+orgId+'&orderTimeBegin='+$('#startTime').val()+'-01 00:00:00',
-						async: false,
 						success: function(r){
 							var userData = {};
 							if(r.code==0){
@@ -218,9 +219,10 @@ layui.config({
 										var sub = (item1.clockInTurnWorkTime-(-item1.clockInOvertime)-item1.recordTurnWorkTime-item1.recordOverTime);
 										allSub+=sub;
 										var color = sub>0?"blue":"red";
+										sub==0 && ( color = 'green');
 										var trColor = '';
 										if(item1.warning && item1.warning==1)
-											trColor = 'red';
+											trColor = '#ff5722';
 										html+= ['<tr style="background-color:'+trColor+'">',
 													'<td><span class="layui-badge layui-bg-green">'+item1.date+'</span></td>',
 													'<td>'+item1.clockInTurnWorkTime+'</td>',
@@ -239,33 +241,37 @@ layui.config({
 								})
 							}else
 								html = '<h3 style="text-align:center;color:#999;;">'+r.message+'</h3>';
-						}
-					})
-					if(compareWin)
-						layer.close(compareWin);
-					compareWin = layer.open({
-						type:1,
-						title:'人机考勤对比',
-						offset:'r',
-						area:['28%','100%'],
-						shade:0,
-						content: html,
-						success:function(){
-							$('.compareTable').find('tr').unbind().on('click',function(obj){
-								var id = $(obj.currentTarget.lastElementChild).html();
-								var warning = 0;
-								if(layui.getStyle(this, 'background-color')=='rgb(255, 0, 0)'){	//如果背景颜色是红的
-									$(this).css('background-color','');
-								}else{
-									warning = 1;
-									$(this).css('background-color','red');
+							if(compareWin)
+								layer.close(compareWin);
+							compareWin = layer.open({
+								type:1,
+								title:'人机考勤对比',
+								offset:'r',
+								area:['28%','100%'],
+								shade:0,
+								content: html,
+								success:function(){
+									$('.compareTable').find('tr').unbind().on('click',function(obj){
+										if($(this).next().length==0)
+											return;
+										var id = $(obj.currentTarget.lastElementChild).html();
+										var warning = 0;
+										if(layui.getStyle(this, 'background-color')=='rgb(255, 87, 34)'){	//如果背景颜色是橙的
+											$(this).css('background-color','');
+										}else{
+											warning = 1;
+											$(this).css('background-color','#ff5722');
+										}
+										$.ajax({
+											url: '${ctx}/finance/updateAttendance?id='+id+'&warning='+warning,
+										})
+									})
 								}
-								$.ajax({
-									url: '${ctx}/finance/updateAttendance?id='+id+'&warning='+warning,
-								})
 							})
+							layer.close(loads);
 						}
 					})
+					
 				})
 			}
 		})();
