@@ -20,7 +20,7 @@
 		margin: 0 auto;
 	    width: 80%;
 	    height: 80%;
-	    background:url(${ctx }/static/img/welcome.jpg) no-repeat center top;
+	    background:url(../upload/img/sys/index/welcome.jpg) no-repeat center top;
 	    background-size: contain;
   	}
   	h1,.day{
