@@ -805,7 +805,7 @@ public class LedgerAction {
 	}
 	
 	/**
-	 * （生产计划部）加工单退货
+	 * （生产计划部）生成加工单退货
 	 * 
 	 * @param order
 	 * @return
@@ -816,6 +816,21 @@ public class LedgerAction {
 		CommonResponse cr = new CommonResponse();
 		refundBillsService.saveRefundBills(refundBills);
 		cr.setMessage("新增加工退货单成功");
+		return cr;
+	}
+	
+	/**
+	 * （生产计划部）删除加工单退货
+	 * 
+	 * @param order
+	 * @return
+	 */
+	@RequestMapping(value = "/ledger/deleteRefundBills", method = RequestMethod.GET)
+	@ResponseBody
+	public CommonResponse deleteRefundBills(String ids) {
+		CommonResponse cr = new CommonResponse();
+		int count= refundBillsService.deleteRefundBills(ids);
+		cr.setMessage("成功删除"+count+"条加工退货单");
 		return cr;
 	}
 	

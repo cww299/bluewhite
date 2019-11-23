@@ -58,7 +58,7 @@ public class OrderOutSourceServiceImpl extends BaseServiceImpl<OrderOutSource, L
 				throw new ServiceException("当前下单合同备料不足，无法进行外发");
 			}
 			List<OrderOutSource> orderOutSourceList = dao.findByOrderId(orderOutSource.getOrderId());
-			//将工序任务变成set存入
+			//将工序任务变成set存入，存在退货情况是，要去除退货数量
 			if(!StringUtils.isEmpty(orderOutSource.getOutsourceTaskIds())){
 				String[] idStrings = orderOutSource.getOutsourceTaskIds().split(",");
 				if(idStrings.length>0){
