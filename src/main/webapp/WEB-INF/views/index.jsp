@@ -293,6 +293,7 @@ layui.use(['form','element','layer','jquery','table'],function(){
 					elem:'#warningConfluenceTable',
 					url: '${ctx}/finance/allAttendancePay?warning=1&orgNameId='+(currUser.orgNameId?currUser.orgNameId:""),
 					page: true,
+					request:{ pageName: 'page' ,limitName: 'size'},
 					parseData:function(r){
 						$('#warnConfluenceNumber').html(r.data.total);
 						return { code:r.code, data:r.data.rows, msg:r.message, count:r.data.total} },
@@ -309,7 +310,7 @@ layui.use(['form','element','layer','jquery','table'],function(){
 					title:'考勤错误预警',
 					type:1,
 					shadeClose: true,
-					area:['50%','60%'],
+					area:['50%','600px'],
 					content:$('#warningConfluenceDiv'),
 					success:function(){
 						$('#verifyBtn').unbind().on('click',function(){
@@ -535,5 +536,3 @@ layui.use(['form','element','layer','jquery','table'],function(){
 })
 </script>
 </html>
-
-
