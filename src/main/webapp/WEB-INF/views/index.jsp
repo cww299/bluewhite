@@ -419,7 +419,7 @@ layui.use(['form','element','layer','jquery','table'],function(){
 					for(var i=0;i<data.length;i++){
 						if(data[i].url!='#'){
 							var href='${ctx}/menusToUrl?url='+data[i].url;
-				    		html+='<li data-name="'+data[i].identity+'" class="layui-nav-item layui-this layui-anim allMenu">'+
+				    		html+='<li data-name="'+data[i].identity+'" class="layui-nav-item layui-this layui-anim">'+
 				    					'<a lay-href="'+href+'" id="'+data[i].identity+'">'+
 				    					'<i class="layui-icon layui-icon-'+data[i].icon+'"></i>  '+
 										'<cite>'+data[i].name+'</cite></a></li>';
