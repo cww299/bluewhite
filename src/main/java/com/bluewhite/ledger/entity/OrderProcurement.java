@@ -241,7 +241,6 @@ public class OrderProcurement extends BaseEntity<Long> {
 	@Column(name = "replenishment")
 	private Integer replenishment;
 	
-	
 	/**
 	 * 部分接受延期付款数量
 	 */

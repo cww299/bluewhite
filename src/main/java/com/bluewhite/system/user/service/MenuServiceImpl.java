@@ -26,6 +26,7 @@ import com.bluewhite.common.entity.CurrentUser;
 import com.bluewhite.common.entity.PageParameter;
 import com.bluewhite.common.entity.PageResult;
 import com.bluewhite.system.user.dao.MenuDao;
+import com.bluewhite.system.user.dao.RoleMenuPermissionDao;
 import com.bluewhite.system.user.entity.Menu;
 import com.bluewhite.system.user.entity.Role;
 import com.bluewhite.system.user.entity.RoleMenuPermission;
@@ -36,12 +37,12 @@ public class MenuServiceImpl extends BaseServiceImpl<Menu, Long> implements Menu
 
 	@Autowired
 	private MenuDao menuDao;
-
 	@Autowired
 	private UserService userService;
-	
 	@Autowired
 	private CacheManager cacheManager;
+	@Autowired
+	private RoleMenuPermissionDao roleMenuPermissionDao;
 
 	/**
 	 * 查找用户有权限访问的菜单
@@ -217,8 +218,21 @@ public class MenuServiceImpl extends BaseServiceImpl<Menu, Long> implements Menu
 		} // end for
 		return topTree;
 	}
-	
-	
-	
+
+	@Override
+	public int deleteMenu(String ids) {
+		int count = 0;
+		if (!StringUtils.isEmpty(ids)) {
+			String[] idStrings = ids.split(",");
+			for(String id : idStrings){
+				Long idLong = Long.parseLong(id);
+				List<RoleMenuPermission> roleMenuPermissionList = roleMenuPermissionDao.findByMenuId(idLong);
+				roleMenuPermissionDao.delete(roleMenuPermissionList);
+				delete(idLong);
+				count++;
+			}
+		}
+		return count;
+	}
 
 }

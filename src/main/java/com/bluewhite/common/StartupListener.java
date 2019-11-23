@@ -10,6 +10,8 @@ import org.springframework.stereotype.Service;
 
 import com.bluewhite.common.utils.IpUtil;
 import com.bluewhite.common.utils.zkemUtils.SDKRunnable;
+import com.bluewhite.common.utils.zkemUtils.SensorEvents;
+import com.bluewhite.common.utils.zkemUtils.ZkemSDKUtils;
 
 @Service
 public class StartupListener implements ApplicationListener<ContextRefreshedEvent> {
@@ -32,11 +34,9 @@ public class StartupListener implements ApplicationListener<ContextRefreshedEven
 				ResourceBundle resource = ResourceBundle.getBundle("resources");
 				String key = resource.getString("attendance.ip");
 				for (String address : key.split(",")) {
-					String threadName = "thread:" + address;
-					new Thread(new SDKRunnable(address),threadName).start();
+					new Thread(new SDKRunnable(address), "thread:" + address).start();
 				}
 			}
-		}, 3000);
+		}, 300);
 	}
-
 }

@@ -93,18 +93,14 @@ public class SensorEvents {
 		if (user != null) {
 			attendance.setUserId(user.getId());
 		}
-		List<Map<String, Object>> mapString = ZkemSDKUtils.getUserInfoByNumber(attendance.getNumber(), zkem);
+		List<Map<String, Object>> mapString = ZkemSDKRealTime.getUserInfoByNumber(attendance.getNumber(), zkem);
 		attendance.setUserName(String.valueOf(mapString.get(0).get("name")));
 		// 考勤状态
 		attendance.setInOutMode(Integer.valueOf(String.valueOf(arge[2])));
 		// 验证方式
 		attendance.setVerifyMode(Integer.valueOf(String.valueOf(arge[3])));
 		System.out.println(Thread.currentThread().getName());
-		String[] adressString = Thread.currentThread().getName().split(":");
-		String address = "";
-		if(adressString.length>0){
-			address = adressString[1];
-		}
+		String address = ZkemSDKRealTime.GetDeviceIP(1, zkem);
 		String sourceMachine = null;
 		if (Constants.THREE_FLOOR.equals(address)) {
 			sourceMachine = "THREE_FLOOR";
