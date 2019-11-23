@@ -31,6 +31,11 @@ public class RefundBillsServiceImpl  extends BaseServiceImpl<RefundBills, Long> 
 		save(refundBills);
 	}
 
+
+	@Override
+	public int deleteRefundBills(String ids) {
+		return delete(ids);
+	}
 	
 	
 	

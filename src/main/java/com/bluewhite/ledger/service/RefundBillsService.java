@@ -11,6 +11,13 @@ public interface RefundBillsService extends BaseCRUDService<RefundBills,Long>{
 	 */
 	public void saveRefundBills(RefundBills refundBills);
 	
+	/**
+	 * 删除加工退货单
+	 * @param ids
+	 * @return
+	 */
+	public int deleteRefundBills(String ids);
+	
 	
 
 }

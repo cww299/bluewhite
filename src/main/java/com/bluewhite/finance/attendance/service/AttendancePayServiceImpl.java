@@ -93,7 +93,7 @@ public class AttendancePayServiceImpl extends BaseServiceImpl<AttendancePay, Lon
 				predicate.add(cb.equal(root.get("user").get("orgNameId").as(Long.class), param.getOrgNameId()));
 			}
 
-			// 是否错误
+			// 考勤是否错误
 			if (param.getWarning() != null) {
 				predicate.add(cb.equal(root.get("warning").as(Integer.class), param.getWarning()));
 			}
@@ -105,7 +105,7 @@ public class AttendancePayServiceImpl extends BaseServiceImpl<AttendancePay, Lon
 			}
 
 			// 按类型
-			if (!StringUtils.isEmpty(param.getType())) {
+			if (param.getType()!=null) {
 				predicate.add(cb.equal(root.get("type").as(Integer.class), param.getType()));
 			}
 			// 按时间过滤

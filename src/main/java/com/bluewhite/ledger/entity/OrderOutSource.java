@@ -238,6 +238,12 @@ public class OrderOutSource extends BaseEntity<Long> {
 	@Column(name = "location")
 	private String location;
 	
+	/**
+	 * 实际任务数量(原始数量-退货数量)
+	 * 
+	 */
+	@Transient
+	private Integer actualNumber;
 	
 	/**
 	 * 产品name

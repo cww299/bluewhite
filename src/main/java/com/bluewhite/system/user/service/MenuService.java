@@ -50,9 +50,15 @@ public interface MenuService extends BaseCRUDService<Menu,Long>{
 	public Optional<Menu> findByIdentity(String identity);
 
 	/**
-	 *  根据父id查询所有菜单
+	 * 根据父id查询所有菜单
 	 * @param id
 	 * @return
 	 */
 	public  List<Menu> getTreeMenuParent(Long id);
+
+	/**
+	 * 删除菜单
+	 * @param ids
+	 */
+	public int deleteMenu(String ids);
 }
