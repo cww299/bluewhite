@@ -1373,6 +1373,9 @@ body .layui-util-face  .layui-layer-content{padding:0; background-color:#fff; co
 { 
     border-radius: 10px; 
     -webkit-box-shadow: inset 0 0 6px rgba(0,0,0,.3); 
-    background-color: gray; 
+    background-color: #bfbfbf42; 
 
+}
+::-webkit-scrollbar-thumb:hover{
+  background: #bfbfbf;
 }
