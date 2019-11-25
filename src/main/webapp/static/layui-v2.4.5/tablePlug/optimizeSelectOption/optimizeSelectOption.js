@@ -61,7 +61,7 @@
 
   var close = function () {
     // console.log(top.layer._indexTemp[modelName]);
-    top.layer.close(top.layer._indexTemp[modelName]);
+	  top && top.layer && top.layer.close(top.layer._indexTemp[modelName]);
   };
 
   // 获得某个节点的位置 offsetTop: 是否获得相对top window的位移

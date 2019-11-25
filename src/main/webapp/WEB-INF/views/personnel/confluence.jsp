@@ -224,7 +224,7 @@ layui.config({
 										if(item1.warning && item1.warning==1)
 											trColor = '#ff5722';
 										html+= ['<tr style="background-color:'+trColor+'">',
-													'<td><span class="layui-badge layui-bg-green">'+item1.date+'</span></td>',
+													'<td>'+item1.date+'</span></td>',
 													'<td>'+item1.clockInTurnWorkTime+'</td>',
 													'<td>'+item1.recordTurnWorkTime+'</td>',
 													'<td>'+item1.clockInOvertime+'</td>',
@@ -246,13 +246,14 @@ layui.config({
 							compareWin = layer.open({
 								type:1,
 								title:'人机考勤对比',
+								maxmin:true,
 								offset:'r',
 								area:['28%','100%'],
 								shade:0,
 								content: html,
 								success:function(){
 									$('.compareTable').find('tr').unbind().on('click',function(obj){
-										if($(this).next().length==0)
+										if($(this).next().length==0 || $(this).prev().length==0)
 											return;
 										var id = $(obj.currentTarget.lastElementChild).html();
 										var warning = 0;
