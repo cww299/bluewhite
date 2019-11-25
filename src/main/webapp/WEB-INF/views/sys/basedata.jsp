@@ -1,5 +1,4 @@
-<%@ page language="java" contentType="text/html; charset=UTF-8"
-	pageEncoding="UTF-8"%>
+<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
 <c:set var="ctx" value="${pageContext.request.contextPath }" />
 <!DOCTYPE html>
@@ -7,16 +6,17 @@
 <head>
 	<link rel="stylesheet" href="${ctx }/static/layui-v2.4.5/layui/css/layui.css" media="all">
 	<script src="${ctx}/static/layui-v2.4.5/layui/layui.js"></script>
-<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-<title>基础数据</title>
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+	<title>基础数据</title>
 </head>
 <body>
 <div class="layui-card">
 	<div class="layui-card-body">
 		<table class="layui-form">
-			<tr><td>数据类型：</td><td>&nbsp;&nbsp;</td>
+			<tr><td>数据类型：</td>
+				<td>&nbsp;&nbsp;</td>
 				<td id="tdSelect">
-					<select><option value="">请选择</option></select><!-- 此处select的作用仅仅是为了页面加载时，保证页面不出现延迟加载，真正的select会在获取数据后渲染模板，重新填充 -->
+					<select><option value="">请选择</option></select>
 				</td>
 				<td>&nbsp;&nbsp;</td>
 				<td><button type="button" lay-submit class="layui-btn layui-btn-sm" lay-filter="find">查找</button></td>
@@ -49,7 +49,6 @@
 			<input type="text" placeholder="请输入" lay-verify="required" class="layui-input" name="type">
 		</div>
 	</div>
-	<!-- 以下为默认值，不需要显示，作为默认参数传参 -->
 	<input type="hidden" name="flag" value="1">
 	<input type="hidden" name="parentId" value="0">
 	<p align="center"><button lay-submit class="layui-btn layui-btn-sm" lay-filter="addType">确定</button></p>
