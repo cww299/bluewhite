@@ -8,10 +8,9 @@ import org.springframework.context.ApplicationListener;
 import org.springframework.context.event.ContextRefreshedEvent;
 import org.springframework.stereotype.Service;
 
+import com.bluewhite.common.entity.ConfigManager;
 import com.bluewhite.common.utils.IpUtil;
 import com.bluewhite.common.utils.zkemUtils.SDKRunnable;
-import com.bluewhite.common.utils.zkemUtils.SensorEvents;
-import com.bluewhite.common.utils.zkemUtils.ZkemSDKUtils;
 
 @Service
 public class StartupListener implements ApplicationListener<ContextRefreshedEvent> {
@@ -31,12 +30,12 @@ public class StartupListener implements ApplicationListener<ContextRefreshedEven
 		timer.schedule(new TimerTask() {
 			@Override
 			public void run() {
-				ResourceBundle resource = ResourceBundle.getBundle("resources");
-				String key = resource.getString("attendance.ip");
+				String key = ConfigManager.getProperty("attendance.ip");
 				for (String address : key.split(",")) {
 					new Thread(new SDKRunnable(address), "thread:" + address).start();
 				}
 			}
 		}, 300);
 	}
+	
 }

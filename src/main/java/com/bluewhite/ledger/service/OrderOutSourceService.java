@@ -70,4 +70,12 @@ public interface OrderOutSourceService extends BaseCRUDService<OrderOutSource, L
 	 */
 	public int judgeOrderOutSource(Long orderId);
 	
+	/**
+	 * 生成外发加工单账单
+	 * @param orderOutSource
+	 */
+	public void saveOutSoureBills(OrderOutSource orderOutSource);
+
+	public void test(Long id);
+	
 }
