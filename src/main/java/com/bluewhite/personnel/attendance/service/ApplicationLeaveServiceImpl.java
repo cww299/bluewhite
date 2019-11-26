@@ -75,6 +75,22 @@ public class ApplicationLeaveServiceImpl extends BaseServiceImpl<ApplicationLeav
 				predicate.add(cb.between(root.get("writeTime").as(Date.class), param.getOrderTimeBegin(),
 						param.getOrderTimeEnd()));
 			}
+			//是否调休
+			if(param.isTradeDays()){
+				predicate.add(cb.equal(root.get("tradeDays"), param.isTradeDays()));
+			}
+			//是否补签
+			if(param.isAddSignIn()){
+				predicate.add(cb.equal(root.get("addSignIn"), param.isAddSignIn()));
+			}
+			//是否申请加班
+			if(param.isApplyOvertime()){
+				predicate.add(cb.equal(root.get("applyOvertime"), param.isApplyOvertime()));
+			}
+			//是否请假
+			if(param.isHoliday()){
+				predicate.add(cb.equal(root.get("holiday"), param.isHoliday()));
+			}
 			Predicate[] pre = new Predicate[predicate.size()];
 			query.where(predicate.toArray(pre));
 			return null;
