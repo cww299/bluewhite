@@ -21,37 +21,49 @@ public class SDKRunnable implements Runnable {
 	@Override
 	public void run() {
 		try {
-			System.out.println("Thread开始====2秒等待设备实时事件");
-			ZkemSDKRealTime sdk = new ZkemSDKRealTime();
-			ActiveXComponent zkem = sdk.initSTA(address);
-			Thread.sleep(2000);
-			sdk.connect(address, zkem);
-			timer(sdk,zkem);
-			sdk.regEvent(zkem);
+			System.out.println("Thread开始====3秒等待设备实时事件");
+			regEvent();
+			Thread.sleep(3000);
 		} catch (Exception e) {
-			
+			regEvent();
+			System.out.println("线程异常，结束---");
 		}
 	}
-	
+
+	/**
+	 * 线程任务
+	 */
+	private void regEvent() {
+		ZkemSDKRealTime sdk = new ZkemSDKRealTime();
+		ActiveXComponent zkem = sdk.initSTA(address);
+		sdk.connect(address, zkem);
+		timer(sdk, zkem);
+		sdk.regEvent(zkem);
+	}
+
 	/**
 	 * 定时任务
+	 * 
 	 * @param sdk
 	 * @param zkem
 	 */
-	public void timer(ZkemSDKRealTime sdk,ActiveXComponent zkem) {
+	private void timer(ZkemSDKRealTime sdk, ActiveXComponent zkem) {
 		Calendar c = Calendar.getInstance();
 		Date time = c.getTime();
 		Timer timer = new Timer();
 		timer.scheduleAtFixedRate(new TimerTask() {
 			public void run() {
-				//使用获取机器ip方式，判断是否保持设备连接在线状态
+				// 使用获取机器ip方式，判断是否保持设备连接在线状态
 				String ip = sdk.GetDeviceIP(1, zkem);
-				if(ip==null){
-					System.out.println(address+"考勤机设备掉线，重连中-------");
-					sdk.connect(address, zkem);
+				if (ip == null) {
+					System.out.println(address + "考勤机设备异常，重连中-------");
+					boolean result = sdk.connect(address, zkem);
+					sdk.regEvent(zkem);
+				} else {
+					System.out.println(address + "考勤机设备正常，保持连接-------");
 				}
 			}
-		},time,60000);// 这里设定将延时每隔一分钟执行一次
+		}, time, 60000);// 这里设定将延时每隔一分钟执行一次
 	}
 
 }
