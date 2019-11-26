@@ -17,7 +17,7 @@ import com.bluewhite.ledger.entity.OrderProcurement;
 import com.bluewhite.system.user.entity.User;
 
 /**
- * 通用财务记账实体
+ * 财务账单
  * 
  * 1.报销，2采购应付和预算，3工资，4税点应付和预算，5物流，6应付借款本金，7应付社保和税费，8应入库周转的材料，9应收周转中的资金，10外发加工单账单
  * 

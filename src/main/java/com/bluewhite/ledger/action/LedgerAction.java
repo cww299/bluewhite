@@ -850,6 +850,23 @@ public class LedgerAction {
 	}
 	
 	
+	
+	/**
+	 * （生产计划部）将外发加工单和退货单糅合，得出该工序的实际任务数量，进行账单的生成
+	 * 
+	 * @param order
+	 * @return
+	 */
+	@RequestMapping(value = "/ledger/mixOutSoureRefund", method = RequestMethod.GET)
+	@ResponseBody
+	public CommonResponse mixOutSoureRefund(Long id) {
+		CommonResponse cr = new CommonResponse();
+//		orderOutSourceService.mixOutSoureRefund(id);
+		cr.setMessage("成功生成加工单账单");
+		return cr;
+	}
+	
+	
 	/**
 	 * （生产计划部）生成外发加工单账单
 	 * 
@@ -864,6 +881,8 @@ public class LedgerAction {
 		cr.setMessage("成功生成加工单账单");
 		return cr;
 	}
+	
+	
 	
 	
 	
