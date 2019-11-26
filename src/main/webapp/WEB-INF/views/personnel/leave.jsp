@@ -56,6 +56,13 @@
 						<td>申请时间:</td>
 						<td><input id="startTime" name="orderTimeBegin" style="width: 310px;" placeholder="请输入开始时间" class="layui-input laydate-icon"></td>
 						<td>&nbsp;&nbsp;</td>
+						<td>
+							<input type="checkbox" name="tradeDays" value="1" title="是否调休" lay-skin="primary">
+							<input type="checkbox" name="addSignIn" value="1" title="是否补签" lay-skin="primary">
+							<input type="checkbox" name="applyOvertime" value="1" title="是否加班" lay-skin="primary">
+							<input type="checkbox" name="holiday" value="1" title="是否请假" lay-skin="primary">
+						</td>
+						<td>&nbsp;&nbsp;</td>
 						<td> <div class="layui-inline">
 								<button class="layui-btn layuiadmin-btn-admin" lay-submit lay-filter="LAY-role-search">
 									<i class="layui-icon layui-icon-search layuiadmin-button-btn"></i>
@@ -876,6 +883,7 @@
 			//监听搜索
 			form.on('submit(LAY-role-search)', function(data) {
 				var field = data.field;
+				console.log(field)
 				if(field.orderTimeBegin){
 					var orderTime=field.orderTimeBegin.split('~');
 					field.orderTimeBegin=orderTime[0];
