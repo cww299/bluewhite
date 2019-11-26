@@ -60,9 +60,6 @@ public class SDKRunnable implements Runnable {
 					boolean result = sdk.connect(address, zkem);
 					sdk.regEvent(zkem);
 				}
-//				else {
-//					System.out.println(address + "考勤机设备正常，保持连接-------");
-//				}
 			}
 		}, time, 60000);// 这里设定将延时每隔一分钟执行一次
 	}
