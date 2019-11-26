@@ -239,6 +239,12 @@ public class OrderOutSource extends BaseEntity<Long> {
 	private String location;
 	
 	/**
+	 * 是否出账
+	 */
+	@Column(name = "charge_off")
+	private Integer chargeOff;
+	
+	/**
 	 * 实际任务数量(原始数量-退货数量)
 	 * 
 	 */
@@ -284,6 +290,22 @@ public class OrderOutSource extends BaseEntity<Long> {
 	
 	
 	
+
+	public Integer getChargeOff() {
+		return chargeOff;
+	}
+
+	public void setChargeOff(Integer chargeOff) {
+		this.chargeOff = chargeOff;
+	}
+
+	public Integer getActualNumber() {
+		return actualNumber;
+	}
+
+	public void setActualNumber(Integer actualNumber) {
+		this.actualNumber = actualNumber;
+	}
 
 	public Long getProcessingUserId() {
 		return processingUserId;

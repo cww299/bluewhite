@@ -136,11 +136,14 @@ public class DatesUtil {
 		cal.set(Calendar.YEAR, cal.get(Calendar.YEAR));
 		// 设置月份
 		cal.set(Calendar.MONTH, cal.get(Calendar.MONTH)-1);
-		cal.set(Calendar.DAY_OF_MONTH, 0);
 		cal.set(Calendar.HOUR_OF_DAY, 23);
 		cal.set(Calendar.MINUTE, 59);
 		cal.set(Calendar.SECOND, 59);
 		cal.set(Calendar.MILLISECOND, 999);
+		// 获取某月最大天数
+		int lastDay = cal.getActualMaximum(Calendar.DAY_OF_MONTH);
+		// 设置日历中月份的最大天数
+		cal.set(Calendar.DAY_OF_MONTH, lastDay);
 		return cal.getTime();
 	}
 
