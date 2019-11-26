@@ -17,6 +17,8 @@ import org.springframework.util.StringUtils;
 import com.bluewhite.base.BaseServiceImpl;
 import com.bluewhite.basedata.dao.BaseDataDao;
 import com.bluewhite.basedata.entity.BaseData;
+import com.bluewhite.common.Log;
+import com.bluewhite.common.MyExceptionHandlerExceptionResolver;
 import com.bluewhite.common.ServiceException;
 import com.bluewhite.common.SessionManager;
 import com.bluewhite.common.entity.CurrentUser;
@@ -25,6 +27,7 @@ import com.bluewhite.common.entity.PageResult;
 import com.bluewhite.common.utils.NumUtils;
 import com.bluewhite.common.utils.RoleUtil;
 import com.bluewhite.common.utils.StringUtil;
+import com.bluewhite.finance.consumption.entity.Consumption;
 import com.bluewhite.ledger.dao.MaterialRequisitionDao;
 import com.bluewhite.ledger.dao.OrderDao;
 import com.bluewhite.ledger.dao.OrderOutSourceDao;
@@ -38,7 +41,7 @@ import com.bluewhite.product.product.entity.Product;
 
 @Service
 public class OrderOutSourceServiceImpl extends BaseServiceImpl<OrderOutSource, Long> implements OrderOutSourceService {
-
+	
 	@Autowired
 	private OrderOutSourceDao dao;
 	@Autowired
@@ -382,6 +385,11 @@ public class OrderOutSourceServiceImpl extends BaseServiceImpl<OrderOutSource, L
 
 	@Override
 	public void saveOutSoureBills(OrderOutSource orderOutSource) {
+		//生成账单
+		Consumption Consumption = new Consumption();
+		
+		
+		
 		
 	}
 

@@ -11,7 +11,7 @@
         <!-- MaxBackupIndex 最多10个 ，多出1000个的日志文件会被自动清除-->
         <param name="MaxBackupIndex" value="10" />
         <!-- MaxFileSize 后缀可以是KB, MB 或者是 GB. 在日志文件到达该大小时，将会自动滚动，即将原来的内容移到mylog.log.1文件 -->
-        <param name="MaxFileSize" value="500KB" />
+        <param name="MaxFileSize" value="1GB" />
         <!-- 编码格式 -->
         <param name="Encoding" value = "UTF-8"/>
         <!--输出格式-->
@@ -20,17 +20,17 @@
         </layout>
     </appender>
     
-   <!-- 输出到控制台 -->
+   <!-- 输出到控制台
  	<appender name="CONSOLE" class="org.apache.log4j.ConsoleAppender">
 		<layout class="org.apache.log4j.PatternLayout">
 			<param name="ConversionPattern" value="[%d{yyyy-MM-dd HH:mm:ss:SSS}] [%c] [%L] %p [%m]%n" />
 		</layout>
 	</appender> 
-
+ -->
 
     <root>
         <priority value="ERROR" />
         <appender-ref ref="default" />
-     	<appender-ref ref="CONSOLE" />
+  <!--  <appender-ref ref="CONSOLE" /> -->
     </root>
 </log4j:configuration>
