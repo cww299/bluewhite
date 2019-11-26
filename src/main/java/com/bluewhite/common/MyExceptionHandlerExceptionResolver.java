@@ -19,7 +19,6 @@ import com.bluewhite.common.entity.ErrorCode;
  */
 @Component
 public class MyExceptionHandlerExceptionResolver implements HandlerExceptionResolver {
-
 	private static final Log log = Log.getLog(MyExceptionHandlerExceptionResolver.class);
 	
 	@Override
@@ -37,12 +36,12 @@ public class MyExceptionHandlerExceptionResolver implements HandlerExceptionReso
 			if (se.getErrorCode() != null) {
 				responseInfo.setCode(se.getErrorCode().getCode());
 			}
-			log.debug(exception);
+			log.error(exception);
 		}else if(exception instanceof ShiroException){	
-			log.debug(exception);
+			log.error(exception);
 			responseInfo.setMessage(exception.getCause().getMessage());
 		} else {
-			log.debug(exception);
+			log.error(exception);
 			responseInfo.setMessage("抱歉,服务器异常了,详情 [" + (exception == null ? "未知" : exception.getClass().getSimpleName().replace("Exception", "")) + "]");
 		}
 		view.setAttributesMap(responseInfo.toMap());
