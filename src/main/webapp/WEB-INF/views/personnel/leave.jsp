@@ -883,7 +883,6 @@
 			//监听搜索
 			form.on('submit(LAY-role-search)', function(data) {
 				var field = data.field;
-				console.log(field)
 				if(field.orderTimeBegin){
 					var orderTime=field.orderTimeBegin.split('~');
 					field.orderTimeBegin=orderTime[0];
@@ -892,17 +891,10 @@
 					field.orderTimeBegin='';
 					field.orderTimeEnd='';
 				}
-				$.ajax({
-					url: "${ctx}/personnel/getApplicationLeavePage",
-					type: "get",
-					data: field,
-					dataType: "json",
-					success: function(result) {
-						table.reload('tableData', {
-							where: field,
-							page:{curr:1},
-						});
-					}
+				field = $.extend({},{tradeDays:0,addSignIn:0,applyOvertime:0,holiday:0},field);
+				table.reload('tableData', {
+					where: field,
+					page:{curr:1},
 				});
 			});
 			//封装ajax主方法
