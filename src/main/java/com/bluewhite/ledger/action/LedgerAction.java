@@ -805,17 +805,32 @@ public class LedgerAction {
 	}
 	
 	/**
-	 * （生产计划部）生成加工单退货
+	 * （生产计划部）生成加工退货单
 	 * 
 	 * @param order
 	 * @return
 	 */
-	@RequestMapping(value = "/ledger/saveRefundBills", method = RequestMethod.GET)
+	@RequestMapping(value = "/ledger/saveRefundBills", method = RequestMethod.POST)
 	@ResponseBody
 	public CommonResponse saveRefundBills(RefundBills refundBills) {
 		CommonResponse cr = new CommonResponse();
 		refundBillsService.saveRefundBills(refundBills);
-		cr.setMessage("新增加工退货单成功");
+		cr.setMessage("新增成功");
+		return cr;
+	}
+	
+	/**
+	 * （生产计划部）修改加工退货单
+	 * 
+	 * @param order
+	 * @return
+	 */
+	@RequestMapping(value = "/ledger/updateRefundBills", method = RequestMethod.POST)
+	@ResponseBody
+	public CommonResponse updateRefundBills(RefundBills refundBills) {
+		CommonResponse cr = new CommonResponse();
+		refundBillsService.updateRefundBills(refundBills);
+		cr.setMessage("修改成功");
 		return cr;
 	}
 	
@@ -830,13 +845,36 @@ public class LedgerAction {
 	public CommonResponse deleteRefundBills(String ids) {
 		CommonResponse cr = new CommonResponse();
 		int count= refundBillsService.deleteRefundBills(ids);
-		cr.setMessage("成功删除"+count+"条加工退货单");
+		cr.setMessage("成功删除"+count+"条");
+		return cr;
+	}
+	
+	
+	/**
+	 * （生产计划部）生成外发加工单账单
+	 * 
+	 * @param order
+	 * @return
+	 */
+	@RequestMapping(value = "/ledger/saveOutSoureBills", method = RequestMethod.GET)
+	@ResponseBody
+	public CommonResponse saveOutSoureBills(OrderOutSource orderOutSource) {
+		CommonResponse cr = new CommonResponse();
+		orderOutSourceService.saveOutSoureBills(orderOutSource);
+		cr.setMessage("成功生成加工单账单");
 		return cr;
 	}
 	
 	
 	
-	
+	@RequestMapping(value = "/ledger/test", method = RequestMethod.GET)
+	@ResponseBody
+	public CommonResponse test(Long id) {
+		CommonResponse cr = new CommonResponse();
+		orderOutSourceService.test(id);
+		cr.setMessage("删除");
+		return cr;
+	}
 	
 	
 	/******************************库存管理**************************/
@@ -947,12 +985,6 @@ public class LedgerAction {
 		cr.setMessage("成功审核" + count + "条外发入库单，进行入库");
 		return cr;
 	}
-	
-	
-	
-	
-	
-	
 	
 	/**
 	 * 查看发货单
@@ -1136,6 +1168,7 @@ public class LedgerAction {
 
 
 	/***************************** 财务 **********************************/
+	
 
 	/**
 	 * 分页查看销售单

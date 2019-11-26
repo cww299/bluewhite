@@ -265,7 +265,7 @@ public class UserServiceImpl extends BaseServiceImpl<User, Long> implements User
 
 	@Override
 	public User findByNumber(String number) {
-		return userDao.findByNumber(number);
+		return userDao.findByNumberAndQuit(number,0);
 	}
 
 	@Override

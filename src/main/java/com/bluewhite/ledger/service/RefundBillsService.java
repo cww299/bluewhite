@@ -18,6 +18,12 @@ public interface RefundBillsService extends BaseCRUDService<RefundBills,Long>{
 	 */
 	public int deleteRefundBills(String ids);
 	
+	/**
+	 * 修改
+	 * @param refundBills
+	 */
+	public void updateRefundBills(RefundBills refundBills);
+	
 	
 
 }

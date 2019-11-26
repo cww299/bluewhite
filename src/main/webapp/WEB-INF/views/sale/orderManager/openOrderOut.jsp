@@ -220,7 +220,6 @@ layui.config({
 			toolbar:['<span class="layui-btn layui-btn-sm" lay-event="edit">修改加工单</span>',
 					 '<span class="layui-btn layui-btn-sm" lay-event="print">打印</span>',
 			         '<span class="layui-btn layui-btn-sm layui-btn-warm" lay-event="audit">审核</span>',
-			         '<span class="layui-btn layui-btn-sm layui-btn-normal" lay-event="flag">作废</span>',
 			         ].join(' '),
 			cols:[[
 			       { type:'checkbox',},

@@ -50,6 +50,7 @@ function(a) {
     d().autoRender(),
     layui.use("common"),
     a("index", {
-        openTabsPage: l
+        openTabsPage: l,
+        admin: n,
     })
 });

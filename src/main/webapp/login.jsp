@@ -61,7 +61,12 @@
 <script type="text/javascript" src="static/login/js/app.js"></script>
 <script src="static/js/vendor/jquery.cookie.js"></script>
 <script src="static/js/layer/layer.js"></script>
+<script src="${ctx }/static/layuiadmin/layui/layui.js"></script>
 <script type="text/javascript">
+layui.data('cookieMenu', {key:'openMenu',value:[],});
+layui.data('cookieMenu', {key:'thisMenu',value:'',});
+if(layui.data('cookieMenu').remeberMenu==='undefined')
+	layui.data('cookieMenu', {key:'remeberMenu',value:false,});
 $('#submitBtn').on('click',function(){
 	var index = layer.load(1, {
 		  shade: [0.5,'#black']

@@ -43,7 +43,7 @@ public interface UserDao extends BaseRepository<User, Long> {
 	 * @param number
 	 * @return
 	 */
-	public User findByNumber(String number);
+	public User findByNumberAndQuit(String number,Integer quit);
 	
 	/**
 	 * 查找出编号不为null的用户

@@ -303,7 +303,7 @@ public class AttendanceServiceImpl extends BaseServiceImpl<Attendance, Long> imp
 		attendance.setSourceMachine(address);
 		List<Attendance> attendanceList = findPageAttendance(attendance, new PageParameter(0, Integer.MAX_VALUE))
 				.getRows().stream()
-				.filter(Attendance -> (Attendance.getInOutMode() == null || Attendance.getInOutMode() != 2 || Attendance.getInOutMode() != 3))
+				.filter(Attendance -> (Attendance.getInOutMode() != null && Attendance.getInOutMode() == 1))
 				.collect(Collectors.toList());
 		if (attendanceList.size() > 0) {
 			dao.delete(attendanceList);
