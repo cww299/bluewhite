@@ -245,13 +245,6 @@ public class OrderOutSource extends BaseEntity<Long> {
 	private Integer chargeOff;
 	
 	/**
-	 * 实际任务数量(原始数量-退货数量)
-	 * 
-	 */
-	@Transient
-	private Integer actualNumber;
-	
-	/**
 	 * 产品name
 	 */
 	@Transient
@@ -297,14 +290,6 @@ public class OrderOutSource extends BaseEntity<Long> {
 
 	public void setChargeOff(Integer chargeOff) {
 		this.chargeOff = chargeOff;
-	}
-
-	public Integer getActualNumber() {
-		return actualNumber;
-	}
-
-	public void setActualNumber(Integer actualNumber) {
-		this.actualNumber = actualNumber;
 	}
 
 	public Long getProcessingUserId() {

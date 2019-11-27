@@ -57,7 +57,7 @@ public class RefundBills extends BaseEntity<Long>{
 	 * 退货数量
 	 */
 	@Column(name = "return_number")
-	private Double returnNumber;
+	private Integer returnNumber;
 	
 	/**
 	 * 退货日期
@@ -106,11 +106,11 @@ public class RefundBills extends BaseEntity<Long>{
 		OrderOutSource = orderOutSource;
 	}
 
-	public Double getReturnNumber() {
+	public Integer getReturnNumber() {
 		return returnNumber;
 	}
 
-	public void setReturnNumber(Double returnNumber) {
+	public void setReturnNumber(Integer returnNumber) {
 		this.returnNumber = returnNumber;
 	}
 
