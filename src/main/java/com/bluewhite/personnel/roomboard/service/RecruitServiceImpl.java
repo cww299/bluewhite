@@ -70,6 +70,10 @@ public class RecruitServiceImpl extends BaseServiceImpl<Recruit, Long> implement
 			if (!StringUtils.isEmpty(sundry.getOrgNameId())) {
 				predicate.add(cb.equal(root.get("orgName").get("id").as(Long.class), sundry.getOrgNameId()));
 			}
+			// 按招聘人查询
+			if (!StringUtils.isEmpty(sundry.getRecruitId())) {
+				predicate.add(cb.equal(root.get("recruitId").as(Long.class), sundry.getRecruitId()));
+			}
 			// 按职位查找
 			if (!StringUtils.isEmpty(sundry.getPositionId())) {
 				predicate.add(cb.equal(root.get("position").get("id").as(Long.class), sundry.getPositionId()));
@@ -139,8 +143,14 @@ public class RecruitServiceImpl extends BaseServiceImpl<Recruit, Long> implement
 
 	@Override
 	public List<Map<String, Object>> Statistics(Recruit recruit) {
-		List<Recruit> list = dao.findByTimeBetween(DatesUtil.getFirstDayOfMonth(recruit.getTime()),
-				DatesUtil.getLastDayOfMonth(recruit.getTime()));
+		Date OrderTimeBegin= recruit.getOrderTimeBegin();
+		Date OrderTimeEnd= recruit.getOrderTimeEnd();
+		if (recruit.getOrderTimeBegin()==null) {
+			OrderTimeBegin=DatesUtil.getFirstDayOfMonth(recruit.getTime());
+			OrderTimeEnd=DatesUtil.getLastDayOfMonth(recruit.getTime());
+		}
+		
+		List<Recruit> list = dao.findByTimeBetween(OrderTimeBegin,OrderTimeEnd);
 		List<Map<String, Object>> allList = new ArrayList<>();
 		Map<String, Object> allMap = null;
 		Map<Long, List<Recruit>> map = list.stream().filter(Recruit -> Recruit.getOrgNameId() != null)
@@ -157,7 +167,7 @@ public class RecruitServiceImpl extends BaseServiceImpl<Recruit, Long> implement
 			Long e = psList1.stream().filter(Recruit -> Recruit.getOrgNameId().equals(Recruit.getOrgNameId())
 					&& Recruit.getState() != null && Recruit.getState().equals(2)).count();// 拒绝入职
 			Long f = psList1.stream()
-					.filter(Recruit -> Recruit.getOrgNameId().equals(Recruit.getOrgNameId())
+	 				.filter(Recruit -> Recruit.getOrgNameId().equals(Recruit.getOrgNameId())
 							&& Recruit.getState() != null && Recruit.getUserId() != null && Recruit.getState().equals(1)
 							&& Recruit.getUser().getQuit().equals(0))
 					.count();// 已入职且在职
@@ -541,6 +551,136 @@ public class RecruitServiceImpl extends BaseServiceImpl<Recruit, Long> implement
 			}
 		}
 		return count;
+	}
+
+	@Override
+	public List<Map<String, Object>> quitDeposit(Recruit recruit) {
+		List<Map<String, Object>> maps = Statistics(recruit);
+		List<Map<String, Object>> allList = new ArrayList<>();
+		Map<String, Object> allMap = new HashMap<>();
+		List<User> list = userDao.findByQuitDateBetween(recruit.getOrderTimeBegin(),
+				recruit.getOrderTimeEnd());
+		double sum4 = list.stream().filter(User -> User.getQuit().equals(1)).count();// 离职人数
+		double sum = 0;// 应邀面试人数汇总
+		double sum1 = 0;// 面试合格人数汇总
+		double sum2 = 0;// 入职人数
+		double sum3 = 0;// 入职且离职
+		double sum6 = 0;// 入职且在职人数
+		User user = new User();
+		user.setIsAdmin(false);
+		double sum5 = userService.findUserList(user).stream()
+				.filter(User -> (User.getQuitDate() == null || User.getQuitDate().after(recruit.getOrderTimeBegin()))
+						&& (User.getEntry() != null && User.getEntry().before(recruit.getOrderTimeEnd())))
+				.count();// 初期人员
+		for (Map<String, Object> map : maps) {
+			Object aInteger = map.get("mod2");// 应邀面试人数
+			Object aInteger2 = map.get("mod3");// 面试合格人数
+			Object aInteger3 = map.get("mod8");// 已入职
+			Object aInteger4 = map.get("mod9");// 已入职且离职
+			Object aInteger5 = map.get("mod5");// 已入职且在职
+			sum = sum + Integer.parseInt(aInteger == null ? "" : aInteger.toString());// 应邀面试人数
+			sum1 = sum1 + Integer.parseInt(aInteger2 == null ? "" : aInteger2.toString());// 面试合格人数
+			sum2 = sum2 + Integer.parseInt(aInteger3 == null ? "" : aInteger3.toString());// 已入职
+			sum3 = sum3 + Integer.parseInt(aInteger4 == null ? "" : aInteger4.toString());// 已入职且离职
+			sum6 = sum6 + Integer.parseInt(aInteger5 == null ? "" : aInteger5.toString());// 已入职且在职
+		}
+		double a = 0;
+		if (sum != 0) {
+			a = NumUtils.div(sum1 * 100, sum, 2);// 面试通过率
+		}
+		double b = 0;
+		if (sum1 != 0) {
+			b = NumUtils.div(sum2 * 100, sum1, 2);// 入职率
+		}
+		double c = 0;
+		if (sum2 != 0) {
+			c = NumUtils.div(sum3 * 100, sum2, 2);// 短期流失率
+		}
+		double d = 0;
+		if ((sum5) != 0) {
+			d = NumUtils.div(sum4 * 100, (sum5), 2);// 离职率
+		}
+		double e = 0;
+		if (sum1 != 0) {
+			e = NumUtils.div(sum6 * 100, sum1, 2);// 留用率
+		}
+
+		allMap.put("md1", a);
+		allMap.put("md2", b);
+		allMap.put("md3", c);
+		allMap.put("md4", d);
+		allMap.put("md5", e);
+		allList.add(allMap);
+		return allList;
+	}
+
+	@Override
+	public List<Map<String, Object>> orgName(Recruit recruit) {
+		List<Recruit> list = dao.findByTimeBetween(recruit.getOrderTimeBegin(),recruit.getOrderTimeEnd());
+		List<Map<String, Object>> allList = new ArrayList<>();
+		Map<String, Object> allMap = null;
+		Map<Long, List<Recruit>> map = list.stream().filter(Recruit -> Recruit.getOrgNameId() != null)
+				.collect(Collectors.groupingBy(Recruit::getOrgNameId, Collectors.toList()));
+		for (Long ps1 : map.keySet()) {
+			allMap = new HashMap<>();
+			List<Recruit> psList1 = map.get(ps1);
+			Long sum = psList1.stream().filter(Recruit -> Recruit.getOrgNameId().equals(Recruit.getOrgNameId())
+					&& Recruit.getType() != null && Recruit.getType().equals(1)).count();// 应邀面试
+			Long sum1 = psList1.stream().filter(Recruit -> Recruit.getOrgNameId().equals(Recruit.getOrgNameId())
+					&& Recruit.getAdopt() != null && Recruit.getAdopt().equals(1)).count();// 面试合格
+			Long sum2 = psList1.stream().filter(Recruit -> Recruit.getOrgNameId().equals(Recruit.getOrgNameId())
+					&& Recruit.getState() != null && Recruit.getState().equals(1)).count();// 已入职
+			Long sum3 = psList1.stream()
+					.filter(Recruit -> Recruit.getOrgNameId().equals(Recruit.getOrgNameId())
+							&& Recruit.getState() != null && Recruit.getUserId() != null && Recruit.getState().equals(1)
+							&& Recruit.getUser().getQuit().equals(1))
+					.count();// 已入职且离职
+			Long sum6 = psList1.stream()
+	 				.filter(Recruit -> Recruit.getOrgNameId().equals(Recruit.getOrgNameId())
+							&& Recruit.getState() != null && Recruit.getUserId() != null && Recruit.getState().equals(1)
+							&& Recruit.getUser().getQuit().equals(0))
+					.count();// 已入职且在职
+			List<User> list1 = userDao.findByQuitDateBetween(recruit.getOrderTimeBegin(),
+					recruit.getOrderTimeEnd());
+			double sum4 = list1.stream().filter(User ->User.getOrgNameId().equals(ps1) && User.getQuit().equals(1)).count();// 离职人数
+			User user = new User();
+			user.setIsAdmin(false);
+			user.setOrgNameId(ps1);
+			double sum5 = userService.findUserList(user).stream()
+					.filter(User -> (User.getQuitDate() == null || User.getQuitDate().after(recruit.getOrderTimeBegin()))
+							&& (User.getEntry() != null && User.getEntry().before(recruit.getOrderTimeEnd())))
+					.count();// 初期人员
+			double a = 0;
+			if (sum != 0) {
+				a = NumUtils.div(sum1 * 100, sum, 2);// 面试通过率
+			}
+			double b = 0;
+			if (sum1 != 0) {
+				b = NumUtils.div(sum2 * 100, sum1, 2);// 入职率
+			}
+			double c = 0;
+			if (sum2 != 0) {
+				c = NumUtils.div(sum3 * 100, sum2, 2);// 短期流失率
+			}
+			double d = 0;
+			if ((sum5) != 0) {
+				d = NumUtils.div(sum4 * 100, (sum5), 2);// 离职率
+			}
+			double e = 0;
+			if (sum1 != 0) {
+				e = NumUtils.div(sum6 * 100, sum1, 2);// 留用率
+			}
+			BaseData baseData = baseDataDao.findOne(ps1);
+			String string = baseData.getName();
+			allMap.put("md1", a);
+			allMap.put("md2", b);
+			allMap.put("md3", c);
+			allMap.put("md4", d);
+			allMap.put("md5", e);
+			allMap.put("orgName",string);
+			allList.add(allMap);
+		}
+		return allList;
 	}
 
 }
