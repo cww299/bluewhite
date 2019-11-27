@@ -2,7 +2,9 @@ package com.bluewhite.ledger.service;
 
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -25,12 +27,17 @@ import com.bluewhite.common.entity.PageResult;
 import com.bluewhite.common.utils.NumUtils;
 import com.bluewhite.common.utils.RoleUtil;
 import com.bluewhite.common.utils.StringUtil;
+import com.bluewhite.finance.consumption.entity.Consumption;
 import com.bluewhite.ledger.dao.MaterialRequisitionDao;
 import com.bluewhite.ledger.dao.OrderDao;
 import com.bluewhite.ledger.dao.OrderOutSourceDao;
+import com.bluewhite.ledger.dao.ProcessPriceDao;
+import com.bluewhite.ledger.dao.RefundBillsDao;
 import com.bluewhite.ledger.entity.MaterialRequisition;
 import com.bluewhite.ledger.entity.Order;
 import com.bluewhite.ledger.entity.OrderOutSource;
+import com.bluewhite.ledger.entity.ProcessPrice;
+import com.bluewhite.ledger.entity.RefundBills;
 import com.bluewhite.onlineretailers.inventory.dao.InventoryDao;
 import com.bluewhite.onlineretailers.inventory.entity.Inventory;
 import com.bluewhite.product.product.entity.Product;
@@ -48,34 +55,55 @@ public class OrderOutSourceServiceImpl extends BaseServiceImpl<OrderOutSource, L
 	private BaseDataDao baseDataDao;
 	@Autowired
 	private MaterialRequisitionDao materialRequisitionDao;
+	@Autowired
+	private RefundBillsDao refundBillsDao;
+	@Autowired
+	private ProcessPriceDao processPriceDao;
 
 	@Override
 	@Transactional
 	public void saveOrderOutSource(OrderOutSource orderOutSource) {
 		if (orderOutSource.getOrderId() != null) {
 			Order order = orderDao.findOne(orderOutSource.getOrderId());
-			if(order.getPrepareEnough()==0){
+			if (order.getPrepareEnough() == 0) {
 				throw new ServiceException("当前下单合同备料不足，无法进行外发");
 			}
 			List<OrderOutSource> orderOutSourceList = dao.findByOrderId(orderOutSource.getOrderId());
-			//将工序任务变成set存入
-			if(!StringUtils.isEmpty(orderOutSource.getOutsourceTaskIds())){
+			// 将工序任务变成set存入，存在退货情况是，要去除退货数量
+			if (!StringUtils.isEmpty(orderOutSource.getOutsourceTaskIds())) {
 				String[] idStrings = orderOutSource.getOutsourceTaskIds().split(",");
-				if(idStrings.length>0){
-					for(String ids : idStrings ){
+				if (idStrings.length > 0) {
+					for (String ids : idStrings) {
 						Long id = Long.parseLong(ids);
 						BaseData baseData = baseDataDao.findOne(id);
-						//对加工单数量进行限制判断，加工单数量和工序挂钩，每个工序最大数量为订单数量，无法超出
-						//工序可以由不同的加工单加工，但是不能超出订单数量
-						double sum = orderOutSourceList.stream().filter(o->{
-							Set<BaseData> baseDataSet = o.getOutsourceTask().stream().filter(BaseData->baseData.getId().equals(id)).collect(Collectors.toSet());
-							if(baseDataSet.size()>0){
+						//新增加工单工序的原始价格数据
+						ProcessPrice processPrice  = new ProcessPrice();
+						processPrice.setOrderOutSourceId(orderOutSource.getId());
+						processPrice.setProcessTaskId(id);
+						processPrice.setCustomerId(orderOutSource.getCustomerId());
+						processPrice.setPrice(0.0);
+						processPriceDao.save(processPrice);
+						
+						// 对加工单数量进行限制判断，加工单数量和工序挂钩，每个工序最大数量为订单数量，无法超出
+						// 工序可以由不同的加工单加工，但是不能超出订单数量
+						// 改工序已经加工总数
+						int sumNumber = orderOutSourceList.stream().filter(o -> {
+							Set<BaseData> baseDataSet = o.getOutsourceTask().stream()
+									.filter(BaseData -> baseData.getId().equals(id)).collect(Collectors.toSet());
+							if (baseDataSet.size() > 0) {
 								return true;
 							}
 							return false;
 						}).mapToInt(OrderOutSource::getProcessNumber).sum();
-						if((sum+orderOutSource.getProcessNumber()) > order.getNumber()){
-							throw new ServiceException(baseData.getName()+"的任务工序数量不足，无法生成加工单 ");
+						// 查找改加工单该工序的退货单
+						List<Integer> returnNumberList = refundBillsDao.getReturnNumber(orderOutSource.getOrderId(),
+								id);
+						// 退货总数
+						Integer returnNumber = returnNumberList.stream().reduce(Integer::sum).orElse(0);
+						// 实际数量=(总加工数-退货数)
+						int actualNumber = sumNumber - returnNumber;
+						if (actualNumber > order.getNumber()) {
+							throw new ServiceException(baseData.getName() + "的任务工序数量不足，无法生成加工单 ");
 						}
 						orderOutSource.getOutsourceTask().add(baseData);
 					}
@@ -94,7 +122,7 @@ public class OrderOutSourceServiceImpl extends BaseServiceImpl<OrderOutSource, L
 	public PageResult<OrderOutSource> findPages(OrderOutSource param, PageParameter page) {
 		CurrentUser cu = SessionManager.getUserSession();
 		Long warehouseTypeDeliveryId = RoleUtil.getWarehouseTypeDelivery(cu.getRole());
-		if(warehouseTypeDeliveryId!=null){
+		if (warehouseTypeDeliveryId != null) {
 			param.setWarehouseTypeId(warehouseTypeDeliveryId);
 		}
 		Page<OrderOutSource> pages = dao.findAll((root, query, cb) -> {
@@ -120,21 +148,23 @@ public class OrderOutSourceServiceImpl extends BaseServiceImpl<OrderOutSource, L
 				predicate.add(cb.equal(root.get("inWarehouseType").as(Long.class), param.getInWarehouseType()));
 			}
 			// 是否外发
-			if (param.getOutsource()!=null) {
+			if (param.getOutsource() != null) {
 				predicate.add(cb.equal(root.get("outsource").as(Integer.class), param.getOutsource()));
 			}
 			// 按跟单人
 			if (!StringUtils.isEmpty(param.getUserName())) {
-				predicate.add(cb.like(root.get("user").get("userName").as(String.class), "%" + param.getUserName() + "%"));
+				predicate.add(
+						cb.like(root.get("user").get("userName").as(String.class), "%" + param.getUserName() + "%"));
 			}
 			// 按客户
 			if (!StringUtils.isEmpty(param.getCustomerName())) {
-				predicate.add(cb.like(root.get("customer").get("name").as(String.class),"%" + param.getCustomerName() + "%"));
+				predicate.add(cb.like(root.get("customer").get("name").as(String.class),
+						"%" + param.getCustomerName() + "%"));
 			}
 			// 按加工点
 			if (!StringUtils.isEmpty(param.getOutSourceNumber())) {
-				predicate.add(cb.like(root.get("outSourceNumber").as(String.class),
-						"%" + param.getOutSourceNumber() + "%"));
+				predicate.add(
+						cb.like(root.get("outSourceNumber").as(String.class), "%" + param.getOutSourceNumber() + "%"));
 			}
 			// 是否作废
 			if (param.getFlag() != null) {
@@ -192,7 +222,7 @@ public class OrderOutSourceServiceImpl extends BaseServiceImpl<OrderOutSource, L
 				for (int i = 0; i < idArr.length; i++) {
 					Long id = Long.parseLong(idArr[i]);
 					OrderOutSource orderOutSource = findOne(id);
-					if(orderOutSource.getAudit()==1){
+					if (orderOutSource.getAudit() == 1) {
 						throw new ServiceException("已审核，无法删除");
 					}
 					delete(id);
@@ -207,33 +237,42 @@ public class OrderOutSourceServiceImpl extends BaseServiceImpl<OrderOutSource, L
 	@Transactional
 	public void updateOrderOutSource(OrderOutSource orderOutSource) {
 		OrderOutSource ot = findOne(orderOutSource.getId());
-		if(ot.getAudit()==1){
+		if (ot.getAudit() == 1) {
 			throw new ServiceException("已审核，无法修改");
 		}
 		update(orderOutSource, ot, "");
 		Order order = orderDao.findOne(ot.getOrderId());
 		List<OrderOutSource> orderOutSourceList = dao.findByOrderId(ot.getOrderId());
-		//将工序任务变成set存入
-		if(!StringUtils.isEmpty(ot.getOutsourceTaskIds())){
+		// 将工序任务变成set存入
+		if (!StringUtils.isEmpty(ot.getOutsourceTaskIds())) {
 			String[] idStrings = ot.getOutsourceTaskIds().split(",");
-				if(idStrings.length>0){
-					for(String ids : idStrings ){
-						Long id = Long.parseLong(ids);
-						BaseData baseData = baseDataDao.findOne(id);
-						//对加工单数量进行限制判断，加工单数量和工序挂钩，每个工序最大数量为订单数量，无法超出
-						//工序可以由不同的加工单加工，但是不能超出订单数量
-						double sum = orderOutSourceList.stream().filter(o->{
-							Set<BaseData> baseDataSet = o.getOutsourceTask().stream().filter(BaseData->baseData.getId().equals(id)).collect(Collectors.toSet());
-							if(baseDataSet.size()>0){
-								return true;
-							}
-							return false;
-						}).mapToInt(OrderOutSource::getProcessNumber).sum();
-						if((sum+ot.getProcessNumber()) > order.getNumber()){
-							throw new ServiceException(baseData.getName()+"的任务工序数量不足，无法生成加工单 ");
+			if (idStrings.length > 0) {
+				for (String ids : idStrings) {
+					Long id = Long.parseLong(ids);
+					BaseData baseData = baseDataDao.findOne(id);
+					// 对加工单数量进行限制判断，加工单数量和工序挂钩，每个工序最大数量为订单数量，无法超出
+					// 工序可以由不同的加工单加工，但是不能超出订单数量
+					int sumNumber = orderOutSourceList.stream().filter(o -> {
+						Set<BaseData> baseDataSet = o.getOutsourceTask().stream()
+								.filter(BaseData -> baseData.getId().equals(id)).collect(Collectors.toSet());
+						if (baseDataSet.size() > 0) {
+							return true;
 						}
-						ot.getOutsourceTask().add(baseData);
+						return false;
+					}).mapToInt(OrderOutSource::getProcessNumber).sum();
+
+					// 查找改加工单该工序的退货单
+					List<Integer> returnNumberList = refundBillsDao.getReturnNumber(orderOutSource.getOrderId(), id);
+					// 退货总数
+					Integer returnNumber = returnNumberList.stream().reduce(Integer::sum).orElse(0);
+					// 实际数量=(总加工数-退货数)
+					int actualNumber = sumNumber - returnNumber;
+
+					if (actualNumber > order.getNumber()) {
+						throw new ServiceException(baseData.getName() + "的任务工序数量不足，无法生成加工单 ");
 					}
+					ot.getOutsourceTask().add(baseData);
+				}
 			}
 		}
 		save(ot);
@@ -267,17 +306,17 @@ public class OrderOutSourceServiceImpl extends BaseServiceImpl<OrderOutSource, L
 				for (int i = 0; i < idArr.length; i++) {
 					Long id = Long.parseLong(idArr[i]);
 					OrderOutSource orderOutSource = findOne(id);
-					if(orderOutSource.getFlag()==1){
-						throw new ServiceException("第"+(i+1)+"条单据已作废，无法审核");
+					if (orderOutSource.getFlag() == 1) {
+						throw new ServiceException("第" + (i + 1) + "条单据已作废，无法审核");
 					}
-					if(orderOutSource.getAudit()==1){
-						throw new ServiceException("第"+(i+1)+"条单据已审核，请勿重复审核");
+					if (orderOutSource.getAudit() == 1) {
+						throw new ServiceException("第" + (i + 1) + "条单据已审核，请勿重复审核");
 					}
-					if(orderOutSource.getOutGoingTime()==null){
-						throw new ServiceException("第"+(i+1)+"条单据无外发时间，无法审核");
+					if (orderOutSource.getOutGoingTime() == null) {
+						throw new ServiceException("第" + (i + 1) + "条单据无外发时间，无法审核");
 					}
 					if (orderOutSource.getWarehouseTypeId() == null) {
-						throw new ServiceException("第"+(i+1)+"条单据未填写预计入库仓库，无法审核，请先确认入库仓库");
+						throw new ServiceException("第" + (i + 1) + "条单据未填写预计入库仓库，无法审核，请先确认入库仓库");
 					}
 					orderOutSource.setAudit(1);
 					save(orderOutSource);
@@ -292,7 +331,7 @@ public class OrderOutSourceServiceImpl extends BaseServiceImpl<OrderOutSource, L
 	public void updateInventoryOrderOutSource(OrderOutSource orderOutSource) {
 		if (orderOutSource.getId() != null) {
 			OrderOutSource ot = findOne(orderOutSource.getId());
-			if(ot.getArrival()==1){
+			if (ot.getArrival() == 1) {
 				throw new ServiceException("已入库，无法修改");
 			}
 			update(orderOutSource, ot, "");
@@ -308,21 +347,23 @@ public class OrderOutSourceServiceImpl extends BaseServiceImpl<OrderOutSource, L
 				for (int i = 0; i < idArr.length; i++) {
 					Long id = Long.parseLong(idArr[i]);
 					OrderOutSource orderOutSource = findOne(id);
-					if(orderOutSource.getArrival()==1){
-						throw new ServiceException("第"+(i+1)+"条单据已入库，请勿重复入库");
+					if (orderOutSource.getArrival() == 1) {
+						throw new ServiceException("第" + (i + 1) + "条单据已入库，请勿重复入库");
 					}
 					if (orderOutSource.getInWarehouseTypeId() == null) {
-						throw new ServiceException("第"+(i+1)+"条单据未填写入库仓库，无法入库，请先确认入库仓库");
+						throw new ServiceException("第" + (i + 1) + "条单据未填写入库仓库，无法入库，请先确认入库仓库");
 					}
 					// 库存表
 					Product product = orderOutSource.getOrder().getProduct();
-					if(product!=null){
-						List<Inventory> inventoryList = product.getInventorys().stream().filter(Inventory->Inventory.getWarehouseTypeId().equals(orderOutSource.getInWarehouseTypeId())).collect(Collectors.toList());
-						//当前仓库只存在一种
+					if (product != null) {
+						List<Inventory> inventoryList = product.getInventorys().stream().filter(Inventory -> Inventory
+								.getWarehouseTypeId().equals(orderOutSource.getInWarehouseTypeId()))
+								.collect(Collectors.toList());
+						// 当前仓库只存在一种
 						Inventory inventory = null;
-						if(inventoryList.size()>0){
+						if (inventoryList.size() > 0) {
 							inventory = inventoryList.get(0);
-						}else{
+						} else {
 							inventory = new Inventory();
 							inventory.setProductId(orderOutSource.getOrder().getProductId());
 							inventory.setWarehouseTypeId(orderOutSource.getInWarehouseTypeId());
@@ -343,14 +384,74 @@ public class OrderOutSourceServiceImpl extends BaseServiceImpl<OrderOutSource, L
 	@Override
 	public int judgeOrderOutSource(Long orderid) {
 		List<MaterialRequisition> materialRequisitionList = materialRequisitionDao.findByOrderId(orderid);
-		if(materialRequisitionList.size()>0){
-			long size = materialRequisitionList.stream().filter( MaterialRequisition->MaterialRequisition.getAudit()==0).count();
-			if(size>0){
+		if (materialRequisitionList.size() > 0) {
+			long size = materialRequisitionList.stream()
+					.filter(MaterialRequisition -> MaterialRequisition.getAudit() == 0).count();
+			if (size > 0) {
 				return -1;
 			}
-		}else{
+		} else {
 			return 0;
 		}
 		return 1;
+	}
+
+	@Override
+	public void saveOutSoureBills(OrderOutSource orderOutSource) {
+		// 生成账单
+		Consumption Consumption = new Consumption();
+		
+		
+		
+		
+		
+		
+		
+		
+		
+
+	}
+
+	@Override
+	public List<Map<String, Object>> mixOutSoureRefund(Long id) {
+		List<Map<String, Object>> mixList = new ArrayList<>();
+		// 加工单
+		OrderOutSource orderOutSource = findOne(id);
+		// 退货单
+		List<RefundBills> refundBills = refundBillsDao.findByOrderOutSourceId(id);
+		// 加工单工序
+		Set<BaseData> outsourceTask = orderOutSource.getOutsourceTask();
+		// 加工单工序对应价格
+		List<ProcessPrice> processPriceList = processPriceDao.findByOrderOutSourceId(id);
+		outsourceTask.stream().forEach(outB -> {
+			Map<String, Object> map = new HashMap<>();
+			List<ProcessPrice> pList = processPriceList.stream()
+					.filter(ProcessPrice -> ProcessPrice.getProcessTaskId().equals(outB.getId()))
+					.collect(Collectors.toList());
+			// 工序id
+			map.put("id", outB.getId());
+			// 工序名称
+			map.put("name", outB.getName());
+			// 工序价格
+			map.put("price", pList.size() > 0 ? pList.get(0).getPrice() : 0);
+			int returnNumber = 0;
+			// 循环退货单，将退货单的工序取出
+			for (RefundBills r : refundBills) {
+				// 当加工单工序等于退货单工序时，更新加工单工序的任务数量
+				Set<BaseData> setBaseData = r.getOutsourceTask().stream()
+						.filter(BaseData -> BaseData.getId().equals(outB.getId())).collect(Collectors.toSet());
+				returnNumber += orderOutSource.getProcessNumber() - (setBaseData.size() > 0 ? r.getReturnNumber() : 0);
+			}
+			//工序数量
+			map.put("number",returnNumber);
+		});
+		return mixList;
+	}
+
+	@Override
+	public void updateProcessPrice(ProcessPrice processPrice) {
+		ProcessPrice ot = processPriceDao.findOne(processPrice.getId());
+		ot.setPrice(processPrice.getPrice());
+		processPriceDao.save(ot);
 	}
 }

@@ -30,6 +30,7 @@ import com.bluewhite.ledger.entity.OrderProcurement;
 import com.bluewhite.ledger.entity.Packing;
 import com.bluewhite.ledger.entity.PackingChild;
 import com.bluewhite.ledger.entity.PackingMaterials;
+import com.bluewhite.ledger.entity.ProcessPrice;
 import com.bluewhite.ledger.entity.ReceivedMoney;
 import com.bluewhite.ledger.entity.RefundBills;
 import com.bluewhite.ledger.entity.Sale;
@@ -238,6 +239,7 @@ public class LedgerAction {
 				.addRetainTerm(Customer.class, "id", "name")
 				.addRetainTerm(Product.class, "id", "name","number")
 				.addRetainTerm(BaseOne.class, "id", "name")
+				.addRetainTerm(BaseData.class, "id", "name")
 				.addRetainTerm(User.class, "id", "userName");
 	}
 	
@@ -805,21 +807,99 @@ public class LedgerAction {
 	}
 	
 	/**
-	 * （生产计划部）加工单退货
+	 * （生产计划部）生成加工退货单
 	 * 
 	 * @param order
 	 * @return
 	 */
-	@RequestMapping(value = "/ledger/saveRefundBills", method = RequestMethod.GET)
+	@RequestMapping(value = "/ledger/saveRefundBills", method = RequestMethod.POST)
 	@ResponseBody
 	public CommonResponse saveRefundBills(RefundBills refundBills) {
 		CommonResponse cr = new CommonResponse();
 		refundBillsService.saveRefundBills(refundBills);
-		cr.setMessage("新增加工退货单成功");
+		cr.setMessage("新增成功");
+		return cr;
+	}
+	
+	/**
+	 * （生产计划部）修改加工退货单
+	 * 
+	 * @param order
+	 * @return
+	 */
+	@RequestMapping(value = "/ledger/updateRefundBills", method = RequestMethod.POST)
+	@ResponseBody
+	public CommonResponse updateRefundBills(RefundBills refundBills) {
+		CommonResponse cr = new CommonResponse();
+		refundBillsService.updateRefundBills(refundBills);
+		cr.setMessage("修改成功");
+		return cr;
+	}
+	
+	/**
+	 * （生产计划部）删除加工退货单
+	 * 
+	 * @param order
+	 * @return
+	 */
+	@RequestMapping(value = "/ledger/deleteRefundBills", method = RequestMethod.GET)
+	@ResponseBody
+	public CommonResponse deleteRefundBills(String ids) {
+		CommonResponse cr = new CommonResponse();
+		int count= refundBillsService.deleteRefundBills(ids);
+		cr.setMessage("成功删除"+count+"条");
 		return cr;
 	}
 	
 	
+	
+	/**
+	 * （生产计划部）将外发加工单,退货单,加工单价格糅合，得出该工序的实际任务数量和价格，进行账单的生成
+	 * 
+	 * @param order
+	 * @return
+	 */
+	@RequestMapping(value = "/ledger/mixOutSoureRefund", method = RequestMethod.GET)
+	@ResponseBody
+	public CommonResponse mixOutSoureRefund(Long id) {
+		CommonResponse cr = new CommonResponse();
+		cr.setData(orderOutSourceService.mixOutSoureRefund(id));
+		cr.setMessage("成功");
+		return cr;
+	}
+	
+	
+	/**
+	 * （生产计划部）对工序价值进行新增或者修改
+	 * 
+	 * @param order
+	 * @return
+	 */
+	@RequestMapping(value = "/ledger/updateProcessPrice", method = RequestMethod.GET)
+	@ResponseBody
+	public CommonResponse updateProcessPrice(ProcessPrice processPrice) {
+		CommonResponse cr = new CommonResponse();
+		orderOutSourceService.updateProcessPrice(processPrice);
+		cr.setMessage("修改成功");
+		return cr;
+	}
+	
+	
+	
+	/**
+	 * （生产计划部）生成外发加工单账单
+	 * 
+	 * @param order
+	 * @return
+	 */
+	@RequestMapping(value = "/ledger/saveOutSoureBills", method = RequestMethod.POST)
+	@ResponseBody
+	public CommonResponse saveOutSoureBills(OrderOutSource orderOutSource) {
+		CommonResponse cr = new CommonResponse();
+		orderOutSourceService.saveOutSoureBills(orderOutSource);
+		cr.setMessage("成功生成加工单账单");
+		return cr;
+	}
 	
 	
 	
@@ -932,12 +1012,6 @@ public class LedgerAction {
 		cr.setMessage("成功审核" + count + "条外发入库单，进行入库");
 		return cr;
 	}
-	
-	
-	
-	
-	
-	
 	
 	/**
 	 * 查看发货单
@@ -1121,6 +1195,7 @@ public class LedgerAction {
 
 
 	/***************************** 财务 **********************************/
+	
 
 	/**
 	 * 分页查看销售单

@@ -238,6 +238,11 @@ public class OrderOutSource extends BaseEntity<Long> {
 	@Column(name = "location")
 	private String location;
 	
+	/**
+	 * 是否出账
+	 */
+	@Column(name = "charge_off")
+	private Integer chargeOff;
 	
 	/**
 	 * 产品name
@@ -278,6 +283,14 @@ public class OrderOutSource extends BaseEntity<Long> {
 	
 	
 	
+
+	public Integer getChargeOff() {
+		return chargeOff;
+	}
+
+	public void setChargeOff(Integer chargeOff) {
+		this.chargeOff = chargeOff;
+	}
 
 	public Long getProcessingUserId() {
 		return processingUserId;

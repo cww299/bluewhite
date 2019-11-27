@@ -58,7 +58,7 @@ public class AttendancePayAction {
 	@RequestMapping(value = "/finance/addAttendance", method = RequestMethod.POST)
 	@ResponseBody
 	@Transactional
-	public CommonResponse allAttendancePay(HttpServletRequest request, AttendancePay attendancePay) {
+	public CommonResponse addAttendance(HttpServletRequest request, AttendancePay attendancePay) {
 		CommonResponse cr = new CommonResponse();
 		if (!StringUtils.isEmpty(attendancePay.getUsersId())) {
 			int count= attendancePayService.addAttendancePay(attendancePay);
@@ -76,12 +76,30 @@ public class AttendancePayAction {
 	 */
 	@RequestMapping(value = "/finance/updateAttendance", method = RequestMethod.GET)
 	@ResponseBody
-	public CommonResponse updateAttendance(HttpServletRequest request, AttendancePay attendancePay) {
+	public CommonResponse updateAttendance(AttendancePay attendancePay) {
 		CommonResponse cr = new CommonResponse();
 		// 修改
 		if (attendancePay.getId()!=null) {
-			attendancePayService.updateAttendance(attendancePay,request);
+			attendancePayService.updateAttendance(attendancePay);
 			cr.setMessage("修改成功");
+		} else {
+			cr.setCode(ErrorCode.ILLEGAL_ARGUMENT.getCode());
+			cr.setMessage("考勤流水不能为空");
+		}
+		return cr;
+	}
+	
+	/**
+	 * 核对预警取消错误预预警
+	 * 
+	 */
+	@RequestMapping(value = "/finance/checkAttendance", method = RequestMethod.GET)
+	@ResponseBody
+	public CommonResponse checkAttendance(String ids) {
+		CommonResponse cr = new CommonResponse();
+		if (!StringUtils.isEmpty(ids)) {
+			int count = attendancePayService.checkAttendance(ids);
+			cr.setMessage("成功核对"+count+"条错误考勤");
 		} else {
 			cr.setCode(ErrorCode.ILLEGAL_ARGUMENT.getCode());
 			cr.setMessage("考勤流水不能为空");

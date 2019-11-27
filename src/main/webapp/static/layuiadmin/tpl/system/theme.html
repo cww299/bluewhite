@@ -1,16 +1,19 @@
-
+<style>
+	.remeberLable{
+		width: 88px;
+		padding:9px 0;
+		cursor: pointer;
+	}
+</style>
 <!-- 主题设置模板 -->
-
 <script type="text/html" template lay-done="layui.data.theme();">
   {{# 
     var local = layui.data(layui.setter.tableName)
     ,theme = local.theme || {}
     ,themeColorIndex =  parseInt((theme && theme.color) ? theme.color.index : 0) || 0;
   }}
-
-  <div class="layui-card-header">
-    配色方案
-  </div>
+  <div class="layui-card-header">设置</div>
+  <div class="layui-card-header">主题</div>
   <div class="layui-card-body layadmin-setTheme">
     <ul class="layadmin-setTheme-color">
       {{# layui.each(layui.setter.theme.color, function(index, item){ }}
@@ -24,12 +27,24 @@
       {{# }); }}
     </ul>
   </div>
+  <div class="layui-card-header">其他</div>
+  <div class="layui-form">
+    <div class="layui-form-item">
+      <label class="layui-form-label remeberLable">
+		<i class="layui-icon layui-icon-tips"></i>Tab记忆：</label>
+      <div class="layui-input-inline" style="width:65px;">
+        <input type="checkbox" name="switch" lay-skin="switch" lay-text="开启|关闭" 
+		       id="system-remeber-switch" lay-filter="system-remeber-switch">
+      </div>
+	  <div class="layui-form-mid layui-word-aux">切换后刷新生效</div>	
+    </div>
+  </div>
 </script>
-
 <script>
 layui.data.theme = function(){
-  layui.use('form', function(){
+  layui.use(['form','jquery'], function(){
     var form = layui.form
+    ,$ = layui.jquery
     ,admin = layui.admin;
     
     //监听隐藏开关
@@ -38,6 +53,34 @@ layui.data.theme = function(){
         hideSideIcon: this.checked
       })
     });
+    
+    form.on('switch(system-remeber-switch)', function(obj){
+      var checked = obj.elem.checked;
+      layui.data('cookieMenu', {key:'openMenu',value:[],});
+      layui.data('cookieMenu', {key:'thisMenu',value:'',});
+      layui.data('cookieMenu', {key:'remeberMenu',value: checked,});
+    });
+    var tipWin;
+    $('.remeberLable').mouseover(function(){
+    	var elem = $(this);
+    	var html = [
+	            '<div class="tipProcurement">',
+	            	(function(){
+	            		var html = '';
+            			html= '<p>开启该功能后，页面刷新将保留刷新前打开的功能页面。</p>';
+	            		return html;
+	            	})(),
+	            '</div>',
+            ].join('');
+    	tipWin = layer.tips(html, elem,{
+			time:0,
+			tips: [4, 'rgb(95, 184, 120)'],
+		})
+    }).mouseleave(function(){
+    	layer.close(tipWin);
+    })
+    $('#system-remeber-switch').prop('checked',layui.data('cookieMenu').remeberMenu);
+    form.render();
   });
 };
 </script>

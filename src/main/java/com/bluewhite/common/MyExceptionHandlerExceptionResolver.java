@@ -19,9 +19,9 @@ import com.bluewhite.common.entity.ErrorCode;
  */
 @Component
 public class MyExceptionHandlerExceptionResolver implements HandlerExceptionResolver {
-
-	private static Logger logger = Logger.getLogger(MyExceptionHandlerExceptionResolver.class);
-
+	
+	private static final Log log = Log.getLog(MyExceptionHandlerExceptionResolver.class);
+	
 	@Override
 	public ModelAndView resolveException(HttpServletRequest request, HttpServletResponse response, Object handler,
 			Exception exception) {
@@ -37,9 +37,12 @@ public class MyExceptionHandlerExceptionResolver implements HandlerExceptionReso
 			if (se.getErrorCode() != null) {
 				responseInfo.setCode(se.getErrorCode().getCode());
 			}
+			log.error(exception);
 		}else if(exception instanceof ShiroException){	
+			log.error("权限异常",exception);
 			responseInfo.setMessage(exception.getCause().getMessage());
 		} else {
+			log.error("系统异常",exception);
 			responseInfo.setMessage("抱歉,服务器异常了,详情 [" + (exception == null ? "未知" : exception.getClass().getSimpleName().replace("Exception", "")) + "]");
 		}
 		view.setAttributesMap(responseInfo.toMap());

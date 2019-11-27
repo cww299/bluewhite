@@ -10,7 +10,7 @@
 ;!function (factory) {
   'use strict';
   var modelName = 'optimizeSelectOption';
-  layui.define(['form'], function (exports) { //layui加载
+  layui.define(['form','layer','jquery'], function (exports) { //layui加载
     exports(modelName, factory(modelName));
   });
 }(function (modelName) {
@@ -61,7 +61,7 @@
 
   var close = function () {
     // console.log(top.layer._indexTemp[modelName]);
-    top.layer.close(top.layer._indexTemp[modelName]);
+	  top && top.layer && top.layer.close(top.layer._indexTemp[modelName]);
   };
 
   // 获得某个节点的位置 offsetTop: 是否获得相对top window的位移
@@ -172,10 +172,10 @@
                 close();
               });
 
-              $Temp(windowTemp.document).one('mousedown', function (event) {
-                console.log('mousedown');
+              //点击下拉不关闭
+             /* $Temp(windowTemp.document).one('mousedown', function (event) {
                 close();
-              });
+              });*/
 
               // 窗口resize的时候关掉表格中的下拉
               $Temp(windowTemp).one('resize', function (event) {

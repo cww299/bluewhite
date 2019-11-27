@@ -2,7 +2,7 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
 <%@ taglib prefix="shiro" uri="http://shiro.apache.org/tags"%>
 <c:set var="ctx" value="${pageContext.request.contextPath }" />
-<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<!DOCTYPE html>
 <html>
 <head>
   <meta charset="utf-8">
@@ -10,10 +10,10 @@
   <meta name="renderer" content="webkit">
   <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=0">
-  <link rel="stylesheet" href="${ctx }/static/layuiadmin/layui/css/layui.css" media="all">
+  <link rel="stylesheet" href="${ctx }/static/layui-v2.4.5/layui/css/layui.css" media="all">
   <link rel="stylesheet" href="${ctx }/static/layuiadmin/style/admin.css" media="all">
   <style>
-    .layui-form-switch{
+    .layui-side .layui-form-switch{
       min-width: 0px;
 	  width: 26px;
 	  height: 10px;
@@ -23,19 +23,19 @@
 	  float: right;
       margin-top: 19px;
     }
-    .layui-form-switch i{
+    .layui-side .layui-form-switch i{
       top: 0px;
       width: 10px;
       height: 10px;
       margin-left: -5px;
     }
-    .layui-form-onswitch em{
+    .layui-side .layui-form-onswitch em{
       display:none !important;
     }
-    .layui-form-switch em{
+    .layui-side .layui-form-switch em{
       display:none !important;
     }
-    .layui-form-onswitch i{
+    .layui-side .layui-form-onswitch i{
       margin-left: -10px;
     }
     .layadmin-side-shrink .layui-form-switch{
@@ -50,11 +50,28 @@
     .layui-layer-tips .layui-layer-content{
       margin-top: -15px;
     }
-    .layui-anim {
+    .myMenu.layui-anim {
 	    -webkit-animation-duration: 1s;
 	    animation-duration: 1s;
 	    -webkit-animation-fill-mode: both;
 	    animation-fill-mode: both;
+	}
+	.allMenu.layui-anim {
+	    -webkit-animation-duration: 1s;
+	    animation-duration: 1s;
+	    -webkit-animation-fill-mode: both;
+	    animation-fill-mode: both;
+	}
+	.layui-badge-number{
+        top: 27% !important;
+    	left: 67px;
+   	    border-radius: 10px;
+	}
+	.layui-side-menu .layui-nav .layui-nav-child .layui-nav-child .layui-nav-child a{
+		padding-left:75px;
+	}
+	.layui-side-menu .layui-nav .layui-nav-item a:hover{
+		background-color: #0096883d !important
 	}
   </style>
 </head>
@@ -91,22 +108,22 @@
            <!-- 广宣部门查看预警按钮 -->
           <shiro:hasAnyRoles name="superAdmin,propagateManager">
 	          <li class="layui-nav-item layui-hide-xs" lay-unselect>
-	            <a href="javascript:;" id='lookoverWarn' >仓库预警<span class="layui-badge" id='warnNumber'>0</span></a>
+	            <a href="javascript:;" id='lookoverWarn' >仓库预警<span class="layui-badge layui-badge-number" id='warnNumber'>0</span></a>
 	          </li>
           </shiro:hasAnyRoles> 
            <!-- 考勤预警按钮 -->
-          <shiro:hasAnyRoles name="superAdmin,productEightTailor,productTwoMachinist,productTwoDeedle,productFristPack,productFristQuality">
+          <shiro:hasAnyRoles name="superAdmin,personnel,productEightTailor,productTwoMachinist,productTwoDeedle,productFristPack,productFristQuality">
 	          <li class="layui-nav-item layui-hide-xs" lay-unselect>
-	            <a href="javascript:;" id='confluenceWarn' >错误考勤<span class="layui-badge" id='warnConfluenceNumber'>0</span></a>
+	            <a href="javascript:;" id='confluenceWarn' >错误考勤<span class="layui-badge layui-badge-number" id='warnConfluenceNumber'>0</span></a>
 	          </li>
           </shiro:hasAnyRoles> 
           
           
-          <li class="layui-nav-item layui-hide-xs" lay-unselect>
+          <!-- <li class="layui-nav-item layui-hide-xs" lay-unselect>
             <a href="javascript:;" layadmin-event="theme">
               <i class="layui-icon layui-icon-theme"></i>
             </a>
-          </li>
+          </li> -->
           <li class="layui-nav-item layui-hide-xs" lay-unselect>
             <a href="javascript:;" layadmin-event="note">
               <i class="layui-icon layui-icon-note"></i>
@@ -128,13 +145,17 @@
               <dd style="text-align: center;"><a id="logout">退出</a></dd>
             </dl>
           </li>
-          <li class="layui-nav-item layui-hide-xs" lay-unselect>
+          <!-- <li class="layui-nav-item layui-hide-xs" lay-unselect>
             <a href="javascript:;"></a>
-          </li>
-         <!--  <li class="layui-nav-item layui-hide-xs" lay-unselect>
+          </li> 
+          <li class="layui-nav-item layui-hide-xs" lay-unselect>
             <a href="javascript:;" layadmin-event="about"><i class="layui-icon layui-icon-more-vertical"></i></a>
+          </li> -->
+          
+          <li class="layui-nav-item layui-hide-xs" lay-unselect>
+            <a href="javascript:;" layadmin-event="theme"><i class="layui-icon layui-icon-more-vertical"></i></a>
           </li>
-          <li class="layui-nav-item layui-show-xs-inline-block layui-hide-sm" lay-unselect>
+          <!-- <li class="layui-nav-item layui-show-xs-inline-block layui-hide-sm" lay-unselect>
             <a href="javascript:;" layadmin-event="more"><i class="layui-icon layui-icon-more-vertical"></i></a>
           </li> -->
           
@@ -204,8 +225,11 @@
    		</div>
 	</shiro:hasAnyRoles> 
 	<!-- 考勤错误预警弹窗 -->
-	<shiro:hasAnyRoles name="superAdmin,productEightTailor,productTwoMachinist,productTwoDeedle,productFristPack,productFristQuality">
-   		<div id="warningConfluenceDiv" style="display:none;">
+	<shiro:hasAnyRoles name="superAdmin,personnel,productEightTailor,productTwoMachinist,productTwoDeedle,productFristPack,productFristQuality">
+   		<div id="warningConfluenceDiv" style="display:none;padding:10px;">
+   			<shiro:hasAnyRoles name="superAdmin,personnel">
+   				<span class="layui-btn" id="verifyBtn">核对</span>
+   			</shiro:hasAnyRoles>
 			<table id='warningConfluenceTable' lay-filter='warningConfluenceTable'></table>   		
    		</div>
 	</shiro:hasAnyRoles>
@@ -222,14 +246,24 @@
 }}
 <span style='margin-top: 10px;' class='layui-badge layui-bg-{{ color}}'>{{ text }}</span>
 </script>
-	
  <script src="${ctx }/static/layuiadmin/layui/layui.js"></script>
  <script>
  layui.config({
    base: '${ctx }/static/layuiadmin/', //静态资源所在路径
  }).extend({
    index : 'lib/index',  //主入口模块
- }).use('index');
+ }).use('index',function(){
+	 var index = layui.index,
+	 	 $ = layui.jquery;
+	 var thisMenu = layui.data('cookieMenu').thisMenu;
+	 if(thisMenu){
+		 index.admin.tabsPage = {
+			 type: 'nav',
+			 index: $('.layui-tab-title').find('li[lay-id="'+thisMenu+'"]').prevAll().length,
+			 elem: $('a[lay-href="'+thisMenu+'"]').get(0),
+		 };
+	 }
+ });
  
 layui.use(['form','element','layer','jquery','table'],function(){
 	var form = layui.form,
@@ -238,13 +272,17 @@ layui.use(['form','element','layer','jquery','table'],function(){
 		$ = layui.$;
     	layer = parent.layer === undefined ? layui.layer : top.layer;
     	form.render();
+    	//是否开启记忆tab
+    	var remeberMenu = layui.data('cookieMenu').remeberMenu;
     	$('#logout').on('click',function(){
     		location.href = "${ctx}/logout";
     	})
     	$('#updatePwd').on('click',function(){				//修改密码
     		$('#hiddenButton').click();
     	})
-    	
+    	$(document).on('click','a[lay-href]',function(){
+    		$(this).parent().addClass('layui-this');
+    	})
     	form.on('switch(changeMenu)',function(obj){
     		var anim = ['up','scale','upbit','fadein','rotate'];
     		var type = 3;
@@ -269,7 +307,7 @@ layui.use(['form','element','layer','jquery','table'],function(){
     	var currUser = null; //当前登录用户
     	$('#lookoverWarn').on('click',warn);
     	$('#confluenceWarn').on('click',confluenceWarn);
-    	/* confluenceWarn(); */
+    	confluenceWarn();
     	warn();
     	function confluenceWarn(){
 			if(document.getElementById('warningConfluenceDiv')!=null){
@@ -286,10 +324,12 @@ layui.use(['form','element','layer','jquery','table'],function(){
 					elem:'#warningConfluenceTable',
 					url: '${ctx}/finance/allAttendancePay?warning=1&orgNameId='+(currUser.orgNameId?currUser.orgNameId:""),
 					page: true,
+					request:{ pageName: 'page' ,limitName: 'size'},
 					parseData:function(r){
 						$('#warnConfluenceNumber').html(r.data.total);
 						return { code:r.code, data:r.data.rows, msg:r.message, count:r.data.total} },
 					cols:[[
+						   {type:'checkbox',},
 					       {align:'center', title:'时间', field:'allotTime',},
 					       {align:'center', title:'人员', field:'userName',},
 					       {align:'center', title:'工作时长', field:'workTime', },
@@ -301,9 +341,31 @@ layui.use(['form','element','layer','jquery','table'],function(){
 					title:'考勤错误预警',
 					type:1,
 					shadeClose: true,
-					area:['50%','60%'],
+					area:['50%','600px'],
 					content:$('#warningConfluenceDiv'),
 					success:function(){
+						$('#verifyBtn').unbind().on('click',function(){
+							var check = layui.table.checkStatus('warningConfluenceTable').data;
+							if(check.length<1)
+								return layer.msg('请选择相关数据',{icon:2});
+							var ids = [];
+							for(var i in check)
+								ids.push(check[i].id);
+							var loads = layer.load(1,{shade: [0.5,'black'] });
+							$.ajax({
+								url:'${ctx}/finance/checkAttendance?ids='+ids.join(','),
+								async:false,
+								success:function(r){
+									var icon = 2;
+									if(r.code==0){
+										icon = 1;
+										table.reload('warningConfluenceTable');
+									}
+									layer.msg(r.message,{ icon:icon });
+								}
+							})
+							layer.close(loads);
+						})
 					}
 				})  
 				table.on('edit(warningConfluenceTable)',function(obj){
@@ -324,7 +386,10 @@ layui.use(['form','element','layer','jquery','table'],function(){
 						data: data,
 						success:function(r){
 							var icon = 2;
-							if(r.code==0) icon = 1;
+							if(r.code==0){
+								icon = 1;
+								table.reload('warningConfluenceTable');
+							}
 							layer.msg(r.message,{icon:icon});
 						}
 					})
@@ -385,7 +450,7 @@ layui.use(['form','element','layer','jquery','table'],function(){
 					for(var i=0;i<data.length;i++){
 						if(data[i].url!='#'){
 							var href='${ctx}/menusToUrl?url='+data[i].url;
-				    		html+='<li data-name="'+data[i].identity+'" class="layui-nav-item layui-this layui-anim allMenu">'+
+				    		html+='<li data-name="'+data[i].identity+'" class="layui-nav-item layui-this layui-anim">'+
 				    					'<a lay-href="'+href+'" id="'+data[i].identity+'">'+
 				    					'<i class="layui-icon layui-icon-'+data[i].icon+'"></i>  '+
 										'<cite>'+data[i].name+'</cite></a></li>';
@@ -407,6 +472,7 @@ layui.use(['form','element','layer','jquery','table'],function(){
     	})
     	$.ajax({
 			url:"${ctx}/menus",
+			async:false,
 			success: function (result) {
 				if(0==result.code){
 					var html='';
@@ -457,8 +523,8 @@ layui.use(['form','element','layer','jquery','table'],function(){
     		}
     		return html+'</dl>';
     	}
-    	 //监听关闭点击事件是否为考勤汇总
-    	$(document).on('mousedown', '.layui-tab-close', function (event) {  
+    	 //监听关闭点击事件
+    	$(document).on('mousedown', '.layui-tab-close', function (event) {
     		 if($(event.target).parent().attr("lay-id")=='/bluewhite/menusToUrl?url=personnel/update'){
     			var closeBtn=$(this);
     			var ifmDocument=document.getElementById('/bluewhite/menusToUrl?url=personnel/update').contentWindow.document;	//获取考勤汇总iframe中的document对象
@@ -476,10 +542,108 @@ layui.use(['form','element','layer','jquery','table'],function(){
     						closeBtn.click();
     					});
     			}  
-    		} 
+    		}
+    		if(remeberMenu){
+	    		var openMenu = layui.data('cookieMenu').openMenu;
+	    		var thisMenu = $(this).closest('li').attr('lay-id');
+	    		for(var i in openMenu){
+	    			if(openMenu[i].id==thisMenu){
+	    				openMenu.splice(i,1);
+	    				layui.data('cookieMenu',{ key:'openMenu',value:openMenu });
+	    				break;
+	    			}
+	    		}
+	    		var newThisMenu = $('.layui-tab').find('li[class=layui-this]').attr('lay-id');
+	    		if(thisMenu == newThisMenu){		//如果关闭的正是当前展示的
+		    		layui.data('cookieMenu',{ key:'thisMenu',value: $(this).closest('li').prev().attr('lay-id') });
+	    		}
+    		}
     	});
-    	 //监听刷新的页面是否为考勤汇总
-    	$(document).on('mousedown', '.layui-icon-refresh-3', function (event) {  
+    	//是否开启记忆tab
+    	if(remeberMenu){
+	    	//监听菜单点击事件
+	    	$(document).on('mousedown', 'a[lay-href]', function (event) {
+	    		var id = $(this).attr('lay-href');
+	    		var name = $(this).find('cite').html();
+	    		var openMenu = layui.data('cookieMenu').openMenu;
+	    		var i = 0;
+	    		for(;i<openMenu.length;i++){
+	    			if(openMenu[i].id==id)
+	    				break;
+	    		}
+	    		if(i>=openMenu.length){
+	    			openMenu.push({
+	    				id:id,
+	    				name:name,
+	    			});
+	    			layui.data('cookieMenu',{ key:'openMenu',value:openMenu });
+	    		}
+	   			layui.data('cookieMenu',{ key:'thisMenu',value:id });
+	    	})
+	    	//关闭多个菜单事件
+	    	$('.layadmin-pagetabs').find('.layui-nav-item').find('dd').click(function(){
+	    		var event = $(this).attr('layadmin-event');
+	    		var cookieMenu = layui.data('cookieMenu');
+	    		var openMenu = cookieMenu.openMenu;
+	    		var layuiThis = $('.layadmin-pagetabs').find('.layui-tab-title').find('li.layui-this');
+	    		var thisId = $(layuiThis).attr('lay-id');
+	    		switch(event){
+	    		case 'closeThisTabs': 
+	    			for(var i in openMenu){
+	        			if(openMenu[i].id == thisId){
+	        				openMenu.splice(i,1);
+	        				break;
+	        			}
+	        		}
+	    			layui.data('cookieMenu',{ key:'thisMenu',value: $(layuiThis).closest('li').prev().attr('lay-id') });
+	    			break;
+	    		case 'closeOtherTabs': 
+	    			for(var i in openMenu){
+	        			if(openMenu[i].id == thisId){
+	        				openMenu = [openMenu[i]];
+	        				break;
+	        			}
+	        		}
+	    			break;
+	    		case 'closeAllTabs': 
+	    			openMenu = []; 
+	    			layui.data('cookieMenu',{ key:'thisMenu',value: '' });
+	    			break;
+	    		}
+	    		layui.data('cookieMenu',{ key:'openMenu',value:openMenu });
+	    	})
+	    	//tab切换事件
+	    	element.on('tab(layadmin-layout-tabs)', function(obj){
+	    		var id = $(obj.elem.context).attr('lay-id');
+	    		if(id)
+		    		layui.data('cookieMenu',{ key:'thisMenu',value:id });
+	  		});
+	    	//进入页面进行回显
+	    	var cookie = layui.data('cookieMenu');
+	    	var open = cookie.openMenu;
+	    	for(var i in open){
+	    		element.tabAdd('layadmin-layout-tabs', {
+	   			  title: open[i].name,
+	   			  id: open[i].id
+	   			}); 
+	    		$('.layui-body').append('<div class="layadmin-tabsbody-item">'+
+	    	   			  '<iframe src="'+open[i].id+'" id="'+open[i].id+'" frameborder="0" class="layadmin-iframe"></iframe></div>')
+	    	}
+	    	if(cookie.thisMenu){
+	    		$('.layui-body').find('.layadmin-tabsbody-item').removeClass('layui-show');
+	    		var show = $('.layui-body').find('.layadmin-tabsbody-item').find('iframe[src="'+cookie.thisMenu+'"]');
+	    		$(show).parent().addClass('layui-show');
+	    		$('.layui-tab').find('li').removeClass('layui-this');
+	    		$('.layui-tab').find('li[lay-id="'+cookie.thisMenu+'"]').addClass('layui-this');
+	    		$('.layui-nav-tree').find('li').removeClass('layui-this');
+	    		var thisA = $('a[lay-href="'+cookie.thisMenu+'"]');
+	    		$(thisA).parent().addClass('layui-this');
+	    	}
+    	}
+    	
+    	
+    	 //监听刷新事件
+    	$(document).on('mousedown', '.layui-icon-refresh-3', function (event) {
     		 var elem=document.getElementById('/bluewhite/menusToUrl?url=personnel/update');			//获取考勤汇总iframe元素对象
 	   		 if(elem!=null && elem.parentNode.getAttribute('class').indexOf('layui-show')>0){			//如果ifram存在，且为当前显示状态
 	   			  var refresh=$(this);
@@ -499,11 +663,6 @@ layui.use(['form','element','layer','jquery','table'],function(){
 	   			}  
    			} 
    		});
-   		
-
 })
- </script>
-</body>
+</script>
 </html>
-
-

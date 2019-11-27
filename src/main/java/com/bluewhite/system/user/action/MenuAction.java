@@ -186,9 +186,9 @@ public class MenuAction {
 	 */
 	@RequestMapping(value = "/deleteMenu", method = RequestMethod.GET)
 	@ResponseBody
-	public CommonResponse deleteMenu(Long ids) {
+	public CommonResponse deleteMenu(String ids) {
 		CommonResponse cr = new CommonResponse();
-		menuService.delete(ids);
+		menuService.deleteMenu(ids);
 		cr.setMessage("删除成功");
 		return cr;
 	}
