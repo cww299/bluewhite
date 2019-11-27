@@ -1,9 +1,13 @@
 package com.bluewhite.ledger.service;
 
+import java.util.List;
+import java.util.Map;
+
 import com.bluewhite.base.BaseCRUDService;
 import com.bluewhite.common.entity.PageParameter;
 import com.bluewhite.common.entity.PageResult;
 import com.bluewhite.ledger.entity.OrderOutSource;
+import com.bluewhite.ledger.entity.ProcessPrice;
 
 public interface OrderOutSourceService extends BaseCRUDService<OrderOutSource, Long> {
 
@@ -75,7 +79,18 @@ public interface OrderOutSourceService extends BaseCRUDService<OrderOutSource, L
 	 * @param orderOutSource
 	 */
 	public void saveOutSoureBills(OrderOutSource orderOutSource);
+	
+	/**
+	 * 将外发加工单和退货单糅合，得出该工序的实际任务数量，进行账单的生成
+	 * @param id
+	 */
+	public List<Map<String, Object>> mixOutSoureRefund(Long id);
+	
+	/**
+	 * 对工序价值进行新增或者修改
+	 * @param id
+	 */
+	public void updateProcessPrice(ProcessPrice processPrice);
 
-	public void test(Long id);
 	
 }

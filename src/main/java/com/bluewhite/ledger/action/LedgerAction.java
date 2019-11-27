@@ -30,6 +30,7 @@ import com.bluewhite.ledger.entity.OrderProcurement;
 import com.bluewhite.ledger.entity.Packing;
 import com.bluewhite.ledger.entity.PackingChild;
 import com.bluewhite.ledger.entity.PackingMaterials;
+import com.bluewhite.ledger.entity.ProcessPrice;
 import com.bluewhite.ledger.entity.ReceivedMoney;
 import com.bluewhite.ledger.entity.RefundBills;
 import com.bluewhite.ledger.entity.Sale;
@@ -238,6 +239,7 @@ public class LedgerAction {
 				.addRetainTerm(Customer.class, "id", "name")
 				.addRetainTerm(Product.class, "id", "name","number")
 				.addRetainTerm(BaseOne.class, "id", "name")
+				.addRetainTerm(BaseData.class, "id", "name")
 				.addRetainTerm(User.class, "id", "userName");
 	}
 	
@@ -835,7 +837,7 @@ public class LedgerAction {
 	}
 	
 	/**
-	 * （生产计划部）删除加工单退货
+	 * （生产计划部）删除加工退货单
 	 * 
 	 * @param order
 	 * @return
@@ -852,7 +854,7 @@ public class LedgerAction {
 	
 	
 	/**
-	 * （生产计划部）将外发加工单和退货单糅合，得出该工序的实际任务数量，进行账单的生成
+	 * （生产计划部）将外发加工单,退货单,加工单价格糅合，得出该工序的实际任务数量和价格，进行账单的生成
 	 * 
 	 * @param order
 	 * @return
@@ -861,10 +863,27 @@ public class LedgerAction {
 	@ResponseBody
 	public CommonResponse mixOutSoureRefund(Long id) {
 		CommonResponse cr = new CommonResponse();
-//		orderOutSourceService.mixOutSoureRefund(id);
-		cr.setMessage("成功生成加工单账单");
+		cr.setData(orderOutSourceService.mixOutSoureRefund(id));
+		cr.setMessage("成功");
 		return cr;
 	}
+	
+	
+	/**
+	 * （生产计划部）对工序价值进行新增或者修改
+	 * 
+	 * @param order
+	 * @return
+	 */
+	@RequestMapping(value = "/ledger/updateProcessPrice", method = RequestMethod.GET)
+	@ResponseBody
+	public CommonResponse updateProcessPrice(ProcessPrice processPrice) {
+		CommonResponse cr = new CommonResponse();
+		orderOutSourceService.updateProcessPrice(processPrice);
+		cr.setMessage("修改成功");
+		return cr;
+	}
+	
 	
 	
 	/**
@@ -873,7 +892,7 @@ public class LedgerAction {
 	 * @param order
 	 * @return
 	 */
-	@RequestMapping(value = "/ledger/saveOutSoureBills", method = RequestMethod.GET)
+	@RequestMapping(value = "/ledger/saveOutSoureBills", method = RequestMethod.POST)
 	@ResponseBody
 	public CommonResponse saveOutSoureBills(OrderOutSource orderOutSource) {
 		CommonResponse cr = new CommonResponse();
@@ -883,17 +902,6 @@ public class LedgerAction {
 	}
 	
 	
-	
-	
-	
-	@RequestMapping(value = "/ledger/test", method = RequestMethod.GET)
-	@ResponseBody
-	public CommonResponse test(Long id) {
-		CommonResponse cr = new CommonResponse();
-		orderOutSourceService.test(id);
-		cr.setMessage("删除");
-		return cr;
-	}
 	
 	
 	/******************************库存管理**************************/

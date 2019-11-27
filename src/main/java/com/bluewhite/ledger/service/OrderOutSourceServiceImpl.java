@@ -2,7 +2,9 @@ package com.bluewhite.ledger.service;
 
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -17,8 +19,6 @@ import org.springframework.util.StringUtils;
 import com.bluewhite.base.BaseServiceImpl;
 import com.bluewhite.basedata.dao.BaseDataDao;
 import com.bluewhite.basedata.entity.BaseData;
-import com.bluewhite.common.Log;
-import com.bluewhite.common.MyExceptionHandlerExceptionResolver;
 import com.bluewhite.common.ServiceException;
 import com.bluewhite.common.SessionManager;
 import com.bluewhite.common.entity.CurrentUser;
@@ -31,17 +31,20 @@ import com.bluewhite.finance.consumption.entity.Consumption;
 import com.bluewhite.ledger.dao.MaterialRequisitionDao;
 import com.bluewhite.ledger.dao.OrderDao;
 import com.bluewhite.ledger.dao.OrderOutSourceDao;
+import com.bluewhite.ledger.dao.ProcessPriceDao;
 import com.bluewhite.ledger.dao.RefundBillsDao;
 import com.bluewhite.ledger.entity.MaterialRequisition;
 import com.bluewhite.ledger.entity.Order;
 import com.bluewhite.ledger.entity.OrderOutSource;
+import com.bluewhite.ledger.entity.ProcessPrice;
+import com.bluewhite.ledger.entity.RefundBills;
 import com.bluewhite.onlineretailers.inventory.dao.InventoryDao;
 import com.bluewhite.onlineretailers.inventory.entity.Inventory;
 import com.bluewhite.product.product.entity.Product;
 
 @Service
 public class OrderOutSourceServiceImpl extends BaseServiceImpl<OrderOutSource, Long> implements OrderOutSourceService {
-	
+
 	@Autowired
 	private OrderOutSourceDao dao;
 	@Autowired
@@ -54,6 +57,8 @@ public class OrderOutSourceServiceImpl extends BaseServiceImpl<OrderOutSource, L
 	private MaterialRequisitionDao materialRequisitionDao;
 	@Autowired
 	private RefundBillsDao refundBillsDao;
+	@Autowired
+	private ProcessPriceDao processPriceDao;
 
 	@Override
 	@Transactional
@@ -71,6 +76,14 @@ public class OrderOutSourceServiceImpl extends BaseServiceImpl<OrderOutSource, L
 					for (String ids : idStrings) {
 						Long id = Long.parseLong(ids);
 						BaseData baseData = baseDataDao.findOne(id);
+						//新增加工单工序的原始价格数据
+						ProcessPrice processPrice  = new ProcessPrice();
+						processPrice.setOrderOutSourceId(orderOutSource.getId());
+						processPrice.setProcessTaskId(id);
+						processPrice.setCustomerId(orderOutSource.getCustomerId());
+						processPrice.setPrice(0.0);
+						processPriceDao.save(processPrice);
+						
 						// 对加工单数量进行限制判断，加工单数量和工序挂钩，每个工序最大数量为订单数量，无法超出
 						// 工序可以由不同的加工单加工，但是不能超出订单数量
 						// 改工序已经加工总数
@@ -385,18 +398,60 @@ public class OrderOutSourceServiceImpl extends BaseServiceImpl<OrderOutSource, L
 
 	@Override
 	public void saveOutSoureBills(OrderOutSource orderOutSource) {
-		//生成账单
+		// 生成账单
 		Consumption Consumption = new Consumption();
 		
 		
 		
 		
+		
+		
+		
+		
+		
+
 	}
 
 	@Override
-	public void test(Long id) {
-		OrderOutSource orderOutSource = dao.findOne(id);
-		orderOutSource.getActualNumber();
-		
+	public List<Map<String, Object>> mixOutSoureRefund(Long id) {
+		List<Map<String, Object>> mixList = new ArrayList<>();
+		// 加工单
+		OrderOutSource orderOutSource = findOne(id);
+		// 退货单
+		List<RefundBills> refundBills = refundBillsDao.findByOrderOutSourceId(id);
+		// 加工单工序
+		Set<BaseData> outsourceTask = orderOutSource.getOutsourceTask();
+		// 加工单工序对应价格
+		List<ProcessPrice> processPriceList = processPriceDao.findByOrderOutSourceId(id);
+		outsourceTask.stream().forEach(outB -> {
+			Map<String, Object> map = new HashMap<>();
+			List<ProcessPrice> pList = processPriceList.stream()
+					.filter(ProcessPrice -> ProcessPrice.getProcessTaskId().equals(outB.getId()))
+					.collect(Collectors.toList());
+			// 工序id
+			map.put("id", outB.getId());
+			// 工序名称
+			map.put("name", outB.getName());
+			// 工序价格
+			map.put("price", pList.size() > 0 ? pList.get(0).getPrice() : 0);
+			int returnNumber = 0;
+			// 循环退货单，将退货单的工序取出
+			for (RefundBills r : refundBills) {
+				// 当加工单工序等于退货单工序时，更新加工单工序的任务数量
+				Set<BaseData> setBaseData = r.getOutsourceTask().stream()
+						.filter(BaseData -> BaseData.getId().equals(outB.getId())).collect(Collectors.toSet());
+				returnNumber += orderOutSource.getProcessNumber() - (setBaseData.size() > 0 ? r.getReturnNumber() : 0);
+			}
+			//工序数量
+			map.put("number",returnNumber);
+		});
+		return mixList;
+	}
+
+	@Override
+	public void updateProcessPrice(ProcessPrice processPrice) {
+		ProcessPrice ot = processPriceDao.findOne(processPrice.getId());
+		ot.setPrice(processPrice.getPrice());
+		processPriceDao.save(ot);
 	}
 }

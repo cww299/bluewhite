@@ -25,8 +25,8 @@ public class SDKRunnable implements Runnable {
 			regEvent();
 			Thread.sleep(3000);
 		} catch (Exception e) {
-			regEvent();
 			System.out.println("线程异常，结束---");
+			regEvent();
 		}
 	}
 
