@@ -8,13 +8,24 @@
 	<link rel="stylesheet" href="${ctx }/static/layui-v2.4.5/layui/css/layui.css" media="all">
 	<script src="${ctx}/static/layui-v2.4.5/layui/layui.js"></script>
 	<link rel="stylesheet" href="${ctx }/static/layui-v2.4.5/formSelect/formSelects-v4.css" />
-	
+	<style>
+		.searchTable td{
+			padding-right:10px;
+		}
+	</style>
 <title>权限管理</title>
 </head>
 <body>
 
 <div class="layui-card" >
 	<div class="layui-card-body">
+		<table class="layui-form searchTable">
+			<tr>
+				<td>用户名：</td>
+				<td><input type="text" name="userName" class="layui-input"></td>
+				<td><span class="layui-btn" lay-submit lay-filter="search">搜索</span></td>
+			</tr>
+		</table>
 		<table class="layui-table" lay-filter="userRoleTable" id="userRoleTable"></table>
 	</div> 
 </div>
@@ -142,6 +153,11 @@ layui.config({
 		, formSelects = layui.formSelects
 		, form = layui.form; 		
 		ajaxGetData();
+		form.on('submit(search)',function(obj){
+			table.reload('userRoleTable',{
+				where: obj.field,
+			})
+		})
 		var choosed=[];							//存放复选框选中的对象，用于删除、编辑
 		table.render({
 			elem : '#userRoleTable',
