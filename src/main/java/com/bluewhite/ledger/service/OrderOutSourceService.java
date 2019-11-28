@@ -1,9 +1,14 @@
 package com.bluewhite.ledger.service;
 
+import java.util.List;
+import java.util.Map;
+
 import com.bluewhite.base.BaseCRUDService;
 import com.bluewhite.common.entity.PageParameter;
 import com.bluewhite.common.entity.PageResult;
 import com.bluewhite.ledger.entity.OrderOutSource;
+import com.bluewhite.ledger.entity.ProcessPrice;
+import com.bluewhite.ledger.entity.PutStorage;
 
 public interface OrderOutSourceService extends BaseCRUDService<OrderOutSource, Long> {
 
@@ -57,14 +62,6 @@ public interface OrderOutSourceService extends BaseCRUDService<OrderOutSource, L
 	public void updateInventoryOrderOutSource(OrderOutSource orderOutSource);
 	
 	/**
-	 *
-	 * （1.成品仓库，2.皮壳仓库）对发外单进行确认回库，增加库存操作
-	 * 
-	 * @return
-	 */
-	public int confirmOrderOutSource(String ids);
-	
-	/**
 	 * （生产计划部）判断是否可以新增加工单
 	 * @param orderId
 	 */
@@ -75,7 +72,25 @@ public interface OrderOutSourceService extends BaseCRUDService<OrderOutSource, L
 	 * @param orderOutSource
 	 */
 	public void saveOutSoureBills(OrderOutSource orderOutSource);
+	
+	/**
+	 * 将外发加工单和退货单糅合，得出该工序的实际任务数量，进行账单的生成
+	 * @param id
+	 */
+	public List<Map<String, Object>> mixOutSoureRefund(Long id);
+	
+	/**
+	 * 对工序价值进行新增或者修改
+	 * @param id
+	 */
+	public void updateProcessPrice(ProcessPrice processPrice);
+	
+	/**
+	 * 仓库收货
+	 * @param id
+	 * @param number
+	 */
+	public void takeGoods(PutStorage putStorage);
 
-	public void test(Long id);
 	
 }

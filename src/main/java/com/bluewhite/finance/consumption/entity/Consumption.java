@@ -13,6 +13,7 @@ import javax.persistence.Transient;
 import com.bluewhite.base.BaseEntity;
 import com.bluewhite.basedata.entity.BaseData;
 import com.bluewhite.ledger.entity.Customer;
+import com.bluewhite.ledger.entity.OrderOutSource;
 import com.bluewhite.ledger.entity.OrderProcurement;
 import com.bluewhite.system.user.entity.User;
 
@@ -191,6 +192,21 @@ public class Consumption extends BaseEntity<Long> {
 	private OrderProcurement orderProcurement;
 	
 
+	/**
+	 * 加工单id
+	 * 
+	 */
+	@Column(name = "order_outSource_id")
+	private Long orderOutSourceId;
+
+	/**
+	 * 加工单
+	 */
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "order_outSource_id", referencedColumnName = "id", insertable = false, updatable = false)
+	private OrderOutSource orderOutSource;
+
+	
 	
 	/**
 	 * 过滤参数(报销人姓名)
@@ -221,6 +237,22 @@ public class Consumption extends BaseEntity<Long> {
 	
 	
 	
+	public Long getOrderOutSourceId() {
+		return orderOutSourceId;
+	}
+
+	public void setOrderOutSourceId(Long orderOutSourceId) {
+		this.orderOutSourceId = orderOutSourceId;
+	}
+
+	public OrderOutSource getOrderOutSource() {
+		return orderOutSource;
+	}
+
+	public void setOrderOutSource(OrderOutSource orderOutSource) {
+		this.orderOutSource = orderOutSource;
+	}
+
 	public Long getOrderProcurementId() {
 		return orderProcurementId;
 	}

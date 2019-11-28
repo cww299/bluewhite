@@ -2,7 +2,9 @@ package com.bluewhite.ledger.service;
 
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -17,31 +19,34 @@ import org.springframework.util.StringUtils;
 import com.bluewhite.base.BaseServiceImpl;
 import com.bluewhite.basedata.dao.BaseDataDao;
 import com.bluewhite.basedata.entity.BaseData;
-import com.bluewhite.common.Log;
-import com.bluewhite.common.MyExceptionHandlerExceptionResolver;
+import com.bluewhite.common.BeanCopyUtils;
 import com.bluewhite.common.ServiceException;
-import com.bluewhite.common.SessionManager;
-import com.bluewhite.common.entity.CurrentUser;
 import com.bluewhite.common.entity.PageParameter;
 import com.bluewhite.common.entity.PageResult;
 import com.bluewhite.common.utils.NumUtils;
-import com.bluewhite.common.utils.RoleUtil;
 import com.bluewhite.common.utils.StringUtil;
+import com.bluewhite.finance.consumption.dao.ConsumptionDao;
 import com.bluewhite.finance.consumption.entity.Consumption;
 import com.bluewhite.ledger.dao.MaterialRequisitionDao;
 import com.bluewhite.ledger.dao.OrderDao;
 import com.bluewhite.ledger.dao.OrderOutSourceDao;
+import com.bluewhite.ledger.dao.ProcessPriceDao;
+import com.bluewhite.ledger.dao.PutStorageDao;
 import com.bluewhite.ledger.dao.RefundBillsDao;
 import com.bluewhite.ledger.entity.MaterialRequisition;
 import com.bluewhite.ledger.entity.Order;
 import com.bluewhite.ledger.entity.OrderOutSource;
+import com.bluewhite.ledger.entity.ProcessPrice;
+import com.bluewhite.ledger.entity.PutStorage;
+import com.bluewhite.ledger.entity.RefundBills;
 import com.bluewhite.onlineretailers.inventory.dao.InventoryDao;
 import com.bluewhite.onlineretailers.inventory.entity.Inventory;
+import com.bluewhite.onlineretailers.inventory.service.InventoryService;
 import com.bluewhite.product.product.entity.Product;
 
 @Service
 public class OrderOutSourceServiceImpl extends BaseServiceImpl<OrderOutSource, Long> implements OrderOutSourceService {
-	
+
 	@Autowired
 	private OrderOutSourceDao dao;
 	@Autowired
@@ -54,6 +59,14 @@ public class OrderOutSourceServiceImpl extends BaseServiceImpl<OrderOutSource, L
 	private MaterialRequisitionDao materialRequisitionDao;
 	@Autowired
 	private RefundBillsDao refundBillsDao;
+	@Autowired
+	private ProcessPriceDao processPriceDao;
+	@Autowired
+	private ConsumptionDao consumptionDao;
+	@Autowired
+	private InventoryService inventoryService;
+	@Autowired
+	private PutStorageDao putStorageDao;
 
 	@Override
 	@Transactional
@@ -71,6 +84,13 @@ public class OrderOutSourceServiceImpl extends BaseServiceImpl<OrderOutSource, L
 					for (String ids : idStrings) {
 						Long id = Long.parseLong(ids);
 						BaseData baseData = baseDataDao.findOne(id);
+						//新增加工单工序的原始价格数据
+						ProcessPrice processPrice  = new ProcessPrice();
+						processPrice.setOrderOutSourceId(orderOutSource.getId());
+						processPrice.setProcessTaskId(id);
+						processPrice.setCustomerId(orderOutSource.getCustomerId());
+						processPriceDao.save(processPrice);
+						
 						// 对加工单数量进行限制判断，加工单数量和工序挂钩，每个工序最大数量为订单数量，无法超出
 						// 工序可以由不同的加工单加工，但是不能超出订单数量
 						// 改工序已经加工总数
@@ -98,7 +118,6 @@ public class OrderOutSourceServiceImpl extends BaseServiceImpl<OrderOutSource, L
 			}
 			orderOutSource.setFlag(0);
 			orderOutSource.setAudit(0);
-			orderOutSource.setArrival(0);
 			save(orderOutSource);
 		} else {
 			throw new ServiceException("生产下单合同不能为空");
@@ -107,11 +126,6 @@ public class OrderOutSourceServiceImpl extends BaseServiceImpl<OrderOutSource, L
 
 	@Override
 	public PageResult<OrderOutSource> findPages(OrderOutSource param, PageParameter page) {
-		CurrentUser cu = SessionManager.getUserSession();
-		Long warehouseTypeDeliveryId = RoleUtil.getWarehouseTypeDelivery(cu.getRole());
-		if (warehouseTypeDeliveryId != null) {
-			param.setWarehouseTypeId(warehouseTypeDeliveryId);
-		}
 		Page<OrderOutSource> pages = dao.findAll((root, query, cb) -> {
 			List<Predicate> predicate = new ArrayList<>();
 			// 按id过滤
@@ -125,14 +139,6 @@ public class OrderOutSourceServiceImpl extends BaseServiceImpl<OrderOutSource, L
 			// 按跟单人id过滤
 			if (param.getUserId() != null) {
 				predicate.add(cb.equal(root.get("userId").as(Long.class), param.getUserId()));
-			}
-			// 按预计入库仓库
-			if (param.getWarehouseType() != null) {
-				predicate.add(cb.equal(root.get("warehouseType").as(Long.class), param.getWarehouseType()));
-			}
-			// 按入库仓库
-			if (param.getInWarehouseType() != null) {
-				predicate.add(cb.equal(root.get("inWarehouseType").as(Long.class), param.getInWarehouseType()));
 			}
 			// 是否外发
 			if (param.getOutsource() != null) {
@@ -166,28 +172,10 @@ public class OrderOutSourceServiceImpl extends BaseServiceImpl<OrderOutSource, L
 				predicate.add(cb.like(root.get("order").get("product").get("name").as(String.class),
 						"%" + StringUtil.specialStrKeyword(param.getProductName()) + "%"));
 			}
-			// 是否到货
-			if (param.getArrival() != null) {
-				predicate.add(cb.equal(root.get("arrival").as(Integer.class), param.getArrival()));
-			}
-			// 按外发日期
-			if (param.getOutGoingTime() != null) {
-				if (!StringUtils.isEmpty(param.getOrderTimeBegin()) && !StringUtils.isEmpty(param.getOrderTimeEnd())) {
-					predicate.add(cb.between(root.get("outGoingTime").as(Date.class), param.getOrderTimeBegin(),
-							param.getOrderTimeEnd()));
-				}
-			}
 			// 按下单日期
 			if (param.getOpenOrderTime() != null) {
 				if (!StringUtils.isEmpty(param.getOrderTimeBegin()) && !StringUtils.isEmpty(param.getOrderTimeEnd())) {
 					predicate.add(cb.between(root.get("openOrderTime").as(Date.class), param.getOrderTimeBegin(),
-							param.getOrderTimeEnd()));
-				}
-			}
-			// 按到货日期
-			if (param.getArrivalTime() != null) {
-				if (!StringUtils.isEmpty(param.getOrderTimeBegin()) && !StringUtils.isEmpty(param.getOrderTimeEnd())) {
-					predicate.add(cb.between(root.get("arrivalTime").as(Date.class), param.getOrderTimeBegin(),
 							param.getOrderTimeEnd()));
 				}
 			}
@@ -227,7 +215,7 @@ public class OrderOutSourceServiceImpl extends BaseServiceImpl<OrderOutSource, L
 		if (ot.getAudit() == 1) {
 			throw new ServiceException("已审核，无法修改");
 		}
-		update(orderOutSource, ot, "");
+		BeanCopyUtils.copyNotEmpty(orderOutSource, ot, "");
 		Order order = orderDao.findOne(ot.getOrderId());
 		List<OrderOutSource> orderOutSourceList = dao.findByOrderId(ot.getOrderId());
 		// 将工序任务变成set存入
@@ -249,7 +237,7 @@ public class OrderOutSourceServiceImpl extends BaseServiceImpl<OrderOutSource, L
 					}).mapToInt(OrderOutSource::getProcessNumber).sum();
 
 					// 查找改加工单该工序的退货单
-					List<Integer> returnNumberList = refundBillsDao.getReturnNumber(orderOutSource.getOrderId(), id);
+					List<Integer> returnNumberList = refundBillsDao.getReturnNumber(ot.getOrderId(), id);
 					// 退货总数
 					Integer returnNumber = returnNumberList.stream().reduce(Integer::sum).orElse(0);
 					// 实际数量=(总加工数-退货数)
@@ -299,12 +287,6 @@ public class OrderOutSourceServiceImpl extends BaseServiceImpl<OrderOutSource, L
 					if (orderOutSource.getAudit() == 1) {
 						throw new ServiceException("第" + (i + 1) + "条单据已审核，请勿重复审核");
 					}
-					if (orderOutSource.getOutGoingTime() == null) {
-						throw new ServiceException("第" + (i + 1) + "条单据无外发时间，无法审核");
-					}
-					if (orderOutSource.getWarehouseTypeId() == null) {
-						throw new ServiceException("第" + (i + 1) + "条单据未填写预计入库仓库，无法审核，请先确认入库仓库");
-					}
 					orderOutSource.setAudit(1);
 					save(orderOutSource);
 					count++;
@@ -318,54 +300,8 @@ public class OrderOutSourceServiceImpl extends BaseServiceImpl<OrderOutSource, L
 	public void updateInventoryOrderOutSource(OrderOutSource orderOutSource) {
 		if (orderOutSource.getId() != null) {
 			OrderOutSource ot = findOne(orderOutSource.getId());
-			if (ot.getArrival() == 1) {
-				throw new ServiceException("已入库，无法修改");
-			}
 			update(orderOutSource, ot, "");
 		}
-	}
-
-	@Override
-	public int confirmOrderOutSource(String ids) {
-		int count = 0;
-		if (!StringUtils.isEmpty(ids)) {
-			String[] idArr = ids.split(",");
-			if (idArr.length > 0) {
-				for (int i = 0; i < idArr.length; i++) {
-					Long id = Long.parseLong(idArr[i]);
-					OrderOutSource orderOutSource = findOne(id);
-					if (orderOutSource.getArrival() == 1) {
-						throw new ServiceException("第" + (i + 1) + "条单据已入库，请勿重复入库");
-					}
-					if (orderOutSource.getInWarehouseTypeId() == null) {
-						throw new ServiceException("第" + (i + 1) + "条单据未填写入库仓库，无法入库，请先确认入库仓库");
-					}
-					// 库存表
-					Product product = orderOutSource.getOrder().getProduct();
-					if (product != null) {
-						List<Inventory> inventoryList = product.getInventorys().stream().filter(Inventory -> Inventory
-								.getWarehouseTypeId().equals(orderOutSource.getInWarehouseTypeId()))
-								.collect(Collectors.toList());
-						// 当前仓库只存在一种
-						Inventory inventory = null;
-						if (inventoryList.size() > 0) {
-							inventory = inventoryList.get(0);
-						} else {
-							inventory = new Inventory();
-							inventory.setProductId(orderOutSource.getOrder().getProductId());
-							inventory.setWarehouseTypeId(orderOutSource.getInWarehouseTypeId());
-						}
-						inventory.setNumber(NumUtils.setzro(inventory.getNumber()) + orderOutSource.getArrivalNumber());
-						inventory.getOrderOutSource().add(orderOutSource);
-						inventoryDao.save(inventory);
-						orderOutSource.setArrival(1);
-						save(orderOutSource);
-					}
-					count++;
-				}
-			}
-		}
-		return count;
 	}
 
 	@Override
@@ -385,18 +321,74 @@ public class OrderOutSourceServiceImpl extends BaseServiceImpl<OrderOutSource, L
 
 	@Override
 	public void saveOutSoureBills(OrderOutSource orderOutSource) {
-		//生成账单
-		Consumption Consumption = new Consumption();
-		
-		
-		
-		
+		// 生成账单
+		Consumption consumption = new Consumption();
+		// 加工单工序对应价格
+		List<ProcessPrice> processPriceList = processPriceDao.findByOrderOutSourceId(orderOutSource.getId());
+		OrderOutSource ot = dao.findOne(orderOutSource.getId());
+		consumption.setOrderOutSourceId(orderOutSource.getId());
+		//外发加工对账单
+		consumption.setType(10);
+		//加工点
+		consumption.setCustomerId(ot.getCustomerId());
+		consumption.setSettleAccountsMode(2);
+		consumption.setFlag(0);
+		//申请金额
+		consumption.setMoney(ot.getMoney());
+		//申请日期
+		consumption.setExpenseDate(new Date());
+		consumptionDao.save(consumption);
 	}
 
 	@Override
-	public void test(Long id) {
-		OrderOutSource orderOutSource = dao.findOne(id);
-		orderOutSource.getActualNumber();
-		
+	public List<Map<String, Object>> mixOutSoureRefund(Long id) {
+		List<Map<String, Object>> mixList = new ArrayList<>();
+		// 加工单
+		OrderOutSource orderOutSource = findOne(id);
+		// 退货单
+		List<RefundBills> refundBills = refundBillsDao.findByOrderOutSourceId(id);
+		// 加工单工序
+		Set<BaseData> outsourceTask = orderOutSource.getOutsourceTask();
+		// 加工单工序对应价格
+		List<ProcessPrice> processPriceList = processPriceDao.findByOrderOutSourceId(id);
+		outsourceTask.stream().forEach(outB -> {
+			Map<String, Object> map = new HashMap<>();
+			List<ProcessPrice> pList = processPriceList.stream()
+					.filter(ProcessPrice -> ProcessPrice.getProcessTaskId().equals(outB.getId()))
+					.collect(Collectors.toList());
+			// 工序id
+			map.put("id", outB.getId());
+			// 工序名称
+			map.put("name", outB.getName());
+			// 工序价格
+			map.put("price", pList.get(0).getPrice());
+			int returnNumber = 0;
+			// 循环退货单，将退货单的工序取出
+			for (RefundBills r : refundBills) {
+				// 当加工单工序等于退货单工序时，更新加工单工序的任务数量
+				Set<BaseData> setBaseData = r.getOutsourceTask().stream()
+						.filter(BaseData -> BaseData.getId().equals(outB.getId())).collect(Collectors.toSet());
+				returnNumber += orderOutSource.getProcessNumber() - (setBaseData.size() > 0 ? r.getReturnNumber() : 0);
+			}
+			//工序数量
+			map.put("number",returnNumber);
+		});
+		return mixList;
+	}
+
+	@Override
+	public void updateProcessPrice(ProcessPrice processPrice) {
+		ProcessPrice ot = processPriceDao.findOne(processPrice.getId());
+		if(ot.getOrderOutSource().getChargeOff()==1){
+			throw new ServiceException("已出账，无法修改价格");
+		}
+		ot.setPrice(processPrice.getPrice());
+		processPriceDao.save(ot);
+	}
+
+	@Override
+	public void takeGoods(PutStorage putStorage) {
+		inventoryService.putInStorage(putStorage.getProductId(), putStorage.getInWarehouseTypeId(), putStorage.getArrivalNumber());
+		putStorageDao.save(putStorage);
 	}
 }

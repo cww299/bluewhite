@@ -37,7 +37,7 @@ public class MyExceptionHandlerExceptionResolver implements HandlerExceptionReso
 			if (se.getErrorCode() != null) {
 				responseInfo.setCode(se.getErrorCode().getCode());
 			}
-			log.error("可预见异常",exception);
+			log.error(exception);
 		}else if(exception instanceof ShiroException){	
 			log.error("权限异常",exception);
 			responseInfo.setMessage(exception.getCause().getMessage());

@@ -30,6 +30,8 @@ import com.bluewhite.ledger.entity.OrderProcurement;
 import com.bluewhite.ledger.entity.Packing;
 import com.bluewhite.ledger.entity.PackingChild;
 import com.bluewhite.ledger.entity.PackingMaterials;
+import com.bluewhite.ledger.entity.ProcessPrice;
+import com.bluewhite.ledger.entity.PutStorage;
 import com.bluewhite.ledger.entity.ReceivedMoney;
 import com.bluewhite.ledger.entity.RefundBills;
 import com.bluewhite.ledger.entity.Sale;
@@ -230,14 +232,14 @@ public class LedgerAction {
 	{
 		clearCascadeJSONSOutSource = ClearCascadeJSON.get()
 				.addRetainTerm(OrderOutSource.class, "id", "fill", "fillRemark", "outSourceNumber",
-						"order", "user", "customer", "remark", "gramWeight", "processNumber", "process",
-						"openOrderTime","outGoingTime","wholeList","flag","audit","productType","warehouseType",
-						"inWarehouseType","arrival","arrivalTime","arrivalNumber","outsourceTask","gramWeight"
+						"order", "user", "customer", "remark", "gramWeight", "processNumber",
+						"openOrderTime","flag","audit","outsourceTask","gramWeight"
 						,"kilogramWeight","processingUser","outsource")
 				.addRetainTerm(Order.class, "id", "bacthNumber", "product", "number", "remark","orderNumber")
 				.addRetainTerm(Customer.class, "id", "name")
 				.addRetainTerm(Product.class, "id", "name","number")
 				.addRetainTerm(BaseOne.class, "id", "name")
+				.addRetainTerm(BaseData.class, "id", "name")
 				.addRetainTerm(User.class, "id", "userName");
 	}
 	
@@ -491,7 +493,6 @@ public class LedgerAction {
 
 	/**
 	 * （采购部）删除采购单
-	 * 
 	 * @param order
 	 * @return
 	 */
@@ -835,7 +836,7 @@ public class LedgerAction {
 	}
 	
 	/**
-	 * （生产计划部）删除加工单退货
+	 * （生产计划部）删除加工退货单
 	 * 
 	 * @param order
 	 * @return
@@ -852,7 +853,7 @@ public class LedgerAction {
 	
 	
 	/**
-	 * （生产计划部）将外发加工单和退货单糅合，得出该工序的实际任务数量，进行账单的生成
+	 * （生产计划部）将外发加工单,退货单,加工单价格糅合，得出该工序的实际任务数量和价格，进行账单的生成
 	 * 
 	 * @param order
 	 * @return
@@ -861,10 +862,27 @@ public class LedgerAction {
 	@ResponseBody
 	public CommonResponse mixOutSoureRefund(Long id) {
 		CommonResponse cr = new CommonResponse();
-//		orderOutSourceService.mixOutSoureRefund(id);
-		cr.setMessage("成功生成加工单账单");
+		cr.setData(orderOutSourceService.mixOutSoureRefund(id));
+		cr.setMessage("成功");
 		return cr;
 	}
+	
+	
+	/**
+	 * （生产计划部）对工序价值进行新增或者修改
+	 * 
+	 * @param order
+	 * @return
+	 */
+	@RequestMapping(value = "/ledger/updateProcessPrice", method = RequestMethod.GET)
+	@ResponseBody
+	public CommonResponse updateProcessPrice(ProcessPrice processPrice) {
+		CommonResponse cr = new CommonResponse();
+		orderOutSourceService.updateProcessPrice(processPrice);
+		cr.setMessage("修改成功");
+		return cr;
+	}
+	
 	
 	
 	/**
@@ -873,27 +891,16 @@ public class LedgerAction {
 	 * @param order
 	 * @return
 	 */
-	@RequestMapping(value = "/ledger/saveOutSoureBills", method = RequestMethod.GET)
+	@RequestMapping(value = "/ledger/saveOutSoureBills", method = RequestMethod.POST)
 	@ResponseBody
 	public CommonResponse saveOutSoureBills(OrderOutSource orderOutSource) {
 		CommonResponse cr = new CommonResponse();
 		orderOutSourceService.saveOutSoureBills(orderOutSource);
-		cr.setMessage("成功生成加工单账单");
+		cr.setMessage("成功生成加工单账单");                                                                                             
 		return cr;
 	}
 	
 	
-	
-	
-	
-	@RequestMapping(value = "/ledger/test", method = RequestMethod.GET)
-	@ResponseBody
-	public CommonResponse test(Long id) {
-		CommonResponse cr = new CommonResponse();
-		orderOutSourceService.test(id);
-		cr.setMessage("删除");
-		return cr;
-	}
 	
 	
 	/******************************库存管理**************************/
@@ -973,39 +980,24 @@ public class LedgerAction {
 		cr.setMessage("成功审核" + count + "领料单，领取出库");
 		return cr;
 	}   
-	
-	
+	 
 	
 	/**
-	 * （1.成品仓库，2.皮壳仓库）修改加工入库单
+	 * （1.成品仓库，2.皮壳仓库）对外发加工单收货入库
 	 * 
-	 * @param order
 	 * @return
 	 */
-	@RequestMapping(value = "/ledger/inventory/updateInventoryOrderOutSource", method = RequestMethod.POST)
+	@RequestMapping(value = "/ledger/inventory/takeGoods", method = RequestMethod.GET)
 	@ResponseBody
-	public CommonResponse updateInventoryOrderOutSource(OrderOutSource orderOutSource) {
+	public CommonResponse takeGoods(PutStorage putStorage) {
 		CommonResponse cr = new CommonResponse();
-		orderOutSourceService.updateInventoryOrderOutSource(orderOutSource);
-		cr.setMessage("修改成功");
+		orderOutSourceService.takeGoods(putStorage);
+		cr.setMessage("成功入库");
 		return cr;
 	}
 	
 	/**
-	 * （1.成品仓库，2.皮壳仓库）对发外单进行确认回库，增加库存操作
 	 * 
-	 * @return
-	 */
-	@RequestMapping(value = "/ledger/inventory/confirmOrderOutSource", method = RequestMethod.GET)
-	@ResponseBody
-	public CommonResponse confirmOrderOutSource(String ids) {
-		CommonResponse cr = new CommonResponse();
-		int count = orderOutSourceService.confirmOrderOutSource(ids);
-		cr.setMessage("成功审核" + count + "条外发入库单，进行入库");
-		return cr;
-	}
-	
-	/**
 	 * 查看发货单
 	 * 
 	 * @return cr
@@ -1063,6 +1055,7 @@ public class LedgerAction {
 		CommonResponse cr = new CommonResponse();
 		int count = sendGoodsService.deleteSendGoods(ids);
 		cr.setMessage("成功删除" + count + "待发货单");
+		
 		return cr;
 	}
 	
