@@ -232,9 +232,8 @@ public class LedgerAction {
 	{
 		clearCascadeJSONSOutSource = ClearCascadeJSON.get()
 				.addRetainTerm(OrderOutSource.class, "id", "fill", "fillRemark", "outSourceNumber",
-						"order", "user", "customer", "remark", "gramWeight", "processNumber", "process",
-						"openOrderTime","outGoingTime","wholeList","flag","audit","productType",
-						"inWarehouseType","arrival","arrivalTime","arrivalNumber","outsourceTask","gramWeight"
+						"order", "user", "customer", "remark", "gramWeight", "processNumber",
+						"openOrderTime","flag","audit","outsourceTask","gramWeight"
 						,"kilogramWeight","processingUser","outsource")
 				.addRetainTerm(Order.class, "id", "bacthNumber", "product", "number", "remark","orderNumber")
 				.addRetainTerm(Customer.class, "id", "name")
@@ -494,7 +493,6 @@ public class LedgerAction {
 
 	/**
 	 * （采购部）删除采购单
-	 * 
 	 * @param order
 	 * @return
 	 */
@@ -983,22 +981,6 @@ public class LedgerAction {
 		return cr;
 	}   
 	 
-	
-	
-	/**
-	 * （1.成品仓库，2.皮壳仓库）修改加工入库单
-	 * 
-	 * @param order
-	 * @return
-	 */
-	@RequestMapping(value = "/ledger/inventory/updateInventoryOrderOutSource", method = RequestMethod.POST)
-	@ResponseBody
-	public CommonResponse updateInventoryOrderOutSource(OrderOutSource orderOutSource) {
-		CommonResponse cr = new CommonResponse();
-		orderOutSourceService.updateInventoryOrderOutSource(orderOutSource);
-		cr.setMessage("修改成功");
-		return cr;
-	}
 	
 	/**
 	 * （1.成品仓库，2.皮壳仓库）对外发加工单收货入库
