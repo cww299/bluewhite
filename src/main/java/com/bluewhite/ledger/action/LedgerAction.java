@@ -31,6 +31,7 @@ import com.bluewhite.ledger.entity.Packing;
 import com.bluewhite.ledger.entity.PackingChild;
 import com.bluewhite.ledger.entity.PackingMaterials;
 import com.bluewhite.ledger.entity.ProcessPrice;
+import com.bluewhite.ledger.entity.PutStorage;
 import com.bluewhite.ledger.entity.ReceivedMoney;
 import com.bluewhite.ledger.entity.RefundBills;
 import com.bluewhite.ledger.entity.Sale;
@@ -232,7 +233,7 @@ public class LedgerAction {
 		clearCascadeJSONSOutSource = ClearCascadeJSON.get()
 				.addRetainTerm(OrderOutSource.class, "id", "fill", "fillRemark", "outSourceNumber",
 						"order", "user", "customer", "remark", "gramWeight", "processNumber", "process",
-						"openOrderTime","outGoingTime","wholeList","flag","audit","productType","warehouseType",
+						"openOrderTime","outGoingTime","wholeList","flag","audit","productType",
 						"inWarehouseType","arrival","arrivalTime","arrivalNumber","outsourceTask","gramWeight"
 						,"kilogramWeight","processingUser","outsource")
 				.addRetainTerm(Order.class, "id", "bacthNumber", "product", "number", "remark","orderNumber")
@@ -897,7 +898,7 @@ public class LedgerAction {
 	public CommonResponse saveOutSoureBills(OrderOutSource orderOutSource) {
 		CommonResponse cr = new CommonResponse();
 		orderOutSourceService.saveOutSoureBills(orderOutSource);
-		cr.setMessage("成功生成加工单账单");
+		cr.setMessage("成功生成加工单账单");                                                                                             
 		return cr;
 	}
 	
@@ -981,7 +982,7 @@ public class LedgerAction {
 		cr.setMessage("成功审核" + count + "领料单，领取出库");
 		return cr;
 	}   
-	
+	 
 	
 	
 	/**
@@ -1000,20 +1001,21 @@ public class LedgerAction {
 	}
 	
 	/**
-	 * （1.成品仓库，2.皮壳仓库）对发外单进行确认回库，增加库存操作
+	 * （1.成品仓库，2.皮壳仓库）对外发加工单收货入库
 	 * 
 	 * @return
 	 */
-	@RequestMapping(value = "/ledger/inventory/confirmOrderOutSource", method = RequestMethod.GET)
+	@RequestMapping(value = "/ledger/inventory/takeGoods", method = RequestMethod.GET)
 	@ResponseBody
-	public CommonResponse confirmOrderOutSource(String ids) {
+	public CommonResponse takeGoods(PutStorage putStorage) {
 		CommonResponse cr = new CommonResponse();
-		int count = orderOutSourceService.confirmOrderOutSource(ids);
-		cr.setMessage("成功审核" + count + "条外发入库单，进行入库");
+		orderOutSourceService.takeGoods(putStorage);
+		cr.setMessage("成功入库");
 		return cr;
 	}
 	
 	/**
+	 * 
 	 * 查看发货单
 	 * 
 	 * @return cr
@@ -1071,6 +1073,7 @@ public class LedgerAction {
 		CommonResponse cr = new CommonResponse();
 		int count = sendGoodsService.deleteSendGoods(ids);
 		cr.setMessage("成功删除" + count + "待发货单");
+		
 		return cr;
 	}
 	
