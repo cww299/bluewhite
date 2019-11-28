@@ -37,7 +37,7 @@
 {{# for(var i in d){  }} 
 	<table style="margin: auto; width: 100%;page-break-before:always;">
 		<tr>
-			<td style="text-align:center;border: 1px solid;width:30%;">{{ d[i].processingUser?d[i].processingUser.name:"" }}</td>
+			<td style="text-align:center;border: 1px solid;width:30%;">{{ d[i].processingUser?d[i].processingUser.userName:"" }}</td>
 			<td style="text-align:center;border: 1px solid;width:10%;">&nbsp;</td>
 			<td style="text-align:center;border: 1px solid;width:10%;">&nbsp;</td>
 			<td style="text-align:center;border: 1px solid;width:20%;">&nbsp;</td>
@@ -61,7 +61,13 @@
 			<td style="border: 1px solid;text-align:center;">{{ d[i].outSourceNumber }}</td>
 			<td style="border: 1px solid;text-align:center;">{{ d[i].processNumber?d[i].processNumber:"" }}</td>
 			<td style="border: 1px solid;">&nbsp;</td>
-			<td style="border: 1px solid;text-align:center;">{{ d[i].process }}</td>
+			<td style="border: 1px solid;text-align:center;">{{# var process = [];
+																layui.each(d[i].outsourceTask,function(index,item){
+																	process.push(item.name);
+																}) 
+															  }}
+ 																{{ process.join(',') }}
+															  </td>
 			<td style="border: 1px solid;text-align:center;">{{ d[i].remark }}</td>
 		</tr>
     </table>
