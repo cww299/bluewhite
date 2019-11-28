@@ -12,6 +12,7 @@ import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 
 import com.bluewhite.base.BaseEntity;
 import com.bluewhite.basedata.entity.BaseData;
@@ -57,7 +58,7 @@ public class RefundBills extends BaseEntity<Long>{
 	 * 退货数量
 	 */
 	@Column(name = "return_number")
-	private Double returnNumber;
+	private Integer returnNumber;
 	
 	/**
 	 * 退货日期
@@ -71,8 +72,49 @@ public class RefundBills extends BaseEntity<Long>{
 	@Column(name = "return_remark")
 	private String returnRemark;
 	
+	/**
+	 * 工序ids
+	 */
+	@Transient
+	private String outsourceTaskIds;
+	
+	/**
+	 * 查询字段
+	 */
+	@Transient
+	private Date orderTimeBegin;
+	/**
+	 * 查询字段
+	 */
+	@Transient
+	private Date orderTimeEnd;
 	
 	
+	
+
+	public String getOutsourceTaskIds() {
+		return outsourceTaskIds;
+	}
+
+	public void setOutsourceTaskIds(String outsourceTaskIds) {
+		this.outsourceTaskIds = outsourceTaskIds;
+	}
+
+	public Date getOrderTimeBegin() {
+		return orderTimeBegin;
+	}
+
+	public void setOrderTimeBegin(Date orderTimeBegin) {
+		this.orderTimeBegin = orderTimeBegin;
+	}
+
+	public Date getOrderTimeEnd() {
+		return orderTimeEnd;
+	}
+
+	public void setOrderTimeEnd(Date orderTimeEnd) {
+		this.orderTimeEnd = orderTimeEnd;
+	}
 
 	public Long getOrderId() {
 		return orderId;
@@ -106,11 +148,11 @@ public class RefundBills extends BaseEntity<Long>{
 		OrderOutSource = orderOutSource;
 	}
 
-	public Double getReturnNumber() {
+	public Integer getReturnNumber() {
 		return returnNumber;
 	}
 
-	public void setReturnNumber(Double returnNumber) {
+	public void setReturnNumber(Integer returnNumber) {
 		this.returnNumber = returnNumber;
 	}
 

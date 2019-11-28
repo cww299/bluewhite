@@ -87,11 +87,6 @@ public class Inventory extends BaseEntity<Long> {
 	@JoinColumn(name = "warehouse_type_id", referencedColumnName = "id", insertable = false, updatable = false)
 	private BaseData warehouseType;
 	
-	/**
-	 * 入库单
-	 */
-	@OneToMany(mappedBy = "inventory", cascade = CascadeType.ALL, orphanRemoval = true)
-	private Set<OrderOutSource> orderOutSource = new HashSet<OrderOutSource>();
 
 	/**
 	 * 商品编号（sku）
@@ -104,13 +99,6 @@ public class Inventory extends BaseEntity<Long> {
 	
 
 
-	public Set<OrderOutSource> getOrderOutSource() {
-		return orderOutSource;
-	}
-
-	public void setOrderOutSource(Set<OrderOutSource> orderOutSource) {
-		this.orderOutSource = orderOutSource;
-	}
 
 	public Long getCommodityId() {
 		return commodityId;
