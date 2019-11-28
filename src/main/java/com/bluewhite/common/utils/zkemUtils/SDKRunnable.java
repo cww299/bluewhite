@@ -22,8 +22,8 @@ public class SDKRunnable implements Runnable {
 	public void run() {
 		try {
 			System.out.println("Thread开始====3秒等待设备实时事件");
-			regEvent();
 			Thread.sleep(3000);
+			regEvent();
 		} catch (Exception e) {
 			System.out.println("线程异常，结束---");
 			regEvent();
