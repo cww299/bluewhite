@@ -31,6 +31,7 @@ import com.bluewhite.ledger.dao.MaterialRequisitionDao;
 import com.bluewhite.ledger.dao.OrderDao;
 import com.bluewhite.ledger.dao.OrderOutSourceDao;
 import com.bluewhite.ledger.dao.ProcessPriceDao;
+import com.bluewhite.ledger.dao.PutStorageDao;
 import com.bluewhite.ledger.dao.RefundBillsDao;
 import com.bluewhite.ledger.entity.MaterialRequisition;
 import com.bluewhite.ledger.entity.Order;
@@ -64,6 +65,8 @@ public class OrderOutSourceServiceImpl extends BaseServiceImpl<OrderOutSource, L
 	private ConsumptionDao consumptionDao;
 	@Autowired
 	private InventoryService inventoryService;
+	@Autowired
+	private PutStorageDao putStorageDao;
 
 	@Override
 	@Transactional
@@ -386,5 +389,6 @@ public class OrderOutSourceServiceImpl extends BaseServiceImpl<OrderOutSource, L
 	@Override
 	public void takeGoods(PutStorage putStorage) {
 		inventoryService.putInStorage(putStorage.getProductId(), putStorage.getInWarehouseTypeId(), putStorage.getArrivalNumber());
+		putStorageDao.save(putStorage);
 	}
 }
