@@ -328,7 +328,7 @@ layui.config({
 			       { title:'用量',   field:'dosage',	},
 			       { title:'库存状态',   field:'state', transData:{ data:['已出库','库存充足','无库存','有库存量不足'],text:'未知' },	},
 			       { title:'库存数量',   field:'inventoryTotal',	},
-			       { title:'是否审核出库', field:'outAudit', transData:{ data:['未审核','审核'],}},
+			       { title:'是否审核出库', field:'outAudit', transData:{ data:['未审核','审核'],text:'否'}},
 			       ]],
 			done:function(){
 				layui.each($('td[data-field="inventoryTotal"]'),function(index,item){
