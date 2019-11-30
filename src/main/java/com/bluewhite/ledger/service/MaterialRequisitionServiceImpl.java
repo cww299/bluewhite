@@ -212,38 +212,5 @@ public class MaterialRequisitionServiceImpl extends BaseServiceImpl<MaterialRequ
 		return count;
 	}
 
-	@Override
-	public int outboundMaterialRequisition(String ids) {
-		int count = 0;
-		if (!StringUtils.isEmpty(ids)) {
-			String[] idArr = ids.split(",");
-			if (idArr.length > 0) {
-				for (int i = 0; i < idArr.length; i++) {
-					Long id = Long.parseLong(idArr[i]);
-					MaterialRequisition materialRequisition = findOne(id);
-					if(materialRequisition.getRequisition()==1){
-						throw new ServiceException("领料出库单已审核出库，请勿多次审核");
-					}
-					if (materialRequisition.getRequisitionTime() == null) {
-						throw new ServiceException("领取时间未填写，无法审核领取");
-					}
-					// 面辅料仓库获取采购库存单，更新采购单实际库存
-					OrderProcurement orderProcurement = materialRequisition.getScatteredOutbound().getOrderProcurement();
-					// 获取到货数量
-//					List<MaterialPutStorage>  materialPutStorageList =  materialPutStorageDao.findByOrderProcurementId(orderProcurement.getId());
-//					double arrivalNumber = materialPutStorageList.stream().mapToDouble(MaterialPutStorage::getArrivalNumber).sum();
-//					
-//					materialPutStorageService.
-//					
-//					orderProcurement.getMateriel().setInventoryNumber(NumUtils.sub(orderProcurement.getMateriel().getInventoryNumber(), materialRequisition.getDosage()));
-					orderProcurementDao.save(orderProcurement);
-					materialRequisition.setRequisition(1);
-					save(materialRequisition);
-					count++;
-				}
-			}
-		}
-		return count;
-	}
 
 }

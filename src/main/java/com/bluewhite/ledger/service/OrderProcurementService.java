@@ -67,24 +67,12 @@ public interface OrderProcurementService extends BaseCRUDService<OrderProcuremen
 	public int auditOrderProcurement(String ids);
 	
 	/**
-	 * 对采购单进行验货
-	 * @param ids
-	 * @return
-	 */
-	public int inspectionOrderProcurement(String ids);
-	
-	/**
 	 * 生成采购账单
 	 * @param ids
 	 * @return
 	 */
 	public int billOrderProcurement(String ids);
 	
-	/**
-	 *  （采购部）修改采购单，对于账单的实际情况作为修改
-	 * @param orderProcurement
-	 */
-	public void updateBillOrderProcurement(OrderProcurement orderProcurement);
 
 
 }

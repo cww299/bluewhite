@@ -145,20 +145,10 @@ public class OrderProcurement extends BaseEntity<Long> {
 	@Column(name = "audit")
 	private Integer audit; 
 	
-	
-	
-	
-	
 	/****物料仓库参数****/
 	
 	/**
-	 * 是否验货
-	 */
-	@Column(name = "inspection")
-	private Integer inspection;
-	
-	/**
-	 * 是否到货（0=否，1=是）
+	 * 是否全部到货（0=否，1=是）
 	 */
 	@Column(name = "arrival")
 	private Integer arrival;
@@ -345,14 +335,6 @@ public class OrderProcurement extends BaseEntity<Long> {
 
 	public void setConventionSquareGram(Double conventionSquareGram) {
 		this.conventionSquareGram = conventionSquareGram;
-	}
-
-	public Integer getInspection() {
-		return inspection;
-	}
-
-	public void setInspection(Integer inspection) {
-		this.inspection = inspection;
 	}
 
 	public Double getPaymentMoney() {
