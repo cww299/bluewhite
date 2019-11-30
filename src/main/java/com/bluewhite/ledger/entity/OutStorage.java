@@ -10,11 +10,9 @@ import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
 import com.bluewhite.base.BaseEntity;
-import com.bluewhite.basedata.entity.BaseData;
-import com.bluewhite.product.product.entity.Product;
 
 /**
- * 出库单()
+ * 出库单
  * 
  * @author zhangliang
  *
@@ -37,7 +35,7 @@ public class OutStorage extends BaseEntity<Long> {
 	private PutStorage putStorage;
 	
 	/**
-	 * （1=生产出库） （2=调拨出库） （3=销售换货出库 ） （4=采购退货出库 ） （5=盘盈出库 ）
+	 * 出库单类型（1=生产出库） （2=调拨出库） （3=销售换货出库 ） （4=采购退货出库 ） （5=盘盈出库 ）(6=返工出库)
 	 */
 	@Column(name = "out_status")
 	private Integer outStatus;
@@ -55,8 +53,6 @@ public class OutStorage extends BaseEntity<Long> {
 	private Integer arrivalNumber;
 
 
-	
-	
 
 	public Long getPutStorageId() {
 		return putStorageId;

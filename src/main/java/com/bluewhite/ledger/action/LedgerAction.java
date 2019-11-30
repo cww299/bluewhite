@@ -29,6 +29,7 @@ import com.bluewhite.ledger.entity.OrderChild;
 import com.bluewhite.ledger.entity.OrderMaterial;
 import com.bluewhite.ledger.entity.OrderOutSource;
 import com.bluewhite.ledger.entity.OrderProcurement;
+import com.bluewhite.ledger.entity.OutStorage;
 import com.bluewhite.ledger.entity.Packing;
 import com.bluewhite.ledger.entity.PackingChild;
 import com.bluewhite.ledger.entity.PackingMaterials;
@@ -47,6 +48,7 @@ import com.bluewhite.ledger.service.OrderMaterialService;
 import com.bluewhite.ledger.service.OrderOutSourceService;
 import com.bluewhite.ledger.service.OrderProcurementService;
 import com.bluewhite.ledger.service.OrderService;
+import com.bluewhite.ledger.service.OutStorageService;
 import com.bluewhite.ledger.service.PackingService;
 import com.bluewhite.ledger.service.PutStorageService;
 import com.bluewhite.ledger.service.ReceivedMoneyService;
@@ -98,6 +100,8 @@ public class LedgerAction {
 	private MaterialOutStorageService materialOutStorageService;
 	@Autowired
 	private PutStorageService putStorageService;
+	@Autowired
+	private OutStorageService outStorageService;
 
 	private ClearCascadeJSON clearCascadeJSONOrder;
 	{
@@ -204,7 +208,7 @@ public class LedgerAction {
 						"materielLocation", "price", "squareGram", "userStorage", "arrival", "audit",
 						"expectPaymentTime", "materiel", "returnNumber", "partDelayNumber", "partDelayTime",
 						"gramPrice", "interest", "paymentMoney", "bill", "conventionPrice", "conventionSquareGram",
-						"partDelayPrice", "returnRemark", "inspection", "arrivalStatus", "replenishment")
+						"partDelayPrice", "returnRemark", "arrivalStatus", "replenishment")
 				.addRetainTerm(Materiel.class, "id", "name", "number", "materialQualitative")
 				.addRetainTerm(Customer.class, "id", "name")
 				.addRetainTerm(BaseOne.class, "id", "name")
@@ -479,20 +483,6 @@ public class LedgerAction {
 	}
 
 	/**
-	 * （采购部）修改采购单，对于账单的实际情况作为修改
-	 * 
-	 * @return
-	 */
-	@RequestMapping(value = "/ledger/updateBillOrderProcurement", method = RequestMethod.POST)
-	@ResponseBody
-	public CommonResponse updateBillOrderProcurement(OrderProcurement orderProcurement) {
-		CommonResponse cr = new CommonResponse();
-		orderProcurementService.updateBillOrderProcurement(orderProcurement);
-		cr.setMessage("修改成功");
-		return cr;
-	}
-
-	/**
 	 * （采购部）审核采购单，进入面辅料仓库
 	 * 
 	 * @param order
@@ -564,7 +554,7 @@ public class LedgerAction {
 	public CommonResponse billOrderProcurement(String ids) {
 		CommonResponse cr = new CommonResponse();
 		int count = orderProcurementService.billOrderProcurement(ids);
-		cr.setMessage("更新成功");
+		cr.setMessage("成功生成"+count+"应付账单");
 		return cr;
 	}
 
@@ -886,7 +876,7 @@ public class LedgerAction {
 	
 	
 
-	/****************************** 库存管理 **************************/
+	/****************************** 库存管理  **************************/
 
 	/**
 	 * （面辅料仓库）生成物料入库单，进行入库
@@ -937,22 +927,22 @@ public class LedgerAction {
 	 * @param order
 	 * @return
 	 */
-	@RequestMapping(value = "/ledger/inspectionMaterialPutStorage", method = RequestMethod.GET)
+	@RequestMapping(value = "/ledger/inventory/inspectionMaterialPutStorage", method = RequestMethod.GET)
 	@ResponseBody
 	public CommonResponse inspectionOrderProcurement(MaterialPutStorage materialPutStorage) {
 		CommonResponse cr = new CommonResponse();
 		materialPutStorageService.inspectionMaterialPutStorage(materialPutStorage);
-		cr.setMessage("成功验货入库单");
+		cr.setMessage("验货成功");
 		return cr;
 	}
 
 	/**
-	 * （面辅料仓库）审核采购单是否全部到货
+	 * （面辅料仓库）审核采购单是否全部到货 （全部到货后，采购部才可以进行耗料分散出库）
 	 * 
 	 * @param order
 	 * @return
 	 */
-	@RequestMapping(value = "/ledger/arrivalOrderProcurement", method = RequestMethod.GET)
+	@RequestMapping(value = "/ledger/inventory/arrivalOrderProcurement", method = RequestMethod.GET)
 	@ResponseBody
 	public CommonResponse arrivalOrderProcurement(String ids) {
 		CommonResponse cr = new CommonResponse();
@@ -963,10 +953,7 @@ public class LedgerAction {
 
 
 	/**
-	 * （面辅料仓库）生成物料出库单 
-	 * 
-	 * 
-	 * 
+	 * （面辅料仓库）生成物料出库单   对于领料单生成(确认已被领取)
 	 * @param order
 	 * @return
 	 */
@@ -981,7 +968,7 @@ public class LedgerAction {
 	
 	
 	/**
-	 * （面辅料仓库）物料出库单列表
+	 * （面辅料仓库）物料出库单列表   
 	 * 
 	 * @return
 	 */
@@ -1009,22 +996,6 @@ public class LedgerAction {
 	}
 	
 
-	/**
-	 * （面辅料仓库）审核领料单出库(确认已被领取)
-	 * 
-	 * @param order
-	 * @return
-	 */
-	@RequestMapping(value = "/ledger/outboundMaterialRequisition", method = RequestMethod.GET)
-	@ResponseBody
-	public CommonResponse outboundMaterialRequisition(String ids) {
-		CommonResponse cr = new CommonResponse();
-		int count = materialRequisitionService.outboundMaterialRequisition(ids);
-		cr.setMessage("成功审核" + count + "领料单，领取出库");
-		return cr;
-	}
-	
-	
 
 	/************************ （1.成品仓库，2.皮壳仓库） ********************/
 
@@ -1067,8 +1038,49 @@ public class LedgerAction {
 		putStorageService.delete(ids);
 		return cr;
 	}
-	 
 	
+	
+	/**
+	 * （1.成品仓库，2.皮壳仓库）出库单
+	 * 
+	 * @return
+	 */
+	@RequestMapping(value = "/ledger/inventory/saveOutStorage", method = RequestMethod.POST)
+	@ResponseBody
+	public CommonResponse saveOutStorage(OutStorage outStorage) {
+		CommonResponse cr = new CommonResponse();
+		outStorageService.saveOutStorage(outStorage);
+		cr.setMessage("成功入库");
+		return cr;
+	}
+	
+	/**
+	 * （1.成品仓库，2.皮壳仓库）入库单列表
+	 * 
+	 * @return
+	 */
+	@RequestMapping(value = "/ledger/inventory/outStoragePage", method = RequestMethod.GET)
+	@ResponseBody
+	public CommonResponse outStoragePage(PageParameter page, OutStorage outStorage) {
+		CommonResponse cr = new CommonResponse();
+		cr.setData(clearCascadeJSONPutStorage.format(outStorageService.findPages(page, outStorage)).toJSON());
+		return cr;
+	}
+	
+	
+	/**
+	 * （1.成品仓库，2.皮壳仓库）出库单
+	 * 
+	 * @return
+	 */
+	@RequestMapping(value = "/ledger/inventory/deleteOutStorage", method = RequestMethod.POST)
+	@ResponseBody
+	public CommonResponse deleteOutStorage(String ids) {
+		CommonResponse cr = new CommonResponse();
+		outStorageService.deleteOutStorage(ids);
+		cr.setMessage("成功删除");
+		return cr;
+	}
 	
 	
 	
@@ -1144,14 +1156,6 @@ public class LedgerAction {
 
 		return cr;
 	}
-	
-	
-	
-	
-	
-	
-	
-	
 	
 	
 	

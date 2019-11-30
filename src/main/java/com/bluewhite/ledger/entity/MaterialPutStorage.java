@@ -8,10 +8,10 @@ import javax.persistence.FetchType;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 
 import com.bluewhite.base.BaseEntity;
 import com.bluewhite.basedata.entity.BaseData;
-import com.bluewhite.onlineretailers.inventory.entity.Inventory;
 import com.bluewhite.product.primecostbasedata.entity.Materiel;
 import com.bluewhite.system.user.entity.User;
 
@@ -108,12 +108,6 @@ public class MaterialPutStorage extends BaseEntity<Long> {
 	private BaseData storageLocation;
 
 	/**
-	 * 出库后剩余数量
-	 */
-	@Column(name = "surplus_Number")
-	private Integer surplusNumber;
-
-	/**
 	 * 入库操作人id
 	 * 
 	 */
@@ -145,6 +139,12 @@ public class MaterialPutStorage extends BaseEntity<Long> {
 	@Column(name = "gram_price")
 	private Double gramPrice;
 	
+	/**
+	 * 出库后剩余数量
+	 */
+	@Transient
+	private Integer surplusNumber;
+
 	
 	public Double getSquareGram() {
 		return squareGram;

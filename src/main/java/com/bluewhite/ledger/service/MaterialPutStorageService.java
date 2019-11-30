@@ -43,5 +43,20 @@ public interface MaterialPutStorageService  extends BaseCRUDService<MaterialPutS
 	 */
 	public double getArrivalNumber(Long id);
 	
+	/**
+	 * 根据采购单查找
+	 * @param id
+	 * @return
+	 */
+	public List<MaterialPutStorage> findByOrderProcurementId(Long id);
+	
+	/**
+	 * 按采购单和已经验货
+	 * @param id
+	 * @param i
+	 * @return
+	 */
+	public List<MaterialPutStorage> findByOrderProcurementIdAndInspection(Long id, int i);
+	
 
 }

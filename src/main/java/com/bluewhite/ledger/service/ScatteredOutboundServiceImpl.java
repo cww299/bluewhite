@@ -210,9 +210,6 @@ public class ScatteredOutboundServiceImpl extends BaseServiceImpl<ScatteredOutbo
 						if (ot.getOrderProcurement().getArrival() == 0) {
 							throw new ServiceException("第" + (j + 1) + "条领料单，物料未到货，无法审核");
 						}
-						if (ot.getOrderProcurement().getInspection() == 0) {
-							throw new ServiceException("第" + (j + 1) + "条领料单，物料未验货，无法审核");
-						}
 						if (ot.getOrderProcurement().getInOutError() == 1) {
 							throw new ServiceException(ot.getOrderProcurement().getOrderProcurementNumber()
 									+ "采购单实际数量和下单数量不相符，无法审核，请先修正数量");
