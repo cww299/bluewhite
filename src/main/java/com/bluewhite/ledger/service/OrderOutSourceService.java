@@ -42,13 +42,6 @@ public interface OrderOutSourceService extends BaseCRUDService<OrderOutSource, L
 	public void updateOrderOutSource(OrderOutSource orderOutSource);
 
 	/**
-	 * 作废外发单
-	 * @param ids
-	 * @return
-	 */
-	public int invalidOrderOutSource(String ids);
-	
-	/**
 	 * 审核外发单
 	 * @param ids
 	 * @return
@@ -85,12 +78,7 @@ public interface OrderOutSourceService extends BaseCRUDService<OrderOutSource, L
 	 */
 	public void updateProcessPrice(ProcessPrice processPrice);
 	
-	/**
-	 * 仓库收货
-	 * @param id
-	 * @param number
-	 */
-	public void takeGoods(PutStorage putStorage);
+
 
 	
 }

@@ -3,6 +3,7 @@ package com.bluewhite.ledger.service;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import javax.persistence.criteria.Predicate;
 
@@ -21,9 +22,11 @@ import com.bluewhite.common.utils.NumUtils;
 import com.bluewhite.common.utils.StringUtil;
 import com.bluewhite.finance.consumption.entity.Consumption;
 import com.bluewhite.finance.consumption.service.ConsumptionService;
+import com.bluewhite.ledger.dao.MaterialPutStorageDao;
 import com.bluewhite.ledger.dao.OrderMaterialDao;
 import com.bluewhite.ledger.dao.OrderProcurementDao;
 import com.bluewhite.ledger.dao.ScatteredOutboundDao;
+import com.bluewhite.ledger.entity.MaterialPutStorage;
 import com.bluewhite.ledger.entity.OrderMaterial;
 import com.bluewhite.ledger.entity.OrderProcurement;
 import com.bluewhite.ledger.entity.ScatteredOutbound;
@@ -40,6 +43,8 @@ public class OrderProcurementServiceImpl extends BaseServiceImpl<OrderProcuremen
 	private ScatteredOutboundDao scatteredOutboundDao;
 	@Autowired
 	private ConsumptionService consumptionService;
+	@Autowired
+	private MaterialPutStorageDao materialPutStorageDao;
 
 	@Override
 	public PageResult<OrderProcurement> findPages(OrderProcurement param, PageParameter page) {
@@ -86,13 +91,6 @@ public class OrderProcurementServiceImpl extends BaseServiceImpl<OrderProcuremen
 			if (param.getPlaceOrderTime() != null) {
 				if (!StringUtils.isEmpty(param.getOrderTimeBegin()) && !StringUtils.isEmpty(param.getOrderTimeEnd())) {
 					predicate.add(cb.between(root.get("placeOrderTime").as(Date.class), param.getOrderTimeBegin(),
-							param.getOrderTimeEnd()));
-				}
-			}
-			// 按到货日期
-			if (param.getArrivalTime() != null) {
-				if (!StringUtils.isEmpty(param.getOrderTimeBegin()) && !StringUtils.isEmpty(param.getOrderTimeEnd())) {
-					predicate.add(cb.between(root.get("arrivalTime").as(Date.class), param.getOrderTimeBegin(),
 							param.getOrderTimeEnd()));
 				}
 			}
@@ -191,34 +189,25 @@ public class OrderProcurementServiceImpl extends BaseServiceImpl<OrderProcuremen
 						double sumDosage = scatteredOutboundList.stream()
 								.filter(ScatteredOutbound -> ScatteredOutbound.getAudit() == 0)
 								.mapToDouble(ScatteredOutbound::getDosage).sum();
-						if (orderProcurement.getArrivalNumber() < sumDosage) {
+						//获取该采购单的到货单
+						List<MaterialPutStorage>  materialPutStorageList =  materialPutStorageDao.findByOrderProcurementIdAndInspection(id,1);
+						double arrivalNumber = materialPutStorageList.stream().mapToDouble(MaterialPutStorage::getArrivalNumber).sum();
+						if (arrivalNumber < sumDosage) {
 							throw new ServiceException(
 									orderProcurement.getOrderProcurementNumber() + "采购单生成的分散出库单所消耗总量小于采购单实际到货数量，无法审核");
 						}
+						//将到货数量更新到下单数量
+						orderProcurement.setPlaceOrderNumber(arrivalNumber);
+						orderProcurement.setInOutError(0);
+						save(orderProcurement);
+						count++;
 					}
-					orderProcurement.setPlaceOrderNumber(orderProcurement.getArrivalNumber());
-					orderProcurement.setInOutError(0);
-					save(orderProcurement);
-					count++;
 				}
 			}
 		}
 		return count;
 	}
 
-	@Override
-	public void updateOrderProcurement(OrderProcurement orderProcurement) {
-		OrderProcurement ot = findOne(orderProcurement.getId());
-		if (ot.getInspection() == 1) {
-			throw new ServiceException(ot.getOrderProcurementNumber() + "采购单已审核已验货，无法修改");
-		}
-		// 判断是否在入库前填写了退货
-		if (ot.getArrival() == 0 && (orderProcurement.getReturnNumber() != null
-				|| orderProcurement.getReturnTime() != null || orderProcurement.getReturnRemark() != null)) {
-			throw new ServiceException(ot.getOrderProcurementNumber() + "采购单未入库，无法退货，清先入库");
-		}
-		update(orderProcurement, ot, "");
-	}
 
 	@Override
 	public int auditOrderProcurement(String ids) {
@@ -253,23 +242,19 @@ public class OrderProcurementServiceImpl extends BaseServiceImpl<OrderProcuremen
 				for (int i = 0; i < idArr.length; i++) {
 					Long id = Long.parseLong(idArr[i]);
 					OrderProcurement orderProcurement = dao.findOne(id);
-					// 审核采购单进行入库，将实际的入库数值，修改后进行入库
-					// 1.进行面料库存的更新
-					// 2.标记入库数值和订购数值不同的采购单，做为库存预警表示
 					if (orderProcurement != null) {
 						if (orderProcurement.getArrival() == 1) {
-							throw new ServiceException("当前采购面料已成功入库，请不要多次审核");
+							throw new ServiceException(orderProcurement.getOrderProcurementNumber()+"采购单已成功审核，请不要多次审核");
 						}
-						if (orderProcurement.getArrivalNumber() == null || orderProcurement.getArrivalTime() == null
-								|| orderProcurement.getUserStorageId() == null) {
-							throw new ServiceException("当前采购面料未填写到库数值或日期或入库人，无法审核入库");
+						// 判断是否有入库单
+						List<MaterialPutStorage>  materialPutStorageList =  materialPutStorageDao.findByOrderProcurementId(id);
+						if(materialPutStorageList.size()<0){
+							throw new ServiceException(orderProcurement.getOrderProcurementNumber()+"采购单没有生成入库单，无法审核");
 						}
-						if (!orderProcurement.getArrivalNumber().equals(orderProcurement.getPlaceOrderNumber())) {
-							orderProcurement.setInOutError(1);
+						int size = materialPutStorageList.stream().filter(MaterialPutStorage->MaterialPutStorage.getInspection()==1).collect(Collectors.toList()).size();
+						if(size>0){
+							throw new ServiceException(orderProcurement.getOrderProcurementNumber()+"采购单有入库单，未完成验货，无法审核");
 						}
-						orderProcurement.getMateriel()
-								.setInventoryNumber(NumUtils.sum(orderProcurement.getMateriel().getInventoryNumber(),
-										orderProcurement.getArrivalNumber()));
 						orderProcurement.setArrival(1);
 						save(orderProcurement);
 						count++;
@@ -297,44 +282,44 @@ public class OrderProcurementServiceImpl extends BaseServiceImpl<OrderProcuremen
 							throw new ServiceException("当前采购入库单已检验，请勿重复检验");
 						}
 						// 当实际克重和约定克重不相符
-						if (orderProcurement.getConventionSquareGram() != null
-								&& orderProcurement.getSquareGram() != null
-								&& orderProcurement.getConventionSquareGram() > orderProcurement.getSquareGram()) {
-							orderProcurement.setGramPrice(NumUtils.mul(
-									NumUtils.div(
-											NumUtils.sub(orderProcurement.getConventionSquareGram(),
-													orderProcurement.getSquareGram()),
-											orderProcurement.getConventionSquareGram(), 3),
-									orderProcurement.getPrice(), orderProcurement.getArrivalNumber()));
-						}
-						// 当退货数量存在时，更新:付款金额，面料库存
-						Double returnNumber = NumUtils.setzro(orderProcurement.getReturnNumber());
-						orderProcurement.setPaymentMoney(NumUtils.mul(orderProcurement.getPrice(),
-								NumUtils.sub(orderProcurement.getArrivalNumber(), returnNumber)));
-						orderProcurement.getMateriel().setInventoryNumber(
-								NumUtils.sub(orderProcurement.getMateriel().getInventoryNumber(), returnNumber));
-						// 更新到货状态
-						// 1.全部接收
-						// 2.全部退货
-						// 3.降价接收
-						// 4.部分接收，部分退货
-						// 5.部分接收，部分延期付款
-						orderProcurement.setArrivalStatus(1);
-						if (orderProcurement.getReturnNumber() != null) {
-							if (orderProcurement.getReturnNumber() == orderProcurement.getPlaceOrderNumber()) {
-								orderProcurement.setArrivalStatus(2);
-								orderProcurement.setReplenishment(1);
-							}
-							if (orderProcurement.getReturnNumber() < orderProcurement.getPlaceOrderNumber()) {
-								orderProcurement.setArrivalStatus(4);
-								orderProcurement.setReplenishment(1);
-							}
-						}
+//						if (orderProcurement.getConventionSquareGram() != null
+//								&& orderProcurement.getSquareGram() != null
+//								&& orderProcurement.getConventionSquareGram() > orderProcurement.getSquareGram()) {
+//							orderProcurement.setGramPrice(NumUtils.mul(
+//									NumUtils.div(
+//											NumUtils.sub(orderProcurement.getConventionSquareGram(),
+//													orderProcurement.getSquareGram()),
+//											orderProcurement.getConventionSquareGram(), 3),
+//									orderProcurement.getPrice(), orderProcurement.getArrivalNumber()));
+//						}
+//						// 当退货数量存在时，更新:付款金额，面料库存
+//						Double returnNumber = NumUtils.setzro(orderProcurement.getReturnNumber());
+//						orderProcurement.setPaymentMoney(NumUtils.mul(orderProcurement.getPrice(),
+//								NumUtils.sub(orderProcurement.getArrivalNumber(), returnNumber)));
+//						orderProcurement.getMateriel().setInventoryNumber(
+//								NumUtils.sub(orderProcurement.getMateriel().getInventoryNumber(), returnNumber));
+//						// 更新到货状态
+//						// 1.全部接收
+//						// 2.全部退货
+//						// 3.降价接收
+//						// 4.部分接收，部分退货
+//						// 5.部分接收，部分延期付款
+//						orderProcurement.setArrivalStatus(1);
+//						if (orderProcurement.getReturnNumber() != null) {
+//							if (orderProcurement.getReturnNumber() == orderProcurement.getPlaceOrderNumber()) {
+//								orderProcurement.setArrivalStatus(2);
+//								orderProcurement.setReplenishment(1);
+//							}
+//							if (orderProcurement.getReturnNumber() < orderProcurement.getPlaceOrderNumber()) {
+//								orderProcurement.setArrivalStatus(4);
+//								orderProcurement.setReplenishment(1);
+//							}
+//						}
 						//占用供应商资金利息
-						orderProcurement.setInterest(NumUtils.mul(
-								NumUtils.sum(NumUtils.setzro(orderProcurement.getPartDelayPrice()), orderProcurement.getPaymentMoney()),
-								(double)DatesUtil.getDaySub(orderProcurement.getExpectPaymentTime(), orderProcurement.getArrivalTime()),
-								orderProcurement.getInterestday()));
+//						orderProcurement.setInterest(NumUtils.mul(
+//								NumUtils.sum(NumUtils.setzro(orderProcurement.getPartDelayPrice()), orderProcurement.getPaymentMoney()),
+//								(double)DatesUtil.getDaySub(orderProcurement.getExpectPaymentTime(), orderProcurement.getArrivalTime()),
+//								orderProcurement.getInterestday()));
 						orderProcurement.setInspection(1);
 						save(orderProcurement);
 						count++;
@@ -384,10 +369,10 @@ public class OrderProcurementServiceImpl extends BaseServiceImpl<OrderProcuremen
 		OrderProcurement ot = dao.findOne(orderProcurement.getId());
 		update(orderProcurement, ot, "");
 		//占用供应商资金利息
-		ot.setInterest(NumUtils.mul(
-				NumUtils.sum(NumUtils.setzro(ot.getPartDelayPrice()), ot.getPaymentMoney()),
-				(double)DatesUtil.getDaySub(ot.getExpectPaymentTime(), ot.getArrivalTime()),
-				ot.getInterestday()));
+//		ot.setInterest(NumUtils.mul(
+//				NumUtils.sum(NumUtils.setzro(ot.getPartDelayPrice()), ot.getPaymentMoney()),
+//				(double)DatesUtil.getDaySub(ot.getExpectPaymentTime(), ot.getArrivalTime()),
+//				ot.getInterestday()));
 		save(ot);
 	}
 
