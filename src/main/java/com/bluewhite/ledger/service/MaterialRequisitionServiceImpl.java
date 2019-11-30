@@ -21,6 +21,7 @@ import com.bluewhite.ledger.dao.MaterialRequisitionDao;
 import com.bluewhite.ledger.dao.OrderMaterialDao;
 import com.bluewhite.ledger.dao.OrderProcurementDao;
 import com.bluewhite.ledger.dao.ScatteredOutboundDao;
+import com.bluewhite.ledger.entity.MaterialPutStorage;
 import com.bluewhite.ledger.entity.MaterialRequisition;
 import com.bluewhite.ledger.entity.OrderProcurement;
 import com.bluewhite.ledger.entity.ScatteredOutbound;
@@ -40,6 +41,8 @@ public class MaterialRequisitionServiceImpl extends BaseServiceImpl<MaterialRequ
 	private MaterielDao materielDao;
 	@Autowired
 	private OrderProcurementDao orderProcurementDao;
+	@Autowired
+	private MaterialPutStorageService materialPutStorageService;
 
 	@Override
 	public void saveMaterialRequisition(MaterialRequisition materialRequisition) {
@@ -209,44 +212,5 @@ public class MaterialRequisitionServiceImpl extends BaseServiceImpl<MaterialRequ
 		return count;
 	}
 
-	@Override
-	public int outboundMaterialRequisition(String ids) {
-		int count = 0;
-		if (!StringUtils.isEmpty(ids)) {
-			String[] idArr = ids.split(",");
-			if (idArr.length > 0) {
-				for (int i = 0; i < idArr.length; i++) {
-					Long id = Long.parseLong(idArr[i]);
-					MaterialRequisition materialRequisition = findOne(id);
-					if(materialRequisition.getRequisition()==1){
-						throw new ServiceException("领料出库单已审核出库，请勿多次审核");
-					}
-					if (materialRequisition.getRequisitionTime() == null) {
-						throw new ServiceException("领取时间未填写，无法审核领取");
-					}
-					// 面辅料仓库获取采购库存单，更新采购单实际库存
-					OrderProcurement orderProcurement = materialRequisition.getScatteredOutbound()
-							.getOrderProcurement();
-					orderProcurement.setArrivalNumber(NumUtils.sub(orderProcurement.getArrivalNumber(), materialRequisition.getDosage()));
-					orderProcurement.getMateriel().setInventoryNumber(NumUtils.sub(orderProcurement.getMateriel().getInventoryNumber(), materialRequisition.getDosage()));
-					orderProcurementDao.save(orderProcurement);
-					materialRequisition.setRequisition(1);
-					save(materialRequisition);
-					count++;
-				}
-			}
-		}
-		return count;
-	}
 
-	@Override
-	public void updateiInventoryMaterialRequisition(MaterialRequisition materialRequisition) {
-		if (materialRequisition.getId() != null) {
-			MaterialRequisition ot = findOne(materialRequisition.getId());
-			if (ot.getRequisition() == 1) {
-				throw new ServiceException("已领取出库，无法修改");
-			}
-			update(materialRequisition, ot, "");
-		}
-	}
 }

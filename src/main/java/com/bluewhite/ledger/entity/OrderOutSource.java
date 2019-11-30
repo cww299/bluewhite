@@ -149,12 +149,6 @@ public class OrderOutSource extends BaseEntity<Long> {
 	private User user;
 
 	/**
-	 * 是否作废
-	 */
-	@Column(name = "flag")
-	private Integer flag;
-
-	/**
 	 * 是否审核
 	 */
 	@Column(name = "audit")
@@ -333,14 +327,6 @@ public class OrderOutSource extends BaseEntity<Long> {
 
 	public void setAudit(Integer audit) {
 		this.audit = audit;
-	}
-
-	public Integer getFlag() {
-		return flag;
-	}
-
-	public void setFlag(Integer flag) {
-		this.flag = flag;
 	}
 
 	public String getFill() {
