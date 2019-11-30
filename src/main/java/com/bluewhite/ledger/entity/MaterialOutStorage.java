@@ -10,31 +10,30 @@ import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
 import com.bluewhite.base.BaseEntity;
-import com.bluewhite.basedata.entity.BaseData;
-import com.bluewhite.product.product.entity.Product;
 
 /**
- * 出库单()
+ * 物料出库单
  * 
  * @author zhangliang
  *
  */
 @Entity
-@Table(name = "ledger_out_storage")
-public class OutStorage extends BaseEntity<Long> {
+@Table(name = "ledger_material_out_storage")
+public class MaterialOutStorage extends BaseEntity<Long>{
 	
 	/**
 	 * 入库单id
 	 */
-	@Column(name = "put_storage_id")
-	private Long putStorageId;
+	@Column(name = "material_put_storage_id")
+	private Long materialPutStorageId;
 
 	/**
 	 * 入库单（选择入库单进行出库）
 	 */
 	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "put_storage_id", referencedColumnName = "id", insertable = false, updatable = false)
-	private PutStorage putStorage;
+	@JoinColumn(name = "material_put_storage_id", referencedColumnName = "id", insertable = false, updatable = false)
+	private MaterialPutStorage materialPutStorage;
+
 	
 	/**
 	 * （1=生产出库） （2=调拨出库） （3=销售换货出库 ） （4=采购退货出库 ） （5=盘盈出库 ）
@@ -53,25 +52,36 @@ public class OutStorage extends BaseEntity<Long> {
 	 */
 	@Column(name = "arrival_number")
 	private Integer arrivalNumber;
-
+	
+	/**
+	 * 退货原因
+	 */
+	@Column(name = "remark")
+	private String remark;
 
 	
-	
-
-	public Long getPutStorageId() {
-		return putStorageId;
+	public String getRemark() {
+		return remark;
 	}
 
-	public void setPutStorageId(Long putStorageId) {
-		this.putStorageId = putStorageId;
+	public void setRemark(String remark) {
+		this.remark = remark;
 	}
 
-	public PutStorage getPutStorage() {
-		return putStorage;
+	public Long getMaterialPutStorageId() {
+		return materialPutStorageId;
 	}
 
-	public void setPutStorage(PutStorage putStorage) {
-		this.putStorage = putStorage;
+	public void setMaterialPutStorageId(Long materialPutStorageId) {
+		this.materialPutStorageId = materialPutStorageId;
+	}
+
+	public MaterialPutStorage getMaterialPutStorage() {
+		return materialPutStorage;
+	}
+
+	public void setMaterialPutStorage(MaterialPutStorage materialPutStorage) {
+		this.materialPutStorage = materialPutStorage;
 	}
 
 	public Integer getOutStatus() {
@@ -97,6 +107,6 @@ public class OutStorage extends BaseEntity<Long> {
 	public void setArrivalNumber(Integer arrivalNumber) {
 		this.arrivalNumber = arrivalNumber;
 	}
-
+	
 
 }

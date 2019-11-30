@@ -13,6 +13,7 @@ import com.bluewhite.base.BaseEntity;
 import com.bluewhite.basedata.entity.BaseData;
 import com.bluewhite.onlineretailers.inventory.entity.Inventory;
 import com.bluewhite.product.product.entity.Product;
+import com.bluewhite.system.user.entity.User;
 
 /**
  * 
@@ -129,7 +130,19 @@ public class PutStorage extends BaseEntity<Long> {
 	@Column(name = "surplus_Number")
 	private Integer surplusNumber;
 	
-	
+	/**
+	 * 入库操作人id
+	 * 
+	 */
+	@Column(name = "user_storage_id")
+	private Long userStorageId;
+
+	/**
+	 * 入库操作人
+	 */
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "user_storage_id", referencedColumnName = "id", insertable = false, updatable = false)
+	private User userStorage;
 	
 	
 	public Long getStorageAreaId() {

@@ -63,10 +63,6 @@ public class OrderOutSourceServiceImpl extends BaseServiceImpl<OrderOutSource, L
 	private ProcessPriceDao processPriceDao;
 	@Autowired
 	private ConsumptionDao consumptionDao;
-	@Autowired
-	private InventoryService inventoryService;
-	@Autowired
-	private PutStorageDao putStorageDao;
 
 	@Override
 	@Transactional
@@ -116,7 +112,6 @@ public class OrderOutSourceServiceImpl extends BaseServiceImpl<OrderOutSource, L
 					}
 				}
 			}
-			orderOutSource.setFlag(0);
 			orderOutSource.setAudit(0);
 			save(orderOutSource);
 		} else {
@@ -158,10 +153,6 @@ public class OrderOutSourceServiceImpl extends BaseServiceImpl<OrderOutSource, L
 			if (!StringUtils.isEmpty(param.getOutSourceNumber())) {
 				predicate.add(
 						cb.like(root.get("outSourceNumber").as(String.class), "%" + param.getOutSourceNumber() + "%"));
-			}
-			// 是否作废
-			if (param.getFlag() != null) {
-				predicate.add(cb.equal(root.get("flag").as(Integer.class), param.getFlag()));
 			}
 			// 是否审核
 			if (param.getAudit() != null) {
@@ -235,7 +226,6 @@ public class OrderOutSourceServiceImpl extends BaseServiceImpl<OrderOutSource, L
 						}
 						return false;
 					}).mapToInt(OrderOutSource::getProcessNumber).sum();
-
 					// 查找改加工单该工序的退货单
 					List<Integer> returnNumberList = refundBillsDao.getReturnNumber(ot.getOrderId(), id);
 					// 退货总数
@@ -254,25 +244,6 @@ public class OrderOutSourceServiceImpl extends BaseServiceImpl<OrderOutSource, L
 	}
 
 	@Override
-	@Transactional
-	public int invalidOrderOutSource(String ids) {
-		int count = 0;
-		if (!StringUtils.isEmpty(ids)) {
-			String[] idArr = ids.split(",");
-			if (idArr.length > 0) {
-				for (int i = 0; i < idArr.length; i++) {
-					Long id = Long.parseLong(idArr[i]);
-					OrderOutSource orderOutSource = findOne(id);
-					orderOutSource.setFlag(1);
-					save(orderOutSource);
-					count++;
-				}
-			}
-		}
-		return count;
-	}
-
-	@Override
 	public int auditOrderOutSource(String ids) {
 		int count = 0;
 		if (!StringUtils.isEmpty(ids)) {
@@ -281,9 +252,6 @@ public class OrderOutSourceServiceImpl extends BaseServiceImpl<OrderOutSource, L
 				for (int i = 0; i < idArr.length; i++) {
 					Long id = Long.parseLong(idArr[i]);
 					OrderOutSource orderOutSource = findOne(id);
-					if (orderOutSource.getFlag() == 1) {
-						throw new ServiceException("第" + (i + 1) + "条单据已作废，无法审核");
-					}
 					if (orderOutSource.getAudit() == 1) {
 						throw new ServiceException("第" + (i + 1) + "条单据已审核，请勿重复审核");
 					}
@@ -386,9 +354,4 @@ public class OrderOutSourceServiceImpl extends BaseServiceImpl<OrderOutSource, L
 		processPriceDao.save(ot);
 	}
 
-	@Override
-	public void takeGoods(PutStorage putStorage) {
-		inventoryService.putInStorage(putStorage.getProductId(), putStorage.getInWarehouseTypeId(), putStorage.getArrivalNumber());
-		putStorageDao.save(putStorage);
-	}
 }
