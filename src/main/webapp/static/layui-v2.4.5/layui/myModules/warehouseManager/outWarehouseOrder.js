@@ -54,13 +54,13 @@ layui.extend({
 					'<div class="layui-input-block">',
 						'<input class="layui-input" lay-verify="required" name="" id="inputOrderChoose" ',
 							'placeholder="单击进行选择" ',
-							'value="{{ d.arrivalNumber?d.arrivalNumber:"" }}" readonly>',
+							'value="{{ d.materialPutStorage?d.MaterialPutStorage.serialNumber:"" }}" readonly>',
 					'</div>',
 				'</div>',
 				'<div>',
 					'<input type="hidden" name="materielId" value="{{ d.materielId }}">',
 					'<input type="hidden" name="inWarehouseTypeId" value="379">',
-					'<input type="hidden" name="materialPutStorageId" id="materialPutStorageId">',
+					'<input type="hidden" name="materialPutStorageId" id="materialPutStorageId" value="{{d.materialPutStorage?d.materialPutStorage.id:""}}">',
 					'<input type="hidden" name="id" value="{{d.id || ""}}">',
 				'</div>',
 				'<p style="display:none;"><button lay-submit lay-filter="sureAddOutOrder" id="sureAddOutOrder">确定</button></p>',
@@ -82,7 +82,6 @@ layui.extend({
 		if(data.id){
 			title = "修改出库单";
 			data.materielId = data.materiel.id;
-			data.orderProcurementId = data.orderProcurement.id;
 		}
 		var html = '';
 		laytpl(TPL).render(data,function(h){
@@ -140,7 +139,6 @@ layui.extend({
 										var data = obj.data;
 										$('#materialPutStorageId').val(data.id);
 										$('#inputOrderChoose').val(data.serialNumber);
-										$('#inputOrderChoose').val(data.id);
 										form.render();
 									});
 								}

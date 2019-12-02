@@ -46,9 +46,9 @@ layui.config({
 	base : '${ctx}/static/layui-v2.4.5/'
 }).extend({
 	mytable : 'layui/myModules/mytable' ,
-	inputWarehouseOrder: 'layui/myModules/warehouseManager/inputWarehouseOrder',
+	outWarehouseOrder: 'layui/myModules/warehouseManager/outWarehouseOrder',
 }).define(
-	['mytable','inputWarehouseOrder','laydate'],
+	['mytable','outWarehouseOrder','laydate'],
 	function(){
 		var $ = layui.jquery
 		, layer = layui.layer 				
@@ -57,7 +57,7 @@ layui.config({
 		, laydate = layui.laydate
 		, myutil = layui.myutil
 		, laytpl = layui.laytpl
-		, inputWarehouseOrder = layui.inputWarehouseOrder
+		, outWarehouseOrder = layui.outWarehouseOrder
 		, mytable = layui.mytable;
 		myutil.config.ctx = '${ctx}';
 		myutil.clickTr();
@@ -104,7 +104,7 @@ layui.config({
 					}else if(obj.event=="update"){
 						if(check.length!=1)
 							return myutil.emsg('只能修改一条数据');
-						inputWarehouseOrder.update({
+						outWarehouseOrder.update({
 							data: check[0],
 							success: function(){
 								table.reload('tableData');
@@ -116,7 +116,6 @@ layui.config({
 			},
 			toolbar:[
 				'<span class="layui-btn layui-btn-sm" lay-event="update">修改</span>',
-				'<span class="layui-btn layui-btn-normal layui-btn-sm" lay-event="verify">验货</span>',
 			].join(''),
 			autoUpdate:{
 				saveUrl:'',
@@ -131,9 +130,7 @@ layui.config({
 			       { title:'出库数量',   field:'arrivalNumber',   },
 			       { title:'出库操作人',   field:'userStorage_userName',	},
 			       { title:'面料',   field:'materiel_name',	},
-			       { title:'出库内容',   field:'orderProcurement_orderProcurementNumber',	width:'33%'},
-			       { title:'状态',   field:'inStatus',  transData:{ data:['','采购入库','调拨入库','退货入库','换货入库','盘亏入库'], } },
-			       { title:'是否验货',   field:'inspection',  transData:{ data:['否','是',], } },
+			       { title:'状态',   field:'outStatus',  transData:{ data:['','生产出库','调拨出库','销售换货出库','采购退货出库','盘盈出库'], } },
 			       ]]
 		})
 		form.on('submit(search)',function(obj){
@@ -149,11 +146,7 @@ layui.config({
 				where: obj.field,
 			})
 		}) 
-		inputWarehouseOrder.init(function(){
-			$('#storageLocationId').append(inputWarehouseOrder.allStorageLocation)
-			$('#storageAreaId').append(inputWarehouseOrder.allStorageArea)
-			form.render();
-		});
+		outWarehouseOrder.init();
 	}//end define function
 )//endedefine
 </script>
