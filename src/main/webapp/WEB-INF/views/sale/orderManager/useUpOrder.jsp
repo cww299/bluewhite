@@ -570,7 +570,7 @@ layui.config({
 					if(addOrEdit=='add'){
 						var number = data.materiel.number.replace(/[^0-9]/ig,"");	//面类、辅料编号
 						var type = data.materiel.number.replace(/\d/ig,"");		//面料、辅料类型
-						str = type+'- “'+allCustom[0].name+'“ '+number+' ';	//拼接
+						str = type+'- “'+(allCustom[0]?allCustom[0].name:"")+'“ '+number+' ';	//拼接
 						$('#orderMaterialId').val(data.id);
 					}else if(addOrEdit=='edit'){
 						var d = data;
