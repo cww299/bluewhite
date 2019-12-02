@@ -145,7 +145,63 @@ public class MaterialPutStorage extends BaseEntity<Long> {
 	@Transient
 	private Double surplusNumber;
 
+	/**
+	 * 物料名称
+	 */
+	@Transient
+	private String materielName;
 	
+	/**
+	 * 物料编号
+	 */
+	@Transient
+	private String materielNumber;
+	
+	/**
+	 * 查询字段
+	 */
+	@Transient
+	private Date orderTimeBegin;
+	/**
+	 * 查询字段
+	 */
+	@Transient
+	private Date orderTimeEnd;
+	
+	
+	
+	public Date getOrderTimeBegin() {
+		return orderTimeBegin;
+	}
+
+	public void setOrderTimeBegin(Date orderTimeBegin) {
+		this.orderTimeBegin = orderTimeBegin;
+	}
+
+	public Date getOrderTimeEnd() {
+		return orderTimeEnd;
+	}
+
+	public void setOrderTimeEnd(Date orderTimeEnd) {
+		this.orderTimeEnd = orderTimeEnd;
+	}
+
+	public String getMaterielName() {
+		return materielName;
+	}
+
+	public void setMaterielName(String materielName) {
+		this.materielName = materielName;
+	}
+
+	public String getMaterielNumber() {
+		return materielNumber;
+	}
+
+	public void setMaterielNumber(String materielNumber) {
+		this.materielNumber = materielNumber;
+	}
+
 	public Double getSquareGram() {
 		return squareGram;
 	}

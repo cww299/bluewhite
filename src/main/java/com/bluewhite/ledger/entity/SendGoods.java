@@ -74,8 +74,6 @@ public class SendGoods extends BaseEntity<Long>{
 	@Column(name = "send_date")
 	private Date sendDate;
 	
-	
-	
 	/**
 	 * (包装)剩余数量
 	 */
