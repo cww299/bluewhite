@@ -17,6 +17,7 @@ import com.bluewhite.base.BaseServiceImpl;
 import com.bluewhite.common.ServiceException;
 import com.bluewhite.common.entity.PageParameter;
 import com.bluewhite.common.entity.PageResult;
+import com.bluewhite.common.utils.NumUtils;
 import com.bluewhite.common.utils.StringUtil;
 import com.bluewhite.finance.consumption.entity.Consumption;
 import com.bluewhite.finance.consumption.service.ConsumptionService;
@@ -194,6 +195,7 @@ public class OrderProcurementServiceImpl extends BaseServiceImpl<OrderProcuremen
 						}
 						//将到货数量更新到下单数量
 						orderProcurement.setPlaceOrderNumber(arrivalNumber);
+						orderProcurement.setResidueNumber(NumUtils.sub(arrivalNumber, sumDosage));
 						orderProcurement.setInOutError(0);
 						save(orderProcurement);
 						count++;
@@ -261,6 +263,7 @@ public class OrderProcurementServiceImpl extends BaseServiceImpl<OrderProcuremen
 						orderProcurement.setArrivalStatus(1);
 						orderProcurement.setArrivalTime(time);
 						orderProcurement.setArrivalNumber(arrivalNumber);
+						orderProcurement.setPaymentMoney(NumUtils.mul(orderProcurement.getPrice(), orderProcurement.getArrivalNumber()));
 						save(orderProcurement);
 						count++;
 					}
