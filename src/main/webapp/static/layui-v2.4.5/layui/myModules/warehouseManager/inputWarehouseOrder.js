@@ -50,10 +50,10 @@ layui.extend({
 					'</div>',
 				'</div>',
 				'<div class="layui-form-item" pane>',
-					'<label class="layui-form-label">入库状态</label>',
+					'<label class="layui-form-label">入库类型</label>',
 					'<div class="layui-input-block">',
-						'<select name="inStatus" disabled value="{{ d.inStatus || 1}}" id="inStatus">',
-							'<option value="1">采购入库</option>',
+						'<select name="inStatus" {{d.inStatus==1?"disabled":""}} value="{{ d.inStatus || 2}}" id="inStatus">',
+							'<option value="1" {{ d.inStatus!=1?"disabled":"" }}>采购入库</option>',
 							'<option value="2">调拨入库</option>',
 							'<option value="3">退货入库</option>',
 							'<option value="4">换货入库</option>',
@@ -63,7 +63,7 @@ layui.extend({
 				'</div>',
 				'<div>',
 					'<input type="hidden" name="materielId" value="{{ d.materielId }}">',
-					'<input type="hidden" name="orderProcurementId" value="{{ d.orderProcurementId }}">',
+					'<input type="hidden" name="orderProcurementId" value="{{ d.orderProcurementId || "" }}">',
 					'<input type="hidden" name="inWarehouseTypeId" value="379">',
 					'<input type="hidden" name="id" value="{{d.id || ""}}">',
 				'</div>',
@@ -143,7 +143,7 @@ layui.extend({
 				inputWarehouseOrder.allStorageArea = allStorageArea;
 				success++;
 				if(success==3)
-					done();
+					done && done();
 			}
 		})
 		myutil.getData({	//获取所有人员
@@ -155,7 +155,7 @@ layui.extend({
 				inputWarehouseOrder.allUser = allUser;
 				success++;
 				if(success==3)
-					done();
+					done && done();
 			}
 		})
 		myutil.getData({	//获取库位
@@ -167,7 +167,7 @@ layui.extend({
 				inputWarehouseOrder.allStorageLocation = allStorageLocation;
 				success++;
 				if(success==3)
-					done();
+					done && done();
 			}
 		})
 	}
