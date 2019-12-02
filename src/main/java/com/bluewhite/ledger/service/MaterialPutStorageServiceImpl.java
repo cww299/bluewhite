@@ -43,16 +43,24 @@ public class MaterialPutStorageServiceImpl extends BaseServiceImpl<MaterialPutSt
 		Page<MaterialPutStorage> pages = dao.findAll((root, query, cb) -> {
 			List<Predicate> predicate = new ArrayList<>();
 
+			
+			
+			
 			Predicate[] pre = new Predicate[predicate.size()];
 			query.where(predicate.toArray(pre));
 			return null;
 		}, page);
+		pages.getContent().stream().forEach(m->{
+			List<MaterialOutStorage> materialOutStorageList = materialOutStorageDao.findByMaterialPutStorageId(m.getId());
+			double arrNumber = materialOutStorageList.stream().mapToDouble(MaterialOutStorage::getArrivalNumber).sum();
+			m.setSurplusNumber(NumUtils.sub(m.getArrivalNumber(),arrNumber));
+		});
 		PageResult<MaterialPutStorage> result = new PageResult<>(pages, page);
 		return result;
 	}
 
 	@Override
-	public int deletematerialPutStorage(String ids) {
+	public int deleteMaterialPutStorage(String ids) {
 		return delete(ids);
 	}
 

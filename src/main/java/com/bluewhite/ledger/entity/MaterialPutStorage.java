@@ -143,7 +143,7 @@ public class MaterialPutStorage extends BaseEntity<Long> {
 	 * 出库后剩余数量
 	 */
 	@Transient
-	private Integer surplusNumber;
+	private Double surplusNumber;
 
 	
 	public Double getSquareGram() {
@@ -290,12 +290,13 @@ public class MaterialPutStorage extends BaseEntity<Long> {
 		this.storageLocation = storageLocation;
 	}
 
-	public Integer getSurplusNumber() {
+	public Double getSurplusNumber() {
 		return surplusNumber;
 	}
 
-	public void setSurplusNumber(Integer surplusNumber) {
+	public void setSurplusNumber(Double surplusNumber) {
 		this.surplusNumber = surplusNumber;
 	}
+
 
 }

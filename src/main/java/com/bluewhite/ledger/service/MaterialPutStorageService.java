@@ -27,7 +27,7 @@ public interface MaterialPutStorageService  extends BaseCRUDService<MaterialPutS
 	 * 批量删除
 	 * @param ids
 	 */
-	public int deletematerialPutStorage(String ids);
+	public int deleteMaterialPutStorage(String ids);
 	
 	/**
 	 * 入库单验货
@@ -57,6 +57,7 @@ public interface MaterialPutStorageService  extends BaseCRUDService<MaterialPutS
 	 * @return
 	 */
 	public List<MaterialPutStorage> findByOrderProcurementIdAndInspection(Long id, int i);
+
 	
 
 }
