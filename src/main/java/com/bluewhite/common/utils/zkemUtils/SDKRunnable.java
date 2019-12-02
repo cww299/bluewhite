@@ -5,15 +5,20 @@ import java.util.Date;
 import java.util.Timer;
 import java.util.TimerTask;
 
+import com.bluewhite.common.Log;
+import com.bluewhite.common.MyExceptionHandlerExceptionResolver;
 import com.jacob.activeX.ActiveXComponent;
 
 public class SDKRunnable implements Runnable {
 
+	private static final Log log = Log.getLog(SDKRunnable.class);
+	
 	private String address;
 
 	public SDKRunnable(String address) {
 		this.address = address;
 	}
+	
 
 	/**
 	 * 线程内每隔一分钟去读取实时事件，失败则重连当前设备
@@ -25,8 +30,8 @@ public class SDKRunnable implements Runnable {
 			Thread.sleep(3000);
 			regEvent();
 		} catch (Exception e) {
-			System.out.println("线程异常，结束---");
-			regEvent();
+			log.error("线程异常，结束");
+//			regEvent();
 		}
 	}
 
@@ -58,7 +63,6 @@ public class SDKRunnable implements Runnable {
 				if (ip == null) {
 					System.out.println(address + "考勤机设备异常，重连中-------");
 					boolean result = sdk.connect(address, zkem);
-					sdk.regEvent(zkem);
 				}
 			}
 		}, time, 60000);// 这里设定将延时每隔一分钟执行一次
