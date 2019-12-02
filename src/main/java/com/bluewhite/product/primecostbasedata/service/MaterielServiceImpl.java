@@ -146,10 +146,9 @@ public class MaterielServiceImpl extends BaseServiceImpl<Materiel, Long> impleme
 			if (!StringUtils.isEmpty(materiel.getNumber())) {
 				predicate.add(cb.like(root.get("number").as(String.class), "%" + materiel.getNumber() + "%"));
 			}
-			// 按類型
+			// 按类型
 			if (materiel.getMaterielTypeId() != null) {
-				predicate.add(
-						cb.equal(root.get("materielType").get("id").as(String.class), materiel.getMaterielTypeId()));
+				predicate.add(cb.equal(root.get("materielType").get("id").as(String.class), materiel.getMaterielTypeId()));
 			}
 			// 按产品名称过滤
 			if (!StringUtils.isEmpty(materiel.getName())) {
@@ -160,6 +159,11 @@ public class MaterielServiceImpl extends BaseServiceImpl<Materiel, Long> impleme
 			return null;
 		}, page);
 		PageResult<Materiel> result = new PageResult<Materiel>(pages, page);
+		result.getRows().stream().forEach(m->{
+			
+			
+			
+		});
 		return result;
 	}
 

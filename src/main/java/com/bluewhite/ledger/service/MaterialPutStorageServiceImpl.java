@@ -56,12 +56,12 @@ public class MaterialPutStorageServiceImpl extends BaseServiceImpl<MaterialPutSt
 			List<Predicate> predicate = new ArrayList<>();
 			// 按物料编号
 			if (!StringUtils.isEmpty(param.getMaterielName())) {
-				predicate.add(cb.like(root.get("number").as(String.class),
+				predicate.add(cb.like(root.get("materiel").get("number").as(String.class),
 						"%" + StringUtil.specialStrKeyword(param.getMaterielName()) + "%"));
 			}
 			// 按物料名称
 			if (!StringUtils.isEmpty(param.getMaterielNumber())) {
-				predicate.add(cb.like(root.get("name").as(String.class),
+				predicate.add(cb.like(root.get("materiel").get("name").as(String.class),
 						"%" + StringUtil.specialStrKeyword(param.getMaterielNumber()) + "%"));
 			}
 			// 按库区
