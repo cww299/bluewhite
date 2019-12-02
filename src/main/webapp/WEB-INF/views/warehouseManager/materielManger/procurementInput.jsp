@@ -27,15 +27,14 @@
 		<table id="tableData" lay-filter="tableData"></table>
 	</div>
 </div>
-</body>
-
 <script>
 layui.config({
 	base : '${ctx}/static/layui-v2.4.5/'
 }).extend({
 	mytable : 'layui/myModules/mytable' ,
+	inputWarehouseOrder: 'layui/myModules/warehouseManager/inputWarehouseOrder',
 }).define(
-	['mytable'],
+	['mytable','inputWarehouseOrder'],
 	function(){
 		var $ = layui.jquery
 		, layer = layui.layer 				
@@ -43,6 +42,7 @@ layui.config({
 		, table = layui.table 
 		, myutil = layui.myutil
 		, laytpl = layui.laytpl
+		, inputWarehouseOrder = layui.inputWarehouseOrder
 		, mytable = layui.mytable;
 		myutil.config.ctx = '${ctx}';
 		myutil.clickTr();
@@ -63,27 +63,25 @@ layui.config({
 				count:['arrivalNumber','returnNumber'],
 				price:['squareGram',]
 			},
-			toolbar: [ '<span lay-event="audit" class="layui-btn layui-btn-sm">入库</span>',
-				   '<span lay-event="verify" class="layui-btn layui-btn-sm layui-btn-normal">验货</span>',],
+			toolbar: [ '<span lay-event="audit" class="layui-btn layui-btn-sm">生成入库单</span>',],
 			curd:{
 				btn:[],
 				otherBtn:function(obj){
-					if(obj.event=='verify'){
-						myutil.deleTableIds({
-							url:'/ledger/inspectionOrderProcurement',
-							table:'tableData',
-							text:'请选择信息|是否确认验货？',
-						})
-					}else if(obj.event=="audit"){
-						myutil.deleTableIds({
-							url:'/ledger/arrivalOrderProcurement',
-							table:'tableData',
-							text:'请选择信息|是否确认审核入库？',
-						})
+					if(obj.event=="audit"){
+						var check = layui.table.checkStatus('tableData').data;
+						if(check.length!=1)
+							return myutil.emsg('只能选择一条数据生成入库单');
+						inputWarehouseOrder.add({
+							data:{
+								inStatus: 1,
+								materielId: check[0].materiel.id,
+								orderProcurementId: check[0].id,
+							}
+						});
 					}
 				}
 			},
-			colsWidth:[0,8,42,6,6,6,8,10,10,6,8,6,6,6,8,6,6,6],
+			colsWidth:[0,8,42,6,6,6,8,10,10,8,6,6,],
 			cols:[[
 					{ type:'checkbox',fixed:'left' },
 					{ title:'下单日期', field:'placeOrderTime', type:'date'},
@@ -94,15 +92,9 @@ layui.config({
 					{ title:'供应商', field:'customer_name', },
 					{ title:'预计到货日期', field:'expectArrivalTime',},
 					{ title:'实际到货日期', field:'arrivalTime', edit:true, type:'date', },
-					{ title:'到货数量', field:'arrivalNumber', edit:true,},
 					{ title:'入库人', field:'userStorage_id', type:'select', select:{ data:allUser, name:'userName', }},
 					{ title:'是否入库',field:'arrival',transData:{data:['否','是'],}},
 					{ title:'约定克重', field:'conventionSquareGram', },
-					{ title:'实际克重', field:'squareGram',edit:true, },
-					{ title:'退货日期',field:'returnTime', edit:true, type:'date',minWidth:'120', },
-					{ title:'退货数量',field:'returnNumber',edit:true, minWidth:'120',},
-					{ title:'退货原因',field:'returnRemark', edit:true, minWidth:'120',},
-					{ title:'是否验货',field:'inspection',transData:{data:['否','是'],}, fixed:'right', },
 			       ]]
 		})
 		form.on('submit(search)',function(obj){
@@ -110,8 +102,9 @@ layui.config({
 				where: obj.field,
 			})
 		}) 
+		inputWarehouseOrder.init();
 	}//end define function
 )//endedefine
 </script>
-
+</body>
 </html>

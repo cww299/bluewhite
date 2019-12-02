@@ -57,10 +57,10 @@
 						<td><input id="startTime" name="orderTimeBegin" style="width: 310px;" placeholder="请输入开始时间" class="layui-input laydate-icon"></td>
 						<td>&nbsp;&nbsp;</td>
 						<td>
-							<input type="checkbox" name="tradeDays" value="1" title="是否调休" lay-skin="primary">
-							<input type="checkbox" name="addSignIn" value="1" title="是否补签" lay-skin="primary">
-							<input type="checkbox" name="applyOvertime" value="1" title="是否加班" lay-skin="primary">
-							<input type="checkbox" name="holiday" value="1" title="是否请假" lay-skin="primary">
+							<input type="checkbox" lay-filter="searchCheck" name="tradeDays" value="1" title="是否调休" lay-skin="primary">
+							<input type="checkbox" lay-filter="searchCheck" name="addSignIn" value="1" title="是否补签" lay-skin="primary">
+							<input type="checkbox" lay-filter="searchCheck" name="applyOvertime" value="1" title="是否加班" lay-skin="primary">
+							<input type="checkbox" lay-filter="searchCheck" name="holiday" value="1" title="是否请假" lay-skin="primary">
 						</td>
 						<td>&nbsp;&nbsp;</td>
 						<td> <div class="layui-inline">
@@ -525,7 +525,7 @@
 						layer.open({
 					         type: 1
 					        ,title: "新增" //不显示标题栏
-					        ,area:['800px', '550px']
+					        ,area:['800px', '600px']
 					        ,id: 'LAY_layuipro' //设定一个id，防止重复弹出
 					        ,btn: ['确认', '取消']
 					        ,btnAlign: 'c'
@@ -897,6 +897,10 @@
 					page:{curr:1},
 				});
 			});
+			form.on('checkbox(searchCheck)',function(obj){
+				$(obj.elem).siblings('input').prop('checked','');
+				form.render();
+			})
 			//封装ajax主方法
 			var mainJs = {
 				//新增							
