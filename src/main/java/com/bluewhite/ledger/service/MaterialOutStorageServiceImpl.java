@@ -35,7 +35,7 @@ public class MaterialOutStorageServiceImpl extends BaseServiceImpl<MaterialOutSt
 			MaterialOutStorage ot = dao.findOne(materialOutStorage.getId());
 			update(materialOutStorage, ot, "");
 		}else{
-			materialOutStorage.setSerialNumber(Constants.WLCK+StringUtil.getDate()+SalesUtils.get0LeftString((int) dao.count(), 8));
+			materialOutStorage.setSerialNumber(Constants.WLCK+StringUtil.getDate()+SalesUtils.get0LeftString((int)  (dao.count()+1), 8));
 			save(materialOutStorage);
 		}
 	}
