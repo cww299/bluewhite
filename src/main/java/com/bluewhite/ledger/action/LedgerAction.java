@@ -543,8 +543,8 @@ public class LedgerAction {
 	@ResponseBody
 	public CommonResponse fixOrderProcurement(String ids) {
 		CommonResponse cr = new CommonResponse();
-		orderProcurementService.fixOrderProcurement(ids);
-		cr.setMessage("更新成功");
+		int count  = orderProcurementService.fixOrderProcurement(ids);
+		cr.setMessage("更新成功"+count+"条");
 		return cr;
 	}
 
