@@ -8,6 +8,11 @@
 	<script src="${ctx}/static/layui-v2.4.5/layui/layui.js"></script>
 	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 	<title>物料库存</title>
+	<style>
+		#inputOrderChoose{
+			cursor:pointer;
+		}
+	</style>
 </head>
 <body>
 <div class="layui-card">
@@ -35,8 +40,10 @@ layui.config({
 	base : '${ctx}/static/layui-v2.4.5/'
 }).extend({
 	mytable : 'layui/myModules/mytable' ,
+	inputWarehouseOrder: 'layui/myModules/warehouseManager/inputWarehouseOrder',
+	outWarehouseOrder: 'layui/myModules/warehouseManager/outWarehouseOrder',
 }).define(
-	['mytable'],
+	['mytable','inputWarehouseOrder','outWarehouseOrder'],
 	function(){
 		var $ = layui.jquery
 		, layer = layui.layer 				
@@ -44,6 +51,8 @@ layui.config({
 		, table = layui.table 
 		, myutil = layui.myutil
 		, laytpl = layui.laytpl
+		, inputWarehouseOrder = layui.inputWarehouseOrder
+		, outWarehouseOrder = layui.outWarehouseOrder
 		, mytable = layui.mytable;
 		myutil.config.ctx = '${ctx}';
 		myutil.clickTr();
@@ -63,6 +72,33 @@ layui.config({
 			url:'${ctx}/product/getMaterielPage',
 			ifNull:0,
 			limit:15,
+			curd:{
+				btn:[],
+				otherBtn:function(obj){
+					var check = layui.table.checkStatus('tableData').data;
+					if(obj.event=='addInput'){
+						if(check.length!=1)
+							return myutil.emsg('只能操作一条数据！');
+						inputWarehouseOrder.add({
+							data:{
+								materielId: check[0].id,
+							}
+						})
+					}else if(obj.event="addOut"){
+						if(check.length!=1)
+							return myutil.emsg('只能操作一条数据！');
+						outWarehouseOrder.add({
+							data:{
+								materielId: check[0].id,
+							},
+						})
+					}
+				},
+			},
+			toolbar:[
+				'<span class="layui-btn layui-btn-sm" lay-event="addInput">新增入库单</span>',
+				'<span class="layui-btn layui-btn-normal layui-btn-sm" lay-event="addOut">新增出库单</span>'
+			].join(' '),
 			limits:[15,25,50,100],
 			cols:[[
 			       { type:'checkbox',},
@@ -78,6 +114,9 @@ layui.config({
 				where: obj.field,
 			})
 		}) 
+		
+		inputWarehouseOrder.init();
+		outWarehouseOrder.init();
 	}//end define function
 )//endedefine
 </script>
