@@ -86,10 +86,9 @@ public class OrderOutSourceServiceImpl extends BaseServiceImpl<OrderOutSource, L
 						processPrice.setProcessTaskId(id);
 						processPrice.setCustomerId(orderOutSource.getCustomerId());
 						processPriceDao.save(processPrice);
-						
 						// 对加工单数量进行限制判断，加工单数量和工序挂钩，每个工序最大数量为订单数量，无法超出
 						// 工序可以由不同的加工单加工，但是不能超出订单数量
-						// 改工序已经加工总数
+						// 该工序已经加工总数
 						int sumNumber = orderOutSourceList.stream().filter(o -> {
 							Set<BaseData> baseDataSet = o.getOutsourceTask().stream()
 									.filter(BaseData -> baseData.getId().equals(id)).collect(Collectors.toSet());
@@ -99,8 +98,7 @@ public class OrderOutSourceServiceImpl extends BaseServiceImpl<OrderOutSource, L
 							return false;
 						}).mapToInt(OrderOutSource::getProcessNumber).sum();
 						// 查找改加工单该工序的退货单
-						List<Integer> returnNumberList = refundBillsDao.getReturnNumber(orderOutSource.getOrderId(),
-								id);
+						List<Integer> returnNumberList = refundBillsDao.getReturnNumber(orderOutSource.getOrderId(),id);
 						// 退货总数
 						Integer returnNumber = returnNumberList.stream().reduce(Integer::sum).orElse(0);
 						// 实际数量=(总加工数-退货数)
