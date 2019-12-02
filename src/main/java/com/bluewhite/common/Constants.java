@@ -133,5 +133,8 @@ public class Constants {
     public final static String  SCLL = "SCLL";
     //耗料出库
     public final static String  HLCK = "HLCK";
-
+    //物料入库
+    public final static String  WLRK = "WLRK";
+    //物料出库
+    public final static String  WLCK = "WLCK";
 }
