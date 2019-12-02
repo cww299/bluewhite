@@ -22,7 +22,12 @@ import com.bluewhite.system.user.entity.User;
 @Entity
 @Table(name = "ledger_material_put_storage")
 public class MaterialPutStorage extends BaseEntity<Long> {
-
+	/**
+	 * 编号
+	 */
+	@Column(name = "serial_number")
+	private String serialNumber;
+	
 	/**
 	 * 物料id
 	 */
@@ -51,7 +56,7 @@ public class MaterialPutStorage extends BaseEntity<Long> {
 	private OrderProcurement orderProcurement;
 
 	/**
-	 * 入库单的订单状态 （1=采购入库）（2=调拨入库） （3=退货入库 ） （4=换货入库 ）（5=盘亏入库）
+	 * 入库类型 （1=采购入库）（2=调拨入库） （3=退货入库 ） （4=换货入库 ）（5=盘亏入库）
 	 */
 	@Column(name = "in_status")
 	private Integer inStatus;
@@ -170,6 +175,14 @@ public class MaterialPutStorage extends BaseEntity<Long> {
 	
 	
 	
+	public String getSerialNumber() {
+		return serialNumber;
+	}
+
+	public void setSerialNumber(String serialNumber) {
+		this.serialNumber = serialNumber;
+	}
+
 	public Date getOrderTimeBegin() {
 		return orderTimeBegin;
 	}

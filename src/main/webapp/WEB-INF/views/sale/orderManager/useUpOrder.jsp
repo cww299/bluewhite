@@ -328,7 +328,7 @@ layui.config({
 			       { title:'用量',   field:'dosage',	},
 			       { title:'库存状态',   field:'state', transData:{ data:['已出库','库存充足','无库存','有库存量不足'],text:'未知' },	},
 			       { title:'库存数量',   field:'inventoryTotal',	},
-			       { title:'是否审核出库', field:'outAudit', transData:{ data:['未审核','审核'],}},
+			       { title:'是否审核出库', field:'outAudit', transData:{ data:['未审核','审核'],text:'否'}},
 			       ]],
 			done:function(){
 				layui.each($('td[data-field="inventoryTotal"]'),function(index,item){
@@ -570,7 +570,7 @@ layui.config({
 					if(addOrEdit=='add'){
 						var number = data.materiel.number.replace(/[^0-9]/ig,"");	//面类、辅料编号
 						var type = data.materiel.number.replace(/\d/ig,"");		//面料、辅料类型
-						str = type+'- “'+allCustom[0].name+'“ '+number+' ';	//拼接
+						str = type+'- “'+(allCustom[0]?allCustom[0].name:"")+'“ '+number+' ';	//拼接
 						$('#orderMaterialId').val(data.id);
 					}else if(addOrEdit=='edit'){
 						var d = data;

@@ -151,7 +151,7 @@ layui.config({
 					title : title
 					,type : 1
 					,btn : ['确定','取消']
-					,area:['25%','70%']
+					,area:['25%','80%']
 					,shade : 0
 					,content : html
 					,yes : function(){

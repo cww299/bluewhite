@@ -112,9 +112,9 @@ layui.define(['jquery','form'],function(exports){
 					  		'value="'+data[i].id+'" '+c+' '+d+' lay-skin="primary">';//复选框
 				    html+='<i class="layui-icon layui-icon-'+data[i].icon+'"></i>&nbsp;&nbsp;'			//菜单图标
 				    if(conf.showName){
-				    	html+='<span>'+conf.showName(data[i])+'</span>&nbsp;&nbsp;';	
+				    	html+='<span style="padding: 7px 0;">'+conf.showName(data[i])+'</span>&nbsp;&nbsp;';	
 				    }else
-				    	html+='<span>'+data[i].name+'</span>&nbsp;&nbsp;';				//菜单名
+				    	html+='<span style="padding: 7px 0;">'+data[i].name+'</span>&nbsp;&nbsp;';				//菜单名
 				    if(conf.toolbar){
 				    	conf.toolbar = conf.toolbar == true?['add','edit','delete'] : conf.toolbar;
 				    	var disNone = conf.toolShow?'':'display:none;'

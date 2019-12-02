@@ -7,7 +7,7 @@
 	<link rel="stylesheet" href="${ctx }/static/layui-v2.4.5/layui/css/layui.css" media="all">
 	<script src="${ctx}/static/layui-v2.4.5/layui/layui.js"></script>
 	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-	<title>耗料出库出库</title>
+	<title>耗料领取</title>
 	<style>
 		.pickingDiv td{
 			padding: 5px 0;
