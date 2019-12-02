@@ -268,8 +268,10 @@ public class LedgerAction {
 	{
 		clearCascadeJSONMaterialPutStorage = ClearCascadeJSON.get()
 				.addRetainTerm(MaterialPutStorage.class, "id", "materiel",
-				"orderProcurement", "inStatus", "inWarehouseType", "inventory", "arrivalTime", "arrivalNumber",
+				"orderProcurement", "inStatus", "inWarehouseType", "arrivalTime", "arrivalNumber",
 				"storageArea", "storageLocation", "surplusNumber", "userStorage")
+				.addRetainTerm(OrderProcurement.class, "id", "orderProcurementNumber")
+				.addRetainTerm(Materiel.class, "id", "name")
 				.addRetainTerm(BaseOne.class, "id", "name")
 				.addRetainTerm(User.class, "id", "userName");
 	}
@@ -944,9 +946,9 @@ public class LedgerAction {
 	 */
 	@RequestMapping(value = "/ledger/inventory/arrivalOrderProcurement", method = RequestMethod.GET)
 	@ResponseBody
-	public CommonResponse arrivalOrderProcurement(String ids) {
+	public CommonResponse arrivalOrderProcurement(String ids,Date time) {
 		CommonResponse cr = new CommonResponse();
-		int count = orderProcurementService.arrivalOrderProcurement(ids);
+		int count = orderProcurementService.arrivalOrderProcurement(ids,time);
 		cr.setMessage("成功审核" + count + "条采购入库单，进行入库");
 		return cr;
 	}

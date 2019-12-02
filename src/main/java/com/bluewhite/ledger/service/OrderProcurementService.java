@@ -1,5 +1,6 @@
 package com.bluewhite.ledger.service;
 
+import java.util.Date;
 import java.util.List;
 
 import com.bluewhite.base.BaseCRUDService;
@@ -44,7 +45,7 @@ public interface OrderProcurementService extends BaseCRUDService<OrderProcuremen
 	 * @param ids
 	 * @return
 	 */
-	public int arrivalOrderProcurement(String ids);
+	public int arrivalOrderProcurement(String ids,Date time);
 	
 	/**
 	 * 库存不符预警
