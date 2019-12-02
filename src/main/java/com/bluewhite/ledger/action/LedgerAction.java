@@ -279,7 +279,8 @@ public class LedgerAction {
 	{
 		clearCascadeJSONMaterialOutStorage = ClearCascadeJSON.get()
 				.addRetainTerm(MaterialOutStorage.class, "id", "materiel","userStorage",
-				"outStatus", "arrivalTime", "arrivalNumber","remark","serialNumber")
+				"outStatus", "arrivalTime", "arrivalNumber","remark","serialNumber","materialPutStorage")
+				.addRetainTerm(MaterialPutStorage.class, "id","serialNumber")
 				.addRetainTerm(Materiel.class, "id", "name")
 				.addRetainTerm(User.class, "id", "userName");
 	}
