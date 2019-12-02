@@ -160,6 +160,12 @@ public class OrderProcurement extends BaseEntity<Long> {
 	private Integer inOutError;
 	
 	/**
+	 * 入库时间
+	 */
+	@Column(name = "arrival_time")
+	private Date arrivalTime;
+	
+	/**
 	 * 	到货接收状态
 	 *  1.全部接收
 	 *  2.全部退货
@@ -260,6 +266,14 @@ public class OrderProcurement extends BaseEntity<Long> {
 	
 	
 	
+
+	public Date getArrivalTime() {
+		return arrivalTime;
+	}
+
+	public void setArrivalTime(Date arrivalTime) {
+		this.arrivalTime = arrivalTime;
+	}
 
 	public static double getInterestday() {
 		return interestDay;

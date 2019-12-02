@@ -226,7 +226,7 @@ public class OrderProcurementServiceImpl extends BaseServiceImpl<OrderProcuremen
 
 	@Override
 	@Transactional
-	public int arrivalOrderProcurement(String ids) {
+	public int arrivalOrderProcurement(String ids,Date time) {
 		int count = 0;
 		if (!StringUtils.isEmpty(ids)) {
 			String[] idArr = ids.split(",");
@@ -255,6 +255,7 @@ public class OrderProcurementServiceImpl extends BaseServiceImpl<OrderProcuremen
 						}
 						orderProcurement.setArrival(1);
 						orderProcurement.setArrivalStatus(1);
+						orderProcurement.setArrivalTime(time);
 						save(orderProcurement);
 						count++;
 					}
