@@ -269,8 +269,8 @@ public class LedgerAction {
 		clearCascadeJSONMaterialPutStorage = ClearCascadeJSON.get()
 				.addRetainTerm(MaterialPutStorage.class, "id", "materiel",
 				"orderProcurement", "inStatus", "inWarehouseType", "arrivalTime", "arrivalNumber",
-				"storageArea", "storageLocation", "surplusNumber", "userStorage")
-				.addRetainTerm(OrderProcurement.class, "id", "orderProcurementNumber")
+				"storageArea", "storageLocation", "surplusNumber", "userStorage","inspection")
+				.addRetainTerm(OrderProcurement.class, "id", "orderProcurementNumber","serialNumber")
 				.addRetainTerm(Materiel.class, "id", "name")
 				.addRetainTerm(BaseOne.class, "id", "name")
 				.addRetainTerm(User.class, "id", "userName");
@@ -279,7 +279,8 @@ public class LedgerAction {
 	{
 		clearCascadeJSONMaterialOutStorage = ClearCascadeJSON.get()
 				.addRetainTerm(MaterialOutStorage.class, "id", "materialPutStorage",
-				"outStatus", "inStatus", "arrivalTime", "arrivalNumber");
+				"outStatus", "inStatus", "arrivalTime", "arrivalNumber","remark","serialNumber")
+				.addRetainTerm(Materiel.class, "id", "name");
 	}
 
 	/**
@@ -890,8 +891,12 @@ public class LedgerAction {
 	@ResponseBody
 	public CommonResponse saveMaterialPutStorage(MaterialPutStorage materialPutStorage) {
 		CommonResponse cr = new CommonResponse();
+		if(materialPutStorage.getId()==null){
+			cr.setMessage("新增成功");
+		}else{
+			cr.setMessage("修改成功");
+		}
 		materialPutStorageService.saveMaterialPutStorage(materialPutStorage);
-		cr.setMessage("成功入库");
 		return cr;
 	}
 	
@@ -939,6 +944,7 @@ public class LedgerAction {
 	}
 
 	/**
+	 * 
 	 * （面辅料仓库）审核采购单是否全部到货 （全部到货后，采购部才可以进行耗料分散出库）
 	 * 
 	 * @param order
