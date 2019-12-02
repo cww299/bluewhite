@@ -1,90 +1,86 @@
 /* 2019/12/2
  * author: 299
- * 新增、修改入库单模板
+ * 新增、修改出库单模板
  * 需要在本模块前引入myutil,并设置ctx后调用init()
- * inputWarehouseOrder.add({ success:function(){ 成功函数的回调 }  }) 绑定新增按钮
- * inputWarehouseOrder.update({ data:{修改前的数据、回显},   })
+ * outWarehouseOrder.add({ success:function(){ 成功函数的回调 }  }) 绑定新增按钮
+ * outWarehouseOrder.update({ data:{修改前的数据、回显},   })
  */
 layui.extend({
-}).define(['jquery','layer','form','laytpl','laydate'],function(exports){
+}).define(['jquery','layer','form','laytpl','laydate','mytable'],function(exports){
 	"use strict";
 	var $ = layui.jquery,
 		form = layui.form,
 		layer = layui.layer,
+		mytable = layui.mytable,
+		table = layui.table,
 		laydate = layui.laydate,
 		laytpl = layui.laytpl,
 		myutil = layui.myutil;
 	var TPL = ['<div class="layui-form layui-form-pane" style="padding:20px;">',
 				'<div class="layui-form-item" pane>',
-					'<label class="layui-form-label">入库时间</label>',
+					'<label class="layui-form-label">出库时间</label>',
 					'<div class="layui-input-block">',
 						'<input class="layui-input" lay-verify="required" name="arrivalTime" id="arrivalTime" value="{{ d.arrivalTime?d.arrivalTime:"" }}">',
 					'</div>',
 				'</div>',
 				'<div class="layui-form-item" pane>',
-					'<label class="layui-form-label">入库数量</label>',
+					'<label class="layui-form-label">出库数量</label>',
 					'<div class="layui-input-block">',
 						'<input class="layui-input" lay-verify="number" name="arrivalNumber" ',
 							'value="{{ d.arrivalNumber?d.arrivalNumber:"" }}">',
 					'</div>',
 				'</div>',
 				'<div class="layui-form-item" pane>',
-					'<label class="layui-form-label">库区</label>',
-					'<div class="layui-input-block">',
-						'<select lay-search name="storageAreaId" id="storageAreaId">',
-							'<option value="">请选择</option></select>',
-					'</div>',
-				'</div>',
-				'<div class="layui-form-item" pane>',
-					'<label class="layui-form-label">库位</label>',
-					'<div class="layui-input-block">',
-						'<select lay-search name="storageLocationId" id="storageLocationId">',
-							'<option value="">请选择</option></select>',
-					'</div>',
-				'</div>',
-				'<div class="layui-form-item" pane>',
-					'<label class="layui-form-label">入库人</label>',
+					'<label class="layui-form-label">出库人</label>',
 					'<div class="layui-input-block">',
 						'<select lay-search name="userStorageId" id="userStorageId">',
 							'<option value="">请选择</option></select>',
 					'</div>',
 				'</div>',
 				'<div class="layui-form-item" pane>',
-					'<label class="layui-form-label">入库类型</label>',
+					'<label class="layui-form-label">出库类型</label>',
 					'<div class="layui-input-block">',
-						'<select name="inStatus" {{d.inStatus==1?"disabled":""}} value="{{ d.inStatus || 2}}" id="inStatus">',
-							'<option value="1" {{ d.inStatus!=1?"disabled":"" }}>采购入库</option>',
-							'<option value="2">调拨入库</option>',
-							'<option value="3">退货入库</option>',
-							'<option value="4">换货入库</option>',
-							'<option value="5">盘亏入库</option>',
+						'<select name="outStatus">',
+							'<option value="1">生产出库</option>',
+							'<option value="2">调拨出库</option>',
+							'<option value="3">销售换货出库</option>',
+							'<option value="4">采购退货出库</option>',
+							'<option value="5">盘盈出库</option>',
 							'</select>',
+					'</div>',
+				'</div>',
+				'<div class="layui-form-item" pane>',
+					'<label class="layui-form-label">入库单</label>',
+					'<div class="layui-input-block">',
+						'<input class="layui-input" lay-verify="required" name="" id="inputOrderChoose" ',
+							'placeholder="单击进行选择" ',
+							'value="{{ d.arrivalNumber?d.arrivalNumber:"" }}" readonly>',
 					'</div>',
 				'</div>',
 				'<div>',
 					'<input type="hidden" name="materielId" value="{{ d.materielId }}">',
-					'<input type="hidden" name="orderProcurementId" value="{{ d.orderProcurementId || "" }}">',
 					'<input type="hidden" name="inWarehouseTypeId" value="379">',
+					'<input type="hidden" name="materialPutStorageId" id="materialPutStorageId">',
 					'<input type="hidden" name="id" value="{{d.id || ""}}">',
 				'</div>',
 				'<p style="display:none;"><button lay-submit lay-filter="sureAddOutOrder" id="sureAddOutOrder">确定</button></p>',
 				'</div>',
 	           ].join(' ');
 	
-	var inputWarehouseOrder = {}, allStorageLocation = '',allStorageArea = '',allUser = '';
+	var outWarehouseOrder = {}, allStorageLocation = '',allStorageArea = '',allUser = '';
 	
-	inputWarehouseOrder.add = function(opt){
-		inputWarehouseOrder.update(opt)
+	outWarehouseOrder.add = function(opt){
+		outWarehouseOrder.update(opt)
 	}
 	
-	inputWarehouseOrder.update = function(opt){
-		var data = opt.data,title="生成入库单";
+	outWarehouseOrder.update = function(opt){
+		var data = opt.data,title="生成出库单";
 		if(!data){
 			console.error('请给定数据！');
 			return;
 		}
 		if(data.id){
-			title = "修改入库单";
+			title = "修改出库单";
 			data.materielId = data.materiel.id;
 			data.orderProcurementId = data.orderProcurement.id;
 		}
@@ -113,8 +109,47 @@ layui.extend({
 					$('#inStatus').val(data.inStatus);
 					form.render();
 				}
+				$('#inputOrderChoose').click(function(){
+					var chooseInputWin = layer.open({
+						typr:1,
+						btn:[],
+						title:'入库单选择&nbsp;&nbsp;&nbsp;<span class="layui-badge">提示：双击进行选择</span>',
+						area:['70%','80%'],
+						content:`<div>
+									<table id="chooseTable" lay-filter="chooseTable"></table>
+								 </div>
+								`,
+						success:function(){
+							mytable.render({
+								elem:'#chooseTable',
+								url: myutil.config.ctx+'/ledger/inventory/materialPutStoragePage',
+								ifNull:'--',
+								cols:[[
+								       { type:'checkbox',},
+								       { title:'入库编号', field:'serialNumber',},
+								       { title:'入库时间',   field:'arrivalTime', type:'dateTime',width:'10%',	},
+								       { title:'库区',   field:'storageArea_name', 	},
+								       { title:'库位',   field:'storageLocation_name',	},
+								       { title:'剩余数量',   field:'surplusNumber',width:'10%',	},
+								       { title:'面料',   field:'materiel_name',	},
+								       { title:'入库内容',   field:'orderProcurement_orderProcurementNumber',	width:'33%'},
+								       ]],
+								done:function(){
+									table.on('row(chooseTable)', function(obj){
+										layer.close(chooseInputWin);
+										var data = obj.data;
+										$('#materialPutStorageId').val(data.id);
+										$('#inputOrderChoose').val(data.serialNumber);
+										$('#inputOrderChoose').val(data.id);
+										form.render();
+									});
+								}
+							})
+						}
+					})
+				})
 				form.on('submit(sureAddOutOrder)',function(obj){
-					var url = '/ledger/inventory/saveMaterialPutStorage';
+					var url = '/ledger/inventory/saveMaterialOutStorage';
 					myutil.saveAjax({
 						url: url,
 						data: obj.field,
@@ -132,44 +167,20 @@ layui.extend({
 		})
 	}
 	
-	inputWarehouseOrder.init = function(done){
+	outWarehouseOrder.init = function(done){
 		var success = 0;
-		myutil.getDataSync({	//获取库区
-			url: myutil.config.ctx+'/basedata/list?type=storageArea',
-			success:function(d){
-				for(var i=0,len=d.length;i<len;i++){
-					allStorageArea += '<option value="'+d[i].id+'">'+d[i].name+'</option>';
-				}
-				inputWarehouseOrder.allStorageArea = allStorageArea;
-				success++;
-				if(success==3)
-					done && done();
-			}
-		})
 		myutil.getData({	//获取所有人员
 			url: myutil.config.ctx+'/system/user/findUserList?quit=0',
 			success:function(d){
 				for(var i=0,len=d.length;i<len;i++){
 					allUser += '<option value="'+d[i].id+'">'+d[i].userName+'</option>';
 				}
-				inputWarehouseOrder.allUser = allUser;
+				outWarehouseOrder.allUser = allUser;
 				success++;
-				if(success==3)
-					done && done();
-			}
-		})
-		myutil.getData({	//获取库位
-			url: myutil.config.ctx+'/basedata/list?type=storageLocation&size=9999',
-			success:function(d){
-				for(var i=0,len=d.length;i<len;i++){
-					allStorageLocation += '<option value="'+d[i].id+'">'+d[i].name+'</option>';
-				}
-				inputWarehouseOrder.allStorageLocation = allStorageLocation;
-				success++;
-				if(success==3)
+				if(success==1)
 					done && done();
 			}
 		})
 	}
-	exports('inputWarehouseOrder',inputWarehouseOrder);
+	exports('outWarehouseOrder',outWarehouseOrder);
 })

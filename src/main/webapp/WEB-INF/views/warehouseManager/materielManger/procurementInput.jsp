@@ -63,8 +63,7 @@ layui.config({
 				count:['arrivalNumber','returnNumber'],
 				price:['squareGram',]
 			},
-			toolbar: [ '<span lay-event="audit" class="layui-btn layui-btn-sm">生成入库单</span>',
-				       '<span lay-event="outStorage" class="layui-btn layui-btn-sm">生成退货单</span>',],
+			toolbar: [ '<span lay-event="audit" class="layui-btn layui-btn-sm">生成入库单</span>',],
 			curd:{
 				btn:[],
 				otherBtn:function(obj){

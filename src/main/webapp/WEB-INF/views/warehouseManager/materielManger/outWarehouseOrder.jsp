@@ -7,19 +7,12 @@
 	<link rel="stylesheet" href="${ctx }/static/layui-v2.4.5/layui/css/layui.css" media="all">
 	<script src="${ctx}/static/layui-v2.4.5/layui/layui.js"></script>
 	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-	<title>入库单</title>
+	<title>出库单</title>
 	<style>
 	  .searchTable td:nth-of-type(odd){
 	  	padding: 5px 0;
 	  	padding-left: 15px;
 	  	padding-right: 5px;
-	  }
-	  .btnTd{
-	    text-align:center;
-	    padding-left: 0px;
-	  	padding-right: 0px;
-	  	padding-bottom: 0px;
-	  	padding-top: 2px;
 	  }
 	</style>
 </head>
@@ -28,30 +21,20 @@
 	<div class="layui-card-body">
 		<table class="layui-form searchTable">
 			<tr>
-				<td>入库日期:</td>
+				<td>出库日期:</td>
 				<td><input type="text" name="orderTimeBegin" id="inputDate" class="layui-input"></td>
 				<td>物料编号:</td>
 				<td><input type="text" name="materielNumber" class="layui-input"></td>
 				<td>物料名称:</td>
 				<td><input type="text" name="materielName" class="layui-input"></td>
-				<td>库区:</td>
-				<td><select name="storageAreaId" id="storageAreaId"><option value="">请选择</option></select></td>
-			</tr>
-			<tr>
-				<td>库位:</td>
-				<td><select name="storageLocationId" id="storageLocationId"><option value="">请选择</option></select></td>
-				<td>是否验货:</td>
-				<td><select name="inspection"><option value="">请选择</option>
-											  <option value="0">否</option>
-											  <option value="1">是</option></select></td>
-				<td>采购单状态:</td>
-				<td><select name="inStatus"><option value="">请选择</option>
-							<option value="1">采购入库</option>
-							<option value="2">调拨入库</option>
-							<option value="3">退货入库</option>
-							<option value="4">换货入库</option>
-							<option value="5">盘亏入库</option></select></td>
-				<td colspan="2" class="btnTd">
+				<td>出库状态:</td>
+				<td><select name="outStatus"><option value="">请选择</option>
+							<option value="1">生产出库</option>
+							<option value="2">调拨出库</option>
+							<option value="3">销售换货出库</option>
+							<option value="4">采购退货出库</option>
+							<option value="5">盘盈出库</option></select></td>
+				<td>
 					<button type="button" class="layui-btn" lay-submit lay-filter="search">搜索</button></td>
 			</tr>
 		</table>
@@ -81,7 +64,7 @@ layui.config({
 		laydate.render({elem:'#inputDate',range:'~'})
 		mytable.render({
 			elem:'#tableData',
-			url:'${ctx}/ledger/inventory/materialPutStoragePage',
+			url:'${ctx}/ledger/inventory/materialOutStoragePage',
 			curd:{
 				otherBtn:function(obj){
 					var check = layui.table.checkStatus('tableData').data;
@@ -143,15 +126,15 @@ layui.config({
 			ifNull:'--',
 			cols:[[
 			       { type:'checkbox',},
-			       { title:'入库编号', field:'serialNumber',},
-			       { title:'入库时间',   field:'arrivalTime', type:'dateTime',width:'10%',	},
-			       { title:'入库数量',   field:'arrivalNumber',   },
+			       { title:'出库编号', field:'serialNumber',},
+			       { title:'出库时间',   field:'arrivalTime', type:'dateTime',width:'10%',	},
+			       { title:'出库数量',   field:'arrivalNumber',   },
 			       { title:'库区',   field:'storageArea_name', 	},
 			       { title:'库位',   field:'storageLocation_name',	},
-			       { title:'入库操作人',   field:'userStorage_userName',	},
+			       { title:'出库操作人',   field:'userStorage_userName',	},
 			       { title:'出库后剩余数量',   field:'surplusNumber',width:'10%',	},
 			       { title:'面料',   field:'materiel_name',	},
-			       { title:'入库内容',   field:'orderProcurement_orderProcurementNumber',	width:'33%'},
+			       { title:'出库内容',   field:'orderProcurement_orderProcurementNumber',	width:'33%'},
 			       { title:'状态',   field:'inStatus',  transData:{ data:['','采购入库','调拨入库','退货入库','换货入库','盘亏入库'], } },
 			       { title:'是否验货',   field:'inspection',  transData:{ data:['否','是',], } },
 			       ]]
