@@ -45,7 +45,7 @@ public class MaterialPutStorageServiceImpl extends BaseServiceImpl<MaterialPutSt
 			update(materialPutStorage, ot, "");
 		} else {
 			materialPutStorage.setSerialNumber(
-					Constants.WLRK + StringUtil.getDate() + SalesUtils.get0LeftString((int) dao.count(), 8));
+					Constants.WLRK + StringUtil.getDate() + SalesUtils.get0LeftString((int) (dao.count()+1), 8));
 			materialPutStorage.setInspection(0);
 			dao.save(materialPutStorage);
 		}
@@ -109,6 +109,10 @@ public class MaterialPutStorageServiceImpl extends BaseServiceImpl<MaterialPutSt
 			for (String idString : idStrings) {
 				Long id = Long.parseLong(idString);
 				MaterialPutStorage materialPutStorage = dao.findOne(id);
+				List<MaterialOutStorage> materialOutStorage = materialOutStorageDao.findByMaterialPutStorageId(id);
+				if(materialOutStorage.size()>0){
+					throw new ServiceException("第"+(i+1)+"条入库单已有出库记录，无法删除，请先删除出库单");
+				}
 				if (materialPutStorage.getOrderProcurement().getArrival() == 1) {
 					throw new ServiceException("第"+(i+1)+"条入库单的采购单已审核全部入库，无法删除");
 				}

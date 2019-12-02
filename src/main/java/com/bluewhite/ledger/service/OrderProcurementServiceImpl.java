@@ -247,7 +247,7 @@ public class OrderProcurementServiceImpl extends BaseServiceImpl<OrderProcuremen
 						if(materialPutStorageList.size()<0){
 							throw new ServiceException(orderProcurement.getOrderProcurementNumber()+"采购单还未入库，无法审核");
 						}
-						int size = materialPutStorageList.stream().filter(MaterialPutStorage->MaterialPutStorage.getInspection()==1).collect(Collectors.toList()).size();
+						int size = materialPutStorageList.stream().filter(MaterialPutStorage->MaterialPutStorage.getInspection()==0).collect(Collectors.toList()).size();
 						if(size>0){
 							throw new ServiceException(orderProcurement.getOrderProcurementNumber()+"采购单有入库单，未完成验货，无法审核");
 						}
