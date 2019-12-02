@@ -119,7 +119,7 @@ layui.config({
 			].join(''),
 			autoUpdate:{
 				saveUrl:'',
-				deleUrl:'/ledger/inventory/deleteMaterialPutStorage',
+				deleUrl:'/ledger/inventory/deleteMaterialoOutStorage',
 				field:{ },
 			},
 			ifNull:'--',

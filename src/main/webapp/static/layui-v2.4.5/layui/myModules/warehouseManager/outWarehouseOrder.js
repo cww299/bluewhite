@@ -54,7 +54,7 @@ layui.extend({
 					'<div class="layui-input-block">',
 						'<input class="layui-input" lay-verify="required" name="" id="inputOrderChoose" ',
 							'placeholder="单击进行选择" ',
-							'value="{{ d.materialPutStorage?d.MaterialPutStorage.serialNumber:"" }}" readonly>',
+							'value="{{ d.materialPutStorage?d.materialPutStorage.serialNumber:"" }}" readonly>',
 					'</div>',
 				'</div>',
 				'<div>',

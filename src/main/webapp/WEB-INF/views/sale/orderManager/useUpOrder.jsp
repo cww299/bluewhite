@@ -178,7 +178,7 @@ layui.config({
 												}
 											}
 									},
-									colsWidth:[0,0,7,13,7,13,7],
+									colsWidth:[0,0,7,13,7,13,],
 									toolbar:'<span class="layui-btn layui-btn-sm" lay-event="onekeyUpdate">一键更新订单数量</span>',
 									cols:[[
 									       { type:'checkbox' },
@@ -187,7 +187,6 @@ layui.config({
 									       { title:'采购时间', field:'placeOrderTime', },
 									       { title:'入库数量', field:'arrivalNumber',style:'color:red;'},
 									       { title:'入库时间', field:'arrivalTime' },
-									       { title:'入库人', field:'userStorage_userName' },
 									       ]]
 								})
 							} 
