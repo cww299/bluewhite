@@ -13,10 +13,12 @@ import org.springframework.util.StringUtils;
 
 import com.bluewhite.base.BaseServiceImpl;
 import com.bluewhite.common.BeanCopyUtils;
+import com.bluewhite.common.Constants;
 import com.bluewhite.common.ServiceException;
 import com.bluewhite.common.entity.PageParameter;
 import com.bluewhite.common.entity.PageResult;
 import com.bluewhite.common.utils.NumUtils;
+import com.bluewhite.common.utils.SalesUtils;
 import com.bluewhite.common.utils.StringUtil;
 import com.bluewhite.ledger.dao.MaterialOutStorageDao;
 import com.bluewhite.ledger.dao.MaterialPutStorageDao;
@@ -42,6 +44,7 @@ public class MaterialPutStorageServiceImpl extends BaseServiceImpl<MaterialPutSt
 			MaterialPutStorage ot = dao.findOne(materialPutStorage.getId());
 			update(materialPutStorage, ot, "");
 		} else {
+			materialPutStorage.setSerialNumber(Constants.WLRK+StringUtil.getDate()+SalesUtils.get0LeftString((int) dao.count(), 8));
 			materialPutStorage.setInspection(0);
 			dao.save(materialPutStorage);
 		}
@@ -74,7 +77,7 @@ public class MaterialPutStorageServiceImpl extends BaseServiceImpl<MaterialPutSt
 			if (param.getInspection() != null) {
 				predicate.add(cb.equal(root.get("inspection").as(Long.class), param.getInspection()));
 			}
-			// 按发货贴包日期
+			// 按到货日期
 			if (!StringUtils.isEmpty(param.getOrderTimeBegin()) && !StringUtils.isEmpty(param.getOrderTimeEnd())) {
 				predicate.add(cb.between(root.get("arrivalTime").as(Date.class), param.getOrderTimeBegin(),
 						param.getOrderTimeEnd()));

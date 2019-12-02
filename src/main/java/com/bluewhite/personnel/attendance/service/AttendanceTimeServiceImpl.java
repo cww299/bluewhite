@@ -440,8 +440,7 @@ public class AttendanceTimeServiceImpl extends BaseServiceImpl<AttendanceTime, L
 
 	@Override
 	public List<Map<String, Object>> findAttendanceTimeCollectAdd(AttendanceTime attendanceTime) throws ParseException {
-		return attendanceCollect(
-				saveAttendanceTimeList(attendanceTimeByApplication(findAttendanceTime(attendanceTime))), true);
+		return attendanceCollect(saveAttendanceTimeList(attendanceTimeByApplication(findAttendanceTime(attendanceTime))), true);
 	}
 
 	@Override
