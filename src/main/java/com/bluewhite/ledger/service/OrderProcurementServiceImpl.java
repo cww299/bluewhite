@@ -92,6 +92,10 @@ public class OrderProcurementServiceImpl extends BaseServiceImpl<OrderProcuremen
 			return null;
 		}, page);
 		PageResult<OrderProcurement> result = new PageResult<>(pages, page);
+		
+		
+		
+		
 		return result;
 	}
 
@@ -256,6 +260,7 @@ public class OrderProcurementServiceImpl extends BaseServiceImpl<OrderProcuremen
 						orderProcurement.setArrival(1);
 						orderProcurement.setArrivalStatus(1);
 						orderProcurement.setArrivalTime(time);
+						orderProcurement.setArrivalNumber(arrivalNumber);
 						save(orderProcurement);
 						count++;
 					}

@@ -44,7 +44,8 @@ public class MaterialPutStorageServiceImpl extends BaseServiceImpl<MaterialPutSt
 			MaterialPutStorage ot = dao.findOne(materialPutStorage.getId());
 			update(materialPutStorage, ot, "");
 		} else {
-			materialPutStorage.setSerialNumber(Constants.WLRK+StringUtil.getDate()+SalesUtils.get0LeftString((int) dao.count(), 8));
+			materialPutStorage.setSerialNumber(
+					Constants.WLRK + StringUtil.getDate() + SalesUtils.get0LeftString((int) dao.count(), 8));
 			materialPutStorage.setInspection(0);
 			dao.save(materialPutStorage);
 		}
@@ -56,12 +57,12 @@ public class MaterialPutStorageServiceImpl extends BaseServiceImpl<MaterialPutSt
 			List<Predicate> predicate = new ArrayList<>();
 			// 按物料编号
 			if (!StringUtils.isEmpty(param.getMaterielName())) {
-				predicate.add(cb.like(root.get("number").as(String.class),
+				predicate.add(cb.like(root.get("materiel").get("number").as(String.class),
 						"%" + StringUtil.specialStrKeyword(param.getMaterielName()) + "%"));
 			}
 			// 按物料名称
 			if (!StringUtils.isEmpty(param.getMaterielNumber())) {
-				predicate.add(cb.like(root.get("name").as(String.class),
+				predicate.add(cb.like(root.get("materiel").get("name").as(String.class),
 						"%" + StringUtil.specialStrKeyword(param.getMaterielNumber()) + "%"));
 			}
 			// 按库区
@@ -102,7 +103,20 @@ public class MaterialPutStorageServiceImpl extends BaseServiceImpl<MaterialPutSt
 
 	@Override
 	public int deleteMaterialPutStorage(String ids) {
-		return delete(ids);
+		int i = 0;
+		if (!StringUtils.isEmpty(ids)) {
+			String[] idStrings = ids.split(",");
+			for (String idString : idStrings) {
+				Long id = Long.parseLong(idString);
+				MaterialPutStorage materialPutStorage = dao.findOne(id);
+				if (materialPutStorage.getOrderProcurement().getArrival() == 1) {
+					throw new ServiceException("第"+(i+1)+"条入库单的采购单已审核全部入库，无法删除");
+				}
+				delete(id);
+				i++;
+			}
+		}
+		return i;
 	}
 
 	@Override
@@ -140,7 +154,7 @@ public class MaterialPutStorageServiceImpl extends BaseServiceImpl<MaterialPutSt
 		});
 		double returnNumber = list.stream().mapToDouble(MaterialOutStorage::getArrivalNumber).sum();
 		double arrivalNumber = materialPutStorageList.stream().mapToDouble(MaterialPutStorage::getArrivalNumber).sum();
-		return arrivalNumber - returnNumber;
+		return NumUtils.sub(arrivalNumber, returnNumber);
 	}
 
 	@Override
