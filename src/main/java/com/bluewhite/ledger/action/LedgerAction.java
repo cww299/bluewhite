@@ -913,11 +913,11 @@ public class LedgerAction {
 	 * 
 	 * @return
 	 */
-	@RequestMapping(value = "/ledger/inventory/deletematerialPutStorage", method = RequestMethod.GET)
+	@RequestMapping(value = "/ledger/inventory/deleteMaterialPutStorage", method = RequestMethod.GET)
 	@ResponseBody
 	public CommonResponse deletematerialPutStorage(String ids) {
 		CommonResponse cr = new CommonResponse();
-		int count= materialPutStorageService.deletematerialPutStorage(ids);
+		int count= materialPutStorageService.deleteMaterialPutStorage(ids);
 		cr.setMessage("成功删除"+count+"入库单");
 		return cr;
 	}
