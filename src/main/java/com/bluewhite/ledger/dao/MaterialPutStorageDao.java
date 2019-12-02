@@ -21,5 +21,12 @@ public interface MaterialPutStorageDao  extends BaseRepository<MaterialPutStorag
 	 */
 	List<MaterialPutStorage> findByOrderProcurementId(Long orderprocurementid);
 	
+	/**
+	 * 根据面料id
+	 * @param materielid
+	 * @return
+	 */
+	List<MaterialPutStorage> findByMaterielId(Long materielid);
+	
 
 }

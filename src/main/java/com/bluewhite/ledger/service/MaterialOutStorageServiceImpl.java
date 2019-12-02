@@ -13,12 +13,14 @@ import org.springframework.util.StringUtils;
 
 import com.bluewhite.base.BaseServiceImpl;
 import com.bluewhite.common.Constants;
+import com.bluewhite.common.ServiceException;
 import com.bluewhite.common.entity.PageParameter;
 import com.bluewhite.common.entity.PageResult;
 import com.bluewhite.common.utils.SalesUtils;
 import com.bluewhite.common.utils.StringUtil;
 import com.bluewhite.ledger.dao.MaterialOutStorageDao;
 import com.bluewhite.ledger.entity.MaterialOutStorage;
+import com.bluewhite.ledger.entity.MaterialPutStorage;
 
 @Service
 public class MaterialOutStorageServiceImpl extends BaseServiceImpl<MaterialOutStorage, Long>
@@ -71,7 +73,20 @@ public class MaterialOutStorageServiceImpl extends BaseServiceImpl<MaterialOutSt
 
 	@Override
 	public int deleteMaterialOutStorage(String ids) {
-		return delete(ids);
+		int i = 0;
+		if (!StringUtils.isEmpty(ids)) {
+			String[] idStrings = ids.split(",");
+			for (String idString : idStrings) {
+				Long id = Long.parseLong(idString);
+				MaterialOutStorage materialOutStorage = dao.findOne(id);
+				if (materialOutStorage.getMaterialPutStorage().getOrderProcurement().getArrival() == 1) {
+					throw new ServiceException("第"+(i+1)+"条出库单的入库采购单已审核全部入库，无法删除");
+				}
+				delete(id);
+				i++;
+			}
+		}
+		return i;
 	}
 
 }

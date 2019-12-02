@@ -11,6 +11,7 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 
 import com.bluewhite.base.BaseEntity;
 import com.bluewhite.basedata.entity.BaseData;
@@ -128,13 +129,6 @@ public class Materiel extends BaseEntity<Long>{
     private Double convertNumber;
 	
 	/**
-	 * 库存数量
-	 * 
-	 */
-	@Column(name = "inventory_number")
-	private Double inventoryNumber;
-	
-	/**
 	 * 仓库种类id
 	 */
 	@Column(name = "warehouse_type_id")
@@ -153,7 +147,12 @@ public class Materiel extends BaseEntity<Long>{
 	@OneToMany(mappedBy = "materiel",cascade = CascadeType.ALL, orphanRemoval = true)
 	private Set<OrderProcurement> orderProcurements = new HashSet<OrderProcurement>();
 	
-	
+	/**
+	 * 库存数量
+	 * 
+	 */
+	@Transient
+	private Double inventoryNumber;
 	
 	
 	public Long getMaterialQualitativeId() {

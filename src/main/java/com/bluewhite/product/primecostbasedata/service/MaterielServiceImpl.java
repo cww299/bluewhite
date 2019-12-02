@@ -13,7 +13,12 @@ import org.springframework.util.StringUtils;
 import com.bluewhite.base.BaseServiceImpl;
 import com.bluewhite.common.entity.PageParameter;
 import com.bluewhite.common.entity.PageResult;
+import com.bluewhite.common.utils.NumUtils;
 import com.bluewhite.common.utils.StringUtil;
+import com.bluewhite.ledger.dao.MaterialOutStorageDao;
+import com.bluewhite.ledger.dao.MaterialPutStorageDao;
+import com.bluewhite.ledger.entity.MaterialOutStorage;
+import com.bluewhite.ledger.entity.MaterialPutStorage;
 import com.bluewhite.product.primecostbasedata.dao.BaseFourDao;
 import com.bluewhite.product.primecostbasedata.dao.BaseOneDao;
 import com.bluewhite.product.primecostbasedata.dao.BaseThreeDao;
@@ -28,15 +33,18 @@ public class MaterielServiceImpl extends BaseServiceImpl<Materiel, Long> impleme
 
 	@Autowired
 	private MaterielDao dao;
-
 	@Autowired
 	private BaseOneDao baseOneDao;
-
 	@Autowired
 	private BaseThreeDao baseThreeDao;
-
 	@Autowired
 	private BaseFourDao baseFourDao;
+	@Autowired
+	private MaterialPutStorageDao materialPutStorageDao;
+	@Autowired
+	private MaterialOutStorageDao materialOutStorageDao;
+
+
 
 	@Override
 	public List<Materiel> findList(Materiel materiel) {
@@ -160,9 +168,18 @@ public class MaterielServiceImpl extends BaseServiceImpl<Materiel, Long> impleme
 		}, page);
 		PageResult<Materiel> result = new PageResult<Materiel>(pages, page);
 		result.getRows().stream().forEach(m->{
-			
-			
-			
+			List<MaterialPutStorage> mList = materialPutStorageDao.findByMaterielId(m.getId());
+			// 计算退货总数
+			List<MaterialOutStorage> list = new ArrayList<>();
+			mList.stream().forEach(l -> {
+				MaterialOutStorage materialOutStorage = materialOutStorageDao.findOne(l.getId());
+				if (materialOutStorage != null) {
+					list.add(materialOutStorage);
+				}
+			});
+			double returnNumber = list.stream().mapToDouble(MaterialOutStorage::getArrivalNumber).sum();
+			double arrivalNumber = mList.stream().mapToDouble(MaterialPutStorage::getArrivalNumber).sum();
+			m.setInventoryNumber(NumUtils.sub(arrivalNumber,returnNumber));
 		});
 		return result;
 	}
