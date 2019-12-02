@@ -10,9 +10,9 @@
 	<title>入库单</title>
 	<style>
 	  .searchTable td:nth-of-type(odd){
+	  	padding: 5px 0;
 	  	padding-left: 15px;
 	  	padding-right: 5px;
-	  	padding-bottom: 10px;
 	  }
 	  .btnTd{
 	    text-align:center;
@@ -88,7 +88,7 @@ layui.config({
 					if(obj.event=="verify"){
 						if(check.length!=1)
 							return myutil.emsg('只能选择一条数据进行操作');
-						layer.open({
+						var win = layer.open({
 							title:'验货',
 							offset:'150px',
 							area:['400px','220px'],
@@ -110,11 +110,15 @@ layui.config({
 									data:{
 										squareGram: $('#squareGram').val(),
 										id: check[0].id,
+									},
+									success:function(){
+										layer.close(win);
+										table.reload('tableData');
 									}
 								})
 							}
 						})
-					}else if(obj.event="update"){
+					}else if(obj.event=="update"){
 						if(check.length!=1)
 							return myutil.emsg('只能修改一条数据');
 						inputWarehouseOrder.update({
@@ -139,15 +143,16 @@ layui.config({
 			ifNull:'--',
 			cols:[[
 			       { type:'checkbox',},
-			       { title:'入库时间',   field:'arrivalTime', type:'dateTime'	},
+			       { title:'入库时间',   field:'arrivalTime', type:'dateTime',width:'10%',	},
 			       { title:'入库数量',   field:'arrivalNumber',   },
 			       { title:'库区',   field:'storageArea_name', 	},
 			       { title:'库位',   field:'storageLocation_name',	},
 			       { title:'入库操作人',   field:'userStorage_userName',	},
-			       { title:'出库后剩余数量',   field:'surplusNumber',	},
+			       { title:'出库后剩余数量',   field:'surplusNumber',width:'10%',	},
 			       { title:'面料',   field:'materiel_name',	},
 			       { title:'入库内容',   field:'orderProcurement_orderProcurementNumber',	width:'33%'},
 			       { title:'状态',   field:'inStatus',  transData:{ data:['','采购入库','调拨入库','退货入库','换货入库','盘亏入库'], } },
+			       { title:'是否验货',   field:'inspection',  transData:{ data:['否','是',], } },
 			       ]]
 		})
 		form.on('submit(search)',function(obj){

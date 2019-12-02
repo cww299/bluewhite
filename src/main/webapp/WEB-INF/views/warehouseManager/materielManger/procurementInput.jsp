@@ -7,7 +7,7 @@
 	<link rel="stylesheet" href="${ctx }/static/layui-v2.4.5/layui/css/layui.css" media="all">
 	<script src="${ctx}/static/layui-v2.4.5/layui/layui.js"></script>
 	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-	<title>采购入库单</title>
+	<title>采购入库</title>
 </head>
 <body>
 
@@ -63,7 +63,8 @@ layui.config({
 				count:['arrivalNumber','returnNumber'],
 				price:['squareGram',]
 			},
-			toolbar: [ '<span lay-event="audit" class="layui-btn layui-btn-sm">生成入库单</span>',],
+			toolbar: [ '<span lay-event="audit" class="layui-btn layui-btn-sm">生成入库单</span>',
+				       '<span lay-event="outStorage" class="layui-btn layui-btn-sm">生成退货单</span>',],
 			curd:{
 				btn:[],
 				otherBtn:function(obj){
@@ -78,6 +79,8 @@ layui.config({
 								orderProcurementId: check[0].id,
 							}
 						});
+					}else if(obj.event=='outStorage'){
+						
 					}
 				}
 			},
