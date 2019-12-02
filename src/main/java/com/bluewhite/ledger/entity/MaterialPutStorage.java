@@ -143,9 +143,65 @@ public class MaterialPutStorage extends BaseEntity<Long> {
 	 * 出库后剩余数量
 	 */
 	@Transient
-	private Integer surplusNumber;
+	private Double surplusNumber;
 
+	/**
+	 * 物料名称
+	 */
+	@Transient
+	private String materielName;
 	
+	/**
+	 * 物料编号
+	 */
+	@Transient
+	private String materielNumber;
+	
+	/**
+	 * 查询字段
+	 */
+	@Transient
+	private Date orderTimeBegin;
+	/**
+	 * 查询字段
+	 */
+	@Transient
+	private Date orderTimeEnd;
+	
+	
+	
+	public Date getOrderTimeBegin() {
+		return orderTimeBegin;
+	}
+
+	public void setOrderTimeBegin(Date orderTimeBegin) {
+		this.orderTimeBegin = orderTimeBegin;
+	}
+
+	public Date getOrderTimeEnd() {
+		return orderTimeEnd;
+	}
+
+	public void setOrderTimeEnd(Date orderTimeEnd) {
+		this.orderTimeEnd = orderTimeEnd;
+	}
+
+	public String getMaterielName() {
+		return materielName;
+	}
+
+	public void setMaterielName(String materielName) {
+		this.materielName = materielName;
+	}
+
+	public String getMaterielNumber() {
+		return materielNumber;
+	}
+
+	public void setMaterielNumber(String materielNumber) {
+		this.materielNumber = materielNumber;
+	}
+
 	public Double getSquareGram() {
 		return squareGram;
 	}
@@ -290,12 +346,13 @@ public class MaterialPutStorage extends BaseEntity<Long> {
 		this.storageLocation = storageLocation;
 	}
 
-	public Integer getSurplusNumber() {
+	public Double getSurplusNumber() {
 		return surplusNumber;
 	}
 
-	public void setSurplusNumber(Integer surplusNumber) {
+	public void setSurplusNumber(Double surplusNumber) {
 		this.surplusNumber = surplusNumber;
 	}
+
 
 }

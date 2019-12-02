@@ -46,7 +46,7 @@ public class MaterielServiceImpl extends BaseServiceImpl<Materiel, Long> impleme
 			if (materiel.getId() != null) {
 				predicate.add(cb.equal(root.get("id").as(Long.class), materiel.getId()));
 			}
-			// 按類型
+			// 按类型
 			if (materiel.getMaterielTypeId() != null) {
 				predicate.add(cb.equal(root.get("materielType").get("id").as(Long.class), materiel.getMaterielTypeId()));
 			}
