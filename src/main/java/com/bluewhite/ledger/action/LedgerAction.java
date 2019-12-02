@@ -977,7 +977,7 @@ public class LedgerAction {
 	public CommonResponse materialPutStoragePage(PageParameter page,MaterialOutStorage materialOutStorage) {
 		CommonResponse cr = new CommonResponse();
 		cr.setData(clearCascadeJSONMaterialOutStorage.format(materialOutStorageService.findPages(page, materialOutStorage)).toJSON());
-		return cr;
+		return cr;	
 	}
 	
 	/**
