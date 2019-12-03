@@ -108,17 +108,24 @@
 			</div>
 			
 			<div class="layui-form-item">
+				<label class="layui-form-label" style="width: 100px;">培训机构</label>
+				<div class="layui-input-inline">
+					<input name="mechanism" style="width:190px;" lay-filter="id" id="train" lay-search="true" class="layui-input laydate-icon">
+				</div>
+			</div>
+			
+			<div class="layui-form-item">
 				<label class="layui-form-label" style="width: 100px;">培训内容</label>
 				<div class="layui-input-inline">
 					<input name="train" style="width:190px;" lay-filter="id" id="train" lay-search="true" class="layui-input laydate-icon">
 				</div>
 			</div>
 	
-			<div class="layui-form-item">
+			<!-- <div class="layui-form-item">
 				<label class="layui-form-label" style="width: 100px;">培训导师</label>
 				<div class="layui-input-inline" id="userId2">
 				</div>
-			</div>
+			</div> -->
 			
 			<div class="layui-form-item">
 				<label class="layui-form-label" style="width: 100px;">培训成本</label>
@@ -141,10 +148,7 @@
 <!-- 表格工具栏模板 -->
 <script type="text/html" id="trainToolbar">
 <div class="layui-btn-container layui-inline">
-	<span class="layui-btn layui-btn-sm" lay-event="addTempData">入职培训</span>
-	<span class="layui-btn layui-btn-sm" lay-event="addTempData2">内部培训</span>
-	<span class="layui-btn layui-btn-sm layui-btn-danger" lay-event="cleanTempData">清空新增行</span>
-	<span class="layui-btn layui-btn-sm layui-btn-warm" lay-event="saveTempData">批量保存</span>
+	<span class="layui-btn layui-btn-sm" lay-event="addTempData2">外部培训</span>
 	<span class="layui-btn layui-btn-sm layui-btn-danger" lay-event="deleteSome">批量删除</span>
 </div>
 </script>
@@ -209,7 +213,7 @@ layui.config({
 	 		}
 		 	else{
 		 		table.reload('trainTable',{
-		 			url:'${ctx}/personnel/getAdvertisement?type=1&recruitId='+obj.value,
+		 			url:'${ctx}/personnel/getAdvertisement?type=1&mold=2&recruitId='+obj.value,
 		 			page : { curr :1 },
 		 		})
 		 		$.ajax({
@@ -235,7 +239,7 @@ layui.config({
 	 			
 		table.render({
 			elem:'#trainTable',
-			url:'${ctx}/personnel/getAdvertisement?type=1',
+			url:'${ctx}/personnel/getAdvertisement?type=1&mold=2',
 			toolbar:'#trainToolbar',
 			page:true,
 			size:'lg',
@@ -248,11 +252,11 @@ layui.config({
 			       {align:'center', title:'招聘人',  field:'recruitName',edit: false, 	templet:'<span>{{ d.recruitName.recruitName }}</span>' },
 			       {align:'center', title:'开始时间',field:'startTime',edit: false, 	},
 			       {align:'center', title:'结束时间',field:'endTime',	  edit: false,}, 
+			       {align:'center', title:'培训机构',field:'mechanism',   edit: true,},
 			       {align:'center', title:'培训内容',field:'train',   edit: true,},
-			       {align:'center', title:'培训导师',field:'userId',  edit: false, templet: getUserIdSelect(), },
 			       {align:'center', title:'培训成本',field:'price',   edit: true,},
 			       {align:'center', title:'是否合格',field:'qualified',edit: false, templet: getQualifiedSelect(),  },
-			       {align:'center', title:'培训类型',field:'mold',edit: false, templet: function(d){if(d.mold==0){return "<span class='layui-badge layui-bg-green'>入职培训</span>"} if(d.mold==1){return "<span class='layui-badge'>内部培训</span>"}},  },
+			       {align:'center', title:'培训类型',field:'mold',edit: false, templet: function(d){if(d.mold==0){return "<span class='layui-badge layui-bg-green'>入职培训</span>"} if(d.mold==1){return "<span class='layui-badge'>内部培训</span>"} if(d.mold==2){return "<span class='layui-badge layui-bg-orange'>外部培训</span>"}},  },
 			       ]],
 			done:function(){
 				var tableView = this.elem.next();
@@ -296,12 +300,8 @@ layui.config({
 			var btnElem = $(this);
 			var tableId = config.id;
 			switch(obj.event){
-			case 'addTempData': addTempData();
-				break;
 			case 'addTempData2': addTempData2();
 				break;	
-			case 'cleanTempData': table.cleanTemp('trainTable');
-				break;
 			case 'saveTempData': saveTempData();
 				break;
 			case 'deleteSome': deleteSome();
@@ -323,7 +323,7 @@ layui.config({
 					postData = { id:obj.data.id, price: obj.value};
 				}
 			}else{
-				postData = { id:obj.data.id, train: obj.value};
+				postData = { id:obj.data.id, [obj.field]: obj.value};
 			}
 			postData && updateAjax(postData);	//如果有数据，则进行修改
 			table.reload('trainTable');
@@ -431,97 +431,6 @@ layui.config({
                 }
 			});
 		});
-		function addTempData(){
-	 		if($('#searchName').val()==''){
-	 			layer.msg('请选择应聘对象',{icon:2});
-	 			return;
-	 		}
-			var name = $('#searchName').find('option[value="'+$('#searchName').val()+'"]').html().split(' ')[0];
-			$("#name").val(name)
-	 		var recruitname = $('#searchName').find('option[value="'+$('#searchName').val()+'"]').data('recruitname');
-			$("#recruitName2").val(recruitname)
-			var testTime = $('#searchName').find('option[value="'+$('#searchName').val()+'"]').data('time');
-			$("#startTime2").val(testTime)
-			var orderTime=testTime.split(' ');
-			var endTime=orderTime[0]+' '+'00:30:00'
-			$("#endTime2").val(endTime)
-	 		var	dicDiv=$("#layuiadmin-form-admin2");
-		var index=layer.open({
-				type:1,
-				title:'入职培训',
-				area:['25%','55%'],
-				btn:['确认','取消'],
-				content:dicDiv,
-				id: 'LAY_layuipro' ,
-				btnAlign: 'c',
-			    moveType: 1, //拖拽模式，0或者1
-				success : function(layero, index) {
-		        	layero.addClass('layui-form');
-					// 将保存按钮改变成提交按钮
-					layero.find('.layui-layer-btn0').attr({
-						'lay-filter' : 'addRole',
-						'lay-submit' : ''
-					})
-		        },
-				yes:function(){
-					form.on('submit(addRole)', function(data) {
-						data.field.type=1
-						data.field.mold=0
-						data.field.recruitId=$('#searchName').val()
-						$.ajax({
-							url: '${ctx}/personnel/addAdvertisement',
-							type: 'post',
-							async: false,
-							data: data.field,
-							success: function(r){
-								if(r.code==0)
-									layer.msg(r.message,{icon:1});
-								else
-									layer.msg(r.message,{icon:2});
-							}
-						})
-						document.getElementById("layuiadmin-form-admin2").reset(); 
-			        	layui.form.render();
-			        	table.reload('trainTable',{ page:{ curr:1 } })
-			        	layer.close(index);
-					})
-				},end:function(){ 
-		        	document.getElementById("layuiadmin-form-admin2").reset();
-		        	layui.form.render();
-				  }
-			})
-	 		
-	 		
-			/* allField = {train: '', price: '', startTime:'',endTime:'',type:'1',qualified:0, userId:'', recruitId:$('#searchName').val(),};
-			var recruitname = $('#searchName').find('option[value="'+$('#searchName').val()+'"]').data('recruitname');
-			var name = $('#searchName').find('option[value="'+$('#searchName').val()+'"]').html().split(' ')[0];
-		    allField.recruitName = { name: name, recruitName: recruitname};
-			table.addTemp('trainTable',allField,function(trElem) {
-				var startTiemTd = trElem.find('td[data-field="startTime"]')[0];
-				laydate.render({
-					elem: startTiemTd.children[0],
-					type:'datetime',
-					format: 'yyyy-MM-dd HH:mm:ss',
-					done: function(value, date) {
-						var trElem = $(this.elem[0]).closest('tr');
-						var tableView = trElem.closest('.layui-table-view');
-						table.cache['trainTable'][trElem.data('index')]['startTime'] = value;
-					}
-				}) 
-				var endTimeTd = trElem.find('td[data-field="endTime"]')[0];	
-				laydate.render({
-					elem: endTimeTd.children[0],
-					format: 'yyyy-MM-dd HH:mm:ss',
-					type:'datetime',
-					done: function(value, date) {
-						var trElem = $(this.elem[0]).closest('tr');
-						var tableView = trElem.closest('.layui-table-view');
-						table.cache['trainTable'][trElem.data('index')]['endTime'] = value;
-					}
-				}) 
-			}); */
-	 	}
-		
 		function addTempData2(){
 	 		if($('#searchName').val()==''){
 	 			layer.msg('请选择应聘对象',{icon:2});
@@ -534,8 +443,8 @@ layui.config({
 	 		var	dicDiv=$("#layuiadmin-form-admin2");
 			var index=layer.open({
 				type:1,
-				title:'入职培训',
-				area:['25%','55%'],
+				title:'内部培训',
+				area:['23%','62%'],
 				btn:['确认','取消'],
 				content:dicDiv,
 				id: 'LAY_layuipro2' ,
@@ -552,7 +461,7 @@ layui.config({
 				yes:function(){
 					form.on('submit(addRole)', function(data) {
 						data.field.type=1
-						data.field.mold=1
+						data.field.mold=2
 						data.field.recruitId=$('#searchName').val()
 						$.ajax({
 							url: '${ctx}/personnel/addAdvertisement',
@@ -576,75 +485,8 @@ layui.config({
 		        	layui.form.render();
 				  }
 			})
-	 		
-	 		
-			/* allField = {train: '', price: '', startTime:'',endTime:'',type:'1',qualified:0, userId:'', recruitId:$('#searchName').val(),};
-			var recruitname = $('#searchName').find('option[value="'+$('#searchName').val()+'"]').data('recruitname');
-			var name = $('#searchName').find('option[value="'+$('#searchName').val()+'"]').html().split(' ')[0];
-		    allField.recruitName = { name: name, recruitName: recruitname};
-			table.addTemp('trainTable',allField,function(trElem) {
-				var startTiemTd = trElem.find('td[data-field="startTime"]')[0];
-				laydate.render({
-					elem: startTiemTd.children[0],
-					type:'datetime',
-					format: 'yyyy-MM-dd HH:mm:ss',
-					done: function(value, date) {
-						var trElem = $(this.elem[0]).closest('tr');
-						var tableView = trElem.closest('.layui-table-view');
-						table.cache['trainTable'][trElem.data('index')]['startTime'] = value;
-					}
-				}) 
-				var endTimeTd = trElem.find('td[data-field="endTime"]')[0];	
-				laydate.render({
-					elem: endTimeTd.children[0],
-					format: 'yyyy-MM-dd HH:mm:ss',
-					type:'datetime',
-					done: function(value, date) {
-						var trElem = $(this.elem[0]).closest('tr');
-						var tableView = trElem.closest('.layui-table-view');
-						table.cache['trainTable'][trElem.data('index')]['endTime'] = value;
-					}
-				}) 
-			}); */
 	 	}
-		/* function saveTempData(){
-			var tempData = table.getTemp('trainTable').data;
-			for(var i=0;i<tempData.length;i++){
-				var t = tempData[i];
-				if(!t.endTime || !t.price || !t.startTime || !t.train){
-					layer.msg('新增数据字段不能为空！',{icon:2});
-					return;
-				}
-				if(isNaN(t.price)){
-					layer.msg('培训成本只能为数字！',{icon:2});
-					return;
-				}
-			}
-			var load = layer.load(1);
-			var successAdd = 0;
-			for(var i=0;i<tempData.length;i++){
-				delete tempData[i].recruitName;
-				$.ajax({
-					url: '${ctx}/personnel/addAdvertisement',
-					type: 'post',
-					async: false,
-					data:  tempData[i],
-					success: function(r){
-						if(r.code==0)
-							successAdd++;
-						else
-							layer.msg(r.message,{icon:2});
-					}
-				}) 
-			}
-			table.cleanTemp('trainTable');
-			table.reload('trainTable',{ page:{ curr:1 } })
-			if(successAdd==tempData.length)
-				layer.msg('成功新增：'+successAdd+'条数据',{icon:1});
-			else
-				layer.msg('新增异常：'+(tempData.length-successAdd)+'条数据',{icon:2});
-			layer.close(load);
-		} */
+
 		function deleteSome(){
 			var choosed=layui.table.checkStatus('trainTable').data;
 			if(choosed.length<1)

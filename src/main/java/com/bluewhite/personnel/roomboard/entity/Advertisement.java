@@ -130,7 +130,18 @@ public class Advertisement extends BaseEntity<Long> {
 	 */
 	@Column(name = "type")
 	private Integer type;
-
+	
+	/**
+	 * 培训类型(0=入职部培训，1=内部培训 2=外部培训)
+	 */
+	@Column(name = "mold")
+	private Integer mold;
+	
+	/**
+	 * 培训机构
+	 */
+	@Column(name = "mechanism")
+	private String mechanism;
 	/**
 	 * 合格简历数
 	 */
@@ -196,6 +207,22 @@ public class Advertisement extends BaseEntity<Long> {
 	private Date orderTimeEnd2;
 	
 	
+	public String getMechanism() {
+		return mechanism;
+	}
+
+	public void setMechanism(String mechanism) {
+		this.mechanism = mechanism;
+	}
+
+	public Integer getMold() {
+		return mold;
+	}
+
+	public void setMold(Integer mold) {
+		this.mold = mold;
+	}
+
 	public Date getOrderTimeBegin2() {
 		return orderTimeBegin2;
 	}

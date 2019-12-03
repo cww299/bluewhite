@@ -584,6 +584,9 @@
 							case 'addTempData':
 								$("#time2").hide();
 								$("#time1").show();
+								$("#mode").removeAttr("disabled","disabled");
+								$("#tradeDaysTime2").removeAttr("disabled","disabled");
+								layui.form.render();
 								var	dicDiv=$("#layuiadmin-form-admin2");
 								layer.open({
 									type:1,
