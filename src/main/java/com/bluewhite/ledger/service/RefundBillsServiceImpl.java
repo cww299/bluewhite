@@ -1,6 +1,13 @@
 package com.bluewhite.ledger.service;
 
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+
+import javax.persistence.criteria.Predicate;
+
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
@@ -10,6 +17,9 @@ import com.bluewhite.basedata.dao.BaseDataDao;
 import com.bluewhite.basedata.entity.BaseData;
 import com.bluewhite.common.BeanCopyUtils;
 import com.bluewhite.common.ServiceException;
+import com.bluewhite.common.entity.PageParameter;
+import com.bluewhite.common.entity.PageResult;
+import com.bluewhite.common.utils.StringUtil;
 import com.bluewhite.ledger.dao.OrderOutSourceDao;
 import com.bluewhite.ledger.dao.RefundBillsDao;
 import com.bluewhite.ledger.entity.OrderOutSource;
@@ -70,6 +80,28 @@ public class RefundBillsServiceImpl extends BaseServiceImpl<RefundBills, Long> i
 			}
 		}
 		save(ot);
+	}
+
+	@Override
+	public PageResult<RefundBills> findPages(RefundBills param, PageParameter page) {
+		Page<RefundBills> pages = dao.findAll((root, query, cb) -> {
+			List<Predicate> predicate = new ArrayList<>();
+			// 按生产单编号
+			if (!StringUtils.isEmpty(param.getOrderName())){ 
+				predicate.add(cb.like(root.get("orderOutSource").get("order").get("orderNumber").as(String.class),
+						"%" + StringUtil.specialStrKeyword(param.getOrderName()) + "%"));
+			}
+			// 按下单日期
+			if (!StringUtils.isEmpty(param.getOrderTimeBegin()) && !StringUtils.isEmpty(param.getOrderTimeEnd())) {
+				predicate.add(cb.between(root.get("returnTime").as(Date.class), param.getOrderTimeBegin(),
+						param.getOrderTimeEnd()));
+			}
+			Predicate[] pre = new Predicate[predicate.size()];
+			query.where(predicate.toArray(pre));
+			return null;
+		}, page);
+		PageResult<RefundBills> result = new PageResult<>(pages, page);
+		return result;
 	}
 
 }

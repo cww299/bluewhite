@@ -88,9 +88,21 @@ public class RefundBills extends BaseEntity<Long>{
 	 */
 	@Transient
 	private Date orderTimeEnd;
+	/**
+	 * 查询字段
+	 */
+	@Transient
+	private String orderName;
 	
 	
-	
+
+	public String getOrderName() {
+		return orderName;
+	}
+
+	public void setOrderName(String orderName) {
+		this.orderName = orderName;
+	}
 
 	public String getOutsourceTaskIds() {
 		return outsourceTaskIds;

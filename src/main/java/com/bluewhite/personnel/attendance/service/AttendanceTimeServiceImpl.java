@@ -227,6 +227,9 @@ public class AttendanceTimeServiceImpl extends BaseServiceImpl<AttendanceTime, L
 				boolean rout = false;
 				// 1.周休一天，
 				if (attendanceInit.getRestType() == 1) {
+					if(StringUtils.isEmpty(restType.getKeyValue())){
+						throw new ServiceException("当月未设定周休方式，请设定");
+					}
 					String[] weeklyRestDate = restType.getKeyValue().split(",");
 					if (weeklyRestDate.length > 0) {
 						for (int j = 0; j < weeklyRestDate.length; j++) {
@@ -240,6 +243,9 @@ public class AttendanceTimeServiceImpl extends BaseServiceImpl<AttendanceTime, L
 
 				// 2.月休两天
 				if (attendanceInit.getRestType() == 2) {
+					if(StringUtils.isEmpty(restType.getKeyValue())){
+						throw new ServiceException("当月未设定月休方式，请设定");
+					}
 					String[] monthRestDate = restType.getKeyValueTwo().split(",");
 					if (monthRestDate.length > 0) {
 						for (int j = 0; j < monthRestDate.length; j++) {

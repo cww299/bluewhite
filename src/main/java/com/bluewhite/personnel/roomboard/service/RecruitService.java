@@ -56,4 +56,16 @@ public interface RecruitService  extends BaseCRUDService<Recruit,Long>{
 	public int deletes(String[] ids);
 
 	public int updateRecruit(String[] ids, Integer state);
+	
+	/**
+	 * 招聘留存图形统计
+	 * @param onlineOrder
+	 */
+	public  List<Map<String, Object>> quitDeposit(Recruit recruit);
+	
+	/**
+	 * 招聘部门的离职 留存率
+	 * @param onlineOrder
+	 */
+	public  List<Map<String, Object>> orgName(Recruit recruit);
 }
