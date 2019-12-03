@@ -972,7 +972,7 @@ public class LedgerAction {
 	public CommonResponse saveMaterialOutStorage(MaterialOutStorage materialOutStorage) {
 		CommonResponse cr = new CommonResponse();
 		materialOutStorageService.saveMaterialOutStorage(materialOutStorage);
-		cr.setMessage("成功入库");
+		cr.setMessage("成功出库");
 		return cr;
 	}
 	
@@ -1018,8 +1018,12 @@ public class LedgerAction {
 	@ResponseBody
 	public CommonResponse savePutStorage(PutStorage putStorage) {
 		CommonResponse cr = new CommonResponse();
+		if(putStorage.getId()!=null){
+			cr.setMessage("修改入库单成功");
+		}else{
+			cr.setMessage("新增入库单成功");
+		}
 		putStorageService.savePutStorage(putStorage);
-		cr.setMessage("成功入库");
 		return cr;
 	}
 
@@ -1045,7 +1049,7 @@ public class LedgerAction {
 	@ResponseBody
 	public CommonResponse deletePutStorage(String ids) {
 		CommonResponse cr = new CommonResponse();
-		putStorageService.delete(ids);
+		int count = putStorageService.deletePutStorage(ids);
 		return cr;
 	}
 	

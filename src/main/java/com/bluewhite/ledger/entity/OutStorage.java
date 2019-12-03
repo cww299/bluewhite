@@ -10,6 +10,7 @@ import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
 import com.bluewhite.base.BaseEntity;
+import com.bluewhite.system.user.entity.User;
 
 /**
  * 出库单
@@ -52,7 +53,19 @@ public class OutStorage extends BaseEntity<Long> {
 	@Column(name = "arrival_number")
 	private Integer arrivalNumber;
 
+	/**
+	 * 出库操作人id
+	 * 
+	 */
+	@Column(name = "user_storage_id")
+	private Long userStorageId;
 
+	/**
+	 * 出库操作人
+	 */
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "user_storage_id", referencedColumnName = "id", insertable = false, updatable = false)
+	private User userStorage;
 
 	public Long getPutStorageId() {
 		return putStorageId;

@@ -8,7 +8,7 @@ public interface InventoryService extends BaseCRUDService<Inventory,Long>{
 	/**
 	 * 入库操作
 	 */
-	public void putInStorage(Long  productId, Long inWarehouseTypeId,Integer arrivalNumber); 
+	public void putInStorage(Long  productId, Long inWarehouseTypeId); 
 
 
 

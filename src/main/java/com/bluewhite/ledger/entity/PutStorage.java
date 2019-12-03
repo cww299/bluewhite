@@ -8,6 +8,7 @@ import javax.persistence.FetchType;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 
 import com.bluewhite.base.BaseEntity;
 import com.bluewhite.basedata.entity.BaseData;
@@ -42,7 +43,6 @@ public class PutStorage extends BaseEntity<Long> {
 	/**
 	 * 生产入库时会存在加工单
 	 * 加工单id
-	 * 
 	 */
 	@Column(name = "order_outSource_id")
 	private Long orderOutSourceId;
@@ -59,19 +59,6 @@ public class PutStorage extends BaseEntity<Long> {
 	 */
 	@Column(name = "in_status")
 	private Integer inStatus;
-
-	/**
-	 * 仓管指定 入库仓库种类id
-	 */
-	@Column(name = "in_warehouse_type_id")
-	private Long inWarehouseTypeId;
-
-	/**
-	 * 入库仓库种类
-	 */
-	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "in_warehouse_type_id", referencedColumnName = "id", insertable = false, updatable = false)
-	private BaseData inWarehouseType;
 
 	/**
 	 * 仓管指定 入库库存id
@@ -125,12 +112,6 @@ public class PutStorage extends BaseEntity<Long> {
 	private BaseData storageLocation;
 
 	/**
-	 * 出库后剩余数量
-	 */
-	@Column(name = "surplus_Number")
-	private Integer surplusNumber;
-	
-	/**
 	 * 入库操作人id
 	 * 
 	 */
@@ -144,7 +125,99 @@ public class PutStorage extends BaseEntity<Long> {
 	@JoinColumn(name = "user_storage_id", referencedColumnName = "id", insertable = false, updatable = false)
 	private User userStorage;
 	
+	/**
+	 * 仓管指定 入库仓库种类id
+	 */
+	@Column(name = "in_warehouse_type_id")
+	private Long inWarehouseTypeId;
+
+	/**
+	 * 出库后剩余数量
+	 */
+	@Transient
+	private Double surplusNumber;
 	
+	/**
+	 * 产品名称
+	 */
+	@Transient
+	private String productName;
+	
+	/**
+	 * 产品名编号
+	 */
+	@Transient
+	private String productNumber;
+	
+	/**
+	 * 查询字段
+	 */
+	@Transient
+	private Date orderTimeBegin;
+	/**
+	 * 查询字段
+	 */
+	@Transient
+	private Date orderTimeEnd;
+	
+	
+	
+	public Date getOrderTimeBegin() {
+		return orderTimeBegin;
+	}
+
+	public void setOrderTimeBegin(Date orderTimeBegin) {
+		this.orderTimeBegin = orderTimeBegin;
+	}
+
+	public Date getOrderTimeEnd() {
+		return orderTimeEnd;
+	}
+
+	public void setOrderTimeEnd(Date orderTimeEnd) {
+		this.orderTimeEnd = orderTimeEnd;
+	}
+
+	public String getProductName() {
+		return productName;
+	}
+
+	public void setProductName(String productName) {
+		this.productName = productName;
+	}
+
+	public String getProductNumber() {
+		return productNumber;
+	}
+
+	public void setProductNumber(String productNumber) {
+		this.productNumber = productNumber;
+	}
+
+	public Long getUserStorageId() {
+		return userStorageId;
+	}
+
+	public void setUserStorageId(Long userStorageId) {
+		this.userStorageId = userStorageId;
+	}
+
+	public User getUserStorage() {
+		return userStorage;
+	}
+
+	public void setUserStorage(User userStorage) {
+		this.userStorage = userStorage;
+	}
+
+	public Double getSurplusNumber() {
+		return surplusNumber;
+	}
+
+	public void setSurplusNumber(Double surplusNumber) {
+		this.surplusNumber = surplusNumber;
+	}
+
 	public Long getStorageAreaId() {
 		return storageAreaId;
 	}
@@ -225,14 +298,6 @@ public class PutStorage extends BaseEntity<Long> {
 		this.inWarehouseTypeId = inWarehouseTypeId;
 	}
 
-	public BaseData getInWarehouseType() {
-		return inWarehouseType;
-	}
-
-	public void setInWarehouseType(BaseData inWarehouseType) {
-		this.inWarehouseType = inWarehouseType;
-	}
-
 	public Long getInventoryId() {
 		return inventoryId;
 	}
@@ -263,14 +328,6 @@ public class PutStorage extends BaseEntity<Long> {
 
 	public void setArrivalNumber(Integer arrivalNumber) {
 		this.arrivalNumber = arrivalNumber;
-	}
-
-	public Integer getSurplusNumber() {
-		return surplusNumber;
-	}
-
-	public void setSurplusNumber(Integer surplusNumber) {
-		this.surplusNumber = surplusNumber;
 	}
 	
 	
