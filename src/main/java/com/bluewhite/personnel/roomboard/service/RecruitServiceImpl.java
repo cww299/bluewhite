@@ -153,7 +153,7 @@ public class RecruitServiceImpl extends BaseServiceImpl<Recruit, Long> implement
 		List<Recruit> list = dao.findByTimeBetween(OrderTimeBegin,OrderTimeEnd);
 		List<Map<String, Object>> allList = new ArrayList<>();
 		Map<String, Object> allMap = null;
-		Map<Long, List<Recruit>> map = list.stream().filter(Recruit -> Recruit.getOrgNameId() != null)
+		Map<Long, List<Recruit>> map = list.stream().filter(Recruit -> Recruit.getOrgNameId() != null && Recruit.getOrgNameId() != 318 )
 				.collect(Collectors.groupingBy(Recruit::getOrgNameId, Collectors.toList()));
 		for (Long ps1 : map.keySet()) {
 			allMap = new HashMap<>();

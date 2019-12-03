@@ -21,9 +21,10 @@
 		  <div class="layui-row layui-col-space10">
 		  	<!-- <div class="layui-col-md4" id="safe" style="height:500px;"></div>
 		  	<div class="layui-col-md4" id="quit" style="height:500px;"></div> -->
-		  	<div class="layui-col-md1" style="height:50px;" id="date3"></div>
+		  	<div class="layui-col-md4" style="height:50px;" id="date3"></div>
 		    <div class="layui-col-md12" id="education" style="height:500px;"></div>
 		    <div class="layui-col-md12" id="orgName" style="height:500px;"></div>
+		    <div class="layui-col-md12" id="user" style="height:500px;"></div>
 		    <div class="layui-col-md1" style="height:50px;" id="date"></div>
 		    <div class="layui-col-md12" id="sumary" style="height:600px;"></div>
 		    <div class="layui-col-md1" style="height:50px;" id="date2"></div>
@@ -48,6 +49,7 @@ layui.config({
 			, myutil = layui.myutil
 			, mytable = layui.mytable
 			,laydate = layui.laydate 
+			,form = layui.form //表单
 			, echarts = layui.echarts;
 			function p(s) { return s < 10 ? '0' + s: s; }
 			var myDate = new Date();
@@ -64,7 +66,8 @@ layui.config({
 			var firstdate = year + '-' + p(month) + '-01'+' '+'00:00:00';
 			var lastdate = year + '-' + p(month) + '-' + day.getDate() +' '+'23:59:59';
 			var month = year + '-' + p(month);
-			$("#date3").html("<input id='startTime3' style='width: 320px;' name='startTime3'   class='layui-input laydate-icon'>")
+			$("#date3").html("<table class='layui-form'><tr><td><input id='startTime3' style='width: 320px;' name='startTime3'   class='layui-input laydate-icon'></td><td>  <select class='form-control' lay-filter='lay_selecte' id='selectOne'><option value=''>请选择</option><option value='1'>邀约面试</option><option value='2'>应邀面试</option><option value='3'>面试合格</option><option value='4'>拒绝入职</option><option value='5'>已入职且在职</option><option value='6'>即将入职</option><option value='7'>已入职</option></select></td></tr></table>" )
+			form.render();
 			var orderTimeBegin;
 			var orderTimeEnd;
 			laydate.render({
@@ -76,21 +79,139 @@ layui.config({
 					var orderTime=value.split('~');
 					orderTimeBegin=orderTime[0];
 					orderTimeEnd=orderTime[1];
-					mainJs3(orderTimeBegin,orderTimeEnd)
+					var type="";
+					var adopt="";
+					var state="";
+					var quit="";
+					var value=$("#selectOne").val();
+					if(value==1){
+						type="";
+						adopt="";
+						state="";
+						quit="";
+					}
+					if(value==2){
+						type=1;
+						adopt="";
+						state="";
+						quit="";
+					}
+					if(value==3){
+						adopt=1;
+						type="";
+						state="";
+						quit="";
+					}
+					if(value==4){
+						state=2;
+						type="";
+						adopt="";
+						quit="";
+					}
+					if(value==5){
+						state=1;
+						quit=0;
+						type="";
+						adopt="";
+					}
+					if(value==6){
+						state=3;
+						type="";
+						adopt="";
+						quit="";
+					}
+					if(value==7){
+						state=1;
+						type="";
+						adopt="";
+						quit="";
+					}
+					mainJs3(orderTimeBegin,orderTimeEnd,state,type,adopt,quit)
 					}
 			});
+			var type="";
+			var adopt="";
+			var state="";
+			var quit="";
+			form.on('select(lay_selecte)', function(data) {
+			var value=data.value;
+			if(value==1){
+				type="";
+				adopt="";
+				state="";
+				quit="";
+			}
+			if(value==2){
+				type=1;
+				adopt="";
+				state="";
+				quit="";
+			}
+			if(value==3){
+				adopt=1;
+				type="";
+				state="";
+				quit="";
+			}
+			if(value==4){
+				state=2;
+				type="";
+				adopt="";
+				quit="";
+			}
+			if(value==5){
+				state=1;
+				quit=0;
+				type="";
+				adopt="";
+			}
+			if(value==6){
+				state=3;
+				type="";
+				adopt="";
+				quit="";
+			}
+			if(value==7){
+				state=1;
+				type="";
+				adopt="";
+				quit="";
+			}
+			var orderTime=$("#startTime3").val().split('~');
+			orderTimeBegin=orderTime[0];
+			orderTimeEnd=orderTime[1];
+			mainJs3(orderTimeBegin,orderTimeEnd,state,type,adopt,quit)
+			})
 		var mainJs3=function(orderTimeBegin,orderTimeEnd){
-		var address = [],addressOther=0,
+		var address = [],addressOther=0, 
 		orgName = { name:[],value:[],other:0},
 		platform = { name:[],value:[],other:0},
 		agreement = { name:[], value:[], other:0},
+		recruitName = { name:[],value:[],other:0},
 		company = { lb:0,lc:0,other:0 },
 		safe = 0,
 		entryAndQuit = {};
 		var allOrg = [];
-		var allUser = myutil.getDataSync({ url: '${ctx}/personnel/getRecruit?size=999999&orderTimeBegin='+orderTimeBegin+'&orderTimeEnd='+orderTimeEnd+'&time=2019-06-02 11:00:00',  });
+		var allUser = myutil.getDataSync({ url: '${ctx}/personnel/getRecruit?size=999999&orderTimeBegin='+orderTimeBegin+'&orderTimeEnd='+orderTimeEnd+'&type='+type+'&adopt='+adopt+'&state='+state+'&quit='+quit+'&time=2019-06-02 11:00:00',  });
 		for(var i=0,len=allUser.length;i<len;i++){
 			var d = allUser[i];
+			(function(){
+				if(d.recruitName){
+					var j=0,l=recruitName.name.length,news = true;
+					for(;j<l;j++){
+						if(d.recruitName == recruitName.name[j]){
+							news = false;
+							recruitName.value[j]++;
+						}
+					}
+					if(news){
+						recruitName.name[j] = d.recruitName;
+						recruitName.value[j] = 1;
+						allOrg.push(d.recruitName)
+					}
+				}else
+					orgName.other++;
+			})();
 			(function(){
 				if(d.platform.name){
 					var j=0,l=platform.name.length,news = true;
@@ -160,7 +281,7 @@ layui.config({
 		            },		//纵坐标
 		            series: [
 		            	{
-			                name: '部门',
+			                name: '平台',
 			                type: 'bar',
 						    markPoint: {	//标注点
 				                data: [
@@ -183,18 +304,6 @@ layui.config({
 		        		},
 		        	]
 		    });
-		educationDiv.on('click',function(obj){	//点击事件
-			var platformId;
-			for(var j=0;j<allOrg.length;j++){
-				if(obj.name===allOrg[j].name){
-					platformId = allOrg[j].id;
-					break;
-				}
-			}
-			searchUser({
-				platformId: platformId
-			})
-		})
         var orgNameDiv = echarts.init(document.getElementById('orgName'));
 		orgNameDiv.setOption(
 	        {
@@ -251,6 +360,76 @@ layui.config({
 	        		},
 	        	]
 	    });
+		
+		var userDiv = echarts.init(document.getElementById('user'));
+		userDiv.setOption(
+	        {
+	            title: {		//标题
+	                text: '招聘人分布情况',
+	            },
+	            tooltip: {},	
+	            toolbox: {
+			        show: true,
+			        feature: {
+			            dataZoom: {
+			                yAxisIndex: 'none'
+			            },
+			            dataView: {readOnly: false},
+			            magicType: {type: ['line', 'bar']},
+			            restore: {},
+			            saveAsImage: {}
+			        }
+			    },
+	            xAxis: {		//横坐标
+	            	data: recruitName.name,
+	            	axisLabel: {
+	                    interval: 0,
+	                    rotate: 30
+	                },
+	            },
+	            yAxis: {
+	            	axisLabel: {
+			            formatter: '{value} /人'
+			        }
+	            },		//纵坐标
+	            series: [
+	            	{
+		                name: '人名',
+		                type: 'bar',
+					    markPoint: {	//标注点
+			                data: [
+			                    {type: 'max', name: '最多人数'},
+			                    {type: 'min', name: '最少人数'}
+			                ]
+			            },
+			            markLine: {		//标注线
+			                data: [
+			                    {type: 'average', name: '平均部门人数'}
+			                ]
+			           	},
+			            label: {
+			                normal: {
+			                    show: true,
+			                    position: 'inside'
+			                }
+			            },
+		                data: recruitName.value,
+	        		},
+	        	]
+	    });
+		
+		/* educationDiv.on('click',function(obj){	//点击事件
+			var platformId;
+			for(var j=0;j<allOrg.length;j++){
+				if(obj.name===allOrg[j].name){
+					platformId = allOrg[j].id;
+					break;
+				}
+			}
+			searchUser({
+				platformId: platformId
+			})
+		})
 		orgNameDiv.on('click',function(obj){	//点击事件
 			var orgId;
 			for(var j=0;j<allOrg.length;j++){
@@ -286,7 +465,7 @@ layui.config({
 					}
 				})
 				
-			}
+			} */
 		}
 		mainJs3(firstdate,lastdate)
 		$("#date").html("<input id='startTime' style='width: 200px;' name='startTime' placeholder='请选择月份' value="+month+" class='layui-input laydate-icon'>")
@@ -303,6 +482,7 @@ layui.config({
 		var allsumy = myutil.getDataSync({ url: '${ctx}/personnel/Statistics?time='+value+'', });
 		for(var i=0,len=allsumy.length;i<len;i++){
 			var d = allsumy[i];
+			console.log(d)
 			orge.value1.push(d.mod1)
 			orge.value2.push(d.mod2)
 			orge.value3.push(d.mod3)
