@@ -96,23 +96,17 @@ layui.extend({
 				})
 				$('#processSelect').append(allProcess);
 				formSelects.render();
-				
 				if(data.id){	//如果存在id，进行数据回显
-					/*var processIds = [];
-					for(var i=0,len=data.outsourceTask.length;i<len;i++)
-						processIds.push(data.outsourceTask[i].id);
+					var processIds = [];
+					for(var i=0,len=data.outsourceTaskChoosed.length;i<len;i++)
+						processIds.push(data.outsourceTaskChoosed[i].id);
 					formSelects.value('processSelect',processIds); 
-					$('#userId').val(data.user?data.user.id:'');
-					$('#warehouseTypeId').val(data.warehouseType?data.warehouseType.id:'');
-					if(data.outsource==1)
-						$('#customerId').val(data.customer?data.customer.id:'');
-					else
-						$('#customerId').val(data.processingUser?data.processingUser.id:"");*/
 				}
-				
 				form.on('submit(sureAddOutOrder)',function(obj){
 					var url = '/ledger/saveRefundBills';
 					obj.field.orderOutSourceId = data.orderOutSourceId;
+					if(data.id)
+						obj.field.id = data.id;
 					if(!obj.field.outsourceTaskIds)
 						return myutil.emsg('工序不能为空！');
 					var val = $('#processNumber').val();
