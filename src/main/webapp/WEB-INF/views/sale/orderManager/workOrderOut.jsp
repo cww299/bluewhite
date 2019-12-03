@@ -114,10 +114,11 @@
 layui.config({
 	base : '${ctx}/static/layui-v2.4.5/'
 }).extend({
-	mytable : 'layui/myModules/mytable' ,
-	outOrderModel : 'layui/myModules/sale/outOrderModel' ,
+	mytable : 'layui/myModules/mytable',
+	outOrderModel : 'layui/myModules/sale/outOrderModel',
+	returnOrder : 'layui/myModules/sale/returnOrder',
 }).define(
-	['mytable','laydate','outOrderModel'],
+	['mytable','laydate','outOrderModel','returnOrder'],
 	function(){
 		var $ = layui.jquery
 		, layer = layui.layer
@@ -126,6 +127,7 @@ layui.config({
 		, table = layui.table 
 		, myutil = layui.myutil
 		, outOrderModel = layui.outOrderModel
+		, returnOrder = layui.returnOrder
 		, laytpl = layui.laytpl
 		, mytable = layui.mytable;
 		myutil.config.ctx = '${ctx}';
@@ -212,14 +214,22 @@ layui.config({
 								table.reload('tableData');
 							}
 						});
+					}else if(obj.event=='returnOrder'){
+						var check = layui.table.checkStatus('tableData').data;
+						if(check.length!=1)
+							return myutil.emsg('只能选择一条数据编辑！');
+						returnOrder.add({
+							data: check[0],
+						})
 					}
 				},
 			},
 			ifNull:'---',
-			colsWidth:[0,0,18,4,7,6,8,7,4,4,8,4,4], 
+			colsWidth:[0,0,18,4,7,6,8,7,4,4,8,4], 
 			toolbar:['<span class="layui-btn layui-btn-sm" lay-event="edit">修改加工单</span>',
 					 '<span class="layui-btn layui-btn-sm" lay-event="print">打印</span>',
 			         '<span class="layui-btn layui-btn-sm layui-btn-warm" lay-event="audit">审核</span>',
+			         '<span class="layui-btn layui-btn-sm layui-btn-normal" lay-event="returnOrder">退货单</span>',
 			         ].join(' '),
 			cols:[[
 			       { type:'checkbox',},
@@ -233,7 +243,6 @@ layui.config({
 			       { title:'千克',   field:'kilogramWeight',	},
 			       { title:'克重',   field:'gramWeight',	},
 			       { title:'预计仓库',   field:'warehouseType_name',	},
-			       { title:'作废',   field:'flag',	transData:{ data:['否','是'],}, },
 			       { title:'审核',   field:'audit',	transData:{ data:['否','是'],}, },
 			       ]]
 		})

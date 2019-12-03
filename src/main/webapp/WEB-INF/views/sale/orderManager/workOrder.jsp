@@ -120,10 +120,11 @@
 layui.config({
 	base : '${ctx}/static/layui-v2.4.5/'
 }).extend({
-	mytable : 'layui/myModules/mytable' ,
-	outOrderModel : 'layui/myModules/sale/outOrderModel' ,
+	mytable : 'layui/myModules/mytable',
+	outOrderModel : 'layui/myModules/sale/outOrderModel',
+	returnOrder : 'layui/myModules/sale/returnOrder',
 }).define(
-	['mytable','laydate','outOrderModel'],
+	['mytable','laydate','outOrderModel','returnOrder'],
 	function(){
 		var $ = layui.jquery
 		, layer = layui.layer
@@ -132,6 +133,7 @@ layui.config({
 		, table = layui.table 
 		, myutil = layui.myutil
 		, outOrderModel = layui.outOrderModel
+		, returnOrder = layui.returnOrder
 		, laytpl = layui.laytpl
 		, mytable = layui.mytable;
 		myutil.config.ctx = '${ctx}';
@@ -212,6 +214,13 @@ layui.config({
 								table.reload('tableData');
 							}
 						});
+					}else if(obj.event=='returnOrder'){
+						var check = layui.table.checkStatus('tableData').data;
+						if(check.length!=1)
+							return myutil.emsg('只能选择一条数据编辑！');
+						returnOrder.add({
+							data: check[0],
+						})
 					}
 				},
 			},
@@ -221,6 +230,7 @@ layui.config({
 					 '<span class="layui-btn layui-btn-sm" lay-event="edit">修改加工单</span>',
 					 '<span class="layui-btn layui-btn-sm" lay-event="print">打印</span>',
 			         '<span class="layui-btn layui-btn-sm layui-btn-warm" lay-event="audit">审核</span>',
+			         '<span class="layui-btn layui-btn-sm layui-btn-normal" lay-event="returnOrder">退货单</span>',
 			         ].join(' '),
 			cols:[[
 			       { type:'checkbox',},
