@@ -879,7 +879,7 @@ public class LedgerAction {
 	 * @param order
 	 * @return
 	 */
-	@RequestMapping(value = "/ledger/updateProcessPrice", method = RequestMethod.GET)
+	@RequestMapping(value = "/ledger/updateProcessPrice", method = RequestMethod.POST)
 	@ResponseBody
 	public CommonResponse updateProcessPrice(ProcessPrice processPrice) {
 		CommonResponse cr = new CommonResponse();

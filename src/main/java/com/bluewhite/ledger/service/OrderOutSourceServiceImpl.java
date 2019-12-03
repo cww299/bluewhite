@@ -316,13 +316,14 @@ public class OrderOutSourceServiceImpl extends BaseServiceImpl<OrderOutSource, L
 		Set<BaseData> outsourceTask = orderOutSource.getOutsourceTask();
 		// 加工单工序对应价格
 		List<ProcessPrice> processPriceList = processPriceDao.findByOrderOutSourceId(id);
+		
 		outsourceTask.stream().forEach(outB -> {
 			Map<String, Object> map = new HashMap<>();
 			List<ProcessPrice> pList = processPriceList.stream()
 					.filter(ProcessPrice -> ProcessPrice.getProcessTaskId().equals(outB.getId()))
 					.collect(Collectors.toList());
 			// 工序id
-			map.put("id", outB.getId());
+			map.put("id",  pList.get(0).getId());
 			// 工序名称
 			map.put("name", outB.getName());
 			// 工序价格
@@ -333,10 +334,10 @@ public class OrderOutSourceServiceImpl extends BaseServiceImpl<OrderOutSource, L
 				// 当加工单工序等于退货单工序时，更新加工单工序的任务数量
 				Set<BaseData> setBaseData = r.getOutsourceTask().stream()
 						.filter(BaseData -> BaseData.getId().equals(outB.getId())).collect(Collectors.toSet());
-				returnNumber += orderOutSource.getProcessNumber() - (setBaseData.size() > 0 ? r.getReturnNumber() : 0);
+				returnNumber += (setBaseData.size() > 0 ? r.getReturnNumber() : 0);
 			}
 			//工序数量
-			map.put("number",returnNumber);
+			map.put("number",orderOutSource.getProcessNumber() -returnNumber);
 			mixList.add(map);
 		});
 		return mixList;
