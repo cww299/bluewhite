@@ -92,8 +92,7 @@ public class MaterialPutStorageServiceImpl extends BaseServiceImpl<MaterialPutSt
 			return null;
 		}, page);
 		pages.getContent().stream().forEach(m -> {
-			List<MaterialOutStorage> materialOutStorageList = materialOutStorageDao
-					.findByMaterialPutStorageId(m.getId());
+			List<MaterialOutStorage> materialOutStorageList = materialOutStorageDao.findByMaterialPutStorageId(m.getId());
 			double arrNumber = materialOutStorageList.stream().mapToDouble(MaterialOutStorage::getArrivalNumber).sum();
 			m.setSurplusNumber(NumUtils.sub(m.getArrivalNumber(), arrNumber));
 		});

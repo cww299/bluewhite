@@ -4,7 +4,6 @@ import com.bluewhite.base.BaseCRUDService;
 import com.bluewhite.common.entity.PageParameter;
 import com.bluewhite.common.entity.PageResult;
 import com.bluewhite.ledger.entity.PutStorage;
-import com.bluewhite.ledger.entity.SendGoods;
 
 public interface PutStorageService extends BaseCRUDService<PutStorage, Long> {
 	
@@ -20,6 +19,13 @@ public interface PutStorageService extends BaseCRUDService<PutStorage, Long> {
 	 * @param page
 	 * @param putStorage
 	 */
-	public  PageResult<SendGoods> findPages(PageParameter page, PutStorage putStorage);
+	public  PageResult<PutStorage> findPages(PageParameter page, PutStorage putStorage);
+	
+	/**
+	 * 删除入库单
+	 * @param ids
+	 * @return
+	 */
+	public int deletePutStorage(String ids);
 
 }

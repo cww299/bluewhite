@@ -21,7 +21,7 @@ public class InventoryServiceImpl extends BaseServiceImpl<Inventory, Long> imple
 	private ProductDao productDao;
 
 	@Override
-	public void putInStorage(Long  productId, Long inWarehouseTypeId,Integer arrivalNumber) {
+	public void putInStorage(Long  productId, Long inWarehouseTypeId) {
 		// 库存表
 		Product product = productDao.findOne(productId);
 		if (product != null) {
@@ -37,7 +37,6 @@ public class InventoryServiceImpl extends BaseServiceImpl<Inventory, Long> imple
 				inventory.setProductId(productId);
 				inventory.setWarehouseTypeId(inWarehouseTypeId);
 			}
-			inventory.setNumber(NumUtils.setzro(inventory.getNumber()) +arrivalNumber);
 			dao.save(inventory);
 		}
 		

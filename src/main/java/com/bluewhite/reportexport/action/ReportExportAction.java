@@ -114,7 +114,7 @@ public class ReportExportAction {
 
 	@Autowired
 	private UserDao userDao;
-	
+
 	@Autowired
 	private BaseDataService baseDataService;
 
@@ -512,7 +512,8 @@ public class ReportExportAction {
 		OutputStream out = response.getOutputStream();
 		List<CollectPay> collectPayList = payBService.collectPay(collectPay);
 		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
-		collectPayList.stream().forEach(CollectPay -> CollectPay.setStartDate(sdf.format(collectPay.getOrderTimeBegin())));
+		collectPayList.stream()
+				.forEach(CollectPay -> CollectPay.setStartDate(sdf.format(collectPay.getOrderTimeBegin())));
 		Excelutil<CollectPay> util = new Excelutil<CollectPay>(CollectPay.class);
 		util.exportExcel(collectPayList, "绩效报表", out);// 导出
 		out.close();
@@ -546,58 +547,59 @@ public class ReportExportAction {
 	public void DownBacth(HttpServletRequest request, HttpServletResponse response, Long id) {
 		response.setContentType("octets/stream");
 		response.addHeader("Content-Disposition", "attachment;filename=task.xlsx");
-		// 第一步，创建一个webbook，对应一个Excel文件
-		XSSFWorkbook wb = new XSSFWorkbook();
-		// 第二步，在webbook中添加一个sheet,对应Excel文件中的sheet
-		XSSFSheet sheet = wb.createSheet("任务报表");
-		// 设置表格默认宽度为15个字节
-		sheet.setDefaultColumnWidth(15);
-		// 在sheet中添加表头第0行,注意老版本poi对Excel的行数列数有限制short
-		XSSFRow row = sheet.createRow(0);
-		XSSFRow row2 = sheet.createRow(2);
-		// 第四步，创建单元格，并设置值表头 设置表头居中
-		XSSFCellStyle style = wb.createCellStyle();
-
-		XSSFCell cell = row.createCell(0);
-		cell.setCellValue("批次号");
-		cell.setCellStyle(style);
-		cell = row.createCell(1);
-		cell.setCellValue("产品名");
-		cell.setCellStyle(style);
-
-		Bacth bacth = bacthService.findOne(id);
-
-		// 第四步，创建单元格，并设置值
-		row = sheet.createRow(1);
-		row.createCell(0).setCellValue(bacth.getBacthNumber());
-		row.createCell(1).setCellValue(bacth.getProduct().getName());
-
-		XSSFCell cell2 = row2.createCell(0);
-		cell2.setCellValue("需要完成的工序");
-		cell2.setCellStyle(style);
-		cell2 = row2.createCell(1);
-		cell2.setCellValue("未完成的数量");
-		cell2.setCellStyle(style);
-		cell2 = row2.createCell(2);
-		cell2.setCellValue("未完成的数量预计时间（分）");
-		cell2.setCellStyle(style);
-		cell2 = row2.createCell(3);
-		cell2.setCellValue("分配任务填写备注");
-		cell2.setCellStyle(style);
-
-		List<Procedure> procedureList = procedureDao.findByProductIdAndTypeAndFlag(bacth.getProduct().getId(),
-				bacth.getType(), 0);
-
-		for (int i = 0; i < procedureList.size(); i++) {
-			row2 = sheet.createRow(i + 3);
-			// 第四步，创建单元格，并设置值
-			row2.createCell(0).setCellValue(procedureList.get(i).getName());
-			row2.createCell(1).setCellValue(bacth.getNumber());
-			row2.createCell(2).setCellValue(bacth.getNumber() * procedureList.get(i).getWorkingTime() / 60);
-			row2.createCell(3).setCellValue("");
-		}
 		try {
 			OutputStream outputStream = response.getOutputStream();
+			// 第一步，创建一个webbook，对应一个Excel文件
+			XSSFWorkbook wb = new XSSFWorkbook();
+			// 第二步，在webbook中添加一个sheet,对应Excel文件中的sheet
+			XSSFSheet sheet = wb.createSheet("任务报表");
+			// 设置表格默认宽度为15个字节
+			sheet.setDefaultColumnWidth(15);
+			// 在sheet中添加表头第0行,注意老版本poi对Excel的行数列数有限制short
+			XSSFRow row = sheet.createRow(0);
+			XSSFRow row2 = sheet.createRow(2);
+			// 第四步，创建单元格，并设置值表头 设置表头居中
+			XSSFCellStyle style = wb.createCellStyle();
+
+			XSSFCell cell = row.createCell(0);
+			cell.setCellValue("批次号");
+			cell.setCellStyle(style);
+			cell = row.createCell(1);
+			cell.setCellValue("产品名");
+			cell.setCellStyle(style);
+
+			Bacth bacth = bacthService.findOne(id);
+
+			// 第四步，创建单元格，并设置值
+			row = sheet.createRow(1);
+			row.createCell(0).setCellValue(bacth.getBacthNumber());
+			row.createCell(1).setCellValue(bacth.getProduct().getName());
+
+			XSSFCell cell2 = row2.createCell(0);
+			cell2.setCellValue("需要完成的工序");
+			cell2.setCellStyle(style);
+			cell2 = row2.createCell(1);
+			cell2.setCellValue("未完成的数量");
+			cell2.setCellStyle(style);
+			cell2 = row2.createCell(2);
+			cell2.setCellValue("未完成的数量预计时间（分）");
+			cell2.setCellStyle(style);
+			cell2 = row2.createCell(3);
+			cell2.setCellValue("分配任务填写备注");
+			cell2.setCellStyle(style);
+
+			List<Procedure> procedureList = procedureDao.findByProductIdAndTypeAndFlag(bacth.getProduct().getId(),
+					bacth.getType(), 0);
+
+			for (int i = 0; i < procedureList.size(); i++) {
+				row2 = sheet.createRow(i + 3);
+				// 第四步，创建单元格，并设置值
+				row2.createCell(0).setCellValue(procedureList.get(i).getName());
+				row2.createCell(1).setCellValue(bacth.getNumber());
+				row2.createCell(2).setCellValue(bacth.getNumber() * procedureList.get(i).getWorkingTime() / 60);
+				row2.createCell(3).setCellValue("");
+			}
+
 			wb.write(outputStream);
 			outputStream.flush();
 			outputStream.close();
@@ -777,38 +779,39 @@ public class ReportExportAction {
 	public void DownAttendanceSign(HttpServletRequest request, HttpServletResponse response, Attendance attendance) {
 		response.setContentType("octets/stream");
 		response.addHeader("Content-Disposition", "attachment;filename=Attendance.xlsx");
-		// 第一步，创建一个webbook，对应一个Excel文件
-		XSSFWorkbook wb = new XSSFWorkbook();
-		// 第二步，在webbook中添加一个sheet,对应Excel文件中的sheet
-		XSSFSheet sheet = wb.createSheet("签到表");
-		// 设置表格默认宽度为15个字节
-		sheet.setDefaultColumnWidth(15);
-		// 在sheet中添加表头第0行,注意老版本poi对Excel的行数列数有限制short
-		XSSFRow row = sheet.createRow(0);
-		// 第四步，创建单元格，并设置值表头 设置表头居中
-		XSSFCellStyle style = wb.createCellStyle();
-		XSSFCell cell = row.createCell(0);
-		cell.setCellValue("员工编号");
-		cell.setCellStyle(style);
-		cell = row.createCell(1);
-		cell.setCellValue("员工姓名");
-		cell.setCellStyle(style);
-		cell = row.createCell(2);
-		cell.setCellValue("签到时间");
-		cell.setCellStyle(style);
-		List<Attendance> attendanceList = attendanceService
-				.findPageAttendance(attendance, new PageParameter(0, Integer.MAX_VALUE)).getRows();
-		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-		for (int i = 0; i < attendanceList.size(); i++) {
-			row = sheet.createRow(i + 1);
-			// 第四步，创建单元格，并设置值
-			row.createCell(0).setCellValue(attendanceList.get(i).getNumber());
-			row.createCell(1).setCellValue(
-					attendanceList.get(i).getUser() != null ? attendanceList.get(i).getUser().getUserName() : "");
-			row.createCell(2).setCellValue(sdf.format(attendanceList.get(i).getTime()));
-		}
 		try {
 			OutputStream outputStream = response.getOutputStream();
+			// 第一步，创建一个webbook，对应一个Excel文件
+			XSSFWorkbook wb = new XSSFWorkbook();
+			// 第二步，在webbook中添加一个sheet,对应Excel文件中的sheet
+			XSSFSheet sheet = wb.createSheet("签到表");
+			// 设置表格默认宽度为15个字节
+			sheet.setDefaultColumnWidth(15);
+			// 在sheet中添加表头第0行,注意老版本poi对Excel的行数列数有限制short
+			XSSFRow row = sheet.createRow(0);
+			// 第四步，创建单元格，并设置值表头 设置表头居中
+			XSSFCellStyle style = wb.createCellStyle();
+			XSSFCell cell = row.createCell(0);
+			cell.setCellValue("员工编号");
+			cell.setCellStyle(style);
+			cell = row.createCell(1);
+			cell.setCellValue("员工姓名");
+			cell.setCellStyle(style);
+			cell = row.createCell(2);
+			cell.setCellValue("签到时间");
+			cell.setCellStyle(style);
+			List<Attendance> attendanceList = attendanceService
+					.findPageAttendance(attendance, new PageParameter(0, Integer.MAX_VALUE)).getRows();
+			SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+			for (int i = 0; i < attendanceList.size(); i++) {
+				row = sheet.createRow(i + 1);
+				// 第四步，创建单元格，并设置值
+				row.createCell(0).setCellValue(attendanceList.get(i).getNumber());
+				row.createCell(1).setCellValue(
+						attendanceList.get(i).getUser() != null ? attendanceList.get(i).getUser().getUserName() : "");
+				row.createCell(2).setCellValue(sdf.format(attendanceList.get(i).getTime()));
+			}
+
 			wb.write(outputStream);
 			outputStream.flush();
 			outputStream.close();
@@ -852,13 +855,11 @@ public class ReportExportAction {
 		List<User> users = userDao.findAll();
 		List<User> list = users.stream()
 				.filter(User -> User.getGender() != null && User.getAge() != null && User.getBirthDate() != null
-						&& User.getGender().equals(1) && User.getAge() >= 50
-						&& User.getBirthDate().before(date3))
+						&& User.getGender().equals(1) && User.getAge() >= 50 && User.getBirthDate().before(date3))
 				.collect(Collectors.toList());
 		List<User> list2 = users.stream()
 				.filter(User -> User.getGender() != null && User.getAge() != null && User.getBirthDate() != null
-						&& User.getGender().equals(0) && User.getAge() >= 60
-						&& User.getBirthDate().before(date4))
+						&& User.getGender().equals(0) && User.getAge() >= 60 && User.getBirthDate().before(date4))
 				.collect(Collectors.toList());
 		lists.addAll(list);
 		lists.addAll(list2);
@@ -893,8 +894,9 @@ public class ReportExportAction {
 		// 输出的实体与反射的实体相对应
 		List<User> lists = new ArrayList<>();
 		List<User> users = userDao.findAll();
-		List<User> list = users.stream().filter(User -> User.getIdCard() != null && !User.getIdCard().equals("")
-				&& User.getIsAdmin() == false).collect(Collectors.toList());
+		List<User> list = users.stream()
+				.filter(User -> User.getIdCard() != null && !User.getIdCard().equals("") && User.getIsAdmin() == false)
+				.collect(Collectors.toList());
 		lists.addAll(list);
 		List<User2Poi> lists2 = new ArrayList<>();
 		for (User user : lists) {
@@ -937,19 +939,19 @@ public class ReportExportAction {
 		response.setHeader("Content-disposition", "attachment;filename=attendance.xlsx");
 		List<Map<String, Object>> listmap = attendanceTimeService.findAttendanceTimeCollectList(attendanceTime);
 		BaseData baseData = baseDataService.findOne(attendanceTime.getOrgNameId());
-			EasyExcel.write(response.getOutputStream())
-			// 这里放入动态头
-			.head(head(listmap)).sheet(baseData.getName())
-			// table的时候 传入class 并且设置needHead =false
-			.table().needHead(Boolean.FALSE).doWrite(data(listmap));
+		EasyExcel.write(response.getOutputStream())
+				// 这里放入动态头
+				.head(head(listmap)).sheet(baseData.getName())
+				// table的时候 传入class 并且设置needHead =false
+				.table().needHead(Boolean.FALSE).doWrite(data(listmap));
 	}
 
 	// 表头
 	private List<List<String>> head(List<Map<String, Object>> listmap) {
 		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
 		List<List<String>> list = new ArrayList<List<String>>();
-		if(listmap.size()==0){
-			List<String> err= new ArrayList<>();
+		if (listmap.size() == 0) {
+			List<String> err = new ArrayList<>();
 			err.add("请先统计考勤，再导出");
 			list.add(err);
 			return list;
@@ -1012,7 +1014,7 @@ public class ReportExportAction {
 	// 数据
 	private List<List<Object>> data(List<Map<String, Object>> listmap) {
 		List<List<Object>> list = new ArrayList<>();
-		if(listmap.size()!=0){
+		if (listmap.size() != 0) {
 			for (Map<String, Object> map : listmap) {
 				List<AttendanceTime> attendanceTimeList = (List<AttendanceTime>) map.get("attendanceTimeData");
 				AttendanceCollect collect = (AttendanceCollect) map.get("collect");
