@@ -284,6 +284,15 @@ public class LedgerAction {
 				.addRetainTerm(Materiel.class, "id", "name")
 				.addRetainTerm(User.class, "id", "userName");
 	}
+	
+	private ClearCascadeJSON clearCascadeJSONSRefundBills;
+	{
+		clearCascadeJSONSRefundBills = ClearCascadeJSON.get()
+				.addRetainTerm(RefundBills.class, "id", "orderOutSource","outsourceTask",
+				"returnNumber", "returnTime", "returnRemark")
+				.addRetainTerm(OrderOutSource.class, "id", "outsourceTask")
+				.addRetainTerm(BaseOne.class, "id", "name");
+	}
 
 	/**
 	 * 分页查看生产计划单
@@ -784,6 +793,23 @@ public class LedgerAction {
 		CommonResponse cr = new CommonResponse();
 		int count = orderOutSourceService.auditOrderOutSource(ids);
 		cr.setMessage("成功审核" + count + "条加工单");
+		return cr;
+	}
+	
+	
+	/**
+	 * （生产计划部） 分页查看加工退货单
+	 * 
+	 * @param page
+	 * @param order
+	 * @return
+	 */
+	@RequestMapping(value = "/ledger/refundBillsPage", method = RequestMethod.GET)
+	@ResponseBody
+	public CommonResponse refundBillsPage(PageParameter page, RefundBills refundBills) {
+		CommonResponse cr = new CommonResponse();
+		cr.setData(clearCascadeJSONSRefundBills.format(refundBillsService.findPages(refundBills, page)).toJSON());
+		cr.setMessage("查看成功");
 		return cr;
 	}
 
