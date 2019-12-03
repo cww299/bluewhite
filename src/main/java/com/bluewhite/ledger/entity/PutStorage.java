@@ -126,6 +126,20 @@ public class PutStorage extends BaseEntity<Long> {
 	private User userStorage;
 	
 	/**
+	 * 所属业务员id
+	 * 
+	 */
+	@Column(name = "user_id")
+	private Long userId;
+
+	/**
+	 * 所属业务员
+	 */
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "user_id", referencedColumnName = "id", insertable = false, updatable = false)
+	private User user;
+	
+	/**
 	 * 仓管指定 入库仓库种类id
 	 */
 	@Column(name = "in_warehouse_type_id")
@@ -162,6 +176,22 @@ public class PutStorage extends BaseEntity<Long> {
 	
 	
 	
+	public Long getUserId() {
+		return userId;
+	}
+
+	public void setUserId(Long userId) {
+		this.userId = userId;
+	}
+
+	public User getUser() {
+		return user;
+	}
+
+	public void setUser(User user) {
+		this.user = user;
+	}
+
 	public Date getOrderTimeBegin() {
 		return orderTimeBegin;
 	}
