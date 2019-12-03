@@ -190,7 +190,6 @@ public class Consumption extends BaseEntity<Long> {
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "orderProcurement_id", referencedColumnName = "id", insertable = false, updatable = false)
 	private OrderProcurement orderProcurement;
-	
 
 	/**
 	 * 加工单id
@@ -205,8 +204,6 @@ public class Consumption extends BaseEntity<Long> {
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "order_outSource_id", referencedColumnName = "id", insertable = false, updatable = false)
 	private OrderOutSource orderOutSource;
-
-	
 	
 	/**
 	 * 过滤参数(报销人姓名)
