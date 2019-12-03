@@ -8,21 +8,16 @@
 	<script src="${ctx}/static/layui-v2.4.5/layui/layui.js"></script>
 	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 	<title>加工退货单</title>
-	<style>
-		.searchTable td{
-			padding-left:10px;
-		}
-	</style>
 </head>
 <body>
 <div class="layui-card">
 	<div class="layui-card-body">
 		<table class="layui-form searchTable">
 			<tr>
-				<td>退货日期:</td>
+				<td>退货日期：</td>
 				<td><input type="text" name="orderTimeBegin" id="searchTime" class="layui-input"></td>
-				<td>退货日期:</td>
-				<td><input type="text" name="productName" class="layui-input"></td>
+				<td>订单号：</td>
+				<td><input type="text" name="orderName" class="layui-input"></td>
 				<td><button type="button" class="layui-btn layui-btn-sm" lay-submit lay-filter="search">搜索</button></td>
 			</tr>
 		</table>
