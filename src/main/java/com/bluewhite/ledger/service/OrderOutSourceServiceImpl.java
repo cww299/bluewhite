@@ -102,7 +102,7 @@ public class OrderOutSourceServiceImpl extends BaseServiceImpl<OrderOutSource, L
 						// 退货总数
 						Integer returnNumber = returnNumberList.stream().reduce(Integer::sum).orElse(0);
 						// 实际数量=(总加工数-退货数)
-						int actualNumber = sumNumber - returnNumber;
+						int actualNumber = (sumNumber+orderOutSource.getProcessNumber()) - returnNumber;
 						if (actualNumber > order.getNumber()) {
 							throw new ServiceException(baseData.getName() + "的任务工序数量不足，无法生成加工单 ");
 						}
@@ -300,7 +300,7 @@ public class OrderOutSourceServiceImpl extends BaseServiceImpl<OrderOutSource, L
 		consumption.setSettleAccountsMode(2);
 		consumption.setFlag(0);
 		//申请金额
-		consumption.setMoney(ot.getMoney());
+		consumption.setMoney(orderOutSource.getMoney());
 		//申请日期
 		consumption.setExpenseDate(new Date());
 		consumptionDao.save(consumption);
