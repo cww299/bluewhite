@@ -225,7 +225,7 @@ layui.config({
 				},
 			},
 			ifNull:'---',
-			colsWidth:[0,0,18,4,7,6,8,7,4,4,8,4], 
+			colsWidth:[0,0,18,4,7,6,8,7,4,4,4], 
 			toolbar:[
 					 '<span class="layui-btn layui-btn-sm" lay-event="edit">修改加工单</span>',
 					 '<span class="layui-btn layui-btn-sm" lay-event="print">打印</span>',
@@ -243,7 +243,6 @@ layui.config({
 			       { title:'棉花类型',   field:'fill',	},
 			       { title:'千克',   field:'kilogramWeight',	},
 			       { title:'克重',   field:'gramWeight',	},
-			       { title:'预计仓库',   field:'warehouseType_name',	},
 			       { title:'审核',   field:'audit',	transData:{ data:['否','是'],}, },
 			       ]]
 		})

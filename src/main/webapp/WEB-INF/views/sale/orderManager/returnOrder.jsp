@@ -63,10 +63,13 @@ layui.config({
 						var data = check[0].orderOutSource;
 						data.outsourceTaskChoosed = check[0].outsourceTask;
 						data.orderOutSourceId = check[0].orderOutSource.id;
-						data = $.extend({},data,check[0])
+						data = $.extend({},data,check[0]);
 						data.outsourceTask = data.orderOutSource.outsourceTask;
 						returnOrder.update({
 							data: data,
+							success:function(){
+								table.reload('tableData');
+							}
 						})
 					}
 				}
