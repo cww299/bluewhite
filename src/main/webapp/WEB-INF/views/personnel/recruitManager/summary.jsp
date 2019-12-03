@@ -1055,6 +1055,7 @@
 							loading: true,
 							toolbar: '#toolbar2', 
 							sort:true,
+							page: true,
 							colFilterRecord: true,
 							smartReloadModel: true,
 							data:newArr,
@@ -1361,7 +1362,7 @@
 							parseData:function(ret){ return { data:ret.data, msg:ret.message, code:ret.code } },
 							cols: [[
 							       {align:'center', title:'部门',   field:'username',	  }, 
-							       {align:'center', title:'部门招聘奖励金',   field:'ReceivePrice',},
+							       {align:'center', title:'有效部门招聘奖励金',   field:'ReceivePrice',},
 							       {align:'center', title:'培训费用',   field:'trainPrice',},
 							       {align:'center', title:'该部门占应聘费用',   field:'occupyPrice',totalRow: true,},
 							       {align:'center', title:'计划该部门占应聘费用',   field:'planPrice',totalRow: true,},
@@ -1386,7 +1387,26 @@
 						table.reload("layuitable2")
 					});
 					
-					
+				 	table.on('edit(totalTable)',function(obj){
+				 		var load =layer.load(1);
+				 		if(isNaN(obj.value)){
+				 			layer.msg("招聘人员费用只能为数字！",{icon:2});
+				 		}
+				 		else{
+					 		$.ajax({
+					 			url : '${ctx}/personnel/addBasics',
+					 			type: 'post',
+					 			data: { recruitUserPrice: parseFloat(obj.value), id:table.cache['totalTable'][0]['id'], time:searchTime, },
+					 			async: false,
+					 			success: function(r){
+					 				var icon = (r.code==0)? 1 : 2;
+					 				layer.msg(r.message,{icon:icon});
+					 			}
+					 		})
+				 		} 
+				 		table.reload('totalTable');
+				 		layer.close(load);
+				 	})
 					table.on('edit(tableData)', function(obj) {
 						var value = obj.value ,//得到修改后的值
 							data = obj.data ,//得到所在行所有键值

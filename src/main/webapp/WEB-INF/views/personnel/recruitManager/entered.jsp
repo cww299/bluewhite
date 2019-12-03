@@ -142,9 +142,6 @@
 <script type="text/html" id="trainToolbar">
 <div class="layui-btn-container layui-inline">
 	<span class="layui-btn layui-btn-sm" lay-event="addTempData">入职培训</span>
-	<span class="layui-btn layui-btn-sm" lay-event="addTempData2">内部培训</span>
-	<span class="layui-btn layui-btn-sm layui-btn-danger" lay-event="cleanTempData">清空新增行</span>
-	<span class="layui-btn layui-btn-sm layui-btn-warm" lay-event="saveTempData">批量保存</span>
 	<span class="layui-btn layui-btn-sm layui-btn-danger" lay-event="deleteSome">批量删除</span>
 </div>
 </script>
@@ -209,7 +206,7 @@ layui.config({
 	 		}
 		 	else{
 		 		table.reload('trainTable',{
-		 			url:'${ctx}/personnel/getAdvertisement?type=1&recruitId='+obj.value,
+		 			url:'${ctx}/personnel/getAdvertisement?type=1&mold=0&recruitId='+obj.value,
 		 			page : { curr :1 },
 		 		})
 		 		$.ajax({
@@ -235,7 +232,7 @@ layui.config({
 	 			
 		table.render({
 			elem:'#trainTable',
-			url:'${ctx}/personnel/getAdvertisement?type=1',
+			url:'${ctx}/personnel/getAdvertisement?type=1&mold=0',
 			toolbar:'#trainToolbar',
 			page:true,
 			size:'lg',
@@ -298,17 +295,7 @@ layui.config({
 			switch(obj.event){
 			case 'addTempData': addTempData();
 				break;
-			case 'addTempData2': addTempData2();
-				break;	
-			case 'cleanTempData': table.cleanTemp('trainTable');
-				break;
-			case 'saveTempData': saveTempData();
-				break;
 			case 'deleteSome': deleteSome();
-				break;
-			case 'lookoverTotal': lookoverTotal();
-				break;
-			case 'departmentTotal': departmentTotal();
 				break;
 			}
 		})
@@ -332,60 +319,12 @@ layui.config({
 	 		elem: '#totalDepartmentTime',
 	 		type: 'month',
 	 	})
-		function departmentTotal(){
-	 		layer.open({
-	 			type:1,
-	 			content: $('#departmentDiv'),
-	 			shadeClose : true,
-	 			area : ['60%','60%'],
-	 		})
-	 		table.render({
-	 			elem: '#totalDepartmentTable',
-	 			data: [],
-				parseData:function(ret){ return { data:ret.data, msg:ret.message, code:ret.code } },
-				cols: [[
-				       {align:'center', title:'部门',   field:'username',	  }, 
-				       {align:'center', title:'部门招聘奖励金',   field:'ReceivePrice',},
-				       {align:'center', title:'培训费用',   field:'trainPrice',},
-				       {align:'center', title:'该部门占应聘费用',   field:'occupyPrice',},
-				       {align:'center', title:'计划该部门占应聘费用',   field:'planPrice',},
-				       {align:'center', title:'定向招聘费用',   field:'directional',},
-		 			]],
-	 		})
-	 	}
 	 	form.on('submit(searchDepartmentTotal)',function(obj){
 	 		table.reload('totalDepartmentTable',{
 		 		url: '${ctx}/personnel/findBasicsSummary',
 		 		where : { time : obj.field.time+'-01 00:00:00'},
 	 		})
 	 	})
-		function lookoverTotal(){
-	 		layer.open({
-	 			type:1,
-	 			content: $('#lookoverDiv'),
-	 			shadeClose : true,
-	 			area : ['60%','60%'],
-	 		})
-	 		table.render({
-	 			elem: '#totalTable',
-	 			data: [],
-	 			parseData:function(ret){ 
-	 				var data = [];
-	 				data.push(ret.data);
-	 				return { data:data,  msg:ret.message, code:ret.code } 
-	 			},
-	 			cols: [[
-				       {align:'center', title:'宣传费',   field:'advertisementPrice',	  }, 
-				       {align:'center', title:'人工费用',   field:'recruitUserPrice',  edit: true,  },
-				       {align:'center', title:'培训费用',   field:'trainPrice',    },
-				       {align:'center', title:'招聘费用汇总',   field:'sumPrice',    },
-				       {align:'center', title:'招聘计划人数',   field:'planNumber',},
-				       {align:'center', title:'入职人员数量',   field:'admissionNum',  },
-				       {align:'center', title:'计划每人分到应聘费用',   field:'planPrice',},
-				       {align:'center', title:'每人占到应聘费用',   field:'sharePrice',},
-	 			        ]],
-	 		})
-	 	}
 	 	var searchTime = '';  //记录搜索查询时间
 	 	form.on('submit(searchTotal)',function(obj){
 	 		searchTime = obj.field.time+'-01 00:00:00';
@@ -449,7 +388,7 @@ layui.config({
 		var index=layer.open({
 				type:1,
 				title:'入职培训',
-				area:['25%','55%'],
+				area:['23%','62%'],
 				btn:['确认','取消'],
 				content:dicDiv,
 				id: 'LAY_layuipro' ,
@@ -490,161 +429,8 @@ layui.config({
 		        	layui.form.render();
 				  }
 			})
-	 		
-	 		
-			/* allField = {train: '', price: '', startTime:'',endTime:'',type:'1',qualified:0, userId:'', recruitId:$('#searchName').val(),};
-			var recruitname = $('#searchName').find('option[value="'+$('#searchName').val()+'"]').data('recruitname');
-			var name = $('#searchName').find('option[value="'+$('#searchName').val()+'"]').html().split(' ')[0];
-		    allField.recruitName = { name: name, recruitName: recruitname};
-			table.addTemp('trainTable',allField,function(trElem) {
-				var startTiemTd = trElem.find('td[data-field="startTime"]')[0];
-				laydate.render({
-					elem: startTiemTd.children[0],
-					type:'datetime',
-					format: 'yyyy-MM-dd HH:mm:ss',
-					done: function(value, date) {
-						var trElem = $(this.elem[0]).closest('tr');
-						var tableView = trElem.closest('.layui-table-view');
-						table.cache['trainTable'][trElem.data('index')]['startTime'] = value;
-					}
-				}) 
-				var endTimeTd = trElem.find('td[data-field="endTime"]')[0];	
-				laydate.render({
-					elem: endTimeTd.children[0],
-					format: 'yyyy-MM-dd HH:mm:ss',
-					type:'datetime',
-					done: function(value, date) {
-						var trElem = $(this.elem[0]).closest('tr');
-						var tableView = trElem.closest('.layui-table-view');
-						table.cache['trainTable'][trElem.data('index')]['endTime'] = value;
-					}
-				}) 
-			}); */
+	 	
 	 	}
-		
-		function addTempData2(){
-	 		if($('#searchName').val()==''){
-	 			layer.msg('请选择应聘对象',{icon:2});
-	 			return;
-	 		}
-			var name = $('#searchName').find('option[value="'+$('#searchName').val()+'"]').html().split(' ')[0];
-			$("#name").val(name)
-	 		var recruitname = $('#searchName').find('option[value="'+$('#searchName').val()+'"]').data('recruitname');
-			$("#recruitName2").val(recruitname)
-	 		var	dicDiv=$("#layuiadmin-form-admin2");
-			var index=layer.open({
-				type:1,
-				title:'入职培训',
-				area:['25%','55%'],
-				btn:['确认','取消'],
-				content:dicDiv,
-				id: 'LAY_layuipro2' ,
-				btnAlign: 'c',
-			    moveType: 1, //拖拽模式，0或者1
-				success : function(layero, index) {
-		        	layero.addClass('layui-form');
-					// 将保存按钮改变成提交按钮
-					layero.find('.layui-layer-btn0').attr({
-						'lay-filter' : 'addRole',
-						'lay-submit' : ''
-					})
-		        },
-				yes:function(){
-					form.on('submit(addRole)', function(data) {
-						data.field.type=1
-						data.field.mold=1
-						data.field.recruitId=$('#searchName').val()
-						$.ajax({
-							url: '${ctx}/personnel/addAdvertisement',
-							type: 'post',
-							async: false,
-							data: data.field,
-							success: function(r){
-								if(r.code==0)
-									layer.msg(r.message,{icon:1});
-								else
-									layer.msg(r.message,{icon:2});
-							}
-						})
-						document.getElementById("layuiadmin-form-admin2").reset(); 
-			        	layui.form.render();
-			        	table.reload('trainTable',{ page:{ curr:1 } })
-			        	layer.close(index);
-					})
-				},end:function(){ 
-		        	document.getElementById("layuiadmin-form-admin2").reset();
-		        	layui.form.render();
-				  }
-			})
-	 		
-	 		
-			/* allField = {train: '', price: '', startTime:'',endTime:'',type:'1',qualified:0, userId:'', recruitId:$('#searchName').val(),};
-			var recruitname = $('#searchName').find('option[value="'+$('#searchName').val()+'"]').data('recruitname');
-			var name = $('#searchName').find('option[value="'+$('#searchName').val()+'"]').html().split(' ')[0];
-		    allField.recruitName = { name: name, recruitName: recruitname};
-			table.addTemp('trainTable',allField,function(trElem) {
-				var startTiemTd = trElem.find('td[data-field="startTime"]')[0];
-				laydate.render({
-					elem: startTiemTd.children[0],
-					type:'datetime',
-					format: 'yyyy-MM-dd HH:mm:ss',
-					done: function(value, date) {
-						var trElem = $(this.elem[0]).closest('tr');
-						var tableView = trElem.closest('.layui-table-view');
-						table.cache['trainTable'][trElem.data('index')]['startTime'] = value;
-					}
-				}) 
-				var endTimeTd = trElem.find('td[data-field="endTime"]')[0];	
-				laydate.render({
-					elem: endTimeTd.children[0],
-					format: 'yyyy-MM-dd HH:mm:ss',
-					type:'datetime',
-					done: function(value, date) {
-						var trElem = $(this.elem[0]).closest('tr');
-						var tableView = trElem.closest('.layui-table-view');
-						table.cache['trainTable'][trElem.data('index')]['endTime'] = value;
-					}
-				}) 
-			}); */
-	 	}
-		/* function saveTempData(){
-			var tempData = table.getTemp('trainTable').data;
-			for(var i=0;i<tempData.length;i++){
-				var t = tempData[i];
-				if(!t.endTime || !t.price || !t.startTime || !t.train){
-					layer.msg('新增数据字段不能为空！',{icon:2});
-					return;
-				}
-				if(isNaN(t.price)){
-					layer.msg('培训成本只能为数字！',{icon:2});
-					return;
-				}
-			}
-			var load = layer.load(1);
-			var successAdd = 0;
-			for(var i=0;i<tempData.length;i++){
-				delete tempData[i].recruitName;
-				$.ajax({
-					url: '${ctx}/personnel/addAdvertisement',
-					type: 'post',
-					async: false,
-					data:  tempData[i],
-					success: function(r){
-						if(r.code==0)
-							successAdd++;
-						else
-							layer.msg(r.message,{icon:2});
-					}
-				}) 
-			}
-			table.cleanTemp('trainTable');
-			table.reload('trainTable',{ page:{ curr:1 } })
-			if(successAdd==tempData.length)
-				layer.msg('成功新增：'+successAdd+'条数据',{icon:1});
-			else
-				layer.msg('新增异常：'+(tempData.length-successAdd)+'条数据',{icon:2});
-			layer.close(load);
-		} */
 		function deleteSome(){
 			var choosed=layui.table.checkStatus('trainTable').data;
 			if(choosed.length<1)
