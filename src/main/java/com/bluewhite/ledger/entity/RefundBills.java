@@ -38,7 +38,7 @@ public class RefundBills extends BaseEntity<Long>{
 	 */
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "order_outSource_Id", referencedColumnName = "id", insertable = false, updatable = false)
-	private OrderOutSource OrderOutSource;
+	private OrderOutSource orderOutSource;
 	
 	/**
 	 * 生产计划单id
@@ -141,11 +141,11 @@ public class RefundBills extends BaseEntity<Long>{
 	}
 
 	public OrderOutSource getOrderOutSource() {
-		return OrderOutSource;
+		return orderOutSource;
 	}
 
 	public void setOrderOutSource(OrderOutSource orderOutSource) {
-		OrderOutSource = orderOutSource;
+		this.orderOutSource = orderOutSource;
 	}
 
 	public Integer getReturnNumber() {
