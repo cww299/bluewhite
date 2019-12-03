@@ -105,8 +105,10 @@ layui.extend({
 				form.on('submit(sureAddOutOrder)',function(obj){
 					var url = '/ledger/saveRefundBills';
 					obj.field.orderOutSourceId = data.orderOutSourceId;
-					if(data.id)
+					if(data.id){
+						url='/ledger/updateRefundBills';
 						obj.field.id = data.id;
+					}
 					if(!obj.field.outsourceTaskIds)
 						return myutil.emsg('工序不能为空！');
 					var val = $('#processNumber').val();

@@ -5,6 +5,7 @@
 <html>
 <head>
 	<link rel="stylesheet" href="${ctx }/static/layui-v2.4.5/layui/css/layui.css" media="all">
+	<link rel="stylesheet" href="${ctx }/static/layui-v2.4.5/formSelect/formSelects-v4.css" />
 	<script src="${ctx}/static/layui-v2.4.5/layui/layui.js"></script>
 	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 	<title>加工退货单</title>
@@ -18,7 +19,7 @@
 				<td><input type="text" name="orderTimeBegin" id="searchTime" class="layui-input"></td>
 				<td>订单号：</td>
 				<td><input type="text" name="orderName" class="layui-input"></td>
-				<td><button type="button" class="layui-btn layui-btn-sm" lay-submit lay-filter="search">搜索</button></td>
+				<td><button type="button" class="layui-btn" lay-submit lay-filter="search">搜索</button></td>
 			</tr>
 		</table>
 		<table id="tableData" lay-filter="tableData"></table>
@@ -41,15 +42,13 @@ layui.config({
 		, myutil = layui.myutil
 		, laydate = layui.laydate
 		, laytpl = layui.laytpl
+		, formSelects = layui.formSelects
 		, returnOrder = layui.returnOrder
 		, mytable = layui.mytable;
 		myutil.config.ctx = '${ctx}';
 		myutil.clickTr();
 		
-		laydate.render({
-			elem:'#searchTime',
-			range:'~',
-		})
+		laydate.render({ elem:'#searchTime', range:'~', })
 		mytable.render({
 			elem:'#tableData',
 			url:'${ctx}/ledger/refundBillsPage',
@@ -65,6 +64,7 @@ layui.config({
 						data.outsourceTaskChoosed = check[0].outsourceTask;
 						data.orderOutSourceId = check[0].orderOutSource.id;
 						data = $.extend({},data,check[0])
+						data.outsourceTask = data.orderOutSource.outsourceTask;
 						returnOrder.update({
 							data: data,
 						})
@@ -76,10 +76,10 @@ layui.config({
 			},
 			cols:[[
 			       { type:'checkbox',},
-			       { title:'退货数量',   field:'returnNumber',	},
 			       { title:'退货日期',   field:'returnTime',   },
-			       { title:'退货原因',   field:'returnRemark', 	},
 			       { title:'退货工序',   field:'outsourceTaskIds',templet: getProcess(),	},
+			       { title:'退货数量',   field:'returnNumber',	},
+			       { title:'退货原因',   field:'returnRemark', 	},
 			       ]]
 		})
 		function getProcess(){
