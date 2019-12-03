@@ -235,7 +235,43 @@ public class RecruitAction {
 	}
 
 	/**
+	 * 部门留存率分析
+	 * 
+	 * @param request
+	 *            请求
+	 * @return cr
+	 * @throws Exception
+	 */
+	@RequestMapping(value = "/personnel/quitOrgName", method = RequestMethod.GET)
+	@ResponseBody
+	public CommonResponse orgName(HttpServletRequest request, Recruit recruit) {
+		CommonResponse cr = new CommonResponse();
+		List<Map<String, Object>> list = service.orgName(recruit);
+		cr.setData(clearCascadeJSONUser.format(list).toJSON());
+		cr.setMessage("查询成功");
+		return cr;
+	}
+
+	/**
 	 * 汇总分析
+	 * 
+	 * @param request
+	 *            请求
+	 * @return cr
+	 * @throws Exception
+	 */
+	@RequestMapping(value = "/personnel/quitDeposit", method = RequestMethod.GET)
+	@ResponseBody
+	public CommonResponse quitDeposit(HttpServletRequest request, Recruit recruit) {
+		CommonResponse cr = new CommonResponse();
+		List<Map<String, Object>> list = service.quitDeposit(recruit);
+		cr.setData(clearCascadeJSONUser.format(list).toJSON());
+		cr.setMessage("查询成功");
+		return cr;
+	}
+	
+	/**
+	 * 图标汇总分析
 	 * 
 	 * @param request
 	 *            请求
@@ -251,7 +287,7 @@ public class RecruitAction {
 		cr.setMessage("查询成功");
 		return cr;
 	}
-
+	
 	/**
 	 * 查询录取人
 	 * 

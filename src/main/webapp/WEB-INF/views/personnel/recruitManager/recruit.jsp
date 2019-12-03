@@ -30,9 +30,6 @@
 									<option value="1">通过</option>
 							</select></td>
 							<td>&nbsp;&nbsp;</td>
-							<td>电话查询:</td>
-							<td><input type="text" name="phone" class="layui-input" style="width:212px;" /></td>
-							<td>&nbsp;&nbsp;</td>
 							<td>平台:</td>
 							<td><select class="form-control"  name="platformId" lay-search="true" id="platform"></select></td>
 							<td>&nbsp;&nbsp;</td>
