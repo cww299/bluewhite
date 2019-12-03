@@ -190,6 +190,7 @@ layui.config({
 			curd:{
 				btn:[4],
 				otherBtn:function(obj){
+					var check = layui.table.checkStatus('tableData').data;
 					if(obj.event=='audit'){
 						myutil.deleTableIds({
 							url:'/ledger/auditOrderOutSource',
@@ -205,7 +206,6 @@ layui.config({
 					}else if(obj.event=='print'){
 						printWin();
 					}else if(obj.event=="edit"){
-						var check = layui.table.checkStatus('tableData').data;
 						if(check.length!=1)
 							return myutil.emsg('只能选择一条数据编辑！');
 						outOrderModel.update({
@@ -215,12 +215,17 @@ layui.config({
 							}
 						});
 					}else if(obj.event=='returnOrder'){
-						var check = layui.table.checkStatus('tableData').data;
 						if(check.length!=1)
 							return myutil.emsg('只能选择一条数据编辑！');
 						returnOrder.add({
 							data: check[0],
 						})
+					}else if(obj.event=='addBill'){
+						if(check.length!=1)
+							return myutil.emsg('只能选择一条数据生成账单！');
+						if(check[0].chargeOff)
+							return myutil.emsg('该数据已生产账单，请勿重复添加！');
+						addBill(check[0]);
 					}
 				},
 			},
@@ -230,6 +235,7 @@ layui.config({
 					 '<span class="layui-btn layui-btn-sm" lay-event="print">打印</span>',
 			         '<span class="layui-btn layui-btn-sm layui-btn-warm" lay-event="audit">审核</span>',
 			         '<span class="layui-btn layui-btn-sm layui-btn-normal" lay-event="returnOrder">退货单</span>',
+			         '<span class="layui-btn layui-btn-sm layui-btn-primary" lay-event="addBill">生成账单</span>',
 			         ].join(' '),
 			cols:[[
 			       { type:'checkbox',},
@@ -277,6 +283,9 @@ layui.config({
 					wind.print();
 				},
 			})
+		}
+		function addBill(data){
+			var sum = myutil.getDataSync({ url:'${ctx}/ledger/mixOutSoureRefund?id='+data.id, });
 		}
 	}//end define function
 )//endedefine
