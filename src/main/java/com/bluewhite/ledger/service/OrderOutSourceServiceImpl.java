@@ -73,6 +73,7 @@ public class OrderOutSourceServiceImpl extends BaseServiceImpl<OrderOutSource, L
 				throw new ServiceException("当前下单合同备料不足，无法进行外发");
 			}
 			List<OrderOutSource> orderOutSourceList = dao.findByOrderId(orderOutSource.getOrderId());
+			save(orderOutSource);
 			// 将工序任务变成set存入，存在退货情况是，要去除退货数量
 			if (!StringUtils.isEmpty(orderOutSource.getOutsourceTaskIds())) {
 				String[] idStrings = orderOutSource.getOutsourceTaskIds().split(",");
@@ -289,8 +290,6 @@ public class OrderOutSourceServiceImpl extends BaseServiceImpl<OrderOutSource, L
 	public void saveOutSoureBills(OrderOutSource orderOutSource) {
 		// 生成账单
 		Consumption consumption = new Consumption();
-		// 加工单工序对应价格
-		List<ProcessPrice> processPriceList = processPriceDao.findByOrderOutSourceId(orderOutSource.getId());
 		OrderOutSource ot = dao.findOne(orderOutSource.getId());
 		consumption.setOrderOutSourceId(orderOutSource.getId());
 		//外发加工对账单
@@ -338,6 +337,7 @@ public class OrderOutSourceServiceImpl extends BaseServiceImpl<OrderOutSource, L
 			}
 			//工序数量
 			map.put("number",returnNumber);
+			mixList.add(map);
 		});
 		return mixList;
 	}
