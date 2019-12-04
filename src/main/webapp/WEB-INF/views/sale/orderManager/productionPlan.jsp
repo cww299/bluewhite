@@ -61,7 +61,7 @@
 			<td><input type="text" id="bacthNumber" class="layui-input" ></td>
 			<td>&nbsp;&nbsp;</td>
 			<td>订单备注：</td>
-			<td><input type="text" id="orderRemak" class="layui-input" ></td>
+			<td><input type="text" id="orderRemark" class="layui-input" ></td>
 			<td>&nbsp;&nbsp;</td>
 			<td>订单数量：</td>
 			<td style="width:80px;"><input type="text" id="orderNumber" value="0" readonly class="layui-input" ></td>
@@ -162,7 +162,7 @@
 	<div class="layui-item" pane id="editOrderDate">
 		<label class="layui-form-label">下单时间</label>
 		<div class="layui-input-block">
-			<input class="layui-input" name="remark" id="editOrderDateInput" value="{{d.orderDate || ''}}">
+			<input class="layui-input" name="orderDate" id="editOrderDateInput" value="{{d.orderDate || ''}}">
 		</div>
 	</div>
 	<p style="display:none;"><button lay-submit lay-filter="sureEdit" id="sureEdit">确定</button></p>
