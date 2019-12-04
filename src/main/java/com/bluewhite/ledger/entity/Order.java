@@ -162,7 +162,21 @@ public class Order extends BaseEntity<Long> {
 	@Transient
 	private String productNumber;
 	
+	/**
+	 * 需要删除的子单
+	 */
+	@Transient
+	private String deleteIds;
 	
+	
+
+	public String getDeleteIds() {
+		return deleteIds;
+	}
+
+	public void setDeleteIds(String deleteIds) {
+		this.deleteIds = deleteIds;
+	}
 
 	public String getOrderNumber() {
 		return orderNumber;

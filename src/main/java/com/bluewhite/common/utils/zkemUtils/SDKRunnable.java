@@ -28,7 +28,7 @@ public class SDKRunnable implements Runnable {
 		try {
 			System.out.println("Thread开始====3秒等待设备实时事件");
 			Thread.sleep(3000);
-			regEvent();
+//			regEvent(sdk,zkem);
 		} catch (Exception e) {
 			log.error("线程异常，结束");
 		}
@@ -37,11 +37,9 @@ public class SDKRunnable implements Runnable {
 	/**
 	 * 线程任务
 	 */
-	private void regEvent() {
-		ZkemSDKRealTime sdk = new ZkemSDKRealTime();
-		ActiveXComponent zkem = sdk.initSTA(address);
+	private void regEvent(ZkemSDKRealTime sdk, ActiveXComponent zkem) {
 		sdk.connect(address, zkem);
-		timerTask(sdk, zkem);
+		timerTask();
 		sdk.regEvent(zkem);
 	}
 
@@ -51,7 +49,9 @@ public class SDKRunnable implements Runnable {
 	 * @param sdk
 	 * @param zkem
 	 */
-	private void timerTask(ZkemSDKRealTime sdk, ActiveXComponent zkem) {
+	private void timerTask() {
+		ZkemSDKRealTime sdk = new ZkemSDKRealTime();
+		ActiveXComponent zkem = sdk.initSTA(address);
 		Calendar c = Calendar.getInstance();
 		Date time = c.getTime();
 		Timer timer = new Timer();
@@ -61,6 +61,7 @@ public class SDKRunnable implements Runnable {
 				String ip = sdk.GetDeviceIP(1, zkem);
 				if (ip == null) {
 					System.out.println(address + "考勤机设备异常，重连中-------");
+					
 					timer.cancel();
 				}
 			}
