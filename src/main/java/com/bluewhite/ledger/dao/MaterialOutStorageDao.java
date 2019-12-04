@@ -5,6 +5,8 @@ import com.bluewhite.ledger.entity.MaterialOutStorage;
 import java.lang.Long;
 import java.util.List;
 
+import org.springframework.data.jpa.repository.Query;
+
 public interface MaterialOutStorageDao extends BaseRepository<MaterialOutStorage, Long>{
 	
 	/**
@@ -12,7 +14,8 @@ public interface MaterialOutStorageDao extends BaseRepository<MaterialOutStorage
 	 * @param materialputstorageid
 	 * @return
 	 */
-	List<MaterialOutStorage> findByMaterialPutStorageId(Long materialputstorageid);
+	@Query(nativeQuery=true,value ="SELECT s FROM ledger_put_out_material_storage s WHERE s.material_put_storage_id = ?1")
+	List<MaterialOutStorage> findMaterialPutStorageId(Long materialputstorageid);
 
 
 }
