@@ -173,7 +173,6 @@ public class OrderServiceImpl extends BaseServiceImpl<Order, Long> implements Or
 			throw new ServiceException("批次号为" + ot.getBacthNumber() + "下单合同已审核，无法修改");
 		}
 		BeanCopyUtils.copyNotEmpty(order, ot, "");
-		ot.getOrderChilds().clear();
 		// 新增子单
 		if (!StringUtils.isEmpty(ot.getOrderChild())) {
 			JSONArray jsonArray = JSON.parseArray(ot.getOrderChild());
@@ -187,7 +186,8 @@ public class OrderServiceImpl extends BaseServiceImpl<Order, Long> implements Or
 				orderChild.setUserId(jsonObject.getLong("userId"));
 				orderChild.setChildNumber(jsonObject.getInteger("childNumber"));
 				orderChild.setChildRemark(jsonObject.getString("childRemark"));
-				ot.getOrderChilds().add(orderChild);
+				orderChild.setOrderId(order.getId());
+				orderChildDao.save(orderChild);
 			}
 		}
 		dao.save(ot);
