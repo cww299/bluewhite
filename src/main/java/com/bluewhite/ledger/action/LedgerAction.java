@@ -375,7 +375,7 @@ public class LedgerAction {
 	 * 
 	 * @return cr
 	 */
-	@RequestMapping(value = "/ledger/deleteOrderChild", method = RequestMethod.GET)
+	@RequestMapping(value = "/ledger/deleteOrderChild",  method = RequestMethod.GET)
 	@ResponseBody
 	public CommonResponse deleteOrderChild(String ids) {
 		CommonResponse cr = new CommonResponse();
@@ -1128,7 +1128,7 @@ public class LedgerAction {
 	 * 
 	 * @return
 	 */
-	@RequestMapping(value = "/ledger/inventory/deleteOutStorage", method = RequestMethod.POST)
+	@RequestMapping(value = "/ledger/inventory/deleteOutStorage", method = RequestMethod.GET)
 	@ResponseBody
 	public CommonResponse deleteOutStorage(String ids) {
 		CommonResponse cr = new CommonResponse();
