@@ -126,7 +126,7 @@ public class OrderServiceImpl extends BaseServiceImpl<Order, Long> implements Or
 			JSONArray jsonArray = JSON.parseArray(order.getOrderChild());
 			for (int i = 0; i < jsonArray.size(); i++) {
 				JSONObject jsonObject = jsonArray.getJSONObject(i);
-				OrderChild orderChild = new OrderChild(); 
+				OrderChild orderChild = new OrderChild();
 				orderChild.setCustomerId(jsonObject.getLong("customerId"));
 				orderChild.setUserId(jsonObject.getLong("userId"));
 				orderChild.setChildNumber(jsonObject.getInteger("childNumber"));
@@ -173,12 +173,16 @@ public class OrderServiceImpl extends BaseServiceImpl<Order, Long> implements Or
 			throw new ServiceException("批次号为" + ot.getBacthNumber() + "下单合同已审核，无法修改");
 		}
 		BeanCopyUtils.copyNotEmpty(order, ot, "");
+		ot.getOrderChilds().clear();
 		// 新增子单
 		if (!StringUtils.isEmpty(ot.getOrderChild())) {
 			JSONArray jsonArray = JSON.parseArray(ot.getOrderChild());
 			for (int i = 0; i < jsonArray.size(); i++) {
 				JSONObject jsonObject = jsonArray.getJSONObject(i);
 				OrderChild orderChild = orderChildDao.findOne(jsonObject.getLong("id"));
+				if (orderChild == null) {
+					orderChild = new OrderChild();
+				}
 				orderChild.setCustomerId(jsonObject.getLong("customerId"));
 				orderChild.setUserId(jsonObject.getLong("userId"));
 				orderChild.setChildNumber(jsonObject.getInteger("childNumber"));
@@ -187,7 +191,8 @@ public class OrderServiceImpl extends BaseServiceImpl<Order, Long> implements Or
 			}
 		}
 		dao.save(ot);
-		if(!StringUtils.isEmpty(order.getDeleteIds())){
+
+		if (!StringUtils.isEmpty(order.getDeleteIds())) {
 			deleteOrderChild(order.getDeleteIds());
 		}
 	}
