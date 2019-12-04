@@ -61,7 +61,7 @@ public class PutStorage extends BaseEntity<Long> {
 	private OrderOutSource orderOutSource;
 
 	/**
-	 * 入库单的订单状态 （1=生产入库） （2=调拨入库） （3=退货入库 ） （4=换货入库 ） （5=采购入库） （6=盘亏入库）
+	 * 入库单的订单状态 （1=生产入库）（2=采购入库） （3=调拨入库） （4=退货入库 ） （5=换货入库 ）  （6=盘亏入库）
 	 */
 	@Column(name = "in_status")
 	private Integer inStatus;
