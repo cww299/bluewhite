@@ -210,21 +210,9 @@ public class OrderOutSourceServiceImpl extends BaseServiceImpl<OrderOutSource, L
 		if (ot.getAudit() == 1) {
 			throw new ServiceException("已审核，无法修改");
 		}
-		
-		//当修改了多对多的情况，进行比对修改
-		Set<BaseData> outsourceTask = new HashSet<BaseData>();
-		if (!StringUtils.isEmpty(orderOutSource.getOutsourceTaskIds())) {
-			String[] idStrings = orderOutSource.getOutsourceTaskIds().split(",");
-			if (idStrings.length > 0) {
-				for (String ids : idStrings) {
-					Long id = Long.parseLong(ids);
-					BaseData baseData = baseDataDao.findOne(id);
-					outsourceTask.add(baseData);
-				}
-			}
-		}
-		
 		BeanCopyUtils.copyNotEmpty(orderOutSource, ot, "");
+		ot.getOutsourceTask().clear();
+		save(ot);
 		Order order = orderDao.findOne(ot.getOrderId());
 		List<OrderOutSource> orderOutSourceList = dao.findByOrderId(ot.getOrderId());
 		// 将工序任务变成set存入
