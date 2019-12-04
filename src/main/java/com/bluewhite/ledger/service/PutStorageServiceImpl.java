@@ -68,8 +68,7 @@ public class PutStorageServiceImpl extends BaseServiceImpl<PutStorage, Long> imp
 			}
 			// 按库位
 			if (param.getStorageLocationId() != null) {
-				predicate.add(
-						cb.equal(root.get("storageLocation").get("id").as(Long.class), param.getStorageLocationId()));
+				predicate.add(cb.equal(root.get("storageLocation").get("id").as(Long.class), param.getStorageLocationId()));
 			}
 			// 按到货日期
 			if (!StringUtils.isEmpty(param.getOrderTimeBegin()) && !StringUtils.isEmpty(param.getOrderTimeEnd())) {

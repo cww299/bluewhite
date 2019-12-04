@@ -135,7 +135,7 @@ public class ProductAction {
 	/**
 	 * 仓库查看库存
 	 */
-	@RequestMapping(value = "/inventory/getProductPages", method = RequestMethod.GET)
+	@RequestMapping(value = "/inventory/productPages", method = RequestMethod.GET)
 	@ResponseBody
 	public CommonResponse getProductPages(PageParameter page, Product product) {
 		CommonResponse cr = new CommonResponse();
@@ -144,7 +144,7 @@ public class ProductAction {
 				.addRetainTerm(Inventory.class, "id", "number", "warehouse", "warehouseType")
 				.addRetainTerm(OrderOutSource.class, "id", "surplusNumber","location")
 				.addRetainTerm(BaseData.class, "id", "name")
-				.format(productService.findPages(product, page)).toJSON());
+				.format(productService.inventoryFindPages(product, page)).toJSON());
 		cr.setMessage("查询成功");
 		return cr;
 	}
