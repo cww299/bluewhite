@@ -83,6 +83,9 @@
 							<td><select class="form-control" name="positionId" lay-search="true" id="positionss">
 									
 							</select></td>
+							<td>&nbsp;&nbsp;</td>
+							<td>电话:</td>
+							<td><input type="text" name="phone" id="phone" class="layui-input" style="width:212px;" /></td>
 							<!-- <td>&nbsp;&nbsp;</td>
 							<td><input type="checkbox" name="like[write]" lay-filter="lockDemo" title="入职在职"></td> -->
 					</tr>
