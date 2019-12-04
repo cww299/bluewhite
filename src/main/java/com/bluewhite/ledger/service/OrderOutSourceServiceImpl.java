@@ -23,7 +23,6 @@ import com.bluewhite.common.BeanCopyUtils;
 import com.bluewhite.common.ServiceException;
 import com.bluewhite.common.entity.PageParameter;
 import com.bluewhite.common.entity.PageResult;
-import com.bluewhite.common.utils.NumUtils;
 import com.bluewhite.common.utils.StringUtil;
 import com.bluewhite.finance.consumption.dao.ConsumptionDao;
 import com.bluewhite.finance.consumption.entity.Consumption;
@@ -31,18 +30,13 @@ import com.bluewhite.ledger.dao.MaterialRequisitionDao;
 import com.bluewhite.ledger.dao.OrderDao;
 import com.bluewhite.ledger.dao.OrderOutSourceDao;
 import com.bluewhite.ledger.dao.ProcessPriceDao;
-import com.bluewhite.ledger.dao.PutStorageDao;
 import com.bluewhite.ledger.dao.RefundBillsDao;
 import com.bluewhite.ledger.entity.MaterialRequisition;
 import com.bluewhite.ledger.entity.Order;
 import com.bluewhite.ledger.entity.OrderOutSource;
 import com.bluewhite.ledger.entity.ProcessPrice;
-import com.bluewhite.ledger.entity.PutStorage;
 import com.bluewhite.ledger.entity.RefundBills;
 import com.bluewhite.onlineretailers.inventory.dao.InventoryDao;
-import com.bluewhite.onlineretailers.inventory.entity.Inventory;
-import com.bluewhite.onlineretailers.inventory.service.InventoryService;
-import com.bluewhite.product.product.entity.Product;
 
 @Service
 public class OrderOutSourceServiceImpl extends BaseServiceImpl<OrderOutSource, Long> implements OrderOutSourceService {
@@ -112,6 +106,7 @@ public class OrderOutSourceServiceImpl extends BaseServiceImpl<OrderOutSource, L
 				}
 			}
 			orderOutSource.setAudit(0);
+			orderOutSource.setChargeOff(0);
 			save(orderOutSource);
 		} else {
 			throw new ServiceException("生产下单合同不能为空");
@@ -291,6 +286,9 @@ public class OrderOutSourceServiceImpl extends BaseServiceImpl<OrderOutSource, L
 		// 生成账单
 		Consumption consumption = new Consumption();
 		OrderOutSource ot = dao.findOne(orderOutSource.getId());
+		if(ot.getChargeOff()==1){
+			throw new ServiceException("账单已生成，请勿多次申请");
+		}
 		consumption.setOrderOutSourceId(orderOutSource.getId());
 		//外发加工对账单
 		consumption.setType(10);
@@ -301,8 +299,10 @@ public class OrderOutSourceServiceImpl extends BaseServiceImpl<OrderOutSource, L
 		//申请金额
 		consumption.setMoney(orderOutSource.getMoney());
 		//申请日期
-		consumption.setExpenseDate(new Date());
+		consumption.setExpenseDate(orderOutSource.getExpenseDate());
 		consumptionDao.save(consumption);
+		ot.setChargeOff(1);
+		save(ot);
 	}
 
 	@Override
