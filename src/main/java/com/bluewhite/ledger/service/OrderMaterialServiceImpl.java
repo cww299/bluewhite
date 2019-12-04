@@ -149,7 +149,7 @@ public class OrderMaterialServiceImpl extends BaseServiceImpl<OrderMaterial, Lon
 								}
 							});
 						} else {
-							throw new ServiceException("当前产品暂无面料，请联系相关人员添加");
+							throw new ServiceException("当前产品暂无物料，请联系相关人员添加");
 						}
 						// 将辅料的耗料添加
 						List<ProductMaterials> productMaterialsList = productMaterialsService

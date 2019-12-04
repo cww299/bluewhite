@@ -131,7 +131,13 @@ public class Constants {
     public final static String  SCHL = "SCHL";
     //生产领料
     public final static String  SCLL = "SCLL";
-    //耗料出库
-    public final static String  HLCK = "HLCK";
-
+    //物料出库
+    public final static String  WLCK = "WLCK";
+    //物料入库
+    public final static String  WLRK = "WLRK";
+    //成品出库
+    public final static String  CPCK = "CPCK";
+    //成品入库
+    public final static String  CPRK = "CPRK";
+    
 }

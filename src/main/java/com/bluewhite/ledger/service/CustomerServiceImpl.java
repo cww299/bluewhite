@@ -78,7 +78,11 @@ public class CustomerServiceImpl extends BaseServiceImpl<Customer, Long> impleme
 			String[] idStrings = ids.split(",");
 			for (String id : idStrings) {
 				Long idLong = Long.valueOf(id);
-				dao.delete(idLong);
+				try {
+					dao.delete(idLong);
+				} catch (Exception e) {
+					throw new ServiceException("第"+(count+1)+"位客户存在数据关联，无法删除");
+				}
 				count++;
 			}
 		}
@@ -86,11 +90,11 @@ public class CustomerServiceImpl extends BaseServiceImpl<Customer, Long> impleme
 	}
 
 	@Override
+	@Transactional
 	public void saveCustomer(Customer customer) {
 		if (customer.getId() != null) {
 			Customer ot = dao.findOne(customer.getId());
-			BeanCopyUtils.copyNotEmpty(customer, ot, "");
-			dao.save(ot);
+			update(customer, ot, "");
 		} else {
 			if (dao.findByPhone(customer.getPhone()) != null) {
 				throw new ServiceException("客户手机号已存在，请勿重复添加");
@@ -137,7 +141,6 @@ public class CustomerServiceImpl extends BaseServiceImpl<Customer, Long> impleme
 			if (param.getUserId() != null) {
 				predicate.add(cb.equal(root.get("userId").as(Long.class), param.getUserId()));
 			}
-
 			Predicate[] pre = new Predicate[predicate.size()];
 			query.where(predicate.toArray(pre));
 			return null;

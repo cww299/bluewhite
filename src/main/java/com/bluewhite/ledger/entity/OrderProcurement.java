@@ -75,12 +75,6 @@ public class OrderProcurement extends BaseEntity<Long> {
 	private Double conventionSquareGram;
 	
 	/**
-	 * 实际平方克重
-	 */
-	@Column(name = "square_gram")
-	private Double squareGram;
-
-	/**
 	 * 下单数量
 	 */
 	@Column(name = "place_order_number")
@@ -138,7 +132,6 @@ public class OrderProcurement extends BaseEntity<Long> {
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "user_id", referencedColumnName = "id", insertable = false, updatable = false)
 	private User user;
-
 	
 	/**
 	 * 根据客户来的新编号
@@ -150,48 +143,16 @@ public class OrderProcurement extends BaseEntity<Long> {
 	 * 是否审核（0=未审核，1=已审核）审核成功后 物料仓库查看
 	 */
 	@Column(name = "audit")
-	private Integer audit;
+	private Integer audit; 
 	
 	/****物料仓库参数****/
 	
 	/**
-	 * 是否验货
-	 */
-	@Column(name = "inspection")
-	private Integer inspection;
-	
-	/**
-	 * 是否到货（0=否，1=是）
+	 * 是否全部到货（0=否，1=是）
 	 */
 	@Column(name = "arrival")
 	private Integer arrival;
 	
-	/**
-	 * 到货日期
-	 */
-	@Column(name = "arrival_time")
-	private Date arrivalTime;
-
-	/**
-	 * 到货数量
-	 */
-	@Column(name = "arrival_number")
-	private Double arrivalNumber;
-	
-	/**
-	 * 入库操作人id
-	 * 
-	 */
-	@Column(name = "user_storage_id")
-	private Long userStorageId;
-
-	/**
-	 * 入库操作人
-	 */
-	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "user_storage_id", referencedColumnName = "id", insertable = false, updatable = false)
-	private User userStorage;
-
 	/**
 	 * 入库库存是否有出入(0=否，1=是)
 	 */
@@ -199,11 +160,16 @@ public class OrderProcurement extends BaseEntity<Long> {
 	private Integer inOutError;
 	
 	/**
-	 * 库位
-	 * 
+	 * 实际到货日期
 	 */
-	@Column(name = "materiel_location")
-	private String materielLocation;
+	@Column(name = "arrival_time")
+	private Date arrivalTime;
+	
+	/**
+	 * 入库数量
+	 */
+	@Column(name = "arrival_number")
+	private Double arrivalNumber;
 	
 	/**
 	 * 	到货接收状态
@@ -215,24 +181,6 @@ public class OrderProcurement extends BaseEntity<Long> {
 	 */
 	@Column(name = "arrival_status")
 	private Integer arrivalStatus;
-	
-	/**
-	 * 退货数量
-	 */
-	@Column(name = "return_number")
-	private Double returnNumber;
-	
-	/**
-	 * 退货日期
-	 */
-	@Column(name = "return_time")
-	private Date returnTime;
-	
-	/**
-	 * 退货原因
-	 */
-	@Column(name = "return_remark")
-	private String returnRemark;
 	
 	/**
 	 * 是否加急补货
@@ -325,6 +273,22 @@ public class OrderProcurement extends BaseEntity<Long> {
 	
 	
 
+	public Double getArrivalNumber() {
+		return arrivalNumber;
+	}
+
+	public void setArrivalNumber(Double arrivalNumber) {
+		this.arrivalNumber = arrivalNumber;
+	}
+
+	public Date getArrivalTime() {
+		return arrivalTime;
+	}
+
+	public void setArrivalTime(Date arrivalTime) {
+		this.arrivalTime = arrivalTime;
+	}
+
 	public static double getInterestday() {
 		return interestDay;
 	}
@@ -345,28 +309,12 @@ public class OrderProcurement extends BaseEntity<Long> {
 		this.arrivalStatus = arrivalStatus;
 	}
 
-	public Date getReturnTime() {
-		return returnTime;
-	}
-
-	public void setReturnTime(Date returnTime) {
-		this.returnTime = returnTime;
-	}
-
 	public Double getPartDelayPrice() {
 		return partDelayPrice;
 	}
 
 	public void setPartDelayPrice(Double partDelayPrice) {
 		this.partDelayPrice = partDelayPrice;
-	}
-
-	public Double getReturnNumber() {
-		return returnNumber;
-	}
-
-	public void setReturnNumber(Double returnNumber) {
-		this.returnNumber = returnNumber;
 	}
 
 	public Double getPartDelayNumber() {
@@ -417,14 +365,6 @@ public class OrderProcurement extends BaseEntity<Long> {
 		this.conventionSquareGram = conventionSquareGram;
 	}
 
-	public Integer getInspection() {
-		return inspection;
-	}
-
-	public void setInspection(Integer inspection) {
-		this.inspection = inspection;
-	}
-
 	public Double getPaymentMoney() {
 		return paymentMoney;
 	}
@@ -463,22 +403,6 @@ public class OrderProcurement extends BaseEntity<Long> {
 
 	public void setCustomerName(String customerName) {
 		this.customerName = customerName;
-	}
-
-	public Long getUserStorageId() {
-		return userStorageId;
-	}
-
-	public void setUserStorageId(Long userStorageId) {
-		this.userStorageId = userStorageId;
-	}
-
-	public User getUserStorage() {
-		return userStorage;
-	}
-
-	public void setUserStorage(User userStorage) {
-		this.userStorage = userStorage;
 	}
 
 	public Integer getInOutError() {
@@ -529,14 +453,6 @@ public class OrderProcurement extends BaseEntity<Long> {
 		this.newCode = newCode;
 	}
 
-	public Double getSquareGram() {
-		return squareGram;
-	}
-
-	public void setSquareGram(Double squareGram) {
-		this.squareGram = squareGram;
-	}
-
 	public Date getExpectArrivalTime() {
 		return expectArrivalTime;
 	}
@@ -585,14 +501,6 @@ public class OrderProcurement extends BaseEntity<Long> {
 		this.materiel = materiel;
 	}
 
-	public String getMaterielLocation() {
-		return materielLocation;
-	}
-
-	public void setMaterielLocation(String materielLocation) {
-		this.materielLocation = materielLocation;
-	}
-
 	public Double getPrice() {
 		return price;
 	}
@@ -603,14 +511,6 @@ public class OrderProcurement extends BaseEntity<Long> {
 
 	public Double getPlaceOrderNumber() {
 		return placeOrderNumber;
-	}
-
-	public Double getArrivalNumber() {
-		return arrivalNumber;
-	}
-
-	public void setArrivalNumber(Double arrivalNumber) {
-		this.arrivalNumber = arrivalNumber;
 	}
 
 	public void setPlaceOrderNumber(Double placeOrderNumber) {
@@ -657,14 +557,6 @@ public class OrderProcurement extends BaseEntity<Long> {
 		this.placeOrderTime = placeOrderTime;
 	}
 
-	public Date getArrivalTime() {
-		return arrivalTime;
-	}
-
-	public void setArrivalTime(Date arrivalTime) {
-		this.arrivalTime = arrivalTime;
-	}
-
 	public Long getCustomerId() {
 		return customerId;
 	}
@@ -680,14 +572,5 @@ public class OrderProcurement extends BaseEntity<Long> {
 	public void setCustomer(Customer customer) {
 		this.customer = customer;
 	}
-
-	public String getReturnRemark() {
-		return returnRemark;
-	}
-
-	public void setReturnRemark(String returnRemark) {
-		this.returnRemark = returnRemark;
-	}
-	
 
 }

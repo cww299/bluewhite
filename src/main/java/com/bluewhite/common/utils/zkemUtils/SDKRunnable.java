@@ -5,15 +5,20 @@ import java.util.Date;
 import java.util.Timer;
 import java.util.TimerTask;
 
+import com.bluewhite.common.Log;
+import com.bluewhite.common.MyExceptionHandlerExceptionResolver;
 import com.jacob.activeX.ActiveXComponent;
 
 public class SDKRunnable implements Runnable {
 
+	private static final Log log = Log.getLog(SDKRunnable.class);
+	
 	private String address;
 
 	public SDKRunnable(String address) {
 		this.address = address;
 	}
+	
 
 	/**
 	 * 线程内每隔一分钟去读取实时事件，失败则重连当前设备
@@ -22,11 +27,10 @@ public class SDKRunnable implements Runnable {
 	public void run() {
 		try {
 			System.out.println("Thread开始====3秒等待设备实时事件");
-			regEvent();
 			Thread.sleep(3000);
-		} catch (Exception e) {
-			System.out.println("线程异常，结束---");
 			regEvent();
+		} catch (Exception e) {
+			log.error("线程异常，结束");
 		}
 	}
 
@@ -37,7 +41,7 @@ public class SDKRunnable implements Runnable {
 		ZkemSDKRealTime sdk = new ZkemSDKRealTime();
 		ActiveXComponent zkem = sdk.initSTA(address);
 		sdk.connect(address, zkem);
-		timer(sdk, zkem);
+		timerTask(sdk, zkem);
 		sdk.regEvent(zkem);
 	}
 
@@ -47,7 +51,7 @@ public class SDKRunnable implements Runnable {
 	 * @param sdk
 	 * @param zkem
 	 */
-	private void timer(ZkemSDKRealTime sdk, ActiveXComponent zkem) {
+	private void timerTask(ZkemSDKRealTime sdk, ActiveXComponent zkem) {
 		Calendar c = Calendar.getInstance();
 		Date time = c.getTime();
 		Timer timer = new Timer();
@@ -57,8 +61,7 @@ public class SDKRunnable implements Runnable {
 				String ip = sdk.GetDeviceIP(1, zkem);
 				if (ip == null) {
 					System.out.println(address + "考勤机设备异常，重连中-------");
-					boolean result = sdk.connect(address, zkem);
-					sdk.regEvent(zkem);
+					timer.cancel();
 				}
 			}
 		}, time, 60000);// 这里设定将延时每隔一分钟执行一次

@@ -12,6 +12,7 @@ import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 
 import com.bluewhite.base.BaseEntity;
 import com.bluewhite.basedata.entity.BaseData;
@@ -37,7 +38,7 @@ public class RefundBills extends BaseEntity<Long>{
 	 */
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "order_outSource_Id", referencedColumnName = "id", insertable = false, updatable = false)
-	private OrderOutSource OrderOutSource;
+	private OrderOutSource orderOutSource;
 	
 	/**
 	 * 生产计划单id
@@ -71,8 +72,61 @@ public class RefundBills extends BaseEntity<Long>{
 	@Column(name = "return_remark")
 	private String returnRemark;
 	
+	/**
+	 * 工序ids
+	 */
+	@Transient
+	private String outsourceTaskIds;
+	
+	/**
+	 * 查询字段
+	 */
+	@Transient
+	private Date orderTimeBegin;
+	/**
+	 * 查询字段
+	 */
+	@Transient
+	private Date orderTimeEnd;
+	/**
+	 * 查询字段
+	 */
+	@Transient
+	private String orderName;
 	
 	
+
+	public String getOrderName() {
+		return orderName;
+	}
+
+	public void setOrderName(String orderName) {
+		this.orderName = orderName;
+	}
+
+	public String getOutsourceTaskIds() {
+		return outsourceTaskIds;
+	}
+
+	public void setOutsourceTaskIds(String outsourceTaskIds) {
+		this.outsourceTaskIds = outsourceTaskIds;
+	}
+
+	public Date getOrderTimeBegin() {
+		return orderTimeBegin;
+	}
+
+	public void setOrderTimeBegin(Date orderTimeBegin) {
+		this.orderTimeBegin = orderTimeBegin;
+	}
+
+	public Date getOrderTimeEnd() {
+		return orderTimeEnd;
+	}
+
+	public void setOrderTimeEnd(Date orderTimeEnd) {
+		this.orderTimeEnd = orderTimeEnd;
+	}
 
 	public Long getOrderId() {
 		return orderId;
@@ -99,11 +153,11 @@ public class RefundBills extends BaseEntity<Long>{
 	}
 
 	public OrderOutSource getOrderOutSource() {
-		return OrderOutSource;
+		return orderOutSource;
 	}
 
 	public void setOrderOutSource(OrderOutSource orderOutSource) {
-		OrderOutSource = orderOutSource;
+		this.orderOutSource = orderOutSource;
 	}
 
 	public Integer getReturnNumber() {

@@ -51,5 +51,12 @@ public interface OrderService extends BaseCRUDService<Order,Long>{
 	 */
 	public int auditOrder(String ids);
 	
+	/**
+	 * 删除子单
+	 * @param ids
+	 * @return
+	 */
+	public int deleteOrderChild(String ids);
+	
 	
 }

@@ -43,7 +43,6 @@ public class FormLoginFilter extends PathMatchingFilter {
 	}
 
 	private void saveRequestAndRedirectToLogin(HttpServletRequest req, HttpServletResponse resp) throws IOException {
-//		WebUtils.saveRequest(req);
 		WebUtils.issueRedirect(req, resp, loginUrlJsp);
 	}
 

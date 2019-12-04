@@ -30,6 +30,7 @@
 <script type="text/html" id="addEditTpl">
 	<form class="layui-form" style="padding:10px;">
 		<input type="hidden" name="id" value="{{d.id}}">
+		<input type="hidden" name="type" value="4">
 		<div class="layui-item">
 			<label class="layui-form-label">供应商名称</label>
 			<div class="layui-input-block">

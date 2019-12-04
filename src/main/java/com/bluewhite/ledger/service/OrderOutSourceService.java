@@ -8,6 +8,7 @@ import com.bluewhite.common.entity.PageParameter;
 import com.bluewhite.common.entity.PageResult;
 import com.bluewhite.ledger.entity.OrderOutSource;
 import com.bluewhite.ledger.entity.ProcessPrice;
+import com.bluewhite.ledger.entity.PutStorage;
 
 public interface OrderOutSourceService extends BaseCRUDService<OrderOutSource, Long> {
 
@@ -41,13 +42,6 @@ public interface OrderOutSourceService extends BaseCRUDService<OrderOutSource, L
 	public void updateOrderOutSource(OrderOutSource orderOutSource);
 
 	/**
-	 * 作废外发单
-	 * @param ids
-	 * @return
-	 */
-	public int invalidOrderOutSource(String ids);
-	
-	/**
 	 * 审核外发单
 	 * @param ids
 	 * @return
@@ -59,14 +53,6 @@ public interface OrderOutSourceService extends BaseCRUDService<OrderOutSource, L
 	 * @param orderOutSource
 	 */
 	public void updateInventoryOrderOutSource(OrderOutSource orderOutSource);
-	
-	/**
-	 *
-	 * （1.成品仓库，2.皮壳仓库）对发外单进行确认回库，增加库存操作
-	 * 
-	 * @return
-	 */
-	public int confirmOrderOutSource(String ids);
 	
 	/**
 	 * （生产计划部）判断是否可以新增加工单
@@ -91,6 +77,8 @@ public interface OrderOutSourceService extends BaseCRUDService<OrderOutSource, L
 	 * @param id
 	 */
 	public void updateProcessPrice(ProcessPrice processPrice);
+	
+
 
 	
 }

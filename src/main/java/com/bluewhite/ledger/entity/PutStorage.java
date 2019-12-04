@@ -8,11 +8,13 @@ import javax.persistence.FetchType;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 
 import com.bluewhite.base.BaseEntity;
 import com.bluewhite.basedata.entity.BaseData;
 import com.bluewhite.onlineretailers.inventory.entity.Inventory;
 import com.bluewhite.product.product.entity.Product;
+import com.bluewhite.system.user.entity.User;
 
 /**
  * 
@@ -24,6 +26,12 @@ import com.bluewhite.product.product.entity.Product;
 @Entity
 @Table(name = "ledger_put_storage")
 public class PutStorage extends BaseEntity<Long> {
+	
+	/**
+	 * 编号
+	 */
+	@Column(name = "serial_number")
+	private String serialNumber;
 
 	/**
 	 * 产品id
@@ -37,25 +45,26 @@ public class PutStorage extends BaseEntity<Long> {
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "product_id", referencedColumnName = "id", insertable = false, updatable = false)
 	private Product product;
+	
+	/**
+	 * 生产入库时会存在加工单
+	 * 加工单id
+	 */
+	@Column(name = "order_outSource_id")
+	private Long orderOutSourceId;
+
+	/**
+	 * 加工单
+	 */
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "order_OutSource_id", referencedColumnName = "id", insertable = false, updatable = false)
+	private OrderOutSource orderOutSource;
 
 	/**
 	 * 入库单的订单状态 （1=生产入库） （2=调拨入库） （3=退货入库 ） （4=换货入库 ） （5=采购入库） （6=盘亏入库）
 	 */
 	@Column(name = "in_status")
 	private Integer inStatus;
-
-	/**
-	 * 仓管指定 入库仓库种类id
-	 */
-	@Column(name = "in_warehouse_type_id")
-	private Long inWarehouseTypeId;
-
-	/**
-	 * 入库仓库种类
-	 */
-	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "in_warehouse_type_id", referencedColumnName = "id", insertable = false, updatable = false)
-	private BaseData inWarehouseType;
 
 	/**
 	 * 仓管指定 入库库存id
@@ -81,18 +90,195 @@ public class PutStorage extends BaseEntity<Long> {
 	 */
 	@Column(name = "arrival_number")
 	private Integer arrivalNumber;
+	
+	/**
+	 * 库区id
+	 */
+	@Column(name = "storage_area_id")
+	private Long storageAreaId;
+	
+	/**
+	 * 库区
+	 */
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "storage_area_id", referencedColumnName = "id", insertable = false, updatable = false)
+	private BaseData storageArea;
 
+	/**
+	 * 库位id
+	 */
+	@Column(name = "storage_location_id")
+	private Long storageLocationId;
+	
 	/**
 	 * 库位
 	 */
-	@Column(name = "location")
-	private String location;
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "storage_location_id", referencedColumnName = "id", insertable = false, updatable = false)
+	private BaseData storageLocation;
+
+	/**
+	 * 入库操作人id
+	 * 
+	 */
+	@Column(name = "user_storage_id")
+	private Long userStorageId;
+
+	/**
+	 * 入库操作人
+	 */
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "user_storage_id", referencedColumnName = "id", insertable = false, updatable = false)
+	private User userStorage;
+	
+	/**
+	 * 仓管指定 入库仓库种类id
+	 */
+	@Column(name = "in_warehouse_type_id")
+	private Long inWarehouseTypeId;
 
 	/**
 	 * 出库后剩余数量
 	 */
-	@Column(name = "surplus_Number")
-	private Integer surplusNumber;
+	@Transient
+	private Double surplusNumber;
+	
+	/**
+	 * 产品名称
+	 */
+	@Transient
+	private String productName;
+	
+	/**
+	 * 产品名编号
+	 */
+	@Transient
+	private String productNumber;
+	
+	/**
+	 * 查询字段
+	 */
+	@Transient
+	private Date orderTimeBegin;
+	/**
+	 * 查询字段
+	 */
+	@Transient
+	private Date orderTimeEnd;
+	
+	
+
+	public String getSerialNumber() {
+		return serialNumber;
+	}
+
+	public void setSerialNumber(String serialNumber) {
+		this.serialNumber = serialNumber;
+	}
+
+	public Date getOrderTimeBegin() {
+		return orderTimeBegin;
+	}
+
+	public void setOrderTimeBegin(Date orderTimeBegin) {
+		this.orderTimeBegin = orderTimeBegin;
+	}
+
+	public Date getOrderTimeEnd() {
+		return orderTimeEnd;
+	}
+
+	public void setOrderTimeEnd(Date orderTimeEnd) {
+		this.orderTimeEnd = orderTimeEnd;
+	}
+
+	public String getProductName() {
+		return productName;
+	}
+
+	public void setProductName(String productName) {
+		this.productName = productName;
+	}
+
+	public String getProductNumber() {
+		return productNumber;
+	}
+
+	public void setProductNumber(String productNumber) {
+		this.productNumber = productNumber;
+	}
+
+	public Long getUserStorageId() {
+		return userStorageId;
+	}
+
+	public void setUserStorageId(Long userStorageId) {
+		this.userStorageId = userStorageId;
+	}
+
+	public User getUserStorage() {
+		return userStorage;
+	}
+
+	public void setUserStorage(User userStorage) {
+		this.userStorage = userStorage;
+	}
+
+	public Double getSurplusNumber() {
+		return surplusNumber;
+	}
+
+	public void setSurplusNumber(Double surplusNumber) {
+		this.surplusNumber = surplusNumber;
+	}
+
+	public Long getStorageAreaId() {
+		return storageAreaId;
+	}
+
+	public void setStorageAreaId(Long storageAreaId) {
+		this.storageAreaId = storageAreaId;
+	}
+
+	public BaseData getStorageArea() {
+		return storageArea;
+	}
+
+	public void setStorageArea(BaseData storageArea) {
+		this.storageArea = storageArea;
+	}
+
+	public Long getStorageLocationId() {
+		return storageLocationId;
+	}
+
+	public void setStorageLocationId(Long storageLocationId) {
+		this.storageLocationId = storageLocationId;
+	}
+
+	public BaseData getStorageLocation() {
+		return storageLocation;
+	}
+
+	public void setStorageLocation(BaseData storageLocation) {
+		this.storageLocation = storageLocation;
+	}
+
+	public Long getOrderOutSourceId() {
+		return orderOutSourceId;
+	}
+
+	public void setOrderOutSourceId(Long orderOutSourceId) {
+		this.orderOutSourceId = orderOutSourceId;
+	}
+
+	public OrderOutSource getOrderOutSource() {
+		return orderOutSource;
+	}
+
+	public void setOrderOutSource(OrderOutSource orderOutSource) {
+		this.orderOutSource = orderOutSource;
+	}
 
 	public Long getProductId() {
 		return productId;
@@ -126,14 +312,6 @@ public class PutStorage extends BaseEntity<Long> {
 		this.inWarehouseTypeId = inWarehouseTypeId;
 	}
 
-	public BaseData getInWarehouseType() {
-		return inWarehouseType;
-	}
-
-	public void setInWarehouseType(BaseData inWarehouseType) {
-		this.inWarehouseType = inWarehouseType;
-	}
-
 	public Long getInventoryId() {
 		return inventoryId;
 	}
@@ -164,22 +342,6 @@ public class PutStorage extends BaseEntity<Long> {
 
 	public void setArrivalNumber(Integer arrivalNumber) {
 		this.arrivalNumber = arrivalNumber;
-	}
-
-	public String getLocation() {
-		return location;
-	}
-
-	public void setLocation(String location) {
-		this.location = location;
-	}
-
-	public Integer getSurplusNumber() {
-		return surplusNumber;
-	}
-
-	public void setSurplusNumber(Integer surplusNumber) {
-		this.surplusNumber = surplusNumber;
 	}
 	
 	

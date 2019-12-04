@@ -96,7 +96,7 @@ public class SensorEvents {
 		List<Map<String, Object>> mapString = ZkemSDKRealTime.getUserInfoByNumber(attendance.getNumber(), zkem);
 		attendance.setUserName(String.valueOf(mapString.get(0).get("name")));
 		// 考勤状态
-		attendance.setInOutMode(Integer.valueOf(String.valueOf(arge[2])));
+		attendance.setInOutMode(1);
 		// 验证方式
 		attendance.setVerifyMode(Integer.valueOf(String.valueOf(arge[3])));
 		System.out.println(Thread.currentThread().getName());

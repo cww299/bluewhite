@@ -38,17 +38,4 @@ public interface MaterialRequisitionService  extends BaseCRUDService<MaterialReq
 	 */
 	public int deleteMaterialRequisition(String ids);
 	
-	/**
-	 * 审核出库
-	 * @param ids
-	 * @return
-	 */
-	public int outboundMaterialRequisition(String ids);
-	
-	/**
-	 * 面辅料仓库修改领料单
-	 * @param materialRequisition
-	 */
-	public void updateiInventoryMaterialRequisition(MaterialRequisition materialRequisition);
-
 }

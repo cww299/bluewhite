@@ -140,12 +140,6 @@ public class MaterialRequisition extends BaseEntity<Long> {
 	private Integer requisition;
 	
 	/**
-	 * 是否作废
-	 */
-	@Column(name = "flag")
-	private Integer flag;
-	
-	/**
 	 * 产品name
 	 */
 	@Transient
@@ -208,14 +202,6 @@ public class MaterialRequisition extends BaseEntity<Long> {
 
 	public void setType(Integer type) {
 		this.type = type;
-	}
-
-	public Integer getFlag() {
-		return flag;
-	}
-
-	public void setFlag(Integer flag) {
-		this.flag = flag;
 	}
 
 	public Integer getRequisition() {
