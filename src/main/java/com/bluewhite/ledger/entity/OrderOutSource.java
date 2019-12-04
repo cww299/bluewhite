@@ -202,12 +202,28 @@ public class OrderOutSource extends BaseEntity<Long> {
 	 */
 	@Transient
 	private Date orderTimeEnd;
+	
+	/**
+	 * (申请人申请时)申请日期
+	 */
+	@Transient
+	private Date expenseDate;
 
 	/**
 	 * 到货数量
 	 */
 	@Transient
 	private Integer arrivalNumber;
+	
+	
+
+	public Date getExpenseDate() {
+		return expenseDate;
+	}
+
+	public void setExpenseDate(Date expenseDate) {
+		this.expenseDate = expenseDate;
+	}
 
 	public Integer getArrivalNumber() {
 		return arrivalNumber;
