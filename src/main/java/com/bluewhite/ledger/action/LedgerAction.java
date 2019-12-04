@@ -260,13 +260,15 @@ public class LedgerAction {
 	{
 		clearCascadeJSONPutStorage = ClearCascadeJSON.get()
 				.addRetainTerm(PutStorage.class, "id", "product","orderOutSource", "inStatus",
-						"inWarehouseType", "arrivalTime", "arrivalNumber",
+				"inWarehouseType", "arrivalTime", "arrivalNumber",
 				"storageArea", "storageLocation", "surplusNumber", "userStorage")
+				.addRetainTerm(OrderOutSource.class, "id",  "outSourceNumber","outsourceTask")
 				.addRetainTerm(Product.class, "id", "name", "number")
 				.addRetainTerm(BaseOne.class, "id", "name")
 				.addRetainTerm(BaseData.class, "id", "name")
 				.addRetainTerm(User.class, "id", "userName");
 	}
+	
 	private ClearCascadeJSON clearCascadeJSONMaterialPutStorage;
 	{
 		clearCascadeJSONMaterialPutStorage = ClearCascadeJSON.get()
@@ -279,6 +281,7 @@ public class LedgerAction {
 				.addRetainTerm(BaseData.class, "id", "name")
 				.addRetainTerm(User.class, "id", "userName");
 	}
+	
 	private ClearCascadeJSON clearCascadeJSONMaterialOutStorage;
 	{
 		clearCascadeJSONMaterialOutStorage = ClearCascadeJSON.get()
