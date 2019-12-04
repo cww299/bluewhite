@@ -134,9 +134,12 @@ layui.extend({
 								 </div>
 								`,
 						success:function(){
+							var url = '/ledger/inventory/materialPutStoragePage';
+							if(outWarehouseOrder.type!=1)
+								url = '/ledger/inventory/putStoragePage';
 							mytable.render({
 								elem:'#chooseTable',
-								url: myutil.config.ctx+'/ledger/inventory/materialPutStoragePage',
+								url: myutil.config.ctx+url,
 								ifNull:'--',
 								cols:[[
 								       { type:'checkbox',},
