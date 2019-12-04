@@ -44,14 +44,14 @@ public class Packing extends BaseEntity<Long> {
 	private Customer customer;
 
 	/**
-	 * 贴单人员工id
+	 * 贴单人员id
 	 * 
 	 */
 	@Column(name = "user_id")
 	private Long userId;
 
 	/**
-	 * 贴单人员工
+	 * 贴单人员
 	 */
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "user_id", referencedColumnName = "id", insertable = false, updatable = false)

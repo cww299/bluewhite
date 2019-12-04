@@ -746,8 +746,6 @@ public class ProcurementServiceImpl extends BaseServiceImpl<Procurement, Long> i
 								.size(), 4));
 				// 未审核
 				sale.setAudit(0);
-				// 不转批次
-				sale.setNewBacth(0);
 				// 未拥有版权
 				sale.setCopyright(0);
 				// 未收货
@@ -766,12 +764,6 @@ public class ProcurementServiceImpl extends BaseServiceImpl<Procurement, Long> i
 						|| pc.getProduct().getName().contains(Constants.XXYJN)) {
 					sale.setCopyright(1);
 				}
-				// 判定是否更换客户发货，更换客户发货变成新批次，->Y
-				Order order = orderDao.findByBacthNumber(pc.getBacthNumber());
-//				if (order != null && order.getInternal() != 1 && order.getCustomerId() != pc.getCustomerId()) {
-//					sale.setBacthNumber(pc.getBacthNumber().substring(0, pc.getBacthNumber().length() - 1) + "Y");
-//					sale.setNewBacth(1);
-//				}
 				saleDao.save(sale);
 				packingChildDao.save(pc);
 				count++;
