@@ -24,6 +24,7 @@ import com.bluewhite.production.group.entity.Group;
 
 /**
  * 员工用户实体
+ * 
  * @author zhangliang
  *
  */
@@ -38,62 +39,61 @@ public class User extends BaseEntity<Long> {
 	 */
 	@Column(name = "isAdmin", nullable = false)
 	private Boolean isAdmin = false;
-	
+
 	/**
 	 * 是否锁定
 	 */
 	@Column(name = "del_flag")
 	private Integer delFlag = 1;
 
-	
 	/**
 	 * 照片id
 	 */
 	@Column(name = "file_id")
 	private Long fileId;
-	
+
 	/**
 	 * 照片url
 	 */
 	@Column(name = "picture_url")
 	private String pictureUrl;
-	
+
 	/**
 	 * 用户密码
 	 */
 	@Column(name = "password")
-	private String password; 
+	private String password;
 
 	/**
 	 * 员工姓名
 	 */
 	@Column(name = "username")
 	private String userName;
-	
+
 	/**
 	 * 员工编号（考勤机上的编号）
 	 */
 	@Column(name = "number")
 	private String number;
-	
+
 	/**
 	 * 民族
 	 */
 	@Column(name = "nation")
 	private String nation;
-	
+
 	/**
 	 * 固定电话
 	 */
 	@Column(name = "telephone")
 	private String telephone;
-	
+
 	/**
 	 * 手机
 	 */
 	@Column(name = "phone")
 	private String phone;
-	
+
 	/**
 	 * 邮箱
 	 */
@@ -111,13 +111,13 @@ public class User extends BaseEntity<Long> {
 	 */
 	@Column(name = "birth_date")
 	private Date birthDate;
-	
+
 	/**
 	 * 年龄
 	 */
 	@Column(name = "age")
 	private Integer age;
-	
+
 	/**
 	 * 身份证到期时间
 	 */
@@ -129,7 +129,7 @@ public class User extends BaseEntity<Long> {
 	 */
 	@Column(name = "id_card")
 	private String idCard;
-	
+
 	/**
 	 * 户籍地址
 	 */
@@ -139,122 +139,119 @@ public class User extends BaseEntity<Long> {
 	 * 现居住地址
 	 */
 	@Column(name = "living_address")
-    private String livingAddress;
-    /**
-     * 婚姻状况
-     */
+	private String livingAddress;
+	/**
+	 * 婚姻状况
+	 */
 	@Column(name = "marriage")
-    private Integer marriage;
-    /**
-     * 生育状况
-     */
+	private Integer marriage;
+	/**
+	 * 生育状况
+	 */
 	@Column(name = "procreate")
-    private Integer procreate;
-    /**
-     * 学历
-     */
+	private Integer procreate;
+	/**
+	 * 学历
+	 */
 	@Column(name = "education")
-    private String education;
-    /**
-     * 毕业学校
-     */
+	private String education;
+	/**
+	 * 毕业学校
+	 */
 	@Column(name = "school")
-    private String school;
-    /**
-     * 专业
-     */
+	private String school;
+	/**
+	 * 专业
+	 */
 	@Column(name = "major")
-    private String major;
-    /**
-     * 紧急联系人
-     */
+	private String major;
+	/**
+	 * 紧急联系人
+	 */
 	@Column(name = "contacts")
-    private String contacts;
-	
-    /**
-     * 紧急联系人关系
-     */
+	private String contacts;
+
+	/**
+	 * 紧急联系人关系
+	 */
 	@Column(name = "nexus")
-    private String nexus;
-	
-    /**
-     * 紧急联系方式
-     */
+	private String nexus;
+
+	/**
+	 * 紧急联系方式
+	 */
 	@Column(name = "information")
-    private String information;
-	
-    /**
-     * 入职时间
-     */
+	private String information;
+
+	/**
+	 * 入职时间
+	 */
 	@Column(name = "entry")
-    private Date entry;
-	
-    /**
-     * 预计转正时间 
-     */
+	private Date entry;
+
+	/**
+	 * 预计转正时间
+	 */
 	@Column(name = "estimate")
-    private Date estimate;
-	
-    /**
-     * 实际转正开始时间
-     */
+	private Date estimate;
+
+	/**
+	 * 实际转正开始时间
+	 */
 	@Column(name = "actua")
-    private Date actua;
-	
+	private Date actua;
+
 	/**
 	 * 社保缴纳时间
 	 */
 	@Column(name = "social_security")
 	private Date socialSecurity;
-	
+
 	/**
 	 * 银行卡1
 	 */
 	@Column(name = "bank_card1")
-    private String bankCard1;
-	
+	private String bankCard1;
+
 	/**
 	 * 所属银行1
 	 */
 	@Column(name = "ascription_bank1")
-    private String ascriptionBank1;
-	
+	private String ascriptionBank1;
+
 	/**
 	 * 银行卡2
 	 */
 	@Column(name = "bank_card2")
-    private String bankCard2;
-	
+	private String bankCard2;
+
 	/**
-	 * 保险情况
-	 * 0=未缴，1=已缴，
+	 * 保险情况 0=未缴，1=已缴，
 	 */
 	@Column(name = "safe")
 	private Integer safe;
-	
+
 	/**
-	 * 是否签订承诺书
-	 *  0=未签，1=已签，
+	 * 是否签订承诺书 0=未签，1=已签，
 	 */
 	@Column(name = "promise")
-    private Integer promise;
+	private Integer promise;
 	/**
-	 * 是否签订合同
-	 * 0=未签，1=已签，2=续签
+	 * 是否签订合同 0=未签，1=已签，2=续签
 	 */
 	@Column(name = "commitment")
-    private Integer commitment;
+	private Integer commitment;
 	/**
 	 * 合同签订开始日期
 	 */
 	@Column(name = "contract_date")
-    private Date contractDate;
+	private Date contractDate;
 	/**
 	 * 合同签订结束日期
 	 */
 	@Column(name = "contract_date_end")
-    private Date contractDateEnd;
-	
+	private Date contractDateEnd;
+
 	/**
 	 * 合同签订次数
 	 */
@@ -264,22 +261,36 @@ public class User extends BaseEntity<Long> {
 	 * 工作状态(0=在职1=离职)
 	 */
 	@Column(name = "quit")
-    private Integer quit;
+	private Integer quit;
 	/**
 	 * 离职时间
 	 */
 	@Column(name = "quit_date")
-    private Date quitDate;
+	private Date quitDate;
+
+	/**
+	 * 离职类型id
+	 */
+	@Column(name = "quit_type_id")
+	private Long quitTypeId;
+
+	/**
+	 * 离职类型
+	 */
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "quit_type_id", referencedColumnName = "id", insertable = false, updatable = false)
+	private BaseData quitType;
+
 	/**
 	 * 离职原因
 	 */
 	@Column(name = "reason")
-    private String reason;
+	private String reason;
 	/**
 	 * 培训
 	 */
 	@Column(name = "train")
-    private String train;
+	private String train;
 	/**
 	 * 备注
 	 */
@@ -290,56 +301,52 @@ public class User extends BaseEntity<Long> {
 	 */
 	@Column(name = "commitment_id")
 	private Long commitmentId;
-	
+
 	/**
 	 * 合同
 	 */
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "commitment_id", referencedColumnName = "id", insertable = false, updatable = false)
 	private BaseData commitments;
-	
-	
+
 	/**
 	 * 协议id
 	 */
 	@Column(name = "agreement_id")
 	private String agreementId;
-	
 
 	/**
 	 * 职位id
 	 */
 	@Column(name = "position_id")
 	private Long positionId;
-	
+
 	/**
 	 * 职位
 	 */
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "position_id", referencedColumnName = "id", insertable = false, updatable = false)
 	private BaseData position;
-	
 
 	/**
 	 * 部门id
 	 */
 	@Column(name = "orgName_id")
 	private Long orgNameId;
-	
+
 	/**
 	 * 部门
 	 */
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "orgName_id", referencedColumnName = "id", insertable = false, updatable = false)
 	private BaseData orgName;
-	
-	
+
 	/**
 	 * 分组id
 	 */
 	@Column(name = "group_id")
 	private Long groupId;
-	
+
 	/**
 	 * 分组
 	 */
@@ -353,59 +360,57 @@ public class User extends BaseEntity<Long> {
 	@ManyToMany(fetch = FetchType.LAZY)
 	@JoinTable(name = "sys_user_role", joinColumns = @JoinColumn(name = "user_id", referencedColumnName = "id"), inverseJoinColumns = @JoinColumn(name = "role_id", referencedColumnName = "id"))
 	private Set<Role> roles = new HashSet<Role>();
-	
+
 	/**
 	 * 合同id
 	 */
 	@Column(name = "user_contract_id")
-    private Long userContractId;
-	
+	private Long userContractId;
+
 	/**
 	 * 合同位置实体
 	 */
-    @ManyToOne(fetch=FetchType.LAZY,cascade = CascadeType.ALL) 
-    @JoinColumn(name = "user_contract_id", referencedColumnName = "id", insertable = false, updatable = false)
-    private UserContract userContract;
-	
+	@ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+	@JoinColumn(name = "user_contract_id", referencedColumnName = "id", insertable = false, updatable = false)
+	private UserContract userContract;
+
 	/**
 	 * 到岗小时预计收入
 	 */
 	@Column(name = "price")
 	private Double price;
-	
-	
+
 	/**
 	 * 工作状态（0=工作，1 等于休息）
 	 */
 	@Column(name = "status")
 	private Integer status;
-	
-	
+
 	/**
 	 * 工作时长
 	 */
 	@Column(name = "work_time")
 	private Double workTime;
-	
+
 	/**
 	 * 签订单位
 	 */
 	@Column(name = "company")
 	private String company;
-	
+
 	/**
 	 * 宿舍ID
 	 */
 	@Column(name = "hostel_id")
 	private Long hostelId;
-	
+
 	/**
 	 * 
 	 * 位置编号
 	 */
 	@Transient
 	private Integer lotionNumber;
-	
+
 	/**
 	 * 权限
 	 */
@@ -419,44 +424,43 @@ public class User extends BaseEntity<Long> {
 	@Transient
 	@JSONField(serialize = false)
 	private Set<String> role = new HashSet<>();
-	
-	
+
 	/**
 	 * 部门ids
 	 */
 	@Transient
 	private String orgNameIds;
-	
+
 	/**
 	 * 是否退休返聘
 	 */
 	@Transient
 	private Integer retire;
-	
+
 	/**
 	 * 时间查询字段
 	 */
 	@Transient
 	private Date orderTimeBegin;
-	
+
 	/**
 	 * 时间查询字段
 	 */
 	@Transient
 	private Date orderTimeEnd;
-	
+
 	/**
 	 * 按位置编号排序
 	 */
 	@Transient
 	private Integer numberSort;
-	
+
 	/**
 	 * 出勤时长
 	 */
 	@Transient
-	private Double  turnWorkTime;
-	
+	private Double turnWorkTime;
+
 	/**
 	 * 对于人员显示出勤时间特殊字段
 	 */
@@ -464,7 +468,23 @@ public class User extends BaseEntity<Long> {
 	private Integer isType;
 	
 	
-	  
+
+	public Long getQuitTypeId() {
+		return quitTypeId;
+	}
+
+	public void setQuitTypeId(Long quitTypeId) {
+		this.quitTypeId = quitTypeId;
+	}
+
+	public BaseData getQuitType() {
+		return quitType;
+	}
+
+	public void setQuitType(BaseData quitType) {
+		this.quitType = quitType;
+	}
+
 	public Integer getIsType() {
 		return isType;
 	}
@@ -521,7 +541,6 @@ public class User extends BaseEntity<Long> {
 		this.orderTimeEnd = orderTimeEnd;
 	}
 
-
 	public Integer getLotionNumber() {
 		return lotionNumber;
 	}
@@ -561,8 +580,6 @@ public class User extends BaseEntity<Long> {
 	public void setCommitments(BaseData commitments) {
 		this.commitments = commitments;
 	}
-
-
 
 	public String getAgreementId() {
 		return agreementId;
@@ -739,7 +756,7 @@ public class User extends BaseEntity<Long> {
 	public void setInformation(String information) {
 		this.information = information;
 	}
-	
+
 	public String getBankCard1() {
 		return bankCard1;
 	}
@@ -843,7 +860,6 @@ public class User extends BaseEntity<Long> {
 	public void setPassword(String password) {
 		this.password = password;
 	}
-
 
 	public String getUserName() {
 		return userName;
@@ -989,7 +1005,6 @@ public class User extends BaseEntity<Long> {
 		this.socialSecurity = socialSecurity;
 	}
 
-
 	public Date getContractDate() {
 		return contractDate;
 	}
@@ -1037,12 +1052,5 @@ public class User extends BaseEntity<Long> {
 	public void setHostelId(Long hostelId) {
 		this.hostelId = hostelId;
 	}
-
-
-	
-	
-	
-	
-	
 
 }

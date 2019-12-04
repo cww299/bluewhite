@@ -20,7 +20,6 @@ import com.bluewhite.common.utils.SalesUtils;
 import com.bluewhite.common.utils.StringUtil;
 import com.bluewhite.ledger.dao.MaterialOutStorageDao;
 import com.bluewhite.ledger.entity.MaterialOutStorage;
-import com.bluewhite.ledger.entity.MaterialPutStorage;
 
 @Service
 public class MaterialOutStorageServiceImpl extends BaseServiceImpl<MaterialOutStorage, Long>
