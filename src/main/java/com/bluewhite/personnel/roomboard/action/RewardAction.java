@@ -23,6 +23,7 @@ import com.bluewhite.common.entity.PageParameter;
 import com.bluewhite.common.entity.PageResult;
 import com.bluewhite.personnel.roomboard.entity.Reward;
 import com.bluewhite.personnel.roomboard.service.RewardService;
+import com.bluewhite.system.user.entity.User;
 
 @Controller
 public class RewardAction {
@@ -32,7 +33,8 @@ public class RewardAction {
 	private ClearCascadeJSON clearCascadeJSON;
 	{
 		clearCascadeJSON = ClearCascadeJSON.get()
-				.addRetainTerm(Reward.class,"id","time","recruitId", "coverRecruitId","recruitName","price","type","remarks","collarPrice","hairPrice");
+				.addRetainTerm(Reward.class,"id","time","recruitId", "coverRecruitId","recruitName","price","type","remarks","collarPrice","hairPrice")
+		        .addRetainTerm(User.class, "quit", "entry", "quitDate");
 	}
 	/**
 	 * 分页查看招聘奖励
