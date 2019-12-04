@@ -18,7 +18,7 @@
 layui.config({
 	base : '${ctx}/static/layui-v2.4.5/'
 }).extend({
-	inventory : 'layui/myModules/inventory/inventory' ,
+	inventory : 'layui/myModules/warehouseManager/inventory' ,
 }).define(
 	['inventory','myutil'],
 	function(){

@@ -4,16 +4,23 @@
  * inventory.render({
  * 	 elem:'绑定元素', ctx:'ctx',
  * }) 
+ * type: 库存类型，引用模块前先设置 inventory.type;
+ * 		1.物料库存、2:成品库存、3:皮壳库存
  */
 layui.extend({
 	mytable: 'layui/myModules/mytable',
-}).define(['jquery','layer','form','laydate','mytable'],function(exports){
+	inputWarehouseOrder: 'layui/myModules/warehouseManager/inputWarehouseOrder',
+	outWarehouseOrder: 'layui/myModules/warehouseManager/outWarehouseOrder',
+}).define(
+	['jquery','layer','form','laydate','mytable','inputWarehouseOrder','outWarehouseOrder'],
+	function(exports){
 	"use strict";
 	var $ = layui.jquery,
 		form = layui.form,
-		laydate = layui.laydate,
 		table = layui.table,
 		mytable = layui.mytable,
+		inputWarehouseOrder = layui.inputWarehouseOrder,
+		outWarehouseOrder = layui.outWarehouseOrder,
 		myutil = layui.myutil;
 	
 	var TPL_MAIN = [	//页面主模板
@@ -31,7 +38,7 @@ layui.extend({
 	           ].join(' ');
 	
 	var inventory = {
-			
+			type:2,	//默认为成品库存
 	};
 	inventory.render = function(opt){
 		$(opt.elem).append(TPL_MAIN);
@@ -40,7 +47,32 @@ layui.extend({
 			elem:'#tableData',
 			limit:15,
 			limits:[10,15,20,30,50,100],
-			url: opt.ctx+'/inventory/getProductPages',
+			curd:{
+				btn:[],
+				otherBtn:function(obj){
+					var check = layui.table.checkStatus('tableData').data;
+					if(check.length!=1)
+						return myutil.emsg("只能选择一条数据进行操作");
+					if(obj.event=='addInp'){
+						inputWarehouseOrder.add({
+							data:{
+								productId: check[0].id,
+							}
+						})
+					}else if(obj.event=="addOut"){
+						outWarehouseOrder.add({
+							data:{
+								productId: check[0].id,
+							},
+						})
+					}
+				},
+			},
+			toolbar:[
+				'<span class="layui-btn layui-btn-sm layui-btn-" lay-event="addInp">生成入库单</span>',
+				'<span class="layui-btn layui-btn-sm layui-btn-normal" lay-event="addOut">生成出库单</span>',
+			].join(' '),
+			url: opt.ctx+'/inventory/productPages',
 			cols:[[
 			       { type:'checkbox',},
 			       { title:'产品编号',   field:'number',	},
@@ -77,6 +109,10 @@ layui.extend({
 				page: { curr:1 },
 			})
 		})
+		inputWarehouseOrder.type = inventory.type;
+		outWarehouseOrder.type = inventory.type;
+		inputWarehouseOrder.init();
+		outWarehouseOrder.init();
 	}
 	
 	exports('inventory',inventory);

@@ -525,6 +525,7 @@ layui.config({
 								ids: ids.join(','),
 								success:function(){
 									layer.close(auditWin);
+									table.reload('tableData');
 									table.reload('outTable');
 								}
 							})

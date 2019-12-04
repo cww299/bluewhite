@@ -4,6 +4,11 @@
  * 需要在本模块前引入myutil,并设置ctx后调用init()
  * outWarehouseOrder.add({ success:function(){ 成功函数的回调 }  }) 绑定新增按钮
  * outWarehouseOrder.update({ data:{修改前的数据、回显},   })
+ * 
+ * outWarehouseOrder.add({
+ * 		type: 0,		//入库类型1:物料出库（默认）、2:成品出库、3:皮壳出库
+ * 
+ * })
  */
 layui.extend({
 }).define(['jquery','layer','form','laytpl','laydate','mytable'],function(exports){
@@ -46,6 +51,14 @@ layui.extend({
 							'<option value="3">销售换货出库</option>',
 							'<option value="4">采购退货出库</option>',
 							'<option value="5">盘盈出库</option>',
+							`{{#
+							 	if(layui.inputWarehouseOrder.type!=1){
+							 }}
+									'<option value="6">返工出库</option>'
+							 {{#
+							 	 }
+							  }}
+							  `,
 							'</select>',
 					'</div>',
 				'</div>',
@@ -67,7 +80,9 @@ layui.extend({
 				'</div>',
 	           ].join(' ');
 	
-	var outWarehouseOrder = {}, allStorageLocation = '',allStorageArea = '',allUser = '';
+	var outWarehouseOrder = {
+			type:1,
+		}, allStorageLocation = '',allStorageArea = '',allUser = '';
 	
 	outWarehouseOrder.add = function(opt){
 		outWarehouseOrder.update(opt)

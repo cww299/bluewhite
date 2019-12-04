@@ -1,9 +1,18 @@
 /* 2019/12/2
  * author: 299
  * 新增、修改入库单模板
- * 需要在本模块前引入myutil,并设置ctx后调用init()
+ * 需要在本模块前引入myutil,并设置ctx后调用init(done)//回调函数
  * inputWarehouseOrder.add({ success:function(){ 成功函数的回调 }  }) 绑定新增按钮
  * inputWarehouseOrder.update({ data:{修改前的数据、回显},   })
+ * type: 0,		//入库类型1:物料入库（默认）、2:成品入库、3:皮壳入库
+ * inputWarehouseOrder.add({
+ * 
+ * 		materielId:'',	//物料入库时传入
+ * 		orderProcurementId:'',  //物料入库采购入库时，传入的订单id
+ * 
+ * 		productId:'',   //成品、皮壳入库时传入
+ * 		orderOutSourceId:'',    //成品、皮壳生产入库时，传入的订单id
+ * })
  */
 layui.extend({
 }).define(['jquery','layer','form','laytpl','laydate'],function(exports){
@@ -45,33 +54,61 @@ layui.extend({
 				'<div class="layui-form-item" pane>',
 					'<label class="layui-form-label">入库人</label>',
 					'<div class="layui-input-block">',
-						'<select lay-search name="userStorageId" id="userStorageId">',
+						'<select lay-search name="userStorageId" id="userStorageId" lay-verify="required">',
 							'<option value="">请选择</option></select>',
 					'</div>',
 				'</div>',
 				'<div class="layui-form-item" pane>',
 					'<label class="layui-form-label">入库类型</label>',
 					'<div class="layui-input-block">',
-						'<select name="inStatus" {{d.inStatus==1?"disabled":""}} value="{{ d.inStatus || 2}}" id="inStatus">',
-							'<option value="1" {{ d.inStatus!=1?"disabled":"" }}>采购入库</option>',
-							'<option value="2">调拨入库</option>',
-							'<option value="3">退货入库</option>',
-							'<option value="4">换货入库</option>',
-							'<option value="5">盘亏入库</option>',
+						'<select name="inStatus" {{(d.inStatus==1 || d.inStatus==2)?"disabled":""}} ',
+							' value="{{ d.inStatus || 3}}" id="inStatus">',
+							`{{#
+								 if(layui.inputWarehouseOrder.type==1){
+							 }}
+									<option value="2" {{ d.inStatus!=2?"disabled":"" }}>采购入库</option>
+							 {{#
+							 	 }else{
+							  }}
+							  		<option value="1" {{ d.inStatus!=1?"disabled":"" }}>生产入库</option>
+							  {{#
+							     }
+							  }}
+							  `,
+							'<option value="3">调拨入库</option>',
+							'<option value="4">退货入库</option>',
+							'<option value="5">换货入库</option>',
+							'<option value="6">盘亏入库</option>',
 							'</select>',
 					'</div>',
 				'</div>',
 				'<div>',
-					'<input type="hidden" name="materielId" value="{{ d.materielId }}">',
-					'<input type="hidden" name="orderProcurementId" value="{{ d.orderProcurementId || "" }}">',
-					'<input type="hidden" name="inWarehouseTypeId" value="379">',
+					`{{#
+						 if(layui.inputWarehouseOrder.type==1){
+					 }}
+							<input type="hidden" name="materielId" value="{{ d.materielId }}">
+							<input type="hidden" name="orderProcurementId" value="{{ d.orderProcurementId || "" }}">
+					 {{#
+					 	 }else{
+					  }}
+					  		<input type="hidden" name="productId" value="{{ d.productId }}">
+							<input type="hidden" name="orderOutSourceId" value="{{ d.orderOutSourceId || "" }}">
+					  {{#
+					     }
+					  }}
+				  `,
+					'<input type="hidden" name="inWarehouseTypeId" value="{{'+
+						' layui.inputWarehouseOrder.type==1?434:(layui.inputWarehouseOrder.type==2?274:379) }}">',
 					'<input type="hidden" name="id" value="{{d.id || ""}}">',
 				'</div>',
 				'<p style="display:none;"><button lay-submit lay-filter="sureAddOutOrder" id="sureAddOutOrder">确定</button></p>',
 				'</div>',
 	           ].join(' ');
 	
-	var inputWarehouseOrder = {}, allStorageLocation = '',allStorageArea = '',allUser = '';
+	var inputWarehouseOrder = {
+			type:1,	//默认为物料入库
+		}, 
+		allStorageLocation = '',allStorageArea = '',allUser = '';
 	
 	inputWarehouseOrder.add = function(opt){
 		inputWarehouseOrder.update(opt)
@@ -79,14 +116,20 @@ layui.extend({
 	
 	inputWarehouseOrder.update = function(opt){
 		var data = opt.data,title="生成入库单";
+		console.log(data);
 		if(!data){
 			console.error('请给定数据！');
 			return;
 		}
 		if(data.id){
 			title = "修改入库单";
-			data.materielId = data.materiel.id;
-			data.orderProcurementId = data.orderProcurement.id;
+			if(inputWarehouseOrder.type==1){
+				data.materielId = data.materiel.id;
+				data.orderProcurementId = data.orderProcurement.id;
+			}else{
+				data.productId = '';
+				data.orderOutSourceId = '';
+			}
 		}
 		var html = '';
 		laytpl(TPL).render(data,function(h){
@@ -109,12 +152,18 @@ layui.extend({
 					$('#userStorageId').val(data.userStorage?data.userStorage.id:'');
 					$('#storageAreaId').val(data.storageArea?data.storageArea.id:'');
 					$('#storageLocationId').val(data.storageLocation?data.storageLocation.id:'');
-					$('#storageLocationId').val(data.storageLocation?data.storageLocation.id:'');
 					$('#inStatus').val(data.inStatus);
+					if(inputWarehouseOrder.type==1){
+						
+					}else{
+						
+					}
 					form.render();
 				}
 				form.on('submit(sureAddOutOrder)',function(obj){
-					var url = '/ledger/inventory/saveMaterialPutStorage';
+					var url = '/ledger/inventory/savePutStorage';
+					if(inputWarehouseOrder.type==1)
+						url = '/ledger/inventory/saveMaterialPutStorage';
 					myutil.saveAjax({
 						url: url,
 						data: obj.field,
