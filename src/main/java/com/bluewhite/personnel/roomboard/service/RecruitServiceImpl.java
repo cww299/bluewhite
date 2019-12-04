@@ -648,7 +648,7 @@ public class RecruitServiceImpl extends BaseServiceImpl<Recruit, Long> implement
 			user.setOrgNameId(ps1);
 			double sum5 = userService.findUserList(user).stream()
 					.filter(User -> (User.getQuitDate() == null || User.getQuitDate().after(recruit.getOrderTimeBegin()))
-							&& (User.getEntry() != null && User.getEntry().before(recruit.getOrderTimeEnd())))
+							&& (User.getEntry() != null && User.getEntry().before(recruit.getOrderTimeEnd())) && User.getOrgNameId()!=null && User.getOrgNameId().equals(ps1))
 					.count();// 初期人员
 			double a = 0;
 			if (sum != 0) {
