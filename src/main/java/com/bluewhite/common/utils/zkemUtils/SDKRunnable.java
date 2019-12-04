@@ -31,7 +31,6 @@ public class SDKRunnable implements Runnable {
 			regEvent();
 		} catch (Exception e) {
 			log.error("线程异常，结束");
-//			regEvent();
 		}
 	}
 
@@ -62,7 +61,8 @@ public class SDKRunnable implements Runnable {
 				String ip = sdk.GetDeviceIP(1, zkem);
 				if (ip == null) {
 					System.out.println(address + "考勤机设备异常，重连中-------");
-					boolean result = sdk.connect(address, zkem);
+					regEvent();
+					timer.cancel();
 				}
 			}
 		}, time, 60000);// 这里设定将延时每隔一分钟执行一次

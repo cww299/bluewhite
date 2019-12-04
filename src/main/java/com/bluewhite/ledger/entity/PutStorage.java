@@ -26,6 +26,12 @@ import com.bluewhite.system.user.entity.User;
 @Entity
 @Table(name = "ledger_put_storage")
 public class PutStorage extends BaseEntity<Long> {
+	
+	/**
+	 * 编号
+	 */
+	@Column(name = "serial_number")
+	private String serialNumber;
 
 	/**
 	 * 产品id
@@ -126,20 +132,6 @@ public class PutStorage extends BaseEntity<Long> {
 	private User userStorage;
 	
 	/**
-	 * 所属业务员id
-	 * 
-	 */
-	@Column(name = "user_id")
-	private Long userId;
-
-	/**
-	 * 所属业务员
-	 */
-	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "user_id", referencedColumnName = "id", insertable = false, updatable = false)
-	private User user;
-	
-	/**
 	 * 仓管指定 入库仓库种类id
 	 */
 	@Column(name = "in_warehouse_type_id")
@@ -175,21 +167,13 @@ public class PutStorage extends BaseEntity<Long> {
 	private Date orderTimeEnd;
 	
 	
-	
-	public Long getUserId() {
-		return userId;
+
+	public String getSerialNumber() {
+		return serialNumber;
 	}
 
-	public void setUserId(Long userId) {
-		this.userId = userId;
-	}
-
-	public User getUser() {
-		return user;
-	}
-
-	public void setUser(User user) {
-		this.user = user;
+	public void setSerialNumber(String serialNumber) {
+		this.serialNumber = serialNumber;
 	}
 
 	public Date getOrderTimeBegin() {

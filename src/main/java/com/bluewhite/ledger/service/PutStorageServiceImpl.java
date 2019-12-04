@@ -12,10 +12,12 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
 import com.bluewhite.base.BaseServiceImpl;
+import com.bluewhite.common.Constants;
 import com.bluewhite.common.ServiceException;
 import com.bluewhite.common.entity.PageParameter;
 import com.bluewhite.common.entity.PageResult;
 import com.bluewhite.common.utils.NumUtils;
+import com.bluewhite.common.utils.SalesUtils;
 import com.bluewhite.common.utils.StringUtil;
 import com.bluewhite.ledger.dao.OutStorageDao;
 import com.bluewhite.ledger.dao.PutStorageDao;
@@ -39,6 +41,8 @@ public class PutStorageServiceImpl extends BaseServiceImpl<PutStorage, Long> imp
 			PutStorage ot = dao.findOne(putStorage.getId());
 			update(putStorage, ot, "");
 		}else{
+			putStorage.setSerialNumber(
+					Constants.CPRK + StringUtil.getDate() + SalesUtils.get0LeftString((int) (dao.count()+1), 8));
 			inventoryService.putInStorage(putStorage.getProductId(), putStorage.getInWarehouseTypeId());
 			dao.save(putStorage);
 		}

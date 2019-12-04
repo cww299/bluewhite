@@ -107,12 +107,13 @@ public class LedgerAction {
 	{
 		clearCascadeJSONOrder = ClearCascadeJSON.get()
 				.addRetainTerm(Order.class, "id", "remark", "orderDate", "bacthNumber", "product", "number",
-						"orderMaterials", "prepareEnough", "orderChilds", "audit", "orderNumber")
+						"orderMaterials", "prepareEnough", "orderChilds", "audit", "orderNumber","orderType")
 				.addRetainTerm(OrderMaterial.class, "id")
 				.addRetainTerm(OrderChild.class, "id", "customer", "user", "childNumber", "childRemark")
 				.addRetainTerm(Customer.class, "id", "name")
 				.addRetainTerm(User.class, "id", "userName")
-				.addRetainTerm(Product.class, "id", "name", "number");
+				.addRetainTerm(Product.class, "id", "name", "number")
+				.addRetainTerm(BaseData.class, "id", "name");
 	}
 
 	private ClearCascadeJSON clearCascadeJSONPacking;
@@ -365,6 +366,20 @@ public class LedgerAction {
 	public CommonResponse deleteOrder(String ids) {
 		CommonResponse cr = new CommonResponse();
 		int count = orderService.deleteOrder(ids);
+		cr.setMessage("成功删除" + count + "订单合同");
+		return cr;
+	}
+	
+	/**
+	 * (销售部) 删除生产计划子单
+	 * 
+	 * @return cr
+	 */
+	@RequestMapping(value = "/ledger/deleteOrderChild", method = RequestMethod.GET)
+	@ResponseBody
+	public CommonResponse deleteOrderChild(String ids) {
+		CommonResponse cr = new CommonResponse();
+		int count = orderService.deleteOrderChild(ids);
 		cr.setMessage("成功删除" + count + "订单合同");
 		return cr;
 	}
@@ -1095,7 +1110,7 @@ public class LedgerAction {
 	}
 	
 	/**
-	 * （1.成品仓库，2.皮壳仓库）入库单列表
+	 * （1.成品仓库，2.皮壳仓库）出库单列表
 	 * 
 	 * @return
 	 */
@@ -1104,12 +1119,12 @@ public class LedgerAction {
 	public CommonResponse outStoragePage(PageParameter page, OutStorage outStorage) {
 		CommonResponse cr = new CommonResponse();
 		cr.setData(clearCascadeJSONPutStorage.format(outStorageService.findPages(page, outStorage)).toJSON());
-		return cr;
+		return cr; 
 	}
 	
 	
 	/**
-	 * （1.成品仓库，2.皮壳仓库）出库单
+	 * （1.成品仓库，2.皮壳仓库）删除出库单
 	 * 
 	 * @return
 	 */
@@ -1121,11 +1136,9 @@ public class LedgerAction {
 		cr.setMessage("成功删除");
 		return cr;
 	}
+
 	
-	
-	
-	
-	
+
 	
 	
 	
