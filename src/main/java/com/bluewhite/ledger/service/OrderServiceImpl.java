@@ -168,9 +168,6 @@ public class OrderServiceImpl extends BaseServiceImpl<Order, Long> implements Or
 	@Override
 	@Transactional
 	public void updateOrder(Order order) {
-		if(!StringUtils.isEmpty(order.getDeleteIds())){
-			deleteOrderChild(order.getDeleteIds());
-		}
 		Order ot = dao.findOne(order.getId());
 		if (ot.getAudit() == 1) {
 			throw new ServiceException("批次号为" + ot.getBacthNumber() + "下单合同已审核，无法修改");
@@ -190,6 +187,9 @@ public class OrderServiceImpl extends BaseServiceImpl<Order, Long> implements Or
 			}
 		}
 		dao.save(ot);
+		if(!StringUtils.isEmpty(order.getDeleteIds())){
+			deleteOrderChild(order.getDeleteIds());
+		}
 	}
 
 	@Override

@@ -31,7 +31,8 @@ layui.extend({
 						</td>
 					<td>&nbsp;&nbsp;</td>
 					<td>订单类型：</td>
-					<td style="width:100px;"><select id="orderTypeSelect" name="orderTypeId" value="{{ }}" lay-verify="required">
+					<td style="width:100px;"><select id="orderTypeSelect" name="orderTypeId" data-value="{{d.orderType?d.orderType.id:"" }}" 
+							lay-verify="required">
 							<option value="">请选择</option></select></td>
 					<td>&nbsp;&nbsp;</td>
 					<td>订单时间：</td>
@@ -110,8 +111,9 @@ layui.extend({
 				number: item.childNumber,
 			})
 		})
-		opt.data.orderChilds = d;
-		saveProductionPlan.add(opt);
+		saveProductionPlan.add({
+			data: $.extend({},opt.data,{ orderChilds:d }),
+		});
 	}
 	
 	saveProductionPlan.add = function(opt){
@@ -138,6 +140,8 @@ layui.extend({
 			success:function(){
 				laydate.render({ elem:'#orderDate', type:'datetime', });
 				$('#orderTypeSelect').append(allTypeSelectHtml);
+				$('#orderTypeSelect').val($('#orderTypeSelect').data('value'));
+				form.render();
 				$('#chooseProductInput').unbind().on('click',function(){
 					var chooseProductWinNew = layer.open({
 						type:1,
