@@ -1379,3 +1379,6 @@ body .layui-util-face  .layui-layer-content{padding:0; background-color:#fff; co
 ::-webkit-scrollbar-thumb:hover{
   background: #bfbfbf;
 }
+.searchTable td:nth-of-type(odd){
+	padding-left:10px;
+}

@@ -316,13 +316,14 @@ public class OrderOutSourceServiceImpl extends BaseServiceImpl<OrderOutSource, L
 		Set<BaseData> outsourceTask = orderOutSource.getOutsourceTask();
 		// 加工单工序对应价格
 		List<ProcessPrice> processPriceList = processPriceDao.findByOrderOutSourceId(id);
+		
 		outsourceTask.stream().forEach(outB -> {
 			Map<String, Object> map = new HashMap<>();
 			List<ProcessPrice> pList = processPriceList.stream()
 					.filter(ProcessPrice -> ProcessPrice.getProcessTaskId().equals(outB.getId()))
 					.collect(Collectors.toList());
 			// 工序id
-			map.put("id",pList.get(0).getId());
+			map.put("id",  pList.get(0).getId());
 			// 工序名称
 			map.put("name", outB.getName());
 			// 工序价格

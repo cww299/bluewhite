@@ -40,13 +40,16 @@ public class AdvertisementServiceImpl extends BaseServiceImpl<Advertisement, Lon
 			if (advertisement.getType() != null) {
 				predicate.add(cb.equal(root.get("type").as(Integer.class), advertisement.getType()));
 			}
+			// 按培训类型
+			if (advertisement.getMold() != null) {
+				predicate.add(cb.equal(root.get("mold").as(Integer.class), advertisement.getMold()));
+			}
 			if (advertisement.getRecruitId() != null) {
 				predicate.add(cb.equal(root.get("recruitId").as(Long.class), advertisement.getRecruitId()));
 			}
 			// 应聘人
 			if(!StringUtils.isEmpty(advertisement.getApplyName())){
 				predicate.add(cb.like(root.get("recruit").get("name").as(String.class), "%"+advertisement.getApplyName()+"%"));
-				
 			}
 			// 招聘人
 			if(!StringUtils.isEmpty(advertisement.getRecruitmentName())){
@@ -84,7 +87,7 @@ public class AdvertisementServiceImpl extends BaseServiceImpl<Advertisement, Lon
 	 */
 	@Override
 	public Advertisement findRecruitId(Long recruitId) {
-		List<Advertisement> advertisements = dao.findByRecruitIdAndType(recruitId, 1);
+		List<Advertisement> advertisements = dao.findByRecruitIdAndTypeAndMold(recruitId, 1,0);
 		double price = 0;
 		for (Advertisement advertisement : advertisements) {
 			price += advertisement.getPrice();

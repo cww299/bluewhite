@@ -55,7 +55,7 @@ layui.config({
 		address = [],addressOther=0,
 		orgName = { name:[],value:[],other:0},
 		agreement = { name:[], value:[], other:0},
-		company = { lb:0,lc:0,other:0 },
+		company = { lb:0,lc:0,other:0,lcai:0,xz:0,yl:0,ds:0,yy:0, },
 		safe = 0,
 		entryAndQuit = {};
 		
@@ -151,6 +151,16 @@ layui.config({
 				company.lb++;
 			else if(d.company=='乐程')
 				company.lc++;
+			else if(d.company=='乐彩')
+				company.lcai++;
+			else if(d.company=='馨泽')
+				company.xz++;
+			else if(d.company=='迪赛')
+				company.ds++;
+			else if(d.company=='韵业')
+				company.yy++;
+			else if(d.company=='昀立')
+				company.yl++;
 			else
 				company.other++;
 			if(d.safe)
@@ -312,7 +322,7 @@ layui.config({
             legend: {		
 		        orient: 'vertical',
 		        x: 'right',
-		        data:['蓝白','乐程','其他',]
+		        data:['蓝白','乐程','乐彩','馨泽','迪赛','韵业','昀立','其他',]
 		    },
             tooltip: {
             	trigger: 'item',
@@ -325,8 +335,13 @@ layui.config({
 		            type: 'pie',
 		            data:[
 		                {value: company.lb, name:'蓝白'},
-		                {value: company.lc, name:'乐程'},
+		                {value: company.xz, name:'馨泽'},
+		                {value: company.ds, name:'迪赛'},
 		                {value: company.other, name:'其他'},
+		                {value: company.lc, name:'乐程'},
+		                {value: company.lcai, name:'乐彩'},
+		                {value: company.yy, name:'韵业'},
+		                {value: company.yl, name:'昀立'},
 		            ]
 		        }
 		    ]

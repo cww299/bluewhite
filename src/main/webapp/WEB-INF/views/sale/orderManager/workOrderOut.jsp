@@ -30,6 +30,11 @@
 		<table id="tableData" lay-filter="tableData"></table>
 	</div>
 </div>
+<div style="display:none;padding:5px;" id="tipWin">
+	<div style="width:380px;">
+		<table id="tipTable" lay-filter="tipTable"></table>
+	</div>
+</div>
 </body>
 <!-- 打印模板 -->
 <script type="text/html" id="printTpl">
@@ -114,10 +119,11 @@
 layui.config({
 	base : '${ctx}/static/layui-v2.4.5/'
 }).extend({
-	mytable : 'layui/myModules/mytable' ,
-	outOrderModel : 'layui/myModules/sale/outOrderModel' ,
+	mytable : 'layui/myModules/mytable',
+	outOrderModel : 'layui/myModules/sale/outOrderModel',
+	returnOrder : 'layui/myModules/sale/returnOrder',
 }).define(
-	['mytable','laydate','outOrderModel'],
+	['mytable','laydate','outOrderModel','returnOrder'],
 	function(){
 		var $ = layui.jquery
 		, layer = layui.layer
@@ -126,6 +132,7 @@ layui.config({
 		, table = layui.table 
 		, myutil = layui.myutil
 		, outOrderModel = layui.outOrderModel
+		, returnOrder = layui.returnOrder
 		, laytpl = layui.laytpl
 		, mytable = layui.mytable;
 		myutil.config.ctx = '${ctx}';
@@ -188,6 +195,7 @@ layui.config({
 			curd:{
 				btn:[4],
 				otherBtn:function(obj){
+					var check = layui.table.checkStatus('tableData').data;
 					if(obj.event=='audit'){
 						myutil.deleTableIds({
 							url:'/ledger/auditOrderOutSource',
@@ -203,7 +211,6 @@ layui.config({
 					}else if(obj.event=='print'){
 						printWin();
 					}else if(obj.event=="edit"){
-						var check = layui.table.checkStatus('tableData').data;
 						if(check.length!=1)
 							return myutil.emsg('只能选择一条数据编辑！');
 						outOrderModel.update({
@@ -212,14 +219,28 @@ layui.config({
 								table.reload('tableData');
 							}
 						});
+					}else if(obj.event=='returnOrder'){
+						if(check.length!=1)
+							return myutil.emsg('只能选择一条数据编辑！');
+						returnOrder.add({
+							data: check[0],
+						})
+					}else if(obj.event=='addBill'){
+						if(check.length!=1)
+							return myutil.emsg('只能选择一条数据生成账单！');
+						if(check[0].chargeOff)
+							return myutil.emsg('该数据已生产账单，请勿重复添加！');
+						addBill(check[0]);
 					}
 				},
 			},
 			ifNull:'---',
-			colsWidth:[0,0,18,4,7,6,8,7,4,4,8,4,4], 
+			colsWidth:[0,0,18,4,7,6,8,7,4,4,4], 
 			toolbar:['<span class="layui-btn layui-btn-sm" lay-event="edit">修改加工单</span>',
 					 '<span class="layui-btn layui-btn-sm" lay-event="print">打印</span>',
 			         '<span class="layui-btn layui-btn-sm layui-btn-warm" lay-event="audit">审核</span>',
+			         '<span class="layui-btn layui-btn-sm layui-btn-normal" lay-event="returnOrder">退货单</span>',
+			         '<span class="layui-btn layui-btn-sm layui-btn-primary" lay-event="addBill">生成账单</span>',
 			         ].join(' '),
 			cols:[[
 			       { type:'checkbox',},
@@ -232,10 +253,60 @@ layui.config({
 			       { title:'棉花类型',   field:'fill',	},
 			       { title:'千克',   field:'kilogramWeight',	},
 			       { title:'克重',   field:'gramWeight',	},
-			       { title:'预计仓库',   field:'warehouseType_name',	},
-			       { title:'作废',   field:'flag',	transData:{ data:['否','是'],}, },
 			       { title:'审核',   field:'audit',	transData:{ data:['否','是'],}, },
-			       ]]
+			       ]],
+			done:function(){
+				var tipWin;
+				var first = 0;
+				layui.each($('td[data-field="process"]'),function(index,item){
+					var elem = $(item);
+					var index = elem.closest('tr').data('index');
+					var trData = table.cache['tableData'][index];
+					$(item).on('mouseenter',function(){
+						if(first==0){
+							mytable.renderNoPage({
+								elem:'#tipTable',
+								ifNull:'0',
+								totalRow:['allPrice'],
+								parseData:function(ret){
+									if(ret.code==0){
+										layui.each(ret.data,function(index,item){
+											item.allPrice = (item.price || 0)*item.number;
+										})
+									}
+									return {  msg:ret.message,  code:ret.code , data:ret.data, };
+								},
+								url:'${ctx}/ledger/mixOutSoureRefund?id='+trData.id,
+								ifNull:0,
+								cols:[[
+									{field:'name',title:'工序',},
+									{field:'number',title:'数量',},
+									{field:'price',title:'价格',},
+									{field:'allPrice',title:'总价格',},
+								]],
+								done:function(){
+									layer.close(tipWin);
+									tipWin = layer.tips($('#tipWin').html(), elem,{
+										time:0,
+										area: '410px',
+										//area:['400px','300px'],
+										tips: [2, 'rgb(95, 184, 120)'],
+										success:function(layero, layerIndex){
+											
+										}
+									})
+								}
+							})
+						}else{
+							table.reload('tipTable',{
+								url:'${ctx}/ledger/mixOutSoureRefund?id='+trData.id,
+							})
+						}
+						first++;
+					})
+				})
+				$(document).on('mousedown', function (event) { layer.close(tipWin); });
+			}
 		})
 		function getProcess(){
 			return function(data){
@@ -268,6 +339,102 @@ layui.config({
 					wind.document.body.innerHTML = printHtml;
 					wind.print();
 				},
+			})
+		}
+		function addBill(data){
+			var addBillWin = layer.open({
+				type:1,
+				title:'生成账单',
+				offset:'50px',
+				area:['50%','50%'],
+				btn:['确认生成','取消'],
+				shadeClose:true,
+				content:[
+					'<div>',
+						'<table id="addBillTable" lay-filter="addBillTable"></table>',
+					'</div>'
+				].join(' '),
+				success:function(){
+					mytable.renderNoPage({
+						elem:'#addBillTable',
+						autoUpdate:{
+							saveUrl:'/ledger/updateProcessPrice',
+							isReload:true,
+						},
+						parseData:function(ret){
+							if(ret.code==0){
+								layui.each(ret.data,function(index,item){
+									item.allPrice = (item.price || 0)*item.number;
+								})
+							}
+							return {  msg:ret.message,  code:ret.code , data:ret.data, };
+						},
+						ifNull:'0',
+						totalRow:['allPrice'],
+						verify:{
+							price:['price'],
+						},
+						url:'${ctx}/ledger/mixOutSoureRefund?id='+data.id,
+						cols:[[
+							{field:'name',title:'工序',},
+							{field:'number',title:'数量',},
+							{field:'price',title:'价格',edit:true,},
+							{field:'allPrice',title:'总价格',},
+						]],
+					})
+				},
+				yes:function(){
+					var money = 0,verify=true;
+					layui.each(table.cache['addBillTable'],function(index,item){
+						if(!item.price && item.number!=0){
+							verify = false;
+							return;
+						}
+						money += item.allPrice;
+					});
+					if(!verify){
+						myutil.emsg('工序价格不能为0！');
+						return false;
+					}
+					var sureAddWin = layer.open({
+						type:1,
+						btn:['确定','取消'],
+						title:'确认生成',
+						offset:'120px',
+						area:['300px','250px'],
+						content:[
+							'<div style="padding:10px;">',
+								'<table style="margin:0 auto;"><tr><td>时间：</td>',
+									'<td><input type="text" class="layui-input" id="addBillTime"></td></tr></table>',
+							'</div>',
+						].join(' '),
+						success:function(){
+							laydate.render({
+								elem:'#addBillTime',type:'datetime',value:new Date(),
+							})
+						},
+						yes:function(){
+							var time = $('#addBillTime').val();
+							if(!time){
+								myutil.emsg('时间不能为空！');
+								return false;
+							}
+							myutil.saveAjax({
+								url:'/ledger/saveOutSoureBills',
+								data:{
+									expenseDate: time,
+									id: data.id,
+									money: money,
+								},
+								success:function(){
+									layer.close(addBillWin);
+									layer.close(sureAddWin);
+									table.reload('tableData');
+								}
+							})
+						}
+					})
+				}
 			})
 		}
 	}//end define function

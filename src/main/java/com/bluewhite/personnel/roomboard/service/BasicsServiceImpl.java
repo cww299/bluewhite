@@ -60,7 +60,7 @@ public class BasicsServiceImpl extends BaseServiceImpl<Basics, Long>
 									  ||(Advertisement.getStartTime().compareTo(orderTimeBegin)!=-1 && Advertisement.getEndTime().compareTo(orderTimeEnd)!=1)
 										).collect(Collectors.toList());
 		//查询出当月所有培训费
-	List<Advertisement> list2=advertisementDao.findByType(1);
+	List<Advertisement> list2=advertisementDao.findByTypeAndMold(1, 0);
 	List<Advertisement> listFilter2= list2.stream().filter(Advertisement->(Advertisement.getStartTime().compareTo(orderTimeBegin)==-1 && Advertisement.getEndTime().compareTo(orderTimeEnd)==1)
 			  ||(Advertisement.getStartTime().compareTo(orderTimeBegin)!=-1 && Advertisement.getStartTime().compareTo(orderTimeEnd)==-1 && Advertisement.getEndTime().compareTo(orderTimeEnd)==1)
 			  ||(Advertisement.getStartTime().compareTo(orderTimeBegin)==-1 && Advertisement.getEndTime().compareTo(orderTimeBegin)==1 && Advertisement.getEndTime().compareTo(orderTimeEnd)==-1)
@@ -259,7 +259,7 @@ public class BasicsServiceImpl extends BaseServiceImpl<Basics, Long>
 					/*
 					 * 查询单个人的培训汇总
 					 */
-					List<Advertisement> advertisements=advertisementDao.findByRecruitIdAndType(recruit.getId(), 1);
+					List<Advertisement> advertisements=advertisementDao.findByRecruitIdAndTypeAndMold(recruit.getId(), 1,0);
 					List<Advertisement> listFilter2= advertisements.stream().filter(Advertisement->(Advertisement.getStartTime().compareTo(orderTimeBegin)==-1 && Advertisement.getEndTime().compareTo(orderTimeEnd)==1)
 							  ||(Advertisement.getStartTime().compareTo(orderTimeBegin)==1 && Advertisement.getStartTime().compareTo(orderTimeEnd)==-1 && Advertisement.getEndTime().compareTo(orderTimeEnd)==1)
 							  ||(Advertisement.getStartTime().compareTo(orderTimeBegin)==-1 && Advertisement.getEndTime().compareTo(orderTimeBegin)==1 && Advertisement.getEndTime().compareTo(orderTimeEnd)==-1)

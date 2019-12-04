@@ -251,7 +251,7 @@
 				size: 'lg', 
 				url: '${ctx}/task/allTask',
 				where:{
-					type:6,
+					type:2,
 					orderTimeBegin:firstdate,
 			  		orderTimeEnd:lastdate,
 				},
@@ -376,7 +376,6 @@
 			//监听工具事件
 			table.on('tool(tableData)', function(obj){
 				 var data = obj.data;
-				 console.log(data)
 				switch(obj.event) {
 				case 'query':
 					$("#queryId").val(data.id)//把组ID放进查询  方便查询调用

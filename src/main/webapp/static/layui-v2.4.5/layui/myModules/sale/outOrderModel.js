@@ -1,6 +1,6 @@
 /* 2019/11/1
  * author: 299
- * 新增、修改外发单模板
+ * 新增、修改外发加工单、加工单模板
  * 需要在本模块前引入myutil,并设置ctx后调用init()
  * outOrderModel.add({ success:function(){ 成功函数的回调 }  }) 绑定新增按钮
  * OutOrderModel.update({ data:{修改前的数据、回显},   })
