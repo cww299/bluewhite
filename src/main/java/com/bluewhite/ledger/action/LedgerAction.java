@@ -259,9 +259,10 @@ public class LedgerAction {
 	private ClearCascadeJSON clearCascadeJSONPutStorage;
 	{
 		clearCascadeJSONPutStorage = ClearCascadeJSON.get()
-				.addRetainTerm(PutStorage.class, "id", "product",
-				"orderOutSource", "inStatus", "inWarehouseType", "inventory", "arrivalTime", "arrivalNumber",
+				.addRetainTerm(PutStorage.class, "id", "product","orderOutSource", "inStatus",
+						"inWarehouseType", "arrivalTime", "arrivalNumber",
 				"storageArea", "storageLocation", "surplusNumber", "userStorage")
+				.addRetainTerm(Product.class, "id", "name", "number")
 				.addRetainTerm(BaseOne.class, "id", "name")
 				.addRetainTerm(User.class, "id", "userName");
 	}
@@ -1003,7 +1004,7 @@ public class LedgerAction {
 
 
 	/**
-	 * （面辅料仓库）生成物料出库单   对于领料单生成(确认已被领取)
+	 * （面辅料仓库）生成物料出库单
 	 * @param order
 	 * @return
 	 */

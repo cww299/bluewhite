@@ -16,7 +16,6 @@ import javax.persistence.Transient;
 
 import com.bluewhite.base.BaseEntity;
 import com.bluewhite.basedata.entity.BaseData;
-import com.bluewhite.onlineretailers.inventory.entity.Inventory;
 import com.bluewhite.system.user.entity.User;
 
 /**

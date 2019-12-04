@@ -19,7 +19,9 @@ import com.bluewhite.common.entity.PageResult;
 import com.bluewhite.common.utils.SalesUtils;
 import com.bluewhite.common.utils.StringUtil;
 import com.bluewhite.ledger.dao.MaterialOutStorageDao;
+import com.bluewhite.ledger.dao.MaterialPutStorageDao;
 import com.bluewhite.ledger.entity.MaterialOutStorage;
+import com.bluewhite.ledger.entity.MaterialPutStorage;
 
 @Service
 public class MaterialOutStorageServiceImpl extends BaseServiceImpl<MaterialOutStorage, Long>
@@ -27,14 +29,27 @@ public class MaterialOutStorageServiceImpl extends BaseServiceImpl<MaterialOutSt
 
 	@Autowired
 	private MaterialOutStorageDao dao;
+	@Autowired
+	private MaterialPutStorageDao materialPutStorageDao;
 
 	@Override
 	public void saveMaterialOutStorage(MaterialOutStorage materialOutStorage) {
-		if(materialOutStorage.getId()!=null){  
+		if (materialOutStorage.getId() != null) {
 			MaterialOutStorage ot = dao.findOne(materialOutStorage.getId());
 			update(materialOutStorage, ot, "");
-		}else{
-			materialOutStorage.setSerialNumber(Constants.WLCK+StringUtil.getDate()+SalesUtils.get0LeftString((int)  (dao.count()+1), 8));
+		} else {
+			if (!StringUtils.isEmpty(materialOutStorage.getMaterialPutOutStorageIds())) {
+				String[] idStrings = materialOutStorage.getMaterialPutOutStorageIds().split(",");
+				if (idStrings.length > 0) {
+					for (String ids : idStrings) {
+						Long id = Long.parseLong(ids);
+						MaterialPutStorage materialPutStorage = materialPutStorageDao.findOne(id);
+						materialOutStorage.getMaterialPutOutStorage().add(materialPutStorage);
+					}
+				}
+			}
+			materialOutStorage.setSerialNumber(
+					Constants.WLCK + StringUtil.getDate() + SalesUtils.get0LeftString((int) (dao.count() + 1), 8));
 			save(materialOutStorage);
 		}
 	}
@@ -78,8 +93,12 @@ public class MaterialOutStorageServiceImpl extends BaseServiceImpl<MaterialOutSt
 			for (String idString : idStrings) {
 				Long id = Long.parseLong(idString);
 				MaterialOutStorage materialOutStorage = dao.findOne(id);
-				if (materialOutStorage.getMaterialPutStorage().getOrderProcurement().getArrival() == 1) {
-					throw new ServiceException("第"+(i+1)+"条出库单的入库采购单已审核全部入库，无法删除");
+				if (materialOutStorage.getMaterialPutOutStorage().size() > 0) {
+					for (MaterialPutStorage m : materialOutStorage.getMaterialPutOutStorage()) {
+						if (m.getOrderProcurement().getArrival() == 1) {
+							throw new ServiceException("第" + (i + 1) + "条出库单的入库采购单已审核全部入库，无法删除");
+						}
+					}
 				}
 				delete(id);
 				i++;
