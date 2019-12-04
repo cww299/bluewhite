@@ -44,7 +44,7 @@ public class ConsumptionServiceImpl extends BaseServiceImpl<Consumption, Long> i
 	@Override
 	public PageResult<Consumption> findPages(Consumption param, PageParameter page) {
 		CurrentUser cu = SessionManager.getUserSession();
-		if (cu != null && !cu.getIsAdmin() && cu.getOrgNameId() != 6) {
+		if (param.getType()==1 && cu != null && !cu.getIsAdmin() && cu.getOrgNameId() != 6) {
 			param.setOrgNameId(cu.getOrgNameId());
 		}
 		Page<Consumption> pages = dao.findAll((root, query, cb) -> {

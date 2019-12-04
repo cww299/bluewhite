@@ -477,7 +477,6 @@ public class LedgerAction {
 	/**
 	 * （采购部）查看采购订单
 	 * 
-	 * 
 	 * @param order
 	 * @return
 	 */
@@ -1138,11 +1137,6 @@ public class LedgerAction {
 	}
 
 	
-
-	
-	
-	
-
 	/**
 	 * 
 	 * 查看发货单
@@ -1246,7 +1240,7 @@ public class LedgerAction {
 	}
 
 	/**
-	 * 发货贴包单
+	 * 一键发货贴包单，同时生成财务销售单
 	 * 
 	 * @return cr
 	 */
