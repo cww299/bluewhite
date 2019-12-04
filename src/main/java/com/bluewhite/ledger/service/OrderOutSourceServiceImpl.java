@@ -3,6 +3,7 @@ package com.bluewhite.ledger.service;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -20,9 +21,11 @@ import com.bluewhite.base.BaseServiceImpl;
 import com.bluewhite.basedata.dao.BaseDataDao;
 import com.bluewhite.basedata.entity.BaseData;
 import com.bluewhite.common.BeanCopyUtils;
+import com.bluewhite.common.Constants;
 import com.bluewhite.common.ServiceException;
 import com.bluewhite.common.entity.PageParameter;
 import com.bluewhite.common.entity.PageResult;
+import com.bluewhite.common.utils.SalesUtils;
 import com.bluewhite.common.utils.StringUtil;
 import com.bluewhite.finance.consumption.dao.ConsumptionDao;
 import com.bluewhite.finance.consumption.entity.Consumption;
@@ -107,6 +110,13 @@ public class OrderOutSourceServiceImpl extends BaseServiceImpl<OrderOutSource, L
 			}
 			orderOutSource.setAudit(0);
 			orderOutSource.setChargeOff(0);
+			String outSourceNumber = "";
+			if(orderOutSource.getOutsource()==0){
+				outSourceNumber = Constants.JGD+StringUtil.getDate()+SalesUtils.get0LeftString((int)(dao.count()+1), 8);
+			}else{
+				outSourceNumber = Constants.WFJGD+StringUtil.getDate()+SalesUtils.get0LeftString((int)(dao.count()+1), 8);
+			}
+			orderOutSource.setOutSourceNumber(outSourceNumber);
 			save(orderOutSource);
 		} else {
 			throw new ServiceException("生产下单合同不能为空");
@@ -200,6 +210,20 @@ public class OrderOutSourceServiceImpl extends BaseServiceImpl<OrderOutSource, L
 		if (ot.getAudit() == 1) {
 			throw new ServiceException("已审核，无法修改");
 		}
+		
+		//当修改了多对多的情况，进行比对修改
+		Set<BaseData> outsourceTask = new HashSet<BaseData>();
+		if (!StringUtils.isEmpty(orderOutSource.getOutsourceTaskIds())) {
+			String[] idStrings = orderOutSource.getOutsourceTaskIds().split(",");
+			if (idStrings.length > 0) {
+				for (String ids : idStrings) {
+					Long id = Long.parseLong(ids);
+					BaseData baseData = baseDataDao.findOne(id);
+					outsourceTask.add(baseData);
+				}
+			}
+		}
+		
 		BeanCopyUtils.copyNotEmpty(orderOutSource, ot, "");
 		Order order = orderDao.findOne(ot.getOrderId());
 		List<OrderOutSource> orderOutSourceList = dao.findByOrderId(ot.getOrderId());
@@ -226,7 +250,6 @@ public class OrderOutSourceServiceImpl extends BaseServiceImpl<OrderOutSource, L
 					Integer returnNumber = returnNumberList.stream().reduce(Integer::sum).orElse(0);
 					// 实际数量=(总加工数-退货数)
 					int actualNumber = sumNumber - returnNumber;
-
 					if (actualNumber > order.getNumber()) {
 						throw new ServiceException(baseData.getName() + "的任务工序数量不足，无法生成加工单 ");
 					}

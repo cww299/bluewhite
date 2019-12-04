@@ -95,7 +95,6 @@ public class ProductServiceImpl extends BaseServiceImpl<Product, Long> implement
 		if (cu.getRole().contains(Constants.PRODUCT_RIGHT_TAILOR)) {
 			param.setOriginDepartment(Constants.PRODUCT_RIGHT_TAILOR);
 		}
-		
 		Long warehouseTypeDeliveryId = RoleUtil.getWarehouseTypeDelivery(cu.getRole());
 		if(warehouseTypeDeliveryId!=null){
 			param.setWarehouseTypeId(warehouseTypeDeliveryId);
@@ -128,11 +127,6 @@ public class ProductServiceImpl extends BaseServiceImpl<Product, Long> implement
 			// 按产品名称过滤
 			if (!StringUtils.isEmpty(param.getName())) {
 				predicate.add(cb.like(root.get("name").as(String.class),"%" + StringUtil.specialStrKeyword(param.getName()) + "%"));
-			}
-			//按仓库种类
-			if(param.getWarehouseTypeId()!=null){
-				Join<Product,Inventory> join = root.join(root.getModel().getSet("inventorys", Inventory.class),JoinType.LEFT);
-				predicate.add(cb.equal(join.get("warehouseTypeId").as(Long.class),param.getWarehouseTypeId()));
 			}
 			Predicate[] pre = new Predicate[predicate.size()];
 			query.where(predicate.toArray(pre));
@@ -169,7 +163,6 @@ public class ProductServiceImpl extends BaseServiceImpl<Product, Long> implement
 				}
 			}
 		}
-
 		PageResult<Product> result = new PageResult<>(pages, page);
 		return result;
 	}
@@ -306,6 +299,55 @@ public class ProductServiceImpl extends BaseServiceImpl<Product, Long> implement
 	@Override
 	public List<Product> getAllProduct() {
 		return productDao.findByNumberNotNull();
+	}
+
+	@Override
+	public PageResult<Product> inventoryFindPages(Product param, PageParameter page) {
+		CurrentUser cu = SessionManager.getUserSession();
+		Long warehouseTypeDeliveryId = RoleUtil.getWarehouseTypeDelivery(cu.getRole());
+		if(warehouseTypeDeliveryId!=null){
+			param.setWarehouseTypeId(warehouseTypeDeliveryId);
+		}
+		Page<Product> pages = productDao.findAll((root, query, cb) -> {
+			List<Predicate> predicate = new ArrayList<>();
+			// 按id过滤
+			if (param.getId() != null) {
+				predicate.add(cb.equal(root.get("id").as(Long.class), param.getId()));
+			}
+			// 按部门展示出共同的产品 和 自身部门添加的产品
+			// 按编号过滤
+			if (!StringUtils.isEmpty(param.getOriginDepartment())) {
+				Predicate p1 = cb.isNotNull(root.get("number").as(String.class));
+				Predicate p2 = cb.equal(root.get("originDepartment").as(String.class), param.getOriginDepartment());
+				predicate.add(cb.or(p1, p2));
+			} else {
+				predicate.add(cb.isNotNull(root.get("number").as(String.class)));
+			}
+
+			// 按部门产品编号过滤
+			if (!StringUtils.isEmpty(param.getDepartmentNumber())) {
+				predicate.add(cb.equal(root.get("departmentNumber").as(String.class), param.getDepartmentNumber()));
+			}
+
+			// 按编号过滤
+			if (!StringUtils.isEmpty(param.getNumber())) {
+				predicate.add(cb.equal(root.get("number").as(String.class), param.getNumber()));
+			}
+			// 按产品名称过滤
+			if (!StringUtils.isEmpty(param.getName())) {
+				predicate.add(cb.like(root.get("name").as(String.class),"%" + StringUtil.specialStrKeyword(param.getName()) + "%"));
+			}
+			//按仓库种类
+			if(param.getWarehouseTypeId()!=null){
+				Join<Product,Inventory> join = root.join(root.getModel().getSet("inventorys", Inventory.class),JoinType.LEFT);
+				predicate.add(cb.equal(join.get("warehouseTypeId").as(Long.class),param.getWarehouseTypeId()));
+			}
+			Predicate[] pre = new Predicate[predicate.size()];
+			query.where(predicate.toArray(pre));
+			return null;
+		}, page);
+		PageResult<Product> result = new PageResult<>(pages, page);
+		return result;
 	}
 
 }
