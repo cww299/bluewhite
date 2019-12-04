@@ -264,6 +264,7 @@ public class LedgerAction {
 				"storageArea", "storageLocation", "surplusNumber", "userStorage")
 				.addRetainTerm(Product.class, "id", "name", "number")
 				.addRetainTerm(BaseOne.class, "id", "name")
+				.addRetainTerm(BaseData.class, "id", "name")
 				.addRetainTerm(User.class, "id", "userName");
 	}
 	private ClearCascadeJSON clearCascadeJSONMaterialPutStorage;
@@ -275,6 +276,7 @@ public class LedgerAction {
 				.addRetainTerm(OrderProcurement.class, "id", "orderProcurementNumber")
 				.addRetainTerm(Materiel.class, "id", "name")
 				.addRetainTerm(BaseOne.class, "id", "name")
+				.addRetainTerm(BaseData.class, "id", "name")
 				.addRetainTerm(User.class, "id", "userName");
 	}
 	private ClearCascadeJSON clearCascadeJSONMaterialOutStorage;
