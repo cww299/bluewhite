@@ -19,10 +19,12 @@ import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.bluewhite.base.BaseServiceImpl;
 import com.bluewhite.basedata.dao.BaseDataDao;
+import com.bluewhite.common.BeanCopyUtils;
 import com.bluewhite.common.ServiceException;
 import com.bluewhite.common.entity.PageParameter;
 import com.bluewhite.common.entity.PageResult;
 import com.bluewhite.common.utils.StringUtil;
+import com.bluewhite.ledger.dao.OrderChildDao;
 import com.bluewhite.ledger.dao.OrderDao;
 import com.bluewhite.ledger.entity.Order;
 import com.bluewhite.ledger.entity.OrderChild;
@@ -38,6 +40,8 @@ public class OrderServiceImpl extends BaseServiceImpl<Order, Long> implements Or
 	private ProcurementDao procurementDao;
 	@Autowired
 	private BaseDataDao baseDataDao;
+	@Autowired
+	private OrderChildDao orderChildDao;
 
 	@Override
 	public PageResult<Order> findPages(Order param, PageParameter page) {
@@ -121,8 +125,8 @@ public class OrderServiceImpl extends BaseServiceImpl<Order, Long> implements Or
 		if (!StringUtils.isEmpty(order.getOrderChild())) {
 			JSONArray jsonArray = JSON.parseArray(order.getOrderChild());
 			for (int i = 0; i < jsonArray.size(); i++) {
-				OrderChild orderChild = new OrderChild();
 				JSONObject jsonObject = jsonArray.getJSONObject(i);
+				OrderChild orderChild = new OrderChild(); 
 				orderChild.setCustomerId(jsonObject.getLong("customerId"));
 				orderChild.setUserId(jsonObject.getLong("userId"));
 				orderChild.setChildNumber(jsonObject.getInteger("childNumber"));
@@ -164,18 +168,25 @@ public class OrderServiceImpl extends BaseServiceImpl<Order, Long> implements Or
 	@Override
 	@Transactional
 	public void updateOrder(Order order) {
-		if (order.getId() != null) {
-			Order ot = findOne(order.getId());
-			if (ot.getAudit() == 1) {
-				throw new ServiceException("批次号为" + ot.getBacthNumber() + "下单合同已审核，无法修改");
-				
-				
-				
-				
-				
-			}
-
+		Order ot = dao.findOne(order.getId());
+		if (ot.getAudit() == 1) {
+			throw new ServiceException("批次号为" + ot.getBacthNumber() + "下单合同已审核，无法修改");
 		}
+		BeanCopyUtils.copyNotEmpty(order, ot, "");
+		// 新增子单
+		if (!StringUtils.isEmpty(ot.getOrderChild())) {
+			JSONArray jsonArray = JSON.parseArray(ot.getOrderChild());
+			for (int i = 0; i < jsonArray.size(); i++) {
+				JSONObject jsonObject = jsonArray.getJSONObject(i);
+				OrderChild orderChild = orderChildDao.findOne(jsonObject.getLong("id"));
+				orderChild.setCustomerId(jsonObject.getLong("customerId"));
+				orderChild.setUserId(jsonObject.getLong("userId"));
+				orderChild.setChildNumber(jsonObject.getInteger("childNumber"));
+				orderChild.setChildRemark(jsonObject.getString("childRemark"));
+				ot.getOrderChilds().add(orderChild);
+			}
+		}
+		dao.save(ot);
 	}
 
 	@Override
@@ -200,4 +211,19 @@ public class OrderServiceImpl extends BaseServiceImpl<Order, Long> implements Or
 		return count;
 	}
 
+	@Override
+	public int deleteOrderChild(String ids) {
+		int count = 0;
+		if (!StringUtils.isEmpty(ids)) {
+			String[] idArr = ids.split(",");
+			if (idArr.length > 0) {
+				for (int i = 0; i < idArr.length; i++) {
+					Long id = Long.parseLong(idArr[i]);
+					orderChildDao.delete(id);
+					count++;
+				}
+			}
+		}
+		return count;
+	}
 }
