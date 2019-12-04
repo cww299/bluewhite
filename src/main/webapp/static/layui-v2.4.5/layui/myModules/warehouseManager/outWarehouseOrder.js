@@ -52,7 +52,7 @@ layui.extend({
 							'<option value="4">采购退货出库</option>',
 							'<option value="5">盘盈出库</option>',
 							`{{#
-							 	if(layui.inputWarehouseOrder.type!=1){
+							 	if(layui.outWarehouseOrder.type!=1){
 							 }}
 									'<option value="6">返工出库</option>'
 							 {{#
@@ -62,19 +62,30 @@ layui.extend({
 							'</select>',
 					'</div>',
 				'</div>',
-				'<div class="layui-form-item" pane>',
-					'<label class="layui-form-label">入库单</label>',
+				'<div class="layui-form-item">',
+					'<label class="layui-form-label textareaLable" style="">入库单</label>',
 					'<div class="layui-input-block">',
-						'<input class="layui-input" lay-verify="required" name="" id="inputOrderChoose" ',
-							'placeholder="单击进行选择" ',
-							'value="{{ d.materialPutStorage?d.materialPutStorage.serialNumber:"" }}" readonly>',
+						'<div class="layui-input textareaDiv" id="inputOrderChoose" >',
+							'<p class="textareaTips">单击进行选择</p>',
+						'</div>',
 					'</div>',
 				'</div>',
 				'<div>',
-					'<input type="hidden" name="materielId" value="{{ d.materielId }}">',
 					'<input type="hidden" name="inWarehouseTypeId" value="379">',
-					'<input type="hidden" name="materialPutStorageId" id="materialPutStorageId" value="{{d.materialPutStorage?d.materialPutStorage.id:""}}">',
 					'<input type="hidden" name="id" value="{{d.id || ""}}">',
+					'<input type="hidden" name="materialPutStorageId" id="materialPutStorageId">',
+					`{{#
+				 	if(layui.outWarehouseOrder.type==1){
+					}}
+						<input type="hidden" name="materielId" value="{{ d.materielId }}">
+					{{#
+				 	 	}else{
+					}}
+						<input type="hidden" name="productId" value="{{ d.productId }}">
+					{{#
+				 	 	}
+					}}
+					`,
 				'</div>',
 				'<p style="display:none;"><button lay-submit lay-filter="sureAddOutOrder" id="sureAddOutOrder">确定</button></p>',
 				'</div>',
@@ -105,7 +116,7 @@ layui.extend({
 		var win = layer.open({
 			type:1,
 			content:html,
-			area:['32%','480px'],
+			area:['32%','500px'],
 			offset:'50px',
 			btn:['确定','取消'],
 			title: title,
@@ -127,7 +138,7 @@ layui.extend({
 					var chooseInputWin = layer.open({
 						typr:1,
 						btn:[],
-						title:'入库单选择&nbsp;&nbsp;&nbsp;<span class="layui-badge">提示：双击进行选择</span>',
+						title:'入库单选择',
 						area:['70%','80%'],
 						content:`<div>
 									<table id="chooseTable" lay-filter="chooseTable"></table>
@@ -140,32 +151,71 @@ layui.extend({
 							mytable.render({
 								elem:'#chooseTable',
 								url: myutil.config.ctx+url,
+								toolbar:`<div>
+											<span class="layui-btn layui-btn-sm" lay-event="sureChoosedInputOrder">确定选择</span>
+										</div>`,
 								ifNull:'--',
 								cols:[[
 								       { type:'checkbox',},
-								       { title:'入库编号', field:'serialNumber',},
-								       { title:'入库时间',   field:'arrivalTime', type:'dateTime',width:'10%',	},
+								       { title:'入库编号', field:'serialNumber',width:'30%',},
+								       { title:'入库时间',   field:'arrivalTime', type:'dateTime',width:'15%',	},
 								       { title:'库区',   field:'storageArea_name', 	},
 								       { title:'库位',   field:'storageLocation_name',	},
 								       { title:'剩余数量',   field:'surplusNumber',width:'10%',	},
-								       { title:'面料',   field:'materiel_name',	},
-								       { title:'入库内容',   field:'orderProcurement_orderProcurementNumber',	width:'33%'},
 								       ]],
 								done:function(){
-									table.on('row(chooseTable)', function(obj){
-										layer.close(chooseInputWin);
-										var data = obj.data;
-										$('#materialPutStorageId').val(data.id);
-										$('#inputOrderChoose').val(data.serialNumber);
-										form.render();
-									});
+									
+								}
+							})
+							table.on('toolbar(chooseTable)',function(obj){
+								var check = layui.table.checkStatus('chooseTable').data;
+								if(obj.event=='sureChoosedInputOrder'){
+									if(check.length<1)
+										return myutil.emsg('请选择相关数据');
+									var html = '';
+									var choosedIds = $('#materialPutStorageId').val().split(',');
+									for(var i=0;i<check.length;i++){
+										for(var j=0;j<choosedIds.length;j++){
+											if(choosedIds[j]==check[i].id){
+												myutil.emsg('入库单：'+check[i].serialNumber+'已选择 ，请勿重复添加');
+												return false;
+											}
+										}
+										html += ['<span class="layui-badge layui-bg-green">',
+													check[i].serialNumber,
+													'<i class="layui-icon layui-icon-close" data-id="'+check[i].id+'"></i>',
+												'</span>',].join(' ');
+										choosedIds.push(check[i].id);
+									}
+									if($('#materialPutStorageId').val()=="")
+										$('#inputOrderChoose').html(html);
+									else
+										$('#inputOrderChoose').append(html);
+									$('#materialPutStorageId').val(choosedIds.join(','));
+									$('#inputOrderChoose .layui-icon').unbind().on('click',function(e){
+										layui.stope(e);
+										var id = $(this).data('id');
+										var choosedIds = $('#materialPutStorageId').val().split(',');
+										for(var i in choosedIds){
+											if(choosedIds[i]==id){
+												choosedIds.splice(i,1);
+												$('#materialPutStorageId').val(choosedIds.join(','));
+												$(this).closest('span').remove();
+												break;
+											}
+										}
+									})
+									layer.close(chooseInputWin);
+									form.render();
 								}
 							})
 						}
 					})
 				})
 				form.on('submit(sureAddOutOrder)',function(obj){
-					var url = '/ledger/inventory/saveMaterialOutStorage';
+					var url = '/ledger/inventory/saveOutStorage';
+					if(outWarehouseOrder.type==1)
+						url = '/ledger/inventory/saveMaterialOutStorage';
 					myutil.saveAjax({
 						url: url,
 						data: obj.field,
@@ -197,6 +247,9 @@ layui.extend({
 					done && done();
 			}
 		})
+		var filePath = layui.cache.modules.outWarehouseOrder
+	    .substr(0, layui.cache.modules.outWarehouseOrder.lastIndexOf('/'))
+		layui.link(filePath+"/../css/warehouseManager/outWarehouseOrder.css")
 	}
 	exports('outWarehouseOrder',outWarehouseOrder);
 })

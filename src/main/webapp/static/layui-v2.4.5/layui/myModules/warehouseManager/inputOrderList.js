@@ -92,14 +92,14 @@ layui.extend({
 			ifNull:'--',
 			cols:[[
 			       { type:'checkbox',},
-			       { title:'入库编号', field:'serialNumber',width:'15%',	},
+			       { title:'入库编号', field:'serialNumber',width:'12%',	},
 			       { title:'入库时间',   field:'arrivalTime', type:'date',width:'10%',	},
 			       { title:'入库数量',   field:'arrivalNumber',   },
 			       { title:'库区',   field:'storageArea_name', 	},
 			       { title:'库位',   field:'storageLocation_name',	},
 			       { title:'入库人',   field:'userStorage_userName',	},
 			       { title:'剩余数量',   field:'surplusNumber',width:'8%',	},
-			       { title:'面料',   field:'materiel_name',	},
+			       { title:'产品',   field:'product_name',	width:'18%',},
 			       { title:'入库内容',   field:'orderProcurement_orderProcurementNumber',	width:'20%'},
 			       { title:'状态',   field:'inStatus',  transData:{ data:['','生产入库','','调拨入库','退货入库','换货入库','盘亏入库'], } },
 			       ]]
