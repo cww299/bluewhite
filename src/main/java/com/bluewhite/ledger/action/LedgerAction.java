@@ -264,8 +264,18 @@ public class LedgerAction {
 				"storageArea", "storageLocation", "surplusNumber", "userStorage")
 				.addRetainTerm(OrderOutSource.class, "id",  "outSourceNumber","outsourceTask")
 				.addRetainTerm(Product.class, "id", "name", "number")
-				.addRetainTerm(BaseOne.class, "id", "name")
 				.addRetainTerm(BaseData.class, "id", "name")
+				.addRetainTerm(User.class, "id", "userName");
+	}
+	
+	private ClearCascadeJSON clearCascadeJSONOutStorage;
+	{
+		clearCascadeJSONOutStorage = ClearCascadeJSON.get()
+				.addRetainTerm(OutStorage.class, "id", "product","putStorage", "outStatus",
+				"arrivalTime", "arrivalNumber","serialNumber","userStorage")
+				.addRetainTerm(PutStorage.class, "id","inStatus","arrivalTime", "arrivalNumber"
+						,"serialNumber","storageArea", "storageLocation", "surplusNumber", "userStorage")
+				.addRetainTerm(Product.class, "id", "name", "number")
 				.addRetainTerm(User.class, "id", "userName");
 	}
 	
@@ -1123,7 +1133,7 @@ public class LedgerAction {
 	@ResponseBody
 	public CommonResponse outStoragePage(PageParameter page, OutStorage outStorage) {
 		CommonResponse cr = new CommonResponse();
-		cr.setData(clearCascadeJSONPutStorage.format(outStorageService.findPages(page, outStorage)).toJSON());
+		cr.setData(clearCascadeJSONOutStorage.format(outStorageService.findPages(page, outStorage)).toJSON());
 		return cr; 
 	}
 	
