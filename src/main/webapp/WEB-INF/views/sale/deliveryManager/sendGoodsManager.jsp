@@ -7,7 +7,7 @@
 	<link rel="stylesheet" href="${ctx }/static/layui-v2.4.5/layui/css/layui.css" media="all">
 	<script src="${ctx}/static/layui-v2.4.5/layui/layui.js"></script>
 	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-<title>发货管理</title>
+<title>发货单</title>
 <style>
 #defaultDate{
 	font-weight: bolder;
@@ -42,7 +42,7 @@
 <!-- 表格工具栏模板 -->
 <script type="text/html" id="tableDataToolbar">
 <div class="layui-btn-container layui-inline">
-	<span class="layui-btn layui-btn-primary" id="defaultDate">0000-00-00</span>
+	<span class="layui-btn layui-btn-sm layui-btn-primary" id="defaultDate">0000-00-00</span>
 	<span class="layui-btn layui-btn-sm" lay-event="addTempData">新增一行</span>
 	<span class="layui-btn layui-btn-sm layui-btn-danger" lay-event="cleanTempData">清空新增行</span>
 	<span class="layui-btn layui-btn-sm layui-btn-warm" lay-event="saveTempData">批量保存</span>
@@ -223,16 +223,14 @@ layui.config({
 					data: tempData[i],
 					success: function(r){
 						r.code==0 && (successAdd++);
+						if(successAdd==tempData.length){
+							myutil.smsg('成功新增：'+successAdd+'条数据');
+							table.cleanTemp('tableData');
+							table.reload('tableData')
+						}
 					}
 				})
 			}
-			if(successAdd==tempData.length){
-				myutil.smsg('成功新增：'+successAdd+'条数据');
-				table.cleanTemp('tableData');
-				table.reload('tableData')
-			}
-			else
-				myutil.emsg('新增异常：'+(tempData.length-successAdd)+'条数据');
 		}
 		function deleteSome(){
 			myutil.deleTableIds({
