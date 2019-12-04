@@ -23,7 +23,6 @@ import com.bluewhite.product.product.entity.Product;
 @Table(name = "ledger_packing_child")
 public class PackingChild extends BaseEntity<Long> {
 	
-	
 	/**
 	 * 客户id
 	 * 
@@ -68,7 +67,7 @@ public class PackingChild extends BaseEntity<Long> {
 	private Packing packing;
 	     
 	/**
-	 * 批次号
+	 * 批次号（冗余字段，便于查找）
 	 */
 	@Column(name = "bacth_number")
 	private String bacthNumber;
@@ -160,7 +159,7 @@ public class PackingChild extends BaseEntity<Long> {
 	 * 贴包数量（包或者箱）
 	 */
 	@Column(name = "stick_number")
-	private String stickNumber;
+	private Integer stickNumber;
 	
 	/**
 	 * 实际数量
@@ -311,11 +310,11 @@ public class PackingChild extends BaseEntity<Long> {
 		this.warehouseType = warehouseType;
 	}
 
-	public String getStickNumber() {
+	public Integer getStickNumber() {
 		return stickNumber;
 	}
 
-	public void setStickNumber(String stickNumber) {
+	public void setStickNumber(Integer stickNumber) {
 		this.stickNumber = stickNumber;
 	}
 

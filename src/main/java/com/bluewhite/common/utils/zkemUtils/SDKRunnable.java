@@ -41,7 +41,7 @@ public class SDKRunnable implements Runnable {
 		ZkemSDKRealTime sdk = new ZkemSDKRealTime();
 		ActiveXComponent zkem = sdk.initSTA(address);
 		sdk.connect(address, zkem);
-		timer(sdk, zkem);
+		timerTask(sdk, zkem);
 		sdk.regEvent(zkem);
 	}
 
@@ -51,7 +51,7 @@ public class SDKRunnable implements Runnable {
 	 * @param sdk
 	 * @param zkem
 	 */
-	private void timer(ZkemSDKRealTime sdk, ActiveXComponent zkem) {
+	private void timerTask(ZkemSDKRealTime sdk, ActiveXComponent zkem) {
 		Calendar c = Calendar.getInstance();
 		Date time = c.getTime();
 		Timer timer = new Timer();
@@ -61,7 +61,6 @@ public class SDKRunnable implements Runnable {
 				String ip = sdk.GetDeviceIP(1, zkem);
 				if (ip == null) {
 					System.out.println(address + "考勤机设备异常，重连中-------");
-					regEvent();
 					timer.cancel();
 				}
 			}

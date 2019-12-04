@@ -71,7 +71,7 @@ public class Sale extends BaseEntity<Long>{
 
 
 	/**
-	 * 单只价格
+	 * 单只价格（价格的来源有待商榷）
 	 */
 	@Column(name = "price")
 	private Double price;
@@ -93,12 +93,6 @@ public class Sale extends BaseEntity<Long>{
 	 */
 	@Column(name = "copyright")
 	private Integer copyright ;
-	
-	/**
-	 * 是否产生新批次号（0=否1=是）
-	 */
-	@Column(name = "new_bacth")
-	private Integer newBacth ;
 	
 	/**
 	 * 销售编号 
@@ -322,14 +316,6 @@ public class Sale extends BaseEntity<Long>{
 
 	public void setCopyright(Integer copyright) {
 		this.copyright = copyright;
-	}
-
-	public Integer getNewBacth() {
-		return newBacth;
-	}
-
-	public void setNewBacth(Integer newBacth) {
-		this.newBacth = newBacth;
 	}
 
 	public String getSaleNumber() {
