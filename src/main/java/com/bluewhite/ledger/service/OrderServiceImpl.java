@@ -178,9 +178,9 @@ public class OrderServiceImpl extends BaseServiceImpl<Order, Long> implements Or
 			JSONArray jsonArray = JSON.parseArray(ot.getOrderChild());
 			for (int i = 0; i < jsonArray.size(); i++) {
 				JSONObject jsonObject = jsonArray.getJSONObject(i);
-				OrderChild orderChild = orderChildDao.findOne(jsonObject.getLong("id"));
-				if (orderChild == null) {
-					orderChild = new OrderChild();
+				OrderChild orderChild = new OrderChild();
+				if(jsonObject.getLong("id")!=null){
+					orderChild = orderChildDao.findOne(jsonObject.getLong("id"));
 				}
 				orderChild.setCustomerId(jsonObject.getLong("customerId"));
 				orderChild.setUserId(jsonObject.getLong("userId"));
