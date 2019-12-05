@@ -109,7 +109,7 @@ public class Product extends BaseEntity<Long> {
 	 * 仓库
 	 */
 	@Transient
-	private Integer warehouse;
+	private String warehouse;
 
 	/**
 	 * 库存数量
@@ -119,11 +119,13 @@ public class Product extends BaseEntity<Long> {
 	
 	
 
-	public Integer getWarehouse() {
+	
+
+	public String getWarehouse() {
 		return warehouse;
 	}
 
-	public void setWarehouse(Integer warehouse) {
+	public void setWarehouse(String warehouse) {
 		this.warehouse = warehouse;
 	}
 
