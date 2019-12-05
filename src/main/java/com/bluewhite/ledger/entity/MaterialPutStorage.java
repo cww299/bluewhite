@@ -57,6 +57,12 @@ public class MaterialPutStorage extends BaseEntity<Long> {
 
 	/**
 	 * 入库类型 （1=采购入库）（2=调拨入库） （3=退货入库 ） （4=换货入库 ）（5=盘亏入库）
+	 * 采购入库：根据采购单入库
+	 * 调拨入库：根据调拨申请单入库
+	 * 退货入库：根据退货申请单入库
+	 * 换货入库：根据换货申请单入库
+	 * 盘亏入库：根据盘盈申请单入库
+	 * 
 	 */
 	@Column(name = "in_status")
 	private Integer inStatus;

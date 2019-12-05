@@ -47,7 +47,7 @@ public class MaterialOutStorage extends BaseEntity<Long>{
 	private Materiel materiel;
 	
 	/**
-	 * 领料单id
+	 * 领料单id(生产出库)
 	 * 
 	 */
 	@Column(name = "material_requisition_id")
@@ -68,7 +68,14 @@ public class MaterialOutStorage extends BaseEntity<Long>{
 	private Set<MaterialPutStorage> materialPutOutStorage = new HashSet<MaterialPutStorage>();
 	
 	/**
-	 * 出库类型（1=生产出库） （2=调拨出库） （3=销售换货出库 ） （4=采购退货出库 ） （5=盘盈出库 ）
+	 * 出库类型（1=生产出库） （2=调拨出库） （3=换货出库 ） （4=退货出库 ） （5=盘盈出库 ）
+	 * 生产出库：根据领料申请单出库
+	 * 调拨出库：根据调拨申请单出库
+	 * 换货出库：根据换货申请单出库
+	 * 退货出库：根据退货申请单出库
+	 * 盘盈出库：根据盘盈申请单出库
+	 * 
+	 * 
 	 */
 	@Column(name = "out_status")
 	private Integer outStatus;
