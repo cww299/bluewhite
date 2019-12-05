@@ -1173,8 +1173,12 @@
 								field: "reason",
 								title: "离职原因",
 								align: 'center',
-								templet:  function(d){ 
-									return d.user.reason		
+								templet:  function(d){
+										if(d.user.quitType!=null){
+										 return "("+d.user.quitType.name+")"+d.user.reason
+										}else{
+											return d.user.reason		
+										}
 								}
 							}
 							]
@@ -1240,6 +1244,13 @@
 								field: "reason",
 								title: "离职原因",
 								align: 'center',
+								templet:function(d){
+									if(d.quitType!=null){
+										return "("+d.quitType+")"+d.reason
+									}else{
+									return d.reason
+									}
+								}
 							}
 							]
 						],
@@ -1275,6 +1286,21 @@
 							},{
 								field: "count",
 								title: "离职人数",
+								align: 'center',
+								totalRow: true
+							},{
+								field: "count1",
+								title: "自离",
+								align: 'center',
+								totalRow: true
+							},{
+								field: "count2",
+								title: "劝退",
+								align: 'center',
+								totalRow: true
+							},{
+								field: "count3",
+								title: "开除",
 								align: 'center',
 								totalRow: true
 							}

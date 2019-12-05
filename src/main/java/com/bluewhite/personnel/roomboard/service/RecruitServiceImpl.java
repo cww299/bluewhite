@@ -272,6 +272,10 @@ public class RecruitServiceImpl extends BaseServiceImpl<Recruit, Long> implement
 			if (user.getPosition() != null) {
 				positionName = user.getPosition().getName();
 			}
+			String quitType = null;
+			if (user.getQuitType() != null) {
+				quitType = user.getQuitType().getName();
+			}
 			Date entry = user.getEntry();
 			Date quitDate = user.getQuitDate();
 			String reason = user.getReason();
@@ -281,6 +285,7 @@ public class RecruitServiceImpl extends BaseServiceImpl<Recruit, Long> implement
 			allMap.put("entry", entry);
 			allMap.put("quitDate", quitDate);
 			allMap.put("reason", reason);
+			allMap.put("quitType", quitType);
 			allList.add(allMap);
 		}
 
@@ -294,8 +299,17 @@ public class RecruitServiceImpl extends BaseServiceImpl<Recruit, Long> implement
 			Long i = psList2.stream()
 					.filter(User -> User.getOrgNameId().equals(User.getOrgNameId()) && User.getQuit().equals(1))
 					.count();
+			Long j= psList2.stream()
+					.filter(User -> User.getQuitTypeId() !=null && User.getOrgNameId().equals(User.getOrgNameId()) && User.getQuit().equals(1)  && User.getQuitTypeId().equals((long)434)).count();//自离
+			Long k= psList2.stream()
+					.filter(User -> User.getQuitTypeId()!=null &&  User.getOrgNameId().equals(User.getOrgNameId()) && User.getQuit().equals(1) && User.getQuitTypeId().equals((long)435)).count();//劝退
+			Long l= psList2.stream()
+					.filter(User -> User.getQuitTypeId()!=null && User.getOrgNameId().equals(User.getOrgNameId()) && User.getQuit().equals(1) &&  User.getQuitTypeId().equals((long)436)).count();//开除
 			String orgName = baseDataDao2.findOne(ps2).getName();
 			countMap.put("count", i);
+			countMap.put("count1",j);
+			countMap.put("count2",k);
+			countMap.put("count3",l);
 			countMap.put("orgName", orgName);
 			countList.add(countMap);
 		}
