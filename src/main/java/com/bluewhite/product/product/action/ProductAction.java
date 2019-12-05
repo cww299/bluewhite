@@ -140,9 +140,7 @@ public class ProductAction {
 	public CommonResponse getProductPages(PageParameter page, Product product) {
 		CommonResponse cr = new CommonResponse();
 		cr.setData(ClearCascadeJSON.get()
-				.addRetainTerm(Product.class, "id", "inventorys", "name", "number")
-				.addRetainTerm(Inventory.class, "id", "number", "warehouse", "warehouseType")
-				.addRetainTerm(BaseData.class, "id", "name")
+				.addRetainTerm(Product.class, "id", "name", "number","mapList")
 				.format(productService.inventoryFindPages(product, page)).toJSON());
 		cr.setMessage("查询成功");
 		return cr;
