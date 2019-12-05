@@ -29,19 +29,6 @@ import com.bluewhite.product.product.entity.Product;
 public class Inventory extends BaseEntity<Long> {
 
 	/**
-	 * 产品id
-	 */
-	@Column(name = "product_id")
-	private Long productId;
-
-	/**
-	 * 产品
-	 */
-	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "product_id", referencedColumnName = "id", insertable = false, updatable = false)
-	private Product product;
-
-	/**
 	 * 商品id
 	 */
 	@Column(name = "commodity_id")
@@ -114,22 +101,6 @@ public class Inventory extends BaseEntity<Long> {
 
 	public void setCommodity(Commodity commodity) {
 		this.commodity = commodity;
-	}
-
-	public Long getProductId() {
-		return productId;
-	}
-
-	public void setProductId(Long productId) {
-		this.productId = productId;
-	}
-
-	public Product getProduct() {
-		return product;
-	}
-
-	public void setProduct(Product product) {
-		this.product = product;
 	}
 
 	public Long getWarehouseTypeId() {

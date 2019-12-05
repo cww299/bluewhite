@@ -71,6 +71,11 @@ public class OrderServiceImpl extends BaseServiceImpl<Order, Long> implements Or
 				predicate.add(cb.equal(root.get("product").get("name").as(String.class),
 						"%" + StringUtil.specialStrKeyword(param.getProductName()) + "%"));
 			}
+			// 按业务员id
+			if (param.getUserId()!=null) {
+				Join<Order, OrderChild> join = root.join(root.getModel().getList("orderChilds", OrderChild.class),JoinType.LEFT);
+				predicate.add(cb.equal(join.get("userId").as(String.class),param.getUserId()));
+			}
 			// 按产品编号过滤
 			if (!StringUtils.isEmpty(param.getProductNumber())) {
 				predicate.add(
@@ -145,6 +150,10 @@ public class OrderServiceImpl extends BaseServiceImpl<Order, Long> implements Or
 			if (param.getId() != null) {
 				predicate.add(cb.equal(root.get("id").as(Long.class), param.getId()));
 			}
+			// 按是否完结
+			if (param.getComplete() != null) {
+				predicate.add(cb.equal(root.get("complete").as(Integer.class), param.getComplete()));
+			}
 			// 按批次
 			if (!StringUtils.isEmpty(param.getBacthNumber())) {
 				predicate.add(cb.like(root.get("bacthNumber").as(String.class), "%" + param.getBacthNumber() + "%"));
@@ -154,9 +163,14 @@ public class OrderServiceImpl extends BaseServiceImpl<Order, Long> implements Or
 				predicate.add(cb.between(root.get("orderDate").as(Date.class), param.getOrderTimeBegin(),
 						param.getOrderTimeEnd()));
 			}
-			// 按是否生成耗料
-			if (param.getConsumption() != null) {
-				predicate.add(cb.isNotEmpty(root.get("orderMaterials")));
+			// 按业务员id
+			if (param.getUserId()!=null) {
+				Join<Order, OrderChild> join = root.join(root.getModel().getList("orderChilds", OrderChild.class),JoinType.LEFT);
+				predicate.add(cb.equal(join.get("userId").as(String.class),param.getUserId()));
+			}
+			// 按是否审核
+			if (param.getAudit() != null) {
+				predicate.add(cb.equal(root.get("audit").as(Integer.class), param.getAudit()));
 			}
 			Predicate[] pre = new Predicate[predicate.size()];
 			query.where(predicate.toArray(pre));

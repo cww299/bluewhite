@@ -22,7 +22,7 @@ import com.bluewhite.system.sys.entity.RegionAddress;
 import com.bluewhite.system.user.entity.User;
 
 /**
- * 财务部 客户
+ * 系统 客户
  * 
  * @author qiyong
  *

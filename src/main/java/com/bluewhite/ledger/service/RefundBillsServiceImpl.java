@@ -68,6 +68,8 @@ public class RefundBillsServiceImpl extends BaseServiceImpl<RefundBills, Long> i
 	public void updateRefundBills(RefundBills refundBills) {
 		RefundBills ot = dao.findOne(refundBills.getId());
 		BeanCopyUtils.copyNotEmpty(refundBills, ot, "");
+		ot.getOutsourceTask().clear();
+		save(ot);
 		// 将工序任务变成set存入，存在退货情况是，要去除退货数量
 		if (!StringUtils.isEmpty(ot.getOutsourceTaskIds())) {
 			String[] idStrings = ot.getOutsourceTaskIds().split(",");

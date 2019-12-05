@@ -1,11 +1,11 @@
 package com.bluewhite.product.product.service;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
-import javax.persistence.criteria.Join;
-import javax.persistence.criteria.JoinType;
 import javax.persistence.criteria.Predicate;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,6 +14,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
 import com.bluewhite.base.BaseServiceImpl;
+import com.bluewhite.basedata.dao.BaseDataDao;
+import com.bluewhite.basedata.entity.BaseData;
 import com.bluewhite.common.Constants;
 import com.bluewhite.common.SessionManager;
 import com.bluewhite.common.entity.CurrentUser;
@@ -22,7 +24,11 @@ import com.bluewhite.common.entity.PageResult;
 import com.bluewhite.common.utils.NumUtils;
 import com.bluewhite.common.utils.RoleUtil;
 import com.bluewhite.common.utils.StringUtil;
-import com.bluewhite.onlineretailers.inventory.entity.Inventory;
+import com.bluewhite.ledger.dao.OutStorageDao;
+import com.bluewhite.ledger.dao.PutStorageDao;
+import com.bluewhite.ledger.entity.OutStorage;
+import com.bluewhite.ledger.entity.Packing;
+import com.bluewhite.ledger.entity.PutStorage;
 import com.bluewhite.product.primecost.cutparts.dao.CutPartsDao;
 import com.bluewhite.product.primecost.cutparts.entity.CutParts;
 import com.bluewhite.product.primecost.embroidery.dao.EmbroideryDao;
@@ -67,6 +73,12 @@ public class ProductServiceImpl extends BaseServiceImpl<Product, Long> implement
 	private NeedleworkDao needleworkDao;
 	@Autowired
 	private PackDao packDao;
+	@Autowired
+	private BaseDataDao baseDataDao;
+	@Autowired
+	private OutStorageDao outStorageDao;
+	@Autowired
+	private PutStorageDao putStorageDao;
 
 	@Override
 	public PageResult<Product> findPages(Product param, PageParameter page) {
@@ -95,10 +107,6 @@ public class ProductServiceImpl extends BaseServiceImpl<Product, Long> implement
 		if (cu.getRole().contains(Constants.PRODUCT_RIGHT_TAILOR)) {
 			param.setOriginDepartment(Constants.PRODUCT_RIGHT_TAILOR);
 		}
-		Long warehouseTypeDeliveryId = RoleUtil.getWarehouseTypeDelivery(cu.getRole());
-		if(warehouseTypeDeliveryId!=null){
-			param.setWarehouseTypeId(warehouseTypeDeliveryId);
-		}
 		Page<Product> pages = productDao.findAll((root, query, cb) -> {
 			List<Predicate> predicate = new ArrayList<>();
 			// 按id过滤
@@ -126,7 +134,8 @@ public class ProductServiceImpl extends BaseServiceImpl<Product, Long> implement
 			}
 			// 按产品名称过滤
 			if (!StringUtils.isEmpty(param.getName())) {
-				predicate.add(cb.like(root.get("name").as(String.class),"%" + StringUtil.specialStrKeyword(param.getName()) + "%"));
+				predicate.add(cb.like(root.get("name").as(String.class),
+						"%" + StringUtil.specialStrKeyword(param.getName()) + "%"));
 			}
 			Predicate[] pre = new Predicate[predicate.size()];
 			query.where(predicate.toArray(pre));
@@ -135,8 +144,8 @@ public class ProductServiceImpl extends BaseServiceImpl<Product, Long> implement
 		// 展示外发单价和当部门预计生产单价，针工价格
 		if (param.getOriginDepartment() != null) {
 			for (Product pro : pages.getContent()) {
-				List<Procedure> procedureList = procedureDao.findByProductIdAndTypeAndFlag(pro.getId(),
-						param.getType(), 0);
+				List<Procedure> procedureList = procedureDao.findByProductIdAndTypeAndFlag(pro.getId(), param.getType(),
+						0);
 				if (procedureList != null && procedureList.size() > 0) {
 					if (param.getType() != null && param.getType() == 5) {
 						List<Procedure> procedureList1 = procedureList.stream()
@@ -303,11 +312,6 @@ public class ProductServiceImpl extends BaseServiceImpl<Product, Long> implement
 
 	@Override
 	public PageResult<Product> inventoryFindPages(Product param, PageParameter page) {
-		CurrentUser cu = SessionManager.getUserSession();
-		Long warehouseTypeDeliveryId = RoleUtil.getWarehouseTypeDelivery(cu.getRole());
-		if(warehouseTypeDeliveryId!=null){
-			param.setWarehouseTypeId(warehouseTypeDeliveryId);
-		}
 		Page<Product> pages = productDao.findAll((root, query, cb) -> {
 			List<Predicate> predicate = new ArrayList<>();
 			// 按id过滤
@@ -335,17 +339,35 @@ public class ProductServiceImpl extends BaseServiceImpl<Product, Long> implement
 			}
 			// 按产品名称过滤
 			if (!StringUtils.isEmpty(param.getName())) {
-				predicate.add(cb.like(root.get("name").as(String.class),"%" + StringUtil.specialStrKeyword(param.getName()) + "%"));
-			}
-			//按仓库种类
-			if(param.getWarehouseTypeId()!=null){
-				Join<Product,Inventory> join = root.join(root.getModel().getSet("inventorys", Inventory.class),JoinType.LEFT);
-				predicate.add(cb.equal(join.get("warehouseTypeId").as(Long.class),param.getWarehouseTypeId()));
+				predicate.add(cb.like(root.get("name").as(String.class),
+						"%" + StringUtil.specialStrKeyword(param.getName()) + "%"));
 			}
 			Predicate[] pre = new Predicate[predicate.size()];
 			query.where(predicate.toArray(pre));
 			return null;
 		}, page);
+		// 获取所有的仓库类型
+		List<BaseData> baseDataList = baseDataDao.findByTypeAndOrd("warehouseType",param.getWarehouse());
+		pages.getContent().forEach(p -> {
+			baseDataList.forEach(b -> {
+				Map<String, Object> map = new HashMap<>();
+				//获取该产品该仓库的所有入库单
+				List<PutStorage> putStorageList =  putStorageDao.findByWarehouseTypeIdAndProductId(b.getId(), p.getId());
+				putStorageList.forEach(m->{
+					List<Long> longList = outStorageDao.findPutStorageId(m.getId());
+					List<OutStorage> outStorageList = outStorageDao.findAll(longList);
+					int arrNumber = outStorageList.stream().mapToInt(OutStorage::getArrivalNumber).sum();
+					m.setSurplusNumber(m.getArrivalNumber()-arrNumber);
+				});
+				int number = 0;
+				if(putStorageList.size()>0){
+					number = putStorageList.stream().mapToInt(PutStorage::getSurplusNumber).sum();
+				}
+				map.put("warehouseTypeId", b.getId());
+				map.put("number", number);
+				p.getMapList().add(map);
+			});
+		});
 		PageResult<Product> result = new PageResult<>(pages, page);
 		return result;
 	}
