@@ -28,6 +28,7 @@ layui.config({
 		
 		myutil.config.ctx = '${ctx}';
 		myutil.clickTr();
+		
 		inventory.render({
 			elem:'#app',
 			ctx:'${ctx}',

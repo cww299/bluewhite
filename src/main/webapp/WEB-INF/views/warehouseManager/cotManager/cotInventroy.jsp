@@ -31,6 +31,7 @@ layui.config({
 		inventory.render({
 			elem:'#app',
 			ctx:'${ctx}',
+			type:3,
 		})
 	}//end define function
 )//endedefine

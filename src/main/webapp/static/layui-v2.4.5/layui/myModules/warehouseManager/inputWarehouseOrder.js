@@ -97,7 +97,7 @@ layui.extend({
 					     }
 					  }}
 				  `,
-					'<input type="hidden" name="inWarehouseTypeId" value="{{'+
+					'<input type="hidden" name="warehouseTypeId" value="{{'+
 						' layui.inputWarehouseOrder.type==1?434:(layui.inputWarehouseOrder.type==2?274:379) }}">',
 					'<input type="hidden" name="id" value="{{d.id || ""}}">',
 				'</div>',

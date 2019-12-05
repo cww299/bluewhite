@@ -35,16 +35,59 @@ layui.extend({
 					'</tr>',
 				'</table>',
 				'<table id="tableData" lay-filter="tableData"></table>',
+				`
+					<div style="display:none;" id="orderOutSourceTableWin">
+						<div style="width:600px;">
+							<table id="orderOutSourceTable" lay-filter="orderOutSourceTable"></table>
+						</div>
+					</div>
+				`,
 	           ].join(' ');
 	
 	var inventory = {
 			type:2,	//默认为成品库存
-	};
+	},allWarehouseType = [];
 	inventory.render = function(opt){
+		inventory.type = opt.type || inventory.type;
 		$(opt.elem).append(TPL_MAIN);
 		form.render();
+		
+		myutil.getDataSync({
+			url: myutil.config.ctx+'/basedata/list?type=warehouseType',
+			success:function(d){
+				layui.each(d,function(index,item){
+					if(item.ord==inventory.type){
+						allWarehouseType.push(item);
+					}
+				})
+			}
+		})
+		var cols = [
+		       { type:'checkbox',},
+		       { title:'产品编号',   field:'number',	},
+		       { title:'产品名',   field:'name',	},
+		];
+		layui.each(allWarehouseType,function(i,d){
+			cols.push({
+				title: d.name,
+				field: 'wid'+d.id,
+				event: 'wid-'+d.id,
+			})
+		})
 		mytable.render({
 			elem:'#tableData',
+			parseData: function(r){
+				if(r.code==0){
+					layui.each(r.data.rows,function(i,item){
+						layui.each(item.mapList,function(j,itemMapList){
+							item['wid'+itemMapList.warehouseTypeId] = itemMapList.number;
+						})
+					})
+					return {  msg:r.message,  code:r.code , data:r.data.rows, count:r.data.total }; 
+				}
+				else
+					return {  msg:r.message,  code:r.code , data:[], count:0 }; 
+			},
 			limit:15,
 			limits:[10,15,20,30,50,100],
 			curd:{
@@ -73,20 +116,101 @@ layui.extend({
 				'<span class="layui-btn layui-btn-sm layui-btn-normal" lay-event="addOut">生成出库单</span>',
 			].join(' '),
 			url: opt.ctx+'/inventory/productPages?warehouse='+inventory.type,
-			cols:[[
-			       { type:'checkbox',},
-			       { title:'产品编号',   field:'number',	},
-			       { title:'产品名',   field:'name',	},
-			       { title:'库存',   field:'inventorys',	templet:function(d){
-			    	   		var number = 0;
-			    	   		/*for(var i=0,len=d.inventorys.length;i<len;i++){
-			    	   			number += d.inventorys[i].number;
-			    	   		}
-			    	   		var color = number?'green':'red';*/
-			    	   		return '<span style="color:'+color+';">'+number+'</span>';
-			       		}},
-			       ]]
+			cols:[ cols ]
 		})
+		table.on('tool(tableData)', function(obj){
+			var data = obj.data;
+			var event = obj.event.split('-');
+			if(event.length==2 && event[0]=="wid"){
+				layer.open({
+					type:1,
+					area:['100%','80%'],
+					shadeClose:true,
+					content:`
+						<div>
+							<table id="warehoseInof" lay-filter="warehoseInof"></table>
+						</div>
+					`,
+					title:'库存详情',
+					success:function(){
+						mytable.renderNoPage({
+							elem:'#warehoseInof',
+							url: myutil.config.ctx+'/ledger/inventory/detailsInventory',
+							where:{
+								warehouseTypeId: event[1],
+								productId: data.id,
+							},
+							ifNull:'---',
+							cols:[[
+								{ title:'入库编号', field:'serialNumber',},
+								{ title:'入库时间', field:'arrivalTime',},
+								{ title:'入库数量', field:'arrivalNumber',},
+								{ title:'剩余数量', field:'surplusNumber',},
+								{ title:'库区', field:'storageArea_name',},
+								{ title:'库位', field:'storageLocation_name',},
+								{ title:'状态',   field:'inStatus',  transData:{ data:['','生产入库','','调拨入库','退货入库','换货入库','盘亏入库'], } },
+							]],
+							done:function(){
+								var tipInventory = 0;
+								layui.each($('div[lay-id=warehoseInof] td[data-field="inStatus"]'),function(index,item){
+									$(item).on('mouseover',function(){
+										var elem = $(item);
+										var index = elem.closest('tr').data('index');
+										var trData = table.cache['warehoseInof'][index];
+										if(trData.inStatus==1){		//如果是生产入库
+											var order = trData.orderOutSource.order;
+											layui.each(order.orderChilds,function(i,d1){
+												d1.bacthNumber = order.bacthNumber;
+												d1.allNumber = order.number;
+												d1.orderDate = order.orderDate;
+											})
+											mytable.renderNoPage({
+												elem:'#orderOutSourceTable',
+												data: order.orderChilds,
+												cols:[[
+													{ title:'批次号', field:'bacthNumber',},
+													{ title:'下单时间', field:'orderDate',},
+													{ title:'总数量', field:'allNumber',},
+													{ title:'数量', field:'childNumber',},
+													{ title:'客户', field:'customer_name',},
+													{ title:'跟单人', field:'user_userName',},
+												]],
+												done:function(){
+													merge('bacthNumber');
+													merge('orderDate');
+													merge('allNumber');
+													function merge(field){
+														var allCol = $('#orderOutSourceTable').next().find('td[data-field="'+field+'"]');
+														layui.each(allCol,function(index,item){
+															if(index!=0){
+																$(item).css('display','none')
+															}else{
+																$(item).attr('rowspan',allCol.length)
+															}
+														})
+													}
+													layer.close(tipInventory)
+													tipInventory = layer.tips($('#orderOutSourceTableWin').html(), elem,{
+														time:0,
+														area: '630px',
+														tips: [2, 'rgb(95, 184, 120)'],
+													})
+													$('div[lay-id=orderOutSourceTable] tr').append(`
+													<style>div[lay-id=orderOutSourceTable] tr:hover{background-color:transparent}</style>
+													`);
+												}
+											})
+										}
+									})
+								})
+								$(document).on('mousedown', function (event) { layer.close(tipInventory); });
+							}
+						})
+					}
+					
+				})
+			}
+		});
 		form.on('submit(search)',function(obj){
 			var t = $('#searchTime').val();
 			if(t){
@@ -114,6 +238,5 @@ layui.extend({
 		inputWarehouseOrder.init();
 		outWarehouseOrder.init();
 	}
-	
 	exports('inventory',inventory);
 })
