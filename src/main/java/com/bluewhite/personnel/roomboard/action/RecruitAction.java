@@ -52,7 +52,7 @@ public class RecruitAction {
 						"position", "positionId", "time", "position", "orgNameId", "orgName", "name", "gender", "phone",
 						"livingAddress", "entry", "type", "remarks", "typeOne", "remarksOne", "typeTwo", "remarksTwo",
 						"state", "adopt", "platform", "recruitId", "recruitName")
-				.addRetainTerm(User.class, "id", "name", "delFlag", "userName", "quit", "entry", "quitDate", "reason")
+				.addRetainTerm(User.class, "id", "name", "delFlag", "userName", "quit", "entry", "quitDate", "reason","quitType","quitTypeId")
 				.addRetainTerm(BaseData.class, "id", "name", "type");
 	}
 
@@ -71,7 +71,7 @@ public class RecruitAction {
 						"education", "school", "major", "contacts", "information", "entry", "estimate", "actua",
 						"socialSecurity", "bankCard1", "bankCard2", "agreement", "safe", "commitment", "frequency",
 						"quitDate", "quit", "reason", "train", "remark", "userContract", "commitments", "agreementId",
-						"company", "age", "type", "ascriptionBank1", "sale", "roles")
+						"company", "age", "type", "ascriptionBank1", "sale", "roles","quitType","quitTypeId")
 				.addRetainTerm(Group.class, "id", "name", "type", "price")
 				.addRetainTerm(Role.class, "name", "role", "description", "id")
 				.addRetainTerm(BaseData.class, "id", "name", "type").addRetainTerm(UserContract.class, "id", "number",

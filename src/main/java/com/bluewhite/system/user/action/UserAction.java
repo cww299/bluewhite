@@ -77,7 +77,7 @@ public class UserAction {
 						"socialSecurity", "bankCard1", "bankCard2", "agreement", "safe", "commitment", "promise",
 						"contract", "contractDate", "contractDateEnd", "frequency", "quitDate", "quit", "reason",
 						"train", "remark", "userContract", "commitments", "agreementId", "company", "age", "type",
-						"ascriptionBank1", "sale", "roles", "turnWorkTime")
+						"ascriptionBank1", "sale", "roles", "turnWorkTime","quitTypeId","quitType")
 				.addRetainTerm(Group.class, "id", "name", "type", "price")
 				.addRetainTerm(Role.class, "name", "role", "description", "id")
 				.addRetainTerm(BaseData.class, "id", "name", "type").addRetainTerm(UserContract.class, "id", "number",
