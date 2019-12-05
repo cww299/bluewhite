@@ -72,17 +72,17 @@ layui.extend({
 				'<span class="layui-btn layui-btn-sm layui-btn-" lay-event="addInp">生成入库单</span>',
 				'<span class="layui-btn layui-btn-sm layui-btn-normal" lay-event="addOut">生成出库单</span>',
 			].join(' '),
-			url: opt.ctx+'/inventory/productPages',
+			url: opt.ctx+'/inventory/productPages?warehouse='+inventory.type,
 			cols:[[
 			       { type:'checkbox',},
 			       { title:'产品编号',   field:'number',	},
 			       { title:'产品名',   field:'name',	},
 			       { title:'库存',   field:'inventorys',	templet:function(d){
 			    	   		var number = 0;
-			    	   		for(var i=0,len=d.inventorys.length;i<len;i++){
+			    	   		/*for(var i=0,len=d.inventorys.length;i<len;i++){
 			    	   			number += d.inventorys[i].number;
 			    	   		}
-			    	   		var color = number?'green':'red';
+			    	   		var color = number?'green':'red';*/
 			    	   		return '<span style="color:'+color+';">'+number+'</span>';
 			       		}},
 			       ]]
