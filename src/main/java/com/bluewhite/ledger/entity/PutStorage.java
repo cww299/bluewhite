@@ -62,22 +62,29 @@ public class PutStorage extends BaseEntity<Long> {
 
 	/**
 	 * 入库单的订单状态 （1=生产入库）（2=采购入库） （3=调拨入库） （4=退货入库 ） （5=换货入库 ）  （6=盘亏入库）
+	 * 生产入库：根据加工单入库
+	 * 采购入库：根据采购单入库
+	 * 调拨入库：根据调拨申请单入库
+	 * 换货入库：根据换货申请单入库
+	 * 退货入库：根据退货申请单入库
+	 * 盘亏入库：根据盘盈申请单入库
+	 * 
 	 */
 	@Column(name = "in_status")
 	private Integer inStatus;
 
 	/**
-	 * 仓管指定 入库库存id
+	 * 仓库种类id
 	 */
-	@Column(name = "inventory_id")
-	private Long inventoryId;
+	@Column(name = "warehouse_type_id")
+	private Long warehouseTypeId;
 
 	/**
-	 * 入库库存
+	 * 仓库种类
 	 */
 	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "inventory_id", referencedColumnName = "id", insertable = false, updatable = false)
-	private Inventory inventory;
+	@JoinColumn(name = "warehouse_type_id", referencedColumnName = "id", insertable = false, updatable = false)
+	private BaseData warehouseType;
 
 	/**
 	 * 入库时间
@@ -132,16 +139,10 @@ public class PutStorage extends BaseEntity<Long> {
 	private User userStorage;
 	
 	/**
-	 * 仓管指定 入库仓库种类id
-	 */
-	@Column(name = "in_warehouse_type_id")
-	private Long inWarehouseTypeId;
-
-	/**
 	 * 出库后剩余数量
 	 */
 	@Transient
-	private Double surplusNumber;
+	private Integer surplusNumber;
 	
 	/**
 	 * 产品名称
@@ -224,11 +225,11 @@ public class PutStorage extends BaseEntity<Long> {
 		this.userStorage = userStorage;
 	}
 
-	public Double getSurplusNumber() {
+	public Integer getSurplusNumber() {
 		return surplusNumber;
 	}
 
-	public void setSurplusNumber(Double surplusNumber) {
+	public void setSurplusNumber(Integer surplusNumber) {
 		this.surplusNumber = surplusNumber;
 	}
 
@@ -304,28 +305,20 @@ public class PutStorage extends BaseEntity<Long> {
 		this.inStatus = inStatus;
 	}
 
-	public Long getInWarehouseTypeId() {
-		return inWarehouseTypeId;
+	public Long getWarehouseTypeId() {
+		return warehouseTypeId;
 	}
 
-	public void setInWarehouseTypeId(Long inWarehouseTypeId) {
-		this.inWarehouseTypeId = inWarehouseTypeId;
+	public void setWarehouseTypeId(Long warehouseTypeId) {
+		this.warehouseTypeId = warehouseTypeId;
 	}
 
-	public Long getInventoryId() {
-		return inventoryId;
+	public BaseData getWarehouseType() {
+		return warehouseType;
 	}
 
-	public void setInventoryId(Long inventoryId) {
-		this.inventoryId = inventoryId;
-	}
-
-	public Inventory getInventory() {
-		return inventory;
-	}
-
-	public void setInventory(Inventory inventory) {
-		this.inventory = inventory;
+	public void setWarehouseType(BaseData warehouseType) {
+		this.warehouseType = warehouseType;
 	}
 
 	public Date getArrivalTime() {

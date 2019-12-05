@@ -142,7 +142,6 @@ public class ProductAction {
 		cr.setData(ClearCascadeJSON.get()
 				.addRetainTerm(Product.class, "id", "inventorys", "name", "number")
 				.addRetainTerm(Inventory.class, "id", "number", "warehouse", "warehouseType")
-				.addRetainTerm(OrderOutSource.class, "id", "surplusNumber","location")
 				.addRetainTerm(BaseData.class, "id", "name")
 				.format(productService.inventoryFindPages(product, page)).toJSON());
 		cr.setMessage("查询成功");
@@ -344,12 +343,6 @@ public class ProductAction {
 		Session session = hEntityManager.getSession();
 		Product oldIdProduct = productService.findOne(oldId);
 		Product product = productService.findOne(id);
-		PrimeCost primeCost = new PrimeCost();
-		PrimeCost oldprimeCost = oldIdProduct.getPrimeCost();
-		BeanCopyUtils.copyNotEmpty(oldprimeCost, primeCost, "");
-		primeCost.setId(null);
-		primeCost.setProductId(id);
-		product.setPrimeCost(primeCost);
 		productService.save(product);
 
 		// 裁片

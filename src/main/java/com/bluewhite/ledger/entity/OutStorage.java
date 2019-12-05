@@ -1,11 +1,15 @@
 package com.bluewhite.ledger.entity;
 
 import java.util.Date;
+import java.util.HashSet;
+import java.util.Set;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.JoinColumn;
+import javax.persistence.JoinTable;
+import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.persistence.Transient;
@@ -23,13 +27,13 @@ import com.bluewhite.system.user.entity.User;
 @Entity
 @Table(name = "ledger_out_storage")
 public class OutStorage extends BaseEntity<Long> {
-	
+
 	/**
 	 * 编号
 	 */
 	@Column(name = "serial_number")
 	private String serialNumber;
-	
+
 	/**
 	 * 产品id
 	 */
@@ -42,22 +46,22 @@ public class OutStorage extends BaseEntity<Long> {
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "product_id", referencedColumnName = "id", insertable = false, updatable = false)
 	private Product product;
-	
-	/**
-	 * 入库单id
-	 */
-	@Column(name = "put_storage_id")
-	private Long putStorageId;
 
 	/**
-	 * 入库单（选择入库单进行出库）
+	 * 入库单多对多
 	 */
-	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "put_storage_id", referencedColumnName = "id", insertable = false, updatable = false)
-	private PutStorage putStorage;
-	
+	@ManyToMany(fetch = FetchType.LAZY)
+	@JoinTable(name = "ledger_put_out_storage", joinColumns = @JoinColumn(name = "out_storage_id", referencedColumnName = "id"), inverseJoinColumns = @JoinColumn(name = "put_storage_id", referencedColumnName = "id"))
+	private Set<PutStorage> putOutStorage = new HashSet<PutStorage>();
+
 	/**
-	 * 出库单类型（1=生产出库） （2=调拨出库） （3=销售换货出库 ） （4=采购退货出库 ） （5=盘盈出库 ）(6=返工出库)
+	 * 出库单类型（1=销售出库） （2=调拨出库） （3=换货出库 ） （4=退货出库 ） （5=盘盈出库 ）(6=返工出库)
+	 * 销售出库：根据发货申请单出库
+	 * 调拨出库：根据调拨申请单出库
+	 * 换货出库：根据换货申请单出库
+	 * 退货出库：根据退货申请单出库
+	 * 盘盈出库：根据盘盈申请单出库
+	 * 返工出库：根据返工申请单出库
 	 */
 	@Column(name = "out_status")
 	private Integer outStatus;
@@ -87,19 +91,25 @@ public class OutStorage extends BaseEntity<Long> {
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "user_storage_id", referencedColumnName = "id", insertable = false, updatable = false)
 	private User userStorage;
-	
+
 	/**
 	 * 物料名称
 	 */
 	@Transient
 	private String productName;
-	
+
 	/**
 	 * 物料编号
 	 */
 	@Transient
 	private String productNumber;
 	
+	/**
+	 * 多对多出库单
+	 */
+	@Transient
+	private String putOutStorageIds;
+
 	/**
 	 * 查询字段
 	 */
@@ -113,6 +123,14 @@ public class OutStorage extends BaseEntity<Long> {
 	
 	
 	
+
+	public String getPutOutStorageIds() {
+		return putOutStorageIds;
+	}
+
+	public void setPutOutStorageIds(String putOutStorageIds) {
+		this.putOutStorageIds = putOutStorageIds;
+	}
 
 	public String getSerialNumber() {
 		return serialNumber;
@@ -186,20 +204,12 @@ public class OutStorage extends BaseEntity<Long> {
 		this.orderTimeEnd = orderTimeEnd;
 	}
 
-	public Long getPutStorageId() {
-		return putStorageId;
+	public Set<PutStorage> getPutOutStorage() {
+		return putOutStorage;
 	}
 
-	public void setPutStorageId(Long putStorageId) {
-		this.putStorageId = putStorageId;
-	}
-
-	public PutStorage getPutStorage() {
-		return putStorage;
-	}
-
-	public void setPutStorage(PutStorage putStorage) {
-		this.putStorage = putStorage;
+	public void setPutOutStorage(Set<PutStorage> putOutStorage) {
+		this.putOutStorage = putOutStorage;
 	}
 
 	public Integer getOutStatus() {
@@ -225,6 +235,5 @@ public class OutStorage extends BaseEntity<Long> {
 	public void setArrivalNumber(Integer arrivalNumber) {
 		this.arrivalNumber = arrivalNumber;
 	}
-
 
 }

@@ -1,162 +1,146 @@
 package com.bluewhite.product.product.entity;
 
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
-import javax.persistence.JoinColumn;
 import javax.persistence.OneToMany;
-import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 
-import org.hibernate.annotations.NotFound;
-import org.hibernate.annotations.NotFoundAction;
-
 import com.bluewhite.base.BaseEntity;
-import com.bluewhite.onlineretailers.inventory.entity.Inventory;
-import com.bluewhite.product.primecost.primecost.entity.PrimeCost;
 import com.bluewhite.system.sys.entity.Files;
 
 /**
  * 蓝白产品
+ * 
  * @author zhangliang
  *
  */
 @Entity
 @Table(name = "sys_product")
-public class Product extends BaseEntity<Long>{
-	
+public class Product extends BaseEntity<Long> {
+
 	/**
 	 * 产品编号
 	 */
 	@Column(name = "number")
-    private String number;
-	
-    /**
-     * 产品名
-     */
+	private String number;
+
+	/**
+	 * 产品名
+	 */
 	@Column(name = "name")
-    private String name;
-	
+	private String name;
+
 	/**
 	 * 产品照片
 	 */
-	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY,orphanRemoval = true)
+	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, orphanRemoval = true)
 	private Set<Files> fileSet = new HashSet<>();
-	
-    @OneToOne(fetch=FetchType.LAZY,cascade = CascadeType.ALL) 
-    @JoinColumn(name="prime_cost_id",referencedColumnName="id",nullable=true)
-    @NotFound(action=NotFoundAction.IGNORE)
-	private PrimeCost primeCost;
-	
-    /**
-     * 各个部门自己的产品编号
-     */
- 	@Column(name = "department_number")
-    private String departmentNumber;
-    
-   /**
-    * 产品来源部门
-    */
+
+	/**
+	 * 各个部门自己的产品编号
+	 */
+	@Column(name = "department_number")
+	private String departmentNumber;
+
+	/**
+	 * 产品来源部门
+	 */
 	@Column(name = "origin_department")
-    private String originDepartment;
-	
-   /**
-    * 产品分类(1=成品，2=皮壳)
-    */
+	private String originDepartment;
+
+	/**
+	 * 产品分类(1=成品，2=皮壳)
+	 */
 	@Column(name = "product_type")
-    private Integer productType;
-	
+	private Integer productType;
+
 	/**
-	 * 库存数量
-	 */
-	@OneToMany(mappedBy = "product" ,cascade = CascadeType.ALL)
-	private Set<Inventory> inventorys = new HashSet<Inventory>();
-	 
-	/**
-	 * 八号仓库特殊业务，同一种产品会有会有激光和冲床两种类型工序，同时会产生不同的外发单价（0=激光，1=冲床）
+	 * 产品本身外发价格
 	 */
 	@Transient
-	private Integer sign; 
-	
-    /**
-     * 产品本身外发价格
-     */
+	private Double hairPrice;
+
+	/**
+	 * 当部门预计生产价格
+	 */
 	@Transient
-    private Double hairPrice;
-	
-    /**
-     * 当部门预计生产价格
-     */
+	private Double departmentPrice;
+
+	/**
+	 * 产品本身外发价格
+	 */
 	@Transient
-    private Double departmentPrice;
-	
-    /**
-     * 产品本身外发价格
-     */
+	private Double puncherHairPrice;
+
+	/**
+	 * 当部门预计生产价格
+	 */
 	@Transient
-    private Double puncherHairPrice;
-	
-    /**
-     * 当部门预计生产价格
-     */
-	@Transient
-    private Double puncherDepartmentPrice;
-	
+	private Double puncherDepartmentPrice;
+
 	/**
 	 * 工序部门类型
 	 */
 	@Transient
-	private Integer type;	
-	
+	private Integer type;
+
 	/**
 	 * 针工价格
 	 */
 	@Transient
 	private Double deedlePrice;
-	
-	/**
-	 * 仓库种类id
-	 */
-	@Transient
-	private Long warehouseTypeId;
-	
-	
+
 	/**
 	 * 照片ids
 	 */
 	@Transient
 	private String fileIds;
 	
+	/**
+	 * 仓库
+	 */
+	@Transient
+	private Integer warehouse;
+
+	/**
+	 * 库存数量
+	 */
+	@Transient
+	private List<Map<String, Object>> mapList = new ArrayList<>();
 	
 	
-	
+
+	public Integer getWarehouse() {
+		return warehouse;
+	}
+
+	public void setWarehouse(Integer warehouse) {
+		this.warehouse = warehouse;
+	}
+
+	public List<Map<String, Object>> getMapList() {
+		return mapList;
+	}
+
+	public void setMapList(List<Map<String, Object>> mapList) {
+		this.mapList = mapList;
+	}
+
 	public String getFileIds() {
 		return fileIds;
 	}
 
 	public void setFileIds(String fileIds) {
 		this.fileIds = fileIds;
-	}
-
-	public Long getWarehouseTypeId() {
-		return warehouseTypeId;
-	}
-
-	public void setWarehouseTypeId(Long warehouseTypeId) {
-		this.warehouseTypeId = warehouseTypeId;
-	}
-
-	public Set<Inventory> getInventorys() {
-		return inventorys;
-	}
-
-	public void setInventorys(Set<Inventory> inventorys) {
-		this.inventorys = inventorys;
 	}
 
 	public Integer getProductType() {
@@ -181,22 +165,6 @@ public class Product extends BaseEntity<Long>{
 
 	public void setOriginDepartment(String originDepartment) {
 		this.originDepartment = originDepartment;
-	}
-
-	public PrimeCost getPrimeCost() {
-		return primeCost;
-	}
-
-	public void setPrimeCost(PrimeCost primeCost) {
-		this.primeCost = primeCost;
-	}
-
-	public Integer getSign() {
-		return sign;
-	}
-
-	public void setSign(Integer sign) {
-		this.sign = sign;
 	}
 
 	public Double getPuncherHairPrice() {
@@ -270,8 +238,5 @@ public class Product extends BaseEntity<Long>{
 	public void setFileSet(Set<Files> fileSet) {
 		this.fileSet = fileSet;
 	}
-
-
-	
 
 }

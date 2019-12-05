@@ -424,13 +424,21 @@
 								class="form-control laydate-icon"
 								onClick="laydate({elem: '#contractDateEnd', istime: true, format: 'YYYY-MM-DD hh:mm:ss'})">
 						</div>
-						<label class="col-sm-2 control-label">合同:</label>
-						<div class="col-sm-2 remarktww">
-							<!-- <input type="text" class="form-control remark"> -->
-						</div>
+						 <label class="col-sm-2 control-label">离职类型:</label>
+						<div class="col-sm-2 ">
+							<select class="form-control" id="quitType">
+							
+							</select>
+						</div> 
 						<label class="col-sm-2 control-label">离职理由:</label>
 						<div class="col-sm-2 working">
 							<input type="text" class="form-control reason">
+						</div>
+					</div>
+					<div class="form-group">
+						<label class="col-sm-4 control-label">合同:</label>
+						<div class="col-sm-4 remarktww">
+							<!-- <input type="text" class="form-control remark"> -->
 						</div>
 					</div>
 					<div class="form-group">
@@ -810,7 +818,19 @@ jQuery(function($){
 	});
 	   
 	   
-	   
+	 $.ajax({
+		  url:"${ctx}/basedata/list",
+		  data:{type:"quitType"},
+		  type:"GET",
+		  async:false,
+ 		  success: function (result) {
+ 			  	var html='<option value=" ">请选择</option>';
+	  			  $(result.data).each(function(index,item){
+	  				html+='<option value="'+item.id+'">'+item.name+'</option>'
+	  			  });
+	  			$("#quitType").html(html);
+	    	}
+	});
 	   
 	   
    	var Login = function(){
@@ -1071,7 +1091,7 @@ jQuery(function($){
 				      				 }else{
 				      					 u=o.position.id
 				      				 }
-				      			
+				      				$("#quitType").val(o.quitTypeId)
 				      				th='<div class="dz-preview dz-processing dz-image-preview dz-success"><div class="dz-details"><img data-dz-thumbnail  src='+o.pictureUrl+'></div><div class="dz-success-mark" ></div></div>'
 				      				 $("#my-awesome-dropzone").html(th); 
 				      				$('.dz-success-mark').on('click',function(){
@@ -1301,6 +1321,7 @@ jQuery(function($){
 											type:$('#type4').val(),
 											sale:$('#sale').val(),
 											ascriptionBank1:$('.bankCardtw').val(),
+											quitTypeId:$('#quitType').val(),
 								  }
 								   $.ajax({
 										url:"${ctx}/system/user/update",
@@ -1838,7 +1859,7 @@ jQuery(function($){
 				      				 }else{
 				      					 u=o.position.id
 				      				 }
-				      			
+				      			$("#quitType").val(o.quitTypeId)
 				      				th='<div class="dz-preview dz-processing dz-image-preview dz-success"><div class="dz-details"><img data-dz-thumbnail  src='+o.pictureUrl+'></div><div class="dz-success-mark" ></div></div>'
 				      				 $("#my-awesome-dropzone").html(th); 
 				      				$('.dz-success-mark').on('click',function(){
@@ -2097,6 +2118,7 @@ jQuery(function($){
 											type:$('#type4').val(),
 											sale:$('#sale').val(),
 											ascriptionBank1:$('.bankCardtw').val(),
+											quitTypeId:$('#quitType').val(),
 								  }
 								  if(postData.orgNameId==null){
 									return  layer.msg("部门不能为空", {icon: 2});

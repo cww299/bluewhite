@@ -485,26 +485,8 @@ public class PackingServiceImpl extends BaseServiceImpl<Packing, Long> implement
 				if (packingChild != null) {
 					Product product = packingChild.getProduct();
 					packingChild.setConfirm(1);
-					// 创建商品的库存
-					Set<Inventory> inventorys = product.getInventorys();
-					// 获取库存
-					Inventory inventory = inventoryDao.findByProductIdAndWarehouseId(product.getId(),
-							packingChild.getWarehouseId());
-					if (inventory == null) {
-						inventory = new Inventory();
-						inventory.setProductId(product.getId());
-						inventory.setNumber(packingChild.getConfirmNumber());
-						//审核入库
-						inventory.setWarehouseTypeId(warehouseTypeDeliveryId);
-						inventorys.add(inventory);
-						product.setInventorys(inventorys);
-					} else {
-						inventory.setNumber(inventory.getNumber() + packingChild.getConfirmNumber());
-					}
-					productDao.save(product);
 					packingChildDao.save(packingChild);
-				}
-				;
+				};
 				count++;
 			}
 		}
@@ -607,16 +589,8 @@ public class PackingServiceImpl extends BaseServiceImpl<Packing, Long> implement
 				if (packingChild != null) {
 					Product product = packingChild.getProduct();
 					packingChild.setConfirm(0);
-					// 创建商品的库存
-					Set<Inventory> inventorys = product.getInventorys();
-					// 获取库存
-					Inventory inventory = inventoryDao.findByProductIdAndWarehouseId(product.getId(),
-							packingChild.getWarehouseId());
-					inventory.setNumber(inventory.getNumber() - packingChild.getConfirmNumber());
-					productDao.save(product);
 					packingChildDao.save(packingChild);
-				}
-				;
+				};
 				count++;
 			}
 		}

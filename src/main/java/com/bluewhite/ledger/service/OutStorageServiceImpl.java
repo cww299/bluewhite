@@ -13,20 +13,22 @@ import org.springframework.util.StringUtils;
 
 import com.bluewhite.base.BaseServiceImpl;
 import com.bluewhite.common.Constants;
-import com.bluewhite.common.ServiceException;
 import com.bluewhite.common.entity.PageParameter;
 import com.bluewhite.common.entity.PageResult;
 import com.bluewhite.common.utils.SalesUtils;
 import com.bluewhite.common.utils.StringUtil;
 import com.bluewhite.ledger.dao.OutStorageDao;
-import com.bluewhite.ledger.entity.MaterialOutStorage;
+import com.bluewhite.ledger.dao.PutStorageDao;
 import com.bluewhite.ledger.entity.OutStorage;
+import com.bluewhite.ledger.entity.PutStorage;
 
 @Service
 public class OutStorageServiceImpl extends BaseServiceImpl<OutStorage, Long> implements OutStorageService {
 	
 	@Autowired
 	private OutStorageDao dao;
+	@Autowired
+	private PutStorageDao putStorageDao;
 
 	@Override
 	public void saveOutStorage(OutStorage outStorage) {
@@ -34,6 +36,16 @@ public class OutStorageServiceImpl extends BaseServiceImpl<OutStorage, Long> imp
 			OutStorage ot = dao.findOne(outStorage.getId());
 			update(outStorage, ot, "");
 		}else{
+			if (!StringUtils.isEmpty(outStorage.getPutOutStorageIds())) {
+				String[] idStrings = outStorage.getPutOutStorageIds().split(",");
+				if (idStrings.length > 0) {
+					for (String ids : idStrings) {
+						Long id = Long.parseLong(ids);
+						PutStorage putStorage = putStorageDao.findOne(id);
+						outStorage.getPutOutStorage().add(putStorage);
+					}
+				}
+			}
 			outStorage.setSerialNumber(Constants.CPCK+StringUtil.getDate()+SalesUtils.get0LeftString((int) (dao.count()+1), 8));
 			save(outStorage);
 		};

@@ -17,30 +17,7 @@ public class InventoryServiceImpl extends BaseServiceImpl<Inventory, Long> imple
 	
 	@Autowired
 	private InventoryDao dao;
-	@Autowired
-	private ProductDao productDao;
 
-	@Override
-	public void putInStorage(Long  productId, Long inWarehouseTypeId) {
-		// 库存表
-		Product product = productDao.findOne(productId);
-		if (product != null) {
-			List<Inventory> inventoryList = product.getInventorys().stream().filter(Inventory -> Inventory
-					.getWarehouseTypeId().equals(inWarehouseTypeId))
-					.collect(Collectors.toList());
-			// 当前仓库只存在一种
-			Inventory inventory = null;
-			if (inventoryList.size() > 0) {
-				inventory = inventoryList.get(0);
-			} else {
-				inventory = new Inventory();
-				inventory.setProductId(productId);
-				inventory.setWarehouseTypeId(inWarehouseTypeId);
-			}
-			dao.save(inventory);
-		}
-		
-	}
 
 	
 

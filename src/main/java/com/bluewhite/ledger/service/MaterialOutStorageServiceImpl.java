@@ -38,6 +38,7 @@ public class MaterialOutStorageServiceImpl extends BaseServiceImpl<MaterialOutSt
 			MaterialOutStorage ot = dao.findOne(materialOutStorage.getId());
 			update(materialOutStorage, ot, "");
 		} else {
+			//新增出库单，入库单有多条
 			if (!StringUtils.isEmpty(materialOutStorage.getMaterialPutOutStorageIds())) {
 				String[] idStrings = materialOutStorage.getMaterialPutOutStorageIds().split(",");
 				if (idStrings.length > 0) {
@@ -47,10 +48,12 @@ public class MaterialOutStorageServiceImpl extends BaseServiceImpl<MaterialOutSt
 						materialOutStorage.getMaterialPutOutStorage().add(materialPutStorage);
 					}
 				}
+				
 			}
-			materialOutStorage.setSerialNumber(
-					Constants.WLCK + StringUtil.getDate() + SalesUtils.get0LeftString((int) (dao.count() + 1), 8));
+			materialOutStorage.setSerialNumber(Constants.WLCK + StringUtil.getDate() + SalesUtils.get0LeftString((int)(dao.count()+1), 8));
 			save(materialOutStorage);
+			
+			
 		}
 	}
 
