@@ -107,7 +107,11 @@ layui.extend({
 		}
 		if(data.id){
 			title = "修改出库单";
-			data.materielId = data.materiel.id;
+			if(outWarehouseOrder.type==1){
+				data.materielId = data.materiel.id;
+			}else{
+				data.productId = data.productId;
+			}
 		}
 		var html = '';
 		laytpl(TPL).render(data,function(h){
