@@ -234,7 +234,7 @@ public class PackingServiceImpl extends BaseServiceImpl<Packing, Long> implement
 			}
 		}
 		// 新增贴包物
-		if (!StringUtils.isEmpty(packing.getChildPacking())) {
+		if (!StringUtils.isEmpty(packing.getPackingMaterialsJson())) {
 			JSONArray jsonArrayMaterials = JSON.parseArray(packing.getPackingMaterialsJson());
 			for (int i = 0; i < jsonArrayMaterials.size(); i++) {
 				PackingMaterials packingMaterials = new PackingMaterials();
