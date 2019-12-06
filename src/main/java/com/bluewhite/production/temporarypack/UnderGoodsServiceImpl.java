@@ -75,9 +75,7 @@ public class UnderGoodsServiceImpl extends BaseServiceImpl<UnderGoods, Long> imp
 
 	@Override
 	public void saveUnderGoods(UnderGoods underGoods) {
-
-		
-		
+		save(underGoods);
 	}
 
 }

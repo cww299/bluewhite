@@ -50,7 +50,7 @@ public class Quantitative extends BaseEntity<Long> {
 	 * 包装物list
 	 */
 	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY,orphanRemoval = true)
-	@JoinColumn(name = "packing_id")
+	@JoinColumn(name = "quantitative_id")
 	private List<PackingMaterials> packingMaterials = new ArrayList<>();
 	
 	/**
@@ -114,6 +114,22 @@ public class Quantitative extends BaseEntity<Long> {
 	
 	
 	
+	public Integer getFlag() {
+		return flag;
+	}
+
+	public void setFlag(Integer flag) {
+		this.flag = flag;
+	}
+
+	public Integer getPrint() {
+		return print;
+	}
+
+	public void setPrint(Integer print) {
+		this.print = print;
+	}
+
 	public String getPackingMaterialsJson() {
 		return packingMaterialsJson;
 	}
