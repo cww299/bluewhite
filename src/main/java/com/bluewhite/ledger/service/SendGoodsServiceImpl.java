@@ -12,15 +12,17 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
 
+import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONArray;
+import com.alibaba.fastjson.JSONObject;
 import com.bluewhite.base.BaseServiceImpl;
-import com.bluewhite.common.BeanCopyUtils;
 import com.bluewhite.common.ServiceException;
 import com.bluewhite.common.entity.PageParameter;
 import com.bluewhite.common.entity.PageResult;
 import com.bluewhite.ledger.dao.OrderDao;
 import com.bluewhite.ledger.dao.PackingChildDao;
 import com.bluewhite.ledger.dao.SendGoodsDao;
-import com.bluewhite.ledger.entity.Order;
+import com.bluewhite.ledger.entity.ApplyVoucher;
 import com.bluewhite.ledger.entity.PackingChild;
 import com.bluewhite.ledger.entity.SendGoods;
 
@@ -70,10 +72,10 @@ public class SendGoodsServiceImpl extends BaseServiceImpl<SendGoods, Long> imple
 						param.getOrderTimeEnd()));
 			}
 			// 剩余数量大于0的单据
-			if(param.getSurplusNumber()!=null){
+			if (param.getSurplusNumber() != null) {
 				predicate.add(cb.greaterThan(root.get("surplusNumber").as(Integer.class), param.getSurplusNumber()));
 			}
-			
+
 			Predicate[] pre = new Predicate[predicate.size()];
 			query.where(predicate.toArray(pre));
 			return null;
@@ -83,18 +85,26 @@ public class SendGoodsServiceImpl extends BaseServiceImpl<SendGoods, Long> imple
 	}
 
 	@Override
-	public SendGoods addSendGoods(SendGoods sendGoods) {
-		if(sendGoods.getProductId()!=null){
-			
-			
-			
-			
-			
-			
+	public void addSendGoods(SendGoods sendGoods) {
+		
+		// 新增子单
+		if (!StringUtils.isEmpty(sendGoods.getApplyVoucher())) {
+			JSONArray jsonArray = JSON.parseArray(sendGoods.getApplyVoucher());
+			for (int i = 0; i < jsonArray.size(); i++) {
+				JSONObject jsonObject = jsonArray.getJSONObject(i);
+				ApplyVoucher applyVoucher = new ApplyVoucher();
+				applyVoucher.setApplyVoucherTypeId((long)438);
+				applyVoucher.setApplyVoucherKindId((long)441);
+				applyVoucher.setTime(jsonObject.getDate("time"));
+				applyVoucher.setNumber(jsonObject.getInteger("number"));
+				
+			}
 		}
-		sendGoods.setSurplusNumber(sendGoods.getNumber());
-		dao.save(sendGoods);
-		return sendGoods;
+		
+		
+		
+		
+		
 	}
 
 	@Override
@@ -125,7 +135,8 @@ public class SendGoodsServiceImpl extends BaseServiceImpl<SendGoods, Long> imple
 			}
 			// 按批次查找
 			if (!StringUtils.isEmpty(param.getBacthNumber())) {
-				predicate.add(cb.like(root.get("order").get("bacthNumber").as(String.class), "%" + param.getBacthNumber() + "%"));
+				predicate.add(cb.like(root.get("order").get("bacthNumber").as(String.class),
+						"%" + param.getBacthNumber() + "%"));
 			}
 			// 按发货日期
 			if (!StringUtils.isEmpty(param.getSendDate())) {
@@ -137,7 +148,7 @@ public class SendGoodsServiceImpl extends BaseServiceImpl<SendGoods, Long> imple
 						param.getOrderTimeEnd()));
 			}
 			// 剩余数量大于0的单据
-			if(param.getSurplusNumber()!=null){
+			if (param.getSurplusNumber() != null) {
 				predicate.add(cb.greaterThan(root.get("surplusNumber").as(Integer.class), param.getSurplusNumber()));
 			}
 			Predicate[] pre = new Predicate[predicate.size()];
