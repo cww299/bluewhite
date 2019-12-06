@@ -96,6 +96,8 @@ public class QuantitativeServiceImpl extends BaseServiceImpl<Quantitative, Long>
 				quantitative.getPackingMaterials().add(packingMaterials);
 			}
 		}
+		quantitative.setFlag(0);
+		quantitative.setPrint(0);
 		save(quantitative);
 	}
 }
