@@ -58,4 +58,11 @@ public interface OrderService extends BaseCRUDService<Order,Long>{
 	 */
 	public int deleteOrderChild(String ids);
 	
+	/**
+	 * 查看库存订单
+	 * @param order
+	 * @return
+	 */
+	public  List<Order> findListSend(Order order);
+	
 }

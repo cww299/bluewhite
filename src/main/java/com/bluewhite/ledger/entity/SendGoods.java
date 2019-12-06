@@ -12,6 +12,7 @@ import javax.persistence.Transient;
 
 import com.bluewhite.base.BaseEntity;
 import com.bluewhite.product.product.entity.Product;
+import com.bluewhite.system.user.entity.User;
 /**
  * 发货单（待发货，已发货）
  * @author zhangliang
@@ -36,19 +37,19 @@ public class SendGoods extends BaseEntity<Long>{
 	private Customer customer;
 	
 	/**
-	 * 订单id
+	 * 发货申请人id
 	 * 
 	 */
-	@Column(name = "order_id")
-	private Long orderId;
-	
+	@Column(name = "user_id")
+	private Long userId;
+
 	/**
-	 * 订单合同
+	 * 发货申请人
 	 */
 	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "order_id", referencedColumnName = "id", insertable = false, updatable = false)
-	private Order order;
-
+	@JoinColumn(name = "user_id", referencedColumnName = "id", insertable = false, updatable = false)
+	private User user;
+	
 	/**
 	 * 产品id
 	 */
@@ -75,9 +76,21 @@ public class SendGoods extends BaseEntity<Long>{
 	private Date sendDate;
 	
 	/**
+	 * 发货备注
+	 */
+	@Column(name = "remark")
+	private String remark;
+	
+	/**
+	 * 发货状态
+	 */
+	@Column(name = "status")
+	private Integer status;
+	
+	/**
 	 * (包装)剩余数量
 	 */
-	@Column(name = "surplus_Number")
+	@Transient
 	private Integer surplusNumber;
 	
 	/**
@@ -110,11 +123,57 @@ public class SendGoods extends BaseEntity<Long>{
 	@Transient
 	private Date orderTimeEnd;
 	
+	/**
+	 * 借货申请
+	 */
+	@Transient
+	private String applyVoucher;
 	
 	
 	
 	
 	
+	
+	public String getRemark() {
+		return remark;
+	}
+
+	public void setRemark(String remark) {
+		this.remark = remark;
+	}
+
+	public String getApplyVoucher() {
+		return applyVoucher;
+	}
+
+	public void setApplyVoucher(String applyVoucher) {
+		this.applyVoucher = applyVoucher;
+	}
+
+	public Integer getStatus() {
+		return status;
+	}
+
+	public void setStatus(Integer status) {
+		this.status = status;
+	}
+
+	public Long getUserId() {
+		return userId;
+	}
+
+	public void setUserId(Long userId) {
+		this.userId = userId;
+	}
+
+	public User getUser() {
+		return user;
+	}
+
+	public void setUser(User user) {
+		this.user = user;
+	}
+
 	public Date getOrderTimeBegin() {
 		return orderTimeBegin;
 	}
@@ -129,14 +188,6 @@ public class SendGoods extends BaseEntity<Long>{
 
 	public void setOrderTimeEnd(Date orderTimeEnd) {
 		this.orderTimeEnd = orderTimeEnd;
-	}
-
-	public Long getOrderId() {
-		return orderId;
-	}
-
-	public void setOrderId(Long orderId) {
-		this.orderId = orderId;
 	}
 
 	public Date getSendDate() {

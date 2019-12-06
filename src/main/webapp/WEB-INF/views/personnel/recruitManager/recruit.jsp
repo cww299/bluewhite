@@ -487,13 +487,14 @@
 						      }
 						  });
 					 form.on('select(orgNameIds)', function(data){
-						 var html=""
+						 var html="<option value=' '>请选择</option>"
 			      			$.ajax({								//获取当前部门下拉框选择的子数据：职位
 							      url:"${ctx}/basedata/children",
 							      data:{id:data.value},
 							      type:"GET",
 							      async:false,
 					      		  success: function (result) {				//填充职位下拉框
+					      			  
 					      			  	$(result.data).each(function(i,o){
 						      				  html +='<option  value="'+o.id+'">'+o.name+'</option>'
 					      				});  

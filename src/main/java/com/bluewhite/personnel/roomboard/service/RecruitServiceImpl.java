@@ -300,11 +300,11 @@ public class RecruitServiceImpl extends BaseServiceImpl<Recruit, Long> implement
 					.filter(User -> User.getOrgNameId().equals(User.getOrgNameId()) && User.getQuit().equals(1))
 					.count();
 			Long j= psList2.stream()
-					.filter(User -> User.getQuitTypeId() !=null && User.getOrgNameId().equals(User.getOrgNameId()) && User.getQuit().equals(1)  && User.getQuitTypeId().equals((long)434)).count();//自离
+					.filter(User -> User.getQuitTypeId() !=null && User.getOrgNameId().equals(User.getOrgNameId()) && User.getQuit().equals(1)  && User.getQuitTypeId().equals((long)435)).count();//自离
 			Long k= psList2.stream()
-					.filter(User -> User.getQuitTypeId()!=null &&  User.getOrgNameId().equals(User.getOrgNameId()) && User.getQuit().equals(1) && User.getQuitTypeId().equals((long)435)).count();//劝退
+					.filter(User -> User.getQuitTypeId()!=null &&  User.getOrgNameId().equals(User.getOrgNameId()) && User.getQuit().equals(1) && User.getQuitTypeId().equals((long)436)).count();//劝退
 			Long l= psList2.stream()
-					.filter(User -> User.getQuitTypeId()!=null && User.getOrgNameId().equals(User.getOrgNameId()) && User.getQuit().equals(1) &&  User.getQuitTypeId().equals((long)436)).count();//开除
+					.filter(User -> User.getQuitTypeId()!=null && User.getOrgNameId().equals(User.getOrgNameId()) && User.getQuit().equals(1) &&  User.getQuitTypeId().equals((long)437)).count();//开除
 			String orgName = baseDataDao2.findOne(ps2).getName();
 			countMap.put("count", i);
 			countMap.put("count1",j);

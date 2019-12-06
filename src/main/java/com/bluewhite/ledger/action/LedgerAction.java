@@ -330,6 +330,21 @@ public class LedgerAction {
 		cr.setMessage("查看成功");
 		return cr;
 	}
+	
+	/**
+	 * 查看批次库存
+	 * 
+	 * @param order
+	 * @return
+	 */
+	@RequestMapping(value = "/ledger/getOrderSend", method = RequestMethod.GET)
+	@ResponseBody
+	public CommonResponse getOrderSend(Order order) {
+		CommonResponse cr = new CommonResponse();
+		cr.setData(clearCascadeJSONOrder.format(orderService.findListSend(order)).toJSON());
+		cr.setMessage("查看成功");
+		return cr;
+	}
 
 	/**
 	 * (销售部)新增生产计划单
@@ -1087,8 +1102,8 @@ public class LedgerAction {
 				.addRetainTerm(PutStorage.class, "id", "orderOutSource", "inStatus", "arrivalTime", "arrivalNumber",
 						"serialNumber", "storageArea", "storageLocation", "surplusNumber")
 				.addRetainTerm(OrderOutSource.class, "id", "outSourceNumber", "outsourceTask", "order")
-				.addRetainTerm(Order.class, "id", "orderNumber", "bacthNumber", "orderChilds", "number")
-				.addRetainTerm(OrderChild.class, "id", "customer", "user", "childNumber", "childRemark")
+				.addRetainTerm(Order.class, "id", "orderDate","orderNumber", "bacthNumber", "orderChilds", "number")
+				.addRetainTerm(OrderChild.class, "id","customer","user", "childNumber", "childRemark")
 				.addRetainTerm(Customer.class, "id", "name")
 				.addRetainTerm(BaseData.class, "id", "name")
 				.addRetainTerm(User.class, "id", "userName")
@@ -1181,7 +1196,7 @@ public class LedgerAction {
 	}
 
 	/**
-	 * (销售部)新增修改发货单
+	 * (销售部)新增发货单
 	 * 
 	 * @return cr
 	 */
@@ -1189,12 +1204,8 @@ public class LedgerAction {
 	@ResponseBody
 	public CommonResponse addSendGoods(SendGoods sendGoods) {
 		CommonResponse cr = new CommonResponse();
-		if (sendGoods.getId() != null) {
-			cr.setMessage("修改成功");
-		} else {
-			cr.setMessage("新增成功");
-		}
 		sendGoodsService.addSendGoods(sendGoods);
+		cr.setMessage("新增成功");
 		return cr;
 	}
 

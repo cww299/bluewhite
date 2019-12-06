@@ -46,6 +46,19 @@ public class OutStorage extends BaseEntity<Long> {
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "product_id", referencedColumnName = "id", insertable = false, updatable = false)
 	private Product product;
+	
+	/**
+	 * 发货单id
+	 */
+	@Column(name = "send_goods_id")
+	private Long sendGoodsId;
+
+	/**
+	 * 发货单
+	 */
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "send_goods_id", referencedColumnName = "id", insertable = false, updatable = false)
+	private SendGoods sendGoods;
 
 	/**
 	 * 入库单多对多
@@ -123,6 +136,22 @@ public class OutStorage extends BaseEntity<Long> {
 	
 	
 	
+
+	public Long getSendGoodsId() {
+		return sendGoodsId;
+	}
+
+	public void setSendGoodsId(Long sendGoodsId) {
+		this.sendGoodsId = sendGoodsId;
+	}
+
+	public SendGoods getSendGoods() {
+		return sendGoods;
+	}
+
+	public void setSendGoods(SendGoods sendGoods) {
+		this.sendGoods = sendGoods;
+	}
 
 	public String getPutOutStorageIds() {
 		return putOutStorageIds;

@@ -21,7 +21,7 @@ public interface SendGoodsService extends BaseCRUDService<SendGoods,Long>{
 	 * 新增发货单
 	 * @param sendGoods
 	 */
-	public SendGoods addSendGoods(SendGoods sendGoods);
+	public void addSendGoods(SendGoods sendGoods);
 	/**
 	 * 查看发货单
 	 * @param packing

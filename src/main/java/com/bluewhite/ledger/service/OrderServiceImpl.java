@@ -2,7 +2,10 @@ package com.bluewhite.ledger.service;
 
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 import javax.persistence.criteria.Join;
 import javax.persistence.criteria.JoinType;
@@ -21,13 +24,19 @@ import com.bluewhite.base.BaseServiceImpl;
 import com.bluewhite.basedata.dao.BaseDataDao;
 import com.bluewhite.common.BeanCopyUtils;
 import com.bluewhite.common.ServiceException;
+import com.bluewhite.common.SessionManager;
+import com.bluewhite.common.entity.CurrentUser;
 import com.bluewhite.common.entity.PageParameter;
 import com.bluewhite.common.entity.PageResult;
 import com.bluewhite.common.utils.StringUtil;
 import com.bluewhite.ledger.dao.OrderChildDao;
 import com.bluewhite.ledger.dao.OrderDao;
+import com.bluewhite.ledger.dao.OutStorageDao;
+import com.bluewhite.ledger.dao.PutStorageDao;
 import com.bluewhite.ledger.entity.Order;
 import com.bluewhite.ledger.entity.OrderChild;
+import com.bluewhite.ledger.entity.OutStorage;
+import com.bluewhite.ledger.entity.PutStorage;
 import com.bluewhite.onlineretailers.inventory.dao.ProcurementDao;
 import com.bluewhite.onlineretailers.inventory.entity.Procurement;
 
@@ -42,6 +51,10 @@ public class OrderServiceImpl extends BaseServiceImpl<Order, Long> implements Or
 	private BaseDataDao baseDataDao;
 	@Autowired
 	private OrderChildDao orderChildDao;
+	@Autowired
+	private PutStorageDao putStorageDao;
+	@Autowired
+	private OutStorageDao outStorageDao;
 
 	@Override
 	public PageResult<Order> findPages(Order param, PageParameter page) {
@@ -72,9 +85,10 @@ public class OrderServiceImpl extends BaseServiceImpl<Order, Long> implements Or
 						"%" + StringUtil.specialStrKeyword(param.getProductName()) + "%"));
 			}
 			// 按业务员id
-			if (param.getUserId()!=null) {
-				Join<Order, OrderChild> join = root.join(root.getModel().getList("orderChilds", OrderChild.class),JoinType.LEFT);
-				predicate.add(cb.equal(join.get("userId").as(String.class),param.getUserId()));
+			if (param.getUserId() != null) {
+				Join<Order, OrderChild> join = root.join(root.getModel().getList("orderChilds", OrderChild.class),
+						JoinType.LEFT);
+				predicate.add(cb.equal(join.get("userId").as(String.class), param.getUserId()));
 			}
 			// 按产品编号过滤
 			if (!StringUtils.isEmpty(param.getProductNumber())) {
@@ -147,8 +161,8 @@ public class OrderServiceImpl extends BaseServiceImpl<Order, Long> implements Or
 		List<Order> result = dao.findAll((root, query, cb) -> {
 			List<Predicate> predicate = new ArrayList<>();
 			// 按id过滤
-			if (param.getId() != null) {
-				predicate.add(cb.equal(root.get("id").as(Long.class), param.getId()));
+			if (param.getProductId() != null) {
+				predicate.add(cb.equal(root.get("productId").as(Long.class), param.getProductId()));
 			}
 			// 按是否完结
 			if (param.getComplete() != null) {
@@ -164,9 +178,16 @@ public class OrderServiceImpl extends BaseServiceImpl<Order, Long> implements Or
 						param.getOrderTimeEnd()));
 			}
 			// 按业务员id
-			if (param.getUserId()!=null) {
-				Join<Order, OrderChild> join = root.join(root.getModel().getList("orderChilds", OrderChild.class),JoinType.LEFT);
-				predicate.add(cb.equal(join.get("userId").as(String.class),param.getUserId()));
+			if (param.getUserId() != null) {
+				Join<Order, OrderChild> join = root.join(root.getModel().getList("orderChilds", OrderChild.class),
+						JoinType.LEFT);
+				predicate.add(cb.equal(join.get("userId").as(Long.class), param.getUserId()));
+			}
+			// 按客户id
+			if (param.getCustomerId() != null) {
+				Join<Order, OrderChild> join = root.join(root.getModel().getList("orderChilds", OrderChild.class),
+						JoinType.LEFT);
+				predicate.add(cb.equal(join.get("customerId").as(Long.class), param.getCustomerId()));
 			}
 			// 按是否审核
 			if (param.getAudit() != null) {
@@ -193,7 +214,7 @@ public class OrderServiceImpl extends BaseServiceImpl<Order, Long> implements Or
 			for (int i = 0; i < jsonArray.size(); i++) {
 				JSONObject jsonObject = jsonArray.getJSONObject(i);
 				OrderChild orderChild = new OrderChild();
-				if(jsonObject.getLong("id")!=null){
+				if (jsonObject.getLong("id") != null) {
 					orderChild = orderChildDao.findOne(jsonObject.getLong("id"));
 				}
 				orderChild.setCustomerId(jsonObject.getLong("customerId"));
@@ -247,4 +268,29 @@ public class OrderServiceImpl extends BaseServiceImpl<Order, Long> implements Or
 		}
 		return count;
 	}
+
+	@Override
+	public List<Order> findListSend(Order param) {
+		//通过产品查询所有的入库单
+		List<PutStorage> putStorageList = putStorageDao.findByProductId(param.getProductId());
+		putStorageList.forEach(m->{
+			List<Long> longList = outStorageDao.findPutStorageId(m.getId());
+			List<OutStorage> outStorageList = outStorageDao.findAll(longList);
+			int arrNumber = outStorageList.stream().mapToInt(OutStorage::getArrivalNumber).sum();
+			m.setSurplusNumber(m.getArrivalNumber()-arrNumber);
+		});
+		//排除掉已经全部出库的入库单
+		putStorageList = putStorageList.stream().filter(PutStorage->PutStorage.getSurplusNumber()>0).collect(Collectors.toList());
+		//通过入库单拿到所有的生产计划单
+		List<Order> orderList = new ArrayList<>();
+		List<Map<String, Object>> listMap = new ArrayList<>();
+		putStorageList.forEach(p->{
+			Map<String, Object> map = new HashMap<String, Object>();
+			map.put("order", p.getOrderOutSource().getOrder());
+			map.put("number", p.getSurplusNumber());
+			listMap.add(map);
+		});
+		return orderList;
+	}
+
 }
