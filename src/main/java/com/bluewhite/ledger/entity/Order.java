@@ -142,6 +142,12 @@ public class Order extends BaseEntity<Long> {
 	 */
 	@Transient
 	private Long userId;
+	
+	/**
+	 * 客户id
+	 */
+	@Transient
+	private Long customerId;
 
 	/**
 	 * 子单新增
@@ -179,6 +185,15 @@ public class Order extends BaseEntity<Long> {
 	private String deleteIds;
 	
 	
+	
+
+	public Long getCustomerId() {
+		return customerId;
+	}
+
+	public void setCustomerId(Long customerId) {
+		this.customerId = customerId;
+	}
 
 	public Integer getComplete() {
 		return complete;

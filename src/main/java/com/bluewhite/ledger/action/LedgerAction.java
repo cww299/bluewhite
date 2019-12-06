@@ -1189,12 +1189,8 @@ public class LedgerAction {
 	@ResponseBody
 	public CommonResponse addSendGoods(SendGoods sendGoods) {
 		CommonResponse cr = new CommonResponse();
-		if (sendGoods.getId() != null) {
-			cr.setMessage("修改成功");
-		} else {
-			cr.setMessage("新增成功");
-		}
 		sendGoodsService.addSendGoods(sendGoods);
+		cr.setMessage("新增成功");
 		return cr;
 	}
 

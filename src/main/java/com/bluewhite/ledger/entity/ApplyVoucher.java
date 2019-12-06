@@ -39,23 +39,41 @@ public class ApplyVoucher extends BaseEntity<Long> {
 	 */
 	@Column(name = "cause")
 	private String cause;
-
+	
+	
 	/**
-	 * 申请类型id( 
-	 *  销售： 销售员借货申请
-	 *  入库：返工申请，调拨申请，退货申请 ，换货申请，盘亏申请
-	 *  出库：调拨申请，换货申请，退货申请，盘盈申请，返工申请
+	 * 申请单类型id( 
+	 *  销售申请
+	 *  入库申请
+	 *  出库申请
 	 * )
 	 */
-	@Column(name = "apply_voucher_id")
-	private Long applyVoucherId;
+	@Column(name = "apply_voucher_type_id")
+	private Long applyVoucherTypeId;
 
 	/**
 	 * 申请类型
 	 */
 	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "apply_voucher_id", referencedColumnName = "id", insertable = false, updatable = false)
-	private BaseData applyVoucher;
+	@JoinColumn(name = "apply_voucher_type_id", referencedColumnName = "id", insertable = false, updatable = false)
+	private BaseData applyVoucherType;
+
+	/**
+	 * 申请种类id( 
+	 *  销售： 销售员借货申请
+	 *  入库：返工申请，调拨申请，退货申请 ，换货申请，盘亏申请
+	 *  出库：调拨申请，换货申请，退货申请，盘盈申请，返工申请
+	 * )
+	 */
+	@Column(name = "apply_voucher_kind_id")
+	private Long applyVoucherKindId;
+
+	/**
+	 * 申请种类
+	 */
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "apply_voucher_kind_id", referencedColumnName = "id", insertable = false, updatable = false)
+	private BaseData applyVoucherKind;
 
 	/**
 	 * 申请人员id
@@ -83,18 +101,89 @@ public class ApplyVoucher extends BaseEntity<Long> {
 	private Date passTime;
 	
 	/**
-	 * 审核人员id
+	 * 被申请人员id
 	 */
 	@Column(name = "approval_user_id")
 	private Long approvalUserId;
 
 	/**
-	 * 审核人员
+	 *  被申请人员
 	 */
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "approval_user_id", referencedColumnName = "id", insertable = false, updatable = false)
 	private User approvalUser;
 	
+	/**
+	 * 申请数量
+	 */
+	@Column(name = "number")
+	private Integer number;
+	
+	
+	
+	public Integer getNumber() {
+		return number;
+	}
+
+	public void setNumber(Integer number) {
+		this.number = number;
+	}
+
+	public String getApplyNumber() {
+		return applyNumber;
+	}
+
+	public void setApplyNumber(String applyNumber) {
+		this.applyNumber = applyNumber;
+	}
+
+	public Long getApplyVoucherTypeId() {
+		return applyVoucherTypeId;
+	}
+
+	public void setApplyVoucherTypeId(Long applyVoucherTypeId) {
+		this.applyVoucherTypeId = applyVoucherTypeId;
+	}
+
+	public BaseData getApplyVoucherType() {
+		return applyVoucherType;
+	}
+
+	public void setApplyVoucherType(BaseData applyVoucherType) {
+		this.applyVoucherType = applyVoucherType;
+	}
+
+	public Long getApplyVoucherKindId() {
+		return applyVoucherKindId;
+	}
+
+	public void setApplyVoucherKindId(Long applyVoucherKindId) {
+		this.applyVoucherKindId = applyVoucherKindId;
+	}
+
+	public BaseData getApplyVoucherKind() {
+		return applyVoucherKind;
+	}
+
+	public void setApplyVoucherKind(BaseData applyVoucherKind) {
+		this.applyVoucherKind = applyVoucherKind;
+	}
+
+	public Long getApprovalUserId() {
+		return approvalUserId;
+	}
+
+	public void setApprovalUserId(Long approvalUserId) {
+		this.approvalUserId = approvalUserId;
+	}
+
+	public User getApprovalUser() {
+		return approvalUser;
+	}
+
+	public void setApprovalUser(User approvalUser) {
+		this.approvalUser = approvalUser;
+	}
 
 	public Integer getPass() {
 		return pass;

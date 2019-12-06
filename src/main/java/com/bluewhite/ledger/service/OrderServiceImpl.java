@@ -72,9 +72,10 @@ public class OrderServiceImpl extends BaseServiceImpl<Order, Long> implements Or
 						"%" + StringUtil.specialStrKeyword(param.getProductName()) + "%"));
 			}
 			// 按业务员id
-			if (param.getUserId()!=null) {
-				Join<Order, OrderChild> join = root.join(root.getModel().getList("orderChilds", OrderChild.class),JoinType.LEFT);
-				predicate.add(cb.equal(join.get("userId").as(String.class),param.getUserId()));
+			if (param.getUserId() != null) {
+				Join<Order, OrderChild> join = root.join(root.getModel().getList("orderChilds", OrderChild.class),
+						JoinType.LEFT);
+				predicate.add(cb.equal(join.get("userId").as(String.class), param.getUserId()));
 			}
 			// 按产品编号过滤
 			if (!StringUtils.isEmpty(param.getProductNumber())) {
@@ -147,8 +148,8 @@ public class OrderServiceImpl extends BaseServiceImpl<Order, Long> implements Or
 		List<Order> result = dao.findAll((root, query, cb) -> {
 			List<Predicate> predicate = new ArrayList<>();
 			// 按id过滤
-			if (param.getId() != null) {
-				predicate.add(cb.equal(root.get("id").as(Long.class), param.getId()));
+			if (param.getProductId() != null) {
+				predicate.add(cb.equal(root.get("productId").as(Long.class), param.getProductId()));
 			}
 			// 按是否完结
 			if (param.getComplete() != null) {
@@ -164,9 +165,16 @@ public class OrderServiceImpl extends BaseServiceImpl<Order, Long> implements Or
 						param.getOrderTimeEnd()));
 			}
 			// 按业务员id
-			if (param.getUserId()!=null) {
-				Join<Order, OrderChild> join = root.join(root.getModel().getList("orderChilds", OrderChild.class),JoinType.LEFT);
-				predicate.add(cb.equal(join.get("userId").as(String.class),param.getUserId()));
+			if (param.getUserId() != null) {
+				Join<Order, OrderChild> join = root.join(root.getModel().getList("orderChilds", OrderChild.class),
+						JoinType.LEFT);
+				predicate.add(cb.equal(join.get("userId").as(Long.class), param.getUserId()));
+			}
+			// 按客户id
+			if (param.getCustomerId() != null) {
+				Join<Order, OrderChild> join = root.join(root.getModel().getList("orderChilds", OrderChild.class),
+						JoinType.LEFT);
+				predicate.add(cb.equal(join.get("customerId").as(Long.class), param.getCustomerId()));
 			}
 			// 按是否审核
 			if (param.getAudit() != null) {
@@ -193,7 +201,7 @@ public class OrderServiceImpl extends BaseServiceImpl<Order, Long> implements Or
 			for (int i = 0; i < jsonArray.size(); i++) {
 				JSONObject jsonObject = jsonArray.getJSONObject(i);
 				OrderChild orderChild = new OrderChild();
-				if(jsonObject.getLong("id")!=null){
+				if (jsonObject.getLong("id") != null) {
 					orderChild = orderChildDao.findOne(jsonObject.getLong("id"));
 				}
 				orderChild.setCustomerId(jsonObject.getLong("customerId"));
