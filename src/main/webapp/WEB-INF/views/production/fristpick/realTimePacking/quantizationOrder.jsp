@@ -24,6 +24,35 @@
 	</div>
 </div>
 </body>
+<script type="text/html" id="printPackTpl">
+<div style="padding:20px;">
+	<table border="1" style="margin: auto;width: 80%;text-align:center;">
+		<tr>
+       	 	<td>包装组贴包人</td>
+        	<td>编号</td>
+	    </tr>
+		<tr>
+	        <td>{{ d.user?d.user.userName:'---' }}</td>
+	        <td>{{ d.number}}</td>
+	    </tr>
+		<tr>
+	        <td>产品名</td>
+	        <td>当件内装数量</td>
+	    </tr>
+		{{# layui.each(d.packingChilds,function(index,item){  }}
+		<tr>
+	        <td>{{ item.product.name}}</td>
+	        <td>{{ item.count}}</td>
+	    </tr>
+	    {{# }) }}
+		<tr>
+	        <td></td>
+	        <td>已出货</td>
+	    </tr>
+	</table>
+</div>
+<hr>
+</script>
 <script>
 layui.config({
 	base : '${ctx}/static/layui-v2.4.5/'
@@ -50,6 +79,8 @@ layui.config({
 			toolbar:[
 				'<span class="layui-btn layui-btn-sm" lay-event="add">新增数据</span>',
 				'<span class="layui-btn layui-btn-sm" lay-event="update">修改数据</span>',
+				'<span class="layui-btn layui-btn-sm" lay-event="audit">审核</span>',
+				'<span class="layui-btn layui-btn-sm" lay-event="print">打印</span>',
 			].join(' '),
 			curd:{
 				btn:[4],
@@ -61,6 +92,14 @@ layui.config({
 						if(check.length!=1)
 							return myutil.emsg('只能选择一条数据编辑');
 						addEdit('update',check[0]);
+					}else if(obj.event=='audit'){
+						myutil.deleTableIds({
+							 table:'tableData', 
+							 text:'请选择信息|是否确认发货？',
+							 url:'/temporaryPack/auditQuantitative',
+						})
+					}else if(obj.event=='print'){
+						printOrder();
 					}
 				},
 			},
@@ -128,6 +167,43 @@ layui.config({
 				where: obj.field,
 			})
 		}) 
+		
+		function printOrder(){	
+			var choosed=layui.table.checkStatus('packTable').data;
+			if(choosed.length<1)
+				return myutil.emsg('请选择打印信息');
+			var tpl = $('#printPackTpl').html(), html='<div id="printDiv">';
+			layui.each(choosed,function(index,item){
+				laytpl(tpl).render(item,function(h){ html += h; })
+			})
+			layer.open({
+				title: '打印',
+				area: ['80%','80%'],
+				offset: '100px', 
+				content: html+'</div>',
+				btnAlign: 'c',
+				btn: ['打印','取消'],
+				shadeClose: true,
+				yes: function(){
+					printpage('printDiv');
+					var ids = [];
+					myutil.deleteAjax({
+						ids: ids.join(),
+						url:'/temporaryPack/printQuantitative',
+						success:function(){
+							table.reload('tableData');
+						}
+					})
+				}
+			})
+		}
+		function printpage(myDiv){    
+			var printHtml = document.getElementById(myDiv).innerHTML;
+			var wind = window.open("",'newwindow', 'height=800, width=1500, top=100, left=100, toolbar=no, menubar=no, scrollbars=no, resizable=no,location=n o, status=no');
+			wind.document.body.innerHTML = printHtml;
+			wind.print();
+			return false; 
+		}  
 		
 		function addEdit(type,data){
 			var title = '新增量化单';

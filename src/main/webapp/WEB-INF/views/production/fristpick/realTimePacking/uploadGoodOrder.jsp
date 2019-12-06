@@ -103,7 +103,7 @@ layui.config({
 		
 		mytable.render({
 			elem:'#tableData',
-			url:'${ctx}/TemporaryPack/findPagesUnderGoods',
+			url:'${ctx}/temporaryPack/findPagesUnderGoods',
 			data:[],
 			curd:{
 				btn:[4],
@@ -119,7 +119,7 @@ layui.config({
 				},
 			},
 			autoUpdate:{
-				deleUrl:'/TemporaryPack/deleteUnderGoods',
+				deleUrl:'/temporaryPack/deleteUnderGoods',
 			},
 			toolbar:[
 				'<span class="layui-btn layui-btn-sm" lay-event="add">新增数据</span>',
@@ -188,7 +188,7 @@ layui.config({
 					})
 					form.on('submit(sureAddOrder)',function(obj){
 						myutil.saveAjax({
-							url:'/TemporaryPack/saveUnderGoods',
+							url:'/temporaryPack/saveUnderGoods',
 							data: obj.field,
 							success:function(){
 								table.reload('tableData')
