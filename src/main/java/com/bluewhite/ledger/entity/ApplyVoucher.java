@@ -22,36 +22,41 @@ import com.bluewhite.system.user.entity.User;
 public class ApplyVoucher extends BaseEntity<Long> {
 	
 	/**
+	 * 申请单编号
+	 */
+	@Column(name = "apply_number")
+	private String applyNumber;
+
+	/**
 	 * 申请时间
 	 */
 	@Column(name = "time")
 	private Date time;
-	
+
 	/**
 	 * 申请原因
 	 * 
 	 */
 	@Column(name = "cause")
 	private String cause;
-	
+
 	/**
-	 * 申请类型id(
-	 * 业务员调拨申请
-	 * 发货出库：仓管调拨申请，换货申请，退货申请，盘盈申请，返工申请
-	 * 收货入库：调拨申请，换货申请，退货申请，盘盈申请
-	 *  
+	 * 申请类型id( 
+	 *  销售： 销售员借货申请
+	 *  入库：返工申请，调拨申请，退货申请 ，换货申请，盘亏申请
+	 *  出库：调拨申请，换货申请，退货申请，盘盈申请，返工申请
 	 * )
 	 */
 	@Column(name = "apply_voucher_id")
 	private Long applyVoucherId;
-	
+
 	/**
 	 * 申请类型
 	 */
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "apply_voucher_id", referencedColumnName = "id", insertable = false, updatable = false)
 	private BaseData applyVoucher;
-	
+
 	/**
 	 * 申请人员id
 	 */
@@ -64,12 +69,48 @@ public class ApplyVoucher extends BaseEntity<Long> {
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "user_id", referencedColumnName = "id", insertable = false, updatable = false)
 	private User user;
+
+	/**
+	 * 是否通过
+	 */
+	@Column(name = "pass")
+	private Integer pass;
+
+	/**
+	 * 通过时间
+	 */
+	@Column(name = "pass_time")
+	private Date passTime;
 	
 	/**
-	 * 是否批准
+	 * 审核人员id
 	 */
-	@Column(name = "approval")
-	private Integer approval;
+	@Column(name = "approval_user_id")
+	private Long approvalUserId;
+
+	/**
+	 * 审核人员
+	 */
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "approval_user_id", referencedColumnName = "id", insertable = false, updatable = false)
+	private User approvalUser;
+	
+
+	public Integer getPass() {
+		return pass;
+	}
+
+	public void setPass(Integer pass) {
+		this.pass = pass;
+	}
+
+	public Date getPassTime() {
+		return passTime;
+	}
+
+	public void setPassTime(Date passTime) {
+		this.passTime = passTime;
+	}
 
 	public Date getTime() {
 		return time;
@@ -117,14 +158,6 @@ public class ApplyVoucher extends BaseEntity<Long> {
 
 	public void setUser(User user) {
 		this.user = user;
-	}
-
-	public Integer getApproval() {
-		return approval;
-	}
-
-	public void setApproval(Integer approval) {
-		this.approval = approval;
 	}
 
 }

@@ -84,21 +84,16 @@ public class SendGoodsServiceImpl extends BaseServiceImpl<SendGoods, Long> imple
 
 	@Override
 	public SendGoods addSendGoods(SendGoods sendGoods) {
-		if (sendGoods.getId() != null) {
-			List<PackingChild> sendGoodsList = packingChildDao.findBySendGoodsId(sendGoods.getId());
-			if (sendGoodsList.size() > 0) {
-				throw new ServiceException("该发货单已有贴包发货单，无法修改，请先核对贴包发货单");
-			}
-			SendGoods ot = dao.findOne(sendGoods.getId());
-			update(sendGoods, ot, "");
-		} else {
-			//根据下单合同进行成品发货
-			//发货单发货时选择库存详情发货
-			Order order = orderdao.findOne(sendGoods.getOrderId());
-			sendGoods.setProductId(order.getProductId());
-			sendGoods.setSurplusNumber(sendGoods.getNumber());
-			dao.save(sendGoods);
+		if(sendGoods.getProductId()!=null){
+			
+			
+			
+			
+			
+			
 		}
+		sendGoods.setSurplusNumber(sendGoods.getNumber());
+		dao.save(sendGoods);
 		return sendGoods;
 	}
 
