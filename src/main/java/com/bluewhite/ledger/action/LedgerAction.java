@@ -330,6 +330,21 @@ public class LedgerAction {
 		cr.setMessage("查看成功");
 		return cr;
 	}
+	
+	/**
+	 * 查看批次库存
+	 * 
+	 * @param order
+	 * @return
+	 */
+	@RequestMapping(value = "/ledger/getOrderSend", method = RequestMethod.GET)
+	@ResponseBody
+	public CommonResponse getOrderSend(Order order) {
+		CommonResponse cr = new CommonResponse();
+		cr.setData(clearCascadeJSONOrder.format(orderService.findListSend(order)).toJSON());
+		cr.setMessage("查看成功");
+		return cr;
+	}
 
 	/**
 	 * (销售部)新增生产计划单
@@ -1181,7 +1196,7 @@ public class LedgerAction {
 	}
 
 	/**
-	 * (销售部)新增修改发货单
+	 * (销售部)新增发货单
 	 * 
 	 * @return cr
 	 */
