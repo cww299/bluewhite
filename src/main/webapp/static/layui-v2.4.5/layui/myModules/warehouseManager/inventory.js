@@ -2,17 +2,18 @@
  * author: 299
    *   库存管理：库存 模板
  * inventory.render({
- * 	 elem:'绑定元素', ctx:'ctx',
+ * 	 elem:'绑定元素', 
+ * 	 ctx:'ctx',
+ *   chooseProductWin: true,  //是否只用来双击选择商品弹窗
  * }) 
  * type: 库存类型，引用模块前先设置 inventory.type;
  * 		1.物料库存、2:成品库存、3:皮壳库存
  */
 layui.extend({
-	mytable: 'layui/myModules/mytable',
 	inputWarehouseOrder: 'layui/myModules/warehouseManager/inputWarehouseOrder',
 	outWarehouseOrder: 'layui/myModules/warehouseManager/outWarehouseOrder',
 }).define(
-	['jquery','layer','form','laydate','mytable','inputWarehouseOrder','outWarehouseOrder'],
+	['jquery','layer','form','laydate','mytable',],
 	function(exports){
 	"use strict";
 	var $ = layui.jquery,
@@ -34,7 +35,7 @@ layui.extend({
 						'<td><span class="layui-btn" lay-submit lay-filter="search">搜索</span></td>',
 						`
 						<td>&nbsp;&nbsp;</td>
-						<td><span class="layui-badge">点击标绿的商品库存，查看库存详情</span></td>
+						<td><span class="layui-badge" id="tipsInfo">点击标绿的商品库存，查看库存详情</span></td>
 						`,
 					'</tr>',
 				'</table>',
@@ -51,11 +52,15 @@ layui.extend({
 	var inventory = {
 			type:2,	//默认为成品库存
 	},allWarehouseType = [];
+	
 	inventory.render = function(opt){
 		inventory.type = opt.type || inventory.type;
 		$(opt.elem).append(TPL_MAIN);
+		if(opt.chooseProductWin){
+			$('#tipsInfo').html('双击进行选择');
+		}
 		form.render();
-		
+		allWarehouseType = [];
 		myutil.getDataSync({
 			url: myutil.config.ctx+'/basedata/list?type=warehouseType',
 			success:function(d){
@@ -65,12 +70,13 @@ layui.extend({
 					}
 				})
 			}
-		})
+		});
+		
 		var cols = [
-		       { type:'checkbox',},
-		       { title:'产品编号',   field:'number',width:'10%',	},
-		       { title:'产品名',   field:'name',	},
-		];
+	       { type:'checkbox',},
+	       { title:'产品编号',   field:'number',width:'10%',	},
+	       { title:'产品名',   field:'name',	},
+	    ];
 		layui.each(allWarehouseType,function(i,data){
 			cols.push({
 				title: data.name,
@@ -99,7 +105,7 @@ layui.extend({
 				else
 					return {  msg:r.message,  code:r.code , data:[], count:0 }; 
 			},
-			limit:15,
+			limit: opt.chooseProductWin?10:15,
 			limits:[10,15,20,30,50,100],
 			curd:{
 				btn:[],
@@ -122,14 +128,16 @@ layui.extend({
 					}
 				},
 			},
-			toolbar:[
-				'<span class="layui-btn layui-btn-sm layui-btn-" lay-event="addInp">生成入库单</span>',
-				'<span class="layui-btn layui-btn-sm layui-btn-normal" lay-event="addOut">生成出库单</span>',
-			].join(' '),
+			toolbar: opt.chooseProductWin?'':[
+					'<span class="layui-btn layui-btn-sm layui-btn-" lay-event="addInp">生成入库单</span>',
+					'<span class="layui-btn layui-btn-sm layui-btn-normal" lay-event="addOut">生成出库单</span>',
+				].join(' '),
 			url: opt.ctx+'/inventory/productPages?warehouse='+inventory.type,
 			cols:[ cols ]
 		})
 		table.on('tool(tableData)', function(obj){
+			if(opt.chooseProductWin)
+				return;
 			var data = obj.data;
 			var event = obj.event.split('-');
 			if(event.length==2 && event[0]=="wid"){
@@ -246,10 +254,19 @@ layui.extend({
 				page: { curr:1 },
 			})
 		})
-		inputWarehouseOrder.type = inventory.type;
-		outWarehouseOrder.type = inventory.type;
-		inputWarehouseOrder.init();
-		outWarehouseOrder.init();
+		opt.done && opt.done();
+		if(!opt.chooseProductWin){
+			layui.use(['inputWarehouseOrder','outWarehouseOrder'],function(){
+				inputWarehouseOrder = layui.inputWarehouseOrder;
+				outWarehouseOrder = layui.outWarehouseOrder;
+				
+				inputWarehouseOrder.type = inventory.type;
+				outWarehouseOrder.type = inventory.type;
+				
+				inputWarehouseOrder.init();
+				outWarehouseOrder.init();
+			})
+		}
 	}
 	exports('inventory',inventory);
 })

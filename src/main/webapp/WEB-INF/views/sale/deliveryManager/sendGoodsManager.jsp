@@ -35,12 +35,12 @@
 				<td><button type="button" class="layui-btn" lay-submit lay-filter="search">搜索</button></td>
 			</tr>
 		</table>
-		<table id="tableData" lay-filter="tableData"></table>
+		<table id="sendTable" lay-filter="sendTable"></table>
 	</div>
 </div>
 </body>
 <!-- 表格工具栏模板 -->
-<script type="text/html" id="tableDataToolbar">
+<script type="text/html" id="sendTableToolbar">
 <div class="layui-btn-container layui-inline">
 	<span class="layui-btn layui-btn-sm layui-btn-primary" id="defaultDate">0000-00-00</span>
 	<span class="layui-btn layui-btn-sm" lay-event="addTempData">新增一行</span>
@@ -53,10 +53,10 @@
 layui.config({
 	base : '${ctx}/static/layui-v2.4.5/'
 }).extend({
-	tablePlug : 'tablePlug/tablePlug',
-	myutil: 'layui/myModules/myutil',
+	mytable: 'layui/myModules/mytable',
+	sendGoodOrder: 'layui/myModules/sale/sendGoodOrder',
 }).define(
-	['tablePlug','layer','myutil','laydate'],
+	['layer','mytable','laydate','sendGoodOrder'],
 	function(){
 		var $ = layui.jquery
 		, layer = layui.layer 				
@@ -64,48 +64,41 @@ layui.config({
 		, laydate = layui.laydate
 		, myutil = layui.myutil
 		, table = layui.table 
+		, sendGoodOrder = layui.sendGoodOrder
 		, laytpl = layui.laytpl
-		, tablePlug = layui.tablePlug;
+		, mytable = layui.mytable;
+		
 		myutil.config.ctx = '${ctx}';
 		myutil.clickTr();
 		myutil.timeFormat();
-		var allBatch = [],allCustom = []; 	//所有的批次号、客户
 		var searchTime = new Date().format("yyyy-MM-dd");;
-		allCustom = myutil.getDataSync({ url:'${ctx}/ledger/allCustomer', });
-		allBatch = myutil.getDataSync({ url:'${ctx}/ledger/getOrder', });
+		
 		laydate.render({ elem:'#searchTime',range:'~'  })
-		table.render({
-			elem:'#tableData',
+		mytable.render({
+			elem:'#sendTable',
 			url:'${ctx}/ledger/getSendGoods',
-			toolbar:'#tableDataToolbar',
-			page:true,
+			toolbar: [
+				'<span class="layui-btn layui-btn-sm" lay-event="addSendOrder">新增发货单<span>',
+			].join(' '),
+			curd:{
+				btn:[],
+				otherBtn:function(obj){
+					if(obj.event=='addSendOrder'){
+						sendGoodOrder.add({});
+					}
+				}
+			},
 			size:'lg',
-			request:{ pageName:'page', limitName:'size' },
-			parseData:function(ret){ return { data:ret.data.rows, count:ret.data.total, msg:ret.message, code:ret.code } },
 			cols:[[
-			       {align:'center', type:'checkbox',},
-			       {align:'center', title:'发货日期',   field:'sendDate', edit:false, width:'10%', templet:'<span>{{ d.sendDate.split(" ")[0] }}</span>', },
-			       {align:'center', title:'客户',   field:'customerId',  edit:false,  width:'12%', templet: getSelectHtml(allCustom,'customerId'),  },
-			       {align:'center', title:'批次号',   field:'bacthNumber', edit:false, templet: getSelectHtml(allBatch,'bacthNumber'),  },
-			       {align:'center', title:'产品', 	field:'productName', edit:false, templet: '<span>{{d.product?d.product.name:""}}</span>'	},
-			       {align:'center', title:'数量',   field:'number',	edit:true,  width:'6%',},
-			       {align:'center', title:'剩余数量',   field:'surplusNumber', edit:false, width:'6%',	},
+			       { type:'checkbox',},
+			       { title:'发货日期',   field:'sendDate', width:'10%', type:'date' },
+			       { title:'客户',   field:'customer_name',   width:'12%',   },
+			       { title:'批次号',   field:'bacthNumber',  },
+			       { title:'产品', 	field:'product_name',  },
+			       { title:'数量',   field:'number',  width:'6%',},
+			       { title:'剩余数量',   field:'surplusNumber',  width:'6%',	},
 			       ]],
 			done:function(){
-				layui.each($('#tableData').next().find('td[data-field="sendDate"]'),function(index,item){
-					item.children[0].onclick = function(event) { layui.stope(event) };
-					laydate.render({
-						elem: item.children[0],
-						done: function(val){
-							var index = $(this.elem).closest('tr').attr('data-index');
-							var trData = table.cache['tableData'][index];
-							update({
-								id: trData.id,
-								sendDate: val+' 00:00:00'
-							})
-						}
-					})
-				})
 				laydate.render({ 
 					elem:'#defaultDate',
 					value: searchTime,
@@ -134,7 +127,7 @@ layui.config({
 		form.on('select(selectFilter)',function(obj){
 			var index = $(obj.elem).closest('tr').attr('data-index');
 			var field = $(obj.elem).closest('td').attr('data-field');
-			var trData = layui.table.cache['tableData'][index];
+			var trData = layui.table.cache['sendTable'][index];
 			if(field == 'bacthNumber'){
 				var opt = $(obj.elem).find('option[value="'+obj.value+'"]'); 
 				var text = $(opt).html();
@@ -151,7 +144,7 @@ layui.config({
 				update(data);
 			}
 		})
-		table.on('edit(tableData)',function(obj){
+		table.on('edit(sendTable)',function(obj){
 			var data = obj.data;
 			var val = obj.value, msg ='';
 			isNaN(val) && (msg = '数量只能为数字');
@@ -177,35 +170,35 @@ layui.config({
 			}
 			obj.field.orderTimeBegin = beg;
 			obj.field.orderTimeEnd = end;
-			table.reload('tableData',{
+			table.reload('sendTable',{
 				where: obj.field ,
 				page:{ curr:1 },
 			})
 		}) 
-		table.on('toolbar(tableData)',function(obj){
+		table.on('toolbar(sendTable)',function(obj){
 			switch(obj.event){
 			case 'addTempData': 	addTempData(); 	break;
 			case 'saveTempData': 	saveTempData(); break;
 			case 'deleteSome': 		deleteSome(); 	break;
-			case 'cleanTempData': 	table.cleanTemp('tableData'); break;
+			case 'cleanTempData': 	table.cleanTemp('sendTable'); break;
 			}
 		})
 		function addTempData(){
 			var allField = {customerId:'',number:'',sendDate:searchTime+' 00:00:00' ,id:'',orderId:'' };
-			table.addTemp('tableData',allField,function(trElem){
+			table.addTemp('sendTable',allField,function(trElem){
 				var sendDateTd = trElem.find('td[data-field="sendDate"]')[0];
 				laydate.render({
 					elem: sendDateTd.children[0],
 					value: searchTime,
 					done: function(val) {
 						var index = $(this.elem).closest('tr').attr('data-index');
-						table.cache['tableData'][index]['sendDate'] = val+' 00:00:00';
+						table.cache['sendTable'][index]['sendDate'] = val+' 00:00:00';
 					}
 				}) 
 			});
 	 	}
 		function saveTempData(){
-			var tempData = table.getTemp('tableData').data;
+			var tempData = table.getTemp('sendTable').data;
 			for(var i=0;i<tempData.length;i++){
 				var t = tempData[i];
 				var msg = '';
@@ -225,8 +218,8 @@ layui.config({
 						r.code==0 && (successAdd++);
 						if(successAdd==tempData.length){
 							myutil.smsg('成功新增：'+successAdd+'条数据');
-							table.cleanTemp('tableData');
-							table.reload('tableData')
+							table.cleanTemp('sendTable');
+							table.reload('sendTable')
 						}
 					}
 				})
@@ -236,7 +229,7 @@ layui.config({
 			myutil.deleTableIds({
 				url: '/ledger/deleteSendGoods',
 				text: '请选择删除信息|是否确认删除？',
-				table: 'tableData',
+				table: 'sendTable',
 			})
 		}
 		function update(data){
@@ -245,8 +238,8 @@ layui.config({
 				data: data
 			})
 		}
+		sendGoodOrder.init();
 	}//end define function
 )//endedefine
 </script>
-
 </html>

@@ -18,9 +18,10 @@
 layui.config({
 	base : '${ctx}/static/layui-v2.4.5/'
 }).extend({
+	mytable: 'layui/myModules/mytable',
 	inventory : 'layui/myModules/warehouseManager/inventory' ,
 }).define(
-	['inventory','myutil'],
+	['mytable','inventory','myutil'],
 	function(){
 		var $ = layui.jquery
 		,myutil = layui.myutil
