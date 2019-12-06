@@ -14,4 +14,12 @@ public interface PutStorageDao extends BaseRepository<PutStorage, Long> {
 	 * @return
 	 */
 	List<PutStorage> findByWarehouseTypeIdAndProductId(Long warehouseTypeId, Long productId);
+	
+	/**
+	 * 根据产品id查找入库单
+	 * @param inwarehousetypeid
+	 * @param productId
+	 * @return
+	 */
+	List<PutStorage> findByProductId(Long productId);
 }

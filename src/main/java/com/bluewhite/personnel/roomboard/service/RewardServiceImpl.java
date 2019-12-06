@@ -65,10 +65,18 @@ public class RewardServiceImpl extends BaseServiceImpl<Reward, Long>
 			for (Reward reward2 : list2) {
 				price2=price2+reward2.getPrice();
 			}
-			if (price-price2-reward.getPrice()<0) {
-				throw new ServiceException("领取的奖励超过了 累计奖励");
+			if(reward.getId()==null){
+				if (price-price2-reward.getPrice()<0) {
+					throw new ServiceException("领取的奖励超过了 累计奖励");
+				}else{
+					return dao.save(reward);
+				}
 			}else{
-				return dao.save(reward);
+				if (price-reward.getPrice()<0) {
+					throw new ServiceException("领取的奖励超过了 累计奖励");
+				}else{
+					return dao.save(reward);
+				}
 			}
 		}else{
 			return dao.save(reward);

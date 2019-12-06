@@ -78,7 +78,9 @@ public class AdvertisementServiceImpl extends BaseServiceImpl<Advertisement, Lon
 	 */
 	@Override
 	public Advertisement addAdvertisement(Advertisement advertisement) {
-
+			if (advertisement.getId()==null && advertisement.getPrice()==null) {
+				advertisement.setPrice(0.0);
+			}
 		return dao.save(advertisement);
 	}
 
