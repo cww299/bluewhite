@@ -21,10 +21,24 @@ public interface QuantitativeService extends BaseCRUDService<Quantitative,Long>{
 	public void saveQuantitative(Quantitative quantitative);
 
 	/**
-	 * 
+	 * 新增贴包材料
 	 * @param quantitative
 	 */
-	void saveQuantitativeMaterials(Quantitative quantitative);
+	public void saveQuantitativeMaterials(Quantitative quantitative);
+	
+	/**
+	 * 发货
+	 * @param ids
+	 * @return
+	 */
+	int auditQuantitative(String ids);
+	
+	/**
+	 * 打印
+	 * @param ids
+	 * @return
+	 */
+	int printQuantitative(String ids);
 
 	
 

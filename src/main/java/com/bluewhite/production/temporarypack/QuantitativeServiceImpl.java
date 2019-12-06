@@ -17,12 +17,14 @@ import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.bluewhite.base.BaseServiceImpl;
+import com.bluewhite.common.ServiceException;
 import com.bluewhite.common.entity.PageParameter;
 import com.bluewhite.common.entity.PageResult;
 import com.bluewhite.common.utils.StringUtil;
 import com.bluewhite.ledger.dao.PackingMaterialsDao;
 import com.bluewhite.ledger.entity.Order;
 import com.bluewhite.ledger.entity.OrderChild;
+import com.bluewhite.ledger.entity.Packing;
 import com.bluewhite.ledger.entity.PackingMaterials;
 
 @Service
@@ -88,9 +90,6 @@ public class QuantitativeServiceImpl extends BaseServiceImpl<Quantitative, Long>
 			for (int i = 0; i < jsonArrayMaterials.size(); i++) {
 				PackingMaterials packingMaterials = new PackingMaterials();
 				JSONObject jsonObject = jsonArrayMaterials.getJSONObject(i);
-				if (jsonObject.getLong("packingMaterialsId") != null) {
-					packingMaterials = packingMaterialsDao.findOne(jsonObject.getLong("packingMaterialsId"));
-				}
 				packingMaterials.setPackagingId(jsonObject.getLong("packagingId"));
 				packingMaterials.setPackagingCount(jsonObject.getInteger("packagingCount"));
 				quantitative.getPackingMaterials().add(packingMaterials);
@@ -99,5 +98,58 @@ public class QuantitativeServiceImpl extends BaseServiceImpl<Quantitative, Long>
 		quantitative.setFlag(0);
 		quantitative.setPrint(0);
 		save(quantitative);
+	}
+
+	@Override
+	public void saveQuantitativeMaterials(Quantitative quantitative) {
+		// 新增贴包物
+		if (!StringUtils.isEmpty(quantitative.getPackingMaterialsJson())) {
+			JSONArray jsonArrayMaterials = JSON.parseArray(quantitative.getPackingMaterialsJson());
+			for (int i = 0; i < jsonArrayMaterials.size(); i++) {
+				PackingMaterials packingMaterials = new PackingMaterials();
+				JSONObject jsonObject = jsonArrayMaterials.getJSONObject(i);
+				packingMaterials.setPackagingId(jsonObject.getLong("packagingId"));
+				packingMaterials.setPackagingCount(jsonObject.getInteger("packagingCount"));
+				quantitative.getPackingMaterials().add(packingMaterials);
+			}
+		}
+		save(quantitative);
+	}
+
+	@Override
+	public int auditQuantitative(String ids) {
+		int count = 0; 
+		if (!StringUtils.isEmpty(ids)) {
+			String[] idArr = ids.split(",");
+			if (idArr.length > 0) {
+				for (int i = 0; i < idArr.length; i++) {
+					Long id = Long.parseLong(idArr[i]);
+					Quantitative quantitative = dao.findOne(id);
+					quantitative.setPrint(1);
+					dao.save(quantitative);
+				}
+			}
+		}
+		return count;
+	}
+
+	@Override
+	public int printQuantitative(String ids) {
+		int count = 0;
+		if (!StringUtils.isEmpty(ids)) {
+			String[] idArr = ids.split(",");
+			if (idArr.length > 0) {
+				for (int i = 0; i < idArr.length; i++) {
+					Long id = Long.parseLong(idArr[i]);
+					Quantitative quantitative = dao.findOne(id);
+					if (quantitative.getFlag() == 1) {
+						throw new ServiceException("已发货请勿多次发货");
+					}
+					quantitative.setFlag(1);
+					dao.save(quantitative);
+				}
+			}
+		}
+		return count;
 	}
 }

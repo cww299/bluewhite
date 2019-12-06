@@ -116,14 +116,25 @@ public class TemporaryPackAction {
 	}
 	
 	/**
-	 * 审核打印 量化单
+	 * 发货 量化单
 	 */
 	@RequestMapping(value = "/temporaryPack/auditQuantitative", method = RequestMethod.POST)
 	@ResponseBody
-	public CommonResponse auditQuantitative(Quantitative quantitative) {
+	public CommonResponse auditQuantitative(String ids) {
 		CommonResponse cr = new CommonResponse();
-		Quantitative ot = quantitativeService.findOne(quantitative.getId());
-		quantitativeService.update(quantitative, ot, "");
+		quantitativeService.auditQuantitative(ids);
+		cr.setMessage("成功");
+		return cr;
+	}
+	
+	/**
+	 * 打印 量化单
+	 */
+	@RequestMapping(value = "/temporaryPack/printQuantitative", method = RequestMethod.POST)
+	@ResponseBody
+	public CommonResponse printQuantitative(String ids) {
+		CommonResponse cr = new CommonResponse();
+		quantitativeService.printQuantitative(ids);
 		cr.setMessage("成功");
 		return cr;
 	}
