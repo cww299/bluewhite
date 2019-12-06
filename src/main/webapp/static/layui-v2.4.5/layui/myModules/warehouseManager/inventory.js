@@ -32,6 +32,10 @@ layui.extend({
 						'<td><input type="text" name="name" class="layui-input"></td>',
 						'<td>&nbsp;&nbsp;</td>',
 						'<td><span class="layui-btn" lay-submit lay-filter="search">搜索</span></td>',
+						`
+						<td>&nbsp;&nbsp;</td>
+						<td><span class="layui-badge">点击标绿的商品库存，查看库存详情</span></td>
+						`,
 					'</tr>',
 				'</table>',
 				'<table id="tableData" lay-filter="tableData"></table>',
@@ -64,14 +68,21 @@ layui.extend({
 		})
 		var cols = [
 		       { type:'checkbox',},
-		       { title:'产品编号',   field:'number',	},
+		       { title:'产品编号',   field:'number',width:'10%',	},
 		       { title:'产品名',   field:'name',	},
 		];
-		layui.each(allWarehouseType,function(i,d){
+		layui.each(allWarehouseType,function(i,data){
 			cols.push({
-				title: d.name,
-				field: 'wid'+d.id,
-				event: 'wid-'+d.id,
+				title: data.name,
+				field: 'wid'+data.id,
+				event: 'wid-'+data.id,
+				width: '12%',
+				templet: function(d){
+					if(d['wid'+data.id]==0)
+						return '<b style="color:red">'+d['wid'+data.id]+'</b>';
+					else
+						return '<b style="color:green">'+d['wid'+data.id]+'</b>';
+				}
 			})
 		})
 		mytable.render({
@@ -122,6 +133,8 @@ layui.extend({
 			var data = obj.data;
 			var event = obj.event.split('-');
 			if(event.length==2 && event[0]=="wid"){
+				if(data[event[0]+event[1]]==0)
+					return myutil.emsg('该商品在该仓库无库存！');
 				layer.open({
 					type:1,
 					area:['100%','80%'],
