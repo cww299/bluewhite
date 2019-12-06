@@ -39,6 +39,12 @@ public interface QuantitativeService extends BaseCRUDService<Quantitative,Long>{
 	 * @return
 	 */
 	int printQuantitative(String ids);
+	
+	/**
+	 * 
+	 * @param ids
+	 */
+	int deleteQuantitative(String ids);
 
 	
 

@@ -75,6 +75,12 @@ public class UnderGoods extends BaseEntity<Long> {
 	 */
 	@Transient
 	private String productNumber;
+	
+	/**
+	 * 剩余发货数量
+	 */
+	@Transient
+	private Integer surplusNumber;
 
 	/**
 	 * 查询字段
@@ -87,6 +93,15 @@ public class UnderGoods extends BaseEntity<Long> {
 	@Transient
 	private Date orderTimeEnd;
 
+
+	
+	public Integer getSurplusNumber() {
+		return surplusNumber;
+	}
+
+	public void setSurplusNumber(Integer surplusNumber) {
+		this.surplusNumber = surplusNumber;
+	}
 
 	public String getProductName() {
 		return productName;

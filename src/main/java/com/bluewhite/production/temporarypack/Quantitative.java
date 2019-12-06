@@ -43,6 +43,12 @@ public class Quantitative extends BaseEntity<Long> {
 	private Date time;
 	
 	/**
+	 * 包装数量
+	 */
+	@Column(name = "number")
+	private Integer number;
+	
+	/**
 	 * 子单list
 	 */
 	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY,orphanRemoval = true)
@@ -131,6 +137,14 @@ public class Quantitative extends BaseEntity<Long> {
 	
 	
 	
+	public Integer getNumber() {
+		return number;
+	}
+
+	public void setNumber(Integer number) {
+		this.number = number;
+	}
+
 	public Long getUserid() {
 		return userid;
 	}
