@@ -49,7 +49,6 @@ import com.bluewhite.system.user.service.UserService;
 @Controller
 public class TaskAction {
 
-	private static final Log log = Log.getLog(TaskAction.class);
 
 	@Autowired
 	private TaskService taskService;

@@ -40,7 +40,6 @@ public class ApplyVoucher extends BaseEntity<Long> {
 	@Column(name = "cause")
 	private String cause;
 	
-	
 	/**
 	 * 申请单类型id( 
 	 *  销售申请
@@ -118,6 +117,7 @@ public class ApplyVoucher extends BaseEntity<Long> {
 	 */
 	@Column(name = "number")
 	private Integer number;
+	
 	
 	
 	
@@ -215,22 +215,6 @@ public class ApplyVoucher extends BaseEntity<Long> {
 
 	public void setCause(String cause) {
 		this.cause = cause;
-	}
-
-	public Long getApplyVoucherId() {
-		return applyVoucherId;
-	}
-
-	public void setApplyVoucherId(Long applyVoucherId) {
-		this.applyVoucherId = applyVoucherId;
-	}
-
-	public BaseData getApplyVoucher() {
-		return applyVoucher;
-	}
-
-	public void setApplyVoucher(BaseData applyVoucher) {
-		this.applyVoucher = applyVoucher;
 	}
 
 	public Long getUserId() {

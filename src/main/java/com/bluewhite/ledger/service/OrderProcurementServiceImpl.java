@@ -93,10 +93,6 @@ public class OrderProcurementServiceImpl extends BaseServiceImpl<OrderProcuremen
 			return null;
 		}, page);
 		PageResult<OrderProcurement> result = new PageResult<>(pages, page);
-		
-		
-		
-		
 		return result;
 	}
 

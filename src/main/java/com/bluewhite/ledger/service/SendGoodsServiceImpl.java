@@ -17,8 +17,11 @@ import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.bluewhite.base.BaseServiceImpl;
 import com.bluewhite.common.ServiceException;
+import com.bluewhite.common.SessionManager;
+import com.bluewhite.common.entity.CurrentUser;
 import com.bluewhite.common.entity.PageParameter;
 import com.bluewhite.common.entity.PageResult;
+import com.bluewhite.ledger.dao.ApplyVoucherDao;
 import com.bluewhite.ledger.dao.OrderDao;
 import com.bluewhite.ledger.dao.PackingChildDao;
 import com.bluewhite.ledger.dao.SendGoodsDao;
@@ -35,7 +38,8 @@ public class SendGoodsServiceImpl extends BaseServiceImpl<SendGoods, Long> imple
 	private PackingChildDao packingChildDao;
 	@Autowired
 	private OrderDao orderdao;
-
+	@Autowired
+	private ApplyVoucherDao applyVoucherDao;
 	@Override
 	public PageResult<SendGoods> findPages(SendGoods param, PageParameter page) {
 		Page<SendGoods> pages = dao.findAll((root, query, cb) -> {
@@ -86,8 +90,10 @@ public class SendGoodsServiceImpl extends BaseServiceImpl<SendGoods, Long> imple
 
 	@Override
 	public void addSendGoods(SendGoods sendGoods) {
-		
-		// 新增子单
+		CurrentUser cu = SessionManager.getUserSession();
+		sendGoods.setUserId(cu.getId());
+		// 新增借货申请单
+		List<ApplyVoucher> applyVoucherList = new ArrayList<>();
 		if (!StringUtils.isEmpty(sendGoods.getApplyVoucher())) {
 			JSONArray jsonArray = JSON.parseArray(sendGoods.getApplyVoucher());
 			for (int i = 0; i < jsonArray.size(); i++) {
@@ -97,14 +103,13 @@ public class SendGoodsServiceImpl extends BaseServiceImpl<SendGoods, Long> imple
 				applyVoucher.setApplyVoucherKindId((long)441);
 				applyVoucher.setTime(jsonObject.getDate("time"));
 				applyVoucher.setNumber(jsonObject.getInteger("number"));
-				
+				applyVoucher.setApprovalUserId(jsonObject.getLong("approvalUserId"));
+				applyVoucher.setUserId(cu.getId());
+				applyVoucherList.add(applyVoucher);
 			}
 		}
-		
-		
-		
-		
-		
+		applyVoucherDao.save(applyVoucherList);
+		save(sendGoods);
 	}
 
 	@Override

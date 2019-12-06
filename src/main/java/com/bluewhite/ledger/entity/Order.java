@@ -184,8 +184,21 @@ public class Order extends BaseEntity<Long> {
 	@Transient
 	private String deleteIds;
 	
+	/**
+	 * 需要删除的子单
+	 */
+	@Transient
+	private Integer include;
 	
+
 	
+	public Integer getInclude() {
+		return include;
+	}
+
+	public void setInclude(Integer include) {
+		this.include = include;
+	}
 
 	public Long getCustomerId() {
 		return customerId;

@@ -76,6 +76,12 @@ public class SendGoods extends BaseEntity<Long>{
 	private Date sendDate;
 	
 	/**
+	 * 发货备注
+	 */
+	@Column(name = "remark")
+	private String remark;
+	
+	/**
 	 * 发货状态
 	 */
 	@Column(name = "status")
@@ -127,6 +133,15 @@ public class SendGoods extends BaseEntity<Long>{
 	
 	
 	
+	
+	public String getRemark() {
+		return remark;
+	}
+
+	public void setRemark(String remark) {
+		this.remark = remark;
+	}
+
 	public String getApplyVoucher() {
 		return applyVoucher;
 	}
