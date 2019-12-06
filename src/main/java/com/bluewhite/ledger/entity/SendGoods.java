@@ -36,20 +36,6 @@ public class SendGoods extends BaseEntity<Long>{
 	private Customer customer;
 	
 	/**
-	 * 订单id
-	 * 
-	 */
-	@Column(name = "order_id")
-	private Long orderId;
-	
-	/**
-	 * 订单合同
-	 */
-	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "order_id", referencedColumnName = "id", insertable = false, updatable = false)
-	private Order order;
-
-	/**
 	 * 产品id
 	 */
 	@Column(name = "product_id")
@@ -129,14 +115,6 @@ public class SendGoods extends BaseEntity<Long>{
 
 	public void setOrderTimeEnd(Date orderTimeEnd) {
 		this.orderTimeEnd = orderTimeEnd;
-	}
-
-	public Long getOrderId() {
-		return orderId;
-	}
-
-	public void setOrderId(Long orderId) {
-		this.orderId = orderId;
 	}
 
 	public Date getSendDate() {

@@ -1087,8 +1087,8 @@ public class LedgerAction {
 				.addRetainTerm(PutStorage.class, "id", "orderOutSource", "inStatus", "arrivalTime", "arrivalNumber",
 						"serialNumber", "storageArea", "storageLocation", "surplusNumber")
 				.addRetainTerm(OrderOutSource.class, "id", "outSourceNumber", "outsourceTask", "order")
-				.addRetainTerm(Order.class, "id", "orderNumber", "bacthNumber", "orderChilds", "number")
-				.addRetainTerm(OrderChild.class, "id", "customer", "user", "childNumber", "childRemark")
+				.addRetainTerm(Order.class, "id", "orderDate","orderNumber", "bacthNumber", "orderChilds", "number")
+				.addRetainTerm(OrderChild.class, "id","customer","user", "childNumber", "childRemark")
 				.addRetainTerm(Customer.class, "id", "name")
 				.addRetainTerm(BaseData.class, "id", "name")
 				.addRetainTerm(User.class, "id", "userName")
