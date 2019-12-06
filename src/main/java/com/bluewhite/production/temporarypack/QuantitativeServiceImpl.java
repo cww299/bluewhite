@@ -20,14 +20,18 @@ import com.bluewhite.base.BaseServiceImpl;
 import com.bluewhite.common.entity.PageParameter;
 import com.bluewhite.common.entity.PageResult;
 import com.bluewhite.common.utils.StringUtil;
+import com.bluewhite.ledger.dao.PackingMaterialsDao;
 import com.bluewhite.ledger.entity.Order;
 import com.bluewhite.ledger.entity.OrderChild;
+import com.bluewhite.ledger.entity.PackingMaterials;
 
 @Service
 public class QuantitativeServiceImpl extends BaseServiceImpl<Quantitative, Long> implements QuantitativeService {
 	
 	@Autowired
 	private QuantitativeDao dao;
+	@Autowired
+	private PackingMaterialsDao packingMaterialsDao;
 
 	@Override
 	public PageResult<Quantitative> findPages(Quantitative param, PageParameter page) {
@@ -76,6 +80,20 @@ public class QuantitativeServiceImpl extends BaseServiceImpl<Quantitative, Long>
 				quantitativeChild.setSingleNumber(jsonObject.getInteger("SingleNumber"));
 				quantitativeChild.setSumPackageNumber(jsonObject.getInteger("SumPackageNumber"));
 				quantitative.getQuantitativeChilds().add(quantitativeChild);
+			}
+		}
+		// 新增贴包物
+		if (!StringUtils.isEmpty(quantitative.getPackingMaterialsJson())) {
+			JSONArray jsonArrayMaterials = JSON.parseArray(quantitative.getPackingMaterialsJson());
+			for (int i = 0; i < jsonArrayMaterials.size(); i++) {
+				PackingMaterials packingMaterials = new PackingMaterials();
+				JSONObject jsonObject = jsonArrayMaterials.getJSONObject(i);
+				if (jsonObject.getLong("packingMaterialsId") != null) {
+					packingMaterials = packingMaterialsDao.findOne(jsonObject.getLong("packingMaterialsId"));
+				}
+				packingMaterials.setPackagingId(jsonObject.getLong("packagingId"));
+				packingMaterials.setPackagingCount(jsonObject.getInteger("packagingCount"));
+				quantitative.getPackingMaterials().add(packingMaterials);
 			}
 		}
 		save(quantitative);
