@@ -71,16 +71,16 @@ layui.config({
 		, mytable = layui.mytable;
 		myutil.config.ctx = '${ctx}';
 		myutil.clickTr();
-		var allUoloadOrder = myutil.getDataSync({ url: '${ctx}/TemporaryPack/findPagesUnderGoods?size=99999', });
+		var allUoloadOrder = myutil.getDataSync({ url: '${ctx}/temporaryPack/findPagesUnderGoods?size=99999', });
 		mytable.render({
 			elem:'#tableData',
-			//url:'${ctx}/TemporaryPack/findPagesQuantitative',
-			data:[],
+			url:'${ctx}/temporaryPack/findPagesQuantitative',
 			toolbar:[
-				'<span class="layui-btn layui-btn-sm" lay-event="add">新增数据</span>',
-				'<span class="layui-btn layui-btn-sm" lay-event="update">修改数据</span>',
-				'<span class="layui-btn layui-btn-sm" lay-event="audit">审核</span>',
-				'<span class="layui-btn layui-btn-sm" lay-event="print">打印</span>',
+				'<span class="layui-btn layui-btn-sm layui-btn-" lay-event="add">新增数据</span>',
+				'<span class="layui-btn layui-btn-sm layui-btn-" lay-event="update">修改数据</span>',
+				'<span class="layui-btn layui-btn-sm layui-btn-" lay-event="audit">审核</span>',
+				'<span class="layui-btn layui-btn-sm layui-btn-" lay-event="print">打印</span>',
+				'<span class="layui-btn layui-btn-sm layui-btn-" lay-event="addPackMet">新增贴包材料</span>',
 			].join(' '),
 			curd:{
 				btn:[4],
@@ -100,13 +100,15 @@ layui.config({
 						})
 					}else if(obj.event=='print'){
 						printOrder();
+					}else if(obj.event=='addPackMet'){
+						
 					}
 				},
 			},
 			autoUpdate:{
-				deleUrl:'/TemporaryPack/deleteQuantitative',
+				deleUrl:'/temporaryPack/deleteQuantitative',
 			},
-			parseData:function(r){
+			parseData:function(ret){
 				if(ret.code==0){
 					var data = [],d = ret.data.rows;
 					for(var i=0,len=d.length;i<len;i++){
@@ -211,7 +213,7 @@ layui.config({
 			if(data.id){
 				title = '修改量化单';
 			}
-			layer.open({
+			var addEditWin = layer.open({
 				type:1,
 				area:['80%','80%'],
 				title: title,
@@ -227,25 +229,46 @@ layui.config({
 						size:'lg',
 						curd:{
 							btn:[1,2,3],
-							saveFun: function(data){
-								console.log(data)
-								layui.each(data,function(index,item){
-									if(!item.singleNumber || !item.sumPackageNumber || !item.underGoods_id){
+							saveFun: function(d){
+								console.log(d)
+								layui.each(d,function(index,item){
+									if(!item.singleNumber || !item.sumPackageNumber || !item.underGoodsId){
 										return myutil.emsg('请正确填写数据！');
 									}
 								})
-							}
+								var url = '/temporaryPack/saveQuantitative';
+								if(obj.data)
+									url= '';
+								myutil.saveAjax({
+									url: url,
+									data:{
+										time: $('#time').val(),
+										child: JSON.stringify(d),
+									},
+									success:function(){
+										layer.close(addEditWin);
+										table.reload('tableData');
+									}
+								})
+							},
+							addTemp:{
+								underGoodsId: allUoloadOrder[0]?allUoloadOrder[0].id:"",
+								sumPackageNumber: 0,
+								singleNumber: 0,
+								number: 0,
+							},
 						},
 						autoUpdate:{
-							field:[],
+							field: { underGoods_id:'underGoodsId', },
 						},
 						toolbar:'<span class="layui-btn layui-btn-primary layui-btn-sm" id="time">2019-12-06 17:55:50</span>',
 						cols:[[
 							{ type:'checkbox',},
-							{ title:'下货单~批次号~批次数量', field:'underGoods_id', type:'select', 
+							{ title:'下货单~批次号~剩余数量', field:'underGoods_id', type:'select',
 								select:{data: allUoloadOrder, name:['product_name','bacthNumber','number'],} },
 							{ title:'总包数',   field:'sumPackageNumber',	},
 					        { title:'单包个数',   field:'singleNumber',	},
+					        { title:'总数量',   field:'number',	},
 						]],
 						done:function(){
 							laydate.render({
@@ -256,9 +279,7 @@ layui.config({
 				}
 			})
 		}
-		
 	}//end define function
 )//endedefine
 </script>
-
 </html>

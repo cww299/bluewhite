@@ -88,7 +88,7 @@ layui.config({
 }).extend({
 	mytable : 'layui/myModules/mytable' ,
 }).define(
-	['mytable','laydate'],
+	['mytable','laydate','upload'],
 	function(){
 		var $ = layui.jquery
 		, layer = layui.layer 				
@@ -97,6 +97,7 @@ layui.config({
 		, myutil = layui.myutil
 		, laydate = layui.laydate
 		, laytpl = layui.laytpl
+		, upload = layui.upload
 		, mytable = layui.mytable;
 		myutil.config.ctx = '${ctx}';
 		myutil.clickTr();
@@ -124,16 +125,38 @@ layui.config({
 			toolbar:[
 				'<span class="layui-btn layui-btn-sm" lay-event="add">新增数据</span>',
 				'<span class="layui-btn layui-btn-sm" lay-event="update">修改数据</span>',
+				'<span class="layui-btn layui-btn-sm" id="uploadBtn">导入数据</span>',
 			].join(' '),
 			cols:[[
 			       { type:'checkbox',},
-			       { title:'下单时间',   field:'allotTime;',	},
-			       { title:'批次号',   field:'bacthNumber;',   },
+			       { title:'下单时间',   field:'allotTime',	},
+			       { title:'批次号',   field:'bacthNumber',   },
 			       { title:'产品名',   field:'product_name',	},
-			       { title:'批次数量',   field:'number;', 	},
-			       { title:'备注',   field:'remarks;',	},
+			       { title:'批次数量',   field:'number', 	},
+			       { title:'备注',   field:'remarks',	},
 			       { title:'状态',   field:'',	},
-			       ]]
+			       ]],
+			 done:function(){
+				 upload.render({
+				   	  elem: '#uploadBtn'
+				   	  ,url: '${ctx}/temporaryPack/import/excelUnderGoods'
+				 	  ,before: function(obj){ 	
+				 		 load = layer.load(1); 
+					  }
+				   	  ,done: function(res, index, upload){ 
+				   		  if(res.code==0){
+						   		layer.closeAll();
+						   		layer.msg(res.message,{icon:1});
+						   		table.reload('tableData');
+				   		  }else{
+					   			layer.close(load);
+					   			layer.msg(res.message,{icon:2});
+				   		  }
+				   	  } 
+				   	  ,accept: 'file' 
+				   	  ,exts: 'xlsx|xls'
+				})
+			 }
 		})
 		form.on('submit(search)',function(obj){
 			table.reload('tableData',{
