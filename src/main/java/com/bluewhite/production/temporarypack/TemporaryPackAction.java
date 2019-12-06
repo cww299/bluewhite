@@ -104,6 +104,31 @@ public class TemporaryPackAction {
 	}
 	
 	/**
+	 * 新增量化单包装物
+	 */
+	@RequestMapping(value = "/temporaryPack/saveQuantitativeMaterials", method = RequestMethod.POST)
+	@ResponseBody
+	public CommonResponse saveQuantitativeMaterials(Quantitative quantitative) {
+		CommonResponse cr = new CommonResponse();
+		quantitativeService.saveQuantitativeMaterials(quantitative);
+		cr.setMessage("新增成功");
+		return cr;
+	}
+	
+	/**
+	 * 审核打印 量化单
+	 */
+	@RequestMapping(value = "/temporaryPack/auditQuantitative", method = RequestMethod.POST)
+	@ResponseBody
+	public CommonResponse auditQuantitative(Quantitative quantitative) {
+		CommonResponse cr = new CommonResponse();
+		Quantitative ot = quantitativeService.findOne(quantitative.getId());
+		quantitativeService.update(quantitative, ot, "");
+		cr.setMessage("成功");
+		return cr;
+	}
+	
+	/**
 	 * 查询量化单
 	 * 
 	 */
@@ -117,7 +142,7 @@ public class TemporaryPackAction {
 	}
 	
 	/**
-	 * 删除下货单
+	 * 删除量化单
 	 */
 	@RequestMapping(value = "/temporaryPack/deleteQuantitative", method = RequestMethod.GET)
 	@ResponseBody
