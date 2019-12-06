@@ -1,10 +1,8 @@
 package com.bluewhite.production.temporarypack;
 
+import java.io.IOException;
+import java.io.InputStream;
 import java.text.SimpleDateFormat;
-import java.util.List;
-import java.util.Map;
-
-import javax.servlet.http.HttpServletRequest;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.propertyeditors.CustomDateEditor;
@@ -13,22 +11,19 @@ import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.InitBinder;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.multipart.support.ByteArrayMultipartFileEditor;
 
+import com.alibaba.excel.EasyExcelFactory;
+import com.alibaba.excel.metadata.Sheet;
 import com.bluewhite.common.ClearCascadeJSON;
 import com.bluewhite.common.DateTimePattern;
-import com.bluewhite.common.Log;
-import com.bluewhite.common.SessionManager;
 import com.bluewhite.common.entity.CommonResponse;
-import com.bluewhite.common.entity.CurrentUser;
 import com.bluewhite.common.entity.PageParameter;
+import com.bluewhite.common.utils.excel.ExcelListener;
 import com.bluewhite.product.product.entity.Product;
-import com.bluewhite.production.bacth.entity.Bacth;
-import com.bluewhite.production.procedure.entity.Procedure;
-import com.bluewhite.production.productionutils.constant.ProTypeUtils;
-import com.bluewhite.production.task.action.TaskAction;
-import com.bluewhite.production.task.entity.Task;
 
 @Controller
 public class TemporaryPackAction {
@@ -62,7 +57,11 @@ public class TemporaryPackAction {
 	public CommonResponse saveUnderGoods(UnderGoods underGoods) {
 		CommonResponse cr = new CommonResponse();
 		underGoodsService.saveUnderGoods(underGoods);
-		cr.setMessage("新增成功");
+		if(underGoods.getId()==null){
+			cr.setMessage("新增成功");
+		}else{
+			cr.setMessage("修改成功");
+		}
 		return cr;
 	}
 	
@@ -116,14 +115,25 @@ public class TemporaryPackAction {
 	}
 	
 	/**
-	 * 审核打印 量化单
+	 * 发货 量化单
 	 */
 	@RequestMapping(value = "/temporaryPack/auditQuantitative", method = RequestMethod.POST)
 	@ResponseBody
-	public CommonResponse auditQuantitative(Quantitative quantitative) {
+	public CommonResponse auditQuantitative(String ids) {
 		CommonResponse cr = new CommonResponse();
-		Quantitative ot = quantitativeService.findOne(quantitative.getId());
-		quantitativeService.update(quantitative, ot, "");
+		quantitativeService.auditQuantitative(ids);
+		cr.setMessage("成功");
+		return cr;
+	}
+	
+	/**
+	 * 打印 量化单
+	 */
+	@RequestMapping(value = "/temporaryPack/printQuantitative", method = RequestMethod.POST)
+	@ResponseBody
+	public CommonResponse printQuantitative(String ids) {
+		CommonResponse cr = new CommonResponse();
+		quantitativeService.printQuantitative(ids);
 		cr.setMessage("成功");
 		return cr;
 	}
@@ -148,8 +158,28 @@ public class TemporaryPackAction {
 	@ResponseBody
 	public CommonResponse deleteQuantitative(String ids) {
 		CommonResponse cr = new CommonResponse();
-		quantitativeService.delete(ids);
+		quantitativeService.deleteQuantitative(ids);
 		cr.setMessage("删除成功");
+		return cr;
+	}
+	
+	/**
+	 * 新增下货单(导入)
+	 * 
+	 * @return
+	 * @throws IOException
+	 */
+	@RequestMapping(value = "/temporaryPack/import/excelUnderGoods", method = RequestMethod.POST)
+	@ResponseBody
+	public CommonResponse excelOutProcurement(@RequestParam(value = "file", required = false) MultipartFile file
+			,Long userId ,Long warehouseId) throws IOException {
+		CommonResponse cr = new CommonResponse();
+		InputStream inputStream = file.getInputStream();
+		ExcelListener excelListener = new ExcelListener();
+		EasyExcelFactory.readBySax(inputStream, new Sheet(1, 1, UnderGoodsPoi.class), excelListener);
+		int count = underGoodsService.excelUnderGoods(excelListener);
+		inputStream.close();
+		cr.setMessage("成功导入"+count+"条下货单");
 		return cr;
 	}
 	

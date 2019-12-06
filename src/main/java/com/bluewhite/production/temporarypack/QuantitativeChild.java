@@ -42,6 +42,22 @@ public class QuantitativeChild  extends BaseEntity<Long> {
 	 */
 	@Column(name = "single_number")
 	private Integer singleNumber;
+	
+	
+	/**
+	 * 包装数量
+	 */
+	@Column(name = "number")
+	private Integer number;
+	
+
+	public Integer getNumber() {
+		return number;
+	}
+
+	public void setNumber(Integer number) {
+		this.number = number;
+	}
 
 	public Long getUnderGoodsId() {
 		return underGoodsId;
