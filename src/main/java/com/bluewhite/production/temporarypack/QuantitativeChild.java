@@ -7,6 +7,8 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
+import com.bluewhite.base.BaseEntity;
+
 /**
  * 量化单
  * @author zhangliang
@@ -14,7 +16,7 @@ import javax.persistence.Table;
  */
 @Entity
 @Table(name = "pro_quantitative_child")
-public class QuantitativeChild {
+public class QuantitativeChild  extends BaseEntity<Long> {
 
 	/**
 	 * 下货单id

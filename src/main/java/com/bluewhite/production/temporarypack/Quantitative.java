@@ -17,6 +17,7 @@ import javax.persistence.Transient;
 
 import com.bluewhite.base.BaseEntity;
 import com.bluewhite.ledger.entity.PackingChild;
+import com.bluewhite.ledger.entity.PackingMaterials;
 import com.bluewhite.product.product.entity.Product;
 
 /**
@@ -47,6 +48,14 @@ public class Quantitative extends BaseEntity<Long> {
 	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY,orphanRemoval = true)
 	@JoinColumn(name = "quantitative_id")
 	private List<QuantitativeChild> quantitativeChilds = new ArrayList<>();
+	
+	
+	/**
+	 * 包装物list
+	 */
+	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY,orphanRemoval = true)
+	@JoinColumn(name = "packing_id")
+	private List<PackingMaterials> packingMaterials = new ArrayList<>();
 	
 	/**
 	 * 产品名称
@@ -90,6 +99,15 @@ public class Quantitative extends BaseEntity<Long> {
 	private String bacthNumber;
 	
 	
+	
+	public List<PackingMaterials> getPackingMaterials() {
+		return packingMaterials;
+	}
+
+	public void setPackingMaterials(List<PackingMaterials> packingMaterials) {
+		this.packingMaterials = packingMaterials;
+	}
+
 	public String getBacthNumber() {
 		return bacthNumber;
 	}
