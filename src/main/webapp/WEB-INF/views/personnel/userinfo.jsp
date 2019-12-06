@@ -1323,12 +1323,6 @@ jQuery(function($){
 											ascriptionBank1:$('.bankCardtw').val(),
 											quitTypeId:$('#quitType').val(),
 								  }
-								  if(postData.orgNameId==null){
-										return  layer.msg("部门不能为空", {icon: 2});
-									  }
-									  if(postData.positionId==null){
-										return  layer.msg("职位不能为空", {icon: 2});
-									  }
 									  if(postData.quit==1){
 										  if(postData.quitDate==""){
 											  return  layer.msg("离职时间不能为空", {icon: 2});
