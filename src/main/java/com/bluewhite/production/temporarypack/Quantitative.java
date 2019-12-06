@@ -10,15 +10,12 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 
 import com.bluewhite.base.BaseEntity;
-import com.bluewhite.ledger.entity.PackingChild;
 import com.bluewhite.ledger.entity.PackingMaterials;
-import com.bluewhite.product.product.entity.Product;
 
 /**
  * 量化单
@@ -49,13 +46,24 @@ public class Quantitative extends BaseEntity<Long> {
 	@JoinColumn(name = "quantitative_id")
 	private List<QuantitativeChild> quantitativeChilds = new ArrayList<>();
 	
-	
 	/**
 	 * 包装物list
 	 */
 	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY,orphanRemoval = true)
 	@JoinColumn(name = "packing_id")
 	private List<PackingMaterials> packingMaterials = new ArrayList<>();
+	
+	/**
+	 * 是否发货
+	 */
+	@Column(name = "flag")
+	private Integer flag;
+	
+	/**
+	 * 是否打印
+	 */
+	@Column(name = "print")
+	private Integer print;
 	
 	/**
 	 * 产品名称
@@ -98,8 +106,22 @@ public class Quantitative extends BaseEntity<Long> {
 	@Transient
 	private String bacthNumber;
 	
+	/**
+	 * 新增包装物json数据
+	 */
+	@Transient
+	private String packingMaterialsJson;
 	
 	
+	
+	public String getPackingMaterialsJson() {
+		return packingMaterialsJson;
+	}
+
+	public void setPackingMaterialsJson(String packingMaterialsJson) {
+		this.packingMaterialsJson = packingMaterialsJson;
+	}
+
 	public List<PackingMaterials> getPackingMaterials() {
 		return packingMaterials;
 	}
