@@ -20,6 +20,12 @@ public interface QuantitativeService extends BaseCRUDService<Quantitative,Long>{
 	 */
 	public void saveQuantitative(Quantitative quantitative);
 
+	/**
+	 * 
+	 * @param quantitative
+	 */
+	void saveQuantitativeMaterials(Quantitative quantitative);
+
 	
 
 }
