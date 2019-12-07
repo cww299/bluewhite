@@ -13,7 +13,7 @@ public interface QuantitativeChildDao  extends BaseRepository<QuantitativeChild,
 	 * @param undergoodsid
 	 * @return
 	 */
-	List<QuantitativeChild> findByUnderGoodsId(Long undergoodsid);
+	List<QuantitativeChild> findByUnderGoodsId(Long undergoodsId);
 	
 	/**
 	 * 根据多个id查询
