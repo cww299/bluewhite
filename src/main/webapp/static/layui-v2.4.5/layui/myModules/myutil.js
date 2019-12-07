@@ -267,7 +267,7 @@ layui.define(['jquery','layer','form','table'],function(exports){
 	};
 	
 	myutil.clickTr = function(opt){
-		var noClick = opt.noClick;
+		var noClick = opt && opt.noClick;
 		$(document).on('click', '.layui-table-view tbody tr', function(event) {
 			var elemTemp = $(this);
 			var tableView = elemTemp.closest('.layui-table-view');

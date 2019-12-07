@@ -75,6 +75,8 @@ layui.config({
 		});
 		var allUoloadOrder = myutil.getDataSync({ url: '${ctx}/temporaryPack/findPagesUnderGoods?size=99999', });
 		var allMaterials = myutil.getDataSync({ url:'${ctx}/basedata/list?type=packagingMaterials', });
+		var allUser ='';
+		var tableDataNoTrans = [];
 		mytable.render({
 			elem:'#tableData',
 			url:'${ctx}/temporaryPack/findPagesQuantitative',
@@ -93,7 +95,12 @@ layui.config({
 						var check = layui.table.checkStatus('tableData').data;
 						if(check.length!=1)
 							return myutil.emsg('只能选择一条数据编辑');
-						addEdit('update',check[0]);
+						var i = 0;
+						for(;i<tableDataNoTrans.length;i++){
+							if(tableDataNoTrans[i].id==check[0].id)
+								break;
+						}
+						addEdit('update',tableDataNoTrans[i]);
 					}else if(obj.event=='audit'){
 						myutil.deleTableIds({
 							 table:'tableData', 
@@ -111,8 +118,9 @@ layui.config({
 			parseData:function(ret){
 				if(ret.code==0){
 					var data = [],d = ret.data.rows;
+					tableDataNoTrans = d;
 					for(var i=0,len=d.length;i<len;i++){
-						var child = d[i].orderChilds;
+						var child = d[i].quantitativeChilds;
 						if(!child)
 							continue;
 						for(var j=0,l=child.length;j<l;j++){
@@ -123,10 +131,12 @@ layui.config({
 								product: child[j].product,
 								sumPackageNumber: child[j].sumPackageNumber,
 								singleNumber: child[j].singleNumber,
+								underGoods: child[j].underGoods,
 							})
 						}
 					}
-					return {  msg:ret.message,  code:ret.code , data:ret.data.rows, count:ret.data.total }; 
+					console.log(data)
+					return {  msg:ret.message,  code:ret.code , data: data, count:ret.data.total }; 
 				}
 				else
 					return {  msg:ret.message,  code:ret.code , data:[], count:0 }; 
@@ -134,19 +144,20 @@ layui.config({
 			cols:[[
 			       { type:'checkbox',},
 			       { title:'量化编号',   field:'quantitativeNumber',	},
-			       { title:'包装时间',   field:'time;',   },
-			       { title:'产品名',   field:'product_name', 	},
-			       { title:'总包数',   field:'sumPackageNumber;',	},
-			       { title:'单包个数',   field:'singleNumber;',	},
+			       { title:'包装时间',   field:'time',   },
+			       { title:'产品名',   field:'underGoods_product_name', 	},
+			       { title:'总包数',   field:'sumPackageNumber',	},
+			       { title:'单包个数',   field:'singleNumber',	},
 			       ]],
 	       done:function(){
-				merge('product_name');
-				merge('sumPackageNumber');
-				merge('singleNumber');
+				merge('underGoods_product_name');
+				merge('quantitativeNumber');
+				merge('time');
+				merge('0');
 				function merge(field){
 					var rowspan = 1,mainCols=0;
-					var cache = table.cache['tableAgreement'];
-					var allCol = $('#tableAgreement').next().find('td[data-field="'+field+'"]');
+					var cache = table.cache['tableData'];
+					var allCol = $('#tableData').next().find('td[data-field="'+field+'"]');
 					layui.each(allCol,function(index,item){
 						if(index!=0){
 							var thisData = cache[index],lastData = index!=0?cache[index-1]:{id:-1};
@@ -215,6 +226,20 @@ layui.config({
 				title: title,
 				content: [
 					'<div style="padding:10px;">',
+						'<div>',
+							'<table class="layui-form">',
+								'<tr>',
+									'<td>量化时间：</td>',
+									'<td>',
+										'<input class="layui-input" id="addEditTime" value="2019-12-06 17:55:50">',
+									'</td>',
+									'<td>&nbsp;&nbsp;贴包人：</td>',
+									'<td>',
+										'<select id="packPeopleSelect" lay-search><option value="">请选择</option></select>',
+									'</td>',
+								'</tr>',
+							'</table>',
+						'</div>',
 						'<div style="float:left;width:68%;">',
 							'<table id="addTable" lay-filter="addTable"></table>',
 						'</div>',
@@ -224,9 +249,19 @@ layui.config({
 					'</div>',
 				].join(' '),
 				success: function(){
+					var addTable = [],addMate = [];
+					laydate.render({
+						elem:'#addEditTime',value: new Date(),type:'datetime',
+					})
+					$('#packPeopleSelect').append(allUser);
+					if(data.id){
+						addTable = data.quantitativeChilds;
+						$('#packPeopleSelect').val(data.user?data.user.id:'');
+						$('#addEditTime').val(data.time);
+					}
 					mytable.render({
 						elem: '#addTable',
-						data: [],
+						data: addTable,
 						size:'lg',
 						curd:{
 							saveFun: function(d){
@@ -234,10 +269,17 @@ layui.config({
 								var url = '/temporaryPack/saveQuantitative';
 								if(data.id)
 									url= '';
+								var time = $('#addEditTime').val();
+								var userId = $('#packPeopleSelect').val();
+								if(!time)
+									return myutil.emsg('量化单时间不能为空！');
+								if(!userId)
+									return myutil.emsg('请选择贴包人！');
 								myutil.saveAjax({
 									url: url,
 									data:{
-										time: $('#addEditTime').html(),
+										time: time,
+										userId: userId,
 										child: JSON.stringify(d),
 									},
 									success:function(){
@@ -259,7 +301,6 @@ layui.config({
 						verify:{
 							count:['sumPackageNumber','singleNumber','number'],
 						},
-						toolbar:'<span class="layui-btn layui-btn-primary layui-btn-sm" id="addEditTime">2019-12-06 17:55:50</span>',
 						cols:[[
 							{ type:'checkbox',},
 							{ title:'下货单~批次号~剩余数量', field:'underGoods_id', type:'select',
@@ -268,15 +309,10 @@ layui.config({
 					        { title:'单包个数',   field:'singleNumber',	},
 					        { title:'总数量',   field:'number',	},
 						]],
-						done:function(){
-							laydate.render({
-								elem:'#addEditTime',value: new Date(),type:'datetime',
-							})
-						}
 					})
 					mytable.render({
 						elem: '#addMaterTable',
-						data: [],
+						data: addMate,
 						size:'lg',
 						curd:{
 							btn:[1,2,4],
@@ -297,9 +333,18 @@ layui.config({
 							{ title:'数量',   field:'number',	},
 						]],
 					})
+					form.render();
 				}
 			})
 		}
+		myutil.getData({
+			url: myutil.config.ctx+'/system/user/findUserList?foreigns=0&isAdmin=false&orgNameIds=55&quit=0',
+			done: function(data){
+				layui.each(data,function(index,item){
+					allUser += '<option value="'+item.id+'">'+item.userName+'</option>';
+				})
+			}
+		})
 		form.on('submit(search)',function(obj){
 			table.reload('tableData',{
 				where: obj.field,
