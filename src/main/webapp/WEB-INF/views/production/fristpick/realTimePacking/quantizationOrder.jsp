@@ -12,6 +12,9 @@
 	div[lay-id="tableData"] .layui-table tbody tr:hover, .layui-table-hover {
 		background-color: transparent; 
 	}
+	div[lay-id="tableData"] .layui-table-header th[data-field="0"] .layui-form-checkbox{
+		display:none !important;
+	}
 	</style>
 </head>
 <body>
@@ -170,7 +173,7 @@ layui.config({
 			       { title:'量化编号',   field:'quantitativeNumber', width:'12%',	},
 			       { title:'包装时间',   field:'time',  width:'12%', },
 			       { title:'贴包人',   field:'user_userName', width:'10%',	},
-			       { title:'是否审核',   field:'print', 	transData:{data:['否','是']}, width:'6%', },
+			       { title:'是否发货',   field:'print', 	transData:{data:['否','是']}, width:'6%', },
 			       { title:'是否打印',   field:'flag', 	transData:{data:['否','是']}, width:'6%', },
 			       { title:'产品名',   field:'underGoods_product_name', 	},
 			       { title:'总包数',   field:'sumPackageNumber',	width:'8%', },
@@ -201,12 +204,14 @@ layui.config({
 								rowspan = 1;
 							}else{	//与上一列相同
 								rowspan++;
-								$(item).css('display','none')
+								//$(item).css('display','none')
+								$(item).remove();
 							}
 						}
 					});
 					$(allCol[mainCols]).attr('rowspan',rowspan);
 				}
+				form.render();
 			}
 		})
 		function printOrder(){	
@@ -226,12 +231,12 @@ layui.config({
 				btn: ['打印','取消'],
 				shadeClose: true,
 				yes: function(){
-					var ids = [];
+					var ids = new Set();
 					layui.each(choosed,function(i,item){
-						ids.push(item.id);
+						ids.add(item.id);
 					})
 					myutil.deleteAjax({
-						ids: ids.join(),
+						ids: Array.from(ids).join(),
 						url:'/temporaryPack/printQuantitative',
 						success:function(){
 							table.reload('tableData');
