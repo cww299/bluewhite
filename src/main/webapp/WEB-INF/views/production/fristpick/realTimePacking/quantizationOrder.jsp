@@ -380,7 +380,7 @@ layui.config({
 						data: addMate,
 						size:'lg',
 						curd:{
-							btn:[1,2,4],
+							btn:[1,2,],
 							addTemp:{
 								packagingId: allMaterials[0]?allMaterials[0].id:"",
 								packagingCount: 0,
