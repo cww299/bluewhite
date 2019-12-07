@@ -70,8 +70,11 @@ layui.config({
 		, laytpl = layui.laytpl
 		, mytable = layui.mytable;
 		myutil.config.ctx = '${ctx}';
-		myutil.clickTr();
+		myutil.clickTr({
+			noClick:'tableData',
+		});
 		var allUoloadOrder = myutil.getDataSync({ url: '${ctx}/temporaryPack/findPagesUnderGoods?size=99999', });
+		var allMaterials = myutil.getDataSync({ url:'${ctx}/basedata/list?type=packagingMaterials', });
 		mytable.render({
 			elem:'#tableData',
 			url:'${ctx}/temporaryPack/findPagesQuantitative',
@@ -80,7 +83,6 @@ layui.config({
 				'<span class="layui-btn layui-btn-sm layui-btn-" lay-event="update">修改数据</span>',
 				'<span class="layui-btn layui-btn-sm layui-btn-" lay-event="audit">审核</span>',
 				'<span class="layui-btn layui-btn-sm layui-btn-" lay-event="print">打印</span>',
-				'<span class="layui-btn layui-btn-sm layui-btn-" lay-event="addPackMet">新增贴包材料</span>',
 			].join(' '),
 			curd:{
 				btn:[4],
@@ -100,8 +102,6 @@ layui.config({
 						})
 					}else if(obj.event=='print'){
 						printOrder();
-					}else if(obj.event=='addPackMet'){
-						
 					}
 				},
 			},
@@ -113,6 +113,8 @@ layui.config({
 					var data = [],d = ret.data.rows;
 					for(var i=0,len=d.length;i<len;i++){
 						var child = d[i].orderChilds;
+						if(!child)
+							continue;
 						for(var j=0,l=child.length;j<l;j++){
 							data.push({
 								id: d[i].id,
@@ -164,14 +166,8 @@ layui.config({
 				}
 			}
 		})
-		form.on('submit(search)',function(obj){
-			table.reload('tableData',{
-				where: obj.field,
-			})
-		}) 
-		
 		function printOrder(){	
-			var choosed=layui.table.checkStatus('packTable').data;
+			var choosed=layui.table.checkStatus('tableData').data;
 			if(choosed.length<1)
 				return myutil.emsg('请选择打印信息');
 			var tpl = $('#printPackTpl').html(), html='<div id="printDiv">';
@@ -215,11 +211,16 @@ layui.config({
 			}
 			var addEditWin = layer.open({
 				type:1,
-				area:['80%','80%'],
+				area:['90%','80%'],
 				title: title,
 				content: [
-					'<div>',
-						'<table id="addTable" lay-filter="addTable"></table>',
+					'<div style="padding:10px;">',
+						'<div style="float:left;width:68%;">',
+							'<table id="addTable" lay-filter="addTable"></table>',
+						'</div>',
+						'<div style="float:right;width:30%;">',
+							'<table id="addMaterTable" lay-filter="addMaterTable"></table>',
+						'</div>',
 					'</div>',
 				].join(' '),
 				success: function(){
@@ -228,21 +229,15 @@ layui.config({
 						data: [],
 						size:'lg',
 						curd:{
-							btn:[1,2,3],
 							saveFun: function(d){
 								console.log(d)
-								layui.each(d,function(index,item){
-									if(!item.singleNumber || !item.sumPackageNumber || !item.underGoodsId){
-										return myutil.emsg('请正确填写数据！');
-									}
-								})
 								var url = '/temporaryPack/saveQuantitative';
-								if(obj.data)
+								if(data.id)
 									url= '';
 								myutil.saveAjax({
 									url: url,
 									data:{
-										time: $('#time').val(),
+										time: $('#addEditTime').html(),
 										child: JSON.stringify(d),
 									},
 									success:function(){
@@ -261,7 +256,10 @@ layui.config({
 						autoUpdate:{
 							field: { underGoods_id:'underGoodsId', },
 						},
-						toolbar:'<span class="layui-btn layui-btn-primary layui-btn-sm" id="time">2019-12-06 17:55:50</span>',
+						verify:{
+							count:['sumPackageNumber','singleNumber','number'],
+						},
+						toolbar:'<span class="layui-btn layui-btn-primary layui-btn-sm" id="addEditTime">2019-12-06 17:55:50</span>',
 						cols:[[
 							{ type:'checkbox',},
 							{ title:'下货单~批次号~剩余数量', field:'underGoods_id', type:'select',
@@ -272,13 +270,41 @@ layui.config({
 						]],
 						done:function(){
 							laydate.render({
-								elem:'#time',value: new Date(),type:'datetime',
+								elem:'#addEditTime',value: new Date(),type:'datetime',
 							})
 						}
+					})
+					mytable.render({
+						elem: '#addMaterTable',
+						data: [],
+						size:'lg',
+						curd:{
+							btn:[1,2,4],
+							addTemp:{
+								underGoodsId: allMaterials[0]?allMaterials[0].id:"",
+								number: 0,
+							},
+						},
+						autoUpdate:{
+							field: { underGoods_id:'underGoodsId', },
+						},
+						verify:{
+							count:['number'],
+						},
+						cols:[[
+							{ type:'checkbox',},
+							{ title:'材料', field:'underGoods_id', type:'select',select:{data: allMaterials, } },
+							{ title:'数量',   field:'number',	},
+						]],
 					})
 				}
 			})
 		}
+		form.on('submit(search)',function(obj){
+			table.reload('tableData',{
+				where: obj.field,
+			})
+		}) 
 	}//end define function
 )//endedefine
 </script>
