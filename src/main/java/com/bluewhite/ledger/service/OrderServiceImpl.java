@@ -303,14 +303,16 @@ public class OrderServiceImpl extends BaseServiceImpl<Order, Long> implements Or
 			IntSummaryStatistics sumcc = slist.stream()
 					.collect(Collectors.summarizingInt(e -> Integer.valueOf(e.get("number").toString())));
 			Order order = (Order) slist.get(0).get("order");
-			Map<String, Object> map = new HashMap<String, Object>();
+			List<Map<String, Object>> userList = new ArrayList<>();
 			order.getOrderChilds().forEach(o -> {
+				Map<String, Object> map = new HashMap<String, Object>();
 				map.put("name", o.getUser().getUserName());
 				map.put("id", o.getUserId());
+				userList.add(map);
 			});
 			nmap.put("bacth", order.getBacthNumber());
 			nmap.put("number", sumcc.getSum());
-			nmap.put("Customer", map);
+			nmap.put("userList", userList);
 			result.add(nmap);
 		});
 		return result;
