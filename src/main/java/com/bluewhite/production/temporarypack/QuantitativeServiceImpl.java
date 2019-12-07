@@ -80,12 +80,12 @@ public class QuantitativeServiceImpl extends BaseServiceImpl<Quantitative, Long>
 			if (ot.getFlag() == 1) {
 				throw new ServiceException("已发货，无法修改");
 			}
-			update(quantitative, ot, "");
+			quantitative.setQuantitativeNumber(ot.getQuantitativeNumber());
 		}else{
-			quantitative.setFlag(0);
-			quantitative.setPrint(0);
 			quantitative.setQuantitativeNumber(Constants.XHD + StringUtil.getDate() + SalesUtils.get0LeftString((int)(dao.count()+1), 8));
 		}
+		quantitative.setFlag(0);
+		quantitative.setPrint(0);
 		// 新增子单
 		if (!StringUtils.isEmpty(quantitative.getChild())) {
 			JSONArray jsonArray = JSON.parseArray(quantitative.getChild());
@@ -125,6 +125,7 @@ public class QuantitativeServiceImpl extends BaseServiceImpl<Quantitative, Long>
 				quantitative.getPackingMaterials().add(packingMaterials);
 			}
 		}
+		
 		save(quantitative);
 	}
 
