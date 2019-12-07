@@ -31,7 +31,9 @@ public class UnderGoodsServiceImpl extends BaseServiceImpl<UnderGoods, Long> imp
 	private ProductDao productDao;
 	@Autowired
 	private QuantitativeChildDao quantitativeChildDao;
-
+	@Autowired
+	private QuantitativeDao quantitativeDao;
+	
 	@Override
 	public PageResult<UnderGoods> findPages(UnderGoods param, PageParameter page) {
 		Page<UnderGoods> pages = dao.findAll((root, query, cb) -> {
@@ -79,9 +81,10 @@ public class UnderGoodsServiceImpl extends BaseServiceImpl<UnderGoods, Long> imp
 			List<QuantitativeChild> quantitativeChildList = quantitativeChildDao.findByUnderGoodsId(r.getId());
 			int numberSum = quantitativeChildList.stream().mapToInt(QuantitativeChild::getNumber).sum();
 			r.setSurplusNumber(r.getNumber()-numberSum);;
-			
+			List<QuantitativeChild> quantitativeList = quantitativeDao.findSendNumber(r.getId());
+			int numberSendSum = quantitativeChildList.stream().mapToInt(QuantitativeChild::getNumber).sum();
+			r.setSurplusSendNumber(r.getNumber()-numberSendSum);;
 		});
-		
 		return result;
 	}
 
