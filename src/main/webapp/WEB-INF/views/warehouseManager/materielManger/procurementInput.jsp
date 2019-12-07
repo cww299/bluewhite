@@ -55,7 +55,7 @@ layui.config({
 			ifNull:'',
 			scrollX:true,
 			toolbar: [ '<span lay-event="add" class="layui-btn layui-btn-sm">生成入库单</span>',
-					   '<span lay-event="audit" class="layui-btn layui-btn-sm">审核到货</span>',],
+					   '<span lay-event="audit" class="layui-btn layui-btn-sm">审核到货</span>',].join(' '),
 			curd:{
 				btn:[],
 				otherBtn:function(obj){

@@ -226,6 +226,7 @@ public class OrderServiceImpl extends BaseServiceImpl<Order, Long> implements Or
 			}
 		}
 		dao.save(ot);
+
 		if (!StringUtils.isEmpty(order.getDeleteIds())) {
 			deleteOrderChild(order.getDeleteIds());
 		}
