@@ -81,8 +81,9 @@ public class UnderGoodsServiceImpl extends BaseServiceImpl<UnderGoods, Long> imp
 			List<QuantitativeChild> quantitativeChildList = quantitativeChildDao.findByUnderGoodsId(r.getId());
 			int numberSum = quantitativeChildList.stream().mapToInt(QuantitativeChild::getNumber).sum();
 			r.setSurplusNumber(r.getNumber()-numberSum);;
-			List<QuantitativeChild> quantitativeList = quantitativeDao.findSendNumber(r.getId());
-			int numberSendSum = quantitativeChildList.stream().mapToInt(QuantitativeChild::getNumber).sum();
+			List<Long> quantitativeListId = quantitativeDao.findSendNumber(r.getId());
+			List<QuantitativeChild> quantitativeList = quantitativeChildDao.findAll(quantitativeListId);
+			int numberSendSum = quantitativeList.stream().mapToInt(QuantitativeChild::getNumber).sum();
 			r.setSurplusSendNumber(r.getNumber()-numberSendSum);;
 		});
 		return result;
