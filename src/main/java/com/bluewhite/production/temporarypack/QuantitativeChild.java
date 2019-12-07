@@ -43,7 +43,6 @@ public class QuantitativeChild  extends BaseEntity<Long> {
 	@Column(name = "single_number")
 	private Integer singleNumber;
 	
-	
 	/**
 	 * 包装数量
 	 */
