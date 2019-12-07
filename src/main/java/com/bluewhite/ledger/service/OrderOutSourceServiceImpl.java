@@ -130,6 +130,10 @@ public class OrderOutSourceServiceImpl extends BaseServiceImpl<OrderOutSource, L
 			if (param.getId() != null) {
 				predicate.add(cb.equal(root.get("id").as(Long.class), param.getId()));
 			}
+			// 按合同id
+			if (param.getOrderId() != null) {
+				predicate.add(cb.equal(root.get("orderId").as(Long.class), param.getOrderId()));
+			}
 			// 按加工点id过滤
 			if (param.getCustomerId() != null) {
 				predicate.add(cb.equal(root.get("customerId").as(Long.class), param.getCustomerId()));
