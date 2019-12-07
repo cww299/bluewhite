@@ -191,9 +191,6 @@ public class QuantitativeServiceImpl extends BaseServiceImpl<Quantitative, Long>
 				for (int i = 0; i < idArr.length; i++) {
 					Long id = Long.parseLong(idArr[i]);
 					Quantitative quantitative = dao.findOne(id);
-					if (quantitative.getPrint() == 1) {
-						throw new ServiceException("已打印无法删除");
-					}
 					if (quantitative.getFlag() == 1) {
 						throw new ServiceException("已发货无法删除");
 					}
