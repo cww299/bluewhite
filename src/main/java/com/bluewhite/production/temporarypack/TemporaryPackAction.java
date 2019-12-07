@@ -99,26 +99,18 @@ public class TemporaryPackAction {
 	}
 	
 	/**
-	 * 新增量化单
+	 * 新增修改量化单
 	 */
 	@RequestMapping(value = "/temporaryPack/saveQuantitative", method = RequestMethod.POST)
 	@ResponseBody
 	public CommonResponse saveQuantitative(Quantitative quantitative) {
 		CommonResponse cr = new CommonResponse();
 		quantitativeService.saveQuantitative(quantitative);
-		cr.setMessage("新增成功");
-		return cr;
-	}
-	
-	/**
-	 * 新增量化单包装物
-	 */
-	@RequestMapping(value = "/temporaryPack/saveQuantitativeMaterials", method = RequestMethod.POST)
-	@ResponseBody
-	public CommonResponse saveQuantitativeMaterials(Quantitative quantitative) {
-		CommonResponse cr = new CommonResponse();
-		quantitativeService.saveQuantitativeMaterials(quantitative);
-		cr.setMessage("新增成功");
+		if(quantitative.getId()==null){
+			cr.setMessage("新增成功");
+		}else{
+			cr.setMessage("修改成功");
+		}
 		return cr;
 	}
 	

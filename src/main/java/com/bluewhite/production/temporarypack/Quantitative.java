@@ -17,7 +17,6 @@ import javax.persistence.Transient;
 
 import com.bluewhite.base.BaseEntity;
 import com.bluewhite.ledger.entity.PackingMaterials;
-import com.bluewhite.product.product.entity.Product;
 import com.bluewhite.system.user.entity.User;
 
 /**
@@ -66,9 +65,9 @@ public class Quantitative extends BaseEntity<Long> {
 	 * 贴包人id
 	 */
 	@Column(name = "user_id")
-	private Long userid;
+	private Long userId;
 	/**
-	 * 铁包人
+	 * 贴包人
 	 */
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "user_id", referencedColumnName = "id", insertable = false, updatable = false)
@@ -145,12 +144,12 @@ public class Quantitative extends BaseEntity<Long> {
 		this.number = number;
 	}
 
-	public Long getUserid() {
-		return userid;
+	public Long getUserId() {
+		return userId;
 	}
 
-	public void setUserid(Long userid) {
-		this.userid = userid;
+	public void setUserId(Long userId) {
+		this.userId = userId;
 	}
 
 	public User getUser() {
