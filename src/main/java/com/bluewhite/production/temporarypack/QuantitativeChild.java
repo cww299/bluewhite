@@ -30,7 +30,7 @@ public class QuantitativeChild  extends BaseEntity<Long> {
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "underGoods_id", referencedColumnName = "id", insertable = false, updatable = false)
 	private UnderGoods underGoods;
-
+	
 	/**
 	 * 总包数
 	 */
