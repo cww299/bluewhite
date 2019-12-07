@@ -97,6 +97,9 @@ layui.extend({
 							})
 						}
 						if(item2.type && item2.type=='select'){				//开启下拉框
+							var layFilter = item2.select.layFilter || item2.field;
+							if(selectLay.indexOf(layFilter)<0)
+								selectLay.push(layFilter);
 							return getSelectHtml(res);
 						}				
 						else if(item2.type && item2.type=='date'){			//开启日期
@@ -125,8 +128,6 @@ layui.extend({
 						var data = item2.select.data, id = item2.select.id || 'id', name = item2.select.name || 'name',
 							layFilter = item2.select.layFilter || item2.field, unsearch = item2.select.unsearch || false,
 							disabled = item2.select.isDisabled?'disabled':'';
-						if(selectLay.indexOf(layFilter)<0)
-							selectLay.push(layFilter);
 						var html = '<select '+(unsearch?"":"lay-search")+' lay-filter="'+(layFilter)+'" '+disabled+'>';
 						layui.each(data,function(index,item){
 							var selected = r == item.id ? 'selected' : '';
