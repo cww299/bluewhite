@@ -75,9 +75,12 @@ public class QuantitativeServiceImpl extends BaseServiceImpl<Quantitative, Long>
 	public void saveQuantitative(Quantitative quantitative) {
 		if(quantitative.getId()!=null){
 			Quantitative ot = dao.findOne(quantitative.getId());
+			quantitativeChildDao.delete(ot.getQuantitativeChilds());
+			packingMaterialsDao.delete(ot.getPackingMaterials());
 			if (ot.getFlag() == 1) {
 				throw new ServiceException("已发货，无法修改");
 			}
+			update(quantitative, ot, "");
 		}else{
 			quantitative.setFlag(0);
 			quantitative.setPrint(0);
@@ -85,7 +88,6 @@ public class QuantitativeServiceImpl extends BaseServiceImpl<Quantitative, Long>
 		}
 		// 新增子单
 		if (!StringUtils.isEmpty(quantitative.getChild())) {
-			quantitative.getQuantitativeChilds().clear();
 			JSONArray jsonArray = JSON.parseArray(quantitative.getChild());
 			for (int i = 0; i < jsonArray.size(); i++) {
 				JSONObject jsonObject = jsonArray.getJSONObject(i);
@@ -95,8 +97,7 @@ public class QuantitativeServiceImpl extends BaseServiceImpl<Quantitative, Long>
 				}
 				quantitativeChild.setUnderGoodsId(jsonObject.getLong("underGoodsId"));
 				quantitativeChild.setNumber(jsonObject.getInteger("number"));
-				List<QuantitativeChild> quantitativeChildList = quantitativeChildDao
-						.findByUnderGoodsId(jsonObject.getLong("underGoodsId"));
+				List<QuantitativeChild> quantitativeChildList = quantitativeChildDao.findByUnderGoodsId(jsonObject.getLong("underGoodsId"));
 				UnderGoods underGoods = underGoodsDao.findOne(jsonObject.getLong("underGoodsId"));
 				if (quantitativeChildList.size() > 0) {
 					int numberSum = quantitativeChildList.stream().mapToInt(QuantitativeChild::getNumber).sum();
@@ -112,7 +113,6 @@ public class QuantitativeServiceImpl extends BaseServiceImpl<Quantitative, Long>
 		
 		// 新增贴包物
 		if (!StringUtils.isEmpty(quantitative.getPackingMaterialsJson())) {
-			quantitative.getPackingMaterials().clear();
 			JSONArray jsonArrayMaterials = JSON.parseArray(quantitative.getPackingMaterialsJson());
 			for (int i = 0; i < jsonArrayMaterials.size(); i++) {
 				PackingMaterials packingMaterials = new PackingMaterials();
