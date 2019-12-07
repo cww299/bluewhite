@@ -22,13 +22,20 @@
 				<td>产品名:</td>
 				<td><input type="text" name="productName" class="layui-input"></td>
 				<td>&nbsp;&nbsp;&nbsp;</td>
-				<td>量化编号:</td>
-				<td><input type="text" name="quantitativeNumber" class="layui-input"></td>
-				<td>&nbsp;&nbsp;&nbsp;</td>
 				<td>包装时间:</td>
 				<td><input type="text" name="orderTimeBegin" id="orderTimeBegin" class="layui-input"></td>
 				<td>&nbsp;&nbsp;&nbsp;</td>
-				<td><button type="button" class="layui-btn layui-btn-sm" lay-submit lay-filter="search">搜索</button></td>
+				<td>是否打印:</td>
+				<td style="width:100px;"><select name="print"><option value="">请选择</option>
+										<option value="0">否</option>
+										<option value="1">是</option></select></td>
+				<td>&nbsp;&nbsp;&nbsp;</td>
+				<td>是否发货:</td>
+				<td style="width:100px;"><select name="flag"><option value="">请选择</option>
+										<option value="0">否</option>
+										<option value="1">是</option></select></td>
+				<td>&nbsp;&nbsp;&nbsp;</td>
+				<td><button type="button" class="layui-btn layui-btn-" lay-submit lay-filter="search">搜索</button></td>
 			</tr>
 		</table>
 		<table id="tableData" lay-filter="tableData"></table>
@@ -96,9 +103,9 @@ layui.config({
 			url:'${ctx}/temporaryPack/findPagesQuantitative',
 			toolbar:[
 				'<span class="layui-btn layui-btn-sm layui-btn-" lay-event="add">新增数据</span>',
-				'<span class="layui-btn layui-btn-sm layui-btn-" lay-event="update">修改数据</span>',
-				'<span class="layui-btn layui-btn-sm layui-btn-" lay-event="audit">审核</span>',
-				'<span class="layui-btn layui-btn-sm layui-btn-" lay-event="print">打印</span>',
+				'<span class="layui-btn layui-btn-sm layui-btn-warm" lay-event="update">修改数据</span>',
+				'<span class="layui-btn layui-btn-sm layui-btn-primary" lay-event="print">打印</span>',
+				'<span class="layui-btn layui-btn-sm layui-btn-normal" lay-event="audit">发货</span>',
 			].join(' '),
 			curd:{
 				btn:[4],
@@ -143,11 +150,13 @@ layui.config({
 								quantitativeNumber: d[i].quantitativeNumber,
 								time: d[i].time,
 								user: d[i].user,
+								print: d[i].print,
+								flag: d[i].flag,
 								product: child[j].product,
 								sumPackageNumber: child[j].sumPackageNumber,
 								singleNumber: child[j].singleNumber,
-								underGoods: child[j].underGoods,
 								number: child[j].number,
+								underGoods: child[j].underGoods,
 							})
 						}
 					}
@@ -158,20 +167,21 @@ layui.config({
 			},
 			cols:[[
 			       { type:'checkbox',},
-			       { title:'量化编号',   field:'quantitativeNumber',	},
-			       { title:'包装时间',   field:'time',   },
+			       { title:'量化编号',   field:'quantitativeNumber', width:'12%',	},
+			       { title:'包装时间',   field:'time',  width:'12%', },
+			       { title:'贴包人',   field:'user_userName', width:'10%',	},
+			       { title:'是否审核',   field:'print', 	transData:{data:['否','是']}, width:'6%', },
+			       { title:'是否打印',   field:'flag', 	transData:{data:['否','是']}, width:'6%', },
 			       { title:'产品名',   field:'underGoods_product_name', 	},
-			       { title:'剩余发货数量',   field:'surplusSendNumber', 	},
-			       { title:'剩余量化数量',   field:'surplusNumber', 	},
-			       { title:'贴包人',   field:'user_userName', 	},
-			       { title:'总包数',   field:'sumPackageNumber',	},
-			       { title:'单包个数',   field:'singleNumber',	},
-			       { title:'数量',   field:'number',	},
+			       { title:'总包数',   field:'sumPackageNumber',	width:'8%', },
+			       { title:'单包个数',   field:'singleNumber',	width:'8%', },
+			       { title:'数量',   field:'number', width:'8%',	 },
 			       ]],
 	       done:function(){
-				merge('underGoods_product_name');
 				merge('quantitativeNumber');
 				merge('time');
+				merge('print');
+				merge('flag');
 				merge('user_userName');
 				merge('surplusSendNumber');
 				merge('surplusNumber');
@@ -216,8 +226,10 @@ layui.config({
 				btn: ['打印','取消'],
 				shadeClose: true,
 				yes: function(){
-					printpage('printDiv');
 					var ids = [];
+					layui.each(choosed,function(i,item){
+						ids.push(item.id);
+					})
 					myutil.deleteAjax({
 						ids: ids.join(),
 						url:'/temporaryPack/printQuantitative',
@@ -225,6 +237,7 @@ layui.config({
 							table.reload('tableData');
 						}
 					})
+					printpage('printDiv');
 				}
 			})
 		}
@@ -283,6 +296,9 @@ layui.config({
 					if(data.id){
 						addTable = data.quantitativeChilds;
 						addMate = data.packingMaterials
+						layui.each(addMate,function(index,item){
+							item.packagingId = item.packagingMaterials.id;
+						})
 						$('#packPeopleSelect').val(data.user?data.user.id:'');
 						$('#addEditTime').val(data.time);
 					}
@@ -308,7 +324,7 @@ layui.config({
 										number: item.number,
 										singleNumber: item.singleNumber,
 										sumPackageNumber: item.sumPackageNumber,
-										underGoodsId: item.underGoods.id,
+										underGoodsId: item.underGoodsId || item.underGoods.id,
 									})
 								})
 								var mateData = table.getTemp('addMaterTable').data;	//
@@ -357,10 +373,10 @@ layui.config({
 							{ type:'checkbox',},
 							{ title:'下货单~批次号~剩余数量', field:'underGoods_id', type:'select',
 								select:{data: allUoloadOrder, name:['product_name','bacthNumber','number'],} },
-							{ title:'总包数',   field:'sumPackageNumber', edit:true,	},
-					        { title:'单包个数',   field:'singleNumber',	 edit:true,	},
-					        { title:'总数量',   field:'number',	 edit:true, },
-					        { title:'操作',   field:'de',	 event:'deleteTr', edit:false,
+							{ title:'总包数',   field:'sumPackageNumber', edit:true, width:'10%', 	},
+					        { title:'单包个数',   field:'singleNumber',	 edit:true,	width:'10%',},
+					        { title:'总数量',   field:'number',	 edit:true, width:'10%',},
+					        { title:'操作',   field:'de',	 event:'deleteTr', edit:false,width:'10%',
 					        		templet:'<div><span class="layui-btn layui-btn-xs layui-btn-danger">删除</span></div>' },
 						]],
 						done:function(){
@@ -398,8 +414,8 @@ layui.config({
 						cols:[[
 							{ type:'checkbox',},
 							{ title:'材料', field:'packagingMaterials_id', type:'select',select:{data: allMaterials, } },
-							{ title:'数量',   field:'packagingCount',	edit:true, },
-							{ title:'操作',   field:'de',	 event:'deleteTr', edit:false,
+							{ title:'数量',   field:'packagingCount',	edit:true,width:'25%', },
+							{ title:'操作',   field:'de',	 event:'deleteTr', edit:false,width:'20%',
 				        		templet:'<div><span class="layui-btn layui-btn-xs layui-btn-danger">删除</span></div>' },
 						]],
 						done:function(){

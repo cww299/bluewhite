@@ -18,10 +18,16 @@
 	<div class="layui-card-body">
 		<table class="layui-form">
 			<tr>
+				<td>下单时间:</td>
+				<td><input type="text" name="orderTimeBegin" class="layui-input" id="searchTime"></td>
+				<td>&nbsp;&nbsp;&nbsp;</td>
 				<td>产品名:</td>
 				<td><input type="text" name="productName" class="layui-input"></td>
 				<td>&nbsp;&nbsp;&nbsp;</td>
-				<td><button type="button" class="layui-btn layui-btn-sm" lay-submit lay-filter="search">搜索</button></td>
+				<td>批次号:</td>
+				<td><input type="text" name="bacthNumber" class="layui-input"></td>
+				<td>&nbsp;&nbsp;&nbsp;</td>
+				<td><button type="button" class="layui-btn layui-btn-" lay-submit lay-filter="search">搜索</button></td>
 			</tr>
 		</table>
 		<table id="tableData" lay-filter="tableData"></table>
@@ -102,6 +108,7 @@ layui.config({
 		myutil.config.ctx = '${ctx}';
 		myutil.clickTr();
 		
+		laydate.render({ elem:'#searchTime', range:'~', })
 		mytable.render({
 			elem:'#tableData',
 			url:'${ctx}/temporaryPack/findPagesUnderGoods',
@@ -124,8 +131,8 @@ layui.config({
 			},
 			toolbar:[
 				'<span class="layui-btn layui-btn-sm" lay-event="add">新增数据</span>',
-				'<span class="layui-btn layui-btn-sm" lay-event="update">修改数据</span>',
-				'<span class="layui-btn layui-btn-sm" id="uploadBtn">导入数据</span>',
+				'<span class="layui-btn layui-btn-sm layui-btn-warm" lay-event="update">修改数据</span>',
+				'<span class="layui-btn layui-btn-sm layui-btn-normal" id="uploadBtn">导入数据</span>',
 			].join(' '),
 			cols:[[
 			       { type:'checkbox',},
@@ -133,8 +140,9 @@ layui.config({
 			       { title:'批次号',   field:'bacthNumber',   },
 			       { title:'产品名',   field:'product_name',	},
 			       { title:'批次数量',   field:'number', 	},
+			       { title:'剩余发货数量',   field:'surplusSendNumber', 	},
+			       { title:'剩余量化数量',   field:'surplusNumber', 	},
 			       { title:'备注',   field:'remarks',	},
-			       { title:'状态',   field:'',	},
 			       ]],
 			 done:function(){
 				 upload.render({
@@ -159,6 +167,13 @@ layui.config({
 			 }
 		})
 		form.on('submit(search)',function(obj){
+			var field = obj.field;
+			if(field.orderTimeBegin){
+				var t = field.orderTimeBegin.split(' ~ ');
+				field.orderTimeBegin = t[0]+' 00:00:00';
+				field.orderTimeEnd = t[1]+' 23:59:59';
+			}else
+				field.orderTimeEnd = '';
 			table.reload('tableData',{
 				where: obj.field,
 			})
