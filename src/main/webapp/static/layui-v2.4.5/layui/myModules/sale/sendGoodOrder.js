@@ -28,7 +28,7 @@ layui.extend({
 	  <div class="addTable">
 	    <div class="layui-card layerContentDiv">
 	      <div class="layui-card-body layerContent">
-	        <div style="width: 48.5%;float: left;padding: 0 0.5%;">
+	        <div style="">
 	          <p class="smallTitle"><span class="blueBlock">&nbsp;</span>发货单基础信息
 	          	<span class="headTips"><b class="red">*</b>为必填项</span>
 	          </p>
@@ -43,6 +43,11 @@ layui.extend({
 	              <td colspan="">
 	              	<input type="text" class="layui-input" id="customInputChoose" value="{{ d.customer?d.customer.name:"" }}"
 	              		placeholder="点击进行客户选择" readonly lay-verify="required" ></td>
+	              <td class="imgTd" colspan="4" rowspan="4">
+	                <div><b id="allWarehouseNumber">0</b><p>总库存数量</p></div>
+	                <div>0<p>业务员所属数量</p></div>
+	                <div>需要申请<p>发货状态</p></div>
+	              </td>
 	            </tr>
 	            <tr>
 	              <td class="titleTd"><b class="red">*</b>商品名称：</td>
@@ -67,32 +72,22 @@ layui.extend({
 					<span style="" lay-submit lay-filter="sureAddSendOrderSubmit" id="sureAddSendOrderSubmit"></span>
 				  </td>
 	            </tr>
-	            <tr>
-	              <td class="imgTd" colspan="4">
-	                <div><b id="allWarehouseNumber">0</b><p>总库存数量</p></div>
-	                <div>0<p>业务员所属数量</p></div>
-	                <div>需要申请<p>发货状态</p></div>
-	              </td>
-	            </tr>
 	          </table>
 	        </div>
-	        <div style="width: 48.5%;float: right;padding: 0 0.5%;">
-	          <p class="smallTitle"><span class="blueBlock">&nbsp;</span>申请借货单&nbsp;&nbsp;
-	          	申请时间：<span class="layui-btn layui-btn-primary layui-btn-xs" id="askforDate">2019-12-06 00:00:00</span>
-	            <span class="layui-btn layui-btn-xs layui-btn-danger fright" id="deleteAskfor">删除</span></p>
-	          <table id="askForTable" lay-filter="askForTable"></table>
-	        </div>
+	        
 	      </div>
 	    </div>
-	    <div class="layui-card twoDiv">
-	      <p class="smallTitle"><span class="blueBlock">&nbsp;</span>业务员所属库存信息</p>
-	      <table id="myWarehouseTable" lay-filter="myWarehouseTable"></table>
-	    </div>
-	    <div class="layui-card twoDiv" style="float: right;">
+	    <div class="layui-card twoDiv" >
 	      <p class="smallTitle"><span class="blueBlock">&nbsp;</span>其他业务员库存所属信息
 	            <span class="layui-btn layui-btn-xs layui-btn-normal fright" id="addAskfor">添加申请</span></p>
 	      <table id="otherWarehouseTable" lay-filter="otherWarehouseTable"></table>
 	    </div>
+		<div class="layui-card twoDiv" style="float: right;">
+			<p class="smallTitle"><span class="blueBlock">&nbsp;</span>申请借货单&nbsp;&nbsp;
+					申请时间：<span class="layui-btn layui-btn-primary layui-btn-xs" id="askforDate">2019-12-06 00:00:00</span>
+					<span class="layui-btn layui-btn-xs layui-btn-danger fright" id="deleteAskfor">删除</span></p>
+			<table id="askForTable" lay-filter="askForTable"></table>
+		</div>
 	  </div>
 	`;
 	
@@ -142,8 +137,9 @@ layui.extend({
 		var win = layer.open({
 			type:1,
 			move: false,
+			offset:'20px',
 			content:html,
-			area:['60%','100%'],
+			area:['80%','90%'],
 			title: [	'<i class="layui-icon layui-icon-spread-left"></i>&nbsp;',
 						title,
 						'<span class="layui-btn layui-btn-sm" id="sureAddSendOrder">确定新增</span>'
@@ -154,26 +150,43 @@ layui.extend({
 				$('#sureAddSendOrder').click(function(){
 					$("#sureAddSendOrderSubmit").click();
 				})
-				mytable.render({
+				mytable.renderNoPage({
 					elem:'#askForTable',
 					data:[],
-					height:'320px',
+					height:'420px',
 					totalRow:['number'],
 					cols:[[
 						{ type:'checkbox', },
-						{ field:'bacthNumber',title:'批次号',},
-						{ field:'user_userName',title:'所属业务员',},
-						{ field:'number',title:'库存数量',},
-						{ field:'askNumber',title:'申请数量',edit:true,},
+						{ field:'bacth',title:'批次号',},
+						{ field:'users',title:'所属业务员', templet: getAllUserName(),},
+						{ field:'number',title:'库存数量', width:'15%',},
+						{ field:'askNumber',title:'申请数量',edit:true,width:'15%',},
 					]],
 					done:function(){
-						$('#deleteAskfor').click(function(){
+						$('#deleteAskfor').unbind().on('click',function(){
 							var check = layui.table.checkStatus('askForTable').data;
 							if(check.length==0)
 								return myutil.emsg('请选择删除的申请信息');
+							var askCache = layui.table.cache['askForTable'];
+							var newData = [];
+							layui.each(askCache,function(index,item){
+								var isDelete = false;
+								layui.each(check,function(i2,askItem){
+									if(askItem.bacth==item.bacth){
+										isDelete = true;
+										return;
+									}
+								})
+								if(!isDelete){
+									newData.push(item)
+								}
+							})
+							table.reload('askForTable',{
+								data: newData,
+							})
 							
 						})
-						table.on('edit(askForTable)', function(obj){
+						/*table.on('edit(askForTable)', function(obj){
 							var trData = obj.data;
 							var val = obj.value;
 							if(isNaN(val) || val<0 || val%1.0!=0.0){
@@ -181,64 +194,45 @@ layui.extend({
 								trData['askNumber'] = last;
 								$(this).val(last);
 							}
-						});
-					}
-				})
-				mytable.renderNoPage({
-					elem:'#myWarehouseTable',
-					data:[],
-					height:'400px',
-					parseData: getParseData(),
-					totalRow:['number'],
-					cols:[[
-						{ type:'checkbox', },
-						{ field:'bacthNumber',title:'批次号',},
-						{ field:'user_userName',title:'所属业务员',},
-						{ field:'number',title:'库存数量',},
-					]],
-					done:function(){
-
+						});*/
 					}
 				})
 				mytable.renderNoPage({
 					elem:'#otherWarehouseTable',
-					parseData: getParseData(),
 					data:[],
-					height:'400px',
+					height:'420px',
 					totalRow:['number'],
 					cols:[[
 						{ type:'checkbox', },
-						{ field:'bacthNumber',title:'批次号',},
-						{ field:'user_userName',title:'所属业务员',},
+						{ field:'bacth',title:'批次号',},
+						{ field:'users',title:'所属业务员', templet: getAllUserName(),},
 						{ field:'number',title:'库存数量',},
 					]],
 					done:function(){
-						$('#addAskfor').click(function(){
+						$('#addAskfor').unbind().on('click',function(){
 							var check = layui.table.checkStatus('otherWarehouseTable').data;
-							var otherCache = layui.table.cache['otherWarehouseTable'];
 							var askCache = layui.table.cache['askForTable'];
 							if(check.length==0)
 								return myutil.emsg('请选择需要申请的信息');
-							
 							layui.each(check,function(index,item){
+								var isChoosed = false;
 								layui.each(askCache,function(i2,askItem){
-									
+									if(askItem.bacth==item.bacth){
+										isChoosed = true;
+										return;
+									}
 								})
+								if(!isChoosed){
+									item.askNumber = 0;
+									askCache.push(item)
+								}
 							})
-							
-							
-							
-							var askforTable = layui.table.cache['askForTable'];
-							
-							
-							//askNumber:0
 							table.reload('askForTable',{
-								data: check,
+								data: askCache,
 							})
 						})
 					}
 				})
-				
 				if(data.id){	//如果存在id，进行数据回显
 					
 				}
@@ -250,14 +244,28 @@ layui.extend({
 					if(data.id)
 						url = '';
 					var tableData = layui.table.cache['askForTable'],json = [];
+					var time = $('#askforDate').val(),msg = '';
 					layui.each(tableData,function(index,item){
-						json.push({
-							time: $('#askforDate').val(),
-							number: item.askNumber,
-							approvalUserId: item.userId,
+						if(msg)
+							return;
+						layui.each(item.userList,function(i2,childItem){
+							if(msg)
+								return;
+							if(!item.askNumber || isNaN(item.askNumber) || item.askNumber%1.0!=0 )
+								msg = '请正确填写申请数量';
+							json.push({
+								time: time,
+								number: item.askNumber,
+								approvalUserId: childItem.id,
+							})
 						})
 					})
+					if(msg)
+						return myutil.emsg(msg);
 					data.applyVoucher = JSON.stringify(json);
+					
+					console.log(data)
+					return 
 					myutil.saveAjax({
 						url: url,
 						data: data,
@@ -279,26 +287,15 @@ layui.extend({
 		})
 	}
 	
-	//解析接口返回数据
-	function getParseData(){
-		return function(r){
-			if(r.code==0){
-				var data = [];
-				layui.each(r.data,function(index,item){
-					layui.each(item.orderChilds,function(i2,itemChild){
-						data.push({
-							id: item.id,
-							bacthNumber: item.bacthNumber,
-							number: item.number,
-							user: itemChild.user,
-						})
-					})
-				})
-			}
-			return {  msg: r.message,  code: r.code , data: data, };
+	function getAllUserName(){
+		return function(d){
+			var html = '';
+			layui.each(d.userList,function(index,item){
+				html += '<span class="layui-badge layui-bg-green">'+item.name+'</span>&nbsp;&nbsp;';
+			})
+			return html;
 		}
 	}
-	
 	function getWarehouseInfo(){
 		var pid = $('#productIdHidden').val();
 		if(pid){
@@ -307,12 +304,6 @@ layui.extend({
 				where:{
 					productId: pid,
 					include: 1,
-				},
-			})
-			table.reload('myWarehouseTable',{
-				url: myutil.config.ctx+'/ledger/getOrderSend',
-				where:{
-					productId: pid,
 				},
 			})
 		}
