@@ -85,6 +85,11 @@ layui.extend({
 					china[item2.field] = item2.title;
 					if(item2.field.split('_').length>1 && exportCols.indexOf(item2.field)<0 ) //记录假字段、用于导出
 						exportCols.push(item2.field);
+					if(item2.type=='select'){	//初始无值时bug、需要进入后记录下拉框值
+						var layFilter = item2.select.layFilter || item2.field;
+						if(selectLay.indexOf(layFilter)<0)
+							selectLay.push(layFilter);
+					}
 					var tep = function(d){								//默认模板
 						var fie = item2.field.split('_');				
 						var res = '';
@@ -97,9 +102,6 @@ layui.extend({
 							})
 						}
 						if(item2.type && item2.type=='select'){				//开启下拉框
-							var layFilter = item2.select.layFilter || item2.field;
-							if(selectLay.indexOf(layFilter)<0)
-								selectLay.push(layFilter);
 							return getSelectHtml(res);
 						}				
 						else if(item2.type && item2.type=='date'){			//开启日期
