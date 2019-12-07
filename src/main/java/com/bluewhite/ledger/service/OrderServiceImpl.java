@@ -305,8 +305,8 @@ public class OrderServiceImpl extends BaseServiceImpl<Order, Long> implements Or
 			Order order = (Order) slist.get(0).get("order");
 			Map<String, Object> map = new HashMap<String, Object>();
 			order.getOrderChilds().forEach(o -> {
-				map.put("name", o.getCustomer().getName());
-				map.put("id", o.getCustomerId());
+				map.put("name", o.getUser().getUserName());
+				map.put("id", o.getUserId());
 			});
 			nmap.put("bacth", order.getBacthNumber());
 			nmap.put("number", sumcc.getSum());
