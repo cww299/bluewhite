@@ -373,8 +373,6 @@ layui.extend({
 					}
 					function saveTempData(){
 						var data = table.getTemp(tableId).data,success = 0,msg='';
-						if(data.length==0)
-							return myutil.emsg('无临时数据可保存！');
 						layui.each(data,function(index,item){
 							if(msg!='') return;
 							for(var i=0;i<notNull.length;i++){
@@ -401,6 +399,8 @@ layui.extend({
 						if(opt.curd.saveFun)
 							opt.curd.saveFun(data);		//如果存在保存函数则执行，否则执行默认保存函数
 						else{
+							if(data.length==0)
+								return myutil.emsg('无临时数据可保存！');
 							for(var i=0;i<data.length;i++)
 								myutil.saveAjax({
 									url: opt.autoUpdate.saveUrl,
