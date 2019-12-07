@@ -24,8 +24,6 @@ import com.bluewhite.common.entity.PageResult;
 import com.bluewhite.common.utils.SalesUtils;
 import com.bluewhite.common.utils.StringUtil;
 import com.bluewhite.ledger.dao.PackingMaterialsDao;
-import com.bluewhite.ledger.entity.Packing;
-import com.bluewhite.ledger.entity.PackingChild;
 import com.bluewhite.ledger.entity.PackingMaterials;
 
 @Service
@@ -148,7 +146,10 @@ public class QuantitativeServiceImpl extends BaseServiceImpl<Quantitative, Long>
 				for (int i = 0; i < idArr.length; i++) {
 					Long id = Long.parseLong(idArr[i]);
 					Quantitative quantitative = dao.findOne(id);
-					quantitative.setPrint(1);
+					if (quantitative.getFlag() == 1) {
+						throw new ServiceException("已发货请勿多次发货");
+					}
+					quantitative.setFlag(1);
 					dao.save(quantitative);
 				}
 			}
@@ -165,10 +166,7 @@ public class QuantitativeServiceImpl extends BaseServiceImpl<Quantitative, Long>
 				for (int i = 0; i < idArr.length; i++) {
 					Long id = Long.parseLong(idArr[i]);
 					Quantitative quantitative = dao.findOne(id);
-					if (quantitative.getFlag() == 1) {
-						throw new ServiceException("已发货请勿多次发货");
-					}
-					quantitative.setFlag(1);
+					quantitative.setPrint(1);
 					dao.save(quantitative);
 				}
 			}
