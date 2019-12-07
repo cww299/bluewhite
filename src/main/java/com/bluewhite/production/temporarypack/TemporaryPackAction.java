@@ -19,6 +19,7 @@ import org.springframework.web.multipart.support.ByteArrayMultipartFileEditor;
 import com.alibaba.excel.EasyExcelFactory;
 import com.alibaba.excel.metadata.Sheet;
 import com.bluewhite.basedata.entity.BaseData;
+import com.bluewhite.common.BeanCopyUtils;
 import com.bluewhite.common.ClearCascadeJSON;
 import com.bluewhite.common.DateTimePattern;
 import com.bluewhite.common.entity.CommonResponse;
@@ -110,7 +111,10 @@ public class TemporaryPackAction {
 		if (quantitative.getId() == null) {
 			if (quantitative.getSumPackageNumber() > 0) {
 				for (int i = 0; i < quantitative.getSumPackageNumber(); i++) {
-					 quantitativeService.saveQuantitative(quantitative);
+					Quantitative ot = new Quantitative();
+					BeanCopyUtils.copyNotEmpty(quantitative, ot, "");
+					quantitative.setId(null);
+					quantitativeService.saveQuantitative(ot);
 				}
 			}
 			cr.setMessage("新增成功");
