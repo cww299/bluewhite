@@ -154,6 +154,7 @@ layui.config({
 								time: d[i].time,
 								user: d[i].user,
 								print: d[i].print,
+								customer: d[i].customer,
 								flag: d[i].flag,
 								product: child[j].product,
 								singleNumber: child[j].singleNumber,
@@ -166,11 +167,13 @@ layui.config({
 				else
 					return {  msg:ret.message,  code:ret.code , data:[], count:0 }; 
 			},
+			ifNull:'---',
 			cols:[[
 			       { type:'checkbox',},
 			       { title:'量化编号',   field:'quantitativeNumber', width:'12%',	},
 			       { title:'包装时间',   field:'time',  width:'12%', },
 			       { title:'贴包人',   field:'user_userName', width:'10%',	},
+			       { title:'客户',   field:'customer_name', width:'10%',	},
 			       { title:'是否发货',   field:'print', 	transData:{data:['否','是']}, width:'6%', },
 			       { title:'是否打印',   field:'flag', 	transData:{data:['否','是']}, width:'6%', },
 			       { title:'产品名',   field:'underGoods_product_name', 	},
@@ -184,6 +187,7 @@ layui.config({
 				merge('user_userName');
 				merge('surplusSendNumber');
 				merge('surplusNumber');
+				merge('customer_name');
 				merge('0');
 				function merge(field){
 					var rowspan = 1,mainCols=0;
@@ -266,12 +270,13 @@ layui.config({
 						'</td>',
 						'<td>&nbsp;&nbsp;客户：</td>',
 						'<td>',
-							'<select id="customerSelect" lay-search name="customerId" ',
+							'<select id="customerSelect" lay-search name="customerId"> ',
 								'<option value="">请选择</option></select>',
 						'</td>',
 						'<td>&nbsp;&nbsp;总包数：</td>',
 						'<td>',
-							'<input class="layui-input" name="sumPackageNumber" value="{{ d.sumPackageNumber || 0}}" lay-verify="required">',
+							'<input class="layui-input" name="sumPackageNumber" value="{{ d.sumPackageNumber || 0}}" ',
+								' id="sumPackageNumberInput" lay-verify="required">',
 							'<input type="hidden" name="id" value="{{ d.id || ""}}">',
 						'</td>',
 						'<td>&nbsp;&nbsp;<span class="layui-btn" id="saveBtn" lay-filter="saveBtn" lay-submit>保存</span></td>',
@@ -303,6 +308,8 @@ layui.config({
 				success: function(){
 					var formData = {};
 					form.on('submit(saveBtn)',function(obj){
+						if(obj.field.sumPackageNumber==0)
+							return myutil.emsg('总包数数量不能为0');
 						formData = obj.field;
 						$('span[lay-event="saveTempData"]').click();
 					})
@@ -320,6 +327,7 @@ layui.config({
 						layui.each(addMate,function(index,item){
 							item.packagingId = item.packagingMaterials.id;
 						})
+						$('#sumPackageNumberInput').attr('disabled','disabled')
 						$('#packPeopleSelect').val(data.user?data.user.id:'');
 						$('#customerSelect').val(data.customer?data.customer.id:'');
 					}
