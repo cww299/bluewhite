@@ -32,31 +32,11 @@ public class QuantitativeChild  extends BaseEntity<Long> {
 	private UnderGoods underGoods;
 	
 	/**
-	 * 总包数
-	 */
-	@Column(name = "sum_package_number")
-	private Integer sumPackageNumber;
-
-	/**
 	 * 单包个数
 	 */
 	@Column(name = "single_number")
 	private Integer singleNumber;
 	
-	/**
-	 * 包装数量
-	 */
-	@Column(name = "number")
-	private Integer number;
-	
-
-	public Integer getNumber() {
-		return number;
-	}
-
-	public void setNumber(Integer number) {
-		this.number = number;
-	}
 
 	public Long getUnderGoodsId() {
 		return underGoodsId;
@@ -72,14 +52,6 @@ public class QuantitativeChild  extends BaseEntity<Long> {
 
 	public void setUnderGoods(UnderGoods underGoods) {
 		this.underGoods = underGoods;
-	}
-
-	public Integer getSumPackageNumber() {
-		return sumPackageNumber;
-	}
-
-	public void setSumPackageNumber(Integer sumPackageNumber) {
-		this.sumPackageNumber = sumPackageNumber;
 	}
 
 	public Integer getSingleNumber() {

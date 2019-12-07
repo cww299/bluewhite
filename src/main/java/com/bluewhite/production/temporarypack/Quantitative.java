@@ -16,6 +16,7 @@ import javax.persistence.Table;
 import javax.persistence.Transient;
 
 import com.bluewhite.base.BaseEntity;
+import com.bluewhite.ledger.entity.Customer;
 import com.bluewhite.ledger.entity.PackingMaterials;
 import com.bluewhite.system.user.entity.User;
 
@@ -29,6 +30,21 @@ import com.bluewhite.system.user.entity.User;
 @Table(name = "pro_quantitative")
 public class Quantitative extends BaseEntity<Long> {
 	
+	
+	/**
+	 * 客户id
+	 * 
+	 */
+	@Column(name = "customer_id")
+	private Long customerId;
+
+	/**
+	 * 客户
+	 */
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "customer_id", referencedColumnName = "id", insertable = false, updatable = false)
+	private Customer customer;
+	
 	/**
 	 * 量化编号
 	 */
@@ -40,6 +56,12 @@ public class Quantitative extends BaseEntity<Long> {
 	 */
 	@Column(name = "time")
 	private Date time;
+	
+	/**
+	 * 总包数
+	 */
+	@Column(name = "sum_package_number")
+	private Integer sumPackageNumber;
 	
 	/**
 	 * 包装数量
@@ -132,10 +154,47 @@ public class Quantitative extends BaseEntity<Long> {
 	@Transient
 	private String packingMaterialsJson;
 	
+	/**
+	 * 客户name
+	 */
+	@Transient
+	private String customerName;
 	
 	
 	
 	
+	public String getCustomerName() {
+		return customerName;
+	}
+
+	public void setCustomerName(String customerName) {
+		this.customerName = customerName;
+	}
+
+	public Long getCustomerId() {
+		return customerId;
+	}
+
+	public void setCustomerId(Long customerId) {
+		this.customerId = customerId;
+	}
+
+	public Customer getCustomer() {
+		return customer;
+	}
+
+	public void setCustomer(Customer customer) {
+		this.customer = customer;
+	}
+
+	public Integer getSumPackageNumber() {
+		return sumPackageNumber;
+	}
+
+	public void setSumPackageNumber(Integer sumPackageNumber) {
+		this.sumPackageNumber = sumPackageNumber;
+	}
+
 	public Integer getNumber() {
 		return number;
 	}
