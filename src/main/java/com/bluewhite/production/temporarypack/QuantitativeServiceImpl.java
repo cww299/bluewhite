@@ -48,6 +48,11 @@ public class QuantitativeServiceImpl extends BaseServiceImpl<Quantitative, Long>
 			if (param.getId() != null) {
 				predicate.add(cb.equal(root.get("id").as(Long.class), param.getId()));
 			}
+			// 按客户名称
+			if (!StringUtils.isEmpty(param.getCustomerName())) {
+				predicate.add(cb.like(root.get("customer").get("name").as(String.class),
+						"%" + param.getCustomerName() + "%"));
+			}
 			// 是否打印
 			if (param.getPrint() != null) {
 				predicate.add(cb.equal(root.get("print").as(Integer.class), param.getPrint()));
@@ -111,18 +116,7 @@ public class QuantitativeServiceImpl extends BaseServiceImpl<Quantitative, Long>
 					quantitativeChild = quantitativeChildDao.findOne(jsonObject.getLong("id"));
 				}
 				quantitativeChild.setUnderGoodsId(jsonObject.getLong("underGoodsId"));
-				quantitativeChild.setNumber(jsonObject.getInteger("number"));
-				List<QuantitativeChild> quantitativeChildList = quantitativeChildDao
-						.findByUnderGoodsId(jsonObject.getLong("underGoodsId"));
-				UnderGoods underGoods = underGoodsDao.findOne(jsonObject.getLong("underGoodsId"));
-				if (quantitativeChildList.size() > 0) {
-					int numberSum = quantitativeChildList.stream().mapToInt(QuantitativeChild::getNumber).sum();
-					if (underGoods.getNumber() < (numberSum + (jsonObject.getInteger("number")))) {
-						throw new ServiceException("数量不足，无法新增");
-					}
-				}
 				quantitativeChild.setSingleNumber(jsonObject.getInteger("singleNumber"));
-				quantitativeChild.setSumPackageNumber(jsonObject.getInteger("sumPackageNumber"));
 				quantitative.getQuantitativeChilds().add(quantitativeChild);
 			}
 		}
@@ -191,9 +185,6 @@ public class QuantitativeServiceImpl extends BaseServiceImpl<Quantitative, Long>
 				for (int i = 0; i < idArr.length; i++) {
 					Long id = Long.parseLong(idArr[i]);
 					Quantitative quantitative = dao.findOne(id);
-					if (quantitative.getPrint() == 1) {
-						throw new ServiceException("已打印无法删除");
-					}
 					if (quantitative.getFlag() == 1) {
 						throw new ServiceException("已发货无法删除");
 					}
