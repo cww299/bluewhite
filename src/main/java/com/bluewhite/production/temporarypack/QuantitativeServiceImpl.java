@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import javax.persistence.criteria.Join;
+import javax.persistence.criteria.JoinType;
 import javax.persistence.criteria.Predicate;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,6 +24,8 @@ import com.bluewhite.common.entity.PageResult;
 import com.bluewhite.common.utils.SalesUtils;
 import com.bluewhite.common.utils.StringUtil;
 import com.bluewhite.ledger.dao.PackingMaterialsDao;
+import com.bluewhite.ledger.entity.Packing;
+import com.bluewhite.ledger.entity.PackingChild;
 import com.bluewhite.ledger.entity.PackingMaterials;
 
 @Service
@@ -48,9 +52,11 @@ public class QuantitativeServiceImpl extends BaseServiceImpl<Quantitative, Long>
 			if (!StringUtils.isEmpty(param.getBacthNumber())) {
 				predicate.add(cb.like(root.get("bacthNumber").as(String.class), "%" + param.getBacthNumber() + "%"));
 			}
-			// 按产品name过滤
+			// 按商品名称过滤
 			if (!StringUtils.isEmpty(param.getProductName())) {
-				predicate.add(cb.equal(root.get("product").get("name").as(String.class),
+				Join<Quantitative, QuantitativeChild> join = root
+						.join(root.getModel().getList("quantitativeChilds", QuantitativeChild.class), JoinType.LEFT);
+				predicate.add(cb.like(join.get("underGoods").get("product").get("name").as(String.class),
 						"%" + StringUtil.specialStrKeyword(param.getProductName()) + "%"));
 			}
 			// 按产品编号过滤
@@ -73,7 +79,7 @@ public class QuantitativeServiceImpl extends BaseServiceImpl<Quantitative, Long>
 
 	@Override
 	public void saveQuantitative(Quantitative quantitative) {
-		if(quantitative.getId()!=null){
+		if (quantitative.getId() != null) {
 			Quantitative ot = dao.findOne(quantitative.getId());
 			quantitativeChildDao.delete(ot.getQuantitativeChilds());
 			packingMaterialsDao.delete(ot.getPackingMaterials());
@@ -81,8 +87,9 @@ public class QuantitativeServiceImpl extends BaseServiceImpl<Quantitative, Long>
 				throw new ServiceException("已发货，无法修改");
 			}
 			quantitative.setQuantitativeNumber(ot.getQuantitativeNumber());
-		}else{
-			quantitative.setQuantitativeNumber(Constants.XHD + StringUtil.getDate() + SalesUtils.get0LeftString((int)(dao.count()+1), 8));
+		} else {
+			quantitative.setQuantitativeNumber(
+					Constants.XHD + StringUtil.getDate() + SalesUtils.get0LeftString((int) (dao.count() + 1), 8));
 		}
 		quantitative.setFlag(0);
 		quantitative.setPrint(0);
@@ -97,7 +104,8 @@ public class QuantitativeServiceImpl extends BaseServiceImpl<Quantitative, Long>
 				}
 				quantitativeChild.setUnderGoodsId(jsonObject.getLong("underGoodsId"));
 				quantitativeChild.setNumber(jsonObject.getInteger("number"));
-				List<QuantitativeChild> quantitativeChildList = quantitativeChildDao.findByUnderGoodsId(jsonObject.getLong("underGoodsId"));
+				List<QuantitativeChild> quantitativeChildList = quantitativeChildDao
+						.findByUnderGoodsId(jsonObject.getLong("underGoodsId"));
 				UnderGoods underGoods = underGoodsDao.findOne(jsonObject.getLong("underGoodsId"));
 				if (quantitativeChildList.size() > 0) {
 					int numberSum = quantitativeChildList.stream().mapToInt(QuantitativeChild::getNumber).sum();
@@ -110,7 +118,7 @@ public class QuantitativeServiceImpl extends BaseServiceImpl<Quantitative, Long>
 				quantitative.getQuantitativeChilds().add(quantitativeChild);
 			}
 		}
-		
+
 		// 新增贴包物
 		if (!StringUtils.isEmpty(quantitative.getPackingMaterialsJson())) {
 			JSONArray jsonArrayMaterials = JSON.parseArray(quantitative.getPackingMaterialsJson());
@@ -125,7 +133,7 @@ public class QuantitativeServiceImpl extends BaseServiceImpl<Quantitative, Long>
 				quantitative.getPackingMaterials().add(packingMaterials);
 			}
 		}
-		
+
 		save(quantitative);
 	}
 
