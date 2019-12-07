@@ -266,11 +266,22 @@ layui.define(['jquery','layer','form','table'],function(exports){
 		return myutil.c.getData(options,callback);
 	};
 	
-	myutil.clickTr = function(){
+	myutil.clickTr = function(opt){
+		var noClick = opt.noClick;
 		$(document).on('click', '.layui-table-view tbody tr', function(event) {
 			var elemTemp = $(this);
 			var tableView = elemTemp.closest('.layui-table-view');
 			var trIndex = elemTemp.data('index');
+			var tableId = $(tableView).attr('lay-id');
+			if(noClick){
+				if(typeof(noClick)!=='object'){
+					noClick = [noClick];
+				}
+				for(var i in noClick){
+					if(noClick[i]==tableId)
+						return;
+				}
+			}
 			tableView.find('tr[data-index="' + trIndex + '"]').find('[name="layTableCheckbox"]+').last().click();
 		})
 	};
