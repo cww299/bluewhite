@@ -36,13 +36,13 @@ layui.extend({
 	            <tr>
 	              <td class="titleTd">发货类型：</td>
 	              <td style="min-width:150px;">
-	              	  <input type="radio" value="1" title="成品" name="productType" {{ d.productType==1?"checked":"" }}>
+	              	  <input type="radio" value="1" title="成品" name="productType" {{ d.productType!=2?"checked":"" }}>
 					  <input type="radio" value="2" title="皮壳" name="productType" {{ d.productType==2?"checked":"" }}>
 	              </td>
 	              <td class="titleTd"><b class="red">*</b>客户名称：</td>
 	              <td colspan="">
 	              	<input type="text" class="layui-input" id="customInputChoose" value="{{ d.customer?d.customer.name:"" }}"
-	              		placeholder="点击进行客户选择" readonly lay-verify="required"></td>
+	              		placeholder="点击进行客户选择" readonly lay-verify="required" ></td>
 	            </tr>
 	            <tr>
 	              <td class="titleTd"><b class="red">*</b>商品名称：</td>
@@ -59,15 +59,17 @@ layui.extend({
 	            </tr>
 	            <tr>
 	              <td class="titleTd">备注：</td>
-	              <td colspan="3"><input type="text" class="layui-input" name="remark" value="{{ d.remark || "" }}">
+	              <td colspan="3">
+	              	<input type="text" class="layui-input" name="remark" value="{{ d.remark || "" }}">
 	              	<input type="hidden" id="customerIdHidden" name="customerId" value="{{ d.customer?d.customer.id:"" }}">
 	              	<input type="hidden" id="productIdHidden" name="productId" value="{{ d.product?d.product.id:"" }}">
-	              	<input type="hidden" name="id" value="{{ d.id || "" }}"></td>
-					<span style="display:none;" lay-submit lay-filter="sureAddSendOrderSubmit" id="sureAddSendOrderSubmit"></span>
+	              	<input type="hidden" name="id" value="{{ d.id || "" }}">
+					<span style="" lay-submit lay-filter="sureAddSendOrderSubmit" id="sureAddSendOrderSubmit"></span>
+				  </td>
 	            </tr>
 	            <tr>
 	              <td class="imgTd" colspan="4">
-	                <div>0<p>总库存数量</p></div>
+	                <div><b id="allWarehouseNumber">0</b><p>总库存数量</p></div>
 	                <div>0<p>业务员所属数量</p></div>
 	                <div>需要申请<p>发货状态</p></div>
 	              </td>
@@ -156,12 +158,12 @@ layui.extend({
 					elem:'#askForTable',
 					data:[],
 					height:'320px',
-					totalRow:[],
+					totalRow:['number'],
 					cols:[[
 						{ type:'checkbox', },
 						{ field:'bacthNumber',title:'批次号',},
-						{ field:'userName',title:'所属业务员',},
-						{ field:'number',title:'剩余数量',},
+						{ field:'user_userName',title:'所属业务员',},
+						{ field:'number',title:'库存数量',},
 						{ field:'askNumber',title:'申请数量',edit:true,},
 					]],
 					done:function(){
@@ -186,32 +188,53 @@ layui.extend({
 					elem:'#myWarehouseTable',
 					data:[],
 					height:'400px',
-					totalRow:[],
+					parseData: getParseData(),
+					totalRow:['number'],
 					cols:[[
 						{ type:'checkbox', },
 						{ field:'bacthNumber',title:'批次号',},
-						{ field:'',title:'所属业务员',},
-						{ field:'',title:'剩余数量',},
-					]]
+						{ field:'user_userName',title:'所属业务员',},
+						{ field:'number',title:'库存数量',},
+					]],
+					done:function(){
+
+					}
 				})
 				mytable.renderNoPage({
 					elem:'#otherWarehouseTable',
+					parseData: getParseData(),
 					data:[],
 					height:'400px',
-					totalRow:[],
+					totalRow:['number'],
 					cols:[[
 						{ type:'checkbox', },
 						{ field:'bacthNumber',title:'批次号',},
-						{ field:'',title:'所属业务员',},
-						{ field:'',title:'剩余数量',},
+						{ field:'user_userName',title:'所属业务员',},
+						{ field:'number',title:'库存数量',},
 					]],
 					done:function(){
 						$('#addAskfor').click(function(){
 							var check = layui.table.checkStatus('otherWarehouseTable').data;
+							var otherCache = layui.table.cache['otherWarehouseTable'];
+							var askCache = layui.table.cache['askForTable'];
 							if(check.length==0)
 								return myutil.emsg('请选择需要申请的信息');
+							
+							layui.each(check,function(index,item){
+								layui.each(askCache,function(i2,askItem){
+									
+								})
+							})
+							
+							
+							
 							var askforTable = layui.table.cache['askForTable'];
 							
+							
+							//askNumber:0
+							table.reload('askForTable',{
+								data: check,
+							})
 						})
 					}
 				})
@@ -220,6 +243,8 @@ layui.extend({
 					
 				}
 				form.on('submit(sureAddSendOrderSubmit)',function(obj){
+					if(obj.field.number==0)
+						return myutil.emsg('发货数量不能为0');
 					var data = obj.field;
 					var url = '/ledger/addSendGoods';
 					if(data.id)
@@ -232,13 +257,14 @@ layui.extend({
 							approvalUserId: item.userId,
 						})
 					})
-					obj.field.applyVoucher = JSON.stringify(json);
+					data.applyVoucher = JSON.stringify(json);
 					myutil.saveAjax({
 						url: url,
-						data: obj.field,
+						data: data,
 						success:function(){
 							layer.close(win);
 							opt.success && opt.success();
+							table.reload('sendTable');
 						}
 					})
 				})
@@ -257,9 +283,19 @@ layui.extend({
 	function getParseData(){
 		return function(r){
 			if(r.code==0){
-				
+				var data = [];
+				layui.each(r.data,function(index,item){
+					layui.each(item.orderChilds,function(i2,itemChild){
+						data.push({
+							id: item.id,
+							bacthNumber: item.bacthNumber,
+							number: item.number,
+							user: itemChild.user,
+						})
+					})
+				})
 			}
-			return {  msg: r.message,  code: r.code , data: r.data, };
+			return {  msg: r.message,  code: r.code , data: data, };
 		}
 	}
 	
@@ -267,23 +303,17 @@ layui.extend({
 		var pid = $('#productIdHidden').val();
 		if(pid){
 			table.reload('otherWarehouseTable',{
-				url: myutil.config.ctx+'/ledger/getOrder',
+				url: myutil.config.ctx+'/ledger/getOrderSend',
 				where:{
 					productId: pid,
 					include: 1,
 				},
-				done:function(r){
-					
-				}
 			})
 			table.reload('myWarehouseTable',{
-				url: myutil.config.ctx+'/ledger/getOrder',
+				url: myutil.config.ctx+'/ledger/getOrderSend',
 				where:{
 					productId: pid,
 				},
-				done:function(r){
-					
-				}
 			})
 		}
 	}
@@ -330,6 +360,11 @@ layui.extend({
 					done:function(){
 						table.on('rowDouble(tableData)', function(obj){
 							var data = obj.data;
+							var allWarehouseNum = 0;
+							layui.each(data.mapList,function(index,item){
+								allWarehouseNum += item.number;
+							})
+							$('#allWarehouseNumber').html(allWarehouseNum);
 							$('#productIdHidden').val(data.id);
 							$('#productInputChoose').val(data.name);
 							layer.close(chooseProductWinNew);

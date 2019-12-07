@@ -81,19 +81,21 @@ layui.config({
 				'<span class="layui-btn layui-btn-sm" lay-event="addSendOrder">新增发货单<span>',
 			].join(' '),
 			curd:{
-				btn:[],
+				btn:[4],
 				otherBtn:function(obj){
 					if(obj.event=='addSendOrder'){
 						sendGoodOrder.add({});
 					}
 				}
 			},
+			autoUpdate:{
+				deleUrl:'/ledger/deleteSendGoods',
+			},
 			size:'lg',
 			cols:[[
 			       { type:'checkbox',},
-			       { title:'发货日期',   field:'sendDate', width:'10%', type:'date' },
+			       { title:'发货日期',   field:'sendDate', width:'10%',  },
 			       { title:'客户',   field:'customer_name',   width:'12%',   },
-			       { title:'批次号',   field:'bacthNumber',  },
 			       { title:'产品', 	field:'product_name',  },
 			       { title:'数量',   field:'number',  width:'6%',},
 			       { title:'剩余数量',   field:'surplusNumber',  width:'6%',	},
