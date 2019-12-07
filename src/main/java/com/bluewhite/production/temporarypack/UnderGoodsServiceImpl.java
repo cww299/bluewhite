@@ -12,19 +12,25 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
 import com.bluewhite.base.BaseServiceImpl;
+import com.bluewhite.common.ServiceException;
 import com.bluewhite.common.entity.PageParameter;
 import com.bluewhite.common.entity.PageResult;
 import com.bluewhite.common.utils.StringUtil;
 import com.bluewhite.common.utils.excel.ExcelListener;
-import com.bluewhite.onlineretailers.inventory.entity.Delivery;
-import com.bluewhite.onlineretailers.inventory.entity.OnlineOrder;
-import com.bluewhite.onlineretailers.inventory.entity.Procurement;
+import com.bluewhite.onlineretailers.inventory.entity.Commodity;
+import com.bluewhite.product.product.dao.ProductDao;
+import com.bluewhite.product.product.entity.Product;
+import com.bluewhite.product.product.service.ProductService;
 
 @Service
 public class UnderGoodsServiceImpl extends BaseServiceImpl<UnderGoods, Long> implements UnderGoodsService {
 
 	@Autowired
 	private UnderGoodsDao dao;
+	@Autowired
+	private ProductDao productDao;
+	@Autowired
+	private QuantitativeChildDao quantitativeChildDao;
 
 	@Override
 	public PageResult<UnderGoods> findPages(UnderGoods param, PageParameter page) {
@@ -67,6 +73,15 @@ public class UnderGoodsServiceImpl extends BaseServiceImpl<UnderGoods, Long> imp
 			return null;
 		}, page);
 		PageResult<UnderGoods> result = new PageResult<>(pages, page);
+		//贴包剩余数量
+		//发货剩余数量
+		result.getRows().forEach(r->{
+			List<QuantitativeChild> quantitativeChildList = quantitativeChildDao.findByUnderGoodsId(r.getId());
+			int numberSum = quantitativeChildList.stream().mapToInt(QuantitativeChild::getNumber).sum();
+			r.setSurplusNumber(r.getNumber()-numberSum);;
+			
+		});
+		
 		return result;
 	}
 
@@ -78,12 +93,27 @@ public class UnderGoodsServiceImpl extends BaseServiceImpl<UnderGoods, Long> imp
 	@Override
 	public int excelUnderGoods(ExcelListener excelListener) {
 		List<Object> excelListenerList = excelListener.getData();
+		List<UnderGoods> underGoodsList = new ArrayList<>();
 		for (int i = 0; i < excelListenerList.size(); i++) {
-			
-			
-			
+			UnderGoods underGoods = new UnderGoods();
+			UnderGoodsPoi cPoi = (UnderGoodsPoi) excelListenerList.get(i);
+			Product product = productDao.findByNumberNotNullAndName(cPoi.getName());
+			if (product != null) {
+				underGoods.setProductId(product.getId());
+			} else {
+				throw new ServiceException("当前导入excel第" + (i + 2) + "条数据的商品不存在，请先添加");
+			}
+			if (cPoi.getNumber() == null) {
+				throw new ServiceException("当前导入excel第" + (i + 2) + "条数据的数量不存在，请先添加");
+			}
+			underGoods.setNumber(cPoi.getNumber());
+			underGoods.setBacthNumber(cPoi.getBacthNumber());
+			underGoods.setProductId(product.getId());
+			underGoods.setAllotTime(cPoi.getAllotTime());
+			underGoodsList.add(underGoods);
 		}
-		return 0;
+		dao.save(underGoodsList);
+		return underGoodsList.size();
 	}
 
 }

@@ -15,9 +15,11 @@ import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.bluewhite.base.BaseServiceImpl;
+import com.bluewhite.common.Constants;
 import com.bluewhite.common.ServiceException;
 import com.bluewhite.common.entity.PageParameter;
 import com.bluewhite.common.entity.PageResult;
+import com.bluewhite.common.utils.SalesUtils;
 import com.bluewhite.common.utils.StringUtil;
 import com.bluewhite.ledger.dao.PackingMaterialsDao;
 import com.bluewhite.ledger.entity.PackingMaterials;
@@ -79,6 +81,7 @@ public class QuantitativeServiceImpl extends BaseServiceImpl<Quantitative, Long>
 		}else{
 			quantitative.setFlag(0);
 			quantitative.setPrint(0);
+			quantitative.setQuantitativeNumber(Constants.XHD + StringUtil.getDate() + SalesUtils.get0LeftString((int)(dao.count()+1), 8));
 		}
 		// 新增子单
 		if (!StringUtils.isEmpty(quantitative.getChild())) {
@@ -117,22 +120,6 @@ public class QuantitativeServiceImpl extends BaseServiceImpl<Quantitative, Long>
 				if (jsonObject.getLong("packingMaterialsId") != null) {
 					packingMaterials = packingMaterialsDao.findOne(jsonObject.getLong("packingMaterialsId"));
 				}
-				packingMaterials.setPackagingId(jsonObject.getLong("packagingId"));
-				packingMaterials.setPackagingCount(jsonObject.getInteger("packagingCount"));
-				quantitative.getPackingMaterials().add(packingMaterials);
-			}
-		}
-		save(quantitative);
-	}
-
-	@Override
-	public void saveQuantitativeMaterials(Quantitative quantitative) {
-		// 新增贴包物
-		if (!StringUtils.isEmpty(quantitative.getPackingMaterialsJson())) {
-			JSONArray jsonArrayMaterials = JSON.parseArray(quantitative.getPackingMaterialsJson());
-			for (int i = 0; i < jsonArrayMaterials.size(); i++) {
-				PackingMaterials packingMaterials = new PackingMaterials();
-				JSONObject jsonObject = jsonArrayMaterials.getJSONObject(i);
 				packingMaterials.setPackagingId(jsonObject.getLong("packagingId"));
 				packingMaterials.setPackagingCount(jsonObject.getInteger("packagingCount"));
 				quantitative.getPackingMaterials().add(packingMaterials);

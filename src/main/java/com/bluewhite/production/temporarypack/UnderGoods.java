@@ -77,10 +77,16 @@ public class UnderGoods extends BaseEntity<Long> {
 	private String productNumber;
 	
 	/**
-	 * 剩余发货数量
+	 * 剩余量化数量
 	 */
 	@Transient
 	private Integer surplusNumber;
+	
+	/**
+	 * 剩余发货数量
+	 */
+	@Transient
+	private Integer surplusSendNumber;
 
 	/**
 	 * 查询字段
@@ -95,6 +101,14 @@ public class UnderGoods extends BaseEntity<Long> {
 
 
 	
+	public Integer getSurplusSendNumber() {
+		return surplusSendNumber;
+	}
+
+	public void setSurplusSendNumber(Integer surplusSendNumber) {
+		this.surplusSendNumber = surplusSendNumber;
+	}
+
 	public Integer getSurplusNumber() {
 		return surplusNumber;
 	}
