@@ -10,12 +10,15 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 
 import com.bluewhite.base.BaseEntity;
 import com.bluewhite.ledger.entity.PackingMaterials;
+import com.bluewhite.product.product.entity.Product;
+import com.bluewhite.system.user.entity.User;
 
 /**
  * 量化单
@@ -40,6 +43,12 @@ public class Quantitative extends BaseEntity<Long> {
 	private Date time;
 	
 	/**
+	 * 包装数量
+	 */
+	@Column(name = "number")
+	private Integer number;
+	
+	/**
 	 * 子单list
 	 */
 	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY,orphanRemoval = true)
@@ -52,6 +61,18 @@ public class Quantitative extends BaseEntity<Long> {
 	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY,orphanRemoval = true)
 	@JoinColumn(name = "quantitative_id")
 	private List<PackingMaterials> packingMaterials = new ArrayList<>();
+	
+	/**
+	 * 贴包人id
+	 */
+	@Column(name = "user_id")
+	private Long userid;
+	/**
+	 * 铁包人
+	 */
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "user_id", referencedColumnName = "id", insertable = false, updatable = false)
+	private User user;
 	
 	/**
 	 * 是否发货
@@ -114,6 +135,32 @@ public class Quantitative extends BaseEntity<Long> {
 	
 	
 	
+	
+	
+	public Integer getNumber() {
+		return number;
+	}
+
+	public void setNumber(Integer number) {
+		this.number = number;
+	}
+
+	public Long getUserid() {
+		return userid;
+	}
+
+	public void setUserid(Long userid) {
+		this.userid = userid;
+	}
+
+	public User getUser() {
+		return user;
+	}
+
+	public void setUser(User user) {
+		this.user = user;
+	}
+
 	public Integer getFlag() {
 		return flag;
 	}

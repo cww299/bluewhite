@@ -14,11 +14,11 @@ import org.springframework.util.StringUtils;
 import com.bluewhite.base.BaseServiceImpl;
 import com.bluewhite.common.entity.PageParameter;
 import com.bluewhite.common.entity.PageResult;
-import com.bluewhite.common.entity.PageResultStat;
-import com.bluewhite.common.utils.SalesUtils;
 import com.bluewhite.common.utils.StringUtil;
-import com.bluewhite.production.bacth.entity.Bacth;
-import com.bluewhite.production.task.service.TaskService;
+import com.bluewhite.common.utils.excel.ExcelListener;
+import com.bluewhite.onlineretailers.inventory.entity.Delivery;
+import com.bluewhite.onlineretailers.inventory.entity.OnlineOrder;
+import com.bluewhite.onlineretailers.inventory.entity.Procurement;
 
 @Service
 public class UnderGoodsServiceImpl extends BaseServiceImpl<UnderGoods, Long> implements UnderGoodsService {
@@ -62,20 +62,28 @@ public class UnderGoodsServiceImpl extends BaseServiceImpl<UnderGoods, Long> imp
 				predicate.add(cb.between(root.get("allotTime").as(Date.class), param.getOrderTimeBegin(),
 						param.getOrderTimeEnd()));
 			}
-
 			Predicate[] pre = new Predicate[predicate.size()];
 			query.where(predicate.toArray(pre));
 			return null;
-		}, SalesUtils.getQueryNoPageParameter());
-		PageResultStat<UnderGoods> result = new PageResultStat<>(pages, page);
-		result.setAutoStateField("number");
-		result.count();
+		}, page);
+		PageResult<UnderGoods> result = new PageResult<>(pages, page);
 		return result;
 	}
 
 	@Override
 	public void saveUnderGoods(UnderGoods underGoods) {
 		save(underGoods);
+	}
+
+	@Override
+	public int excelUnderGoods(ExcelListener excelListener) {
+		List<Object> excelListenerList = excelListener.getData();
+		for (int i = 0; i < excelListenerList.size(); i++) {
+			
+			
+			
+		}
+		return 0;
 	}
 
 }
