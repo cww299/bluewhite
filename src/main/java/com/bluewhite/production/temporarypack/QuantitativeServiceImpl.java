@@ -71,12 +71,25 @@ public class QuantitativeServiceImpl extends BaseServiceImpl<Quantitative, Long>
 
 	@Override
 	public void saveQuantitative(Quantitative quantitative) {
+		if(quantitative.getId()!=null){
+			Quantitative ot = dao.findOne(quantitative.getId());
+			if (ot.getFlag() == 1) {
+				throw new ServiceException("已发货，无法修改");
+			}
+		}else{
+			quantitative.setFlag(0);
+			quantitative.setPrint(0);
+		}
 		// 新增子单
 		if (!StringUtils.isEmpty(quantitative.getChild())) {
+			quantitative.getQuantitativeChilds().clear();
 			JSONArray jsonArray = JSON.parseArray(quantitative.getChild());
 			for (int i = 0; i < jsonArray.size(); i++) {
 				JSONObject jsonObject = jsonArray.getJSONObject(i);
 				QuantitativeChild quantitativeChild = new QuantitativeChild();
+				if (jsonObject.getLong("packingChildId") != null) {
+					quantitativeChild = quantitativeChildDao.findOne(jsonObject.getLong("packingChildId"));
+				}
 				quantitativeChild.setUnderGoodsId(jsonObject.getLong("underGoodsId"));
 				quantitativeChild.setNumber(jsonObject.getInteger("number"));
 				List<QuantitativeChild> quantitativeChildList = quantitativeChildDao
@@ -93,8 +106,22 @@ public class QuantitativeServiceImpl extends BaseServiceImpl<Quantitative, Long>
 				quantitative.getQuantitativeChilds().add(quantitativeChild);
 			}
 		}
-		quantitative.setFlag(0);
-		quantitative.setPrint(0);
+		
+		// 新增贴包物
+		if (!StringUtils.isEmpty(quantitative.getPackingMaterialsJson())) {
+			quantitative.getPackingMaterials().clear();
+			JSONArray jsonArrayMaterials = JSON.parseArray(quantitative.getPackingMaterialsJson());
+			for (int i = 0; i < jsonArrayMaterials.size(); i++) {
+				PackingMaterials packingMaterials = new PackingMaterials();
+				JSONObject jsonObject = jsonArrayMaterials.getJSONObject(i);
+				if (jsonObject.getLong("packingMaterialsId") != null) {
+					packingMaterials = packingMaterialsDao.findOne(jsonObject.getLong("packingMaterialsId"));
+				}
+				packingMaterials.setPackagingId(jsonObject.getLong("packagingId"));
+				packingMaterials.setPackagingCount(jsonObject.getInteger("packagingCount"));
+				quantitative.getPackingMaterials().add(packingMaterials);
+			}
+		}
 		save(quantitative);
 	}
 

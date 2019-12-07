@@ -18,12 +18,15 @@ import org.springframework.web.multipart.support.ByteArrayMultipartFileEditor;
 
 import com.alibaba.excel.EasyExcelFactory;
 import com.alibaba.excel.metadata.Sheet;
+import com.bluewhite.basedata.entity.BaseData;
 import com.bluewhite.common.ClearCascadeJSON;
 import com.bluewhite.common.DateTimePattern;
 import com.bluewhite.common.entity.CommonResponse;
 import com.bluewhite.common.entity.PageParameter;
 import com.bluewhite.common.utils.excel.ExcelListener;
+import com.bluewhite.ledger.entity.PackingMaterials;
 import com.bluewhite.product.product.entity.Product;
+import com.bluewhite.system.user.entity.User;
 
 @Controller
 public class TemporaryPackAction {
@@ -42,7 +45,12 @@ public class TemporaryPackAction {
 	private ClearCascadeJSON clearCascadeJSONQuantitative;
 	{
 		clearCascadeJSONQuantitative = ClearCascadeJSON.get()
-				.addRetainTerm(Quantitative.class, "id", "underGoods","sumPackageNumber","singleNumber","time")
+				.addRetainTerm(Quantitative.class, "id", "quantitativeNumber","time","number","time"
+						,"quantitativeChilds","packingMaterials","user","flag","print")
+				.addRetainTerm(QuantitativeChild.class, "id", "underGoods","sumPackageNumber","singleNumber","number")
+				.addRetainTerm(PackingMaterials.class, "id", "packagingMaterials","packagingCount")
+				.addRetainTerm(User.class, "id", "userName")
+				.addRetainTerm(BaseData.class, "id", "name")
 				.addRetainTerm(UnderGoods.class, "id", "remarks","product","number","bacthNumber","status","allotTime")
 				.addRetainTerm(Product.class, "id", "name");
 	}
@@ -117,7 +125,7 @@ public class TemporaryPackAction {
 	/**
 	 * 发货 量化单
 	 */
-	@RequestMapping(value = "/temporaryPack/auditQuantitative", method = RequestMethod.POST)
+	@RequestMapping(value = "/temporaryPack/auditQuantitative", method = RequestMethod.GET)
 	@ResponseBody
 	public CommonResponse auditQuantitative(String ids) {
 		CommonResponse cr = new CommonResponse();
@@ -129,7 +137,7 @@ public class TemporaryPackAction {
 	/**
 	 * 打印 量化单
 	 */
-	@RequestMapping(value = "/temporaryPack/printQuantitative", method = RequestMethod.POST)
+	@RequestMapping(value = "/temporaryPack/printQuantitative", method = RequestMethod.GET)
 	@ResponseBody
 	public CommonResponse printQuantitative(String ids) {
 		CommonResponse cr = new CommonResponse();
