@@ -8,6 +8,11 @@
 	<script src="${ctx}/static/layui-v2.4.5/layui/layui.js"></script>
 	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 	<title>量化单</title>
+	<style>
+	div[lay-id="tableData"] .layui-table tbody tr:hover, .layui-table-hover {
+		background-color: transparent; 
+	}
+	</style>
 </head>
 <body>
 <div class="layui-card">
@@ -16,6 +21,12 @@
 			<tr>
 				<td>产品名:</td>
 				<td><input type="text" name="productName" class="layui-input"></td>
+				<td>&nbsp;&nbsp;&nbsp;</td>
+				<td>量化编号:</td>
+				<td><input type="text" name="quantitativeNumber" class="layui-input"></td>
+				<td>&nbsp;&nbsp;&nbsp;</td>
+				<td>包装时间:</td>
+				<td><input type="text" name="orderTimeBegin" id="orderTimeBegin" class="layui-input"></td>
 				<td>&nbsp;&nbsp;&nbsp;</td>
 				<td><button type="button" class="layui-btn layui-btn-sm" lay-submit lay-filter="search">搜索</button></td>
 			</tr>
@@ -73,6 +84,9 @@ layui.config({
 		myutil.clickTr({
 			noClick:'tableData',
 		});
+		laydate.render({
+			elem: '#orderTimeBegin', range: '~',
+		})
 		var allUoloadOrder = myutil.getDataSync({ url: '${ctx}/temporaryPack/findPagesUnderGoods?size=99999', });
 		var allMaterials = myutil.getDataSync({ url:'${ctx}/basedata/list?type=packagingMaterials', });
 		var allUser ='';
@@ -133,6 +147,7 @@ layui.config({
 								sumPackageNumber: child[j].sumPackageNumber,
 								singleNumber: child[j].singleNumber,
 								underGoods: child[j].underGoods,
+								number: child[j].number,
 							})
 						}
 					}
@@ -146,15 +161,20 @@ layui.config({
 			       { title:'量化编号',   field:'quantitativeNumber',	},
 			       { title:'包装时间',   field:'time',   },
 			       { title:'产品名',   field:'underGoods_product_name', 	},
+			       { title:'剩余发货数量',   field:'surplusSendNumber', 	},
+			       { title:'剩余量化数量',   field:'surplusNumber', 	},
 			       { title:'贴包人',   field:'user_userName', 	},
 			       { title:'总包数',   field:'sumPackageNumber',	},
 			       { title:'单包个数',   field:'singleNumber',	},
+			       { title:'数量',   field:'number',	},
 			       ]],
 	       done:function(){
 				merge('underGoods_product_name');
 				merge('quantitativeNumber');
 				merge('time');
 				merge('user_userName');
+				merge('surplusSendNumber');
+				merge('surplusNumber');
 				merge('0');
 				function merge(field){
 					var rowspan = 1,mainCols=0;
@@ -174,8 +194,8 @@ layui.config({
 								$(item).css('display','none')
 							}
 						}
-					})
-					$(allCol[mainCols]).attr('rowspan',rowspan)
+					});
+					$(allCol[mainCols]).attr('rowspan',rowspan);
 				}
 			}
 		})
@@ -262,14 +282,16 @@ layui.config({
 					$('#packPeopleSelect').append(allUser);
 					if(data.id){
 						addTable = data.quantitativeChilds;
+						addMate = data.packingMaterials
 						$('#packPeopleSelect').val(data.user?data.user.id:'');
 						$('#addEditTime').val(data.time);
 					}
-					mytable.render({
+					mytable.renderNoPage({
 						elem: '#addTable',
 						data: addTable,
 						size:'lg',
 						curd:{
+							btn:[1,2,3],
 							saveFun: function(d){
 								var url = '/temporaryPack/saveQuantitative';
 								var time = $('#addEditTime').val();
@@ -279,22 +301,31 @@ layui.config({
 								if(!userId)
 									return myutil.emsg('请选择贴包人！');
 								layui.each(table.cache['addTable'],function(index,item){
+									if(typeof(item)==='object' && item.length==0)
+										return;
 									d.push({
 										id: item.id,
 										number: item.number,
 										singleNumber: item.singleNumber,
 										sumPackageNumber: item.sumPackageNumber,
+										underGoodsId: item.underGoods.id,
 									})
 								})
-								
 								var mateData = table.getTemp('addMaterTable').data;	//
-								//var temp = table.getTemp('addMaterTable').data;	//
-								
-								
-								
+								layui.each(table.cache['addMaterTable'],function(index,item){
+									if(typeof(item)==='object' && item.length==0)
+										return;
+									console.log(item)
+									mateData.push({
+										id: item.id,
+										packagingId: item.packagingId,
+										packagingCount: item.packagingCount,
+									})
+								})
 								myutil.saveAjax({
 									url: url,
 									data:{
+										id: data.id || '',
 										time: time,
 										userId: userId,
 										child: JSON.stringify(d),
@@ -329,12 +360,22 @@ layui.config({
 							{ title:'总包数',   field:'sumPackageNumber', edit:true,	},
 					        { title:'单包个数',   field:'singleNumber',	 edit:true,	},
 					        { title:'总数量',   field:'number',	 edit:true, },
+					        { title:'操作',   field:'de',	 event:'deleteTr', edit:false,
+					        		templet:'<div><span class="layui-btn layui-btn-xs layui-btn-danger">删除</span></div>' },
 						]],
 						done:function(){
 							$('span[lay-event="saveTempData"]').hide();
+							table.on('tool(addTable)', function(obj){
+								if(obj.event === 'deleteTr'){ //删除
+								    layer.confirm('是否确认删除？', function(index){
+								        obj.del();
+								        layer.close(index);
+								 	});
+								}
+							})
 						}
 					})
-					mytable.render({
+					mytable.renderNoPage({
 						elem: '#addMaterTable',
 						data: addMate,
 						size:'lg',
@@ -349,16 +390,28 @@ layui.config({
 							},
 						},
 						autoUpdate:{
-							field: { packaging_id:'packagingId', },
+							field: { packagingMaterials_id:'packagingId', },
 						},
 						verify:{
 							count:['packagingCount'],
 						},
 						cols:[[
 							{ type:'checkbox',},
-							{ title:'材料', field:'packaging_id', type:'select',select:{data: allMaterials, } },
-							{ title:'数量',   field:'packagingCount',	},
+							{ title:'材料', field:'packagingMaterials_id', type:'select',select:{data: allMaterials, } },
+							{ title:'数量',   field:'packagingCount',	edit:true, },
+							{ title:'操作',   field:'de',	 event:'deleteTr', edit:false,
+				        		templet:'<div><span class="layui-btn layui-btn-xs layui-btn-danger">删除</span></div>' },
 						]],
+						done:function(){
+							table.on('tool(addMaterTable)', function(obj){
+								if(obj.event === 'deleteTr'){
+								    layer.confirm('是否确认删除？', function(index){
+								        obj.del();
+								        layer.close(index);
+								 	});
+								}
+							})
+						},
 					})
 					form.render();
 				}
@@ -373,8 +426,15 @@ layui.config({
 			}
 		})
 		form.on('submit(search)',function(obj){
+			var field = obj.field;
+			if(field.orderTimeBegin){
+				var t = field.orderTimeBegin.split(' ~ ');
+				field.orderTimeBegin = t[0]+' 00:00:00';
+				field.orderTiemEnd = t[1]+' 23:59:59';
+			}else
+				field.orderTiemEnd = '';
 			table.reload('tableData',{
-				where: obj.field,
+				where: field,
 			})
 		}) 
 	}//end define function
