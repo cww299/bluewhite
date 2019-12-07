@@ -160,8 +160,7 @@ public class LedgerAction {
 	private ClearCascadeJSON clearCascadeJSONSendGoods;
 	{
 		clearCascadeJSONSendGoods = ClearCascadeJSON.get()
-				.addRetainTerm(SendGoods.class, "id", "customer", "bacthNumber", "product", "number", "sendNumber",
-						"surplusNumber", "sendDate", "orderId")
+				.addRetainTerm(SendGoods.class, "id", "customer", "product", "number", "sendNumber","surplusNumber", "sendDate", "orderId")
 				.addRetainTerm(Customer.class, "id", "name").addRetainTerm(Product.class, "name", "number");
 	}
 
@@ -331,21 +330,6 @@ public class LedgerAction {
 		return cr;
 	}
 	
-	/**
-	 * 查看批次库存
-	 * 
-	 * @param order
-	 * @return
-	 */
-	@RequestMapping(value = "/ledger/getOrderSend", method = RequestMethod.GET)
-	@ResponseBody
-	public CommonResponse getOrderSend(Order order) {
-		CommonResponse cr = new CommonResponse();
-		cr.setData(clearCascadeJSONOrder.format(orderService.findListSend(order)).toJSON());
-		cr.setMessage("查看成功");
-		return cr;
-	}
-
 	/**
 	 * (销售部)新增生产计划单
 	 * 
@@ -1166,6 +1150,21 @@ public class LedgerAction {
 		return cr;
 	}
 
+	/**
+	 * 查看批次库存
+	 * 
+	 * @param order
+	 * @return
+	 */
+	@RequestMapping(value = "/ledger/getOrderSend", method = RequestMethod.GET)
+	@ResponseBody
+	public CommonResponse getOrderSend(Order order) {
+		CommonResponse cr = new CommonResponse();
+		cr.setData(orderService.findListSend(order));
+		cr.setMessage("查看成功");
+		return cr;
+	}
+	
 	/**
 	 * 
 	 * 查看发货单

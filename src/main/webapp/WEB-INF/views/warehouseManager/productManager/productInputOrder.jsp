@@ -7,7 +7,14 @@
 	<link rel="stylesheet" href="${ctx }/static/layui-v2.4.5/layui/css/layui.css" media="all">
 	<script src="${ctx}/static/layui-v2.4.5/layui/layui.js"></script>
 	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-	<title>皮壳库存</title>
+	<title>成品入库单</title>
+	<style type="text/css">
+	.searchTable td:nth-of-type(odd) {
+	    padding: 5px 0;
+	    padding-left: 15px;
+	    padding-right: 5px;
+	}
+	</style>
 </head>
 <body>
 <div class="layui-card">
@@ -18,21 +25,19 @@
 layui.config({
 	base : '${ctx}/static/layui-v2.4.5/'
 }).extend({
-	mytable: 'layui/myModules/mytable',
-	inventory : 'layui/myModules/warehouseManager/inventory' ,
+	inputOrderList : 'layui/myModules/warehouseManager/inputOrderList' ,
 }).define(
-	['mytable','inventory','myutil'],
+	['inputOrderList','myutil'],
 	function(){
 		var $ = layui.jquery
-		,myutil = layui.myutil
-		,inventory = layui.inventory;
+		,inputOrderList = layui.inputOrderList
+		,myutil = layui.myutil;
 		
 		myutil.config.ctx = '${ctx}';
 		myutil.clickTr();
-		inventory.render({
+		inputOrderList.render({
 			elem:'#app',
 			ctx:'${ctx}',
-			type:3,
 		})
 	}//end define function
 )//endedefine

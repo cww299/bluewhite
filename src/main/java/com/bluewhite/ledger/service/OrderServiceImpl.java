@@ -3,6 +3,7 @@ package com.bluewhite.ledger.service;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.IntSummaryStatistics;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -39,6 +40,7 @@ import com.bluewhite.ledger.entity.OutStorage;
 import com.bluewhite.ledger.entity.PutStorage;
 import com.bluewhite.onlineretailers.inventory.dao.ProcurementDao;
 import com.bluewhite.onlineretailers.inventory.entity.Procurement;
+import com.bluewhite.onlineretailers.inventory.entity.ProcurementChild;
 
 @Service
 public class OrderServiceImpl extends BaseServiceImpl<Order, Long> implements OrderService {
@@ -226,6 +228,7 @@ public class OrderServiceImpl extends BaseServiceImpl<Order, Long> implements Or
 			}
 		}
 		dao.save(ot);
+
 		if (!StringUtils.isEmpty(order.getDeleteIds())) {
 			deleteOrderChild(order.getDeleteIds());
 		}
@@ -270,27 +273,47 @@ public class OrderServiceImpl extends BaseServiceImpl<Order, Long> implements Or
 	}
 
 	@Override
-	public List<Order> findListSend(Order param) {
-		//通过产品查询所有的入库单
+	public List<Map<String, Object>> findListSend(Order param) {
+		
+		// 通过产品查询所有的入库单
 		List<PutStorage> putStorageList = putStorageDao.findByProductId(param.getProductId());
-		putStorageList.forEach(m->{
+		putStorageList.forEach(m -> {
 			List<Long> longList = outStorageDao.findPutStorageId(m.getId());
 			List<OutStorage> outStorageList = outStorageDao.findAll(longList);
 			int arrNumber = outStorageList.stream().mapToInt(OutStorage::getArrivalNumber).sum();
-			m.setSurplusNumber(m.getArrivalNumber()-arrNumber);
+			m.setSurplusNumber(m.getArrivalNumber() - arrNumber);
 		});
-		//排除掉已经全部出库的入库单
-		putStorageList = putStorageList.stream().filter(PutStorage->PutStorage.getSurplusNumber()>0).collect(Collectors.toList());
-		//通过入库单拿到所有的生产计划单
-		List<Order> orderList = new ArrayList<>();
+		// 排除掉已经全部出库的入库单
+		putStorageList = putStorageList.stream().filter(PutStorage -> PutStorage.getSurplusNumber() > 0)
+				.collect(Collectors.toList());
+		// 通过入库单拿到所有的生产计划单
 		List<Map<String, Object>> listMap = new ArrayList<>();
-		putStorageList.forEach(p->{
+		putStorageList.forEach(p -> {
 			Map<String, Object> map = new HashMap<String, Object>();
+			map.put("id", p.getOrderOutSource().getOrderId());
 			map.put("order", p.getOrderOutSource().getOrder());
 			map.put("number", p.getSurplusNumber());
 			listMap.add(map);
 		});
-		return orderList;
+		Map<Object, List<Map<String, Object>>> mapOnlineOrderChildList = listMap.stream()
+				.collect(Collectors.groupingBy(m -> m.get("id").toString()));
+		List<Map<String, Object>> result = new ArrayList<>();
+		mapOnlineOrderChildList.forEach((k, slist) -> {
+			Map<String, Object> nmap = new HashMap<>();
+			IntSummaryStatistics sumcc = slist.stream()
+					.collect(Collectors.summarizingInt(e -> Integer.valueOf(e.get("number").toString())));
+			Order order = (Order) slist.get(0).get("order");
+			Map<String, Object> map = new HashMap<String, Object>();
+			order.getOrderChilds().forEach(o -> {
+				map.put("name", o.getCustomer().getName());
+				map.put("id", o.getCustomerId());
+			});
+			nmap.put("bacth", order.getBacthNumber());
+			nmap.put("number", sumcc.getSum());
+			nmap.put("Customer", map);
+			result.add(nmap);
+		});
+		return result;
 	}
 
 }

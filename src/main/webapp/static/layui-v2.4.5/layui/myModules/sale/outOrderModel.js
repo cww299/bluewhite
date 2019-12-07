@@ -84,7 +84,7 @@ layui.extend({
 				'</div>',
 	           ].join(' ');
 	
-	var outOrderModel = {}, allOrgUser ='', allCustom = '', allWarehouse = '',allProcess = '',allUser = '';
+	var outOrderModel = {}, allOrgUser ='', allCustom = '', allProcess = '',allUser = '';
 	
 	outOrderModel.add = function(opt){
 		outOrderModel.update(opt)
@@ -103,20 +103,7 @@ layui.extend({
 			if(data.outsource)
 				title = "修改外发加工单";
 			t = TPL +[
-					'<div class="layui-item" pane>',
-						'<label class="layui-form-label">预计仓库</label>',
-						'<div class="layui-input-block">',
-							'<select name="warehouseTypeId" id="warehouseTypeId" lay-search>',
-								'<option value="">请选择</option></select>',
-						'</div>',
-					'</div>',
-					'<div class="layui-item" pane>',
-						'<label class="layui-form-label">外发时间</label>',
-						'<div class="layui-input-block">',
-							'<input class="layui-input" name="outGoingTime" id="outGoingTime" value="{{ d.outGoingTime?d.outGoingTime:"" }}">',
-						'</div>',
-					'</div>',
-					'<input type="hidden" name="id" value="{{ d.id }}">',
+						'<input type="hidden" name="id" value="{{ d.id }}">',
 			        ].join(' ');
 		}else{
 			t = TPL+['<input type="hidden" name="orderId" value="{{ d.orderId }}">',
@@ -133,11 +120,9 @@ layui.extend({
 			area:['32%','80%'],
 			btn:['确定','取消'],
 			title: title,
-			shadeClose:true,
 			btnAlign:'c',
 			success:function(){
 				laydate.render({ elem:'#openOrderTime', type:'datetime', });
-				laydate.render({ elem:'#outGoingTime', type:'datetime', });
 			    $('#gWeight').attr('onkeyup',"value=value.replace(/[^\\d.]/g,'')");
 			    $('#kgWeight').attr('onkeyup',"value=value.replace(/[^\\d.]/g,'')");
 				$('#gWeight').blur(function(){
@@ -165,7 +150,6 @@ layui.extend({
 					$('#customerId').append(allUser);
 					$('#customerId').attr('name','processingUserId');
 				}
-				$('#warehouseTypeId').append(allWarehouse);
 				$('#processSelect').append(allProcess);
 				formSelects.render();
 				if(data.id){	//如果存在id，进行数据回显
@@ -174,7 +158,6 @@ layui.extend({
 						processIds.push(data.outsourceTask[i].id);
 					formSelects.value('processSelect',processIds); 
 					$('#userId').val(data.user?data.user.id:'');
-					$('#warehouseTypeId').val(data.warehouseType?data.warehouseType.id:'');
 					if(data.outsource==1)
 						$('#customerId').val(data.customer?data.customer.id:'');
 					else
@@ -231,14 +214,6 @@ layui.extend({
 			success:function(d){
 				for(var i=0,len=d.length;i<len;i++){
 					allCustom += '<option value="'+d[i].id+'">'+d[i].name+'</option>';
-				}
-			}
-		})
-		myutil.getDataSync({	//获取仓库类型
-			url: myutil.config.ctx+'/basedata/list?type=warehouseType&size=9999',
-			success:function(d){
-				for(var i=0,len=d.length;i<len;i++){
-					allWarehouse += '<option value="'+d[i].id+'">'+d[i].name+'</option>';
 				}
 			}
 		})

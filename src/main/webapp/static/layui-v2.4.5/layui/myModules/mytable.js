@@ -85,6 +85,11 @@ layui.extend({
 					china[item2.field] = item2.title;
 					if(item2.field.split('_').length>1 && exportCols.indexOf(item2.field)<0 ) //记录假字段、用于导出
 						exportCols.push(item2.field);
+					if(item2.type=='select'){	//初始无值时bug、需要进入后记录下拉框值
+						var layFilter = item2.select.layFilter || item2.field;
+						if(selectLay.indexOf(layFilter)<0)
+							selectLay.push(layFilter);
+					}
 					var tep = function(d){								//默认模板
 						var fie = item2.field.split('_');				
 						var res = '';
@@ -125,8 +130,6 @@ layui.extend({
 						var data = item2.select.data, id = item2.select.id || 'id', name = item2.select.name || 'name',
 							layFilter = item2.select.layFilter || item2.field, unsearch = item2.select.unsearch || false,
 							disabled = item2.select.isDisabled?'disabled':'';
-						if(selectLay.indexOf(layFilter)<0)
-							selectLay.push(layFilter);
 						var html = '<select '+(unsearch?"":"lay-search")+' lay-filter="'+(layFilter)+'" '+disabled+'>';
 						layui.each(data,function(index,item){
 							var selected = r == item.id ? 'selected' : '';
@@ -370,8 +373,6 @@ layui.extend({
 					}
 					function saveTempData(){
 						var data = table.getTemp(tableId).data,success = 0,msg='';
-						if(data.length==0)
-							return myutil.emsg('无临时数据可保存！');
 						layui.each(data,function(index,item){
 							if(msg!='') return;
 							for(var i=0;i<notNull.length;i++){
@@ -398,6 +399,8 @@ layui.extend({
 						if(opt.curd.saveFun)
 							opt.curd.saveFun(data);		//如果存在保存函数则执行，否则执行默认保存函数
 						else{
+							if(data.length==0)
+								return myutil.emsg('无临时数据可保存！');
 							for(var i=0;i<data.length;i++)
 								myutil.saveAjax({
 									url: opt.autoUpdate.saveUrl,
@@ -421,7 +424,7 @@ layui.extend({
 							for(var i=0;i<choosed.length;i++)
 								ids+=(choosed[i].id+",");
 							if(opt.curd.deleFun)
-								opt.curd.deleFun(ids);		//如果存在删除函数则执行，否则执行默认删除函数
+								opt.curd.deleFun(ids,choosed);		//如果存在删除函数则执行，否则执行默认删除函数
 							else
 								myutil.deleteAjax({
 									url: opt.autoUpdate.deleUrl,
