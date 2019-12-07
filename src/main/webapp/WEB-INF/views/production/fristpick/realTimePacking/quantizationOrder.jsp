@@ -287,7 +287,9 @@ layui.config({
 									})
 								})
 								
-								var temp = table.getTemp('addMaterTable').data;
+								var mateData = table.getTemp('addMaterTable').data;	//
+								//var temp = table.getTemp('addMaterTable').data;	//
+								
 								
 								
 								myutil.saveAjax({
@@ -296,12 +298,16 @@ layui.config({
 										time: time,
 										userId: userId,
 										child: JSON.stringify(d),
+										packingMaterialsJson: JSON.stringify(mateData),
 									},
 									success:function(){
 										layer.close(addEditWin);
 										table.reload('tableData');
 									}
 								})
+							},
+							deleFun:function(ids,check){
+								
 							},
 							addTemp:{
 								underGoodsId: allUoloadOrder[0]?allUoloadOrder[0].id:"",
@@ -335,20 +341,23 @@ layui.config({
 						curd:{
 							btn:[1,2,4],
 							addTemp:{
-								underGoodsId: allMaterials[0]?allMaterials[0].id:"",
-								number: 0,
+								packagingId: allMaterials[0]?allMaterials[0].id:"",
+								packagingCount: 0,
+							},
+							deleFun:function(ids,check){
+								
 							},
 						},
 						autoUpdate:{
-							field: { underGoods_id:'underGoodsId', },
+							field: { packaging_id:'packagingId', },
 						},
 						verify:{
-							count:['number'],
+							count:['packagingCount'],
 						},
 						cols:[[
 							{ type:'checkbox',},
-							{ title:'材料', field:'underGoods_id', type:'select',select:{data: allMaterials, } },
-							{ title:'数量',   field:'number',	},
+							{ title:'材料', field:'packaging_id', type:'select',select:{data: allMaterials, } },
+							{ title:'数量',   field:'packagingCount',	},
 						]],
 					})
 					form.render();

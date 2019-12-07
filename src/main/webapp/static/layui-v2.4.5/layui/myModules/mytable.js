@@ -424,7 +424,7 @@ layui.extend({
 							for(var i=0;i<choosed.length;i++)
 								ids+=(choosed[i].id+",");
 							if(opt.curd.deleFun)
-								opt.curd.deleFun(ids);		//如果存在删除函数则执行，否则执行默认删除函数
+								opt.curd.deleFun(ids,choosed);		//如果存在删除函数则执行，否则执行默认删除函数
 							else
 								myutil.deleteAjax({
 									url: opt.autoUpdate.deleUrl,
