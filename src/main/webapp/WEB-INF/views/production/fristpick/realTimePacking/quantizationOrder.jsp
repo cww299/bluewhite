@@ -99,7 +99,7 @@ layui.config({
 		})
 		var allUoloadOrder = myutil.getDataSync({ url: '${ctx}/temporaryPack/findPagesUnderGoods?size=99999', });
 		var allMaterials = myutil.getDataSync({ url:'${ctx}/basedata/list?type=packagingMaterials', });
-		var allUser ='';
+		var allUser ='',allCustomer='';
 		var tableDataNoTrans = [];
 		mytable.render({
 			elem:'#tableData',
@@ -156,9 +156,7 @@ layui.config({
 								print: d[i].print,
 								flag: d[i].flag,
 								product: child[j].product,
-								sumPackageNumber: child[j].sumPackageNumber,
 								singleNumber: child[j].singleNumber,
-								number: child[j].number,
 								underGoods: child[j].underGoods,
 							})
 						}
@@ -176,9 +174,7 @@ layui.config({
 			       { title:'是否发货',   field:'print', 	transData:{data:['否','是']}, width:'6%', },
 			       { title:'是否打印',   field:'flag', 	transData:{data:['否','是']}, width:'6%', },
 			       { title:'产品名',   field:'underGoods_product_name', 	},
-			       { title:'总包数',   field:'sumPackageNumber',	width:'8%', },
 			       { title:'单包个数',   field:'singleNumber',	width:'8%', },
-			       { title:'数量',   field:'number', width:'8%',	 },
 			       ]],
 	       done:function(){
 				merge('quantitativeNumber');
@@ -254,50 +250,70 @@ layui.config({
 			return false; 
 		}  
 		
+		var tpl =  [
+			'<div style="padding:10px;">',
+			'<div>',
+				'<table class="layui-form">',
+					'<tr>',
+						'<td>量化时间：</td>',
+						'<td>',
+							'<input class="layui-input" id="addEditTime" name="time" value="2019-12-06 17:55:50" lay-verify="required">',
+						'</td>',
+						'<td>&nbsp;&nbsp;贴包人：</td>',
+						'<td>',
+							'<select id="packPeopleSelect" lay-search name="userId" lay-verify="required">',
+								'<option value="">请选择</option></select>',
+						'</td>',
+						'<td>&nbsp;&nbsp;客户：</td>',
+						'<td>',
+							'<select id="customerSelect" lay-search name="customerId" ',
+								'<option value="">请选择</option></select>',
+						'</td>',
+						'<td>&nbsp;&nbsp;总包数：</td>',
+						'<td>',
+							'<input class="layui-input" name="sumPackageNumber" value="{{ d.sumPackageNumber || 0}}" lay-verify="required">',
+							'<input type="hidden" name="id" value="{{ d.id || ""}}">',
+						'</td>',
+						'<td>&nbsp;&nbsp;<span class="layui-btn" id="saveBtn" lay-filter="saveBtn" lay-submit>保存</span></td>',
+					'</tr>',
+				'</table>',
+			'</div>',
+			'<div style="float:left;width:68%;">',
+				'<table id="addTable" lay-filter="addTable"></table>',
+			'</div>',
+			'<div style="float:right;width:30%;">',
+				'<table id="addMaterTable" lay-filter="addMaterTable"></table>',
+			'</div>',
+		'</div>',
+		].join(' ');
 		function addEdit(type,data){
 			var title = '新增量化单';
-			
 			if(data.id){
 				title = '修改量化单';
 			}
+			var html = '';
+			laytpl(tpl).render(data,function(h){
+				html = h;
+			})
 			var addEditWin = layer.open({
 				type:1,
 				area:['90%','80%'],
 				title: title,
-				content: [
-					'<div style="padding:10px;">',
-						'<div>',
-							'<table class="layui-form">',
-								'<tr>',
-									'<td>量化时间：</td>',
-									'<td>',
-										'<input class="layui-input" id="addEditTime" value="2019-12-06 17:55:50">',
-									'</td>',
-									'<td>&nbsp;&nbsp;贴包人：</td>',
-									'<td>',
-										'<select id="packPeopleSelect" lay-search><option value="">请选择</option></select>',
-									'</td>',
-									'<td>&nbsp;&nbsp;<span class="layui-btn" id="saveBtn">保存</span></td>',
-								'</tr>',
-							'</table>',
-						'</div>',
-						'<div style="float:left;width:68%;">',
-							'<table id="addTable" lay-filter="addTable"></table>',
-						'</div>',
-						'<div style="float:right;width:30%;">',
-							'<table id="addMaterTable" lay-filter="addMaterTable"></table>',
-						'</div>',
-					'</div>',
-				].join(' '),
+				content: html,
 				success: function(){
-					$('#saveBtn').click(function(){
+					var formData = {};
+					form.on('submit(saveBtn)',function(obj){
+						formData = obj.field;
 						$('span[lay-event="saveTempData"]').click();
 					})
 					var addTable = [],addMate = [];
 					laydate.render({
-						elem:'#addEditTime',value: new Date(),type:'datetime',
+						elem:'#addEditTime',
+						value: data.time || new Date(),
+						type:'datetime',
 					})
 					$('#packPeopleSelect').append(allUser);
+					$('#customerSelect').append(allCustomer);
 					if(data.id){
 						addTable = data.quantitativeChilds;
 						addMate = data.packingMaterials
@@ -305,7 +321,7 @@ layui.config({
 							item.packagingId = item.packagingMaterials.id;
 						})
 						$('#packPeopleSelect').val(data.user?data.user.id:'');
-						$('#addEditTime').val(data.time);
+						$('#customerSelect').val(data.customer?data.customer.id:'');
 					}
 					mytable.renderNoPage({
 						elem: '#addTable',
@@ -315,28 +331,19 @@ layui.config({
 							btn:[1,2,3],
 							saveFun: function(d){
 								var url = '/temporaryPack/saveQuantitative';
-								var time = $('#addEditTime').val();
-								var userId = $('#packPeopleSelect').val();
-								if(!time)
-									return myutil.emsg('量化单时间不能为空！');
-								if(!userId)
-									return myutil.emsg('请选择贴包人！');
 								layui.each(table.cache['addTable'],function(index,item){
 									if(typeof(item)==='object' && item.length==0)
 										return;
 									d.push({
 										id: item.id,
-										number: item.number,
 										singleNumber: item.singleNumber,
-										sumPackageNumber: item.sumPackageNumber,
 										underGoodsId: item.underGoodsId || item.underGoods.id,
 									})
 								})
-								var mateData = table.getTemp('addMaterTable').data;	//
+								var mateData = table.getTemp('addMaterTable').data;
 								layui.each(table.cache['addMaterTable'],function(index,item){
 									if(typeof(item)==='object' && item.length==0)
 										return;
-									console.log(item)
 									mateData.push({
 										id: item.id,
 										packagingId: item.packagingId,
@@ -345,42 +352,34 @@ layui.config({
 								})
 								myutil.saveAjax({
 									url: url,
-									data:{
-										id: data.id || '',
-										time: time,
-										userId: userId,
-										child: JSON.stringify(d),
-										packingMaterialsJson: JSON.stringify(mateData),
-									},
+									data: $.extend({},{
+											child: JSON.stringify(d),
+											packingMaterialsJson: JSON.stringify(mateData),
+											},formData
+										),
 									success:function(){
 										layer.close(addEditWin);
 										table.reload('tableData');
 									}
 								})
 							},
-							deleFun:function(ids,check){
-								
-							},
+							deleFun:function(ids,check){ },
 							addTemp:{
 								underGoodsId: allUoloadOrder[0]?allUoloadOrder[0].id:"",
-								sumPackageNumber: 0,
 								singleNumber: 0,
-								number: 0,
 							},
 						},
 						autoUpdate:{
 							field: { underGoods_id:'underGoodsId', },
 						},
 						verify:{
-							count:['sumPackageNumber','singleNumber','number'],
+							count:['singleNumber',],
 						},
 						cols:[[
 							{ type:'checkbox',},
 							{ title:'下货单~批次号~剩余数量', field:'underGoods_id', type:'select',
 								select:{data: allUoloadOrder, name:['product_name','bacthNumber','number'],} },
-							{ title:'总包数',   field:'sumPackageNumber', edit:true, width:'10%', 	},
 					        { title:'单包个数',   field:'singleNumber',	 edit:true,	width:'10%',},
-					        { title:'总数量',   field:'number',	 edit:true, width:'10%',},
 					        { title:'操作',   field:'de',	 event:'deleteTr', edit:false,width:'10%',
 					        		templet:'<div><span class="layui-btn layui-btn-xs layui-btn-danger">删除</span></div>' },
 						]],
@@ -406,9 +405,7 @@ layui.config({
 								packagingId: allMaterials[0]?allMaterials[0].id:"",
 								packagingCount: 0,
 							},
-							deleFun:function(ids,check){
-								
-							},
+							deleFun:function(ids,check){ },
 						},
 						autoUpdate:{
 							field: { packagingMaterials_id:'packagingId', },
@@ -443,6 +440,14 @@ layui.config({
 			done: function(data){
 				layui.each(data,function(index,item){
 					allUser += '<option value="'+item.id+'">'+item.userName+'</option>';
+				})
+			}
+		})
+		myutil.getData({
+			url: myutil.config.ctx+'/ledger/allCustomer',
+			done: function(data){
+				layui.each(data,function(index,item){
+					allCustomer += '<option value="'+item.id+'">'+item.name+'</option>';
 				})
 			}
 		})

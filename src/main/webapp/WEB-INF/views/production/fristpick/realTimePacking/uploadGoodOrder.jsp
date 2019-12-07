@@ -141,7 +141,6 @@ layui.config({
 			       { title:'产品名',   field:'product_name',	},
 			       { title:'批次数量',   field:'number', 	},
 			       { title:'剩余发货数量',   field:'surplusSendNumber', 	},
-			       { title:'剩余量化数量',   field:'surplusNumber', 	},
 			       { title:'备注',   field:'remarks',	},
 			       ]],
 			 done:function(){
