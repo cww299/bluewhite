@@ -128,6 +128,7 @@ layui.config({
 								id: d[i].id,
 								quantitativeNumber: d[i].quantitativeNumber,
 								time: d[i].time,
+								user: d[i].user,
 								product: child[j].product,
 								sumPackageNumber: child[j].sumPackageNumber,
 								singleNumber: child[j].singleNumber,
@@ -135,7 +136,6 @@ layui.config({
 							})
 						}
 					}
-					console.log(data)
 					return {  msg:ret.message,  code:ret.code , data: data, count:ret.data.total }; 
 				}
 				else
@@ -146,6 +146,7 @@ layui.config({
 			       { title:'量化编号',   field:'quantitativeNumber',	},
 			       { title:'包装时间',   field:'time',   },
 			       { title:'产品名',   field:'underGoods_product_name', 	},
+			       { title:'贴包人',   field:'user_userName', 	},
 			       { title:'总包数',   field:'sumPackageNumber',	},
 			       { title:'单包个数',   field:'singleNumber',	},
 			       ]],
@@ -153,6 +154,7 @@ layui.config({
 				merge('underGoods_product_name');
 				merge('quantitativeNumber');
 				merge('time');
+				merge('user_userName');
 				merge('0');
 				function merge(field){
 					var rowspan = 1,mainCols=0;
@@ -237,6 +239,7 @@ layui.config({
 									'<td>',
 										'<select id="packPeopleSelect" lay-search><option value="">请选择</option></select>',
 									'</td>',
+									'<td>&nbsp;&nbsp;<span class="layui-btn" id="saveBtn">保存</span></td>',
 								'</tr>',
 							'</table>',
 						'</div>',
@@ -249,6 +252,9 @@ layui.config({
 					'</div>',
 				].join(' '),
 				success: function(){
+					$('#saveBtn').click(function(){
+						$('span[lay-event="saveTempData"]').click();
+					})
 					var addTable = [],addMate = [];
 					laydate.render({
 						elem:'#addEditTime',value: new Date(),type:'datetime',
@@ -265,16 +271,25 @@ layui.config({
 						size:'lg',
 						curd:{
 							saveFun: function(d){
-								console.log(d)
 								var url = '/temporaryPack/saveQuantitative';
-								if(data.id)
-									url= '';
 								var time = $('#addEditTime').val();
 								var userId = $('#packPeopleSelect').val();
 								if(!time)
 									return myutil.emsg('量化单时间不能为空！');
 								if(!userId)
 									return myutil.emsg('请选择贴包人！');
+								layui.each(table.cache['addTable'],function(index,item){
+									d.push({
+										id: item.id,
+										number: item.number,
+										singleNumber: item.singleNumber,
+										sumPackageNumber: item.sumPackageNumber,
+									})
+								})
+								
+								var temp = table.getTemp('addMaterTable').data;
+								
+								
 								myutil.saveAjax({
 									url: url,
 									data:{
@@ -305,10 +320,13 @@ layui.config({
 							{ type:'checkbox',},
 							{ title:'下货单~批次号~剩余数量', field:'underGoods_id', type:'select',
 								select:{data: allUoloadOrder, name:['product_name','bacthNumber','number'],} },
-							{ title:'总包数',   field:'sumPackageNumber',	},
-					        { title:'单包个数',   field:'singleNumber',	},
-					        { title:'总数量',   field:'number',	},
+							{ title:'总包数',   field:'sumPackageNumber', edit:true,	},
+					        { title:'单包个数',   field:'singleNumber',	 edit:true,	},
+					        { title:'总数量',   field:'number',	 edit:true, },
 						]],
+						done:function(){
+							$('span[lay-event="saveTempData"]').hide();
+						}
 					})
 					mytable.render({
 						elem: '#addMaterTable',
