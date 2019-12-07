@@ -48,6 +48,14 @@ public class QuantitativeServiceImpl extends BaseServiceImpl<Quantitative, Long>
 			if (param.getId() != null) {
 				predicate.add(cb.equal(root.get("id").as(Long.class), param.getId()));
 			}
+			// 是否打印
+			if (param.getPrint() != null) {
+				predicate.add(cb.equal(root.get("print").as(Integer.class), param.getPrint()));
+			}
+			// 是否发货
+			if (param.getFlag() != null) {
+				predicate.add(cb.equal(root.get("flag").as(Integer.class), param.getFlag()));
+			}
 			// 按批次
 			if (!StringUtils.isEmpty(param.getBacthNumber())) {
 				predicate.add(cb.like(root.get("bacthNumber").as(String.class), "%" + param.getBacthNumber() + "%"));
