@@ -273,7 +273,8 @@ public class OrderServiceImpl extends BaseServiceImpl<Order, Long> implements Or
 
 	@Override
 	public List<Map<String, Object>> findListSend(Order param) {
-		
+		//排除自己的库存和公用库存
+		CurrentUser cu = SessionManager.getUserSession();
 		// 通过产品查询所有的入库单
 		List<PutStorage> putStorageList = putStorageDao.findByProductId(param.getProductId());
 		putStorageList.forEach(m -> {
@@ -285,14 +286,28 @@ public class OrderServiceImpl extends BaseServiceImpl<Order, Long> implements Or
 		// 排除掉已经全部出库的入库单
 		putStorageList = putStorageList.stream().filter(PutStorage -> PutStorage.getSurplusNumber() > 0)
 				.collect(Collectors.toList());
+		putStorageList.stream().filter(p->{
+			if(p.getOrderOutSource().getOrderId()!=null){
+				List<OrderChild> ocList = p.getOrderOutSource().getOrder().getOrderChilds();
+				for(OrderChild oc : ocList){
+					if(cu.getId().equals(oc.getUserId())){
+						return false;
+					}
+				}
+			}
+			return true;
+		});
+		
 		// 通过入库单拿到所有的生产计划单
 		List<Map<String, Object>> listMap = new ArrayList<>();
 		putStorageList.forEach(p -> {
 			Map<String, Object> map = new HashMap<String, Object>();
-			map.put("id", p.getOrderOutSource().getOrderId());
-			map.put("order", p.getOrderOutSource().getOrder());
-			map.put("number", p.getSurplusNumber());
-			listMap.add(map);
+			if(p.getOrderOutSource().getOrderId()!=null){
+				map.put("id", p.getOrderOutSource().getOrderId());
+				map.put("order", p.getOrderOutSource().getOrder());
+				map.put("number", p.getSurplusNumber());
+				listMap.add(map);
+			}
 		});
 		Map<Object, List<Map<String, Object>>> mapOnlineOrderChildList = listMap.stream()
 				.collect(Collectors.groupingBy(m -> m.get("id").toString()));

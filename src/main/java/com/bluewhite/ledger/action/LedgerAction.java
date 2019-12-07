@@ -56,8 +56,6 @@ import com.bluewhite.ledger.service.RefundBillsService;
 import com.bluewhite.ledger.service.SaleService;
 import com.bluewhite.ledger.service.ScatteredOutboundService;
 import com.bluewhite.ledger.service.SendGoodsService;
-import com.bluewhite.onlineretailers.inventory.entity.Commodity;
-import com.bluewhite.onlineretailers.inventory.entity.Inventory;
 import com.bluewhite.product.primecostbasedata.entity.BaseOne;
 import com.bluewhite.product.primecostbasedata.entity.Materiel;
 import com.bluewhite.product.product.entity.Product;
