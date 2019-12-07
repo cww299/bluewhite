@@ -11,6 +11,6 @@ public interface QuantitativeDao  extends BaseRepository<Quantitative, Long>{
 	/**
 	 * 查询下货单已发货数量
 	 */
-	@Query(nativeQuery=true,value ="SELECT distinct qc.id , pro_quantitative_child FROM pro_quantitative q, pro_quantitative_child qc,pro_under_goods u WHERE qc.underGoods_id = u.id AND q.flag = 0 and u.id = ?1")
+	@Query(nativeQuery=true,value ="SELECT distinct qc.id FROM pro_quantitative q, pro_quantitative_child qc,pro_under_goods u WHERE qc.underGoods_id = u.id AND q.flag = 1 and u.id = ?1")
 	List<Long> findSendNumber(Long id);
 }
