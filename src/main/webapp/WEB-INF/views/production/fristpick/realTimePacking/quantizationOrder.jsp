@@ -49,27 +49,27 @@
 <div style="padding:20px;">
 	<table border="1" style="margin: auto;width: 80%;text-align:center;">
 		<tr>
-       	 	<td>包装组贴包人</td>
-        	<td>编号</td>
+       	 	<td>收货人名</td>
+        	<td>{{ d.customer?d.customer.name:'---' }}</td>
+			<td>收货人地址电话</td>
 	    </tr>
 		<tr>
-	        <td>{{ d.user?d.user.userName:'---' }}</td>
-	        <td>{{ d.number}}</td>
+	        <td>当批外包编号</td>
+	        <td>{{ d.quantitativeNumber || '---' }}</td>
+			<td>电话</td>
 	    </tr>
 		<tr>
+			<td>批次号</td>
 	        <td>产品名</td>
 	        <td>当件内装数量</td>
 	    </tr>
-		{{# layui.each(d.packingChilds,function(index,item){  }}
+		{{# layui.each(d.quantitativeChilds,function(index,item){  }}
 		<tr>
-	        <td>{{ item.product.name}}</td>
-	        <td>{{ item.count}}</td>
+			<td>{{ item.underGoods.bacthNumber}}</td>
+	        <td>{{ item.underGoods.product.name}}</td>
+	        <td>{{ item.singleNumber}}</td>
 	    </tr>
 	    {{# }) }}
-		<tr>
-	        <td></td>
-	        <td>已出货</td>
-	    </tr>
 	</table>
 </div>
 <hr>
@@ -107,8 +107,9 @@ layui.config({
 			toolbar:[
 				'<span class="layui-btn layui-btn-sm layui-btn-" lay-event="add">新增数据</span>',
 				'<span class="layui-btn layui-btn-sm layui-btn-warm" lay-event="update">修改数据</span>',
+				'<span class="layui-btn layui-btn-sm layui-btn-normal" lay-event="audit">审核</span>',
 				'<span class="layui-btn layui-btn-sm layui-btn-primary" lay-event="print">打印</span>',
-				'<span class="layui-btn layui-btn-sm layui-btn-normal" lay-event="audit">发货</span>',
+				'<span class="layui-btn layui-btn-sm layui-btn-normal" lay-event="send">发货</span>',
 			].join(' '),
 			curd:{
 				btn:[4],
@@ -128,11 +129,17 @@ layui.config({
 					}else if(obj.event=='audit'){
 						myutil.deleTableIds({
 							 table:'tableData', 
-							 text:'请选择信息|是否确认发货？',
+							 text:'请选择信息|是否确认审核？',
 							 url:'/temporaryPack/auditQuantitative',
 						})
 					}else if(obj.event=='print'){
 						printOrder();
+					}else if(obj.event=='send'){
+						myutil.deleTableIds({
+							 table:'tableData', 
+							 text:'请选择信息|是否确认发货？',
+							 url:'/temporaryPack/sendQuantitative',
+						})
 					}
 				},
 			},
@@ -154,9 +161,9 @@ layui.config({
 								time: d[i].time,
 								user: d[i].user,
 								print: d[i].print,
+								audit: d[i].audit,
 								customer: d[i].customer,
 								flag: d[i].flag,
-								product: child[j].product,
 								singleNumber: child[j].singleNumber,
 								underGoods: child[j].underGoods,
 							})
@@ -174,14 +181,17 @@ layui.config({
 			       { title:'包装时间',   field:'time',  width:'12%', },
 			       { title:'贴包人',   field:'user_userName', width:'10%',	},
 			       { title:'客户',   field:'customer_name', width:'10%',	},
-			       { title:'是否发货',   field:'print', 	transData:{data:['否','是']}, width:'6%', },
-			       { title:'是否打印',   field:'flag', 	transData:{data:['否','是']}, width:'6%', },
+			       { title:'是否审核',   field:'audit', 	transData:{data:['否','是']}, width:'6%', },
+			       { title:'是否发货',   field:'flag', 	transData:{data:['否','是']}, width:'6%', },
+			       { title:'是否打印',   field:'print', 	transData:{data:['否','是']}, width:'6%', },
+			       { title:'批次号',   field:'underGoods_bacthNumber',	width:'8%', },
 			       { title:'产品名',   field:'underGoods_product_name', 	},
 			       { title:'单包个数',   field:'singleNumber',	width:'8%', },
 			       ]],
 	       done:function(){
 				merge('quantitativeNumber');
 				merge('time');
+				merge('audit');
 				merge('print');
 				merge('flag');
 				merge('user_userName');
@@ -218,8 +228,18 @@ layui.config({
 			var choosed=layui.table.checkStatus('tableData').data;
 			if(choosed.length<1)
 				return myutil.emsg('请选择打印信息');
+			var printData = [];
+			layui.each(choosed,function(index1,itemChoosed){
+				layui.each(tableDataNoTrans,function(index2,itemNoTrans){
+					if(itemChoosed.id == itemNoTrans.id){
+						printData.push(itemNoTrans);
+						return;
+					}
+				})
+			})
 			var tpl = $('#printPackTpl').html(), html='<div id="printDiv">';
-			layui.each(choosed,function(index,item){
+			console.log(printData)
+			layui.each(printData,function(index,item){
 				laytpl(tpl).render(item,function(h){ html += h; })
 			})
 			layer.open({
@@ -386,7 +406,7 @@ layui.config({
 						cols:[[
 							{ type:'checkbox',},
 							{ title:'下货单~批次号~剩余数量', field:'underGoods_id', type:'select',
-								select:{data: allUoloadOrder, name:['product_name','bacthNumber','number'],} },
+								select:{data: allUoloadOrder, name:['product_name','bacthNumber','surplusSendNumber'],} },
 					        { title:'单包个数',   field:'singleNumber',	 edit:true,	width:'10%',},
 					        { title:'操作',   field:'de',	 event:'deleteTr', edit:false,width:'10%',
 					        		templet:'<div><span class="layui-btn layui-btn-xs layui-btn-danger">删除</span></div>' },
