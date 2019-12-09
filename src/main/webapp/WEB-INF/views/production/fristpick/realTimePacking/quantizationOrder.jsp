@@ -419,7 +419,7 @@ layui.config({
 								{ type:'checkbox',},
 								{ title:'下货单~批次号~剩余数量', field:'underGoods_id', type:'select',
 									select:{data: allUoloadOrder, name:['product_name','bacthNumber','surplusStickNumber'],} },
-						        { title:'单包个数',   field:'singleNumber',	 edit:true,	width:'10%',},
+						        { title:'单包个数',   field:'singleNumber',	 edit: !isStickBagStick,	width:'10%',},
 							];
 							if(!isStickBagStick)
 								cols.push({ title:'操作',field:'de', event:'deleteTr', edit:false,width:'10%',
@@ -461,7 +461,7 @@ layui.config({
 								var cols = [
 									{ type:'checkbox',},
 									{ title:'材料', field:'packagingMaterials_id', type:'select',select:{data: allMaterials, } },
-									{ title:'数量',   field:'packagingCount',	edit:true,width:'25%', },
+									{ title:'数量',   field:'packagingCount',	edit:isStickBagStick, width:'25%', },
 									
 								];
 								if(isStickBagStick)
