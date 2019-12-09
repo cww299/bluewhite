@@ -3,7 +3,7 @@ package com.bluewhite.ledger.service;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-import java.util.stream.Collectors;
+import java.util.Map;
 
 import javax.persistence.criteria.Predicate;
 
@@ -23,16 +23,13 @@ import com.bluewhite.common.entity.CurrentUser;
 import com.bluewhite.common.entity.PageParameter;
 import com.bluewhite.common.entity.PageResult;
 import com.bluewhite.ledger.dao.ApplyVoucherDao;
-import com.bluewhite.ledger.dao.OrderDao;
 import com.bluewhite.ledger.dao.OutStorageDao;
 import com.bluewhite.ledger.dao.PackingChildDao;
 import com.bluewhite.ledger.dao.PutStorageDao;
 import com.bluewhite.ledger.dao.SendGoodsDao;
 import com.bluewhite.ledger.entity.ApplyVoucher;
-import com.bluewhite.ledger.entity.OrderChild;
-import com.bluewhite.ledger.entity.OutStorage;
+import com.bluewhite.ledger.entity.Order;
 import com.bluewhite.ledger.entity.PackingChild;
-import com.bluewhite.ledger.entity.PutStorage;
 import com.bluewhite.ledger.entity.SendGoods;
 
 @Service
@@ -43,13 +40,13 @@ public class SendGoodsServiceImpl extends BaseServiceImpl<SendGoods, Long> imple
 	@Autowired
 	private PackingChildDao packingChildDao;
 	@Autowired
-	private OrderDao orderdao;
-	@Autowired
 	private ApplyVoucherDao applyVoucherDao;
 	@Autowired
 	private PutStorageDao putStorageDao;
 	@Autowired
 	private OutStorageDao outStorageDao;
+	@Autowired
+	private OrderService orderService;
 	@Override
 	public PageResult<SendGoods> findPages(SendGoods param, PageParameter page) {
 		CurrentUser cu = SessionManager.getUserSession();
@@ -97,32 +94,23 @@ public class SendGoodsServiceImpl extends BaseServiceImpl<SendGoods, Long> imple
 			//2.查出销售人员和产品id通过的申请单，获取到申请数量
 			//3.查出共有库存
 			// 通过产品查询所有的入库单
-			List<PutStorage> putStorageList = putStorageDao.findByProductId(s.getProductId());
-			putStorageList.forEach(m -> {
-				List<Long> longList = outStorageDao.findPutStorageId(m.getId());
-				List<OutStorage> outStorageList = outStorageDao.findAll(longList);
-				int arrNumber = outStorageList.stream().mapToInt(OutStorage::getArrivalNumber).sum();
-				m.setSurplusNumber(m.getArrivalNumber() - arrNumber);
-			});
-			// 排除掉已经全部出库的入库单
-			putStorageList = putStorageList.stream().filter(PutStorage -> PutStorage.getSurplusNumber() > 0)
-					.collect(Collectors.toList());
-			putStorageList  = putStorageList.stream().filter(p->{
-				//排除公共库存
-				if(p.getOrderOutSource().getOrderId()!=null){
-					List<OrderChild> ocList = p.getOrderOutSource().getOrder().getOrderChilds();
-					for(OrderChild oc : ocList){
-						if(!cu.getId().equals(oc.getUserId())){
-							return false;
-						}
-						return true;
-					}
-				}
-				return true;
-			}).collect(Collectors.toList());
-			
+			Order order = new Order(); 
+			order.setProductId(s.getProductId());
+			order.setInclude(true);
+			List<Map<String, Object>> mapsList = orderService.findListSend(order);
+			int number = 0;
+			for(Map<String, Object> map : mapsList ){
+				number+=(int)map.get("number");
+			}
+			int status = 0;
+			if(s.getNumber()<number){
+				status = 1;
+			}
+			if(number<=0){
+				status = 2;
+			}
+			s.setStatus(status);
 		});
-		
 		return result;
 	}
 
