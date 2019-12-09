@@ -77,9 +77,11 @@
 </script>
 
 <div id="toolbarTpl" style="display:none;">
-	<span class="layui-btn layui-btn-sm layui-btn-" lay-event="add">新增数据</span>
 	<span class="layui-btn layui-btn-sm layui-btn-warm" lay-event="update">修改数据</span>
-	<span class="layui-btn layui-btn-sm layui-btn-normal" lay-event="audit">审核</span>
+	<shiro:hasAnyRoles name="superAdmin,stickBagAccount">
+		<span class="layui-btn layui-btn-sm layui-btn-" lay-event="add">新增数据</span>
+		<span class="layui-btn layui-btn-sm layui-btn-normal" lay-event="audit">审核</span>
+	</shiro:hasAnyRoles>
 	<shiro:hasAnyRoles name="superAdmin,stickBagStick">
 		<span class="layui-btn layui-btn-sm layui-btn-primary" lay-event="print" id="stickBagStickBtn">打印</span>
 		<span class="layui-btn layui-btn-sm layui-btn-normal" lay-event="send">发货</span>
@@ -110,16 +112,17 @@ layui.config({
 		laydate.render({
 			elem: '#orderTimeBegin', range: '~',
 		})
+		var isStickBagStick = $('#stickBagStickBtn').length>0;
 		var allUoloadOrder = [];
 		var allMaterials = [];
 		var allUser ='',allCustomer='';
 		var tableDataNoTrans = [];
 		mytable.render({
 			elem:'#tableData',
-			url:'${ctx}/temporaryPack/findPagesQuantitative',
+			url:'${ctx}/temporaryPack/findPagesQuantitative?'+(isStickBagStick?'audit=1':''),
 			toolbar: $('#toolbarTpl').html(),
 			curd:{
-				btn:[4],
+				btn: isStickBagStick?[]:[4],
 				otherBtn:function(obj){
 					if(obj.event=='add'){
 						addEdit('add',{});
@@ -319,7 +322,6 @@ layui.config({
 		'</div>',
 		].join(' ');
 		function addEdit(type,data){	//stickBagAccount角色操作左边  stickBagStick  右边
-			var isStickBagStick = $('#stickBagStickBtn').length>0;
 			var title = '新增量化单';
 			if(data.id){
 				title = '修改量化单';
@@ -417,7 +419,7 @@ layui.config({
 								{ type:'checkbox',},
 								{ title:'下货单~批次号~剩余数量', field:'underGoods_id', type:'select',
 									select:{data: allUoloadOrder, name:['product_name','bacthNumber','surplusStickNumber'],} },
-						        { title:'单包个数',   field:'singleNumber',	 edit:true,	width:'10%',},
+						        { title:'单包个数',   field:'singleNumber',	 edit: !isStickBagStick,	width:'10%',},
 							];
 							if(!isStickBagStick)
 								cols.push({ title:'操作',field:'de', event:'deleteTr', edit:false,width:'10%',
@@ -459,7 +461,7 @@ layui.config({
 								var cols = [
 									{ type:'checkbox',},
 									{ title:'材料', field:'packagingMaterials_id', type:'select',select:{data: allMaterials, } },
-									{ title:'数量',   field:'packagingCount',	edit:true,width:'25%', },
+									{ title:'数量',   field:'packagingCount',	edit:isStickBagStick, width:'25%', },
 									
 								];
 								if(isStickBagStick)
