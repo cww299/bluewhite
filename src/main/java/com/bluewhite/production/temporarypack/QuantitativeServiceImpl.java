@@ -97,7 +97,7 @@ public class QuantitativeServiceImpl extends BaseServiceImpl<Quantitative, Long>
 			Quantitative ot = dao.findOne(quantitative.getId());
 			quantitativeChildDao.delete(ot.getQuantitativeChilds());
 			packingMaterialsDao.delete(ot.getPackingMaterials());
-			if(ot.getAudit()==1 && cu.getOrgName().contains("stickBagAccount") ){
+			if(ot.getAudit()==1 && cu.getOrgName().contains("stickBagStick") ){
 				throw new ServiceException("已审核，无法修改");
 			}
 			if (ot.getFlag() == 1) {
