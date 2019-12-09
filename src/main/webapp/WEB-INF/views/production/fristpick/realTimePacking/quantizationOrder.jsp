@@ -77,9 +77,11 @@
 </script>
 
 <div id="toolbarTpl" style="display:none;">
-	<span class="layui-btn layui-btn-sm layui-btn-" lay-event="add">新增数据</span>
 	<span class="layui-btn layui-btn-sm layui-btn-warm" lay-event="update">修改数据</span>
-	<span class="layui-btn layui-btn-sm layui-btn-normal" lay-event="audit">审核</span>
+	<shiro:hasAnyRoles name="superAdmin,stickBagAccount">
+		<span class="layui-btn layui-btn-sm layui-btn-" lay-event="add">新增数据</span>
+		<span class="layui-btn layui-btn-sm layui-btn-normal" lay-event="audit">审核</span>
+	</shiro:hasAnyRoles>
 	<shiro:hasAnyRoles name="superAdmin,stickBagStick">
 		<span class="layui-btn layui-btn-sm layui-btn-primary" lay-event="print" id="stickBagStickBtn">打印</span>
 		<span class="layui-btn layui-btn-sm layui-btn-normal" lay-event="send">发货</span>
@@ -110,16 +112,17 @@ layui.config({
 		laydate.render({
 			elem: '#orderTimeBegin', range: '~',
 		})
+		var isStickBagStick = $('#stickBagStickBtn').length>0;
 		var allUoloadOrder = [];
 		var allMaterials = [];
 		var allUser ='',allCustomer='';
 		var tableDataNoTrans = [];
 		mytable.render({
 			elem:'#tableData',
-			url:'${ctx}/temporaryPack/findPagesQuantitative',
+			url:'${ctx}/temporaryPack/findPagesQuantitative?'+(isStickBagStick?'audit=1':''),
 			toolbar: $('#toolbarTpl').html(),
 			curd:{
-				btn:[4],
+				btn: isStickBagStick?[]:[4],
 				otherBtn:function(obj){
 					if(obj.event=='add'){
 						addEdit('add',{});
@@ -319,7 +322,6 @@ layui.config({
 		'</div>',
 		].join(' ');
 		function addEdit(type,data){	//stickBagAccount角色操作左边  stickBagStick  右边
-			var isStickBagStick = $('#stickBagStickBtn').length>0;
 			var title = '新增量化单';
 			if(data.id){
 				title = '修改量化单';
