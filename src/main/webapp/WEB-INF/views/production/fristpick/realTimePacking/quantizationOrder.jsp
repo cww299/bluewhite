@@ -1,5 +1,6 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
+<%@ taglib prefix="shiro" uri="http://shiro.apache.org/tags"%>
 <c:set var="ctx" value="${pageContext.request.contextPath }" />
 <!DOCTYPE html>
 <html>
@@ -74,6 +75,18 @@
 </div>
 <hr>
 </script>
+
+<div id="toolbarTpl" style="display:none;">
+	<span class="layui-btn layui-btn-sm layui-btn-" lay-event="add">新增数据</span>
+	<span class="layui-btn layui-btn-sm layui-btn-warm" lay-event="update">修改数据</span>
+	<span class="layui-btn layui-btn-sm layui-btn-normal" lay-event="audit">审核</span>
+	<shiro:hasAnyRoles name="superAdmin,stickBagAccount">
+		<span class="layui-btn layui-btn-sm layui-btn-primary" lay-event="print">打印</span>
+		<span class="layui-btn layui-btn-sm layui-btn-normal" lay-event="send">发货</span>
+	</shiro:hasAnyRoles>
+</div>
+<script type="text/html" >
+</script>
 <script>
 layui.config({
 	base : '${ctx}/static/layui-v2.4.5/'
@@ -104,15 +117,7 @@ layui.config({
 		mytable.render({
 			elem:'#tableData',
 			url:'${ctx}/temporaryPack/findPagesQuantitative',
-			toolbar:[
-				'<span class="layui-btn layui-btn-sm layui-btn-" lay-event="add">新增数据</span>',
-				'<span class="layui-btn layui-btn-sm layui-btn-warm" lay-event="update">修改数据</span>',
-				'<span class="layui-btn layui-btn-sm layui-btn-normal" lay-event="audit">审核</span>',
-				'<shiro:hasAnyRoles name="superAdmin,stickBagAccount">',
-					'<span class="layui-btn layui-btn-sm layui-btn-primary" lay-event="print">打印</span>',
-					'<span class="layui-btn layui-btn-sm layui-btn-normal" lay-event="send">发货</span>',
-				'</shiro:hasAnyRoles>',
-			].join(' '),
+			toolbar: $('#toolbarTpl').html(),
 			curd:{
 				btn:[4],
 				otherBtn:function(obj){
