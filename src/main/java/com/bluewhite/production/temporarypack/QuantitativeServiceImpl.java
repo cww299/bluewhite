@@ -97,19 +97,22 @@ public class QuantitativeServiceImpl extends BaseServiceImpl<Quantitative, Long>
 			Quantitative ot = dao.findOne(quantitative.getId());
 			quantitativeChildDao.delete(ot.getQuantitativeChilds());
 			packingMaterialsDao.delete(ot.getPackingMaterials());
-			if(ot.getAudit()==1 && cu.getOrgName().contains("stickBagStick") ){
+			if (ot.getAudit() == 1 && cu.getRole().contains("stickBagAccount")) {
 				throw new ServiceException("已审核，无法修改");
 			}
 			if (ot.getFlag() == 1) {
 				throw new ServiceException("已发货，无法修改");
 			}
 			quantitative.setQuantitativeNumber(ot.getQuantitativeNumber());
+			quantitative.setAudit(ot.getAudit());
+			quantitative.setPrint(ot.getPrint());
+			quantitative.setFlag(ot.getFlag());
 		} else {
 			quantitative.setQuantitativeNumber(
 					Constants.XHD + StringUtil.getDate() + SalesUtils.get0LeftString((int) (dao.count() + 1), 8));
+			quantitative.setPrint(0);
+			quantitative.setFlag(0);
 		}
-		quantitative.setFlag(0);
-		quantitative.setPrint(0);
 		// 新增子单
 		if (!StringUtils.isEmpty(quantitative.getChild())) {
 			JSONArray jsonArray = JSON.parseArray(quantitative.getChild());
@@ -139,7 +142,6 @@ public class QuantitativeServiceImpl extends BaseServiceImpl<Quantitative, Long>
 				quantitative.getPackingMaterials().add(packingMaterials);
 			}
 		}
-
 		save(quantitative);
 	}
 
@@ -155,7 +157,7 @@ public class QuantitativeServiceImpl extends BaseServiceImpl<Quantitative, Long>
 					if (quantitative.getAudit() == 1) {
 						throw new ServiceException("已发货请勿多次发货");
 					}
-					quantitative.setFlag(1);
+					quantitative.setAudit(1);
 					dao.save(quantitative);
 				}
 			}
