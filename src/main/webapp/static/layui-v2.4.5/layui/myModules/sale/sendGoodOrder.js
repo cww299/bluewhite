@@ -268,9 +268,6 @@ layui.extend({
 					if(msg)
 						return myutil.emsg(msg);
 					data.applyVoucher = JSON.stringify(json);
-					
-					console.log(data)
-					return 
 					myutil.saveAjax({
 						url: url,
 						data: data,
