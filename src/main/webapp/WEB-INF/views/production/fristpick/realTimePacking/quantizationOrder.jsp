@@ -292,7 +292,7 @@ layui.config({
 						'</td>',
 						'<td>&nbsp;&nbsp;贴包人：</td>',
 						'<td>',
-							'<select id="packPeopleSelect" lay-search name="userId" lay-verify="required">',
+							'<select id="packPeopleSelect" lay-search name="userId">',
 								'<option value="">请选择</option></select>',
 						'</td>',
 						'<td>&nbsp;&nbsp;客户：</td>',

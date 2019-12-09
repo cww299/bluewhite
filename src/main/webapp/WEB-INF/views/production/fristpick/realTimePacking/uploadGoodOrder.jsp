@@ -193,7 +193,7 @@ layui.config({
 				content: html,
 				btn:['保存','取消'],
 				success:function(){
-					laydate.render({ elem:'#allotTime', type:'datetime', });
+					laydate.render({ elem:'#allotTime', type:'datetime', value: data.allotTime || new Date(), });
 					$('#productNameInput').unbind().on('click',function(){
 						var chooseProducyWin = layer.open({
 							type:1,
