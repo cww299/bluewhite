@@ -108,8 +108,10 @@ layui.config({
 				'<span class="layui-btn layui-btn-sm layui-btn-" lay-event="add">新增数据</span>',
 				'<span class="layui-btn layui-btn-sm layui-btn-warm" lay-event="update">修改数据</span>',
 				'<span class="layui-btn layui-btn-sm layui-btn-normal" lay-event="audit">审核</span>',
-				'<span class="layui-btn layui-btn-sm layui-btn-primary" lay-event="print">打印</span>',
-				'<span class="layui-btn layui-btn-sm layui-btn-normal" lay-event="send">发货</span>',
+				'<shiro:hasAnyRoles name="superAdmin,stickBagstick">',
+					'<span class="layui-btn layui-btn-sm layui-btn-primary" lay-event="print">打印</span>',
+					'<span class="layui-btn layui-btn-sm layui-btn-normal" lay-event="send">发货</span>',
+				'</shiro:hasAnyRoles>',
 			].join(' '),
 			curd:{
 				btn:[4],
