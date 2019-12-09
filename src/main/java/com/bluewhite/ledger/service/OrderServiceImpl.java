@@ -301,8 +301,9 @@ public class OrderServiceImpl extends BaseServiceImpl<Order, Long> implements Or
 			}
 			return param.isInclude();
 		}).collect(Collectors.toList());
-		
 		// 需要将申请通过的库存取出
+		
+		
 		// 通过入库单拿到所有的生产计划单
 		List<Map<String, Object>> listMap = new ArrayList<>();
 		putStorageList.forEach(p -> {
