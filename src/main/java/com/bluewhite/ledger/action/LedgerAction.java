@@ -1217,7 +1217,6 @@ public class LedgerAction {
 		CommonResponse cr = new CommonResponse();
 		int count = sendGoodsService.deleteSendGoods(ids);
 		cr.setMessage("成功删除" + count + "待发货单");
-
 		return cr;
 	}
 

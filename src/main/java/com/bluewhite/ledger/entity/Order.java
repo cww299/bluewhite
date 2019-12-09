@@ -185,18 +185,19 @@ public class Order extends BaseEntity<Long> {
 	private String deleteIds;
 	
 	/**
-	 * 需要删除的子单
+	 * 是否是自己的库存
 	 */
 	@Transient
-	private Integer include;
+	private boolean include;
 	
 
 	
-	public Integer getInclude() {
+
+	public boolean isInclude() {
 		return include;
 	}
 
-	public void setInclude(Integer include) {
+	public void setInclude(boolean include) {
 		this.include = include;
 	}
 
