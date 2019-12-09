@@ -294,16 +294,15 @@ public class OrderServiceImpl extends BaseServiceImpl<Order, Long> implements Or
 			if(p.getOrderOutSource().getOrderId()!=null){
 				List<OrderChild> ocList = p.getOrderOutSource().getOrder().getOrderChilds();
 				for(OrderChild oc : ocList){
-					if(!cu.getId().equals(oc.getUserId())){
-						return param.isInclude();
+					if(cu.getId().equals(oc.getUserId())){
+						return !param.isInclude();
 					}
-					return !param.isInclude();
 				}
 			}
-			return !param.isInclude();
+			return param.isInclude();
 		}).collect(Collectors.toList());
-		//当是自己库存时，需要将申请通过的库存取出
 		
+		// 需要将申请通过的库存取出
 		// 通过入库单拿到所有的生产计划单
 		List<Map<String, Object>> listMap = new ArrayList<>();
 		putStorageList.forEach(p -> {
@@ -315,6 +314,8 @@ public class OrderServiceImpl extends BaseServiceImpl<Order, Long> implements Or
 				listMap.add(map);
 			}
 		});
+		
+		//数据返回格式处理
 		Map<Object, List<Map<String, Object>>> mapOnlineOrderChildList = listMap.stream()
 				.collect(Collectors.groupingBy(m -> m.get("id").toString()));
 		List<Map<String, Object>> result = new ArrayList<>();
@@ -330,8 +331,15 @@ public class OrderServiceImpl extends BaseServiceImpl<Order, Long> implements Or
 				map.put("id", o.getUserId());
 				userList.add(map);
 			});
+			// 当是自己库存时，判断下单数量是否大于库存数量，当大于时取库存作为返回数量，小于则取下单数返回 。
+			if(!param.isInclude()){
+				int num = order.getOrderChilds().stream()
+						.filter(OrderChild->cu.getId().equals(OrderChild.getUserId())).mapToInt(OrderChild::getChildNumber).sum();
+				nmap.put("number", num >= (int)sumcc.getSum() ? (int)sumcc.getSum() : num);
+			}else{
+				nmap.put("number", sumcc.getSum());
+			}
 			nmap.put("bacth", order.getBacthNumber());
-			nmap.put("number", sumcc.getSum());
 			nmap.put("userList", userList);
 			result.add(nmap);
 		});
