@@ -274,7 +274,9 @@ public class OrderServiceImpl extends BaseServiceImpl<Order, Long> implements Or
 
 	@Override
 	public List<Map<String, Object>> findListSend(Order param) {
-		//排除自己的库存和公用库存
+		//是否是自己的库存
+		//include = 0  false
+		//include = 1  true   
 		CurrentUser cu = SessionManager.getUserSession();
 		// 通过产品查询所有的入库单
 		List<PutStorage> putStorageList = putStorageDao.findByProductId(param.getProductId());
@@ -287,17 +289,20 @@ public class OrderServiceImpl extends BaseServiceImpl<Order, Long> implements Or
 		// 排除掉已经全部出库的入库单
 		putStorageList = putStorageList.stream().filter(PutStorage -> PutStorage.getSurplusNumber() > 0)
 				.collect(Collectors.toList());
-		putStorageList.stream().filter(p->{
+		putStorageList  = putStorageList.stream().filter(p->{
+			//排除公共库存
 			if(p.getOrderOutSource().getOrderId()!=null){
 				List<OrderChild> ocList = p.getOrderOutSource().getOrder().getOrderChilds();
 				for(OrderChild oc : ocList){
-					if(cu.getId().equals(oc.getUserId())){
-						return false;
+					if(!cu.getId().equals(oc.getUserId())){
+						return param.isInclude();
 					}
+					return !param.isInclude();
 				}
 			}
-			return true;
-		});
+			return !param.isInclude();
+		}).collect(Collectors.toList());
+		//当是自己库存时，需要将申请通过的库存取出
 		
 		// 通过入库单拿到所有的生产计划单
 		List<Map<String, Object>> listMap = new ArrayList<>();
