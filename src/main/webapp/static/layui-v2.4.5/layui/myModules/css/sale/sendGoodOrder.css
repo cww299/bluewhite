@@ -2,6 +2,7 @@
 .addTable{
 	background: #f4f4f4;
     overflow: hidden;
+    height: 100%;
 }
 .layerContentDiv{
 	overflow: hidden;
@@ -95,3 +96,4 @@
 	padding-right: 0px;
 	margin-right: 0px;
 }
+	

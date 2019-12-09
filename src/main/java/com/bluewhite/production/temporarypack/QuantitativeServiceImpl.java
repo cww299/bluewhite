@@ -19,6 +19,8 @@ import com.alibaba.fastjson.JSONObject;
 import com.bluewhite.base.BaseServiceImpl;
 import com.bluewhite.common.Constants;
 import com.bluewhite.common.ServiceException;
+import com.bluewhite.common.SessionManager;
+import com.bluewhite.common.entity.CurrentUser;
 import com.bluewhite.common.entity.PageParameter;
 import com.bluewhite.common.entity.PageResult;
 import com.bluewhite.common.utils.SalesUtils;
@@ -90,10 +92,14 @@ public class QuantitativeServiceImpl extends BaseServiceImpl<Quantitative, Long>
 
 	@Override
 	public void saveQuantitative(Quantitative quantitative) {
+		CurrentUser cu = SessionManager.getUserSession();
 		if (quantitative.getId() != null) {
 			Quantitative ot = dao.findOne(quantitative.getId());
 			quantitativeChildDao.delete(ot.getQuantitativeChilds());
 			packingMaterialsDao.delete(ot.getPackingMaterials());
+			if(ot.getAudit()==1 && cu.getOrgName().contains("stickBagStick") ){
+				throw new ServiceException("已审核，无法修改");
+			}
 			if (ot.getFlag() == 1) {
 				throw new ServiceException("已发货，无法修改");
 			}
@@ -146,7 +152,7 @@ public class QuantitativeServiceImpl extends BaseServiceImpl<Quantitative, Long>
 				for (int i = 0; i < idArr.length; i++) {
 					Long id = Long.parseLong(idArr[i]);
 					Quantitative quantitative = dao.findOne(id);
-					if (quantitative.getFlag() == 1) {
+					if (quantitative.getAudit() == 1) {
 						throw new ServiceException("已发货请勿多次发货");
 					}
 					quantitative.setFlag(1);
@@ -187,6 +193,26 @@ public class QuantitativeServiceImpl extends BaseServiceImpl<Quantitative, Long>
 						throw new ServiceException("已发货无法删除");
 					}
 					dao.delete(id);
+				}
+			}
+		}
+		return count;
+	}
+
+	@Override
+	public int sendQuantitative(String ids) {
+		int count = 0;
+		if (!StringUtils.isEmpty(ids)) {
+			String[] idArr = ids.split(",");
+			if (idArr.length > 0) {
+				for (int i = 0; i < idArr.length; i++) {
+					Long id = Long.parseLong(idArr[i]);
+					Quantitative quantitative = dao.findOne(id);
+					if (quantitative.getFlag() == 1) {
+						throw new ServiceException("已发货请勿多次发货");
+					}
+					quantitative.setFlag(1);
+					dao.save(quantitative);
 				}
 			}
 		}
