@@ -85,9 +85,9 @@ public class UnderGoodsServiceImpl extends BaseServiceImpl<UnderGoods, Long> imp
 			int numberSendSum = quantitativeList.stream().mapToInt(QuantitativeChild::getSingleNumber).sum();
 			List<Long> stickListId = quantitativeDao.findStickNumber(r.getId());
 			List<QuantitativeChild> stickListList = quantitativeChildDao.findByIdIn(stickListId);
-			int numberStickSum = quantitativeList.stream().mapToInt(QuantitativeChild::getSingleNumber).sum();
-			r.setSurplusStickNumber(r.getNumber()-numberStickSum);
+			int numberStickSum = stickListList.stream().mapToInt(QuantitativeChild::getSingleNumber).sum();
 			r.setSurplusSendNumber(r.getNumber()-numberSendSum);;
+			r.setSurplusStickNumber(r.getNumber()-numberStickSum);
 		});
 		return result;
 	}

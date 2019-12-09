@@ -110,8 +110,8 @@ layui.config({
 		laydate.render({
 			elem: '#orderTimeBegin', range: '~',
 		})
-		var allUoloadOrder = myutil.getDataSync({ url: '${ctx}/temporaryPack/findPagesUnderGoods?size=99999', });
-		var allMaterials = myutil.getDataSync({ url:'${ctx}/basedata/list?type=packagingMaterials', });
+		var allUoloadOrder = [];
+		var allMaterials = [];
 		var allUser ='',allCustomer='';
 		var tableDataNoTrans = [];
 		mytable.render({
@@ -328,6 +328,7 @@ layui.config({
 			laytpl(tpl).render(data,function(h){
 				html = h;
 			})
+			getDataOfUoloadOrder();
 			var addEditWin = layer.open({
 				type:1,
 				area:['90%','80%'],
@@ -415,7 +416,7 @@ layui.config({
 							var cols = [
 								{ type:'checkbox',},
 								{ title:'下货单~批次号~剩余数量', field:'underGoods_id', type:'select',
-									select:{data: allUoloadOrder, name:['product_name','bacthNumber','surplusSendNumber'],} },
+									select:{data: allUoloadOrder, name:['product_name','bacthNumber','surplusStickNumber'],} },
 						        { title:'单包个数',   field:'singleNumber',	 edit:true,	width:'10%',},
 							];
 							if(!isStickBagStick)
@@ -482,6 +483,15 @@ layui.config({
 				}
 			})
 		}
+		function getDataOfUoloadOrder(){
+			allUoloadOrder = myutil.getDataSync({ url: '${ctx}/temporaryPack/findPagesUnderGoods?size=99999', });
+		}
+		myutil.getData({
+			url: myutil.config.ctx+'/basedata/list?type=packagingMaterials',
+			done: function(data){
+				allMaterials = data;
+			}
+		})
 		myutil.getData({
 			url: myutil.config.ctx+'/system/user/findUserList?foreigns=0&isAdmin=false&orgNameIds=55&quit=0',
 			done: function(data){
