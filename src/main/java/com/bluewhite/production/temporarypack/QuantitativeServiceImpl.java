@@ -61,6 +61,10 @@ public class QuantitativeServiceImpl extends BaseServiceImpl<Quantitative, Long>
 			if (param.getFlag() != null) {
 				predicate.add(cb.equal(root.get("flag").as(Integer.class), param.getFlag()));
 			}
+			// 是否审核
+			if (param.getAudit() != null) {
+				predicate.add(cb.equal(root.get("audit").as(Integer.class), param.getAudit()));
+			}
 			// 按批次
 			if (!StringUtils.isEmpty(param.getBacthNumber())) {
 				predicate.add(cb.like(root.get("bacthNumber").as(String.class), "%" + param.getBacthNumber() + "%"));
@@ -109,7 +113,7 @@ public class QuantitativeServiceImpl extends BaseServiceImpl<Quantitative, Long>
 			quantitative.setFlag(ot.getFlag());
 		} else {
 			quantitative.setQuantitativeNumber(
-					Constants.XHD + StringUtil.getDate() + SalesUtils.get0LeftString((int) (dao.count() + 1), 8));
+					Constants.LHTB + StringUtil.getDate() + SalesUtils.get0LeftString((int) (dao.count() + 1), 8));
 			quantitative.setAudit(0);
 			quantitative.setPrint(0);
 			quantitative.setFlag(0);
