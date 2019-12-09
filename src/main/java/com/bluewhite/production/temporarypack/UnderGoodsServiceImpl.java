@@ -77,11 +77,16 @@ public class UnderGoodsServiceImpl extends BaseServiceImpl<UnderGoods, Long> imp
 		}, page);
 		PageResult<UnderGoods> result = new PageResult<>(pages, page);
 		//发货剩余数量
+		//贴包剩余数量
 		result.getRows().forEach(r->{
 			List<Long> quantitativeListId = quantitativeDao.findSendNumber(r.getId());
 			//获取单包数量
 			List<QuantitativeChild> quantitativeList = quantitativeChildDao.findByIdIn(quantitativeListId);
 			int numberSendSum = quantitativeList.stream().mapToInt(QuantitativeChild::getSingleNumber).sum();
+			List<Long> stickListId = quantitativeDao.findStickNumber(r.getId());
+			List<QuantitativeChild> stickListList = quantitativeChildDao.findByIdIn(stickListId);
+			int numberStickSum = quantitativeList.stream().mapToInt(QuantitativeChild::getSingleNumber).sum();
+			r.setSurplusStickNumber(r.getNumber()-numberStickSum);
 			r.setSurplusSendNumber(r.getNumber()-numberSendSum);;
 		});
 		return result;

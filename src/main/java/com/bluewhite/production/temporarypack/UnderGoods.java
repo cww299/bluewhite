@@ -80,6 +80,12 @@ public class UnderGoods extends BaseEntity<Long> {
 	 * 剩余发货数量
 	 */
 	@Transient
+	private Integer surplusStickNumber;
+	
+	/**
+	 * 剩余发货数量
+	 */
+	@Transient
 	private Integer surplusSendNumber;
 
 	/**
@@ -93,8 +99,16 @@ public class UnderGoods extends BaseEntity<Long> {
 	@Transient
 	private Date orderTimeEnd;
 
-
 	
+	
+	public Integer getSurplusStickNumber() {
+		return surplusStickNumber;
+	}
+
+	public void setSurplusStickNumber(Integer surplusStickNumber) {
+		this.surplusStickNumber = surplusStickNumber;
+	}
+
 	public Integer getSurplusSendNumber() {
 		return surplusSendNumber;
 	}

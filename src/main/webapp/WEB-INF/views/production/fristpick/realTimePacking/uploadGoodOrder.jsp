@@ -141,6 +141,7 @@ layui.config({
 			       { title:'产品名',   field:'product_name',	},
 			       { title:'批次数量',   field:'number', 	},
 			       { title:'剩余发货数量',   field:'surplusSendNumber', 	},
+			       { title:'剩余量化数量',   field:'surplusStickNumber', 	},
 			       { title:'备注',   field:'remarks',	},
 			       ]],
 			 done:function(){
@@ -193,7 +194,7 @@ layui.config({
 				content: html,
 				btn:['保存','取消'],
 				success:function(){
-					laydate.render({ elem:'#allotTime', type:'datetime', });
+					laydate.render({ elem:'#allotTime', type:'datetime', value: data.allotTime || new Date(), });
 					$('#productNameInput').unbind().on('click',function(){
 						var chooseProducyWin = layer.open({
 							type:1,
