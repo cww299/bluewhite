@@ -134,7 +134,7 @@ public class TemporaryPackAction {
 	public CommonResponse auditQuantitative(String ids) {
 		CommonResponse cr = new CommonResponse();
 		quantitativeService.auditQuantitative(ids);
-		cr.setMessage("成功");
+		cr.setMessage("审核成功");
 		return cr;
 	}
 
@@ -146,7 +146,7 @@ public class TemporaryPackAction {
 	public CommonResponse sendQuantitative(String ids) {
 		CommonResponse cr = new CommonResponse();
 		quantitativeService.sendQuantitative(ids);
-		cr.setMessage("成功");
+		cr.setMessage("发货成功");
 		return cr;
 	}
 
@@ -158,7 +158,7 @@ public class TemporaryPackAction {
 	public CommonResponse printQuantitative(String ids) {
 		CommonResponse cr = new CommonResponse();
 		quantitativeService.printQuantitative(ids);
-		cr.setMessage("成功");
+		cr.setMessage("打印成功");
 		return cr;
 	}
 
