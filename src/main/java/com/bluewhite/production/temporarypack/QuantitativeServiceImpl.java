@@ -110,6 +110,7 @@ public class QuantitativeServiceImpl extends BaseServiceImpl<Quantitative, Long>
 		} else {
 			quantitative.setQuantitativeNumber(
 					Constants.XHD + StringUtil.getDate() + SalesUtils.get0LeftString((int) (dao.count() + 1), 8));
+			quantitative.setAudit(0);
 			quantitative.setPrint(0);
 			quantitative.setFlag(0);
 		}
@@ -155,7 +156,7 @@ public class QuantitativeServiceImpl extends BaseServiceImpl<Quantitative, Long>
 					Long id = Long.parseLong(idArr[i]);
 					Quantitative quantitative = dao.findOne(id);
 					if (quantitative.getAudit() == 1) {
-						throw new ServiceException("已发货请勿多次发货");
+						throw new ServiceException("已审核请勿多次审核");
 					}
 					quantitative.setAudit(1);
 					dao.save(quantitative);
