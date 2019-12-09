@@ -124,15 +124,28 @@ public class TemporaryPackAction {
 		}
 		return cr;
 	}
-
+	
+	
 	/**
-	 * 发货 量化单
+	 * 审核 量化单
 	 */
 	@RequestMapping(value = "/temporaryPack/auditQuantitative", method = RequestMethod.GET)
 	@ResponseBody
 	public CommonResponse auditQuantitative(String ids) {
 		CommonResponse cr = new CommonResponse();
 		quantitativeService.auditQuantitative(ids);
+		cr.setMessage("成功");
+		return cr;
+	}
+
+	/**
+	 * 发货 量化单
+	 */
+	@RequestMapping(value = "/temporaryPack/sendQuantitative", method = RequestMethod.GET)
+	@ResponseBody
+	public CommonResponse sendQuantitative(String ids) {
+		CommonResponse cr = new CommonResponse();
+		quantitativeService.sendQuantitative(ids);
 		cr.setMessage("成功");
 		return cr;
 	}

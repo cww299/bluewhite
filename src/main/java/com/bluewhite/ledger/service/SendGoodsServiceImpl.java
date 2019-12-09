@@ -75,12 +75,22 @@ public class SendGoodsServiceImpl extends BaseServiceImpl<SendGoods, Long> imple
 				predicate.add(cb.between(root.get("sendDate").as(Date.class), param.getOrderTimeBegin(),
 						param.getOrderTimeEnd()));
 			}
-
 			Predicate[] pre = new Predicate[predicate.size()];
 			query.where(predicate.toArray(pre));
 			return null;
 		}, page);
 		PageResult<SendGoods> result = new PageResult<>(pages, page);
+		result.getRows().forEach(s->{
+			//通过销售人员和产品id查询出所属的库存，进行库存状态的更新
+			//1.查出销售人员的生产计划单，有多少入库单
+			//2.查出销售人员和产品id通过的申请单，获取到申请数量
+			//3.查出共有库存
+			
+			
+			
+			
+		});
+		
 		return result;
 	}
 

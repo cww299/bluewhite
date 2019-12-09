@@ -108,6 +108,12 @@ public class Quantitative extends BaseEntity<Long> {
 	private Integer print;
 	
 	/**
+	 * 是否审核
+	 */
+	@Column(name = "audit")
+	private Integer audit;
+	
+	/**
 	 * 产品名称
 	 */
 	@Transient
@@ -163,6 +169,14 @@ public class Quantitative extends BaseEntity<Long> {
 	
 	
 	
+	public Integer getAudit() {
+		return audit;
+	}
+
+	public void setAudit(Integer audit) {
+		this.audit = audit;
+	}
+
 	public String getCustomerName() {
 		return customerName;
 	}

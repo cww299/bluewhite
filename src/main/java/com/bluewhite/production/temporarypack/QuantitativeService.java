@@ -35,10 +35,17 @@ public interface QuantitativeService extends BaseCRUDService<Quantitative,Long>{
 	int printQuantitative(String ids);
 	
 	/**
-	 * 
+	 * 删除
 	 * @param ids
 	 */
 	int deleteQuantitative(String ids);
+	
+	/**
+	 * 审核
+	 * @param ids
+	 * @return
+	 */
+	int sendQuantitative(String ids);
 
 	
 
