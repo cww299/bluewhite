@@ -82,9 +82,10 @@ public class SendGoods extends BaseEntity<Long>{
 	private String remark;
 	
 	/**
+	 * (1.库存不足，2.无库存)
 	 * 发货状态
 	 */
-	@Column(name = "status")
+	@Transient
 	private Integer status;
 	
 	/**
