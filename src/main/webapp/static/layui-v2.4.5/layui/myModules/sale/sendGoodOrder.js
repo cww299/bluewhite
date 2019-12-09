@@ -45,8 +45,8 @@ layui.extend({
 	              		placeholder="点击进行客户选择" readonly lay-verify="required" ></td>
 	              <td class="imgTd" colspan="4" rowspan="4">
 	                <div><b id="allWarehouseNumber">0</b><p>总库存数量</p></div>
-	                <div>0<p>业务员所属数量</p></div>
-	                <div>需要申请<p>发货状态</p></div>
+	                <div><b id="myNumber">0</b><p>业务员所属数量</p></div>
+	                <div><b id="myState">无</b><p>发货状态</p></div>
 	              </td>
 	            </tr>
 	            <tr>
@@ -60,7 +60,9 @@ layui.extend({
 	              <td colspan=""><input type="text" class="layui-input" value="" name="sendDate" value="{{ d.sendDate || ""}}"
 	              		id="sendGoodDate" lay-verify="required"></td>
 	              <td class="titleTd"><b class="red">*</b>发货数量：</td>
-	              <td colspan=""><input type="text" class="layui-input" lay-verify="number" name="number" value="{{ d.number || 0 }}">
+	              <td colspan=""><input type="text" class="layui-input" lay-verify="number" id="sendGoodNumber"
+	              		name="number" value="{{ d.number || 0 }}" onkeyup="value=value.replace(/[^\\d]/g,'')" 
+						onbeforepaste="clipboardData.setData('text',clipboardData.getData('text').replace(/[^\d]/g,''))">
 	            </tr>
 	            <tr>
 	              <td class="titleTd">备注：</td>
@@ -113,7 +115,7 @@ layui.extend({
 		<div id="inventoryRenderDiv"></div>
 	</div>
 	`;
-		
+	var allWarehouseNum = 0,myNumber = 0;
 	var sendGoodOrder = { };
 	
 	sendGoodOrder.add = function(opt){
@@ -147,6 +149,9 @@ layui.extend({
 			success:function(){
 				laydate.render({ elem:'#sendGoodDate', type:'datetime', });
 				laydate.render({ elem:'#askforDate', type:'datetime', value: new Date(), });
+				$('#sendGoodNumber').blur(function(){
+					showState();
+				})
 				$('#sureAddSendOrder').click(function(){
 					$("#sureAddSendOrderSubmit").click();
 				})
@@ -300,11 +305,20 @@ layui.extend({
 		var pid = $('#productIdHidden').val();
 		if(pid){
 			table.reload('otherWarehouseTable',{
-				url: myutil.config.ctx+'/ledger/getOrderSend',
+				url: myutil.config.ctx+'/ledger/getOrderSend?include=1',
 				where:{
 					productId: pid,
-					include: 1,
 				},
+			})
+			myutil.getData({
+				url: myutil.config.ctx+'/ledger/getOrderSend?include=0&productId='+pid,
+				success:function(d){
+					myNumber = 0;
+					layui.each(d,function(index,item){
+						myNumber += item.number;
+					})
+					showState();
+				}
 			})
 		}
 	}
@@ -328,7 +342,8 @@ layui.extend({
 				table.on('rowDouble(choosedCustomerTable)',function(obj){
 					var data = obj.data;
 					$('#customerIdHidden').val(data.id);
-						$('#customInputChoose').val(data.name);
+					$('#customInputChoose').val(data.name);
+					
 					layer.close(chooseProductWin);
 				});
 			},
@@ -351,11 +366,10 @@ layui.extend({
 					done:function(){
 						table.on('rowDouble(tableData)', function(obj){
 							var data = obj.data;
-							var allWarehouseNum = 0;
+							allWarehouseNum = 0;
 							layui.each(data.mapList,function(index,item){
 								allWarehouseNum += item.number;
 							})
-							$('#allWarehouseNumber').html(allWarehouseNum);
 							$('#productIdHidden').val(data.id);
 							$('#productInputChoose').val(data.name);
 							layer.close(chooseProductWinNew);
@@ -367,10 +381,26 @@ layui.extend({
 		})
 		
 	}
-	
+	var state = ['库存充足','库存不足','无库存',];
+	function showState(){
+		var s = 0,color = 'red';
+		var sendGoodNumber = $('#sendGoodNumber').val() || 0;
+		$('#myNumber').html(myNumber);
+		$('#allWarehouseNumber').html(allWarehouseNum);
+		if(sendGoodNumber<=myNumber){
+			s = 0;
+			color = '#16fb16';
+		}
+		else if(sendGoodNumber>myNumber)
+			s = 1;
+		else if(myNumber==0)
+			s = 2;
+		$('#myState').html('<font style="color:'+color+'">'+state[s]+'</font>');
+	}
 	sendGoodOrder.init = function(done){
 		var filePath = layui.cache.modules.sendGoodOrder.substr(0, layui.cache.modules.sendGoodOrder.lastIndexOf('/'));
 		layui.link(filePath+"/../css/sale/sendGoodOrder.css");
+		done && done();
 	};
 	exports("sendGoodOrder",sendGoodOrder);
 });
