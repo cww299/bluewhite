@@ -143,7 +143,7 @@ public class Constants {
     public final static String  CPCK = "CPCK";
     //成品入库
     public final static String  CPRK = "CPRK";
-    //下货单
-    public final static String  XHD = "XHD";
+    //量化单
+    public final static String  LHTB = "LHTB";
     
 }
