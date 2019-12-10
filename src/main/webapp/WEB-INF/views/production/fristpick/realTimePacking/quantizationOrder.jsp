@@ -417,14 +417,16 @@ layui.config({
 							deleFun:function(ids,check){ },
 							addTemp:{
 								underGoodsId: allUoloadOrder[0]?allUoloadOrder[0].id:"",
-								singleNumber: 0,
+								singleNumber: 0,actualSingleNumber:0,
 							},
 						},
 						autoUpdate:{
 							field: { underGoods_id:'underGoodsId', },
+							saveUrl: '/temporaryPack/setActualSingleNumber',
+							nolyUpdateField: ['actualSingleNumber'],
 						},
 						verify:{
-							count:['singleNumber',],
+							count:['actualSingleNumber'],
 						},
 						cols:[(function(){
 							var cols = [
@@ -432,6 +434,7 @@ layui.config({
 								{ title:'下货单~批次号~剩余数量', field:'underGoods_id', type:'select',
 									select:{data: allUoloadOrder, name:['product_name','bacthNumber','surplusStickNumber'],} },
 						        { title:'单包个数',   field:'singleNumber',	 edit: isStickBagAccount,	width:'10%',},
+						        { title:'实际发货数量',   field:'actualSingleNumber',	 edit: isStickBagAccount,	width:'15%',},
 							];
 							if(isStickBagAccount)
 								cols.push({ title:'操作',field:'de', event:'deleteTr', edit:false,width:'10%',
