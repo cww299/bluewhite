@@ -3,6 +3,8 @@ package com.bluewhite.ledger.service;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 import javax.persistence.criteria.Predicate;
 
@@ -13,14 +15,19 @@ import org.springframework.util.StringUtils;
 
 import com.bluewhite.base.BaseServiceImpl;
 import com.bluewhite.common.Constants;
+import com.bluewhite.common.ServiceException;
 import com.bluewhite.common.entity.PageParameter;
 import com.bluewhite.common.entity.PageResult;
 import com.bluewhite.common.utils.SalesUtils;
 import com.bluewhite.common.utils.StringUtil;
 import com.bluewhite.ledger.dao.OutStorageDao;
 import com.bluewhite.ledger.dao.PutStorageDao;
+import com.bluewhite.ledger.dao.SendGoodsDao;
+import com.bluewhite.ledger.entity.Order;
+import com.bluewhite.ledger.entity.OrderChild;
 import com.bluewhite.ledger.entity.OutStorage;
 import com.bluewhite.ledger.entity.PutStorage;
+import com.bluewhite.ledger.entity.SendGoods;
 
 @Service
 public class OutStorageServiceImpl extends BaseServiceImpl<OutStorage, Long> implements OutStorageService {
@@ -29,7 +36,13 @@ public class OutStorageServiceImpl extends BaseServiceImpl<OutStorage, Long> imp
 	private OutStorageDao dao;
 	@Autowired
 	private PutStorageDao putStorageDao;
-
+	@Autowired
+	private SendGoodsDao sendGoodsDao;
+	@Autowired
+	private OutStorageDao outStorageDao;
+	@Autowired
+	private OrderService orderService;
+	
 	@Override
 	public void saveOutStorage(OutStorage outStorage) {
 		if(outStorage.getId()!=null){  
@@ -96,6 +109,39 @@ public class OutStorageServiceImpl extends BaseServiceImpl<OutStorage, Long> imp
 		PageResult<OutStorage> result = new PageResult<>(pages, page);
 		return result;
 	}
+
+	@Override
+	public int sendOutStorage(String ids) {
+		int i = 0;
+		if (!StringUtils.isEmpty(ids)) {
+			String[] idStrings = ids.split(",");
+			for (String idString : idStrings) {
+				Long id = Long.parseLong(idString);
+				SendGoods sendGoods = sendGoodsDao.findOne(id);
+				Order order = new Order(); 
+				order.setProductId(sendGoods.getProductId());
+				order.setInclude(true);
+				List<Map<String, Object>> mapsList = orderService.findListSend(order);
+				int number = 0;
+				for(Map<String, Object> map : mapsList ){
+					number+=Integer.valueOf(map.get("number").toString());
+				}
+				if(sendGoods.getNumber()<number){
+					throw new ServiceException("库存不足，无法发货");
+				}
+				if(number<=0){
+					throw new ServiceException("无库存");
+				}
+				
+				
+				
+				
+				i++;
+			}
+		}
+		return i;
+	}
+		
 
 
 }

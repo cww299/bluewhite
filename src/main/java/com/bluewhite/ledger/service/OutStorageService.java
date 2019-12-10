@@ -28,5 +28,11 @@ public interface OutStorageService  extends BaseCRUDService<OutStorage,Long>{
 	 * @return
 	 */
 	public PageResult<OutStorage> findPages(PageParameter page, OutStorage outStorage);
+	
+	/**
+	 * 对发货单进行出库
+	 * @param ids
+	 */
+	public int sendOutStorage(String ids);
 
 }
