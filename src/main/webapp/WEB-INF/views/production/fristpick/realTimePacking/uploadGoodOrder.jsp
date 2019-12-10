@@ -78,9 +78,9 @@ var TPL = [
 var TPL_CHOOSE_PRODUCT = [
 		'<div style="padding:10px;">',
 			'<table class="layui-form searchTable"><tr>',
-				'<td>商品名：</td>',
+				'<td>产品编号：</td>',
 				'<td><input type="text" name="number" class="layui-input"></td>',
-				'<td>商品名：</td>',
+				'<td>产品名：</td>',
 				'<td><input type="text" name="name" class="layui-input"></td>',
 				'<td><span class="layui-btn" lay-submit lay-filter="searchProductBtn">搜索</span></td>',
 				'<td></td>',
