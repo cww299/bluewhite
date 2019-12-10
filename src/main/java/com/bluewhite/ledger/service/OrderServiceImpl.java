@@ -272,6 +272,8 @@ public class OrderServiceImpl extends BaseServiceImpl<Order, Long> implements Or
 		return count;
 	}
 
+	
+	//公共库存未处理
 	@Override
 	public List<Map<String, Object>> findListSend(Order param) {
 		//是否是自己的库存
