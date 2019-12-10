@@ -1123,15 +1123,30 @@ public class LedgerAction {
 
 	
 	/**
+	 * （1.成品仓库，2.皮壳仓库）根据发货单查询库存详情
+	 * 
+	 * @return
+	 */
+	@RequestMapping(value = "/ledger/inventory/sendPutStorage", method = RequestMethod.POST)
+	@ResponseBody
+	public CommonResponse sendPutStorage(Long id) {
+		CommonResponse cr = new CommonResponse();
+		outStorageService.sendPutStorage(id);
+		cr.setMessage("查询成功");
+		return cr;
+	}
+	
+	
+	/**
 	 * （1.成品仓库，2.皮壳仓库）对发货单进行出库
 	 * 
 	 * @return
 	 */
 	@RequestMapping(value = "/ledger/inventory/sendOutStorage", method = RequestMethod.POST)
 	@ResponseBody
-	public CommonResponse sendOutStorage(String ids) {
+	public CommonResponse sendOutStorage(Long id,String putStorageIds) {
 		CommonResponse cr = new CommonResponse();
-		outStorageService.sendOutStorage(ids);
+		outStorageService.sendOutStorage(id,putStorageIds);
 		cr.setMessage("成功出库");
 		return cr;
 	}

@@ -166,9 +166,22 @@ public class Quantitative extends BaseEntity<Long> {
 	@Transient
 	private String customerName;
 	
+	/**
+	 * ids
+	 */
+	@Transient
+	private String ids;
 	
 	
 	
+	public String getIds() {
+		return ids;
+	}
+
+	public void setIds(String ids) {
+		this.ids = ids;
+	}
+
 	public Integer getAudit() {
 		return audit;
 	}
