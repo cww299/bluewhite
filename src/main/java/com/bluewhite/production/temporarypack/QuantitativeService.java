@@ -19,7 +19,7 @@ public interface QuantitativeService extends BaseCRUDService<Quantitative,Long>{
 	 * @param quantitative
 	 */
 	public void saveQuantitative(Quantitative quantitative);
-
+	
 	/**
 	 * 发货
 	 * @param ids
