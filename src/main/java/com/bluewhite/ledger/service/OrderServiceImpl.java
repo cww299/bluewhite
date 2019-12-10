@@ -285,8 +285,11 @@ public class OrderServiceImpl extends BaseServiceImpl<Order, Long> implements Or
 		putStorageList.forEach(m -> {
 			List<Long> longList = outStorageDao.findPutStorageId(m.getId());
 			List<OutStorage> outStorageList = outStorageDao.findAll(longList);
-			int arrNumber = outStorageList.stream().mapToInt(OutStorage::getArrivalNumber).sum();
-			m.setSurplusNumber(m.getArrivalNumber() - arrNumber);
+			if(outStorageList.size()>0){
+				
+				int arrNumber = outStorageList.stream().mapToInt(OutStorage::getArrivalNumber).sum();
+				m.setSurplusNumber(m.getArrivalNumber() - arrNumber);
+			}
 		});
 		// 排除掉已经全部出库的入库单
 		putStorageList = putStorageList.stream().filter(PutStorage -> PutStorage.getSurplusNumber() > 0)
@@ -311,6 +314,7 @@ public class OrderServiceImpl extends BaseServiceImpl<Order, Long> implements Or
 		putStorageList.forEach(p -> {
 			Map<String, Object> map = new HashMap<String, Object>();
 			if(p.getOrderOutSource().getOrderId()!=null){
+				map.put("putStorageId", p.getId());
 				map.put("id", p.getOrderOutSource().getOrderId());
 				map.put("order", p.getOrderOutSource().getOrder());
 				map.put("number", p.getSurplusNumber());
@@ -344,6 +348,7 @@ public class OrderServiceImpl extends BaseServiceImpl<Order, Long> implements Or
 			}
 			nmap.put("bacth", order.getBacthNumber());
 			nmap.put("userList", userList);
+			nmap.put("putStorageId", slist.get(0).get("putStorageId"));
 			result.add(nmap);
 		});
 		return result;
