@@ -86,7 +86,7 @@ layui.config({
 			       { title:'发货日期',   field:'sendDate', width:'10%',  },
 			       { title:'客户',   field:'customer_name',   width:'12%',   },
 			       { title:'产品', 	field:'product_name',  },
-			       { title:'产品类型', 	field:'productType', transData:['','成品','皮壳'] },
+			       { title:'产品类型', 	field:'productType', width:'10%', transData:{data:['','成品','皮壳']} },
 			       { title:'数量',   field:'number',  width:'6%',},
 			       { title:'剩余数量',   field:'surplusNumber',  width:'6%',	},
 			       { title:'发货状态',field:'status',width:'8%',transData:{data:['库存充足','库存不足','无库存',]}, },
