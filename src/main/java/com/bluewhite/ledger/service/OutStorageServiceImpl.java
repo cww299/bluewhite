@@ -30,13 +30,14 @@ public class OutStorageServiceImpl extends BaseServiceImpl<OutStorage, Long> imp
 	@Autowired
 	private OutStorageDao dao;
 	@Autowired
-	private PutStorageDao putStorageDao;
-	@Autowired
 	private SendGoodsDao sendGoodsDao;
 	@Autowired
 	private OutStorageDao outStorageDao;
 	@Autowired
 	private OrderService orderService;
+	@Autowired
+	private PutStorageService putStorageService;
+	
 	
 	@Override
 	public void saveOutStorage(OutStorage outStorage) {
@@ -49,7 +50,7 @@ public class OutStorageServiceImpl extends BaseServiceImpl<OutStorage, Long> imp
 				if (idStrings.length > 0) {
 					for (String ids : idStrings) {
 						Long id = Long.parseLong(ids);
-						PutStorage putStorage = putStorageDao.findOne(id);
+						PutStorage putStorage = putStorageService.findOne(id);
 						
 						
 					}
@@ -124,11 +125,10 @@ public class OutStorageServiceImpl extends BaseServiceImpl<OutStorage, Long> imp
 	}
 
 	@Override
-	public void getSendPutStorage(Long id) {
+	public void getSendPutStorage(Long id) { 
 		SendGoods sendGoods = sendGoodsDao.findOne(id);
-		
-		
-		
+		//获取出库单剩余数量
+		List<PutStorage> putStorageList = putStorageService.detailsInventory((long)274, sendGoods.getProductId());
 		
 		
 		
