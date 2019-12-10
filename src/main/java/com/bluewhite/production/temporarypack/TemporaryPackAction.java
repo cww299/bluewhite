@@ -52,7 +52,7 @@ public class TemporaryPackAction {
 						"quantitativeChilds", "packingMaterials", "user", "flag", "print","customer","audit")
 				.addRetainTerm(Customer.class, "id", "name")
 				.addRetainTerm(QuantitativeChild.class, "id", "underGoods", "sumPackageNumber", "singleNumber",
-						"number","actualSingleNumber","check")
+						"number","actualSingleNumber","checks")
 				.addRetainTerm(PackingMaterials.class, "id", "packagingMaterials", "packagingCount")
 				.addRetainTerm(User.class, "id", "userName").addRetainTerm(BaseData.class, "id", "name")
 				.addRetainTerm(UnderGoods.class, "id", "remarks", "product", "number", "bacthNumber", "status",
@@ -152,7 +152,7 @@ public class TemporaryPackAction {
 	/**
 	 * 对 量化单 进行实际发货数字的补录
 	 */
-	@RequestMapping(value = "/temporaryPack/setActualSingleNumber", method = RequestMethod.GET)
+	@RequestMapping(value = "/temporaryPack/setActualSingleNumber", method = RequestMethod.POST)
 	@ResponseBody
 	public CommonResponse setActualSingleNumber(Long id,Integer actualSingleNumber) {
 		CommonResponse cr = new CommonResponse();

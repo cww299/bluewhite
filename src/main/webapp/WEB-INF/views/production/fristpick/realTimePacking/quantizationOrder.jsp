@@ -79,7 +79,7 @@
 <div id="toolbarTpl" style="display:none;">
 	<span class="layui-btn layui-btn-sm layui-btn-warm" lay-event="update">修改数据</span>
 	<shiro:hasAnyRoles name="superAdmin,stickBagAccount">
-		<span class="layui-btn layui-btn-sm layui-btn-" lay-event="add">新增数据</span>
+		<span class="layui-btn layui-btn-sm layui-btn-" lay-event="add" id="stickBagAccountBtn">新增数据</span>
 		<span class="layui-btn layui-btn-sm layui-btn-normal" lay-event="audit">审核</span>
 	</shiro:hasAnyRoles>
 	<shiro:hasAnyRoles name="superAdmin,stickBagStick">
@@ -113,13 +113,14 @@ layui.config({
 			elem: '#orderTimeBegin', range: '~',
 		})
 		var isStickBagStick = $('#stickBagStickBtn').length>0;
+		var isStickBagAccount = $('#stickBagAccountBtn').length>0;
 		var allUoloadOrder = [];
 		var allMaterials = [];
 		var allUser ='',allCustomer='';
 		var tableDataNoTrans = [];
 		mytable.render({
 			elem:'#tableData',
-			url:'${ctx}/temporaryPack/findPagesQuantitative?'+(isStickBagStick?'audit=1':''),
+			url:'${ctx}/temporaryPack/findPagesQuantitative?'+((isStickBagStick && !isStickBagAccount)?'audit=1':''),
 			toolbar: $('#toolbarTpl').html(),
 			curd:{
 				btn: isStickBagStick?[]:[4],
@@ -181,6 +182,9 @@ layui.config({
 								flag: d[i].flag,
 								singleNumber: child[j].singleNumber,
 								underGoods: child[j].underGoods,
+								actualSingleNumber: child[j].actualSingleNumber,
+								checks: child[j].checks,
+								childId: child[j].id,
 							})
 						}
 					}
@@ -202,6 +206,9 @@ layui.config({
 			       { title:'批次号',   field:'underGoods_bacthNumber',	width:'8%', },
 			       { title:'产品名',   field:'underGoods_product_name', 	},
 			       { title:'单包个数',   field:'singleNumber',	width:'8%', },
+			       { title:'实际数量',   field:'actualSingleNumber',	width:'8%',event:'transColor', templet: function(d){
+			    	   				return '<span style="color:'+(d.checks?'red':"")+'">'+d.actualSingleNumber+'<span>'; },
+			       },
 			       ]],
 	       done:function(){
 				merge('quantitativeNumber');
@@ -239,6 +246,24 @@ layui.config({
 				form.render();
 			}
 		})
+		table.on('tool(tableData)',function(obj){
+			if(isStickBagAccount){
+				if(obj.event=='transColor'){
+					var data = obj.data;
+					myutil.saveAjax({
+						url:'/temporaryPack/checkNumber',
+						data:{
+							id: data.childId,
+							check: data.checks?0:1,
+						},
+						type:'get',
+						success:function(){
+							table.reload('tableData');
+						}
+					})
+				}
+			}
+		})
 		function printOrder(){	
 			var choosed=layui.table.checkStatus('tableData').data;
 			if(choosed.length<1)
@@ -253,7 +278,6 @@ layui.config({
 				})
 			})
 			var tpl = $('#printPackTpl').html(), html='<div id="printDiv">';
-			console.log(printData)
 			layui.each(printData,function(index,item){
 				laytpl(tpl).render(item,function(h){ html += h; })
 			})
@@ -372,7 +396,7 @@ layui.config({
 						data: addTable,
 						size:'lg',
 						curd:{
-							btn: isStickBagStick?[3]:[1,2,3],
+							btn: isStickBagAccount?[1,2,3]:[3],
 							saveFun: function(d){
 								var url = '/temporaryPack/saveQuantitative';
 								layui.each(table.cache['addTable'],function(index,item){
@@ -384,6 +408,12 @@ layui.config({
 										underGoodsId: item.underGoodsId || item.underGoods.id,
 									})
 								})
+								if(d.length===0)
+									return myutil.emsg('下货单不能为空！');
+								for(var i=0;i<d.length;i++){
+									if(!d[i].underGoodsId)
+										return myutil.emsg('请选择下货单！');
+								}
 								var mateData = table.getTemp('addMaterTable').data;
 								layui.each(table.cache['addMaterTable'],function(index,item){
 									if(typeof(item)==='object' && item.length==0)
@@ -394,6 +424,7 @@ layui.config({
 										packagingCount: item.packagingCount,
 									})
 								})
+								
 								myutil.saveAjax({
 									url: url,
 									data: $.extend({},{
@@ -410,23 +441,26 @@ layui.config({
 							deleFun:function(ids,check){ },
 							addTemp:{
 								underGoodsId: allUoloadOrder[0]?allUoloadOrder[0].id:"",
-								singleNumber: 0,
+								singleNumber: 0,actualSingleNumber:0,
 							},
 						},
 						autoUpdate:{
 							field: { underGoods_id:'underGoodsId', },
+							saveUrl: '/temporaryPack/setActualSingleNumber',
+							nolyUpdateField: ['actualSingleNumber'],
 						},
 						verify:{
-							count:['singleNumber',],
+							count:['actualSingleNumber'],
 						},
 						cols:[(function(){
 							var cols = [
 								{ type:'checkbox',},
 								{ title:'下货单~批次号~剩余数量', field:'underGoods_id', type:'select',
 									select:{data: allUoloadOrder, name:['product_name','bacthNumber','surplusStickNumber'],} },
-						        { title:'单包个数',   field:'singleNumber',	 edit: !isStickBagStick,	width:'10%',},
+						        { title:'单包个数',   field:'singleNumber',	 edit: isStickBagAccount,	width:'10%',},
+						        { title:'实际发货数量',   field:'actualSingleNumber',	 edit: isStickBagAccount,	width:'15%',},
 							];
-							if(!isStickBagStick)
+							if(isStickBagAccount)
 								cols.push({ title:'操作',field:'de', event:'deleteTr', edit:false,width:'10%',
 						        	templet:'<div><span class="layui-btn layui-btn-xs layui-btn-danger">删除</span></div>'});
 							return cols;
@@ -492,6 +526,7 @@ layui.config({
 		}
 		function getDataOfUoloadOrder(){
 			allUoloadOrder = myutil.getDataSync({ url: '${ctx}/temporaryPack/findPagesUnderGoods?size=99999', });
+			allUoloadOrder.unshift({id:'',bacthNumber:'请选择'})
 		}
 		myutil.getData({
 			url: myutil.config.ctx+'/basedata/list?type=packagingMaterials',

@@ -47,16 +47,16 @@ public class QuantitativeChild  extends BaseEntity<Long> {
 	 * 是否核实
 	 * 
 	 */
-	@Column(name = "check")
-	private Integer check;
+	@Column(name = "checks")
+	private Integer checks;
 	
 	
-	public Integer getCheck() {
-		return check;
+	public Integer getChecks() {
+		return checks;
 	}
 
-	public void setCheck(Integer check) {
-		this.check = check;
+	public void setChecks(Integer check) {
+		this.checks = check;
 	}
 
 	public Integer getActualSingleNumber() {
