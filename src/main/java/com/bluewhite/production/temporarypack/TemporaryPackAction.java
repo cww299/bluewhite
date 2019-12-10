@@ -7,6 +7,7 @@ import java.text.SimpleDateFormat;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.propertyeditors.CustomDateEditor;
 import org.springframework.stereotype.Controller;
+import org.springframework.util.StringUtils;
 import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.InitBinder;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -108,7 +109,7 @@ public class TemporaryPackAction {
 	@ResponseBody
 	public CommonResponse saveQuantitative(Quantitative quantitative) {
 		CommonResponse cr = new CommonResponse();
-		if (quantitative.getId() == null) {
+		if (StringUtils.isEmpty(quantitative.getIds())) {
 			if (quantitative.getSumPackageNumber() > 0) {
 				for (int i = 0; i < quantitative.getSumPackageNumber(); i++) {
 					Quantitative ot = new Quantitative();
@@ -119,7 +120,15 @@ public class TemporaryPackAction {
 			}
 			cr.setMessage("新增成功");
 		} else {
-			quantitativeService.saveQuantitative(quantitative);
+			String[] idArr = quantitative.getIds().split(",");
+			if (idArr.length > 0) {
+				for (int i = 0; i < idArr.length; i++) {
+					Long id = Long.parseLong(idArr[i]);
+					Quantitative ot = quantitativeService.findOne(id);
+					BeanCopyUtils.copyNotEmpty(quantitative, ot, "");
+					quantitativeService.saveQuantitative(ot);
+				}
+			}
 			cr.setMessage("修改成功");
 		}
 		return cr;

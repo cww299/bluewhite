@@ -286,7 +286,6 @@ public class OrderServiceImpl extends BaseServiceImpl<Order, Long> implements Or
 			List<Long> longList = outStorageDao.findPutStorageId(m.getId());
 			List<OutStorage> outStorageList = outStorageDao.findAll(longList);
 			if(outStorageList.size()>0){
-				
 				int arrNumber = outStorageList.stream().mapToInt(OutStorage::getArrivalNumber).sum();
 				m.setSurplusNumber(m.getArrivalNumber() - arrNumber);
 			}

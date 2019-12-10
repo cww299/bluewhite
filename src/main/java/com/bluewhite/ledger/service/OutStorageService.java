@@ -33,6 +33,12 @@ public interface OutStorageService  extends BaseCRUDService<OutStorage,Long>{
 	 * 对发货单进行出库
 	 * @param ids
 	 */
-	public int sendOutStorage(String ids);
+	public int sendOutStorage(Long id,String putStorageIds);
+	
+	/**
+	 * 根据发货单获取库存详情
+	 * @param id
+	 */
+	public void sendPutStorage(Long id);
 
 }
