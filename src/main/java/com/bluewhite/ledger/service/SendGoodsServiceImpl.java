@@ -48,8 +48,11 @@ public class SendGoodsServiceImpl extends BaseServiceImpl<SendGoods, Long> imple
 	@Autowired
 	private OrderService orderService;
 	@Override
-	public PageResult<SendGoods> findPages(SendGoods param, PageParameter page) {
+	public PageResult<SendGoods> findPages(SendGoods param, PageParameter page) { 
 		CurrentUser cu = SessionManager.getUserSession();
+		
+		
+		
 		Page<SendGoods> pages = dao.findAll((root, query, cb) -> {
 			List<Predicate> predicate = new ArrayList<>();
 			// 按id过滤
@@ -59,6 +62,10 @@ public class SendGoodsServiceImpl extends BaseServiceImpl<SendGoods, Long> imple
 			// 按客户id过滤
 			if (param.getCustomerId() != null) {
 				predicate.add(cb.equal(root.get("customerId").as(Long.class), param.getCustomerId()));
+			}
+			// 按产品类型
+			if (param.getProductType() != null) {
+				predicate.add(cb.equal(root.get("productType").as(Integer.class), param.getProductType()));
 			}
 			// 按客户名称
 			if (!StringUtils.isEmpty(param.getCustomerName())) {
@@ -100,7 +107,7 @@ public class SendGoodsServiceImpl extends BaseServiceImpl<SendGoods, Long> imple
 			List<Map<String, Object>> mapsList = orderService.findListSend(order);
 			int number = 0;
 			for(Map<String, Object> map : mapsList ){
-				number+=(int)map.get("number");
+				number+=Integer.valueOf(map.get("number").toString());
 			}
 			int status = 0;
 			if(s.getNumber()<number){

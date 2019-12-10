@@ -80,7 +80,11 @@ public class SendGoods extends BaseEntity<Long>{
 	 */
 	@Column(name = "remark")
 	private String remark;
-	
+	/**
+	 * 产品分类(1=成品，2=皮壳)
+	 */
+	@Column(name = "product_type")
+	private Integer productType;
 	/**
 	 * (1.库存不足，2.无库存)
 	 * 发货状态
@@ -135,6 +139,14 @@ public class SendGoods extends BaseEntity<Long>{
 	
 	
 	
+	public Integer getProductType() {
+		return productType;
+	}
+
+	public void setProductType(Integer productType) {
+		this.productType = productType;
+	}
+
 	public String getRemark() {
 		return remark;
 	}

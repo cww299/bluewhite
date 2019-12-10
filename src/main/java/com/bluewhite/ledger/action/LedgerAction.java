@@ -110,8 +110,10 @@ public class LedgerAction {
 						"orderMaterials", "prepareEnough", "orderChilds", "audit", "orderNumber", "orderType")
 				.addRetainTerm(OrderMaterial.class, "id")
 				.addRetainTerm(OrderChild.class, "id", "customer", "user", "childNumber", "childRemark")
-				.addRetainTerm(Customer.class, "id", "name").addRetainTerm(User.class, "id", "userName")
-				.addRetainTerm(Product.class, "id", "name", "number").addRetainTerm(BaseData.class, "id", "name");
+				.addRetainTerm(Customer.class, "id", "name")
+				.addRetainTerm(User.class, "id", "userName")
+				.addRetainTerm(Product.class, "id", "name", "number")
+				.addRetainTerm(BaseData.class, "id", "name");
 	}
 
 	private ClearCascadeJSON clearCascadeJSONPacking;
@@ -119,11 +121,13 @@ public class LedgerAction {
 		clearCascadeJSONPacking = ClearCascadeJSON.get()
 				.addRetainTerm(Packing.class, "id", "number", "customer", "packingMaterials", "packingChilds",
 						"packingDate", "packingMaterials", "flag", "user", "type", "warehouseTypeId", "warehouseType")
-				.addRetainTerm(User.class, "id", "userName").addRetainTerm(Customer.class, "id", "name")
+				.addRetainTerm(User.class, "id", "userName")
+				.addRetainTerm(Customer.class, "id", "name")
 				.addRetainTerm(PackingChild.class, "id", "bacthNumber", "product", "count", "sendGoodsId",
 						"lastPackingChildId", "surplusNumber")
 				.addRetainTerm(PackingMaterials.class, "id", "packagingMaterials", "packagingCount")
-				.addRetainTerm(Product.class, "id", "name", "number").addRetainTerm(BaseData.class, "id", "name");
+				.addRetainTerm(Product.class, "id", "name", "number")
+				.addRetainTerm(BaseData.class, "id", "name");
 	}
 
 	private ClearCascadeJSON clearCascadeJSONSale;
@@ -134,8 +138,10 @@ public class LedgerAction {
 						"deliveryNumber", "deliveryDate", "disputeNumber", "disputeRemark", "deliveryCollectionDate",
 						"offshorePay", "acceptPay", "disputePay", "deliveryStatus", "warehouse", "warehouseType",
 						"confirm", "confirmNumber")
-				.addRetainTerm(BaseData.class, "id", "name").addRetainTerm(Customer.class, "id", "name", "user")
-				.addRetainTerm(User.class, "id", "userName").addRetainTerm(Product.class, "id", "name", "number");
+				.addRetainTerm(BaseData.class, "id", "name")
+				.addRetainTerm(Customer.class, "id", "name", "user")
+				.addRetainTerm(User.class, "id", "userName")
+				.addRetainTerm(Product.class, "id", "name", "number");
 	}
 
 	private ClearCascadeJSON clearCascadeJSONChild;
@@ -144,22 +150,27 @@ public class LedgerAction {
 				.addRetainTerm(PackingChild.class, "id", "bacthNumber", "product", "count", "sendDate", "flag",
 						"customer", "remark", "warehouse", "warehouseType", "confirm", "confirmNumber",
 						"warehouseTypeDelivery", "surplusNumber")
-				.addRetainTerm(BaseData.class, "id", "name").addRetainTerm(Customer.class, "id", "name", "user")
-				.addRetainTerm(User.class, "id", "userName").addRetainTerm(Product.class, "id", "name", "number");
+				.addRetainTerm(BaseData.class, "id", "name")
+				.addRetainTerm(Customer.class, "id", "name", "user")
+				.addRetainTerm(User.class, "id", "userName")
+				.addRetainTerm(Product.class, "id", "name", "number");
 	}
 
 	private ClearCascadeJSON clearCascadeJSONPrice;
 	{
 		clearCascadeJSONPrice = ClearCascadeJSON.get()
 				.addRetainTerm(PackingChild.class, "id", "product", "price", "customer", "sendDate")
-				.addRetainTerm(Customer.class, "id", "name").addRetainTerm(Product.class, "id", "name", "number");
+				.addRetainTerm(Customer.class, "id", "name")
+				.addRetainTerm(Product.class, "id", "name", "number");
 	}
 
 	private ClearCascadeJSON clearCascadeJSONSendGoods;
 	{
 		clearCascadeJSONSendGoods = ClearCascadeJSON.get()
-				.addRetainTerm(SendGoods.class, "id", "customer", "product", "number", "sendNumber","surplusNumber", "sendDate", "orderId")
-				.addRetainTerm(Customer.class, "id", "name").addRetainTerm(Product.class, "name", "number");
+				.addRetainTerm(SendGoods.class, "id","status", "customer", "product", "number", 
+						"sendNumber","surplusNumber", "sendDate","productType")
+				.addRetainTerm(Customer.class, "id", "name")
+				.addRetainTerm(Product.class, "name", "number");
 	}
 
 	private ClearCascadeJSON clearCascadeJSONMixed;
@@ -171,15 +182,18 @@ public class LedgerAction {
 
 	private ClearCascadeJSON clearCascadeJSONBill;
 	{
-		clearCascadeJSONBill = ClearCascadeJSON.get().addRetainTerm(Bill.class, "customerName", "customerId",
+		clearCascadeJSONBill = ClearCascadeJSON.get()
+				.addRetainTerm(Bill.class, "customerName", "customerId",
 				"billDate", "offshorePay", "acceptPay", "acceptPayable", "disputePay", "nonArrivalPay",
 				"overpaymentPay", "arrivalPay");
 	}
 
 	private ClearCascadeJSON clearCascadeJSONReceivedMoney;
 	{
-		clearCascadeJSONReceivedMoney = ClearCascadeJSON.get().addRetainTerm(ReceivedMoney.class, "id", "customer",
-				"receivedMoneyDate", "receivedMoney", "receivedRemark").addRetainTerm(Customer.class, "id", "name");
+		clearCascadeJSONReceivedMoney = ClearCascadeJSON.get()
+				.addRetainTerm(ReceivedMoney.class, "id", "customer",
+				"receivedMoneyDate", "receivedMoney", "receivedRemark")
+				.addRetainTerm(Customer.class, "id", "name");
 	}
 
 	private ClearCascadeJSON clearCascadeJSONOrderMaterial;
@@ -1107,6 +1121,23 @@ public class LedgerAction {
 		return cr;
 	}
 
+	
+	/**
+	 * （1.成品仓库，2.皮壳仓库）对发货单进行出库
+	 * 
+	 * @return
+	 */
+	@RequestMapping(value = "/ledger/inventory/sendOutStorage", method = RequestMethod.POST)
+	@ResponseBody
+	public CommonResponse sendOutStorage(String ids) {
+		CommonResponse cr = new CommonResponse();
+		outStorageService.sendOutStorage(ids);
+		cr.setMessage("成功出库");
+		return cr;
+	}
+	
+	
+	
 	/**
 	 * （1.成品仓库，2.皮壳仓库）生成出库单
 	 * 
@@ -1117,7 +1148,7 @@ public class LedgerAction {
 	public CommonResponse saveOutStorage(OutStorage outStorage) {
 		CommonResponse cr = new CommonResponse();
 		outStorageService.saveOutStorage(outStorage);
-		cr.setMessage("成功入库");
+		cr.setMessage("成功出库");
 		return cr;
 	}
 
