@@ -124,8 +124,9 @@ public class TemporaryPackAction {
 			if (idArr.length > 0) {
 				for (int i = 0; i < idArr.length; i++) {
 					Long id = Long.parseLong(idArr[i]);
-					Quantitative ot = quantitativeService.findOne(id);
+					Quantitative ot = new Quantitative();
 					BeanCopyUtils.copyNotEmpty(quantitative, ot, "");
+					ot.setId(id);
 					quantitativeService.saveQuantitative(ot);
 				}
 			}
