@@ -1,7 +1,5 @@
 package com.bluewhite.ledger.service;
 
-import static org.springframework.test.web.client.match.MockRestRequestMatchers.method;
-
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -19,12 +17,13 @@ import com.bluewhite.common.Constants;
 import com.bluewhite.common.ServiceException;
 import com.bluewhite.common.entity.PageParameter;
 import com.bluewhite.common.entity.PageResult;
-import com.bluewhite.common.utils.NumUtils;
 import com.bluewhite.common.utils.SalesUtils;
 import com.bluewhite.common.utils.StringUtil;
 import com.bluewhite.ledger.dao.OutStorageDao;
+import com.bluewhite.ledger.dao.PutOutStorageDao;
 import com.bluewhite.ledger.dao.PutStorageDao;
 import com.bluewhite.ledger.entity.OutStorage;
+import com.bluewhite.ledger.entity.PutOutStorage;
 import com.bluewhite.ledger.entity.PutStorage;
 import com.bluewhite.onlineretailers.inventory.service.InventoryService;
 
@@ -37,6 +36,9 @@ public class PutStorageServiceImpl extends BaseServiceImpl<PutStorage, Long> imp
 	private InventoryService inventoryService;
 	@Autowired
 	private OutStorageDao outStorageDao;
+	@Autowired
+	private PutOutStorageDao putOutStorageDao;
+	
 
 	@Override
 	public void savePutStorage(PutStorage putStorage) {
@@ -119,11 +121,13 @@ public class PutStorageServiceImpl extends BaseServiceImpl<PutStorage, Long> imp
 	public List<PutStorage> detailsInventory(Long warehouseTypeId, Long productId) {
 		List<PutStorage> putStorageList= dao.findByWarehouseTypeIdAndProductId(warehouseTypeId, productId);
 		putStorageList.forEach(m->{
-			List<Long> longList = outStorageDao.findPutStorageId(m.getId());
-			List<OutStorage> outStorageList = outStorageDao.findAll(longList);
-			int arrNumber = outStorageList.stream().mapToInt(OutStorage::getArrivalNumber).sum();
+			//入库单实际出库数量
+			List<PutOutStorage> outPutStorageList = putOutStorageDao.findByPutStorageId(m.getId());
+			int arrNumber = outPutStorageList.stream().mapToInt(PutOutStorage::getNumber).sum();
+			//入库单剩余数量
 			m.setSurplusNumber(m.getArrivalNumber() - arrNumber);
 		});
+		// 排除掉已经全部出库的入库单
 		putStorageList = putStorageList.stream().filter(PutStorage->PutStorage.getSurplusNumber()>0).collect(Collectors.toList());
 		return putStorageList;
 	}

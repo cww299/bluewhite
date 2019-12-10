@@ -147,6 +147,32 @@ public class TemporaryPackAction {
 		cr.setMessage("审核成功");
 		return cr;
 	}
+	
+	
+	/**
+	 * 对 量化单 进行实际发货数字的补录
+	 */
+	@RequestMapping(value = "/temporaryPack/setActualSingleNumber", method = RequestMethod.GET)
+	@ResponseBody
+	public CommonResponse setActualSingleNumber(Long id,Integer actualSingleNumber) {
+		CommonResponse cr = new CommonResponse();
+		quantitativeService.setActualSingleNumber(id,actualSingleNumber);
+		cr.setMessage("修改成功");
+		return cr;
+	}
+	
+	/**
+	 * 对 量化单 实际数字和贴包数字进行核对
+	 */
+	@RequestMapping(value = "/temporaryPack/checkNumber", method = RequestMethod.GET)
+	@ResponseBody
+	public CommonResponse checkNumber(Long id,Integer check) {
+		CommonResponse cr = new CommonResponse();
+		quantitativeService.checkNumber(id,check);
+		cr.setMessage("核对成功");
+		return cr;
+	}
+
 
 	/**
 	 * 发货 量化单

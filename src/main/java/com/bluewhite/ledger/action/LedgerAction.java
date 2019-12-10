@@ -1131,7 +1131,7 @@ public class LedgerAction {
 	@ResponseBody
 	public CommonResponse sendPutStorage(Long id) {
 		CommonResponse cr = new CommonResponse();
-		outStorageService.sendPutStorage(id);
+		outStorageService.getSendPutStorage(id);
 		cr.setMessage("查询成功");
 		return cr;
 	}
