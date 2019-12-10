@@ -124,11 +124,10 @@ public class QuantitativeServiceImpl extends BaseServiceImpl<Quantitative, Long>
 			for (int i = 0; i < jsonArray.size(); i++) {
 				JSONObject jsonObject = jsonArray.getJSONObject(i);
 				QuantitativeChild quantitativeChild = new QuantitativeChild();
-				if (jsonObject.getLong("id") != null) {
-					quantitativeChild = quantitativeChildDao.findOne(jsonObject.getLong("id"));
-				}
 				quantitativeChild.setUnderGoodsId(jsonObject.getLong("underGoodsId"));
 				quantitativeChild.setSingleNumber(jsonObject.getInteger("singleNumber"));
+				quantitativeChild.setActualSingleNumber(jsonObject.getInteger("singleNumber"));
+				quantitativeChild.setCheck(0);
 				quantitative.getQuantitativeChilds().add(quantitativeChild);
 			}
 		}
@@ -139,9 +138,6 @@ public class QuantitativeServiceImpl extends BaseServiceImpl<Quantitative, Long>
 			for (int i = 0; i < jsonArrayMaterials.size(); i++) {
 				PackingMaterials packingMaterials = new PackingMaterials();
 				JSONObject jsonObject = jsonArrayMaterials.getJSONObject(i);
-				if (jsonObject.getLong("id") != null) {
-					packingMaterials = packingMaterialsDao.findOne(jsonObject.getLong("id"));
-				}
 				packingMaterials.setPackagingId(jsonObject.getLong("packagingId"));
 				packingMaterials.setPackagingCount(jsonObject.getInteger("packagingCount"));
 				quantitative.getPackingMaterials().add(packingMaterials);
@@ -150,6 +146,12 @@ public class QuantitativeServiceImpl extends BaseServiceImpl<Quantitative, Long>
 		save(quantitative);
 	}
 
+
+		
+	
+	
+	
+	
 	@Override
 	public int auditQuantitative(String ids) {
 		int count = 0;
@@ -225,4 +227,23 @@ public class QuantitativeServiceImpl extends BaseServiceImpl<Quantitative, Long>
 		}
 		return count;
 	}
+
+	@Override
+	public void setActualSingleNumber(Long id, Integer actualSingleNumber) {
+		QuantitativeChild quantitativeChild = quantitativeChildDao.findOne(id);
+		quantitativeChild.setActualSingleNumber(actualSingleNumber);
+		if(quantitativeChild.getSingleNumber()!= actualSingleNumber){
+			quantitativeChild.setCheck(1);
+		}
+		quantitativeChildDao.save(quantitativeChild);
+	}
+
+	@Override
+	public void checkNumber(Long id, Integer check) {
+		QuantitativeChild quantitativeChild = quantitativeChildDao.findOne(id);
+		quantitativeChild.setCheck(check);
+		quantitativeChildDao.save(quantitativeChild);
+	}
+
+
 }

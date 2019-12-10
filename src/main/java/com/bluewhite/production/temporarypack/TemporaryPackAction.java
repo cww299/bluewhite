@@ -7,6 +7,7 @@ import java.text.SimpleDateFormat;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.propertyeditors.CustomDateEditor;
 import org.springframework.stereotype.Controller;
+import org.springframework.util.StringUtils;
 import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.InitBinder;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -51,7 +52,7 @@ public class TemporaryPackAction {
 						"quantitativeChilds", "packingMaterials", "user", "flag", "print","customer","audit")
 				.addRetainTerm(Customer.class, "id", "name")
 				.addRetainTerm(QuantitativeChild.class, "id", "underGoods", "sumPackageNumber", "singleNumber",
-						"number")
+						"number","actualSingleNumber","check")
 				.addRetainTerm(PackingMaterials.class, "id", "packagingMaterials", "packagingCount")
 				.addRetainTerm(User.class, "id", "userName").addRetainTerm(BaseData.class, "id", "name")
 				.addRetainTerm(UnderGoods.class, "id", "remarks", "product", "number", "bacthNumber", "status",
@@ -108,7 +109,7 @@ public class TemporaryPackAction {
 	@ResponseBody
 	public CommonResponse saveQuantitative(Quantitative quantitative) {
 		CommonResponse cr = new CommonResponse();
-		if (quantitative.getId() == null) {
+		if (StringUtils.isEmpty(quantitative.getIds())) {
 			if (quantitative.getSumPackageNumber() > 0) {
 				for (int i = 0; i < quantitative.getSumPackageNumber(); i++) {
 					Quantitative ot = new Quantitative();
@@ -119,7 +120,16 @@ public class TemporaryPackAction {
 			}
 			cr.setMessage("新增成功");
 		} else {
-			quantitativeService.saveQuantitative(quantitative);
+			String[] idArr = quantitative.getIds().split(",");
+			if (idArr.length > 0) {
+				for (int i = 0; i < idArr.length; i++) {
+					Long id = Long.parseLong(idArr[i]);
+					Quantitative ot = new Quantitative();
+					BeanCopyUtils.copyNotEmpty(quantitative, ot, "");
+					ot.setId(id);
+					quantitativeService.saveQuantitative(ot);
+				}
+			}
 			cr.setMessage("修改成功");
 		}
 		return cr;
@@ -137,6 +147,32 @@ public class TemporaryPackAction {
 		cr.setMessage("审核成功");
 		return cr;
 	}
+	
+	
+	/**
+	 * 对 量化单 进行实际发货数字的补录
+	 */
+	@RequestMapping(value = "/temporaryPack/setActualSingleNumber", method = RequestMethod.GET)
+	@ResponseBody
+	public CommonResponse setActualSingleNumber(Long id,Integer actualSingleNumber) {
+		CommonResponse cr = new CommonResponse();
+		quantitativeService.setActualSingleNumber(id,actualSingleNumber);
+		cr.setMessage("修改成功");
+		return cr;
+	}
+	
+	/**
+	 * 对 量化单 实际数字和贴包数字进行核对
+	 */
+	@RequestMapping(value = "/temporaryPack/checkNumber", method = RequestMethod.GET)
+	@ResponseBody
+	public CommonResponse checkNumber(Long id,Integer check) {
+		CommonResponse cr = new CommonResponse();
+		quantitativeService.checkNumber(id,check);
+		cr.setMessage("核对成功");
+		return cr;
+	}
+
 
 	/**
 	 * 发货 量化单

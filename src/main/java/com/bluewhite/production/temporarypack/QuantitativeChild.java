@@ -37,6 +37,35 @@ public class QuantitativeChild  extends BaseEntity<Long> {
 	@Column(name = "single_number")
 	private Integer singleNumber;
 	
+	/**
+	 * 单包实际发货个数
+	 */
+	@Column(name = "actual_single_number")
+	private Integer actualSingleNumber;
+	
+	/**
+	 * 是否核实
+	 * 
+	 */
+	@Column(name = "check")
+	private Integer check;
+	
+	
+	public Integer getCheck() {
+		return check;
+	}
+
+	public void setCheck(Integer check) {
+		this.check = check;
+	}
+
+	public Integer getActualSingleNumber() {
+		return actualSingleNumber;
+	}
+
+	public void setActualSingleNumber(Integer actualSingleNumber) {
+		this.actualSingleNumber = actualSingleNumber;
+	}
 
 	public Long getUnderGoodsId() {
 		return underGoodsId;

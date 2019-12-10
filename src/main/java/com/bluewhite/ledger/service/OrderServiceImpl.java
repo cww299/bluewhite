@@ -54,7 +54,7 @@ public class OrderServiceImpl extends BaseServiceImpl<Order, Long> implements Or
 	@Autowired
 	private OrderChildDao orderChildDao;
 	@Autowired
-	private PutStorageDao putStorageDao;
+	private PutStorageService putStorageService;
 	@Autowired
 	private OutStorageDao outStorageDao;
 
@@ -281,19 +281,7 @@ public class OrderServiceImpl extends BaseServiceImpl<Order, Long> implements Or
 		//include = 1  true   
 		CurrentUser cu = SessionManager.getUserSession();
 		// 通过产品查询所有的入库单
-		List<PutStorage> putStorageList = putStorageDao.findByProductId(param.getProductId());
-		putStorageList.forEach(m -> {
-			List<Long> longList = outStorageDao.findPutStorageId(m.getId());
-			List<OutStorage> outStorageList = outStorageDao.findAll(longList);
-			if(outStorageList.size()>0){
-				
-				int arrNumber = outStorageList.stream().mapToInt(OutStorage::getArrivalNumber).sum();
-				m.setSurplusNumber(m.getArrivalNumber() - arrNumber);
-			}
-		});
-		// 排除掉已经全部出库的入库单
-		putStorageList = putStorageList.stream().filter(PutStorage -> PutStorage.getSurplusNumber() > 0)
-				.collect(Collectors.toList());
+		List<PutStorage> putStorageList = putStorageService.detailsInventory((long)473, param.getProductId());
 		putStorageList  = putStorageList.stream().filter(p->{
 			//排除公共库存
 			if(p.getOrderOutSource().getOrderId()!=null){
