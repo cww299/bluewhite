@@ -44,16 +44,24 @@ layui.config({
 		
 		mytable.render({
 			elem:'#tableData',
-			url:'',
+			url: myutil.config.ctx+'/ledger/dispatch/applyVoucherPage',
 			curd:{
 				otherBtn:function(obj){
-					
+					if(obj.event=='askfor'){
+						myutil.deleTableIds({
+							url:'/ledger/dispatch/passApplyVoucher',
+							table:'tableData',
+							text:'请选择信息|是否确认通过申请？',
+						})
+					}
 				},
 			},
+			toolbar:[
+				'<span class="layui-btn layui-btn-sm" lay-event="askfor">确认申请</span>',
+			].join(' '),
 			autoUpdate:{
 				saveUrl:'',
 				deleUrl:'',
-				
 				field:{ },
 			},
 			cols:[[

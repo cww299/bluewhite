@@ -384,14 +384,15 @@ layui.extend({
 		var sendGoodNumber = $('#sendGoodNumber').val() || 0;
 		$('#myNumber').html(myNumber);
 		$('#allWarehouseNumber').html(allWarehouseNum);
-		if(sendGoodNumber<=myNumber){
+		if(myNumber==0)
+			s = 2;
+		else if(sendGoodNumber<=myNumber){
 			s = 0;
 			color = '#16fb16';
 		}
 		else if(sendGoodNumber>myNumber)
 			s = 1;
-		else if(myNumber==0)
-			s = 2;
+		 
 		$('#myState').html('<font style="color:'+color+'">'+state[s]+'</font>');
 	}
 	sendGoodOrder.init = function(done){

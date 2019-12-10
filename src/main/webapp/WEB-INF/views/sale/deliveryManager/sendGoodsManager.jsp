@@ -60,13 +60,20 @@ layui.config({
 			elem:'#sendTable',
 			url: myutil.config.ctx+'/ledger/getSendGoods',
 			toolbar: [
-				'<span class="layui-btn layui-btn-sm" lay-event="addSendOrder">新增发货单<span>',
+				'<span class="layui-btn layui-btn-sm" lay-event="addSendOrder">新增发货单</span>',
+				'<span class="layui-btn layui-btn-sm layui-btn-warm" lay-event="sendGood">发货</span>',
 			].join(' '),
 			curd:{
 				btn:[4],
 				otherBtn:function(obj){
 					if(obj.event=='addSendOrder'){
 						sendGoodOrder.add({});
+					}else if(obj.event=='sendGood'){
+						myutil.deleTableIds({
+							table:'sendTable',
+							url:'/ledger/inventory/sendOutStorage',
+							text:'请选择数据|是否确认发货？',
+						})
 					}
 				}
 			},
@@ -79,6 +86,7 @@ layui.config({
 			       { title:'发货日期',   field:'sendDate', width:'10%',  },
 			       { title:'客户',   field:'customer_name',   width:'12%',   },
 			       { title:'产品', 	field:'product_name',  },
+			       { title:'产品类型', 	field:'productType', transData:['','成品','皮壳'] },
 			       { title:'数量',   field:'number',  width:'6%',},
 			       { title:'剩余数量',   field:'surplusNumber',  width:'6%',	},
 			       { title:'发货状态',field:'status',width:'8%',transData:{data:['库存充足','库存不足','无库存',]}, },
