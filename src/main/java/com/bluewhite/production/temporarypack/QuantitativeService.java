@@ -46,6 +46,19 @@ public interface QuantitativeService extends BaseCRUDService<Quantitative,Long>{
 	 * @return
 	 */
 	int sendQuantitative(String ids);
+	
+	/**
+	 * 设置发货数量
+	 * @param id
+	 * @param actualSingleNumber
+	 */
+	public void setActualSingleNumber(Long id, Integer actualSingleNumber);
+	
+	/**
+	 * 核对成功
+	 * @param id
+	 */
+	void checkNumber(Long id,Integer check);
 
 	
 
