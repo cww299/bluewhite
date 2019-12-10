@@ -74,13 +74,6 @@ public class OutStorage extends BaseEntity<Long> {
 	private SendGoods sendGoods;
 
 	/**
-	 * 入库单多对多
-	 */
-	@ManyToMany(fetch = FetchType.LAZY)
-	@JoinTable(name = "ledger_put_out_storage", joinColumns = @JoinColumn(name = "out_storage_id", referencedColumnName = "id"), inverseJoinColumns = @JoinColumn(name = "put_storage_id", referencedColumnName = "id"))
-	private Set<PutStorage> putOutStorage = new HashSet<PutStorage>();
-
-	/**
 	 * 出库单类型（1=销售出库） （2=调拨出库） （3=换货出库 ） （4=退货出库 ） （5=盘盈出库 ）(6=返工出库)
 	 * 销售出库：根据发货申请单出库
 	 * 调拨出库：根据调拨申请单出库
@@ -260,14 +253,6 @@ public class OutStorage extends BaseEntity<Long> {
 
 	public void setOrderTimeEnd(Date orderTimeEnd) {
 		this.orderTimeEnd = orderTimeEnd;
-	}
-
-	public Set<PutStorage> getPutOutStorage() {
-		return putOutStorage;
-	}
-
-	public void setPutOutStorage(Set<PutStorage> putOutStorage) {
-		this.putOutStorage = putOutStorage;
 	}
 
 	public Integer getOutStatus() {

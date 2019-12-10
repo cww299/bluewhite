@@ -128,14 +128,19 @@ layui.config({
 						addEdit('add',{});
 					}else if(obj.event=='update'){
 						var check = layui.table.checkStatus('tableData').data;
-						if(check.length!=1)
-							return myutil.emsg('只能选择一条数据编辑');
+						if(check.length<1)
+							return myutil.emsg('请选择数据编辑');
 						var i = 0;
 						for(;i<tableDataNoTrans.length;i++){
 							if(tableDataNoTrans[i].id==check[0].id)
 								break;
 						}
-						addEdit('update',tableDataNoTrans[i]);
+						var set = new Set();
+						layui.each(check,function(index,item){
+							set.add(item.id);
+						})
+						var updateData = $.extend({},tableDataNoTrans[i],{id: Array.from(set).join(',')});
+						addEdit('update',updateData);
 					}else if(obj.event=='audit'){
 						myutil.deleTableIds({
 							 table:'tableData', 
@@ -307,7 +312,7 @@ layui.config({
 						'<td>',
 							'<input class="layui-input" name="sumPackageNumber" value="{{ d.sumPackageNumber || 0}}" ',
 								' id="sumPackageNumberInput" lay-verify="required">',
-							'<input type="hidden" name="id" value="{{ d.id || ""}}">',
+							'<input type="hidden" name="ids" value="{{ d.id || ""}}">',
 						'</td>',
 						'<td>&nbsp;&nbsp;<span class="layui-btn" id="saveBtn" lay-filter="saveBtn" lay-submit>保存</span></td>',
 					'</tr>',

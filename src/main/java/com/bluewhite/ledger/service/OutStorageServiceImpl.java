@@ -50,7 +50,8 @@ public class OutStorageServiceImpl extends BaseServiceImpl<OutStorage, Long> imp
 					for (String ids : idStrings) {
 						Long id = Long.parseLong(ids);
 						PutStorage putStorage = putStorageDao.findOne(id);
-						outStorage.getPutOutStorage().add(putStorage);
+						
+						
 					}
 				}
 			}
@@ -106,18 +107,31 @@ public class OutStorageServiceImpl extends BaseServiceImpl<OutStorage, Long> imp
 	}
 
 	@Override
-	public int sendOutStorage(String ids) {
+	public int sendOutStorage(Long id,String putStorageIds) {
 		int i = 0;
-		if (!StringUtils.isEmpty(ids)) {
-			String[] idStrings = ids.split(",");
+		if (!StringUtils.isEmpty(putStorageIds)) {
+			
+			String[] idStrings = putStorageIds.split(",");
 			for (String idString : idStrings) {
-				Long id = Long.parseLong(idString);
+				Long idPut = Long.parseLong(idString);
 				SendGoods sendGoods = sendGoodsDao.findOne(id);
+				
 				
 				i++;
 			}
 		}
 		return i;
+	}
+
+	@Override
+	public void getSendPutStorage(Long id) {
+		SendGoods sendGoods = sendGoodsDao.findOne(id);
+		
+		
+		
+		
+		
+		
 	}
 		
 

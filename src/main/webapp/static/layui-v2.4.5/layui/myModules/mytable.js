@@ -116,7 +116,7 @@ layui.extend({
 					};
 					function transData(r){
 						var text = r;
-						var data = item2.transData.data;
+						var data = item2.transData.data || [];
 						if(data[r])											//存在转换数据时
 							text = data[r];	
 						else if(item2.transData.text)						//无值时
