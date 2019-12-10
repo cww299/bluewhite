@@ -182,6 +182,9 @@ layui.config({
 								flag: d[i].flag,
 								singleNumber: child[j].singleNumber,
 								underGoods: child[j].underGoods,
+								actualSingleNumber: child[j].actualSingleNumber,
+								checks: child[j].checks,
+								childId: child[j].id,
 							})
 						}
 					}
@@ -203,6 +206,9 @@ layui.config({
 			       { title:'批次号',   field:'underGoods_bacthNumber',	width:'8%', },
 			       { title:'产品名',   field:'underGoods_product_name', 	},
 			       { title:'单包个数',   field:'singleNumber',	width:'8%', },
+			       { title:'实际数量',   field:'actualSingleNumber',	width:'8%',event:'transColor', templet: function(d){
+			    	   				return '<span style="color:'+(d.checks?'red':"")+'">'+d.actualSingleNumber+'<span>'; },
+			       },
 			       ]],
 	       done:function(){
 				merge('quantitativeNumber');
@@ -238,6 +244,24 @@ layui.config({
 					$(allCol[mainCols]).attr('rowspan',rowspan);
 				}
 				form.render();
+			}
+		})
+		table.on('tool(tableData)',function(obj){
+			if(isStickBagAccount){
+				if(obj.event=='transColor'){
+					var data = obj.data;
+					myutil.saveAjax({
+						url:'/temporaryPack/checkNumber',
+						data:{
+							id: data.childId,
+							check: data.checks?0:1,
+						},
+						type:'get',
+						success:function(){
+							table.reload('tableData');
+						}
+					})
+				}
 			}
 		})
 		function printOrder(){	
