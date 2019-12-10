@@ -48,6 +48,19 @@ public class OutStorage extends BaseEntity<Long> {
 	private Product product;
 	
 	/**
+	 * 申请请求单id
+	 */
+	@Column(name = "apply_voucher_id")
+	private Long applyVoucherId;
+
+	/**
+	 * 申请请求单
+	 */
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "apply_voucher_id", referencedColumnName = "id", insertable = false, updatable = false)
+	private ApplyVoucher applyVoucher;
+	
+	/**
 	 * 发货单id
 	 */
 	@Column(name = "send_goods_id")
@@ -136,6 +149,22 @@ public class OutStorage extends BaseEntity<Long> {
 	
 	
 	
+
+	public Long getApplyVoucherId() {
+		return applyVoucherId;
+	}
+
+	public void setApplyVoucherId(Long applyVoucherId) {
+		this.applyVoucherId = applyVoucherId;
+	}
+
+	public ApplyVoucher getApplyVoucher() {
+		return applyVoucher;
+	}
+
+	public void setApplyVoucher(ApplyVoucher applyVoucher) {
+		this.applyVoucher = applyVoucher;
+	}
 
 	public Long getSendGoodsId() {
 		return sendGoodsId;

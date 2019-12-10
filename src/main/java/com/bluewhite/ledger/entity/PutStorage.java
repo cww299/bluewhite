@@ -12,7 +12,6 @@ import javax.persistence.Transient;
 
 import com.bluewhite.base.BaseEntity;
 import com.bluewhite.basedata.entity.BaseData;
-import com.bluewhite.onlineretailers.inventory.entity.Inventory;
 import com.bluewhite.product.product.entity.Product;
 import com.bluewhite.system.user.entity.User;
 
@@ -59,6 +58,19 @@ public class PutStorage extends BaseEntity<Long> {
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "order_OutSource_id", referencedColumnName = "id", insertable = false, updatable = false)
 	private OrderOutSource orderOutSource;
+	
+	/**
+	 * 申请请求单id
+	 */
+	@Column(name = "apply_voucher_id")
+	private Long applyVoucherId;
+
+	/**
+	 * 申请请求单
+	 */
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "apply_voucher_id", referencedColumnName = "id", insertable = false, updatable = false)
+	private ApplyVoucher applyVoucher;
 
 	/**
 	 * 入库单的订单状态 （1=生产入库）（2=返工入库） （3=调拨入库） （4=退货入库 ） （5=换货入库 ）  （6=盘亏入库）
@@ -168,6 +180,23 @@ public class PutStorage extends BaseEntity<Long> {
 	private Date orderTimeEnd;
 	
 	
+	
+
+	public Long getApplyVoucherId() {
+		return applyVoucherId;
+	}
+
+	public void setApplyVoucherId(Long applyVoucherId) {
+		this.applyVoucherId = applyVoucherId;
+	}
+
+	public ApplyVoucher getApplyVoucher() {
+		return applyVoucher;
+	}
+
+	public void setApplyVoucher(ApplyVoucher applyVoucher) {
+		this.applyVoucher = applyVoucher;
+	}
 
 	public String getSerialNumber() {
 		return serialNumber;
