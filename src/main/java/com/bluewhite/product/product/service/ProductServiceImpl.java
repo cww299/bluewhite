@@ -29,6 +29,7 @@ import com.bluewhite.ledger.dao.PutStorageDao;
 import com.bluewhite.ledger.entity.OutStorage;
 import com.bluewhite.ledger.entity.Packing;
 import com.bluewhite.ledger.entity.PutStorage;
+import com.bluewhite.ledger.service.PutStorageService;
 import com.bluewhite.product.primecost.cutparts.dao.CutPartsDao;
 import com.bluewhite.product.primecost.cutparts.entity.CutParts;
 import com.bluewhite.product.primecost.embroidery.dao.EmbroideryDao;
@@ -76,9 +77,7 @@ public class ProductServiceImpl extends BaseServiceImpl<Product, Long> implement
 	@Autowired
 	private BaseDataDao baseDataDao;
 	@Autowired
-	private OutStorageDao outStorageDao;
-	@Autowired
-	private PutStorageDao putStorageDao;
+	private PutStorageService putStorageService;
 
 	@Override
 	public PageResult<Product> findPages(Product param, PageParameter page) {
@@ -352,13 +351,7 @@ public class ProductServiceImpl extends BaseServiceImpl<Product, Long> implement
 			baseDataList.forEach(b -> {
 				Map<String, Object> map = new HashMap<>();
 				//获取该产品该仓库的所有入库单
-				List<PutStorage> putStorageList =  putStorageDao.findByWarehouseTypeIdAndProductId(b.getId(), p.getId());
-				putStorageList.forEach(m->{
-					List<Long> longList = outStorageDao.findPutStorageId(m.getId());
-					List<OutStorage> outStorageList = outStorageDao.findAll(longList);
-					int arrNumber = outStorageList.stream().mapToInt(OutStorage::getArrivalNumber).sum();
-					m.setSurplusNumber(m.getArrivalNumber()-arrNumber);
-				});
+				List<PutStorage> putStorageList = putStorageService.detailsInventory(b.getId(),p.getId());
 				int number = 0;
 				if(putStorageList.size()>0){
 					number = putStorageList.stream().mapToInt(PutStorage::getSurplusNumber).sum();

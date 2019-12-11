@@ -300,8 +300,6 @@ public class PackingServiceImpl extends BaseServiceImpl<Packing, Long> implement
 							|| pc.getProduct().getName().contains(Constants.XXYJN)) {
 						sale.setCopyright(1);
 					}
-					// 判定是否更换客户发货，更换客户发货变成新批次，->Y
-					Order order = orderDao.findByBacthNumber(pc.getBacthNumber());
 					saleDao.save(sale);
 				}
 				dao.save(packing);

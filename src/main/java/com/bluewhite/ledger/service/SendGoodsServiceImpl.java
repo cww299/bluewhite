@@ -17,11 +17,14 @@ import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.bluewhite.base.BaseServiceImpl;
+import com.bluewhite.common.Constants;
 import com.bluewhite.common.ServiceException;
 import com.bluewhite.common.SessionManager;
 import com.bluewhite.common.entity.CurrentUser;
 import com.bluewhite.common.entity.PageParameter;
 import com.bluewhite.common.entity.PageResult;
+import com.bluewhite.common.utils.SalesUtils;
+import com.bluewhite.common.utils.StringUtil;
 import com.bluewhite.ledger.dao.ApplyVoucherDao;
 import com.bluewhite.ledger.dao.OutStorageDao;
 import com.bluewhite.ledger.dao.PackingChildDao;
@@ -126,22 +129,24 @@ public class SendGoodsServiceImpl extends BaseServiceImpl<SendGoods, Long> imple
 		CurrentUser cu = SessionManager.getUserSession();
 		sendGoods.setUserId(cu.getId());
 		// 新增借货申请单
-		List<ApplyVoucher> applyVoucherList = new ArrayList<>();
 		if (!StringUtils.isEmpty(sendGoods.getApplyVoucher())) {
 			JSONArray jsonArray = JSON.parseArray(sendGoods.getApplyVoucher());
 			for (int i = 0; i < jsonArray.size(); i++) {
 				JSONObject jsonObject = jsonArray.getJSONObject(i);
 				ApplyVoucher applyVoucher = new ApplyVoucher();
+				//销售人员申请
 				applyVoucher.setApplyVoucherTypeId((long)438);
+				//借货申请
 				applyVoucher.setApplyVoucherKindId((long)441);
 				applyVoucher.setTime(jsonObject.getDate("time"));
 				applyVoucher.setNumber(jsonObject.getInteger("number"));
 				applyVoucher.setApprovalUserId(jsonObject.getLong("approvalUserId"));
 				applyVoucher.setUserId(cu.getId());
-				applyVoucherList.add(applyVoucher);
+				applyVoucher.setApplyNumber(
+						Constants.SQD + StringUtil.getDate() + SalesUtils.get0LeftString((int) (dao.count() + 1), 8));
+				applyVoucherDao.save(applyVoucher);
 			}
 		}
-		applyVoucherDao.save(applyVoucherList);
 		save(sendGoods);
 	}
 

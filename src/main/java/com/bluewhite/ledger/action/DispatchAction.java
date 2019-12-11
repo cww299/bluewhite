@@ -72,10 +72,39 @@ public class DispatchAction {
 	public CommonResponse passApplyVoucher(String ids) {
 		CommonResponse cr = new CommonResponse();
 		int count = applyVoucherService.passApplyVoucher(ids);
-		cr.setMessage("申请成功");
+		cr.setMessage("成功");
 		return cr;
 	}
 	
+	/**
+	 * 取消通过请求申请
+	 * 
+	 * @param order
+	 * @return
+	 */
+	@RequestMapping(value = "/ledger/dispatch/cancelApplyVoucher", method = RequestMethod.GET)
+	@ResponseBody
+	public CommonResponse cancelApplyVoucher(String ids) {
+		CommonResponse cr = new CommonResponse();
+		int count = applyVoucherService.cancelApplyVoucher(ids);
+		cr.setMessage("成功");
+		return cr;
+	}
+	
+	/**
+	 * 撤销请求申请
+	 * 
+	 * @param order
+	 * @return
+	 */
+	@RequestMapping(value = "/ledger/dispatch/deleteApplyVoucher", method = RequestMethod.GET)
+	@ResponseBody
+	public CommonResponse deleteApplyVoucher(String ids) {
+		CommonResponse cr = new CommonResponse();
+		int count = applyVoucherService.deleteApplyVoucher(ids);
+		cr.setMessage("成功");
+		return cr;
+	}
 	
 
 }
