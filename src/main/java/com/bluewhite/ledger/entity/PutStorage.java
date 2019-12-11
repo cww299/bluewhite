@@ -78,12 +78,18 @@ public class PutStorage extends BaseEntity<Long> {
 	 * 返工入库：根据返工申请单入库
 	 * 调拨入库：根据调拨申请单入库
 	 * 换货入库：根据换货申请单入库
-	 * 退货入库：根据退货申请单入库
-	 * 盘亏入库：根据盘盈申请单入库
+	 * 退货入库：根据退货申请单入库(需验货后再入库，成为公共库存)
+	 * 盘亏入库：根据盘盈申请单入库(公共库存)
 	 * 
 	 */
 	@Column(name = "in_status")
 	private Integer inStatus;
+	
+	/**
+	 * 是否为公共库存
+	 */
+	@Column(name = "public_stock")
+	private Integer publicStock;
 
 	/**
 	 * 仓库种类id
@@ -181,6 +187,14 @@ public class PutStorage extends BaseEntity<Long> {
 	
 	
 	
+
+	public Integer getPublicStock() {
+		return publicStock;
+	}
+
+	public void setPublicStock(Integer publicStock) {
+		this.publicStock = publicStock;
+	}
 
 	public Long getApplyVoucherId() {
 		return applyVoucherId;

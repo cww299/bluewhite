@@ -281,7 +281,7 @@ public class OrderServiceImpl extends BaseServiceImpl<Order, Long> implements Or
 		//include = 1  true   
 		CurrentUser cu = SessionManager.getUserSession();
 		// 通过产品查询所有的入库单
-		List<PutStorage> putStorageList = putStorageService.detailsInventory((long)473, param.getProductId());
+		List<PutStorage> putStorageList = putStorageService.detailsInventory(null, param.getProductId());
 		putStorageList  = putStorageList.stream().filter(p->{
 			//排除公共库存
 			if(p.getOrderOutSource().getOrderId()!=null){

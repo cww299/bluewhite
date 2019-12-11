@@ -13,4 +13,6 @@ public interface PutOutStorageDao extends BaseRepository<PutOutStorage, Long> {
 	 * @return
 	 */
 	List<PutOutStorage> findByPutStorageId(Long putstorageid);
+	
+	
 }

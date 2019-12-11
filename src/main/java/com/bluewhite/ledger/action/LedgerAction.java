@@ -1127,11 +1127,11 @@ public class LedgerAction {
 	 * 
 	 * @return
 	 */
-	@RequestMapping(value = "/ledger/inventory/sendPutStorage", method = RequestMethod.POST)
+	@RequestMapping(value = "/ledger/inventory/sendPutStorage", method = RequestMethod.GET)
 	@ResponseBody
 	public CommonResponse sendPutStorage(Long id) {
 		CommonResponse cr = new CommonResponse();
-		outStorageService.getSendPutStorage(id);
+		cr.setData(outStorageService.getSendPutStorage(id));
 		cr.setMessage("查询成功");
 		return cr;
 	}
@@ -1142,7 +1142,7 @@ public class LedgerAction {
 	 * 
 	 * @return
 	 */
-	@RequestMapping(value = "/ledger/inventory/sendOutStorage", method = RequestMethod.POST)
+	@RequestMapping(value = "/ledger/inventory/sendOutStorage", method = RequestMethod.GET)
 	@ResponseBody
 	public CommonResponse sendOutStorage(Long id,String putStorageIds) {
 		CommonResponse cr = new CommonResponse();
@@ -1364,6 +1364,18 @@ public class LedgerAction {
 		cr.setMessage("获取成功");
 		return cr;
 	}
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
 
 	/***************************** 财务 **********************************/
 

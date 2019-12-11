@@ -27,5 +27,19 @@ public interface ApplyVoucherService extends BaseCRUDService<ApplyVoucher, Long>
 	 * @return
 	 */
 	public int passApplyVoucher(String ids);
+	
+	/**
+	 * 删除请求
+	 * @param ids
+	 * @return
+	 */
+	public int deleteApplyVoucher(String ids);
+	
+	/**
+	 * 取消申请
+	 * @param ids
+	 * @return
+	 */
+	public int cancelApplyVoucher(String ids);
 
 }

@@ -8,9 +8,11 @@ import javax.persistence.FetchType;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 
 import com.bluewhite.base.BaseEntity;
 import com.bluewhite.basedata.entity.BaseData;
+import com.bluewhite.product.product.entity.Product;
 import com.bluewhite.system.user.entity.User;
 
 /**
@@ -118,9 +120,93 @@ public class ApplyVoucher extends BaseEntity<Long> {
 	@Column(name = "number")
 	private Integer number;
 	
+	/**
+	 * 针对发货单申请
+	 * 发货单id
+	 */
+	@Column(name = "send_goods_id")
+	private Long sendGoodsId;
+	
+	/**
+	 * 发货单
+	 */
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "send_goods_id", referencedColumnName = "id", insertable = false, updatable = false)
+	private SendGoods sendGoods;
+
+	/**
+	 * 产品名称
+	 */
+	@Transient
+	private String productName;
+	
+	/**
+	 * 产品名编号
+	 */
+	@Transient
+	private String productNumber;
+	
+	/**
+	 * 查询字段
+	 */
+	@Transient
+	private Date orderTimeBegin;
+	/**
+	 * 查询字段
+	 */
+	@Transient
+	private Date orderTimeEnd;
 	
 	
 	
+	public SendGoods getSendGoods() {
+		return sendGoods;
+	}
+
+	public void setSendGoods(SendGoods sendGoods) {
+		this.sendGoods = sendGoods;
+	}
+
+	public String getProductName() {
+		return productName;
+	}
+
+	public void setProductName(String productName) {
+		this.productName = productName;
+	}
+
+	public String getProductNumber() {
+		return productNumber;
+	}
+
+	public void setProductNumber(String productNumber) {
+		this.productNumber = productNumber;
+	}
+
+	public Date getOrderTimeBegin() {
+		return orderTimeBegin;
+	}
+
+	public void setOrderTimeBegin(Date orderTimeBegin) {
+		this.orderTimeBegin = orderTimeBegin;
+	}
+
+	public Date getOrderTimeEnd() {
+		return orderTimeEnd;
+	}
+
+	public void setOrderTimeEnd(Date orderTimeEnd) {
+		this.orderTimeEnd = orderTimeEnd;
+	}
+
+	public Long getSendGoodsId() {
+		return sendGoodsId;
+	}
+
+	public void setSendGoodsId(Long sendGoodsId) {
+		this.sendGoodsId = sendGoodsId;
+	}
+
 	public Integer getNumber() {
 		return number;
 	}
