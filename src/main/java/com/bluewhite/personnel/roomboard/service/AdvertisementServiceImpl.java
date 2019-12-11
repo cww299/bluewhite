@@ -33,18 +33,18 @@ public class AdvertisementServiceImpl extends BaseServiceImpl<Advertisement, Lon
 		Page<Advertisement> pages = dao.findAll((root, query, cb) -> {
 			List<Predicate> predicate = new ArrayList<>();
 			// 按平台
-			if (advertisement.getPlatformId() != null) {
+			if (!StringUtils.isEmpty(advertisement.getPlatformId())) {
 				predicate.add(cb.equal(root.get("platformId").as(Long.class), advertisement.getPlatformId()));
 			}
 			// 按类型
-			if (advertisement.getType() != null) {
+			if (!StringUtils.isEmpty(advertisement.getType())) {
 				predicate.add(cb.equal(root.get("type").as(Integer.class), advertisement.getType()));
 			}
 			// 按培训类型
-			if (advertisement.getMold() != null) {
+			if (!StringUtils.isEmpty(advertisement.getMold())) {
 				predicate.add(cb.equal(root.get("mold").as(Integer.class), advertisement.getMold()));
 			}
-			if (advertisement.getRecruitId() != null) {
+			if (!StringUtils.isEmpty(advertisement.getRecruitId())) {
 				predicate.add(cb.equal(root.get("recruitId").as(Long.class), advertisement.getRecruitId()));
 			}
 			// 应聘人
