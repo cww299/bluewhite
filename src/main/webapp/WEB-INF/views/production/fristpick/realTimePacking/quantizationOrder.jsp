@@ -120,8 +120,10 @@ layui.config({
 		var tableDataNoTrans = [];
 		mytable.render({
 			elem:'#tableData',
+			size:'sm',
 			url:'${ctx}/temporaryPack/findPagesQuantitative?'+((isStickBagStick && !isStickBagAccount)?'audit=1':''),
 			toolbar: $('#toolbarTpl').html(),
+			limit:20,
 			curd:{
 				btn: isStickBagStick?[]:[4],
 				otherBtn:function(obj){
@@ -197,18 +199,19 @@ layui.config({
 			cols:[[
 			       { type:'checkbox',},
 			       { title:'量化编号',   field:'quantitativeNumber', width:'12%',	},
-			       { title:'包装时间',   field:'time',  width:'12%', },
-			       { title:'贴包人',   field:'user_userName', width:'10%',	},
-			       { title:'客户',   field:'customer_name', width:'10%',	},
-			       { title:'是否审核',   field:'audit', 	transData:{data:['否','是']}, width:'6%', },
-			       { title:'是否发货',   field:'flag', 	transData:{data:['否','是']}, width:'6%', },
-			       { title:'是否打印',   field:'print', 	transData:{data:['否','是']}, width:'6%', },
+			       { title:'包装时间',   field:'time',  width:'10%', },
+			       { title:'贴包人',   field:'user_userName', width:'6%',	},
+			       { title:'客户',   field:'customer_name', width:'6%',	},
+			       { title:'是否审核',   field:'audit', 	transData:{data:['否','是']}, width:'5%', },
+			       { title:'是否发货',   field:'flag', 	transData:{data:['否','是']}, width:'5%', },
+			       { title:'是否打印',   field:'print', 	transData:{data:['否','是']}, width:'5%', },
 			       { title:'批次号',   field:'underGoods_bacthNumber',	width:'8%', },
 			       { title:'产品名',   field:'underGoods_product_name', 	},
-			       { title:'单包个数',   field:'singleNumber',	width:'8%', },
-			       { title:'实际数量',   field:'actualSingleNumber',	width:'8%',event:'transColor', templet: function(d){
+			       { title:'单包个数',   field:'singleNumber',	width:'6%', },
+			       { title:'实际数量',   field:'actualSingleNumber',	width:'6%',event:'transColor', templet: function(d){
 			    	   				return '<span style="color:'+(d.checks?'red':"")+'">'+d.actualSingleNumber+'<span>'; },
 			       },
+			       { title:'备注',   field:'remarks',	width:'10%', edit:true,},  				
 			       ]],
 	       done:function(){
 				merge('quantitativeNumber');
@@ -243,9 +246,23 @@ layui.config({
 					});
 					$(allCol[mainCols]).attr('rowspan',rowspan);
 				}
+				table.on('edit(tableData)',function(obj){
+					var data = obj.data; 
+					myutil.saveAjax({
+						url: '/temporaryPack/updateActualSingleNumber',
+						data:{
+							id: data.childId,
+							remarks: obj.value,
+						},
+						success:function(){
+							table.reload('tableData');
+						}
+					})
+				})
 				form.render();
 			}
 		})
+		
 		table.on('tool(tableData)',function(obj){
 			if(isStickBagAccount){
 				if(obj.event=='transColor'){
@@ -458,7 +475,7 @@ layui.config({
 								{ title:'下货单~批次号~剩余数量', field:'underGoods_id', type:'select',
 									select:{data: allUoloadOrder, name:['product_name','bacthNumber','surplusStickNumber'],} },
 						        { title:'单包个数',   field:'singleNumber',	 edit: isStickBagAccount,	width:'10%',},
-						        { title:'实际发货数量',   field:'actualSingleNumber',	 edit: isStickBagAccount,	width:'15%',},
+						        { title:'实际发货数量',   field:'actualSingleNumber',	 edit: isStickBagStick,	width:'15%',},
 							];
 							if(isStickBagAccount)
 								cols.push({ title:'操作',field:'de', event:'deleteTr', edit:false,width:'10%',
