@@ -69,11 +69,54 @@ layui.config({
 					if(obj.event=='addSendOrder'){
 						sendGoodOrder.add({});
 					}else if(obj.event=='sendGood'){
-						myutil.deleTableIds({
+						var check = layui.table.checkStatus('sendTable').data;
+						if(check.length!=1)
+							return myutil.emsg('请选择一条信息进行发货');
+						layer.open({
+							type: 1,
+							area:['50%','50%'],
+							content:[
+								'<div style="padding:10px 0;">',
+									'<table>',
+										'<tr>',
+											'<td>发货数量：</td>',
+											'<td><input type="text" class="layui-input"></td></tr>',
+									'</table>',
+									'<table id="chooseInputOrder" lay-filter="chooseInputOrder"></table>',
+								'</div>',
+							].join(' '),
+							title:'剩余发货数量：'+check[0].surplusNumber,
+							btn:['确定','取消'],
+							btnAlign:'c',
+							success:function(){
+								mytable.renderNoPage({
+									elem:'#chooseInputOrder',
+									totalRow:['sendNumber','number'],
+									url: myutil.config.ctx+'/ledger/inventory/getPutStorageDetails?id='+check[0].id,
+									cols:[[
+										{ type:'checkbox',},
+										{ title:'入库单编号',field:'serialNumber'},
+										{ title:'数量',field:'number'},
+										{ title:'发货数量',field:'sendNumber',edit:true,
+											templet:'<span>{{ d.sendNumber || 0 }}</span>'},
+									]]
+								})
+							},
+							yes:function(){
+								var check = layui.table.checkStatus('chooseInputOrder').data;
+								if(check.length<1)
+									return myutil.emsg('请选择入库单');
+								
+								
+								//  /ledger/inventory/sendOutStorage
+							}
+						})
+						
+						/* myutil.deleTableIds({
 							table:'sendTable',
 							url:'/ledger/inventory/sendOutStorage',
 							text:'请选择数据|是否确认发货？',
-						})
+						}) */
 					}
 				}
 			},
@@ -88,7 +131,8 @@ layui.config({
 			       { title:'产品', 	field:'product_name',  },
 			       { title:'产品类型', 	field:'productType', width:'10%', transData:{data:['','成品','皮壳']} },
 			       { title:'数量',   field:'number',  width:'6%',},
-			       { title:'剩余数量',   field:'surplusNumber',  width:'6%',	},
+			       { title:'剩余发货数量',   field:'surplusNumber',  width:'8%',	},
+			     /*   { title:'剩余数量',   field:'surplusNumber',  width:'6%',	}, */
 			       { title:'发货状态',field:'status',width:'8%',transData:{data:['库存充足','库存不足','无库存',]}, },
 			       ]],
 		})
