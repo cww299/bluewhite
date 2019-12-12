@@ -52,7 +52,7 @@ public class TemporaryPackAction {
 						"quantitativeChilds", "packingMaterials", "user", "flag", "print","customer","audit")
 				.addRetainTerm(Customer.class, "id", "name")
 				.addRetainTerm(QuantitativeChild.class, "id", "underGoods", "sumPackageNumber", "singleNumber",
-						"number","actualSingleNumber","checks")
+						"number","actualSingleNumber","checks","remarks")
 				.addRetainTerm(PackingMaterials.class, "id", "packagingMaterials", "packagingCount")
 				.addRetainTerm(User.class, "id", "userName").addRetainTerm(BaseData.class, "id", "name")
 				.addRetainTerm(UnderGoods.class, "id", "remarks", "product", "number", "bacthNumber", "status",
@@ -157,6 +157,18 @@ public class TemporaryPackAction {
 	public CommonResponse setActualSingleNumber(Long id,Integer actualSingleNumber) {
 		CommonResponse cr = new CommonResponse();
 		quantitativeService.setActualSingleNumber(id,actualSingleNumber);
+		cr.setMessage("修改成功");
+		return cr;
+	}
+	
+	/**
+	 * 对 量化单子单 进行修改
+	 */
+	@RequestMapping(value = "/temporaryPack/updateActualSingleNumber", method = RequestMethod.POST)
+	@ResponseBody
+	public CommonResponse updateActualSingleNumber(QuantitativeChild quantitativeChild) {
+		CommonResponse cr = new CommonResponse();
+		quantitativeService.updateActualSingleNumber(quantitativeChild);
 		cr.setMessage("修改成功");
 		return cr;
 	}

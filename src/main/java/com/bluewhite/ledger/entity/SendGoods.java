@@ -99,6 +99,12 @@ public class SendGoods extends BaseEntity<Long>{
 	private Integer surplusNumber;
 	
 	/**
+	 * 实际发货数量
+	 */
+	@Transient
+	private Integer sendNumber;
+	
+	/**
 	 * 批次号
 	 */
 	@Transient
@@ -139,6 +145,14 @@ public class SendGoods extends BaseEntity<Long>{
 	
 	
 	
+	public Integer getSendNumber() {
+		return sendNumber;
+	}
+
+	public void setSendNumber(Integer sendNumber) {
+		this.sendNumber = sendNumber;
+	}
+
 	public Integer getProductType() {
 		return productType;
 	}

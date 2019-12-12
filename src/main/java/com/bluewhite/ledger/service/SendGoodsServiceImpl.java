@@ -31,7 +31,6 @@ import com.bluewhite.ledger.dao.PackingChildDao;
 import com.bluewhite.ledger.dao.PutStorageDao;
 import com.bluewhite.ledger.dao.SendGoodsDao;
 import com.bluewhite.ledger.entity.ApplyVoucher;
-import com.bluewhite.ledger.entity.Order;
 import com.bluewhite.ledger.entity.OutStorage;
 import com.bluewhite.ledger.entity.PackingChild;
 import com.bluewhite.ledger.entity.SendGoods;
@@ -56,7 +55,6 @@ public class SendGoodsServiceImpl extends BaseServiceImpl<SendGoods, Long> imple
 	@Override
 	public PageResult<SendGoods> findPages(SendGoods param, PageParameter page) { 
 		CurrentUser cu = SessionManager.getUserSession();
-		
 		Page<SendGoods> pages = dao.findAll((root, query, cb) -> {
 			List<Predicate> predicate = new ArrayList<>();
 			// 按id过滤
@@ -106,16 +104,15 @@ public class SendGoodsServiceImpl extends BaseServiceImpl<SendGoods, Long> imple
 			//3.查出共有库存
 			// 通过产品查询所有的入库单
 			List<Map<String, Object>> mapsList = outStorageService.getSendPutStorage(s.getId());
-			int number = 0;
-			for(Map<String, Object> map : mapsList ){
-				number+=Integer.valueOf(map.get("number").toString());
-			}
 			int status = 0;
-			if(s.getNumber()<number){
-				status = 1;
-			}
-			if(number<=0){
-				status = 2;
+			if(mapsList.size()>0){
+				int number = mapsList.stream().mapToInt(m->Integer.valueOf(m.get("number").toString())).sum();
+				if(s.getNumber()<number){
+					status = 1;
+				}
+				if(number<=0){
+					status = 2;
+				}
 			}
 			s.setStatus(status);
 			//实际出库单
@@ -123,9 +120,12 @@ public class SendGoodsServiceImpl extends BaseServiceImpl<SendGoods, Long> imple
 			if(outStorageList.size()>0){
 				int surplusNumber = outStorageList.stream().mapToInt(OutStorage::getArrivalNumber).sum();
 				s.setSurplusNumber((s.getNumber()-surplusNumber)<0 ? 0 : s.getNumber()-surplusNumber);
+				s.setSendNumber(surplusNumber);
 			}else{
 				s.setSurplusNumber(s.getNumber());
+				s.setSendNumber(0);
 			}
+			
 		});
 		return result;
 	}

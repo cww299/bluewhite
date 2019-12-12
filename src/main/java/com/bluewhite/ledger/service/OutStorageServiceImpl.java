@@ -68,6 +68,8 @@ public class OutStorageServiceImpl extends BaseServiceImpl<OutStorage, Long> imp
 					for (String ids : idStrings) {
 						Long id = Long.parseLong(ids);
 						PutStorage putStorage = putStorageService.findOne(id);
+						
+						
 
 					}
 				}
@@ -257,7 +259,6 @@ public class OutStorageServiceImpl extends BaseServiceImpl<OutStorage, Long> imp
 			});
 		}
 		return list;
-
 	}
 
 	@Override
