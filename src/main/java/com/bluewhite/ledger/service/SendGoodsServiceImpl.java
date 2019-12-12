@@ -48,6 +48,8 @@ public class SendGoodsServiceImpl extends BaseServiceImpl<SendGoods, Long> imple
 	@Autowired
 	private PutStorageDao putStorageDao;
 	@Autowired
+	private OutStorageService outStorageService;
+	@Autowired
 	private OutStorageDao outStorageDao;
 	@Autowired
 	private OrderService orderService;
@@ -103,10 +105,7 @@ public class SendGoodsServiceImpl extends BaseServiceImpl<SendGoods, Long> imple
 			//2.查出销售人员和产品id通过的申请单，获取到申请数量
 			//3.查出共有库存
 			// 通过产品查询所有的入库单
-			Order order = new Order(); 
-			order.setProductId(s.getProductId());
-			order.setInclude(true);
-			List<Map<String, Object>> mapsList = orderService.findListSend(order);
+			List<Map<String, Object>> mapsList = outStorageService.getSendPutStorage(s.getId());
 			int number = 0;
 			for(Map<String, Object> map : mapsList ){
 				number+=Integer.valueOf(map.get("number").toString());

@@ -131,6 +131,7 @@ public class OutStorageServiceImpl extends BaseServiceImpl<OutStorage, Long> imp
 		SendGoods sendGoods = sendGoodsDao.findOne(id);
 		// 生成出库单
 		OutStorage outStorage = new OutStorage();
+		outStorage.setSendGoodsId(id);
 		outStorage.setArrivalNumber(sendNumber);
 		outStorage.setArrivalTime(new Date());
 		outStorage.setOutStatus(1);
