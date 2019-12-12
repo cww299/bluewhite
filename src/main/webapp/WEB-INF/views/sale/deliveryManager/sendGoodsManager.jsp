@@ -122,18 +122,18 @@ layui.config({
 								})
 							},
 							yes:function(){
-								var check = layui.table.checkStatus('chooseInputOrder').data;
-								if(check.length<1)
+								var checkChild = layui.table.checkStatus('chooseInputOrder').data;
+								if(checkChild.length<1)
 									return myutil.emsg('请选择入库单');
 								var inputNumber = $('#sendAllNumber').val() || 0;
 								if(allInputNumber<inputNumber)
 									return myutil.esmg('发货数量不能超过库存数量！');
 								var childJson = [],allChildNumer = 0;
-								for(var i=0,len=check.length;i<len;i++){
-									allChildNumer -= (-check[i].sendNumber || 0);
+								for(var i=0,len=checkChild.length;i<len;i++){
+									allChildNumer -= (-checkChild[i].sendNumber || 0);
 									childJson.push({
-										id: check[i].id,
-										number: check[i].sendNumber || '',
+										id: checkChild[i].id,
+										number: checkChild[i].sendNumber || '',
 									})
 								}
 								var msg = '';
@@ -152,11 +152,12 @@ layui.config({
 								myutil.saveAjax({
 									url: '/ledger/inventory/sendOutStorage',
 									data:{
-										sendNumber: allChildNumer,
+										id: check[0].id,
+										sendNumber: inputNumber,
 										putStorage: JSON.stringify(childJson),
 									},
 									success:function(){
-										layer.close('sendGoodWin');
+										layer.close(sendGoodWin);
 										table.reload('sendTable');
 									}
 								})
