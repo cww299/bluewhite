@@ -26,6 +26,7 @@ import com.bluewhite.common.entity.CurrentUser;
 import com.bluewhite.common.entity.ErrorCode;
 import com.bluewhite.common.entity.PageParameter;
 import com.bluewhite.common.utils.NumUtils;
+import com.bluewhite.ledger.service.OrderOutSourceService;
 import com.bluewhite.product.product.entity.Product;
 import com.bluewhite.production.bacth.entity.Bacth;
 import com.bluewhite.production.bacth.service.BacthService;
@@ -40,9 +41,10 @@ public class BacthAction {
 
 	@Autowired
 	private BacthService bacthService;
-
 	@Autowired
 	private ProcedureDao procedureDao;
+	@Autowired
+	private OrderOutSourceService orderOutSourceService;
 
 	private ClearCascadeJSON clearCascadeJSON;
 	{
@@ -53,11 +55,39 @@ public class BacthAction {
 						"price", "type", "product")
 				.addRetainTerm(Product.class, "id", "number", "name");
 	}
+	
+	
+	
+	
+	/**
+	 * 根据工序类型将加工单分配到相对应的车间进行工作
+	 * 
+	 * 
+	 */
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
 
 	/**
 	 * 给产品添加批次（修改）
 	 * 
-	 * 是否完成（0=默认未完成，1=完成，status传参） type (1=一楼质检，2=一楼包装，3=二楼针工,4=二楼机工)
+	 * 是否完成（0=默认未完成，1=完成，status传参）
+	 * type (1=一楼质检，2=一楼包装，3=二楼针工,4=二楼机工)
 	 */
 	@RequestMapping(value = "/bacth/addBacth", method = RequestMethod.POST)
 	@ResponseBody
