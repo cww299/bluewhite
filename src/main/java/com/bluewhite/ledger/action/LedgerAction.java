@@ -1168,19 +1168,20 @@ public class LedgerAction {
 		return cr;
 	}
 	
-//	/**
-//	 * （2.皮壳仓库）根据针工加工单进行出库 
-//	 * 
-//	 * @return
-//	 */
-//	@RequestMapping(value = "/ledger/inventory/sendOutStorageCot", method = RequestMethod.GET)
-//	@ResponseBody
-//	public CommonResponse sendOutStorageCot(Long id,String putStorageIds) {
-//		CommonResponse cr = new CommonResponse();
-//		outStorageService.sendOutStorageCot(id,putStorageIds);
-//		cr.setMessage("成功出库");
-//		return cr;
-//	}
+	/**
+	 * （2.皮壳仓库）根据针工加工单进行出库
+	 * 			   针工加工单分为外发和内做
+	 * 
+	 * @return
+	 */
+	@RequestMapping(value = "/ledger/inventory/sendOutStorageCot", method = RequestMethod.GET)
+	@ResponseBody
+	public CommonResponse sendOutStorageCot(Long id,String putStorageIds) {
+		CommonResponse cr = new CommonResponse();
+		outStorageService.sendOutStorageCot(id,putStorageIds);
+		cr.setMessage("成功出库");
+		return cr;
+	}
 	
 	
 	

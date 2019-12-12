@@ -147,6 +147,11 @@ public class OutStorageServiceImpl extends BaseServiceImpl<OutStorage, Long> imp
 				Long idPut = jsonObject.getLong("id");
 				Integer number = jsonObject.getInteger("number");
 				PutStorage p = putStorageService.findOne(idPut);
+				//入库单实际出库数量
+				List<PutOutStorage> outPutStorageList = putOutStorageDao.findByPutStorageId(p.getId());
+				int arrNumber = outPutStorageList.stream().mapToInt(PutOutStorage::getNumber).sum();
+				//入库单剩余数量
+				p.setSurplusNumber(p.getArrivalNumber() - arrNumber);
 				PutOutStorage putOutStorage = new PutOutStorage();
 				putOutStorage.setOutStorageId(id);
 				putOutStorage.setPutStorageId(p.getId());
@@ -258,5 +263,11 @@ public class OutStorageServiceImpl extends BaseServiceImpl<OutStorage, Long> imp
 	public List<Map<String, Object>> getPutStorageCotDetails(Long id) {
 
 		return null;
+	}
+
+	@Override
+	public void sendOutStorageCot(Long id, String putStorageIds) {
+		// TODO Auto-generated method stub
+		
 	}
 }
