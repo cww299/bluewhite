@@ -187,6 +187,7 @@ layui.config({
 								actualSingleNumber: child[j].actualSingleNumber,
 								checks: child[j].checks,
 								childId: child[j].id,
+								remarks: child[j].remarks,
 							})
 						}
 					}
@@ -195,7 +196,7 @@ layui.config({
 				else
 					return {  msg:ret.message,  code:ret.code , data:[], count:0 }; 
 			},
-			ifNull:'---',
+			ifNull:'',
 			cols:[[
 			       { type:'checkbox',},
 			       { title:'量化编号',   field:'quantitativeNumber', width:'12%',	},
