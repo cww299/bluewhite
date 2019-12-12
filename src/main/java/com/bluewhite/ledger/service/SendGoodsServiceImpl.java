@@ -107,7 +107,7 @@ public class SendGoodsServiceImpl extends BaseServiceImpl<SendGoods, Long> imple
 			int status = 0;
 			if(mapsList.size()>0){
 				int number = mapsList.stream().mapToInt(m->Integer.valueOf(m.get("number").toString())).sum();
-				if(s.getNumber()<number){
+				if(s.getNumber()>number){
 					status = 1;
 				}
 				if(number<=0){
@@ -125,14 +125,15 @@ public class SendGoodsServiceImpl extends BaseServiceImpl<SendGoods, Long> imple
 				s.setSurplusNumber(s.getNumber());
 				s.setSendNumber(0);
 			}
-			
 		});
 		return result;
 	}
 
 	
 	@Override
-	public void addSendGoods(SendGoods sendGoods) {
+	public void addSendGoods(SendGoods sendGoods
+			
+			) {
 		CurrentUser cu = SessionManager.getUserSession();
 		sendGoods.setUserId(cu.getId());
 		// 新增借货申请单
