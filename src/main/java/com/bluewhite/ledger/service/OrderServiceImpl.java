@@ -294,8 +294,6 @@ public class OrderServiceImpl extends BaseServiceImpl<Order, Long> implements Or
 			}
 			return param.isInclude();
 		}).collect(Collectors.toList());
-		// 需要将申请通过的库存取出
-		
 		
 		// 通过入库单拿到所有的生产计划单
 		List<Map<String, Object>> listMap = new ArrayList<>();
@@ -339,6 +337,20 @@ public class OrderServiceImpl extends BaseServiceImpl<Order, Long> implements Or
 			nmap.put("putStorageId", slist.get(0).get("putStorageId"));
 			result.add(nmap);
 		});
+		
+		// 获取公共库存
+		List<PutStorage> publicStorageList = putStorageList.stream()
+				.filter(PutStorage -> PutStorage.getPublicStock() == 1).collect(Collectors.toList());
+		if (publicStorageList.size() > 0) {
+			publicStorageList.forEach(p -> {
+				Map<String, Object> map = new HashMap<String, Object>();
+				map.put("putStorageId", p.getId());
+				map.put("bacth", p.getSerialNumber());
+				map.put("number", p.getSurplusNumber());
+				map.put("userList", "");
+				result.add(map);
+			});
+		}
 		return result;
 	}
 
