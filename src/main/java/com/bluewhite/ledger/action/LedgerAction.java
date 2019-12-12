@@ -1138,14 +1138,17 @@ public class LedgerAction {
 	
 	/**
 	 * （成品仓库）对发货单进行出库
+	 * sendNumber 发货数量
+	 * putStorage （json 入库单的发货具体数量 ）
+	 * 
 	 * 
 	 * @return
 	 */
-	@RequestMapping(value = "/ledger/inventory/sendOutStorage", method = RequestMethod.GET)
+	@RequestMapping(value = "/ledger/inventory/sendOutStorage", method = RequestMethod.POST)
 	@ResponseBody
-	public CommonResponse sendOutStorage(Long id,String putStorageIds) {
+	public CommonResponse sendOutStorage(Long id,Integer sendNumber,String putStorage) {
 		CommonResponse cr = new CommonResponse();
-		outStorageService.sendOutStorage(id,putStorageIds);
+		outStorageService.sendOutStorage(id,sendNumber,putStorage);
 		cr.setMessage("成功出库");
 		return cr;
 	}

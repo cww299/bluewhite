@@ -50,6 +50,8 @@ import com.bluewhite.system.user.entity.TemporaryUser;
 import com.bluewhite.system.user.entity.User;
 import com.bluewhite.system.user.service.UserService;
 
+import cn.hutool.core.date.DateUtil;
+
 @Controller
 public class GroupAction {
 
@@ -126,7 +128,8 @@ public class GroupAction {
 		}
 		return cr;
 	}
-
+	
+	
 	/**
 	 * 根据时间查看当前分组里面的人
 	 * 
@@ -156,12 +159,14 @@ public class GroupAction {
 		List<Map<String, Object>> temporarilyUserList = new ArrayList<>();
 		// 平板模式下，按打卡记录显示正式工作人员
 		if (UnUtil.isFromMobile(request)) {
-			Date startTimeSix = DatesUtil.dayTime(startTime, "05:00:00");
+			//从第一天早上五点到第二天早上4：59：59 的打卡人员
+			Date startTimeSix = DateUtil.offsetHour(startTime, 5);
+			Date endTimeSix = DateUtil.offsetHour(endTime, 5); 
 			List<User> userGroupList = userService.findByGroupId(id);
 			String sourceMachineFinal = sourceMachine;
 			userGroupList = userGroupList.stream().filter(user -> {
 				List<Attendance> attendanceList = attendanceService.findByUserIdAndSourceMachineAndTimeBetween(
-						user.getId(), sourceMachineFinal, startTimeSix, endTime);
+						user.getId(), sourceMachineFinal, startTimeSix, endTimeSix);
 				if (attendanceList.size() > 0) {
 					return true;
 				} else {
