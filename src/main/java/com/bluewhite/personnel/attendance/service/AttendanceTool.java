@@ -8,6 +8,8 @@ import com.bluewhite.personnel.attendance.entity.AttendanceInit;
 import com.bluewhite.personnel.attendance.entity.AttendanceTime;
 import com.bluewhite.system.user.entity.User;
 
+import cn.hutool.core.date.DateUnit;
+
 /**
  * 用于计算考勤数据的工具方法
  * 
@@ -22,6 +24,9 @@ public class AttendanceTool {
 	// 计算员工可以加班后晚到岗,迟到分钟不超过的分钟数不算迟到(10)
 	private final static double LATERMIN = 10;
 
+	// 一小时的分钟数
+	private final static double MINUTES  = 60;
+	
 	/**
 	 * 进行出勤，加班，缺勤，迟到，早退的计算 举例出能满足的所有条件，合适条件的进行
 	 * 
@@ -129,7 +134,7 @@ public class AttendanceTool {
 			// 满足于：员工可以加班后晚到岗 ，属于包装部，签入时间在（初始化上班开始时间后的加班分钟数）之前，工作时间结束后签到加班
 			// 早到时间 ,包装部员工的签入时间早于实际上班时间超过30分钟后算0.5个加班，超过60分钟算1个加班
 			double earlyTime = Math.floor(DatesUtil.getTime(attendanceTime.getCheckIn(),
-					DatesUtil.getDaySum(workTime, NumUtils.sum(minute, 0))) / 60) * 0.5;
+					DatesUtil.getDaySum(workTime, NumUtils.sum(minute, 0))) / MINUTES) * 0.5;
 			flag = user.getOrgNameId() == 79
 					&& attendanceTime.getCheckIn().before(DatesUtil.getDaySum(workTime, NumUtils.sum(minute, 0)))
 					&& attendanceInit.getOverTimeType() == 2;
@@ -260,7 +265,7 @@ public class AttendanceTool {
 	private static Double setActualbelateTime(Date beginTime, Date endTime) {
 		double actualbelateTime = 0;
 		double sec = DatesUtil.getTimeSec(beginTime, endTime);  
-		double alltime = Math.floor(sec / 60);
+		double alltime = Math.floor(sec / MINUTES);
 		actualbelateTime = alltime + 1;
 		return actualbelateTime;
 	}

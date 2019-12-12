@@ -194,7 +194,6 @@ public class OutStorageServiceImpl extends BaseServiceImpl<OutStorage, Long> imp
 				list.add(map);
 			});
 		}
-
 		// 获取申请通过库存
 		// 循环申请单,将被申请人取出,同时过滤出被申请人的入库单,进行入库单的记录
 		List<ApplyVoucher> applyVoucherList = applyVoucherDao.findBySendGoodsIdAndPass(id, 1);
@@ -225,7 +224,6 @@ public class OutStorageServiceImpl extends BaseServiceImpl<OutStorage, Long> imp
 				}
 			}
 		}
-
 		// 获取公共库存
 		List<PutStorage> publicStorageList = putStorageList.stream()
 				.filter(PutStorage -> PutStorage.getPublicStock() == 1).collect(Collectors.toList());
@@ -240,5 +238,26 @@ public class OutStorageServiceImpl extends BaseServiceImpl<OutStorage, Long> imp
 		}
 		return list;
 
+	}
+
+	@Override
+	public List<Map<String, Object>> getPutStorageCotDetails(Long id) {
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		return null;
 	}
 }

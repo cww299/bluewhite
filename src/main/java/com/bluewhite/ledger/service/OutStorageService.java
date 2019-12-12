@@ -43,5 +43,12 @@ public interface OutStorageService  extends BaseCRUDService<OutStorage,Long>{
 	 * @param id
 	 */
 	public List<Map<String, Object>> getSendPutStorage(Long id);
+	
+	/**
+	 * 根据针工加工单查询库存详情
+	 * @param id
+	 * @return
+	 */
+	public List<Map<String, Object>> getPutStorageCotDetails(Long id);
 
 }
