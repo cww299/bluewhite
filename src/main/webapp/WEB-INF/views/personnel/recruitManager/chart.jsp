@@ -470,7 +470,7 @@ layui.config({
 		educationDiv.setOption(
 				{
 		            title: {		//标题
-		                text: '招聘平台分布情况',
+		                text: '招聘平台招聘情况统计图',
 		            },
 		            tooltip: {},	
 		            toolbox: {
@@ -682,7 +682,7 @@ layui.config({
 		orgNameDiv.setOption(
 	        {
 	            title: {		//标题
-	                text: '招聘部门分布情况',
+	                text: '部门招聘情况统计图',
 	            },
 	            tooltip: {},	
 	            toolbox: {
@@ -895,7 +895,7 @@ layui.config({
 		userDiv.setOption(
 	        {
 	            title: {		//标题
-	                text: '招聘人分布情况',
+	                text: '招聘人员成绩榜',
 	            },
 	            tooltip: {},	
 	            toolbox: {
@@ -1085,7 +1085,7 @@ layui.config({
 			 orgQuitDiv.setOption(
 					 {
 				            title: {		//标题
-				                text: '招聘平台分布情况',
+				                text: '部门入离职利率分析图',
 				            },
 				            tooltip: {},	
 				            toolbox: {
