@@ -75,7 +75,8 @@ layui.config({
 						var allInputNumber = 0; //计算总库存数量，发货数量不能超过该值
 						var sendGoodWin = layer.open({
 							type: 1,
-							area:['50%','50%'],
+							title:'剩余发货数量：<b style="color:red">'+check[0].surplusNumber+'</b>',
+							area:['50%','600px'],
 							content:[
 								'<div style="padding:10px 0;">',
 									'<table>',
@@ -86,13 +87,12 @@ layui.config({
 									'<table id="chooseInputOrder" lay-filter="chooseInputOrder"></table>',
 								'</div>',
 							].join(' '),
-							title:'剩余发货数量：'+check[0].surplusNumber,
 							btn:['确定','取消'],
 							btnAlign:'c',
 							success:function(){
-								$('#sendAllNumber').val(check[0].surplusNumber);
 								mytable.renderNoPage({
 									elem:'#chooseInputOrder',
+									height:'400px',
 									//totalRow:['sendNumber','number'],
 									url: myutil.config.ctx+'/ledger/inventory/getPutStorageDetails?id='+check[0].id,
 									cols:[[
