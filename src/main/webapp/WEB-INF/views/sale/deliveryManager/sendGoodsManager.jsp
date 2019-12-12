@@ -72,7 +72,8 @@ layui.config({
 						var check = layui.table.checkStatus('sendTable').data;
 						if(check.length!=1)
 							return myutil.emsg('请选择一条信息进行发货');
-						layer.open({
+						var allInputNumber = 0; //计算总库存数量，发货数量不能超过该值
+						var sendGoodWin = layer.open({
 							type: 1,
 							area:['50%','50%'],
 							content:[
@@ -89,7 +90,6 @@ layui.config({
 							btn:['确定','取消'],
 							btnAlign:'c',
 							success:function(){
-								var allInputNumber = 0; //计算总库存数量，发货数量不能超过该值
 								$('#sendAllNumber').val(check[0].surplusNumber);
 								mytable.renderNoPage({
 									elem:'#chooseInputOrder',
@@ -100,41 +100,55 @@ layui.config({
 										{ title:'入库单编号',field:'serialNumber'},
 										{ title:'数量',field:'number'},
 										{ title:'发货数量',field:'sendNumber',edit:true,
-											templet:'<span>{{ d.sendNumber || "-" }}</span>'},
+											templet:'<span>{{ d.sendNumber || "" }}</span>'},
 									]],
 									done:function(r){
-										console.log(r)
+										layui.each(r.data,function(index,item){
+											allInputNumber -= (-item.number);
+										})
 									}
 								})
 								table.on('edit(chooseInputOrder)',function(obj){
 									var index = $(this).closest('tr').data('index');
 									var trData = table.cache['chooseInputOrder'][index];
+									var val = obj.value;
 									if(obj.field==='sendNumber'){
-										//myutil.lastData
+										if(isNaN(val) || val<0 || val%1.0!=0.0){
+											$(this).val(myutil.lastData);
+											trData.sendNumber = myutil.lastData;
+											myutil.emsg('请正确填写发货数量');
+										}
 									}
-									table.reload('chooseInputOrder',{
-										data: table.cache['chooseInputOrder'],
-									})
 								})
 							},
 							yes:function(){
 								var check = layui.table.checkStatus('chooseInputOrder').data;
 								if(check.length<1)
 									return myutil.emsg('请选择入库单');
-								var inputNumber = $('#sendAllNumber').val();
+								var inputNumber = $('#sendAllNumber').val() || 0;
 								if(allInputNumber<inputNumber)
 									return myutil.esmg('发货数量不能超过库存数量！');
 								var childJson = [],allChildNumer = 0;
 								for(var i=0,len=check.length;i<len;i++){
-									allChildNumer += (check[i].sendNumber || 0);
+									allChildNumer -= (-check[i].sendNumber || 0);
 									childJson.push({
 										id: check[i].id,
 										number: check[i].sendNumber || '',
 									})
 								}
-								if(allChildNumer>0 && inputNumber!=allChildNumer){
-									return myutil.emsg('填写的发货数量与总发货数量不同！请检查');
+								var msg = '';
+								if(allChildNumer>0){
+									if(inputNumber>0){
+										if(inputNumber!=allChildNumer)
+											msg = '填写的发货数量与总发货数量不同！请检查';
+									}else{
+										inputNumber = allChildNumer;
+									}
+								}else if(inputNumber==0){
+									msg = '请填写发货数量';
 								}
+								if(msg)
+									return myutil.emsg(msg);
 								myutil.saveAjax({
 									url: '/ledger/inventory/sendOutStorage',
 									data:{
@@ -142,17 +156,12 @@ layui.config({
 										putStorage: JSON.stringify(childJson),
 									},
 									success:function(){
-										
+										layer.close('sendGoodWin');
+										table.reload('sendTable');
 									}
 								})
 							}
 						})
-						
-						/* myutil.deleTableIds({
-							table:'sendTable',
-							url:'/ledger/inventory/sendOutStorage',
-							text:'请选择数据|是否确认发货？',
-						}) */
 					}
 				}
 			},
