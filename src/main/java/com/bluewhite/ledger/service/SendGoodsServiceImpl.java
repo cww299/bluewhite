@@ -124,6 +124,8 @@ public class SendGoodsServiceImpl extends BaseServiceImpl<SendGoods, Long> imple
 			if(outStorageList.size()>0){
 				int surplusNumber = outStorageList.stream().mapToInt(OutStorage::getArrivalNumber).sum();
 				s.setSurplusNumber((s.getNumber()-surplusNumber)<0 ? 0 : s.getNumber()-surplusNumber);
+			}else{
+				s.setSurplusNumber(s.getNumber());
 			}
 		});
 		return result;
