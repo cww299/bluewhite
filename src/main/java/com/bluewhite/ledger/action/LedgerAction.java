@@ -1123,11 +1123,11 @@ public class LedgerAction {
 
 	
 	/**
-	 * （1.成品仓库，2.皮壳仓库）根据发货单查询库存详情
+	 * （1.成品仓库）根据发货单查询库存详情
 	 * 
 	 * @return
 	 */
-	@RequestMapping(value = "/ledger/inventory/sendPutStorage", method = RequestMethod.GET)
+	@RequestMapping(value = "/ledger/inventory/getPutStorageDetails", method = RequestMethod.GET)
 	@ResponseBody
 	public CommonResponse sendPutStorage(Long id) {
 		CommonResponse cr = new CommonResponse();
@@ -1136,9 +1136,8 @@ public class LedgerAction {
 		return cr;
 	}
 	
-	
 	/**
-	 * （1.成品仓库，2.皮壳仓库）对发货单进行出库
+	 * （成品仓库）对发货单进行出库
 	 * 
 	 * @return
 	 */
@@ -1150,6 +1149,34 @@ public class LedgerAction {
 		cr.setMessage("成功出库");
 		return cr;
 	}
+	
+	/**
+	 * （2.皮壳仓库）根据针工加工单查询库存详情
+	 * 
+	 * @return
+	 */
+	@RequestMapping(value = "/ledger/inventory/getPutStorageCotDetails", method = RequestMethod.GET)
+	@ResponseBody
+	public CommonResponse getPutStorageCotDetails(Long id) {
+		CommonResponse cr = new CommonResponse();
+		cr.setData(outStorageService.getPutStorageCotDetails(id));
+		cr.setMessage("查询成功");
+		return cr;
+	}
+	
+//	/**
+//	 * （2.皮壳仓库）根据针工加工单进行出库 
+//	 * 
+//	 * @return
+//	 */
+//	@RequestMapping(value = "/ledger/inventory/sendOutStorageCot", method = RequestMethod.GET)
+//	@ResponseBody
+//	public CommonResponse sendOutStorageCot(Long id,String putStorageIds) {
+//		CommonResponse cr = new CommonResponse();
+//		outStorageService.sendOutStorageCot(id,putStorageIds);
+//		cr.setMessage("成功出库");
+//		return cr;
+//	}
 	
 	
 	
