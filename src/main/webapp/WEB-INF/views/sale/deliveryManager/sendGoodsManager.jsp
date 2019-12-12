@@ -178,7 +178,7 @@ layui.config({
 			       { title:'产品类型', 	field:'productType', width:'10%', transData:{data:['','成品','皮壳']} },
 			       { title:'数量',   field:'number',  width:'6%',},
 			       { title:'剩余发货数量',   field:'surplusNumber',  width:'8%',	},
-			     /*   { title:'剩余数量',   field:'surplusNumber',  width:'6%',	}, */
+			       { title:'实际发货数量',   field:'sendNumber',  width:'8%',	}, 
 			       { title:'发货状态',field:'status',width:'8%',transData:{data:['库存充足','库存不足','无库存',]}, },
 			       ]],
 		})
