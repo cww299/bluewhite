@@ -116,7 +116,6 @@ layui.extend({
 	
 	inputWarehouseOrder.update = function(opt){
 		var data = opt.data,title="生成入库单";
-		console.log(data);
 		if(!data){
 			console.error('请给定数据！');
 			return;

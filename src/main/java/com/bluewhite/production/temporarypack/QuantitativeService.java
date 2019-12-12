@@ -59,6 +59,12 @@ public interface QuantitativeService extends BaseCRUDService<Quantitative,Long>{
 	 * @param id
 	 */
 	void checkNumber(Long id,Integer check);
+	
+	/**
+	 * 修改子单
+	 * @param quantitativeChild
+	 */
+	public void updateActualSingleNumber(QuantitativeChild quantitativeChild);
 
 	
 
