@@ -292,6 +292,9 @@ layui.extend({
 	function getAllUserName(){
 		return function(d){
 			var html = '';
+			if(d.userList.length==0){
+				return '<span class="layui-badge">公共库存</span>';
+			}
 			layui.each(d.userList,function(index,item){
 				html += '<span class="layui-badge layui-bg-green">'+item.name+'</span>&nbsp;&nbsp;';
 			})

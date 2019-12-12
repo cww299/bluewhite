@@ -103,6 +103,7 @@ layui.extend({
 				where: obj.field,
 			})
 		})
+		outWarehouseOrder.type = outOrderList.type;
 		outWarehouseOrder.init();
 	}
 	

@@ -81,7 +81,7 @@ layui.extend({
 			},
 			ifNull:'',
 			/*colsWidth:[0,0,10,6,10,6,8,8,6,6,],*/
-			toolbar:['<span class="layui-btn layui-btn-sm layui-btn-warm" lay-event="addBtn">生产入库单</span>',].join(' '),
+			toolbar:['<span class="layui-btn layui-btn-sm layui-btn-warm" lay-event="addBtn">生成入库单</span>',].join(' '),
 			cols:[[
 			       { type:'checkbox',},
 			       { title:'外发编号',   field:'outSourceNumber',	},
