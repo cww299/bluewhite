@@ -284,7 +284,7 @@ public class OrderServiceImpl extends BaseServiceImpl<Order, Long> implements Or
 		List<PutStorage> putStorageList = putStorageService.detailsInventory(null, param.getProductId());
 		putStorageList  = putStorageList.stream().filter(p->{
 			//排除公共库存
-			if(p.getOrderOutSource().getOrderId()!=null){
+			if(p.getOrderOutSource()!=null){
 				List<OrderChild> ocList = p.getOrderOutSource().getOrder().getOrderChilds();
 				for(OrderChild oc : ocList){
 					if(cu.getId().equals(oc.getUserId())){
@@ -301,7 +301,7 @@ public class OrderServiceImpl extends BaseServiceImpl<Order, Long> implements Or
 		List<Map<String, Object>> listMap = new ArrayList<>();
 		putStorageList.forEach(p -> {
 			Map<String, Object> map = new HashMap<String, Object>();
-			if(p.getOrderOutSource().getOrderId()!=null){
+			if(p.getOrderOutSource()!=null){
 				map.put("putStorageId", p.getId());
 				map.put("id", p.getOrderOutSource().getOrderId());
 				map.put("order", p.getOrderOutSource().getOrder());
