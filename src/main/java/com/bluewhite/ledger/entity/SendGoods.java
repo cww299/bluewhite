@@ -93,7 +93,7 @@ public class SendGoods extends BaseEntity<Long>{
 	private Integer status;
 	
 	/**
-	 * (包装)剩余数量
+	 * 剩余发货数量
 	 */
 	@Transient
 	private Integer surplusNumber;

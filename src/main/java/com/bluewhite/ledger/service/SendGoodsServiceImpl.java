@@ -32,6 +32,7 @@ import com.bluewhite.ledger.dao.PutStorageDao;
 import com.bluewhite.ledger.dao.SendGoodsDao;
 import com.bluewhite.ledger.entity.ApplyVoucher;
 import com.bluewhite.ledger.entity.Order;
+import com.bluewhite.ledger.entity.OutStorage;
 import com.bluewhite.ledger.entity.PackingChild;
 import com.bluewhite.ledger.entity.SendGoods;
 
@@ -53,8 +54,6 @@ public class SendGoodsServiceImpl extends BaseServiceImpl<SendGoods, Long> imple
 	@Override
 	public PageResult<SendGoods> findPages(SendGoods param, PageParameter page) { 
 		CurrentUser cu = SessionManager.getUserSession();
-		
-		
 		
 		Page<SendGoods> pages = dao.findAll((root, query, cb) -> {
 			List<Predicate> predicate = new ArrayList<>();
@@ -120,10 +119,17 @@ public class SendGoodsServiceImpl extends BaseServiceImpl<SendGoods, Long> imple
 				status = 2;
 			}
 			s.setStatus(status);
+			//实际出库单
+			List<OutStorage> outStorageList = outStorageDao.findBySendGoodsId(s.getId());
+			if(outStorageList.size()>0){
+				int surplusNumber = outStorageList.stream().mapToInt(OutStorage::getArrivalNumber).sum();
+				s.setSurplusNumber((s.getNumber()-surplusNumber)<0 ? 0 : s.getNumber()-surplusNumber);
+			}
 		});
 		return result;
 	}
 
+	
 	@Override
 	public void addSendGoods(SendGoods sendGoods) {
 		CurrentUser cu = SessionManager.getUserSession();
