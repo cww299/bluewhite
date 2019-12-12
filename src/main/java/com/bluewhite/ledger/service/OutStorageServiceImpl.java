@@ -14,6 +14,9 @@ import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
+import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONArray;
+import com.alibaba.fastjson.JSONObject;
 import com.bluewhite.base.BaseServiceImpl;
 import com.bluewhite.common.Constants;
 import com.bluewhite.common.ServiceException;
@@ -123,7 +126,7 @@ public class OutStorageServiceImpl extends BaseServiceImpl<OutStorage, Long> imp
 	}
 
 	@Override
-	public void sendOutStorage(Long id, String putStorageIds) {
+	public void sendOutStorage(Long id, Integer sendNumber, String putStorage) {
 		CurrentUser cu = SessionManager.getUserSession();
 		SendGoods sendGoods = sendGoodsDao.findOne(id);
 		// 生成出库单
@@ -136,28 +139,38 @@ public class OutStorageServiceImpl extends BaseServiceImpl<OutStorage, Long> imp
 		outStorage.setProductId(sendGoods.getProductId());
 		outStorage.setUserStorageId(cu.getId());
 		outStorageDao.save(outStorage);
-		if (!StringUtils.isEmpty(putStorageIds)) {
-			String[] idStrings = putStorageIds.split(",");
-			for (String idString : idStrings) {
-				Long idPut = Long.parseLong(idString);
+
+		if (!StringUtils.isEmpty(putStorage)) {
+			JSONArray jsonArray = JSON.parseArray(putStorage);
+			for (int i = 0; i < jsonArray.size(); i++) {
+				JSONObject jsonObject = jsonArray.getJSONObject(i);
+				Long idPut = jsonObject.getLong("id");
+				Integer number = jsonObject.getInteger("number");
 				PutStorage p = putStorageService.findOne(idPut);
 				PutOutStorage putOutStorage = new PutOutStorage();
 				putOutStorage.setOutStorageId(id);
 				putOutStorage.setPutStorageId(p.getId());
-				// 当发货数量小于等于剩余数量时,当前入库单可以满足出库数量，终止循环
-				if (sendGoods.getNumber() <= p.getSurplusNumber()) {
-					putOutStorage.setNumber(sendGoods.getNumber());
+				//当子单填写发货数量
+				if(number!=null){
+					putOutStorage.setNumber(number);
 					putOutStorageDao.save(putOutStorage);
-					break;
-				}
-				// 当发货数量大于剩余数量时,当前入库单数量无法满足出库数量，库存相减后继续循环出库
-				if (sendGoods.getNumber() > p.getSurplusNumber()) {
-					putOutStorage.setNumber(p.getSurplusNumber());
-					sendGoods.setNumber(sendGoods.getNumber() - p.getSurplusNumber());
-					putOutStorageDao.save(putOutStorage);
+				}else{
+					// 当发货数量小于等于剩余数量时,当前入库单可以满足出库数量，终止循环
+					if (sendGoods.getNumber() <= p.getSurplusNumber()) {
+						putOutStorage.setNumber(sendGoods.getNumber());
+						putOutStorageDao.save(putOutStorage);
+						break;
+					}
+					// 当发货数量大于剩余数量时,当前入库单数量无法满足出库数量，库存相减后继续循环出库
+					if (sendGoods.getNumber() > p.getSurplusNumber()) {
+						putOutStorage.setNumber(p.getSurplusNumber());
+						sendGoods.setNumber(sendGoods.getNumber() - p.getSurplusNumber());
+						putOutStorageDao.save(putOutStorage);
+					}
 				}
 			}
 		}
+
 	}
 
 	@Override
@@ -174,7 +187,7 @@ public class OutStorageServiceImpl extends BaseServiceImpl<OutStorage, Long> imp
 				sendGoods.getProductId());
 		// 获取发货申请人自己的库存
 		List<PutStorage> putStorageListSelf = putStorageList.stream().filter(p -> {
-			if (p.getOrderOutSource().getOrderId() != null) {
+			if (p.getOrderOutSource() != null) {
 				List<OrderChild> ocList = p.getOrderOutSource().getOrder().getOrderChilds();
 				for (OrderChild oc : ocList) {
 					if (sendGoods.getUserId().equals(oc.getUserId())) {
@@ -202,7 +215,7 @@ public class OutStorageServiceImpl extends BaseServiceImpl<OutStorage, Long> imp
 					.collect(Collectors.groupingBy(ApplyVoucher::getApprovalUserId));
 			for (Long ps1 : mapApplyVoucher.keySet()) {
 				List<PutStorage> putStorageListOther = putStorageList.stream().filter(p -> {
-					if (p.getOrderOutSource().getOrderId() != null) {
+					if (p.getOrderOutSource() != null) {
 						List<OrderChild> ocList = p.getOrderOutSource().getOrder().getOrderChilds();
 						for (OrderChild oc : ocList) {
 							if (ps1.equals(oc.getUserId())) {
@@ -232,6 +245,7 @@ public class OutStorageServiceImpl extends BaseServiceImpl<OutStorage, Long> imp
 				Map<String, Object> map = new HashMap<String, Object>();
 				map.put("id", p.getId());
 				map.put("number", p.getSurplusNumber());
+				map.put("bacthNumber", "");
 				map.put("serialNumber", p.getSerialNumber());
 				list.add(map);
 			});
@@ -242,22 +256,7 @@ public class OutStorageServiceImpl extends BaseServiceImpl<OutStorage, Long> imp
 
 	@Override
 	public List<Map<String, Object>> getPutStorageCotDetails(Long id) {
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
+
 		return null;
 	}
 }
