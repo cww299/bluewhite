@@ -2,7 +2,10 @@ package com.bluewhite.ledger.service;
 
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 import javax.persistence.criteria.Predicate;
 
@@ -13,51 +16,64 @@ import org.springframework.util.StringUtils;
 
 import com.bluewhite.base.BaseServiceImpl;
 import com.bluewhite.common.Constants;
+import com.bluewhite.common.ServiceException;
+import com.bluewhite.common.SessionManager;
+import com.bluewhite.common.entity.CurrentUser;
 import com.bluewhite.common.entity.PageParameter;
 import com.bluewhite.common.entity.PageResult;
+import com.bluewhite.common.utils.RoleUtil;
 import com.bluewhite.common.utils.SalesUtils;
 import com.bluewhite.common.utils.StringUtil;
+import com.bluewhite.ledger.dao.ApplyVoucherDao;
 import com.bluewhite.ledger.dao.OutStorageDao;
-import com.bluewhite.ledger.dao.PutStorageDao;
+import com.bluewhite.ledger.dao.PutOutStorageDao;
 import com.bluewhite.ledger.dao.SendGoodsDao;
+import com.bluewhite.ledger.entity.ApplyVoucher;
+import com.bluewhite.ledger.entity.OrderChild;
 import com.bluewhite.ledger.entity.OutStorage;
+import com.bluewhite.ledger.entity.PutOutStorage;
 import com.bluewhite.ledger.entity.PutStorage;
 import com.bluewhite.ledger.entity.SendGoods;
 
 @Service
 public class OutStorageServiceImpl extends BaseServiceImpl<OutStorage, Long> implements OutStorageService {
-	
+
 	@Autowired
 	private OutStorageDao dao;
-	@Autowired
-	private PutStorageDao putStorageDao;
 	@Autowired
 	private SendGoodsDao sendGoodsDao;
 	@Autowired
 	private OutStorageDao outStorageDao;
 	@Autowired
 	private OrderService orderService;
-	
+	@Autowired
+	private PutStorageService putStorageService;
+	@Autowired
+	private PutOutStorageDao putOutStorageDao;
+	@Autowired
+	private ApplyVoucherDao applyVoucherDao;
+
 	@Override
 	public void saveOutStorage(OutStorage outStorage) {
-		if(outStorage.getId()!=null){  
+		if (outStorage.getId() != null) {
 			OutStorage ot = dao.findOne(outStorage.getId());
 			update(outStorage, ot, "");
-		}else{
+		} else {
 			if (!StringUtils.isEmpty(outStorage.getPutOutStorageIds())) {
 				String[] idStrings = outStorage.getPutOutStorageIds().split(",");
 				if (idStrings.length > 0) {
 					for (String ids : idStrings) {
 						Long id = Long.parseLong(ids);
-						PutStorage putStorage = putStorageDao.findOne(id);
-						
-						
+						PutStorage putStorage = putStorageService.findOne(id);
+
 					}
 				}
 			}
-			outStorage.setSerialNumber(Constants.CPCK+StringUtil.getDate()+SalesUtils.get0LeftString((int) (dao.count()+1), 8));
+			outStorage.setSerialNumber(
+					Constants.CPCK + StringUtil.getDate() + SalesUtils.get0LeftString((int) (dao.count() + 1), 8));
 			save(outStorage);
-		};
+		}
+		;
 	}
 
 	@Override
@@ -107,33 +123,122 @@ public class OutStorageServiceImpl extends BaseServiceImpl<OutStorage, Long> imp
 	}
 
 	@Override
-	public int sendOutStorage(Long id,String putStorageIds) {
-		int i = 0;
+	public void sendOutStorage(Long id, String putStorageIds) {
+		CurrentUser cu = SessionManager.getUserSession();
+		SendGoods sendGoods = sendGoodsDao.findOne(id);
+		// 生成出库单
+		OutStorage outStorage = new OutStorage();
+		outStorage.setArrivalNumber(sendGoods.getNumber());
+		outStorage.setArrivalTime(new Date());
+		outStorage.setOutStatus(1);
+		outStorage.setSerialNumber(
+				Constants.CPCK + StringUtil.getDate() + SalesUtils.get0LeftString((int) (dao.count() + 1), 8));
+		outStorage.setProductId(sendGoods.getProductId());
+		outStorage.setUserStorageId(cu.getId());
+		outStorageDao.save(outStorage);
 		if (!StringUtils.isEmpty(putStorageIds)) {
-			
 			String[] idStrings = putStorageIds.split(",");
 			for (String idString : idStrings) {
 				Long idPut = Long.parseLong(idString);
-				SendGoods sendGoods = sendGoodsDao.findOne(id);
-				
-				
-				i++;
+				PutStorage p = putStorageService.findOne(idPut);
+				PutOutStorage putOutStorage = new PutOutStorage();
+				putOutStorage.setOutStorageId(id);
+				putOutStorage.setPutStorageId(p.getId());
+				// 当发货数量小于等于剩余数量时,当前入库单可以满足出库数量，终止循环
+				if (sendGoods.getNumber() <= p.getSurplusNumber()) {
+					putOutStorage.setNumber(sendGoods.getNumber());
+					putOutStorageDao.save(putOutStorage);
+					break;
+				}
+				// 当发货数量大于剩余数量时,当前入库单数量无法满足出库数量，库存相减后继续循环出库
+				if (sendGoods.getNumber() > p.getSurplusNumber()) {
+					putOutStorage.setNumber(p.getSurplusNumber());
+					sendGoods.setNumber(sendGoods.getNumber() - p.getSurplusNumber());
+					putOutStorageDao.save(putOutStorage);
+				}
 			}
 		}
-		return i;
 	}
 
 	@Override
-	public void getSendPutStorage(Long id) {
+	public List<Map<String, Object>> getSendPutStorage(Long id) {
+		List<Map<String, Object>> list = new ArrayList<>();
+		CurrentUser cu = SessionManager.getUserSession();
+		Long warehouseTypeDeliveryId = RoleUtil.getWarehouseTypeDelivery(cu.getRole());
+		if (warehouseTypeDeliveryId == null) {
+			throw new ServiceException("请使用仓库管理员账号");
+		}
 		SendGoods sendGoods = sendGoodsDao.findOne(id);
-		
-		
-		
-		
-		
-		
+		// 获取登陆库管的仓库出库单剩余数量
+		List<PutStorage> putStorageList = putStorageService.detailsInventory(warehouseTypeDeliveryId,
+				sendGoods.getProductId());
+		// 获取发货申请人自己的库存
+		List<PutStorage> putStorageListSelf = putStorageList.stream().filter(p -> {
+			if (p.getOrderOutSource().getOrderId() != null) {
+				List<OrderChild> ocList = p.getOrderOutSource().getOrder().getOrderChilds();
+				for (OrderChild oc : ocList) {
+					if (sendGoods.getUserId().equals(oc.getUserId())) {
+						return true;
+					}
+				}
+			}
+			return false;
+		}).collect(Collectors.toList());
+		if (putStorageListSelf.size() > 0) {
+			putStorageListSelf.forEach(p -> {
+				Map<String, Object> map = new HashMap<String, Object>();
+				map.put("id", p.getId());
+				map.put("number", p.getSurplusNumber());
+				map.put("bacthNumber", p.getOrderOutSource().getOrder().getBacthNumber());
+				map.put("serialNumber", p.getSerialNumber());
+				list.add(map);
+			});
+		}
+
+		// 获取申请通过库存
+		// 循环申请单,将被申请人取出,同时过滤出被申请人的入库单,进行入库单的记录
+		List<ApplyVoucher> applyVoucherList = applyVoucherDao.findBySendGoodsIdAndPass(id, 1);
+		if (applyVoucherList.size() > 0) {
+			Map<Long, List<ApplyVoucher>> mapApplyVoucher = applyVoucherList.stream()
+					.collect(Collectors.groupingBy(ApplyVoucher::getApprovalUserId));
+			for (Long ps1 : mapApplyVoucher.keySet()) {
+				List<PutStorage> putStorageListOther = putStorageList.stream().filter(p -> {
+					if (p.getOrderOutSource().getOrderId() != null) {
+						List<OrderChild> ocList = p.getOrderOutSource().getOrder().getOrderChilds();
+						for (OrderChild oc : ocList) {
+							if (ps1.equals(oc.getUserId())) {
+								return true;
+							}
+						}
+					}
+					return false;
+				}).collect(Collectors.toList());
+				if (putStorageListOther.size() > 0) {
+					putStorageListOther.forEach(p -> {
+						Map<String, Object> map = new HashMap<String, Object>();
+						map.put("id", p.getId());
+						map.put("number", p.getSurplusNumber());
+						map.put("bacthNumber", p.getOrderOutSource().getOrder().getBacthNumber());
+						map.put("serialNumber", p.getSerialNumber());
+						list.add(map);
+					});
+				}
+			}
+		}
+
+		// 获取公共库存
+		List<PutStorage> publicStorageList = putStorageList.stream()
+				.filter(PutStorage -> PutStorage.getPublicStock() == 1).collect(Collectors.toList());
+		if (publicStorageList.size() > 0) {
+			publicStorageList.forEach(p -> {
+				Map<String, Object> map = new HashMap<String, Object>();
+				map.put("id", p.getId());
+				map.put("number", p.getSurplusNumber());
+				map.put("serialNumber", p.getSerialNumber());
+				list.add(map);
+			});
+		}
+		return list;
+
 	}
-		
-
-
 }

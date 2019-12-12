@@ -11,6 +11,7 @@
  * 					cols:[[ { type:'price', }  ]]   修改时只能是数字，不能为空
  * 					cols:[[ { type:'count', }  ]]	修改时只能是正整数
  * 开启自动修改功能：autoUpdate:{  saveUrl:'新增的接口', deleUrl:'删除接口', updateUrl:'修改接口（如果不存在时，默认使用新增接口）',
+ * 								nolyUpdateField:[],		//自动修改的字段，用于过滤可修改但需要点击保存的字段
  * 									field:{ 虚拟字段:'对应的上传值' },isReload：修改成功是否重载表格 ,success:成功后的回调 },   如：customer_id 对应的上传值customerId
  * 增加自动curd工具模板：curd: {
  * 							btn:[1,2,3,4],  需要显示的按钮，按顺序，默认全显
@@ -233,6 +234,10 @@ layui.extend({
 								if(val.split(' ').length==1)
 									val += ' 00:00:00';
 								if(opt.autoUpdate){		//开启自动修改
+									if(opt.autoUpdate.nolyUpdateField){
+										if(opt.autoUpdate.nolyUpdateField.indexOf(f)<0)
+											return;
+									}
 									var data = { id: trData.id };
 									data[f] = val;
 									myutil.saveAjax({
@@ -264,6 +269,10 @@ layui.extend({
 							else{
 								var data = { id: trData.id };
 								data[f] = obj.value;
+								if(opt.autoUpdate.nolyUpdateField){
+									if(opt.autoUpdate.nolyUpdateField.indexOf(f)<0)
+										return;
+								}
 								myutil.saveAjax({
 									url: opt.autoUpdate.updateUrl || opt.autoUpdate.saveUrl,
 									data: data,
@@ -305,6 +314,10 @@ layui.extend({
 					}
 					data[t] = val;
 					if(opt.autoUpdate && trData.id>0){
+						if(opt.autoUpdate.nolyUpdateField){
+							if(opt.autoUpdate.nolyUpdateField.indexOf(t)<0)
+								return;
+						}
 						myutil.saveAjax({
 							url: opt.autoUpdate.updateUrl || opt.autoUpdate.saveUrl,
 							data: data,

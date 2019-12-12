@@ -36,5 +36,6 @@ public interface PutStorageService extends BaseCRUDService<PutStorage, Long> {
 	 * @param productId
 	 */
 	public List<PutStorage>  detailsInventory(Long warehouseTypeId, Long productId);
+	
 
 }

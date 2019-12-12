@@ -145,5 +145,7 @@ public class Constants {
     public final static String  CPRK = "CPRK";
     //量化单
     public final static String  LHTB = "LHTB";
+    //申请单
+    public final static String  SQD = "SQD";
     
 }

@@ -36,7 +36,7 @@ public class PutOutStorage extends BaseEntity<Long> {
 	 * 入库单id
 	 */
 	@Column(name = "put_storage_id")
-	private Long PutStorageId;
+	private Long putStorageId;
 
 	/**
 	 * 入库单
@@ -70,11 +70,11 @@ public class PutOutStorage extends BaseEntity<Long> {
 	}
 
 	public Long getPutStorageId() {
-		return PutStorageId;
+		return putStorageId;
 	}
 
 	public void setPutStorageId(Long putStorageId) {
-		PutStorageId = putStorageId;
+		this.putStorageId = putStorageId;
 	}
 
 	public PutStorage getPutStorage() {

@@ -127,7 +127,7 @@ public class QuantitativeServiceImpl extends BaseServiceImpl<Quantitative, Long>
 				quantitativeChild.setUnderGoodsId(jsonObject.getLong("underGoodsId"));
 				quantitativeChild.setSingleNumber(jsonObject.getInteger("singleNumber"));
 				quantitativeChild.setActualSingleNumber(jsonObject.getInteger("singleNumber"));
-				quantitativeChild.setCheck(0);
+				quantitativeChild.setChecks(0);
 				quantitative.getQuantitativeChilds().add(quantitativeChild);
 			}
 		}
@@ -233,7 +233,7 @@ public class QuantitativeServiceImpl extends BaseServiceImpl<Quantitative, Long>
 		QuantitativeChild quantitativeChild = quantitativeChildDao.findOne(id);
 		quantitativeChild.setActualSingleNumber(actualSingleNumber);
 		if(quantitativeChild.getSingleNumber()!= actualSingleNumber){
-			quantitativeChild.setCheck(1);
+			quantitativeChild.setChecks(1);
 		}
 		quantitativeChildDao.save(quantitativeChild);
 	}
@@ -241,7 +241,7 @@ public class QuantitativeServiceImpl extends BaseServiceImpl<Quantitative, Long>
 	@Override
 	public void checkNumber(Long id, Integer check) {
 		QuantitativeChild quantitativeChild = quantitativeChildDao.findOne(id);
-		quantitativeChild.setCheck(check);
+		quantitativeChild.setChecks(check);
 		quantitativeChildDao.save(quantitativeChild);
 	}
 
