@@ -77,7 +77,7 @@ public class UnderGoods extends BaseEntity<Long> {
 	private String productNumber;
 	
 	/**
-	 * 剩余发货数量
+	 * 剩余量化数量
 	 */
 	@Transient
 	private Integer surplusStickNumber;

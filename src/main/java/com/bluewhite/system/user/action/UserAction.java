@@ -385,22 +385,20 @@ public class UserAction {
 		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
 		Map<String, Object> map = new HashMap<String, Object>();
 		List<User> userList = userService.findAll();
-		// 退休时间，过滤出有生日的员工
 		List<Map<String, Object>> userBirthList = new ArrayList<Map<String, Object>>();
-		List<User> userBirth1 = userList.stream()
-				.filter(User -> User.getBirthDate() != null && User.getGender() != null
-						&& User.getCommitmentId() != null && User.getCommitmentId() != 317 && User.getCommitmentId() != 145)
-				.collect(Collectors.toList());
-		for (User user : userBirth1) {
-			int age = DatesUtil.getAgeByBirth(user.getBirthDate());
-			user.setAge(age);
-		}
-		userService.save(userBirth1);
+		//更新员工年龄
+		List<User> userAge = userList.stream().filter(User -> User.getBirthDate() != null).collect(Collectors.toList());
+		userAge.stream().forEach(u->{
+			int age = DatesUtil.getAgeByBirth(u.getBirthDate());
+			u.setAge(age);
+		});
+		userService.save(userAge);
+		
+		// 退休时间
 		List<User> userBirth = userList.stream()
 				.filter(User -> User.getBirthDate() != null && User.getGender() != null && User.getQuit() != null
-						&& User.getQuit() != 1 && User.getCommitmentId() != null && User.getCommitmentId() != 144
-						&& User.getCommitmentId() != 317)
-				.collect(Collectors.toList());
+						&& User.getQuit() != 1 && User.getCommitmentId() != null && User.getCommitmentId() != 144 
+						&& User.getCommitmentId() != 145 && User.getCommitmentId() != 317).collect(Collectors.toList());
 		for (User user : userBirth) {
 			Map<String, Object> us = new HashMap<String, Object>();
 			int co = DatesUtil.getAgeByBirth(user.getBirthDate());
@@ -421,16 +419,15 @@ public class UserAction {
 			}
 
 		}
+		
 		// 合同到期时间
 		List<Map<String, Object>> userContractList = new ArrayList<Map<String, Object>>();
 		List<User> userContract = userList.stream()
-				.filter(User -> User.getContractDateEnd() != null && User.getQuit() != null && User.getQuit() != 1
-						&& User.getCommitmentId() != null && User.getCommitmentId() != 317)
+				.filter(User -> User.getContractDateEnd() != null && User.getQuit() != null && User.getQuit() != 1 && User.getCommitmentId() != null )
 				.collect(Collectors.toList());
 		for (User user : userContract) {
 			Map<String, Object> us = new HashMap<String, Object>();
-			long co = DatesUtil.getDaySub(DatesUtil.getfristDayOftime(new Date()),
-					DatesUtil.getfristDayOftime(user.getContractDateEnd()));
+			long co = DatesUtil.getDaySub(DatesUtil.getfristDayOftime(new Date()),DatesUtil.getfristDayOftime(user.getContractDateEnd()));
 			if (co <= 80) {
 				us.put("userId", user.getId());
 				us.put("username", user.getUserName());
@@ -442,8 +439,7 @@ public class UserAction {
 		// 身份证到期
 		List<Map<String, Object>> userCardList = new ArrayList<Map<String, Object>>();
 		List<User> userrCard = userList.stream()
-				.filter(User -> User.getIdCardEnd() != null && User.getQuit() != 1 && User.getQuit() != null
-						&& User.getCommitmentId() != null && User.getCommitmentId() != 317)
+				.filter(User -> User.getIdCardEnd() != null && User.getQuit() != 1 && User.getQuit() != null && User.getCommitmentId() != null)
 				.collect(Collectors.toList());
 		for (User user : userrCard) {
 			Map<String, Object> us = new HashMap<String, Object>();

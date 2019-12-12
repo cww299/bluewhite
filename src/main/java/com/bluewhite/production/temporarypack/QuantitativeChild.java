@@ -50,7 +50,22 @@ public class QuantitativeChild  extends BaseEntity<Long> {
 	@Column(name = "checks")
 	private Integer checks;
 	
+	/**
+	 * 备注
+	 */
+	@Column(name = "remarks")
+	private String remarks;
 	
+	
+	
+	public String getRemarks() {
+		return remarks;
+	}
+
+	public void setRemarks(String remarks) {
+		this.remarks = remarks;
+	}
+
 	public Integer getChecks() {
 		return checks;
 	}
