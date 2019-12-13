@@ -11,12 +11,13 @@ layui.extend({
 	mytable: 'layui/myModules/mytable',
 	outWarehouseOrder: 'layui/myModules/warehouseManager/outWarehouseOrder',
 }).define(
-	['jquery','layer','form','laydate','mytable','outWarehouseOrder'],
+	['jquery','layer','form','laydate','mytable','outWarehouseOrder','laytpl'],
 	function(exports){
 	"use strict";
 	var $ = layui.jquery,
 		form = layui.form,
 		table = layui.table,
+		laytpl = layui.laytpl,
 		laydate = layui.laydate,
 		mytable = layui.mytable,
 		outWarehouseOrder = layui.outWarehouseOrder,
@@ -28,19 +29,25 @@ layui.extend({
 					<tr>
 						<td>出库日期:</td>
 						<td><input type="text" name="orderTimeBegin" id="inputDate" class="layui-input"></td>
-						<td>物料编号:</td>
+						<td>产品编号:</td>
 						<td><input type="text" name="materielNumber" class="layui-input"></td>
-						<td>物料名称:</td>
+						<td>产品名称:</td>
 						<td><input type="text" name="materielName" class="layui-input"></td>
 						<td>出库状态:</td>
-						<td><select name="outStatus"><option value="">请选择</option>
-									<option value="1">生产出库</option>
+						<td style="width:120px;"><select name="outStatus">
+									<option value="">请选择</option>
+									<option value="1">销售出库</option>
 									<option value="2">调拨出库</option>
-									<option value="3">销售换货出库</option>
-									<option value="4">采购退货出库</option>
-									<option value="5">盘盈出库</option></select></td>
-						<td>
-							<button type="button" class="layui-btn" lay-submit lay-filter="search">搜索</button></td>
+									<option value="3">换货出库</option>
+									<option value="4">退货出库</option>
+									<option value="5">盘盈出库</option>
+									<option value="6">返工出库</option>
+									{{# if(layui.outOrderList.type === layui.outOrderList.allType.PK){   
+									}}
+										<option value="7">生产出库</option>
+									{{# } }}
+							</select></td>
+						<td><button type="button" class="layui-btn" lay-submit lay-filter="search">搜索</button></td>
 					</tr>
 				</table>
 				<table id="tableData" lay-filter="tableData"></table>
@@ -49,11 +56,19 @@ layui.extend({
 	
 	var outOrderList = {
 			type:2,	//默认为成品库存
+			allType:{
+				CP:2, PK:3,
+			},
 	};
 	outOrderList.render = function(opt){
 		outWarehouseOrder.type = outOrderList.type;
-		$(opt.elem).append(TPL_MAIN);
+		var html = '';
+		laytpl(TPL_MAIN).render({},function(h){
+			html = h;
+		})
+		$(opt.elem).append(html);
 		laydate.render({elem:'#inputDate',range:'~'})
+		form.render();
 		mytable.render({
 			elem:'#tableData',
 			url: myutil.config.ctx+'/ledger/inventory/outStoragePage',
@@ -86,7 +101,7 @@ layui.extend({
 			       { title:'出库时间',   field:'arrivalTime', type:'dateTime',width:'10%',	},
 			       { title:'出库数量',   field:'arrivalNumber',   },
 			       { title:'出库操作人',   field:'userStorage_userName',	},
-			       { title:'面料',   field:'materiel_name',	},
+			       { title:'出库产品',   field:'product_name',	},
 			       { title:'状态',   field:'outStatus',  transData:{ data:['','生产出库','调拨出库','销售换货出库','采购退货出库','盘盈出库'], } },
 			       ]]
 		})

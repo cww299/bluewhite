@@ -6,11 +6,15 @@
  * inputWarehouseOrder.update({ data:{修改前的数据、回显},   })
  * type: 0,		//入库类型1:物料入库（默认）、2:成品入库、3:皮壳入库
  * inputWarehouseOrder.add({
- * 
- * 		materielId:'',	//物料入库时传入
- * 		orderProcurementId:'',  //物料入库采购入库时，传入的订单id
- * 
- * 		productId:'',   //成品、皮壳入库时传入
+ * 		inStatus: 1,    //采购入库	物料type=1时的值
+ * 		inStatus: 2,    //生产入库 如果新增为这两种状态，请给定inStatus值
+ * 		inStatus: 3,    //调拨入库,
+ * 		inStatus: 4,	//退货入库,
+ * 		inStatus: 5,	//换货入库,
+ * 		inStatus: 6, 	//盘亏入库,
+ * 		orderProcurementId:'',  //修改物料入库采购入库时，传入的订单id
+ * 		materielId:'',			//物料入库时传入
+ * 		productId:'',   		//成品、皮壳入库时传入
  * 		orderOutSourceId:'',    //成品、皮壳生产入库时，传入的订单id
  * })
  */
@@ -64,7 +68,7 @@ layui.extend({
 						'<select name="inStatus" {{(d.inStatus==1 || d.inStatus==2)?"disabled":""}} ',
 							' value="{{ d.inStatus || 3}}" id="inStatus">',
 							`{{#
-								 if(layui.inputWarehouseOrder.type==1){
+								 if(layui.inputWarehouseOrder.type==layui.inputWarehouseOrder.allType.WL){
 							 }}
 									<option value="2" {{ d.inStatus!=2?"disabled":"" }}>采购入库</option>
 							 {{#
@@ -84,7 +88,7 @@ layui.extend({
 				'</div>',
 				'<div>',
 					`{{#
-						 if(layui.inputWarehouseOrder.type==1){
+						 if(layui.inputWarehouseOrder.type==layui.inputWarehouseOrder.allType.WL){
 					 }}
 							<input type="hidden" name="materielId" value="{{ d.materielId }}">
 							<input type="hidden" name="orderProcurementId" value="{{ d.orderProcurementId || "" }}">
@@ -98,20 +102,24 @@ layui.extend({
 					  }}
 				  `,
 					'<input type="hidden" name="warehouseTypeId" value="{{'+
-						' layui.inputWarehouseOrder.type==1?434:(layui.inputWarehouseOrder.type==2?274:379) }}">',
+						' layui.inputWarehouseOrder.type==layui.inputWarehouseOrder.allType.WL?434:(layui.inputWarehouseOrder.type==2?274:379) }}">',
 					'<input type="hidden" name="id" value="{{d.id || ""}}">',
 				'</div>',
 				'<p style="display:none;"><button lay-submit lay-filter="sureAddOutOrder" id="sureAddOutOrder">确定</button></p>',
 				'</div>',
 	           ].join(' ');
 	
+	
 	var inputWarehouseOrder = {
-			type:1,	//默认为物料入库
+			type: 1,	//默认为物料入库
+			allType :{
+				WL : 1, CP : 2, PK : 3,
+			}
 		}, 
 		allStorageLocation = '',allStorageArea = '',allUser = '';
 	
 	inputWarehouseOrder.add = function(opt){
-		inputWarehouseOrder.update(opt)
+		inputWarehouseOrder.update(opt || {})
 	}
 	
 	inputWarehouseOrder.update = function(opt){
@@ -122,7 +130,7 @@ layui.extend({
 		}
 		if(data.id){
 			title = "修改入库单";
-			if(inputWarehouseOrder.type==1){
+			if(inputWarehouseOrder.type==inputWarehouseOrder.allType.WL){
 				data.materielId = data.materiel.id;
 				data.orderProcurementId = data.orderProcurement.id;
 			}else{
@@ -152,7 +160,7 @@ layui.extend({
 					$('#storageAreaId').val(data.storageArea?data.storageArea.id:'');
 					$('#storageLocationId').val(data.storageLocation?data.storageLocation.id:'');
 					$('#inStatus').val(data.inStatus);
-					if(inputWarehouseOrder.type==1){
+					if(inputWarehouseOrder.type==inputWarehouseOrder.allType.WL){
 						
 					}else{
 						
@@ -161,7 +169,7 @@ layui.extend({
 				}
 				form.on('submit(sureAddOutOrder)',function(obj){
 					var url = '/ledger/inventory/savePutStorage';
-					if(inputWarehouseOrder.type==1)
+					if(inputWarehouseOrder.type==inputWarehouseOrder.allType.WL)
 						url = '/ledger/inventory/saveMaterialPutStorage';
 					myutil.saveAjax({
 						url: url,

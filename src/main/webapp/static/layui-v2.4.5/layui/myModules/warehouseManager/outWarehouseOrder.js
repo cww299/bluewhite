@@ -6,7 +6,7 @@
  * outWarehouseOrder.update({ data:{修改前的数据、回显},   })
  * 
  * outWarehouseOrder.add({
- * 		type: 0,		//入库类型1:物料出库（默认）、2:成品出库、3:皮壳出库
+ * 		type: 1,		//入库类型1:物料出库（默认）、2:成品出库、3:皮壳出库
  * 
  * })
  */
@@ -93,6 +93,9 @@ layui.extend({
 	
 	var outWarehouseOrder = {
 			type:1,
+			allType:{
+				WL:1, PC:2, PK:3,
+			}
 		}, allStorageLocation = '',allStorageArea = '',allUser = '';
 	
 	outWarehouseOrder.add = function(opt){

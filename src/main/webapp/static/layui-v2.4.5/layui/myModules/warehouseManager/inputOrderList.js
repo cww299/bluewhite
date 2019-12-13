@@ -81,10 +81,10 @@ layui.extend({
 						});
 					}
 				},
-				btn:[4],
+				btn:[],
 			},
 			toolbar:[
-				'<span class="layui-btn layui-btn-sm" lay-event="update">修改</span>',
+				/*'<span class="layui-btn layui-btn-sm" lay-event="update">修改</span>',*/
 			].join(''),
 			autoUpdate:{
 				deleUrl:'/ledger/inventory/deletePutStorage',

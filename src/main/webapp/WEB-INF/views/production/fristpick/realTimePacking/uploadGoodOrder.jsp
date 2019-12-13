@@ -28,7 +28,7 @@
 				<td><input type="text" name="bacthNumber" class="layui-input"></td>
 				<td>&nbsp;&nbsp;&nbsp;</td>
 				<td>是否天猫:</td>
-				<td style="width:80px;">
+				<td style="width:100px;">
 					<select name="internal"><option value="">请选择</option>
 									<option value="0">是</option>
 									<option value="1">否</option></select></td>
