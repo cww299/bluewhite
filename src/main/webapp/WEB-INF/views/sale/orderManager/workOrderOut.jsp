@@ -1,5 +1,6 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
+<%@ taglib prefix="shiro" uri="http://shiro.apache.org/tags"%>
 <c:set var="ctx" value="${pageContext.request.contextPath }" />
 <!DOCTYPE html>
 <html>
@@ -115,6 +116,17 @@
 {{# }  }} 
 </div>
 </script>
+<div id="toolbarTpl" style="display:none;">
+	<shiro:hasAnyRoles name="superAdmin,productionProcessPlan">
+		<span class="layui-btn layui-btn-sm" lay-event="edit" id="productionProcessPlanBtn">修改加工单</span>
+		<span class="layui-btn layui-btn-sm" lay-event="print">打印</span>
+		<span class="layui-btn layui-btn-sm layui-btn-warm" lay-event="audit">审核</span>
+		<span class="layui-btn layui-btn-sm layui-btn-normal" lay-event="returnOrder">退货单</span>
+	</shiro:hasAnyRoles>
+	<shiro:hasAnyRoles name="superAdmin,productionBillAccounting">
+		<span class="layui-btn layui-btn-sm layui-btn-primary" lay-event="addBill">生成账单</span>
+	</shiro:hasAnyRoles>
+</div>
 <script>
 layui.config({
 	base : '${ctx}/static/layui-v2.4.5/'
@@ -193,7 +205,7 @@ layui.config({
 				deleUrl:'/ledger/deleteOrderOutSource',
 			},
 			curd:{
-				btn:[4],
+				btn: $('#productionProcessPlanBtn').length>0?[4]:[],
 				otherBtn:function(obj){
 					var check = layui.table.checkStatus('tableData').data;
 					if(obj.event=='audit'){
@@ -236,12 +248,7 @@ layui.config({
 			},
 			ifNull:'---',
 			colsWidth:[0,0,18,4,7,6,8,7,4,4,4], 
-			toolbar:['<span class="layui-btn layui-btn-sm" lay-event="edit">修改加工单</span>',
-					 '<span class="layui-btn layui-btn-sm" lay-event="print">打印</span>',
-			         '<span class="layui-btn layui-btn-sm layui-btn-warm" lay-event="audit">审核</span>',
-			         '<span class="layui-btn layui-btn-sm layui-btn-normal" lay-event="returnOrder">退货单</span>',
-			         '<span class="layui-btn layui-btn-sm layui-btn-primary" lay-event="addBill">生成账单</span>',
-			         ].join(' '),
+			toolbar: $('#toolbarTpl').html(),
 			cols:[[
 			       { type:'checkbox',},
 			       { title:'编号',   field:'order_orderNumber',	},
