@@ -11,6 +11,7 @@
  * 					cols:[[ { type:'price', }  ]]   修改时只能是数字，不能为空
  * 					cols:[[ { type:'count', }  ]]	修改时只能是正整数
  * 开启自动修改功能：autoUpdate:{  saveUrl:'新增的接口', deleUrl:'删除接口', updateUrl:'修改接口（如果不存在时，默认使用新增接口）',
+ * 								nolyUpdateField:[],		//自动修改的字段，用于过滤可修改但需要点击保存的字段
  * 									field:{ 虚拟字段:'对应的上传值' },isReload：修改成功是否重载表格 ,success:成功后的回调 },   如：customer_id 对应的上传值customerId
  * 增加自动curd工具模板：curd: {
  * 							btn:[1,2,3,4],  需要显示的按钮，按顺序，默认全显
@@ -85,6 +86,11 @@ layui.extend({
 					china[item2.field] = item2.title;
 					if(item2.field.split('_').length>1 && exportCols.indexOf(item2.field)<0 ) //记录假字段、用于导出
 						exportCols.push(item2.field);
+					if(item2.type=='select'){	//初始无值时bug、需要进入后记录下拉框值
+						var layFilter = item2.select.layFilter || item2.field;
+						if(selectLay.indexOf(layFilter)<0)
+							selectLay.push(layFilter);
+					}
 					var tep = function(d){								//默认模板
 						var fie = item2.field.split('_');				
 						var res = '';
@@ -111,7 +117,7 @@ layui.extend({
 					};
 					function transData(r){
 						var text = r;
-						var data = item2.transData.data;
+						var data = item2.transData.data || [];
 						if(data[r])											//存在转换数据时
 							text = data[r];	
 						else if(item2.transData.text)						//无值时
@@ -125,8 +131,6 @@ layui.extend({
 						var data = item2.select.data, id = item2.select.id || 'id', name = item2.select.name || 'name',
 							layFilter = item2.select.layFilter || item2.field, unsearch = item2.select.unsearch || false,
 							disabled = item2.select.isDisabled?'disabled':'';
-						if(selectLay.indexOf(layFilter)<0)
-							selectLay.push(layFilter);
 						var html = '<select '+(unsearch?"":"lay-search")+' lay-filter="'+(layFilter)+'" '+disabled+'>';
 						layui.each(data,function(index,item){
 							var selected = r == item.id ? 'selected' : '';
@@ -230,6 +234,10 @@ layui.extend({
 								if(val.split(' ').length==1)
 									val += ' 00:00:00';
 								if(opt.autoUpdate){		//开启自动修改
+									if(opt.autoUpdate.nolyUpdateField){
+										if(opt.autoUpdate.nolyUpdateField.indexOf(f)<0)
+											return;
+									}
 									var data = { id: trData.id };
 									data[f] = val;
 									myutil.saveAjax({
@@ -261,6 +269,10 @@ layui.extend({
 							else{
 								var data = { id: trData.id };
 								data[f] = obj.value;
+								if(opt.autoUpdate.nolyUpdateField){
+									if(opt.autoUpdate.nolyUpdateField.indexOf(f)<0)
+										return;
+								}
 								myutil.saveAjax({
 									url: opt.autoUpdate.updateUrl || opt.autoUpdate.saveUrl,
 									data: data,
@@ -302,6 +314,10 @@ layui.extend({
 					}
 					data[t] = val;
 					if(opt.autoUpdate && trData.id>0){
+						if(opt.autoUpdate.nolyUpdateField){
+							if(opt.autoUpdate.nolyUpdateField.indexOf(t)<0)
+								return;
+						}
 						myutil.saveAjax({
 							url: opt.autoUpdate.updateUrl || opt.autoUpdate.saveUrl,
 							data: data,
@@ -370,8 +386,6 @@ layui.extend({
 					}
 					function saveTempData(){
 						var data = table.getTemp(tableId).data,success = 0,msg='';
-						if(data.length==0)
-							return myutil.emsg('无临时数据可保存！');
 						layui.each(data,function(index,item){
 							if(msg!='') return;
 							for(var i=0;i<notNull.length;i++){
@@ -398,6 +412,8 @@ layui.extend({
 						if(opt.curd.saveFun)
 							opt.curd.saveFun(data);		//如果存在保存函数则执行，否则执行默认保存函数
 						else{
+							if(data.length==0)
+								return myutil.emsg('无临时数据可保存！');
 							for(var i=0;i<data.length;i++)
 								myutil.saveAjax({
 									url: opt.autoUpdate.saveUrl,
@@ -421,7 +437,7 @@ layui.extend({
 							for(var i=0;i<choosed.length;i++)
 								ids+=(choosed[i].id+",");
 							if(opt.curd.deleFun)
-								opt.curd.deleFun(ids);		//如果存在删除函数则执行，否则执行默认删除函数
+								opt.curd.deleFun(ids,choosed);		//如果存在删除函数则执行，否则执行默认删除函数
 							else
 								myutil.deleteAjax({
 									url: opt.autoUpdate.deleUrl,

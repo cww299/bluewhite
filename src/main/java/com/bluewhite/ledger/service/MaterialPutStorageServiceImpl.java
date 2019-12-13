@@ -92,7 +92,8 @@ public class MaterialPutStorageServiceImpl extends BaseServiceImpl<MaterialPutSt
 			return null;
 		}, page);
 		pages.getContent().stream().forEach(m -> {
-			List<MaterialOutStorage> materialOutStorageList = materialOutStorageDao.findByMaterialPutStorageId(m.getId());
+			List<Long> longList = materialOutStorageDao.findMaterialPutStorageId(m.getId());
+			List<MaterialOutStorage> materialOutStorageList = materialOutStorageDao.findAll(longList);
 			double arrNumber = materialOutStorageList.stream().mapToDouble(MaterialOutStorage::getArrivalNumber).sum();
 			m.setSurplusNumber(NumUtils.sub(m.getArrivalNumber(), arrNumber));
 		});
@@ -108,8 +109,9 @@ public class MaterialPutStorageServiceImpl extends BaseServiceImpl<MaterialPutSt
 			for (String idString : idStrings) {
 				Long id = Long.parseLong(idString);
 				MaterialPutStorage materialPutStorage = dao.findOne(id);
-				List<MaterialOutStorage> materialOutStorage = materialOutStorageDao.findByMaterialPutStorageId(id);
-				if(materialOutStorage.size()>0){
+				List<Long> longList = materialOutStorageDao.findMaterialPutStorageId(id);
+				List<MaterialOutStorage> materialOutStorageList = materialOutStorageDao.findAll(longList);
+				if(materialOutStorageList.size()>0){
 					throw new ServiceException("第"+(i+1)+"条入库单已有出库记录，无法删除，请先删除出库单");
 				}
 				if (materialPutStorage.getOrderProcurement().getArrival() == 1) {

@@ -2,7 +2,11 @@ package com.bluewhite.ledger.service;
 
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.IntSummaryStatistics;
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 import javax.persistence.criteria.Join;
 import javax.persistence.criteria.JoinType;
@@ -21,15 +25,22 @@ import com.bluewhite.base.BaseServiceImpl;
 import com.bluewhite.basedata.dao.BaseDataDao;
 import com.bluewhite.common.BeanCopyUtils;
 import com.bluewhite.common.ServiceException;
+import com.bluewhite.common.SessionManager;
+import com.bluewhite.common.entity.CurrentUser;
 import com.bluewhite.common.entity.PageParameter;
 import com.bluewhite.common.entity.PageResult;
 import com.bluewhite.common.utils.StringUtil;
 import com.bluewhite.ledger.dao.OrderChildDao;
 import com.bluewhite.ledger.dao.OrderDao;
+import com.bluewhite.ledger.dao.OutStorageDao;
+import com.bluewhite.ledger.dao.PutStorageDao;
 import com.bluewhite.ledger.entity.Order;
 import com.bluewhite.ledger.entity.OrderChild;
+import com.bluewhite.ledger.entity.OutStorage;
+import com.bluewhite.ledger.entity.PutStorage;
 import com.bluewhite.onlineretailers.inventory.dao.ProcurementDao;
 import com.bluewhite.onlineretailers.inventory.entity.Procurement;
+import com.bluewhite.onlineretailers.inventory.entity.ProcurementChild;
 
 @Service
 public class OrderServiceImpl extends BaseServiceImpl<Order, Long> implements OrderService {
@@ -42,6 +53,10 @@ public class OrderServiceImpl extends BaseServiceImpl<Order, Long> implements Or
 	private BaseDataDao baseDataDao;
 	@Autowired
 	private OrderChildDao orderChildDao;
+	@Autowired
+	private PutStorageService putStorageService;
+	@Autowired
+	private OutStorageDao outStorageDao;
 
 	@Override
 	public PageResult<Order> findPages(Order param, PageParameter page) {
@@ -70,6 +85,12 @@ public class OrderServiceImpl extends BaseServiceImpl<Order, Long> implements Or
 			if (!StringUtils.isEmpty(param.getProductName())) {
 				predicate.add(cb.equal(root.get("product").get("name").as(String.class),
 						"%" + StringUtil.specialStrKeyword(param.getProductName()) + "%"));
+			}
+			// 按业务员id
+			if (param.getUserId() != null) {
+				Join<Order, OrderChild> join = root.join(root.getModel().getList("orderChilds", OrderChild.class),
+						JoinType.LEFT);
+				predicate.add(cb.equal(join.get("userId").as(String.class), param.getUserId()));
 			}
 			// 按产品编号过滤
 			if (!StringUtils.isEmpty(param.getProductNumber())) {
@@ -126,7 +147,7 @@ public class OrderServiceImpl extends BaseServiceImpl<Order, Long> implements Or
 			JSONArray jsonArray = JSON.parseArray(order.getOrderChild());
 			for (int i = 0; i < jsonArray.size(); i++) {
 				JSONObject jsonObject = jsonArray.getJSONObject(i);
-				OrderChild orderChild = new OrderChild(); 
+				OrderChild orderChild = new OrderChild();
 				orderChild.setCustomerId(jsonObject.getLong("customerId"));
 				orderChild.setUserId(jsonObject.getLong("userId"));
 				orderChild.setChildNumber(jsonObject.getInteger("childNumber"));
@@ -142,8 +163,12 @@ public class OrderServiceImpl extends BaseServiceImpl<Order, Long> implements Or
 		List<Order> result = dao.findAll((root, query, cb) -> {
 			List<Predicate> predicate = new ArrayList<>();
 			// 按id过滤
-			if (param.getId() != null) {
-				predicate.add(cb.equal(root.get("id").as(Long.class), param.getId()));
+			if (param.getProductId() != null) {
+				predicate.add(cb.equal(root.get("productId").as(Long.class), param.getProductId()));
+			}
+			// 按是否完结
+			if (param.getComplete() != null) {
+				predicate.add(cb.equal(root.get("complete").as(Integer.class), param.getComplete()));
 			}
 			// 按批次
 			if (!StringUtils.isEmpty(param.getBacthNumber())) {
@@ -154,9 +179,21 @@ public class OrderServiceImpl extends BaseServiceImpl<Order, Long> implements Or
 				predicate.add(cb.between(root.get("orderDate").as(Date.class), param.getOrderTimeBegin(),
 						param.getOrderTimeEnd()));
 			}
-			// 按是否生成耗料
-			if (param.getConsumption() != null) {
-				predicate.add(cb.isNotEmpty(root.get("orderMaterials")));
+			// 按业务员id
+			if (param.getUserId() != null) {
+				Join<Order, OrderChild> join = root.join(root.getModel().getList("orderChilds", OrderChild.class),
+						JoinType.LEFT);
+				predicate.add(cb.equal(join.get("userId").as(Long.class), param.getUserId()));
+			}
+			// 按客户id
+			if (param.getCustomerId() != null) {
+				Join<Order, OrderChild> join = root.join(root.getModel().getList("orderChilds", OrderChild.class),
+						JoinType.LEFT);
+				predicate.add(cb.equal(join.get("customerId").as(Long.class), param.getCustomerId()));
+			}
+			// 按是否审核
+			if (param.getAudit() != null) {
+				predicate.add(cb.equal(root.get("audit").as(Integer.class), param.getAudit()));
 			}
 			Predicate[] pre = new Predicate[predicate.size()];
 			query.where(predicate.toArray(pre));
@@ -168,9 +205,6 @@ public class OrderServiceImpl extends BaseServiceImpl<Order, Long> implements Or
 	@Override
 	@Transactional
 	public void updateOrder(Order order) {
-		if(!StringUtils.isEmpty(order.getDeleteIds())){
-			deleteOrderChild(order.getDeleteIds());
-		}
 		Order ot = dao.findOne(order.getId());
 		if (ot.getAudit() == 1) {
 			throw new ServiceException("批次号为" + ot.getBacthNumber() + "下单合同已审核，无法修改");
@@ -181,15 +215,23 @@ public class OrderServiceImpl extends BaseServiceImpl<Order, Long> implements Or
 			JSONArray jsonArray = JSON.parseArray(ot.getOrderChild());
 			for (int i = 0; i < jsonArray.size(); i++) {
 				JSONObject jsonObject = jsonArray.getJSONObject(i);
-				OrderChild orderChild = orderChildDao.findOne(jsonObject.getLong("id"));
+				OrderChild orderChild = new OrderChild();
+				if (jsonObject.getLong("id") != null) {
+					orderChild = orderChildDao.findOne(jsonObject.getLong("id"));
+				}
 				orderChild.setCustomerId(jsonObject.getLong("customerId"));
 				orderChild.setUserId(jsonObject.getLong("userId"));
 				orderChild.setChildNumber(jsonObject.getInteger("childNumber"));
 				orderChild.setChildRemark(jsonObject.getString("childRemark"));
-				ot.getOrderChilds().add(orderChild);
+				orderChild.setOrderId(order.getId());
+				orderChildDao.save(orderChild);
 			}
 		}
 		dao.save(ot);
+
+		if (!StringUtils.isEmpty(order.getDeleteIds())) {
+			deleteOrderChild(order.getDeleteIds());
+		}
 	}
 
 	@Override
@@ -229,4 +271,87 @@ public class OrderServiceImpl extends BaseServiceImpl<Order, Long> implements Or
 		}
 		return count;
 	}
+
+	
+	//公共库存未处理
+	@Override
+	public List<Map<String, Object>> findListSend(Order param) {
+		//是否是自己的库存
+		//include = 0  false
+		//include = 1  true   
+		CurrentUser cu = SessionManager.getUserSession();
+		// 通过产品查询所有的入库单
+		List<PutStorage> putStorageList = putStorageService.detailsInventory(null, param.getProductId());
+		putStorageList  = putStorageList.stream().filter(p->{
+			//排除公共库存
+			if(p.getOrderOutSource()!=null){
+				List<OrderChild> ocList = p.getOrderOutSource().getOrder().getOrderChilds();
+				for(OrderChild oc : ocList){
+					if(cu.getId().equals(oc.getUserId())){
+						return !param.isInclude();
+					}
+				}
+			}
+			return param.isInclude();
+		}).collect(Collectors.toList());
+		
+		// 通过入库单拿到所有的生产计划单
+		List<Map<String, Object>> listMap = new ArrayList<>();
+		putStorageList.forEach(p -> {
+			Map<String, Object> map = new HashMap<String, Object>();
+			if(p.getOrderOutSource()!=null){
+				map.put("putStorageId", p.getId());
+				map.put("id", p.getOrderOutSource().getOrderId());
+				map.put("order", p.getOrderOutSource().getOrder());
+				map.put("number", p.getSurplusNumber());
+				listMap.add(map);
+			}
+		});
+		
+		//数据返回格式处理
+		Map<Object, List<Map<String, Object>>> mapOnlineOrderChildList = listMap.stream()
+				.collect(Collectors.groupingBy(m -> m.get("id").toString()));
+		List<Map<String, Object>> result = new ArrayList<>();
+		mapOnlineOrderChildList.forEach((k, slist) -> {
+			Map<String, Object> nmap = new HashMap<>();
+			IntSummaryStatistics sumcc = slist.stream()
+					.collect(Collectors.summarizingInt(e -> Integer.valueOf(e.get("number").toString())));
+			Order order = (Order) slist.get(0).get("order");
+			List<Map<String, Object>> userList = new ArrayList<>();
+			order.getOrderChilds().forEach(o -> {
+				Map<String, Object> map = new HashMap<String, Object>();
+				map.put("name", o.getUser().getUserName());
+				map.put("id", o.getUserId());
+				userList.add(map);
+			});
+			// 当是自己库存时，判断下单数量是否大于库存数量，当大于时取库存作为返回数量，小于则取下单数返回 。
+			if(!param.isInclude()){
+				int num = order.getOrderChilds().stream()
+						.filter(OrderChild->cu.getId().equals(OrderChild.getUserId())).mapToInt(OrderChild::getChildNumber).sum();
+				nmap.put("number", num >= (int)sumcc.getSum() ? (int)sumcc.getSum() : num);
+			}else{
+				nmap.put("number", sumcc.getSum());
+			}
+			nmap.put("bacth", order.getBacthNumber());
+			nmap.put("userList", userList);
+			nmap.put("putStorageId", slist.get(0).get("putStorageId"));
+			result.add(nmap);
+		});
+		
+		// 获取公共库存
+		List<PutStorage> publicStorageList = putStorageList.stream()
+				.filter(PutStorage -> PutStorage.getPublicStock() == 1).collect(Collectors.toList());
+		if (publicStorageList.size() > 0) {
+			publicStorageList.forEach(p -> {
+				Map<String, Object> map = new HashMap<String, Object>();
+				map.put("putStorageId", p.getId());
+				map.put("bacth", p.getSerialNumber());
+				map.put("number", p.getSurplusNumber());
+				map.put("userList", "");
+				result.add(map);
+			});
+		}
+		return result;
+	}
+
 }

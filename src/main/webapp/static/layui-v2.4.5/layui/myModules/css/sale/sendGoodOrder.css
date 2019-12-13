@@ -1,0 +1,99 @@
+@charset "UTF-8";
+.addTable{
+	background: #f4f4f4;
+    overflow: hidden;
+    height: 100%;
+}
+.layerContentDiv{
+	overflow: hidden;
+    margin: auto;
+    width: 100% !important;
+}
+.addTable .layui-card-body {
+    margin: 0 auto;
+    padding: 0;
+    overflow: hidden;
+    width: 100% !important;
+}
+.smallTitle{
+	    background: #f8f8f8;
+    padding: 10px;
+    margin-bottom: -15px;
+    font-weight: bold;
+        color: #000000ba;
+    margin-top: 8px;
+}
+.blueBlock {
+    width: 3px;
+    height: 5px;
+    background: #2196F3;
+    margin-right: 5px;
+}
+.addTable table {
+    width: 95%;
+    margin: 10px auto;
+}
+.layerContent table .titleTd {
+    width: 80px;
+    text-align: right;
+    color: gray;
+}
+.addTable table td {
+    padding-top: 8px;
+}
+.imgTd>div {
+    background: #1394ce;
+    width: 100px;
+    height: 100px;
+    margin-right: 45px;
+    float: left;
+    margin: 0 20px;
+    color: white;
+    font-size: 25px;
+    text-align: center;
+    line-height: 65px;
+    cursor: pointer;
+    border-radius: 10px;
+    overflow: hidden;
+}
+.imgTd>div>p {
+    font-size: 12px !important;
+    background: orange;
+    text-align: center;
+    line-height: 35px;
+}
+.fright{
+	float: right;
+}
+.fleft{
+	float: left;
+}
+.headTips {
+    float: right;
+    color: gray;
+}
+.red {
+	margin-right: 3px;
+    color: red;
+}
+.twoDiv {
+    width: 48.5% !important;
+    float: left;
+    padding: 0.5%;
+    margin-top: 10px !important;
+}
+#sureAddSendOrder{
+	float: right;
+    margin-top: 6px;
+}
+#customInputChoose:hover{
+	cursor:pointer;
+}
+#productInputChoose:hover{
+	cursor:pointer;
+}
+.addTable .layui-form-radio{
+	padding-right: 0px;
+	margin-right: 0px;
+}
+	

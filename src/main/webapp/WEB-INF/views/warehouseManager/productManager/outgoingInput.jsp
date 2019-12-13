@@ -18,17 +18,17 @@
 layui.config({
 	base : '${ctx}/static/layui-v2.4.5/'
 }).extend({
-	outgoing : 'layui/myModules/inventory/outgoing' ,
+	productionInput : 'layui/myModules/warehouseManager/productionInput' ,
 }).define(
-	['outgoing','myutil'],
+	['productionInput','myutil'],
 	function(){
 		var $ = layui.jquery
 		,myutil = layui.myutil
-		,outgoing = layui.outgoing;
+		,productionInput = layui.productionInput;
 		
 		myutil.config.ctx = '${ctx}';
 		myutil.clickTr();
-		outgoing.render({
+		productionInput.render({
 			elem:'#app',
 			ctx:'${ctx}',
 		})

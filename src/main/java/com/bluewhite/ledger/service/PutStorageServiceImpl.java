@@ -1,8 +1,10 @@
 package com.bluewhite.ledger.service;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import javax.persistence.criteria.Predicate;
 
@@ -13,15 +15,14 @@ import org.springframework.util.StringUtils;
 
 import com.bluewhite.base.BaseServiceImpl;
 import com.bluewhite.common.Constants;
-import com.bluewhite.common.ServiceException;
 import com.bluewhite.common.entity.PageParameter;
 import com.bluewhite.common.entity.PageResult;
-import com.bluewhite.common.utils.NumUtils;
 import com.bluewhite.common.utils.SalesUtils;
 import com.bluewhite.common.utils.StringUtil;
 import com.bluewhite.ledger.dao.OutStorageDao;
+import com.bluewhite.ledger.dao.PutOutStorageDao;
 import com.bluewhite.ledger.dao.PutStorageDao;
-import com.bluewhite.ledger.entity.OutStorage;
+import com.bluewhite.ledger.entity.PutOutStorage;
 import com.bluewhite.ledger.entity.PutStorage;
 import com.bluewhite.onlineretailers.inventory.service.InventoryService;
 
@@ -34,16 +35,19 @@ public class PutStorageServiceImpl extends BaseServiceImpl<PutStorage, Long> imp
 	private InventoryService inventoryService;
 	@Autowired
 	private OutStorageDao outStorageDao;
+	@Autowired
+	private PutOutStorageDao putOutStorageDao;
+	
 
 	@Override
 	public void savePutStorage(PutStorage putStorage) {
-		if(putStorage.getId()!=null){
+		if (putStorage.getId() != null) {
 			PutStorage ot = dao.findOne(putStorage.getId());
 			update(putStorage, ot, "");
-		}else{
+		} else {
 			putStorage.setSerialNumber(
-					Constants.CPRK + StringUtil.getDate() + SalesUtils.get0LeftString((int) (dao.count()+1), 8));
-			inventoryService.putInStorage(putStorage.getProductId(), putStorage.getInWarehouseTypeId());
+					Constants.CPRK + StringUtil.getDate() + SalesUtils.get0LeftString((int) (dao.count() + 1), 8));
+			putStorage.setPublicStock(0);
 			dao.save(putStorage);
 		}
 	}
@@ -85,9 +89,10 @@ public class PutStorageServiceImpl extends BaseServiceImpl<PutStorage, Long> imp
 			return null;
 		}, page);
 		pages.getContent().stream().forEach(m -> {
-			List<OutStorage> outStorageList = outStorageDao.findByPutStorageId(m.getId());
-			double arrNumber = outStorageList.stream().mapToDouble(OutStorage::getArrivalNumber).sum();
-			m.setSurplusNumber(NumUtils.sub(m.getArrivalNumber(), arrNumber));
+			//入库单实际出库数量
+			List<PutOutStorage> outPutStorageList = putOutStorageDao.findByPutStorageId(m.getId());
+			int arrNumber = outPutStorageList.stream().mapToInt(PutOutStorage::getNumber).sum();
+			m.setSurplusNumber(m.getArrivalNumber() - arrNumber);
 		});
 		PageResult<PutStorage> result = new PageResult<>(pages, page);
 		return result;
@@ -95,21 +100,34 @@ public class PutStorageServiceImpl extends BaseServiceImpl<PutStorage, Long> imp
 
 	@Override
 	public int deletePutStorage(String ids) {
-		int i = 0;
+		int count = 0;
 		if (!StringUtils.isEmpty(ids)) {
 			String[] idStrings = ids.split(",");
 			for (String idString : idStrings) {
 				Long id = Long.parseLong(idString);
-				PutStorage putStorage = dao.findOne(id);
-				List<OutStorage> outStorage = outStorageDao.findByPutStorageId(id);
-				if(outStorage.size()>0){
-					throw new ServiceException("第"+(i+1)+"条入库单已有出库记录，无法删除，请先删除出库单");
-				}
 				delete(id);
-				i++;
+				count++;
 			}
 		}
-		return i;
+		return count;
+	}
+
+	@Override
+	public List<PutStorage> detailsInventory(Long warehouseTypeId, Long productId) {
+		List<PutStorage> putStorageList = dao.findByProductId(productId);
+		if(warehouseTypeId!=null){
+			putStorageList= dao.findByWarehouseTypeIdAndProductId(warehouseTypeId, productId);
+		}
+		putStorageList.forEach(m->{
+			//入库单实际出库数量
+			List<PutOutStorage> outPutStorageList = putOutStorageDao.findByPutStorageId(m.getId());
+			int arrNumber = outPutStorageList.stream().mapToInt(PutOutStorage::getNumber).sum();
+			//入库单剩余数量
+			m.setSurplusNumber(m.getArrivalNumber() - arrNumber);
+		});
+		// 排除掉已经全部出库的入库单
+		putStorageList = putStorageList.stream().filter(PutStorage->PutStorage.getSurplusNumber()>0).sorted(Comparator.comparing(PutStorage::getArrivalTime)).collect(Collectors.toList());
+		return putStorageList;
 	}
 
 }

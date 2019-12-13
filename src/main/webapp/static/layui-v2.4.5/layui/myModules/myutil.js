@@ -199,7 +199,7 @@ layui.define(['jquery','layer','form','table'],function(exports){
 		/*url: '', id:'id', table:'', text:'', offset:'', success,verify(checked) */
 		if(!opt.table)
 			return console.warn('请给定操作表格');
-		var tid = opt.table, text = opt.text || '请选择相关信息删除|是否确认删除？',offset = opt.offset || '',ids = [];
+		var tid = opt.table, text = opt.text || '请选择相关信息删除|是否确认删除？',offset = opt.offset || '',ids = new Set();
 		var choosed = table.checkStatus(tid).data;
 		if(choosed.length<1)
 			return myutil.emsg(text.split('|')[0]);
@@ -208,7 +208,7 @@ layui.define(['jquery','layer','form','table'],function(exports){
 			layui.each(id.split('_'),function(i1,t1){
 				val = val[t1] || null;
 			})
-			ids.push(val);
+			ids.add(val);
 		})
 		var msg = '';
 		opt.verify && (msg = opt.verify(choosed));
@@ -217,7 +217,7 @@ layui.define(['jquery','layer','form','table'],function(exports){
 		layer.confirm(text.split('|')[1],{ offset:offset },function(){
 			myutil.deleteAjax({
 				url: opt.url,
-				ids: ids.join(','),
+				ids: Array.from(ids).join(','),
 				success: function(){
 					table.reload(tid);
 					opt.success && opt.success();
@@ -266,11 +266,22 @@ layui.define(['jquery','layer','form','table'],function(exports){
 		return myutil.c.getData(options,callback);
 	};
 	
-	myutil.clickTr = function(){
+	myutil.clickTr = function(opt){
+		var noClick = opt && opt.noClick;
 		$(document).on('click', '.layui-table-view tbody tr', function(event) {
 			var elemTemp = $(this);
 			var tableView = elemTemp.closest('.layui-table-view');
 			var trIndex = elemTemp.data('index');
+			var tableId = $(tableView).attr('lay-id');
+			if(noClick){
+				if(typeof(noClick)!=='object'){
+					noClick = [noClick];
+				}
+				for(var i in noClick){
+					if(noClick[i]==tableId)
+						return;
+				}
+			}
 			tableView.find('tr[data-index="' + trIndex + '"]').find('[name="layTableCheckbox"]+').last().click();
 		})
 	};

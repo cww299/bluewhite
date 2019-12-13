@@ -1,5 +1,7 @@
 package com.bluewhite.ledger.service;
 
+import java.util.List;
+
 import com.bluewhite.base.BaseCRUDService;
 import com.bluewhite.common.entity.PageParameter;
 import com.bluewhite.common.entity.PageResult;
@@ -19,7 +21,7 @@ public interface PutStorageService extends BaseCRUDService<PutStorage, Long> {
 	 * @param page
 	 * @param putStorage
 	 */
-	public  PageResult<PutStorage> findPages(PageParameter page, PutStorage putStorage);
+	public PageResult<PutStorage> findPages(PageParameter page, PutStorage putStorage);
 	
 	/**
 	 * 删除入库单
@@ -27,5 +29,13 @@ public interface PutStorageService extends BaseCRUDService<PutStorage, Long> {
 	 * @return
 	 */
 	public int deletePutStorage(String ids);
+	
+	/**
+	 * 根据产品和库存查看实际入库单和生产计划单 （库存详情）
+	 * @param warehouseTypeId
+	 * @param productId
+	 */
+	public List<PutStorage>  detailsInventory(Long warehouseTypeId, Long productId);
+	
 
 }

@@ -18,7 +18,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import com.bluewhite.basedata.entity.BaseData;
 import com.bluewhite.common.BeanCopyUtils;
 import com.bluewhite.common.ClearCascadeJSON;
 import com.bluewhite.common.Constants;
@@ -28,8 +27,6 @@ import com.bluewhite.common.entity.CommonResponse;
 import com.bluewhite.common.entity.CurrentUser;
 import com.bluewhite.common.entity.ErrorCode;
 import com.bluewhite.common.entity.PageParameter;
-import com.bluewhite.ledger.entity.OrderOutSource;
-import com.bluewhite.onlineretailers.inventory.entity.Inventory;
 import com.bluewhite.product.primecost.cutparts.entity.CutParts;
 import com.bluewhite.product.primecost.cutparts.service.CutPartsService;
 import com.bluewhite.product.primecost.embroidery.entity.Embroidery;
@@ -135,16 +132,13 @@ public class ProductAction {
 	/**
 	 * 仓库查看库存
 	 */
-	@RequestMapping(value = "/inventory/getProductPages", method = RequestMethod.GET)
+	@RequestMapping(value = "/inventory/productPages", method = RequestMethod.GET)
 	@ResponseBody
 	public CommonResponse getProductPages(PageParameter page, Product product) {
 		CommonResponse cr = new CommonResponse();
 		cr.setData(ClearCascadeJSON.get()
-				.addRetainTerm(Product.class, "id", "inventorys", "name", "number")
-				.addRetainTerm(Inventory.class, "id", "number", "warehouse", "warehouseType")
-				.addRetainTerm(OrderOutSource.class, "id", "surplusNumber","location")
-				.addRetainTerm(BaseData.class, "id", "name")
-				.format(productService.findPages(product, page)).toJSON());
+				.addRetainTerm(Product.class, "id", "name", "number","mapList")
+				.format(productService.inventoryFindPages(product, page)).toJSON());
 		cr.setMessage("查询成功");
 		return cr;
 	}
@@ -344,12 +338,6 @@ public class ProductAction {
 		Session session = hEntityManager.getSession();
 		Product oldIdProduct = productService.findOne(oldId);
 		Product product = productService.findOne(id);
-		PrimeCost primeCost = new PrimeCost();
-		PrimeCost oldprimeCost = oldIdProduct.getPrimeCost();
-		BeanCopyUtils.copyNotEmpty(oldprimeCost, primeCost, "");
-		primeCost.setId(null);
-		primeCost.setProductId(id);
-		product.setPrimeCost(primeCost);
 		productService.save(product);
 
 		// 裁片

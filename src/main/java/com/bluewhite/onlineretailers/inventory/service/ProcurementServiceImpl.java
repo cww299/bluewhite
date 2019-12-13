@@ -310,7 +310,7 @@ public class ProcurementServiceImpl extends BaseServiceImpl<Procurement, Long> i
 					procurementChild.setPutWarehouseIds(ids);
 					procurementChild.setWarehouseId(jsonObject.getLong("warehouseId"));
 					procurementChild.setStatus(jsonObject.getIntValue("status"));
-					Set<Inventory> inventorys = commodity.getProduct().getInventorys();
+					Set<Inventory> inventorys = commodity.getInventorys();
 					if (inventorys.size() == 0) {
 						throw new ServiceException(commodity.getSkuCode() + "没有任何库存,无法出库");
 					}
@@ -375,7 +375,7 @@ public class ProcurementServiceImpl extends BaseServiceImpl<Procurement, Long> i
 							// 获取商品
 							Commodity commodity = procurementChild.getCommodity();
 							// 获取商品库存
-							Inventory inventory = inventoryDao.findByProductIdAndWarehouseId(commodity.getProductId(),
+							Inventory inventory = inventoryDao.findByCommodityIdAndWarehouseId(commodity.getProductId(),
 									procurementChild.getWarehouseId());
 							// 增加库存的同时改变状态
 							if (inventory != null) {
@@ -652,17 +652,16 @@ public class ProcurementServiceImpl extends BaseServiceImpl<Procurement, Long> i
 					procurement.getProcurementChilds().stream().forEach(p -> {
 						Commodity commodity = p.getCommodity();
 						// 创建商品的库存
-						Set<Inventory> inventorys = commodity.getProduct().getInventorys();
+						Set<Inventory> inventorys = commodity.getInventorys();
 						// 获取库存
-						Inventory inventory = inventoryDao.findByProductIdAndWarehouseId(p.getCommodity().getProductId(), p.getWarehouseId());
+						Inventory inventory = inventoryDao.findByCommodityIdAndWarehouseId(p.getCommodity().getId(), p.getWarehouseId());
 						if (inventory == null) {
 							inventory = new Inventory();
 							inventory.setCommodityId(p.getCommodityId());
-							inventory.setProductId(p.getCommodity().getProductId());
 							inventory.setNumber(p.getNumber());
 							inventory.setWarehouseId(p.getWarehouseId());
 							inventorys.add(inventory);
-							commodity.getProduct().setInventorys(inventorys);
+							commodity.setInventorys(inventorys);
 						} else {
 							inventory.setNumber(inventory.getNumber() + p.getNumber());
 						}

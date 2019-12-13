@@ -13,14 +13,14 @@ import com.bluewhite.ledger.entity.PutStorage;
 public interface OrderOutSourceService extends BaseCRUDService<OrderOutSource, Long> {
 
 	/**
-	 * 新增外发单
+	 * 新增加工单
 	 * 
 	 * @param orderOutSource
 	 */
 	public void saveOrderOutSource(OrderOutSource orderOutSource);
 
 	/**
-	 * 分页查看外发单
+	 * 分页查看加工单
 	 * 
 	 * @param order
 	 * @param page
@@ -29,56 +29,60 @@ public interface OrderOutSourceService extends BaseCRUDService<OrderOutSource, L
 	public PageResult<OrderOutSource> findPages(OrderOutSource orderOutSource, PageParameter page);
 
 	/**
-	 * 删除外发单
+	 * 删除加工单
 	 * 
 	 * @param orderOutSource
 	 */
 	public int deleteOrderOutSource(String ids);
+
 	/**
-	 * 修改外发单
+	 * 修改加工单
 	 * 
 	 * @param orderOutSource
 	 */
 	public void updateOrderOutSource(OrderOutSource orderOutSource);
 
 	/**
-	 * 审核外发单
+	 * 审核加工单
+	 * 
 	 * @param ids
 	 * @return
 	 */
 	public int auditOrderOutSource(String ids);
-	
+
 	/**
-	 * （1.成品仓库，2.皮壳仓库）修改外发单
+	 * （1.成品仓库，2.皮壳仓库）修改加工单
+	 * 
 	 * @param orderOutSource
 	 */
 	public void updateInventoryOrderOutSource(OrderOutSource orderOutSource);
-	
+
 	/**
 	 * （生产计划部）判断是否可以新增加工单
+	 * 
 	 * @param orderId
 	 */
 	public int judgeOrderOutSource(Long orderId);
-	
+
 	/**
 	 * 生成外发加工单账单
+	 * 
 	 * @param orderOutSource
 	 */
 	public void saveOutSoureBills(OrderOutSource orderOutSource);
-	
+
 	/**
 	 * 将外发加工单和退货单糅合，得出该工序的实际任务数量，进行账单的生成
+	 * 
 	 * @param id
 	 */
 	public List<Map<String, Object>> mixOutSoureRefund(Long id);
-	
+
 	/**
 	 * 对工序价值进行新增或者修改
+	 * 
 	 * @param id
 	 */
 	public void updateProcessPrice(ProcessPrice processPrice);
-	
 
-
-	
 }

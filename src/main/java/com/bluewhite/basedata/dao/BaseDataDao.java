@@ -14,5 +14,11 @@ public interface BaseDataDao extends BaseRepository<BaseData, Long>{
 	 * @return
 	 */
 	public List<BaseData> findByType(String type);
+	
+	/**
+	 * 根绝类型查找所有的基础数据
+	 * @return
+	 */
+	public List<BaseData> findByTypeAndOrd(String type,String ord);
 
 }

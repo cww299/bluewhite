@@ -43,33 +43,6 @@
 		<table id="tableAgreement" lay-filter="tableAgreement"></table>
 	</div>
 </div>
-<script id="addTpl" type="text/html">
-<div style="padding:10px;">
-	<table class="layui-form">
-		<tr>
-			<td>商品选择：</td>
-			<td><input readonly placeholder="点击选择商品" class="layui-input" id="chooseProductInput">
-				<input type="hidden" name="productId" id="productIdHidden"></td>
-			<td>&nbsp;&nbsp;</td>
-			<td>订单类型：</td>
-			<td style="width:100px;"><select id="orderTypeSelect"><option value="">请选择</option></select></td>
-			<td>&nbsp;&nbsp;</td>
-			<td>订单时间：</td>
-			<td><input type="text" id="orderTime" class="layui-input" ></td>
-			<td>&nbsp;&nbsp;</td>
-			<td>批次号：</td>
-			<td><input type="text" id="bacthNumber" class="layui-input" ></td>
-			<td>&nbsp;&nbsp;</td>
-			<td>订单备注：</td>
-			<td><input type="text" id="orderRemak" class="layui-input" ></td>
-			<td>&nbsp;&nbsp;</td>
-			<td>订单数量：</td>
-			<td style="width:80px;"><input type="text" id="orderNumber" value="0" readonly class="layui-input" ></td>
-		</tr>
-	</table>
-	<table id="addTable" lay-filter="addTable"></table>
-</div>
-</script>
 <script id="toolbar" type="text/html">
 <div>
 	<span lay-event="addAgreement"  class="layui-btn layui-btn-sm" >新增合同</span>
@@ -78,105 +51,15 @@
 	<span lay-event="auditAgreement"  class="layui-btn layui-btn-sm layui-btn-normal" >审核</span>
 </div>
 </script>
-<script  id="addTableToolbar" type="text/html">
-<div>
-	<span lay-event="chooseCustomer"  class="layui-btn layui-btn-sm">选择客户</span>
-	<span lay-event="delete"  class="layui-btn layui-btn-sm layui-btn-danger" >删除客户</span>
-	<span lay-event="sureAdd" class="layui-btn layui-btn-sm">确定新增</span>
-</div>
-</script>
-<script  id="chooseCustomerWin" type="text/html">
-<div style="padding:10px;">
-	<table class="layui-form">
-		<tr>
-			<td>客户名称：</td>
-			<td><input class="layui-input" type="text" name="name"></td>
-			<td>&nbsp;&nbsp;</td>
-			<td><span class="layui-btn layui-btn-sm" lay-submit lay-filter="searchProduct" id="searchBtn">搜索</span></td>
-			<td>&nbsp;&nbsp;</td>
-			<td><span class="layui-btn layui-btn-sm" id="sureChoosed">确定</span></td>
-		</tr>
-	</table>
-	<table id="choosedCustomerTable" lay-filter="choosedCustomerTable"></table>
-</div>
-</script>
-<script  id="choosedProductWin" type="text/html">
-<div style="padding:10px;">
-	<table class="layui-form">
-		<tr>
-			<td>商品名称：</td>
-			<td><input class="layui-input" type="text" name="name"></td>
-			<td>&nbsp;&nbsp;</td>
-			<td>商品编号：</td>
-			<td><input class="layui-input" type="text" name="number"></td>
-			<td>&nbsp;&nbsp;</td>
-			<td><span class="layui-btn layui-btn-sm" lay-submit lay-filter="searchProductBtn" >搜索</span></td>
-			<td>&nbsp;&nbsp;</td>
-			<td><span class="layui-badge">双击选择</span></td>
-		</tr>
-	</table>
-	<table id="chooseProductTable" lay-filter="chooseProductTable"></table>
-</div>
-</script>
-<script  id="editAgreement" type="text/html">
-<div class="layui-form layui-form-pane" style="padding:20px;">
-	<input type="hidden" name="id" value="{{d.id}}">
-	<input type="hidden" name="productId" value="{{d.product.id}}" id="editProductId" >
-	<input type="hidden" name="orderDate" value="{{d.orderDate}}">
-	<div class="layui-item" pane>
-		<label class="layui-form-label">客户</label>
-		<div class="layui-input-block">
-			<select id="editCustomSelect" name="customerId" lay-search></select>
-		</div>
-	</div>
-	<div class="layui-item" pane>
-		<label class="layui-form-label">批次号</label>
-		<div class="layui-input-block">
-			<input class="layui-input" name="bacthNumber" value="{{d.bacthNumber}}" lay-verify="required">
-		</div>
-	</div>
-	<div class="layui-item" pane>
-		<label class="layui-form-label">产品编号</label>
-		<div class="layui-input-block">
-			<input class="layui-input" value="{{d.product.number}}" readonly id="editProductNumber">
-		</div>
-	</div>
-	<div class="layui-item" pane>
-		<label class="layui-form-label">产品名称</label>
-		<div class="layui-input-block">
-			<input class="layui-input" value="{{d.product.name}}" readonly id="editProductName">
-		</div>
-	</div>
-	<div class="layui-item" pane>
-		<label class="layui-form-label">数量</label>
-		<div class="layui-input-block">
-			<input class="layui-input" name="number" value="{{d.number}}" lay-verify="number">
-		</div>
-	</div>
-	<div class="layui-item" pane>
-		<label class="layui-form-label">备注</label>
-		<div class="layui-input-block">
-			<input class="layui-input" name="remark" value="{{d.remark}}">
-		</div>
-	</div>
-	<div class="layui-item" pane id="editOrderDate">
-		<label class="layui-form-label">下单时间</label>
-		<div class="layui-input-block">
-			<input class="layui-input" name="remark" id="editOrderDateInput" value="{{d.orderDate || ''}}">
-		</div>
-	</div>
-	<p style="display:none;"><button lay-submit lay-filter="sureEdit" id="sureEdit">确定</button></p>
-</div>
-</script>
 </body>
 <script>
 layui.config({
 	base : '${ctx}/static/layui-v2.4.5/'
 }).extend({
 	mytable : 'layui/myModules/mytable',
-	orderAgreementTpl:'layui/tpl/sale/orderAgreementTpl',
+	saveProductionPlan:'layui/myModules/sale/saveProductionPlan',
 }).define(
-	['mytable','laydate',],
+	['mytable','laydate','saveProductionPlan'],
 	function(){
 		var $ = layui.jquery
 		, layer = layui.layer 				
@@ -185,20 +68,13 @@ layui.config({
 		, laydate = layui.laydate
 		, laytpl = layui.laytpl
 		, myutil = layui.myutil
+		, saveProductionPlan = layui.saveProductionPlan
 		, mytable = layui.mytable;
 		myutil.config.ctx = '${ctx}';
 		myutil.getLastData();
 		myutil.config.msgOffset = '250px';
 		
-		//主页面功能，新增合同时的下单人，全局获取一次
-		var allUser = [];
-		myutil.getData({
-			url:'${ctx}/system/user/findUserList',
-			success:function(d){
-				allUser = d;
-				allUser.unshift({id:'',userName:'请选择'});
-			}
-		})
+		var noTransTableData = [];
 		laydate.render({ elem:'#searchTime', range:'~' })
 		mytable.render({
 			elem:'#tableAgreement',
@@ -209,6 +85,7 @@ layui.config({
 			parseData:function(ret){
 				if(ret.code==0){
 					var data = [],d = ret.data.rows;
+					noTransTableData = d;
 					for(var i=0,len=d.length;i<len;i++){
 						var child = d[i].orderChilds;
 						for(var j=0,l=child.length;j<l;j++){
@@ -309,345 +186,24 @@ layui.config({
 		})
 		//新增合同
 		function addAgreement(){
-			var addWin = layer.open({
-				title: '新增合同',
-				type:1,
-				area:['90%','100%'],
-				content: $('#addTpl').html(),
-				success:function(){
-					laydate.render({
-						elem:'#orderTime',
-						type:'datetime',
-					})
-					$('#orderTypeSelect').append(allTypeSelectHtml);
-					$('#chooseProductInput').unbind().on('click',function(){
-						var chooseProductWinNew = layer.open({
-							type:1,
-							title:'商品选择',
-							area:['50%','70%'],
-							content: $('#choosedProductWin').html(),
-							shadeClose:true,
-							success:function(){
-								mytable.render({
-									elem:'#chooseProductTable',
-									url:'${ctx}/productPages',
-									cols:[[
-										{title:'产品编号',field:'number',},
-										{title:'产品名称',field:'name',},
-									]],
-								})
-								form.on('submit(searchProductBtn)',function(obj){
-									table.reload('chooseProductTable',{
-										where:obj.field,
-										page:{ curr:1, }
-									})
-								})
-								table.on('rowDouble(chooseProductTable)', function(obj){
-									var data = obj.data;
-									$('#productIdHidden').val(data.id);
-									$('#chooseProductInput').val(data.name);
-								  	layer.close(chooseProductWinNew);
-								});
-							}
-						})
-					})
-					mytable.renderNoPage({
-						elem: '#addTable',
-						toolbar: $('#addTableToolbar').html(),
-						size:'lg',
-						data:[],
-						cols:[[
-								{ type:'checkbox',},
-								{ title:'客户',   	field:'name', 	},
-								{ title:'下单人',    field:'userId',    type:'select', select:{data:allUser,name:'userName'}},
-								{ title:'数量',   	field:'number',  	edit:true, },
-								{ title:'备注',   	field:'remark',	edit:true, },
-						       ]],
-						done:function(){
-							table.on('edit(addTable)',function(obj){
-								if(obj.field == "number"){
-									var allCache = table.cache['addTable'];
-									var index = $(obj.tr).data('index');
-									var cache = allCache[index];
-									var number = obj.data.number;
-									if(isNaN(number) || number<0 || number%1.0!=0 ){
-										cache['number'] = myutil.lastData;	
-										$(this).val(myutil.lastData);   //回滚数据
-										return myutil.emsg('请确证填写数量！');
-									}
-									var val = parseInt(number);
-									cache['number'] = val;	
-									$(this).val(val);   
-									var sum = 0;
-									for(var i in allCache){
-										sum -= -allCache[i].number;
-									}
-									$('#orderNumber').val(sum);
-								}
-							})
-							form.render();
-						}
-					})
-				}
-			})
-			table.on('toolbar(addTable)',function(obj){
-				switch(obj.event){
-				case 'chooseCustomer':	chooseCustomer();	break;
-				case 'delete':	deleteCustomer();			break;
-				case 'sureAdd':	sureAdd(); 	break;
-				}
-			})
-			function chooseCustomer(){
-				customerList = [];
-				var chooseProductWin = layer.open({
-					title: '选择客户',
-					type:1,
-					area:['50%','90%'],
-					content: $('#chooseCustomerWin').html(),
-					success:function(){
-						mytable.render({
-							elem: '#choosedCustomerTable',
-							url:'${ctx}/ledger/customerPage?', //type=1
-							cols:[[
-									{ type:'checkbox',},
-									{ title:'客户编号',	field:'id',	},
-									{ title:'客户名称',	field:'name',	},
-							       ]],
-							done: function(res, curr, count){		//回显复选框选中
-								for(var i=0;i< res.data.length;i++){
-			                         for (var j = 0; j < customerList.length; j++) {
-			                             if(res.data[i].id == customerList[j].id)
-			                             {
-			                                 res.data[i]["LAY_CHECKED"]='true';
-			                                 var index= res.data[i]['LAY_TABLE_INDEX'];
-			                                 $('#choosedCustomerTable').next().find('tr[data-index=' + index + '] input[type="checkbox"]').prop('checked', true);
-			                                 $('#choosedCustomerTable').next().find('tr[data-index=' + index + '] input[type="checkbox"]').next().addClass('layui-form-checked');
-			                             }
-			                         }
-			                     }
-			                     var checkStatus = table.checkStatus('choosedTable');
-			                     if(checkStatus.isAll){
-			                         $('#choosedCustomerTable').next().find(' .layui-table-header th[data-field="0"] input[type="checkbox"]').prop('checked', true);
-			                         $('#choosedCustomerTable').next().find('.layui-table-header th[data-field="0"] input[type="checkbox"]').next().addClass('layui-form-checked');
-			                     }
-			                     form.render();
-							}
-						})
-					}
-				})
-				table.on('checkbox(choosedCustomerTable)', function (obj) {	//监听复选框事件
-					var currPageData = table.cache['choosedCustomerTable'];
-					if(obj.checked==true){
-					    if(obj.type=='one')
-					    	customerList.push(obj.data);
-					   else{
-					        for(var i=0;i<currPageData.length;i++){
-					     	   var isHas=false;
-					     	   layui.each(customerList,function(index,item){
-					     		   if(item.id == currPageData[i].id){
-					     			   isHas = true;
-					     		   	   return;
-					     		   }
-					     	   })
-					     	   if(!isHas)
-					     		  customerList.push(currPageData[i]);
-					        }
-					    }
-					}else{
-					    if(obj.type=='one'){
-					        for(var i=0;i<customerList.length;i++)
-					           if(customerList[i].id==obj.data.id){
-					        	   	customerList.splice(i,1);
-									break;
-					           }
-					    }else{
-					 	   	for(var i=0;i<currPageData.length;i++)
-					 		   	for(var j=0;j<customerList.length;j++)
-					 			   	if(customerList[j].id == currPageData[i].id){	
-					 				  	customerList.splice(j,1);
-					 				   	break;
-					 			   	}
-					    }
-					}
-	    		});
-				form.on('submit(searchProduct)',function(obj){
-					table.reload('choosedCustomerTable',{
-						where: obj.field,
-						page: { curr:1 },
-					})
-				})
-				$('#sureChoosed').unbind().on('click',function(){
-					var t = table.cache['addTable'];
-					var newCus = [];
-					var isHas = false;
-					layui.each(customerList,function(index1,item1){
-						if(isHas)
-							return;
-						for(var i=0;i<t.length;i++)
-							if(t[i].customerId == item1.id){
-								isHas = true;
-								myutil.emsg('客户:'+item1.name+' 已存在请勿重复添加客户');
-							}
-						newCus.push({
-							userId: '',
-							name:item1.name,
-							remark: '',
-							number: 0,
-							customerId: item1.id,
-						})
-					})
-					if(isHas)
-						return;
-					table.reload('addTable',{ data: t.concat(newCus) })
-					layer.close(chooseProductWin);
-				})
-			}
-			function sureAdd(){
-				var orderChild = [];
-				var msg = '';
-				var productId = $('#productIdHidden').val();
-				var bacthNumber = $('#bacthNumber').val();
-				var orderDate = $('#orderTime').val();
-				var typeId = $('#orderTypeSelect').val();
-				layui.each(table.cache['addTable'],function(index,item){
-					orderChild.push({
-						childNumber: item.number,
-						userId: item.userId,
-						customerId: item.customerId,
-						childRemark: item.remark,
-					})
-					if(item.userId=='' || item.numbe==""){
-						return msg = '数量、跟单人不能为空!';
-					}
-					if(isNaN(item.number)|| item.number<=0)
-						return msg = '请正确填写数量!';
-				})	
-				orderChild.length==0 && (msg = '请选择客户');
-				if(productId == '')
-					return myutil.emsg('请选择商品!');
-				else if(typeId=="")
-					msg = '订单类型不能为空!';
-				else if(!orderDate)
-					msg = '订单时间不能为空!';
-				else if(bacthNumber=="")
-					msg = '批次号不能为空!';
-				if(msg!='')
-					return myutil.emsg(msg);
-				orderChild = JSON.stringify(orderChild);
-				myutil.saveAjax({
-					url: '/ledger/addOrder',
-					data: { 
-						productId: productId,
-						bacthNumber: bacthNumber,
-						orderChild: orderChild,
-						remark: $('#orderRemark').val(),
-						orderDate: orderDate,
-						number: $('#orderNumber').val(),
-						orderTypeId: typeId,
-						orderNumber: bacthNumber+$('#chooseProductInput').val(),
-					},
-					success:function(){
-						table.reload('tableAgreement');
-						layer.close(addWin);
-					}
-				})
-			}// end sureAdd
-			function deleteCustomer(){
-				var checked = layui.table.checkStatus('addTable').data;
-				if(checked.length==0)
-					return layer.msg('请选择删除的客户',{icon:2});
-				var confirm = layer.confirm('是否确认删除？',function(){
-					var allCache = table.cache['addTable'];
-					layui.each(checked,function(index1,item1){
-						layui.each(allCache,function(index2,item2){
-							if(item1.customerId == item2.customerId ){
-								allCache.splice(index2,1);
-								return;
-							}
-						})
-					})
-					var sum = 0;
-					for(var i in allCache){
-						sum -= -allCache[i].number;
-					}
-					$('#orderNumber').val(sum);
-					table.reload('addTable',{ data: allCache, })
-					layer.close(confirm);
-				})
-			}// end deleteCustomer
+			saveProductionPlan.add({
+				data:{}
+			});
 		}
-		
-		
 		function edit(){
-			var choosed=layui.table.checkStatus('tableAgreement').data,
-			html='';
+			var choosed=layui.table.checkStatus('tableAgreement').data;
 			if(choosed.length!=1)
 				return myutil.emsg('只能选择一条信息进行编辑');
 			if(choosed[0].audit==1)
 				return myutil.emsg("该合同数据已经审核，无法修改");
-			laytpl($('#editAgreement').html()).render(choosed[0],function(h){
-				html=h;
-			})
-			var addEditWin=layer.open({
-				type:1,
-				title: '修改',
-				area:['30%','65%'],
-				btn: ['确定','取消'],
-				content:html,
-				success:function(){
-					laydate.render({
-						elem:'#editOrderDateInput',
-						type:'datetime'
-					})
-					getAllCustom('editCustomSelect',choosed[0].customer?choosed[0].customer.id:"");
-					$('#editProductName,#editProductNumber').on('click',function(){
-						var chooseProductWin = layer.open({
-							title: '选择产品',
-							type:1,
-							area:['45%','90%'],
-							shadeClose:true,
-							content: $('#choosedProductWin').html(),
-							success:function(){
-								mytable.render({
-									elem: '#chooseProductTable',
-									url:'${ctx}/productPages',
-									cols:[[
-											{ title:'产品编号',	field:'number',	},
-											{ title:'产品名称',	field:'name',	},
-									       ]],
-								})
-								form.on('submit(searchProduct)',function(obj){
-									table.reload('choosedTable',{
-										where: obj.field,
-										page: { curr:1 },
-									})
-								})
-								table.on('rowDouble(chooseProductTable)',function(obj){
-									$('#editProductId').val(obj.data.id);
-									$('#editProductNumber').val(obj.data.number);
-									$('#editProductName').val(obj.data.name);
-									form.render();
-									layer.close(chooseProductWin);
-								})
-							},
-						})
-					})
-					form.on('submit(sureEdit)',function(obj){
-						myutil.saveAjax({
-							url: '/ledger/updateOrder',
-							data: obj.field,
-							success:function(r){
-								table.reload('tableAgreement');
-								layer.close(addEditWin);
-							}
-						})
-					})
-					form.render();
-				},
-				yes:function(){
-					$('#sureEdit').click();
+			for(var i in noTransTableData){
+				if(noTransTableData[i].id==choosed[0].id){
+					saveProductionPlan.update({
+						data: noTransTableData[i]
+					});
+					break;
 				}
-			})
+			}
 		}
 		function deletes(){
 			myutil.deleTableIds({
@@ -656,26 +212,8 @@ layui.config({
 				text:'请选择商品|是否确认删除？',
 			})
 		}
-		function getAllCustom(id,selected){
-			myutil.getSelectHtml({
-				url:'/ledger/allCustomer',
-				title: 'name',
-				value: 'id',
-				selectOption: selected,
-				done: function(html){
-					$('#'+id).html(html);
-					form.render();
-				}
-			})
-		}
-		var allTypeSelectHtml = '';
-		myutil.getData({
-			url:'${ctx}/basedata/list?type=orderNumberType',
-			success:function(d){
-				for(var i=0,len=d.length;i<len;i++)
-					allTypeSelectHtml+='<option value="'+d[i].id+'">'+d[i].name+'</option>'
-			}
-		})
+		saveProductionPlan.reloadTable = 'tableAgreement';
+		saveProductionPlan.init();
 	}//end define function
 )//endedefine
 </script>

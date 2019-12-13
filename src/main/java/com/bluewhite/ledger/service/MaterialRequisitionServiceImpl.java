@@ -66,6 +66,8 @@ public class MaterialRequisitionServiceImpl extends BaseServiceImpl<MaterialRequ
 			// 剩余任务数量
 			scatteredOutbound.setResidueDosageNumber(
 					scatteredOutbound.getResidueDosageNumber() - materialRequisition.getProcessNumber());
+			// 领料单
+			materialRequisition.setType(1);
 			materialRequisition.setAudit(0);
 			materialRequisition.setRequisition(0);
 			scatteredOutboundDao.save(scatteredOutbound);

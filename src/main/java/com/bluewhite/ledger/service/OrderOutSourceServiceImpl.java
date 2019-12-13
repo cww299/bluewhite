@@ -8,6 +8,9 @@ import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+import javax.persistence.criteria.Join;
+import javax.persistence.criteria.JoinType;
+import javax.persistence.criteria.ListJoin;
 import javax.persistence.criteria.Predicate;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,9 +23,11 @@ import com.bluewhite.base.BaseServiceImpl;
 import com.bluewhite.basedata.dao.BaseDataDao;
 import com.bluewhite.basedata.entity.BaseData;
 import com.bluewhite.common.BeanCopyUtils;
+import com.bluewhite.common.Constants;
 import com.bluewhite.common.ServiceException;
 import com.bluewhite.common.entity.PageParameter;
 import com.bluewhite.common.entity.PageResult;
+import com.bluewhite.common.utils.SalesUtils;
 import com.bluewhite.common.utils.StringUtil;
 import com.bluewhite.finance.consumption.dao.ConsumptionDao;
 import com.bluewhite.finance.consumption.entity.Consumption;
@@ -33,6 +38,7 @@ import com.bluewhite.ledger.dao.ProcessPriceDao;
 import com.bluewhite.ledger.dao.RefundBillsDao;
 import com.bluewhite.ledger.entity.MaterialRequisition;
 import com.bluewhite.ledger.entity.Order;
+import com.bluewhite.ledger.entity.OrderChild;
 import com.bluewhite.ledger.entity.OrderOutSource;
 import com.bluewhite.ledger.entity.ProcessPrice;
 import com.bluewhite.ledger.entity.RefundBills;
@@ -107,6 +113,8 @@ public class OrderOutSourceServiceImpl extends BaseServiceImpl<OrderOutSource, L
 			}
 			orderOutSource.setAudit(0);
 			orderOutSource.setChargeOff(0);
+			String outSourceNumber = (orderOutSource.getOutsource() ==0 ? Constants.JGD :  Constants.WFJGD )+StringUtil.getDate()+SalesUtils.get0LeftString((int)(dao.count()+1), 8);
+			orderOutSource.setOutSourceNumber(outSourceNumber);
 			save(orderOutSource);
 		} else {
 			throw new ServiceException("生产下单合同不能为空");
@@ -121,14 +129,26 @@ public class OrderOutSourceServiceImpl extends BaseServiceImpl<OrderOutSource, L
 			if (param.getId() != null) {
 				predicate.add(cb.equal(root.get("id").as(Long.class), param.getId()));
 			}
+			// 按合同id
+			if (param.getOrderId() != null) {
+				predicate.add(cb.equal(root.get("orderId").as(Long.class), param.getOrderId()));
+			}
 			// 按加工点id过滤
 			if (param.getCustomerId() != null) {
 				predicate.add(cb.equal(root.get("customerId").as(Long.class), param.getCustomerId()));
 			}
 			// 按跟单人id过滤
 			if (param.getUserId() != null) {
-				predicate.add(cb.equal(root.get("userId").as(Long.class), param.getUserId()));
+				predicate.add(cb.equal(root.get("userId").as(Long.class), param.getUserId())); 
 			}
+			
+			// 按生产工序过滤
+			if (param.getOutsourceTaskId()!=null) {
+				Join<OrderOutSource, BaseData> join = root.join(root.getModel().getSet("outsourceTask", BaseData.class),
+						JoinType.LEFT);
+				predicate.add(cb.equal(join.get("id").as(Long.class),param.getOutsourceTaskId()));
+			}
+			
 			// 是否外发
 			if (param.getOutsource() != null) {
 				predicate.add(cb.equal(root.get("outsource").as(Integer.class), param.getOutsource()));
@@ -201,6 +221,8 @@ public class OrderOutSourceServiceImpl extends BaseServiceImpl<OrderOutSource, L
 			throw new ServiceException("已审核，无法修改");
 		}
 		BeanCopyUtils.copyNotEmpty(orderOutSource, ot, "");
+		ot.getOutsourceTask().clear();
+		save(ot);
 		Order order = orderDao.findOne(ot.getOrderId());
 		List<OrderOutSource> orderOutSourceList = dao.findByOrderId(ot.getOrderId());
 		// 将工序任务变成set存入
@@ -226,7 +248,6 @@ public class OrderOutSourceServiceImpl extends BaseServiceImpl<OrderOutSource, L
 					Integer returnNumber = returnNumberList.stream().reduce(Integer::sum).orElse(0);
 					// 实际数量=(总加工数-退货数)
 					int actualNumber = sumNumber - returnNumber;
-
 					if (actualNumber > order.getNumber()) {
 						throw new ServiceException(baseData.getName() + "的任务工序数量不足，无法生成加工单 ");
 					}

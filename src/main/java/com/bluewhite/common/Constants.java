@@ -127,6 +127,10 @@ public class Constants {
     /**
      * 生产计划中的编号前缀
      */
+    //加工单
+    public final static String  JGD = "JGD";
+    //外发加工单
+    public final static String  WFJGD = "WFJGD";
     //生产耗料
     public final static String  SCHL = "SCHL";
     //生产领料
@@ -139,5 +143,9 @@ public class Constants {
     public final static String  CPCK = "CPCK";
     //成品入库
     public final static String  CPRK = "CPRK";
+    //量化单
+    public final static String  LHTB = "LHTB";
+    //申请单
+    public final static String  SQD = "SQD";
     
 }

@@ -7,15 +7,11 @@
 	<link rel="stylesheet" href="${ctx }/static/layui-v2.4.5/layui/css/layui.css" media="all">
 	<script src="${ctx}/static/layui-v2.4.5/layui/layui.js"></script>
 	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-<title>发货管理</title>
+<title>发货单</title>
 <style>
-#defaultDate{
-	font-weight: bolder;
-}
 </style>
 </head>
 <body>
-
 <div class="layui-card">
 	<div class="layui-card-body">
 		<table class="layui-form">
@@ -35,28 +31,17 @@
 				<td><button type="button" class="layui-btn" lay-submit lay-filter="search">搜索</button></td>
 			</tr>
 		</table>
-		<table id="tableData" lay-filter="tableData"></table>
+		<table id="sendTable" lay-filter="sendTable"></table>
 	</div>
 </div>
-</body>
-<!-- 表格工具栏模板 -->
-<script type="text/html" id="tableDataToolbar">
-<div class="layui-btn-container layui-inline">
-	<span class="layui-btn layui-btn-primary" id="defaultDate">0000-00-00</span>
-	<span class="layui-btn layui-btn-sm" lay-event="addTempData">新增一行</span>
-	<span class="layui-btn layui-btn-sm layui-btn-danger" lay-event="cleanTempData">清空新增行</span>
-	<span class="layui-btn layui-btn-sm layui-btn-warm" lay-event="saveTempData">批量保存</span>
-	<span class="layui-btn layui-btn-sm layui-btn-danger" lay-event="deleteSome">批量删除</span>
-</div>
-</script>
 <script>
 layui.config({
 	base : '${ctx}/static/layui-v2.4.5/'
 }).extend({
-	tablePlug : 'tablePlug/tablePlug',
-	myutil: 'layui/myModules/myutil',
+	mytable: 'layui/myModules/mytable',
+	sendGoodOrder: 'layui/myModules/sale/sendGoodOrder',
 }).define(
-	['tablePlug','layer','myutil','laydate'],
+	['layer','mytable','laydate','sendGoodOrder'],
 	function(){
 		var $ = layui.jquery
 		, layer = layui.layer 				
@@ -64,109 +49,138 @@ layui.config({
 		, laydate = layui.laydate
 		, myutil = layui.myutil
 		, table = layui.table 
-		, laytpl = layui.laytpl
-		, tablePlug = layui.tablePlug;
+		, sendGoodOrder = layui.sendGoodOrder
+		, mytable = layui.mytable;
+		
 		myutil.config.ctx = '${ctx}';
 		myutil.clickTr();
-		myutil.timeFormat();
-		var allBatch = [],allCustom = []; 	//所有的批次号、客户
-		var searchTime = new Date().format("yyyy-MM-dd");;
-		allCustom = myutil.getDataSync({ url:'${ctx}/ledger/allCustomer', });
-		allBatch = myutil.getDataSync({ url:'${ctx}/ledger/getOrder', });
+		myutil.getLastData();
 		laydate.render({ elem:'#searchTime',range:'~'  })
-		table.render({
-			elem:'#tableData',
-			url:'${ctx}/ledger/getSendGoods',
-			toolbar:'#tableDataToolbar',
-			page:true,
+		mytable.render({
+			elem:'#sendTable',
+			url: myutil.config.ctx+'/ledger/getSendGoods',
+			toolbar: [
+				'<span class="layui-btn layui-btn-sm" lay-event="addSendOrder">新增发货单</span>',
+				'<span class="layui-btn layui-btn-sm layui-btn-warm" lay-event="sendGood">发货</span>',
+			].join(' '),
+			curd:{
+				btn:[4],
+				otherBtn:function(obj){
+					if(obj.event=='addSendOrder'){
+						sendGoodOrder.add({});
+					}else if(obj.event=='sendGood'){
+						var check = layui.table.checkStatus('sendTable').data;
+						if(check.length!=1)
+							return myutil.emsg('请选择一条信息进行发货');
+						var allInputNumber = 0; //计算总库存数量，发货数量不能超过该值
+						var sendGoodWin = layer.open({
+							type: 1,
+							title:'剩余发货数量：<b style="color:red">'+check[0].surplusNumber+'</b>',
+							area:['50%','600px'],
+							content:[
+								'<div style="padding:10px 0;">',
+									'<table>',
+										'<tr>',
+											'<td>发货数量：</td>',
+											'<td><input type="text" class="layui-input" id="sendAllNumber"></td></tr>',
+									'</table>',
+									'<table id="chooseInputOrder" lay-filter="chooseInputOrder"></table>',
+								'</div>',
+							].join(' '),
+							btn:['确定','取消'],
+							btnAlign:'c',
+							success:function(){
+								mytable.renderNoPage({
+									elem:'#chooseInputOrder',
+									height:'400px',
+									//totalRow:['sendNumber','number'],
+									url: myutil.config.ctx+'/ledger/inventory/getPutStorageDetails?id='+check[0].id,
+									cols:[[
+										{ type:'checkbox',},
+										{ title:'入库单编号',field:'serialNumber'},
+										{ title:'数量',field:'number'},
+										{ title:'发货数量',field:'sendNumber',edit:true,
+											templet:'<span>{{ d.sendNumber || "" }}</span>'},
+									]],
+									done:function(r){
+										layui.each(r.data,function(index,item){
+											allInputNumber -= (-item.number);
+										})
+									}
+								})
+								table.on('edit(chooseInputOrder)',function(obj){
+									var index = $(this).closest('tr').data('index');
+									var trData = table.cache['chooseInputOrder'][index];
+									var val = obj.value;
+									if(obj.field==='sendNumber'){
+										if(isNaN(val) || val<0 || val%1.0!=0.0){
+											$(this).val(myutil.lastData);
+											trData.sendNumber = myutil.lastData;
+											myutil.emsg('请正确填写发货数量');
+										}
+									}
+								})
+							},
+							yes:function(){
+								var checkChild = layui.table.checkStatus('chooseInputOrder').data;
+								if(checkChild.length<1)
+									return myutil.emsg('请选择入库单');
+								var inputNumber = $('#sendAllNumber').val() || 0;
+								if(allInputNumber<inputNumber)
+									return myutil.esmg('发货数量不能超过库存数量！');
+								var childJson = [],allChildNumer = 0;
+								for(var i=0,len=checkChild.length;i<len;i++){
+									allChildNumer -= (-checkChild[i].sendNumber || 0);
+									childJson.push({
+										id: checkChild[i].id,
+										number: checkChild[i].sendNumber || '',
+									})
+								}
+								var msg = '';
+								if(allChildNumer>0){
+									if(inputNumber>0){
+										if(inputNumber!=allChildNumer)
+											msg = '填写的发货数量与总发货数量不同！请检查';
+									}else{
+										inputNumber = allChildNumer;
+									}
+								}else if(inputNumber==0){
+									msg = '请填写发货数量';
+								}
+								if(msg)
+									return myutil.emsg(msg);
+								myutil.saveAjax({
+									url: '/ledger/inventory/sendOutStorage',
+									data:{
+										id: check[0].id,
+										sendNumber: inputNumber,
+										putStorage: JSON.stringify(childJson),
+									},
+									success:function(){
+										layer.close(sendGoodWin);
+										table.reload('sendTable');
+									}
+								})
+							}
+						})
+					}
+				}
+			},
+			autoUpdate:{
+				deleUrl:'/ledger/deleteSendGoods',
+			},
 			size:'lg',
-			request:{ pageName:'page', limitName:'size' },
-			parseData:function(ret){ return { data:ret.data.rows, count:ret.data.total, msg:ret.message, code:ret.code } },
 			cols:[[
-			       {align:'center', type:'checkbox',},
-			       {align:'center', title:'发货日期',   field:'sendDate', edit:false, width:'10%', templet:'<span>{{ d.sendDate.split(" ")[0] }}</span>', },
-			       {align:'center', title:'客户',   field:'customerId',  edit:false,  width:'12%', templet: getSelectHtml(allCustom,'customerId'),  },
-			       {align:'center', title:'批次号',   field:'bacthNumber', edit:false, templet: getSelectHtml(allBatch,'bacthNumber'),  },
-			       {align:'center', title:'产品', 	field:'productName', edit:false, templet: '<span>{{d.product?d.product.name:""}}</span>'	},
-			       {align:'center', title:'数量',   field:'number',	edit:true,  width:'6%',},
-			       {align:'center', title:'剩余数量',   field:'surplusNumber', edit:false, width:'6%',	},
+			       { type:'checkbox',},
+			       { title:'发货日期',   field:'sendDate', width:'10%',  },
+			       { title:'客户',   field:'customer_name',   width:'12%',   },
+			       { title:'产品', 	field:'product_name',  },
+			       { title:'产品类型', 	field:'productType', width:'10%', transData:{data:['','成品','皮壳']} },
+			       { title:'数量',   field:'number',  width:'6%',},
+			       { title:'剩余发货数量',   field:'surplusNumber',  width:'8%',	},
+			       { title:'实际发货数量',   field:'sendNumber',  width:'8%',	}, 
+			       { title:'发货状态',field:'status',width:'8%',transData:{data:['库存充足','库存不足','无库存',]}, },
 			       ]],
-			done:function(){
-				layui.each($('#tableData').next().find('td[data-field="sendDate"]'),function(index,item){
-					item.children[0].onclick = function(event) { layui.stope(event) };
-					laydate.render({
-						elem: item.children[0],
-						done: function(val){
-							var index = $(this.elem).closest('tr').attr('data-index');
-							var trData = table.cache['tableData'][index];
-							update({
-								id: trData.id,
-								sendDate: val+' 00:00:00'
-							})
-						}
-					})
-				})
-				laydate.render({ 
-					elem:'#defaultDate',
-					value: searchTime,
-					done:function(val){
-						searchTime = val;
-					}
-				})
-			}
-		})
-		function getSelectHtml(data,field){
-			return function(d){
-				var html = '<select lay-filter="selectFilter" lay-search><option value="">请选择</option>';
-				layui.each(data,function(index,item){
-					var id = d.customer ? d.customer.id : '';
-					var title = item.name;
-					if(field=='bacthNumber'){
-						id=d.orderId;
-						title = item.bacthNumber+"~ "+item.product.name;
-					}
-					var selected = (item.id==id ? 'selected' : '');
-					html += '<option value="'+item.id+'" '+selected+'>'+title+'</option>';
-				})
-				return html += '</select>';
-			}
-		}
-		form.on('select(selectFilter)',function(obj){
-			var index = $(obj.elem).closest('tr').attr('data-index');
-			var field = $(obj.elem).closest('td').attr('data-field');
-			var trData = layui.table.cache['tableData'][index];
-			if(field == 'bacthNumber'){
-				var opt = $(obj.elem).find('option[value="'+obj.value+'"]'); 
-				var text = $(opt).html();
-				$(obj.elem).closest('tr').find('td[data-field=productName]').find('div').html(text.split('~')[1]);
-				trData['orderId'] = obj.value;
-			}else
-				trData[field] = obj.value;
-			if(index>=0){
-				var data = { id: trData.id, }
-				if(field=='bacthNumber'){
-					data.orderId = obj.value;
-				}else
-					data.customerId = obj.value;
-				update(data);
-			}
-		})
-		table.on('edit(tableData)',function(obj){
-			var data = obj.data;
-			var val = obj.value, msg ='';
-			isNaN(val) && (msg = '数量只能为数字');
-			val<0 && (msg = '数量只能为数字');
-			if(msg!='')
-				return myutil.emsg(msg);
-			if(data.id!=''){
-				myutil.saveAjax({
-					url: '/ledger/addSendGoods',
-					data: { id: data.id, number: parseInt(val) },
-					success: function(){
-						$(obj.tr[0]).find('td[data-field="surplusNumber"]').find('div').html(val-data.sendNumber);
-					}
-				})
-			}
 		})
 		form.on('submit(search)',function(obj){
 			var val = $('#searchTime').val();
@@ -177,78 +191,14 @@ layui.config({
 			}
 			obj.field.orderTimeBegin = beg;
 			obj.field.orderTimeEnd = end;
-			table.reload('tableData',{
+			table.reload('sendTable',{
 				where: obj.field ,
 				page:{ curr:1 },
 			})
 		}) 
-		table.on('toolbar(tableData)',function(obj){
-			switch(obj.event){
-			case 'addTempData': 	addTempData(); 	break;
-			case 'saveTempData': 	saveTempData(); break;
-			case 'deleteSome': 		deleteSome(); 	break;
-			case 'cleanTempData': 	table.cleanTemp('tableData'); break;
-			}
-		})
-		function addTempData(){
-			var allField = {customerId:'',number:'',sendDate:searchTime+' 00:00:00' ,id:'',orderId:'' };
-			table.addTemp('tableData',allField,function(trElem){
-				var sendDateTd = trElem.find('td[data-field="sendDate"]')[0];
-				laydate.render({
-					elem: sendDateTd.children[0],
-					value: searchTime,
-					done: function(val) {
-						var index = $(this.elem).closest('tr').attr('data-index');
-						table.cache['tableData'][index]['sendDate'] = val+' 00:00:00';
-					}
-				}) 
-			});
-	 	}
-		function saveTempData(){
-			var tempData = table.getTemp('tableData').data;
-			for(var i=0;i<tempData.length;i++){
-				var t = tempData[i];
-				var msg = '';
-				t.number=='' && (msg='请填写发货数量');
-				t.orderId=='' && (msg='请选择批次号');
-				t.customerId=='' && (msg='请选择客户');
-				t.sendDate=='' && (msg='请填写发货时间');
-				if(msg!='')
-					return myutil.emsg(msg);
-			}
-			var successAdd=0;
-			for(var i=0;i<tempData.length;i++){
-				myutil.saveAjax({
-					url: '/ledger/addSendGoods',
-					data: tempData[i],
-					success: function(r){
-						r.code==0 && (successAdd++);
-					}
-				})
-			}
-			if(successAdd==tempData.length){
-				myutil.smsg('成功新增：'+successAdd+'条数据');
-				table.cleanTemp('tableData');
-				table.reload('tableData')
-			}
-			else
-				myutil.emsg('新增异常：'+(tempData.length-successAdd)+'条数据');
-		}
-		function deleteSome(){
-			myutil.deleTableIds({
-				url: '/ledger/deleteSendGoods',
-				text: '请选择删除信息|是否确认删除？',
-				table: 'tableData',
-			})
-		}
-		function update(data){
-			myutil.saveAjax({
-				url: '/ledger/addSendGoods',
-				data: data
-			})
-		}
+		sendGoodOrder.init();
 	}//end define function
 )//endedefine
 </script>
-
+</body>
 </html>

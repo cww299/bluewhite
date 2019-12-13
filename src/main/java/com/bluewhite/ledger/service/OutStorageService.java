@@ -1,5 +1,8 @@
 package com.bluewhite.ledger.service;
 
+import java.util.List;
+import java.util.Map;
+
 import com.bluewhite.base.BaseCRUDService;
 import com.bluewhite.common.entity.PageParameter;
 import com.bluewhite.common.entity.PageResult;
@@ -28,5 +31,31 @@ public interface OutStorageService  extends BaseCRUDService<OutStorage,Long>{
 	 * @return
 	 */
 	public PageResult<OutStorage> findPages(PageParameter page, OutStorage outStorage);
+	
+	/**
+	 * 对发货单进行出库
+	 * @param ids
+	 */
+	public void sendOutStorage(Long id,Integer sendNumber,String putStorage);
+	
+	/**
+	 * 根据发货单获取库存详情
+	 * @param id
+	 */
+	public List<Map<String, Object>> getSendPutStorage(Long id);
+	
+	/**
+	 * 根据针工加工单查询库存详情
+	 * @param id
+	 * @return
+	 */
+	public List<Map<String, Object>> getPutStorageCotDetails(Long id);
+
+	/**
+	 * 根据针工加工单进行出库
+	 * @param id
+	 * @param putStorageIds
+	 */
+	public void sendOutStorageCot(Long id, String putStorageIds);
 
 }

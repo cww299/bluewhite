@@ -16,7 +16,6 @@ import javax.persistence.Transient;
 
 import com.bluewhite.base.BaseEntity;
 import com.bluewhite.basedata.entity.BaseData;
-import com.bluewhite.onlineretailers.inventory.entity.Inventory;
 import com.bluewhite.system.user.entity.User;
 
 /**
@@ -43,6 +42,21 @@ public class OrderOutSource extends BaseEntity<Long> {
 	@JoinColumn(name = "order_id", referencedColumnName = "id", insertable = false, updatable = false)
 	private Order order;
 
+	/**
+	 * 领料单id
+	 * 
+	 */
+	@Column(name = "material_requisition_id")	
+	private Long materialRequisitionId;
+
+	/**
+	 * 领料单
+	 */
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "material_requisition_id", referencedColumnName = "id", insertable = false, updatable = false)
+	private MaterialRequisition materialRequisition;
+	
+	
 	/**
 	 * 开单时间
 	 */
@@ -215,7 +229,22 @@ public class OrderOutSource extends BaseEntity<Long> {
 	@Transient
 	private Integer arrivalNumber;
 	
+	/**
+	 * 工序id
+	 */
+	@Transient
+	private Long outsourceTaskId;
+
 	
+	
+	
+	public Long getOutsourceTaskId() {
+		return outsourceTaskId;
+	}
+
+	public void setOutsourceTaskId(Long outsourceTaskId) {
+		this.outsourceTaskId = outsourceTaskId;
+	}
 
 	public Date getExpenseDate() {
 		return expenseDate;

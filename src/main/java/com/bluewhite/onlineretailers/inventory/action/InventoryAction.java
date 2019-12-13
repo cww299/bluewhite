@@ -171,8 +171,8 @@ public class InventoryAction {
 		cr.setData(ClearCascadeJSON.get()
 				.addRetainTerm(Commodity.class, "id", "productID", "skuCode", "fileId", "picUrl", "name", "description",
 						"weight", "size", "material", "fillers", "cost", "propagandaCost", "remark", "tianmaoPrice",
-						"oseePrice", "offlinePrice","number","productId","product")
-				.addRetainTerm(Product.class, "id", "name", "inventorys")
+						"oseePrice", "offlinePrice","number","productId","product","inventorys")
+				.addRetainTerm(Product.class, "id", "name")
 				.addRetainTerm(Inventory.class, "number", "place", "warehouse")
 				.addRetainTerm(BaseData.class, "id", "name")
 				.format(commodityService.findPage(commodity, page))

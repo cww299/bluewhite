@@ -93,10 +93,6 @@ public class OrderProcurementServiceImpl extends BaseServiceImpl<OrderProcuremen
 			return null;
 		}, page);
 		PageResult<OrderProcurement> result = new PageResult<>(pages, page);
-		
-		
-		
-		
 		return result;
 	}
 
@@ -246,8 +242,8 @@ public class OrderProcurementServiceImpl extends BaseServiceImpl<OrderProcuremen
 						}
 						// 判断是否有入库单
 						List<MaterialPutStorage>  materialPutStorageList =  materialPutStorageService.findByOrderProcurementId(id);
-						if(materialPutStorageList.size()<0){
-							throw new ServiceException(orderProcurement.getOrderProcurementNumber()+"采购单还未入库，无法审核");
+						if(materialPutStorageList.size()==0){
+							throw new ServiceException(orderProcurement.getOrderProcurementNumber()+"采购单还未生成入库单，无法审核");
 						}
 						int size = materialPutStorageList.stream().filter(MaterialPutStorage->MaterialPutStorage.getInspection()==0).collect(Collectors.toList()).size();
 						if(size>0){

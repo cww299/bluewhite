@@ -234,7 +234,7 @@ public class PackingServiceImpl extends BaseServiceImpl<Packing, Long> implement
 			}
 		}
 		// 新增贴包物
-		if (!StringUtils.isEmpty(packing.getChildPacking())) {
+		if (!StringUtils.isEmpty(packing.getPackingMaterialsJson())) {
 			JSONArray jsonArrayMaterials = JSON.parseArray(packing.getPackingMaterialsJson());
 			for (int i = 0; i < jsonArrayMaterials.size(); i++) {
 				PackingMaterials packingMaterials = new PackingMaterials();
@@ -300,8 +300,6 @@ public class PackingServiceImpl extends BaseServiceImpl<Packing, Long> implement
 							|| pc.getProduct().getName().contains(Constants.XXYJN)) {
 						sale.setCopyright(1);
 					}
-					// 判定是否更换客户发货，更换客户发货变成新批次，->Y
-					Order order = orderDao.findByBacthNumber(pc.getBacthNumber());
 					saleDao.save(sale);
 				}
 				dao.save(packing);
@@ -485,26 +483,8 @@ public class PackingServiceImpl extends BaseServiceImpl<Packing, Long> implement
 				if (packingChild != null) {
 					Product product = packingChild.getProduct();
 					packingChild.setConfirm(1);
-					// 创建商品的库存
-					Set<Inventory> inventorys = product.getInventorys();
-					// 获取库存
-					Inventory inventory = inventoryDao.findByProductIdAndWarehouseId(product.getId(),
-							packingChild.getWarehouseId());
-					if (inventory == null) {
-						inventory = new Inventory();
-						inventory.setProductId(product.getId());
-						inventory.setNumber(packingChild.getConfirmNumber());
-						//审核入库
-						inventory.setWarehouseTypeId(warehouseTypeDeliveryId);
-						inventorys.add(inventory);
-						product.setInventorys(inventorys);
-					} else {
-						inventory.setNumber(inventory.getNumber() + packingChild.getConfirmNumber());
-					}
-					productDao.save(product);
 					packingChildDao.save(packingChild);
-				}
-				;
+				};
 				count++;
 			}
 		}
@@ -607,16 +587,8 @@ public class PackingServiceImpl extends BaseServiceImpl<Packing, Long> implement
 				if (packingChild != null) {
 					Product product = packingChild.getProduct();
 					packingChild.setConfirm(0);
-					// 创建商品的库存
-					Set<Inventory> inventorys = product.getInventorys();
-					// 获取库存
-					Inventory inventory = inventoryDao.findByProductIdAndWarehouseId(product.getId(),
-							packingChild.getWarehouseId());
-					inventory.setNumber(inventory.getNumber() - packingChild.getConfirmNumber());
-					productDao.save(product);
 					packingChildDao.save(packingChild);
-				}
-				;
+				};
 				count++;
 			}
 		}

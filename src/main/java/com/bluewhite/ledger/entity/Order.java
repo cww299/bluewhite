@@ -22,9 +22,6 @@ import com.bluewhite.product.product.entity.Product;
 
 /**
  * 订单（下单合同）生产计划单
- * 
- * 
- * 
  * @author zhangliang
  *
  */
@@ -118,20 +115,36 @@ public class Order extends BaseEntity<Long> {
 	 */
 	@Column(name = "product_type")
 	private Integer productType;
+	
+	/**
+	 * 生产计划单是否已经全部完成，从生产到全部发货
+	 */
+	@Column(name = "complete")
+	private Integer complete;
 
 	/**
 	 * 是否生成耗料单
-	 * 
 	 */
 	@Transient
 	private Integer consumption;
 
 	/**
 	 * 客户name
-	 * 
 	 */
 	@Transient
 	private String customerName;
+	
+	/**
+	 * 销售员id
+	 */
+	@Transient
+	private Long userId;
+	
+	/**
+	 * 客户id
+	 */
+	@Transient
+	private Long customerId;
 
 	/**
 	 * 子单新增
@@ -168,7 +181,46 @@ public class Order extends BaseEntity<Long> {
 	@Transient
 	private String deleteIds;
 	
+	/**
+	 * 是否是自己的库存
+	 */
+	@Transient
+	private boolean include;
 	
+
+	
+
+	public boolean isInclude() {
+		return include;
+	}
+
+	public void setInclude(boolean include) {
+		this.include = include;
+	}
+
+	public Long getCustomerId() {
+		return customerId;
+	}
+
+	public void setCustomerId(Long customerId) {
+		this.customerId = customerId;
+	}
+
+	public Integer getComplete() {
+		return complete;
+	}
+
+	public void setComplete(Integer complete) {
+		this.complete = complete;
+	}
+
+	public Long getUserId() {
+		return userId;
+	}
+
+	public void setUserId(Long userId) {
+		this.userId = userId;
+	}
 
 	public String getDeleteIds() {
 		return deleteIds;

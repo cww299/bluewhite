@@ -55,7 +55,7 @@ layui.config({
 			ifNull:'',
 			scrollX:true,
 			toolbar: [ '<span lay-event="add" class="layui-btn layui-btn-sm">生成入库单</span>',
-					   '<span lay-event="audit" class="layui-btn layui-btn-sm">审核到货</span>',],
+					   '<span lay-event="audit" class="layui-btn layui-btn-sm">审核到货</span>',].join(' '),
 			curd:{
 				btn:[],
 				otherBtn:function(obj){
@@ -65,7 +65,7 @@ layui.config({
 							return myutil.emsg('只能选择一条数据生成入库单');
 						inputWarehouseOrder.add({
 							data:{
-								inStatus: 1,
+								inStatus: 2,	//采购入库
 								materielId: check[0].materiel.id,
 								orderProcurementId: check[0].id,
 							}
@@ -124,6 +124,7 @@ layui.config({
 				where: obj.field,
 			})
 		}) 
+		inputWarehouseOrder.type = 1;
 		inputWarehouseOrder.init();
 	}//end define function
 )//endedefine

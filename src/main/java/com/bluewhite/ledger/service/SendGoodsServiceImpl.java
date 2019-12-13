@@ -3,6 +3,7 @@ package com.bluewhite.ledger.service;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 
 import javax.persistence.criteria.Predicate;
 
@@ -12,15 +13,25 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
 
+import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONArray;
+import com.alibaba.fastjson.JSONObject;
 import com.bluewhite.base.BaseServiceImpl;
-import com.bluewhite.common.BeanCopyUtils;
+import com.bluewhite.common.Constants;
 import com.bluewhite.common.ServiceException;
+import com.bluewhite.common.SessionManager;
+import com.bluewhite.common.entity.CurrentUser;
 import com.bluewhite.common.entity.PageParameter;
 import com.bluewhite.common.entity.PageResult;
-import com.bluewhite.ledger.dao.OrderDao;
+import com.bluewhite.common.utils.SalesUtils;
+import com.bluewhite.common.utils.StringUtil;
+import com.bluewhite.ledger.dao.ApplyVoucherDao;
+import com.bluewhite.ledger.dao.OutStorageDao;
 import com.bluewhite.ledger.dao.PackingChildDao;
+import com.bluewhite.ledger.dao.PutStorageDao;
 import com.bluewhite.ledger.dao.SendGoodsDao;
-import com.bluewhite.ledger.entity.Order;
+import com.bluewhite.ledger.entity.ApplyVoucher;
+import com.bluewhite.ledger.entity.OutStorage;
 import com.bluewhite.ledger.entity.PackingChild;
 import com.bluewhite.ledger.entity.SendGoods;
 
@@ -32,10 +43,18 @@ public class SendGoodsServiceImpl extends BaseServiceImpl<SendGoods, Long> imple
 	@Autowired
 	private PackingChildDao packingChildDao;
 	@Autowired
-	private OrderDao orderdao;
-
+	private ApplyVoucherDao applyVoucherDao;
+	@Autowired
+	private PutStorageDao putStorageDao;
+	@Autowired
+	private OutStorageService outStorageService;
+	@Autowired
+	private OutStorageDao outStorageDao;
+	@Autowired
+	private OrderService orderService;
 	@Override
-	public PageResult<SendGoods> findPages(SendGoods param, PageParameter page) {
+	public PageResult<SendGoods> findPages(SendGoods param, PageParameter page) { 
+		CurrentUser cu = SessionManager.getUserSession();
 		Page<SendGoods> pages = dao.findAll((root, query, cb) -> {
 			List<Predicate> predicate = new ArrayList<>();
 			// 按id过滤
@@ -45,6 +64,10 @@ public class SendGoodsServiceImpl extends BaseServiceImpl<SendGoods, Long> imple
 			// 按客户id过滤
 			if (param.getCustomerId() != null) {
 				predicate.add(cb.equal(root.get("customerId").as(Long.class), param.getCustomerId()));
+			}
+			// 按产品类型
+			if (param.getProductType() != null) {
+				predicate.add(cb.equal(root.get("productType").as(Integer.class), param.getProductType()));
 			}
 			// 按客户名称
 			if (!StringUtils.isEmpty(param.getCustomerName())) {
@@ -69,37 +92,70 @@ public class SendGoodsServiceImpl extends BaseServiceImpl<SendGoods, Long> imple
 				predicate.add(cb.between(root.get("sendDate").as(Date.class), param.getOrderTimeBegin(),
 						param.getOrderTimeEnd()));
 			}
-			// 剩余数量大于0的单据
-			if(param.getSurplusNumber()!=null){
-				predicate.add(cb.greaterThan(root.get("surplusNumber").as(Integer.class), param.getSurplusNumber()));
-			}
-			
 			Predicate[] pre = new Predicate[predicate.size()];
 			query.where(predicate.toArray(pre));
 			return null;
 		}, page);
 		PageResult<SendGoods> result = new PageResult<>(pages, page);
+		result.getRows().forEach(s->{
+			//通过销售人员和产品id查询出所属的库存，进行库存状态的更新
+			//1.查出销售人员的生产计划单，有多少入库单
+			//2.查出销售人员和产品id通过的申请单，获取到申请数量
+			//3.查出共有库存
+			// 通过产品查询所有的入库单
+			List<Map<String, Object>> mapsList = outStorageService.getSendPutStorage(s.getId());
+			int status = 0;
+			if(mapsList.size()>0){
+				int number = mapsList.stream().mapToInt(m->Integer.valueOf(m.get("number").toString())).sum();
+				if(s.getNumber()>number){
+					status = 1;
+				}
+				if(number<=0){
+					status = 2;
+				}
+			}
+			s.setStatus(status);
+			//实际出库单
+			List<OutStorage> outStorageList = outStorageDao.findBySendGoodsId(s.getId());
+			if(outStorageList.size()>0){
+				int surplusNumber = outStorageList.stream().mapToInt(OutStorage::getArrivalNumber).sum();
+				s.setSurplusNumber((s.getNumber()-surplusNumber)<0 ? 0 : s.getNumber()-surplusNumber);
+				s.setSendNumber(surplusNumber);
+			}else{
+				s.setSurplusNumber(s.getNumber());
+				s.setSendNumber(0);
+			}
+		});
 		return result;
 	}
 
+	
 	@Override
-	public SendGoods addSendGoods(SendGoods sendGoods) {
-		if (sendGoods.getId() != null) {
-			List<PackingChild> sendGoodsList = packingChildDao.findBySendGoodsId(sendGoods.getId());
-			if (sendGoodsList.size() > 0) {
-				throw new ServiceException("该发货单已有贴包发货单，无法修改，请先核对贴包发货单");
+	public void addSendGoods(SendGoods sendGoods
+			
+			) {
+		CurrentUser cu = SessionManager.getUserSession();
+		sendGoods.setUserId(cu.getId());
+		// 新增借货申请单
+		if (!StringUtils.isEmpty(sendGoods.getApplyVoucher())) {
+			JSONArray jsonArray = JSON.parseArray(sendGoods.getApplyVoucher());
+			for (int i = 0; i < jsonArray.size(); i++) {
+				JSONObject jsonObject = jsonArray.getJSONObject(i);
+				ApplyVoucher applyVoucher = new ApplyVoucher();
+				//销售人员申请
+				applyVoucher.setApplyVoucherTypeId((long)438);
+				//借货申请
+				applyVoucher.setApplyVoucherKindId((long)441);
+				applyVoucher.setTime(jsonObject.getDate("time"));
+				applyVoucher.setNumber(jsonObject.getInteger("number"));
+				applyVoucher.setApprovalUserId(jsonObject.getLong("approvalUserId"));
+				applyVoucher.setUserId(cu.getId());
+				applyVoucher.setApplyNumber(
+						Constants.SQD + StringUtil.getDate() + SalesUtils.get0LeftString((int) (dao.count() + 1), 8));
+				applyVoucherDao.save(applyVoucher);
 			}
-			SendGoods ot = dao.findOne(sendGoods.getId());
-			update(sendGoods, ot, "");
-		} else {
-			//根据下单合同进行成品发货
-			//发货单发货时选择库存详情发货
-			Order order = orderdao.findOne(sendGoods.getOrderId());
-			sendGoods.setProductId(order.getProductId());
-			sendGoods.setSurplusNumber(sendGoods.getNumber());
-			dao.save(sendGoods);
 		}
-		return sendGoods;
+		save(sendGoods);
 	}
 
 	@Override
@@ -130,7 +186,8 @@ public class SendGoodsServiceImpl extends BaseServiceImpl<SendGoods, Long> imple
 			}
 			// 按批次查找
 			if (!StringUtils.isEmpty(param.getBacthNumber())) {
-				predicate.add(cb.like(root.get("order").get("bacthNumber").as(String.class), "%" + param.getBacthNumber() + "%"));
+				predicate.add(cb.like(root.get("order").get("bacthNumber").as(String.class),
+						"%" + param.getBacthNumber() + "%"));
 			}
 			// 按发货日期
 			if (!StringUtils.isEmpty(param.getSendDate())) {
@@ -142,7 +199,7 @@ public class SendGoodsServiceImpl extends BaseServiceImpl<SendGoods, Long> imple
 						param.getOrderTimeEnd()));
 			}
 			// 剩余数量大于0的单据
-			if(param.getSurplusNumber()!=null){
+			if (param.getSurplusNumber() != null) {
 				predicate.add(cb.greaterThan(root.get("surplusNumber").as(Integer.class), param.getSurplusNumber()));
 			}
 			Predicate[] pre = new Predicate[predicate.size()];

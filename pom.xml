@@ -273,6 +273,13 @@
 			<version>3.14.2</version>
 		</dependency>
 
+		<!-- Hutool 工具类 -->
+		<dependency>
+			<groupId>cn.hutool</groupId>
+			<artifactId>hutool-all</artifactId>
+			<version>5.0.7</version>
+		</dependency>
+
 
 	</dependencies>
 	<build>
