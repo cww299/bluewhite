@@ -63,6 +63,13 @@ public class UnderGoods extends BaseEntity<Long> {
 	 */
 	@Column(name = "allot_time")
 	private Date allotTime;
+	
+	/**
+	 * 是否天猫
+	 */
+	@Column(name = "internal")
+	private Integer internal;
+
 
 	/**
 	 * 产品名称
@@ -101,6 +108,14 @@ public class UnderGoods extends BaseEntity<Long> {
 
 	
 	
+	public Integer getInternal() {
+		return internal;
+	}
+
+	public void setInternal(Integer internal) {
+		this.internal = internal;
+	}
+
 	public Integer getSurplusStickNumber() {
 		return surplusStickNumber;
 	}

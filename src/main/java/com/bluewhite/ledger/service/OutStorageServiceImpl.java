@@ -33,6 +33,7 @@ import com.bluewhite.ledger.dao.PutOutStorageDao;
 import com.bluewhite.ledger.dao.SendGoodsDao;
 import com.bluewhite.ledger.entity.ApplyVoucher;
 import com.bluewhite.ledger.entity.OrderChild;
+import com.bluewhite.ledger.entity.OrderOutSource;
 import com.bluewhite.ledger.entity.OutStorage;
 import com.bluewhite.ledger.entity.PutOutStorage;
 import com.bluewhite.ledger.entity.PutStorage;
@@ -46,8 +47,6 @@ public class OutStorageServiceImpl extends BaseServiceImpl<OutStorage, Long> imp
 	@Autowired
 	private SendGoodsDao sendGoodsDao;
 	@Autowired
-	private OutStorageDao outStorageDao;
-	@Autowired
 	private OrderService orderService;
 	@Autowired
 	private PutStorageService putStorageService;
@@ -55,6 +54,8 @@ public class OutStorageServiceImpl extends BaseServiceImpl<OutStorage, Long> imp
 	private PutOutStorageDao putOutStorageDao;
 	@Autowired
 	private ApplyVoucherDao applyVoucherDao;
+	@Autowired
+	private OrderOutSourceService orderOutSourceService;
 
 	@Override
 	public void saveOutStorage(OutStorage outStorage) {
@@ -68,8 +69,6 @@ public class OutStorageServiceImpl extends BaseServiceImpl<OutStorage, Long> imp
 					for (String ids : idStrings) {
 						Long id = Long.parseLong(ids);
 						PutStorage putStorage = putStorageService.findOne(id);
-						
-						
 
 					}
 				}
@@ -141,7 +140,7 @@ public class OutStorageServiceImpl extends BaseServiceImpl<OutStorage, Long> imp
 				Constants.CPCK + StringUtil.getDate() + SalesUtils.get0LeftString((int) (dao.count() + 1), 8));
 		outStorage.setProductId(sendGoods.getProductId());
 		outStorage.setUserStorageId(cu.getId());
-		outStorageDao.save(outStorage);
+		save(outStorage);
 
 		if (!StringUtils.isEmpty(putStorage)) {
 			JSONArray jsonArray = JSON.parseArray(putStorage);
@@ -262,6 +261,17 @@ public class OutStorageServiceImpl extends BaseServiceImpl<OutStorage, Long> imp
 
 	@Override
 	public List<Map<String, Object>> getPutStorageCotDetails(Long id) {
+		List<Map<String, Object>> list = new ArrayList<>();
+		CurrentUser cu = SessionManager.getUserSession();
+		Long warehouseTypeDeliveryId = RoleUtil.getWarehouseTypeDelivery(cu.getRole());
+		if (warehouseTypeDeliveryId == null) {
+			throw new ServiceException("请使用仓库管理员账号");
+		}
+		
+		
+		
+		
+		
 
 		return null;
 	}
