@@ -30,8 +30,8 @@
 				<td>是否天猫:</td>
 				<td style="width:100px;">
 					<select name="internal"><option value="">请选择</option>
-									<option value="0">是</option>
-									<option value="1">否</option></select></td>
+									<option value="1">是</option>
+									<option value="0">否</option></select></td>
 				<td>&nbsp;&nbsp;&nbsp;</td>
 				<td><button type="button" class="layui-btn layui-btn-" lay-submit lay-filter="search">搜索</button></td>
 			</tr>
@@ -159,7 +159,7 @@ layui.config({
 			       { title:'剩余发货数量',   field:'surplusSendNumber', 	},
 			       { title:'剩余量化数量',   field:'surplusStickNumber', 	},
 			       { title:'备注',   field:'remarks',	},
-			       { title:'是否天猫',  width:'6%', field:'internal',	transData:{data:['否','是']}},
+			       { title:'是否天猫',  width:'6%', field:'internal',	transData:{data:['否','是'],text:'未知'}},
 			       ]],
 			 done:function(){
 				 upload.render({
