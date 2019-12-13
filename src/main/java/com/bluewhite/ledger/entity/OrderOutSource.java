@@ -214,7 +214,22 @@ public class OrderOutSource extends BaseEntity<Long> {
 	@Transient
 	private Integer arrivalNumber;
 	
+	/**
+	 * 工序id
+	 */
+	@Transient
+	private Long outsourceTaskId;
+
 	
+	
+	
+	public Long getOutsourceTaskId() {
+		return outsourceTaskId;
+	}
+
+	public void setOutsourceTaskId(Long outsourceTaskId) {
+		this.outsourceTaskId = outsourceTaskId;
+	}
 
 	public Date getExpenseDate() {
 		return expenseDate;

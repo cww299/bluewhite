@@ -47,6 +47,10 @@ public class UnderGoodsServiceImpl extends BaseServiceImpl<UnderGoods, Long> imp
 			if (param.getProductId() != null) {
 				predicate.add(cb.equal(root.get("productId").as(Long.class), param.getId()));
 			}
+			// 是否天猫
+			if (param.getInternal() != null) {
+				predicate.add(cb.equal(root.get("internal").as(Integer.class), param.getInternal()));
+			}
 			// 按产品名称
 			if (!StringUtils.isEmpty(param.getProductName())) {
 				predicate.add(cb.like(root.get("product").get("name").as(String.class),

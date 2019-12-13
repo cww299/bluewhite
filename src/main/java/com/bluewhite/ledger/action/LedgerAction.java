@@ -1156,6 +1156,7 @@ public class LedgerAction {
 	
 	/**
 	 * （2.皮壳仓库）根据针工加工单查询库存详情
+	 * 生产出库
 	 * 
 	 * @return
 	 */
@@ -1164,14 +1165,15 @@ public class LedgerAction {
 	public CommonResponse getPutStorageCotDetails(Long id) {
 		CommonResponse cr = new CommonResponse();
 		cr.setData(outStorageService.getPutStorageCotDetails(id));
+		
 		cr.setMessage("查询成功");
 		return cr;
 	}
 	
 	/**
 	 * （2.皮壳仓库）根据针工加工单进行出库
-	 * 			针工加工单分为外发和内做
-	 * 
+	 * 			   针工加工单分为外发和内做
+	 * 生产出库
 	 * @return
 	 */
 	@RequestMapping(value = "/ledger/inventory/sendOutStorageCot", method = RequestMethod.GET)
