@@ -43,6 +43,21 @@ public class OrderOutSource extends BaseEntity<Long> {
 	private Order order;
 
 	/**
+	 * 领料单id
+	 * 
+	 */
+	@Column(name = "material_requisition_id")	
+	private Long materialRequisitionId;
+
+	/**
+	 * 领料单
+	 */
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "material_requisition_id", referencedColumnName = "id", insertable = false, updatable = false)
+	private MaterialRequisition materialRequisition;
+	
+	
+	/**
 	 * 开单时间
 	 */
 	@Column(name = "open_order_time")

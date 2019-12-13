@@ -103,7 +103,6 @@ public class UserAction {
 	@ResponseBody
 	public CommonResponse userPages(User user, PageParameter page) {
 		CommonResponse cr = new CommonResponse();
-		user.setNumberSort(0);
 		cr.setData(clearCascadeJSON.format(userService.getPagedUser(page, user)).toJSON());
 		return cr;
 	}
@@ -269,11 +268,6 @@ public class UserAction {
 			return cr;
 		}
 		User oldUser = userService.findOne(user.getId());
-		if (oldUser.getUserContract() == null) {
-			UserContract userContract = new UserContract();
-			userContractDao.save(userContract);
-			oldUser.setUserContract(userContract);
-		}
 		// 离职去除分组信息
 		if (user.getQuit() != null && user.getQuit() == 1) {
 			user.setGroupId(null);
@@ -298,22 +292,9 @@ public class UserAction {
 	@ResponseBody
 	public CommonResponse updateContract(HttpServletRequest request, UserContract userContract) {
 		CommonResponse cr = new CommonResponse();
-		if (userContract.getId() == null) {
-			cr.setCode(ErrorCode.ILLEGAL_ARGUMENT.getCode());
-			cr.setMessage("id为空");
-			return cr;
-		}
-		UserContract oldUser = userContractDao.findOne(userContract.getId());
-		if (userContract.getNumber() != null && oldUser.getNumber() != userContract.getNumber()) {
-			UserContract uc = userContractDao.findByNumber(userContract.getNumber());
-			if (uc != null) {
-				cr.setCode(ErrorCode.ILLEGAL_ARGUMENT.getCode());
-				cr.setMessage("该合同编号已存在");
-				return cr;
-			}
-		}
-		BeanCopyUtils.copyNotEmpty(userContract, oldUser);
-		userContractDao.save(oldUser);
+		UserContract ot = userContractDao.findOne(userContract.getId());
+		BeanCopyUtils.copyNotEmpty(userContract, ot,"");
+		userContractDao.save(ot);
 		cr.setMessage("修改成功");
 		return cr;
 	}
