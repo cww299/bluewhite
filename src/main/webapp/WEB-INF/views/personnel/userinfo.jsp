@@ -1113,6 +1113,7 @@ jQuery(function($){
 											  });
 										  }, 
 							      		  success: function (result) {
+							      			  	console.log(result)
 							      				$('.bankCardtw').val(result.data)
 							      				layer.close(index);
 									      },error:function(){
