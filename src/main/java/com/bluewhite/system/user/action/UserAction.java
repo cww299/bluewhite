@@ -8,8 +8,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-import javax.servlet.http.HttpServletRequest;
-
 import org.apache.shiro.crypto.hash.SimpleHash;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.propertyeditors.CustomDateEditor;
@@ -80,9 +78,7 @@ public class UserAction {
 						"ascriptionBank1", "sale", "roles", "turnWorkTime", "quitTypeId", "quitType")
 				.addRetainTerm(Group.class, "id", "name", "type", "price")
 				.addRetainTerm(Role.class, "name", "role", "description", "id")
-				.addRetainTerm(BaseData.class, "id", "name", "type").addRetainTerm(UserContract.class, "id", "number",
-						"username", "archives", "pic", "idCard", "bankCard", "physical", "qualification",
-						"formalSchooling", "agreement", "secrecyAgreement", "contract", "remark", "quit");
+				.addRetainTerm(BaseData.class, "id", "name", "type");
 	}
 
 	private ClearCascadeJSON clearCascadeJSONTemporaryUser;
@@ -90,6 +86,13 @@ public class UserAction {
 		clearCascadeJSONTemporaryUser = ClearCascadeJSON.get().addRetainTerm(TemporaryUser.class, "userName", "id",
 				"phone", "idCard", "bankCard1", "group", "status", "turnWorkTime")
 				.addRetainTerm(Group.class, "name", "id");
+	}
+
+	private ClearCascadeJSON clearCascadeJSONUserContract;
+	{
+		clearCascadeJSONUserContract = ClearCascadeJSON.get().addRetainTerm(UserContract.class, "id", "number",
+				"username", "archives", "pic", "idCard", "bankCard", "physical", "qualification", "formalSchooling",
+				"agreement", "secrecyAgreement", "contract", "remark", "quit");
 	}
 
 	/**
