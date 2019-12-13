@@ -8,6 +8,9 @@ import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+import javax.persistence.criteria.Join;
+import javax.persistence.criteria.JoinType;
+import javax.persistence.criteria.ListJoin;
 import javax.persistence.criteria.Predicate;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -35,6 +38,7 @@ import com.bluewhite.ledger.dao.ProcessPriceDao;
 import com.bluewhite.ledger.dao.RefundBillsDao;
 import com.bluewhite.ledger.entity.MaterialRequisition;
 import com.bluewhite.ledger.entity.Order;
+import com.bluewhite.ledger.entity.OrderChild;
 import com.bluewhite.ledger.entity.OrderOutSource;
 import com.bluewhite.ledger.entity.ProcessPrice;
 import com.bluewhite.ledger.entity.RefundBills;
@@ -109,12 +113,7 @@ public class OrderOutSourceServiceImpl extends BaseServiceImpl<OrderOutSource, L
 			}
 			orderOutSource.setAudit(0);
 			orderOutSource.setChargeOff(0);
-			String outSourceNumber = "";
-			if(orderOutSource.getOutsource()==0){
-				outSourceNumber = Constants.JGD+StringUtil.getDate()+SalesUtils.get0LeftString((int)(dao.count()+1), 8);
-			}else{
-				outSourceNumber = Constants.WFJGD+StringUtil.getDate()+SalesUtils.get0LeftString((int)(dao.count()+1), 8);
-			}
+			String outSourceNumber = (orderOutSource.getOutsource() ==0 ? Constants.JGD :  Constants.WFJGD )+StringUtil.getDate()+SalesUtils.get0LeftString((int)(dao.count()+1), 8);
 			orderOutSource.setOutSourceNumber(outSourceNumber);
 			save(orderOutSource);
 		} else {
@@ -140,8 +139,16 @@ public class OrderOutSourceServiceImpl extends BaseServiceImpl<OrderOutSource, L
 			}
 			// 按跟单人id过滤
 			if (param.getUserId() != null) {
-				predicate.add(cb.equal(root.get("userId").as(Long.class), param.getUserId()));
+				predicate.add(cb.equal(root.get("userId").as(Long.class), param.getUserId())); 
 			}
+			
+			// 按生产工序过滤
+			if (param.getOutsourceTaskId()!=null) {
+				Join<OrderOutSource, BaseData> join = root.join(root.getModel().getSet("outsourceTask", BaseData.class),
+						JoinType.LEFT);
+				predicate.add(cb.equal(join.get("id").as(Long.class),param.getOutsourceTaskId()));
+			}
+			
 			// 是否外发
 			if (param.getOutsource() != null) {
 				predicate.add(cb.equal(root.get("outsource").as(Integer.class), param.getOutsource()));
