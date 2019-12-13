@@ -173,7 +173,7 @@ layui.config({
 						if(!child)
 							continue;
 						for(var j=0,l=child.length;j<l;j++){
-							data.push({
+							/*data.push({
 								id: d[i].id,
 								quantitativeNumber: d[i].quantitativeNumber,
 								time: d[i].time,
@@ -187,7 +187,9 @@ layui.config({
 								actualSingleNumber: child[j].actualSingleNumber,
 								checks: child[j].checks,
 								childId: child[j].id,
-							})
+								remarks: child[j].remarks,
+							})*/
+							data.push($.extend({},child[j],{childId: child[j].id,},d[i])); 
 						}
 					}
 					return {  msg:ret.message,  code:ret.code , data: data, count:ret.data.total }; 
@@ -195,7 +197,7 @@ layui.config({
 				else
 					return {  msg:ret.message,  code:ret.code , data:[], count:0 }; 
 			},
-			ifNull:'---',
+			ifNull:'',
 			cols:[[
 			       { type:'checkbox',},
 			       { title:'量化编号',   field:'quantitativeNumber', width:'12%',	},

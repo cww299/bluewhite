@@ -27,6 +27,12 @@
 				<td>批次号:</td>
 				<td><input type="text" name="bacthNumber" class="layui-input"></td>
 				<td>&nbsp;&nbsp;&nbsp;</td>
+				<td>是否天猫:</td>
+				<td style="width:100px;">
+					<select name="internal"><option value="">请选择</option>
+									<option value="1">是</option>
+									<option value="0">否</option></select></td>
+				<td>&nbsp;&nbsp;&nbsp;</td>
 				<td><button type="button" class="layui-btn layui-btn-" lay-submit lay-filter="search">搜索</button></td>
 			</tr>
 		</table>
@@ -63,6 +69,16 @@ var TPL = [
 			'<div class="layui-input-block">',
 				'<input class="layui-input" id="productNameInput" lay-verify="required" placeholder="点击进行选择商品" ', 
 					'value="{{ d.product?d.product.name:"" }}">',
+			'</div>',
+		'</div>',
+		'<div class="layui-form-item" pane>',
+		'<label class="layui-form-label">是否天猫</label>',
+			'<div class="layui-input-block">',
+				'<select name="internal" value="{{ d.internal }}">',
+					'<option value="">请选择</option>',
+					'<option value="0">否</option>',
+					'<option value="1">是</option>',
+				'</select>',
 			'</div>',
 		'</div>',
 		'<div class="layui-form-item" pane>',
@@ -143,6 +159,7 @@ layui.config({
 			       { title:'剩余发货数量',   field:'surplusSendNumber', 	},
 			       { title:'剩余量化数量',   field:'surplusStickNumber', 	},
 			       { title:'备注',   field:'remarks',	},
+			       { title:'是否天猫',  width:'6%', field:'internal',	transData:{data:['否','是'],text:'未知'}},
 			       ]],
 			 done:function(){
 				 upload.render({
@@ -234,6 +251,7 @@ layui.config({
 							}
 						})
 					})
+					form.render();
 				},
 				yes:function(){
 					$('#sureAddOrder').click();

@@ -300,10 +300,10 @@ layui.config({
 			ifNull:'---',
 			toolbar:'<span class="layui-btn layui-btn-sm" lay-event="addBuy">生成采购单</span>'+
 					'<span class="layui-btn layui-btn-sm layui-btn-" lay-event="allProcurement">采购单</span>'+
-					'<span class="layui-btn layui-btn-sm layui-btn-normal" lay-event="inventedOut">生成出库单</span>'+
-					'<span class="layui-btn layui-btn-sm" lay-event="audit">审核出库单</span>'+
-					'<span class="layui-btn layui-btn-sm layui-btn-danger" lay-event="deletes">清除出库单</span>'+
-					'<span class="layui-btn layui-btn-sm layui-btn-normal" lay-event="outOrder">出库单</span>',
+					'<span class="layui-btn layui-btn-sm layui-btn-normal" lay-event="inventedOut">生成耗料出库</span>'+
+					'<span class="layui-btn layui-btn-sm" lay-event="audit">审核耗料出库</span>'+
+					'<span class="layui-btn layui-btn-sm layui-btn-danger" lay-event="deletes">清除耗料出库</span>'+
+					'<span class="layui-btn layui-btn-sm layui-btn-normal" lay-event="outOrder">耗料出库单</span>',
 			colsWidth:[0,10,0,10,10,8,8,8,8,8],
 			parseData:function(ret){
 				if(ret.code==0){

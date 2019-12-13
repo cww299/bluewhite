@@ -30,6 +30,7 @@ public class ApplyVoucherServiceImpl extends BaseServiceImpl<ApplyVoucher, Long>
 
 	@Override
 	public void saveApplyVoucher(ApplyVoucher applyVoucher) {
+		applyVoucher.setTime(new Date());
 		applyVoucher.setApplyNumber(
 				Constants.SQD + StringUtil.getDate() + SalesUtils.get0LeftString((int) (count() + 1), 8));
 		save(applyVoucher);

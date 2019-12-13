@@ -197,7 +197,7 @@ public class BasicsServiceImpl extends BaseServiceImpl<Basics, Long>
 		List<Recruit> list= recruitDao.findByTimeBetween(DatesUtil.getFirstDayOfMonth(basics.getTime()), DatesUtil.getLastDayOfMonth(basics.getTime()));
 		List<Map<String, Object>> allList = new ArrayList<>();
 		Map<String, Object> allMap =null;
-		List<Reward> rewards=rewardDao.findByTypeAndTimeBetween(0,DatesUtil.getFirstDayOfMonth(basics.getTime()), DatesUtil.getLastDayOfMonth(basics.getTime()));
+		List<Reward> rewards=rewardDao.findByTypeAndTimeBetween(1,DatesUtil.getFirstDayOfMonth(basics.getTime()), DatesUtil.getLastDayOfMonth(basics.getTime()));
 		Basics basics2= findBasics(basics);
 		List<BaseData> baseDatas= baseDataDao.findByType("orgName");
 		for (BaseData baseData : baseDatas) {
