@@ -112,49 +112,40 @@ public class UserServiceImpl extends BaseServiceImpl<User, Long> implements User
 			if (user.getGroupId() != null) {
 				predicate.add(cb.equal(root.get("groupId").as(Long.class), user.getGroupId()));
 			}
-
 			// 忽略管理员
 			if (user.getRole().size() == 0) {
 				predicate.add(cb.equal(root.get("isAdmin").as(Boolean.class), false));
 			}
-
 			// 是否离职
 			if (user.getQuit() != null) {
 				predicate.add(cb.equal(root.get("quit").as(Integer.class), user.getQuit()));
 			}
-
 			// 按手机号查找
 			if (!StringUtils.isEmpty(user.getPhone())) {
 				predicate.add(cb.like(root.get("phone").as(String.class), "%" + user.getPhone() + "%"));
 			}
-
 			// 按姓名查找
 			if (!StringUtils.isEmpty(user.getUserName())) {
 				predicate.add(cb.like(root.get("userName").as(String.class), "%" + user.getUserName() + "%"));
 			}
-
 			// 按学历查找
 			if (!StringUtils.isEmpty(user.getEducation())) {
 				predicate.add(cb.like(root.get("education").as(String.class), "%" + user.getEducation() + "%"));
 			}
-
 			// 按归属银行查找
 			if (!StringUtils.isEmpty(user.getAscriptionBank1())) {
 				predicate.add(
 						cb.like(root.get("ascriptionBank1").as(String.class), "%" + user.getAscriptionBank1() + "%"));
 			}
-
 			// 按员工编号
 			if (!StringUtils.isEmpty(user.getNumber())) {
 				predicate.add(cb.like(root.get("number").as(String.class), "%" + user.getNumber() + "%"));
 			}
-
 			// 按位置编号
 			if (!StringUtils.isEmpty(user.getLotionNumber())) {
 				predicate.add(cb.like(root.get("userContract").get("number").as(String.class),
 						"%" + user.getLotionNumber() + "%"));
 			}
-
 			// 是否签订合同
 			if (!StringUtils.isEmpty(user.getCommitment())) {
 				predicate.add(cb.equal(root.get("commitment").as(Integer.class), user.getCommitment()));
@@ -167,12 +158,10 @@ public class UserServiceImpl extends BaseServiceImpl<User, Long> implements User
 			if (!StringUtils.isEmpty(user.getPromise())) {
 				predicate.add(cb.equal(root.get("promise").as(Integer.class), user.getPromise()));
 			}
-
 			// 根据签订协议查找
 			if (!StringUtils.isEmpty(user.getAgreementId())) {
 				predicate.add(cb.like(root.get("agreementId").as(String.class), "%" + user.getAgreementId() + "%"));
 			}
-
 			// 是否保险
 			if (!StringUtils.isEmpty(user.getSafe())) {
 				predicate.add(cb.equal(root.get("safe").as(Integer.class), user.getSafe()));
@@ -187,7 +176,6 @@ public class UserServiceImpl extends BaseServiceImpl<User, Long> implements User
 				SetJoin<User, Role> join = root.join(root.getModel().getSet("roles", Role.class), JoinType.LEFT);
 				predicate.add(cb.isNotNull(join.get("id").as(Long.class)));
 			}
-
 			// 退休返聘（男age>60，女age>50,还在正常工作）
 			if (!StringUtils.isEmpty(user.getRetire())) {
 				if (!StringUtils.isEmpty(user.getGender())) {
@@ -198,7 +186,6 @@ public class UserServiceImpl extends BaseServiceImpl<User, Long> implements User
 					}
 				}
 			}
-
 			// 部门,多个
 			if (!StringUtils.isEmpty(user.getOrgNameIds())) {
 				List<Long> orgNameIdList = new ArrayList<Long>();
@@ -229,9 +216,6 @@ public class UserServiceImpl extends BaseServiceImpl<User, Long> implements User
 			}
 			Predicate[] pre = new Predicate[predicate.size()];
 			query.where(predicate.toArray(pre));
-			if (user.getNumberSort() != null) {
-				query.orderBy(cb.desc(root.get("userContract").get("number").as(Integer.class)));
-			}
 			query.distinct(true);
 			return null;
 		}, page);
@@ -313,9 +297,6 @@ public class UserServiceImpl extends BaseServiceImpl<User, Long> implements User
 			} else {
 				user.setPassword(new SimpleHash("md5", "123456").toHex());
 				user.setStatus(0);
-				UserContract userContract = new UserContract();
-				userContractDao.save(userContract);
-				user.setUserContractId(userContract.getId());
 			}
 		} else {
 			throw new ServiceException("手机号不能为空");
@@ -404,9 +385,6 @@ public class UserServiceImpl extends BaseServiceImpl<User, Long> implements User
 				throw new ServiceException(user.getUserName() + "的手机号为空，不能转正，请先添加手机号");
 			}
 			user.setQuit(0);
-			UserContract userContract = new UserContract();
-			userContractDao.save(userContract);
-			user.setUserContractId(userContract.getId());
 			dao.save(user);
 			count++;
 		}
