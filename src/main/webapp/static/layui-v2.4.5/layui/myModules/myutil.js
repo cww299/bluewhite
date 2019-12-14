@@ -340,6 +340,17 @@ layui.define(['jquery','layer','form','table'],function(exports){
 		})
 	};
 	
+	myutil.getLastMonth = function(format,firstOfEnd){
+	    var date = new Date; 
+	    var year = date.getFullYear();
+	    var month = date.getMonth();
+	    if(month == 0){
+	         year = year -1;
+	         month = 12; 
+	    }
+		return year+'-'+month;
+	}
+	
 	myutil.scrollX = function(container){
         //判断浏览器
         var isIE = navigator.userAgent.match(/MSIE (\d)/i);
