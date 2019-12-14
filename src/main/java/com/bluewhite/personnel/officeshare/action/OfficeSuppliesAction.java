@@ -38,7 +38,7 @@ public class OfficeSuppliesAction {
 	{
 		clearCascadeJSON = ClearCascadeJSON.get()
 				.addRetainTerm(OfficeSupplies.class,"id","number", "name", "price", "unit"
-						, "inventoryNumber","location","libraryValue","createdAt","customer")
+						, "inventoryNumber","location","libraryValue","createdAt","customer","singleMealConsumption")
 				.addRetainTerm(Customer.class, "id", "name")
 				.addRetainTerm(BaseData.class, "id", "name");
 	}
@@ -48,7 +48,7 @@ public class OfficeSuppliesAction {
 		clearCascadeJSONInventoryDetail = ClearCascadeJSON.get()
 				.addRetainTerm(InventoryDetail.class,"id","officeSupplies", "flag", "orgName", "user"
 						, "time","number","remark","outboundCost","mealType")
-				.addRetainTerm(OfficeSupplies.class, "id", "name","price")
+				.addRetainTerm(OfficeSupplies.class, "id", "name","price","singleMealConsumption")
 				.addRetainTerm(BaseData.class, "id", "name")
 				.addRetainTerm(User.class, "id", "userName");
 	}
@@ -155,6 +155,19 @@ public class OfficeSuppliesAction {
 		return cr;
 	}
 	
+	/**
+	 * 食材出库记录统计
+	 * @param ids
+	 * @return
+	 */
+	@RequestMapping(value = "/personnel/ingredientsStatisticalInventoryDetail", method = RequestMethod.GET)
+	@ResponseBody
+	public CommonResponse ingredientsStatisticalInventoryDetail(InventoryDetail onventoryDetail) {
+		CommonResponse cr = new CommonResponse();
+		cr.setData(inventoryDetailService.ingredientsStatisticalInventoryDetail(onventoryDetail));
+		cr.setMessage("成功");
+		return cr;
+	}
 
 	@InitBinder
 	protected void initBinder(WebDataBinder binder) {
