@@ -176,7 +176,7 @@ layui.extend({
 			       ];
 					if(inventory.type===3){
 						cols.push({
-							field: "singleMealConsumption_id", title: "材料分类",  edit: true, 
+							field: "singleMealConsumption_id", title: "材料分类",   type:'select',
 							select:{ data: allSingleMealConsumption, },
 						})
 					}
