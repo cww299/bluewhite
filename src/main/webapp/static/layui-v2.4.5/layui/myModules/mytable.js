@@ -117,11 +117,13 @@ layui.extend({
 					};
 					function transData(r){
 						var text = r;
-						var data = item2.transData.data || [];
+						var data = item2.transData.data || ['否','是'];
 						if(data[r])											//存在转换数据时
 							text = data[r];	
-						else if(item2.transData.text)						//无值时
-							text = item2.transData.text;
+						else{
+							text = item2.transData.text || '未知';
+							color = 6;
+						}
 						if(!item2.transData.skin)							//开启皮肤
 							text = '<span class="layui-badge layui-bg-'+COLOR[r%7]+'">'+text+'</span>';
 						return text;

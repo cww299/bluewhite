@@ -25,7 +25,7 @@
 </div>
 <script>
 layui.config({
-	/* base : '${ctx}/static/layui-v2.4.5/' */
+	base : '${ctx}/static/layui-v2.4.5/',
 }).extend({
 	mytable : 'layui/myModules/mytable' ,
 }).define(
@@ -43,7 +43,7 @@ layui.config({
 		
 		mytable.render({
 			elem:'#tableData',
-			url:'',
+			url: myutil.config.ctx+'/ledger/inventory/putStoragePage',
 			curd:{
 				otherBtn:function(obj){
 					

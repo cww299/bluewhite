@@ -8,8 +8,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-import javax.servlet.http.HttpServletRequest;
-
 import org.apache.shiro.crypto.hash.SimpleHash;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.propertyeditors.CustomDateEditor;
@@ -77,12 +75,10 @@ public class UserAction {
 						"socialSecurity", "bankCard1", "bankCard2", "agreement", "safe", "commitment", "promise",
 						"contract", "contractDate", "contractDateEnd", "frequency", "quitDate", "quit", "reason",
 						"train", "remark", "userContract", "commitments", "agreementId", "company", "age", "type",
-						"ascriptionBank1", "sale", "roles", "turnWorkTime","quitTypeId","quitType")
+						"ascriptionBank1", "sale", "roles", "turnWorkTime", "quitTypeId", "quitType")
 				.addRetainTerm(Group.class, "id", "name", "type", "price")
 				.addRetainTerm(Role.class, "name", "role", "description", "id")
-				.addRetainTerm(BaseData.class, "id", "name", "type").addRetainTerm(UserContract.class, "id", "number",
-						"username", "archives", "pic", "idCard", "bankCard", "physical", "qualification",
-						"formalSchooling", "agreement", "secrecyAgreement", "contract", "remark", "quit");
+				.addRetainTerm(BaseData.class, "id", "name", "type");
 	}
 
 	private ClearCascadeJSON clearCascadeJSONTemporaryUser;
@@ -90,6 +86,13 @@ public class UserAction {
 		clearCascadeJSONTemporaryUser = ClearCascadeJSON.get().addRetainTerm(TemporaryUser.class, "userName", "id",
 				"phone", "idCard", "bankCard1", "group", "status", "turnWorkTime")
 				.addRetainTerm(Group.class, "name", "id");
+	}
+
+	private ClearCascadeJSON clearCascadeJSONUserContract;
+	{
+		clearCascadeJSONUserContract = ClearCascadeJSON.get().addRetainTerm(UserContract.class, "id", "number",
+				"username", "archives", "pic", "idCard", "bankCard", "physical", "qualification", "formalSchooling",
+				"agreement", "secrecyAgreement", "contract", "remark", "quit");
 	}
 
 	/**
@@ -103,7 +106,6 @@ public class UserAction {
 	@ResponseBody
 	public CommonResponse userPages(User user, PageParameter page) {
 		CommonResponse cr = new CommonResponse();
-		user.setNumberSort(0);
 		cr.setData(clearCascadeJSON.format(userService.getPagedUser(page, user)).toJSON());
 		return cr;
 	}
@@ -117,7 +119,7 @@ public class UserAction {
 	 */
 	@RequestMapping(value = "/foreignsPages", method = RequestMethod.GET)
 	@ResponseBody
-	public CommonResponse foreignsPages(HttpServletRequest request, User user, PageParameter page) {
+	public CommonResponse foreignsPages(User user, PageParameter page) {
 		CommonResponse cr = new CommonResponse();
 		cr.setData(ClearCascadeJSON.get().addRetainTerm(User.class, "id", "idCardEnd", "price", "status", "workTime",
 				"userName", "phone", "idCard").format(userService.getPagedUser(page, user)).toJSON());
@@ -128,8 +130,6 @@ public class UserAction {
 	/**
 	 * 新增员工
 	 * 
-	 * @param request
-	 *            请求
 	 * @param user
 	 *            用户实体类
 	 * @return cr
@@ -137,7 +137,7 @@ public class UserAction {
 	@RequestMapping(value = "/add", method = RequestMethod.POST)
 	@ResponseBody
 	@SysLogAspectAnnotation(description = "员工新增操作", module = "员工管理", operateType = "增加", logType = SysLog.ADMIN_LOG_TYPE)
-	public CommonResponse createUser(HttpServletRequest request, User user) {
+	public CommonResponse createUser(User user) {
 		CommonResponse cr = new CommonResponse();
 		userService.addUser(user);
 		cr.setCode(2);
@@ -153,9 +153,9 @@ public class UserAction {
 	@ResponseBody
 	public CommonResponse addTemporaryUser(TemporaryUser temporaryUser) {
 		CommonResponse cr = new CommonResponse();
-		if(temporaryUser.getId()!=null){
+		if (temporaryUser.getId() != null) {
 			cr.setMessage("修改成功");
-		}else{
+		} else {
 			cr.setMessage("新增成功");
 		}
 		temporaryUserService.addTemporaryUser(temporaryUser);
@@ -196,7 +196,9 @@ public class UserAction {
 			BeanCopyUtils.copyNotEmpty(temporarily, temporarilyNew, "");
 			temporarilyNew.setTemporarilyDate(DatesUtil.getfristDayOftime(date));
 			if (temporarily.getTemporaryUserId() != null) {
-				if (temporarilyDao.findByTemporaryUserIdAndTemporarilyDateAndTypeAndGroupId(temporarily.getTemporaryUserId(),date,temporarily.getType(),temporarily.getGroupId()) != null) {
+				if (temporarilyDao.findByTemporaryUserIdAndTemporarilyDateAndTypeAndGroupId(
+						temporarily.getTemporaryUserId(), date, temporarily.getType(),
+						temporarily.getGroupId()) != null) {
 					cr.setMessage("当天当前分组已添加过临时工的工作时间,不必再次添加");
 					cr.setCode(ErrorCode.ILLEGAL_ARGUMENT.getCode());
 					return cr;
@@ -219,11 +221,12 @@ public class UserAction {
 	@ResponseBody
 	public CommonResponse findTemporaryUserTimePages(TemporaryUser temporaryUser, PageParameter page) {
 		CommonResponse cr = new CommonResponse();
-		cr.setData(clearCascadeJSONTemporaryUser.format(temporaryUserService.getPagedUser(page, temporaryUser)).toJSON());
+		cr.setData(
+				clearCascadeJSONTemporaryUser.format(temporaryUserService.getPagedUser(page, temporaryUser)).toJSON());
 		cr.setMessage("查询成功");
 		return cr;
 	}
-	
+
 	/**
 	 * 查看临时员工列表
 	 * 
@@ -254,14 +257,14 @@ public class UserAction {
 
 	/**
 	 * 修改用户信息
-
+	 * 
 	 * 
 	 * @return cr
 	 */
 	@RequestMapping(value = "/update", method = RequestMethod.POST)
 	@ResponseBody
 	@SysLogAspectAnnotation(description = "员工修改操作", module = "修改管理", operateType = "修改", logType = SysLog.ADMIN_LOG_TYPE)
-	public CommonResponse updateUser(HttpServletRequest request, User user) {
+	public CommonResponse updateUser(User user) {
 		CommonResponse cr = new CommonResponse();
 		if (user.getId() == null) {
 			cr.setCode(ErrorCode.ILLEGAL_ARGUMENT.getCode());
@@ -269,11 +272,6 @@ public class UserAction {
 			return cr;
 		}
 		User oldUser = userService.findOne(user.getId());
-		if (oldUser.getUserContract() == null) {
-			UserContract userContract = new UserContract();
-			userContractDao.save(userContract);
-			oldUser.setUserContract(userContract);
-		}
 		// 离职去除分组信息
 		if (user.getQuit() != null && user.getQuit() == 1) {
 			user.setGroupId(null);
@@ -296,24 +294,11 @@ public class UserAction {
 	 */
 	@RequestMapping(value = "/updateContract", method = RequestMethod.POST)
 	@ResponseBody
-	public CommonResponse updateContract(HttpServletRequest request, UserContract userContract) {
+	public CommonResponse updateContract(UserContract userContract) {
 		CommonResponse cr = new CommonResponse();
-		if (userContract.getId() == null) {
-			cr.setCode(ErrorCode.ILLEGAL_ARGUMENT.getCode());
-			cr.setMessage("id为空");
-			return cr;
-		}
-		UserContract oldUser = userContractDao.findOne(userContract.getId());
-		if (userContract.getNumber() != null && oldUser.getNumber() != userContract.getNumber()) {
-			UserContract uc = userContractDao.findByNumber(userContract.getNumber());
-			if (uc != null) {
-				cr.setCode(ErrorCode.ILLEGAL_ARGUMENT.getCode());
-				cr.setMessage("该合同编号已存在");
-				return cr;
-			}
-		}
-		BeanCopyUtils.copyNotEmpty(userContract, oldUser);
-		userContractDao.save(oldUser);
+		UserContract ot = userContractDao.findOne(userContract.getId());
+		BeanCopyUtils.copyNotEmpty(userContract, ot, "");
+		userContractDao.save(ot);
 		cr.setMessage("修改成功");
 		return cr;
 	}
@@ -327,7 +312,7 @@ public class UserAction {
 	 */
 	@RequestMapping(value = "/userInfo", method = RequestMethod.GET)
 	@ResponseBody
-	public CommonResponse userInfo(HttpServletRequest request, Long id) {
+	public CommonResponse userInfo(Long id) {
 		User user = userService.findOne(id);
 		CommonResponse cr = new CommonResponse(clearCascadeJSON.format(user).toJSON());
 		return cr;
@@ -342,7 +327,7 @@ public class UserAction {
 	 */
 	@RequestMapping(value = "/getUserContract", method = RequestMethod.GET)
 	@ResponseBody
-	public CommonResponse getUser(HttpServletRequest request, Long id) {
+	public CommonResponse getUser(Long id) {
 		CommonResponse cr = new CommonResponse();
 		UserContract userContract = userContractDao.findOne(id);
 		cr.setData(ClearCascadeJSON.get()
@@ -363,7 +348,7 @@ public class UserAction {
 	 */
 	@RequestMapping(value = "/getbank", method = RequestMethod.GET)
 	@ResponseBody
-	public CommonResponse getbank(HttpServletRequest request, String idCard) {
+	public CommonResponse getbank(String idCard) {
 		CommonResponse cr = new CommonResponse();
 		String bankName = BankUtil.getNameOfBank(idCard);
 		cr.setMessage("查询成功");
@@ -374,31 +359,30 @@ public class UserAction {
 	/**
 	 * 合同到期，退休时间到期提醒
 	 * 
-	 * @param request
-	 *            请求
 	 * @return cr
 	 */
 	@RequestMapping(value = "/remind", method = RequestMethod.GET)
 	@ResponseBody
-	public CommonResponse remind(HttpServletRequest request) {
+	public CommonResponse remind() {
 		CommonResponse cr = new CommonResponse();
 		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
 		Map<String, Object> map = new HashMap<String, Object>();
 		List<User> userList = userService.findAll();
 		List<Map<String, Object>> userBirthList = new ArrayList<Map<String, Object>>();
-		//更新员工年龄
+		// 更新员工年龄
 		List<User> userAge = userList.stream().filter(User -> User.getBirthDate() != null).collect(Collectors.toList());
-		userAge.stream().forEach(u->{
+		userAge.stream().forEach(u -> {
 			int age = DatesUtil.getAgeByBirth(u.getBirthDate());
 			u.setAge(age);
 		});
 		userService.save(userAge);
-		
+
 		// 退休时间
 		List<User> userBirth = userList.stream()
 				.filter(User -> User.getBirthDate() != null && User.getGender() != null && User.getQuit() != null
-						&& User.getQuit() != 1 && User.getCommitmentId() != null && User.getCommitmentId() != 144 
-						&& User.getCommitmentId() != 145 && User.getCommitmentId() != 317).collect(Collectors.toList());
+						&& User.getQuit() != 1 && User.getCommitmentId() != null && User.getCommitmentId() != 144
+						&& User.getCommitmentId() != 145 && User.getCommitmentId() != 317)
+				.collect(Collectors.toList());
 		for (User user : userBirth) {
 			Map<String, Object> us = new HashMap<String, Object>();
 			int co = DatesUtil.getAgeByBirth(user.getBirthDate());
@@ -419,15 +403,16 @@ public class UserAction {
 			}
 
 		}
-		
+
 		// 合同到期时间
 		List<Map<String, Object>> userContractList = new ArrayList<Map<String, Object>>();
-		List<User> userContract = userList.stream()
-				.filter(User -> User.getContractDateEnd() != null && User.getQuit() != null && User.getQuit() != 1 && User.getCommitmentId() != null )
+		List<User> userContract = userList.stream().filter(User -> User.getContractDateEnd() != null
+				&& User.getQuit() != null && User.getQuit() != 1 && User.getCommitmentId() != null)
 				.collect(Collectors.toList());
 		for (User user : userContract) {
 			Map<String, Object> us = new HashMap<String, Object>();
-			long co = DatesUtil.getDaySub(DatesUtil.getfristDayOftime(new Date()),DatesUtil.getfristDayOftime(user.getContractDateEnd()));
+			long co = DatesUtil.getDaySub(DatesUtil.getfristDayOftime(new Date()),
+					DatesUtil.getfristDayOftime(user.getContractDateEnd()));
 			if (co <= 80) {
 				us.put("userId", user.getId());
 				us.put("username", user.getUserName());
@@ -438,9 +423,8 @@ public class UserAction {
 
 		// 身份证到期
 		List<Map<String, Object>> userCardList = new ArrayList<Map<String, Object>>();
-		List<User> userrCard = userList.stream()
-				.filter(User -> User.getIdCardEnd() != null && User.getQuit() != 1 && User.getQuit() != null && User.getCommitmentId() != null)
-				.collect(Collectors.toList());
+		List<User> userrCard = userList.stream().filter(User -> User.getIdCardEnd() != null && User.getQuit() != 1
+				&& User.getQuit() != null && User.getCommitmentId() != null).collect(Collectors.toList());
 		for (User user : userrCard) {
 			Map<String, Object> us = new HashMap<String, Object>();
 			long co = DatesUtil.getDaySub(DatesUtil.getfristDayOftime(new Date()),
@@ -470,7 +454,7 @@ public class UserAction {
 	 */
 	@RequestMapping(value = "/deleteUser", method = RequestMethod.GET)
 	@ResponseBody
-	public CommonResponse deleteUser(HttpServletRequest request, String id) {
+	public CommonResponse deleteUser(String id) {
 		CommonResponse cr = new CommonResponse();
 		int count = userService.deleteUser(id);
 		cr.setMessage("成功删除" + count + "名员工");

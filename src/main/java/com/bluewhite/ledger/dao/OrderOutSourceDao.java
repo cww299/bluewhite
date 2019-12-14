@@ -14,6 +14,6 @@ public interface OrderOutSourceDao extends BaseRepository<OrderOutSource, Long>{
 	 * @param orderid
 	 * @return
 	 */
-	List<OrderOutSource> findByOrderId(Long orderid);
+	List<OrderOutSource> findByMaterialRequisitionId(Long materialRequisitionId);
 	
 }
