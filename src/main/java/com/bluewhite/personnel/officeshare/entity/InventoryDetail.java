@@ -16,90 +16,95 @@ import com.bluewhite.system.user.entity.User;
 
 /**
  * 出入库明细
+ * 
  * @author zhangliang
  *
  */
 @Entity
 @Table(name = "person_inventory_detail")
-public class InventoryDetail extends BaseEntity<Long>{
-	
+public class InventoryDetail extends BaseEntity<Long> {
+
 	/**
-	 * 办公用品id
+	 * 后勤物品id
 	 */
 	@Column(name = "office_supplies_id")
 	private Long officeSuppliesId;
-	
+
 	/**
-	 * 办公用品
+	 * 后勤物品
 	 */
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "office_supplies_id", referencedColumnName = "id", insertable = false, updatable = false)
 	private OfficeSupplies OfficeSupplies;
-	
 
 	/**
 	 * 出库入库（0,1）
 	 */
 	@Column(name = "flag")
 	private Integer flag;
-	
+
 	/**
 	 * 部门id
 	 */
 	@Column(name = "orgName_id")
 	private Long orgNameId;
-	
+
 	/**
 	 * 部门
 	 */
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "orgName_id", referencedColumnName = "id", insertable = false, updatable = false)
 	private BaseData orgName;
-	
-	
+
 	/**
 	 * 领取人id
 	 */
 	@Column(name = "user_id")
 	private Long userId;
-	
+
 	/**
 	 * 领取人
 	 */
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "user_id", referencedColumnName = "id", insertable = false, updatable = false)
 	private User user;
-	
+
 	/**
 	 * 出库（入库）时间
 	 */
 	@Column(name = "time")
 	private Date time;
-	
+
 	/**
 	 * 出库（入库）数量
 	 */
 	@Column(name = "number")
 	private Integer number;
-	
+
 	/**
 	 * 领用价值
 	 */
 	@Column(name = "outbound_cost")
 	private Double outboundCost;
-	
+
 	/**
 	 * 备注
 	 */
 	@Column(name = "remark")
 	private String remark;
-	
+
+	/**
+	 * 对于食材明细出库的详细类型补充 1.早餐 2.中餐 3.晚餐 4.夜宵5.早中晚餐6.中晚餐
+	 */
+	@Column(name = "meal_type")
+	private Integer mealType;
+
 	/**
 	 * 名称
 	 */
 	@Transient
 	private String name;
-	
+
 	/**
 	 * 查询字段
 	 */
@@ -110,14 +115,36 @@ public class InventoryDetail extends BaseEntity<Long>{
 	 */
 	@Transient
 	private Date orderTimeEnd;
-	
+
 	/**
 	 * 物品类型
 	 */
 	@Transient
 	private Integer type;
 	
+	/**
+	 * 物料id
+	 */
+	@Transient
+	private Long singleMealConsumptionId;
 	
+	
+
+	public Long getSingleMealConsumptionId() {
+		return singleMealConsumptionId;
+	}
+
+	public void setSingleMealConsumptionId(Long singleMealConsumptionId) {
+		this.singleMealConsumptionId = singleMealConsumptionId;
+	}
+
+	public Integer getMealType() {
+		return mealType;
+	}
+
+	public void setMealType(Integer mealType) {
+		this.mealType = mealType;
+	}
 
 	public Integer getType() {
 		return type;
@@ -238,8 +265,5 @@ public class InventoryDetail extends BaseEntity<Long>{
 	public void setUser(User user) {
 		this.user = user;
 	}
-	
-	
-	
 
 }

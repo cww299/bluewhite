@@ -19,6 +19,8 @@ import com.bluewhite.basedata.entity.BaseData;
 import com.bluewhite.system.user.entity.User;
 
 /**
+ * 加工单由领料单而来，加工单的实际数量等于领料单的实际数量
+ * 
  * 生产计划部 加工单 1.加工单 2.外发加工单
  * 
  * @author zhangliang
@@ -27,20 +29,6 @@ import com.bluewhite.system.user.entity.User;
 @Entity
 @Table(name = "ledger_order_outsource")
 public class OrderOutSource extends BaseEntity<Long> {
-
-	/**
-	 * 生产计划单id
-	 * 
-	 */
-	@Column(name = "order_id")
-	private Long orderId;
-
-	/**
-	 * 生产计划单
-	 */
-	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "order_id", referencedColumnName = "id", insertable = false, updatable = false)
-	private Order order;
 
 	/**
 	 * 领料单id
@@ -55,7 +43,6 @@ public class OrderOutSource extends BaseEntity<Long> {
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "material_requisition_id", referencedColumnName = "id", insertable = false, updatable = false)
 	private MaterialRequisition materialRequisition;
-	
 	
 	/**
 	 * 开单时间
@@ -234,10 +221,41 @@ public class OrderOutSource extends BaseEntity<Long> {
 	 */
 	@Transient
 	private Long outsourceTaskId;
+	
+	/**
+	 * 生产计划单id
+	 */
+	@Transient
+	private Long orderId;
+	
 
 	
 	
-	
+
+	public Long getOrderId() {
+		return orderId;
+	}
+
+	public void setOrderId(Long orderId) {
+		this.orderId = orderId;
+	}
+
+	public Long getMaterialRequisitionId() {
+		return materialRequisitionId;
+	}
+
+	public void setMaterialRequisitionId(Long materialRequisitionId) {
+		this.materialRequisitionId = materialRequisitionId;
+	}
+
+	public MaterialRequisition getMaterialRequisition() {
+		return materialRequisition;
+	}
+
+	public void setMaterialRequisition(MaterialRequisition materialRequisition) {
+		this.materialRequisition = materialRequisition;
+	}
+
 	public Long getOutsourceTaskId() {
 		return outsourceTaskId;
 	}
@@ -452,22 +470,6 @@ public class OrderOutSource extends BaseEntity<Long> {
 
 	public void setProcessNumber(Integer processNumber) {
 		this.processNumber = processNumber;
-	}
-
-	public Long getOrderId() {
-		return orderId;
-	}
-
-	public void setOrderId(Long orderId) {
-		this.orderId = orderId;
-	}
-
-	public Order getOrder() {
-		return order;
-	}
-
-	public void setOrder(Order order) {
-		this.order = order;
 	}
 
 	public Date getOpenOrderTime() {

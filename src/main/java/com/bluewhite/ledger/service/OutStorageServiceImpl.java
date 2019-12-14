@@ -33,7 +33,6 @@ import com.bluewhite.ledger.dao.PutOutStorageDao;
 import com.bluewhite.ledger.dao.SendGoodsDao;
 import com.bluewhite.ledger.entity.ApplyVoucher;
 import com.bluewhite.ledger.entity.OrderChild;
-import com.bluewhite.ledger.entity.OrderOutSource;
 import com.bluewhite.ledger.entity.OutStorage;
 import com.bluewhite.ledger.entity.PutOutStorage;
 import com.bluewhite.ledger.entity.PutStorage;
@@ -192,7 +191,7 @@ public class OutStorageServiceImpl extends BaseServiceImpl<OutStorage, Long> imp
 		// 获取发货申请人自己的库存
 		List<PutStorage> putStorageListSelf = putStorageList.stream().filter(p -> {
 			if (p.getOrderOutSource() != null) {
-				List<OrderChild> ocList = p.getOrderOutSource().getOrder().getOrderChilds();
+				List<OrderChild> ocList = p.getOrderOutSource().getMaterialRequisition().getOrder().getOrderChilds();
 				for (OrderChild oc : ocList) {
 					if (sendGoods.getUserId().equals(oc.getUserId())) {
 						return true;
@@ -206,7 +205,7 @@ public class OutStorageServiceImpl extends BaseServiceImpl<OutStorage, Long> imp
 				Map<String, Object> map = new HashMap<String, Object>();
 				map.put("id", p.getId());
 				map.put("number", p.getSurplusNumber());
-				map.put("bacthNumber", p.getOrderOutSource().getOrder().getBacthNumber());
+				map.put("bacthNumber", p.getOrderOutSource().getMaterialRequisition().getOrder().getBacthNumber());
 				map.put("serialNumber", p.getSerialNumber());
 				list.add(map);
 			});
@@ -220,7 +219,7 @@ public class OutStorageServiceImpl extends BaseServiceImpl<OutStorage, Long> imp
 			for (Long ps1 : mapApplyVoucher.keySet()) {
 				List<PutStorage> putStorageListOther = putStorageList.stream().filter(p -> {
 					if (p.getOrderOutSource() != null) {
-						List<OrderChild> ocList = p.getOrderOutSource().getOrder().getOrderChilds();
+						List<OrderChild> ocList = p.getOrderOutSource().getMaterialRequisition().getOrder().getOrderChilds();
 						for (OrderChild oc : ocList) {
 							if (ps1.equals(oc.getUserId())) {
 								return true;
@@ -234,7 +233,7 @@ public class OutStorageServiceImpl extends BaseServiceImpl<OutStorage, Long> imp
 						Map<String, Object> map = new HashMap<String, Object>();
 						map.put("id", p.getId());
 						map.put("number", p.getSurplusNumber());
-						map.put("bacthNumber", p.getOrderOutSource().getOrder().getBacthNumber());
+						map.put("bacthNumber", p.getOrderOutSource().getMaterialRequisition().getOrder().getBacthNumber());
 						map.put("serialNumber", p.getSerialNumber());
 						list.add(map);
 					});

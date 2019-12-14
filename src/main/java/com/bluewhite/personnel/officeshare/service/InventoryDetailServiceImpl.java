@@ -59,6 +59,10 @@ public class InventoryDetailServiceImpl extends BaseServiceImpl<InventoryDetail,
 			if (param.getOrgNameId() != null) {
 				predicate.add(cb.equal(root.get("orgNameId").as(Long.class), param.getOrgNameId()));
 			}
+			// 按物料分类
+			if (param.getSingleMealConsumptionId() != null) {
+				predicate.add(cb.equal(root.get("OfficeSupplies").get("singleMealConsumptionId").as(Long.class), param.getSingleMealConsumptionId()));
+			}
 			// 按出库入库
 			if (param.getFlag() != null) {
 				predicate.add(cb.equal(root.get("flag").as(Integer.class), param.getFlag()));
@@ -87,11 +91,13 @@ public class InventoryDetailServiceImpl extends BaseServiceImpl<InventoryDetail,
 		// 出库
 		if (onventoryDetail.getFlag() == 0) {
 			if (officeSupplies.getInventoryNumber() == 0) {
-				throw new ServiceException("数量为0，无法出库");
-			} else {
-				officeSupplies.setInventoryNumber(officeSupplies.getInventoryNumber() - onventoryDetail.getNumber());
-				onventoryDetail.setOutboundCost(NumUtils.mul(officeSupplies.getPrice(), onventoryDetail.getNumber()));
+				throw new ServiceException("库存为0，无法出库");
+			} 
+			if(officeSupplies.getInventoryNumber() < onventoryDetail.getNumber()){
+				throw new ServiceException("库存不足，无法出库");
 			}
+			officeSupplies.setInventoryNumber(officeSupplies.getInventoryNumber() - onventoryDetail.getNumber());
+			onventoryDetail.setOutboundCost(NumUtils.mul(officeSupplies.getPrice(), onventoryDetail.getNumber()));
 		}
 		// 入库
 		if (onventoryDetail.getFlag() == 1) {
