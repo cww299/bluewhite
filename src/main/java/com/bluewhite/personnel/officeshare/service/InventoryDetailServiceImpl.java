@@ -21,11 +21,14 @@ import com.bluewhite.basedata.service.BaseDataService;
 import com.bluewhite.common.ServiceException;
 import com.bluewhite.common.entity.PageParameter;
 import com.bluewhite.common.entity.PageResult;
+import com.bluewhite.common.utils.DatesUtil;
 import com.bluewhite.common.utils.NumUtils;
 import com.bluewhite.personnel.officeshare.dao.InventoryDetailDao;
 import com.bluewhite.personnel.officeshare.dao.OfficeSuppliesDao;
 import com.bluewhite.personnel.officeshare.entity.InventoryDetail;
 import com.bluewhite.personnel.officeshare.entity.OfficeSupplies;
+
+import cn.hutool.core.date.DateUnit;
 
 @Service
 public class InventoryDetailServiceImpl extends BaseServiceImpl<InventoryDetail, Long>
@@ -61,7 +64,8 @@ public class InventoryDetailServiceImpl extends BaseServiceImpl<InventoryDetail,
 			}
 			// 按物料分类
 			if (param.getSingleMealConsumptionId() != null) {
-				predicate.add(cb.equal(root.get("OfficeSupplies").get("singleMealConsumptionId").as(Long.class), param.getSingleMealConsumptionId()));
+				predicate.add(cb.equal(root.get("OfficeSupplies").get("singleMealConsumptionId").as(Long.class),
+						param.getSingleMealConsumptionId()));
 			}
 			// 按出库入库
 			if (param.getFlag() != null) {
@@ -92,8 +96,8 @@ public class InventoryDetailServiceImpl extends BaseServiceImpl<InventoryDetail,
 		if (onventoryDetail.getFlag() == 0) {
 			if (officeSupplies.getInventoryNumber() == 0) {
 				throw new ServiceException("库存为0，无法出库");
-			} 
-			if(officeSupplies.getInventoryNumber() < onventoryDetail.getNumber()){
+			}
+			if (officeSupplies.getInventoryNumber() < onventoryDetail.getNumber()) {
 				throw new ServiceException("库存不足，无法出库");
 			}
 			officeSupplies.setInventoryNumber(officeSupplies.getInventoryNumber() - onventoryDetail.getNumber());
@@ -168,12 +172,13 @@ public class InventoryDetailServiceImpl extends BaseServiceImpl<InventoryDetail,
 				double averageLogisticsCost = NumUtils.div(logisticsCost, mapAttendance.size(), 2);
 				Map<String, Object> map = new HashMap<>();
 				List<InventoryDetail> psList = onventoryDetailList.stream()
-						.filter(InventoryDetail ->  InventoryDetail.getOrgNameId() != null && InventoryDetail.getOrgNameId().equals(bData.getId())
-								&& InventoryDetail.getOfficeSupplies().getType().equals(onventoryDetail.getType()))
+						.filter(InventoryDetail -> InventoryDetail.getOrgNameId() != null
+								&& InventoryDetail.getOrgNameId().equals(bData.getId()) && InventoryDetail
+										.getOfficeSupplies().getType().equals(onventoryDetail.getType()))
 						.collect(Collectors.toList());
 				double sumCost = psList.stream().mapToDouble(InventoryDetail::getOutboundCost).sum();
 				sumCost = NumUtils.sum(sumCost, averageLogisticsCost);
-				map.put("orgName",bData.getName());
+				map.put("orgName", bData.getName());
 				map.put("sumCost", NumUtils.round(sumCost, 2));
 				map.put("accounted", NumUtils.mul(NumUtils.div(sumCost, sumCostList, 4), 100) + "%");
 				mapList.add(map);
@@ -203,28 +208,30 @@ public class InventoryDetailServiceImpl extends BaseServiceImpl<InventoryDetail,
 	}
 
 	@Override
-	public List<Map<String, Object>> ingredientsStatisticalInventoryDetail(InventoryDetail onventoryDetail) {
+	public Map<String, Object> ingredientsStatisticalInventoryDetail(InventoryDetail onventoryDetail) {
 		Map<String, Object> sumMap = new HashMap<>();
 		List<Map<String, Object>> mapList = new ArrayList<>();
 		List<InventoryDetail> onventoryDetailList = dao.findByFlagAndTimeBetween(0, onventoryDetail.getOrderTimeBegin(),
-				onventoryDetail.getOrderTimeEnd());
+				DatesUtil.getLastDayOfMonth(onventoryDetail.getOrderTimeBegin()));
 		double sumCostList = onventoryDetailList.stream().filter(
 				InventoryDetail -> InventoryDetail.getOfficeSupplies().getType().equals(onventoryDetail.getType()))
 				.mapToDouble(InventoryDetail::getOutboundCost).sum();
 		// 查询出所有的食材类型
 		List<BaseData> baseDatas = baseDataService.getBaseDataTreeByType("singleMealConsumption");
-		baseDatas.forEach(b->{
+		baseDatas.forEach(b -> {
 			Map<String, Object> map = new HashMap<>();
-			double sumCost = onventoryDetailList.stream().filter(
-					InventoryDetail->InventoryDetail.getOfficeSupplies().getSingleMealConsumptionId().equals(b.getId()))
+			double sumCost = onventoryDetailList.stream()
+					.filter(InventoryDetail -> InventoryDetail.getOfficeSupplies() != null
+							&& InventoryDetail.getOfficeSupplies().getType().equals(onventoryDetail.getType())
+							&& b.getId().equals(InventoryDetail.getOfficeSupplies().getSingleMealConsumptionId()))
 					.mapToDouble(InventoryDetail::getOutboundCost).sum();
-			map.put("name",b.getName());
+			map.put("name", b.getName());
 			map.put("sumCost", NumUtils.round(sumCost, 2));
 			mapList.add(map);
 		});
-		sumMap.put("data",mapList);
+		sumMap.put("data", mapList);
 		sumMap.put("sum", sumCostList);
-		return mapList;
+		return sumMap;
 	}
 
 }
