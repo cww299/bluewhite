@@ -43,7 +43,7 @@ public interface InventoryDetailService  extends BaseCRUDService<InventoryDetail
 	 * @param onventoryDetail
 	 * @return
 	 */
-	public List<Map<String, Object>> ingredientsStatisticalInventoryDetail(InventoryDetail onventoryDetail);
+	public Map<String, Object> ingredientsStatisticalInventoryDetail(InventoryDetail onventoryDetail);
 	
 	
 
