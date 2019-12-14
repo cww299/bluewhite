@@ -68,19 +68,21 @@ layui.extend({
 					<td>输入对比月份：</td>
 					<td><input type="text" class="layui-input" id="firstTime" lay-verify="required">
 					<td><input type="text" class="layui-input" id="secondTime" lay-verify="required">
+					<td></td>
 					<td><span class="layui-btn" lay-submit lay-filter="comparyBtn">搜索</span></td>
+					<td id="sumTd"></td>
 				</tr>
 			</table>
 		</div>
-		<div id="comparyDiv" style="width:100%;float:left;height:100%;"></div>
+		<div id="comparyDiv" style="width:100%;float:left;height:80%;"></div>
 	`;
 	
 	var record = {
 			type: 1,  //默认食材
 	};
 	
+	var allSingleMealConsumption =  [],allSingleMealConsumptionName = [];
 	record.render = function(opt){
-		var allSingleMealConsumption =  [];
 		$(opt.elem || '#app').html(TPL_MAIN);
 		laydate.render({ elem:'#searchTime', range:'~', })
 		form.render();
@@ -121,7 +123,7 @@ layui.extend({
 		layui.use('echarts',function(){	//页面渲染结束后再进行echarts加载。
 			echarts = layui.echarts;
 		});  
-		myutil.getData({
+		myutil.getDataSync({
 			url: myutil.config.ctx+'/basedata/list?type=orgName',
 			success:function(d){ 
 				var html = '';
@@ -147,11 +149,14 @@ layui.extend({
 				page:{curr:1},
 			})
 		})
-		if(inventory.type==3){
-			myutil.getData({ 
+		if(record.type==3){
+			myutil.getDataSync({ 
 				url: myutil.config.ctx+'/basedata/list?type=singleMealConsumption',
 				success:function(d){
 					allSingleMealConsumption = d;
+					layui.each(d,function(index,item){
+						allSingleMealConsumptionName.push(item.name);
+					})
 				}
 			});
 		}
@@ -252,20 +257,33 @@ layui.extend({
 				laydate.render({ elem:'#firstTime', value: lastMonth, type:'month', });
 				laydate.render({ elem:'#secondTime', value: thisMonth, type:'month', });
 				renderEchart(thisMonth,lastMonth);
-				
 				form.on('submit(comparyBtn)',function(obj){
 					renderEchart($('#firstTime').val(),$('#secondTime').val())
 				})
-				
 				function renderEchart(t1,t2){
-					var d1 = getDetailData(t1);
-					var d2 = getDetailData(t2);
+					var getData1 = getDetailData(t1);
+					var getData2 = getDetailData(t2);
+					var d1 = {
+						data: getData1.data,
+						time: t1,
+						sum: getData2.sum,
+					};
+					var d2 = {
+						data: getData2.data,
+						time: t2,
+						sum: getData1.sum,
+					};
+					$('#sumTd').html([
+						'&nbsp;&nbsp;',
+						d1.time+'花费:'+d1.sum+'元',
+						'&nbsp;&nbsp;&nbsp;&nbsp;',
+						d2.time+'花费:'+d2.sum+'元',
+					].join(' '));
 					var comparyDiv = echarts.init(document.getElementById('comparyDiv'));
-					return
 					comparyDiv.setOption({
 						title:{ text:'食材费用月份对比图', },
 					    tooltip:{  trigger: 'axis', },	
-					    legend: {  data:['年龄','男','女']  },
+					    legend: {  data:[d1.time,d2.time]  },
 					    toolbox: {	
 					        show: true,
 					        feature: {
@@ -281,23 +299,23 @@ layui.extend({
 					    xAxis: {
 					        type: 'category',
 					        boundaryGap: false,
-					        data: [],
+					        data: allSingleMealConsumptionName,
 					    },
 					    yAxis: {
 					        type: 'value',
 					        axisLabel: {
-					            formatter: '{value} /'
+					            formatter: '{value} /元'
 					        }
 					    },
 					    series: [
 					    	{
-					    		name:'男',
-						        data: [],
+					    		name: d1.time,
+						        data: d1.data,
 						        type: 'line',
 					    	},
 					    	{
-					    		name:'女',
-						        data: [],
+					    		name: d2.time,
+						        data: d2.data,
 						        type: 'line',
 					    	},
 					    ]
@@ -308,6 +326,7 @@ layui.extend({
 	}
 	function getDetailData(t){
 		var data =  [];
+		var obj = {};
 		myutil.getDataSync({
 			url: myutil.config.ctx+'/personnel/ingredientsStatisticalInventoryDetail',
 			data:{
@@ -315,13 +334,20 @@ layui.extend({
 				orderTimeBegin: t+'-01 00:00:00',
 			},
 			success:function(d){
-				allSingleMealConsumption
-				
-				
-				data = [];
+				obj.sum = d.sum;
+				d = d.data;
+				layui.each(allSingleMealConsumption,function(ind,item){
+					layui.each(d,function(index2,itemGetData){
+						if(item.id == itemGetData.id){
+							data.push(itemGetData.sumCost);
+							return;
+						}
+					})
+				})
 			}
 		})
-		return data;
+		obj.data = data;
+		return obj;
 	}
 	exports('record',record);
 })
