@@ -230,7 +230,7 @@ layui.config({
 			       { title:'领取模式',   field:'scatteredOutbound_orderMaterial_receiveMode_name',  },
 			       { title:'领取人',   field:'name', templet: getName(),   },
 			       { title:'任务数量',   field:'processNumber', 	},
-			       { title:'领取用量',   field:'dosage',	},
+			       { title:'耗料用量',   field:'dosage',	},
 			       { title:'备注',   field:'remark',	},
 			       { title:'是否外发',   field:'outsource', transData:{data:['否','是']}	},
 			       { title:'是否审核',   field:'audit', transData:{data:['否','是']}	},
