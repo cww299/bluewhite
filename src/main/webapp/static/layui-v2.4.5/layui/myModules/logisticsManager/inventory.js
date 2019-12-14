@@ -38,81 +38,99 @@ layui.extend({
 	`;
 	var INPUT_TPL = `
 	<div style="text-align:center;">
-		<table class="layui-form" style="margin:30px auto;">
-			<tr>
-				<td>日期：</td>
-				<td>&nbsp;&nbsp;</td>
-				<td><input type="text" name="time" class="layui-input" id="addInputTime"></td>
-			</tr>
-			<tr>
-				<td>数量：</td>
-				<td>&nbsp;&nbsp;</td>
-				<td><input type="text" name="number" lay-verify="number" class="layui-input" id="inputTime"></td>
-			</tr>
-			<tr>
-				<td>备注</td>
-				<td>&nbsp;&nbsp;</td>
-				<td><input type="text" name="remark" class="layui-input">
-					<input type="hidden" name="flag" value="1">
-					<span lay-submit lay-filter="addInputBtn" id="addInputBtn" style="display:none;">1</span></td>
-			</tr>
-		</table>
+		<div class="layui-form layui-form-pane" style="padding:10px;">
+		  <div class="layui-form-item" pane>
+		    <label class="layui-form-label">日期</label>
+		    <div class="layui-input-block">
+		      <input type="text" name="time" class="layui-input" id="addInputTime">
+		    </div>
+		  </div>
+		  <div class="layui-form-item" pane>
+		    <label class="layui-form-label">数量</label>
+		    <div class="layui-input-block">
+		      <input type="number" name="number" lay-verify="number" class="layui-input" id="inputTime">
+		    </div>
+		  </div>
+		  <div class="layui-form-item" pane style="display:none;">
+		    <label class="layui-form-label">供应商</label>
+		    <div class="layui-input-block">
+		      <select  name="customerId" id="supplierIdSelcte" lay-search></select>
+		    </div>
+		  </div>
+		  <div class="layui-form-item" pane>
+		    <label class="layui-form-label">备注</label>
+		    <div class="layui-input-block">
+		      <input type="text" name="remark" class="layui-input">
+		    </div>
+		  </div>
+		  <p style="display:none;">
+		  	<input type="hidden" name="flag" value="1">
+			<span lay-submit lay-filter="addInputBtn" id="addInputBtn" style="display:none;">1</span>
+		  </p>
+		</div>
 	</div>
 	`;
 	var OUT_TPL = `
 	<div style="text-align:center;">
-		<table class="layui-form" style="margin:30px auto;">
-			<tr>
-				<td>日期：</td>
-				<td>&nbsp;&nbsp;</td>
-				<td><input type="text" name="time" class="layui-input" id="addOutTime"></td>
-			</tr>
-			<tr>
-				<td>数量：</td>
-				<td>&nbsp;&nbsp;</td>
-				<td><input type="text" name="number" lay-verify="number" class="layui-input"></td>
-			</tr>
-			<tr>
-				<td>部门：</td>
-				<td>&nbsp;&nbsp;</td>
-				<td><select  name="orgNameId" id="addOrg" lay-search></select></td>
-			</tr>
-			<tr>
-				<td>领取人：</td>
-				<td>&nbsp;&nbsp;</td>
-				<td><select  name="userId" id="addUser" lay-search></select></td>
-			</tr>
-			<tr>
-				<td>用餐类型：</td>
-				<td>&nbsp;&nbsp;</td>
-				<td><select  name="mealType">
+		<div class="layui-form layui-form-pane" style="padding:10px;">
+		  <div class="layui-form-item" pane>
+		    <label class="layui-form-label">日期</label>
+		    <div class="layui-input-block">
+		      <input type="text" name="time" class="layui-input" id="addOutTime">
+		    </div>
+		  </div>
+		  <div class="layui-form-item" pane>
+		    <label class="layui-form-label">数量</label>
+		    <div class="layui-input-block">
+		      <input type="number" name="number" lay-verify="number" class="layui-input">
+		    </div>
+		  </div>
+		  <div class="layui-form-item" pane>
+		    <label class="layui-form-label">部门</label>
+		    <div class="layui-input-block">
+		      <select  name="orgNameId" id="addOrg" lay-search></select>
+		    </div>
+		  </div>
+		  <div class="layui-form-item" pane>
+		    <label class="layui-form-label">领取人</label>
+		    <div class="layui-input-block">
+		      <select  name="userId" id="addUser" lay-search></select>
+		    </div>
+		  </div>
+		  <div class="layui-form-item" pane>
+		    <label class="layui-form-label">用餐类型</label>
+		    <div class="layui-input-block">
+		      <select  name="mealType" id="mealType">
 						<option value="1">早餐</option>
 						<option value="2">午餐</option>
 						<option value="3">晚餐</option>
 						<option value="4">夜宵</option>
 						<option value="5">早午晚餐</option>
 						<option value="6">午晚餐</option>
-					</select></td>
-			</tr>
-			<tr>
-				<td>备注：</td>
-				<td>&nbsp;&nbsp;</td>
-				<td><input type="text" name="remark" class="layui-input">
-					<input type="hidden" name="flag" value="0">
-					<span lay-submit lay-filter="addOutBtn" id="addOutBtn" style="display:none;">1</span></td>
-			</tr>
-		</table>
+					</select>
+		    </div>
+		  </div>
+		  <div class="layui-form-item" pane>
+		    <label class="layui-form-label">备注</label>
+		    <div class="layui-input-block">
+		      <input type="text" name="remark" class="layui-input">
+			  <input type="hidden" name="flag" value="0">
+			  <span lay-submit lay-filter="addOutBtn" id="addOutBtn" style="display:none;">1</span>
+		    </div>
+		  </div>
+		</div>
 	</div>
 	`
 	var inventory = {
-			type: 1,  //默认食材
+		type: 1,  //默认食材
 	};
 	
 	inventory.render = function(opt){
 		$(opt.elem || '#app').html(TPL_MAIN);
 		laydate.render({ elem:'#searchTime', range:'~', })
 		form.render();
-		var orgNameSelectHtml = '<option value="">请选择</option>', userSelectHtml = '<option value="">请选择</option>';
+		var orgNameSelectHtml = '<option value="">请选择</option>', userSelectHtml = '<option value="">请选择</option>',
+			allCustomerSelectHtml = '<option value="">请选择</option>';
 		var unitData = myutil.getDataSync({ url: myutil.config.ctx+'/basedata/list?type=officeUnit' });
 		mytable.render({
 			elem:'#tableData',
@@ -159,12 +177,17 @@ layui.extend({
 					var trData = table.cache['tableData'][index];
 					var win = layer.open({
 						type:1,
-						area:['30%','40%'],
+						area:['30%',inventory.type==3?'350px':'300px'],
+						offset:'100px',
 						btnAlign:'c',
 						btn:['确定',"取消"],
 						title: trData.name,
 						content: INPUT_TPL,
 						success:function(){
+							if(inventory.type===3){
+								$('#supplierIdSelcte').closest('div.layui-form-item').show();
+								$('#supplierIdSelcte').html(allCustomerSelectHtml);
+							}
 							laydate.render({ elem:'#addInputTime',value:myutil.getSubDay(0,'yyyy-MM-dd'), })
 							form.on('submit(addInputBtn)',function(obj){
 								obj.field.officeSuppliesId = trData.id;
@@ -190,7 +213,8 @@ layui.extend({
 					var trData = table.cache['tableData'][index];
 					var win = layer.open({
 						type:1,
-						area:['30%','50%'],
+						offset:'100px',
+						area:['30%','400px'],
 						btn:['确定',"取消"],
 						btnAlign:'c',
 						title: trData.name,
@@ -198,10 +222,10 @@ layui.extend({
 						success:function(){
 							laydate.render({ elem:'#addOutTime', value:myutil.getSubDay(0,'yyyy-MM-dd'), });
 							if(inventory.type===3){
-								$('#addUser').closest('tr').hide();
+								$('#addUser').closest('div.layui-form-item').hide();
 							}
 							else{
-								$('#mealType').closest('tr').hide();
+								$('#mealType').closest('div.layui-form-item').hide();
 								$('#addUser').html(userSelectHtml);
 							}
 							$('#addOrg').html(orgNameSelectHtml);
@@ -231,6 +255,15 @@ layui.extend({
 		if(inventory.type===3){
 			orgNameSelectHtml += '<option value="1">总经办</option>';
 			userSelectHtml = '';
+			allCustomerSelectHtml = '';
+			myutil.getData({
+				url: myutil.config.ctx+'/inventory/onlineCustomerPage?type=6',
+				success:function(d){ 
+					for(var i=0,len=d.length;i<len;i++){
+						allCustomerSelectHtml += '<option value="'+d[i].id+'">'+d[i].name+'</option>';
+					}
+				},
+			})
 		}else{
 			myutil.getData({
 				url: myutil.config.ctx+'/basedata/list?type=orgName',
