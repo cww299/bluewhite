@@ -202,4 +202,29 @@ public class InventoryDetailServiceImpl extends BaseServiceImpl<InventoryDetail,
 		return mapList;
 	}
 
+	@Override
+	public List<Map<String, Object>> ingredientsStatisticalInventoryDetail(InventoryDetail onventoryDetail) {
+		Map<String, Object> sumMap = new HashMap<>();
+		List<Map<String, Object>> mapList = new ArrayList<>();
+		List<InventoryDetail> onventoryDetailList = dao.findByFlagAndTimeBetween(0, onventoryDetail.getOrderTimeBegin(),
+				onventoryDetail.getOrderTimeEnd());
+		double sumCostList = onventoryDetailList.stream().filter(
+				InventoryDetail -> InventoryDetail.getOfficeSupplies().getType().equals(onventoryDetail.getType()))
+				.mapToDouble(InventoryDetail::getOutboundCost).sum();
+		// 查询出所有的食材类型
+		List<BaseData> baseDatas = baseDataService.getBaseDataTreeByType("singleMealConsumption");
+		baseDatas.forEach(b->{
+			Map<String, Object> map = new HashMap<>();
+			double sumCost = onventoryDetailList.stream().filter(
+					InventoryDetail->InventoryDetail.getOfficeSupplies().getSingleMealConsumptionId().equals(b.getId()))
+					.mapToDouble(InventoryDetail::getOutboundCost).sum();
+			map.put("name",b.getName());
+			map.put("sumCost", NumUtils.round(sumCost, 2));
+			mapList.add(map);
+		});
+		sumMap.put("data",mapList);
+		sumMap.put("sum", sumCostList);
+		return mapList;
+	}
+
 }
