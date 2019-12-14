@@ -132,6 +132,9 @@ layui.extend({
 		var orgNameSelectHtml = '<option value="">请选择</option>', userSelectHtml = '<option value="">请选择</option>',
 			allCustomerSelectHtml = '<option value="">请选择</option>';
 		var unitData = myutil.getDataSync({ url: myutil.config.ctx+'/basedata/list?type=officeUnit' });
+		var allSingleMealConsumption =  [];
+		if(inventory.type==3)
+			allSingleMealConsumption =myutil.getDataSync({ url: myutil.config.ctx+'/basedata/list?type=singleMealConsumption' });
 		mytable.render({
 			elem:'#tableData',
 			url: myutil.config.ctx+'/personnel/getOfficeSupplies?type='+inventory.type,
@@ -140,6 +143,8 @@ layui.extend({
 					type: inventory.type,
 					createdAt:myutil.getSubDay(0,'yyyy-MM-dd')+' 00:00:00',
 					location:'',name:'',price:'',inventoryNumber:'',libraryValue:'',
+					unitId: unitData[0].id,
+					singleMealConsumptionId: allSingleMealConsumption[0].id || "",
 				},
 				addTempAfter:function(trElem){
 					var timeElem = $(trElem).find('td[data-field="createdAt"]').find('div')[0];
@@ -158,19 +163,30 @@ layui.extend({
 			autoUpdate:{
 				saveUrl:'/personnel/addOfficeSupplies',
 				deleUrl:'/product/deleteOfficeSupplies',
-				field:{unit_id:'unitId', },
+				field:{unit_id:'unitId',singleMealConsumption_id:'singleMealConsumptionId', },
 			},
-			cols:[[
+			cols:[
+				(function(){
+					var cols = [
 					{ type: 'checkbox', align: 'center', fixed: 'left',},
 					{ field: "createdAt", title: "时间", type:'date',},
 					{ field: "location", title: "仓位", filter:true, edit: true, },
 					{ field: "name", title: "物品名", edit: true, },
 					{ field: "unit_id", title: "单位", type:'select', select:{data:unitData,}, },
-					{ field: "price", title: "单价", edit: true, },
+			       ];
+					if(inventory.type===3){
+						cols.push({
+							field: "singleMealConsumption_id", title: "材料分类",  edit: true, 
+							select:{ data: allSingleMealConsumption, },
+						})
+					}
+					var c = [{ field: "price", title: "单价", edit: true, },
 					{ field: "inventoryNumber", title: "库存数量", edit: false, },
 					{ field: "libraryValue", title: "库值", edit: false, },
-					{ field: "", title: "操作", edit: false, templet:getTpl(), },
-			       ]],
+					{ field: "", title: "操作", edit: false, templet:getTpl(), },];
+					return cols.concat(c);
+				})(),
+			],
 			done:function(){
 				$('.inputBtn').unbind().on('click',function(obj){
 					var index = $(obj.target).closest('tr').data('index');
