@@ -80,6 +80,7 @@ layui.extend({
 	};
 	
 	record.render = function(opt){
+		var allSingleMealConsumption =  [];
 		$(opt.elem || '#app').html(TPL_MAIN);
 		laydate.render({ elem:'#searchTime', range:'~', })
 		form.render();
@@ -131,7 +132,6 @@ layui.extend({
 				form.render();
 			},
 		})
-		
 		form.on('submit(search)',function(obj){
 			var t = $('#searchTime').val();
 			if(t!=''){
@@ -147,6 +147,14 @@ layui.extend({
 				page:{curr:1},
 			})
 		})
+		if(inventory.type==3){
+			myutil.getData({ 
+				url: myutil.config.ctx+'/basedata/list?type=singleMealConsumption',
+				success:function(d){
+					allSingleMealConsumption = d;
+				}
+			});
+		}
 	}
 	
 	function partPrice(){
@@ -299,13 +307,21 @@ layui.extend({
 		})
 	}
 	function getDetailData(t){
-		return myutil.getDataSync({
+		var data =  [];
+		myutil.getDataSync({
 			url: myutil.config.ctx+'/personnel/ingredientsStatisticalInventoryDetail',
 			data:{
 				type:3,
 				orderTimeBegin: t+'-01 00:00:00',
 			},
+			success:function(d){
+				allSingleMealConsumption
+				
+				
+				data = [];
+			}
 		})
+		return data;
 	}
 	exports('record',record);
 })
