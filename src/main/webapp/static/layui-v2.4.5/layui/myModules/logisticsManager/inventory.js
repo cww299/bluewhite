@@ -144,7 +144,7 @@ layui.extend({
 					createdAt:myutil.getSubDay(0,'yyyy-MM-dd')+' 00:00:00',
 					location:'',name:'',price:'',inventoryNumber:'',libraryValue:'',
 					unitId: unitData[0].id,
-					singleMealConsumptionId: allSingleMealConsumption[0].id || "",
+					singleMealConsumptionId: allSingleMealConsumption[0]?allSingleMealConsumption[0].id : "",
 				},
 				addTempAfter:function(trElem){
 					var timeElem = $(trElem).find('td[data-field="createdAt"]').find('div')[0];
