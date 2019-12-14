@@ -43,7 +43,8 @@ layui.define(['jquery','layer','form','table'],function(exports){
 					r.message && (msg = r.message);
 					callback && callback();
 					options.success && options.success(r);
-					myutil.smsg(msg);
+					if(!options.closeMsg)
+						myutil.smsg(msg);
 				}else{
 					msg = '失败';
 					r.message && (msg = r.message);

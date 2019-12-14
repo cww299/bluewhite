@@ -420,6 +420,7 @@ layui.extend({
 								myutil.saveAjax({
 									url: opt.autoUpdate.saveUrl,
 									data: data[i],
+									closeMsg: true,
 									success: function(){
 										success++;
 										if(success==data.length){
