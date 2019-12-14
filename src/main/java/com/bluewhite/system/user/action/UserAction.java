@@ -8,6 +8,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+import javax.servlet.http.HttpServletRequest;
+
 import org.apache.shiro.crypto.hash.SimpleHash;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.propertyeditors.CustomDateEditor;
@@ -46,6 +48,7 @@ import com.bluewhite.system.user.entity.TemporaryUser;
 import com.bluewhite.system.user.entity.User;
 import com.bluewhite.system.user.entity.UserContract;
 import com.bluewhite.system.user.service.TemporaryUserService;
+import com.bluewhite.system.user.service.UserContractService;
 import com.bluewhite.system.user.service.UserService;
 
 @Controller
@@ -64,7 +67,8 @@ public class UserAction {
 	private TemporaryUserService temporaryUserService;
 	@Autowired
 	private TemporarilyDao temporarilyDao;
-
+	@Autowired
+	private UserContractService userContractService;
 	private ClearCascadeJSON clearCascadeJSON;
 	{
 		clearCascadeJSON = ClearCascadeJSON.get()
@@ -75,7 +79,7 @@ public class UserAction {
 						"socialSecurity", "bankCard1", "bankCard2", "agreement", "safe", "commitment", "promise",
 						"contract", "contractDate", "contractDateEnd", "frequency", "quitDate", "quit", "reason",
 						"train", "remark", "userContract", "commitments", "agreementId", "company", "age", "type",
-						"ascriptionBank1", "sale", "roles", "turnWorkTime", "quitTypeId", "quitType")
+						"ascriptionBank1", "sale", "roles", "turnWorkTime", "quitTypeId", "quitType","lotionNumber")
 				.addRetainTerm(Group.class, "id", "name", "type", "price")
 				.addRetainTerm(Role.class, "name", "role", "description", "id")
 				.addRetainTerm(BaseData.class, "id", "name", "type");
@@ -92,7 +96,8 @@ public class UserAction {
 	{
 		clearCascadeJSONUserContract = ClearCascadeJSON.get().addRetainTerm(UserContract.class, "id", "number",
 				"username", "archives", "pic", "idCard", "bankCard", "physical", "qualification", "formalSchooling",
-				"agreement", "secrecyAgreement", "contract", "remark", "quit");
+				"agreement", "secrecyAgreement", "contract", "remark", "quit","user")
+				.addRetainTerm(User.class, "id","userName","lotionNumber");
 	}
 
 	/**
@@ -581,5 +586,59 @@ public class UserAction {
 		binder.registerCustomEditor(java.util.Date.class, null, new CustomDateEditor(dateTimeFormat, true));
 		binder.registerCustomEditor(byte[].class, new ByteArrayMultipartFileEditor());
 	}
-
+	
+	/**
+	 * 查看员工档案列表 
+	 * 
+	 * @param request
+	 * @param UserContract
+	 * @return
+	 */
+	@RequestMapping(value = "/userContractPages", method = RequestMethod.GET)
+	@ResponseBody
+	public CommonResponse userContractPages(UserContract contract, PageParameter page) {
+		CommonResponse cr = new CommonResponse();
+		cr.setData(clearCascadeJSONUserContract.format(userContractService.findPage(contract, page)).toJSON());
+		return cr;
+	}
+	
+	/**
+	 * 档案新增修改
+	 * 
+	 * @param request 请求
+	 * @return cr
+	 * @throws Exception
+	 */
+	@RequestMapping(value = "/addUserContract", method = RequestMethod.POST)
+	@ResponseBody
+	public CommonResponse addPlan(HttpServletRequest request, UserContract userContract) {
+		CommonResponse cr = new CommonResponse();
+		if(userContract.getId() != null){
+			UserContract userContract2 = userContractService.findOne(userContract.getId());
+				BeanCopyUtils.copyNullProperties(userContract2, userContract);
+				userContract.setCreatedAt(userContract2.getCreatedAt());
+			cr.setMessage("修改成功");
+		}else{
+			cr.setMessage("添加成功");
+		}
+		userContractService.addUserContract(userContract);
+		return cr;
+	}
+	
+	/**
+	 * 档案删除
+	 * 
+	 * @param request 请求
+	 * @return cr
+	 * @throws Exception
+	 */
+	@RequestMapping(value = "/deleteUserContract", method = RequestMethod.GET)
+	@ResponseBody
+	public CommonResponse deletePlan(HttpServletRequest request, String[] ids) {
+		CommonResponse cr = new CommonResponse();
+		int count= userContractService.deletes(ids);
+		cr.setMessage("成功删除"+count+"条");
+		return cr;
+	}
+	
 }
