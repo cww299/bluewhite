@@ -75,8 +75,6 @@ public class BacthAction {
 	
 	
 	
-	
-	
 
 	/**
 	 * 给产品添加批次（修改）

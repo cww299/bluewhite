@@ -17,6 +17,7 @@ import com.bluewhite.common.ClearCascadeJSON;
 import com.bluewhite.common.DateTimePattern;
 import com.bluewhite.common.entity.CommonResponse;
 import com.bluewhite.common.entity.PageParameter;
+import com.bluewhite.ledger.entity.Customer;
 import com.bluewhite.personnel.officeshare.entity.InventoryDetail;
 import com.bluewhite.personnel.officeshare.entity.OfficeSupplies;
 import com.bluewhite.personnel.officeshare.service.InventoryDetailService;
@@ -37,7 +38,8 @@ public class OfficeSuppliesAction {
 	{
 		clearCascadeJSON = ClearCascadeJSON.get()
 				.addRetainTerm(OfficeSupplies.class,"id","number", "name", "price", "unit"
-						, "inventoryNumber","location","libraryValue","createdAt")
+						, "inventoryNumber","location","libraryValue","createdAt","customer")
+				.addRetainTerm(Customer.class, "id", "name")
 				.addRetainTerm(BaseData.class, "id", "name");
 	}
 	
@@ -45,7 +47,7 @@ public class OfficeSuppliesAction {
 	{
 		clearCascadeJSONInventoryDetail = ClearCascadeJSON.get()
 				.addRetainTerm(InventoryDetail.class,"id","officeSupplies", "flag", "orgName", "user"
-						, "time","number","remark","outboundCost")
+						, "time","number","remark","outboundCost","mealType")
 				.addRetainTerm(OfficeSupplies.class, "id", "name","price")
 				.addRetainTerm(BaseData.class, "id", "name")
 				.addRetainTerm(User.class, "id", "userName");

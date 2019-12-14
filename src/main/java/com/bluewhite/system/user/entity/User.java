@@ -30,9 +30,6 @@ import com.bluewhite.production.group.entity.Group;
  */
 @Entity
 @Table(name = "sys_user")
-// @Inheritance 的 strategy 属性是指定继承关系的生成策略，JOINED
-// 是将父类、子类分别存放在不同的表中，并且建立相应的外键，以确定相互之间的关系。
-@Inheritance(strategy = InheritanceType.JOINED)
 public class User extends BaseEntity<Long> {
 	/**
 	 * 系统管理员标识
@@ -362,19 +359,6 @@ public class User extends BaseEntity<Long> {
 	private Set<Role> roles = new HashSet<Role>();
 
 	/**
-	 * 合同id
-	 */
-	@Column(name = "user_contract_id")
-	private Long userContractId;
-
-	/**
-	 * 合同位置实体
-	 */
-	@ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
-	@JoinColumn(name = "user_contract_id", referencedColumnName = "id", insertable = false, updatable = false)
-	private UserContract userContract;
-
-	/**
 	 * 到岗小时预计收入
 	 */
 	@Column(name = "price")
@@ -408,8 +392,8 @@ public class User extends BaseEntity<Long> {
 	 * 
 	 * 位置编号
 	 */
-	@Transient
-	private Integer lotionNumber;
+	@Column(name = "lotion_number")
+	private String lotionNumber;
 
 	/**
 	 * 权限
@@ -450,12 +434,6 @@ public class User extends BaseEntity<Long> {
 	private Date orderTimeEnd;
 
 	/**
-	 * 按位置编号排序
-	 */
-	@Transient
-	private Integer numberSort;
-
-	/**
 	 * 出勤时长
 	 */
 	@Transient
@@ -468,6 +446,17 @@ public class User extends BaseEntity<Long> {
 	private Integer isType;
 	
 	
+	
+
+
+
+	public String getLotionNumber() {
+		return lotionNumber;
+	}
+
+	public void setLotionNumber(String lotionNumber) {
+		this.lotionNumber = lotionNumber;
+	}
 
 	public Long getQuitTypeId() {
 		return quitTypeId;
@@ -501,22 +490,6 @@ public class User extends BaseEntity<Long> {
 		this.turnWorkTime = turnWorkTime;
 	}
 
-	public Integer getNumberSort() {
-		return numberSort;
-	}
-
-	public void setNumberSort(Integer numberSort) {
-		this.numberSort = numberSort;
-	}
-
-	public Long getUserContractId() {
-		return userContractId;
-	}
-
-	public void setUserContractId(Long userContractId) {
-		this.userContractId = userContractId;
-	}
-
 	public String getAscriptionBank1() {
 		return ascriptionBank1;
 	}
@@ -541,13 +514,6 @@ public class User extends BaseEntity<Long> {
 		this.orderTimeEnd = orderTimeEnd;
 	}
 
-	public Integer getLotionNumber() {
-		return lotionNumber;
-	}
-
-	public void setLotionNumber(Integer lotionNumber) {
-		this.lotionNumber = lotionNumber;
-	}
 
 	public Integer getRetire() {
 		return retire;
@@ -595,14 +561,6 @@ public class User extends BaseEntity<Long> {
 
 	public void setIdCardEnd(Date idCardEnd) {
 		this.idCardEnd = idCardEnd;
-	}
-
-	public UserContract getUserContract() {
-		return userContract;
-	}
-
-	public void setUserContract(UserContract userContract) {
-		this.userContract = userContract;
 	}
 
 	public Integer getSafe() {
