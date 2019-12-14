@@ -225,6 +225,7 @@ public class InventoryDetailServiceImpl extends BaseServiceImpl<InventoryDetail,
 							&& InventoryDetail.getOfficeSupplies().getType().equals(onventoryDetail.getType())
 							&& b.getId().equals(InventoryDetail.getOfficeSupplies().getSingleMealConsumptionId()))
 					.mapToDouble(InventoryDetail::getOutboundCost).sum();
+			map.put("id", b.getId());
 			map.put("name", b.getName());
 			map.put("sumCost", NumUtils.round(sumCost, 2));
 			mapList.add(map);
