@@ -61,6 +61,19 @@ layui.extend({
 	</div>
 	<div id="pieChart" style="width:50%;float:left;height:100%;"></div>
 	`;
+	var CPMPARE_TPL = `
+		<div  style="padding:10px;">
+			<table class="layui-form searchTable">
+				<tr>
+					<td>输入对比月份：</td>
+					<td><input type="text" class="layui-input" id="firstTime" lay-verify="required">
+					<td><input type="text" class="layui-input" id="secondTime" lay-verify="required">
+					<td><span class="layui-btn" lay-submit lay-filter="comparyBtn">搜索</span></td>
+				</tr>
+			</table>
+		</div>
+		<div id="comparyDiv" style="width:100%;float:left;height:100%;"></div>
+	`;
 	
 	var record = {
 			type: 1,  //默认食材
@@ -77,86 +90,9 @@ layui.extend({
 				btn:[4],
 				otherBtn:function(obj){
 					if(obj.event=="partPrice"){
-						layer.open({
-							type:1,
-							title:'部门分摊',
-							area:['90%','70%'],
-							shadeClose:true,
-							content: PART_TPL,
-							success:function(){
-								var firstDay = myutil.getSubDay(0,'yyyy-MM-01'),
-									nowDay = myutil.getSubDay(0,'yyyy-MM-dd');
-								laydate.render({
-									elem:'#partTime',range:'~', value: firstDay+' ~ '+nowDay,
-								})
-								mytable.renderNoPage({
-									elem:'#partTable',
-									url: myutil.config.ctx+'/personnel/statisticalInventoryDetail?type='+record.type,
-									where:{
-										orderTimeBegin: firstDay+' 00:00:00',
-										orderTimeEnd: nowDay+' 23:59:59',
-									},
-									totalRow:['sumCost','accounted'],
-									height:'450',
-									cols:[[
-									       { field:'orgName', title:'部门', },
-									       { field:'sumCost', title:'部门费用', },
-									       { field:'accounted', title:'占比', },
-									       ]],
-									done:function(obj){
-										var data = obj.data,allOrg = [],allData = [];
-										var pieCharts = echarts.init(document.getElementById('pieChart'));
-										for(var i=0,len=data.length;i<len;i++){
-											allOrg.push(data[i].orgName);
-											allData.push({
-												name: data[i].orgName,
-												value: data[i].sumCost,
-											})
-										}
-										pieCharts.setOption({
-											title: {		
-								                text: '部门费用占比饼状图', x:'center',
-								            },
-								            legend: {		
-										        orient: 'vertical', x: 'left',
-										        data: allOrg,
-										    },
-										    toolbox: {
-									            show: true, left: 'right', top: 'top',
-									            feature: {
-									                restore: {},
-									                saveAsImage: {},
-									            }
-									        },
-								            tooltip: {
-								            	trigger: 'item',
-								        		formatter: "{a} <br/>{b} : {c}/元 (占比：{d}%)",  
-								            }, 
-										    series: [
-										        {
-										            name: '部门费用占比',
-										            selectedMode: 'single', 
-										            type: 'pie',
-										            data: allData,
-										        }
-										    ]
-										})
-									}
-								})
-								$('#searchBtn').unbind().on('click',function(){
-									var val = $('#partTime').val();
-									if(val=='')
-										return myutil.emsg('请输入搜索时间');
-									val = val.split(' ~ ');
-									table.reload('partTable',{
-										where:{
-											orderTimeBegin: val[0].trim()+' 00:00:00',
-											orderTimeEnd: val[1].trim()+' 23:59:59',
-										},
-									})
-								})
-							}
-						})
+						partPrice();
+					}else if(obj.event=='comparyPrice'){
+						comparyPrice();
 					}
 				},
 			},
@@ -166,7 +102,8 @@ layui.extend({
 			ifNull:'--',
 			totalRow:['number','outboundCost'],
 			limits:[10,50,100,200,500,1000],
-			toolbar: record.type==3?'':'<span class="layui-btn layui-btn-sm" lay-event="partPrice">部门分摊费用</span>',
+			toolbar: record.type==3?'<span class="layui-btn layui-btn-sm" lay-event="comparyPrice">费用对比</span>':
+					'<span class="layui-btn layui-btn-sm" lay-event="partPrice">部门分摊费用</span>',
 			cols:[[
 			       { type: 'checkbox', fixed: 'left', },
 			       { field: "time", title: "时间", },
@@ -211,6 +148,164 @@ layui.extend({
 			})
 		})
 	}
-
+	
+	function partPrice(){
+		layer.open({
+			type:1,
+			title:'部门分摊',
+			area:['90%','70%'],
+			shadeClose:true,
+			content: PART_TPL,
+			success:function(){
+				var firstDay = myutil.getSubDay(0,'yyyy-MM-01'),
+					nowDay = myutil.getSubDay(0,'yyyy-MM-dd');
+				laydate.render({
+					elem:'#partTime',range:'~', value: firstDay+' ~ '+nowDay,
+				})
+				mytable.renderNoPage({
+					elem:'#partTable',
+					url: myutil.config.ctx+'/personnel/statisticalInventoryDetail?type='+record.type,
+					where:{
+						orderTimeBegin: firstDay+' 00:00:00',
+						orderTimeEnd: nowDay+' 23:59:59',
+					},
+					totalRow:['sumCost','accounted'],
+					height:'450',
+					cols:[[
+					       { field:'orgName', title:'部门', },
+					       { field:'sumCost', title:'部门费用', },
+					       { field:'accounted', title:'占比', },
+					       ]],
+					done:function(obj){
+						var data = obj.data,allOrg = [],allData = [];
+						var pieCharts = echarts.init(document.getElementById('pieChart'));
+						for(var i=0,len=data.length;i<len;i++){
+							allOrg.push(data[i].orgName);
+							allData.push({
+								name: data[i].orgName,
+								value: data[i].sumCost,
+							})
+						}
+						pieCharts.setOption({
+							title: {		
+				                text: '部门费用占比饼状图', x:'center',
+				            },
+				            legend: {		
+						        orient: 'vertical', x: 'left',
+						        data: allOrg,
+						    },
+						    toolbox: {
+					            show: true, left: 'right', top: 'top',
+					            feature: {
+					                restore: {},
+					                saveAsImage: {},
+					            }
+					        },
+				            tooltip: {
+				            	trigger: 'item',
+				        		formatter: "{a} <br/>{b} : {c}/元 (占比：{d}%)",  
+				            }, 
+						    series: [
+						        {
+						            name: '部门费用占比',
+						            selectedMode: 'single', 
+						            type: 'pie',
+						            data: allData,
+						        }
+						    ]
+						})
+					}
+				})
+				$('#searchBtn').unbind().on('click',function(){
+					var val = $('#partTime').val();
+					if(val=='')
+						return myutil.emsg('请输入搜索时间');
+					val = val.split(' ~ ');
+					table.reload('partTable',{
+						where:{
+							orderTimeBegin: val[0].trim()+' 00:00:00',
+							orderTimeEnd: val[1].trim()+' 23:59:59',
+						},
+					})
+				})
+			}
+		})
+	}
+	function comparyPrice(){
+		layer.open({
+			type:1,
+			title:'费用对比',
+			area:['90%','70%'],
+			shadeClose:true,
+			content: CPMPARE_TPL,
+			success:function(){
+				var thisMonth = myutil.getSubDay(0,'yyyy-MM'),
+					lastMonth = myutil.getLastMonth();
+				laydate.render({ elem:'#firstTime', value: lastMonth, type:'month', });
+				laydate.render({ elem:'#secondTime', value: thisMonth, type:'month', });
+				renderEchart(thisMonth,lastMonth);
+				
+				form.on('submit(comparyBtn)',function(obj){
+					renderEchart($('#firstTime').val(),$('#secondTime').val())
+				})
+				
+				function renderEchart(t1,t2){
+					var d1 = getDetailData(t1);
+					var d2 = getDetailData(t2);
+					var comparyDiv = echarts.init(document.getElementById('comparyDiv'));
+					return
+					comparyDiv.setOption({
+						title:{ text:'食材费用月份对比图', },
+					    tooltip:{  trigger: 'axis', },	
+					    legend: {  data:['年龄','男','女']  },
+					    toolbox: {	
+					        show: true,
+					        feature: {
+					            dataZoom: {
+					                yAxisIndex: 'none'
+					            },
+					            dataView: {readOnly: false},
+					            magicType: {type: ['line', 'bar']},
+					            restore: {},
+					            saveAsImage: {}
+					        }
+					    },
+					    xAxis: {
+					        type: 'category',
+					        boundaryGap: false,
+					        data: [],
+					    },
+					    yAxis: {
+					        type: 'value',
+					        axisLabel: {
+					            formatter: '{value} /'
+					        }
+					    },
+					    series: [
+					    	{
+					    		name:'男',
+						        data: [],
+						        type: 'line',
+					    	},
+					    	{
+					    		name:'女',
+						        data: [],
+						        type: 'line',
+					    	},
+					    ]
+					})
+				}
+			}
+		})
+	}
+	function getDetailData(t){
+		return myutil.getDataSync({
+			url: myutil.config.ctx+'/personnel/ingredientsStatisticalInventoryDetail',
+			data:{
+				type:3,
+				orderTimeBegin: t+'-01 00:00:00',
+			},
+		})
+	}
 	exports('record',record);
 })
