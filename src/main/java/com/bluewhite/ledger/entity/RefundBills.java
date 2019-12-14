@@ -73,6 +73,12 @@ public class RefundBills extends BaseEntity<Long>{
 	private String returnRemark;
 	
 	/**
+	 * 是否审核
+	 */
+	@Column(name = "audit")
+	private Integer audit;
+	
+	/**
 	 * 工序ids
 	 */
 	@Transient
@@ -95,6 +101,14 @@ public class RefundBills extends BaseEntity<Long>{
 	private String orderName;
 	
 	
+
+	public Integer getAudit() {
+		return audit;
+	}
+
+	public void setAudit(Integer audit) {
+		this.audit = audit;
+	}
 
 	public String getOrderName() {
 		return orderName;
