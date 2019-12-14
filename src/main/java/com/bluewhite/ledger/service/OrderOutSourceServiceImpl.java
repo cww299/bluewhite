@@ -93,7 +93,7 @@ public class OrderOutSourceServiceImpl extends BaseServiceImpl<OrderOutSource, L
 						}
 						return false;
 					}).mapToInt(OrderOutSource::getProcessNumber).sum();
-					// 查找该加工单该工序的退货单
+					// 查找该加工单该工序的通过审核的退货单
 					List<Integer> returnNumberList = refundBillsDao.getReturnNumber(orderOutSource.getMaterialRequisitionId(), id);
 					// 退货总数
 					Integer returnNumber = returnNumberList.stream().reduce(Integer::sum).orElse(0);
@@ -113,6 +113,10 @@ public class OrderOutSourceServiceImpl extends BaseServiceImpl<OrderOutSource, L
 		orderOutSource.setOutSourceNumber(outSourceNumber);
 		save(orderOutSource);
 	}
+	
+	
+	
+	
 
 	@Override
 	public PageResult<OrderOutSource> findPages(OrderOutSource param, PageParameter page) {
