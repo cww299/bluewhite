@@ -27,5 +27,11 @@ public interface MaterialOutStorageService  extends BaseCRUDService<MaterialOutS
 	 * @param ids
 	 */
 	public int deleteMaterialOutStorage(String ids);
+	
+	/**
+	 * 领料出库
+	 * @param materialOutStorage
+	 */
+	public void outboundMaterialRequisition(MaterialOutStorage materialOutStorage);
 
 }

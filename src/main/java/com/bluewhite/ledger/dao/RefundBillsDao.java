@@ -17,7 +17,7 @@ public interface RefundBillsDao  extends BaseRepository<RefundBills, Long>{
 	 * @return
 	 * nativeQuery 表示原生sql 支持limit
 	 */
-	@Query(nativeQuery=true,value ="SELECT b.return_number FROM ledger_refundBills_task a , ledger_refund_bills b WHERE b.material_requisition_id = ?1 AND a.task_id= ?2 AND a.audit = 1")
+	@Query(nativeQuery=true,value ="SELECT b.return_number FROM ledger_refundBills_task a , ledger_refund_bills b WHERE b.material_requisition_id = ?1 AND a.task_id= ?2 AND b.audit = 1")
 	List<Integer> getReturnNumber(Long materialRequisitionId,Long taskId);
 	
 	/**

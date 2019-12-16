@@ -22,6 +22,7 @@ import com.bluewhite.system.user.entity.User;
 @Entity
 @Table(name = "ledger_material_put_storage")
 public class MaterialPutStorage extends BaseEntity<Long> {
+	
 	/**
 	 * 编号
 	 */
