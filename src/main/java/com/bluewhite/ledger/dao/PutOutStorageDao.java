@@ -14,5 +14,12 @@ public interface PutOutStorageDao extends BaseRepository<PutOutStorage, Long> {
 	 */
 	List<PutOutStorage> findByPutStorageId(Long putstorageid);
 	
+	/**
+	 * 根据出库单
+	 * @param putstorageid
+	 * @return
+	 */
+	List<PutOutStorage> findByOutStorageId(Long outstorageid);
+	
 	
 }

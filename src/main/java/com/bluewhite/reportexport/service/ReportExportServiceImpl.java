@@ -140,27 +140,7 @@ public class ReportExportServiceImpl implements ReportExportService {
 		entityManager.close();
 	}
 
-	@Override
-	@Transactional
-	public int importUserExcel(List<UserPoi> excelUser) {
-		int count = 0;
-		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
-		if (excelUser.size() > 0) {
-			List<User> userList = new ArrayList<User>();
-			for (UserPoi proPoi : excelUser) {
-		
-				count++;
-			}
-			userDao.save(userList);
-		}
-		return count;
-	}
 
-	@Override
-	public int importImportUserContract(List<UserContract> excelUser) {
-		int count = 0;
-		return count;
-	}
 
 	@Override
 	@Transactional
@@ -235,48 +215,6 @@ public class ReportExportServiceImpl implements ReportExportService {
 	}
 
 	@Override
-	public int importMaterielExcel(List<Materiel> excelMateriel) {
-		int count = 0;
-		for (Materiel materiel : excelMateriel) {
-			Materiel mt = materielDao.findByNumber(materiel.getNumber());
-			if (mt != null) {
-				mt.setName(materiel.getName());
-				mt.setPrice(materiel.getPrice());
-				materielDao.save(mt);
-			} else {
-//				materiel.setType("accessories");
-				materielDao.save(materiel);
-				count++;
-			}
-		}
-		return count;
-	}
-
-	@Override
-	public int importexcelBaseOneExcel(List<BaseOne> excelBaseOne) {
-		for (BaseOne baseOne : excelBaseOne) {
-			baseOne.setType("unit");
-		}
-		baseOneDao.save(excelBaseOne);
-		return excelBaseOne.size();
-	}
-
-	@Override
-	public int importexcelBaseOneTimeExcel(List<BaseOneTime> excelBaseOneTime) {
-		int count = 0;
-		BaseOne baseOne = new BaseOne();
-		baseOne.setName("2楼送棉及叉车卸货");
-		baseOne.setType("endocyst");
-		baseOne = baseOneDao.save(baseOne);
-		for (BaseOneTime bot : excelBaseOneTime) {
-			bot.setBaseOneId(baseOne.getId());
-			count++;
-		}
-		baseOneTimeDao.save(excelBaseOneTime);
-		return count;
-	}
-
-	@Override
 	public int importMachinistProcedureExcel(List<MachinistProcedurePoi> excelProcedure, Long productId, Integer type,
 			Integer flag) {
 		int count = 0;
@@ -344,10 +282,6 @@ public class ReportExportServiceImpl implements ReportExportService {
 		return count;
 	}
 
-	@Override
-	public int importexcelBaseThreeExcel(List<BaseThree> excelBaseThree) {
-		return baseThreeDao.save(excelBaseThree).size();
-	}
 
 	/**
 	 * 财务订单批处理

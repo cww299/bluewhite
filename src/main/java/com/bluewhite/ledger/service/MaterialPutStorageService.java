@@ -6,6 +6,7 @@ import com.bluewhite.base.BaseCRUDService;
 import com.bluewhite.common.entity.PageParameter;
 import com.bluewhite.common.entity.PageResult;
 import com.bluewhite.ledger.entity.MaterialPutStorage;
+import com.bluewhite.ledger.entity.OrderProcurementReturn;
 
 public interface MaterialPutStorageService  extends BaseCRUDService<MaterialPutStorage, Long>{
 	
@@ -58,6 +59,17 @@ public interface MaterialPutStorageService  extends BaseCRUDService<MaterialPutS
 	 */
 	public List<MaterialPutStorage> findByOrderProcurementIdAndInspection(Long id, int i);
 
-	
+	/**
+	 * 根据面料和库存查看实际入库单和生产计划单 （库存详情）
+	 * @param warehouseTypeId
+	 * @param productId
+	 */
+	public List<MaterialPutStorage>  detailsInventory(Long warehouseTypeId, Long materielId);
+
+	/**
+	 * 新增物料退货单
+	 * @param materialPutOutStorage
+	 */
+	public void saveMaterialReturn(OrderProcurementReturn orderProcurementReturn);
 
 }

@@ -14,13 +14,18 @@ import org.springframework.util.StringUtils;
 import com.bluewhite.base.BaseServiceImpl;
 import com.bluewhite.common.Constants;
 import com.bluewhite.common.ServiceException;
+import com.bluewhite.common.SessionManager;
+import com.bluewhite.common.entity.CurrentUser;
 import com.bluewhite.common.entity.PageParameter;
 import com.bluewhite.common.entity.PageResult;
+import com.bluewhite.common.utils.NumUtils;
+import com.bluewhite.common.utils.RoleUtil;
 import com.bluewhite.common.utils.SalesUtils;
 import com.bluewhite.common.utils.StringUtil;
 import com.bluewhite.ledger.dao.MaterialOutStorageDao;
-import com.bluewhite.ledger.dao.MaterialPutStorageDao;
+import com.bluewhite.ledger.dao.MaterialPutOutStorageDao;
 import com.bluewhite.ledger.entity.MaterialOutStorage;
+import com.bluewhite.ledger.entity.MaterialPutOutStorage;
 import com.bluewhite.ledger.entity.MaterialPutStorage;
 
 @Service
@@ -30,31 +35,15 @@ public class MaterialOutStorageServiceImpl extends BaseServiceImpl<MaterialOutSt
 	@Autowired
 	private MaterialOutStorageDao dao;
 	@Autowired
-	private MaterialPutStorageDao materialPutStorageDao;
+	private MaterialPutStorageService materialPutStorageService;
+	@Autowired
+	private MaterialPutOutStorageDao materialPutOutStorageDao;
 
 	@Override
 	public void saveMaterialOutStorage(MaterialOutStorage materialOutStorage) {
-		if (materialOutStorage.getId() != null) {
-			MaterialOutStorage ot = dao.findOne(materialOutStorage.getId());
-			update(materialOutStorage, ot, "");
-		} else {
-			//新增出库单，入库单有多条
-			if (!StringUtils.isEmpty(materialOutStorage.getMaterialPutOutStorageIds())) {
-				String[] idStrings = materialOutStorage.getMaterialPutOutStorageIds().split(",");
-				if (idStrings.length > 0) {
-					for (String ids : idStrings) {
-						Long id = Long.parseLong(ids);
-						MaterialPutStorage materialPutStorage = materialPutStorageDao.findOne(id);
-						materialOutStorage.getMaterialPutOutStorage().add(materialPutStorage);
-					}
-				}
-				
-			}
-			materialOutStorage.setSerialNumber(Constants.WLCK + StringUtil.getDate() + SalesUtils.get0LeftString((int)(dao.count()+1), 8));
-			save(materialOutStorage);
-			
-			
-		}
+		
+		materialOutStorage.setSerialNumber(Constants.WLCK + StringUtil.getDate() + SalesUtils.get0LeftString((int) (dao.count() + 1), 8));
+		save(materialOutStorage);
 	}
 
 	@Override
@@ -95,13 +84,9 @@ public class MaterialOutStorageServiceImpl extends BaseServiceImpl<MaterialOutSt
 			String[] idStrings = ids.split(",");
 			for (String idString : idStrings) {
 				Long id = Long.parseLong(idString);
-				MaterialOutStorage materialOutStorage = dao.findOne(id);
-				if (materialOutStorage.getMaterialPutOutStorage().size() > 0) {
-					for (MaterialPutStorage m : materialOutStorage.getMaterialPutOutStorage()) {
-						if (m.getOrderProcurement().getArrival() == 1) {
-							throw new ServiceException("第" + (i + 1) + "条出库单的入库采购单已审核全部入库，无法删除");
-						}
-					}
+				List<MaterialPutOutStorage> list = materialPutOutStorageDao.findByMaterialOutStorageId(id);
+				if(list.size()>0){
+					materialPutOutStorageDao.delete(list);
 				}
 				delete(id);
 				i++;
@@ -110,4 +95,34 @@ public class MaterialOutStorageServiceImpl extends BaseServiceImpl<MaterialOutSt
 		return i;
 	}
 
+	@Override
+	public void outboundMaterialRequisition(MaterialOutStorage materialOutStorage) {
+		if(materialOutStorage.getMaterialRequisitionId()==null){
+			throw new ServiceException("领料单不能为空");
+		}
+		CurrentUser cu = SessionManager.getUserSession();
+		Long warehouseTypeDeliveryId = RoleUtil.getWarehouseTypeDelivery(cu.getRole());
+		materialOutStorage.setUserStorageId(cu.getId());
+		materialOutStorage.setOutStatus(1);
+		materialOutStorage.setSerialNumber(Constants.WLCK + StringUtil.getDate() + SalesUtils.get0LeftString((int) (dao.count() + 1), 8));
+		save(materialOutStorage);
+		List<MaterialPutStorage> listMaterialPutStorage = materialPutStorageService.detailsInventory(warehouseTypeDeliveryId,materialOutStorage.getMaterielId());
+		for(MaterialPutStorage m : listMaterialPutStorage){
+			MaterialPutOutStorage materialPutOutStorage = new MaterialPutOutStorage();
+			materialPutOutStorage.setMaterialPutStorageId(m.getId());
+			materialPutOutStorage.setMaterialOutStorageId(materialOutStorage.getId());
+			// 当发货数量小于等于剩余数量时,当前入库单可以满足出库数量，终止循环
+			if(materialOutStorage.getArrivalNumber() <= m.getSurplusNumber()){ 
+				materialPutOutStorage.setNumber(materialOutStorage.getArrivalNumber());
+				materialPutOutStorageDao.save(materialPutOutStorage);
+				break;
+			}
+			// 当发货数量大于剩余数量时,当前入库单数量无法满足出库数量，库存相减后继续循环出库
+			if (materialOutStorage.getArrivalNumber() > m.getSurplusNumber()) {
+				materialPutOutStorage.setNumber(m.getSurplusNumber());
+				materialOutStorage.setArrivalNumber(NumUtils.sub(materialOutStorage.getArrivalNumber(),m.getSurplusNumber()));
+				materialPutOutStorageDao.save(materialPutOutStorage);
+			}
+		}
+	}
 }

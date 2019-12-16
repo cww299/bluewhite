@@ -21,6 +21,7 @@ import com.bluewhite.common.entity.PageParameter;
 import com.bluewhite.ledger.entity.Bill;
 import com.bluewhite.ledger.entity.Customer;
 import com.bluewhite.ledger.entity.MaterialOutStorage;
+import com.bluewhite.ledger.entity.MaterialPutOutStorage;
 import com.bluewhite.ledger.entity.MaterialPutStorage;
 import com.bluewhite.ledger.entity.MaterialRequisition;
 import com.bluewhite.ledger.entity.Mixed;
@@ -29,6 +30,7 @@ import com.bluewhite.ledger.entity.OrderChild;
 import com.bluewhite.ledger.entity.OrderMaterial;
 import com.bluewhite.ledger.entity.OrderOutSource;
 import com.bluewhite.ledger.entity.OrderProcurement;
+import com.bluewhite.ledger.entity.OrderProcurementReturn;
 import com.bluewhite.ledger.entity.OutStorage;
 import com.bluewhite.ledger.entity.Packing;
 import com.bluewhite.ledger.entity.PackingChild;
@@ -759,13 +761,14 @@ public class LedgerAction {
 	@ResponseBody
 	public CommonResponse getProcessNumber(Long  id) {
 		CommonResponse cr = new CommonResponse();
-		orderOutSourceService.getProcessNumber(id);
+		cr.setData(orderOutSourceService.getProcessNumber(id));
 		cr.setMessage("查询成功");
 		return cr;
 	}
 
 	/**
 	 * （生产计划部）新增加工单 1.加工单 2.外发加工单
+	 * 加工单数量等于领料单数量
 	 * 
 	 * @param order
 	 * @return
@@ -825,8 +828,11 @@ public class LedgerAction {
 	}
 
 	/**
-	 * （生产计划部） 审核加工单，审核成功后，仓库可见
-	 * 
+	 * （生产计划部） 审核加工单，
+	 *  审核成功后，仓库可见
+	 *  面辅料仓库（机工领取）
+	 *  皮壳仓库（针工领取）
+	 *  成品仓库
 	 * @param order
 	 * @return
 	 */
@@ -975,13 +981,12 @@ public class LedgerAction {
 	@ResponseBody
 	public CommonResponse materialPutStoragePage(PageParameter page, MaterialPutStorage materialPutStorage) {
 		CommonResponse cr = new CommonResponse();
-		cr.setData(clearCascadeJSONMaterialPutStorage
-				.format(materialPutStorageService.findPages(page, materialPutStorage)).toJSON());
+		cr.setData(clearCascadeJSONMaterialPutStorage.format(materialPutStorageService.findPages(page, materialPutStorage)).toJSON());
 		return cr;
 	}
 
 	/**
-	 * （面辅料仓库）删除入库单
+	 * （面辅料仓库）撤销入库单
 	 * 
 	 * @return
 	 */
@@ -1008,13 +1013,25 @@ public class LedgerAction {
 		cr.setMessage("验货成功");
 		return cr;
 	}
-
+	
 	/**
-	 * 
-	 * （面辅料仓库）审核采购单是否全部到货 （全部到货后，采购部才可以进行耗料分散出库）
+	 * （面辅料仓库）退货单新增
 	 * 
 	 * @param order
 	 * @return
+	 */
+	@RequestMapping(value = "/ledger/inventory/saveMaterialReturn", method = RequestMethod.GET)
+	@ResponseBody
+	public CommonResponse saveMaterialReturn(OrderProcurementReturn orderProcurementReturn) {
+		CommonResponse cr = new CommonResponse();
+		materialPutStorageService.saveMaterialReturn(orderProcurementReturn);
+		cr.setMessage("退货成功");
+		return cr;
+	}
+	
+
+	/**
+	 * （面辅料仓库）审核采购单是否全部到货 （全部到货后，采购部才可以进行耗料分散出库）
 	 */
 	@RequestMapping(value = "/ledger/inventory/arrivalOrderProcurement", method = RequestMethod.GET)
 	@ResponseBody
@@ -1024,9 +1041,28 @@ public class LedgerAction {
 		cr.setMessage("成功审核" + count + "条采购入库单，进行入库");
 		return cr;
 	}
+	
+	
+	/**
+	 * （面辅料仓库）审核领料单
+	 *  领料出库(生产出库)
+	 * 
+	 * @param order
+	 * @return
+	 */
+	@RequestMapping(value = "/ledger/inventory/outboundMaterialRequisition", method = RequestMethod.POST)
+	@ResponseBody
+	public CommonResponse outboundMaterialRequisition(MaterialOutStorage materialOutStorage) {
+		CommonResponse cr = new CommonResponse();
+		materialOutStorageService.outboundMaterialRequisition(materialOutStorage);
+		cr.setMessage("成功出库");
+		return cr;
+	}
+	
 
 	/**
 	 * （面辅料仓库）生成物料出库单
+	 * （普通出库，根据申请出库）
 	 * 
 	 * @param order
 	 * @return
@@ -1049,13 +1085,14 @@ public class LedgerAction {
 	@ResponseBody
 	public CommonResponse materialPutStoragePage(PageParameter page, MaterialOutStorage materialOutStorage) {
 		CommonResponse cr = new CommonResponse();
-		cr.setData(clearCascadeJSONMaterialOutStorage
-				.format(materialOutStorageService.findPages(page, materialOutStorage)).toJSON());
+		cr.setData(clearCascadeJSONMaterialOutStorage.format(materialOutStorageService.findPages(page, materialOutStorage)).toJSON());
 		return cr;
 	}
 
 	/**
-	 * （面辅料仓库）删除物料出库单
+	 * （面辅料仓库）撤销物料出库
+	 * 
+	 * 满足于 领取物料后未进入下一环节使用 才可以撤销
 	 * 
 	 * @param order
 	 * @return
@@ -1065,7 +1102,7 @@ public class LedgerAction {
 	public CommonResponse deleteMaterialOutStorage(String ids) {
 		CommonResponse cr = new CommonResponse();
 		materialOutStorageService.deleteMaterialOutStorage(ids);
-		cr.setMessage("成功删除");
+		cr.setMessage("成功撤销");
 		return cr;
 	}
 
@@ -1153,50 +1190,19 @@ public class LedgerAction {
 	}
 	
 	/**
-	 * （成品仓库）对发货单进行出库
+	 * （1.成品仓库）对发货单进行出库
+	 *  2.皮壳仓库 对针工单进行出库
 	 * sendNumber 发货数量
 	 * putStorage （json 入库单的发货具体数量 ）
-	 * 
-	 * 
+	 * flag = 1 成品
+	 * flag = 2 皮壳
 	 * @return
 	 */
 	@RequestMapping(value = "/ledger/inventory/sendOutStorage", method = RequestMethod.POST)
 	@ResponseBody
-	public CommonResponse sendOutStorage(Long id,Integer sendNumber,String putStorage) {
+	public CommonResponse sendOutStorage(Long id,Integer sendNumber,String putStorage,Integer flag) {
 		CommonResponse cr = new CommonResponse();
-		outStorageService.sendOutStorage(id,sendNumber,putStorage);
-		cr.setMessage("成功出库");
-		return cr;
-	}
-	
-	
-	/**
-	 * （2.皮壳仓库）根据针工加工单查询库存详情
-	 * 生产出库
-	 * 
-	 * @return
-	 */
-	@RequestMapping(value = "/ledger/inventory/getPutStorageCotDetails", method = RequestMethod.GET)
-	@ResponseBody
-	public CommonResponse getPutStorageCotDetails(Long id) {
-		CommonResponse cr = new CommonResponse();
-		cr.setData(outStorageService.getPutStorageCotDetails(id));
-		
-		cr.setMessage("查询成功");
-		return cr;
-	}
-	
-	/**
-	 * （2.皮壳仓库）根据针工加工单进行出库
-	 * 			   针工加工单分为外发和内做
-	 * 生产出库
-	 * @return
-	 */
-	@RequestMapping(value = "/ledger/inventory/sendOutStorageCot", method = RequestMethod.GET)
-	@ResponseBody
-	public CommonResponse sendOutStorageCot(Long id,String putStorageIds) {
-		CommonResponse cr = new CommonResponse();
-		outStorageService.sendOutStorageCot(id,putStorageIds);
+		outStorageService.sendOutStorage(id,sendNumber,putStorage,flag);
 		cr.setMessage("成功出库");
 		return cr;
 	}
@@ -1231,7 +1237,7 @@ public class LedgerAction {
 	}
 
 	/**
-	 * （1.成品仓库，2.皮壳仓库）删除出库单
+	 * （1.成品仓库，2.皮壳仓库）撤销出库单
 	 * 
 	 * @return
 	 */
@@ -1245,8 +1251,8 @@ public class LedgerAction {
 	}
 
 	/**
-	 * 查看批次库存
-	 * 
+	 * 申请发货单时
+	 * 查看批次和库存
 	 * @param order
 	 * @return
 	 */
@@ -1260,7 +1266,6 @@ public class LedgerAction {
 	}
 	
 	/**
-	 * 
 	 * 查看发货单
 	 * 
 	 * @return cr

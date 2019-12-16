@@ -143,6 +143,10 @@ public class Constants {
     public final static String  CPCK = "CPCK";
     //成品入库
     public final static String  CPRK = "CPRK";
+    //皮壳出库
+    public final static String  PKCK = "PKCK";
+    //皮壳入库
+    public final static String  PKRK = "PKRK";
     //量化单
     public final static String  LHTB = "LHTB";
     //申请单

@@ -86,7 +86,8 @@ public class OutStorageServiceImpl extends BaseServiceImpl<OutStorage, Long> imp
 			String[] idStrings = ids.split(",");
 			for (String idString : idStrings) {
 				Long id = Long.parseLong(idString);
-				OutStorage outStorage = dao.findOne(id);
+				List<PutOutStorage>  list = putOutStorageDao.findByOutStorageId(id);
+				putOutStorageDao.delete(list);
 				delete(id);
 				i++;
 			}
@@ -126,21 +127,26 @@ public class OutStorageServiceImpl extends BaseServiceImpl<OutStorage, Long> imp
 	}
 
 	@Override
-	public void sendOutStorage(Long id, Integer sendNumber, String putStorage) {
+	public void sendOutStorage(Long id, Integer sendNumber, String putStorage,Integer flag) {
 		CurrentUser cu = SessionManager.getUserSession();
 		SendGoods sendGoods = sendGoodsDao.findOne(id);
 		// 生成出库单
 		OutStorage outStorage = new OutStorage();
-		outStorage.setSendGoodsId(id);
+		//成品使用发货单
+		if(flag == 1){
+			outStorage.setSendGoodsId(id);
+		}
+		//皮壳使用加工单
+		if(flag == 2){
+			outStorage.setOrderOutSourceId(id);
+		}
 		outStorage.setArrivalNumber(sendNumber);
 		outStorage.setArrivalTime(new Date());
 		outStorage.setOutStatus(1);
-		outStorage.setSerialNumber(
-				Constants.CPCK + StringUtil.getDate() + SalesUtils.get0LeftString((int) (dao.count() + 1), 8));
+		outStorage.setSerialNumber((flag == 1 ? Constants.CPCK : Constants.PKCK) + StringUtil.getDate() + SalesUtils.get0LeftString((int) (dao.count() + 1), 8));
 		outStorage.setProductId(sendGoods.getProductId());
 		outStorage.setUserStorageId(cu.getId());
 		save(outStorage);
-
 		if (!StringUtils.isEmpty(putStorage)) {
 			JSONArray jsonArray = JSON.parseArray(putStorage);
 			for (int i = 0; i < jsonArray.size(); i++) {
@@ -256,26 +262,4 @@ public class OutStorageServiceImpl extends BaseServiceImpl<OutStorage, Long> imp
 		return list;
 	}
 
-	@Override
-	public List<Map<String, Object>> getPutStorageCotDetails(Long id) {
-		List<Map<String, Object>> list = new ArrayList<>();
-		CurrentUser cu = SessionManager.getUserSession();
-		Long warehouseTypeDeliveryId = RoleUtil.getWarehouseTypeDelivery(cu.getRole());
-		if (warehouseTypeDeliveryId == null) {
-			throw new ServiceException("请使用仓库管理员账号");
-		}
-		
-		
-		
-		
-		
-
-		return null;
-	}
-
-	@Override
-	public void sendOutStorageCot(Long id, String putStorageIds) {
-		// TODO Auto-generated method stub
-		
-	}
 }
