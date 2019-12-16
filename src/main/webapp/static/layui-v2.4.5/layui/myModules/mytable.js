@@ -420,14 +420,15 @@ layui.extend({
 								myutil.saveAjax({
 									url: opt.autoUpdate.saveUrl,
 									data: data[i],
+									closeMsg: true,
 									success: function(){
 										success++;
+										if(success==data.length){
+											myutil.smsg('成功新增：'+success+'条数据');
+											table.reload(tableId);
+										}
 									}
 								})
-							if(success==data.length){
-								myutil.smsg('成功新增：'+success+'条数据');
-								table.reload(tableId);
-							}
 						}
 					}
 					function deleteSome(){

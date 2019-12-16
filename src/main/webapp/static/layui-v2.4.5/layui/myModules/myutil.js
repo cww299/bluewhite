@@ -43,7 +43,8 @@ layui.define(['jquery','layer','form','table'],function(exports){
 					r.message && (msg = r.message);
 					callback && callback();
 					options.success && options.success(r);
-					myutil.smsg(msg);
+					if(!options.closeMsg)
+						myutil.smsg(msg);
 				}else{
 					msg = '失败';
 					r.message && (msg = r.message);
@@ -338,6 +339,17 @@ layui.define(['jquery','layer','form','table'],function(exports){
 			myutil.lastData = elem.innerHTML;
 		})
 	};
+	
+	myutil.getLastMonth = function(format,firstOfEnd){
+	    var date = new Date; 
+	    var year = date.getFullYear();
+	    var month = date.getMonth();
+	    if(month == 0){
+	         year = year -1;
+	         month = 12; 
+	    }
+		return year+'-'+month;
+	}
 	
 	myutil.scrollX = function(container){
         //判断浏览器
