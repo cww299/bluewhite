@@ -129,12 +129,6 @@ public class MaterialRequisition extends BaseEntity<Long> {
 	private Integer audit;
 
 	/**
-	 * 领取时间
-	 */
-	@Column(name = "requisition_time")
-	private Date requisitionTime;
-
-	/**
 	 * 产品name
 	 */
 	@Transient
@@ -218,14 +212,6 @@ public class MaterialRequisition extends BaseEntity<Long> {
 
 	public void setOrder(Order order) {
 		this.order = order;
-	}
-
-	public Date getRequisitionTime() {
-		return requisitionTime;
-	}
-
-	public void setRequisitionTime(Date requisitionTime) {
-		this.requisitionTime = requisitionTime;
 	}
 
 	public String getUserName() {

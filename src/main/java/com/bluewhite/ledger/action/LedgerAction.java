@@ -218,11 +218,12 @@ public class LedgerAction {
 				.addRetainTerm(OrderProcurement.class, "id", "orderProcurementNumber", "placeOrderNumber",
 						"arrivalNumber", "placeOrderTime", "expectArrivalTime", "arrivalTime", "customer", "user",
 						"materielLocation", "price", "squareGram", "userStorage", "arrival", "audit",
-						"expectPaymentTime", "materiel", "returnNumber", "partDelayNumber", "partDelayTime",
+						"expectPaymentTime", "materiel", "partDelayNumber", "partDelayTime",
 						"gramPrice", "interest", "paymentMoney", "bill", "conventionPrice", "conventionSquareGram",
-						"partDelayPrice", "returnRemark", "arrivalStatus", "replenishment")
+						"partDelayPrice", "arrivalStatus", "replenishment")
 				.addRetainTerm(Materiel.class, "id", "name", "number", "materialQualitative")
-				.addRetainTerm(Customer.class, "id", "name").addRetainTerm(BaseOne.class, "id", "name")
+				.addRetainTerm(Customer.class, "id", "name")
+				.addRetainTerm(BaseOne.class, "id", "name")
 				.addRetainTerm(User.class, "id", "userName");
 	}
 
@@ -247,8 +248,10 @@ public class LedgerAction {
 						"customer", "remark", "gramWeight", "processNumber", "openOrderTime", "flag", "audit",
 						"outsourceTask", "gramWeight", "kilogramWeight", "processingUser", "outsource")
 				.addRetainTerm(Order.class, "id", "bacthNumber", "product", "number", "remark", "orderNumber")
-				.addRetainTerm(Customer.class, "id", "name").addRetainTerm(Product.class, "id", "name", "number")
-				.addRetainTerm(BaseOne.class, "id", "name").addRetainTerm(BaseData.class, "id", "name")
+				.addRetainTerm(Customer.class, "id", "name")
+				.addRetainTerm(Product.class, "id", "name", "number")
+				.addRetainTerm(BaseOne.class, "id", "name")
+				.addRetainTerm(BaseData.class, "id", "name")
 				.addRetainTerm(User.class, "id", "userName");
 	}
 
@@ -257,9 +260,10 @@ public class LedgerAction {
 		clearCascadeJSONMaterialRequisition = ClearCascadeJSON.get()
 				.addRetainTerm(MaterialRequisition.class, "id", "order", "type", "requisitionNumber",
 						"scatteredOutbound", "customer", "user", "outsource", "processNumber", "dosage", "remark",
-						"audit", "requisitionTime", "requisition", "flag")
+						"audit","requisitionCount")
 				.addRetainTerm(Order.class, "id", "bacthNumber", "product", "number", "remark", "orderNumber")
-				.addRetainTerm(BaseOne.class, "id", "name").addRetainTerm(User.class, "id", "userName");
+				.addRetainTerm(BaseOne.class, "id", "name")
+				.addRetainTerm(User.class, "id", "userName");
 	}
 
 	private ClearCascadeJSON clearCascadeJSONPutStorage;
@@ -269,7 +273,8 @@ public class LedgerAction {
 						"arrivalTime", "arrivalNumber", "serialNumber", "storageArea", "storageLocation",
 						"surplusNumber", "userStorage")
 				.addRetainTerm(OrderOutSource.class, "id", "outSourceNumber", "outsourceTask")
-				.addRetainTerm(Product.class, "id", "name", "number").addRetainTerm(BaseData.class, "id", "name")
+				.addRetainTerm(Product.class, "id", "name", "number")
+				.addRetainTerm(BaseData.class, "id", "name")
 				.addRetainTerm(User.class, "id", "userName");
 	}
 
@@ -290,17 +295,19 @@ public class LedgerAction {
 						"inWarehouseType", "arrivalTime", "arrivalNumber", "storageArea", "storageLocation",
 						"surplusNumber", "userStorage", "inspection", "serialNumber")
 				.addRetainTerm(OrderProcurement.class, "id", "orderProcurementNumber")
-				.addRetainTerm(Materiel.class, "id", "name").addRetainTerm(BaseOne.class, "id", "name")
-				.addRetainTerm(BaseData.class, "id", "name").addRetainTerm(User.class, "id", "userName");
+				.addRetainTerm(Materiel.class, "id", "name")
+				.addRetainTerm(BaseOne.class, "id", "name")
+				.addRetainTerm(BaseData.class, "id", "name")
+				.addRetainTerm(User.class, "id", "userName");
 	}
 
 	private ClearCascadeJSON clearCascadeJSONMaterialOutStorage;
 	{
 		clearCascadeJSONMaterialOutStorage = ClearCascadeJSON.get()
 				.addRetainTerm(MaterialOutStorage.class, "id", "materiel", "userStorage", "outStatus", "arrivalTime",
-						"arrivalNumber", "remark", "serialNumber", "materialPutStorage")
-				.addRetainTerm(MaterialPutStorage.class, "id", "serialNumber")
-				.addRetainTerm(Materiel.class, "id", "name").addRetainTerm(User.class, "id", "userName");
+						"arrivalNumber", "remark", "serialNumber")
+				.addRetainTerm(Materiel.class, "id", "name")
+				.addRetainTerm(User.class, "id", "userName");
 	}
 
 	private ClearCascadeJSON clearCascadeJSONSRefundBills;
