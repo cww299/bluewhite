@@ -16,6 +16,8 @@ import com.bluewhite.system.user.entity.User;
 /**
  * 领料单（1.领料单，2.外发领料单） 
  * 领料单由耗料单得到 采购部将所有已经拥有库存的耗料表生成领料单
+ * 
+ * 
  *
  */
 @Entity
@@ -127,19 +129,6 @@ public class MaterialRequisition extends BaseEntity<Long> {
 	private Integer audit;
 
 	/**
-	 * 领取时间
-	 */
-	@Column(name = "requisition_time")
-	private Date requisitionTime;
-
-	/**
-	 * 是否领取
-	 * 
-	 */
-	@Column(name = "requisition")
-	private Integer requisition;
-	
-	/**
 	 * 产品name
 	 */
 	@Transient
@@ -175,11 +164,24 @@ public class MaterialRequisition extends BaseEntity<Long> {
 	 */
 	@Transient
 	private Date orderTimeEnd;
+	
+	/**
+	 * 已领数量(通过出库单实际数量计算)
+	 */
+	@Transient
+	private Double requisitionCount;
+	
+	
+	
+	
+	public Double getRequisitionCount() {
+		return requisitionCount;
+	}
 
-	
-	
-	
-	
+	public void setRequisitionCount(Double requisitionCount) {
+		this.requisitionCount = requisitionCount;
+	}
+
 	public String getOrderProcurementNumber() {
 		return orderProcurementNumber;
 	}
@@ -204,28 +206,12 @@ public class MaterialRequisition extends BaseEntity<Long> {
 		this.type = type;
 	}
 
-	public Integer getRequisition() {
-		return requisition;
-	}
-
-	public void setRequisition(Integer requisition) {
-		this.requisition = requisition;
-	}
-
 	public Order getOrder() {
 		return order;
 	}
 
 	public void setOrder(Order order) {
 		this.order = order;
-	}
-
-	public Date getRequisitionTime() {
-		return requisitionTime;
-	}
-
-	public void setRequisitionTime(Date requisitionTime) {
-		this.requisitionTime = requisitionTime;
 	}
 
 	public String getUserName() {

@@ -455,8 +455,7 @@ public class AttendanceTimeServiceImpl extends BaseServiceImpl<AttendanceTime, L
 	}
 
 	@Override
-	public List<Map<String, Object>> findAttendanceTimeCollectList(AttendanceTime attendanceTime)
-			throws ParseException {
+	public List<Map<String, Object>> findAttendanceTimeCollectList(AttendanceTime attendanceTime) {
 		attendanceTime.setOrderTimeEnd(DatesUtil.getLastDayOfMonth(attendanceTime.getOrderTimeBegin()));
 		// 最外层循环人员list
 		List<Map<String, Object>> allList = new ArrayList<>();

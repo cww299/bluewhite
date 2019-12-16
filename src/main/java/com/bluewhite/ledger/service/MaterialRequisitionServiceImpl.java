@@ -69,7 +69,6 @@ public class MaterialRequisitionServiceImpl extends BaseServiceImpl<MaterialRequ
 			// 领料单
 			materialRequisition.setType(1);
 			materialRequisition.setAudit(0);
-			materialRequisition.setRequisition(0);
 			scatteredOutboundDao.save(scatteredOutbound);
 			save(materialRequisition);
 		}
@@ -104,7 +103,6 @@ public class MaterialRequisitionServiceImpl extends BaseServiceImpl<MaterialRequ
 			scatteredOutbound.setResidueDosageNumber(
 					scatteredOutbound.getResidueDosageNumber() - materialRequisition.getProcessNumber());
 			materialRequisition.setAudit(0);
-			materialRequisition.setRequisition(0);
 			scatteredOutboundDao.save(scatteredOutbound);
 			save(materialRequisition);
 		}
@@ -132,10 +130,6 @@ public class MaterialRequisitionServiceImpl extends BaseServiceImpl<MaterialRequ
 			// 按合同id
 			if (param.getOrderId() != null) {
 				predicate.add(cb.equal(root.get("orderId").as(Long.class), param.getOrderId()));
-			}
-			// 是否领取
-			if (param.getRequisition() != null) {
-				predicate.add(cb.equal(root.get("requisition").as(Integer.class), param.getRequisition()));
 			}
 			// 按领取人
 			if (!StringUtils.isEmpty(param.getUserName())) {

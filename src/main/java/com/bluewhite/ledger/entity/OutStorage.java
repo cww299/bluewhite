@@ -72,6 +72,19 @@ public class OutStorage extends BaseEntity<Long> {
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "send_goods_id", referencedColumnName = "id", insertable = false, updatable = false)
 	private SendGoods sendGoods;
+	
+	/**
+	 * 加工单id
+	 */
+	@Column(name = "order_outsource_id")
+	private Long orderOutSourceId;
+
+	/**
+	 * 加工单
+	 */
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "order_outsource_id", referencedColumnName = "id", insertable = false, updatable = false)
+	private OrderOutSource orderOutSource;
 
 	/**
 	 * 出库单类型（1=销售出库） （2=调拨出库） （3=换货出库 ） （4=退货出库 ） （5=盘盈出库 ）(6=返工出库) （7=生产出库）皮壳
@@ -142,6 +155,22 @@ public class OutStorage extends BaseEntity<Long> {
 	
 	
 	
+
+	public Long getOrderOutSourceId() {
+		return orderOutSourceId;
+	}
+
+	public void setOrderOutSourceId(Long orderOutSourceId) {
+		this.orderOutSourceId = orderOutSourceId;
+	}
+
+	public OrderOutSource getOrderOutSource() {
+		return orderOutSource;
+	}
+
+	public void setOrderOutSource(OrderOutSource orderOutSource) {
+		this.orderOutSource = orderOutSource;
+	}
 
 	public Long getApplyVoucherId() {
 		return applyVoucherId;

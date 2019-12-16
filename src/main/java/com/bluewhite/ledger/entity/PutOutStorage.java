@@ -11,7 +11,7 @@ import com.bluewhite.base.BaseEntity;
 
 /**
  * 
- * 入库单和出库单关系中间表
+ * 成品 入库单和出库单关系中间表
  * @author zhangliang
  *
  */

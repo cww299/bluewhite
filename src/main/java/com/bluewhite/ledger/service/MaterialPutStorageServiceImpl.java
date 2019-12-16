@@ -1,8 +1,10 @@
 package com.bluewhite.ledger.service;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import javax.persistence.criteria.Predicate;
 
@@ -21,11 +23,15 @@ import com.bluewhite.common.utils.NumUtils;
 import com.bluewhite.common.utils.SalesUtils;
 import com.bluewhite.common.utils.StringUtil;
 import com.bluewhite.ledger.dao.MaterialOutStorageDao;
+import com.bluewhite.ledger.dao.MaterialPutOutStorageDao;
 import com.bluewhite.ledger.dao.MaterialPutStorageDao;
 import com.bluewhite.ledger.dao.OrderProcurementDao;
+import com.bluewhite.ledger.dao.OrderProcurementReturnDao;
 import com.bluewhite.ledger.entity.MaterialOutStorage;
+import com.bluewhite.ledger.entity.MaterialPutOutStorage;
 import com.bluewhite.ledger.entity.MaterialPutStorage;
 import com.bluewhite.ledger.entity.OrderProcurement;
+import com.bluewhite.ledger.entity.OrderProcurementReturn;
 
 @Service
 public class MaterialPutStorageServiceImpl extends BaseServiceImpl<MaterialPutStorage, Long>
@@ -37,6 +43,10 @@ public class MaterialPutStorageServiceImpl extends BaseServiceImpl<MaterialPutSt
 	private OrderProcurementDao orderProcurementDao;
 	@Autowired
 	private MaterialOutStorageDao materialOutStorageDao;
+	@Autowired
+	private MaterialPutOutStorageDao materialPutOutStorageDao;
+	@Autowired
+	private OrderProcurementReturnDao orderProcurementReturnDao;
 
 	@Override
 	public void saveMaterialPutStorage(MaterialPutStorage materialPutStorage) {
@@ -170,6 +180,29 @@ public class MaterialPutStorageServiceImpl extends BaseServiceImpl<MaterialPutSt
 	@Override
 	public List<MaterialPutStorage> findByOrderProcurementIdAndInspection(Long id, int i) {
 		return dao.findByOrderProcurementIdAndInspection(id, i);
+	}
+
+	@Override
+	public List<MaterialPutStorage> detailsInventory(Long warehouseTypeId, Long materielId) {
+		List<MaterialPutStorage> putStorageList = dao.findByMaterielId(materielId);
+		if(warehouseTypeId!=null){
+			putStorageList= dao.findByInWarehouseTypeIdAndMaterielId(warehouseTypeId, materielId);
+		}
+		putStorageList.forEach(m->{
+			//入库单实际出库数量
+			List<MaterialPutOutStorage> outPutStorageList = materialPutOutStorageDao.findByMaterialPutStorageId(m.getId());
+			double arrNumber = outPutStorageList.stream().mapToDouble(MaterialPutOutStorage::getNumber).sum();
+			//入库单剩余数量
+			m.setSurplusNumber(NumUtils.sub(m.getArrivalNumber() , arrNumber));
+		});
+		// 排除掉已经全部出库的入库单
+		putStorageList = putStorageList.stream().filter(MaterialPutStorage->MaterialPutStorage.getSurplusNumber()>0).sorted(Comparator.comparing(MaterialPutStorage::getArrivalTime)).collect(Collectors.toList());
+		return putStorageList;
+	}
+
+	@Override
+	public void saveMaterialReturn(OrderProcurementReturn orderProcurementReturn) {
+		orderProcurementReturnDao.save(orderProcurementReturn);
 	}
 
 }
