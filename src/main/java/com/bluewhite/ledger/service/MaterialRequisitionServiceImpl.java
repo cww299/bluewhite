@@ -139,13 +139,6 @@ public class MaterialRequisitionServiceImpl extends BaseServiceImpl<MaterialRequ
 			if (!StringUtils.isEmpty(param.getCustomerName())) {
 				predicate.add(cb.like(root.get("customer").get("name").as(String.class),"%" + param.getCustomerName() + "%"));
 			}
-			// 按领取日期
-			if (param.getRequisitionTime() != null) {
-				if (!StringUtils.isEmpty(param.getOrderTimeBegin()) && !StringUtils.isEmpty(param.getOrderTimeEnd())) {
-					predicate.add(cb.between(root.get("requisitionTime").as(Date.class), param.getOrderTimeBegin(),
-							param.getOrderTimeEnd()));
-				}
-			}
 			// 按下单日期
 			if (param.getOpenOrderTime() != null) {
 				if (!StringUtils.isEmpty(param.getOrderTimeBegin()) && !StringUtils.isEmpty(param.getOrderTimeEnd())) {
