@@ -21,6 +21,7 @@ import org.springframework.util.StringUtils;
 import com.bluewhite.base.BaseServiceImpl;
 import com.bluewhite.basedata.dao.BaseDataDao;
 import com.bluewhite.basedata.entity.BaseData;
+import com.bluewhite.basedata.service.BaseDataService;
 import com.bluewhite.common.BeanCopyUtils;
 import com.bluewhite.common.Constants;
 import com.bluewhite.common.ServiceException;
@@ -60,6 +61,8 @@ public class OrderOutSourceServiceImpl extends BaseServiceImpl<OrderOutSource, L
 	private ProcessPriceDao processPriceDao;
 	@Autowired
 	private ConsumptionDao consumptionDao;
+	@Autowired
+	private BaseDataService baseDataService;
 
 	@Override
 	@Transactional
@@ -112,6 +115,41 @@ public class OrderOutSourceServiceImpl extends BaseServiceImpl<OrderOutSource, L
 				+ StringUtil.getDate() + SalesUtils.get0LeftString((int) (dao.count() + 1), 8);
 		orderOutSource.setOutSourceNumber(outSourceNumber);
 		save(orderOutSource);
+	}
+	
+
+
+
+	@Override
+	public List<Map<String, Object>> getProcessNumber(Long id) {
+		List<Map<String, Object>> listMap = new ArrayList<>();
+		//领料单
+		MaterialRequisition materialRequisition = materialRequisitionDao.findOne(id);
+		// 根据领料单查找加工单
+		List<OrderOutSource> orderOutSourceList = dao.findByMaterialRequisitionId(id);
+		// 查询出所有的工序类型
+		List<BaseData> baseDatas = baseDataService.getBaseDataTreeByType("taskProcessType");
+		baseDatas.forEach(b->{
+			Map<String , Object> map = new HashMap<>();
+			int sumNumber = orderOutSourceList.stream().filter(o -> {
+				Set<BaseData> baseDataSet = o.getOutsourceTask().stream()
+						.filter(BaseData -> BaseData.getId().equals(id)).collect(Collectors.toSet());
+				if (baseDataSet.size() > 0) {
+					return true;
+				}
+				return false;
+			}).mapToInt(OrderOutSource::getProcessNumber).sum();
+			// 查找该加工单该工序的通过审核的退货单
+			List<Integer> returnNumberList = refundBillsDao.getReturnNumber(id, b.getId());
+			// 退货总数
+			Integer returnNumber = returnNumberList.stream().reduce(Integer::sum).orElse(0);
+			int actualNumber = materialRequisition.getProcessNumber()-sumNumber-returnNumber;
+			map.put("id", b.getId());
+			map.put("name",b.getName());
+			map.put("number", actualNumber);
+			listMap.add(map);
+		});
+		return listMap;
 	}
 	
 	
@@ -372,5 +410,8 @@ public class OrderOutSourceServiceImpl extends BaseServiceImpl<OrderOutSource, L
 		ot.setPrice(processPrice.getPrice());
 		processPriceDao.save(ot);
 	}
+
+
+
 
 }

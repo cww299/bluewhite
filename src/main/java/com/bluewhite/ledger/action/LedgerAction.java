@@ -747,6 +747,22 @@ public class LedgerAction {
 		cr.setMessage("查看成功");
 		return cr;
 	}
+	
+	/**
+	 * （生产计划部）根据工序查看当前领料单的工序还剩余多少可加工数量
+	 * 
+	 * @param order
+	 * @return
+	 */
+	
+	@RequestMapping(value = "/ledger/getProcessNumber", method = RequestMethod.GET)
+	@ResponseBody
+	public CommonResponse getProcessNumber(Long  id) {
+		CommonResponse cr = new CommonResponse();
+		orderOutSourceService.getProcessNumber(id);
+		cr.setMessage("查询成功");
+		return cr;
+	}
 
 	/**
 	 * （生产计划部）新增加工单 1.加工单 2.外发加工单

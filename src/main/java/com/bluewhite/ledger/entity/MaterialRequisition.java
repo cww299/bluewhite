@@ -16,6 +16,8 @@ import com.bluewhite.system.user.entity.User;
 /**
  * 领料单（1.领料单，2.外发领料单） 
  * 领料单由耗料单得到 采购部将所有已经拥有库存的耗料表生成领料单
+ * 
+ * 
  *
  */
 @Entity

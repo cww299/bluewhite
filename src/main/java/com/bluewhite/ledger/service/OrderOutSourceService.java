@@ -84,5 +84,11 @@ public interface OrderOutSourceService extends BaseCRUDService<OrderOutSource, L
 	 * @param id
 	 */
 	public void updateProcessPrice(ProcessPrice processPrice);
+	
+	/**
+	 * 对领料单的工序任务数量进行整合
+	 * @param id
+	 */
+	public List<Map<String, Object>> getProcessNumber(Long id);
 
 }
