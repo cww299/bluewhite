@@ -10,7 +10,7 @@ import com.bluewhite.ledger.entity.OrderOutSource;
 public interface OrderOutSourceDao extends BaseRepository<OrderOutSource, Long>{
 	
 	/**
-	 * 根据合同id查找外发单
+	 * 根据领料单id查加工单
 	 * @param orderid
 	 * @return
 	 */

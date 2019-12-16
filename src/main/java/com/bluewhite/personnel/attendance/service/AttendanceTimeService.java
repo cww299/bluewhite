@@ -54,7 +54,7 @@ public interface AttendanceTimeService extends BaseCRUDService<AttendanceTime,Lo
 	 * @param attendance
 	 * @return
 	 */
-	public List<Map<String, Object>> findAttendanceTimeCollectList(AttendanceTime attendanceTime) throws ParseException;
+	public List<Map<String, Object>> findAttendanceTimeCollectList(AttendanceTime attendanceTime);
 	
 	/**
 	 * 手动修改考勤详细数据

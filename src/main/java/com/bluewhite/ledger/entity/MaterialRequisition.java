@@ -135,13 +135,6 @@ public class MaterialRequisition extends BaseEntity<Long> {
 	private Date requisitionTime;
 
 	/**
-	 * 是否领取
-	 * 
-	 */
-	@Column(name = "requisition")
-	private Integer requisition;
-	
-	/**
 	 * 产品name
 	 */
 	@Transient
@@ -177,11 +170,24 @@ public class MaterialRequisition extends BaseEntity<Long> {
 	 */
 	@Transient
 	private Date orderTimeEnd;
+	
+	/**
+	 * 已领数量(通过出库单实际数量计算)
+	 */
+	@Transient
+	private Double requisitionCount;
+	
+	
+	
+	
+	public Double getRequisitionCount() {
+		return requisitionCount;
+	}
 
-	
-	
-	
-	
+	public void setRequisitionCount(Double requisitionCount) {
+		this.requisitionCount = requisitionCount;
+	}
+
 	public String getOrderProcurementNumber() {
 		return orderProcurementNumber;
 	}
@@ -204,14 +210,6 @@ public class MaterialRequisition extends BaseEntity<Long> {
 
 	public void setType(Integer type) {
 		this.type = type;
-	}
-
-	public Integer getRequisition() {
-		return requisition;
-	}
-
-	public void setRequisition(Integer requisition) {
-		this.requisition = requisition;
 	}
 
 	public Order getOrder() {
