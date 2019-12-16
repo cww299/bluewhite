@@ -39,7 +39,7 @@
 		</tr>
     	<tr>
     		<td>数量：</td>
-    		<td><input type="text" class="layui-input" name="processNumber" lay-verify="required"></td>
+    		<td><input type="text" class="layui-input" name="processNumber" id="processNumber" lay-verify="required"></td>
     	</tr>
     	<tr>
     		<td>领取人：</td>
@@ -64,7 +64,7 @@
 		</tr>
     	<tr>
     		<td>数量：</td>
-    		<td><input type="text" name="processNumber"  class="layui-input" lay-verify="number"></td>
+    		<td><input type="text" name="processNumber"  id="processNumber" class="layui-input" lay-verify="number"></td>
     	</tr>
     	<tr>
     		<td>加工点：</td>
@@ -210,6 +210,7 @@ layui.config({
 				content:$('#pickingTpl').html(),
 				success:function(){
 					laydate.render({ elem:'#openOrderTime',type:'datetime',value:myutil.getSubDay(0,'yyyy-MM-dd hh:mm:ss'), });
+					$('#processNumber').val(check[0].residueDosageNumber || 0);
 					$('#addUserSelect').append(allUserSelect);
 					form.on('submit(addPicking)',function(obj){
 						obj.field.orderId = $('#orderIdSelect').val();
@@ -244,6 +245,7 @@ layui.config({
 				area:['40%','40%'],
 				content:$('#outTpl').html(),
 				success:function(){
+					$('#processNumber').val(check[0].residueDosageNumber || 0);
 					laydate.render({ elem:'#openOrderTime',type:'datetime',value:myutil.getSubDay(0,'yyyy-MM-dd hh:mm:ss'), });
 					$('#addCustomerSelect').append(allCustomSelect);
 					form.on('submit(addOut)',function(obj){
