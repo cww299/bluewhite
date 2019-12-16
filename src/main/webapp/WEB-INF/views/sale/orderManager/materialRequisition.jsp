@@ -190,9 +190,11 @@ layui.config({
 							url:'/ledger/auditMaterialRequisition',
 						});
 					}else if(obj.event=='outOrder' || obj.event=='outOrderWaifa'){
-						var id = $('#orderIdSelect').val();
 						if(!id)
 							return myutil.emsg('请选择合同');
+						var check = layui.table.checkStatus('tableData').data;
+						if(check.length!=1)
+							return myutil.emsg('只能选择一条数据！');
 						myutil.getDataSync({
 							url:'${ctx}/ledger/judgeOrderOutSource?orderId='+id,
 							success:function(d){
@@ -201,7 +203,7 @@ layui.config({
 									var name = $('#orderIdSelect').find('option[value="'+id+'"]').html();
 									outOrderModel.add({
 										data:{ 
-											orderId: id,
+											orderId: check[0].id,
 											outsource: outsource,
 										}
 									})
