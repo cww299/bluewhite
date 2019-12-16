@@ -77,7 +77,8 @@ layui.config({
 				saveUrl:'/ledger/updateiInventoryMaterialRequisition'
 			},
 			toolbar:['<span class="layui-btn layui-btn-sm" lay-event="audit">审核出库</span>',].join(' '),
-			colsWidth:[0,8,8,12,30,7,8,8,12,8],
+			colsWidth:[0,8,8,12,0,7,8,8,12,8],
+			ifNull:'',
 			cols:[[
 			       { type:'checkbox',fixed:'left',},
 			       { title:'开单时间',   field:'openOrderTime',	fixed:'left', type:'date'},
