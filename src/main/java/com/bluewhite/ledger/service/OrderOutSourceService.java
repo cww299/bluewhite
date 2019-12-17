@@ -58,13 +58,6 @@ public interface OrderOutSourceService extends BaseCRUDService<OrderOutSource, L
 	public void updateInventoryOrderOutSource(OrderOutSource orderOutSource);
 
 	/**
-	 * （生产计划部）判断是否可以新增加工单
-	 * 
-	 * @param orderId
-	 */
-	public int judgeOrderOutSource(Long orderId);
-
-	/**
 	 * 生成外发加工单账单
 	 * 
 	 * @param orderOutSource
