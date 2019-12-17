@@ -101,15 +101,15 @@ layui.extend({
 					     }
 					  }}
 				  `,
-					'<input type="hidden" name="warehouseTypeId" value="{{'+
-						' layui.inputWarehouseOrder.type==layui.inputWarehouseOrder.allType.WL?434:(layui.inputWarehouseOrder.type==2?274:379) }}">',
 					'<input type="hidden" name="id" value="{{d.id || ""}}">',
 				'</div>',
 				'<p style="display:none;"><button lay-submit lay-filter="sureAddOutOrder" id="sureAddOutOrder">确定</button></p>',
 				'</div>',
 	           ].join(' ');
 	
-	
+/*	'<input type="hidden" name="warehouseTypeId" value="{{'+
+	' layui.inputWarehouseOrder.type==layui.inputWarehouseOrder.allType.WL?434:(layui.inputWarehouseOrder.type==2?274:379) }}">',
+*/	
 	var inputWarehouseOrder = {
 			type: 1,	//默认为物料入库
 			allType :{
