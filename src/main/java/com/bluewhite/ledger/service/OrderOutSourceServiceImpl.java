@@ -325,21 +325,6 @@ public class OrderOutSourceServiceImpl extends BaseServiceImpl<OrderOutSource, L
 	}
 
 	@Override
-	public int judgeOrderOutSource(Long orderid) {
-		List<MaterialRequisition> materialRequisitionList = materialRequisitionDao.findByOrderId(orderid);
-		if (materialRequisitionList.size() > 0) {
-			long size = materialRequisitionList.stream()
-					.filter(MaterialRequisition -> MaterialRequisition.getAudit() == 0).count();
-			if (size > 0) {
-				return -1;
-			}
-		} else {
-			return 0;
-		}
-		return 1;
-	}
-
-	@Override
 	public void saveOutSoureBills(OrderOutSource orderOutSource) {
 		// 生成账单
 		Consumption consumption = new Consumption();
