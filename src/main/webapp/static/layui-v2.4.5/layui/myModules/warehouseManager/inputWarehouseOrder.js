@@ -102,6 +102,7 @@ layui.extend({
 					  }}
 				  `,
 					'<input type="hidden" name="id" value="{{d.id || ""}}">',
+					'<input type="hidden" name="flag" value="{{ layui.inputWarehouseOrder.type-(-1) }}">',
 				'</div>',
 				'<p style="display:none;"><button lay-submit lay-filter="sureAddOutOrder" id="sureAddOutOrder">确定</button></p>',
 				'</div>',
