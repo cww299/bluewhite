@@ -1214,7 +1214,6 @@ public class LedgerAction {
 	}
 	
 	
-	
 	/**
 	 * （1.成品仓库，2.皮壳仓库）生成出库单
 	 * 

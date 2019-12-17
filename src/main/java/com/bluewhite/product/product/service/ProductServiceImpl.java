@@ -91,7 +91,8 @@ public class ProductServiceImpl extends BaseServiceImpl<Product, Long> implement
 			param.setOriginDepartment(Constants.PRODUCT_FRIST_QUALITY);
 		}
 		// 包装
-		if (cu.getRole().contains(Constants.PRODUCT_FRIST_PACK) || cu.getRole().contains("packScene")) {
+		if (cu.getRole().contains(Constants.PRODUCT_FRIST_PACK) || cu.getRole().contains("packScene")
+				|| cu.getRole().contains("stickBagAccount") || cu.getRole().contains("stickBagStick")) {
 			param.setOriginDepartment(Constants.PRODUCT_FRIST_PACK);
 		}
 		// 针工
