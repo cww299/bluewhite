@@ -234,7 +234,7 @@ layui.config({
 			         ].join(' '),
 			cols:[[
 			       { type:'checkbox',},
-			       { title:'编号',   field:'order_orderNumber',	},
+			       { title:'编号',   field:'materialRequisition_order_orderNumber',	},
 			       { title:'工序',   field:'process', templet: getProcess(),	},
 			       { title:'数量',   field:'processNumber',	},
 			       { title:'时间',   field:'openOrderTime', type:'date',},

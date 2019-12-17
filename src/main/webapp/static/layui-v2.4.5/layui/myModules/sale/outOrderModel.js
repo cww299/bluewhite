@@ -87,6 +87,9 @@ layui.extend({
 	var outOrderModel = {}, allOrgUser ='', allCustom = '', allProcess = '',allUser = '';
 	
 	outOrderModel.add = function(opt){
+		opt.data.materialRequisition = {
+				id: opt.data.orderId,
+		};
 		outOrderModel.update(opt)
 	}
 	
@@ -96,6 +99,14 @@ layui.extend({
 			console.error('请给定数据！');
 			return;
 		}
+		myutil.getDataSync({	//获取工序类型
+			url: myutil.config.ctx+'/ledger/getProcessNumber?id='+data.materialRequisition.id,
+			success:function(d){
+				for(var i=0,len=d.length;i<len;i++){
+					allProcess += '<option value="'+d[i].id+'">'+d[i].name+':'+d[i].number+'</option>';
+				}
+			}
+		})
 		if(data.outsource)
 			title = '生成外发加工单';
 		if(data.id){
@@ -106,7 +117,7 @@ layui.extend({
 						'<input type="hidden" name="id" value="{{ d.id }}">',
 			        ].join(' ');
 		}else{
-			t = TPL+['<input type="hidden" name="orderId" value="{{ d.orderId }}">',
+			t = TPL+['<input type="hidden" name="materialRequisitionId" value="{{ d.orderId }}">',
 			        '<input type="hidden" name="outsource" value="{{ d.outsource }}">'].join(' ');
 		}
 		t+='</div>';
@@ -122,7 +133,7 @@ layui.extend({
 			title: title,
 			btnAlign:'c',
 			success:function(){
-				laydate.render({ elem:'#openOrderTime', type:'datetime', });
+				laydate.render({ elem:'#openOrderTime', type:'datetime', value: (data.openOrderTime || new Date()), });
 			    $('#gWeight').attr('onkeyup',"value=value.replace(/[^\\d.]/g,'')");
 			    $('#kgWeight').attr('onkeyup',"value=value.replace(/[^\\d.]/g,'')");
 				$('#gWeight').blur(function(){
@@ -185,14 +196,6 @@ layui.extend({
 	}
 	
 	outOrderModel.init = function(){
-		myutil.getDataSync({	//获取工序类型
-			url: myutil.config.ctx+'/basedata/list?type=taskProcessType',
-			success:function(d){
-				for(var i=0,len=d.length;i<len;i++){
-					allProcess += '<option value="'+d[i].id+'">'+d[i].name+'</option>';
-				}
-			}
-		})
 		myutil.getData({	//获取部门、生产、外协部人员
 			url: myutil.config.ctx+'/system/user/findUserList?orgNameIds=20,23',
 			success:function(d){
