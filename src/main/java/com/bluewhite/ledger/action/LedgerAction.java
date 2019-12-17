@@ -245,8 +245,9 @@ public class LedgerAction {
 		clearCascadeJSONSOutSource = ClearCascadeJSON.get()
 				.addRetainTerm(OrderOutSource.class, "id", "fill", "fillRemark", "outSourceNumber", "order", "user",
 						"customer", "remark", "gramWeight", "processNumber", "openOrderTime", "flag", "audit",
-						"outsourceTask", "gramWeight", "kilogramWeight", "processingUser", "outsource")
-				.addRetainTerm(Order.class, "id", "bacthNumber", "product", "number", "remark", "orderNumber")
+						"outsourceTask", "gramWeight", "kilogramWeight", "processingUser", "outsource","materialRequisition")
+				.addRetainTerm(MaterialRequisition.class, "id",  "order")
+				.addRetainTerm(Order.class, "id", "bacthNumber")
 				.addRetainTerm(Customer.class, "id", "name")
 				.addRetainTerm(Product.class, "id", "name", "number")
 				.addRetainTerm(BaseOne.class, "id", "name")
@@ -788,20 +789,6 @@ public class LedgerAction {
 		return cr;
 	}
 
-	/**
-	 * （生产计划部）判断是否可以新增加工单
-	 * 
-	 * @param order
-	 * @return
-	 */
-	@RequestMapping(value = "/ledger/judgeOrderOutSource", method = RequestMethod.GET)
-	@ResponseBody
-	public CommonResponse judgeOrderOutSource(Long orderId) {
-		CommonResponse cr = new CommonResponse();
-		cr.setData(orderOutSourceService.judgeOrderOutSource(orderId));
-		cr.setMessage("验证");
-		return cr;
-	}
 
 	/**
 	 * （生产计划部）修改加工单
@@ -1196,7 +1183,7 @@ public class LedgerAction {
 	}
 	
 	/**
-	 * （1.成品仓库）对发货单进行出库
+	 *  1.成品仓库 对发货单进行出库
 	 *  2.皮壳仓库 对针工单进行出库
 	 * sendNumber 发货数量
 	 * putStorage （json 入库单的发货具体数量 ）
