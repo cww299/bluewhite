@@ -109,7 +109,7 @@ public class UnderGoodsServiceImpl extends BaseServiceImpl<UnderGoods, Long> imp
 		for (int i = 0; i < excelListenerList.size(); i++) {
 			UnderGoods underGoods = new UnderGoods();
 			UnderGoodsPoi cPoi = (UnderGoodsPoi) excelListenerList.get(i);
-			Product product = productDao.findByNumberNotNullAndName(cPoi.getName());
+			Product product = productDao.findByName(cPoi.getName());
 			if (product != null) {
 				underGoods.setProductId(product.getId());
 			} else {
