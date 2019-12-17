@@ -564,6 +564,7 @@ layui.config({
 			loading:true,
 			page:true,
 			size:'lg',
+			limits:[10,20,50,100,500,1000],
 			smartReloadModel: true,    // 开启智能重载
 			request:{ pageName:'page', limitName:'size' },
 			parseData:function(ret){ return { data:ret.data.rows, count:ret.data.total, msg:ret.message, code:ret.code } },
