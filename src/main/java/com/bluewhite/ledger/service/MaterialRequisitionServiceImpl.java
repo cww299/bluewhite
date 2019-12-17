@@ -21,9 +21,7 @@ import com.bluewhite.ledger.dao.MaterialRequisitionDao;
 import com.bluewhite.ledger.dao.OrderMaterialDao;
 import com.bluewhite.ledger.dao.OrderProcurementDao;
 import com.bluewhite.ledger.dao.ScatteredOutboundDao;
-import com.bluewhite.ledger.entity.MaterialPutStorage;
 import com.bluewhite.ledger.entity.MaterialRequisition;
-import com.bluewhite.ledger.entity.OrderProcurement;
 import com.bluewhite.ledger.entity.ScatteredOutbound;
 import com.bluewhite.product.primecostbasedata.dao.MaterielDao;
 
@@ -122,9 +120,7 @@ public class MaterialRequisitionServiceImpl extends BaseServiceImpl<MaterialRequ
 			}
 			// 按采购单编号
 			if (!StringUtils.isEmpty(param.getOrderProcurementNumber())) {
-				predicate.add(cb.like(
-						root.get("scatteredOutbound").get("orderProcurement").get("orderProcurementNumber")
-								.as(String.class),
+				predicate.add(cb.like(root.get("scatteredOutbound").get("orderProcurement").get("orderProcurementNumber").as(String.class),
 						"%" + StringUtil.specialStrKeyword(param.getOrderProcurementNumber()) + "%"));
 			}
 			// 按合同id

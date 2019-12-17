@@ -488,7 +488,7 @@ layui.config({
 								       { title:'供应商', field:'customer_name', },
 								       { title:'预计到货', field:'expectArrivalTime',},
 								       { title:'付款日期', field:'expectPaymentTime', },
-								       { title:'审核', field:'audit',transData:{data:['审核','未审核'],}},
+								       { title:'审核', field:'audit',transData:{data:['未审核','审核'],}},
 								       ]]
 							})
 						},
