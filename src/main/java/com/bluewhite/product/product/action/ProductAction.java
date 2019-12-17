@@ -7,7 +7,6 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 import javax.persistence.EntityManager;
-import javax.servlet.http.HttpServletRequest;
 
 import org.hibernate.Session;
 import org.hibernate.jpa.HibernateEntityManager;
@@ -106,7 +105,7 @@ public class ProductAction {
 	 */
 	@RequestMapping(value = "/productPages", method = RequestMethod.GET)
 	@ResponseBody
-	public CommonResponse productPages(HttpServletRequest request, PageParameter page, Product product) {
+	public CommonResponse productPages(PageParameter page, Product product) {
 		CommonResponse cr = new CommonResponse(
 				clearCascadeJSON.format(productService.findPages(product, page)).toJSON());
 		cr.setMessage("查询成功");
@@ -171,7 +170,7 @@ public class ProductAction {
 	@RequestMapping(value = "/addProduct", method = RequestMethod.POST)
 	@ResponseBody
 	@SysLogAspectAnnotation(description = "产品新增操作", module = "产品管理", operateType = "增加", logType = SysLog.ADMIN_LOG_TYPE)
-	public CommonResponse addProduct(HttpServletRequest request, Product product) {
+	public CommonResponse addProduct(Product product) {
 		CommonResponse cr = new CommonResponse();
 		CurrentUser cu = SessionManager.getUserSession();
 
@@ -232,7 +231,7 @@ public class ProductAction {
 	 */
 	@RequestMapping(value = "/updateProduct", method = RequestMethod.POST)
 	@ResponseBody
-	public CommonResponse updateProduct(HttpServletRequest request, Product product) {
+	public CommonResponse updateProduct(Product product) {
 		CommonResponse cr = new CommonResponse();
 		if (product.getId() != null) {
 			Product oldProduct = productService.findOne(product.getId());
@@ -332,7 +331,7 @@ public class ProductAction {
 	 */
 	@RequestMapping(value = "product/copyProduct", method = RequestMethod.GET)
 	@ResponseBody
-	public CommonResponse copyProduct(HttpServletRequest request, Long id, Long oldId) {
+	public CommonResponse copyProduct(Long id, Long oldId) {
 		CommonResponse cr = new CommonResponse();
 		HibernateEntityManager hEntityManager = (HibernateEntityManager) entityManager;
 		Session session = hEntityManager.getSession();
