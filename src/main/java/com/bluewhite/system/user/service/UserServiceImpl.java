@@ -16,6 +16,7 @@ import javax.transaction.Transactional;
 import org.apache.shiro.crypto.hash.SimpleHash;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 import org.springframework.util.StringUtils;
@@ -101,7 +102,6 @@ public class UserServiceImpl extends BaseServiceImpl<User, Long> implements User
 			user.setQuit(0);
 			user.setOrgNameIds(String.valueOf(cu.getOrgNameId()));
 		}
-		page.setSort(null);
 		Page<User> pageUser = userDao.findAll((root, query, cb) -> {
 			List<Predicate> predicate = new ArrayList<>();
 			// 按id查找
@@ -216,6 +216,7 @@ public class UserServiceImpl extends BaseServiceImpl<User, Long> implements User
 			}
 			Predicate[] pre = new Predicate[predicate.size()];
 			query.where(predicate.toArray(pre));
+			query.orderBy(cb.desc(root.get("lotionNumber").as(Integer.class)));
 			query.distinct(true);
 			return null;
 		}, page);
