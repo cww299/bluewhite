@@ -482,7 +482,6 @@
 <script type="text/html" id="recruitToolbar">
 <div class="layui-btn-container layui-inline">
 	<span class="layui-btn layui-btn-sm" lay-event="userInfo">员工信息</span>
-	<span class="layui-btn layui-btn-sm" lay-event="export">退休返聘</span>
 	<span class="layui-btn layui-btn-trans layui-btn-sm layui-bg-red"  lay-event="deleteSome">删除</span>
 </div>
 </script>
@@ -919,14 +918,14 @@ layui.config({
 			switch(obj.event){
 			case 'userInfo': userInfo();
 				break;
-			case 'export': 
+			/* case 'export': 
 					var a="";
 					if($("#startTime").val()!=""){
 						var orderTime=$("#startTime").val().split('~');
 						a=orderTime[0]+' '+'00:00:00';
 					}	
 						location.href="${ctx}/excel/importExcel/retire?orderTimeBegin="+a+"";
-			break;
+			break; */
 			case 'deleteSome':
 				var checkedIds = tablePlug.tableCheck.getChecked(tableId);
 				var index;
