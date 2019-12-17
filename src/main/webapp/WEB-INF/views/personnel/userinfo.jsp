@@ -862,6 +862,7 @@ layui.config({
 								}else{
 									layer.msg(result.message, {icon: 2});
 								}
+								table.reload('recruitTable');
 								layer.close(index);
 							},error:function(){
 								layer.msg("操作失败！", {icon: 2});
@@ -968,7 +969,7 @@ layui.config({
 	 		layer.open({
 				title:'员工信息 ',
 				type:1,
-				area:['43%','80%'],
+				area:['45%','80%'],
 				content:$('#userin'),
 				end:function(){
 					$('#userin').hide();		//在弹窗销毁后，隐藏弹窗内容DIV
