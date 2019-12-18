@@ -563,15 +563,15 @@ layui.config({
 			toolbar:'#recruitToolbar',
 			loading:true,
 			page:true,
-			size:'lg',
-			limits:[10,20,50,100,500,1000],
+			limit:14,
+			limits:[14,20,50,100,500,1000],
 			smartReloadModel: true,    // 开启智能重载
 			request:{ pageName:'page', limitName:'size' },
 			parseData:function(ret){ return { data:ret.data.rows, count:ret.data.total, msg:ret.message, code:ret.code } },
 			cols:[[{align: 'center',type: 'checkbox', },
 			       {align:'center', title:'位置编号',field:'lotionNumber', edit: false},
 			       {align:'center', title:'姓名',   field:'userName'},
-			       {align:'center', title:'手机号', 	field:'phone',edit: false,	},
+			       {align:'center', title:'手机号', width:150,	field:'phone',edit: false,	},
 			       {align:'center', title:'年龄',   field:'age',	  edit: false,templet:function(d){return d.age==null ? "" : d.age}},
 			       {align:'center',title: "合同", field:"commitment",templet: function(d){if(d.commitment==0){return "未签"}else if (d.commitment==1){return "已签"} else if (d.commitment==2){return "续签"} else {return ""}}},
 			       {align:'center',field: "positionId",title: "承诺书",templet: function(d){if(d.promise==0){return "未签"}else if(d.promise==1){return "已签"}else{return ""}}},
@@ -836,6 +836,12 @@ layui.config({
 						data.field.id=id
 						data.field.agreementId=values
 						data.field.pictureUrl=pictureUrl
+						if(data.field.quit==1 &&  data.field.quitTypeId==""){
+						return	layer.msg("请填写离职类型", {icon: 2});
+						}
+						if(data.field.quit==1 &&  data.field.quitDate==""){
+							return	layer.msg("请填写离职时间", {icon: 2});
+							}
 						$.ajax({
 							url:"${ctx}/system/user/update",
 							data:data.field,
@@ -878,38 +884,80 @@ layui.config({
 			form.render();
 		}
 	 	form.on('select(lay_selecte)', function(data) {
-	 		if(data.value=1){
-	 			var ind=layer.open({
+	 		if(data.value==1){
+	 			lock = false;
+	 			 var ind=layer.open({
 					   title: '提示'
 					  ,content:'确定删除考勤机上的指纹吗？'
 					  ,btn: ['确认', '取消']
-					,yes: function(index, layero){
+					  ,yes: function(index, layero){
 						layer.close(ind);
-						var arr = ['192.168.1.204','192.168.7.123','192.168.1.205','192.168.14.201','192.168.6.73']
-						var index = layer.load(1, {
-							  shade: [0.1,'#fff'], //0.1透明度的白色背景
-						});;
-						for (var i = 0; i < arr.length; i++) {
-				    	  var postData={
-									number:$('.number').val(),
-									address:arr[i],
-							}
-						   $.ajax({
-							url:"${ctx}/personnel/deleteUser",
-							data:postData,
-							async: false,
-							type:"GET",
-							success:function(result){
-								
-							},error:function(){
-								layer.msg("操作失败！", {icon: 2});
-								layer.close(index);
-							}
-						});  
-						}
-						layer.close(ind);
-		       			 }
-					});
+						lock = true;
+		       		   },
+		       		   end:function(){
+		       			   if(!lock)
+		       				   return;
+						var loading = layer.load(1,{shade: [0.5,'black'], });
+		       			var arr = ['192.168.1.204','192.168.7.123','192.168.1.205','192.168.14.201','192.168.6.73'];
+		       			var suceess = 0,error=0,i=0;
+		       			var postData={
+							number:$('.number').val(),
+							address:arr[i],
+						};
+		       			del();
+		       			function del(){
+		       				postData.address = arr[i];
+			       			$.ajax({
+								url:"${ctx}/personnel/deleteUser",
+								data:postData,
+								async: true,
+								type:"GET",
+								success:function(result){
+									suceess++;
+									i++;
+									if(arr.length==(suceess+error))
+										layer.close(loading);
+									else{
+										del();
+									}
+								},error:function(){
+									error++;
+									i++;
+									if(arr.length==(suceess+error))
+										layer.close(loading);
+									else{
+										del();
+									}
+									layer.msg("操作失败！", {icon: 2});
+								}
+							});
+		       			}
+		       		   }
+					}); 
+						
+						 /* indexs = layer.confirm('<div>确定删除考勤机上的指纹吗？</div>', {btn: ['确定', '取消']},function(){
+								layer.close(indexs);
+							 var arr = ['192.168.1.204','192.168.7.123','192.168.1.205','192.168.14.201','192.168.6.73']
+								for (var i = 0; i < arr.length; i++) {
+						    	  var postData={
+											number:$('.number').val(),
+											address:arr[i],
+									}
+								   $.ajax({
+									url:"${ctx}/personnel/deleteUser",
+									data:postData,
+									async: false,
+									
+									type:"GET",
+									success:function(result){
+										
+									},error:function(){
+										layer.msg("操作失败！", {icon: 2});
+									}
+								});  
+								}
+						 }) */
+						
 	 		}
 	 	})
 	 	table.on('toolbar(recruitTable)',function(obj){

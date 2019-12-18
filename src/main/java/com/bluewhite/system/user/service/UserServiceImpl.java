@@ -16,7 +16,6 @@ import javax.transaction.Transactional;
 import org.apache.shiro.crypto.hash.SimpleHash;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 import org.springframework.util.StringUtils;
@@ -37,7 +36,6 @@ import com.bluewhite.system.user.dao.UserDao;
 import com.bluewhite.system.user.entity.Role;
 import com.bluewhite.system.user.entity.RoleMenuPermission;
 import com.bluewhite.system.user.entity.User;
-import com.bluewhite.system.user.entity.UserContract;
 
 @Service
 public class UserServiceImpl extends BaseServiceImpl<User, Long> implements UserService {
@@ -143,8 +141,7 @@ public class UserServiceImpl extends BaseServiceImpl<User, Long> implements User
 			}
 			// 按位置编号
 			if (!StringUtils.isEmpty(user.getLotionNumber())) {
-				predicate.add(cb.like(root.get("userContract").get("number").as(String.class),
-						"%" + user.getLotionNumber() + "%"));
+				predicate.add(cb.like(root.get("lotionNumber").as(String.class),"%" + user.getLotionNumber() + "%"));
 			}
 			// 是否签订合同
 			if (!StringUtils.isEmpty(user.getCommitment())) {

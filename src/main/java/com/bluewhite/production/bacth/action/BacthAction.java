@@ -87,10 +87,9 @@ public class BacthAction {
 			if (bacth.getFlag() == 0 && bacth.getRegionalPrice() != null) {
 				bacth.setRegionalPrice(NumUtils.round(ProTypeUtils.sumRegionalPrice(bacth, bacth.getType()), null));
 			}
-			List<Procedure> procedureList = procedureDao.findByProductIdAndTypeAndFlag(bacth.getProductId(),
-					bacth.getType(), bacth.getFlag());
+			List<Procedure> procedureList = procedureDao.findByProductIdAndTypeAndFlag(bacth.getProductId(),bacth.getType(), bacth.getFlag());
 			double time = procedureList.stream().mapToDouble(Procedure::getWorkingTime).sum();
-			if (procedureList != null && procedureList.size() > 0) {
+			if (procedureList.size() > 0) {
 				bacth.setTime(NumUtils.div(NumUtils.mul(time, bacth.getNumber()), 60, 3));
 			}
 			bacthService.save(bacth);

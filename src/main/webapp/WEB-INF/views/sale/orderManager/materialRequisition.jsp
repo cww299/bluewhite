@@ -106,7 +106,7 @@ layui.config({
 		outOrderModel.init();
 		var allUserSelect,allCustomSelect;
 		myutil.getData({
-			url:'${ctx}/system/user/findUserList',
+			url: myutil.config.ctx+'/system/user/findUserList',
 			success:function(d){
 				for(var i=0,len=d.length;i<len;i++){
 					allUserSelect += '<option value="'+d[i].id+'">'+d[i].userName+'</option>';
@@ -114,7 +114,7 @@ layui.config({
 			}
 		})
 		myutil.getData({
-			url:'${ctx}/ledger/allCustomer?type=5',
+			url: myutil.config.ctx+'/ledger/allCustomer?type=5',
 			success:function(d){
 				for(var i=0,len=d.length;i<len;i++){
 					allCustomSelect += '<option value="'+d[i].id+'">'+d[i].name+'</option>';
@@ -145,7 +145,7 @@ layui.config({
 		});
 		function getAgreementSelect(data){
 			myutil.getDataSync({
-				url:'${ctx}/ledger/getOrder',
+				url: myutil.config.ctx+'/ledger/getOrder',
 				data: data,
 				success:function(d){
 					var html = '<option value="">请选择</option>';
@@ -161,7 +161,7 @@ layui.config({
 		form.on('select(agreementSelect)',function(obj){
 			if(obj.value!='')
 				table.reload('tableData',{
-					url:'${ctx}/ledger/getMaterialRequisition?&orderId='+$('#orderIdSelect').val(),
+					url: myutil.config.ctx+'/ledger/getMaterialRequisition?&orderId='+$('#orderIdSelect').val(),
 				})
 			else
 				table.reload('tableData',{
@@ -190,29 +190,16 @@ layui.config({
 							url:'/ledger/auditMaterialRequisition',
 						});
 					}else if(obj.event=='outOrder' || obj.event=='outOrderWaifa'){
-						if(!id)
-							return myutil.emsg('请选择合同');
 						var check = layui.table.checkStatus('tableData').data;
 						if(check.length!=1)
 							return myutil.emsg('只能选择一条数据！');
-						myutil.getDataSync({
-							url:'${ctx}/ledger/judgeOrderOutSource?orderId='+id,
-							success:function(d){
-								if(d>0){
-									var outsource = obj.event=='outOrder'?0:1;
-									var name = $('#orderIdSelect').find('option[value="'+id+'"]').html();
-									outOrderModel.add({
-										data:{ 
-											orderId: check[0].id,
-											outsource: outsource,
-										}
-									})
-								}else if(d==0){
-									return myutil.emsg('当前生产计划单未生成领料单，无法生成加工单');
-								}else if(d<0)
-									return myutil.emsg('当前生产计划单存在领料单未审核，无法新增加工单。请先审核');
+						outOrderModel.add({
+							data:{ 
+								orderId: check[0].id,
+								outsource: obj.event=='outOrder'?0:1,
+								processNumber: check[0].processNumber,
 							}
-						})
+						});
 					}
 				}
 			},

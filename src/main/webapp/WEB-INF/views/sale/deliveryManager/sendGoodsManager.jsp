@@ -152,6 +152,7 @@ layui.config({
 								myutil.saveAjax({
 									url: '/ledger/inventory/sendOutStorage',
 									data:{
+										flag: 1,
 										id: check[0].id,
 										sendNumber: inputNumber,
 										putStorage: JSON.stringify(childJson),

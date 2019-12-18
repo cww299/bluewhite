@@ -15,8 +15,11 @@ import org.springframework.util.StringUtils;
 
 import com.bluewhite.base.BaseServiceImpl;
 import com.bluewhite.common.Constants;
+import com.bluewhite.common.SessionManager;
+import com.bluewhite.common.entity.CurrentUser;
 import com.bluewhite.common.entity.PageParameter;
 import com.bluewhite.common.entity.PageResult;
+import com.bluewhite.common.utils.RoleUtil;
 import com.bluewhite.common.utils.SalesUtils;
 import com.bluewhite.common.utils.StringUtil;
 import com.bluewhite.ledger.dao.OutStorageDao;
@@ -37,19 +40,15 @@ public class PutStorageServiceImpl extends BaseServiceImpl<PutStorage, Long> imp
 	private OutStorageDao outStorageDao;
 	@Autowired
 	private PutOutStorageDao putOutStorageDao;
-	
 
 	@Override
 	public void savePutStorage(PutStorage putStorage) {
-		if (putStorage.getId() != null) {
-			PutStorage ot = dao.findOne(putStorage.getId());
-			update(putStorage, ot, "");
-		} else {
-			putStorage.setSerialNumber(
-					Constants.CPRK + StringUtil.getDate() + SalesUtils.get0LeftString((int) (dao.count() + 1), 8));
-			putStorage.setPublicStock(0);
-			dao.save(putStorage);
-		}
+		// 根据仓管登陆用户权限，获取不同的仓库库存
+		CurrentUser cu = SessionManager.getUserSession();
+		Long warehouseTypeDeliveryId = RoleUtil.getWarehouseTypeDelivery(cu.getRole());
+		putStorage.setSerialNumber((putStorage.getFlag() == 1 ? Constants.CPRK : Constants.PKRK)  + StringUtil.getDate() + SalesUtils.get0LeftString((int) (dao.count() + 1), 8));
+		putStorage.setWarehouseTypeId(warehouseTypeDeliveryId);
+		dao.save(putStorage);
 	}
 
 	@Override
@@ -89,7 +88,7 @@ public class PutStorageServiceImpl extends BaseServiceImpl<PutStorage, Long> imp
 			return null;
 		}, page);
 		pages.getContent().stream().forEach(m -> {
-			//入库单实际出库数量
+			// 入库单实际出库数量
 			List<PutOutStorage> outPutStorageList = putOutStorageDao.findByPutStorageId(m.getId());
 			int arrNumber = outPutStorageList.stream().mapToInt(PutOutStorage::getNumber).sum();
 			m.setSurplusNumber(m.getArrivalNumber() - arrNumber);
@@ -115,18 +114,19 @@ public class PutStorageServiceImpl extends BaseServiceImpl<PutStorage, Long> imp
 	@Override
 	public List<PutStorage> detailsInventory(Long warehouseTypeId, Long productId) {
 		List<PutStorage> putStorageList = dao.findByProductId(productId);
-		if(warehouseTypeId!=null){
-			putStorageList= dao.findByWarehouseTypeIdAndProductId(warehouseTypeId, productId);
+		if (warehouseTypeId != null) {
+			putStorageList = dao.findByWarehouseTypeIdAndProductId(warehouseTypeId, productId);
 		}
-		putStorageList.forEach(m->{
-			//入库单实际出库数量
+		putStorageList.forEach(m -> {
+			// 入库单实际出库数量
 			List<PutOutStorage> outPutStorageList = putOutStorageDao.findByPutStorageId(m.getId());
 			int arrNumber = outPutStorageList.stream().mapToInt(PutOutStorage::getNumber).sum();
-			//入库单剩余数量
+			// 入库单剩余数量
 			m.setSurplusNumber(m.getArrivalNumber() - arrNumber);
 		});
 		// 排除掉已经全部出库的入库单
-		putStorageList = putStorageList.stream().filter(PutStorage->PutStorage.getSurplusNumber()>0).sorted(Comparator.comparing(PutStorage::getArrivalTime)).collect(Collectors.toList());
+		putStorageList = putStorageList.stream().filter(PutStorage -> PutStorage.getSurplusNumber() > 0)
+				.sorted(Comparator.comparing(PutStorage::getArrivalTime)).collect(Collectors.toList());
 		return putStorageList;
 	}
 
