@@ -7,7 +7,6 @@ import java.util.List;
 import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpSession;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.propertyeditors.CustomDateEditor;
@@ -29,13 +28,11 @@ import com.bluewhite.common.entity.PageParameter;
 import com.bluewhite.common.entity.PageResult;
 import com.bluewhite.product.primecost.cutparts.entity.CutParts;
 import com.bluewhite.product.primecost.cutparts.service.CutPartsService;
-import com.bluewhite.product.primecost.machinist.entity.Machinist;
 import com.bluewhite.product.primecost.materials.entity.ProductMaterials;
 import com.bluewhite.product.primecost.materials.service.ProductMaterialsService;
 import com.bluewhite.product.primecost.needlework.entity.Needlework;
 import com.bluewhite.product.primecost.needlework.service.NeedleworkService;
 import com.bluewhite.product.primecost.primecost.entity.PrimeCost;
-import com.bluewhite.product.product.entity.Product;
 import com.bluewhite.product.product.service.ProductService;
 @Controller
 public class NeedleworkAction {

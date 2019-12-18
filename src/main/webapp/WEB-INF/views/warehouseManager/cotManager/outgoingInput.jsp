@@ -7,7 +7,7 @@
 	<link rel="stylesheet" href="${ctx }/static/layui-v2.4.5/layui/css/layui.css" media="all">
 	<script src="${ctx}/static/layui-v2.4.5/layui/layui.js"></script>
 	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-	<title>皮壳管理外发入库</title>
+	<title>皮壳管理生产入库</title>
 </head>
 <body>
 <div class="layui-card">
@@ -28,6 +28,7 @@ layui.config({
 		
 		myutil.config.ctx = '${ctx}';
 		myutil.clickTr();
+		productionInput.type = 3;
 		productionInput.render({
 			elem:'#app',
 			ctx:'${ctx}',

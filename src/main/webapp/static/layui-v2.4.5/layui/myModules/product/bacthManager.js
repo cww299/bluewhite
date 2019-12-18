@@ -274,7 +274,7 @@ layui.config({
 		mytable.render({
 			elem:'#tableData',
 			url: opt.ctx+'/bacth/allBacth?type='+opt.type+(opt.type==3||opt.type==4?'&flag=0':''),
-			totalRow:['number','sumTaskPrice','time'],
+			totalRow:['number','sumTaskPrice','time','regionalPrice'],
 			parseData:function(ret){
 				if(ret.code==0)
 					statData = ret.data.statData;
@@ -303,6 +303,7 @@ layui.config({
 				$('.layui-table-total').find('td[data-field="number"]').find('div').html(statData.number);
 				$('.layui-table-total').find('td[data-field="sumTaskPrice"]').find('div').html(statData.sumTaskPrice);
 				$('.layui-table-total').find('td[data-field="time"]').find('div').html(statData.time);
+				$('.layui-table-total').find('td[data-field="regionalPrice"]').find('div').html(statData.regionalPrice);
 			}
 		}) 
 		table.on('tool(tableData)', function(obj){

@@ -2,6 +2,7 @@ package com.bluewhite.ledger.action;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.propertyeditors.CustomDateEditor;
@@ -61,6 +62,9 @@ import com.bluewhite.product.primecostbasedata.entity.BaseOne;
 import com.bluewhite.product.primecostbasedata.entity.Materiel;
 import com.bluewhite.product.product.entity.Product;
 import com.bluewhite.system.user.entity.User;
+
+import cn.hutool.core.bean.BeanUtil;
+import cn.hutool.core.map.MapUtil;
 
 /**
  * 销售
@@ -236,20 +240,21 @@ public class LedgerAction {
 				.addRetainTerm(OrderMaterial.class, "id", "receiveMode", "materiel")
 				.addRetainTerm(Materiel.class, "id", "name", "number")
 				.addRetainTerm(Order.class, "id", "bacthNumber", "number", "remark", "orderNumber")
-				.addRetainTerm(BaseOne.class, "id", "name").addRetainTerm(User.class, "id", "userName")
+				.addRetainTerm(BaseOne.class, "id", "name")
+				.addRetainTerm(User.class, "id", "userName")
 				.addRetainTerm(Customer.class, "id", "name");
 	}
 
 	private ClearCascadeJSON clearCascadeJSONSOutSource;
 	{
 		clearCascadeJSONSOutSource = ClearCascadeJSON.get()
-				.addRetainTerm(OrderOutSource.class, "id", "fill", "fillRemark", "outSourceNumber", "order", "user",
+				.addRetainTerm(OrderOutSource.class, "id", "fill", "fillRemark", "outSourceNumber", "user",
 						"customer", "remark", "gramWeight", "processNumber", "openOrderTime", "flag", "audit",
 						"outsourceTask", "gramWeight", "kilogramWeight", "processingUser", "outsource","materialRequisition")
 				.addRetainTerm(MaterialRequisition.class, "id",  "order")
-				.addRetainTerm(Order.class, "id", "bacthNumber")
+				.addRetainTerm(Order.class, "id", "orderNumber","product")
+				.addRetainTerm(Product.class, "id", "name")
 				.addRetainTerm(Customer.class, "id", "name")
-				.addRetainTerm(Product.class, "id", "name", "number")
 				.addRetainTerm(BaseOne.class, "id", "name")
 				.addRetainTerm(BaseData.class, "id", "name")
 				.addRetainTerm(User.class, "id", "userName");
@@ -1024,7 +1029,8 @@ public class LedgerAction {
 	
 
 	/**
-	 * （面辅料仓库）审核采购单是否全部到货 （全部到货后，采购部才可以进行耗料分散出库）
+	 * （面辅料仓库）审核采购单是否全部到货 
+	 * （全部到货后，采购部才可以进行耗料分散出库）
 	 */
 	@RequestMapping(value = "/ledger/inventory/arrivalOrderProcurement", method = RequestMethod.GET)
 	@ResponseBody
@@ -1101,23 +1107,6 @@ public class LedgerAction {
 
 	/************************ （1.成品仓库，2.皮壳仓库） ********************/
 
-	/**
-	 * （1.成品仓库，2.皮壳仓库）对外发加工单收货入库
-	 * 
-	 * @return
-	 */
-	@RequestMapping(value = "/ledger/inventory/savePutStorage", method = RequestMethod.POST)
-	@ResponseBody
-	public CommonResponse savePutStorage(PutStorage putStorage) {
-		CommonResponse cr = new CommonResponse();
-		if (putStorage.getId() != null) {
-			cr.setMessage("修改入库单成功");
-		} else {
-			cr.setMessage("新增入库单成功");
-		}
-		putStorageService.savePutStorage(putStorage);
-		return cr;
-	}
 
 	/**
 	 * （1.成品仓库，2.皮壳仓库）入库单列表
@@ -1129,6 +1118,20 @@ public class LedgerAction {
 	public CommonResponse putStoragePage(PageParameter page, PutStorage putStorage) {
 		CommonResponse cr = new CommonResponse();
 		cr.setData(clearCascadeJSONPutStorage.format(putStorageService.findPages(page, putStorage)).toJSON());
+		return cr;
+	}
+	
+	/**
+	 * （1.成品仓库，2.皮壳仓库）
+	 *  根据加工单收货入库
+	 * @return
+	 */
+	@RequestMapping(value = "/ledger/inventory/savePutStorage", method = RequestMethod.POST)
+	@ResponseBody
+	public CommonResponse savePutStorage(PutStorage putStorage) {
+		CommonResponse cr = new CommonResponse();
+		putStorageService.savePutStorage(putStorage);
+		cr.setMessage("新增入库单成功");
 		return cr;
 	}
 
@@ -1154,8 +1157,9 @@ public class LedgerAction {
 		return cr;
 	}
 
+	
 	/**
-	 * （1.成品仓库，2.皮壳仓库）删除入库单
+	 * （1.成品仓库，2.皮壳仓库）撤销入库单
 	 * 
 	 * @return
 	 */
@@ -1169,8 +1173,7 @@ public class LedgerAction {
 
 	
 	/**
-	 * （1.成品仓库）根据发货单查询库存详情
-	 * 
+	 * 1.成品仓库  根据发货单查询库存详情
 	 * @return
 	 */
 	@RequestMapping(value = "/ledger/inventory/getPutStorageDetails", method = RequestMethod.GET)
@@ -1178,6 +1181,22 @@ public class LedgerAction {
 	public CommonResponse sendPutStorage(Long id) {
 		CommonResponse cr = new CommonResponse();
 		cr.setData(outStorageService.getSendPutStorage(id));
+		cr.setMessage("查询成功");
+		return cr;
+	}
+	
+	/**
+	 * 2.皮壳仓库  根据加工单查询库存详情
+	 * 皮壳出库，通过针工工序加工单来领取皮壳
+	 * 根据针工工序加工单对应的生产计划单，查询处符合条件的入库单，在根据入库单出库
+	 * 
+	 * @return
+	 */
+	@RequestMapping(value = "/ledger/inventory/getOrderOutSourcePutStorageDetails", method = RequestMethod.GET)
+	@ResponseBody
+	public CommonResponse getOrderOutSourcePutStorageDetails(Long id) {
+		CommonResponse cr = new CommonResponse();
+//		cr.setData(outStorageService.getOrderOutSourcePutStorageDetails(id));
 		cr.setMessage("查询成功");
 		return cr;
 	}
