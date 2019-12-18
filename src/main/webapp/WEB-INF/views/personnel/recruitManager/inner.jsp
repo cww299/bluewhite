@@ -246,7 +246,7 @@ layui.config({
 			       {align:'center', title:'开始时间',field:'startTime',edit: false, 	},
 			       {align:'center', title:'结束时间',field:'endTime',	  edit: false,}, 
 			       {align:'center', title:'培训内容',field:'train',   edit: true,},
-			       {align:'center', title:'培训导师',field:'userId',  edit: false, templet: getUserIdSelect(), },
+			       {align:'center', title:'培训导师',field:'userId',  edit: false, templet: function(d){return d.user==null ? "" : d.user.userName}, },
 			       {align:'center', title:'培训成本',field:'price',   edit: true,},
 			       {align:'center', title:'是否合格',field:'qualified',edit: false, templet: getQualifiedSelect(),  },
 			       {align:'center', title:'培训类型',field:'mold',edit: false, templet: function(d){if(d.mold==0){return "<span class='layui-badge layui-bg-green'>入职培训</span>"} if(d.mold==1){return "<span class='layui-badge'>内部培训</span>"}},  },
@@ -492,6 +492,7 @@ layui.config({
 			})
 			layer.close(load);
 		}
+		getUserIdSelect();
 		function getUserIdSelect(){
 	 		return function(d){
 	 			var html = '<select lay-filter="tableSelect" lay-search>';

@@ -542,7 +542,6 @@ layui.config({
 	 				htm2+='<option value="'+item.id+'" '+selected+'>'+item.userName+'</option>'
 	 			})
 	 			html+='</select>';
-	 			$("#userId2").html(htm2);
 	 			form.render();
 	 			if(d.userId == '')
 					layui.table.cache['trainTable'][d.LAY_INDEX]['userId'] = allTeacher[0].id;
