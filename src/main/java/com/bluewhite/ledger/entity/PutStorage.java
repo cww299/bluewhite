@@ -175,6 +175,12 @@ public class PutStorage extends BaseEntity<Long> {
 	private String productNumber;
 	
 	/**
+	 * 成品=1 皮壳 = 2
+	 */
+	@Transient
+	private Integer flag;
+	
+	/**
 	 * 查询字段
 	 */
 	@Transient
@@ -187,6 +193,15 @@ public class PutStorage extends BaseEntity<Long> {
 	
 	
 	
+
+	
+	public Integer getFlag() {
+		return flag;
+	}
+
+	public void setFlag(Integer flag) {
+		this.flag = flag;
+	}
 
 	public Integer getPublicStock() {
 		return publicStock;

@@ -106,17 +106,16 @@ public class HostelAction {
 	 */
 	@RequestMapping(value = "/fince/updateUser", method = RequestMethod.POST)
 	@ResponseBody
-	public CommonResponse updateUser(HttpServletRequest request, User user) {
+	public CommonResponse updateUser(User user) {
 		CommonResponse cr = new CommonResponse();
 		if(user.getId() != null){
-			User user2 = userService.findOne(user.getId());
-				BeanCopyUtils.copyNullProperties(user2, user);
-				user.setCreatedAt(user2.getCreatedAt());
+			User ot = userService.findOne(user.getId());
+			userService.update(user, ot, "");
 			cr.setMessage("修改成功");
 		}else{
+			userService.save(user);
 			cr.setMessage("添加成功");
 		}
-		service.updateUser(user);
 		return cr;
 	}
 	
