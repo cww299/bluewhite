@@ -25,7 +25,6 @@ import com.bluewhite.common.Log;
 import com.bluewhite.common.annotation.SysLogAspectAnnotation;
 import com.bluewhite.common.entity.CommonResponse;
 import com.bluewhite.common.entity.PageParameter;
-import com.bluewhite.ledger.entity.Customer;
 import com.bluewhite.ledger.entity.OrderProcurement;
 import com.bluewhite.product.primecost.cutparts.entity.CutParts;
 import com.bluewhite.product.primecost.cutparts.service.CutPartsService;
@@ -244,8 +243,8 @@ public class BaseOneAction {
 	public CommonResponse updatePrimeCoefficient(HttpServletRequest request,PrimeCoefficient primeCoefficient) {
 		CommonResponse cr = new CommonResponse();
 		if(primeCoefficient.getId()!=null){
-			PrimeCoefficient oldPrimeCoefficient = primeCoefficientDao.findOne(primeCoefficient.getId());
-			BeanCopyUtils.copyNullProperties(oldPrimeCoefficient,primeCoefficient);
+			PrimeCoefficient ot = primeCoefficientDao.findOne(primeCoefficient.getId());
+			BeanCopyUtils.copyNullProperties(ot,primeCoefficient);
 			if(primeCoefficient.getExtent()!=null){
 				//每CM 用时/秒
 				primeCoefficient.setTime(1/primeCoefficient.getExtent());

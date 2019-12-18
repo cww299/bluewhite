@@ -6,10 +6,8 @@ import java.io.OutputStream;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.Comparator;
 import java.util.Date;
-import java.util.GregorianCalendar;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -54,10 +52,6 @@ import com.bluewhite.personnel.attendance.entity.AttendanceCollect;
 import com.bluewhite.personnel.attendance.entity.AttendanceTime;
 import com.bluewhite.personnel.attendance.service.AttendanceService;
 import com.bluewhite.personnel.attendance.service.AttendanceTimeService;
-import com.bluewhite.product.primecostbasedata.entity.BaseOne;
-import com.bluewhite.product.primecostbasedata.entity.BaseOneTime;
-import com.bluewhite.product.primecostbasedata.entity.BaseThree;
-import com.bluewhite.product.primecostbasedata.entity.Materiel;
 import com.bluewhite.production.bacth.entity.Bacth;
 import com.bluewhite.production.bacth.service.BacthService;
 import com.bluewhite.production.finance.entity.CollectPay;
@@ -74,12 +68,9 @@ import com.bluewhite.reportexport.entity.MachinistProcedurePoi;
 import com.bluewhite.reportexport.entity.ProcedurePoi;
 import com.bluewhite.reportexport.entity.ProductPoi;
 import com.bluewhite.reportexport.entity.ReworkPoi;
-import com.bluewhite.reportexport.entity.User2Poi;
-import com.bluewhite.reportexport.entity.UserPoi;
 import com.bluewhite.reportexport.service.ReportExportService;
-import com.bluewhite.system.user.dao.UserDao;
-import com.bluewhite.system.user.entity.User;
-import com.bluewhite.system.user.entity.UserContract;
+
+import cn.hutool.core.date.DateUtil;
 
 @Controller
 @RequestMapping("excel")
@@ -409,6 +400,54 @@ public class ReportExportAction {
 				row2.createCell(3).setCellValue("");
 			}
 
+			wb.write(outputStream);
+			outputStream.flush();
+			outputStream.close();
+		} catch (IOException e1) {
+			e1.printStackTrace();
+		}
+	}
+	
+	/**
+	 * 人事导出打卡记录
+	 * 
+	 * @author zhangliang
+	 */
+	@RequestMapping("/importExcel/personnel/DownAttendanceSign")
+	public void DownAttendanceSign(HttpServletRequest request, HttpServletResponse response, Attendance attendance) {
+		response.setContentType("octets/stream");
+		response.addHeader("Content-Disposition", "attachment;filename=Attendance.xlsx");
+		try {
+			OutputStream outputStream = response.getOutputStream();
+			// 第一步，创建一个webbook，对应一个Excel文件
+			XSSFWorkbook wb = new XSSFWorkbook();
+			// 第二步，在webbook中添加一个sheet,对应Excel文件中的sheet
+			XSSFSheet sheet = wb.createSheet("签到表");
+			// 设置表格默认宽度为15个字节
+			sheet.setDefaultColumnWidth(15);
+			// 在sheet中添加表头第0行,注意老版本poi对Excel的行数列数有限制short
+			XSSFRow row = sheet.createRow(0);
+			// 第四步，创建单元格，并设置值表头 设置表头居中
+			XSSFCellStyle style = wb.createCellStyle();
+			XSSFCell cell = row.createCell(0);
+			cell.setCellValue("员工编号");
+			cell.setCellStyle(style);
+			cell = row.createCell(1);
+			cell.setCellValue("员工姓名");
+			cell.setCellStyle(style);
+			cell = row.createCell(2);
+			cell.setCellValue("签到时间");
+			cell.setCellStyle(style);
+			List<Attendance> attendanceList = attendanceService
+					.findPageAttendance(attendance, new PageParameter(0, Integer.MAX_VALUE)).getRows();
+			for (int i = 0; i < attendanceList.size(); i++) {
+				row = sheet.createRow(i + 1);
+				// 第四步，创建单元格，并设置值
+				row.createCell(0).setCellValue(attendanceList.get(i).getNumber());
+				row.createCell(1).setCellValue(
+						attendanceList.get(i).getUser() != null ? attendanceList.get(i).getUser().getUserName() : "");
+				row.createCell(2).setCellValue(DateUtil.formatDateTime(attendanceList.get(i).getTime()));
+			}
 			wb.write(outputStream);
 			outputStream.flush();
 			outputStream.close();
