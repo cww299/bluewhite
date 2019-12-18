@@ -2,6 +2,7 @@ package com.bluewhite.ledger.action;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.propertyeditors.CustomDateEditor;
@@ -61,6 +62,9 @@ import com.bluewhite.product.primecostbasedata.entity.BaseOne;
 import com.bluewhite.product.primecostbasedata.entity.Materiel;
 import com.bluewhite.product.product.entity.Product;
 import com.bluewhite.system.user.entity.User;
+
+import cn.hutool.core.bean.BeanUtil;
+import cn.hutool.core.map.MapUtil;
 
 /**
  * 销售
@@ -1183,6 +1187,9 @@ public class LedgerAction {
 	
 	/**
 	 * 2.皮壳仓库  根据加工单查询库存详情
+	 * 皮壳出库，通过针工工序加工单来领取皮壳
+	 * 根据针工工序加工单对应的生产计划单，查询处符合条件的入库单，在根据入库单出库
+	 * 
 	 * @return
 	 */
 	@RequestMapping(value = "/ledger/inventory/getOrderOutSourcePutStorageDetails", method = RequestMethod.GET)
@@ -1193,7 +1200,6 @@ public class LedgerAction {
 		cr.setMessage("查询成功");
 		return cr;
 	}
-	
 	
 	/**
 	 *  1.成品仓库 对发货单进行出库
