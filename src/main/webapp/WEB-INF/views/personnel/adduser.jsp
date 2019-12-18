@@ -54,6 +54,8 @@
 					<td>&nbsp;&nbsp;</td> 
 					<shiro:lacksRole name="attendanceStatistician">
 						<td><button type="button" id="synchronization2" class="layui-btn layui-btn-danger">考勤重置</button></td>
+						<td>&nbsp;&nbsp;</td>
+						<td><button type="button" id="export" class="layui-btn layui-btn-normal">导出</button></td>
 					</shiro:lacksRole>
 				</tr>
 			</table>
@@ -190,7 +192,7 @@ layui.config({
 			}); 
 		})
 	}); 
-	/* $('#export').on('click',function() {
+	$('#export').on('click',function() {
 		var userId = $('#userId').val();
 		var orgNameId = $("#department").val();
 		var number = $('#number').val();
@@ -205,7 +207,7 @@ layui.config({
 		}
 		location.href = "${ctx}/excel/importExcel/personnel/DownAttendanceSign?userId=" + (userId || "") + "&orgNameId=" + orgNameId + "&orderTimeBegin=" + orderTimeBegin
 				+ "&orderTimeEnd=" + orderTimeEnd + "" +"&number="+number+"&address="+address;
-	}); */
+	});
 	function getMode(){
 		return function(d){
 			var mode = "面部验证";
