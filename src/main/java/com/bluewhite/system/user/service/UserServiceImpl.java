@@ -36,7 +36,6 @@ import com.bluewhite.system.user.dao.UserDao;
 import com.bluewhite.system.user.entity.Role;
 import com.bluewhite.system.user.entity.RoleMenuPermission;
 import com.bluewhite.system.user.entity.User;
-import com.bluewhite.system.user.entity.UserContract;
 
 @Service
 public class UserServiceImpl extends BaseServiceImpl<User, Long> implements UserService {

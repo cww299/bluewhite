@@ -29,7 +29,7 @@
 				<div class="layui-form-item">
 					<table>
 						<tr>
-							<td>报销人:</td>
+							<td>扣税单位:</td>
 							<td><input type="text" name="customerName" id="firstNames" class="layui-input" /></td>
 							<td>&nbsp&nbsp</td>
 							<td><select class="layui-input" id="selectone">
@@ -45,7 +45,7 @@
 							</td> -->
 							<td>&nbsp&nbsp</td>
 							<td>是否核对:
-							<td><select class="form-control" name="flag">
+							<td><select class="form-control" name="flags">
 									<option value="0">未审核</option>
 									<option value="1">已审核</option>
 							</select></td>
@@ -113,29 +113,7 @@
 						elem: '#endTime',
 						type: 'datetime',
 					}); */
-				 
-					$.ajax({
-						url: '${ctx}/system/user/findAllUser',
-						type: "GET",
-						async: false,
-						beforeSend: function() {
-							index;
-						},
-						success: function(result) {
-							$(result.data).each(function(i, o) {
-								htmls += '<option value=' + o.id + '>' + o.userName + '</option>'
-							})
-							layer.close(index);
-						},
-						error: function() {
-							layer.msg("操作失败！", {
-								icon: 2
-							});
-							layer.close(index);
-						}
-					});
-					
-					
+					layer.close(index);
 				   	tablePlug.smartReload.enable(true); 
 					table.render({
 						elem: '#tableData',
@@ -143,7 +121,7 @@
 						height:'700px',
 						url: '${ctx}/fince/getConsumption' ,
 						where:{
-							flag:0,
+							flags:0,
 							type:7
 						},
 						request:{
@@ -176,7 +154,7 @@
 								field: "withholdReason",
 								title: "扣税单位",
 								templet: function(d){
-									return d.custom.name
+									return d.customer==null ? "" :d.customer.name
 								}
 							},{
 								field: "content",
@@ -318,7 +296,7 @@
 						}
 						var post={
 							customerName:field.customerName,
-							flag:field.flag,
+							flags:field.flags,
 							orderTimeBegin:orderTimeBegin,
 							orderTimeEnd:orderTimeEnd,
 							expenseDate:a,

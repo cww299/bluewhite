@@ -109,7 +109,7 @@ public class UserAction {
 	 */
 	@RequestMapping(value = "/pages", method = RequestMethod.GET)
 	@ResponseBody
-	public CommonResponse userPages(User user, PageParameter page) {
+	public CommonResponse userPages(User user, PageParameter page,String filterSos) {
 		CommonResponse cr = new CommonResponse();
 		cr.setData(clearCascadeJSON.format(userService.getPagedUser(page, user)).toJSON());
 		return cr;

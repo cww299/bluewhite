@@ -45,7 +45,7 @@
 							</td> -->
 							<td>&nbsp&nbsp</td>
 							<td>是否核对:
-							<td><select class="form-control" name="flag">
+							<td><select class="form-control" name="flags">
 									<option value="0">未审核</option>
 									<option value="1">已审核</option>
 							</select></td>
@@ -143,7 +143,7 @@
 						height:'700px',
 						url: '${ctx}/fince/getConsumption' ,
 						where:{
-							flag:0,
+							flags:0,
 							type:6
 						},
 						request:{
@@ -173,29 +173,13 @@
 								align: 'center',
 								fixed: 'left'
 							},{
-								field: "withholdReason",
-								title: "借款方",
-								templet: function(d){
-									return d.custom.name
-								}
-							},{
 								field: "content",
-								title: "内容",
+								title: "借款方",
+							},{
+								field: "remark",
+								title: "借款类型",
 								align: 'center',
 							},{
-								field: "budget",
-								title: "是否预算",
-								align: 'center',
-								search: true,
-								edit: false,
-								templet: function(d){
-									if(d.budget==0){
-										return "是"
-									}else{
-									return "否"
-									}
-								}
-							}, {
 								field: "money",
 								title: "支付金额",
 								align: 'center',
@@ -331,7 +315,7 @@
 						}
 						var post={
 							customerName:field.customerName,
-							flag:field.flag,
+							flags:field.flags,
 							orderTimeBegin:orderTimeBegin,
 							orderTimeEnd:orderTimeEnd,
 							expenseDate:a,
