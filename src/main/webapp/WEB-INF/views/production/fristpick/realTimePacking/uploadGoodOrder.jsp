@@ -142,6 +142,8 @@ layui.config({
 					}
 				},
 			},
+			limit:15,
+			limits:[10,15,20,30,50,100,200],
 			autoUpdate:{
 				deleUrl:'/temporaryPack/deleteUnderGoods',
 			},
