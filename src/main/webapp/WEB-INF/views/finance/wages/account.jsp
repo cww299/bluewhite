@@ -23,9 +23,6 @@
 				<div class="layui-form-item">
 					<table>
 						<tr>
-							<td>报销人:</td>
-							<td><input type="text" name="Username" id="firstNames" class="layui-input" /></td>
-							<td>&nbsp;&nbsp;</td>
 							<td>报销内容:</td>
 							<td><input type="text" name="content" class="layui-input" /></td>
 							<td>&nbsp;&nbsp;</td>
@@ -41,10 +38,10 @@
 							</td> -->
 							<td>&nbsp;&nbsp;</td>
 							<td>是否核对:
-							<td><select class="form-control" name="flag">
+							<td><select class="form-control" name="flags">
 									<option value="">请选择</option>
-									<option value="0">未核对</option>
-									<option value="1">已核对</option>
+									<option value="0">未审核</option>
+									<option value="1">已审核</option>
 							</select></td>
 							<td>&nbsp;&nbsp;</td>
 							<td>

@@ -27,7 +27,6 @@ import com.bluewhite.common.DateTimePattern;
 import com.bluewhite.common.entity.CommonResponse;
 import com.bluewhite.common.entity.ErrorCode;
 import com.bluewhite.common.entity.PageParameter;
-import com.bluewhite.common.entity.PageResult;
 import com.bluewhite.common.utils.excel.ExcelListener;
 import com.bluewhite.finance.consumption.entity.Consumption;
 import com.bluewhite.finance.consumption.entity.ConsumptionPoi;
@@ -53,7 +52,7 @@ public class ConsumptionAction {
 						"settleAccountsMode", "remark", "flag", "taxPoint", "contact", "logisticsDate", "contactName",
 						"batchNumber", "realityDate", "deleteFlag", "orgName","content")
 				.addRetainTerm(User.class, "id","userName")
-				.addRetainTerm(Customer.class,"name")
+				.addRetainTerm(Customer.class,"name","id")
 				.addRetainTerm(OrderProcurement.class,"orderProcurementNumber", "placeOrderNumber", "arrivalTime","order",
 						"materielLocation", "price","expectPaymentTime", "materiel", "gramPrice", "interest", "paymentMoney")
 				.addRetainTerm(Order.class,"bacthNumber")
