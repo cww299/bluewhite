@@ -89,6 +89,7 @@ public class QuantitativeServiceImpl extends BaseServiceImpl<Quantitative, Long>
 			}
 			Predicate[] pre = new Predicate[predicate.size()];
 			query.where(predicate.toArray(pre));
+			query.distinct(true);
 			return null;
 		}, page);
 		PageResult<Quantitative> result = new PageResult<>(pages, page);
@@ -125,7 +126,20 @@ public class QuantitativeServiceImpl extends BaseServiceImpl<Quantitative, Long>
 			for (int i = 0; i < jsonArray.size(); i++) {
 				JSONObject jsonObject = jsonArray.getJSONObject(i);
 				QuantitativeChild quantitativeChild = new QuantitativeChild();
-				quantitativeChild.setUnderGoodsId(jsonObject.getLong("underGoodsId"));
+				Long id = jsonObject.getLong("underGoodsId");
+				UnderGoods underGoods = underGoodsDao.findOne(id);
+				if(underGoods.getNumber()==null){
+					throw new ServiceException("贴包数量未填写，无法新增");
+				}
+				quantitativeChild.setUnderGoodsId(id);
+				//贴包数量
+				List<Long> stickListId = dao.findStickNumber(id);
+				List<QuantitativeChild> stickListList = quantitativeChildDao.findByIdIn(stickListId);
+				int numberStickSum = stickListList.stream().mapToInt(QuantitativeChild::getSingleNumber).sum();
+				underGoods.setSurplusStickNumber(underGoods.getNumber()-numberStickSum);
+				if(jsonObject.getInteger("singleNumber")>underGoods.getSurplusStickNumber()){
+					throw new ServiceException("剩余贴包数量不足，无法新增");
+				}
 				quantitativeChild.setSingleNumber(jsonObject.getInteger("singleNumber"));
 				quantitativeChild.setActualSingleNumber(jsonObject.getInteger("singleNumber"));
 				quantitativeChild.setChecks(0);

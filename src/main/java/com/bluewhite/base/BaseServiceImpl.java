@@ -4,6 +4,7 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
@@ -16,6 +17,9 @@ import org.springframework.data.jpa.domain.Specification;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.bluewhite.common.BeanCopyUtils;
+import com.bluewhite.common.entity.PageParameter;
+import com.bluewhite.common.entity.PageResult;
+import com.bluewhite.common.utils.AutoSearchUtils.SearchUtils;
 
 /**
  * <p>抽象service层基类 提供一些简便方法
@@ -35,7 +39,6 @@ public abstract class BaseServiceImpl<T extends AbstractEntity<ID>, ID extends S
 	@PersistenceContext
 	protected EntityManager entityManager;
    
-
     /**
      * 保存单个实体
      *
@@ -162,6 +165,21 @@ public abstract class BaseServiceImpl<T extends AbstractEntity<ID>, ID extends S
      */
     public Page<T> findAll(Pageable pageable) {
         return baseRepository.findAll(pageable);
+    }
+    
+    /**
+     * 分页及排序查询实体
+     *
+     * @param pageable 分页及排序数据
+     * @return 返回分页实体
+     */
+    public PageResult<T> findAll(PageParameter page,Map<String, Object> params) {
+    	Page<T> pages = baseRepository.findAll((root, query, cb) -> {
+			SearchUtils.autoBuildQuery(root, query, cb, params);
+			return null;
+		}, page);
+		PageResult<T> result = new PageResult<>(pages, page);
+		return result;
     }
 
     /**
