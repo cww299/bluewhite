@@ -18,7 +18,7 @@
 <head>
 <meta charset="utf-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
-<title>物流申请</title>
+<title>借款本金</title>
 <meta name="description" content="">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
 </head>
@@ -31,10 +31,10 @@
 					<table>
 						<tr>
 							<td>借款方:</td>
-							<td><input type="text" name="customerName" id="firstNames" class="layui-input" /></td>
+							<td><input type="text" name="content" class="layui-input" /></td>
 							<td>&nbsp&nbsp</td>
 							<td><select class="form-control" name="expenseDate" id="selectone">
-									<option value="2018-10-08 00:00:00">申请日期</option>
+									<option value="2018-10-08 00:00:00">预计付款日期</option>
 								</select></td>
 							<td>&nbsp&nbsp</td>
 							<td><input id="startTime" style="width: 300px;" name="orderTimeBegin" placeholder="请输入开始时间" class="layui-input laydate-icon">
@@ -45,7 +45,7 @@
 							</td> -->
 							<td>&nbsp&nbsp</td>
 							<td>是否核对:
-							<td><select class="form-control" name="flag">
+							<td><select class="form-control" name="flags">
 									<option value="">请选择</option>
 									<option value="0">未核对</option>
 									<option value="1">已核对</option>
@@ -76,16 +76,16 @@
 			<div class="layui-form-item">
 				<label class="layui-form-label" style="width: 130px;">借款方</label>
 				<div class="layui-input-inline">
-						<input type="text" value="{{d.custom.name }}" name="customerName" id="userId"
+						<input type="text" value="{{d.content }}" name="content" id="userId"
 						placeholder="请输入借款方名称"
 						class="layui-input laydate-icon" data-provide="typeahead">
 				</div>
 			</div>
 			
 			<div class="layui-form-item">
-				<label class="layui-form-label" style="width: 130px;">内容</label>
+				<label class="layui-form-label" style="width: 130px;">借款类型</label>
 				<div class="layui-input-inline">
-					<input type="text" value="{{d.content }}" name="content" id="content"
+					<input type="text" value="{{d.remark }}" name="remark" id="content"
 						lay-verify="required" placeholder="请输入内容"
 						class="layui-input laydate-icon">
 				</div>
@@ -252,14 +252,11 @@
 								align: 'center',
 								fixed: 'left'
 							},{
-								field: "withholdReason",
-								title: "借款方",
-								templet: function(d){
-									return d.custom.name
-								}
-							},{
 								field: "content",
-								title: "内容",
+								title: "借款方",
+							},{
+								field: "remark",
+								title: "借款类型",
 								align: 'center',
 							},{
 								field: "money",
@@ -372,7 +369,7 @@
 					
 					
 					function addEidt(type){
-						var data={custom:{name:''},money:'',contactName:'',expenseDate:'',content:'贷款本金',withholdMoney:'',withholdReason:''};
+						var data={custom:{name:''},money:'',contactName:'',expenseDate:'',content:'',remark:'贷款本金', withholdMoney:'',withholdReason:''};
 						var title="新增数据";
 						var html="";
 						var tpl=addEditTpl.innerHTML;
@@ -411,11 +408,9 @@
 								form.on('submit(addRole)', function(data) {
 						        	var	field={
 						        			id:id,
-						        			customerName:data.field.customerName,
+						        			remark:data.field.remark,
 						        			content:data.field.content,
 						        			money:data.field.money,
-						        			customId:self.getIndex(),
-						        			contactName:data.field.contactName,
 						        			expenseDate:data.field.expenseDate,
 						        			type:6
 						        		}
@@ -436,51 +431,6 @@
 							elem: '#logisticsDate',
 							type: 'datetime',
 						});
-						//提示查询
-						 $("#userId").typeahead({
-								source : function(query, process) {
-									return $.ajax({
-										url : '${ctx}/fince/findCustom',
-										type : 'GET',
-										data : {
-											name:query,
-											type:6
-										},
-										success : function(result) {
-											//转换成 json集合
-											 var resultList = result.data.map(function (item) {
-												 	//转换成 json对象
-							                        var aItem = {name: item.name, id:item.id}
-							                        //处理 json对象为字符串
-							                        return JSON.stringify(aItem);
-							                    });
-												 self.setIndex(0);
-											//提示框返回数据
-											 return process(resultList);
-										},
-									})
-									//提示框显示
-								}, highlighter: function (item) {
-								    //转出成json对象
-									 var item = JSON.parse(item);
-									return item.name
-									//按条件匹配输出
-				                }, matcher: function (item) {
-				                	//转出成json对象
-							        var item = JSON.parse(item);
-							        self.setIndex(item.id);
-							    	return item.id
-							    },
-								//item是选中的数据
-								updater:function(item){
-									//转出成json对象
-									var item = JSON.parse(item);
-									self.setIndex(item.id);
-										return item.name
-								},
-
-								
-							});
 					}
 					
 					
