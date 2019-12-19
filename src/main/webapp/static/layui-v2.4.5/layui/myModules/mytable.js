@@ -141,7 +141,7 @@ layui.extend({
 								layui.each(name,function(i,t){
 									var field = item;
 									layui.each(t.split('_'),function(i2,t2){
-										field = field[t2]?field[t2]:'';
+										field = field[t2]?field[t2]:(field[t2]!=0?'':0);
 									})
 									text.push(field);
 								})
