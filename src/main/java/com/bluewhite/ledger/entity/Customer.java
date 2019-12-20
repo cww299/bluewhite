@@ -8,6 +8,7 @@ import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
 import com.bluewhite.base.BaseEntity;
+import com.bluewhite.basedata.entity.BaseData;
 import com.bluewhite.system.sys.entity.RegionAddress;
 import com.bluewhite.system.user.entity.User;
 
@@ -18,7 +19,7 @@ import com.bluewhite.system.user.entity.User;
 @Entity
 @Table(name = "ledger_customer")
 public class Customer extends BaseEntity<Long> {
-	
+
 	/**
 	 * 销售人员id
 	 * 
@@ -32,49 +33,68 @@ public class Customer extends BaseEntity<Long> {
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "user_id", referencedColumnName = "id", insertable = false, updatable = false)
 	private User user;
-	
+
 	/**
 	 * 客户昵称
 	 * 
 	 */
 	@Column(name = "name")
 	private String name;
-	
+
 	/**
 	 * 客户真实姓名
 	 */
 	@Column(name = "buyer_name")
 	private String buyerName;
-	
+
 	/**
 	 * 客户等级
 	 * 
 	 */
 	@Column(name = "grade")
 	private Integer grade;
-	
-	
+
 	/**
-	 * 客户类型(1=电商,2=商超，3=线下，4=面辅料供应商 5=加工点6=菜商)
-	 * 
+	 * 客户归属id
 	 */
-	@Column(name = "type")
-	private Integer type;
-	
+	@Column(name = "customer_attribution_id")
+	private Long customerAttributionId;
+
+	/**
+	 * 客户归属
+	 */
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "customer_attribution_id", referencedColumnName = "id", insertable = false, updatable = false)
+	private BaseData customerAttribution;
+
+	/**
+	 * 客户归属id
+	 */
+	@Column(name = "customer_type_id")
+	private Long customertypeId;
+
+	/**
+	 * (1=电商,2=商超，3=线下，4=面辅料供应商 5=加工点 6=菜商) 
+	 * 客户归属
+	 */
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "customer_type_id", referencedColumnName = "id", insertable = false, updatable = false)
+	private BaseData customerType;
+
 	/**
 	 * 收货人的所在省份
 	 * 
 	 */
 	@Column(name = "provinces_id")
 	private Long provincesId;
-	
+
 	/**
 	 * 省份
 	 */
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "provinces_id", referencedColumnName = "id", insertable = false, updatable = false)
 	private RegionAddress provinces;
-	
+
 	/**
 	 * 收货人的所在市
 	 * 
@@ -87,8 +107,7 @@ public class Customer extends BaseEntity<Long> {
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "city_id", referencedColumnName = "id", insertable = false, updatable = false)
 	private RegionAddress city;
-	
-	
+
 	/**
 	 * 收货人的所在县
 	 * 
@@ -101,35 +120,33 @@ public class Customer extends BaseEntity<Long> {
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "county_id", referencedColumnName = "id", insertable = false, updatable = false)
 	private RegionAddress county;
-	
-	
+
 	/**
 	 * 收货人的详细地址
 	 * 
 	 */
 	@Column(name = "address")
 	private String address;
-	
+
 	/**
-	 * 买家手机号
+	 * 手机号
 	 * 
 	 */
 	@Column(name = "phone")
 	private String phone;
-	
+
 	/**
 	 * 帐号
 	 * 
 	 */
 	@Column(name = "account")
 	private String account;
-	
+
 	/**
 	 * 邮编
 	 */
 	@Column(name = "zip_code")
 	private String zipCode;
-	
 
 	/**
 	 * 联系方式
@@ -137,16 +154,13 @@ public class Customer extends BaseEntity<Long> {
 	 */
 	@Column(name = "contact")
 	private String contact;
-	
+
 	/**
 	 * 联系人姓名
 	 * 
 	 */
 	@Column(name = "contact_name")
 	private String contactName;
-
-	
-
 
 	public String getAccount() {
 		return account;
@@ -284,12 +298,37 @@ public class Customer extends BaseEntity<Long> {
 		this.name = name;
 	}
 
-	public Integer getType() {
-		return type;
+	public Long getCustomerAttributionId() {
+		return customerAttributionId;
 	}
 
-	public void setType(Integer type) {
-		this.type = type;
+	public void setCustomerAttributionId(Long customerAttributionId) {
+		this.customerAttributionId = customerAttributionId;
 	}
 
+	public BaseData getCustomerAttribution() {
+		return customerAttribution;
+	}
+
+	public void setCustomerAttribution(BaseData customerAttribution) {
+		this.customerAttribution = customerAttribution;
+	}
+
+	public Long getCustomertypeId() {
+		return customertypeId;
+	}
+
+	public void setCustomertypeId(Long customertypeId) {
+		this.customertypeId = customertypeId;
+	}
+
+	public BaseData getCustomerType() {
+		return customerType;
+	}
+
+	public void setCustomerType(BaseData customerType) {
+		this.customerType = customerType;
+	}
+
+	
 }
