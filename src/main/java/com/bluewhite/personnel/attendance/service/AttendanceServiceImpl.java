@@ -157,9 +157,9 @@ public class AttendanceServiceImpl extends BaseServiceImpl<Attendance, Long> imp
 		if (Constants.THREE_FLOOR.equals(address)) {
 			sourceMachine = "THREE_FLOOR";
 		}
-		if (Constants.TWO_FLOOR.equals(address)) {
-			sourceMachine = "TWO_FLOOR";
-		}
+//		if (Constants.TWO_FLOOR.equals(address)) {
+//			sourceMachine = "TWO_FLOOR";
+//		}
 		if (Constants.ONE_FLOOR.equals(address)) {
 			sourceMachine = "ONE_FLOOR";
 		}
@@ -190,9 +190,9 @@ public class AttendanceServiceImpl extends BaseServiceImpl<Attendance, Long> imp
 			if (Constants.THREE_FLOOR.equals(param.getSourceMachine())) {
 				sourceMachine = "THREE_FLOOR";
 			}
-			if (Constants.TWO_FLOOR.equals(param.getSourceMachine())) {
-				sourceMachine = "TWO_FLOOR";
-			}
+//			if (Constants.TWO_FLOOR.equals(param.getSourceMachine())) {
+//				sourceMachine = "TWO_FLOOR";
+//			}
 			if (Constants.ONE_FLOOR.equals(param.getSourceMachine())) {
 				sourceMachine = "ONE_FLOOR";
 			}
@@ -257,7 +257,6 @@ public class AttendanceServiceImpl extends BaseServiceImpl<Attendance, Long> imp
 	public List<Map<String, Object>> getAllAttendance(String address) {
 		sdk.initSTA();
 		boolean flag = sdk.connect(address, 4370);
-		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 		List<Map<String, Object>> attendanceList = null;
 		flag = sdk.readGeneralLogData(0);
 		if (flag) {
@@ -311,7 +310,7 @@ public class AttendanceServiceImpl extends BaseServiceImpl<Attendance, Long> imp
 		}
 		if (StringUtils.isEmpty(address)) {
 			allAttendance(Constants.THREE_FLOOR, startTime, endTime, userId);
-			allAttendance(Constants.TWO_FLOOR, startTime, endTime, userId);
+//			allAttendance(Constants.TWO_FLOOR, startTime, endTime, userId);
 			allAttendance(Constants.ONE_FLOOR, startTime, endTime, userId);
 			allAttendance(Constants.EIGHT_WAREHOUSE, startTime, endTime, userId);
 			allAttendance(Constants.NEW_IGHT_WAREHOUSE, startTime, endTime, userId);
