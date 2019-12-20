@@ -131,6 +131,7 @@ public class OutStorageServiceImpl extends BaseServiceImpl<OutStorage, Long> imp
 	public void sendOutStorage(Long id, Integer sendNumber, String putStorage,Integer flag) {
 		CurrentUser cu = SessionManager.getUserSession();
 		SendGoods sendGoods = sendGoodsDao.findOne(id);
+		
 		// 生成出库单
 		OutStorage outStorage = new OutStorage();
 		//成品使用发货单
