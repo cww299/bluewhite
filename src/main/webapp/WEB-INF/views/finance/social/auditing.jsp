@@ -31,26 +31,26 @@
 						<tr>
 							<td>扣税单位:</td>
 							<td><input type="text" name="customerName" id="firstNames" class="layui-input" /></td>
-							<td>&nbsp&nbsp</td>
+							<td>&nbsp;&nbsp;</td>
 							<td><select class="layui-input" id="selectone">
 									<option value="expenseDate">预计付款日期</option>
 									<option value="paymentDate">实际付款日期</option>
 							</select></td>
-							<td>&nbsp&nbsp</td>
+							<td>&nbsp;&nbsp;</td>
 							<td><input id="startTime" style="width: 300px;" name="orderTimeBegin" placeholder="请输入开始时间" class="layui-input">
 							</td>
 							<!-- <td>&nbsp&nbsp</td>
 							<td>结束:</td>
 							<td><input id="endTime" name="orderTimeEnd" placeholder="请输入结束时间" class="layui-input">
 							</td> -->
-							<td>&nbsp&nbsp</td>
+							<td>&nbsp;&nbsp;</td>
 							<td>是否核对:
 							<td><select class="form-control" name="flags">
 									<option value="0">未审核</option>
 									<option value="2">部分审核</option>
 									<option value="1">已审核</option>
 							</select></td>
-							<td>&nbsp&nbsp</td>
+							<td>&nbsp;&nbsp;</td>
 							<td>
 								<div class="layui-inline">
 									<button class="layui-btn layuiadmin-btn-admin" lay-submit
@@ -107,7 +107,7 @@
 					
 					laydate.render({
 						elem: '#startTime',
-						type: 'datetime',
+						type: 'date',
 						range: '~',
 					});
 					/* laydate.render({
@@ -161,23 +161,23 @@
 								field: "content",
 								title: "税种",
 								align: 'center',
-							}, {
+							},{
 								field: "money",
 								title: "金额",
 								align: 'center',
-							}, {
+							},{
 								field: "expenseDate",
 								title: "预计付款日期",
-							}, {
+							},{
 								field: "paymentDate",
 								title: "实际付款时间",
 								style:'background-color: #d8fe83',
-							}, {
+							},{
 								field: "paymentMoney",
 								title: "付款金额",
 								edit: 'text',
 								style:'background-color: #d8fe83',
-							}, {
+							},{
 								field: "flag",
 								title: "审核状态",
 								templet:  function(d){
@@ -275,8 +275,8 @@
 					form.on('submit(LAY-search)', function(data) {
 						var field = data.field;
 						var orderTime=field.orderTimeBegin.split('~');
-						orderTimeBegin=orderTime[0];
-						orderTimeEnd=orderTime[1];
+						orderTimeBegin=orderTime[0]+' '+'00:00:00';
+						orderTimeEnd=orderTime[1]+' '+'23:59:59';
 						var a="";
 						var b="";
 						if($("#selectone").val()=="expenseDate"){
