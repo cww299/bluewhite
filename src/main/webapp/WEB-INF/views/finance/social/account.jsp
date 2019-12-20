@@ -396,7 +396,7 @@
 							success : function(layero, index) {
 								$.ajax({
 									url: '${ctx}/ledger/customerPage',
-									data:{type:999},
+									data:{customerAttributionId:448,customerTypeId:454},
 									type: "GET",
 									async: false,
 									beforeSend: function() {
@@ -454,8 +454,6 @@
 						});
 						
 					}
-					
-					
 					
 				
 				
