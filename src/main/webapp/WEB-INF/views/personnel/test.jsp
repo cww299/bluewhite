@@ -5,6 +5,7 @@
 <html>
 <head>
 	<link rel="stylesheet" href="${ctx }/static/layui-v2.4.5/layui/css/layui.css" media="all">
+	<link rel="stylesheet" href="${ctx }/static/layui-v2.4.5/layui/css/soulTable.css" media="all">
 	<script src="${ctx}/static/layui-v2.4.5/layui/layui.js"></script>
 	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 	<style type="text/css">
@@ -120,7 +121,7 @@
 	<table class="layui-table" id="specialTable" lay-filter="specialTable"></table>
 </div> -->
 
-<div id="userin" style="display: none; padding-left: 25px;" >
+<div id="userin" style="display: none; padding-left: 19px;" >
 	<table>
 			<tr>
 				<th style="vertical-align: top">
@@ -205,11 +206,11 @@
 		      </div>
 		    </div>
 			<div class="layui-inline">
-		      <label class="layui-form-label">身份证到期时间</label>
+		      <label class="layui-form-label">位置编号</label>
 		      <div class="layui-input-inline">
-		        <input type="tel"  name="idCardEnd" id="idCardEnd"  autocomplete="off" class="layui-input">
+		        <input type="text" name="lotionNumber" value="{{ d.lotionNumber}}"  autocomplete="off" class="layui-input">
 		      </div>
-		    </div>
+		    </div>			
   			</div>
 			
 			<div class="layui-form-item">
@@ -407,27 +408,6 @@
 		      </div>
 		    </div>
   			</div>
-			
-			<div class="layui-form-item">
-		    <div class="layui-inline">
-		      <label class="layui-form-label">毕业学校</label>
-		      <div class="layui-input-inline">
-		        <input type="text" name="school" value="{{ d.school==null ? "" : d.school}}" autocomplete="off" class="layui-input">
-		      </div>
-		    </div>
-		    <div class="layui-inline">
-		      <label class="layui-form-label">专业</label>
-		      <div class="layui-input-inline">
-		      	 <input type="text" name="major" value="{{ d.major==null ? "" : d.major}}"  autocomplete="off" class="layui-input">
-			  </div>
-		    </div>
-			<div class="layui-inline" >
-		      <label class="layui-form-label">协议</label>
-		      <div class="layui-input-block"  name="agreementId" id="agreementId" style="width: 285px;">
-		     
-			  </div>
-		    </div>
-  			</div>
 
 			<div class="layui-form-item">
 			 <div class="layui-inline">
@@ -451,8 +431,35 @@
 							
 				</select>
 		      </div>
-		    </div>		
+		    </div>	
+			<div class="layui-inline">
+		      <label class="layui-form-label">身份证到期时间</label>
+		      <div class="layui-input-inline">
+		        <input type="tel"  name="idCardEnd" id="idCardEnd"  autocomplete="off" class="layui-input">
+		      </div>
+		    </div>
 			</div>
+
+			<div class="layui-form-item">
+		    <div class="layui-inline">
+		      <label class="layui-form-label">毕业学校</label>
+		      <div class="layui-input-inline">
+		        <input type="text" name="school" value="{{ d.school==null ? "" : d.school}}" autocomplete="off" class="layui-input">
+		      </div>
+		    </div>
+		    <div class="layui-inline">
+		      <label class="layui-form-label">专业</label>
+		      <div class="layui-input-inline">
+		      	 <input type="text" name="major" value="{{ d.major==null ? "" : d.major}}"  autocomplete="off" class="layui-input">
+			  </div>
+		    </div>
+			<div class="layui-inline" >
+		      <label class="layui-form-label">协议</label>
+		      <div class="layui-input-block"  name="agreementId" id="agreementId" style="width: 285px;">
+		     
+			  </div>
+		    </div>
+  			</div>			
 
 			<div class="layui-form-item">
 			<div class="layui-inline">
@@ -466,108 +473,11 @@
 	</form>
 </script>
 
-<script type="text/html" id="addEditTpl2">
-<form action="" id="layuiadmin-form-admin3"
-		style="padding: 20px 0px 0 50px;  text-align:">
-		<div class="layui-form layui-form-pane" lay-filter="layuiadmin-form-admin6">
-				
-			<div class="layui-form-item">
-		    <div class="layui-inline">
-		      <label class="layui-form-label">员工姓名</label>
-		      <div class="layui-input-inline">
-		        <input   name="username" value="{{ d.userName }}" readonly="readonly"  autocomplete="off" class="layui-input">
-		      </div>
-		    </div>
-		    <div class="layui-inline">
-		      <label class="layui-form-label">位置编号</label>
-		      <div class="layui-input-inline">
-		        <input type="text" name="number" value="{{ d.userContract==null ? "" :  d.userContract.number}}"   autocomplete="off" class="layui-input">
-		      </div>
-		    </div>
-		    <div class="layui-inline">
-		      <label class="layui-form-label">照片数量</label>
-		      <div class="layui-input-inline">
-		        <input type="text" name="pic" value="{{ d.userContract==null ? "" :  d.userContract.pic}}"  autocomplete="off" class="layui-input">
-		      </div>
-		    </div>
-			<div class="layui-inline">
-		      <label class="layui-form-label">身份证数量</label>
-		      <div class="layui-input-inline">
-		        <input type="tel"  name="idCard"  value="{{ d.userContract==null ? "" :  d.userContract.idCard}}"  autocomplete="off" class="layui-input">
-		      </div>
-		    </div>
-  			</div>
-			
-			<div class="layui-form-item">
-		    <div class="layui-inline">
-		      <label class="layui-form-label">银行卡数量</label>
-		      <div class="layui-input-inline">
-		        <input type="tel"  name="bankCard" value="{{ d.userContract==null ? "" :  d.userContract.bankCard }}"  autocomplete="off" class="layui-input">
-		      </div>
-		    </div>
-		    <div class="layui-inline">
-		      <label class="layui-form-label">体检</label>
-		      <div class="layui-input-inline">
-		      <input type="tel"  name="physical" value="{{ d.userContract==null ? "" :  d.userContract.physical }}"  autocomplete="off" class="layui-input">
-				</div>
-		    </div>
-		    <div class="layui-inline">
-		      <label class="layui-form-label">资格证书</label>
-		      <div class="layui-input-inline">
-		        <input type="text" name="qualification" value="{{ d.userContract==null ? "" :  d.userContract.qualification}}"  autocomplete="off" class="layui-input">
-		      </div>
-		    </div>
-			<div class="layui-inline">
-		      <label class="layui-form-label">学历证书</label>
-		      <div class="layui-input-inline">
-		        <input type="tel"  name="formalSchooling"  value="{{ d.userContract==null ? "" :  d.userContract.formalSchooling}}"   autocomplete="off" class="layui-input">
-		      </div>
-		    </div>
-  			</div>
-			
-			<div class="layui-form-item">
-		    <div class="layui-inline">
-		      <label class="layui-form-label">其他协议</label>
-		      <div class="layui-input-inline">
-				 <input type="text" name="agreement"  value="{{ d.userContract==null ? "" :  d.userContract.agreement }}"   autocomplete="off" class="layui-input">
-		      </div>
-		    </div>
-		    <div class="layui-inline">
-		      <label class="layui-form-label">保密协议</label>
-		      <div class="layui-input-inline">
-				 <input type="text" name="secrecyAgreement"  value="{{ d.userContract==null ? "" :  d.userContract.secrecyAgreement }}"   autocomplete="off" class="layui-input">
-		      </div>
-		    </div>
-		    <div class="layui-inline">
-		      <label class="layui-form-label">合同数量</label>
-		      <div class="layui-input-inline">
-		        <input type="text" name="contract" value="{{ d.userContract==null ? "" :  d.userContract.contract }}"   autocomplete="off" class="layui-input">
-		      </div>
-		    </div>
-			<div class="layui-inline">
-		      <label class="layui-form-label">其他资料</label>
-		      <div class="layui-input-inline">
-		        <input type="text" name="remark"  id="ascriptionBank1" value="{{ d.userContract==null ? "" :  d.userContract.remark }}"  autocomplete="off" class="layui-input">
-		      </div>
-		    </div>
-  			</div>
-			
-			<div class="layui-form-item">
-		    <div class="layui-inline">
-		      <label class="layui-form-label">员工档案</label>
-		      <div class="layui-input-inline">
-		        <input type="tel"  name="archives"  value="{{ d.userContract==null ? "" :  d.userContract.archives }}"  autocomplete="off" class="layui-input">
-		      </div>
-		    </div>
-  			</div>
-		</div>
-	</form>
-</script>
+
 
 <!-- 表格工具栏模板 -->
 <script type="text/html" id="barDemo">
 	<span class="layui-btn layui-btn-trans layui-btn-xs layui-bg-green"  lay-event="addbatch">员工详情</span>
-	<span class="layui-btn layui-btn-trans layui-btn-xs layui-bg-green"  lay-event="addArchives">档案位置详情</span>
 </script>
 
 <script type="text/html" id="recruitToolbar">
@@ -585,7 +495,7 @@ layui.config({
 }).extend({
 	tablePlug : 'tablePlug/tablePlug',
 }).define(
-	['tablePlug','laydate','upload'],
+	['tablePlug','laydate','upload','upload','soulTable'],
 	function(){
 		var $ = layui.jquery
 		, layer = layui.layer 				
@@ -594,7 +504,8 @@ layui.config({
 		, laydate = layui.laydate
 		, laytpl = layui.laytpl
 		, tablePlug = layui.tablePlug
-		,upload = layui.upload;
+		,upload = layui.upload
+		,soulTable = layui.soulTable;
 		
 		laydate.render({
 			elem: '#startTime',
@@ -648,6 +559,7 @@ layui.config({
 		  });
 		
 		var allPlatform = [];
+		var chosedMember=[];
 	 	tablePlug.smartReload.enable(true);  
 	 	table.render({
 			elem:'#recruitTable',
@@ -655,94 +567,155 @@ layui.config({
 			toolbar:'#recruitToolbar',
 			loading:true,
 			page:true,
-			size:'sm',
-			limit:18,
+			method:'GET',
+			soulSort: false,
+			limit: 14,
+			soulSort: true,
 			smartReloadModel: true,    // 开启智能重载
 			request:{ pageName:'page', limitName:'size' },
 			parseData:function(ret){ return { data:ret.data.rows, count:ret.data.total, msg:ret.message, code:ret.code } },
-			cols:[[{align: 'center',type: 'checkbox', },
-			       {align:'center', title:'位置编号', edit: false, templet: function(d){return (d.userContract==null ? "" : d.userContract.number)}},
-			       {align:'center', title:'姓名',   field:'userName'},
-			       {align:'center', title:'手机号', 	field:'phone',edit: false,	},
+			overflow: 'tips',
+			rowDrag: {trigger: '.layui-icon-snowflake', done: function(obj) {
+		            // 完成时（松开时）触发
+		            // 如果拖动前和拖动后无变化，则不会触发此方法
+		            console.log(obj.row) // 当前行数据
+		            console.log(obj.cache) // 改动后表格数据
+		            console.log(obj.oldIndex) // 原来的数据索引
+		            console.log(obj.newIndex) // 改动后数据索引
+		        }},
+	        contextmenu: {
+	            // 表头右键菜单配置
+	            header: [
+	                {
+	                    name: '导出excel',
+	                    click: function() {
+	                      soulTable.export(this.id)
+	                    }
+	                },
+	                {
+	                    name: '字体颜色',
+	                    icon: 'layui-icon layui-icon-theme',
+	                    children: [
+	                        {
+	                             name: '红色',
+	                             children: [
+	                                 {
+	                                    name: '大红色',
+	                                    click: function(obj) {
+	                                      obj.elem.css('color', 'red')
+	                                    }
+	                                 },
+	                                 {
+	                                    name: '粉红色',
+	                                    click: function(obj) {
+	                                      obj.elem.css('color', 'pink')
+	                                    }
+	                                 },
+	                             ]
+	                        },
+	                        {
+	                             name: '绿色',
+	                             click: function(obj) {
+	                               obj.elem.css('color', '#009688')
+	                             }
+	                         }
+	                     ] 
+	                }
+	                ,
+	                {
+	                    name: '背景色',
+	                    icon: 'layui-icon layui-icon-theme',
+	                    children: [
+	                        {
+	                             name: '蓝色',
+	                             click: function(obj) {
+	                                obj.elem.css('background', '#01AAED')
+	                             }
+	                        },
+	                        {
+	                             name: '黄色',
+	                             click: function(obj) {
+	                            	 obj.tdElem.css('background', '#01AAED')
+	                             }
+	                         }
+	                     ] 
+	                }
+	            ],
+	            // 表格内容右键菜单配置
+	            body: [
+	                {
+	                    name: '清空行标记',
+	                    click: function(obj) {
+	                    	obj.trElem.css('background','')
+	                    }
+	                },
+	                {
+	                    name: '清空字体标记',
+	                    click: function(obj) {
+	                    	obj.elem.css('color', '')
+	                    }
+	                },
+	                {
+	                    name: '行-蓝色',
+	                    click: function(obj) {
+	                        obj.trElem.css('background', '#01AAED')
+	                    }
+	                },
+	                {
+	                    name: '红色',
+	                    click: function(obj) {
+	                      obj.elem.css('color', 'red')
+	                    }
+	                }
+	            ],
+	            // 合计栏右键菜单配置
+	            total: [
+	                {
+	                    name: '背景黄色',
+	                    click: function(obj) {
+	                      obj.elem.css('background', '#FFB800')
+	                    }
+	                }
+	            ] 
+	        },
+			cols:[[{align: 'center',type: 'checkbox'},
+			       {align:'center', title:'位置编号',field:'lotionNumber', edit: false},
+			       {align:'center', title:'姓名',   field:'userName', filter: true, templet:'<div><i class="layui-icon layui-icon-snowflake" />{{d.userName}}</div>'},
+			       {align:'center', title:'手机号', 	field:'phone',edit: false,sort: true,filter: true},
 			       {align:'center', title:'年龄',   field:'age',	  edit: false,templet:function(d){return d.age==null ? "" : d.age}},
 			       {align:'center',title: "合同", field:"commitment",templet: function(d){if(d.commitment==0){return "未签"}else if (d.commitment==1){return "已签"} else if (d.commitment==2){return "续签"} else {return ""}}},
 			       {align:'center',field: "positionId",title: "承诺书",templet: function(d){if(d.promise==0){return "未签"}else if(d.promise==1){return "已签"}else{return ""}}},
 			       {align:'center', title:'保险',field:'safe',templet: function(d){if(d.safe==0){return "未缴"}else if(d.safe==1){return "已缴"}else{return ""}}},
-			       {align:'center', title:'入职时间',field:'contractDateEnd',templet:function(d){return (/\d{4}-\d{1,2}-\d{1,2}/g.exec(d.contractDateEnd)==null ? "" :  /\d{4}-\d{1,2}-\d{1,2}/g.exec(d.contractDateEnd))}}, 
+			       {align:'center', title:'入职时间',field:'contractDateEnd' ,filter: true,}, 
 			       {align:'center', title:'预计转正时间',field:'estimate',templet:function(d){return (/\d{4}-\d{1,2}-\d{1,2}/g.exec(d.estimate)==null ? "" :  /\d{4}-\d{1,2}-\d{1,2}/g.exec(d.estimate))}}, 
 			       {align:'center', title:'合同到期时间',field:'entry',templet:function(d){return (/\d{4}-\d{1,2}-\d{1,2}/g.exec(d.entry)==null ? "" :  /\d{4}-\d{1,2}-\d{1,2}/g.exec(d.entry))}}, 
 			       {align:'center', title:'部门',field:'orgName',templet:function(d){return (d.orgName==null ? "" : d.orgName.name)}},
 			       {align:'center', title:'是否在职',field:'orgName',templet:function(d){return (d.quit==0 ? "在职" : "离职")}},
 			       {align:'center', width:'14%', title:'操作',toolbar: '#barDemo'},
 			       ]],
-		})
-		
+			        filter: {
+		                clearFilter: true,
+		            }, 
+			       /* filter: {
+			            items:['column','data','condition','editCondition','excel','clearCache'] // 加入了清除缓存按钮
+			            ,cache: true 
+			        },  */
+			       done: function () {
+			            soulTable.render(this)
+			        }
+		});
+	 	table.on('sort(recruitTable)', function() {
+            layer.msg('自己监听排序事件')
+        })
 		table.on('tool(recruitTable)', function(obj) {
 			var data=obj.data;
 			switch(obj.event){
 			case 'addbatch': addbatch(data);
 				break;
-			case 'addArchives': addArchives(data);
-				break;
 			}
 		})
 		
-		function addArchives(data){
-	 		var userContractId=data.userContract.id
-	 		if(userContractId==""){
-	 			return layer.msg("该员工没有合同信息 请去员工信息中修改", {icon: 2});
-	 		}
-	 		var id=data.id;
-			var tpl=addEditTpl2.innerHTML;
-			var html="";
-			laytpl(tpl).render(data,function(h){
-				html=h;
-     			})
-	 		var index=layer.open({
-				type:1,
-				title:data.userName+'个人档案',
-				area:['83%','60%'],
-				btn:['确认','取消'],
-				content:html,
-				id: 'LAY_layuipro9' ,
-				btnAlign: 'c',
-			    moveType: 1, //拖拽模式，0或者1
-				success : function(layero, index) {
-					// 将保存按钮改变成提交按钮
-					layero.addClass('layui-form');
-					layero.find('.layui-layer-btn0').attr({
-						'lay-filter' : 'addRole2',
-						'lay-submit' : ''
-					})
-		        },
-				yes:function(){
-					form.on('submit(addRole2)', function(data) {
-						data.field.id=userContractId;
-						$.ajax({
-							url:"${ctx}/system/user/updateContract",
-							data:data.field,
-							type:"POST",
-							traditional: true,
-							success:function(result){
-								if(0==result.code){
-									layer.msg("修改成功！", {icon: 1});
-									table.reload('recruitTable')
-								}else{
-									layer.msg(result.message, {icon: 2});
-								}
-							},error:function(){
-								layer.msg("操作失败！", {icon: 2});
-								layer.close(index);
-							}
-						});
-			        	layui.form.render();
-					})
-				},end:function(){ 
-		        	layui.form.render();
-				  }
-			})
-			form.render();
-	 	}
+
 		
 		function addbatch(data){
 			var id=data.id;

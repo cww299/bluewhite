@@ -189,7 +189,7 @@
 		    <div class="layui-inline">
 		      <label class="layui-form-label">员工姓名</label>
 		      <div class="layui-input-inline">
-		        <input type="tel"  name="username" value="{{ d.userName }}"  autocomplete="off" class="layui-input">
+		        <input type="tel"  name="userName" value="{{ d.userName }}"  autocomplete="off" class="layui-input">
 		      </div>
 		    </div>
 		    <div class="layui-inline">
