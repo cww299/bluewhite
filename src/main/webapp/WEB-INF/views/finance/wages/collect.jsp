@@ -215,6 +215,7 @@
 						table.reload('tableData', {
 							where: post
 						});
+						getTotalAmount(post);
 					});
 					
 
