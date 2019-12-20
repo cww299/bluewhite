@@ -71,7 +71,7 @@ public class Customer extends BaseEntity<Long> {
 	 * 客户归属id
 	 */
 	@Column(name = "customer_type_id")
-	private Long customertypeId;
+	private Long customerTypeId;
 
 	/**
 	 * (1=电商,2=商超，3=线下，4=面辅料供应商 5=加工点 6=菜商) 
@@ -143,12 +143,6 @@ public class Customer extends BaseEntity<Long> {
 	private String account;
 
 	/**
-	 * 邮编
-	 */
-	@Column(name = "zip_code")
-	private String zipCode;
-
-	/**
 	 * 联系方式
 	 * 
 	 */
@@ -168,14 +162,6 @@ public class Customer extends BaseEntity<Long> {
 
 	public void setAccount(String account) {
 		this.account = account;
-	}
-
-	public String getZipCode() {
-		return zipCode;
-	}
-
-	public void setZipCode(String zipCode) {
-		this.zipCode = zipCode;
 	}
 
 	public String getBuyerName() {
@@ -314,12 +300,12 @@ public class Customer extends BaseEntity<Long> {
 		this.customerAttribution = customerAttribution;
 	}
 
-	public Long getCustomertypeId() {
-		return customertypeId;
+	public Long getCustomerTypeId() {
+		return customerTypeId;
 	}
 
-	public void setCustomertypeId(Long customertypeId) {
-		this.customertypeId = customertypeId;
+	public void setCustomerTypeId(Long customerTypeId) {
+		this.customerTypeId = customerTypeId;
 	}
 
 	public BaseData getCustomerType() {
