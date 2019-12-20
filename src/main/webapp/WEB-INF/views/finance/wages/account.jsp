@@ -103,7 +103,7 @@
 					
 					laydate.render({
 						elem: '#startTime',
-						type: 'datetime',
+						type: 'date',
 						range: '~',
 					});
 					/* laydate.render({
@@ -223,6 +223,7 @@
 							},{
 								field: "flag",
 								title: "审核状态",
+								edit: false,
 								templet:  function(d){
 									if(d.flag==0){
 										return "未审核";
@@ -305,7 +306,7 @@
 						var tableId = config.id;
 						switch(obj.event) {
 							case 'addTempData':
-								allField = {id: '', content: '', budget: '',userId:'',money: '', expenseDate: '', 
+								allField = {id: '', content: '', budget: '',userId:'',money: '', expenseDate: '',flag:0, 
 									withholdReason: '',withholdMoney:'',settleAccountsMode:'',type:'3'};
 								table.addTemp(tableId,allField,function(trElem) {
 									// 进入回调的时候this是当前的表格的config
@@ -427,8 +428,8 @@
 					form.on('submit(LAY-search)', function(data) {
 						var field = data.field;
 						var orderTime=field.orderTimeBegin.split('~');
-						field.orderTimeBegin=orderTime[0];
-						field.orderTimeEnd=orderTime[1];
+						field.orderTimeBegin=orderTime[0]+' '+'00:00:00';
+						field.orderTimeEnd=orderTime[1]+' '+'23:59:59';
 						table.reload('tableData', {
 							where: field
 						});

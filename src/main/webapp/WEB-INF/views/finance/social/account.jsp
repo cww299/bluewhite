@@ -167,7 +167,7 @@
 					});
 					laydate.render({
 						elem: '#startTime',
-						type: 'datetime',
+						type: 'date',
 						range: '~',
 					});
 					/* laydate.render({
@@ -396,7 +396,7 @@
 							success : function(layero, index) {
 								$.ajax({
 									url: '${ctx}/ledger/customerPage',
-									data:{type:999},
+									data:{customerAttributionId:448,customerTypeId:454},
 									type: "GET",
 									async: false,
 									beforeSend: function() {
@@ -455,16 +455,14 @@
 						
 					}
 					
-					
-					
 				
 				
 					//监听搜索
 					form.on('submit(LAY-search)', function(data) {
 						var field = data.field;
 						var orderTime=field.orderTimeBegin.split('~');
-						field.orderTimeBegin=orderTime[0];
-						field.orderTimeEnd=orderTime[1];
+						field.orderTimeBegin=orderTime[0]+' '+'00:00:00';
+						field.orderTimeEnd=orderTime[1]+' '+'23:59:59';
 						table.reload('tableData', {
 							where: field
 						});
