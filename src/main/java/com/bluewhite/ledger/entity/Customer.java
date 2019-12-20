@@ -143,12 +143,6 @@ public class Customer extends BaseEntity<Long> {
 	private String account;
 
 	/**
-	 * 邮编
-	 */
-	@Column(name = "zip_code")
-	private String zipCode;
-
-	/**
 	 * 联系方式
 	 * 
 	 */
@@ -168,14 +162,6 @@ public class Customer extends BaseEntity<Long> {
 
 	public void setAccount(String account) {
 		this.account = account;
-	}
-
-	public String getZipCode() {
-		return zipCode;
-	}
-
-	public void setZipCode(String zipCode) {
-		this.zipCode = zipCode;
 	}
 
 	public String getBuyerName() {
