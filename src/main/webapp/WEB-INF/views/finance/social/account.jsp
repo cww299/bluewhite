@@ -46,8 +46,9 @@
 							<td>是否核对:
 							<td><select class="form-control" name="flags">
 									<option value="">请选择</option>
-									<option value="0">未核对</option>
-									<option value="1">已核对</option>
+									<option value="0">未审核</option>
+									<option value="2">部分审核</option>
+									<option value="1">已审核</option>
 							</select></td>
 							<td>&nbsp&nbsp</td>
 							<td>
@@ -75,7 +76,7 @@
 			<div class="layui-form-item">
 				<label class="layui-form-label" style="width: 130px;">扣税单位</label>
 				<div class="layui-input-inline">
-						<select class="form-control" name="customerId" id="customerId">
+						<select class="form-control" lay-verify="required" name="customerId" id="customerId">
 							
 						</select>
 				</div>
@@ -254,6 +255,9 @@
 									}
 									if(d.flag==1){
 										return "已审核";
+									}
+									if(d.flag==2){
+										return "部分审核";
 									}
 								}
 							}]
