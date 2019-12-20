@@ -51,6 +51,12 @@
 									</button>
 								</div>
 							</td>
+							<td>&nbsp;&nbsp;</td>
+							<td>
+							<div class="layui-inline">
+							<button type="button" class="layui-btn layui-btn" id="test3"><i class="layui-icon"></i>导入工资</button>
+							</div>
+							</td>
 						</tr>
 					</table>
 				</div>
@@ -66,7 +72,6 @@
 				<span class="layui-btn layui-btn-sm layui-btn-danger" lay-event="cleanTempData">清空新增行</span>
 				<span class="layui-btn layui-btn-sm layui-btn-warm" lay-event="saveTempData">批量保存</span>
 				<span class="layui-btn layui-btn-sm layui-btn-danger" lay-event="deleteSome">批量删除</span>
-				<span class="layui-btn layui-btn-sm" id="test3" lay-event="updateload">导入工资表</span>
 			</div>
 		</script>
 
@@ -77,7 +82,7 @@
 			}).extend({
 				tablePlug: 'tablePlug/tablePlug'
 			}).define(
-				['tablePlug', 'laydate', 'element'],
+				['tablePlug', 'laydate', 'element','upload'],
 				function() {
 					var $ = layui.jquery
 						,layer = layui.layer //弹层
@@ -85,6 +90,7 @@
 						,table = layui.table //表格
 						,laydate = layui.laydate //日期控件
 						,tablePlug = layui.tablePlug //表格插件
+						,upload = layui.upload
 						,element = layui.element;
 					//全部字段
 					var allField;
@@ -104,26 +110,21 @@
 						type: 'datetime',
 					}); */
 				 
-					$.ajax({
-						url: '${ctx}/system/user/findAllUser',
-						type: "GET",
-						async: false,
-						beforeSend: function() {
-							index;
-						},
-						success: function(result) {
-							$(result.data).each(function(i, o) {
-								htmls += '<option value=' + o.id + '>' + o.userName + '</option>'
-							})
-							layer.close(index);
-						},
-						error: function() {
-							layer.msg("操作失败！", {
-								icon: 2
-							});
-							layer.close(index);
-						}
-					});
+					
+					upload.render({
+					    elem: '#test3'
+					    ,url: '${ctx}/fince/excel/addConsumption?type=3'
+					    ,accept: 'file' //普通文件
+					    ,done: function(res){
+					      if(res.code==0){
+					    	  table.reload("tableData")
+					    	  return layer.msg(res.message, { icon: 1 });
+					      }else{
+					    	  return layer.msg(导入失败, { icon: 2 });
+					      }
+					    }
+					  });
+					layer.close(index);
 					
 					// 处理操作列
 					var fn1 = function(field) {
@@ -213,11 +214,22 @@
 								align: 'center',
 								title: "扣款事由",
 								edit: 'text'
-							}, {
+							},{
 								field: "withholdMoney",
 								title: "扣款金额",
 								align: 'center',
 								edit: 'text'
+							},{
+								field: "flag",
+								title: "审核状态",
+								templet:  function(d){
+									if(d.flag==0){
+										return "未审核";
+									}
+									if(d.flag==1){
+										return "已审核";
+									}
+								}
 							}]
 						],
 						done: function() {
@@ -403,17 +415,6 @@
 							case 'cleanTempData':	
 									table.cleanTemp(tableId);
 							break;
-							
-							case 'updateload':
-								upload.render({
-								    elem: '#test3'
-								    ,url: '${ctx}/fince/excel/addConsumption?type=3'
-								    ,accept: 'file' //普通文件
-								    ,done: function(res){
-								      console.log(res)
-								    }
-								  });
-								break;
 						}
 					});
 
