@@ -245,6 +245,17 @@
 								field: "expenseDate",
 								title: "预计付款日期",
 								align: 'center',
+							},{
+								field: "flag",
+								title: "审核状态",
+								templet:  function(d){
+									if(d.flag==0){
+										return "未审核";
+									}
+									if(d.flag==1){
+										return "已审核";
+									}
+								}
 							}]
 						],
 						done: function() {
