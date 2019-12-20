@@ -79,7 +79,6 @@ public class BaseDataServiceImpl  extends BaseServiceImpl<BaseData, Long> implem
 	@Override
 	public List<Map<String, String>> getBaseDataTypes() {
 		List<Map<String, String>> types = new ArrayList<Map<String, String>>();
-		Sort sort = new Sort(Direction.ASC, "ord");
 		List<BaseData> baseDatas = baseDataDao.findAll((root, query, cb)->{
 			List<Predicate> predicates = new ArrayList<Predicate>();
 			Predicate[] preArr = new Predicate[predicates.size()];
@@ -87,7 +86,7 @@ public class BaseDataServiceImpl  extends BaseServiceImpl<BaseData, Long> implem
 			query.where(preArr);
 			query.groupBy(root.get("type"));
 			return null;
-		}, sort);
+		});
 		
 		for(BaseData bd: baseDatas){
 			Map<String, String> nameValue = new HashMap<String, String>();

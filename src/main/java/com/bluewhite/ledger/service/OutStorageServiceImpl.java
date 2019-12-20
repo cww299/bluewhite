@@ -271,7 +271,7 @@ public class OutStorageServiceImpl extends BaseServiceImpl<OutStorage, Long> imp
 		CurrentUser cu = SessionManager.getUserSession();
 		Long warehouseTypeDeliveryId = RoleUtil.getWarehouseTypeDelivery(cu.getRole());
 		OrderOutSource orderOutSource = orderOutSourceService.findOne(id);
-		// 获取登陆库管的仓库出库单剩余数量
+		// 获取登陆库管的仓库出库单剩余数量(皮壳)
 		List<PutStorage> putStorageList = putStorageService.detailsInventory(warehouseTypeDeliveryId,orderOutSource.getMaterialRequisition().getOrder().getProductId());
 		// 获取加工单的库存
 		List<PutStorage> putStorageListSelf = putStorageList.stream().filter(PutStorage->PutStorage.getOrderOutSourceId().equals(id)).collect(Collectors.toList());
@@ -285,7 +285,7 @@ public class OutStorageServiceImpl extends BaseServiceImpl<OutStorage, Long> imp
 				list.add(map);
 			});
 		}
-		// 获取申请通过库存
+		// 当加工单没有进入库存时，可以进行皮壳借货申请，获取申请通过库存
 		// 循环申请单,将被申请人取出,同时过滤出被申请人的入库单,进行入库单的记录
 		List<ApplyVoucher> applyVoucherList = applyVoucherDao.findBySendGoodsIdAndPass(id, 1);
 		if (applyVoucherList.size() > 0) {
