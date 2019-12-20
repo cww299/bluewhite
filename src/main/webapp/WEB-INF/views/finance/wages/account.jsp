@@ -66,6 +66,7 @@
 				<span class="layui-btn layui-btn-sm layui-btn-danger" lay-event="cleanTempData">清空新增行</span>
 				<span class="layui-btn layui-btn-sm layui-btn-warm" lay-event="saveTempData">批量保存</span>
 				<span class="layui-btn layui-btn-sm layui-btn-danger" lay-event="deleteSome">批量删除</span>
+				<span class="layui-btn layui-btn-sm" id="test3" lay-event="updateload">导入工资表</span>
 			</div>
 		</script>
 
@@ -402,6 +403,17 @@
 							case 'cleanTempData':	
 									table.cleanTemp(tableId);
 							break;
+							
+							case 'updateload':
+								upload.render({
+								    elem: '#test3'
+								    ,url: '${ctx}/fince/excel/addConsumption?type=3'
+								    ,accept: 'file' //普通文件
+								    ,done: function(res){
+								      console.log(res)
+								    }
+								  });
+								break;
 						}
 					});
 
