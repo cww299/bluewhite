@@ -93,7 +93,7 @@
 					
 					laydate.render({
 						elem: '#startTime',
-						type: 'datetime',
+						type: 'date',
 						range: '~',
 					});
 					laydate.render({
@@ -195,8 +195,8 @@
 					form.on('submit(LAY-search)', function(data) {
 						var field = data.field;
 						var orderTime=field.orderTimeBegin.split('~');
-						orderTimeBegin=orderTime[0];
-						orderTimeEnd=orderTime[1];
+						orderTimeBegin=orderTime[0]+' '+'00:00:00';
+						orderTimeEnd=orderTime[1]+' '+'23:59:59';
 						var a="";
 						var b="";
 						if($("#selectone").val()=="expenseDate"){
