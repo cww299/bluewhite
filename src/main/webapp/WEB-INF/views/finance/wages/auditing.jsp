@@ -47,6 +47,7 @@
 							<td>是否核对:
 							<td><select class="form-control" name="flags">
 									<option value="0">未审核</option>
+									<option value="2">部分审核</option>
 									<option value="1">已审核</option>
 							</select></td>
 							<td>&nbsp&nbsp</td>
@@ -185,6 +186,9 @@
 									if(d.flag==1){
 										return "已审核";
 									}
+									if(d.flag==2){
+										return "部分审核";
+									}
 								}
 							}]
 						],
@@ -206,7 +210,7 @@
 						done: function(res, curr, count) {
 							var tableView = this.elem.next();
 							var tableElem = this.elem.next('.layui-table-view');
-							layui.each(tableElem.find('select'), function(index, item) {
+							layui.each(tableElem.find('.layui-table-box').find('select'), function(index, item) {
 								var elem = $(item);
 								elem.val(elem.data('value'));
 							});
