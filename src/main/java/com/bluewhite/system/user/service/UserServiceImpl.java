@@ -100,7 +100,6 @@ public class UserServiceImpl extends BaseServiceImpl<User, Long> implements User
 			user.setQuit(0);
 			user.setOrgNameIds(String.valueOf(cu.getOrgNameId()));
 		}
-		page.setSort(null);
 		Page<User> pageUser = userDao.findAll((root, query, cb) -> {
 			List<Predicate> predicate = new ArrayList<>();
 			// 按id查找
@@ -142,8 +141,7 @@ public class UserServiceImpl extends BaseServiceImpl<User, Long> implements User
 			}
 			// 按位置编号
 			if (!StringUtils.isEmpty(user.getLotionNumber())) {
-				predicate.add(cb.like(root.get("userContract").get("number").as(String.class),
-						"%" + user.getLotionNumber() + "%"));
+				predicate.add(cb.like(root.get("lotionNumber").as(String.class),"%" + user.getLotionNumber() + "%"));
 			}
 			// 是否签订合同
 			if (!StringUtils.isEmpty(user.getCommitment())) {
@@ -215,6 +213,7 @@ public class UserServiceImpl extends BaseServiceImpl<User, Long> implements User
 			}
 			Predicate[] pre = new Predicate[predicate.size()];
 			query.where(predicate.toArray(pre));
+			query.orderBy(cb.desc(root.get("lotionNumber").as(Integer.class)));
 			query.distinct(true);
 			return null;
 		}, page);

@@ -58,13 +58,6 @@ public interface OrderOutSourceService extends BaseCRUDService<OrderOutSource, L
 	public void updateInventoryOrderOutSource(OrderOutSource orderOutSource);
 
 	/**
-	 * （生产计划部）判断是否可以新增加工单
-	 * 
-	 * @param orderId
-	 */
-	public int judgeOrderOutSource(Long orderId);
-
-	/**
 	 * 生成外发加工单账单
 	 * 
 	 * @param orderOutSource
@@ -84,5 +77,11 @@ public interface OrderOutSourceService extends BaseCRUDService<OrderOutSource, L
 	 * @param id
 	 */
 	public void updateProcessPrice(ProcessPrice processPrice);
+	
+	/**
+	 * 对领料单的工序任务数量进行整合
+	 * @param id
+	 */
+	public List<Map<String, Object>> getProcessNumber(Long id);
 
 }

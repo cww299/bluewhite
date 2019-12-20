@@ -21,9 +21,7 @@ import com.bluewhite.ledger.dao.MaterialRequisitionDao;
 import com.bluewhite.ledger.dao.OrderMaterialDao;
 import com.bluewhite.ledger.dao.OrderProcurementDao;
 import com.bluewhite.ledger.dao.ScatteredOutboundDao;
-import com.bluewhite.ledger.entity.MaterialPutStorage;
 import com.bluewhite.ledger.entity.MaterialRequisition;
-import com.bluewhite.ledger.entity.OrderProcurement;
 import com.bluewhite.ledger.entity.ScatteredOutbound;
 import com.bluewhite.product.primecostbasedata.dao.MaterielDao;
 
@@ -69,7 +67,6 @@ public class MaterialRequisitionServiceImpl extends BaseServiceImpl<MaterialRequ
 			// 领料单
 			materialRequisition.setType(1);
 			materialRequisition.setAudit(0);
-			materialRequisition.setRequisition(0);
 			scatteredOutboundDao.save(scatteredOutbound);
 			save(materialRequisition);
 		}
@@ -104,7 +101,6 @@ public class MaterialRequisitionServiceImpl extends BaseServiceImpl<MaterialRequ
 			scatteredOutbound.setResidueDosageNumber(
 					scatteredOutbound.getResidueDosageNumber() - materialRequisition.getProcessNumber());
 			materialRequisition.setAudit(0);
-			materialRequisition.setRequisition(0);
 			scatteredOutboundDao.save(scatteredOutbound);
 			save(materialRequisition);
 		}
@@ -124,18 +120,12 @@ public class MaterialRequisitionServiceImpl extends BaseServiceImpl<MaterialRequ
 			}
 			// 按采购单编号
 			if (!StringUtils.isEmpty(param.getOrderProcurementNumber())) {
-				predicate.add(cb.like(
-						root.get("scatteredOutbound").get("orderProcurement").get("orderProcurementNumber")
-								.as(String.class),
+				predicate.add(cb.like(root.get("scatteredOutbound").get("orderProcurement").get("orderProcurementNumber").as(String.class),
 						"%" + StringUtil.specialStrKeyword(param.getOrderProcurementNumber()) + "%"));
 			}
 			// 按合同id
 			if (param.getOrderId() != null) {
 				predicate.add(cb.equal(root.get("orderId").as(Long.class), param.getOrderId()));
-			}
-			// 是否领取
-			if (param.getRequisition() != null) {
-				predicate.add(cb.equal(root.get("requisition").as(Integer.class), param.getRequisition()));
 			}
 			// 按领取人
 			if (!StringUtils.isEmpty(param.getUserName())) {
@@ -144,13 +134,6 @@ public class MaterialRequisitionServiceImpl extends BaseServiceImpl<MaterialRequ
 			// 按领取客户
 			if (!StringUtils.isEmpty(param.getCustomerName())) {
 				predicate.add(cb.like(root.get("customer").get("name").as(String.class),"%" + param.getCustomerName() + "%"));
-			}
-			// 按领取日期
-			if (param.getRequisitionTime() != null) {
-				if (!StringUtils.isEmpty(param.getOrderTimeBegin()) && !StringUtils.isEmpty(param.getOrderTimeEnd())) {
-					predicate.add(cb.between(root.get("requisitionTime").as(Date.class), param.getOrderTimeBegin(),
-							param.getOrderTimeEnd()));
-				}
 			}
 			// 按下单日期
 			if (param.getOpenOrderTime() != null) {

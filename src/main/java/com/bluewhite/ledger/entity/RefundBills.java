@@ -41,11 +41,11 @@ public class RefundBills extends BaseEntity<Long>{
 	private OrderOutSource orderOutSource;
 	
 	/**
-	 * 生产计划单id
+	 * 领料单id
 	 * 冗余字段，便于查询
 	 */
-	@Column(name = "order_id")
-	private Long orderId;
+	@Column(name = "material_requisition_id")
+	private Long materialRequisitionId;
  	
 	/**
 	 * 退货工序 任务工序多对多
@@ -73,6 +73,12 @@ public class RefundBills extends BaseEntity<Long>{
 	private String returnRemark;
 	
 	/**
+	 * 是否审核
+	 */
+	@Column(name = "audit")
+	private Integer audit;
+	
+	/**
 	 * 工序ids
 	 */
 	@Transient
@@ -95,6 +101,14 @@ public class RefundBills extends BaseEntity<Long>{
 	private String orderName;
 	
 	
+
+	public Integer getAudit() {
+		return audit;
+	}
+
+	public void setAudit(Integer audit) {
+		this.audit = audit;
+	}
 
 	public String getOrderName() {
 		return orderName;
@@ -128,12 +142,12 @@ public class RefundBills extends BaseEntity<Long>{
 		this.orderTimeEnd = orderTimeEnd;
 	}
 
-	public Long getOrderId() {
-		return orderId;
+	public Long getMaterialRequisitionId() {
+		return materialRequisitionId;
 	}
 
-	public void setOrderId(Long orderId) {
-		this.orderId = orderId;
+	public void setMaterialRequisitionId(Long materialRequisitionId) {
+		this.materialRequisitionId = materialRequisitionId;
 	}
 
 	public Set<BaseData> getOutsourceTask() {

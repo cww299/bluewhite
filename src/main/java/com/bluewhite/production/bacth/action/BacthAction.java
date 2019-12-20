@@ -19,7 +19,6 @@ import org.springframework.web.multipart.support.ByteArrayMultipartFileEditor;
 import com.bluewhite.common.BeanCopyUtils;
 import com.bluewhite.common.ClearCascadeJSON;
 import com.bluewhite.common.DateTimePattern;
-import com.bluewhite.common.Log;
 import com.bluewhite.common.SessionManager;
 import com.bluewhite.common.entity.CommonResponse;
 import com.bluewhite.common.entity.CurrentUser;
@@ -36,8 +35,6 @@ import com.bluewhite.production.productionutils.constant.ProTypeUtils;
 
 @Controller
 public class BacthAction {
-
-	private static final Log log = Log.getLog(BacthAction.class);
 
 	@Autowired
 	private BacthService bacthService;
@@ -72,11 +69,6 @@ public class BacthAction {
 	
 	
 	
-	
-	
-	
-	
-	
 
 	/**
 	 * 给产品添加批次（修改）
@@ -95,10 +87,9 @@ public class BacthAction {
 			if (bacth.getFlag() == 0 && bacth.getRegionalPrice() != null) {
 				bacth.setRegionalPrice(NumUtils.round(ProTypeUtils.sumRegionalPrice(bacth, bacth.getType()), null));
 			}
-			List<Procedure> procedureList = procedureDao.findByProductIdAndTypeAndFlag(bacth.getProductId(),
-					bacth.getType(), bacth.getFlag());
+			List<Procedure> procedureList = procedureDao.findByProductIdAndTypeAndFlag(bacth.getProductId(),bacth.getType(), bacth.getFlag());
 			double time = procedureList.stream().mapToDouble(Procedure::getWorkingTime).sum();
-			if (procedureList != null && procedureList.size() > 0) {
+			if (procedureList.size() > 0) {
 				bacth.setTime(NumUtils.div(NumUtils.mul(time, bacth.getNumber()), 60, 3));
 			}
 			bacthService.save(bacth);

@@ -27,12 +27,6 @@
 				<td>库存单编号：</td>
 				<td><input type="text" name="orderProcurementNumber" class="layui-input"></td>
 				<td>&nbsp;&nbsp;&nbsp;</td>
-				<td>是否领取：</td>
-				<td style="width:120px;">
-					<select name="requisition"><option value="">请选择</option>
-											   <option value="0">否</option>
-											   <option value="1">是</option></td>
-				<td>&nbsp;&nbsp;&nbsp;</td>
 				<td><span class="layui-btn" lay-submit lay-filter="searchBtn">搜索</span></td>
 			</tr>
 		</table>
@@ -83,7 +77,8 @@ layui.config({
 				saveUrl:'/ledger/updateiInventoryMaterialRequisition'
 			},
 			toolbar:['<span class="layui-btn layui-btn-sm" lay-event="audit">审核出库</span>',].join(' '),
-			colsWidth:[0,8,8,12,30,7,8,8,8,8,8,12,8],
+			colsWidth:[0,8,8,12,0,7,8,8,12,8],
+			ifNull:'',
 			cols:[[
 			       { type:'checkbox',fixed:'left',},
 			       { title:'开单时间',   field:'openOrderTime',	fixed:'left', type:'date'},
@@ -91,13 +86,9 @@ layui.config({
 			       { title:'物料名称',   field:'scatteredOutbound_orderMaterial_materiel_number',  },
 			       { title:'库存单编号',   field:'scatteredOutbound_orderProcurement_orderProcurementNumber',},
 			       { title:'领取模式',   field:'scatteredOutbound_orderMaterial_receiveMode_name',  },
-			       { title:'领取模式',   field:'scatteredOutbound_orderMaterial_receiveMode_name',  },
 			       { title:'领取人',   field:'name', templet: getName(),   },
-			       { title:'任务数量',   field:'processNumber', 	},
-			       { title:'领取用量',   field:'dosage',	},
-			       { title:'备注',   field:'remark',	},
-			       { title:'领取时间',   field:'requisitionTime',	edit:true, type:'dateTime',style:'background:#d8fe83;'},
-			       { title:'是否领取',   field:'requisition', transData:{data:['否','是'],},fixed:'right'	},
+			       { title:'领取总量',   field:'dosage',	},
+			       { title:'已领数量',   field:'requisitionCount',	},
 		    ]]
 		})
 		function getName(){

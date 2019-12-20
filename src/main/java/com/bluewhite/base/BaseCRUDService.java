@@ -1,8 +1,13 @@
 package com.bluewhite.base;
 
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.data.jpa.domain.Specification;
+
+import com.bluewhite.common.entity.PageParameter;
+import com.bluewhite.common.entity.PageResult;
+import com.bluewhite.ledger.entity.OutStorage;
 
 public interface BaseCRUDService<T,ID> {
 	/**
@@ -72,7 +77,7 @@ public interface BaseCRUDService<T,ID> {
      * @return 返回分页实体
      */
     public List<T> findAll( Specification<T> t);
-
+    
     /**
      * 批量新增
      * @param var1

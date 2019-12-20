@@ -25,9 +25,4 @@ public interface HostelService  extends BaseCRUDService<Hostel,Long>{
 	 */
 	public void updateUserHostelId(Hostel hostel);
 	
-	/**
-	 * 修改宿舍人员信息
-	 * @param onlineOrder
-	 */
-	public void updateUser(User user);
 }

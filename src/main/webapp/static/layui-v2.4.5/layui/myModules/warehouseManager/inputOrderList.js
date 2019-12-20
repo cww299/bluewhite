@@ -79,12 +79,19 @@ layui.extend({
 								table.reload('tableData');
 							}
 						});
+					}else if(obj.event=='delete'){
+						myutil.deleTableIds({
+							url:'/ledger/inventory/deletePutStorage',
+							table:'tableData',
+							text:'请选择信息|是否确认撤销？',
+						})
 					}
 				},
 				btn:[],
 			},
 			toolbar:[
 				/*'<span class="layui-btn layui-btn-sm" lay-event="update">修改</span>',*/
+				'<span class="layui-btn layui-btn-sm layui-btn-danger" lay-event="delete">撤销入库</span>',
 			].join(''),
 			autoUpdate:{
 				deleUrl:'/ledger/inventory/deletePutStorage',

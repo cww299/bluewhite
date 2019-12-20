@@ -7,7 +7,7 @@
 	<link rel="stylesheet" href="${ctx }/static/layui-v2.4.5/layui/css/layui.css" media="all">
 	<script src="${ctx}/static/layui-v2.4.5/layui/layui.js"></script>
 	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-	<title>耗料领取</title>
+	<title>采购耗料出库</title>
 	<style>
 		.pickingDiv td{
 			padding: 5px 0;
@@ -39,7 +39,7 @@
 		</tr>
     	<tr>
     		<td>数量：</td>
-    		<td><input type="text" class="layui-input" name="processNumber" lay-verify="required"></td>
+    		<td><input type="text" class="layui-input" name="processNumber" id="processNumber" lay-verify="required"></td>
     	</tr>
     	<tr>
     		<td>领取人：</td>
@@ -64,7 +64,7 @@
 		</tr>
     	<tr>
     		<td>数量：</td>
-    		<td><input type="text" name="processNumber"  class="layui-input" lay-verify="number"></td>
+    		<td><input type="text" name="processNumber"  id="processNumber" class="layui-input" lay-verify="number"></td>
     	</tr>
     	<tr>
     		<td>加工点：</td>
@@ -189,8 +189,8 @@ layui.config({
 			       { title:'出库日期',   field:'auditTime', type:'dateTime', },
 			       { title:'库存单编号',   field:'orderProcurement_orderProcurementNumber',	},
 			       { title:'领取模式',   field:'orderMaterial_receiveMode_name',  },
-			       { title:'领取用量',   field:'dosage',	},
-			       { title:'剩余领取用量',   field:'residueDosage',style:'color:red;', },
+			       { title:'耗料用量',   field:'dosage',	},
+			       { title:'剩余耗料用量',   field:'residueDosage',style:'color:red;', },
 			       { title:'任务数量',   field:'dosageNumber',  },
 			       { title:'剩余任务数量',   field:'residueDosageNumber', style:'color:red;', },
 			       { title:'是否审核',   field:'audit', transData:{data:['否','是'],}	},
@@ -210,6 +210,7 @@ layui.config({
 				content:$('#pickingTpl').html(),
 				success:function(){
 					laydate.render({ elem:'#openOrderTime',type:'datetime',value:myutil.getSubDay(0,'yyyy-MM-dd hh:mm:ss'), });
+					$('#processNumber').val(check[0].residueDosageNumber || 0);
 					$('#addUserSelect').append(allUserSelect);
 					form.on('submit(addPicking)',function(obj){
 						obj.field.orderId = $('#orderIdSelect').val();
@@ -244,6 +245,7 @@ layui.config({
 				area:['40%','40%'],
 				content:$('#outTpl').html(),
 				success:function(){
+					$('#processNumber').val(check[0].residueDosageNumber || 0);
 					laydate.render({ elem:'#openOrderTime',type:'datetime',value:myutil.getSubDay(0,'yyyy-MM-dd hh:mm:ss'), });
 					$('#addCustomerSelect').append(allCustomSelect);
 					form.on('submit(addOut)',function(obj){

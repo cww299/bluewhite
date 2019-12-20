@@ -123,7 +123,8 @@ layui.config({
 			size:'sm',
 			url:'${ctx}/temporaryPack/findPagesQuantitative?'+((isStickBagStick && !isStickBagAccount)?'audit=1':''),
 			toolbar: $('#toolbarTpl').html(),
-			limit:20,
+			limit:15,
+			limits:[10,15,20,30,50,100,200],
 			curd:{
 				btn: isStickBagStick?[]:[4],
 				otherBtn:function(obj){

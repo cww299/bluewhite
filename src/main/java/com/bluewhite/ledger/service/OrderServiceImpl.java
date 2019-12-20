@@ -33,14 +33,11 @@ import com.bluewhite.common.utils.StringUtil;
 import com.bluewhite.ledger.dao.OrderChildDao;
 import com.bluewhite.ledger.dao.OrderDao;
 import com.bluewhite.ledger.dao.OutStorageDao;
-import com.bluewhite.ledger.dao.PutStorageDao;
 import com.bluewhite.ledger.entity.Order;
 import com.bluewhite.ledger.entity.OrderChild;
-import com.bluewhite.ledger.entity.OutStorage;
 import com.bluewhite.ledger.entity.PutStorage;
 import com.bluewhite.onlineretailers.inventory.dao.ProcurementDao;
 import com.bluewhite.onlineretailers.inventory.entity.Procurement;
-import com.bluewhite.onlineretailers.inventory.entity.ProcurementChild;
 
 @Service
 public class OrderServiceImpl extends BaseServiceImpl<Order, Long> implements OrderService {
@@ -228,7 +225,6 @@ public class OrderServiceImpl extends BaseServiceImpl<Order, Long> implements Or
 			}
 		}
 		dao.save(ot);
-
 		if (!StringUtils.isEmpty(order.getDeleteIds())) {
 			deleteOrderChild(order.getDeleteIds());
 		}
@@ -285,7 +281,7 @@ public class OrderServiceImpl extends BaseServiceImpl<Order, Long> implements Or
 		putStorageList  = putStorageList.stream().filter(p->{
 			//排除公共库存
 			if(p.getOrderOutSource()!=null){
-				List<OrderChild> ocList = p.getOrderOutSource().getOrder().getOrderChilds();
+				List<OrderChild> ocList = p.getOrderOutSource().getMaterialRequisition().getOrder().getOrderChilds();
 				for(OrderChild oc : ocList){
 					if(cu.getId().equals(oc.getUserId())){
 						return !param.isInclude();
@@ -302,7 +298,7 @@ public class OrderServiceImpl extends BaseServiceImpl<Order, Long> implements Or
 			if(p.getOrderOutSource()!=null){
 				map.put("putStorageId", p.getId());
 				map.put("id", p.getOrderOutSource().getOrderId());
-				map.put("order", p.getOrderOutSource().getOrder());
+				map.put("order", p.getOrderOutSource().getMaterialRequisition().getOrder());
 				map.put("number", p.getSurplusNumber());
 				listMap.add(map);
 			}

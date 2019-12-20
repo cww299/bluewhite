@@ -107,8 +107,4 @@ public class HostelServiceImpl extends BaseServiceImpl<Hostel, Long>
 		dao.save(hostel2);
 	}
 
-	@Override
-	public void updateUser(User user) {
-		userDao.save(user);
-	}
 }

@@ -1,15 +1,11 @@
 package com.bluewhite.ledger.entity;
 
 import java.util.Date;
-import java.util.HashSet;
-import java.util.Set;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.JoinColumn;
-import javax.persistence.JoinTable;
-import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.persistence.Transient;
@@ -60,12 +56,6 @@ public class MaterialOutStorage extends BaseEntity<Long>{
 	@JoinColumn(name = "material_requisition_id", referencedColumnName = "id", insertable = false, updatable = false)
 	private MaterialRequisition materialRequisition;
 
-	/**
-	 * 入库单多对多
-	 */
-	@ManyToMany(fetch = FetchType.LAZY)
-	@JoinTable(name = "ledger_put_out_material_storage", joinColumns = @JoinColumn(name = "material_out_storage_id", referencedColumnName = "id"), inverseJoinColumns = @JoinColumn(name = "material_put_storage_id", referencedColumnName = "id"))
-	private Set<MaterialPutStorage> materialPutOutStorage = new HashSet<MaterialPutStorage>();
 	
 	/**
 	 * 出库类型（1=生产出库） （2=调拨出库） （3=换货出库 ） （4=退货出库 ） （5=盘盈出库 ）
@@ -90,10 +80,10 @@ public class MaterialOutStorage extends BaseEntity<Long>{
 	 * 出库数量
 	 */
 	@Column(name = "arrival_number")
-	private Integer arrivalNumber;
+	private Double arrivalNumber;
 	
 	/**
-	 * 退货原因
+	 * 备注
 	 */
 	@Column(name = "remark")
 	private String remark;
@@ -248,14 +238,6 @@ public class MaterialOutStorage extends BaseEntity<Long>{
 		this.remark = remark;
 	}
 
-	public Set<MaterialPutStorage> getMaterialPutOutStorage() {
-		return materialPutOutStorage;
-	}
-
-	public void setMaterialPutOutStorage(Set<MaterialPutStorage> materialPutOutStorage) {
-		this.materialPutOutStorage = materialPutOutStorage;
-	}
-
 	public Integer getOutStatus() {
 		return outStatus;
 	}
@@ -272,13 +254,15 @@ public class MaterialOutStorage extends BaseEntity<Long>{
 		this.arrivalTime = arrivalTime;
 	}
 
-	public Integer getArrivalNumber() {
+	public Double getArrivalNumber() {
 		return arrivalNumber;
 	}
 
-	public void setArrivalNumber(Integer arrivalNumber) {
+	public void setArrivalNumber(Double arrivalNumber) {
 		this.arrivalNumber = arrivalNumber;
 	}
+
+
 	
 
 }

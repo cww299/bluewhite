@@ -6,7 +6,6 @@ import java.util.Map;
 import com.bluewhite.base.BaseCRUDService;
 import com.bluewhite.common.entity.PageParameter;
 import com.bluewhite.common.entity.PageResult;
-import com.bluewhite.ledger.entity.MaterialOutStorage;
 import com.bluewhite.ledger.entity.OutStorage;
 
 public interface OutStorageService  extends BaseCRUDService<OutStorage,Long>{
@@ -36,7 +35,7 @@ public interface OutStorageService  extends BaseCRUDService<OutStorage,Long>{
 	 * 对发货单进行出库
 	 * @param ids
 	 */
-	public void sendOutStorage(Long id,Integer sendNumber,String putStorage);
+	public void sendOutStorage(Long id,Integer sendNumber,String putStorage,Integer flag);
 	
 	/**
 	 * 根据发货单获取库存详情
@@ -45,17 +44,10 @@ public interface OutStorageService  extends BaseCRUDService<OutStorage,Long>{
 	public List<Map<String, Object>> getSendPutStorage(Long id);
 	
 	/**
-	 * 根据针工加工单查询库存详情
+	 * 根据加工单获取皮壳库存详情
 	 * @param id
 	 * @return
 	 */
-	public List<Map<String, Object>> getPutStorageCotDetails(Long id);
-
-	/**
-	 * 根据针工加工单进行出库
-	 * @param id
-	 * @param putStorageIds
-	 */
-	public void sendOutStorageCot(Long id, String putStorageIds);
-
+	public Object getOrderOutSourcePutStorageDetails(Long id);
+	
 }

@@ -87,7 +87,8 @@ public class OutStorageServiceImpl extends BaseServiceImpl<OutStorage, Long> imp
 			String[] idStrings = ids.split(",");
 			for (String idString : idStrings) {
 				Long id = Long.parseLong(idString);
-				OutStorage outStorage = dao.findOne(id);
+				List<PutOutStorage>  list = putOutStorageDao.findByOutStorageId(id);
+				putOutStorageDao.delete(list);
 				delete(id);
 				i++;
 			}
@@ -127,21 +128,26 @@ public class OutStorageServiceImpl extends BaseServiceImpl<OutStorage, Long> imp
 	}
 
 	@Override
-	public void sendOutStorage(Long id, Integer sendNumber, String putStorage) {
+	public void sendOutStorage(Long id, Integer sendNumber, String putStorage,Integer flag) {
 		CurrentUser cu = SessionManager.getUserSession();
 		SendGoods sendGoods = sendGoodsDao.findOne(id);
 		// 生成出库单
 		OutStorage outStorage = new OutStorage();
-		outStorage.setSendGoodsId(id);
+		//成品使用发货单
+		if(flag == 1){
+			outStorage.setSendGoodsId(id);
+		}
+		//皮壳使用加工单
+		if(flag == 2){
+			outStorage.setOrderOutSourceId(id);
+		}
 		outStorage.setArrivalNumber(sendNumber);
 		outStorage.setArrivalTime(new Date());
 		outStorage.setOutStatus(1);
-		outStorage.setSerialNumber(
-				Constants.CPCK + StringUtil.getDate() + SalesUtils.get0LeftString((int) (dao.count() + 1), 8));
+		outStorage.setSerialNumber((flag == 1 ? Constants.CPCK : Constants.PKCK) + StringUtil.getDate() + SalesUtils.get0LeftString((int) (dao.count() + 1), 8));
 		outStorage.setProductId(sendGoods.getProductId());
 		outStorage.setUserStorageId(cu.getId());
 		save(outStorage);
-
 		if (!StringUtils.isEmpty(putStorage)) {
 			JSONArray jsonArray = JSON.parseArray(putStorage);
 			for (int i = 0; i < jsonArray.size(); i++) {
@@ -192,7 +198,7 @@ public class OutStorageServiceImpl extends BaseServiceImpl<OutStorage, Long> imp
 		// 获取发货申请人自己的库存
 		List<PutStorage> putStorageListSelf = putStorageList.stream().filter(p -> {
 			if (p.getOrderOutSource() != null) {
-				List<OrderChild> ocList = p.getOrderOutSource().getOrder().getOrderChilds();
+				List<OrderChild> ocList = p.getOrderOutSource().getMaterialRequisition().getOrder().getOrderChilds();
 				for (OrderChild oc : ocList) {
 					if (sendGoods.getUserId().equals(oc.getUserId())) {
 						return true;
@@ -206,7 +212,7 @@ public class OutStorageServiceImpl extends BaseServiceImpl<OutStorage, Long> imp
 				Map<String, Object> map = new HashMap<String, Object>();
 				map.put("id", p.getId());
 				map.put("number", p.getSurplusNumber());
-				map.put("bacthNumber", p.getOrderOutSource().getOrder().getBacthNumber());
+				map.put("bacthNumber", p.getOrderOutSource().getMaterialRequisition().getOrder().getBacthNumber());
 				map.put("serialNumber", p.getSerialNumber());
 				list.add(map);
 			});
@@ -220,7 +226,7 @@ public class OutStorageServiceImpl extends BaseServiceImpl<OutStorage, Long> imp
 			for (Long ps1 : mapApplyVoucher.keySet()) {
 				List<PutStorage> putStorageListOther = putStorageList.stream().filter(p -> {
 					if (p.getOrderOutSource() != null) {
-						List<OrderChild> ocList = p.getOrderOutSource().getOrder().getOrderChilds();
+						List<OrderChild> ocList = p.getOrderOutSource().getMaterialRequisition().getOrder().getOrderChilds();
 						for (OrderChild oc : ocList) {
 							if (ps1.equals(oc.getUserId())) {
 								return true;
@@ -234,7 +240,7 @@ public class OutStorageServiceImpl extends BaseServiceImpl<OutStorage, Long> imp
 						Map<String, Object> map = new HashMap<String, Object>();
 						map.put("id", p.getId());
 						map.put("number", p.getSurplusNumber());
-						map.put("bacthNumber", p.getOrderOutSource().getOrder().getBacthNumber());
+						map.put("bacthNumber", p.getOrderOutSource().getMaterialRequisition().getOrder().getBacthNumber());
 						map.put("serialNumber", p.getSerialNumber());
 						list.add(map);
 					});
@@ -258,25 +264,70 @@ public class OutStorageServiceImpl extends BaseServiceImpl<OutStorage, Long> imp
 	}
 
 	@Override
-	public List<Map<String, Object>> getPutStorageCotDetails(Long id) {
+	public Object getOrderOutSourcePutStorageDetails(Long id) {
 		List<Map<String, Object>> list = new ArrayList<>();
+		//根据仓管登陆用户权限，获取不同的仓库库存
 		CurrentUser cu = SessionManager.getUserSession();
 		Long warehouseTypeDeliveryId = RoleUtil.getWarehouseTypeDelivery(cu.getRole());
-		if (warehouseTypeDeliveryId == null) {
-			throw new ServiceException("请使用仓库管理员账号");
+		OrderOutSource orderOutSource = orderOutSourceService.findOne(id);
+		// 获取登陆库管的仓库出库单剩余数量
+		List<PutStorage> putStorageList = putStorageService.detailsInventory(warehouseTypeDeliveryId,orderOutSource.getMaterialRequisition().getOrder().getProductId());
+		// 获取加工单的库存
+		List<PutStorage> putStorageListSelf = putStorageList.stream().filter(PutStorage->PutStorage.getOrderOutSourceId().equals(id)).collect(Collectors.toList());
+		if (putStorageListSelf.size() > 0) {
+			putStorageListSelf.forEach(p -> {
+				Map<String, Object> map = new HashMap<String, Object>();
+				map.put("id", p.getId());
+				map.put("number", p.getSurplusNumber());
+				map.put("bacthNumber", p.getOrderOutSource().getMaterialRequisition().getOrder().getBacthNumber());
+				map.put("serialNumber", p.getSerialNumber());
+				list.add(map);
+			});
 		}
-		
-		
-		
-		
-		
-
-		return null;
+		// 获取申请通过库存
+		// 循环申请单,将被申请人取出,同时过滤出被申请人的入库单,进行入库单的记录
+		List<ApplyVoucher> applyVoucherList = applyVoucherDao.findBySendGoodsIdAndPass(id, 1);
+		if (applyVoucherList.size() > 0) {
+			Map<Long, List<ApplyVoucher>> mapApplyVoucher = applyVoucherList.stream()
+					.collect(Collectors.groupingBy(ApplyVoucher::getApprovalUserId));
+			for (Long ps1 : mapApplyVoucher.keySet()) {
+				List<PutStorage> putStorageListOther = putStorageList.stream().filter(p -> {
+					if (p.getOrderOutSource() != null) {
+						List<OrderChild> ocList = p.getOrderOutSource().getMaterialRequisition().getOrder().getOrderChilds();
+						for (OrderChild oc : ocList) {
+							if (ps1.equals(oc.getUserId())) {
+								return true;
+							}
+						}
+					}
+					return false;
+				}).collect(Collectors.toList());
+				if (putStorageListOther.size() > 0) {
+					putStorageListOther.forEach(p -> {
+						Map<String, Object> map = new HashMap<String, Object>();
+						map.put("id", p.getId());
+						map.put("number", p.getSurplusNumber());
+						map.put("bacthNumber", p.getOrderOutSource().getMaterialRequisition().getOrder().getBacthNumber());
+						map.put("serialNumber", p.getSerialNumber());
+						list.add(map);
+					});
+				}
+			}
+		}
+		// 获取公共库存
+		List<PutStorage> publicStorageList = putStorageList.stream()
+				.filter(PutStorage -> PutStorage.getPublicStock() == 1).collect(Collectors.toList());
+		if (publicStorageList.size() > 0) {
+			publicStorageList.forEach(p -> {
+				Map<String, Object> map = new HashMap<String, Object>();
+				map.put("id", p.getId());
+				map.put("number", p.getSurplusNumber());
+				map.put("bacthNumber", "");
+				map.put("serialNumber", p.getSerialNumber());
+				list.add(map);
+			});
+		}
+		return list;
 	}
 
-	@Override
-	public void sendOutStorageCot(Long id, String putStorageIds) {
-		// TODO Auto-generated method stub
-		
-	}
 }

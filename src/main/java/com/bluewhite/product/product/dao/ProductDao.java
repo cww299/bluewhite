@@ -33,7 +33,18 @@ public interface ProductDao extends BaseRepository<Product, Long> {
 	 */
 	public Product findByNumberNotNullAndName(String name);
 
+	/**
+	 * 根据名称
+	 * @param name
+	 * @return
+	 */
+	public Product findByName(String name);
 
+	/**
+	 * 根据部门编号
+	 * @param departmentNumber
+	 * @return
+	 */
 	public Product findByDepartmentNumber(String departmentNumber);
 	
 	/**

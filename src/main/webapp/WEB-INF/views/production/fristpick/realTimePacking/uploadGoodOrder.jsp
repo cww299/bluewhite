@@ -76,8 +76,8 @@ var TPL = [
 			'<div class="layui-input-block">',
 				'<select name="internal" value="{{ d.internal }}">',
 					'<option value="">请选择</option>',
-					'<option value="0">否</option>',
-					'<option value="1">是</option>',
+					'<option value="0" {{ d.internal==0?"selected":"" }}>否</option>',
+					'<option value="1" {{ d.internal==1?"selected":"" }}>是</option>',
 				'</select>',
 			'</div>',
 		'</div>',
@@ -142,6 +142,8 @@ layui.config({
 					}
 				},
 			},
+			limit:15,
+			limits:[10,15,20,30,50,100,200],
 			autoUpdate:{
 				deleUrl:'/temporaryPack/deleteUnderGoods',
 			},

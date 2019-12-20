@@ -123,12 +123,6 @@ public class Consumption extends BaseEntity<Long> {
 	private Date paymentDate;
 	
 	/**
-	 * 其余类型日期
-	 */
-	@Column(name = "logistics_date")
-	private Date logisticsDate;
-	
-	/**
 	 * 客户Id
 	 */
 	@Column(name = "customer_id")
@@ -313,14 +307,6 @@ public class Consumption extends BaseEntity<Long> {
 
 	public void setDeleteFlag(Integer deleteFlag) {
 		this.deleteFlag = deleteFlag;
-	}
-
-	public Date getLogisticsDate() {
-		return logisticsDate;
-	}
-
-	public void setLogisticsDate(Date logisticsDate) {
-		this.logisticsDate = logisticsDate;
 	}
 
 	public Long getOrgNameId() {

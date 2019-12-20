@@ -51,11 +51,11 @@
 										<option value="2">补签</option></select></td>
 					<td>&nbsp;&nbsp;</td>
 					<td><button type="button" class="layui-btn" lay-submit lay-filter='search'>查找</button></td>
-					<td>&nbsp;&nbsp;</td>
-					<td><button type="button" id="export" class="layui-btn">导出签到</button></td>
 					<td>&nbsp;&nbsp;</td> 
 					<shiro:lacksRole name="attendanceStatistician">
 						<td><button type="button" id="synchronization2" class="layui-btn layui-btn-danger">考勤重置</button></td>
+						<td>&nbsp;&nbsp;</td>
+						<td><button type="button" id="export" class="layui-btn layui-btn-normal">导出</button></td>
 					</shiro:lacksRole>
 				</tr>
 			</table>
