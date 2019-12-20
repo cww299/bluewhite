@@ -37,6 +37,8 @@ import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.multipart.support.ByteArrayMultipartFileEditor;
 
 import com.alibaba.excel.EasyExcel;
+import com.alibaba.excel.EasyExcelFactory;
+import com.alibaba.excel.metadata.Sheet;
 import com.bluewhite.basedata.entity.BaseData;
 import com.bluewhite.basedata.service.BaseDataService;
 import com.bluewhite.common.DateTimePattern;
@@ -44,9 +46,12 @@ import com.bluewhite.common.entity.CommonResponse;
 import com.bluewhite.common.entity.ErrorCode;
 import com.bluewhite.common.entity.PageParameter;
 import com.bluewhite.common.utils.DatesUtil;
+import com.bluewhite.common.utils.excel.ExcelListener;
 import com.bluewhite.common.utils.excel.Excelutil;
 import com.bluewhite.finance.attendance.entity.AttendancePay;
 import com.bluewhite.finance.attendance.service.AttendancePayService;
+import com.bluewhite.finance.consumption.entity.ConsumptionPoi;
+import com.bluewhite.onlineretailers.inventory.entity.poi.OnlineOrderPoi;
 import com.bluewhite.personnel.attendance.entity.Attendance;
 import com.bluewhite.personnel.attendance.entity.AttendanceCollect;
 import com.bluewhite.personnel.attendance.entity.AttendanceTime;
@@ -642,7 +647,12 @@ public class ReportExportAction {
 				// table的时候 传入class 并且设置needHead =false
 				.table().needHead(Boolean.FALSE).doWrite(data(listmap));
 	}
-	// 表头
+	
+	/**
+	 * 写入
+	 * @param listmap
+	 * @return
+	 */
 	private List<List<String>> head(List<Map<String, Object>> listmap) {
 		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
 		List<List<String>> list = new ArrayList<List<String>>();
@@ -707,7 +717,11 @@ public class ReportExportAction {
 		return list;
 	}
 
-	// 数据
+	/**
+	 * 数据
+	 * @param listmap
+	 * @return
+	 */
 	private List<List<Object>> data(List<Map<String, Object>> listmap) {
 		List<List<Object>> list = new ArrayList<>();
 		if (listmap.size() != 0) {
@@ -732,6 +746,8 @@ public class ReportExportAction {
 		}
 		return list;
 	}
+	
+	
 
 	@InitBinder
 	protected void initBinder(WebDataBinder binder) {
