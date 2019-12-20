@@ -29,12 +29,12 @@
 				<div class="layui-form-item">
 					<table>
 						<tr>
-							<td>报销人:</td>
-							<td><input type="text" name="Username" id="firstNames" class="layui-input" /></td>
+							<td>工资内容:</td>
+							<td><input type="text" name="content" class="layui-input" /></td>
 							<td>&nbsp&nbsp</td>
 							<td><select class="layui-input" name="selectone" id="selectone">
-									<option name="expenseDate" value="2018-10-08 00:00:00">申请日期</option>
-									<option name="paymentDate" value="2018-11-08 00:00:00">付款日期</option>
+									<option name="expenseDate" value="2018-10-08 00:00:00">工资申请日期</option>
+									<option name="paymentDate" value="2018-11-08 00:00:00">实际付款日期</option>
 							</select></td>
 							<td>&nbsp&nbsp</td>
 							<td><input id="startTime" style="width: 300px;" name="orderTimeBegin" placeholder="请输入开始时间" class="layui-input">
@@ -45,8 +45,9 @@
 							</td> -->
 							<td>&nbsp&nbsp</td>
 							<td>是否核对:
-							<td><select class="form-control" name="flag">
+							<td><select class="form-control" name="flags">
 									<option value="0">未审核</option>
+									<option value="2">部分审核</option>
 									<option value="1">已审核</option>
 							</select></td>
 							<td>&nbsp&nbsp</td>
@@ -103,7 +104,7 @@
 					var index = layer.load(1, {
 						shade: [0.1, '#fff'] //0.1透明度的白色背景
 					});
-					
+					layer.close(index);
 					laydate.render({
 						elem: '#startTime',
 						type: 'datetime',
@@ -114,28 +115,6 @@
 						type: 'datetime',
 					});
 				 
-					$.ajax({
-						url: '${ctx}/system/user/findAllUser',
-						type: "GET",
-						async: false,
-						beforeSend: function() {
-							index;
-						},
-						success: function(result) {
-							$(result.data).each(function(i, o) {
-								htmls += '<option value=' + o.id + '>' + o.userName + '</option>'
-							})
-							layer.close(index);
-						},
-						error: function() {
-							layer.msg("操作失败！", {
-								icon: 2
-							});
-							layer.close(index);
-						}
-					});
-					
-					
 				   	tablePlug.smartReload.enable(true); 
 					table.render({
 						elem: '#tableData',
@@ -143,7 +122,7 @@
 						height:'700px',
 						url: '${ctx}/fince/getConsumption' ,
 						where:{
-							flag:0,
+							flags:0,
 							type:3
 						},
 						request:{
@@ -207,6 +186,9 @@
 									if(d.flag==1){
 										return "已审核";
 									}
+									if(d.flag==2){
+										return "部分审核";
+									}
 								}
 							}]
 						],
@@ -228,7 +210,7 @@
 						done: function(res, curr, count) {
 							var tableView = this.elem.next();
 							var tableElem = this.elem.next('.layui-table-view');
-							layui.each(tableElem.find('select'), function(index, item) {
+							layui.each(tableElem.find('.layui-table-box').find('select'), function(index, item) {
 								var elem = $(item);
 								elem.val(elem.data('value'));
 							});
@@ -316,8 +298,8 @@
 							b="2019-05-08 00:00:00"
 						}
 						var post={
-							Username:field.Username,
-							flag:field.flag,
+							content:field.content,
+							flags:field.flags,
 							orderTimeBegin:orderTimeBegin,
 							orderTimeEnd:orderTimeEnd,
 							expenseDate:a,

@@ -133,14 +133,6 @@ public class ConsumptionServiceImpl extends BaseServiceImpl<Consumption, Long> i
 				}
 			}
 
-			if (!StringUtils.isEmpty(param.getLogisticsDate())) {
-				// 按其他日期
-				if (!StringUtils.isEmpty(param.getOrderTimeBegin()) && !StringUtils.isEmpty(param.getOrderTimeEnd())) {
-					predicate.add(cb.between(root.get("logisticsDate").as(Date.class), param.getOrderTimeBegin(),
-							param.getOrderTimeEnd()));
-				}
-			}
-
 			if (!StringUtils.isEmpty(param.getRealityDate())) {
 				// 按实际消费日期
 				if (!StringUtils.isEmpty(param.getOrderTimeBegin()) && !StringUtils.isEmpty(param.getOrderTimeEnd())) {
@@ -174,11 +166,9 @@ public class ConsumptionServiceImpl extends BaseServiceImpl<Consumption, Long> i
 			consumption = ot;
 		}
 
-		boolean flag = true;
 		switch (consumption.getType()) {
 		//报销
 		case 1:
-			flag = false;
 			//表示不是修改金额时自动跳过
 			if(consumption.getId() != null &&  originalMoney == null){
 				break;
@@ -217,7 +207,6 @@ public class ConsumptionServiceImpl extends BaseServiceImpl<Consumption, Long> i
 		case 2:
 			break;
 		case 3:
-			flag = false;
 			break;
 		case 4:
 			break;
@@ -230,7 +219,6 @@ public class ConsumptionServiceImpl extends BaseServiceImpl<Consumption, Long> i
 		case 8:
 			break;
 		case 9:
-			flag = false;
 			break;
 		}
 
@@ -343,7 +331,7 @@ public class ConsumptionServiceImpl extends BaseServiceImpl<Consumption, Long> i
 	}
 
 	@Override
-	public int excelAddConsumption(ExcelListener excelListener) {
+	public int excelAddConsumption(ExcelListener excelListener,Integer type) {
 		int count = 0;
 		// 获取导入的订单
 		List<Object> excelListenerList = excelListener.getData();
@@ -352,11 +340,9 @@ public class ConsumptionServiceImpl extends BaseServiceImpl<Consumption, Long> i
 			Consumption consumption = new Consumption();
 			consumption.setContent(cPoi.getContent());
 			consumption.setCustomerName(cPoi.getCustomerName());
-			consumption.setUsername(cPoi.getUsername());
 			consumption.setMoney(cPoi.getMoney());
 			consumption.setExpenseDate(cPoi.getExpenseDate());
-			consumption.setLogisticsDate(cPoi.getLogisticsDate());
-			consumption.setType(2);
+			consumption.setType(type);
 			addConsumption(consumption);
 			count++;
 		}

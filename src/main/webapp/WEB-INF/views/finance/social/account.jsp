@@ -17,7 +17,7 @@
 <head>
 <meta charset="utf-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
-<title>物流申请</title>
+<title>社保税收</title>
 <meta name="description" content="">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
 </head>
@@ -29,7 +29,7 @@
 				<div class="layui-form-item">
 					<table>
 						<tr>
-							<td>报销人:</td>
+							<td>扣税单位:</td>
 							<td><input type="text" name="customerName" id="firstNames" class="layui-input" /></td>
 							<td>&nbsp&nbsp</td>
 							<td><select class="form-control" name="expenseDate" id="selectone">
@@ -44,10 +44,11 @@
 							</td> -->
 							<td>&nbsp&nbsp</td>
 							<td>是否核对:
-							<td><select class="form-control" name="flag">
+							<td><select class="form-control" name="flags">
 									<option value="">请选择</option>
-									<option value="0">未核对</option>
-									<option value="1">已核对</option>
+									<option value="0">未审核</option>
+									<option value="2">部分审核</option>
+									<option value="1">已审核</option>
 							</select></td>
 							<td>&nbsp&nbsp</td>
 							<td>
@@ -75,9 +76,9 @@
 			<div class="layui-form-item">
 				<label class="layui-form-label" style="width: 130px;">扣税单位</label>
 				<div class="layui-input-inline">
-						<input type="text" value="{{d.custom.name }}" name="customerName" id="userId"
-						placeholder="请输入扣税单位名称"
-						class="layui-input laydate-icon" data-provide="typeahead">
+						<select class="form-control" lay-verify="required" name="customerId" id="customerId">
+							
+						</select>
 				</div>
 			</div>
 			
@@ -159,7 +160,7 @@
 					var index = layer.load(1, {
 						shade: [0.1, '#fff'] //0.1透明度的白色背景
 					});
-					
+					layer.close(index);
 					laydate.render({
 						elem: '#paymentDate',
 						type: 'datetime',
@@ -175,27 +176,7 @@
 					}); */
 				 
 				
-					var mycars=new Array()
-					$.ajax({
-						url: '${ctx}/system/user/findAllUser',
-						type: "GET",
-						async: false,
-						beforeSend: function() {
-							index;
-						},
-						success: function(result) {
-							$(result.data).each(function(i, o) {
-								mycars.push(o.userName)
-							})
-							layer.close(index);
-						},
-						error: function() {
-							layer.msg("操作失败！", {
-								icon: 2
-							});
-							layer.close(index);
-						}
-					});
+					
 					
 					// 处理操作列
 					/* var fn1 = function(field) {
@@ -251,7 +232,7 @@
 								field: "withholdReason",
 								title: "扣税单位",
 								templet: function(d){
-									return d.custom.name
+									return d.customer==null ? "" :d.customer.name
 								}
 							},{
 								field: "content",
@@ -265,6 +246,20 @@
 								field: "expenseDate",
 								title: "预计付款日期",
 								align: 'center',
+							},{
+								field: "flag",
+								title: "审核状态",
+								templet:  function(d){
+									if(d.flag==0){
+										return "未审核";
+									}
+									if(d.flag==1){
+										return "已审核";
+									}
+									if(d.flag==2){
+										return "部分审核";
+									}
+								}
 							}]
 						],
 						done: function() {
@@ -367,14 +362,15 @@
 						}
 					});
 					
-					
 					function addEidt(type){
-						var data={custom:{name:''},money:'',contactName:'',expenseDate:'',content:'',withholdMoney:'',withholdReason:''};
+						var data={custom:{name:''},money:'',contactName:'',expenseDate:'',content:'',withholdMoney:'',withholdReason:'',customerId:''};
 						var title="新增数据";
 						var html="";
 						var tpl=addEditTpl.innerHTML;
 						var choosed=layui.table.checkStatus("tableData").data;
 						var id="";
+						var customerId="";
+						var htmls='<option value="">请选择</option>';	
 						if(type=='edit'){
 							title="编辑数据"
 							if(choosed.length>1){
@@ -382,7 +378,8 @@
 								return;
 							}
 							data=choosed[0];
-							id=data.id
+							id=data.id;
+							customerId=data.customer.id
 						}
 						laytpl(tpl).render(data,function(h){
 							html=h;
@@ -397,6 +394,29 @@
 							btnAlign: 'c',
 						    moveType: 1, //拖拽模式，0或者1
 							success : function(layero, index) {
+								$.ajax({
+									url: '${ctx}/ledger/customerPage',
+									data:{type:999},
+									type: "GET",
+									async: false,
+									beforeSend: function() {
+										index;
+									},
+									success: function(result) {
+										$(result.data.rows).each(function(i,item) {
+											htmls+='<option value="'+item.id+'">'+item.name+'</option>'
+										})
+										$("#customerId").html(htmls)
+										form.render();
+									},
+									error: function() {
+										layer.msg("操作失败！", {
+											icon: 2
+										});
+									}
+								});
+								$("#customerId").val(customerId)
+								form.render();
 					        	layero.addClass('layui-form');
 								// 将保存按钮改变成提交按钮
 								layero.find('.layui-layer-btn0').attr({
@@ -408,11 +428,10 @@
 								form.on('submit(addRole)', function(data) {
 						        	var	field={
 						        			id:id,
+						        			customerId:data.field.customerId,
 						        			customerName:data.field.customerName,
 						        			content:data.field.content,
 						        			money:data.field.money,
-						        			customId:self.getIndex(),
-						        			contactName:data.field.contactName,
 						        			expenseDate:data.field.expenseDate,
 						        			type:7
 						        		}
@@ -433,51 +452,7 @@
 							elem: '#logisticsDate',
 							type: 'datetime',
 						});
-						//提示查询
-						 $("#userId").typeahead({
-								source : function(query, process) {
-									return $.ajax({
-										url : '${ctx}/fince/findCustom',
-										type : 'GET',
-										data : {
-											name:query,
-											type:7
-										},
-										success : function(result) {
-											//转换成 json集合
-											 var resultList = result.data.map(function (item) {
-												 	//转换成 json对象
-							                        var aItem = {name: item.name, id:item.id}
-							                        //处理 json对象为字符串
-							                        return JSON.stringify(aItem);
-							                    });
-												 self.setIndex(0);
-											//提示框返回数据
-											 return process(resultList);
-										},
-									})
-									//提示框显示
-								}, highlighter: function (item) {
-								    //转出成json对象
-									 var item = JSON.parse(item);
-									return item.name
-									//按条件匹配输出
-				                }, matcher: function (item) {
-				                	//转出成json对象
-							        var item = JSON.parse(item);
-							        self.setIndex(item.id);
-							    	return item.id
-							    },
-								//item是选中的数据
-								updater:function(item){
-									//转出成json对象
-									var item = JSON.parse(item);
-									self.setIndex(item.id);
-										return item.name
-								},
-
-								
-							});
+						
 					}
 					
 					

@@ -143,6 +143,7 @@
 								<th class="text-center">时间</th>
 								<th class="text-center">加绩工资</th>
 								<th class="text-center">B工资</th>
+								<th class="text-center">任务数量</th>
 							</tr>
 						</thead>
 						<tbody id="tablecontent">
@@ -315,7 +316,8 @@
 		      				+'<td class="text-center edit ">'+o.task.procedureName+'</td>'
 		      				+'<td class="text-center edit ">'+o.allotTime+'</td>'
 		      				+'<td class="text-center edit ">'+parseFloat((a).toFixed(3))+'</td>'
-		      				+'<td class="text-center edit ">'+parseFloat((o.payNumber).toFixed(3))+'</td></tr>'
+		      				+'<td class="text-center edit ">'+parseFloat((o.payNumber).toFixed(3))+'</td>'
+		      				+'<td class="text-center edit ">'+o.task.number+'</td></tr>'
 							
 		      			}); 
 				        //显示分页

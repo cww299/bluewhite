@@ -45,8 +45,9 @@
 							</td> -->
 							<td>&nbsp&nbsp</td>
 							<td>是否核对:
-							<td><select class="form-control" name="flag">
+							<td><select class="form-control" name="flags">
 									<option value="0">未审核</option>
+									<option value="2">部分审核</option>
 									<option value="1">已审核</option>
 							</select></td>
 							<td>&nbsp&nbsp</td>
@@ -143,7 +144,7 @@
 						height:'700px',
 						url: '${ctx}/fince/getConsumption' ,
 						where:{
-							flag:0,
+							flags:0,
 							type:6
 						},
 						request:{
@@ -173,29 +174,13 @@
 								align: 'center',
 								fixed: 'left'
 							},{
-								field: "withholdReason",
-								title: "借款方",
-								templet: function(d){
-									return d.custom.name
-								}
-							},{
 								field: "content",
-								title: "内容",
+								title: "借款方",
+							},{
+								field: "remark",
+								title: "借款类型",
 								align: 'center',
 							},{
-								field: "budget",
-								title: "是否预算",
-								align: 'center',
-								search: true,
-								edit: false,
-								templet: function(d){
-									if(d.budget==0){
-										return "是"
-									}else{
-									return "否"
-									}
-								}
-							}, {
 								field: "money",
 								title: "支付金额",
 								align: 'center',
@@ -221,28 +206,17 @@
 									if(d.flag==1){
 										return "已审核";
 									}
+									if(d.flag==2){
+										return "部分审核";
+									}
 								}
 							}]
 						],
-						done: function() {
-							var tableView = this.elem.next();
-							tableView.find('.layui-table-grid-down').remove();
-							var totalRow = tableView.find('.layui-table-total');
-							var limit = this.page ? this.page.limit : this.limit;
-							layui.each(totalRow.find('td'), function(index, tdElem) {
-								tdElem = $(tdElem);
-								var text = tdElem.text();
-								if(text && !isNaN(text)) {
-									text = (parseFloat(text) / limit).toFixed(2);
-									tdElem.find('div.layui-table-cell').html(text);
-								}
-							});
-						},
 						//下拉框回显赋值
 						done: function(res, curr, count) {
 							var tableView = this.elem.next();
 							var tableElem = this.elem.next('.layui-table-view');
-							layui.each(tableElem.find('select'), function(index, item) {
+							layui.each(tableElem.find('.layui-table-box').find('select'), function(index, item) {
 								var elem = $(item);
 								elem.val(elem.data('value'));
 							});
@@ -331,7 +305,7 @@
 						}
 						var post={
 							customerName:field.customerName,
-							flag:field.flag,
+							flags:field.flags,
 							orderTimeBegin:orderTimeBegin,
 							orderTimeEnd:orderTimeEnd,
 							expenseDate:a,

@@ -12,7 +12,6 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
 
 import com.bluewhite.base.BaseServiceImpl;
-import com.bluewhite.common.BeanCopyUtils;
 import com.bluewhite.common.ServiceException;
 import com.bluewhite.common.entity.PageParameter;
 import com.bluewhite.common.entity.PageResult;
@@ -49,19 +48,22 @@ public class CustomerServiceImpl extends BaseServiceImpl<Customer, Long> impleme
 				predicate.add(cb.like(root.get("phone").as(String.class),
 						"%" + StringUtil.specialStrKeyword(param.getPhone()) + "%"));
 			}
-			// 按类型过滤
-			if (param.getType() != null) {
-				predicate.add(cb.equal(root.get("type").as(Integer.class), param.getType()));
-			}
 			// 按等级过滤
 			if (param.getGrade() != null) {
 				predicate.add(cb.equal(root.get("grade").as(Integer.class), param.getGrade()));
 			}
-			// 按经手人过滤
+			// 按客户归属过滤
+			if (param.getCustomerAttributionId() != null) {
+				predicate.add(cb.equal(root.get("customerAttributionId").as(Long.class), param.getCustomerAttributionId()));
+			}
+			// 按客户类型过滤
+			if (param.getCustomertypeId() != null) {
+				predicate.add(cb.equal(root.get("customertypeId").as(Long.class), param.getCustomertypeId()));
+			}
+			// 所属业务员过滤
 			if (param.getUserId() != null) {
 				predicate.add(cb.equal(root.get("userId").as(Long.class), param.getUserId()));
 			}
-
 			Predicate[] pre = new Predicate[predicate.size()];
 			query.where(predicate.toArray(pre));
 			return null;
@@ -128,10 +130,6 @@ public class CustomerServiceImpl extends BaseServiceImpl<Customer, Long> impleme
 			if (!StringUtils.isEmpty(param.getPhone())) {
 				predicate.add(cb.like(root.get("phone").as(String.class),
 						"%" + StringUtil.specialStrKeyword(param.getPhone()) + "%"));
-			}
-			// 按类型过滤
-			if (param.getType() != null) {
-				predicate.add(cb.equal(root.get("type").as(Integer.class), param.getType()));
 			}
 			// 按等级过滤
 			if (param.getGrade() != null) {

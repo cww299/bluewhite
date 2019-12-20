@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.support.ByteArrayMultipartFileEditor;
 
+import com.bluewhite.basedata.entity.BaseData;
 import com.bluewhite.common.ClearCascadeJSON;
 import com.bluewhite.common.DateTimePattern;
 import com.bluewhite.common.entity.CommonResponse;
@@ -38,8 +39,9 @@ public class CustomerAction {
 	{
 		clearCascadeJSON = ClearCascadeJSON
 				.get().addRetainTerm(Customer.class, "id", "name", "address", "type", "provinces", "city", "county",
-						"phone", "user","buyerName")
-				.addRetainTerm(User.class, "userName","id")
+						"phone", "user","buyerName","customerAttribution","customerType")
+				.addRetainTerm(BaseData.class,"id","name")
+				.addRetainTerm(User.class,"id", "userName")
 				.addRetainTerm(RegionAddress.class, "regionName","id");
 	}
 	private ClearCascadeJSON clearCascadeJSONGet;

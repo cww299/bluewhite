@@ -642,7 +642,12 @@ public class ReportExportAction {
 				// table的时候 传入class 并且设置needHead =false
 				.table().needHead(Boolean.FALSE).doWrite(data(listmap));
 	}
-	// 表头
+	
+	/**
+	 * 写入
+	 * @param listmap
+	 * @return
+	 */
 	private List<List<String>> head(List<Map<String, Object>> listmap) {
 		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
 		List<List<String>> list = new ArrayList<List<String>>();
@@ -707,7 +712,11 @@ public class ReportExportAction {
 		return list;
 	}
 
-	// 数据
+	/**
+	 * 数据
+	 * @param listmap
+	 * @return
+	 */
 	private List<List<Object>> data(List<Map<String, Object>> listmap) {
 		List<List<Object>> list = new ArrayList<>();
 		if (listmap.size() != 0) {
@@ -732,6 +741,8 @@ public class ReportExportAction {
 		}
 		return list;
 	}
+	
+	
 
 	@InitBinder
 	protected void initBinder(WebDataBinder binder) {

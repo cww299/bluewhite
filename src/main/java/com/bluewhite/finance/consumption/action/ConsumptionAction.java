@@ -19,15 +19,13 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.multipart.support.ByteArrayMultipartFileEditor;
 
-import com.alibaba.excel.EasyExcelFactory;
-import com.alibaba.excel.metadata.Sheet;
+import com.alibaba.excel.EasyExcel;
 import com.bluewhite.basedata.entity.BaseData;
 import com.bluewhite.common.ClearCascadeJSON;
 import com.bluewhite.common.DateTimePattern;
 import com.bluewhite.common.entity.CommonResponse;
 import com.bluewhite.common.entity.ErrorCode;
 import com.bluewhite.common.entity.PageParameter;
-import com.bluewhite.common.entity.PageResult;
 import com.bluewhite.common.utils.excel.ExcelListener;
 import com.bluewhite.finance.consumption.entity.Consumption;
 import com.bluewhite.finance.consumption.entity.ConsumptionPoi;
@@ -53,7 +51,7 @@ public class ConsumptionAction {
 						"settleAccountsMode", "remark", "flag", "taxPoint", "contact", "logisticsDate", "contactName",
 						"batchNumber", "realityDate", "deleteFlag", "orgName","content")
 				.addRetainTerm(User.class, "id","userName")
-				.addRetainTerm(Customer.class,"name")
+				.addRetainTerm(Customer.class,"name","id")
 				.addRetainTerm(OrderProcurement.class,"orderProcurementNumber", "placeOrderNumber", "arrivalTime","order",
 						"materielLocation", "price","expectPaymentTime", "materiel", "gramPrice", "interest", "paymentMoney")
 				.addRetainTerm(Order.class,"bacthNumber")
@@ -114,24 +112,6 @@ public class ConsumptionAction {
 	}
 
 	/**
-	 * 财务新增订单（导入）
-	 * 
-	 */
-	@RequestMapping(value = "/fince/excel/addConsumption", method = RequestMethod.POST)
-	@ResponseBody
-	public CommonResponse importConsumption(@RequestParam(value = "file", required = false) MultipartFile file,
-			HttpServletRequest request) throws IOException {
-		CommonResponse cr = new CommonResponse();
-		InputStream inputStream = file.getInputStream();
-		ExcelListener excelListener = new ExcelListener();
-		EasyExcelFactory.readBySax(inputStream, new Sheet(1, 1, ConsumptionPoi.class), excelListener);
-		int count = consumptionService.excelAddConsumption(excelListener);
-		inputStream.close();
-		cr.setMessage("成功导入" + count + "条数据");
-		return cr;
-	}
-
-	/**
 	 * 财务审核放款
 	 * 
 	 * @param request
@@ -178,6 +158,25 @@ public class ConsumptionAction {
 		cr.setMessage("查询成功");
 		return cr;
 	}
+	
+	/**
+	 * 财务新增订单（导入）
+	 * 
+	 */
+	@RequestMapping(value = "/fince/excel/addConsumption", method = RequestMethod.POST)
+	@ResponseBody
+	public CommonResponse importConsumption(@RequestParam(value = "file", required = false) MultipartFile file,
+			HttpServletRequest request,Integer type) throws IOException {
+		CommonResponse cr = new CommonResponse();
+		InputStream inputStream = file.getInputStream();
+		ExcelListener excelListener = new ExcelListener();
+		EasyExcel.read(inputStream, ConsumptionPoi.class, excelListener).sheet().doRead();
+		int count = consumptionService.excelAddConsumption(excelListener,type);
+		inputStream.close();
+		cr.setMessage("成功导入" + count + "条数据");
+		return cr;
+	}
+	
 
 	@InitBinder
 	protected void initBinder(WebDataBinder binder) {

@@ -22,7 +22,6 @@ import org.springframework.web.multipart.support.ByteArrayMultipartFileEditor;
 
 import com.bluewhite.common.ClearCascadeJSON;
 import com.bluewhite.common.DateTimePattern;
-import com.bluewhite.common.Log;
 import com.bluewhite.common.entity.CommonResponse;
 import com.bluewhite.common.entity.ErrorCode;
 import com.bluewhite.common.entity.PageParameter;
@@ -56,8 +55,6 @@ import com.bluewhite.production.task.entity.Task;
 @Controller
 public class FinanceAction {
 
-	private static final Log log = Log.getLog(FinanceAction.class);
-
 	@Autowired
 	private PayBService payBService;
 	@Autowired
@@ -78,7 +75,7 @@ public class FinanceAction {
 	{
 		clearCascadeJSON = ClearCascadeJSON.get().addRetainTerm(PayB.class, "id", "userName", "allotTime", "payNumber",
 				"bacth", "productName", "allotTime", "performancePayNumber", "task")
-				.addRetainTerm(Task.class, "procedureName");
+				.addRetainTerm(Task.class, "procedureName","number");
 	}
 
 	/**

@@ -122,7 +122,7 @@ layui.extend({
 							text = data[r];	
 						else{
 							text = item2.transData.text || '未知';
-							color = 6;
+							r = 6;
 						}
 						if(!item2.transData.skin)							//开启皮肤
 							text = '<span class="layui-badge layui-bg-'+COLOR[r%7]+'">'+text+'</span>';
@@ -141,7 +141,7 @@ layui.extend({
 								layui.each(name,function(i,t){
 									var field = item;
 									layui.each(t.split('_'),function(i2,t2){
-										field = field[t2]?field[t2]:'';
+										field = field[t2]?field[t2]:(field[t2]!=0?'':0);
 									})
 									text.push(field);
 								})

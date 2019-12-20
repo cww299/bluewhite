@@ -23,9 +23,6 @@
 				<div class="layui-form-item">
 					<table>
 						<tr>
-							<td>报销人:</td>
-							<td><input type="text" name="Username" id="firstNames" class="layui-input" /></td>
-							<td>&nbsp;&nbsp;</td>
 							<td>报销内容:</td>
 							<td><input type="text" name="content" class="layui-input" /></td>
 							<td>&nbsp;&nbsp;</td>
@@ -41,10 +38,11 @@
 							</td> -->
 							<td>&nbsp;&nbsp;</td>
 							<td>是否核对:
-							<td><select class="form-control" name="flag">
+							<td><select class="form-control" name="flags">
 									<option value="">请选择</option>
-									<option value="0">未核对</option>
-									<option value="1">已核对</option>
+									<option value="0">未审核</option>
+									<option value="2">部分审核</option>
+									<option value="1">已审核</option>
 							</select></td>
 							<td>&nbsp;&nbsp;</td>
 							<td>
@@ -53,6 +51,12 @@
 										<i class="layui-icon layui-icon-search layuiadmin-button-btn"></i>
 									</button>
 								</div>
+							</td>
+							<td>&nbsp;&nbsp;</td>
+							<td>
+							<div class="layui-inline">
+							<button type="button" class="layui-btn layui-btn" id="test3"><i class="layui-icon"></i>导入工资</button>
+							</div>
 							</td>
 						</tr>
 					</table>
@@ -79,7 +83,7 @@
 			}).extend({
 				tablePlug: 'tablePlug/tablePlug'
 			}).define(
-				['tablePlug', 'laydate', 'element'],
+				['tablePlug', 'laydate', 'element','upload'],
 				function() {
 					var $ = layui.jquery
 						,layer = layui.layer //弹层
@@ -87,6 +91,7 @@
 						,table = layui.table //表格
 						,laydate = layui.laydate //日期控件
 						,tablePlug = layui.tablePlug //表格插件
+						,upload = layui.upload
 						,element = layui.element;
 					//全部字段
 					var allField;
@@ -106,26 +111,21 @@
 						type: 'datetime',
 					}); */
 				 
-					$.ajax({
-						url: '${ctx}/system/user/findAllUser',
-						type: "GET",
-						async: false,
-						beforeSend: function() {
-							index;
-						},
-						success: function(result) {
-							$(result.data).each(function(i, o) {
-								htmls += '<option value=' + o.id + '>' + o.userName + '</option>'
-							})
-							layer.close(index);
-						},
-						error: function() {
-							layer.msg("操作失败！", {
-								icon: 2
-							});
-							layer.close(index);
-						}
-					});
+					
+					upload.render({
+					    elem: '#test3'
+					    ,url: '${ctx}/fince/excel/addConsumption?type=3'
+					    ,accept: 'file' //普通文件
+					    ,done: function(res){
+					      if(res.code==0){
+					    	  table.reload("tableData")
+					    	  return layer.msg(res.message, { icon: 1 });
+					      }else{
+					    	  return layer.msg(导入失败, { icon: 2 });
+					      }
+					    }
+					  });
+					layer.close(index);
 					
 					// 处理操作列
 					var fn1 = function(field) {
@@ -215,11 +215,25 @@
 								align: 'center',
 								title: "扣款事由",
 								edit: 'text'
-							}, {
+							},{
 								field: "withholdMoney",
 								title: "扣款金额",
 								align: 'center',
 								edit: 'text'
+							},{
+								field: "flag",
+								title: "审核状态",
+								templet:  function(d){
+									if(d.flag==0){
+										return "未审核";
+									}
+									if(d.flag==1){
+										return "已审核";
+									}
+									if(d.flag==2){
+										return "部分审核";
+									}
+								}
 							}]
 						],
 						done: function() {
@@ -240,7 +254,7 @@
 						done: function(res, curr, count) {
 							var tableView = this.elem.next();
 							var tableElem = this.elem.next('.layui-table-view');
-							layui.each(tableElem.find('select'), function(index, item) {
+							layui.each(tableElem.find('.layui-table-box').find('select'), function(index, item) {
 								var elem = $(item);
 								elem.val(elem.data('value'));
 							});

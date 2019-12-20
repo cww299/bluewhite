@@ -2,7 +2,6 @@ package com.bluewhite.ledger.action;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
-import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.propertyeditors.CustomDateEditor;
@@ -62,9 +61,6 @@ import com.bluewhite.product.primecostbasedata.entity.BaseOne;
 import com.bluewhite.product.primecostbasedata.entity.Materiel;
 import com.bluewhite.product.product.entity.Product;
 import com.bluewhite.system.user.entity.User;
-
-import cn.hutool.core.bean.BeanUtil;
-import cn.hutool.core.map.MapUtil;
 
 /**
  * 销售
@@ -1196,7 +1192,7 @@ public class LedgerAction {
 	@ResponseBody
 	public CommonResponse getOrderOutSourcePutStorageDetails(Long id) {
 		CommonResponse cr = new CommonResponse();
-//		cr.setData(outStorageService.getOrderOutSourcePutStorageDetails(id));
+		cr.setData(outStorageService.getOrderOutSourcePutStorageDetails(id));
 		cr.setMessage("查询成功");
 		return cr;
 	}

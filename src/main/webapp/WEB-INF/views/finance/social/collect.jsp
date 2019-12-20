@@ -23,23 +23,28 @@
 				<div class="layui-form-item">
 					<table>
 						<tr>
-							<td>报销人:</td>
+							<td>扣税单位:</td>
 							<td><input type="text" name="customerName" id="firstNames" class="layui-input" /></td>
-							<td>&nbsp&nbsp</td>
-							<td><select class="layui-input" name="selectone" id="selectone">
+							<td>&nbsp;&nbsp;</td>
+							<td><select class="layui-input" id="selectone">
 									<option value="expenseDate">预计付款日期</option>
+									<option value="paymentDate">实际付款日期</option>
 							</select></td>
-							<td>&nbsp&nbsp</td>
+							<td>&nbsp;&nbsp;</td>
 							<td><input id="startTime" style="width: 300px;" name="orderTimeBegin" placeholder="请输入开始时间" class="layui-input laydate-icon">
 							</td>
+							<td>&nbsp;&nbsp;</td>
+							<td>是否核对:
+							<td><select class="form-control" name="flags">
+									<option value="0">未审核</option>
+									<option value="2">部分审核</option>
+									<option value="1">已审核</option>
+							</select></td>
 							<!-- <td>&nbsp&nbsp</td>
 							<td>结束:</td>
 							<td><input id="endTime" name="orderTimeEnd" placeholder="请输入结束时间" class="layui-input laydate-icon">
 							</td> -->
-							<td>&nbsp&nbsp</td>
-							<td>需要支付总额:
-							<td><input type="text" id="allPrice" disabled class="layui-input"  /></td>
-							<td>&nbsp&nbsp</td>
+							<td>&nbsp;&nbsp;</td>
 							<td>
 								<div class="layui-inline">
 									<button class="layui-btn layuiadmin-btn-admin" lay-submit lay-filter="LAY-search">
@@ -47,6 +52,9 @@
 									</button>
 								</div>
 							</td>
+							<td style="width:130px;"></td>
+							<td style="font-size: 20px;">未支付总额:</td>
+							<td id="allPrice" style="color:red;font-size: 20px;"></td>
 						</tr>
 					</table>
 				</div>
@@ -96,28 +104,20 @@
 						type: 'datetime',
 					}); */
 				 
-					$.ajax({
-						url: '${ctx}/system/user/findAllUser',
-						type: "GET",
-						async: false,
-						beforeSend: function() {
-							index;
-						},
-						success: function(result) {
-							$(result.data).each(function(i, o) {
-								htmls += '<option value=' + o.id + '>' + o.userName + '</option>'
-							})
-							layer.close(index);
-						},
-						error: function() {
-							layer.msg("操作失败！", {
-								icon: 2
-							});
-							layer.close(index);
-						}
-					});
-					
-					
+					layer.close(index);
+					getTotalAmount({flags: '0,2',});
+					function getTotalAmount(post){
+						$.ajax({
+							url: '${ctx}/fince/totalAmount?type=7',
+							data: post,
+							success:function(r){
+								if(r.code==0){
+									$('#allPrice').text(r.data);
+								}else
+									$('#allPrice').html('异常');
+							}
+						})
+					};
 				   	tablePlug.smartReload.enable(true); 
 					table.render({
 						elem: '#tableData',
@@ -125,7 +125,7 @@
 						height:'700px',
 						url: '${ctx}/fince/getConsumption' ,
 						where:{
-							flag:0,
+							flags:'0,2',
 							type:7
 						},
 						request:{
@@ -142,7 +142,6 @@
 						colFilterRecord: true,
 						smartReloadModel: true,// 开启智能重载
 						parseData: function(ret) {
-							$('#allPrice').val(ret.data.statData.statAmount)
 							return {
 								code: ret.code,
 								msg: ret.message,
@@ -159,7 +158,7 @@
 								field: "withholdReason",
 								title: "扣税单位",
 								templet: function(d){
-									return d.custom.name
+									return d.customer.name
 								}
 							},{
 								field: "content",
@@ -170,7 +169,10 @@
 								title: "金额",
 							},{
 								field: "expenseDate",
-								title: "报销申请日期",
+								title: "预计付款日期",
+							},{
+								field: "paymentDate",
+								title: "实际付款日期",
 							},{
 								field: "flag",
 								title: "审核状态",
@@ -180,6 +182,9 @@
 									}
 									if(d.flag==1){
 										return "已审核";
+									}
+									if(d.flag==2){
+										return "部分审核";
 									}
 								}
 							}]
@@ -196,16 +201,25 @@
 						var orderTime=field.orderTimeBegin.split('~');
 						orderTimeBegin=orderTime[0];
 						orderTimeEnd=orderTime[1];
+						var a="";
+						var b="";
+						if($("#selectone").val()=="expenseDate"){
+							a="2019-05-08 00:00:00"
+						}else{
+							b="2019-05-08 00:00:00"
+						}
 						var post={
 							customerName:field.customerName,
-							flag:field.flag,
+							flags:field.flags,
 							orderTimeBegin:orderTimeBegin,
 							orderTimeEnd:orderTimeEnd,
-							expenseDate:"2019-05-08 00:00:00",
+							expenseDate:a,
+							paymentDate:b,
 						}
 						table.reload('tableData', {
 							where: post
 						});
+						getTotalAmount(post);
 					});
 					
 

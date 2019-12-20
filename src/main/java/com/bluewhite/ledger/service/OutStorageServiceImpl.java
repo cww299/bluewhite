@@ -33,6 +33,7 @@ import com.bluewhite.ledger.dao.PutOutStorageDao;
 import com.bluewhite.ledger.dao.SendGoodsDao;
 import com.bluewhite.ledger.entity.ApplyVoucher;
 import com.bluewhite.ledger.entity.OrderChild;
+import com.bluewhite.ledger.entity.OrderOutSource;
 import com.bluewhite.ledger.entity.OutStorage;
 import com.bluewhite.ledger.entity.PutOutStorage;
 import com.bluewhite.ledger.entity.PutStorage;
@@ -130,6 +131,7 @@ public class OutStorageServiceImpl extends BaseServiceImpl<OutStorage, Long> imp
 	public void sendOutStorage(Long id, Integer sendNumber, String putStorage,Integer flag) {
 		CurrentUser cu = SessionManager.getUserSession();
 		SendGoods sendGoods = sendGoodsDao.findOne(id);
+		
 		// 生成出库单
 		OutStorage outStorage = new OutStorage();
 		//成品使用发货单
@@ -217,6 +219,73 @@ public class OutStorageServiceImpl extends BaseServiceImpl<OutStorage, Long> imp
 			});
 		}
 		// 获取申请通过库存
+		// 循环申请单,将被申请人取出,同时过滤出被申请人的入库单,进行入库单的记录
+		List<ApplyVoucher> applyVoucherList = applyVoucherDao.findBySendGoodsIdAndPass(id, 1);
+		if (applyVoucherList.size() > 0) {
+			Map<Long, List<ApplyVoucher>> mapApplyVoucher = applyVoucherList.stream()
+					.collect(Collectors.groupingBy(ApplyVoucher::getApprovalUserId));
+			for (Long ps1 : mapApplyVoucher.keySet()) {
+				List<PutStorage> putStorageListOther = putStorageList.stream().filter(p -> {
+					if (p.getOrderOutSource() != null) {
+						List<OrderChild> ocList = p.getOrderOutSource().getMaterialRequisition().getOrder().getOrderChilds();
+						for (OrderChild oc : ocList) {
+							if (ps1.equals(oc.getUserId())) {
+								return true;
+							}
+						}
+					}
+					return false;
+				}).collect(Collectors.toList());
+				if (putStorageListOther.size() > 0) {
+					putStorageListOther.forEach(p -> {
+						Map<String, Object> map = new HashMap<String, Object>();
+						map.put("id", p.getId());
+						map.put("number", p.getSurplusNumber());
+						map.put("bacthNumber", p.getOrderOutSource().getMaterialRequisition().getOrder().getBacthNumber());
+						map.put("serialNumber", p.getSerialNumber());
+						list.add(map);
+					});
+				}
+			}
+		}
+		// 获取公共库存
+		List<PutStorage> publicStorageList = putStorageList.stream()
+				.filter(PutStorage -> PutStorage.getPublicStock() == 1).collect(Collectors.toList());
+		if (publicStorageList.size() > 0) {
+			publicStorageList.forEach(p -> {
+				Map<String, Object> map = new HashMap<String, Object>();
+				map.put("id", p.getId());
+				map.put("number", p.getSurplusNumber());
+				map.put("bacthNumber", "");
+				map.put("serialNumber", p.getSerialNumber());
+				list.add(map);
+			});
+		}
+		return list;
+	}
+
+	@Override
+	public Object getOrderOutSourcePutStorageDetails(Long id) {
+		List<Map<String, Object>> list = new ArrayList<>();
+		//根据仓管登陆用户权限，获取不同的仓库库存
+		CurrentUser cu = SessionManager.getUserSession();
+		Long warehouseTypeDeliveryId = RoleUtil.getWarehouseTypeDelivery(cu.getRole());
+		OrderOutSource orderOutSource = orderOutSourceService.findOne(id);
+		// 获取登陆库管的仓库出库单剩余数量(皮壳)
+		List<PutStorage> putStorageList = putStorageService.detailsInventory(warehouseTypeDeliveryId,orderOutSource.getMaterialRequisition().getOrder().getProductId());
+		// 获取加工单的库存
+		List<PutStorage> putStorageListSelf = putStorageList.stream().filter(PutStorage->PutStorage.getOrderOutSourceId().equals(id)).collect(Collectors.toList());
+		if (putStorageListSelf.size() > 0) {
+			putStorageListSelf.forEach(p -> {
+				Map<String, Object> map = new HashMap<String, Object>();
+				map.put("id", p.getId());
+				map.put("number", p.getSurplusNumber());
+				map.put("bacthNumber", p.getOrderOutSource().getMaterialRequisition().getOrder().getBacthNumber());
+				map.put("serialNumber", p.getSerialNumber());
+				list.add(map);
+			});
+		}
+		// 当加工单没有进入库存时，可以进行皮壳借货申请，获取申请通过库存
 		// 循环申请单,将被申请人取出,同时过滤出被申请人的入库单,进行入库单的记录
 		List<ApplyVoucher> applyVoucherList = applyVoucherDao.findBySendGoodsIdAndPass(id, 1);
 		if (applyVoucherList.size() > 0) {

@@ -243,8 +243,8 @@
 
 	<script type="text/html" id="addEditTpl">
 	<form action="" id="layuiadmin-form-admin"
-		style="padding: 20px 30px 0 60px; text-align:">
-		<div class="layui-form" lay-filter="layuiadmin-form-admin">
+		style="padding: 20px 40px 0 60px; text-align:">
+		<div class="layui-form layui-form-pane" lay-filter="layuiadmin-form-admin ">
 			<input type="text" name="id" id="usID" style="display:none;">
 
 			<div class="layui-form-item">
@@ -256,6 +256,7 @@
 				</div>
 			</div>
 			<div class="layui-form-item">
+				<div class="layui-inline">
 				<label class="layui-form-label" style="width: 130px;">面试时间</label>
 				<div class="layui-input-inline">
 					<select id="tplTime"><option value="">请选择</option>
@@ -269,6 +270,7 @@
 						{{# } }}
 					</select>
 				</div>
+			</div>
 			</div>
 			<div class="layui-form-item">
 				<label class="layui-form-label" style="width: 130px;">面试人</label>
@@ -1709,6 +1711,10 @@
 							positionId=data.positionId;
 							recruitId=data.recruitId;
 							platformId=data.platformId;
+							if(state==1){
+								layer.msg("该员工已入职 信息不可修改",{icon:2});
+								return;
+							}
 						}
 						laytpl(tpl).render(data,function(h){
 							html=h;
@@ -1716,7 +1722,7 @@
 						layer.open({
 							type:1,
 							title:title,
-							area:['30%','80%'],
+							area:['28%','80%'],
 							btn:['确认','取消'],
 							content:html,
 							id: 'LAY_layuipro' ,
