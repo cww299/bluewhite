@@ -31,7 +31,7 @@ import com.bluewhite.common.entity.PageParameter;
 import com.bluewhite.common.entity.PageResult;
 import com.bluewhite.common.utils.DatesUtil;
 import com.bluewhite.common.utils.RoleUtil;
-import com.bluewhite.common.utils.SalesUtils;
+import com.bluewhite.common.utils.StringUtil;
 import com.bluewhite.common.utils.StringUtil;
 import com.bluewhite.ledger.dao.OrderDao;
 import com.bluewhite.ledger.dao.PackingChildDao;
@@ -277,7 +277,7 @@ public class PackingServiceImpl extends BaseServiceImpl<Packing, Long> implement
 					sale.setCustomerId(pc.getCustomerId());
 					sale.setBacthNumber(pc.getBacthNumber());
 					// 生成销售编号
-					sale.setSaleNumber(Constants.XS + "-" + sdf.format(time) + "-" + SalesUtils.get0LeftString(
+					sale.setSaleNumber(Constants.XS + "-" + sdf.format(time) + "-" + StringUtil.get0LeftString(
 							packingChildDao.findBySendDateBetween(time, DatesUtil.getLastDayOftime(time)).size(), 4));
 					// 未审核
 					sale.setAudit(0);

@@ -25,7 +25,7 @@ import com.bluewhite.common.entity.PageResult;
 import com.bluewhite.common.entity.PageResultStat;
 import com.bluewhite.common.utils.DatesUtil;
 import com.bluewhite.common.utils.NumUtils;
-import com.bluewhite.common.utils.SalesUtils;
+import com.bluewhite.common.utils.StringUtil;
 import com.bluewhite.finance.attendance.dao.AttendancePayDao;
 import com.bluewhite.finance.attendance.entity.AttendancePay;
 import com.bluewhite.production.task.service.TaskService;
@@ -116,7 +116,7 @@ public class AttendancePayServiceImpl extends BaseServiceImpl<AttendancePay, Lon
 			Predicate[] pre = new Predicate[predicate.size()];
 			query.where(predicate.toArray(pre));
 			return null;
-		}, SalesUtils.getQueryNoPageParameter());
+		}, StringUtil.getQueryNoPageParameter());
 		if (param.getSign() != null) {
 			this.countMaxPay(pages.getContent(), param);
 		}

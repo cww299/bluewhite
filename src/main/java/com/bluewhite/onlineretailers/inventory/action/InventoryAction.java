@@ -591,15 +591,5 @@ public class InventoryAction {
 		cr.setMessage("成功审核"+count+"条发货清单");
 		return cr;
 	}
-	
-	
-	
-
-	@InitBinder
-	protected void initBinder(WebDataBinder binder) {
-		SimpleDateFormat dateTimeFormat = new SimpleDateFormat(DateTimePattern.DATEHMS.getPattern());
-		binder.registerCustomEditor(java.util.Date.class, null, new CustomDateEditor(dateTimeFormat, true));
-		binder.registerCustomEditor(byte[].class, new ByteArrayMultipartFileEditor());
-	}
 
 }

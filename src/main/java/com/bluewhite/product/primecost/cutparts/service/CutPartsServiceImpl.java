@@ -16,7 +16,7 @@ import com.bluewhite.common.entity.PageParameter;
 import com.bluewhite.common.entity.PageResult;
 import com.bluewhite.common.entity.PageResultStat;
 import com.bluewhite.common.utils.NumUtils;
-import com.bluewhite.common.utils.SalesUtils;
+import com.bluewhite.common.utils.StringUtil;
 import com.bluewhite.product.primecost.cutparts.dao.CutPartsDao;
 import com.bluewhite.product.primecost.cutparts.entity.CutParts;
 import com.bluewhite.product.primecost.tailor.dao.OrdinaryLaserDao;
@@ -140,7 +140,7 @@ public class CutPartsServiceImpl  extends BaseServiceImpl<CutParts, Long> implem
 				Predicate[] pre = new Predicate[predicate.size()];
 				query.where(predicate.toArray(pre));
 	        	return null;
-	        }, SalesUtils.getQueryNoPageParameter());
+	        }, StringUtil.getQueryNoPageParameter());
 		 	PageResultStat<CutParts> result = new PageResultStat<>(pages,page);
 			result.setAutoStateField("allPerimeter", "perimeter","addMaterial");
 			result.count();

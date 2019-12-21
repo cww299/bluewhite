@@ -20,7 +20,7 @@ import com.bluewhite.common.ServiceException;
 import com.bluewhite.common.entity.PageParameter;
 import com.bluewhite.common.entity.PageResult;
 import com.bluewhite.common.utils.NumUtils;
-import com.bluewhite.common.utils.SalesUtils;
+import com.bluewhite.common.utils.StringUtil;
 import com.bluewhite.common.utils.StringUtil;
 import com.bluewhite.ledger.dao.MaterialOutStorageDao;
 import com.bluewhite.ledger.dao.MaterialPutOutStorageDao;
@@ -55,7 +55,7 @@ public class MaterialPutStorageServiceImpl extends BaseServiceImpl<MaterialPutSt
 			update(materialPutStorage, ot, "");
 		} else {
 			materialPutStorage.setSerialNumber(
-					Constants.WLRK + StringUtil.getDate() + SalesUtils.get0LeftString((int) (dao.count()+1), 8));
+					Constants.WLRK + StringUtil.getDate() + StringUtil.get0LeftString((int) (dao.count()+1), 8));
 			materialPutStorage.setInspection(0);
 			dao.save(materialPutStorage);
 		}
