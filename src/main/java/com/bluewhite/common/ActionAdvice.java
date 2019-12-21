@@ -53,3 +53,4 @@ public class ActionAdvice{
 	}
 	
 }
+>>>>>>> branch 'master' of https://github.com/cww299/bluewhite.git
