@@ -15,7 +15,7 @@ import com.bluewhite.base.BaseServiceImpl;
 import com.bluewhite.common.ServiceException;
 import com.bluewhite.common.entity.PageParameter;
 import com.bluewhite.common.entity.PageResult;
-import com.bluewhite.common.utils.SalesUtils;
+import com.bluewhite.common.utils.StringUtil;
 import com.bluewhite.system.user.dao.TemporaryUserDao;
 import com.bluewhite.system.user.dao.UserDao;
 import com.bluewhite.system.user.entity.TemporaryUser;
@@ -65,7 +65,7 @@ public class TemporaryUserServiceImpl  extends BaseServiceImpl<TemporaryUser, Lo
 			if(temporaryUserOld.size()>0){
 				throw new ServiceException("该临时人员姓名已存在,请先查找，如是重名员工，请联系管理员");
 			}
-			temporaryUser.setId(Long.parseLong(SalesUtils.findRandomCode()));;
+			temporaryUser.setId(Long.parseLong(StringUtil.findRandomCode()));;
 			dao.save(temporaryUser);
 		}
 	}

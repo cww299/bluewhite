@@ -15,8 +15,7 @@ import com.bluewhite.base.BaseServiceImpl;
 import com.bluewhite.common.entity.PageParameter;
 import com.bluewhite.common.entity.PageResult;
 import com.bluewhite.common.entity.PageResultStat;
-import com.bluewhite.common.utils.SalesUtils;
-import com.bluewhite.finance.attendance.entity.AttendancePay;
+import com.bluewhite.common.utils.StringUtil;
 import com.bluewhite.production.finance.dao.FarragoTaskPayDao;
 import com.bluewhite.production.finance.entity.FarragoTaskPay;
 @Service
@@ -62,7 +61,7 @@ public class FarragoTaskPayServiceImpl extends BaseServiceImpl<FarragoTaskPay, L
 				Predicate[] pre = new Predicate[predicate.size()];
 				query.where(predicate.toArray(pre));
 	        	return null;
-	        }, SalesUtils.getQueryNoPageParameter());
+	        }, StringUtil.getQueryNoPageParameter());
 		 	PageResultStat<FarragoTaskPay> result = new PageResultStat<>(pages,page);
 		 	result.setAutoStateField("performancePayNumber", "payNumber");
 		 	result.count();

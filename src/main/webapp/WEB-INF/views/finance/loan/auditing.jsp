@@ -228,6 +228,7 @@
 								};
 								laydate.render({
 									elem: tdElem.children[0],
+									type: 'datetime',
 									format: 'yyyy-MM-dd HH:mm:ss',
 									done: function(value, date) {
 											var id = table.cache[tableView.attr('lay-id')][index].id

@@ -26,7 +26,6 @@ import com.bluewhite.common.entity.PageParameter;
 import com.bluewhite.common.entity.PageResult;
 import com.bluewhite.common.utils.DatesUtil;
 import com.bluewhite.common.utils.NumUtils;
-import com.bluewhite.common.utils.SalesUtils;
 import com.bluewhite.common.utils.StringUtil;
 import com.bluewhite.common.utils.UnUtil;
 import com.bluewhite.finance.attendance.dao.AttendancePayDao;
@@ -344,7 +343,7 @@ public class TaskServiceImpl extends BaseServiceImpl<Task, Long> implements Task
 		double bacthDepartmentPrice = 0;
 		if (bacth.getTasks().size() > 0) {
 			List<Double> listDouble = new ArrayList<>();
-			bacth.getTasks().stream().filter(SalesUtils.distinctByKey(Task::getProcedureId)).forEach(a -> {
+			bacth.getTasks().stream().filter(StringUtil.distinctByKey(Task::getProcedureId)).forEach(a -> {
 				if(a.getProcedureId()!=null ){
 					Procedure procedure  = procedureDao.findOne(a.getProcedureId());
 					listDouble.add(procedure.getWorkingTime());

@@ -17,7 +17,7 @@ import javax.persistence.Transient;
 import com.bluewhite.base.BaseEntity;
 import com.bluewhite.common.utils.DatesUtil;
 import com.bluewhite.common.utils.NumUtils;
-import com.bluewhite.common.utils.SalesUtils;
+import com.bluewhite.common.utils.StringUtil;
 import com.bluewhite.system.user.entity.User;
 import com.fasterxml.jackson.annotation.JsonFormat;
 
@@ -227,7 +227,7 @@ public class AttendanceCollect extends BaseEntity<Long>{
     				}
     			);
     	list.stream().filter(AttendanceTime->AttendanceTime.getHolidayDetail()!=null).collect(Collectors.toList())
-    	.stream().filter(SalesUtils.distinctByKey(b -> b.getHolidayDetail())).forEach(at->{
+    	.stream().filter(StringUtil.distinctByKey(b -> b.getHolidayDetail())).forEach(at->{
     					leaveDetails += at.getHolidayDetail()+",";
     	});
     	belateDetails = "共迟到"+belateAttendanceTime.size()+"次："+belateDetails;

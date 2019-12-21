@@ -1,6 +1,5 @@
 package com.bluewhite.personnel.attendance.service;
 
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -30,6 +29,8 @@ import com.bluewhite.personnel.attendance.dao.AttendanceTimeDao;
 import com.bluewhite.personnel.attendance.entity.Attendance;
 import com.bluewhite.system.user.entity.User;
 import com.bluewhite.system.user.service.UserService;
+
+import cn.hutool.core.util.StrUtil;
 
 @Service
 public class AttendanceServiceImpl extends BaseServiceImpl<Attendance, Long> implements AttendanceService {
@@ -73,8 +74,7 @@ public class AttendanceServiceImpl extends BaseServiceImpl<Attendance, Long> imp
 		for (Map<String, Object> map : userMapList) {
 			if (userListAll.size() > 0) {
 				List<User> user = userListAll.stream()
-						.filter(User -> User.getNumber() == null
-								&& User.getUserName().trim().equals(map.get("name").toString().trim()))
+						.filter(User -> StrUtil.isBlank(User.getNumber()) && User.getUserName().trim().equals(map.get("name").toString().trim()))
 						.collect(Collectors.toList());
 				if (user.size() > 1) {
 					throw new ServiceException("系统用户有相同名称的员工" + user.get(0).getUserName() + "，请检查是否重复");
@@ -156,9 +156,9 @@ public class AttendanceServiceImpl extends BaseServiceImpl<Attendance, Long> imp
 		if (Constants.THREE_FLOOR.equals(address)) {
 			sourceMachine = "THREE_FLOOR";
 		}
-		if (Constants.TWO_FLOOR.equals(address)) {
-			sourceMachine = "TWO_FLOOR";
-		}
+//		if (Constants.TWO_FLOOR.equals(address)) {
+//			sourceMachine = "TWO_FLOOR";
+//		}
 		if (Constants.ONE_FLOOR.equals(address)) {
 			sourceMachine = "ONE_FLOOR";
 		}
@@ -189,9 +189,9 @@ public class AttendanceServiceImpl extends BaseServiceImpl<Attendance, Long> imp
 			if (Constants.THREE_FLOOR.equals(param.getSourceMachine())) {
 				sourceMachine = "THREE_FLOOR";
 			}
-			if (Constants.TWO_FLOOR.equals(param.getSourceMachine())) {
-				sourceMachine = "TWO_FLOOR";
-			}
+//			if (Constants.TWO_FLOOR.equals(param.getSourceMachine())) {
+//				sourceMachine = "TWO_FLOOR";
+//			}
 			if (Constants.ONE_FLOOR.equals(param.getSourceMachine())) {
 				sourceMachine = "ONE_FLOOR";
 			}
@@ -256,7 +256,6 @@ public class AttendanceServiceImpl extends BaseServiceImpl<Attendance, Long> imp
 	public List<Map<String, Object>> getAllAttendance(String address) {
 		sdk.initSTA();
 		boolean flag = sdk.connect(address, 4370);
-		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 		List<Map<String, Object>> attendanceList = null;
 		flag = sdk.readGeneralLogData(0);
 		if (flag) {
@@ -308,17 +307,20 @@ public class AttendanceServiceImpl extends BaseServiceImpl<Attendance, Long> imp
 		if (attendanceList.size() > 0) {
 			dao.delete(attendanceList);
 		}
+		int count = 0;
 		if (StringUtils.isEmpty(address)) {
-			allAttendance(Constants.THREE_FLOOR, startTime, endTime, userId);
-			allAttendance(Constants.TWO_FLOOR, startTime, endTime, userId);
-			allAttendance(Constants.ONE_FLOOR, startTime, endTime, userId);
-			allAttendance(Constants.EIGHT_WAREHOUSE, startTime, endTime, userId);
-			allAttendance(Constants.NEW_IGHT_WAREHOUSE, startTime, endTime, userId);
-			allAttendance(Constants.ELEVEN_WAREHOUSE, startTime, endTime, userId);
+			List<Attendance> list = allAttendance(Constants.THREE_FLOOR, startTime, endTime, userId);
+//			allAttendance(Constants.TWO_FLOOR, startTime, endTime, userId);
+			List<Attendance> list1 = allAttendance(Constants.ONE_FLOOR, startTime, endTime, userId);
+			List<Attendance> list2 = allAttendance(Constants.EIGHT_WAREHOUSE, startTime, endTime, userId);
+			List<Attendance> list3 = allAttendance(Constants.NEW_IGHT_WAREHOUSE, startTime, endTime, userId);
+			List<Attendance> list4 = allAttendance(Constants.ELEVEN_WAREHOUSE, startTime, endTime, userId);
+			count = list.size()+list1.size()+list2.size()+list3.size()+list4.size();
 		} else {
-			allAttendance(address, startTime, endTime, userId);
+			List<Attendance> list = allAttendance(address, startTime, endTime, userId);
+			count = list.size();
 		}
-		return attendanceList.size();
+		return count;
 	}
 
 	@Override

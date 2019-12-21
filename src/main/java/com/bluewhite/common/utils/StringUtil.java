@@ -6,13 +6,23 @@ import java.util.Date;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Random;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.function.Function;
+import java.util.function.Predicate;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import org.springframework.data.domain.Sort;
+
 import com.bluewhite.common.Constants;
+import com.bluewhite.common.entity.PageParameter;
 
 public class StringUtil {
 
+	/**
+	 * 模糊查询
+	 */
 	public static String specialStrKeyword(String str) {
 		if (str == null || str == "") {
 			return null;
@@ -172,5 +182,43 @@ public class StringUtil {
 	    }  
 	    return "";  
 	}
+	
+    /**
+     * 去重
+     */
+    public static <T> Predicate<T> distinctByKey(Function<? super T, ?> keyExtractor) {
+        Map<Object,Boolean> seen = new ConcurrentHashMap<>();
+        return t -> seen.putIfAbsent(keyExtractor.apply(t), Boolean.TRUE) == null;
+    }
+    
+    /**
+     * 获取左补0的数据
+     * @param value
+     * @param stringLen
+     * @return
+     */
+    public static String get0LeftString(Integer value, int stringLen) {
+        return String.format("%0" + stringLen + "d",value);
+    }
+    
+    /**
+     * 获取4位数随机码
+     */
+    public static String findRandomCode(){
+        int intCount = (new Random()).nextInt(99999);// 最大值位9999
+        if (intCount < 10000) {
+            intCount += 10000; // 最小值位1001
+        }
+        return String.valueOf(intCount);
+    }
+    
+    /**
+     * 获取没有分页的分页参数
+     * @return
+     */
+    public static PageParameter getQueryNoPageParameter() {
+        return new PageParameter(0, Integer.MAX_VALUE,new Sort(Sort.Direction.DESC, "id"));
+    }
+    
 
 }
