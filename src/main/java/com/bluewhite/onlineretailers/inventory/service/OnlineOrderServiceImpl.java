@@ -31,7 +31,7 @@ import com.bluewhite.common.entity.PageParameter;
 import com.bluewhite.common.entity.PageResult;
 import com.bluewhite.common.utils.DatesUtil;
 import com.bluewhite.common.utils.NumUtils;
-import com.bluewhite.common.utils.SalesUtils;
+import com.bluewhite.common.utils.StringUtil;
 import com.bluewhite.common.utils.StringUtil;
 import com.bluewhite.common.utils.excel.ExcelListener;
 import com.bluewhite.onlineretailers.inventory.dao.CommodityDao;
@@ -242,7 +242,7 @@ public class OnlineOrderServiceImpl extends BaseServiceImpl<OnlineOrder, Long> i
 		}
 		// 生成销售单编号
 		onlineOrder.setDocumentNumber(
-				StringUtil.getDocumentNumber(Constants.XS) + SalesUtils.get0LeftString((int) dao.count(), 8));
+				StringUtil.getDocumentNumber(Constants.XS) + StringUtil.get0LeftString((int) dao.count(), 8));
 		// 新增子订单
 		if (!StringUtils.isEmpty(onlineOrder.getChildOrder())) {
 			JSONArray jsonArray = JSON.parseArray(onlineOrder.getChildOrder());
@@ -287,7 +287,7 @@ public class OnlineOrderServiceImpl extends BaseServiceImpl<OnlineOrder, Long> i
 			procurement.setUserId(cu.getId());
 			// 出库单编号
 			procurement.setDocumentNumber(
-					StringUtil.getDocumentNumber("3") + SalesUtils.get0LeftString((int) procurementDao.count(), 8));
+					StringUtil.getDocumentNumber("3") + StringUtil.get0LeftString((int) procurementDao.count(), 8));
 			procurement.setStatus(0);
 			procurement.setFlag(0);
 			procurement.setType(3);
