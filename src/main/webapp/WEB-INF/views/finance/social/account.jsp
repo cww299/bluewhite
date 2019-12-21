@@ -69,22 +69,22 @@
 <!--新增  -->
 <script type="text/html" id="addEditTpl">
 	<form action="" id="layuiadmin-form-admin"
-		style="padding: 20px 30px 0 60px; text-align:">
-		<div class="layui-form" lay-filter="layuiadmin-form-admin">
+		style="margin-left: 50px;margin-top: 30px;margin-right: 50px;">
+		<div class="layui-form layui-form-pane" lay-filter="layuiadmin-form-admin">
 			<input type="text" name="id" id="usID" style="display:none;">
 
 			<div class="layui-form-item">
-				<label class="layui-form-label" style="width: 130px;">扣税单位</label>
-				<div class="layui-input-inline">
-						<select class="form-control" lay-verify="required" name="customerId" id="customerId">
+				<label class="layui-form-label">扣税单位</label>
+				<div class="layui-input-block">
+						<select class="form-control"  lay-verify="required" name="customerId" id="customerId">
 							
 						</select>
 				</div>
 			</div>
 			
 			<div class="layui-form-item">
-				<label class="layui-form-label" style="width: 130px;">税种</label>
-				<div class="layui-input-inline">
+				<label class="layui-form-label">税种</label>
+				<div class="layui-input-block">
 					<input type="text" value="{{d.content }}" name="content" id="content"
 						lay-verify="required" placeholder="请输入税种"
 						class="layui-input laydate-icon">
@@ -94,8 +94,8 @@
 		
 
 			<div class="layui-form-item">
-				<label class="layui-form-label" style="width: 130px;">金额</label>
-				<div class="layui-input-inline">
+				<label class="layui-form-label">金额</label>
+				<div class="layui-input-block">
 					<input type="text" value="{{d.money }}" name="money" id="money"
 						lay-verify="required" placeholder="请输入金额"
 						class="layui-input laydate-icon">
@@ -103,8 +103,8 @@
 			</div>
 
 			<div class="layui-form-item">
-				<label class="layui-form-label" style="width: 130px;">预计付款日期</label>
-				<div class="layui-input-inline">
+				<label class="layui-form-label">预计付款</label>
+				<div class="layui-input-block">
 					<input type="text" value="{{d.expenseDate }}" name="expenseDate"
 						id="expenseDate" lay-verify="required"
 						placeholder="请输入预计付款日期 " class="layui-input">
@@ -387,7 +387,7 @@
 						layer.open({
 							type:1,
 							title:title,
-							area:['30%','60%'],
+							area:['500px','60%'],
 							btn:['确认','取消'],
 							content:html,
 							id: 'LAY_layuipro' ,
