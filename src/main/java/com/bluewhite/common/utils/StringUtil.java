@@ -20,6 +20,9 @@ import com.bluewhite.common.entity.PageParameter;
 
 public class StringUtil {
 
+	/**
+	 * 模糊查询
+	 */
 	public static String specialStrKeyword(String str) {
 		if (str == null || str == "") {
 			return null;
