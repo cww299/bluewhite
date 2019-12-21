@@ -1,6 +1,5 @@
 package com.bluewhite.personnel.attendance.service;
 
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -308,17 +307,20 @@ public class AttendanceServiceImpl extends BaseServiceImpl<Attendance, Long> imp
 		if (attendanceList.size() > 0) {
 			dao.delete(attendanceList);
 		}
+		int count = 0;
 		if (StringUtils.isEmpty(address)) {
-			allAttendance(Constants.THREE_FLOOR, startTime, endTime, userId);
+			List<Attendance> list = allAttendance(Constants.THREE_FLOOR, startTime, endTime, userId);
 //			allAttendance(Constants.TWO_FLOOR, startTime, endTime, userId);
-			allAttendance(Constants.ONE_FLOOR, startTime, endTime, userId);
-			allAttendance(Constants.EIGHT_WAREHOUSE, startTime, endTime, userId);
-			allAttendance(Constants.NEW_IGHT_WAREHOUSE, startTime, endTime, userId);
-			allAttendance(Constants.ELEVEN_WAREHOUSE, startTime, endTime, userId);
+			List<Attendance> list1 = allAttendance(Constants.ONE_FLOOR, startTime, endTime, userId);
+			List<Attendance> list2 = allAttendance(Constants.EIGHT_WAREHOUSE, startTime, endTime, userId);
+			List<Attendance> list3 = allAttendance(Constants.NEW_IGHT_WAREHOUSE, startTime, endTime, userId);
+			List<Attendance> list4 = allAttendance(Constants.ELEVEN_WAREHOUSE, startTime, endTime, userId);
+			count = list.size()+list1.size()+list2.size()+list3.size()+list4.size();
 		} else {
-			allAttendance(address, startTime, endTime, userId);
+			List<Attendance> list = allAttendance(address, startTime, endTime, userId);
+			count = list.size();
 		}
-		return attendanceList.size();
+		return count;
 	}
 
 	@Override

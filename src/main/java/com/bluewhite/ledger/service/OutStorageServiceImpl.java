@@ -287,7 +287,7 @@ public class OutStorageServiceImpl extends BaseServiceImpl<OutStorage, Long> imp
 		}
 		// 当加工单没有进入库存时，可以进行皮壳借货申请，获取申请通过库存 
 		// 循环申请单,将被申请人取出,同时过滤出被申请人的入库单,进行入库单的记录
-		List<ApplyVoucher> applyVoucherList = applyVoucherDao.findBySendGoodsIdAndPass(id, 1);
+		List<ApplyVoucher> applyVoucherList = applyVoucherDao.findByOrderOutSourceIdAndPass(id, 1);
 		if (applyVoucherList.size() > 0) {
 			Map<Long, List<ApplyVoucher>> mapApplyVoucher = applyVoucherList.stream()
 					.collect(Collectors.groupingBy(ApplyVoucher::getApprovalUserId));
