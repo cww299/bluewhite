@@ -105,9 +105,9 @@ public class SensorEvents {
 		if (Constants.THREE_FLOOR.equals(address)) {
 			sourceMachine = "THREE_FLOOR";
 		}
-		if (Constants.TWO_FLOOR.equals(address)) {
-			sourceMachine = "TWO_FLOOR";
-		}
+//		if (Constants.TWO_FLOOR.equals(address)) {
+//			sourceMachine = "TWO_FLOOR";
+//		}
 		if (Constants.ONE_FLOOR.equals(address)) {
 			sourceMachine = "ONE_FLOOR";
 		}

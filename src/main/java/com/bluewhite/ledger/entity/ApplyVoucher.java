@@ -12,7 +12,6 @@ import javax.persistence.Transient;
 
 import com.bluewhite.base.BaseEntity;
 import com.bluewhite.basedata.entity.BaseData;
-import com.bluewhite.product.product.entity.Product;
 import com.bluewhite.system.user.entity.User;
 
 /**
@@ -133,6 +132,20 @@ public class ApplyVoucher extends BaseEntity<Long> {
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "send_goods_id", referencedColumnName = "id", insertable = false, updatable = false)
 	private SendGoods sendGoods;
+	
+	/**
+	 * 针对加工单申请
+	 * 加工单id
+	 */
+	@Column(name = "orderout_source_id")
+	private Long orderOutSourceId;
+	
+	/**
+	 * 加工单
+	 */
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "orderout_source_id", referencedColumnName = "id", insertable = false, updatable = false)
+	private OrderOutSource orderOutSource;
 
 	/**
 	 * 产品名称
@@ -159,6 +172,22 @@ public class ApplyVoucher extends BaseEntity<Long> {
 	
 	
 	
+	public Long getOrderOutSourceId() {
+		return orderOutSourceId;
+	}
+
+	public void setOrderOutSourceId(Long orderOutSourceId) {
+		this.orderOutSourceId = orderOutSourceId;
+	}
+
+	public OrderOutSource getOrderOutSource() {
+		return orderOutSource;
+	}
+
+	public void setOrderOutSource(OrderOutSource orderOutSource) {
+		this.orderOutSource = orderOutSource;
+	}
+
 	public SendGoods getSendGoods() {
 		return sendGoods;
 	}

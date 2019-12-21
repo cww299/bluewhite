@@ -25,7 +25,7 @@ import com.bluewhite.common.entity.CurrentUser;
 import com.bluewhite.common.entity.PageParameter;
 import com.bluewhite.common.entity.PageResult;
 import com.bluewhite.common.utils.RoleUtil;
-import com.bluewhite.common.utils.SalesUtils;
+import com.bluewhite.common.utils.StringUtil;
 import com.bluewhite.common.utils.StringUtil;
 import com.bluewhite.ledger.dao.ApplyVoucherDao;
 import com.bluewhite.ledger.dao.OutStorageDao;
@@ -74,7 +74,7 @@ public class OutStorageServiceImpl extends BaseServiceImpl<OutStorage, Long> imp
 				}
 			}
 			outStorage.setSerialNumber(
-					Constants.CPCK + StringUtil.getDate() + SalesUtils.get0LeftString((int) (dao.count() + 1), 8));
+					Constants.CPCK + StringUtil.getDate() + StringUtil.get0LeftString((int) (dao.count() + 1), 8));
 			save(outStorage);
 		}
 		;
@@ -131,6 +131,7 @@ public class OutStorageServiceImpl extends BaseServiceImpl<OutStorage, Long> imp
 	public void sendOutStorage(Long id, Integer sendNumber, String putStorage,Integer flag) {
 		CurrentUser cu = SessionManager.getUserSession();
 		SendGoods sendGoods = sendGoodsDao.findOne(id);
+		
 		// 生成出库单
 		OutStorage outStorage = new OutStorage();
 		//成品使用发货单
@@ -144,7 +145,7 @@ public class OutStorageServiceImpl extends BaseServiceImpl<OutStorage, Long> imp
 		outStorage.setArrivalNumber(sendNumber);
 		outStorage.setArrivalTime(new Date());
 		outStorage.setOutStatus(1);
-		outStorage.setSerialNumber((flag == 1 ? Constants.CPCK : Constants.PKCK) + StringUtil.getDate() + SalesUtils.get0LeftString((int) (dao.count() + 1), 8));
+		outStorage.setSerialNumber((flag == 1 ? Constants.CPCK : Constants.PKCK) + StringUtil.getDate() + StringUtil.get0LeftString((int) (dao.count() + 1), 8));
 		outStorage.setProductId(sendGoods.getProductId());
 		outStorage.setUserStorageId(cu.getId());
 		save(outStorage);
@@ -270,7 +271,7 @@ public class OutStorageServiceImpl extends BaseServiceImpl<OutStorage, Long> imp
 		CurrentUser cu = SessionManager.getUserSession();
 		Long warehouseTypeDeliveryId = RoleUtil.getWarehouseTypeDelivery(cu.getRole());
 		OrderOutSource orderOutSource = orderOutSourceService.findOne(id);
-		// 获取登陆库管的仓库出库单剩余数量
+		// 获取登陆库管的仓库出库单剩余数量(皮壳)
 		List<PutStorage> putStorageList = putStorageService.detailsInventory(warehouseTypeDeliveryId,orderOutSource.getMaterialRequisition().getOrder().getProductId());
 		// 获取加工单的库存
 		List<PutStorage> putStorageListSelf = putStorageList.stream().filter(PutStorage->PutStorage.getOrderOutSourceId().equals(id)).collect(Collectors.toList());
@@ -284,9 +285,9 @@ public class OutStorageServiceImpl extends BaseServiceImpl<OutStorage, Long> imp
 				list.add(map);
 			});
 		}
-		// 获取申请通过库存
+		// 当加工单没有进入库存时，可以进行皮壳借货申请，获取申请通过库存 
 		// 循环申请单,将被申请人取出,同时过滤出被申请人的入库单,进行入库单的记录
-		List<ApplyVoucher> applyVoucherList = applyVoucherDao.findBySendGoodsIdAndPass(id, 1);
+		List<ApplyVoucher> applyVoucherList = applyVoucherDao.findByOrderOutSourceIdAndPass(id, 1);
 		if (applyVoucherList.size() > 0) {
 			Map<Long, List<ApplyVoucher>> mapApplyVoucher = applyVoucherList.stream()
 					.collect(Collectors.groupingBy(ApplyVoucher::getApprovalUserId));

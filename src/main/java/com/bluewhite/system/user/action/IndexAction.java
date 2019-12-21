@@ -34,9 +34,8 @@ import com.bluewhite.system.user.service.MenuService;
 import com.bluewhite.system.user.service.RoleService;
 import com.bluewhite.system.user.service.UserService;
 
-
 /**
- * 
+ * 首页
  * @author zhangliang
  *
  */
@@ -53,61 +52,64 @@ public class IndexAction {
 	private RoleService roleService;
 	@Autowired
 	private MenuDao menuDao;
-	
+
 	/**
 	 * 跳转首页
+	 * 
 	 * @return
 	 */
-	@RequestMapping(value="/")
+	@RequestMapping(value = "/")
 	public String index() {
 		return "index";
 	}
-	
+
 	/**
 	 * 根据不同菜单跳转不同的jsp
 	 */
 	@RequestMapping(value = "/menusToUrl", method = RequestMethod.GET)
-	public String menusToJsp(HttpServletRequest request,String url) {
+	public String menusToJsp(HttpServletRequest request, String url) {
 		Optional<Menu> menu = menuDao.findByUrl(url);
-		if(menu.isPresent()){
+		if (menu.isPresent()) {
 			Subject subject = SecurityUtils.getSubject();
-			boolean permitted  = subject.isPermitted(menu.get().getIdentity()+":*");
-			if(!permitted ){
-				return  "error/401";
+			boolean permitted = subject.isPermitted(menu.get().getIdentity() + ":*");
+			if (!permitted) {
+				return "error/401";
 			}
 		}
 		return url;
 	}
-	
-	
-	
+
 	/**
 	 * 普通用户登录
 	 * 
 	 * 
-	 * @param request 请求
-	 * @param reponse 回复
-	 * @param username 用户名
-	 * @param password 密码
+	 * @param request
+	 *            请求
+	 * @param reponse
+	 *            回复
+	 * @param username
+	 *            用户名
+	 * @param password
+	 *            密码
 	 * @return cr
 	 */
 	@RequestMapping(value = "/login", method = RequestMethod.POST)
 	@ResponseBody
-	public CommonResponse login(HttpServletRequest request,
-			HttpServletResponse reponse, String username, String password,Boolean rememberme){
+	public CommonResponse login(HttpServletRequest request, HttpServletResponse reponse, String username,
+			String password, Boolean rememberme) {
 		CommonResponse cr = new CommonResponse();
 		Cache<String, User> sysUserCache = cacheManager.getCache("sysUserCache");
 		Subject subject = SecurityUtils.getSubject();
 		CurrentUser cu = SessionManager.getUserSession();
-		//当用户已经认证且用户匹配时
-		if(cu != null && subject.isAuthenticated() && subject.getPrincipal().equals(username)){
+		// 当用户已经认证且用户匹配时
+		if (cu != null && subject.isAuthenticated() && subject.getPrincipal().equals(username)) {
 			cr.setMessage("用户已登录");
-		}else{
-			//用户未登录
+		} else {
+			// 用户未登录
 			try {
 				subject.login(new UsernamePasswordToken(username, password));
 				User user = userService.loginByUsernameAndPassword(username, password);
-				//登录后更新缓存和session用户信息
+				// 登录后更新缓存和session用户信息
 				sysUserCache.put(username, user);
 				cu = new CurrentUser();
 				cu.setId(user.getId());
@@ -121,21 +123,20 @@ public class IndexAction {
 				return cr;
 			} catch (IncorrectCredentialsException e1) {
 				cr.setCode(ErrorCode.SYSTEM_USER_PASSWORD_WRONG.getCode());
-                cr.setMessage("密码错误");
-                return cr;
-            }
+				cr.setMessage("密码错误");
+				return cr;
+			}
 			cr.setMessage("用户登录成功");
 		}
 		return cr;
 	}
-	
-	
+
 	/**
 	 * 当前登录用户
 	 * 
 	 * @return cr
 	 */
-	@RequestMapping(value = "/getCurrentUser" , method = RequestMethod.GET)
+	@RequestMapping(value = "/getCurrentUser", method = RequestMethod.GET)
 	@ResponseBody
 	public CommonResponse getCurrentUser() {
 		CommonResponse cr = new CommonResponse();
@@ -144,29 +145,28 @@ public class IndexAction {
 		cr.setMessage("成功");
 		return cr;
 	}
-	
-	
+
 	/**
 	 * 获取所有缓存对象
 	 * 
 	 * @return cr
 	 */
-	@RequestMapping(value = "/getAllUserCache" , method = RequestMethod.GET)
+	@RequestMapping(value = "/getAllUserCache", method = RequestMethod.GET)
 	@ResponseBody
 	public CommonResponse getAllUserCache() {
 		CommonResponse cr = new CommonResponse();
-		Cache<String, User> sysUserCache =  cacheManager.getCache("sysUserCache");
+		Cache<String, User> sysUserCache = cacheManager.getCache("sysUserCache");
 		sysUserCache.values();
 		cr.setMessage("成功");
 		return cr;
 	}
-	
+
 	/**
 	 * 清除指定user缓存对象
 	 * 
 	 * @return cr
 	 */
-	@RequestMapping(value = "/cleanUserCache" , method = RequestMethod.GET)
+	@RequestMapping(value = "/cleanUserCache", method = RequestMethod.GET)
 	@ResponseBody
 	public CommonResponse cleanUserCache(String username) {
 		CommonResponse cr = new CommonResponse();
@@ -174,8 +174,6 @@ public class IndexAction {
 		cr.setMessage("成功");
 		return cr;
 	}
-	
-	
 
 	/**
 	 * 登出
@@ -183,12 +181,12 @@ public class IndexAction {
 	 * @param token
 	 * @return cr
 	 */
-	@RequestMapping(value = "/logout" , method = RequestMethod.GET)
+	@RequestMapping(value = "/logout", method = RequestMethod.GET)
 	public String logout() {
-		//获取缓存
-		Cache<String, User> sysUserCache =  cacheManager.getCache("sysUserCache");
-		Cache<String, SimpleAuthorizationInfo> apiAccessTokenCache =  cacheManager.getCache("sysAuthCache");
-		Cache<String, List<Menu>> sysMenuCache =  cacheManager.getCache("sysMenuCache");
+		// 获取缓存
+		Cache<String, User> sysUserCache = cacheManager.getCache("sysUserCache");
+		Cache<String, SimpleAuthorizationInfo> apiAccessTokenCache = cacheManager.getCache("sysAuthCache");
+		Cache<String, List<Menu>> sysMenuCache = cacheManager.getCache("sysMenuCache");
 		CurrentUser currentUser = SessionManager.getUserSession();
 		sysUserCache.remove(currentUser.getUserName());
 		apiAccessTokenCache.remove(currentUser.getUserName());
@@ -196,6 +194,5 @@ public class IndexAction {
 		SessionManager.removeUserSession();
 		return "redirect:login.jsp";
 	}
-	
 
 }

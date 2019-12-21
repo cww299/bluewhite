@@ -16,11 +16,9 @@ import com.bluewhite.common.Constants;
 import com.bluewhite.common.ServiceException;
 import com.bluewhite.common.entity.PageParameter;
 import com.bluewhite.common.entity.PageResult;
-import com.bluewhite.common.utils.SalesUtils;
 import com.bluewhite.common.utils.StringUtil;
 import com.bluewhite.ledger.dao.ApplyVoucherDao;
 import com.bluewhite.ledger.entity.ApplyVoucher;
-import com.bluewhite.ledger.entity.OutStorage;
 
 @Service
 public class ApplyVoucherServiceImpl extends BaseServiceImpl<ApplyVoucher, Long> implements ApplyVoucherService {
@@ -32,7 +30,7 @@ public class ApplyVoucherServiceImpl extends BaseServiceImpl<ApplyVoucher, Long>
 	public void saveApplyVoucher(ApplyVoucher applyVoucher) {
 		applyVoucher.setTime(new Date());
 		applyVoucher.setApplyNumber(
-				Constants.SQD + StringUtil.getDate() + SalesUtils.get0LeftString((int) (count() + 1), 8));
+				Constants.SQD + StringUtil.getDate() + StringUtil.get0LeftString((int) (count() + 1), 8));
 		save(applyVoucher);
 	}
 
