@@ -24,7 +24,6 @@ import com.bluewhite.common.entity.PageResult;
 import com.bluewhite.common.entity.PageResultStat;
 import com.bluewhite.common.utils.DatesUtil;
 import com.bluewhite.common.utils.NumUtils;
-import com.bluewhite.common.utils.SalesUtils;
 import com.bluewhite.common.utils.StringUtil;
 import com.bluewhite.finance.attendance.dao.AttendancePayDao;
 import com.bluewhite.finance.attendance.entity.AttendancePay;
@@ -129,7 +128,7 @@ public class BacthServiceImpl extends BaseServiceImpl<Bacth, Long> implements Ba
 			Predicate[] pre = new Predicate[predicate.size()];
 			query.where(predicate.toArray(pre));
 			return null;
-		}, SalesUtils.getQueryNoPageParameter());
+		}, StringUtil.getQueryNoPageParameter());
 		PageResultStat<Bacth> result = new PageResultStat<>(pages, page);
 		result.setAutoStateField("number", "sumTaskPrice","regionalPrice","time");
 		result.count();
