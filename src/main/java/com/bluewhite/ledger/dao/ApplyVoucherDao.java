@@ -16,5 +16,5 @@ public interface ApplyVoucherDao  extends BaseRepository<ApplyVoucher, Long>{
 	/**
 	 * 根据加工单获取申请单
 	 */
-
+	List<ApplyVoucher> findByOrderOutSourceIdAndPass(Long orderoutsourceid,Integer pass);
 }
