@@ -546,7 +546,7 @@
 									'<option value="1">通过</option>',
 									'<option value="2">待定</option>',
 									'</select>'
-								].join('');
+								].join('');//数组转字符串
 
 							};
 						};

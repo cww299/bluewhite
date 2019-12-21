@@ -12,6 +12,9 @@
 	.layui-form-label{
 		width: 120px !important;
 	}
+	.layui-tablePlug-icon-filter{
+		display: none !important;
+	}
 	</style>
 <title>员工信息</title>
 </head>
@@ -575,15 +578,16 @@ layui.config({
 			request:{ pageName:'page', limitName:'size' },
 			parseData:function(ret){ return { data:ret.data.rows, count:ret.data.total, msg:ret.message, code:ret.code } },
 			overflow: 'tips',
-			rowDrag: {trigger: '.layui-icon-snowflake', done: function(obj) {
-		            // 完成时（松开时）触发
-		            // 如果拖动前和拖动后无变化，则不会触发此方法
-		            console.log(obj.row) // 当前行数据
-		            console.log(obj.cache) // 改动后表格数据
-		            console.log(obj.oldIndex) // 原来的数据索引
-		            console.log(obj.newIndex) // 改动后数据索引
-		        }},
-	        contextmenu: {
+			rowDrag: {/*trigger: 'row',*/ done: function(obj) {
+	            // 完成时（松开时）触发
+	            // 如果拖动前和拖动后无变化，则不会触发此方法
+	            console.log(obj.row) // 当前行数据
+	            console.log(obj.cache) // 改动后全表数据
+	            console.log(obj.oldIndex) // 原来的数据索引
+	            console.log(obj.newIndex) // 改动后数据索引
+	        }},
+	        drag: {toolbar: true},
+	        contextmenu:{
 	            // 表头右键菜单配置
 	            header: [
 	                {
@@ -620,8 +624,7 @@ layui.config({
 	                             }
 	                         }
 	                     ] 
-	                }
-	                ,
+	                },
 	                {
 	                    name: '背景色',
 	                    icon: 'layui-icon layui-icon-theme',
@@ -680,7 +683,7 @@ layui.config({
 	        },
 			cols:[[{align: 'center',type: 'checkbox'},
 			       {align:'center', title:'位置编号',field:'lotionNumber', edit: false},
-			       {align:'center', title:'姓名',   field:'userName', filter: true, templet:'<div><i class="layui-icon layui-icon-snowflake" />{{d.userName}}</div>'},
+			       {align:'center', title:'姓名',   field:'userName', filter: true,},
 			       {align:'center', title:'手机号', 	field:'phone',edit: false,sort: true,filter: true},
 			       {align:'center', title:'年龄',   field:'age',	  edit: false,templet:function(d){return d.age==null ? "" : d.age}},
 			       {align:'center',title: "合同", field:"commitment",templet: function(d){if(d.commitment==0){return "未签"}else if (d.commitment==1){return "已签"} else if (d.commitment==2){return "续签"} else {return ""}}},
