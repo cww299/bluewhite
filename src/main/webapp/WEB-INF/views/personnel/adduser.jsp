@@ -38,7 +38,7 @@
 						<select name="sourceMachine" id="addressSelect" class="layui-inline">
 							<option value="">请选择</option>
 							<option value="192.168.1.204">三楼打卡机</option>
-							<option value="192.168.1.250">二楼打卡机</option>
+							<!-- <option value="192.168.1.250">二楼打卡机</option> -->
 							<option value="192.168.1.205">一楼打卡机</option>
 							<option value="192.168.7.123">面辅料打卡机</option>
 							<option value="192.168.6.73">成品打卡机</option>

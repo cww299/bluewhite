@@ -33,7 +33,7 @@ import com.bluewhite.common.entity.PageParameter;
 import com.bluewhite.common.entity.PageResult;
 import com.bluewhite.common.utils.DatesUtil;
 import com.bluewhite.common.utils.RoleUtil;
-import com.bluewhite.common.utils.SalesUtils;
+import com.bluewhite.common.utils.StringUtil;
 import com.bluewhite.common.utils.StringUtil;
 import com.bluewhite.common.utils.excel.ExcelListener;
 import com.bluewhite.ledger.dao.OrderDao;
@@ -229,7 +229,7 @@ public class ProcurementServiceImpl extends BaseServiceImpl<Procurement, Long> i
 		}
 		// 生成单据编号
 		procurement.setDocumentNumber(StringUtil.getDocumentNumber(String.valueOf(procurement.getType()))
-				+ SalesUtils.get0LeftString((int) dao.count(), 8));
+				+ StringUtil.get0LeftString((int) dao.count(), 8));
 		procurement.setFlag(0);
 		procurement.setResidueNumber(procurement.getNumber());
 		// 创建子单据
@@ -740,7 +740,7 @@ public class ProcurementServiceImpl extends BaseServiceImpl<Procurement, Long> i
 				sale.setBacthNumber(pc.getBacthNumber());
 				// 生成销售编号
 				sale.setSaleNumber(Constants.XS + "-" + sdf.format(pc.getSendDate()) + "-"
-						+ SalesUtils.get0LeftString(packingChildDao
+						+ StringUtil.get0LeftString(packingChildDao
 								.findBySendDateBetween(pc.getSendDate(), DatesUtil.getLastDayOftime(pc.getSendDate()))
 								.size(), 4));
 				// 未审核

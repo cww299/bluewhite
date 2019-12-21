@@ -23,7 +23,7 @@ import com.bluewhite.common.SessionManager;
 import com.bluewhite.common.entity.CurrentUser;
 import com.bluewhite.common.entity.PageParameter;
 import com.bluewhite.common.entity.PageResult;
-import com.bluewhite.common.utils.SalesUtils;
+import com.bluewhite.common.utils.StringUtil;
 import com.bluewhite.common.utils.StringUtil;
 import com.bluewhite.ledger.dao.ApplyVoucherDao;
 import com.bluewhite.ledger.dao.OutStorageDao;
@@ -151,7 +151,7 @@ public class SendGoodsServiceImpl extends BaseServiceImpl<SendGoods, Long> imple
 				applyVoucher.setApprovalUserId(jsonObject.getLong("approvalUserId"));
 				applyVoucher.setUserId(cu.getId());
 				applyVoucher.setApplyNumber(
-						Constants.SQD + StringUtil.getDate() + SalesUtils.get0LeftString((int) (dao.count() + 1), 8));
+						Constants.SQD + StringUtil.getDate() + StringUtil.get0LeftString((int) (dao.count() + 1), 8));
 				applyVoucherDao.save(applyVoucher);
 			}
 		}

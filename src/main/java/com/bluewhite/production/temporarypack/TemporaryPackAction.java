@@ -255,11 +255,4 @@ public class TemporaryPackAction {
 		return cr;
 	}
 
-	@InitBinder
-	protected void initBinder(WebDataBinder binder) {
-		SimpleDateFormat dateTimeFormat = new SimpleDateFormat(DateTimePattern.DATEHMS.getPattern());
-		binder.registerCustomEditor(java.util.Date.class, null, new CustomDateEditor(dateTimeFormat, true));
-		binder.registerCustomEditor(byte[].class, new ByteArrayMultipartFileEditor());
-	}
-
 }

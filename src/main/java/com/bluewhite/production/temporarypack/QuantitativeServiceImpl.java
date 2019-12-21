@@ -24,7 +24,6 @@ import com.bluewhite.common.SessionManager;
 import com.bluewhite.common.entity.CurrentUser;
 import com.bluewhite.common.entity.PageParameter;
 import com.bluewhite.common.entity.PageResult;
-import com.bluewhite.common.utils.SalesUtils;
 import com.bluewhite.common.utils.StringUtil;
 import com.bluewhite.ledger.dao.PackingMaterialsDao;
 import com.bluewhite.ledger.entity.PackingMaterials;
@@ -115,7 +114,7 @@ public class QuantitativeServiceImpl extends BaseServiceImpl<Quantitative, Long>
 			quantitative.setFlag(ot.getFlag());
 		} else {
 			quantitative.setQuantitativeNumber(
-					Constants.LHTB + StringUtil.getDate() + SalesUtils.get0LeftString((int) (dao.count() + 1), 8));
+					Constants.LHTB + StringUtil.getDate() + StringUtil.get0LeftString((int) (dao.count() + 1), 8));
 			quantitative.setAudit(0);
 			quantitative.setPrint(0);
 			quantitative.setFlag(0);

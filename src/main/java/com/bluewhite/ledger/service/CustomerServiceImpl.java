@@ -57,8 +57,8 @@ public class CustomerServiceImpl extends BaseServiceImpl<Customer, Long> impleme
 				predicate.add(cb.equal(root.get("customerAttributionId").as(Long.class), param.getCustomerAttributionId()));
 			}
 			// 按客户类型过滤
-			if (param.getCustomertypeId() != null) {
-				predicate.add(cb.equal(root.get("customertypeId").as(Long.class), param.getCustomertypeId()));
+			if (param.getCustomerTypeId() != null) {
+				predicate.add(cb.equal(root.get("customerTypeId").as(Long.class), param.getCustomerTypeId()));
 			}
 			// 所属业务员过滤
 			if (param.getUserId() != null) {
@@ -138,6 +138,14 @@ public class CustomerServiceImpl extends BaseServiceImpl<Customer, Long> impleme
 			// 按经手人过滤
 			if (param.getUserId() != null) {
 				predicate.add(cb.equal(root.get("userId").as(Long.class), param.getUserId()));
+			}
+			// 按客户归属过滤
+			if (param.getCustomerAttributionId() != null) {
+				predicate.add(cb.equal(root.get("customerAttributionId").as(Long.class), param.getCustomerAttributionId()));
+			}
+			// 按客户类型过滤
+			if (param.getCustomerTypeId() != null) {
+				predicate.add(cb.equal(root.get("customertypeId").as(Long.class), param.getCustomerTypeId()));
 			}
 			Predicate[] pre = new Predicate[predicate.size()];
 			query.where(predicate.toArray(pre));

@@ -27,7 +27,7 @@ import com.bluewhite.common.Constants;
 import com.bluewhite.common.ServiceException;
 import com.bluewhite.common.entity.PageParameter;
 import com.bluewhite.common.entity.PageResult;
-import com.bluewhite.common.utils.SalesUtils;
+import com.bluewhite.common.utils.StringUtil;
 import com.bluewhite.common.utils.StringUtil;
 import com.bluewhite.finance.consumption.dao.ConsumptionDao;
 import com.bluewhite.finance.consumption.entity.Consumption;
@@ -112,7 +112,7 @@ public class OrderOutSourceServiceImpl extends BaseServiceImpl<OrderOutSource, L
 		orderOutSource.setAudit(0);
 		orderOutSource.setChargeOff(0);
 		String outSourceNumber = (orderOutSource.getOutsource() == 0 ? Constants.JGD : Constants.WFJGD)
-				+ StringUtil.getDate() + SalesUtils.get0LeftString((int) (dao.count() + 1), 8);
+				+ StringUtil.getDate() + StringUtil.get0LeftString((int) (dao.count() + 1), 8);
 		orderOutSource.setOutSourceNumber(outSourceNumber);
 		save(orderOutSource);
 	}

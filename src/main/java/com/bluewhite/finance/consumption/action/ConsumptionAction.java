@@ -2,27 +2,21 @@ package com.bluewhite.finance.consumption.action;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.text.SimpleDateFormat;
 
 import javax.servlet.http.HttpServletRequest;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.propertyeditors.CustomDateEditor;
 import org.springframework.stereotype.Controller;
 import org.springframework.util.StringUtils;
-import org.springframework.web.bind.WebDataBinder;
-import org.springframework.web.bind.annotation.InitBinder;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
-import org.springframework.web.multipart.support.ByteArrayMultipartFileEditor;
 
 import com.alibaba.excel.EasyExcel;
 import com.bluewhite.basedata.entity.BaseData;
 import com.bluewhite.common.ClearCascadeJSON;
-import com.bluewhite.common.DateTimePattern;
 import com.bluewhite.common.entity.CommonResponse;
 import com.bluewhite.common.entity.ErrorCode;
 import com.bluewhite.common.entity.PageParameter;
@@ -177,12 +171,5 @@ public class ConsumptionAction {
 		return cr;
 	}
 	
-
-	@InitBinder
-	protected void initBinder(WebDataBinder binder) {
-		SimpleDateFormat dateTimeFormat = new SimpleDateFormat(DateTimePattern.DATEHMS.getPattern());
-		binder.registerCustomEditor(java.util.Date.class, null, new CustomDateEditor(dateTimeFormat, true));
-		binder.registerCustomEditor(byte[].class, new ByteArrayMultipartFileEditor());
-	}
 
 }

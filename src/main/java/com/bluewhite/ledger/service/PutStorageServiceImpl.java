@@ -20,7 +20,7 @@ import com.bluewhite.common.entity.CurrentUser;
 import com.bluewhite.common.entity.PageParameter;
 import com.bluewhite.common.entity.PageResult;
 import com.bluewhite.common.utils.RoleUtil;
-import com.bluewhite.common.utils.SalesUtils;
+import com.bluewhite.common.utils.StringUtil;
 import com.bluewhite.common.utils.StringUtil;
 import com.bluewhite.ledger.dao.OutStorageDao;
 import com.bluewhite.ledger.dao.PutOutStorageDao;
@@ -46,7 +46,7 @@ public class PutStorageServiceImpl extends BaseServiceImpl<PutStorage, Long> imp
 		// 根据仓管登陆用户权限，获取不同的仓库库存
 		CurrentUser cu = SessionManager.getUserSession();
 		Long warehouseTypeDeliveryId = RoleUtil.getWarehouseTypeDelivery(cu.getRole());
-		putStorage.setSerialNumber((putStorage.getFlag() == 1 ? Constants.CPRK : Constants.PKRK)  + StringUtil.getDate() + SalesUtils.get0LeftString((int) (dao.count() + 1), 8));
+		putStorage.setSerialNumber((putStorage.getFlag() == 1 ? Constants.CPRK : Constants.PKRK)  + StringUtil.getDate() + StringUtil.get0LeftString((int) (dao.count() + 1), 8));
 		putStorage.setWarehouseTypeId(warehouseTypeDeliveryId);
 		dao.save(putStorage);
 	}

@@ -40,15 +40,4 @@ public class SysLogAction {
 		return cr;
 	}
 	
-	/**
-	 * 格式化时间
-	 * @param binder
-	 */
-	@InitBinder
-	protected void initBinder(WebDataBinder binder) {
-		SimpleDateFormat dateTimeFormat = new SimpleDateFormat(
-				DateTimePattern.DATEHMS.getPattern());
-		binder.registerCustomEditor(java.util.Date.class, null,
-				new CustomDateEditor(dateTimeFormat, true));
-	}
 }
