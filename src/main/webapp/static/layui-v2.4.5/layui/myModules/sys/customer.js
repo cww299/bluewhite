@@ -164,7 +164,7 @@ layui.extend({
 			title: title,
 			content: html,
 			offset:'100px',
-			area:['1000px','350px'],
+			area:['1000px','450px'],
 			btn:['保存','取消'],
 			btnAlign:'c',
 			success:function(){
