@@ -433,7 +433,6 @@ layui.define('layer', function(exports){
           var clickDD = function(){
         	  //选择
 	          dds.on('click', function(){
-	        	  layer.msg(1)
 	            var othis = $(this), value = othis.attr('lay-value');
 	            var filter = select.attr('lay-filter'); //获取过滤器
 	            
