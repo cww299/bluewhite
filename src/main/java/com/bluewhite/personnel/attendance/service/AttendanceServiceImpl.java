@@ -31,6 +31,8 @@ import com.bluewhite.personnel.attendance.entity.Attendance;
 import com.bluewhite.system.user.entity.User;
 import com.bluewhite.system.user.service.UserService;
 
+import cn.hutool.core.util.StrUtil;
+
 @Service
 public class AttendanceServiceImpl extends BaseServiceImpl<Attendance, Long> implements AttendanceService {
 
@@ -73,8 +75,7 @@ public class AttendanceServiceImpl extends BaseServiceImpl<Attendance, Long> imp
 		for (Map<String, Object> map : userMapList) {
 			if (userListAll.size() > 0) {
 				List<User> user = userListAll.stream()
-						.filter(User -> User.getNumber() == null
-								&& User.getUserName().trim().equals(map.get("name").toString().trim()))
+						.filter(User -> StrUtil.isBlank(User.getNumber()) && User.getUserName().trim().equals(map.get("name").toString().trim()))
 						.collect(Collectors.toList());
 				if (user.size() > 1) {
 					throw new ServiceException("系统用户有相同名称的员工" + user.get(0).getUserName() + "，请检查是否重复");
@@ -156,9 +157,9 @@ public class AttendanceServiceImpl extends BaseServiceImpl<Attendance, Long> imp
 		if (Constants.THREE_FLOOR.equals(address)) {
 			sourceMachine = "THREE_FLOOR";
 		}
-		if (Constants.TWO_FLOOR.equals(address)) {
-			sourceMachine = "TWO_FLOOR";
-		}
+//		if (Constants.TWO_FLOOR.equals(address)) {
+//			sourceMachine = "TWO_FLOOR";
+//		}
 		if (Constants.ONE_FLOOR.equals(address)) {
 			sourceMachine = "ONE_FLOOR";
 		}
@@ -189,9 +190,9 @@ public class AttendanceServiceImpl extends BaseServiceImpl<Attendance, Long> imp
 			if (Constants.THREE_FLOOR.equals(param.getSourceMachine())) {
 				sourceMachine = "THREE_FLOOR";
 			}
-			if (Constants.TWO_FLOOR.equals(param.getSourceMachine())) {
-				sourceMachine = "TWO_FLOOR";
-			}
+//			if (Constants.TWO_FLOOR.equals(param.getSourceMachine())) {
+//				sourceMachine = "TWO_FLOOR";
+//			}
 			if (Constants.ONE_FLOOR.equals(param.getSourceMachine())) {
 				sourceMachine = "ONE_FLOOR";
 			}
@@ -256,7 +257,6 @@ public class AttendanceServiceImpl extends BaseServiceImpl<Attendance, Long> imp
 	public List<Map<String, Object>> getAllAttendance(String address) {
 		sdk.initSTA();
 		boolean flag = sdk.connect(address, 4370);
-		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 		List<Map<String, Object>> attendanceList = null;
 		flag = sdk.readGeneralLogData(0);
 		if (flag) {
@@ -310,7 +310,7 @@ public class AttendanceServiceImpl extends BaseServiceImpl<Attendance, Long> imp
 		}
 		if (StringUtils.isEmpty(address)) {
 			allAttendance(Constants.THREE_FLOOR, startTime, endTime, userId);
-			allAttendance(Constants.TWO_FLOOR, startTime, endTime, userId);
+//			allAttendance(Constants.TWO_FLOOR, startTime, endTime, userId);
 			allAttendance(Constants.ONE_FLOOR, startTime, endTime, userId);
 			allAttendance(Constants.EIGHT_WAREHOUSE, startTime, endTime, userId);
 			allAttendance(Constants.NEW_IGHT_WAREHOUSE, startTime, endTime, userId);

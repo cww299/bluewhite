@@ -39,7 +39,7 @@ public class CustomerAction {
 	{
 		clearCascadeJSON = ClearCascadeJSON
 				.get().addRetainTerm(Customer.class, "id", "name", "address", "type", "provinces", "city", "county",
-						"phone", "user","buyerName","customerAttribution","customerType")
+						"phone", "user","buyerName","customerAttribution","customerType","account")
 				.addRetainTerm(BaseData.class,"id","name")
 				.addRetainTerm(User.class,"id", "userName")
 				.addRetainTerm(RegionAddress.class, "regionName","id");
