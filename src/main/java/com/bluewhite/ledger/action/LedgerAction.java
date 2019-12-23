@@ -1194,8 +1194,8 @@ public class LedgerAction {
 	}
 	
 	/**
-	 *  1.成品仓库 对发货单进行出库
-	 *  2.皮壳仓库 对针工单进行出库
+	 * 1.成品仓库 对发货单进行出库
+	 * 2.皮壳仓库 对针工单进行出库
 	 * sendNumber 发货数量
 	 * putStorage （json 入库单的发货具体数量 ）
 	 * flag = 1 成品

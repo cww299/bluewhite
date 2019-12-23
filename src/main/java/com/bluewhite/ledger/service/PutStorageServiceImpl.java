@@ -53,6 +53,10 @@ public class PutStorageServiceImpl extends BaseServiceImpl<PutStorage, Long> imp
 
 	@Override
 	public PageResult<PutStorage> findPages(PageParameter page, PutStorage param) {
+		// 根据仓管登陆用户权限，获取不同的仓库库存
+		CurrentUser cu = SessionManager.getUserSession();
+		Long warehouseTypeDeliveryId = RoleUtil.getWarehouseTypeDelivery(cu.getRole());
+		param.setWarehouseTypeId(warehouseTypeDeliveryId);
 		Page<PutStorage> pages = dao.findAll((root, query, cb) -> {
 			List<Predicate> predicate = new ArrayList<>();
 			// 按产品名字
@@ -73,6 +77,11 @@ public class PutStorageServiceImpl extends BaseServiceImpl<PutStorage, Long> imp
 			if (param.getStorageLocationId() != null) {
 				predicate.add(
 						cb.equal(root.get("storageLocation").get("id").as(Long.class), param.getStorageLocationId()));
+			}
+			// 按库位
+			if (param.getWarehouseTypeId() != null) {
+				predicate.add(
+						cb.equal(root.get("warehouseTypeId").as(Long.class), param.getWarehouseTypeId()));
 			}
 			// 按到货日期
 			if (!StringUtils.isEmpty(param.getOrderTimeBegin()) && !StringUtils.isEmpty(param.getOrderTimeEnd())) {

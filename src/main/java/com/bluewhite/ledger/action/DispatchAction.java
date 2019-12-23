@@ -11,9 +11,7 @@ import com.bluewhite.common.ClearCascadeJSON;
 import com.bluewhite.common.entity.CommonResponse;
 import com.bluewhite.common.entity.PageParameter;
 import com.bluewhite.ledger.entity.ApplyVoucher;
-import com.bluewhite.ledger.entity.Customer;
 import com.bluewhite.ledger.service.ApplyVoucherService;
-import com.bluewhite.system.sys.entity.RegionAddress;
 import com.bluewhite.system.user.entity.User;
 
 @Controller

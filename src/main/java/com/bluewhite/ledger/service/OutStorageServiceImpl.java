@@ -19,16 +19,13 @@ import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.bluewhite.base.BaseServiceImpl;
 import com.bluewhite.common.Constants;
-import com.bluewhite.common.ServiceException;
 import com.bluewhite.common.SessionManager;
 import com.bluewhite.common.entity.CurrentUser;
 import com.bluewhite.common.entity.PageParameter;
 import com.bluewhite.common.entity.PageResult;
 import com.bluewhite.common.utils.RoleUtil;
 import com.bluewhite.common.utils.StringUtil;
-import com.bluewhite.common.utils.StringUtil;
 import com.bluewhite.ledger.dao.ApplyVoucherDao;
-import com.bluewhite.ledger.dao.OrderOutSourceDao;
 import com.bluewhite.ledger.dao.OutStorageDao;
 import com.bluewhite.ledger.dao.PutOutStorageDao;
 import com.bluewhite.ledger.dao.SendGoodsDao;
@@ -100,6 +97,9 @@ public class OutStorageServiceImpl extends BaseServiceImpl<OutStorage, Long> imp
 
 	@Override
 	public PageResult<OutStorage> findPages(PageParameter page, OutStorage param) {
+		// 根据仓管登陆用户权限，获取不同的仓库库存
+		CurrentUser cu = SessionManager.getUserSession();
+		Long warehouseTypeDeliveryId = RoleUtil.getWarehouseTypeDelivery(cu.getRole());
 		Page<OutStorage> pages = dao.findAll((root, query, cb) -> {
 			List<Predicate> predicate = new ArrayList<>();
 			// 按产品名字
@@ -292,7 +292,7 @@ public class OutStorageServiceImpl extends BaseServiceImpl<OutStorage, Long> imp
 		List<PutStorage> putStorageList = putStorageService.detailsInventory(warehouseTypeDeliveryId,orderOutSource.getMaterialRequisition().getOrder().getProductId());
 		// 获取生产计划单的库存
 		List<PutStorage> putStorageListSelf = putStorageList.stream().filter(
-				PutStorage->PutStorage.getOrderOutSource().getMaterialRequisition().getOrderId().equals(order.getId())).collect(Collectors.toList());
+				PutStorage->PutStorage.getOrderOutSourceId()!=null && PutStorage.getOrderOutSource().getMaterialRequisition().getOrderId().equals(order.getId())).collect(Collectors.toList());
 		if (putStorageListSelf.size() > 0) {
 			putStorageListSelf.forEach(p -> {
 				Map<String, Object> map = new HashMap<String, Object>();
@@ -334,7 +334,7 @@ public class OutStorageServiceImpl extends BaseServiceImpl<OutStorage, Long> imp
 		}
 		// 获取公共库存
 		List<PutStorage> publicStorageList = putStorageList.stream()
-				.filter(PutStorage -> PutStorage.getPublicStock() == 1).collect(Collectors.toList());
+				.filter(PutStorage -> PutStorage.getPublicStock()!=null && PutStorage.getPublicStock() == 1).collect(Collectors.toList());
 		if (publicStorageList.size() > 0) {
 			publicStorageList.forEach(p -> {
 				Map<String, Object> map = new HashMap<String, Object>();
