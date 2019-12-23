@@ -12,26 +12,26 @@ import javax.servlet.http.HttpServletRequest;
 
 import org.apache.shiro.crypto.hash.SimpleHash;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.propertyeditors.CustomDateEditor;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.domain.Sort.Direction;
 import org.springframework.stereotype.Controller;
 import org.springframework.util.StringUtils;
-import org.springframework.web.bind.WebDataBinder;
-import org.springframework.web.bind.annotation.InitBinder;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.multipart.support.ByteArrayMultipartFileEditor;
 
 import com.bluewhite.basedata.entity.BaseData;
 import com.bluewhite.common.BeanCopyUtils;
 import com.bluewhite.common.ClearCascadeJSON;
-import com.bluewhite.common.DateTimePattern;
+import com.bluewhite.common.ServiceException;
 import com.bluewhite.common.SessionManager;
 import com.bluewhite.common.annotation.SysLogAspectAnnotation;
 import com.bluewhite.common.entity.CommonResponse;
 import com.bluewhite.common.entity.CurrentUser;
 import com.bluewhite.common.entity.ErrorCode;
 import com.bluewhite.common.entity.PageParameter;
+import com.bluewhite.common.entity.PageUtil;
 import com.bluewhite.common.utils.BankUtil;
 import com.bluewhite.common.utils.DatesUtil;
 import com.bluewhite.personnel.attendance.entity.AttendanceInit;
@@ -50,6 +50,8 @@ import com.bluewhite.system.user.entity.UserContract;
 import com.bluewhite.system.user.service.TemporaryUserService;
 import com.bluewhite.system.user.service.UserContractService;
 import com.bluewhite.system.user.service.UserService;
+
+import cn.hutool.core.map.MapUtil;
 
 @Controller
 @RequestMapping("/system/user")
@@ -535,10 +537,6 @@ public class UserAction {
 	@ResponseBody
 	public CommonResponse getPositiveUser() {
 		CommonResponse cr = new CommonResponse();
-		// cr.setData(ClearCascadeJSON
-		// .get()
-		// .addRetainTerm(User.class,"id","userName","phone","type")
-		// .format(userService.getPositiveUser()).toJSON());
 		cr.setMessage("成功");
 		return cr;
 	}
@@ -589,9 +587,13 @@ public class UserAction {
 	 */
 	@RequestMapping(value = "/userContractPages", method = RequestMethod.GET)
 	@ResponseBody
-	public CommonResponse userContractPages(UserContract contract, PageParameter page) {
+	public CommonResponse userContractPages(@RequestParam Map<String, Object> params) {
 		CommonResponse cr = new CommonResponse();
-		cr.setData(clearCascadeJSONUserContract.format(userContractService.findPage(contract, page)).toJSON());
+		if(MapUtil.isEmpty(params)){
+			throw new ServiceException("参数不能为空");
+ 		};
+ 		PageParameter page = PageUtil.mapToPage(params);
+		cr.setData(clearCascadeJSONUserContract.format(userContractService.findPage(params, page)).toJSON());
 		return cr;
 	}
 	
