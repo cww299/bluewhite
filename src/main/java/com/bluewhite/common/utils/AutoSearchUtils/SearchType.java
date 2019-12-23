@@ -67,6 +67,11 @@ public class SearchType {
      * 条件匹配符 group by --
      */
     public static final String GROUPBY = "groupby";
+    
+    /**
+     * 条件匹配符 OR --
+     */
+    public static final String OR = "or";
 
     // 转化数据类型
     /**

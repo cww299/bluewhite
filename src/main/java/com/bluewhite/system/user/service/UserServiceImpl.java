@@ -100,6 +100,7 @@ public class UserServiceImpl extends BaseServiceImpl<User, Long> implements User
 			user.setQuit(0);
 			user.setOrgNameIds(String.valueOf(cu.getOrgNameId()));
 		}
+		page.setSort(null);
 		Page<User> pageUser = userDao.findAll((root, query, cb) -> {
 			List<Predicate> predicate = new ArrayList<>();
 			// 按id查找
