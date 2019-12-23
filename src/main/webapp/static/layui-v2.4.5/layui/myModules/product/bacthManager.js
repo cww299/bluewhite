@@ -136,7 +136,7 @@ layui.config({
 		              			'<td><input class="layui-input" name="remarks" id="addRemarks"></td>',
 	              			'</tr>',
 		              		'<tr>',
-		              			'<td>产品名称：</td>',
+		              			'<td>分配时间：</td>',
 		              			'<td><input class="layui-input" name="allotTime" id="addAllotTime"></td>',
 		              		'</tr>',
 		              	'</table>',
