@@ -1,5 +1,7 @@
 package com.bluewhite.common.entity;
 
+import java.util.Map;
+
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
@@ -119,11 +121,11 @@ public class PageParameter implements Pageable{
 	 */
 	public PageParameter(int page, int size, Sort sort) {
 		if (page < 0) {
-			throw new IllegalArgumentException("Page index must not be less than zero!");
+			throw new IllegalArgumentException("分页索引不能小于0");
 		}
 
 		if (size < 1) {
-			throw new IllegalArgumentException("Page size must not be less than one!");
+			throw new IllegalArgumentException("分页大小不能小于1");
 		}
 		this.page = page;
 		this.size = size;
@@ -202,5 +204,5 @@ public class PageParameter implements Pageable{
 		return String.format("Page request [number: %d, size %d, sort: %s]", getPageNumber(), getPageSize(),
 				sort == null ? null : sort.toString());
 	}
-
+	
 }
