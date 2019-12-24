@@ -29,8 +29,8 @@
 				<div class="layui-form-item">
 					<table>
 						<tr>
-							<td>申请人:</td>
-							<td><input type="text" name="Username" id="firstNames" class="layui-input" /></td>
+							<td>申请内容:</td>
+							<td><input type="text" name="content" id="firstNames" class="layui-input" /></td>
 							<td>&nbsp&nbsp</td>
 							<td><select class="layui-input" id="selectone">
 									<option value="expenseDate">回款日期</option>
@@ -45,7 +45,7 @@
 							</td> -->
 							<td>&nbsp&nbsp</td>
 							<td>是否核对:
-							<td><select class="form-control" name="flag">
+							<td><select class="form-control" name="flags">
 									<option value="0">未审核</option>
 									<option value="1">已审核</option>
 							</select></td>
@@ -106,34 +106,14 @@
 					
 					laydate.render({
 						elem: '#startTime',
-						type: 'datetime',
+						type: 'date',
 						range: '~',
 					});
 					/* laydate.render({
 						elem: '#endTime',
 						type: 'datetime',
 					}); */
-				 
-					$.ajax({
-						url: '${ctx}/system/user/findAllUser',
-						type: "GET",
-						async: false,
-						beforeSend: function() {
-							index;
-						},
-						success: function(result) {
-							$(result.data).each(function(i, o) {
-								htmls += '<option value=' + o.id + '>' + o.userName + '</option>'
-							})
-							layer.close(index);
-						},
-						error: function() {
-							layer.msg("操作失败！", {
-								icon: 2
-							});
-							layer.close(index);
-						}
-					});
+					layer.close(index);
 					
 					
 				   	tablePlug.smartReload.enable(true); 
@@ -143,7 +123,7 @@
 						height:'700px',
 						url: '${ctx}/fince/getConsumption' ,
 						where:{
-							flag:0,
+							flags:0,
 							type:9
 						},
 						request:{
@@ -238,7 +218,7 @@
 						done: function(res, curr, count) {
 							var tableView = this.elem.next();
 							var tableElem = this.elem.next('.layui-table-view');
-							layui.each(tableElem.find('select'), function(index, item) {
+							layui.each(tableElem.find('.layui-table-box').find('select'), function(index, item) {
 								var elem = $(item);
 								elem.val(elem.data('value'));
 							});
@@ -316,8 +296,12 @@
 					form.on('submit(LAY-search)', function(data) {
 						var field = data.field;
 						var orderTime=field.orderTimeBegin.split('~');
-						orderTimeBegin=orderTime[0];
-						orderTimeEnd=orderTime[1];
+						var orderTimeBegin="";
+						var orderTimeEnd="";
+						if(orderTime!=""){
+						orderTimeBegin=orderTime[0]+' '+'00:00:00';
+						orderTimeEnd=orderTime[1]+' '+'23:59:59';
+						}
 						var a="";
 						var b="";
 						if($("#selectone").val()=="expenseDate"){
@@ -326,8 +310,8 @@
 							b="2019-05-08 00:00:00"
 						}
 						var post={
-							Username:field.Username,
-							flag:field.flag,
+							content:field.content,
+							flags:field.flags,
 							orderTimeBegin:orderTimeBegin,
 							orderTimeEnd:orderTimeEnd,
 							expenseDate:a,
