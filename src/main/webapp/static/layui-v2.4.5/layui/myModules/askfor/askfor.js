@@ -14,6 +14,30 @@ layui.extend({
 		mytable = layui.mytable,
 		table = layui.table,
 		myutil = layui.myutil;
+	
+	var askfor = {
+			type: 0,
+			kind: 0,
+			allType:{
+				sale: {			//销售申请
+					id: 438,
+					child:{
+						borrow: 441,	//借货
+					}
+				},	
+				outInput: {		//入库出库申请
+					id: 439,
+					child:{
+						allot: 464,			//调拨
+						returnWork: 442,	//反工
+						loss: 463,			//盘亏
+						profit: 470,		//盘盈
+						returnGood:465,		//退货
+						changeGood:466,		//换货
+					}
+				},	
+			},
+	};
 	var TPL_MAIN = `
 		<div class="layui-form layui-form-pane" style="padding:10px;">
 		  <div class="layui-form-item" pane>
@@ -44,36 +68,22 @@ layui.extend({
 		       autocomplete="off" class="layui-input">
 		    </div>
 		  </div>
+		  <div class="layui-form-item" pane>
+		    <label class="layui-form-label">申请类型</label>
+		    <div class="layui-input-block">
+		      <select name="applyVoucherKindId">
+		        <option value="">请选择</option>
+		        <option value="`+askfor.allType.outInput.child.loss+`">盘亏</option>
+		        <option value="`+askfor.allType.outInput.child.profit+`">盘盈</option>
+		      </select>
+		    </div>
+		  </div>
 		  <p style="display:none;">
 		  	<input type="hidden" name="applyVoucherTypeId" value="{{ d.applyVoucherTypeId }}">
-		  	<input type="hidden" name="applyVoucherKindId" value="{{ d.applyVoucherKindId }}">
 		  	<span lay-submit lay-filter="saveAskforBtn" id="saveAskforBtn">11</span>
 		  </p>
 		</div>
 	`;
-	var askfor = {
-		type: 0,
-		kind: 0,
-		allType:{
-			sale: {			//销售申请
-				id: 438,
-				child:{
-					borrow: 441,	//借货
-				}
-			},	
-			outInput: {		//入库出库申请
-				id: 439,
-				child:{
-					allot: 464,			//调拨
-					returnWork: 442,	//反工
-					loss: 463,			//盘亏
-					profit: 470,		//盘盈
-					returnGood:465,		//退货
-					changeGood:466,		//换货
-				}
-			},	
-		},
-	};
 	var allUserSelect = '';
 	askfor.add = function(opt){
 		opt = opt || {};
@@ -83,7 +93,6 @@ layui.extend({
 	askfor.upload = function(opt){
 		var renderData = opt.data;
 		renderData.applyVoucherTypeId = askfor.type;
-		renderData.applyVoucherKindId = askfor.kind;
 		var html = '';
 		laytpl(TPL_MAIN).render(renderData,function(h){
 			html = h;
@@ -94,8 +103,9 @@ layui.extend({
 		layer.open({
 			type:1,
 			title:title,
+			offset:'100px',
 			content: html,
-			area:['420px','380px'],
+			area:['420px','420px'],
 			btn:['确定','取消'],
 			btnAlign:'c',
 			yes:function(){

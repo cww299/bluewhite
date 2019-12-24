@@ -14,7 +14,7 @@ layui.extend({
 	outWarehouseOrder: 'layui/myModules/warehouseManager/outWarehouseOrder',
 	askfor: 'layui/myModules/askfor/askfor',
 }).define(
-	['jquery','layer','form','laydate','mytable','askfor'],
+	['jquery','layer','form','laydate','mytable',],
 	function(exports){
 	"use strict";
 	var $ = layui.jquery,
@@ -25,7 +25,6 @@ layui.extend({
 		outWarehouseOrder = layui.outWarehouseOrder,
 		askfor = layui.askfor,
 		myutil = layui.myutil;
-	
 	var TPL_MAIN = [	//页面主模板
 				'<table class="layui-form">',
 					'<tr>',
@@ -56,7 +55,6 @@ layui.extend({
 	},allWarehouseType = [];
 	
 	inventory.render = function(opt){
-		askfor.type = askfor.allType.outInput.id;
 		inventory.type = opt.type || inventory.type;
 		$(opt.elem).append(TPL_MAIN);
 		if(opt.chooseProductWin){
@@ -129,7 +127,7 @@ layui.extend({
 							},
 						})
 					}else if(obj.event=='askfor'){
-						askfor.add();
+						askfor.add({});
 					}
 				},
 			},
@@ -262,15 +260,18 @@ layui.extend({
 		})
 		opt.done && opt.done();
 		if(!opt.chooseProductWin){
-			layui.use(['inputWarehouseOrder','outWarehouseOrder'],function(){
+			layui.use(['inputWarehouseOrder','outWarehouseOrder','askfor'],function(){
 				inputWarehouseOrder = layui.inputWarehouseOrder;
 				outWarehouseOrder = layui.outWarehouseOrder;
+				askfor = layui.askfor;
 				
 				inputWarehouseOrder.type = inventory.type;
 				outWarehouseOrder.type = inventory.type;
+				askfor.type = askfor.allType.outInput.id;
 				
 				inputWarehouseOrder.init();
 				outWarehouseOrder.init();
+				askfor.init();
 			})
 		}
 	}
