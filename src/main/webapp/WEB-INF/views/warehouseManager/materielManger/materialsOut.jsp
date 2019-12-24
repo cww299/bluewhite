@@ -34,6 +34,25 @@
 	</div>
 </div>
 </body>
+<script type="text/html" id="auditWinTpl">
+<div class="layui-form layui-form-pane" style="padding:10px;">
+  <div class="layui-form-item" pane>
+    <label class="layui-form-label">出库数量：</label>
+    <div class="layui-input-block">
+      <input type="number" name="arrivalNumber" class="layui-input" lay-verify="required">
+    </div>
+  </div>
+  <div class="layui-form-item" pane>
+    <label class="layui-form-label">备注：</label>
+    <div class="layui-input-block">
+      <input type="text" name="remark" class="layui-input">
+    </div>
+  </div>
+  <p style="display:none;">
+	<span lay-filter="sureAuditBtn" id="sureAuditBtn" lay-submit>1</span>
+  </p>
+</div>
+</script>
 <script>
 layui.config({
 	base : '${ctx}/static/layui-v2.4.5/'
@@ -65,11 +84,35 @@ layui.config({
 				btn:[],
 				otherBtn:function(obj){
 					if(obj.event=="audit"){
-						myutil.deleTableIds({
-							table:'tableData',
-							text:'请选择相关信息|是否确认审核出库?',
-							url:'/ledger/outboundMaterialRequisition',
-						});
+						var check = table.checkStatus('tableData').data;
+						if(check.length!=1)
+							return myutil.emsg('只能审核一条数据');
+						var auditWin = layer.open({
+							type:1,
+							title:'审核出库',
+							offset:'50px',
+							content: $('#auditWinTpl').html(),
+							area:['400px','250px'],
+							btn:['确定','取消'],
+							btnAlign:'c',
+							success:function(){
+								form.on('submit(sureAuditBtn)',function(obj){
+									obj.field.materialRequisitionId = check[0].id;
+									obj.field.materielId = check[0].scatteredOutbound.orderMaterial.materiel.id;
+									myutil.saveAjax({
+										url:'/ledger/inventory/outboundMaterialRequisition',
+										data: obj.field,
+										success:function(){
+											layer.close(auditWin);
+											table.reload('tableData');
+										}
+									})
+								})
+							},
+							yes:function(){
+								$('#sureAuditBtn').click();
+							}
+						})
 					}
 				}
 			},

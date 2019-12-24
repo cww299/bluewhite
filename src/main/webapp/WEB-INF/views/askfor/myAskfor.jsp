@@ -33,8 +33,9 @@ layui.config({
 }).extend({
 	mytable : 'layui/myModules/mytable' ,
 	addEditAskfor : 'layui/myModules/askfor/addEditAskfor' ,
+	askfor : 'layui/myModules/askfor/askfor' ,
 }).define(
-	['mytable','laydate','addEditAskfor'],
+	['mytable','laydate','addEditAskfor','askfor'],
 	function(){
 		var $ = layui.jquery
 		, layer = layui.layer 				
@@ -43,6 +44,7 @@ layui.config({
 		, myutil = layui.myutil
 		, laydate = layui.laydate
 		, laytpl = layui.laytpl
+		, askfor = layui.askfor
 		, addEditAskfor = layui.addEditAskfor
 		, mytable = layui.mytable;
 		myutil.config.ctx = '${ctx}';
@@ -63,7 +65,7 @@ layui.config({
 							text:'请选择信息|是否确认撤销申请？',
 						})
 					}else if(obj.event=="add"){
-						
+						askfor.add();
 					}else if(obj.event=="edit"){
 						var check = layui.table.checkStatus('tableData').data;
 						if(check.length!=1)
@@ -77,7 +79,7 @@ layui.config({
 			},
 			toolbar:[
 				'<span class="layui-btn layui-btn-sm layui-btn-danger" lay-event="askfor">撤销申请</span>',
-				/* '<span class="layui-btn layui-btn-sm layui-btn-" lay-event="add">新增申请</span>', */
+				'<span class="layui-btn layui-btn-sm layui-btn-" lay-event="add">新增申请</span>',
 				'<span class="layui-btn layui-btn-sm layui-btn-normal" lay-event="edit">修改申请</span>',
 			].join(' '),
 			autoUpdate:{
