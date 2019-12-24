@@ -442,8 +442,12 @@
 					form.on('submit(LAY-search)', function(data) {
 						var field = data.field;
 						var orderTime=field.orderTimeBegin.split('~');
+						var orderTimeBegin="";
+						var orderTimeEnd="";
+						if(orderTime!=""){
 						field.orderTimeBegin=orderTime[0]+' '+'00:00:00';
 						field.orderTimeEnd=orderTime[1]+' '+'23:59:59';
+						}
 						table.reload('tableData', {
 							where: field
 						});

@@ -497,8 +497,14 @@ layui.config({
 	base : '${ctx}/static/layui-v2.4.5/'
 }).extend({
 	tablePlug : 'tablePlug/tablePlug',
+}).extend({
+	soulTable: 'layui-soul-table/soulTable',
+	tableFilter: 'layui-soul-table/tableFilter',
+	excel: 'layui-soul-table/excel',
+	tableChild: 'layui-soul-table/tableChild',
+	tableMerge: 'layui-soul-table/tableMerge',
 }).define(
-	['tablePlug','laydate','upload','upload','soulTable'],
+	['tablePlug','laydate','upload','upload','soulTable','soulTable'],
 	function(){
 		var $ = layui.jquery
 		, layer = layui.layer 				
