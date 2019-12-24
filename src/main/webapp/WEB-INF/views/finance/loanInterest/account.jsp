@@ -28,17 +28,18 @@
 							<td><input type="text" name="customerName" id="firstNames" class="layui-input" /></td>
 							<td>&nbsp;&nbsp;</td>
 							<td><select class="form-control" name="expenseDate" id="selectone">
-									<option value="2018-10-08 00:00:00">申请日期</option>
+									<option value="2018-10-08 00:00:00">预计付款日期</option>
 								</select></td>
 							<td>&nbsp;&nbsp;</td>
 							<td><input id="startTime" style="width: 300px;" name="orderTimeBegin" placeholder="请输入开始时间" class="layui-input laydate-icon">
 							</td>
 							<td>&nbsp;&nbsp;</td>
 							<td>是否核对:
-							<td><select class="form-control" name="flag">
+							<td><select class="form-control" name="flags">
 									<option value="">请选择</option>
-									<option value="0">未核对</option>
-									<option value="1">已核对</option>
+									<option value="0">未审核</option>
+									<option value="2">部分审核</option>
+									<option value="1">已审核</option>
 							</select></td>
 							<td>&nbsp;&nbsp;</td>
 							<td>
@@ -65,14 +66,15 @@
 			<div class="layui-form-item">
 				<label class="layui-form-label" style="width: 130px;">借款方</label>
 				<div class="layui-input-inline">
-						<input type="text" value="{{d.custom.name }}" name="customerName" id="userId"
-						placeholder="请输入借款方名称" class="layui-input" data-provide="typeahead">
+						<input type="text" value="{{d.content }}" name="content" id="userId"
+						placeholder="请输入借款方名称"
+						class="layui-input laydate-icon">
 				</div>
 			</div>
 			<div class="layui-form-item">
-				<label class="layui-form-label" style="width: 130px;">内容</label>
+				<label class="layui-form-label" style="width: 130px;">借款类型</label>
 				<div class="layui-input-inline">
-					<input type="text" value="{{d.content }}" name="content" id="content"
+					<input type="text" value="{{d.remark }}" name="remark"
 						lay-verify="required" placeholder="请输入内容" class="layui-input">
 				</div>
 			</div>
@@ -84,7 +86,7 @@
 				</div>
 			</div>
 			<div class="layui-form-item">
-				<label class="layui-form-label" style="width: 130px;">预计付款日期</label>
+				<label class="layui-form-label" style="width: 130px;">预计付款</label>
 				<div class="layui-input-inline">
 					<input type="text" value="{{d.expenseDate }}" name="expenseDate"
 						id="expenseDate" lay-verify="required"
@@ -121,28 +123,10 @@ layui.config({
 
 		var allField;
 		var self = this;
-		var _index;
-		this.setIndex = function(index){
-	  		_index=index;
-	  	}
-	  	this.getIndex = function(){
-	  		return _index;
-	  	}
-
-		var mycars=new Array()
-		$.ajax({
-			url: '${ctx}/system/user/findAllUser',
-			type: "GET",
-			async: false,
-			success: function(result) {
-				$(result.data).each(function(i, o) {
-					mycars.push(o.userName)
-				})
-			},
-			error: function() {
-				layer.msg("获取数据失败！", { icon: 2 });
-			}
+	  	var index = layer.load(1, {
+			shade: [0.1, '#fff'] //0.1透明度的白色背景
 		});
+	  	layer.close(index);
 		
 		laydate.render({ elem: '#startTime', type: 'datetime', range: '~', });
 
@@ -169,10 +153,11 @@ layui.config({
 			},
 			cols: [[
 			        { align: 'center', type: 'checkbox',  fixed: 'left' },
-			        { align: 'center', field: "withholdReason", title: "借款方", templet: function(d){ return d.custom.name } },
-			        { align: 'center', field: "content", title: "内容", },
+			        { align: 'center', field: "content", title: "借款方"},
+			        { align: 'center', field: "remark", title: "借款类型", },
 				    { align: 'center', field: "money", title: "支付金额", }, 
-				    { align: 'center', field: "expenseDate", title: "预计付款日期", }]
+				    { align: 'center', field: "expenseDate", title: "预计付款日期", },
+				    {field: "flag",title: "审核状态",templet:  function(d){if(d.flag==0){return "未审核";}if(d.flag==1){return "已审核";}if(d.flag==2){return "部分审核";}}}]
 			],
 		});
 
@@ -189,11 +174,14 @@ layui.config({
 		});
 		
 		function addEidt(type){
-			var data={id:'',custom:{name:''},money:'',expenseDate:'',content:'借款利息',withholdMoney:'',withholdReason:''};
+			var data={id:'',custom:{name:''},money:'',expenseDate:'',remark:'借款利息',content:'',withholdMoney:'',withholdReason:''};
 			var title="新增数据";
 			var html="";
 			var tpl=addEditTpl.innerHTML;
 			var choosed=layui.table.checkStatus("tableData").data;
+			var id="";
+			var customerId="";
+			var htmls='<option value="">请选择</option>';	
 			if(type=='edit'){
 				title="编辑数据"
 				if(choosed.length>1){
@@ -205,85 +193,49 @@ layui.config({
 					return;
 				}
 				data=choosed[0];
+				id=data.id;
+				customerId=data.customer.id
 			}
 			laytpl(tpl).render(data,function(h){
 				html=h;
 			})
-			var addEditWin = layer.open({
+			layer.open({
 				type:1,
 				title:title,
-				area:['30%','60%'],
+				area:['500px','60%'],
 				btn:['确认','取消'],
 				content:html,
 				id: 'LAY_layuipro' ,
 				btnAlign: 'c',
+			    moveType: 1, //拖拽模式，0或者1
+				success : function(layero, index) {
+		        	layero.addClass('layui-form');
+					// 将保存按钮改变成提交按钮
+					layero.find('.layui-layer-btn0').attr({
+						'lay-filter' : 'addRole',
+						'lay-submit' : ''
+					})
+		        },
 				yes:function(){
-					$('#addEditSureBtn').click();
-				}
-			})
-			form.on('submit(addEditSureBtn)', function(obj) {
-				var submitData=obj.field;
-				submitData.customId=self.getIndex();
-				var load = layer.load(1);
-		    	$.ajax({
-					url: "${ctx}/fince/addConsumption",
-					data: submitData,
-					type: "POST",
-					success: function(result) {
-						if(0 == result.code) {
-						 	table.reload("tableData");
-						 	layer.close(addEditWin);
-							layer.msg(result.message, {icon: 1, time:800 });
-						} else {
-							layer.msg(result.message, {icon: 2, time:800 });
-						}
-					},
-					error: function() {
-						layer.msg("操作失败！请重试", {icon: 2});
-					},
-				});
-				layer.close(load);
-			})
+					form.on('submit(addRole)', function(data) {
+			        	var	field={
+			        			id:id,
+			        			content:data.field.content,
+			        			remark:data.field.remark,
+			        			money:data.field.money,
+			        			expenseDate:data.field.expenseDate,
+			        			type:10
+			        		}
+			        	  mainJs.fAdd(field);
+			        	if(id==""){
+			        	document.getElementById("layuiadmin-form-admin").reset();
+			        	layui.form.render();
+			        	}
+						})
+							}
+						})
 			form.render();
 			laydate.render({ elem: '#expenseDate', type: 'datetime', });
-			
-			//提示查询
-			 $("#userId").typeahead({
-					source : function(query, process) {
-						return $.ajax({
-							url : '${ctx}/fince/findCustom',
-							type : 'GET',
-							data : { name:query, type:10 },
-							success : function(result) {
-								 var resultList = result.data.map(function (item) {	//转换成 json集合
-				                        var aItem = {name: item.name, id:item.id}	//转换成 json对象
-				                        return JSON.stringify(aItem);				//处理 json对象为字符串
-				                    });
-									 self.setIndex(0);
-								//提示框返回数据
-								 return process(resultList);
-							},
-						})
-						//提示框显示
-					}, highlighter: function (item) {
-					    //转出成json对象
-						 var item = JSON.parse(item);
-						return item.name
-						//按条件匹配输出
-	                }, matcher: function (item) {
-	                	//转出成json对象
-				        var item = JSON.parse(item);
-				        self.setIndex(item.id);
-				    	return item.id
-				    },
-					//item是选中的数据
-					updater:function(item){
-						//转出成json对象
-						var item = JSON.parse(item);
-						self.setIndex(item.id);
-							return item.name
-					},
-				});
 		}
 		function deletes(tableId){
 			var checkedIds = tablePlug.tableCheck.getChecked(tableId);
@@ -323,8 +275,10 @@ layui.config({
 		form.on('submit(LAY-search)', function(data) {
 			var field = data.field;
 			var orderTime=field.orderTimeBegin.split('~');
-			field.orderTimeBegin=orderTime[0];
-			field.orderTimeEnd=orderTime[1];
+			if(orderTime!=""){
+			field.orderTimeBegin=orderTime[0]+' '+'00:00:00';
+			field.orderTimeEnd=orderTime[1]+' '+'23:59:59';
+			}
 			table.reload('tableData', {
 				where: field
 			});
@@ -336,6 +290,82 @@ layui.config({
 			tableView.find('tr[data-index="' + trIndex + '"]').find('[name="layTableCheckbox"]+').last().click();
 		})
 		
+		//封装ajax主方法
+					var mainJs = {
+						//新增							
+					    fAdd : function(data){
+					    	$.ajax({
+								url: "${ctx}/fince/addConsumption",
+								data: data,
+								type: "POST",
+								beforeSend: function() {
+									index;
+								},
+								success: function(result) {
+									if(0 == result.code) {
+									 	 table.reload("tableData", {
+							                page: {
+							                }
+							              })   
+										layer.msg(result.message, {
+											icon: 1,
+											time:800
+										});
+									
+									} else {
+										layer.msg(result.message, {
+											icon: 2,
+											time:800
+										});
+									}
+								},
+								error: function() {
+									layer.msg("操作失败！请重试", {
+										icon: 2
+									});
+								},
+							});
+							layer.close(index);
+					    },
+					//修改							
+				    fUpdate : function(data){
+				    	if(data.id==""){
+				    		return;
+				    	}
+				    	$.ajax({
+							url: "${ctx}/fince/addConsumption",
+							data: data,
+							type: "POST",
+							beforeSend: function() {
+								index;
+							},
+							success: function(result) {
+								if(0 == result.code) {
+								 	 table.reload("tableData", {
+						                page: {
+						                }
+						              })   
+									layer.msg(result.message, {
+										icon: 1,
+										time:800
+									});
+								
+								} else {
+									layer.msg(result.message, {
+										icon: 2,
+										time:800
+									});
+								}
+							},
+							error: function() {
+								layer.msg("操作失败！请重试", {
+									icon: 2
+								});
+							},
+						});
+						layer.close(index);
+				    }
+					}
 	}
 )
 </script>

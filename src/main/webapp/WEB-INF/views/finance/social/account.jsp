@@ -76,7 +76,7 @@
 			<div class="layui-form-item">
 				<label class="layui-form-label">扣税单位</label>
 				<div class="layui-input-block">
-						<select class="form-control"  lay-verify="required" name="customerId" id="customerId">
+						<select class="form-control" lay-search="true" lay-verify="required" name="customerId" id="customerId">
 							
 						</select>
 				</div>
@@ -141,20 +141,6 @@
 					//全部字段
 					var allField;
 					var self = this;
-					var _index;
-					this.setIndex = function(index){
-				  		_index=index;
-				  	}
-				  	this.getIndex = function(){
-				  		return _index;
-				  	}
-				  	var _cache;
-					this.setCache = function(cache){
-				  		_cache=cache;
-				  	}
-				  	this.getCache = function(){
-				  		return _cache;
-				  	}
 					//select全局变量
 					var htmls = '<option value="">请选择</option>';
 					var index = layer.load(1, {
@@ -461,8 +447,12 @@
 					form.on('submit(LAY-search)', function(data) {
 						var field = data.field;
 						var orderTime=field.orderTimeBegin.split('~');
+						var orderTimeBegin="";
+						var orderTimeEnd="";
+						if(orderTime!=""){
 						field.orderTimeBegin=orderTime[0]+' '+'00:00:00';
 						field.orderTimeEnd=orderTime[1]+' '+'23:59:59';
+						}
 						table.reload('tableData', {
 							where: field
 						});

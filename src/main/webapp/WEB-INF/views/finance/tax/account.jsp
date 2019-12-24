@@ -45,10 +45,11 @@
 							</td> -->
 							<td>&nbsp&nbsp</td>
 							<td>是否核对:
-							<td><select class="form-control" name="flag">
+							<td><select class="form-control" name="flags">
 									<option value="">请选择</option>
-									<option value="0">未核对</option>
-									<option value="1">已核对</option>
+									<option value="0">未审核</option>
+									<option value="2">部分审核</option>
+									<option value="1">已审核</option>
 							</select></td>
 							<td>&nbsp&nbsp</td>
 							<td>
@@ -70,21 +71,21 @@
 
 <script type="text/html" id="addEditTpl">
 <form action="" id="layuiadmin-form-admin"
-		style="padding: 20px 30px 0 60px;  text-align:">
-		<div class="layui-form" lay-filter="layuiadmin-form-admin">
+		style="margin-left: 50px;margin-top: 30px;margin-right: 50px;">
+		<div class="layui-form layui-form-pane" lay-filter="layuiadmin-form-admin">
 			<input type="text" name="id" id="usID" style="display:none;">
 			<div class="layui-form-item">
-				<label class="layui-form-label" style="width: 130px;">供应商名称</label>
-				<div class="layui-input-inline">
-						<input type="text" value="{{d.custom.name}}" name="customerName" id="userId"
-						placeholder="请输入供应商名称"
-						class="layui-input laydate-icon" data-provide="typeahead">
+				<label class="layui-form-label">供应商名称</label>
+				<div class="layui-input-block">
+						<select class="form-control" lay-search="true"  lay-verify="required" name="customerId" id="customerId">
+							
+						</select>
 				</div>
 			</div>
 
 			<div class="layui-form-item">
-				<label class="layui-form-label" style="width: 130px;">票面金额</label>
-				<div class="layui-input-inline">
+				<label class="layui-form-label">票面金额</label>
+				<div class="layui-input-block">
 					<input type="text" value="{{d.money }}" name="money" id="money"
 						lay-verify="required" placeholder="请输入票面金额"
 						class="layui-input laydate-icon">
@@ -92,8 +93,8 @@
 			</div>
 
 			<div class="layui-form-item">
-				<label class="layui-form-label" style="width: 130px;">税点</label>
-				<div class="layui-input-inline">
+				<label class="layui-form-label">税点</label>
+				<div class="layui-input-block">
 					<input type="text" value="{{d.taxPoint}}" name="taxPoint" id="taxPoint"
 						lay-verify="required" placeholder="请输入税点"
 						class="layui-input laydate-icon">
@@ -101,8 +102,8 @@
 			</div>
 
 			<div class="layui-form-item">
-				<label class="layui-form-label" style="width: 130px;">申请日期</label>
-				<div class="layui-input-inline">
+				<label class="layui-form-label">申请日期</label>
+				<div class="layui-input-block">
 					<input type="text" value="{{d.expenseDate}}"  name="expenseDate"
 						id="expenseDate" lay-verify="required"
 						placeholder="请输入付款日期 " class="layui-input">
@@ -110,8 +111,8 @@
 			</div>
 
 			<div class="layui-form-item">
-				<label class="layui-form-label" style="width: 130px;">扣款原因</label>
-				<div class="layui-input-inline">
+				<label class="layui-form-label">扣款原因</label>
+				<div class="layui-input-block">
 					<input type="text" value="{{d.withholdReason}}" name="withholdReason" id="withholdReason"
 						lay-verify="required" placeholder="请输入付款日期"
 						class="layui-input">
@@ -119,8 +120,8 @@
 			</div>
 
 			<div class="layui-form-item">
-				<label class="layui-form-label" style="width: 130px;">扣款金额</label>
-				<div class="layui-input-inline">
+				<label class="layui-form-label">扣款金额</label>
+				<div class="layui-input-block">
 					<input type="text" value="{{d.withholdMoney}}" name="withholdMoney" id="withholdMoney"
 						lay-verify="required" placeholder="请输入扣款金额"
 						class="layui-input">
@@ -177,7 +178,7 @@
 					});
 					laydate.render({
 						elem: '#startTime',
-						type: 'datetime',
+						type: 'date',
 						range: '~',
 					});
 				 
@@ -245,7 +246,7 @@
 								align: 'center',
 								search: true,
 								templet: function(d){
-									return d.custom.name
+									return d.customer==null ? "" :d.customer.name
 								}
 							}, {
 								field: "money",
@@ -263,6 +264,20 @@
 							}, {
 								field: "withholdMoney",
 								title: "扣款金额",
+							},{
+								field: "flag",
+								title: "审核状态",
+								templet:  function(d){
+									if(d.flag==0){
+										return "未审核";
+									}
+									if(d.flag==1){
+										return "已审核";
+									}
+									if(d.flag==2){
+										return "部分审核";
+									}
+								}
 							}]
 						],
 						done: function() {
@@ -374,6 +389,8 @@
 						var tpl=addEditTpl.innerHTML;
 						var choosed=layui.table.checkStatus("tableData").data;
 						var id="";
+						var customerId="";
+						var htmls='<option value="">请选择</option>';
 						if(type=='edit'){
 							if(choosed.length>1){
 								layer.msg("无法同时编辑多条信息",{icon:2});
@@ -381,6 +398,7 @@
 							}
 							data=choosed[0];
 							id=data.id
+							customerId=data.customer.id
 						}
 						laytpl(tpl).render(data,function(h){
 							html=h;
@@ -395,6 +413,29 @@
 							btnAlign: 'c',
 						    moveType: 1, //拖拽模式，0或者1
 							success : function(layero, index) {
+								$.ajax({
+									url: '${ctx}/ledger/customerPage',
+									data:{customerAttributionId:449,customerTypeId:456},
+									type: "GET",
+									async: false,
+									beforeSend: function() {
+										index;
+									},
+									success: function(result) {
+										$(result.data.rows).each(function(i,item) {
+											htmls+='<option value="'+item.id+'">'+item.name+'</option>'
+										})
+										$("#customerId").html(htmls)
+										form.render();
+									},
+									error: function() {
+										layer.msg("操作失败！", {
+											icon: 2
+										});
+									}
+								});
+								$("#customerId").val(customerId)
+								
 					        	layero.addClass('layui-form');
 								// 将保存按钮改变成提交按钮
 								layero.find('.layui-layer-btn0').attr({
@@ -406,7 +447,7 @@
 								form.on('submit(addRole)', function(data) {
 						        	var	field={
 						        			id:id,
-						        			customerName:data.field.customerName,
+						        			customerId:data.field.customerId,
 						        			money:data.field.money,
 						        			customId:self.getIndex(),
 						        			expenseDate:data.field.expenseDate,
@@ -428,53 +469,6 @@
 							elem: '#expenseDate',
 							type: 'datetime',
 						});
-						//提示查询
-						 $("#userId").typeahead({
-								source : function(query, process) {
-									return $.ajax({
-										url : '${ctx}/fince/findCustom',
-										type : 'GET',
-										data : {
-											name:query,
-											type:4
-										},
-										success : function(result) {
-											//转换成 json集合
-											 var resultList = result.data.map(function (item) {
-												 	//转换成 json对象
-							                        var aItem = {name: item.name, id:item.id}
-							                        //处理 json对象为字符串
-							                        return JSON.stringify(aItem);
-							                    });
-												 self.setIndex(0);
-											//提示框返回数据
-											 return process(resultList);
-										},
-									})
-									//提示框显示
-								}, highlighter: function (item) {
-								    //转出成json对象
-									 var item = JSON.parse(item);
-									return item.name
-									//按条件匹配输出
-				                }, matcher: function (item) {
-				                	//转出成json对象
-							        var item = JSON.parse(item);
-							        self.setIndex(item.id);
-							    	return item.id
-							    },
-								//item是选中的数据
-								updater:function(item){
-									//转出成json对象
-									var item = JSON.parse(item);
-									self.setIndex(item.id);
-										return item.name
-								},
-
-								
-							});
-						
-					 
 					}
 					
 					
@@ -484,8 +478,12 @@
 					form.on('submit(LAY-search)', function(data) {
 						var field = data.field;
 						var orderTime=field.orderTimeBegin.split('~');
-						field.orderTimeBegin=orderTime[0];
-						field.orderTimeEnd=orderTime[1];
+						var orderTimeBegin="";
+						var orderTimeEnd="";
+						if(orderTime!=""){
+						field.orderTimeBegin=orderTime[0]+' '+'00:00:00';
+						field.orderTimeEnd=orderTime[1]+' '+'23:59:59';
+						}
 						table.reload('tableData', {
 							where: field
 						});
