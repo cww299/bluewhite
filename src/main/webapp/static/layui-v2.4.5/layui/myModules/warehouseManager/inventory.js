@@ -127,7 +127,9 @@ layui.extend({
 							},
 						})
 					}else if(obj.event=='askfor'){
-						askfor.add({});
+						askfor.add({
+							productId: check[0].id,
+						});
 					}
 				},
 			},
@@ -271,7 +273,6 @@ layui.extend({
 				
 				inputWarehouseOrder.init();
 				outWarehouseOrder.init();
-				askfor.init();
 			})
 		}
 	}

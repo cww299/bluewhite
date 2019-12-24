@@ -23,7 +23,7 @@
 				<td><button type="button" class="layui-btn layui-btn-sm" lay-submit lay-filter="search">搜索</button></td>
 			</tr>
 		</table>
-		<table id="tableData" lay-filter="tableData"></table>
+		<table id="tableData" lay-filt er="tableData"></table>
 	</div>
 </div>
 </body>
@@ -32,10 +32,9 @@ layui.config({
 	base : '${ctx}/static/layui-v2.4.5/'
 }).extend({
 	mytable : 'layui/myModules/mytable' ,
-	addEditAskfor : 'layui/myModules/askfor/addEditAskfor' ,
 	askfor : 'layui/myModules/askfor/askfor' ,
 }).define(
-	['mytable','laydate','addEditAskfor','askfor'],
+	['mytable','laydate','askfor'],
 	function(){
 		var $ = layui.jquery
 		, layer = layui.layer 				
@@ -45,7 +44,6 @@ layui.config({
 		, laydate = layui.laydate
 		, laytpl = layui.laytpl
 		, askfor = layui.askfor
-		, addEditAskfor = layui.addEditAskfor
 		, mytable = layui.mytable;
 		myutil.config.ctx = '${ctx}';
 		myutil.clickTr();
@@ -64,15 +62,13 @@ layui.config({
 							table:'tableData',
 							text:'请选择信息|是否确认撤销申请？',
 						})
-					}else if(obj.event=="add"){
-						askfor.add();
 					}else if(obj.event=="edit"){
 						var check = layui.table.checkStatus('tableData').data;
 						if(check.length!=1)
 							return myutil.emsg('请选择一条数据进行修改');
-						addEditAskfor.update({
+						askfor.update({
 							data: check[0],
-							table: 'tableData',
+							productId:1,
 						})
 					}
 				},
@@ -83,7 +79,6 @@ layui.config({
 				'<span class="layui-btn layui-btn-sm layui-btn-normal" lay-event="edit">修改申请</span>',
 			].join(' '),
 			autoUpdate:{
-				field:{ },
 			},
 			cols:[[
 			       { type:'checkbox',},
@@ -117,7 +112,6 @@ layui.config({
 				where: obj.field,
 			})
 		}) 
-		addEditAskfor.init();
 	}//end define function
 )//endedefine
 </script>

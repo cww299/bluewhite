@@ -1,10 +1,18 @@
 /**2019/12/240 
  * author:299
  * 申请模块 askfor
+ * askfor.add({
+ * 	 productId: productId,	//传入productId时，为盘亏、盘盈申请
+ * 
+ * })
+ * askfor.upload({
+ * 	 productId: productId,	//传入productId时，为盘亏、盘盈申请修改
+ * }）
+ * askfor.init();	//初始化数据、获取所有被申请人列表
  */
 layui.extend({
 	//formSelects : 'formSelect/formSelects-v4'
-}).define(['jquery','layer','form','laytpl','laydate','mytable','table'],function(exports){
+}).define(['jquery','layer','form','laytpl','laydate','mytable','table','laydate'],function(exports){
 	"use strict";
 	var $ = layui.jquery,
 		form = layui.form,
@@ -53,7 +61,7 @@ layui.extend({
 		      <input type="text" name="cause" value="{{ d.cause || '' }}" autocomplete="off" class="layui-input">
 		    </div>
 		  </div>
-		  <div class="layui-form-item" pane>
+		  <div class="layui-form-item" pane id="approvalUserDiv">
 		    <label class="layui-form-label">被申请人</label>
 		    <div class="layui-input-block">
 		      <select name="approvalUserId" id="approvalUserId">
@@ -68,13 +76,12 @@ layui.extend({
 		       autocomplete="off" class="layui-input">
 		    </div>
 		  </div>
-		  <div class="layui-form-item" pane>
+		  <div class="layui-form-item" pane id="applyVoucherKindDiv">
 		    <label class="layui-form-label">申请类型</label>
 		    <div class="layui-input-block">
-		      <select name="applyVoucherKindId">
-		        <option value="">请选择</option>
-		        <option value="`+askfor.allType.outInput.child.loss+`">盘亏</option>
-		        <option value="`+askfor.allType.outInput.child.profit+`">盘盈</option>
+		      <select name="applyVoucherKindId" value="{{ d.applyVoucherKind?d.applyVoucherKind.id:'' }}">
+		        <option value="`+askfor.allType.outInput.child.loss+`">盘亏入库</option>
+		        <option value="`+askfor.allType.outInput.child.profit+`">盘盈出库</option>
 		      </select>
 		    </div>
 		  </div>
@@ -88,9 +95,9 @@ layui.extend({
 	askfor.add = function(opt){
 		opt = opt || {};
 		opt.data = opt.data || {};
-		askfor.upload(opt);
+		askfor.update(opt);
 	}
-	askfor.upload = function(opt){
+	askfor.update = function(opt){
 		var renderData = opt.data;
 		renderData.applyVoucherTypeId = askfor.type;
 		var html = '';
@@ -105,16 +112,24 @@ layui.extend({
 			title:title,
 			offset:'100px',
 			content: html,
-			area:['420px','420px'],
+			area:['420px','380px'],
 			btn:['确定','取消'],
 			btnAlign:'c',
 			yes:function(){
 				$('#saveAskforBtn').click();
 			},
 			success:function(layero, layerIndex){
+				laydate.render({ elem:'#askforTime',type:'datetime', value: renderData.time || new Date(),});
+				if(opt.productId){
+					$('#approvalUserDiv').remove();
+				}else{
+					$('#applyVoucherKindDiv').remove();
+				}
 				$('#approvalUserId').append(allUserSelect);
 				form.render();
 				form.on('submit(saveAskforBtn)',function(obj){
+					if(opt.productId)
+						obj.field.productId = opt.productId;
 					myutil.saveAjax({
 						url: '/ledger/dispatch/saveApplyVoucher',
 						data: obj.field,
