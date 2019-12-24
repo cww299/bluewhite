@@ -21,7 +21,6 @@ import com.bluewhite.common.entity.PageResult;
 import com.bluewhite.common.utils.NumUtils;
 import com.bluewhite.common.utils.RoleUtil;
 import com.bluewhite.common.utils.StringUtil;
-import com.bluewhite.common.utils.StringUtil;
 import com.bluewhite.ledger.dao.MaterialOutStorageDao;
 import com.bluewhite.ledger.dao.MaterialPutOutStorageDao;
 import com.bluewhite.ledger.entity.MaterialOutStorage;
@@ -104,6 +103,7 @@ public class MaterialOutStorageServiceImpl extends BaseServiceImpl<MaterialOutSt
 		Long warehouseTypeDeliveryId = RoleUtil.getWarehouseTypeDelivery(cu.getRole());
 		materialOutStorage.setUserStorageId(cu.getId());
 		materialOutStorage.setOutStatus(1);
+		materialOutStorage.setArrivalTime(new Date());
 		materialOutStorage.setSerialNumber(Constants.WLCK + StringUtil.getDate() + StringUtil.get0LeftString((int) (dao.count() + 1), 8));
 		save(materialOutStorage);
 		List<MaterialPutStorage> listMaterialPutStorage = materialPutStorageService.detailsInventory(warehouseTypeDeliveryId,materialOutStorage.getMaterielId());

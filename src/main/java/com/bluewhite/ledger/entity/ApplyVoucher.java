@@ -12,6 +12,7 @@ import javax.persistence.Transient;
 
 import com.bluewhite.base.BaseEntity;
 import com.bluewhite.basedata.entity.BaseData;
+import com.bluewhite.product.product.entity.Product;
 import com.bluewhite.system.user.entity.User;
 
 /**
@@ -21,6 +22,32 @@ import com.bluewhite.system.user.entity.User;
 @Entity
 @Table(name = "ledger_apply_voucher")
 public class ApplyVoucher extends BaseEntity<Long> {
+	
+	/**
+	 * 产品id
+	 */
+	@Column(name = "product_id")
+	private Long productId;
+
+	/**
+	 * 产品
+	 */
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "product_id", referencedColumnName = "id", insertable = false, updatable = false)
+	private Product product;
+	
+	/**
+	 * 仓库种类id
+	 */
+	@Column(name = "warehouse_type_id")
+	private Long warehouseTypeId;
+
+	/**
+	 * 仓库种类
+	 */
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "warehouse_type_id", referencedColumnName = "id", insertable = false, updatable = false)
+	private BaseData warehouseType;
 	
 	/**
 	 * 申请单编号
@@ -44,8 +71,7 @@ public class ApplyVoucher extends BaseEntity<Long> {
 	/**
 	 * 申请单类型id( 
 	 *  销售申请
-	 *  入库申请
-	 *  出库申请	
+	 *  出库入库申请
 	 * )
 	 */
 	@Column(name = "apply_voucher_type_id")
@@ -61,8 +87,7 @@ public class ApplyVoucher extends BaseEntity<Long> {
 	/**
 	 * 申请种类id( 
 	 *  销售： 销售员借货申请
-	 *  入库：返工申请，调拨申请，退货申请 ，换货申请，盘亏申请
-	 *  出库：调拨申请，换货申请，退货申请，盘盈申请，返工申请
+	 *  出库入库：调拨申请，换货申请，退货申请，盘亏申请，返工申请，盘盈申请
 	 * )
 	 */
 	@Column(name = "apply_voucher_kind_id")
@@ -162,6 +187,8 @@ public class ApplyVoucher extends BaseEntity<Long> {
 	/**
 	 * 查询字段
 	 */
+	
+	
 	@Transient
 	private Date orderTimeBegin;
 	/**
@@ -172,6 +199,22 @@ public class ApplyVoucher extends BaseEntity<Long> {
 	
 	
 	
+	public Long getWarehouseTypeId() {
+		return warehouseTypeId;
+	}
+
+	public void setWarehouseTypeId(Long warehouseTypeId) {
+		this.warehouseTypeId = warehouseTypeId;
+	}
+
+	public BaseData getWarehouseType() {
+		return warehouseType;
+	}
+
+	public void setWarehouseType(BaseData warehouseType) {
+		this.warehouseType = warehouseType;
+	}
+
 	public Long getOrderOutSourceId() {
 		return orderOutSourceId;
 	}
@@ -346,6 +389,22 @@ public class ApplyVoucher extends BaseEntity<Long> {
 
 	public void setUser(User user) {
 		this.user = user;
+	}
+
+	public Long getProductId() {
+		return productId;
+	}
+
+	public void setProductId(Long productId) {
+		this.productId = productId;
+	}
+
+	public Product getProduct() {
+		return product;
+	}
+
+	public void setProduct(Product product) {
+		this.product = product;
 	}
 
 }

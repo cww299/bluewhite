@@ -1,8 +1,6 @@
 package com.bluewhite.ledger.action;
 
 import java.util.Date;
-import java.util.HashMap;
-import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -1084,7 +1082,6 @@ public class LedgerAction {
 	 * （面辅料仓库）撤销物料出库
 	 * 
 	 * 满足于 领取物料后未进入下一环节使用 才可以撤销
-	 * 
 	 * @param order
 	 * @return
 	 */
@@ -1092,8 +1089,8 @@ public class LedgerAction {
 	@ResponseBody
 	public CommonResponse deleteMaterialOutStorage(String ids) {
 		CommonResponse cr = new CommonResponse();
-		materialOutStorageService.deleteMaterialOutStorage(ids);
-		cr.setMessage("成功撤销");
+		int count= materialOutStorageService.deleteMaterialOutStorage(ids);
+		cr.setMessage("撤销成功"+count+"条出库单");
 		return cr;
 	}
 
