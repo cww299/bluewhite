@@ -110,7 +110,7 @@ layui.config({
 		myutil.clickTr();
 		mytable.render({
 			elem:'#tableData',
-			url:'${ctx}/ledger/getOrderProcurement?inspection=1',
+			url:'${ctx}/ledger/getOrderProcurement',
 			size:'lg',
 			ifNull:'',
 			scrollX:true,

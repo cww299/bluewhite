@@ -219,6 +219,7 @@ layui.define(['jquery','layer','form','table'],function(exports){
 			myutil.deleteAjax({
 				url: opt.url,
 				ids: Array.from(ids).join(','),
+				type: opt.type || 'get',
 				success: function(){
 					table.reload(tid);
 					opt.success && opt.success();

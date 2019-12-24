@@ -79,7 +79,7 @@ layui.extend({
 							return myutil.emsg('只能选择一条数据操作！');
 						inputWarehouseOrder.add({
 							data:{
-								productId: check[0].order.product.id,
+								productId: check[0].materialRequisition.order.product.id,
 								orderOutSourceId: check[0].id,
 								inStatus:1,
 							}
@@ -161,7 +161,7 @@ layui.extend({
 				mytable.renderNoPage({
 					elem:'#chooseInputOrder',
 					height:'400px',
-					url: myutil.config.ctx+'/ledger/inventory/getPutStorageDetails?id='+data.id,
+					url: myutil.config.ctx+'/ledger/inventory/getOrderOutSourcePutStorageDetails?id='+data.id,
 					cols:[[
 						{ type:'checkbox',},
 						{ title:'入库单编号',field:'serialNumber'},

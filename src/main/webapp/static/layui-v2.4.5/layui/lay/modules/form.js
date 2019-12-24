@@ -197,7 +197,8 @@ layui.define('layer', function(exports){
             reElem.removeClass(CLASS+'ed ' + CLASS+'up');
             input.blur();
             nearElem = null;
-            
+            //关闭弹窗
+            layui.optimizeSelectOption && layui.optimizeSelectOption.close();
             if(choose) return;
             
             notOption(input.val(), function(none){
@@ -372,20 +373,21 @@ layui.define('layer', function(exports){
                   						'<dd lay-value="'+item[onlineSelect.showId]+'">', 
                   							showName(item),
                   						'</dd>',
-                  					].join(' '))
+                  					].join(''))
                   					searchOnlineResultOrigin.push([
                   						'<option value="'+item[onlineSelect.showId]+'">', 
               								showName(item),
               							'</option>',
-              						].join(' '));
+              						].join(''));
                   				})
-                  				dl.append(searchOnlineResultDl.join(' '));
                   				originalElem.append(searchOnlineResultOrigin.join(' '));
+                  				dl.append(searchOnlineResultDl.join(' '));
                   				if(res.data.length==0)
                   					dl.find('.'+NONE)[0] || dl.append('<p class="'+ NONE +'">无匹配项</p>');
                   				else
                   					dl.find('.'+NONE)[0] && dl.find('.'+NONE).remove();
                   				dds = dl.children('dd');
+                  				clickDD();
                   				function showName(data){
                   					var showName = [];
                   					layui.each(onlineSelect.showName.split('|'),function(index,item){
@@ -432,7 +434,7 @@ layui.define('layer', function(exports){
 
           var clickDD = function(){
         	  //选择
-	          dds.on('click', function(){
+	          dds.unbind().on('click', function(){
 	            var othis = $(this), value = othis.attr('lay-value');
 	            var filter = select.attr('lay-filter'); //获取过滤器
 	            

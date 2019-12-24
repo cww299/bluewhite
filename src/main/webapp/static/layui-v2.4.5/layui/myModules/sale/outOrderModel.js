@@ -99,6 +99,7 @@ layui.extend({
 			console.error('请给定数据！');
 			return;
 		}
+		allProcess = '';
 		myutil.getDataSync({	//获取工序类型
 			url: myutil.config.ctx+'/ledger/getProcessNumber?id='+data.materialRequisition.id,
 			success:function(d){

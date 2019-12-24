@@ -36,40 +36,6 @@ layui.extend({
 		</table>
 		<table id="tableData" lay-filter="tableData"></table>
 	`;
-	var INPUT_TPL = `
-	<div style="text-align:center;">
-		<div class="layui-form layui-form-pane" style="padding:10px;">
-		  <div class="layui-form-item" pane>
-		    <label class="layui-form-label">日期</label>
-		    <div class="layui-input-block">
-		      <input type="text" name="time" class="layui-input" id="addInputTime">
-		    </div>
-		  </div>
-		  <div class="layui-form-item" pane>
-		    <label class="layui-form-label">数量</label>
-		    <div class="layui-input-block">
-		      <input type="number" name="number" lay-verify="number" class="layui-input" id="inputTime">
-		    </div>
-		  </div>
-		  <div class="layui-form-item" pane style="display:none;">
-		    <label class="layui-form-label">供应商</label>
-		    <div class="layui-input-block">
-		      <select  name="customerId" id="supplierIdSelcte" lay-search></select>
-		    </div>
-		  </div>
-		  <div class="layui-form-item" pane>
-		    <label class="layui-form-label">备注</label>
-		    <div class="layui-input-block">
-		      <input type="text" name="remark" class="layui-input">
-		    </div>
-		  </div>
-		  <p style="display:none;">
-		  	<input type="hidden" name="flag" value="1">
-			<span lay-submit lay-filter="addInputBtn" id="addInputBtn" style="display:none;">1</span>
-		  </p>
-		</div>
-	</div>
-	`;
 	var OUT_TPL = `
 	<div style="text-align:center;">
 		<div class="layui-form layui-form-pane" style="padding:10px;">
@@ -126,6 +92,42 @@ layui.extend({
 	};
 	
 	inventory.render = function(opt){
+		var INPUT_TPL = `
+			<div style="text-align:center;">
+				<div class="layui-form layui-form-pane" style="padding:10px;">
+				  <div class="layui-form-item" pane>
+				    <label class="layui-form-label">日期</label>
+				    <div class="layui-input-block">
+				      <input type="text" name="time" class="layui-input" id="addInputTime">
+				    </div>
+				  </div>
+				  <div class="layui-form-item" pane>
+				    <label class="layui-form-label">数量</label>
+				    <div class="layui-input-block">
+				      <input type="number" name="number" lay-verify="number" class="layui-input" id="inputTime">
+				    </div>
+				  </div>
+				  <div class="layui-form-item" pane style="display:none;">
+				    <label class="layui-form-label">供应商</label>
+				    <div class="layui-input-block">
+				      <select  name="customerId" id="supplierIdSelcte" lay-search
+				      	lay-url="`+myutil.config.ctx+`/ledger/getCustomer?customerTypeId=455"
+				      	 ></select>
+				    </div>
+				  </div>
+				  <div class="layui-form-item" pane>
+				    <label class="layui-form-label">备注</label>
+				    <div class="layui-input-block">
+				      <input type="text" name="remark" class="layui-input">
+				    </div>
+				  </div>
+				  <p style="display:none;">
+				  	<input type="hidden" name="flag" value="1">
+					<span lay-submit lay-filter="addInputBtn" id="addInputBtn" style="display:none;">1</span>
+				  </p>
+				</div>
+			</div>
+			`;
 		$(opt.elem || '#app').html(TPL_MAIN);
 		laydate.render({ elem:'#searchTime', range:'~', })
 		form.render();
@@ -274,7 +276,7 @@ layui.extend({
 			userSelectHtml = '';
 			allCustomerSelectHtml = '';
 			myutil.getData({
-				url: myutil.config.ctx+'/inventory/onlineCustomerPage?type=6',
+				url: myutil.config.ctx+'/ledger/getCustomer?customerTypeId=455',
 				success:function(d){ 
 					for(var i=0,len=d.length;i<len;i++){
 						allCustomerSelectHtml += '<option value="'+d[i].id+'">'+d[i].name+'</option>';

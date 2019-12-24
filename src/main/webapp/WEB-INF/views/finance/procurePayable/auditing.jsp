@@ -75,6 +75,7 @@ layui.config({
 						myutil.deleTableIds({
 							url:'/fince/auditConsumption?flag=1',
 							table:'tableData',
+							type:'post',
 							text:'请选择相关信息进行审核|是否确认审核？',
 						})
 						break;
