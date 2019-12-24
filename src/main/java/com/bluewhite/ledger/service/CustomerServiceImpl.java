@@ -135,7 +135,7 @@ public class CustomerServiceImpl extends BaseServiceImpl<Customer, Long> impleme
 			if (param.getGrade() != null) {
 				predicate.add(cb.equal(root.get("grade").as(Integer.class), param.getGrade()));
 			}
-			// 按经手人过滤
+			// 所属业务员过滤
 			if (param.getUserId() != null) {
 				predicate.add(cb.equal(root.get("userId").as(Long.class), param.getUserId()));
 			}
@@ -145,8 +145,9 @@ public class CustomerServiceImpl extends BaseServiceImpl<Customer, Long> impleme
 			}
 			// 按客户类型过滤
 			if (param.getCustomerTypeId() != null) {
-				predicate.add(cb.equal(root.get("customertypeId").as(Long.class), param.getCustomerTypeId()));
+				predicate.add(cb.equal(root.get("customerTypeId").as(Long.class), param.getCustomerTypeId()));
 			}
+			
 			Predicate[] pre = new Predicate[predicate.size()];
 			query.where(predicate.toArray(pre));
 			return null;

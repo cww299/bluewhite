@@ -31,13 +31,15 @@ public class ApplyVoucherServiceImpl extends BaseServiceImpl<ApplyVoucher, Long>
 
 	@Override
 	public void saveApplyVoucher(ApplyVoucher applyVoucher) {
+		// 根据仓管登陆用户权限，获取不同的仓库库存
+		CurrentUser cu = SessionManager.getUserSession();
 		if(applyVoucher.getApplyVoucherTypeId()==439 && (applyVoucher.getApplyVoucherKindId()==463||applyVoucher.getApplyVoucherKindId()==470)){
-			// 根据仓管登陆用户权限，获取不同的仓库库存
-			CurrentUser cu = SessionManager.getUserSession();
 			Long warehouseTypeDeliveryId = RoleUtil.getWarehouseTypeDelivery(cu.getRole());
 			applyVoucher.setWarehouseTypeId(warehouseTypeDeliveryId);
 		}
+		applyVoucher.setUserId(cu.getId());
 		applyVoucher.setApplyNumber(Constants.SQD + StringUtil.getDate() + StringUtil.get0LeftString((int) (count() + 1), 8));
+		applyVoucher.setPass(0);
 		save(applyVoucher);
 	}
 
