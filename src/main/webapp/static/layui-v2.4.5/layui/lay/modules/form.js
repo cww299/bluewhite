@@ -197,7 +197,8 @@ layui.define('layer', function(exports){
             reElem.removeClass(CLASS+'ed ' + CLASS+'up');
             input.blur();
             nearElem = null;
-            
+            //关闭弹窗
+            layui.optimizeSelectOption && layui.optimizeSelectOption.close();
             if(choose) return;
             
             notOption(input.val(), function(none){
