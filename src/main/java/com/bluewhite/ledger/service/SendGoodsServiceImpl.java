@@ -24,7 +24,6 @@ import com.bluewhite.common.entity.CurrentUser;
 import com.bluewhite.common.entity.PageParameter;
 import com.bluewhite.common.entity.PageResult;
 import com.bluewhite.common.utils.StringUtil;
-import com.bluewhite.common.utils.StringUtil;
 import com.bluewhite.ledger.dao.ApplyVoucherDao;
 import com.bluewhite.ledger.dao.OutStorageDao;
 import com.bluewhite.ledger.dao.PackingChildDao;
@@ -131,9 +130,7 @@ public class SendGoodsServiceImpl extends BaseServiceImpl<SendGoods, Long> imple
 
 	
 	@Override
-	public void addSendGoods(SendGoods sendGoods
-			
-			) {
+	public void addSendGoods(SendGoods sendGoods) {
 		CurrentUser cu = SessionManager.getUserSession();
 		sendGoods.setUserId(cu.getId());
 		// 新增借货申请单
