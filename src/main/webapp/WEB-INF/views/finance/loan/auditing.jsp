@@ -295,8 +295,12 @@
 					form.on('submit(LAY-search)', function(data) {
 						var field = data.field;
 						var orderTime=field.orderTimeBegin.split('~');
+						var orderTimeBegin="";
+						var orderTimeEnd="";
+						if(orderTime!=""){
 						orderTimeBegin=orderTime[0]+' '+'00:00:00';
 						orderTimeEnd=orderTime[1]+' '+'23:59:59';
+						}
 						var a="";
 						var b="";
 						if($("#selectone").val()=="expenseDate"){

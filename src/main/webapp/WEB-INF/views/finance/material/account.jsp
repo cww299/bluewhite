@@ -34,7 +34,7 @@
 							<td><input type="text" name="customerName" id="firstNames" class="layui-input" /></td>
 							<td>&nbsp&nbsp</td>
 							<td><select class="form-control" name="expenseDate" id="selectone">
-									<option value="2018-10-08 00:00:00">申请日期</option>
+									<option value="2018-10-08 00:00:00">预计入库日期</option>
 								</select></td>
 							<td>&nbsp&nbsp</td>
 							<td><input id="startTime" style="width: 300px;" name="orderTimeBegin" placeholder="请输入开始时间" class="layui-input laydate-icon">
@@ -45,10 +45,11 @@
 							</td> -->
 							<td>&nbsp&nbsp</td>
 							<td>是否核对:
-							<td><select class="form-control" name="flag">
+							<td><select class="form-control" name="flags">
 									<option value="">请选择</option>
-									<option value="0">未核对</option>
-									<option value="1">已核对</option>
+									<option value="0">未审核</option>
+									<option value="2">部分审核</option>
+									<option value="1">已审核</option>
 							</select></td>
 							<td>&nbsp&nbsp</td>
 							<td>
@@ -69,21 +70,21 @@
 <!--新增  -->
 <script type="text/html" id="addEditTpl">
 	<form action="" id="layuiadmin-form-admin"
-		style="padding: 20px 30px 0 60px; text-align:">
-		<div class="layui-form" lay-filter="layuiadmin-form-admin">
+		style="margin-left: 50px;margin-top: 30px;margin-right: 50px;">
+		<div class="layui-form layui-form-pane" lay-filter="layuiadmin-form-admin">
 			<input type="text" name="id" id="usID" style="display:none;">
 			<div class="layui-form-item">
-				<label class="layui-form-label" style="width: 130px;">公司名称</label>
-				<div class="layui-input-inline">
-						<input type="text" value="{{d.custom.name }}" name="customerName" id="userId"
-						placeholder="请输入供应商名称"
-						class="layui-input laydate-icon" data-provide="typeahead">
+				<label class="layui-form-label">供应商</label>
+				<div class="layui-input-block">
+						<select class="form-control" lay-search="true" lay-verify="required" name="customerId" id="customerId">
+							
+						</select>
 				</div>
 			</div>
 		
 			<div class="layui-form-item">
-				<label class="layui-form-label" style="width: 130px;">内容</label>
-				<div class="layui-input-inline">
+				<label class="layui-form-label">内容</label>
+				<div class="layui-input-block">
 					<input type="text" value="{{d.content }}" name="content" id="content"
 						lay-verify="required" placeholder="请输入内容"
 						class="layui-input laydate-icon">
@@ -91,8 +92,8 @@
 			</div>
 
 			<div class="layui-form-item">
-				<label class="layui-form-label" style="width: 130px;">预付金额</label>
-				<div class="layui-input-inline">
+				<label class="layui-form-label">预付金额</label>
+				<div class="layui-input-block">
 					<input type="text" value="{{d.money }}" name="money" id="money"
 						lay-verify="required" placeholder="请输入票面金额"
 						class="layui-input laydate-icon">
@@ -100,8 +101,8 @@
 			</div>
 
 			<div class="layui-form-item">
-				<label class="layui-form-label" style="width: 130px;">预计入库日期</label>
-				<div class="layui-input-inline">
+				<label class="layui-form-label">预计入库</label>
+				<div class="layui-input-block">
 					<input type="text" value="{{d.expenseDate }}" name="expenseDate"
 						id="expenseDate" lay-verify="required"
 						placeholder="请输入预计入库日期 " class="layui-input">
@@ -109,8 +110,8 @@
 			</div>
 
 			<div class="layui-form-item">
-				<label class="layui-form-label" style="width: 130px;">扣款原因</label>
-				<div class="layui-input-inline">
+				<label class="layui-form-label">扣款原因</label>
+				<div class="layui-input-block">
 					<input type="text" value="{{d.withholdReason }}" name="withholdReason" id="withholdReason"
 						lay-verify="required" placeholder="请输入付款日期"
 						class="layui-input">
@@ -118,8 +119,8 @@
 			</div>
 
 			<div class="layui-form-item">
-				<label class="layui-form-label" style="width: 130px;">扣款金额</label>
-				<div class="layui-input-inline">
+				<label class="layui-form-label">扣款金额</label>
+				<div class="layui-input-block">
 					<input type="text" value="{{d.withholdMoney }}" name="withholdMoney" id="withholdMoney"
 						lay-verify="required" placeholder="请输入扣款金额"
 						class="layui-input">
@@ -171,12 +172,8 @@
 					});
 					
 					laydate.render({
-						elem: '#paymentDate',
-						type: 'datetime',
-					});
-					laydate.render({
 						elem: '#startTime',
-						type: 'datetime',
+						type: 'date',
 						range: '~',
 					});
 					/* laydate.render({
@@ -259,11 +256,11 @@
 								fixed: 'left'
 							}, {
 								field: "userId",
-								title: "公司名称",
+								title: "供应商",
 								align: 'center',
 								search: true,
 								templet: function(d){
-									return d.custom.name
+									return d.customer==null ? "" :d.customer.name
 								}
 							}, {
 								field: "content",
@@ -281,6 +278,20 @@
 							}, {
 								field: "withholdMoney",
 								title: "扣款金额",
+							},{
+								field: "flag",
+								title: "审核状态",
+								templet:  function(d){
+									if(d.flag==0){
+										return "未审核";
+									}
+									if(d.flag==1){
+										return "已审核";
+									}
+									if(d.flag==2){
+										return "部分审核";
+									}
+								}
 							}]
 						],
 						done: function() {
@@ -325,52 +336,6 @@
 						switch(obj.event) {
 							case 'addTempData':
 								 addEidt(null)
-								/* var dicDiv=$('#layuiadmin-form-admin');
-								document.getElementById("layuiadmin-form-admin").reset();
-					        	layui.form.render();
-								layer.open({
-							         type: 1
-							        ,title: "新增" //不显示标题栏
-							        ,closeBtn: false
-							        ,zindex:-1
-							        ,area:['30%', '70%']
-							        ,shade: 0.5
-							        ,id: 'LAY_layuipro' //设定一个id，防止重复弹出
-							        ,btn: ['确认', '取消']
-							        ,btnAlign: 'c'
-							        ,moveType: 1 //拖拽模式，0或者1
-							        ,content:dicDiv25
-							        ,success : function(layero, index) {
-							        	layero.addClass('layui-form');
-										// 将保存按钮改变成提交按钮
-										layero.find('.layui-layer-btn0').attr({
-											'lay-filter' : 'addRole',
-											'lay-submit' : ''
-										})
-							        }
-							        ,yes: function(index, layero){
-							        	form.on('submit(addRole)', function(data) {
-							        	var	field={
-							        			customerName:data.field.customerName,
-							        			money:data.field.money,
-							        			customId:self.getIndex(),
-							        			expenseDate:data.field.paymentDate,
-							        			taxPoint:data.field.taxPoint,
-							        			withholdMoney:data.field.withholdMoney,
-							        			withholdReason:data.field.withholdReason,
-							        			type:8
-							        		}
-							        	  mainJs.fAdd(field); 
-							        	document.getElementById("layuiadmin-form-admin").reset();
-							        	layui.form.render();
-										})
-							        }
-							        ,end:function(){
-							        	document.getElementById("layuiadmin-form-admin").reset();
-							        	layui.form.render();
-							        	timeAll=""
-									  } 
-							      }); */
 								break;
 							case 'update' :
 								 addEidt('edit')
@@ -437,6 +402,7 @@
 						var tpl=addEditTpl.innerHTML;
 						var choosed=layui.table.checkStatus("tableData").data;
 						var id="";
+						var customerId="";
 						if(type=='edit'){
 							if(choosed.length>1){
 								layer.msg("无法同时编辑多条信息",{icon:2});
@@ -444,6 +410,7 @@
 							}
 							data=choosed[0];
 							id=data.id
+							customerId=data.customer.id
 						}
 						laytpl(tpl).render(data,function(h){
 							html=h;
@@ -458,6 +425,29 @@
 							btnAlign: 'c',
 						    moveType: 1, //拖拽模式，0或者1
 							success : function(layero, index) {
+								$.ajax({
+									url: '${ctx}/ledger/customerPage',
+									data:{customerAttributionId:449,customerTypeId:456},
+									type: "GET",
+									async: false,
+									beforeSend: function() {
+										index;
+									},
+									success: function(result) {
+										$(result.data.rows).each(function(i,item) {
+											htmls+='<option value="'+item.id+'">'+item.name+'</option>'
+										})
+										$("#customerId").html(htmls)
+										form.render();
+									},
+									error: function() {
+										layer.msg("操作失败！", {
+											icon: 2
+										});
+									}
+								});
+								$("#customerId").val(customerId)
+								form.render();
 					        	layero.addClass('layui-form');
 								// 将保存按钮改变成提交按钮
 								layero.find('.layui-layer-btn0').attr({
@@ -469,7 +459,7 @@
 								form.on('submit(addRole)', function(data) {
 						        	var	field={
 						        			id:id,
-						        			customerName:data.field.customerName,
+						        			customerId:data.field.customerId,
 						        			money:data.field.money,
 						        			content:data.field.content,
 						        			customId:self.getIndex(),
@@ -492,57 +482,18 @@
 							elem: '#expenseDate',
 							type: 'datetime',
 						});
-						//提示查询
-						 $("#userId").typeahead({
-								source : function(query, process) {
-									return $.ajax({
-										url : '${ctx}/fince/findCustom',
-										type : 'GET',
-										data : {
-											name:query,
-											type:8
-										},
-										success : function(result) {
-											//转换成 json集合
-											 var resultList = result.data.map(function (item) {
-												 	//转换成 json对象
-							                        var aItem = {name: item.name, id:item.id}
-							                        //处理 json对象为字符串
-							                        return JSON.stringify(aItem);
-							                    });
-											 self.setIndex(0);
-											//提示框返回数据
-											 return process(resultList);
-										},
-									})
-									//提示框显示
-								}, highlighter: function (item) {
-								    //转出成json对象
-									 var item = JSON.parse(item);
-									return item.name
-									//按条件匹配输出
-				                }, matcher: function (item) {
-				                	//转出成json对象
-							        var item = JSON.parse(item);
-							        self.setIndex(item.id);
-							    	return item.id
-							    },
-								//item是选中的数据
-								updater:function(item){
-									//转出成json对象
-									var item = JSON.parse(item);
-									self.setIndex(item.id);
-										return item.name
-								},
-							});
 					}
 					
 					//监听搜索
 					form.on('submit(LAY-search)', function(data) {
 						var field = data.field;
 						var orderTime=field.orderTimeBegin.split('~');
-						field.orderTimeBegin=orderTime[0];
-						field.orderTimeEnd=orderTime[1];
+						var orderTimeBegin="";
+						var orderTimeEnd="";
+						if(orderTime!=""){
+						field.orderTimeBegin=orderTime[0]+' '+'00:00:00';
+						field.orderTimeEnd=orderTime[1]+' '+'23:59:59';
+						}
 						table.reload('tableData', {
 							where: field
 						});

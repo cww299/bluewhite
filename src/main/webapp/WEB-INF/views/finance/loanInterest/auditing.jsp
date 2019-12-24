@@ -40,8 +40,9 @@
 						</td>
 						<td>&nbsp;&nbsp;</td>
 						<td>是否核对:
-						<td><select class="form-control" name="flag">
+						<td><select class="form-control" name="flags">
 								<option value="0">未审核</option>
+								<option value="2">部分审核</option>
 								<option value="1">已审核</option>
 						</select></td>
 						<td>&nbsp;&nbsp;</td>
@@ -82,14 +83,13 @@ layui.config({
 			laydate = layui.laydate,
 			tablePlug = layui.tablePlug;
 		
-		laydate.render({ elem: '#startTime', type: 'datetime', range: '~', });
+		laydate.render({ elem: '#startTime', type: 'date', range: '~', });
 	   	tablePlug.smartReload.enable(true); 
 		table.render({
 			elem: '#tableData',
 			size: 'lg',
 			height:'700px',
-			url: '${ctx}/fince/getConsumption?type=10' ,
-			where:{ flag:0 },
+			url: '${ctx}/fince/getConsumption?type=10&flags=0' ,
 			request:{ pageName: 'page' , limitName: 'size'  },
 			page: {},
 			loading: true,
@@ -107,8 +107,8 @@ layui.config({
 			},
 			cols: [[
 			       { align: 'center', type: 'checkbox', fixed: 'left' },
-			       { align: 'center', field: "withholdReason", 	title: "借款方", 		templet: function(d){ return d.custom.name } },
-			       { align: 'center', field: "content", 		title: "内容",},
+			       { align: 'center', field: "content", 	title: "借款方",},
+			       { align: 'center', field: "remark", 		title: "借款类型",},
 			       { align: 'center', field: "money", 			title: "支付金额", }, 
 			       { align: 'center', field: "expenseDate", 	title: "预计付款日期", },
 			       { align: 'center', field: "paymentDate", 	title: "实际付款时间", 	style:'background-color: #d8fe83', }, 
@@ -118,7 +118,7 @@ layui.config({
 	       done: function(res, curr, count) {
 				var tableView = this.elem.next();
 				var tableElem = this.elem.next('.layui-table-view');
-				layui.each(tableElem.find('select'), function(index, item) {
+				layui.each(tableElem.find('.layui-table-box').find('select'), function(index, item) {
 					var elem = $(item);
 					elem.val(elem.data('value'));
 				});
@@ -185,8 +185,12 @@ layui.config({
 		form.on('submit(LAY-search)', function(data) {
 			var field = data.field;
 			var orderTime=field.orderTimeBegin.split('~');
-			orderTimeBegin=orderTime[0];
-			orderTimeEnd=orderTime[1];
+			var orderTimeBegin="";
+			var orderTimeEnd="";
+			if(orderTime!=""){
+			orderTimeBegin=orderTime[0]+' '+'00:00:00';
+			orderTimeEnd=orderTime[1]+' '+'23:59:59';
+			}
 			var a="";
 			var b="";
 			if($("#selectone").val()=="expenseDate"){
@@ -196,7 +200,7 @@ layui.config({
 			}
 			var post={
 				customerName:field.customerName,
-				flag:field.flag,
+				flags:field.flags,
 				orderTimeBegin:orderTimeBegin,
 				orderTimeEnd:orderTimeEnd,
 				expenseDate:a,
