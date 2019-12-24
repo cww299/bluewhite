@@ -580,6 +580,7 @@ layui.config({
 				field.orderTiemEnd = '';
 			table.reload('tableData',{
 				where: field,
+				page:{ curr:1 },
 			})
 		}) 
 	}//end define function
