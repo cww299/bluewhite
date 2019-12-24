@@ -25,19 +25,25 @@
 							<td><input type="text" name="customerName" id="firstNames" class="layui-input" /></td>
 							<td>&nbsp;&nbsp;</td>
 							<td><select class="layui-input" name="selectone" id="selectone">
-									<option value="expenseDate">申请日期</option>
+									<option value="expenseDate">预计付款日期</option>
+									<option value="paymentDate">实际付款日期</option>
 								</select></td>
 							<td>&nbsp;&nbsp;</td>
 							<td><input id="startTime" style="width: 300px;" name="orderTimeBegin" placeholder="请输入时间" class="layui-input laydate-icon"></td>
 							<td>&nbsp;&nbsp;</td>
-							<td>需要支付总额:</td>
-							<td><input type="text" id="allPrice" disabled class="layui-input"  /></td>
+							<td>是否核对:
+							<td><select class="form-control" name="flags">
+									<option value="0">未审核</option>
+									<option value="2">部分审核</option>
+									<option value="1">已审核</option>
+							</select></td>
 							<td>&nbsp;&nbsp;</td>
 							<td><button class="layui-btn layuiadmin-btn-admin" lay-submit lay-filter="LAY-search">
 									<i class="layui-icon layui-icon-search layuiadmin-button-btn"></i>
 								</button></td>
-							<td>&nbsp;&nbsp;</td>
-							<td><button class="layui-btn" id="uploadData"><i class="layui-icon">&#xe67c;</i>导入数据</button></td>
+							<td style="width:130px;"></td>
+							<td style="font-size: 20px;">未支付总额:</td>
+							<td id="allPrice" style="color:red;font-size: 20px;"></td>
 						</tr>
 					</table>
 				</div>
@@ -60,14 +66,29 @@
 				laydate = layui.laydate,
 				tablePlug = layui.tablePlug,
 				upload = layui.upload;
-			laydate.render({ elem: '#startTime', type: 'datetime', range: '~', });
-		   	
+			laydate.render({ elem: '#startTime', type: 'date', range: '~', });
+			getTotalAmount({flags: '0,2',});
+			function getTotalAmount(post){
+				$.ajax({
+					url: '${ctx}/fince/totalAmount?type=10',
+					data: post,
+					success:function(r){
+						if(r.code==0){
+							$('#allPrice').text(r.data);
+						}else
+							$('#allPrice').html('异常');
+					}
+				})
+			};
+			tablePlug.smartReload.enable(true);
 			table.render({
 				elem: '#tableData',
 				size: 'lg',
 				height:'700px',
 				url: '${ctx}/fince/getConsumption?type=10' ,
-				where:{ flag:0, },
+				where:{
+					flags:'0,2',
+				},
 				request:{
 					pageName: 'page' ,
 					limitName: 'size' 
@@ -78,7 +99,6 @@
 				colFilterRecord: true,
 				smartReloadModel: true,// 开启智能重载
 				parseData: function(ret) {
-					$('#allPrice').val(ret.data.statData.statAmount)
 					return {
 						code: ret.code,
 						msg: ret.message,
@@ -87,51 +107,44 @@
 					}
 				},
 				cols:[[
-				       { align: 'center', field: "withholdReason", 	title: "借款方", 		templet: function(d){ return d.custom.name } },
-				       { align: 'center', field: "content", 		title: "内容", },
+				       { align: 'center', field: "content", 	title: "借款方",},
+				       { align: 'center', field: "remark", 		title: "借款类型", },
 					   { align: 'center', field: "money", 			title: "报销申请金额", },
 					   { align: 'center', field: "expenseDate", 	title: "报销申请日期", },
-					   { align: 'center', field: "flag", 			title: "审核状态", 		templet:  function(d){ return d.flag==0?'未审核':'已审核';} }
+					   { align: 'center', field: "paymentDate",     title: "实际付款日期",},
+					   { align: 'center', field: "flag", 			title: "审核状态", 		templet:  function(d){if(d.flag==0){return "未审核";}if(d.flag==1){return "已审核";}if(d.flag==2){return "部分审核";}} }
 					 ]],
 			});
 
 			form.on('submit(LAY-search)', function(data) {
 				var field = data.field;
 				var orderTime=field.orderTimeBegin.split('~');
-				orderTimeBegin=orderTime[0];
-				orderTimeEnd=orderTime[1];
+				var orderTimeBegin="";
+				var orderTimeEnd="";
+				if(orderTime!=""){
+				orderTimeBegin=orderTime[0]+' '+'00:00:00';
+				orderTimeEnd=orderTime[1]+' '+'23:59:59';
+				}
+				var a="";
+				var b="";
+				if($("#selectone").val()=="expenseDate"){
+					a="2019-05-08 00:00:00"
+				}else{
+					b="2019-05-08 00:00:00"
+				}
 				var post={
 					customerName:field.customerName,
-					flag:field.flag,
+					flags:field.flags,
 					orderTimeBegin:orderTimeBegin,
 					orderTimeEnd:orderTimeEnd,
-					expenseDate:"2019-05-08 00:00:00",
+					expenseDate:a,
+					paymentDate:b,
 				}
 				table.reload('tableData', {
 					where: post
 				});
 			});
 			
-			
-			$('#uploadData').on('click',function(){
-				layer.msg('尚未完善！',{icon:2});
-			})
-			//报错？！！
-		    var load;		
-			upload.render({
-			   	  elem: '#uploadData',
-			   	  url: '${ctx}/excel/importActualprice',
-			 	  before: function(obj){ 
-			 		 load = layer.load(3); 
-				  },
-				  done: function(res, index, upload){ //上传后的回调
-			   		layer.closeAll();
-			   		layer.msg(res.message, {icon: 1});
-			   		table.reload('tableData');
-			   	  },
-			   	  accept: 'file',
-			   	  field:'file'
-			}) 
 		}
 	)
 </script>

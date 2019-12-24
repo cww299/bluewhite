@@ -14,8 +14,11 @@ import org.springframework.util.StringUtils;
 import com.bluewhite.base.BaseServiceImpl;
 import com.bluewhite.common.Constants;
 import com.bluewhite.common.ServiceException;
+import com.bluewhite.common.SessionManager;
+import com.bluewhite.common.entity.CurrentUser;
 import com.bluewhite.common.entity.PageParameter;
 import com.bluewhite.common.entity.PageResult;
+import com.bluewhite.common.utils.RoleUtil;
 import com.bluewhite.common.utils.StringUtil;
 import com.bluewhite.ledger.dao.ApplyVoucherDao;
 import com.bluewhite.ledger.entity.ApplyVoucher;
@@ -28,14 +31,23 @@ public class ApplyVoucherServiceImpl extends BaseServiceImpl<ApplyVoucher, Long>
 
 	@Override
 	public void saveApplyVoucher(ApplyVoucher applyVoucher) {
-		applyVoucher.setTime(new Date());
-		applyVoucher.setApplyNumber(
-				Constants.SQD + StringUtil.getDate() + StringUtil.get0LeftString((int) (count() + 1), 8));
+		if(applyVoucher.getApplyVoucherTypeId()==439 && (applyVoucher.getApplyVoucherKindId()==463||applyVoucher.getApplyVoucherKindId()==470)){
+			// 根据仓管登陆用户权限，获取不同的仓库库存
+			CurrentUser cu = SessionManager.getUserSession();
+			Long warehouseTypeDeliveryId = RoleUtil.getWarehouseTypeDelivery(cu.getRole());
+			applyVoucher.setWarehouseTypeId(warehouseTypeDeliveryId);
+		}
+		applyVoucher.setApplyNumber(Constants.SQD + StringUtil.getDate() + StringUtil.get0LeftString((int) (count() + 1), 8));
 		save(applyVoucher);
 	}
 
 	@Override
 	public PageResult<ApplyVoucher> findPages(ApplyVoucher param, PageParameter page) {
+		CurrentUser cu = SessionManager.getUserSession();
+		Long warehouseTypeId = RoleUtil.getWarehouseTypeDelivery(cu.getRole());
+		if(warehouseTypeId!=null){
+			param.setWarehouseTypeId(warehouseTypeId);
+		}
 		Page<ApplyVoucher> pages = dao.findAll((root, query, cb) -> {
 			List<Predicate> predicate = new ArrayList<>();
 			// 按产品名字
@@ -51,6 +63,10 @@ public class ApplyVoucherServiceImpl extends BaseServiceImpl<ApplyVoucher, Long>
 			// 按被申请人员id
 			if (param.getApprovalUserId() != null) {
 				predicate.add(cb.equal(root.get("approvalUserId").as(Long.class), param.getApprovalUserId()));
+			}
+			// 按仓库
+			if (param.getWarehouseTypeId() != null) {
+				predicate.add(cb.equal(root.get("warehouseTypeId").as(Long.class), param.getWarehouseTypeId()));
 			}
 			// 按申请人员id
 			if (param.getUserId() != null) {
@@ -108,7 +124,7 @@ public class ApplyVoucherServiceImpl extends BaseServiceImpl<ApplyVoucher, Long>
 
 	@Override
 	public int deleteApplyVoucher(String ids) {
-		int i = 0;
+		int count = 0;
 		if (!StringUtils.isEmpty(ids)) {
 			String[] idStrings = ids.split(",");
 			for (String idString : idStrings) {
@@ -118,10 +134,10 @@ public class ApplyVoucherServiceImpl extends BaseServiceImpl<ApplyVoucher, Long>
 					throw new ServiceException("请求已通过，无法撤销申请，请联系被申请人,取消通过");
 				}
 				delete(applyVoucher);
-				i++;
+				count++;
 			}
 		}
-		return i;
+		return count;
 	}
 
 	@Override

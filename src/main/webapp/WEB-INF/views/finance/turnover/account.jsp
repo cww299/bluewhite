@@ -23,8 +23,8 @@
 				<div class="layui-form-item">
 					<table>
 						<tr>
-							<td>申请人:</td>
-							<td><input type="text" name="Username" id="firstNames" class="layui-input" /></td>
+							<td>申请内容:</td>
+							<td><input type="text" name="content"  class="layui-input" /></td>
 							<td>&nbsp&nbsp</td>
 							<td><select class="form-control" name="expenseDate" id="selectone">
 									<option value="2018-10-08 00:00:00">回款日期</option>
@@ -40,8 +40,9 @@
 							<td>是否核对:
 							<td><select class="form-control" name="flag">
 									<option value="">请选择</option>
-									<option value="0">未核对</option>
-									<option value="1">已核对</option>
+									<option value="0">未审核</option>
+									<option value="2">部分审核</option>
+									<option value="1">已审核</option>
 							</select></td>
 							<td>&nbsp&nbsp</td>
 							<td>
@@ -95,12 +96,8 @@
 					
 					laydate.render({
 						elem: '#startTime',
-						type: 'datetime',
+						type: 'date',
 						range: '~',
-					});
-					laydate.render({
-						elem: '#endTime',
-						type: 'datetime',
 					});
 				 
 					$.ajax({
@@ -128,7 +125,7 @@
 					var fn1 = function(field) {
 						return function(d) {
 							return [
-								'<select name="selectOne" lay-filter="lay_selecte" lay-search="true" data-value="' + d.userId + '">' +
+								'<select name="selectOne" lay-filter="lay_selecte" lay-search="true" data-value="' + (d.user==null ? "" : d.user.id)  + '">' +
 								htmls +
 								'</select>'
 							].join('');
@@ -204,6 +201,21 @@
 								title: "扣款金额",
 								align: 'center',
 								edit: 'text'
+							},{
+								field: "flag",
+								title: "审核状态",
+								edit: false,
+								templet:  function(d){
+									if(d.flag==0){
+										return "未审核";
+									}
+									if(d.flag==1){
+										return "已审核";
+									}
+									if(d.flag==2){
+										return "部分审核";
+									}
+								}
 							}]
 						],
 						done: function() {
@@ -224,7 +236,7 @@
 						done: function(res, curr, count) {
 							var tableView = this.elem.next();
 							var tableElem = this.elem.next('.layui-table-view');
-							layui.each(tableElem.find('select'), function(index, item) {
+							layui.each(tableElem.find('.layui-table-box').find('select'), function(index, item) {
 								var elem = $(item);
 								elem.val(elem.data('value'));
 							});
@@ -275,7 +287,7 @@
 						var tableId = config.id;
 						switch(obj.event) {
 							case 'addTempData':
-								allField = {id: '', content: '', budget: '',userId:'',money: '', expenseDate: '', 
+								allField = {id: '', content: '', budget: '',userId:'',money: '', expenseDate: '', flag:0, 
 									withholdReason: '',withholdMoney:'',settleAccountsMode:'',type:'9'};
 								table.addTemp(tableId,allField,function(trElem) {
 									// 进入回调的时候this是当前的表格的config
@@ -391,13 +403,31 @@
 							break;
 						}
 					});
-
+					
+					//监听单元格编辑
+					table.on('edit(tableData)', function(obj) {
+						var value = obj.value ,//得到修改后的值
+							data = obj.data ,//得到所在行所有键值
+							field = obj.field, //得到字段
+							id = data.id;
+							var postData = {
+								id:id,
+								[field]:value
+							}
+							//调用新增修改
+							mainJs.fUpdate(postData);
+					});
+					
 					//监听搜索
 					form.on('submit(LAY-search)', function(data) {
 						var field = data.field;
 						var orderTime=field.orderTimeBegin.split('~');
-						field.orderTimeBegin=orderTime[0];
-						field.orderTimeEnd=orderTime[1];
+						var orderTimeBegin="";
+						var orderTimeEnd="";
+						if(orderTime!=""){
+							field.orderTimeBegin=orderTime[0]+' '+'00:00:00';
+							field.orderTimeEnd=orderTime[1]+' '+'23:59:59';
+						}
 						table.reload('tableData', {
 							where: field
 						});

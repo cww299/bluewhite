@@ -45,8 +45,7 @@ public class MaterialRequisitionServiceImpl extends BaseServiceImpl<MaterialRequ
 	@Override
 	public void saveMaterialRequisition(MaterialRequisition materialRequisition) {
 		if (materialRequisition.getScatteredOutboundId() != null) {
-			ScatteredOutbound scatteredOutbound = scatteredOutboundDao
-					.findOne(materialRequisition.getScatteredOutboundId());
+			ScatteredOutbound scatteredOutbound = scatteredOutboundDao.findOne(materialRequisition.getScatteredOutboundId());
 			// 查询是否已耗料出库（采购单虚拟库存）
 			if (scatteredOutbound == null) {
 				throw new ServiceException("还未分散出库，无法生成领料单");

@@ -23,7 +23,7 @@ public class DispatchAction {
 	private ClearCascadeJSON clearCascadeJSON;
 	{
 		clearCascadeJSON = ClearCascadeJSON
-				.get().addRetainTerm(ApplyVoucher.class, "id", "applyNumber", "time", "cause", "applyVoucherType", "applyVoucherKind", "user",
+				.get().addRetainTerm(ApplyVoucher.class, "id","createdAt","applyNumber", "time", "cause", "applyVoucherType", "applyVoucherKind", "user",
 						"passTime", "approvalUser","number","pass")
 				.addRetainTerm(User.class, "userName","id")
 				.addRetainTerm(BaseData.class, "id", "name");
