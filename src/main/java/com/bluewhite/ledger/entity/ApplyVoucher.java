@@ -24,6 +24,12 @@ import com.bluewhite.system.user.entity.User;
 public class ApplyVoucher extends BaseEntity<Long> {
 	
 	/**
+	 * 申请单编号
+	 */
+	@Column(name = "apply_number")
+	private String applyNumber;
+	
+	/**
 	 * 产品id
 	 */
 	@Column(name = "product_id")
@@ -49,12 +55,7 @@ public class ApplyVoucher extends BaseEntity<Long> {
 	@JoinColumn(name = "warehouse_type_id", referencedColumnName = "id", insertable = false, updatable = false)
 	private BaseData warehouseType;
 	
-	/**
-	 * 申请单编号
-	 */
-	@Column(name = "apply_number")
-	private String applyNumber;
-
+	
 	/**
 	 * 申请时间
 	 */
@@ -187,8 +188,6 @@ public class ApplyVoucher extends BaseEntity<Long> {
 	/**
 	 * 查询字段
 	 */
-	
-	
 	@Transient
 	private Date orderTimeBegin;
 	/**
