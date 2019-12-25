@@ -59,7 +59,7 @@ public class CustomerAction {
 	
 	/**
 	 * 
-	 * 查看客户
+	 * 查看全部客户
 	 * 
 	 * @return cr
 	 */

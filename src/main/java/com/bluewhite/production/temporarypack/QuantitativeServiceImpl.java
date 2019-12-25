@@ -113,8 +113,7 @@ public class QuantitativeServiceImpl extends BaseServiceImpl<Quantitative, Long>
 			quantitative.setPrint(ot.getPrint());
 			quantitative.setFlag(ot.getFlag());
 		} else {
-			quantitative.setQuantitativeNumber(
-					Constants.LHTB + StringUtil.getDate() + StringUtil.get0LeftString((int) (dao.count() + 1), 8));
+			quantitative.setQuantitativeNumber(Constants.LHTB + StringUtil.getDate() + StringUtil.get0LeftString((int) (dao.count() + 1), 8));
 			quantitative.setAudit(0);
 			quantitative.setPrint(0);
 			quantitative.setFlag(0);
@@ -130,7 +129,6 @@ public class QuantitativeServiceImpl extends BaseServiceImpl<Quantitative, Long>
 				if (underGoods.getNumber() == null) {
 					throw new ServiceException("贴包数量未填写，无法新增");
 				}
-				
 				//子单，通过子单id查看是新增还是修改
 				Long id = jsonObject.getLong("id");
 				QuantitativeChild quantitativeChild = null;
