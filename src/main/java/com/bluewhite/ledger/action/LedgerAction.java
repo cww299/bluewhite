@@ -318,8 +318,10 @@ public class LedgerAction {
 	{
 		clearCascadeJSONSProcessPrice = ClearCascadeJSON.get()
 				.addRetainTerm(ProcessPrice.class, "id", "orderOutSource", "processTask", "price", "customer")
-				.addRetainTerm(OrderOutSource.class, "id", "outsourceTask", "processNumber")
-				
+				.addRetainTerm(OrderOutSource.class, "id","remark","outSourceNumber","materialRequisition")
+				.addRetainTerm(MaterialRequisition.class, "id","order")
+				.addRetainTerm(Order.class,"bacthNumber","orderNumber")
+				.addRetainTerm(Customer.class, "id", "name")
 				.addRetainTerm(BaseOne.class, "id", "name");
 	}
 
@@ -919,7 +921,6 @@ public class LedgerAction {
 		cr.setMessage("查看成功");
 		return cr;
 	}
-	
 	
 
 	/**
