@@ -47,26 +47,26 @@
 </div>
 </body>
 <script type="text/html" id="printPackTpl">
-<div style="padding:20px;">
-	<table border="1" style="margin: auto;width: 80%;text-align:center;">
+<div style="padding:20px; 0px">
+	<table border="1" style="margin: auto;width: 90%;text-align:center;">
 		<tr>
-       	 	<td>收货人名</td>
+       	 	<td style="padding:15px 0;">收货人名</td>
         	<td>{{ d.customer?d.customer.name:'---' }}</td>
 			<td>收货人地址电话</td>
 	    </tr>
 		<tr>
-	        <td>当批外包编号</td>
+	        <td style="padding:15px 0;">当批外包编号</td>
 	        <td>{{ d.quantitativeNumber || '---' }}</td>
 			<td>电话</td>
 	    </tr>
 		<tr>
-			<td>批次号</td>
+			<td style="padding:15px 0;">批次号</td>
 	        <td>产品名</td>
 	        <td>当件内装数量</td>
 	    </tr>
 		{{# layui.each(d.quantitativeChilds,function(index,item){  }}
 		<tr>
-			<td>{{ item.underGoods.bacthNumber}}</td>
+			<td style="padding:15px 0;">{{ item.underGoods.bacthNumber}}</td>
 	        <td>{{ item.underGoods.product.name}}</td>
 	        <td>{{ item.singleNumber}}</td>
 	    </tr>
