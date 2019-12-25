@@ -28,7 +28,6 @@ import com.bluewhite.common.ServiceException;
 import com.bluewhite.common.entity.PageParameter;
 import com.bluewhite.common.entity.PageResult;
 import com.bluewhite.common.utils.StringUtil;
-import com.bluewhite.common.utils.StringUtil;
 import com.bluewhite.finance.consumption.dao.ConsumptionDao;
 import com.bluewhite.finance.consumption.entity.Consumption;
 import com.bluewhite.ledger.dao.MaterialRequisitionDao;
@@ -133,7 +132,7 @@ public class OrderOutSourceServiceImpl extends BaseServiceImpl<OrderOutSource, L
 			Map<String , Object> map = new HashMap<>();
 			int sumNumber = orderOutSourceList.stream().filter(o -> {
 				Set<BaseData> baseDataSet = o.getOutsourceTask().stream()
-						.filter(BaseData -> BaseData.getId().equals(id)).collect(Collectors.toSet());
+						.filter(BaseData -> BaseData.getId().equals(b.getId())).collect(Collectors.toSet());
 				if (baseDataSet.size() > 0) {
 					return true;
 				}
@@ -330,7 +329,7 @@ public class OrderOutSourceServiceImpl extends BaseServiceImpl<OrderOutSource, L
 		Consumption consumption = new Consumption();
 		OrderOutSource ot = dao.findOne(orderOutSource.getId());
 		if (ot.getChargeOff() == 1) {
-			throw new ServiceException("账单已生成，请勿多次申请");
+			throw new ServiceException("外发加工对账单已生成，请勿多次申请");
 		}
 		consumption.setOrderOutSourceId(orderOutSource.getId());
 		// 外发加工对账单

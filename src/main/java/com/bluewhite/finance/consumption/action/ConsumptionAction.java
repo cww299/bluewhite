@@ -26,6 +26,7 @@ import com.bluewhite.finance.consumption.entity.ConsumptionPoi;
 import com.bluewhite.finance.consumption.service.ConsumptionService;
 import com.bluewhite.ledger.entity.Customer;
 import com.bluewhite.ledger.entity.Order;
+import com.bluewhite.ledger.entity.OrderOutSource;
 import com.bluewhite.ledger.entity.OrderProcurement;
 import com.bluewhite.product.primecostbasedata.entity.Materiel;
 import com.bluewhite.system.user.entity.User;
@@ -43,7 +44,8 @@ public class ConsumptionAction {
 				.addRetainTerm(Consumption.class, "id", "user", "customer", "orderProcurement", "budget", "money",
 						"expenseDate", "paymentMoney", "paymentDate", "withholdReason", "remark", "withholdMoney",
 						"settleAccountsMode", "remark", "flag", "taxPoint", "contact", "logisticsDate", "contactName",
-						"batchNumber", "realityDate", "deleteFlag", "orgName","content")
+						"batchNumber", "realityDate", "deleteFlag", "orgName","content","orderOutSource")
+				.addRetainTerm(OrderOutSource.class, "id","remark", "outsourceTask")
 				.addRetainTerm(User.class, "id","userName")
 				.addRetainTerm(Customer.class,"name","id")
 				.addRetainTerm(OrderProcurement.class,"orderProcurementNumber", "placeOrderNumber", "arrivalTime","order",
@@ -61,7 +63,7 @@ public class ConsumptionAction {
 	 */
 	@RequestMapping(value = "/fince/getConsumption", method = RequestMethod.GET)
 	@ResponseBody
-	public CommonResponse getConsumption(HttpServletRequest request, PageParameter page, Consumption consumption) {
+	public CommonResponse getConsumption(PageParameter page, Consumption consumption) {
 		CommonResponse cr = new CommonResponse();
 		cr.setData(clearCascadeJSON.format(consumptionService.findPages(consumption, page)).toJSON());
 		cr.setMessage("查询成功");
@@ -91,7 +93,7 @@ public class ConsumptionAction {
 	 */
 	@RequestMapping(value = "/fince/addConsumption", method = RequestMethod.POST)
 	@ResponseBody
-	public CommonResponse addConsumption(HttpServletRequest request, Consumption consumption) {
+	public CommonResponse addConsumption(Consumption consumption) {
 		CommonResponse cr = new CommonResponse();
 		if (consumption.getId() != null) {
 			cr.setMessage("修改成功");
@@ -113,7 +115,7 @@ public class ConsumptionAction {
 	 */
 	@RequestMapping(value = "/fince/auditConsumption", method = RequestMethod.POST)
 	@ResponseBody
-	public CommonResponse auditConsumption(HttpServletRequest request, String ids, Integer flag) {
+	public CommonResponse auditConsumption(String ids, Integer flag) {
 		CommonResponse cr = new CommonResponse();
 		int count = consumptionService.auditConsumption(ids, flag);
 		cr.setMessage("操作成功" + count + "条");
@@ -128,7 +130,7 @@ public class ConsumptionAction {
 	 */
 	@RequestMapping(value = "/fince/deleteConsumption", method = RequestMethod.GET)
 	@ResponseBody
-	public CommonResponse deleteConsumption(HttpServletRequest request, String ids) {
+	public CommonResponse deleteConsumption(String ids) {
 		CommonResponse cr = new CommonResponse();
 		if (!StringUtils.isEmpty(ids)) {
 			int count = consumptionService.deleteConsumption(ids);
@@ -159,8 +161,7 @@ public class ConsumptionAction {
 	 */
 	@RequestMapping(value = "/fince/excel/addConsumption", method = RequestMethod.POST)
 	@ResponseBody
-	public CommonResponse importConsumption(@RequestParam(value = "file", required = false) MultipartFile file,
-			HttpServletRequest request,Integer type) throws IOException {
+	public CommonResponse importConsumption(@RequestParam(value = "file", required = false) MultipartFile file,Integer type) throws IOException {
 		CommonResponse cr = new CommonResponse();
 		InputStream inputStream = file.getInputStream();
 		ExcelListener excelListener = new ExcelListener();

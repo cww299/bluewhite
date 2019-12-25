@@ -31,6 +31,7 @@ public class UnderGoodsServiceImpl extends BaseServiceImpl<UnderGoods, Long> imp
 	private QuantitativeChildDao quantitativeChildDao;
 	@Autowired
 	private QuantitativeDao quantitativeDao;
+
 	
 	@Override
 	public PageResult<UnderGoods> findPages(UnderGoods param, PageParameter page) {
@@ -89,7 +90,7 @@ public class UnderGoodsServiceImpl extends BaseServiceImpl<UnderGoods, Long> imp
 			List<Long> quantitativeListId = quantitativeDao.findSendNumber(r.getId());
 			List<QuantitativeChild> quantitativeList = quantitativeChildDao.findByIdIn(quantitativeListId);
 			int numberSendSum = quantitativeList.stream().filter(QuantitativeChild->QuantitativeChild.getChecks()==1).mapToInt(QuantitativeChild::getSingleNumber).sum();
-			r.setSurplusSendNumber(r.getNumber()-numberSendSum);;
+			r.setSurplusSendNumber(r.getNumber()-numberSendSum);
 		});
 		return result;
 	}
@@ -123,6 +124,21 @@ public class UnderGoodsServiceImpl extends BaseServiceImpl<UnderGoods, Long> imp
 		}
 		dao.save(underGoodsList);
 		return underGoodsList.size();
+	}
+
+	@Override
+	public List<UnderGoods> findAll() {
+		List<UnderGoods> result = dao.findAll();
+		//发货剩余数量
+		//贴包剩余数量
+		result.forEach(r->{
+			//贴包数量
+			List<Long> stickListId = quantitativeDao.findStickNumber(r.getId());
+			List<QuantitativeChild> stickListList = quantitativeChildDao.findByIdIn(stickListId);
+			int numberStickSum = stickListList.stream().mapToInt(QuantitativeChild::getSingleNumber).sum();
+			r.setSurplusStickNumber(r.getNumber()-numberStickSum);
+		});
+		return result;
 	}
 
 }
