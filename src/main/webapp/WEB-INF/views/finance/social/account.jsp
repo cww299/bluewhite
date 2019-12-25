@@ -76,7 +76,7 @@
 			<div class="layui-form-item">
 				<label class="layui-form-label">扣税单位</label>
 				<div class="layui-input-block">
-						<select class="form-control" lay-search="true" lay-verify="required" name="customerId" id="customerId">
+						<select class="form-control" lay-search="true" lay-verify="required" name="customerId" id="customerId" lay-url="${ctx}/ledger/getCustomer?customerAttributionId=448&customerTypeId=454">
 							
 						</select>
 				</div>
@@ -381,7 +381,7 @@
 						    moveType: 1, //拖拽模式，0或者1
 							success : function(layero, index) {
 								$.ajax({
-									url: '${ctx}/ledger/customerPage',
+									url: '${ctx}/ledger/getCustomer',
 									data:{customerAttributionId:448,customerTypeId:454},
 									type: "GET",
 									async: false,
