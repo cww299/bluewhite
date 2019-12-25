@@ -74,14 +74,14 @@ public class CustomerServiceImpl extends BaseServiceImpl<Customer, Long> impleme
 
 	@Override
 	@Transactional
-	public int deleteCustomr(String ids) {
+	public int deleteCustomer(String ids) {
 		int count = 0;
 		if (!StringUtils.isEmpty(ids)) {
 			String[] idStrings = ids.split(",");
 			for (String id : idStrings) {
 				Long idLong = Long.valueOf(id);
 				try {
-					dao.delete(idLong);
+					delete(idLong);
 				} catch (Exception e) {
 					throw new ServiceException("第"+(count+1)+"位客户存在数据关联，无法删除");
 				}
@@ -95,7 +95,7 @@ public class CustomerServiceImpl extends BaseServiceImpl<Customer, Long> impleme
 	@Transactional
 	public void saveCustomer(Customer customer) {
 		if (customer.getId() != null) {
-			Customer ot = dao.findOne(customer.getId());
+			Customer ot = findOne(customer.getId());
 			update(customer, ot, "");
 		} else {
 			if (dao.findByPhone(customer.getPhone()) != null) {

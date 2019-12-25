@@ -53,7 +53,7 @@ public class UnderGoods extends BaseEntity<Long> {
 	private String remarks;
 
 	/**
-	 * 状态
+	 * 状态(是否已经完成)
 	 */
 	@Column(name = "status")
 	private Integer status;

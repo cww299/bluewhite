@@ -1,6 +1,5 @@
 package com.bluewhite.production.farragotask.action;
 
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
@@ -11,18 +10,14 @@ import java.util.stream.Collectors;
 import javax.servlet.http.HttpServletRequest;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.propertyeditors.CustomDateEditor;
 import org.springframework.stereotype.Controller;
 import org.springframework.util.StringUtils;
-import org.springframework.web.bind.WebDataBinder;
-import org.springframework.web.bind.annotation.InitBinder;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.multipart.support.ByteArrayMultipartFileEditor;
 
+import com.bluewhite.common.BeanCopyUtils;
 import com.bluewhite.common.ClearCascadeJSON;
-import com.bluewhite.common.DateTimePattern;
 import com.bluewhite.common.Log;
 import com.bluewhite.common.SessionManager;
 import com.bluewhite.common.entity.CommonResponse;
@@ -110,7 +105,6 @@ public class FarragoTaskAction {
 	 * 当出现人数变动，获取当前时间作为任务结束时间，将之前的耗时计算出来，同时计算出之前的工资 解决方案：
 	 * 当出现人员变动时,将之前的任务直接结算掉，同名新任务生成，同时将当前时间作为开始时间重新开始计算
 	 * 
-	 * 
 	 */
 	@RequestMapping(value = "/farragoTask/updateFarragoTask", method = RequestMethod.POST)
 	@ResponseBody
@@ -119,8 +113,9 @@ public class FarragoTaskAction {
 		if (farragoTask.getId() != null) {
 			FarragoTask oldTask = farragoTaskService.findOne(farragoTask.getId());
 			if (oldTask.getStatus() == 1) {
-				cr.setCode(ErrorCode.ILLEGAL_ARGUMENT.getCode());
-				cr.setMessage("已完成，无法修改");
+				BeanCopyUtils.copyNotEmpty(farragoTask, oldTask, "");
+				farragoTaskService.addFarragoTask(oldTask,request);
+				cr.setMessage("修改成功");
 				return cr;
 			}
 			if (farragoTask.getStartTime() != null && farragoTask.getEndTime() != null) {
@@ -129,6 +124,14 @@ public class FarragoTaskAction {
 					cr.setMessage("结束时间不能比开始时间小，请重新设定结束时间");
 					return cr;
 				}
+			}
+			
+			if(farragoTask.getTime()!=null){
+				farragoTask.setStatus(1);
+				BeanCopyUtils.copyNotEmpty(farragoTask, oldTask, "");
+				farragoTaskService.addFarragoTask(oldTask,request);
+				cr.setMessage("修改成功");
+				return cr;
 			}
 
 			// 获取原任务员工数量
@@ -179,11 +182,9 @@ public class FarragoTaskAction {
 		}
 		return cr;
 	}
-	
-	
-	
+
 	/**
-	 * 结束杂工任务 (实时) 
+	 * 结束杂工任务 (实时)
 	 * 
 	 */
 	@RequestMapping(value = "/farragoTask/overFarragoTask", method = RequestMethod.POST)
@@ -202,25 +203,24 @@ public class FarragoTaskAction {
 					cr.setCode(ErrorCode.ILLEGAL_ARGUMENT.getCode());
 					cr.setMessage("结束时间不能比开始时间小，请重新设定结束时间");
 					return cr;
-				}else{
+				} else {
 					oldTask.setTime(DatesUtil.getTime(farragoTask.getStartTime(), farragoTask.getEndTime()));
 					oldTask.setStatus(1);
 					farragoTaskService.addFarragoTask(oldTask, request);
 					cr.setMessage("成功");
 				}
-			}else{
+			} else {
 				cr.setCode(ErrorCode.ILLEGAL_ARGUMENT.getCode());
 				cr.setMessage("开始时间或结束时间不能为空");
 				return cr;
 			}
-		
+
 		} else {
 			cr.setCode(ErrorCode.ILLEGAL_ARGUMENT.getCode());
 			cr.setMessage("任务不能为空");
 		}
 		return cr;
 	}
-	
 
 	/**
 	 * 分页查询所有任务
@@ -228,7 +228,7 @@ public class FarragoTaskAction {
 	 */
 	@RequestMapping(value = "/farragoTask/allFarragoTask", method = RequestMethod.GET)
 	@ResponseBody
-	public CommonResponse allTask(HttpServletRequest request, FarragoTask farragoTask, PageParameter page) {
+	public CommonResponse allTask(FarragoTask farragoTask, PageParameter page) {
 		CommonResponse cr = new CommonResponse();
 		CurrentUser cu = SessionManager.getUserSession();
 		if (!cu.getRole().contains("superAdmin") && !cu.getRole().contains("personnel")) {
@@ -241,33 +241,24 @@ public class FarragoTaskAction {
 
 	/**
 	 * 删除任务
-	 * 
-	 * @param request
 	 * @return
 	 */
 	@RequestMapping(value = "/farragoTask/delete", method = RequestMethod.GET)
 	@ResponseBody
-	public CommonResponse delete(HttpServletRequest request, Long id) {
+	public CommonResponse delete(String id) {
 		CommonResponse cr = new CommonResponse();
-		if (id != null) {
-			farragoTaskService.deleteFarragoTask(id);
-			cr.setMessage("删除成功");
-		} else {
-			cr.setCode(ErrorCode.ILLEGAL_ARGUMENT.getCode());
-			cr.setMessage("不能为空");
-		}
+		int count = farragoTaskService.deleteFarragoTask(id);
+		cr.setMessage("成功删除"+count+"条数据");
 		return cr;
 	}
 
 	/**
 	 * 查询该任务的所有领取人
-	 * 
-	 * @param request
 	 * @return
 	 */
 	@RequestMapping(value = "/farragoTask/taskUser", method = RequestMethod.GET)
 	@ResponseBody
-	public CommonResponse taskUser(HttpServletRequest request, Long id) {
+	public CommonResponse taskUser(Long id) {
 		CommonResponse cr = new CommonResponse();
 		List<Map<String, Object>> list = new ArrayList<>();
 		if (id != null) {
@@ -313,8 +304,8 @@ public class FarragoTaskAction {
 	 */
 	@RequestMapping(value = "/farragoTask/giveTaskPerformance", method = RequestMethod.POST)
 	@ResponseBody
-	public CommonResponse giveTaskPerformance(HttpServletRequest request, String[] taskIds, String[] ids,
-			String[] performance, Double[] performanceNumber, Integer update) {
+	public CommonResponse giveTaskPerformance(String[] taskIds, String[] ids, String[] performance,
+			Double[] performanceNumber, Integer update) {
 		CommonResponse cr = new CommonResponse();
 		if (!StringUtils.isEmpty(taskIds)) {
 			if (taskIds.length > 0) {
@@ -390,7 +381,7 @@ public class FarragoTaskAction {
 	 */
 	@RequestMapping(value = "/farragoTask/getUserPerformance", method = RequestMethod.GET)
 	@ResponseBody
-	public CommonResponse getUserPerformance(HttpServletRequest request, Long id) {
+	public CommonResponse getUserPerformance(Long id) {
 		CommonResponse cr = new CommonResponse();
 		List<FarragoTaskPay> payBList = farragoTaskPayDao.findByTaskId(id);
 		List<Map<String, Object>> listMap = new ArrayList<Map<String, Object>>();
