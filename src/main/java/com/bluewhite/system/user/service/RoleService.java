@@ -24,7 +24,7 @@ public interface RoleService extends BaseCRUDService<Role, Long> {
 	 * @param name 角色名
 	 * @return role
 	 */
-	public Role findByName(String name);
+	public Role findByRole(String name);
 	
 	/**
 	 * 清除权限缓存
@@ -35,4 +35,10 @@ public interface RoleService extends BaseCRUDService<Role, Long> {
 	 * 清除指定用户权限缓存
 	 */
 	public void cleanRole(String username);
+	/**
+	 * 通过角公名查询
+	 * @param name 角色名
+	 * @return role
+	 */
+	public Object findByName(String name);
 }
