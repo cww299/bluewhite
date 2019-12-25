@@ -16,7 +16,7 @@ public interface QuantitativeDao  extends BaseRepository<Quantitative, Long>{
 	List<Long> findSendNumber(Long id);
 	
 	/**
-	 * 查询下货单已发货数量
+	 * 查询下货单已贴包数量
 	 */
 	@Query("SELECT distinct qc.id FROM Quantitative q,QuantitativeChild qc,UnderGoods u WHERE qc.underGoodsId = u.id and u.id = (?1)")
 	List<Long> findStickNumber(Long id);

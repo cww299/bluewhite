@@ -35,7 +35,7 @@ public interface FarragoTaskService extends BaseCRUDService<FarragoTask,Long>{
 	 * 删除杂工任务
 	 * @param id
 	 */
-	public void deleteFarragoTask(Long id);
+	public int deleteFarragoTask(String ids);
 	/**
 	 * 根据类型和时间查找
 	 * @param type

@@ -69,7 +69,7 @@ public class CollectInformationServiceImpl extends BaseServiceImpl<CollectInform
 		
 		//杂工费 汇总
 		List<FarragoTask> farragoTaskList = farragoTaskService.findByTypeAndAllotTimeBetween(collectInformation.getType(),collectInformation.getOrderTimeBegin(),collectInformation.getOrderTimeEnd());
-		double sumFarragoTask = farragoTaskList.stream().mapToDouble(FarragoTask::getPrice).sum();
+		double sumFarragoTask = farragoTaskList.stream().filter(FarragoTask->FarragoTask.getPrice()!=null).mapToDouble(FarragoTask::getPrice).sum();
 		collectInformation.setSumFarragoTask(NumUtils.round(sumFarragoTask, 4));
 		//全表加工费,返工费和杂工费汇总
 		double priceCollect =NumUtils.sum(sumTask,sumTaskFlag,sumFarragoTask);

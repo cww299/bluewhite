@@ -22,7 +22,7 @@ public interface CustomerService extends BaseCRUDService<Customer, Long> {
 	 * @param ids
 	 * @return
 	 */
-	public int deleteCustomr(String ids);
+	public int deleteCustomer(String ids);
 	
 	/**
 	 * 新增客户
