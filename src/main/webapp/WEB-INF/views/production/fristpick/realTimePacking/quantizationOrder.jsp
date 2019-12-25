@@ -563,7 +563,7 @@ layui.config({
 			}
 		})
 		myutil.getData({
-			url: myutil.config.ctx+'/ledger/allCustomer',
+			url: myutil.config.ctx+'/ledger/getCustomer?customerTypeId=459',
 			done: function(data){
 				layui.each(data,function(index,item){
 					allCustomer += '<option value="'+item.id+'">'+item.name+'</option>';

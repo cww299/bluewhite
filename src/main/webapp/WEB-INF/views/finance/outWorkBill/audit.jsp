@@ -21,7 +21,7 @@
 					<option value="paymentDate">实际付款日期</option></select></td>
 			<td><input id="startTime" name="orderTimeBegin"  class="layui-input"></td>
 			<td>&nbsp;&nbsp;</td>
-			<td>采购单编号:</td>
+			<td>加工单编号:</td>
 			<td><input type="text" name="content" class="layui-input" /></td>
 			<td>&nbsp;&nbsp;</td>
 			<td>是否审核:</td>
@@ -59,7 +59,7 @@ layui.config({
 		mytable.render({
 			elem: '#tableData',
 			size: 'lg',
-			url: '${ctx}/fince/getConsumption?type=2' ,
+			url: '${ctx}/fince/getConsumption?type=10' ,
 			where:{ flag:0 },
 			ifNull:'',
 			scrollX:true,
@@ -83,6 +83,7 @@ layui.config({
 						myutil.deleTableIds({
 							url:'/fince/auditConsumption?flag=0',
 							table:'tableData',
+							type:'post',
 							text:'请选择相关信息进行审核|是否确认取消审核？',
 						})
 						break;
@@ -97,22 +98,17 @@ layui.config({
 			},
 			cellMinWidth:120,
 			cols: [[
-			       { type: 'checkbox', fixed: 'left' },
-			       { field: "content", title: "采购单编号",width:'25%',fixed: 'left'},
-			       { field: "orderProcurement_order_bacthNumber", 	title: "批次号", 	 width:'10%',},
-			       { field: "customer_name", 	title: "客户",   	width:'8%', }, 
-			       { field: "user_userName",title: "订料人",  width:'8%',	},
-			       { field: "orderProcurement_gramPrice", 	title: "缺克重价值",  }, 
-			       { field: "orderProcurement_interest", 	title: "占用资金利息",  }, 
-			       { field: "orderProcurement_materiel_materialQualitative_name", 	title: "货物类别",  }, 
-			       { field: "orderProcurement_price", 		title: "单价", 			}, 
-			       { field: "orderProcurement_materielLocation", 		title: "库位", 			}, 
-			       { field: "money", 		title: "金额", 			}, 
-			       { field: "orderProcurement_arrivalTime",title: "到货时间",	type:'date', },
-			       { field: "expenseDate", 	title: "预计付款时间", 	type:'date',	 },
-			       { field: "paymentDate", 	title: "实际付款时间", 	 style:'background-color: #d8fe83',edit:true,type:'dateTime',fixed:'right', }, 
-			       { field: "paymentMoney",	title: "付款金额", 		  style:'background-color: #d8fe83', edit:true, fixed:'right',},
-			       { field: "flag", 			title: "审核状态", 	 transData:{data:['未审核','审核'],},fixed:'right',}
+					{ type:'checkbox',},
+					{ title:'申请日期', field:'expenseDate', type:'dateTime',},
+					{ title:'外发单编号', field:'orderOutSource_outSourceNumber', },
+					{ title:'生产单编号', field:'orderOutSource_materialRequisition_order_orderNumber', },
+					{ title:'供应商', field:'customer_name', },
+					{ title:'金额', field:'money', },
+					{ title:'备注', field:'remark', },
+			        { field: "expenseDate", 	title: "预计付款时间", 	type:'date',	 },
+			        { field: "paymentDate", 	title: "实际付款时间", 	 style:'background-color: #d8fe83',edit:true,type:'dateTime',fixed:'right', }, 
+			        { field: "paymentMoney",	title: "付款金额", 		  style:'background-color: #d8fe83', edit:true, fixed:'right',},
+			        { field: "flag", 			title: "审核状态", 	 transData:{data:['未审核','审核'],},fixed:'right',}
 			       ]],
 		});
 
@@ -141,5 +137,4 @@ layui.config({
 )
 </script>
 </body>
-
 </html>
