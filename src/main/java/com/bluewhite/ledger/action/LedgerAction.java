@@ -313,6 +313,15 @@ public class LedgerAction {
 				.addRetainTerm(OrderOutSource.class, "id", "outsourceTask", "processNumber")
 				.addRetainTerm(BaseOne.class, "id", "name");
 	}
+	
+	private ClearCascadeJSON clearCascadeJSONSProcessPrice;
+	{
+		clearCascadeJSONSProcessPrice = ClearCascadeJSON.get()
+				.addRetainTerm(ProcessPrice.class, "id", "orderOutSource", "processTask", "price", "customer")
+				.addRetainTerm(OrderOutSource.class, "id", "outsourceTask", "processNumber")
+				
+				.addRetainTerm(BaseOne.class, "id", "name");
+	}
 
 	/**
 	 * 分页查看生产计划单
@@ -893,6 +902,25 @@ public class LedgerAction {
 		cr.setMessage("成功删除" + count + "条");
 		return cr;
 	}
+	
+	
+	/**
+	 * （生产计划部） 加工单工序价格表
+	 * 
+	 * @param page
+	 * @param order
+	 * @return
+	 */
+	@RequestMapping(value = "/ledger/processNumberPage", method = RequestMethod.GET)
+	@ResponseBody
+	public CommonResponse processNumberPage(PageParameter page, ProcessPrice processPrice) {
+		CommonResponse cr = new CommonResponse();
+		cr.setData(clearCascadeJSONSProcessPrice.format(orderOutSourceService.processNumberPage(processPrice, page)).toJSON());
+		cr.setMessage("查看成功");
+		return cr;
+	}
+	
+	
 
 	/**
 	 * （生产计划部）将外发加工单,退货单,加工单价格糅合，得出加工单的工序的实际任务数量和价格，进行账单的生成

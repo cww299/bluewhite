@@ -3,8 +3,6 @@ package com.bluewhite.finance.consumption.action;
 import java.io.IOException;
 import java.io.InputStream;
 
-import javax.servlet.http.HttpServletRequest;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.util.StringUtils;
@@ -25,6 +23,7 @@ import com.bluewhite.finance.consumption.entity.Consumption;
 import com.bluewhite.finance.consumption.entity.ConsumptionPoi;
 import com.bluewhite.finance.consumption.service.ConsumptionService;
 import com.bluewhite.ledger.entity.Customer;
+import com.bluewhite.ledger.entity.MaterialRequisition;
 import com.bluewhite.ledger.entity.Order;
 import com.bluewhite.ledger.entity.OrderOutSource;
 import com.bluewhite.ledger.entity.OrderProcurement;
@@ -45,12 +44,13 @@ public class ConsumptionAction {
 						"expenseDate", "paymentMoney", "paymentDate", "withholdReason", "remark", "withholdMoney",
 						"settleAccountsMode", "remark", "flag", "taxPoint", "contact", "logisticsDate", "contactName",
 						"batchNumber", "realityDate", "deleteFlag", "orgName","content","orderOutSource")
-				.addRetainTerm(OrderOutSource.class, "id","remark", "outsourceTask")
+				.addRetainTerm(OrderOutSource.class, "id","remark", "outsourceTask","outSourceNumber","materialRequisition")
+				.addRetainTerm(MaterialRequisition.class, "id","order")
 				.addRetainTerm(User.class, "id","userName")
 				.addRetainTerm(Customer.class,"name","id")
 				.addRetainTerm(OrderProcurement.class,"orderProcurementNumber", "placeOrderNumber", "arrivalTime","order",
 						"materielLocation", "price","expectPaymentTime", "materiel", "gramPrice", "interest", "paymentMoney")
-				.addRetainTerm(Order.class,"bacthNumber")
+				.addRetainTerm(Order.class,"bacthNumber","orderNumber")
 				.addRetainTerm(Materiel.class, "name", "number", "materialQualitative")
 				.addRetainTerm(BaseData.class, "id", "name");
 	}

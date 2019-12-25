@@ -105,7 +105,6 @@ public class FarragoTaskAction {
 	 * 当出现人数变动，获取当前时间作为任务结束时间，将之前的耗时计算出来，同时计算出之前的工资 解决方案：
 	 * 当出现人员变动时,将之前的任务直接结算掉，同名新任务生成，同时将当前时间作为开始时间重新开始计算
 	 * 
-	 * 
 	 */
 	@RequestMapping(value = "/farragoTask/updateFarragoTask", method = RequestMethod.POST)
 	@ResponseBody
@@ -246,9 +245,9 @@ public class FarragoTaskAction {
 	 */
 	@RequestMapping(value = "/farragoTask/delete", method = RequestMethod.GET)
 	@ResponseBody
-	public CommonResponse delete(String ids) {
+	public CommonResponse delete(String id) {
 		CommonResponse cr = new CommonResponse();
-		int count = farragoTaskService.deleteFarragoTask(ids);
+		int count = farragoTaskService.deleteFarragoTask(id);
 		cr.setMessage("成功删除"+count+"条数据");
 		return cr;
 	}
