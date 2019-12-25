@@ -349,7 +349,7 @@ layui.config({
 			})
 		}
 		function addBill(data){
-			var addBillWin = layer.open({
+			layer.open({
 				type:1,
 				title:'生成账单',
 				offset:'50px',
@@ -357,11 +357,18 @@ layui.config({
 				btn:['确认生成','取消'],
 				shadeClose:true,
 				content:[
-					'<div>',
+					'<div style="padding:10px;">',
+						'<table>',
+							'<tr><td>账单时间：</td>',
+							'<td><input type="text" class="layui-input" id="addBillTime"></td></tr>',
+						'</table>',
 						'<table id="addBillTable" lay-filter="addBillTable"></table>',
 					'</div>'
 				].join(' '),
-				success:function(){
+				success:function(o,addBillWin){
+					laydate.render({
+						elem:'#addBillTime',type:'datetime',value:new Date(),
+					})
 					mytable.renderNoPage({
 						elem:'#addBillTable',
 						autoUpdate:{
@@ -403,42 +410,21 @@ layui.config({
 						myutil.emsg('工序价格不能为0！');
 						return false;
 					}
-					var sureAddWin = layer.open({
-						type:1,
-						btn:['确定','取消'],
-						title:'确认生成',
-						offset:'120px',
-						area:['300px','250px'],
-						content:[
-							'<div style="padding:10px;">',
-								'<table style="margin:0 auto;"><tr><td>时间：</td>',
-									'<td><input type="text" class="layui-input" id="addBillTime"></td></tr></table>',
-							'</div>',
-						].join(' '),
-						success:function(){
-							laydate.render({
-								elem:'#addBillTime',type:'datetime',value:new Date(),
-							})
+					var time = $('#addBillTime').val();
+					if(!time){
+						myutil.emsg('时间不能为空！');
+						return false;
+					}
+					myutil.saveAjax({
+						url:'/ledger/saveOutSoureBills',
+						data:{
+							expenseDate: time,
+							id: data.id,
+							money: money,
 						},
-						yes:function(){
-							var time = $('#addBillTime').val();
-							if(!time){
-								myutil.emsg('时间不能为空！');
-								return false;
-							}
-							myutil.saveAjax({
-								url:'/ledger/saveOutSoureBills',
-								data:{
-									expenseDate: time,
-									id: data.id,
-									money: money,
-								},
-								success:function(){
-									layer.close(addBillWin);
-									layer.close(sureAddWin);
-									table.reload('tableData');
-								}
-							})
+						success:function(){
+							layer.close(addBillWin);
+							table.reload('tableData');
 						}
 					})
 				}
@@ -447,5 +433,4 @@ layui.config({
 	}//end define function
 )//endedefine
 </script>
-
 </html>
