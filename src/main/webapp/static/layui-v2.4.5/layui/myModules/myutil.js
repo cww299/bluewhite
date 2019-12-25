@@ -164,7 +164,7 @@ layui.define(['jquery','layer','form','table'],function(exports){
 			data : options.data || {},
 			success : function(r){
 				if(r.code == 0){
-					if(r.data.rows)
+					if(r.data && r.data.rows)
 						data = r.data.rows;
 					else
 						data = r.data;
