@@ -813,7 +813,7 @@ window.onload = function(){
 										type:1,
 										title:'结束时间',
 										offset:'120px',
-										area:['30%','20%'],
+										area:['250px','300px'],
 										btn:['确定','取消'],
 										content:['<div>',
 										         	'<input id="endTime" placeholder="结束时间" class="form-control">',
@@ -1428,10 +1428,11 @@ window.onload = function(){
 										layer.close(_index);
 										}else{
 											layer.msg("添加失败", {icon: 2});
+											layer.close(_index);
 										}
 									},error:function(){
 										layer.msg("操作失败！", {icon: 2});
-										layer.close(index);
+										layer.close(_index);
 									}
 								});  
 							},
