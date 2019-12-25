@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import com.bluewhite.common.BeanCopyUtils;
 import com.bluewhite.common.ClearCascadeJSON;
 import com.bluewhite.common.Log;
 import com.bluewhite.common.SessionManager;
@@ -113,7 +114,8 @@ public class FarragoTaskAction {
 		if (farragoTask.getId() != null) {
 			FarragoTask oldTask = farragoTaskService.findOne(farragoTask.getId());
 			if (oldTask.getStatus() == 1) {
-				farragoTaskService.update(farragoTask, oldTask, "");
+				BeanCopyUtils.copyNotEmpty(farragoTask, oldTask, "");
+				farragoTaskService.addFarragoTask(oldTask,request);
 				cr.setMessage("修改成功");
 				return cr;
 			}
@@ -127,7 +129,8 @@ public class FarragoTaskAction {
 			
 			if(farragoTask.getTime()!=null){
 				farragoTask.setStatus(1);
-				farragoTaskService.update(farragoTask, oldTask, "");
+				BeanCopyUtils.copyNotEmpty(farragoTask, oldTask, "");
+				farragoTaskService.addFarragoTask(oldTask,request);
 				cr.setMessage("修改成功");
 				return cr;
 			}
