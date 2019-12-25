@@ -903,9 +903,6 @@ window.onload = function(){
 						}
 					var id=$(this).val();
 					var status=$(this).data('status');
-					if(status==1){
-						return layer.msg("当前任务已完成", {icon: 2});
-					}
 					var ids="";
 					var user="";
 						data={
