@@ -77,7 +77,7 @@
 			<div class="layui-form-item">
 				<label class="layui-form-label">供应商名称</label>
 				<div class="layui-input-block">
-						<select class="form-control" lay-search="true"  lay-verify="required" name="customerId" id="customerId">
+						<select class="form-control" lay-search="true"  lay-verify="required" name="customerId" id="customerId" lay-url="${ctx}/ledger/getCustomer?customerAttributionId=449&customerTypeId=456">
 							
 						</select>
 				</div>
@@ -414,7 +414,7 @@
 						    moveType: 1, //拖拽模式，0或者1
 							success : function(layero, index) {
 								$.ajax({
-									url: '${ctx}/ledger/customerPage',
+									url: '${ctx}/ledger/getCustomer',
 									data:{customerAttributionId:449,customerTypeId:456},
 									type: "GET",
 									async: false,
