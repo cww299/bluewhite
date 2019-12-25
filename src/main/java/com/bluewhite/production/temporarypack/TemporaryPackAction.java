@@ -14,6 +14,9 @@ import org.springframework.web.multipart.MultipartFile;
 
 import com.alibaba.excel.EasyExcelFactory;
 import com.alibaba.excel.metadata.Sheet;
+import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONArray;
+import com.alibaba.fastjson.JSONObject;
 import com.bluewhite.basedata.entity.BaseData;
 import com.bluewhite.common.BeanCopyUtils;
 import com.bluewhite.common.ClearCascadeJSON;
@@ -134,6 +137,21 @@ public class TemporaryPackAction {
 					Quantitative ot = new Quantitative();
 					BeanCopyUtils.copyNotEmpty(quantitative, ot, "");
 					ot.setId(id);
+					//子单内容无法批量修改
+					if(idArr.length > 1){
+						Quantitative qt = quantitativeService.findOne(ot.getId());
+						JSONArray jsonArray = new JSONArray();
+						if(qt.getQuantitativeChilds().size()>0){
+							for(QuantitativeChild quantitativeChild : qt.getQuantitativeChilds()){
+								JSONObject jsonObject = new JSONObject();
+								jsonObject.put("id", quantitativeChild.getId());
+								jsonObject.put("underGoodsId", quantitativeChild.getUnderGoodsId());
+								jsonObject.put("singleNumber", quantitativeChild.getSingleNumber());
+								jsonArray.add(jsonObject);
+							}
+						}
+						ot.setChild(jsonArray.toJSONString());
+					}
 					quantitativeService.saveQuantitative(ot);
 				}
 			}
