@@ -28,7 +28,6 @@ import com.bluewhite.common.ServiceException;
 import com.bluewhite.common.entity.PageParameter;
 import com.bluewhite.common.entity.PageResult;
 import com.bluewhite.common.utils.StringUtil;
-import com.bluewhite.common.utils.StringUtil;
 import com.bluewhite.finance.consumption.dao.ConsumptionDao;
 import com.bluewhite.finance.consumption.entity.Consumption;
 import com.bluewhite.ledger.dao.MaterialRequisitionDao;
@@ -67,10 +66,12 @@ public class OrderOutSourceServiceImpl extends BaseServiceImpl<OrderOutSource, L
 	@Override
 	@Transactional
 	public void saveOrderOutSource(OrderOutSource orderOutSource) {
-		//领料单
-		MaterialRequisition materialRequisition = materialRequisitionDao.findOne(orderOutSource.getMaterialRequisitionId());
+		// 领料单
+		MaterialRequisition materialRequisition = materialRequisitionDao
+				.findOne(orderOutSource.getMaterialRequisitionId());
 		// 根据领料单查找加工单
-		List<OrderOutSource> orderOutSourceList = dao.findByMaterialRequisitionId(orderOutSource.getMaterialRequisitionId());
+		List<OrderOutSource> orderOutSourceList = dao
+				.findByMaterialRequisitionId(orderOutSource.getMaterialRequisitionId());
 		save(orderOutSource);
 		// 将工序任务变成set存入，存在退货情况是，要去除退货数量
 		if (!StringUtils.isEmpty(orderOutSource.getOutsourceTaskIds())) {
@@ -97,7 +98,8 @@ public class OrderOutSourceServiceImpl extends BaseServiceImpl<OrderOutSource, L
 						return false;
 					}).mapToInt(OrderOutSource::getProcessNumber).sum();
 					// 查找该加工单该工序的通过审核的退货单
-					List<Integer> returnNumberList = refundBillsDao.getReturnNumber(orderOutSource.getMaterialRequisitionId(), id);
+					List<Integer> returnNumberList = refundBillsDao
+							.getReturnNumber(orderOutSource.getMaterialRequisitionId(), id);
 					// 退货总数
 					Integer returnNumber = returnNumberList.stream().reduce(Integer::sum).orElse(0);
 					// 实际数量=(总加工数-退货数)
@@ -116,24 +118,21 @@ public class OrderOutSourceServiceImpl extends BaseServiceImpl<OrderOutSource, L
 		orderOutSource.setOutSourceNumber(outSourceNumber);
 		save(orderOutSource);
 	}
-	
-
-
 
 	@Override
 	public List<Map<String, Object>> getProcessNumber(Long id) {
 		List<Map<String, Object>> listMap = new ArrayList<>();
-		//领料单
+		// 领料单
 		MaterialRequisition materialRequisition = materialRequisitionDao.findOne(id);
 		// 根据领料单查找加工单
 		List<OrderOutSource> orderOutSourceList = dao.findByMaterialRequisitionId(id);
 		// 查询出所有的工序类型
 		List<BaseData> baseDatas = baseDataService.getBaseDataTreeByType("taskProcessType");
-		baseDatas.forEach(b->{
-			Map<String , Object> map = new HashMap<>();
+		baseDatas.forEach(b -> {
+			Map<String, Object> map = new HashMap<>();
 			int sumNumber = orderOutSourceList.stream().filter(o -> {
 				Set<BaseData> baseDataSet = o.getOutsourceTask().stream()
-						.filter(BaseData -> BaseData.getId().equals(id)).collect(Collectors.toSet());
+						.filter(BaseData -> BaseData.getId().equals(b.getId())).collect(Collectors.toSet());
 				if (baseDataSet.size() > 0) {
 					return true;
 				}
@@ -143,18 +142,14 @@ public class OrderOutSourceServiceImpl extends BaseServiceImpl<OrderOutSource, L
 			List<Integer> returnNumberList = refundBillsDao.getReturnNumber(id, b.getId());
 			// 退货总数
 			Integer returnNumber = returnNumberList.stream().reduce(Integer::sum).orElse(0);
-			int actualNumber = materialRequisition.getProcessNumber()-sumNumber-returnNumber;
+			int actualNumber = materialRequisition.getProcessNumber() - sumNumber - returnNumber;
 			map.put("id", b.getId());
-			map.put("name",b.getName());
+			map.put("name", b.getName());
 			map.put("number", actualNumber);
 			listMap.add(map);
 		});
 		return listMap;
 	}
-	
-	
-	
-	
 
 	@Override
 	public PageResult<OrderOutSource> findPages(OrderOutSource param, PageParameter page) {
@@ -166,7 +161,8 @@ public class OrderOutSourceServiceImpl extends BaseServiceImpl<OrderOutSource, L
 			}
 			// 按生产计划单id
 			if (param.getOrderId() != null) {
-				predicate.add(cb.equal(root.get("materialRequisition").get("orderId").as(Long.class), param.getOrderId()));
+				predicate.add(
+						cb.equal(root.get("materialRequisition").get("orderId").as(Long.class), param.getOrderId()));
 			}
 			// 按加工点id过滤
 			if (param.getCustomerId() != null) {
@@ -258,10 +254,12 @@ public class OrderOutSourceServiceImpl extends BaseServiceImpl<OrderOutSource, L
 		BeanCopyUtils.copyNotEmpty(orderOutSource, ot, "");
 		ot.getOutsourceTask().clear();
 		save(ot);
-		//领料单
-		MaterialRequisition materialRequisition = materialRequisitionDao.findOne(orderOutSource.getMaterialRequisitionId());
+		// 领料单
+		MaterialRequisition materialRequisition = materialRequisitionDao
+				.findOne(orderOutSource.getMaterialRequisitionId());
 		// 根据领料单查找加工单
-		List<OrderOutSource> orderOutSourceList = dao.findByMaterialRequisitionId(orderOutSource.getMaterialRequisitionId());
+		List<OrderOutSource> orderOutSourceList = dao
+				.findByMaterialRequisitionId(orderOutSource.getMaterialRequisitionId());
 		// 将工序任务变成set存入
 		if (!StringUtils.isEmpty(ot.getOutsourceTaskIds())) {
 			String[] idStrings = ot.getOutsourceTaskIds().split(",");
@@ -330,7 +328,7 @@ public class OrderOutSourceServiceImpl extends BaseServiceImpl<OrderOutSource, L
 		Consumption consumption = new Consumption();
 		OrderOutSource ot = dao.findOne(orderOutSource.getId());
 		if (ot.getChargeOff() == 1) {
-			throw new ServiceException("账单已生成，请勿多次申请");
+			throw new ServiceException("外发加工对账单已生成，请勿多次申请");
 		}
 		consumption.setOrderOutSourceId(orderOutSource.getId());
 		// 外发加工对账单
@@ -396,7 +394,16 @@ public class OrderOutSourceServiceImpl extends BaseServiceImpl<OrderOutSource, L
 		processPriceDao.save(ot);
 	}
 
-
-
+	@Override
+	public PageResult<ProcessPrice> processNumberPage(ProcessPrice param, PageParameter page) {
+		Page<ProcessPrice> pages = processPriceDao.findAll((root, query, cb) -> {
+			List<Predicate> predicate = new ArrayList<>();
+			Predicate[] pre = new Predicate[predicate.size()];
+			query.where(predicate.toArray(pre));
+			return null;
+		}, page);
+		PageResult<ProcessPrice> result = new PageResult<>(pages, page);
+		return result;
+	}
 
 }

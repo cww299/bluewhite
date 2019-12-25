@@ -263,7 +263,7 @@ public class InventoryAction {
 	@ResponseBody
 	public CommonResponse deleteOnlineCustomer(String ids) {
 		CommonResponse cr = new CommonResponse();
-		int count = customerService.deleteCustomr(ids);
+		int count = customerService.deleteCustomer(ids);
 		cr.setMessage("成功删除" + count + "个客户");
 		return cr;
 	}

@@ -11,6 +11,7 @@ import javax.persistence.criteria.Predicate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
 
 import com.alibaba.fastjson.JSON;
@@ -96,12 +97,11 @@ public class QuantitativeServiceImpl extends BaseServiceImpl<Quantitative, Long>
 	}
 
 	@Override
+	@Transactional
 	public void saveQuantitative(Quantitative quantitative) {
 		CurrentUser cu = SessionManager.getUserSession();
 		if (quantitative.getId() != null) {
 			Quantitative ot = dao.findOne(quantitative.getId());
-			quantitativeChildDao.delete(ot.getQuantitativeChilds());
-			packingMaterialsDao.delete(ot.getPackingMaterials());
 			if (ot.getAudit() == 1 && cu.getRole().contains("stickBagAccount")) {
 				throw new ServiceException("已审核，无法修改");
 			}
@@ -124,28 +124,42 @@ public class QuantitativeServiceImpl extends BaseServiceImpl<Quantitative, Long>
 			JSONArray jsonArray = JSON.parseArray(quantitative.getChild());
 			for (int i = 0; i < jsonArray.size(); i++) {
 				JSONObject jsonObject = jsonArray.getJSONObject(i);
-				QuantitativeChild quantitativeChild = new QuantitativeChild();
-				Long id = jsonObject.getLong("underGoodsId");
-				UnderGoods underGoods = underGoodsDao.findOne(id);
-				if(underGoods.getNumber()==null){
+				//下货单id
+				Long underGoodsId = jsonObject.getLong("underGoodsId");
+				UnderGoods underGoods = underGoodsDao.findOne(underGoodsId);
+				if (underGoods.getNumber() == null) {
 					throw new ServiceException("贴包数量未填写，无法新增");
 				}
-				quantitativeChild.setUnderGoodsId(id);
-				//贴包数量
-				List<Long> stickListId = dao.findStickNumber(id);
-				List<QuantitativeChild> stickListList = quantitativeChildDao.findByIdIn(stickListId);
-				int numberStickSum = stickListList.stream().mapToInt(QuantitativeChild::getSingleNumber).sum();
-				underGoods.setSurplusStickNumber(underGoods.getNumber()-numberStickSum);
-				if(jsonObject.getInteger("singleNumber")>underGoods.getSurplusStickNumber()){
-					throw new ServiceException("剩余贴包数量不足，无法新增");
+				
+				//子单，通过子单id查看是新增还是修改
+				Long id = jsonObject.getLong("id");
+				QuantitativeChild quantitativeChild = null;
+				if(id!=null){
+					quantitativeChild = quantitativeChildDao.findOne(id); 
+				}else{
+					//新增初始赋值
+					quantitativeChild = new QuantitativeChild();
+					quantitativeChild.setChecks(0);
+					quantitativeChild.setUnderGoodsId(underGoodsId);
+					quantitativeChild.setSingleNumber(0);
 				}
+				// 获取贴包数量，用于判断是否可以新增或者修改
+				List<Long> stickListId = dao.findStickNumber(underGoodsId);
+				List<QuantitativeChild> stickListList = quantitativeChildDao.findByIdIn(stickListId);
+				int numberStickSum = 0;
+				if (stickListList.size() > 0) {
+					numberStickSum = stickListList.stream().mapToInt(QuantitativeChild::getSingleNumber).sum();
+				}
+				underGoods.setSurplusStickNumber(underGoods.getNumber() - (numberStickSum -  quantitativeChild.getSingleNumber()));
+				if (jsonObject.getInteger("singleNumber") > underGoods.getSurplusStickNumber()) {
+					throw new ServiceException("剩余贴包数量不足，无法新增或修改");
+				}
+				
 				quantitativeChild.setSingleNumber(jsonObject.getInteger("singleNumber"));
-				quantitativeChild.setActualSingleNumber(jsonObject.getInteger("singleNumber"));
-				quantitativeChild.setChecks(0);
+				quantitativeChild.setActualSingleNumber((id==null || quantitative.getAudit()==0 )? jsonObject.getInteger("singleNumber") : quantitativeChild.getActualSingleNumber());
 				quantitative.getQuantitativeChilds().add(quantitativeChild);
 			}
 		}
-
 		// 新增贴包物
 		if (!StringUtils.isEmpty(quantitative.getPackingMaterialsJson())) {
 			JSONArray jsonArrayMaterials = JSON.parseArray(quantitative.getPackingMaterialsJson());
@@ -160,12 +174,6 @@ public class QuantitativeServiceImpl extends BaseServiceImpl<Quantitative, Long>
 		save(quantitative);
 	}
 
-
-		
-	
-	
-	
-	
 	@Override
 	public int auditQuantitative(String ids) {
 		int count = 0;
@@ -246,8 +254,10 @@ public class QuantitativeServiceImpl extends BaseServiceImpl<Quantitative, Long>
 	public void setActualSingleNumber(Long id, Integer actualSingleNumber) {
 		QuantitativeChild quantitativeChild = quantitativeChildDao.findOne(id);
 		quantitativeChild.setActualSingleNumber(actualSingleNumber);
-		if(quantitativeChild.getSingleNumber()!= actualSingleNumber){
+		if (quantitativeChild.getSingleNumber() != actualSingleNumber) {
 			quantitativeChild.setChecks(1);
+		}else{
+			quantitativeChild.setChecks(0);
 		}
 		quantitativeChildDao.save(quantitativeChild);
 	}
@@ -265,6 +275,5 @@ public class QuantitativeServiceImpl extends BaseServiceImpl<Quantitative, Long>
 		BeanCopyUtils.copyNotEmpty(quantitativeChild, ot, "");
 		quantitativeChildDao.save(ot);
 	}
-
 
 }
