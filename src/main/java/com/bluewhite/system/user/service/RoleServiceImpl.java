@@ -64,8 +64,8 @@ public class RoleServiceImpl extends BaseServiceImpl<Role, Long> implements
 	}
 
 	@Override
-	public Role findByName(String name) {
-		return dao.findByName(name);
+	public Role findByRole(String name) {
+		return dao.findByRole(name);
 	}
 
 	@Override
@@ -82,6 +82,11 @@ public class RoleServiceImpl extends BaseServiceImpl<Role, Long> implements
 		Cache<String, List<Menu>> sysMenuCache =  cacheManager.getCache("sysMenuCache");
 		apiAccessTokenCache.remove(username);
 		sysMenuCache.remove(username);
+	}
+
+	@Override
+	public Object findByName(String name) {
+		return dao.findByName(name);
 	}
 
 

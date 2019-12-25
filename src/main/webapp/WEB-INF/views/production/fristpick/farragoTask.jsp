@@ -151,7 +151,7 @@
 						</div>
 					</div>
 					
-					<div class="form-group visible-sm">
+					<div class="form-group" id="stars">
 						<label class="col-sm-3 control-label">开始时间</label>
 						<div class="col-sm-6">
 							<input id="startTimes" placeholder="请输入开始时间"
@@ -489,6 +489,9 @@ window.onload = function(){
 	         winPhone:isWinPhone
 	   };
 	      var mobileType=mobileType.android;
+	      if(mobileType==false){
+	    	  $("#stars").hide();
+	      }
    	var Login = function(){
 			var self = this;
 			//表单jsonArray
@@ -532,6 +535,11 @@ window.onload = function(){
 				var m=myDate.getMinutes();          //获取当前分钟数(0-59)
 				var s=myDate.getSeconds();
 				var now=year2+'-'+p(month2)+"-"+p(date2)+" "+p(h)+':'+p(m)+":"+p(s);//当前时间
+				var a=year + '-' + p(month)+ '-' + date+' '+'00:00:00'
+				var b=year + '-' + p(month)+ '-' + date+' '+'23:59:59'
+				if(mobileType==false){
+					$("#Time").val(a)
+				}
 			 layui.use(['laydate'],function(){
 					var laydate = layui.laydate;
 					laydate.render({
@@ -895,9 +903,6 @@ window.onload = function(){
 						}
 					var id=$(this).val();
 					var status=$(this).data('status');
-					if(status==1){
-						return layer.msg("当前任务已完成", {icon: 2});
-					}
 					var ids="";
 					var user="";
 						data={
@@ -1596,6 +1601,9 @@ window.onload = function(){
 									}
 								});
 							  
+							  if($("#Time").val()==""){
+								  return layer.msg("日期不能为空", {icon:2 });
+							  }
 							   if(arr.length<=0 && arrtem.length<=0){
 								 return layer.msg("领取人不能为空", {icon:2 });
 							  } 
