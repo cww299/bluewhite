@@ -57,9 +57,9 @@ layui.config({
 			},
 			cols:[[
 			       { type:'checkbox',},
-			       { title:'',   field:'',	},
-			       { title:'',   field:'',   },
-			       { title:'',   field:'', 	},
+			       { title:'工序名称',   field:'processTask_name',	},
+			       { title:'价格',   field:'price',   },
+			       { title:'加工点',   field:'customer_name', 	},
 			       { title:'',   field:'',	},
 			       { title:'',   field:'',	},
 			       { title:'',   field:'',	},
