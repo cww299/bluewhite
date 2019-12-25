@@ -7,7 +7,7 @@
 	<link rel="stylesheet" href="${ctx }/static/layui-v2.4.5/layui/css/layui.css" media="all">
 	<script src="${ctx}/static/layui-v2.4.5/layui/layui.js"></script>
 	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-	<title>外发加工对账单</title>
+	<title>对账单列表</title>
 </head>
 <body>
 <div class="layui-card">
@@ -46,12 +46,11 @@ layui.config({
 		cols:[[
 			{ type:'checkbox',},
 			{ title:'申请日期', field:'expenseDate', type:'dateTime',},
+			{ title:'外发单编号', field:'orderOutSource_outSourceNumber', },
+			{ title:'生产单编号', field:'orderOutSource_materialRequisition_order_orderNumber', },
 			{ title:'供应商', field:'customer_name', },
 			{ title:'金额', field:'money', },
-			{ title:'申请内容', field:'content', },
 			{ title:'备注', field:'remark', },
-			{ title:'', field:'', },
-			{ title:'', field:'', },
 			
 		]],
 	})

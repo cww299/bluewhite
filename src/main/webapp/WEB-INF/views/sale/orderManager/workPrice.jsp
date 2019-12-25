@@ -17,7 +17,7 @@
 				<td>产品名:</td>
 				<td><input type="text" name="productName" class="layui-input"></td>
 				<td>&nbsp;&nbsp;&nbsp;</td>
-				<td><button type="button" class="layui-btn layui-btn-sm" lay-submit lay-filter="search">搜索</button></td>
+				<td><button type="button" class="layui-btn" lay-submit lay-filter="search">搜索</button></td>
 			</tr>
 		</table>
 		<table id="tableData" lay-filter="tableData"></table>
@@ -44,25 +44,13 @@ layui.config({
 		mytable.render({
 			elem:'#tableData',
 			url: myutil.config.ctx + '/ledger/processNumberPage',
-			curd:{
-				btn:[],
-				otherBtn:function(obj){
-					
-				},
-			},
-			autoUpdate:{
-				saveUrl:'',
-				deleUrl:'',
-				field:{ },
-			},
+			ifNull:'--',
 			cols:[[
 			       { type:'checkbox',},
+			       { title:'生产单编号',   field:'orderOutSource_materialRequisition_order_orderNumber',	},
 			       { title:'工序名称',   field:'processTask_name',	},
 			       { title:'价格',   field:'price',   },
 			       { title:'加工点',   field:'customer_name', 	},
-			       { title:'',   field:'',	},
-			       { title:'',   field:'',	},
-			       { title:'',   field:'',	},
 			       ]]
 		})
 		form.on('submit(search)',function(obj){
