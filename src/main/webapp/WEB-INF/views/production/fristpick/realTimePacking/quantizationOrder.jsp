@@ -545,7 +545,7 @@ layui.config({
 			})
 		}
 		function getDataOfUoloadOrder(){
-			allUoloadOrder = myutil.getDataSync({ url: '${ctx}/temporaryPack/findPagesUnderGoods?size=99999', });
+			allUoloadOrder = myutil.getDataSync({ url: myutil.config.ctx + '/temporaryPack/findAllUnderGoods', });
 			allUoloadOrder.unshift({id:'',bacthNumber:'请选择'})
 		}
 		myutil.getData({
