@@ -138,7 +138,7 @@ layui.define(['jquery','layer','form','table'],function(exports){
 			})
 		}else
 			data = options.data;
-		var html = '<select name="'+(options.name?options.name:"")+'" lay-filter="'+(options.filter?options.filter:"")+'">';
+		var html = '<select name="'+(options.name?options.name:"")+'" lay-search lay-filter="'+(options.filter?options.filter:"")+'">';
 		if(options.tips)
 			html+='<option value="">'+(options.tips?options.tips:'请选择')+'</option>';
 		var selectOption = (options.selectOption?options.selectOption:"")
