@@ -47,10 +47,10 @@ layui.config({
 		, mytable = layui.mytable;
 		myutil.config.ctx = '${ctx}';
 		myutil.clickTr();
-		var currentUser = myutil.getDataSync({url: '${ctx}/getCurrentUser'});
+		var currentUser = myutil.getDataSync({url: myutil.config.ctx+'/getCurrentUser'});
 		mytable.render({
 			elem:'#tableData',
-			url:'${ctx}/ledger/getOrderProcurement',
+			url: myutil.config.ctx+'/ledger/getOrderProcurement',
 			size:'lg',
 			ifNull:'',
 			scrollX:true,
@@ -74,7 +74,7 @@ layui.config({
 						var check = layui.table.checkStatus('tableData').data;
 						if(check.length<1)
 							return myutil.emsg('请选择审核的信息');
-						layer.open({
+						var auditWin = layer.open({
 							type:1,
 							title:'确认审核到货',
 							area:['300px','200px'],
@@ -94,10 +94,17 @@ layui.config({
 									myutil.emsg('到货时间不能为空！');
 									return false;
 								}
-								myutil.deleTableIds({
+								var ids = [];
+								for(var i in check){
+									ids.push(check[i].id);
+								}
+								myutil.deleteAjax({
 									url:'/ledger/inventory/arrivalOrderProcurement?time='+val,
-									table:'tableData',
-									text:'请选择相关信息|请确认是否全部到货？',
+									ids: ids.join(','),
+									success:function(){
+										table.reload('tableData');
+										layer.close(auditWin);
+									}
 								})
 							}
 						})

@@ -17,13 +17,19 @@
 			padding:10px;
 			
 		}
-		#treeDiv{
+		#treeDiv,#userDiv{
 			margin-top: 5px;
-			width:40%;
+			width:30%;
 			margin-left:3%;
 			padding:10px 1%;
 			border:1px solid #e2e2e2;
 			overflow-y: auto;
+		}
+		#userDiv{
+			width:9%;
+			margin-left:1%;
+			height:90%;
+			float:left;
 		}
 	</style>
 </head>
@@ -77,10 +83,12 @@
   </div>
 </div>
 <div id="treeDiv"></div>
+<div id="userDiv">
+</div>
 </script>
 <!-- 角色表格按钮 -->
 <script type="text/html" id="aboutPermission">
-	<button type="button" class="layui-btn layui-btn-sm" lay-event="editRole">编辑</button>
+	<button type="button" class="layui-btn layui-btn-sm">编辑</button>
 </script>	
 <script>
 layui.config({
@@ -128,7 +136,7 @@ layui.config({
 				{field : "roleType",title : "角色类型",templet:'<p>管理员</p>'}, 
 				{field : "isShow",title : "是否可用", templet : '<p>{{ d.isShow == true ? "是" : "否" }} </p>'},
 				{field : "description",title : "具体描述", },
-				{title : "操作",templet : "#aboutPermission", },
+				{title : "操作",templet : "#aboutPermission", event:"editRole"},
 			]] 
 		});
 
@@ -152,6 +160,7 @@ layui.config({
 	            area:['1000px','480px'],
 	            offset:'100px',
 	            content: html,
+	            shadeClose:true,
 	            btn:["确定",'取消'],
 	            btnAlign:'c',
 	            success:function(layero,layerIndex){
@@ -164,6 +173,15 @@ layui.config({
 				    	  data : allMenu,
 				    	  checked : getPermissionMenuId(rolePermission),
 				    });
+	            	$('#userDiv').append((function(){
+	            		var html = '';
+	            		if(rolePermission[0] && rolePermission[0].role && rolePermission[0].role.users)
+		            		layui.each(rolePermission[0].role.users,function(index,item){
+		            			html += '<span style="margin-top:5px;" class="layui-badge layui-bg-green">'+
+		            				item.userName+'</span><br>';
+		            		})
+	            		return html;
+	            	})())
 	            	form.on('submit(saveRoleBtn)',function(obj){
 	            		var isTrue = true;
 	            		if(data.role!=obj.field.role)

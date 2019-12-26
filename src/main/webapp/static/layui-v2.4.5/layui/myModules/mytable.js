@@ -27,6 +27,15 @@
  * 增加null值时的提示：ifNull:'', //返回值为null获取''时自动转换
  * 增加自动搜索功能：searchTable:{ elem:'存放搜索表格的elem',field:{表格字段:'转成上传字段'},time:{ type:'',range:true/false,name:'',},   },
  *是否开启横向滚动：scrollX : true,
+ *开启合并列 autoMerge:{			//合并复选框列时，需要增加额外样式隐藏原本的全选
+ *	field:['0','',...],		//要合并的字段
+ *	merge:function(data1,data2){ //合并条件，默认通过id判断
+ *		if(data1.id==data2.id)
+ *			return true;		//合并
+ *		else
+ *			return false;
+ *	}		
+ *}
  */
 layui.extend({
 	myutil: 'layui/myModules/myutil',
@@ -456,6 +465,99 @@ layui.extend({
 			if(opt.scrollX){
 				myutil.scrollX($(opt.elem).next().find('.layui-table-box').find('.layui-table-body')[0])
 			}
+			if(opt.autoMerge){
+				var sty = `
+				<style id="mytableStyle">
+					div[lay-id="`+tableId+`"] .layui-table tbody tr:hover, .layui-table-hover {
+						background-color: transparent; 
+					}
+				</style>`;
+				var hiddenAllSty = `
+				<style id="hiddenAllCheck">
+					div[lay-id="`+tableId+`"] .layui-table-header th[data-field="0"] input[name="layTableCheckbox"]+.layui-form-checkbox{
+						display:none !important;
+					}
+				</style>
+				`;
+				if($('#mytableStyle').length==0)
+					$('head').append(sty);
+				else{
+					$('input[lay-filter="allCheckbox"]').prop('checked',false);
+				}
+				layui.each(opt.autoMerge.field,function(index,mergeField){
+					merge(mergeField);
+				})
+				function merge(field){	//进行合并
+					var rowspan = 1,mainCols=0;
+					var cache = table.cache[tableId];
+					var allRow = $('#'+tableId).next().find('td[data-field="'+field+'"]');
+					layui.each(allRow,function(index,item){
+						if(index!=0){
+							var thisData = cache[index],lastData = index!=0?cache[index-1]:{id:-1};
+							if(!thisData)
+								return;
+							var isMerge = false;
+							if(opt.autoMerge.merge){
+								isMerge = opt.autoMerge.merge(thisData,lastData);
+							}else{
+								isMerge = thisData.id==lastData.id;
+							}
+							if(isMerge){	//与上一列相同
+								rowspan++;
+								$(item).remove();
+							}else{	
+								$(allRow[mainCols]).attr('rowspan',rowspan)
+								mainCols = index;
+								rowspan = 1;
+							}
+						}
+					});
+					$(allRow[mainCols]).attr('rowspan',rowspan);
+					if(field=="0"){	//如果合并复选框
+						if($('#hiddenAllCheck').length==0){	//隐藏原本的全选复选框
+							$('head').append(hiddenAllSty);
+							$('div[lay-id="'+tableId+'"] .layui-table-header th[data-field="0"] div').append(
+									['<input type="checkbox" title="" lay-filter="allCheckbox" lay-skin="primary">'].join(' ')
+							);
+						}
+						var inputAllCheck = false;
+			    	    form.on('checkbox(allCheckbox)', function(data){	//监听新加入复选框选择
+			    	    	inputAllCheck = true;
+			    	    	var check = data.elem.checked;
+			    	    	var allCheck = $('#'+tableId).next().find('.layui-table-main').find('.layui-form-checkbox');
+			    	    	layui.each(allCheck,function(index,item){
+			    	    		if(check){
+			    	    			if($(item).hasClass('layui-form-checked'))
+			    	    				return;
+			    	    			else
+			    	    				$(item).click();
+			    	    		}else{
+			    	    			if($(item).hasClass('layui-form-checked'))
+			    	    				$(item).click();
+			    	    		}
+			    	    	})
+			    	    	form.render();
+			    	    	inputAllCheck = false;
+		    	    	});
+			    	    $('input[name="layTableCheckbox"]').change(function() {	//监听表格复选框的变化
+			    	    	if(!inputAllCheck){
+				    	    	var check = $(this).prop("checked");
+				    	    	var allTableCheck = $('td input[name="layTableCheckbox"]');
+				    	    	if(check){
+				    	    		for(var i=0;i<allTableCheck.length;i++){
+				    	    			if($(allTableCheck[i]).prop("checked")!=check){
+				    	    				return;
+				    	    			}
+				    	    		}
+				    	    	}
+			    	    		$('input[lay-filter="allCheckbox"]').prop('checked',check);
+			    	    		form.render();
+			    	    	}
+			    	   	});
+					}
+				}
+	    	    form.render();
+			}
 			done && done(res, curr, cou);
 		}
 		opt.done = newDone;
@@ -472,6 +574,8 @@ layui.extend({
 		render.verify && (delete render.verify);
 		render.colsWidth && (delete render.colsWidth);
 		render.autoUpdate && (delete render.autoUpdate);
+		render.scrollX && (delete render.scrollX);
+		render.autoMerge && (delete render.autoMerge);
 		table.render(render);
 	}
 

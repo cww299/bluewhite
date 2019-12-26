@@ -9,14 +9,6 @@
 	<script src="${ctx}/static/layui-v2.4.5/layui/layui.js"></script>
 	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 	<title>量化单</title>
-	<style>
-	div[lay-id="tableData"] .layui-table tbody tr:hover, .layui-table-hover {
-		background-color: transparent; 
-	}
-	div[lay-id="tableData"] .layui-table-header th[data-field="0"] .layui-form-checkbox{
-		display:none !important;
-	}
-	</style>
 </head>
 <body>
 <div class="layui-card">
@@ -174,22 +166,6 @@ layui.config({
 						if(!child)
 							continue;
 						for(var j=0,l=child.length;j<l;j++){
-							/*data.push({
-								id: d[i].id,
-								quantitativeNumber: d[i].quantitativeNumber,
-								time: d[i].time,
-								user: d[i].user,
-								print: d[i].print,
-								audit: d[i].audit,
-								customer: d[i].customer,
-								flag: d[i].flag,
-								singleNumber: child[j].singleNumber,
-								underGoods: child[j].underGoods,
-								actualSingleNumber: child[j].actualSingleNumber,
-								checks: child[j].checks,
-								childId: child[j].id,
-								remarks: child[j].remarks,
-							})*/
 							data.push($.extend({},child[j],{childId: child[j].id,},d[i])); 
 						}
 					}
@@ -216,39 +192,12 @@ layui.config({
 			       },
 			       { title:'备注',   field:'remarks',	width:'10%', edit:true,},  				
 			       ]],
+	       autoMerge:{
+	    	 field:['quantitativeNumber','time','audit','print','flag',
+	    		 'user_userName','surplusSendNumber','surplusNumber','customer_name','0'],  
+	       },
 	       done:function(){
-				merge('quantitativeNumber');
-				merge('time');
-				merge('audit');
-				merge('print');
-				merge('flag');
-				merge('user_userName');
-				merge('surplusSendNumber');
-				merge('surplusNumber');
-				merge('customer_name');
-				merge('0');
-				function merge(field){
-					var rowspan = 1,mainCols=0;
-					var cache = table.cache['tableData'];
-					var allCol = $('#tableData').next().find('td[data-field="'+field+'"]');
-					layui.each(allCol,function(index,item){
-						if(index!=0){
-							var thisData = cache[index],lastData = index!=0?cache[index-1]:{id:-1};
-							if(!thisData)
-								return;
-							if(thisData.id!=lastData.id){
-								$(allCol[mainCols]).attr('rowspan',rowspan)
-								mainCols = index;
-								rowspan = 1;
-							}else{	//与上一列相同
-								rowspan++;
-								//$(item).css('display','none')
-								$(item).remove();
-							}
-						}
-					});
-					$(allCol[mainCols]).attr('rowspan',rowspan);
-				}
+	    	    form.render();
 				table.on('edit(tableData)',function(obj){
 					var data = obj.data; 
 					myutil.saveAjax({
