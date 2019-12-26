@@ -220,7 +220,9 @@ layui.config({
 	    	    $('div[lay-id="tableData"] .layui-table-header th[data-field="0"] div').append(
 	    	    	['<input type="checkbox" title="" lay-filter="allCheckbox" lay-skin="primary">'].join(' ')
 	    	    );
+	    	    var inputAllCheck = false;
 	    	    form.on('checkbox(allCheckbox)', function(data){
+	    	    	inputAllCheck = true;
 	    	    	var check = data.elem.checked;
 	    	    	var allCheck = $('#tableData').next().find('.layui-table-main').find('.layui-form-checkbox');
 	    	    	layui.each(allCheck,function(index,item){
@@ -230,11 +232,28 @@ layui.config({
 	    	    			else
 	    	    				$(item).click();
 	    	    		}else{
-	    	    			$(item).click();
+	    	    			if($(item).hasClass('layui-form-checked'))
+	    	    				$(item).click();
 	    	    		}
 	    	    	})
 	    	    	form.render();
-    	    	}); 
+	    	    	inputAllCheck = false;
+    	    	});
+	    	    $('input[name="layTableCheckbox"]').change(function() {
+	    	    	if(!inputAllCheck){
+		    	    	var check = $(this).prop("checked");
+		    	    	var allTableCheck = $('td input[name="layTableCheckbox"]');
+		    	    	if(check){
+		    	    		for(var i=0;i<allTableCheck.length;i++){
+		    	    			if($(allTableCheck[i]).prop("checked")!=check){
+		    	    				return;
+		    	    			}
+		    	    		}
+		    	    	}
+	    	    		$('input[lay-filter="allCheckbox"]').prop('checked',check);
+	    	    		form.render();
+	    	    	}
+	    	   	});
 	    	    form.render();
 				merge('quantitativeNumber');
 				merge('time');
