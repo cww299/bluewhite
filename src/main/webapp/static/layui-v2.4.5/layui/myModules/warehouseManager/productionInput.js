@@ -61,10 +61,16 @@ layui.extend({
 			elem:'#searchTime',
 			range:'~',
 		})
+		var otherParam = '';
+		if(productionInput.type==3){
+			otherParam = '&outsourceTaskId=387';
+		}else if(productionInput.type==2 || productionInput.type==4){
+			otherParam = '&outsourceTaskId=388';
+		}
 		mytable.render({
 			elem:'#tableData',
 			size:'lg',
-			url: opt.ctx+'/ledger/orderOutSourcePage?audit=1',
+			url: opt.ctx+'/ledger/orderOutSourcePage?audit=1'+otherParam,
 			autoUpdate:{
 				saveUrl: '/ledger/inventory/updateInventoryOrderOutSource',
 				field:{ inWarehouseType_id:'inWarehouseTypeId', },
