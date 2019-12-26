@@ -611,7 +611,7 @@ public class LedgerAction {
 	public CommonResponse billOrderProcurement(String ids) {
 		CommonResponse cr = new CommonResponse();
 		int count = orderProcurementService.billOrderProcurement(ids);
-		cr.setMessage("成功生成" + count + "应付账单");
+		cr.setMessage("成功生成" + count + "采购应付账单");
 		return cr;
 	}
 
@@ -683,8 +683,7 @@ public class LedgerAction {
 	@ResponseBody
 	public CommonResponse getMaterialRequisition(PageParameter page, MaterialRequisition materialRequisition) {
 		CommonResponse cr = new CommonResponse();
-		cr.setData(clearCascadeJSONScatteredOutbound
-				.format(materialRequisitionService.findPages(page, materialRequisition)).toJSON());
+		cr.setData(clearCascadeJSONScatteredOutbound.format(materialRequisitionService.findPages(page, materialRequisition)).toJSON());
 		cr.setMessage("查看成功");
 		return cr;
 	}
@@ -747,7 +746,8 @@ public class LedgerAction {
 	}
 
 	/**
-	 * （生产计划部） 分页查看加工单 （仓库）查看 入库单 --- 加工单对于仓库来说是入库单
+	 * （生产计划部） 分页查看加工单 
+	 * （仓库）查看入库出库依据 
 	 * 
 	 * @param page
 	 * @param order

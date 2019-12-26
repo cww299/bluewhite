@@ -101,6 +101,7 @@ public class OrderServiceImpl extends BaseServiceImpl<Order, Long> implements Or
 			}
 			Predicate[] pre = new Predicate[predicate.size()];
 			query.where(predicate.toArray(pre));
+			query.distinct(true);
 			return null;
 		}, page);
 		PageResult<Order> result = new PageResult<Order>(pages, page);

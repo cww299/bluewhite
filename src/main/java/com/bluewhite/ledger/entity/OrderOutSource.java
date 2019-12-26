@@ -21,9 +21,7 @@ import com.bluewhite.system.user.entity.User;
 /**
  * 加工单由领料单而来，加工单的实际数量等于领料单的实际数量
  * 
- * 加工单  有工序任务
- * 加工单领取部门有领取人部门决定
- * 加工单的任务工序，由实际的领料单决定，领料单中有领取模式，针工，机工，包装，绣花，裁剪
+ * 加工单 有工序任务 加工单领取部门有领取人部门决定 加工单的任务工序，由实际的领料单决定，领料单中有领取模式，针工，机工，包装，绣花，裁剪
  * 
  * 生产计划部 加工单 1.加工单 2.外发加工单
  * 
@@ -38,7 +36,7 @@ public class OrderOutSource extends BaseEntity<Long> {
 	 * 领料单id
 	 * 
 	 */
-	@Column(name = "material_requisition_id")	
+	@Column(name = "material_requisition_id")
 	private Long materialRequisitionId;
 
 	/**
@@ -47,7 +45,7 @@ public class OrderOutSource extends BaseEntity<Long> {
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "material_requisition_id", referencedColumnName = "id", insertable = false, updatable = false)
 	private MaterialRequisition materialRequisition;
-	
+
 	/**
 	 * 开单时间
 	 */
@@ -198,17 +196,6 @@ public class OrderOutSource extends BaseEntity<Long> {
 	private String outsourceTaskIds;
 
 	/**
-	 * 查询字段
-	 */
-	@Transient
-	private Date orderTimeBegin;
-	/**
-	 * 查询字段
-	 */
-	@Transient
-	private Date orderTimeEnd;
-	
-	/**
 	 * (申请人申请时)申请日期
 	 */
 	@Transient
@@ -219,22 +206,60 @@ public class OrderOutSource extends BaseEntity<Long> {
 	 */
 	@Transient
 	private Integer arrivalNumber;
-	
+
 	/**
 	 * 工序id
 	 */
 	@Transient
 	private Long outsourceTaskId;
-	
+
 	/**
 	 * 生产计划单id
 	 */
 	@Transient
 	private Long orderId;
 	
+	/**
+	 * 库存数量
+	 */
+	@Transient
+	private Integer inventoryQuantity;
+	
+	/**
+	 * 剩余数量
+	 */
+	@Transient
+	private Integer surplusNumber;
+	
+	
+	/**
+	 * 查询字段
+	 */
+	@Transient
+	private Date orderTimeBegin;
+	/**
+	 * 查询字段
+	 */
+	@Transient
+	private Date orderTimeEnd;
+	
+	
 
-	
-	
+	public Integer getSurplusNumber() {
+		return surplusNumber;
+	}
+
+	public void setSurplusNumber(Integer surplusNumber) {
+		this.surplusNumber = surplusNumber;
+	}
+
+	public Integer getInventoryQuantity() {
+		return inventoryQuantity;
+	}
+
+	public void setInventoryQuantity(Integer inventoryQuantity) {
+		this.inventoryQuantity = inventoryQuantity;
+	}
 
 	public Long getOrderId() {
 		return orderId;

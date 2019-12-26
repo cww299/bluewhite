@@ -25,9 +25,12 @@ import com.bluewhite.common.SessionManager;
 import com.bluewhite.common.entity.CurrentUser;
 import com.bluewhite.common.entity.PageParameter;
 import com.bluewhite.common.entity.PageResult;
+import com.bluewhite.common.utils.DatesUtil;
 import com.bluewhite.common.utils.StringUtil;
 import com.bluewhite.ledger.dao.PackingMaterialsDao;
 import com.bluewhite.ledger.entity.PackingMaterials;
+
+import cn.hutool.core.date.DateUtil;
 
 @Service
 public class QuantitativeServiceImpl extends BaseServiceImpl<Quantitative, Long> implements QuantitativeService {
@@ -113,7 +116,8 @@ public class QuantitativeServiceImpl extends BaseServiceImpl<Quantitative, Long>
 			quantitative.setPrint(ot.getPrint());
 			quantitative.setFlag(ot.getFlag());
 		} else {
-			quantitative.setQuantitativeNumber(Constants.LHTB + StringUtil.getDate() + StringUtil.get0LeftString((int) (dao.count() + 1), 8));
+			quantitative.setQuantitativeNumber(Constants.LHTB + DateUtil.format(quantitative.getTime(), "yyMMdd") + 
+					StringUtil.get0LeftString(dao.findByTimeBetween(quantitative.getTime(), DatesUtil.getLastDayOftime(quantitative.getTime())).size(),4));;
 			quantitative.setAudit(0);
 			quantitative.setPrint(0);
 			quantitative.setFlag(0);
