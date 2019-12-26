@@ -1,8 +1,6 @@
 package com.bluewhite.ledger.action;
 
 import java.util.Date;
-import java.util.HashMap;
-import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -315,10 +313,20 @@ public class LedgerAction {
 				.addRetainTerm(OrderOutSource.class, "id", "outsourceTask", "processNumber")
 				.addRetainTerm(BaseOne.class, "id", "name");
 	}
+	
+	private ClearCascadeJSON clearCascadeJSONSProcessPrice;
+	{
+		clearCascadeJSONSProcessPrice = ClearCascadeJSON.get()
+				.addRetainTerm(ProcessPrice.class, "id", "orderOutSource", "processTask", "price", "customer")
+				.addRetainTerm(OrderOutSource.class, "id","remark","outSourceNumber","materialRequisition")
+				.addRetainTerm(MaterialRequisition.class, "id","order")
+				.addRetainTerm(Order.class,"bacthNumber","orderNumber")
+				.addRetainTerm(Customer.class, "id", "name")
+				.addRetainTerm(BaseOne.class, "id", "name");
+	}
 
 	/**
 	 * 分页查看生产计划单
-	 * 
 	 * 
 	 * @param page
 	 * @param order
@@ -603,7 +611,7 @@ public class LedgerAction {
 	public CommonResponse billOrderProcurement(String ids) {
 		CommonResponse cr = new CommonResponse();
 		int count = orderProcurementService.billOrderProcurement(ids);
-		cr.setMessage("成功生成" + count + "应付账单");
+		cr.setMessage("成功生成" + count + "采购应付账单");
 		return cr;
 	}
 
@@ -675,8 +683,7 @@ public class LedgerAction {
 	@ResponseBody
 	public CommonResponse getMaterialRequisition(PageParameter page, MaterialRequisition materialRequisition) {
 		CommonResponse cr = new CommonResponse();
-		cr.setData(clearCascadeJSONScatteredOutbound
-				.format(materialRequisitionService.findPages(page, materialRequisition)).toJSON());
+		cr.setData(clearCascadeJSONScatteredOutbound.format(materialRequisitionService.findPages(page, materialRequisition)).toJSON());
 		cr.setMessage("查看成功");
 		return cr;
 	}
@@ -739,7 +746,8 @@ public class LedgerAction {
 	}
 
 	/**
-	 * （生产计划部） 分页查看加工单 （仓库）查看 入库单 --- 加工单对于仓库来说是入库单
+	 * （生产计划部） 分页查看加工单 
+	 * （仓库）查看入库出库依据 
 	 * 
 	 * @param page
 	 * @param order
@@ -895,6 +903,24 @@ public class LedgerAction {
 		cr.setMessage("成功删除" + count + "条");
 		return cr;
 	}
+	
+	
+	/**
+	 * （生产计划部） 加工单工序价格表
+	 * 
+	 * @param page
+	 * @param order
+	 * @return
+	 */
+	@RequestMapping(value = "/ledger/processNumberPage", method = RequestMethod.GET)
+	@ResponseBody
+	public CommonResponse processNumberPage(PageParameter page, ProcessPrice processPrice) {
+		CommonResponse cr = new CommonResponse();
+		cr.setData(clearCascadeJSONSProcessPrice.format(orderOutSourceService.processNumberPage(processPrice, page)).toJSON());
+		cr.setMessage("查看成功");
+		return cr;
+	}
+	
 
 	/**
 	 * （生产计划部）将外发加工单,退货单,加工单价格糅合，得出加工单的工序的实际任务数量和价格，进行账单的生成
@@ -1084,7 +1110,6 @@ public class LedgerAction {
 	 * （面辅料仓库）撤销物料出库
 	 * 
 	 * 满足于 领取物料后未进入下一环节使用 才可以撤销
-	 * 
 	 * @param order
 	 * @return
 	 */
@@ -1092,8 +1117,8 @@ public class LedgerAction {
 	@ResponseBody
 	public CommonResponse deleteMaterialOutStorage(String ids) {
 		CommonResponse cr = new CommonResponse();
-		materialOutStorageService.deleteMaterialOutStorage(ids);
-		cr.setMessage("成功撤销");
+		int count= materialOutStorageService.deleteMaterialOutStorage(ids);
+		cr.setMessage("撤销成功"+count+"条出库单");
 		return cr;
 	}
 
@@ -1194,8 +1219,8 @@ public class LedgerAction {
 	}
 	
 	/**
-	 *  1.成品仓库 对发货单进行出库
-	 *  2.皮壳仓库 对针工单进行出库
+	 * 1.成品仓库 对发货单进行出库
+	 * 2.皮壳仓库 对针工单进行出库
 	 * sendNumber 发货数量
 	 * putStorage （json 入库单的发货具体数量 ）
 	 * flag = 1 成品

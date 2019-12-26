@@ -1,5 +1,7 @@
 package com.bluewhite.production.temporarypack;
 
+import java.util.List;
+
 import com.bluewhite.base.BaseCRUDService;
 import com.bluewhite.common.entity.PageParameter;
 import com.bluewhite.common.entity.PageResult;
@@ -29,5 +31,13 @@ public interface UnderGoodsService extends BaseCRUDService<UnderGoods,Long>{
 	 * @return
 	 */
 	public int excelUnderGoods(ExcelListener excelListener);
+	
+	/**
+	 * 条件查询
+	 * @param underGoods
+	 * @param page
+	 * @return
+	 */
+	public List<UnderGoods> findAll();
 
 }

@@ -67,61 +67,19 @@ layui.config({
 			url:'${ctx}/ledger/inventory/materialOutStoragePage',
 			curd:{
 				otherBtn:function(obj){
-					var check = layui.table.checkStatus('tableData').data;
-					if(obj.event=="verify"){
-						if(check.length!=1)
-							return myutil.emsg('只能选择一条数据进行操作');
-						var win = layer.open({
-							title:'验货',
-							offset:'150px',
-							area:['400px','220px'],
-							btn:['确定','取消'],
-							type:1,
-							content:
-								['<div class="layui-form" style="padding:20px;">',
-									'<div class="layui-form-item">',
-										'<label class="layui-form-label">实际克重</label>',
-										'<div class="layui-input-block">',
-											 '<input type="text" class="layui-input" id="squareGram">',
-										'</div>',
-									'</div>',
-								 '</div>',].join(''),
-							yes:function(){
-								myutil.saveAjax({
-									url:'/ledger/inventory/inspectionMaterialPutStorage',
-									type:'get',
-									data:{
-										squareGram: $('#squareGram').val(),
-										id: check[0].id,
-									},
-									success:function(){
-										layer.close(win);
-										table.reload('tableData');
-									}
-								})
-							}
+					if(obj.event=='delete'){
+						myutil.deleTableIds({
+							url:'/ledger/inventory/deleteMaterialOutStorage',
+							text:'请选择信息|是否确认撤销',
+							table:'tableData',
 						})
-					}else if(obj.event=="update"){
-						if(check.length!=1)
-							return myutil.emsg('只能修改一条数据');
-						outWarehouseOrder.update({
-							data: check[0],
-							success: function(){
-								table.reload('tableData');
-							}
-						});
 					}
 				},
-				btn:[4],
+				btn:[],
 			},
 			toolbar:[
-				'<span class="layui-btn layui-btn-sm" lay-event="update">修改</span>',
+				'<span class="layui-btn layui-btn-sm layui-btn-danger" lay-event="delete">撤销出库</span>',
 			].join(''),
-			autoUpdate:{
-				saveUrl:'',
-				deleUrl:'/ledger/inventory/deleteMaterialoOutStorage',
-				field:{ },
-			},
 			ifNull:'--',
 			cols:[[
 			       { type:'checkbox',},

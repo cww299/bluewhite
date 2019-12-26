@@ -1,11 +1,8 @@
 package com.bluewhite.production.temporarypack;
 
-import static org.hamcrest.CoreMatchers.nullValue;
-
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-import java.util.stream.Collectors;
 
 import javax.persistence.criteria.Predicate;
 
@@ -20,10 +17,8 @@ import com.bluewhite.common.entity.PageParameter;
 import com.bluewhite.common.entity.PageResult;
 import com.bluewhite.common.utils.StringUtil;
 import com.bluewhite.common.utils.excel.ExcelListener;
-import com.bluewhite.onlineretailers.inventory.entity.Commodity;
 import com.bluewhite.product.product.dao.ProductDao;
 import com.bluewhite.product.product.entity.Product;
-import com.bluewhite.product.product.service.ProductService;
 
 @Service
 public class UnderGoodsServiceImpl extends BaseServiceImpl<UnderGoods, Long> implements UnderGoodsService {
@@ -36,6 +31,7 @@ public class UnderGoodsServiceImpl extends BaseServiceImpl<UnderGoods, Long> imp
 	private QuantitativeChildDao quantitativeChildDao;
 	@Autowired
 	private QuantitativeDao quantitativeDao;
+
 	
 	@Override
 	public PageResult<UnderGoods> findPages(UnderGoods param, PageParameter page) {
@@ -94,7 +90,7 @@ public class UnderGoodsServiceImpl extends BaseServiceImpl<UnderGoods, Long> imp
 			List<Long> quantitativeListId = quantitativeDao.findSendNumber(r.getId());
 			List<QuantitativeChild> quantitativeList = quantitativeChildDao.findByIdIn(quantitativeListId);
 			int numberSendSum = quantitativeList.stream().filter(QuantitativeChild->QuantitativeChild.getChecks()==1).mapToInt(QuantitativeChild::getSingleNumber).sum();
-			r.setSurplusSendNumber(r.getNumber()-numberSendSum);;
+			r.setSurplusSendNumber(r.getNumber()-numberSendSum);
 		});
 		return result;
 	}
@@ -128,6 +124,21 @@ public class UnderGoodsServiceImpl extends BaseServiceImpl<UnderGoods, Long> imp
 		}
 		dao.save(underGoodsList);
 		return underGoodsList.size();
+	}
+
+	@Override
+	public List<UnderGoods> findAll() {
+		List<UnderGoods> result = dao.findAll();
+		//发货剩余数量
+		//贴包剩余数量
+		result.forEach(r->{
+			//贴包数量
+			List<Long> stickListId = quantitativeDao.findStickNumber(r.getId());
+			List<QuantitativeChild> stickListList = quantitativeChildDao.findByIdIn(stickListId);
+			int numberStickSum = stickListList.stream().mapToInt(QuantitativeChild::getSingleNumber).sum();
+			r.setSurplusStickNumber(r.getNumber()-numberStickSum);
+		});
+		return result;
 	}
 
 }

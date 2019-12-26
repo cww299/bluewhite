@@ -31,7 +31,7 @@ layui.extend({
 				'<div class="layui-form-item" pane>',
 					'<label class="layui-form-label">入库时间</label>',
 					'<div class="layui-input-block">',
-						'<input class="layui-input" lay-verify="required" name="arrivalTime" id="arrivalTime" value="{{ d.arrivalTime?d.arrivalTime:"" }}">',
+						'<input class="layui-input" lay-verify="required" name="arrivalTime" autocomplete="off" id="arrivalTime" value="{{ d.arrivalTime?d.arrivalTime:"" }}">',
 					'</div>',
 				'</div>',
 				'<div class="layui-form-item" pane>',
@@ -102,7 +102,7 @@ layui.extend({
 					  }}
 				  `,
 					'<input type="hidden" name="id" value="{{d.id || ""}}">',
-					'<input type="hidden" name="flag" value="{{ layui.inputWarehouseOrder.type-(-1) }}">',
+					'<input type="hidden" name="flag" value="{{ layui.inputWarehouseOrder.type-1 }}">',
 				'</div>',
 				'<p style="display:none;"><button lay-submit lay-filter="sureAddOutOrder" id="sureAddOutOrder">确定</button></p>',
 				'</div>',

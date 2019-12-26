@@ -35,6 +35,8 @@ import com.bluewhite.production.productionutils.constant.ProTypeUtils;
 import com.bluewhite.system.user.dao.UserDao;
 import com.bluewhite.system.user.entity.User;
 
+import cn.hutool.core.util.StrUtil;
+
 @Service
 public class FarragoTaskServiceImpl extends BaseServiceImpl<FarragoTask, Long> implements FarragoTaskService {
 
@@ -61,7 +63,11 @@ public class FarragoTaskServiceImpl extends BaseServiceImpl<FarragoTask, Long> i
 			if (param.getUserId() != null) {
 				predicate.add(cb.equal(root.get("userId").as(Long.class), param.getUserId()));
 			}
-			// 按类型
+			// 按进行状态
+			if (param.getStatus() != null) {
+				predicate.add(cb.equal(root.get("status").as(Integer.class), param.getStatus()));
+			}
+			//按类型
 			if (!StringUtils.isEmpty(param.getType())) {
 				predicate.add(cb.equal(root.get("type").as(Integer.class), param.getType()));
 			}
@@ -222,12 +228,21 @@ public class FarragoTaskServiceImpl extends BaseServiceImpl<FarragoTask, Long> i
 
 	@Override
 	@Transactional
-	public void deleteFarragoTask(Long id) {
-		List<FarragoTaskPay> taskList = farragoTaskPayDao.findByTaskId(id);
-		if (taskList != null) {
-			farragoTaskPayDao.delete(taskList);
+	public int deleteFarragoTask(String ids) {
+		int count = 0;
+		if(StrUtil.isNotBlank(ids)){
+			String [] idsArr = ids.split(",");
+			for(String idString : idsArr){
+				Long id = Long.valueOf(idString);
+				List<FarragoTaskPay> taskList = farragoTaskPayDao.findByTaskId(id);
+				if (taskList != null) {
+					farragoTaskPayDao.delete(taskList);
+				}
+				dao.delete(id);
+				count++;
+			}
 		}
-		dao.delete(id);
+		return count;
 	}
 
 	@Override

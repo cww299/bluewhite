@@ -138,7 +138,7 @@ layui.define(['jquery','layer','form','table'],function(exports){
 			})
 		}else
 			data = options.data;
-		var html = '<select name="'+(options.name?options.name:"")+'" lay-filter="'+(options.filter?options.filter:"")+'">';
+		var html = '<select name="'+(options.name?options.name:"")+'" lay-search lay-filter="'+(options.filter?options.filter:"")+'">';
 		if(options.tips)
 			html+='<option value="">'+(options.tips?options.tips:'请选择')+'</option>';
 		var selectOption = (options.selectOption?options.selectOption:"")
@@ -164,7 +164,7 @@ layui.define(['jquery','layer','form','table'],function(exports){
 			data : options.data || {},
 			success : function(r){
 				if(r.code == 0){
-					if(r.data.rows)
+					if(r.data && r.data.rows)
 						data = r.data.rows;
 					else
 						data = r.data;
@@ -219,6 +219,7 @@ layui.define(['jquery','layer','form','table'],function(exports){
 			myutil.deleteAjax({
 				url: opt.url,
 				ids: Array.from(ids).join(','),
+				type: opt.type || 'get',
 				success: function(){
 					table.reload(tid);
 					opt.success && opt.success();

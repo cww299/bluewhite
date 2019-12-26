@@ -12,6 +12,7 @@
 layui.extend({
 	inputWarehouseOrder: 'layui/myModules/warehouseManager/inputWarehouseOrder',
 	outWarehouseOrder: 'layui/myModules/warehouseManager/outWarehouseOrder',
+	askfor: 'layui/myModules/askfor/askfor',
 }).define(
 	['jquery','layer','form','laydate','mytable',],
 	function(exports){
@@ -22,8 +23,8 @@ layui.extend({
 		mytable = layui.mytable,
 		inputWarehouseOrder = layui.inputWarehouseOrder,
 		outWarehouseOrder = layui.outWarehouseOrder,
+		askfor = layui.askfor,
 		myutil = layui.myutil;
-	
 	var TPL_MAIN = [	//页面主模板
 				'<table class="layui-form">',
 					'<tr>',
@@ -125,12 +126,17 @@ layui.extend({
 								productId: check[0].id,
 							},
 						})
+					}else if(obj.event=='askfor'){
+						askfor.add({
+							productId: check[0].id,
+						});
 					}
 				},
 			},
 			toolbar: opt.chooseProductWin?'':[
 					'<span class="layui-btn layui-btn-sm layui-btn-" lay-event="addInp">生成入库单</span>',
 					'<span class="layui-btn layui-btn-sm layui-btn-normal" lay-event="addOut">生成出库单</span>',
+					'<span class="layui-btn layui-btn-sm layui-btn-warm" lay-event="askfor">申请单</span>',
 				].join(' '),
 			url: opt.ctx+'/inventory/productPages?warehouse='+inventory.type,
 			cols:[ cols ]
@@ -256,12 +262,14 @@ layui.extend({
 		})
 		opt.done && opt.done();
 		if(!opt.chooseProductWin){
-			layui.use(['inputWarehouseOrder','outWarehouseOrder'],function(){
+			layui.use(['inputWarehouseOrder','outWarehouseOrder','askfor'],function(){
 				inputWarehouseOrder = layui.inputWarehouseOrder;
 				outWarehouseOrder = layui.outWarehouseOrder;
+				askfor = layui.askfor;
 				
 				inputWarehouseOrder.type = inventory.type;
 				outWarehouseOrder.type = inventory.type;
+				askfor.type = askfor.allType.outInput.id;
 				
 				inputWarehouseOrder.init();
 				outWarehouseOrder.init();

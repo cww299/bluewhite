@@ -36,6 +36,8 @@ import com.bluewhite.system.user.service.PermissionService;
 import com.bluewhite.system.user.service.RoleService;
 import com.bluewhite.system.user.service.UserService;
 
+import cn.hutool.core.util.StrUtil;
+
 @Controller
 public class RoleAction {
 	
@@ -139,7 +141,8 @@ public class RoleAction {
 		cr.setData(ClearCascadeJSON
 				.get()
 				.addRetainTerm(RoleMenuPermission.class, "id","menuId","menuName", "permissionNames","createdAt","updatedAt","role")
-				.addRetainTerm(Role.class, "id","role")
+				.addRetainTerm(Role.class, "id","role","users")
+				.addRetainTerm(User.class, "id","userName")
 				.format(role.getResourcePermission()).toJSON());
 		cr.setMessage("查询成功");
 		return cr;
@@ -154,16 +157,17 @@ public class RoleAction {
 	 * @param role 角色
 	 * @return cr
 	 */
-	@RequestMapping(value = "/roles/exists", method = RequestMethod.POST)
+	@RequestMapping(value = "/roles/exists", method = RequestMethod.GET)
 	@ResponseBody
-	public CommonResponse exists(HttpServletRequest request, String name) {
+	public CommonResponse exists(HttpServletRequest request, String role) {
 		CommonResponse cr = new CommonResponse();
-		Role role = roleService.findByName(name); 
-		if(role!=null){
-			cr.setCode(ErrorCode.SYSTEM_USER_NAME_REPEAT.getCode());
-			cr.setData("角色名已存在");
+		Role roles = roleService.findByRole(role); 
+		if(roles!=null){
+			cr.setData(false);
+			cr.setMessage("角色名已存在");
 		}else{
-			cr.setData("可使用");
+			cr.setData(true);
+			cr.setMessage("可使用");
 		}
 		return cr;
 	}
@@ -233,7 +237,7 @@ public class RoleAction {
 	 * @param role 角色实体类
 	 * @return cr
 	 */
-	@RequestMapping(value = "/roles/saveUserRole", method = RequestMethod.POST)
+	@RequestMapping(value = "/roles/saveUserRole", method = RequestMethod.GET)
 	@ResponseBody
 	public CommonResponse changeRole(String ids,Long userId) {
 		CommonResponse cr = new CommonResponse();
@@ -288,17 +292,24 @@ public class RoleAction {
 	 * @param role 角色实体类
 	 * @return cr
 	 */
-	@RequestMapping(value = "/roles/deleteRole", method = RequestMethod.POST)
+	@RequestMapping(value = "/roles/deleteRoleMenuPermission", method = RequestMethod.GET)
 	@ResponseBody
-	public CommonResponse deleteRole(Long id) {
+	public CommonResponse deleteRoleMenuPermission(String ids) {
 		CommonResponse cr = new CommonResponse();
-		RoleMenuPermission roleMenuPermission = roleMenuPermissionDao.findOne(id);
-		if(roleMenuPermission!=null){
-			roleMenuPermission.setRole(null);
-			roleMenuPermissionDao.delete(roleMenuPermission);
+		int count = 0;
+		if(StrUtil.isNotBlank(ids)){
+			String[] idArr = ids.split(",");
+			for(String idString : idArr){
+				RoleMenuPermission roleMenuPermission = roleMenuPermissionDao.findOne(Long.valueOf(idString));
+				if(roleMenuPermission!=null){
+					roleMenuPermission.setRole(null);
+					roleMenuPermissionDao.delete(roleMenuPermission);
+					count++;
+				}
+			}
 		}
 		roleService.cleanRole();
-		cr.setMessage("删除成功");
+		cr.setMessage("成功删除"+count+"条角色权限");
 		return cr;
 	}
 

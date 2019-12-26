@@ -103,9 +103,8 @@ public class SearchUtils {
 					case SearchType.BE:
 						// 介于操作会出现开始和结束参数
 						String[] values = String.valueOf(value).split("_");
-						Predicate p1 = convertParamsTypeAndBuildQuery(SearchType.GE, cb, path, type, values[0]);
-						Predicate p2 = convertParamsTypeAndBuildQuery(SearchType.LE, cb, path, type, values[1]);
-						predicates.add(cb.and(p1, p2));
+						predicates.add(convertParamsTypeAndBuildQuery(SearchType.GE, cb, path, type, values[0]));
+						predicates.add(convertParamsTypeAndBuildQuery(SearchType.LE, cb, path, type, values[1]));
 						break;
 					case SearchType.NOTIN:
 						predicates.add(path.in(convertQueryParamsType(type, value)).not());
@@ -323,6 +322,24 @@ public class SearchUtils {
 			expression = root.get(fieldName);
 		}
 		return expression;
+	}
+	
+	/**
+	 * or 查询
+	 * @param root
+	 * @param query
+	 * @param cb
+	 * @param oper
+	 * @return
+	 */
+	public Predicate toPredicate(Root<?> root, CriteriaQuery<?> query, CriteriaBuilder cb,String oper ) {
+		List<Predicate> predicates = new ArrayList<>();
+		switch (oper) {
+		case SearchType.OR:
+			return cb.or(predicates.toArray(new Predicate[predicates.size()]));
+		default:
+			return null;
+		}
 	}
 
 }

@@ -8,7 +8,6 @@ import com.bluewhite.common.entity.PageParameter;
 import com.bluewhite.common.entity.PageResult;
 import com.bluewhite.ledger.entity.OrderOutSource;
 import com.bluewhite.ledger.entity.ProcessPrice;
-import com.bluewhite.ledger.entity.PutStorage;
 
 public interface OrderOutSourceService extends BaseCRUDService<OrderOutSource, Long> {
 
@@ -21,6 +20,12 @@ public interface OrderOutSourceService extends BaseCRUDService<OrderOutSource, L
 
 	/**
 	 * 分页查看加工单
+	 * 对于仓库来说，属于出库入库依据
+	 * 1.皮壳仓库，机工单将物料成为皮壳进行入库，针工单对于皮壳进行出库
+	 * 
+	 * 出库 ：在针工单和库管方面需要去展示库存情况，计算库存状态
+	 * 
+	 * 2.成品仓库，针工单将皮壳变成成品进行入库
 	 * 
 	 * @param order
 	 * @param page
@@ -77,11 +82,17 @@ public interface OrderOutSourceService extends BaseCRUDService<OrderOutSource, L
 	 * @param id
 	 */
 	public void updateProcessPrice(ProcessPrice processPrice);
-	
+
 	/**
 	 * 对领料单的工序任务数量进行整合
+	 * 
 	 * @param id
 	 */
 	public List<Map<String, Object>> getProcessNumber(Long id);
+
+	/**
+	 * 加工单工序对应的价格列表
+	 */
+	public PageResult<ProcessPrice> processNumberPage(ProcessPrice processPrice, PageParameter page);
 
 }

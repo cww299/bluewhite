@@ -11,9 +11,8 @@ import com.bluewhite.common.ClearCascadeJSON;
 import com.bluewhite.common.entity.CommonResponse;
 import com.bluewhite.common.entity.PageParameter;
 import com.bluewhite.ledger.entity.ApplyVoucher;
-import com.bluewhite.ledger.entity.Customer;
 import com.bluewhite.ledger.service.ApplyVoucherService;
-import com.bluewhite.system.sys.entity.RegionAddress;
+import com.bluewhite.product.product.entity.Product;
 import com.bluewhite.system.user.entity.User;
 
 @Controller
@@ -25,9 +24,11 @@ public class DispatchAction {
 	private ClearCascadeJSON clearCascadeJSON;
 	{
 		clearCascadeJSON = ClearCascadeJSON
-				.get().addRetainTerm(ApplyVoucher.class, "id", "applyNumber", "time", "cause", "applyVoucherType", "applyVoucherKind", "user",
-						"passTime", "approvalUser","number","pass")
+				.get()
+				.addRetainTerm(ApplyVoucher.class, "id","createdAt","applyNumber", "time", "cause", "applyVoucherType", "applyVoucherKind", "user",
+						"passTime", "approvalUser","number","pass","product")
 				.addRetainTerm(User.class, "userName","id")
+				.addRetainTerm(Product.class, "id", "name", "number")
 				.addRetainTerm(BaseData.class, "id", "name");
 	}
 	

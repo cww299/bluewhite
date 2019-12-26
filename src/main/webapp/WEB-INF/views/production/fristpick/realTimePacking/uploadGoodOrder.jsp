@@ -195,6 +195,7 @@ layui.config({
 				field.orderTimeEnd = '';
 			table.reload('tableData',{
 				where: obj.field,
+				page:{ curr:1 },
 			})
 		}) 
 		function addEdit(type,data){

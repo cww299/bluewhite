@@ -74,26 +74,19 @@ layui.extend({
 			url: myutil.config.ctx+'/ledger/inventory/outStoragePage',
 			curd:{
 				otherBtn:function(obj){
-					var check = layui.table.checkStatus('tableData').data;
-					if(obj.event=="update"){
-						if(check.length!=1)
-							return myutil.emsg('只能修改一条数据');
-						outWarehouseOrder.update({
-							data: check[0],
-							success: function(){
-								table.reload('tableData');
-							}
-						});
+					if(obj.event=='delete'){
+						myutil.deleTableIds({
+							url:'/ledger/inventory/deleteOutStorage',
+							text:'请选择信息|是否确认撤销',
+							table:'tableData',
+						})
 					}
 				},
-				btn:[4],
+				btn:[],
 			},
 			toolbar:[
-				'<span class="layui-btn layui-btn-sm" lay-event="update">修改</span>',
+				'<span class="layui-btn layui-btn-sm layui-btn-danger" lay-event="delete">撤销出库</span>',
 			].join(''),
-			autoUpdate:{
-				deleUrl:'/ledger/inventory/deleteOutStorage',
-			},
 			ifNull:'--',
 			cols:[[
 			       { type:'checkbox',},

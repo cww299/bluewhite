@@ -85,7 +85,7 @@ layui.extend({
 			cg: 449,	//采购归属
 			sc: 450,	//生产归属
 			xs: 451,	//销售归属
-			hq: 452,	//后勤归属
+			hq: 453,	//后勤归属
 		},
 		allSmallType:{
 			ssdw:454,	//税收单位
@@ -164,7 +164,7 @@ layui.extend({
 			title: title,
 			content: html,
 			offset:'100px',
-			area:['1000px','350px'],
+			area:['1000px','450px'],
 			btn:['保存','取消'],
 			btnAlign:'c',
 			success:function(){

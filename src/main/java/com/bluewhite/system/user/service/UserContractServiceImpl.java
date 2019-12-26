@@ -2,6 +2,7 @@ package com.bluewhite.system.user.service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import javax.persistence.criteria.Predicate;
 
@@ -27,18 +28,18 @@ public class UserContractServiceImpl extends BaseServiceImpl<UserContract, Long>
 	 *分页查询
 	 */
 	@Override
-	public PageResult<UserContract> findPage(UserContract userContract, PageParameter page) {
-		Page<UserContract> pages = dao.findAll((root, query, cb) -> {
-			List<Predicate> predicate = new ArrayList<>();
-			if (userContract.getUserId() != null) {
-				predicate.add(cb.equal(root.get("userId").as(Long.class), userContract.getUserId()));
-			}
-			Predicate[] pre = new Predicate[predicate.size()];
-			query.where(predicate.toArray(pre));
-			return null;
-		}, page);
-		PageResult<UserContract> result = new PageResult<>(pages, page);
-		return result;
+	public PageResult<UserContract> findPage(Map<String, Object> params,PageParameter page) {
+//		Page<UserContract> pages = dao.findAll((root, query, cb) -> {
+//			List<Predicate> predicate = new ArrayList<>();
+//			if (userContract.getUserId() != null) {
+//				predicate.add(cb.equal(root.get("userId").as(Long.class), userContract.getUserId()));
+//			}
+//			Predicate[] pre = new Predicate[predicate.size()];
+//			query.where(predicate.toArray(pre));
+//			return null;
+//		}, page);
+//		PageResult<UserContract> result = new PageResult<>(pages, page);
+		return findAll(page, params);
 	}
 
 	@Override

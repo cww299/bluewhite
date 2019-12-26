@@ -3,6 +3,7 @@ package com.bluewhite.common.utils;
 import java.util.Set;
 
 import com.bluewhite.common.Constants;
+import com.bluewhite.common.ServiceException;
 
 /**
  * 权限工具表
@@ -19,6 +20,9 @@ public class RoleUtil {
 	 */
 	public static Long getWarehouseTypeDelivery(Set<String> role) {
 		Integer id = null;
+		if(role==null && role.size()==0){
+			throw new ServiceException("无权限，无法操作");
+		}
 		if (role.contains(Constants.ONLINEWAREHOUSE)) {
 			id = 230;
 		}

@@ -59,7 +59,7 @@ public class CustomerAction {
 	
 	/**
 	 * 
-	 * 查看客户
+	 * 查看全部客户
 	 * 
 	 * @return cr
 	 */
@@ -110,7 +110,7 @@ public class CustomerAction {
 	@ResponseBody
 	public CommonResponse deleteCustomer(String ids) {
 		CommonResponse cr = new CommonResponse();
-		int count = customrService.deleteCustomr(ids);
+		int count = customrService.deleteCustomer(ids);
 		cr.setMessage("成功删除" + count + "个客户");
 		return cr;
 	}

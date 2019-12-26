@@ -2,27 +2,24 @@ package com.bluewhite.production.temporarypack;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.text.SimpleDateFormat;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.propertyeditors.CustomDateEditor;
 import org.springframework.stereotype.Controller;
 import org.springframework.util.StringUtils;
-import org.springframework.web.bind.WebDataBinder;
-import org.springframework.web.bind.annotation.InitBinder;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
-import org.springframework.web.multipart.support.ByteArrayMultipartFileEditor;
 
 import com.alibaba.excel.EasyExcelFactory;
 import com.alibaba.excel.metadata.Sheet;
+import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONArray;
+import com.alibaba.fastjson.JSONObject;
 import com.bluewhite.basedata.entity.BaseData;
 import com.bluewhite.common.BeanCopyUtils;
 import com.bluewhite.common.ClearCascadeJSON;
-import com.bluewhite.common.DateTimePattern;
 import com.bluewhite.common.entity.CommonResponse;
 import com.bluewhite.common.entity.PageParameter;
 import com.bluewhite.common.utils.excel.ExcelListener;
@@ -78,7 +75,7 @@ public class TemporaryPackAction {
 	}
 
 	/**
-	 * 查询下货单
+	 * 分页查询下货单
 	 * 
 	 */
 	@RequestMapping(value = "/temporaryPack/findPagesUnderGoods", method = RequestMethod.GET)
@@ -86,6 +83,19 @@ public class TemporaryPackAction {
 	public CommonResponse findPagesUnderGoods(UnderGoods underGoods, PageParameter page) {
 		CommonResponse cr = new CommonResponse();
 		cr.setData(clearCascadeJSON.format(underGoodsService.findPages(underGoods, page)).toJSON());
+		cr.setMessage("查询成功");
+		return cr;
+	}
+	
+	/**
+	 * 查询下货单
+	 * 
+	 */
+	@RequestMapping(value = "/temporaryPack/findAllUnderGoods", method = RequestMethod.GET)
+	@ResponseBody
+	public CommonResponse findAllUnderGoods() {
+		CommonResponse cr = new CommonResponse();
+		cr.setData(clearCascadeJSON.format(underGoodsService.findAll()).toJSON());
 		cr.setMessage("查询成功");
 		return cr;
 	}
@@ -127,6 +137,21 @@ public class TemporaryPackAction {
 					Quantitative ot = new Quantitative();
 					BeanCopyUtils.copyNotEmpty(quantitative, ot, "");
 					ot.setId(id);
+					//子单内容无法批量修改
+					if(idArr.length > 1){
+						Quantitative qt = quantitativeService.findOne(ot.getId());
+						JSONArray jsonArray = new JSONArray();
+						if(qt.getQuantitativeChilds().size()>0){
+							for(QuantitativeChild quantitativeChild : qt.getQuantitativeChilds()){
+								JSONObject jsonObject = new JSONObject();
+								jsonObject.put("id", quantitativeChild.getId());
+								jsonObject.put("underGoodsId", quantitativeChild.getUnderGoodsId());
+								jsonObject.put("singleNumber", quantitativeChild.getSingleNumber());
+								jsonArray.add(jsonObject);
+							}
+						}
+						ot.setChild(jsonArray.toJSONString());
+					}
 					quantitativeService.saveQuantitative(ot);
 				}
 			}

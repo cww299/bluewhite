@@ -1,5 +1,7 @@
 package com.bluewhite.system.user.service;
 
+import java.util.Map;
+
 import com.bluewhite.base.BaseCRUDService;
 import com.bluewhite.common.entity.PageParameter;
 import com.bluewhite.common.entity.PageResult;
@@ -12,7 +14,7 @@ public interface UserContractService extends BaseCRUDService<UserContract, Long>
 	 * @param 
 	 * @return
 	 */
-	public PageResult<UserContract> findPage(UserContract contract, PageParameter page);
+	public PageResult<UserContract> findPage(Map<String, Object> params, PageParameter page);
 	
 	/**
 	 * 新增
@@ -25,5 +27,6 @@ public interface UserContractService extends BaseCRUDService<UserContract, Long>
 	 * @param 
 	 */
 	public int deletes(String[] ids);
+
 	
 }

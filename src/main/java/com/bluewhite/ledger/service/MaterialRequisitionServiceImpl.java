@@ -17,10 +17,12 @@ import com.bluewhite.common.entity.PageParameter;
 import com.bluewhite.common.entity.PageResult;
 import com.bluewhite.common.utils.NumUtils;
 import com.bluewhite.common.utils.StringUtil;
+import com.bluewhite.ledger.dao.MaterialOutStorageDao;
 import com.bluewhite.ledger.dao.MaterialRequisitionDao;
 import com.bluewhite.ledger.dao.OrderMaterialDao;
 import com.bluewhite.ledger.dao.OrderProcurementDao;
 import com.bluewhite.ledger.dao.ScatteredOutboundDao;
+import com.bluewhite.ledger.entity.MaterialOutStorage;
 import com.bluewhite.ledger.entity.MaterialRequisition;
 import com.bluewhite.ledger.entity.ScatteredOutbound;
 import com.bluewhite.product.primecostbasedata.dao.MaterielDao;
@@ -41,12 +43,13 @@ public class MaterialRequisitionServiceImpl extends BaseServiceImpl<MaterialRequ
 	private OrderProcurementDao orderProcurementDao;
 	@Autowired
 	private MaterialPutStorageService materialPutStorageService;
+	@Autowired
+	private MaterialOutStorageDao materialOutStorageDao;
 
 	@Override
 	public void saveMaterialRequisition(MaterialRequisition materialRequisition) {
 		if (materialRequisition.getScatteredOutboundId() != null) {
-			ScatteredOutbound scatteredOutbound = scatteredOutboundDao
-					.findOne(materialRequisition.getScatteredOutboundId());
+			ScatteredOutbound scatteredOutbound = scatteredOutboundDao.findOne(materialRequisition.getScatteredOutboundId());
 			// 查询是否已耗料出库（采购单虚拟库存）
 			if (scatteredOutbound == null) {
 				throw new ServiceException("还未分散出库，无法生成领料单");
@@ -146,6 +149,10 @@ public class MaterialRequisitionServiceImpl extends BaseServiceImpl<MaterialRequ
 			query.where(predicate.toArray(pre));
 			return null;
 		}, page);
+		pages.getContent().forEach(m->{
+			List<MaterialOutStorage> mList = materialOutStorageDao.findByMaterialRequisitionId(m.getId());
+			m.setRequisitionCount(mList.stream().mapToDouble(MaterialOutStorage::getArrivalNumber).sum());
+		});
 		PageResult<MaterialRequisition> result = new PageResult<>(pages, page);
 		return result;
 	}

@@ -61,10 +61,16 @@ layui.extend({
 			elem:'#searchTime',
 			range:'~',
 		})
+		var otherParam = '';
+		if(productionInput.type==3){
+			otherParam = '&outsourceTaskId=387';
+		}else if(productionInput.type==2 || productionInput.type==4){
+			otherParam = '&outsourceTaskId=388';
+		}
 		mytable.render({
 			elem:'#tableData',
 			size:'lg',
-			url: opt.ctx+'/ledger/orderOutSourcePage?audit=1',
+			url: opt.ctx+'/ledger/orderOutSourcePage?audit=1'+otherParam,
 			autoUpdate:{
 				saveUrl: '/ledger/inventory/updateInventoryOrderOutSource',
 				field:{ inWarehouseType_id:'inWarehouseTypeId', },
@@ -79,7 +85,7 @@ layui.extend({
 							return myutil.emsg('只能选择一条数据操作！');
 						inputWarehouseOrder.add({
 							data:{
-								productId: check[0].order.product.id,
+								productId: check[0].materialRequisition.order.product.id,
 								orderOutSourceId: check[0].id,
 								inStatus:1,
 							}
@@ -161,7 +167,7 @@ layui.extend({
 				mytable.renderNoPage({
 					elem:'#chooseInputOrder',
 					height:'400px',
-					url: myutil.config.ctx+'/ledger/inventory/getPutStorageDetails?id='+data.id,
+					url: myutil.config.ctx+'/ledger/inventory/getOrderOutSourcePutStorageDetails?id='+data.id,
 					cols:[[
 						{ type:'checkbox',},
 						{ title:'入库单编号',field:'serialNumber'},
