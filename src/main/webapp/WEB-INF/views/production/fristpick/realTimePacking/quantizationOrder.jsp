@@ -13,7 +13,7 @@
 	div[lay-id="tableData"] .layui-table tbody tr:hover, .layui-table-hover {
 		background-color: transparent; 
 	}
-	div[lay-id="tableData"] .layui-table-header th[data-field="0"] .layui-form-checkbox{
+	div[lay-id="tableData"] .layui-table-header th[data-field="0"] input[name="layTableCheckbox"]+.layui-form-checkbox{
 		display:none !important;
 	}
 	</style>
@@ -217,6 +217,25 @@ layui.config({
 			       { title:'备注',   field:'remarks',	width:'10%', edit:true,},  				
 			       ]],
 	       done:function(){
+	    	    $('div[lay-id="tableData"] .layui-table-header th[data-field="0"] div').append(
+	    	    	['<input type="checkbox" title="" lay-filter="allCheckbox" lay-skin="primary">'].join(' ')
+	    	    );
+	    	    form.on('checkbox(allCheckbox)', function(data){
+	    	    	var check = data.elem.checked;
+	    	    	var allCheck = $('#tableData').next().find('.layui-table-main').find('.layui-form-checkbox');
+	    	    	layui.each(allCheck,function(index,item){
+	    	    		if(check){
+	    	    			if($(item).hasClass('layui-form-checked'))
+	    	    				return;
+	    	    			else
+	    	    				$(item).click();
+	    	    		}else{
+	    	    			$(item).click();
+	    	    		}
+	    	    	})
+	    	    	form.render();
+    	    	}); 
+	    	    form.render();
 				merge('quantitativeNumber');
 				merge('time');
 				merge('audit');
