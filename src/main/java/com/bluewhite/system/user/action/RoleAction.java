@@ -141,7 +141,7 @@ public class RoleAction {
 		cr.setData(ClearCascadeJSON
 				.get()
 				.addRetainTerm(RoleMenuPermission.class, "id","menuId","menuName", "permissionNames","createdAt","updatedAt","role")
-				.addRetainTerm(Role.class, "id","role","user")
+				.addRetainTerm(Role.class, "id","role","users")
 				.addRetainTerm(User.class, "id","userName")
 				.format(role.getResourcePermission()).toJSON());
 		cr.setMessage("查询成功");

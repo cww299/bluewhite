@@ -51,10 +51,10 @@
 				<td><span class="input-group-btn">
 					<button type="button"class="btn btn-success  btn-sm btn-3d addDict">加绩</button></span></td>
 				<td>&nbsp;&nbsp;&nbsp;&nbsp;</td> 
-				<td class="visible-sm"><span class="input-group-btn">
-					<button type="button"class="btn btn-success  btn-sm btn-3d update">杂工修改</button></span></td>	
+				<td  id="update2"><span class="input-group-btn">
+					<button type="button"class="btn btn-success  btn-sm btn-3d update" >杂工修改</button></span></td>	
 				<td>&nbsp;&nbsp;&nbsp;&nbsp;</td> 
-				<td class="visible-sm"><span class="input-group-btn">
+				<td id="endTast2"><span class="input-group-btn">
 					<button type="button"class="btn btn-success  btn-sm btn-3d endTast">结束任务</button></span></td>	
 			</tr>
 		</table>
@@ -491,6 +491,8 @@ window.onload = function(){
 	      var mobileType=mobileType.android;
 	      if(mobileType==false){
 	    	  $("#stars").hide();
+	    	  $("#update2").hide();
+	    	  $("#endTast2").hide();
 	      }
    	var Login = function(){
 			var self = this;
@@ -535,11 +537,6 @@ window.onload = function(){
 				var m=myDate.getMinutes();          //获取当前分钟数(0-59)
 				var s=myDate.getSeconds();
 				var now=year2+'-'+p(month2)+"-"+p(date2)+" "+p(h)+':'+p(m)+":"+p(s);//当前时间
-				var a=year + '-' + p(month)+ '-' + date+' '+'00:00:00'
-				var b=year + '-' + p(month)+ '-' + date+' '+'23:59:59'
-				if(mobileType==false){
-					$("#Time").val(a)
-				}
 			 layui.use(['laydate'],function(){
 					var laydate = layui.laydate;
 					laydate.render({
@@ -556,7 +553,6 @@ window.onload = function(){
 				  		orderTimeBegin:firstdate,
 			  			orderTimeEnd:lastdate,
 				} 
-			
 			this.init = function(){
 				
 				//注册绑定事件
@@ -1464,9 +1460,19 @@ window.onload = function(){
 					var firstdate = year + '-' + '0'+month + '-01'+' '+'00:00:00';
 					var lastdate = year + '-' + '0'+month + '-' + day.getDate() +' '+'23:59:59';
 					var now=year+'-'+p(month)+"-"+p(date)+" "+p(h)+':'+p(m)+":"+p(s);//当前时间
+					var myDate2 = new Date(new Date().getTime() - 86400000);
+					var year2=myDate2.getFullYear();
+					//获取当前月
+					var month2=myDate2.getMonth()+1;
+					//获取当前日
+					var date2=myDate2.getDate();
+					var Front=year2 + '-' + p(month2)+ '-' + p(date2)+' '+'00:00:00'//前一天时间
 					if(mobileType==true){
 					$("#startTimes").val(now)
 						$("#Time").val(now)
+					}
+					if(mobileType==false){
+						$("#Time").val(Front)
 					}
 					var _index
 					var index
