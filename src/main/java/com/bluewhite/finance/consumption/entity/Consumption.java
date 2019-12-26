@@ -209,9 +209,18 @@ public class Consumption extends BaseEntity<Long> {
 	@Transient
 	private String customerName;
 	
+	/**
+	 * 审核过滤
+	 */
 	@Transient
 	private String flags;
 	
+	/**
+	 * 生产计划单号
+	 */
+	@Transient
+	private String orderNumber;
+
 	/**
 	 * 查询字段
 	 */
@@ -226,6 +235,14 @@ public class Consumption extends BaseEntity<Long> {
 	
 	
 	
+	public String getOrderNumber() {
+		return orderNumber;
+	}
+
+	public void setOrderNumber(String orderNumber) {
+		this.orderNumber = orderNumber;
+	}
+
 	public Long getOrderOutSourceId() {
 		return orderOutSourceId;
 	}
