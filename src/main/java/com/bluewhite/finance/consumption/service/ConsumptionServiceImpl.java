@@ -65,7 +65,11 @@ public class ConsumptionServiceImpl extends BaseServiceImpl<Consumption, Long> i
 				}
 				predicate.add(cb.equal(root.get("orgNameId").as(Long.class), param.getOrgNameId()));
 			}
-
+			//生产单编号搜索
+			if (!StringUtils.isEmpty(param.getOrderNumber())) {
+				predicate.add(cb.like(root.get("orderOutSource").get("materialRequisition").get("order").get("orderNumber").as(String.class),
+						"%" + StringUtil.specialStrKeyword(param.getOrderNumber()) + "%"));
+			}
 			// 按父类id过滤
 			if (param.getParentId() != null) {
 				predicate.add(cb.equal(root.get("parentId").as(Long.class), param.getParentId()));
