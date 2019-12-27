@@ -469,7 +469,7 @@ layui.extend({
 				var sty = `
 				<style id="mytableStyle">
 					div[lay-id="`+tableId+`"] .layui-table tbody tr:hover, .layui-table-hover {
-						background-color: transparent; 
+						
 					}
 				</style>`;
 				var hiddenAllSty = `
@@ -557,6 +557,35 @@ layui.extend({
 			    	   	});
 					}
 				}
+				/*$('div[lay-id="'+tableId+'"].layui-table-view tbody tr').hover(function(){
+					var trElem = $(this);
+					while($(trElem).find('[name="layTableCheckbox"]+').length==0){
+						trElem = $(trElem).prev();
+						$(trElem).css('backgroundColor','#f2f2f2');
+					}
+					var trElem = $(this);
+					while(true){
+						trElem = $(trElem).next();
+						if($(trElem).find('[name="layTableCheckbox"]+').length==0)
+							$(trElem).css('backgroundColor','#f2f2f2');
+						else
+							break;
+					}
+				},function(){
+					var trElem = $(this);
+					while($(trElem).find('[name="layTableCheckbox"]+').length==0){
+						trElem = $(trElem).prev();
+						$(trElem).css('backgroundColor','white');
+					}
+					var trElem = $(this);
+					while(true){
+						trElem = $(trElem).next();
+						if($(trElem).find('[name="layTableCheckbox"]+').length==0)
+							$(trElem).css('backgroundColor','white');
+						else
+							break;
+					}
+				})*/
 	    	    form.render();
 			}
 			done && done(res, curr, cou);
