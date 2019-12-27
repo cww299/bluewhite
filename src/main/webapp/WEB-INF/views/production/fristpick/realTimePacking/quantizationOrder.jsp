@@ -143,7 +143,7 @@ layui.config({
 						})
 					}else if(obj.event=='print'){
 						printOrder();
-					}else if(obj.event=='send'){
+					}else if(obj.event=='send'){ 
 						myutil.deleTableIds({
 							 table:'tableData',  
 							 text:'请选择信息|是否确认发货？',
