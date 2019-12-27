@@ -251,9 +251,9 @@ public class OrderOutSourceServiceImpl extends BaseServiceImpl<OrderOutSource, L
 				//皮壳剩余数量
 				o.setCotSurplusNumber(o.getProcessNumber()-sendNumber);
 			}
-			List<Map<String, Object>> mapsList = outStorageService.getSendPutStorage(o.getId());
-			int status = 0;
+			List<Map<String, Object>> mapsList = outStorageService.getOrderOutSourcePutStorageDetails(o.getId());
 			if(mapsList.size()>0){
+				int status = 0;
 				int number = mapsList.stream().mapToInt(m->Integer.valueOf(m.get("number").toString())).sum();
 				if(o.getProcessNumber()>number){
 					status = 1;
@@ -261,8 +261,10 @@ public class OrderOutSourceServiceImpl extends BaseServiceImpl<OrderOutSource, L
 				if(number<=0){
 					status = 2;
 				}
+				o.setCotStatus(status);
+			}else{
+				o.setCotStatus(2);
 			}
-			o.setCotStatus(status);
 		});
 		return result;
 	}
