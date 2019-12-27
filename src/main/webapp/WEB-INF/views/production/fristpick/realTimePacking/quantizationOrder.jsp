@@ -98,9 +98,7 @@ layui.config({
 		, laytpl = layui.laytpl
 		, mytable = layui.mytable;
 		myutil.config.ctx = '${ctx}';
-		myutil.clickTr({
-			noClick:'tableData',
-		});
+		myutil.clickTr();
 		laydate.render({
 			elem: '#orderTimeBegin', range: '~',
 		})
