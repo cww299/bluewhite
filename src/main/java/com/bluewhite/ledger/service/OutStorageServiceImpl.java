@@ -348,4 +348,9 @@ public class OutStorageServiceImpl extends BaseServiceImpl<OutStorage, Long> imp
 		return list;
 	}
 
+	@Override
+	public List<OutStorage> findByOrderOutSourceId(Long orderoutsourceid) {
+		return 	dao.findByOrderOutSourceId(orderoutsourceid);
+	}
+
 }
