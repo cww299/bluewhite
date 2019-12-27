@@ -200,7 +200,7 @@ layui.extend({
 					return myutil.emsg('请选择入库单');
 				var inputNumber = $('#sendAllNumber').val() || 0;
 				if(allInputNumber<inputNumber)
-					return myutil.esmg('发货数量不能超过库存数量！');
+					return myutil.emsg('发货数量不能超过库存数量！');
 				var childJson = [],allChildNumer = 0;
 				for(var i=0,len=checkChild.length;i<len;i++){
 					allChildNumer -= (-checkChild[i].sendNumber || 0);
