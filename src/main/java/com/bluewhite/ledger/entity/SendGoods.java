@@ -86,7 +86,7 @@ public class SendGoods extends BaseEntity<Long>{
 	@Column(name = "product_type")
 	private Integer productType;
 	/**
-	 * (1.库存不足，2.无库存)
+	 * (0.库存充足 1.库存不足，2.无库存)
 	 * 发货状态
 	 */
 	@Transient
