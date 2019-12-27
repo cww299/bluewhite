@@ -776,7 +776,7 @@ layui.define(['table'], function (exports) {
       //td内容
       var td = ['<td data-field="' + field + '" data-key="' + key + '" ' + function () { //追加各种属性
         var attr = [];
-        if (item3.type === 'normal' && item3.edit !== false) attr.push('data-edit="text"'); //是否允许单元格编辑
+        if (item3.type === 'normal' && item3.edit !== false) attr.push('data-edit="'+(item3.edit=='number'?'number':'text')+'"'); //是否允许单元格编辑
         if (item3.align) attr.push('align="' + item3.align + '"'); //对齐方式
         if (item3.templet) attr.push('data-content="' + content + '"'); //自定义模板
         if (item3.toolbar) attr.push('data-off="true"'); //行工具列关闭单元格事件
