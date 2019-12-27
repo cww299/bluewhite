@@ -264,6 +264,11 @@ layui.define(['jquery','layer','form','table'],function(exports){
 		return myutil.c.getData(options,callback);
 	};
 	myutil.getDataSync = function(options,callback){	//同步获取数据
+		if(typeof(options)==='string'){
+			options = {
+				url: options,
+			}
+		}
 		options.async = false;
 		return myutil.c.getData(options,callback);
 	};
