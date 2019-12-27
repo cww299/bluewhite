@@ -44,7 +44,7 @@ public class ConsumptionServiceImpl extends BaseServiceImpl<Consumption, Long> i
 	@Override
 	public PageResult<Consumption> findPages(Consumption param, PageParameter page) {
 		CurrentUser cu = SessionManager.getUserSession();
-		if (param.getType()==1 && cu != null && !cu.getIsAdmin() && cu.getOrgNameId() != 6) {
+		if (param.getType() == 1 && cu != null && !cu.getIsAdmin() && cu.getOrgNameId() != 6) {
 			param.setOrgNameId(cu.getOrgNameId());
 		}
 		Page<Consumption> pages = dao.findAll((root, query, cb) -> {
@@ -65,7 +65,13 @@ public class ConsumptionServiceImpl extends BaseServiceImpl<Consumption, Long> i
 				}
 				predicate.add(cb.equal(root.get("orgNameId").as(Long.class), param.getOrgNameId()));
 			}
-
+			// 生产单编号搜索
+			if (!StringUtils.isEmpty(param.getOrderNumber())) {
+				predicate.add(cb.like(
+								root.get("orderOutSource").get("materialRequisition").get("order").get("orderNumber")
+										.as(String.class),
+								"%" + StringUtil.specialStrKeyword(param.getOrderNumber()) + "%"));
+			}
 			// 按父类id过滤
 			if (param.getParentId() != null) {
 				predicate.add(cb.equal(root.get("parentId").as(Long.class), param.getParentId()));
@@ -104,8 +110,8 @@ public class ConsumptionServiceImpl extends BaseServiceImpl<Consumption, Long> i
 			}
 			// 按客户姓名查找
 			if (!StringUtils.isEmpty(param.getCustomerName())) {
-				predicate.add(
-						cb.like(root.get("customer").get("name").as(String.class), "%" + param.getCustomerName() + "%"));
+				predicate.add(cb.like(root.get("customer").get("name").as(String.class),
+						"%" + param.getCustomerName() + "%"));
 			}
 			// 按报销內容查找
 			if (!StringUtils.isEmpty(param.getContent())) {
@@ -140,7 +146,6 @@ public class ConsumptionServiceImpl extends BaseServiceImpl<Consumption, Long> i
 							param.getOrderTimeEnd()));
 				}
 			}
-
 			Predicate[] pre = new Predicate[predicate.size()];
 			query.where(predicate.toArray(pre));
 			return null;
@@ -165,12 +170,11 @@ public class ConsumptionServiceImpl extends BaseServiceImpl<Consumption, Long> i
 			BeanCopyUtils.copyNotEmpty(consumption, ot, "");
 			consumption = ot;
 		}
-
 		switch (consumption.getType()) {
-		//报销
+		// 报销
 		case 1:
-			//表示不是修改金额时自动跳过
-			if(consumption.getId() != null &&  originalMoney == null){
+			// 表示不是修改金额时自动跳过
+			if (consumption.getId() != null && originalMoney == null) {
 				break;
 			}
 			// 修改子类报销单1.改变当前子类报销金额 2改变父类预算的报销金额
@@ -189,16 +193,16 @@ public class ConsumptionServiceImpl extends BaseServiceImpl<Consumption, Long> i
 
 			// 修改父类报销单
 			if (consumption.getId() != null && consumption.getParentId() == null && consumption.getBudget() == 1) {
-					// 获取父类报销单的全部子类
-					List<Consumption> consumptionList = dao.findByParentId(consumption.getId());
-					if (consumptionList.size() > 0) {
-						List<Double> listDouble = new ArrayList<>();
-						consumptionList.stream().forEach(c -> {
-							listDouble.add(c.getMoney());
-						});
-						consumption.setMoney(NumUtils.sub(consumption.getMoney(), NumUtils.sum(listDouble)));
-					}
-				
+				// 获取父类报销单的全部子类
+				List<Consumption> consumptionList = dao.findByParentId(consumption.getId());
+				if (consumptionList.size() > 0) {
+					List<Double> listDouble = new ArrayList<>();
+					consumptionList.stream().forEach(c -> {
+						listDouble.add(c.getMoney());
+					});
+					consumption.setMoney(NumUtils.sub(consumption.getMoney(), NumUtils.sum(listDouble)));
+				}
+
 			}
 			if (consumption.getPaymentMoney() != null && consumption.getPaymentMoney() > consumption.getMoney()) {
 				throw new ServiceException("放款金额不能大于申请金额");
@@ -285,10 +289,11 @@ public class ConsumptionServiceImpl extends BaseServiceImpl<Consumption, Long> i
 				for (int i = 0; i < idArr.length; i++) {
 					Long id = Long.parseLong(idArr[i]);
 					Consumption consumption = dao.findOne(id);
-					if (consumption.getPaymentDate() == null && (consumption.getPaymentMoney() == null || consumption.getPaymentMoney() == 0)) {
+					if (consumption.getPaymentDate() == null
+							&& (consumption.getPaymentMoney() == null || consumption.getPaymentMoney() == 0)) {
 						throw new ServiceException("放款金额或放款时间不能为空或者为0");
 					}
-					if (consumption.getType()==1 && (consumption.getPaymentMoney() < consumption.getMoney())) {
+					if (consumption.getType() == 1 && (consumption.getPaymentMoney() < consumption.getMoney())) {
 						flag = 2;
 					}
 					consumption.setFlag(flag);
@@ -306,8 +311,10 @@ public class ConsumptionServiceImpl extends BaseServiceImpl<Consumption, Long> i
 		CurrentUser cu = SessionManager.getUserSession();
 		consumption.setOrgNameId(cu.getOrgNameId());
 		List<Consumption> cpList = findList(consumption);
-		List<Consumption> consumptionList = cpList.stream().filter(Consumption->Consumption.getBudget()==0).collect(Collectors.toList());
-		List<Consumption> consumptionList1 = cpList.stream().filter(Consumption->Consumption.getBudget()==1).collect(Collectors.toList());
+		List<Consumption> consumptionList = cpList.stream().filter(Consumption -> Consumption.getBudget() == 0)
+				.collect(Collectors.toList());
+		List<Consumption> consumptionList1 = cpList.stream().filter(Consumption -> Consumption.getBudget() == 1)
+				.collect(Collectors.toList());
 		List<Double> listDouble = new ArrayList<>();
 		Double budget = 0.0;
 		Double nonBudget = 0.0;
@@ -331,7 +338,7 @@ public class ConsumptionServiceImpl extends BaseServiceImpl<Consumption, Long> i
 	}
 
 	@Override
-	public int excelAddConsumption(ExcelListener excelListener,Integer type) {
+	public int excelAddConsumption(ExcelListener excelListener, Integer type) {
 		int count = 0;
 		// 获取导入的订单
 		List<Object> excelListenerList = excelListener.getData();
@@ -356,7 +363,8 @@ public class ConsumptionServiceImpl extends BaseServiceImpl<Consumption, Long> i
 		List<Double> listDouble = new ArrayList<>();
 		if (consumptionList.size() > 0) {
 			consumptionList.stream().forEach(c -> {
-				listDouble.add(c.getPaymentMoney() != null ? NumUtils.sub(c.getMoney(), c.getPaymentMoney()) : c.getMoney() );
+				listDouble.add(
+						c.getPaymentMoney() != null ? NumUtils.sub(c.getMoney(), c.getPaymentMoney()) : c.getMoney());
 			});
 			amount = NumUtils.sum(listDouble);
 		}
@@ -376,6 +384,14 @@ public class ConsumptionServiceImpl extends BaseServiceImpl<Consumption, Long> i
 			if (param.getType() != null) {
 				predicate.add(cb.equal(root.get("type").as(Integer.class), param.getType()));
 			}
+			
+			// 生产单编号搜索
+			if (!StringUtils.isEmpty(param.getOrderNumber())) {
+				predicate.add(cb.like(
+								root.get("orderOutSource").get("materialRequisition").get("order").get("orderNumber")
+										.as(String.class),
+								"%" + StringUtil.specialStrKeyword(param.getOrderNumber()) + "%"));
+			}
 
 			// 按是否已付款报销过滤
 			if (!StringUtils.isEmpty(param.getFlags())) {
@@ -389,12 +405,11 @@ public class ConsumptionServiceImpl extends BaseServiceImpl<Consumption, Long> i
 					predicate.add(in);
 				}
 			}
-			
 			// 按部门id过滤
 			if (param.getOrgNameId() != null) {
 				predicate.add(cb.equal(root.get("orgNameId").as(Long.class), param.getOrgNameId()));
 			}
-			
+
 			// 按是否預算
 			if (param.getBudget() != null) {
 				predicate.add(cb.equal(root.get("budget").as(Integer.class), param.getBudget()));

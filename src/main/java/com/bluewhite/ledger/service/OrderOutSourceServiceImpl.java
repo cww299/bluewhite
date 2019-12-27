@@ -25,8 +25,11 @@ import com.bluewhite.basedata.service.BaseDataService;
 import com.bluewhite.common.BeanCopyUtils;
 import com.bluewhite.common.Constants;
 import com.bluewhite.common.ServiceException;
+import com.bluewhite.common.SessionManager;
+import com.bluewhite.common.entity.CurrentUser;
 import com.bluewhite.common.entity.PageParameter;
 import com.bluewhite.common.entity.PageResult;
+import com.bluewhite.common.utils.RoleUtil;
 import com.bluewhite.common.utils.StringUtil;
 import com.bluewhite.finance.consumption.dao.ConsumptionDao;
 import com.bluewhite.finance.consumption.entity.Consumption;
@@ -38,6 +41,7 @@ import com.bluewhite.ledger.dao.RefundBillsDao;
 import com.bluewhite.ledger.entity.MaterialRequisition;
 import com.bluewhite.ledger.entity.OrderOutSource;
 import com.bluewhite.ledger.entity.ProcessPrice;
+import com.bluewhite.ledger.entity.PutStorage;
 import com.bluewhite.ledger.entity.RefundBills;
 import com.bluewhite.onlineretailers.inventory.dao.InventoryDao;
 
@@ -62,6 +66,8 @@ public class OrderOutSourceServiceImpl extends BaseServiceImpl<OrderOutSource, L
 	private ConsumptionDao consumptionDao;
 	@Autowired
 	private BaseDataService baseDataService;
+	@Autowired
+	private PutStorageService putStorageService;
 
 	@Override
 	@Transactional
@@ -98,12 +104,11 @@ public class OrderOutSourceServiceImpl extends BaseServiceImpl<OrderOutSource, L
 						return false;
 					}).mapToInt(OrderOutSource::getProcessNumber).sum();
 					// 查找该加工单该工序的通过审核的退货单
-					List<Integer> returnNumberList = refundBillsDao
-							.getReturnNumber(orderOutSource.getMaterialRequisitionId(), id);
+					List<Integer> returnNumberList = refundBillsDao.getReturnNumber(orderOutSource.getMaterialRequisitionId(), id);
 					// 退货总数
 					Integer returnNumber = returnNumberList.stream().reduce(Integer::sum).orElse(0);
 					// 实际数量=(总加工数-退货数)
-					int actualNumber = (sumNumber + orderOutSource.getProcessNumber()) - returnNumber;
+					int actualNumber =  materialRequisition.getProcessNumber() - sumNumber - returnNumber;
 					if (actualNumber > materialRequisition.getProcessNumber()) {
 						throw new ServiceException(baseData.getName() + "的任务工序数量不足，无法生成加工单 ");
 					}
@@ -153,6 +158,9 @@ public class OrderOutSourceServiceImpl extends BaseServiceImpl<OrderOutSource, L
 
 	@Override
 	public PageResult<OrderOutSource> findPages(OrderOutSource param, PageParameter page) {
+		// 根据仓管登陆用户权限，获取不同的仓库库存
+		CurrentUser cu = SessionManager.getUserSession();
+		Long warehouseTypeDeliveryId = RoleUtil.getWarehouseTypeDelivery(cu.getRole());
 		Page<OrderOutSource> pages = dao.findAll((root, query, cb) -> {
 			List<Predicate> predicate = new ArrayList<>();
 			// 按id过滤
@@ -172,14 +180,12 @@ public class OrderOutSourceServiceImpl extends BaseServiceImpl<OrderOutSource, L
 			if (param.getUserId() != null) {
 				predicate.add(cb.equal(root.get("userId").as(Long.class), param.getUserId()));
 			}
-
 			// 按生产工序过滤
 			if (param.getOutsourceTaskId() != null) {
 				Join<OrderOutSource, BaseData> join = root.join(root.getModel().getSet("outsourceTask", BaseData.class),
 						JoinType.LEFT);
 				predicate.add(cb.equal(join.get("id").as(Long.class), param.getOutsourceTaskId()));
 			}
-
 			// 是否外发
 			if (param.getOutsource() != null) {
 				predicate.add(cb.equal(root.get("outsource").as(Integer.class), param.getOutsource()));
@@ -217,9 +223,20 @@ public class OrderOutSourceServiceImpl extends BaseServiceImpl<OrderOutSource, L
 			}
 			Predicate[] pre = new Predicate[predicate.size()];
 			query.where(predicate.toArray(pre));
+			query.distinct(true);
 			return null;
 		}, page);
 		PageResult<OrderOutSource> result = new PageResult<>(pages, page);
+		result.getRows().forEach(o->{
+			List<PutStorage> putStorageList = putStorageService.detailsInventory(warehouseTypeDeliveryId, o.getMaterialRequisition().getOrder().getProductId());
+			//库存数量
+			o.setInventoryQuantity(putStorageList.stream().filter(PutStorage->PutStorage.getOrderOutSourceId().equals(o.getId())).mapToInt(PutStorage::getArrivalNumber).sum());
+			//剩余数量
+			//1.当为皮壳仓库时，
+//			o.setSurplusNumber();
+			
+			
+		});
 		return result;
 	}
 

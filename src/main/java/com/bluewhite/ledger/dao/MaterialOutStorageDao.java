@@ -17,5 +17,10 @@ public interface MaterialOutStorageDao extends BaseRepository<MaterialOutStorage
 	@Query(nativeQuery=true,value ="SELECT distinct s.material_out_storage_id FROM ledger_put_out_material_storage s WHERE s.material_put_storage_id = ?1")
 	List<Long> findMaterialPutStorageId(Long materialputstorageid);
 
-
+	/**
+	 * 根据领料单查找
+	 * @param materialrequisitionid
+	 * @return
+	 */
+	List<MaterialOutStorage> findByMaterialRequisitionId(Long materialrequisitionid);
 }
