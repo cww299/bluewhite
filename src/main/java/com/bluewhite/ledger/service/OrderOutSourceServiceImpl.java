@@ -207,8 +207,7 @@ public class OrderOutSourceServiceImpl extends BaseServiceImpl<OrderOutSource, L
 			}
 			// 按加工点
 			if (!StringUtils.isEmpty(param.getOutSourceNumber())) {
-				predicate.add(
-						cb.like(root.get("outSourceNumber").as(String.class), "%" + param.getOutSourceNumber() + "%"));
+				predicate.add(cb.like(root.get("outSourceNumber").as(String.class), "%" + param.getOutSourceNumber() + "%"));
 			}
 			// 是否审核
 			if (param.getAudit() != null) {
@@ -239,25 +238,31 @@ public class OrderOutSourceServiceImpl extends BaseServiceImpl<OrderOutSource, L
 				int number = putStorageList.stream().mapToInt(PutStorage::getArrivalNumber).sum();
 				o.setMechanicalInventory(o.getProcessNumber()-number);
 			}
-			
-			//2.出库,针工单，已发货数量，未发货数量，库存状态
+			//2.出库,针工单，需要发货总数，已发货数量，未发货数量，库存状态
 			//总库存数量
 			List<PutStorage> allPutStorageList = putStorageService.detailsInventory(warehouseTypeDeliveryId, o.getMaterialRequisition().getOrder().getProductId());
-			o.setInventoryQuantity(putStorageList.stream().mapToInt(PutStorage::getSurplusNumber).sum());
-			
-			//
-			o.setInventoryQuantity(putStorageList.stream().filter(PutStorage->PutStorage.getOrderOutSourceId().equals(o.getId())).mapToInt(PutStorage::getArrivalNumber).sum());
+			if(allPutStorageList.size()>0){
+				int sumNumber = allPutStorageList.stream().mapToInt(PutStorage::getArrivalNumber).sum();			
+			}
 			//根据加工单获取已发货数量
 			List<OutStorage> outStorageList = outStorageService.findByOrderOutSourceId(o.getId());
-			
-			outStorageList.stream().filter(OutStorage->OutStorage.getOrderOutSourceId().equals(o.getId())).mapToInt(OutStorage::getArrivalNumber).sum();
+			if(outStorageList.size()>0){
+				int sendNumber = outStorageList.stream().filter(OutStorage->OutStorage.getOrderOutSourceId().equals(o.getId())).mapToInt(OutStorage::getArrivalNumber).sum();
+				//皮壳剩余数量
+				o.setCotSurplusNumber(o.getProcessNumber()-sendNumber);
+			}
+			List<Map<String, Object>> mapsList = outStorageService.getSendPutStorage(o.getId());
 			int status = 0;
-			o.setNeedleStockStatus(status);
-			
-			//剩余数量
-			//1.当为皮壳仓库时，
-//			o.setSurplusNumber();
-			
+			if(mapsList.size()>0){
+				int number = mapsList.stream().mapToInt(m->Integer.valueOf(m.get("number").toString())).sum();
+				if(o.getProcessNumber()>number){
+					status = 1;
+				}
+				if(number<=0){
+					status = 2;
+				}
+			}
+			o.setCotStatus(status);
 		});
 		return result;
 	}
