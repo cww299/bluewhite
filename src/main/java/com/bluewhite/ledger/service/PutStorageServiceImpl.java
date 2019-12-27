@@ -139,4 +139,9 @@ public class PutStorageServiceImpl extends BaseServiceImpl<PutStorage, Long> imp
 		return putStorageList;
 	}
 
+	@Override
+	public List<PutStorage> findByWarehouseTypeIdAndOrderOutSourceId(Long warehouseTypeId, Long orderOutSourceId) {
+		return dao.findByWarehouseTypeIdAndOrderOutSourceId(warehouseTypeId, orderOutSourceId);
+	}
+
 }

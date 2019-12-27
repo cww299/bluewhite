@@ -78,7 +78,6 @@ public class OrderOutSource extends BaseEntity<Long> {
 
 	/**
 	 * 任务编号
-	 * 
 	 */
 	@Column(name = "out_source_number")
 	private String outSourceNumber;
@@ -104,14 +103,12 @@ public class OrderOutSource extends BaseEntity<Long> {
 
 	/**
 	 * 是否外发
-	 * 
 	 */
 	@Column(name = "outsource")
 	private Integer outsource;
 
 	/**
 	 * 加工点id
-	 * 
 	 */
 	@Column(name = "customer_id")
 	private Long customerId;
@@ -125,7 +122,6 @@ public class OrderOutSource extends BaseEntity<Long> {
 
 	/**
 	 * （在家加工）加工人id
-	 * 
 	 */
 	@Column(name = "processing_user_id")
 	private Long processingUserId;
@@ -139,7 +135,6 @@ public class OrderOutSource extends BaseEntity<Long> {
 
 	/**
 	 * 跟单人id（外协）
-	 * 
 	 */
 	@Column(name = "user_id")
 	private Long userId;
@@ -170,20 +165,20 @@ public class OrderOutSource extends BaseEntity<Long> {
 	private Double money;
 
 	/**
-	 * 产品name
+	 * (查询字段) 产品name
 	 */
 	@Transient
 	private String productName;
 
 	/**
-	 * 跟单人name
+	 * (查询字段) 跟单人name
 	 * 
 	 */
 	@Transient
 	private String userName;
 
 	/**
-	 * 加工点name
+	 * (查询字段) 加工点name
 	 * 
 	 */
 	@Transient
@@ -196,7 +191,7 @@ public class OrderOutSource extends BaseEntity<Long> {
 	private String outsourceTaskIds;
 
 	/**
-	 * (申请人申请时)申请日期
+	 * (账单)申请日期
 	 */
 	@Transient
 	private Date expenseDate;
@@ -226,11 +221,22 @@ public class OrderOutSource extends BaseEntity<Long> {
 	private Integer inventoryQuantity;
 	
 	/**
+	 * 机工单生成入库后剩余数量
+	 */
+	@Transient
+	private Integer mechanicalInventory;
+	
+	/**
+	 * 针工单库存状态 (0.库存充足 1.库存不足，2.无库存)
+	 */
+	@Transient
+	private Integer needleStockStatus;
+	
+	/**
 	 * 剩余数量
 	 */
 	@Transient
 	private Integer surplusNumber;
-	
 	
 	/**
 	 * 查询字段
@@ -244,6 +250,22 @@ public class OrderOutSource extends BaseEntity<Long> {
 	private Date orderTimeEnd;
 	
 	
+
+	public Integer getNeedleStockStatus() {
+		return needleStockStatus;
+	}
+
+	public void setNeedleStockStatus(Integer needleStockStatus) {
+		this.needleStockStatus = needleStockStatus;
+	}
+
+	public Integer getMechanicalInventory() {
+		return mechanicalInventory;
+	}
+
+	public void setMechanicalInventory(Integer mechanicalInventory) {
+		this.mechanicalInventory = mechanicalInventory;
+	}
 
 	public Integer getSurplusNumber() {
 		return surplusNumber;
