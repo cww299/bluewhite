@@ -11,7 +11,7 @@
 layui.extend({
 	mytable: 'layui/myModules/mytable',
 	inputWarehouseOrder: 'layui/myModules/warehouseManager/inputWarehouseOrder',
-}).define(['jquery','layer','form','laydate','mytable','inputWarehouseOrder'],function(exports){
+}).define(['jquery','layer','form','laydate','mytable','inputWarehouseOrder',],function(exports){
 	"use strict";
 	var $ = layui.jquery,
 		form = layui.form,
@@ -94,26 +94,41 @@ layui.extend({
 						if(check.length!=1)
 							return myutil.emsg('只能选择一条数据操作！');
 						outInventory(check[0])
+					}else if(obj.event=='askfor'){
+						if(check.length!=1)
+							return myutil.emsg('只能选择一条数据操作！');
+						askfor(check[0]);
 					}
 				},
 			},
 			ifNull:'',
-			/*colsWidth:[0,0,10,6,10,6,8,8,6,6,],*/
 			toolbar:[
 				productionInput.type!=4?
 				'<span class="layui-btn layui-btn-sm layui-btn-warm" lay-event="addBtn">生成入库单</span>':
-					'<span class="layui-btn layui-btn-sm layui-btn-warm" lay-event="addOutBtn">生成出库单</span>',
+					('<span class="layui-btn layui-btn-sm layui-btn-warm" lay-event="addOutBtn">生成出库单</span>'+
+					  '<span class="layui-btn layui-btn-sm layui-btn-normal" lay-event="askfor">借货申请</span>'
+					),
 			].join(' '),
-			cols:[[
-			       { type:'checkbox',},
-			       { title:'编号',   field:'outSourceNumber',	},
-			       { title:'工序',   field:'process',	templet: getProcess(), },
-			       { title:'数量',   field:'processNumber',	},
-			       { title:'时间',   field:'openOrderTime', type:'dateTime',},
-			       { title:'跟单人',   field:'user_userName',	},
-			       { title:'加工点',   field:'customer_name',	},
-			       { title:'是否外发',   field:'outsource',	transData:{ data:['否','是'],}, },
-			       ]]
+			cols:[
+				(function(){
+				var arr =  [{ type:'checkbox',},
+			       { title:'编号',   field:'outSourceNumber',	width:190,},
+			       { title:'加工单',   field:'materialRequisition_order_orderNumber',	},
+			       { title:'工序',   field:'process',	templet: getProcess(), width:100,},
+			       { title:'数量',   field:'processNumber',	width:100, },
+			       { title:'时间',   field:'openOrderTime', type:'dateTime', width:200,},
+			       { title:'跟单人',   field:'user_userName',	width:120,},
+			       { title:'加工点',   field:'customer_name',	width:120,},
+			       { title:'是否外发',   field:'outsource',	transData:{ data:['否','是'],}, width:100,},];
+				if(productionInput.type==3)
+					arr.push({ title:'剩余数量',   field:'mechanicalInventory',width:100,	});
+				else if(productionInput.type==4){
+					arr.push({ title:'剩余数量',   field:'cotSurplusNumber',	width:100,});
+					arr.push({ title:'库存状态',   field:'cotStatus',	transData:{data:['库存充足','库存不足','无库存',]}, width:100,});
+				}
+				return arr;
+				})(),
+			]
 		})
 		function getProcess(){
 			return function(d){
@@ -144,6 +159,37 @@ layui.extend({
 		})
 		inputWarehouseOrder.init();
 	};
+	function askfor(data){		//皮壳生产出库 type=4  借货申请
+		layer.open({
+			type: 1,
+			title:'借货申请',
+			area:['50%','600px'],
+			content:[
+				'<div style="padding-top:10px;">',
+					'<table id="chooseInputOrder" lay-filter="chooseInputOrder"></table>',
+				'</div>',
+			].join(' '),
+			btn:['确定','取消'],
+			btnAlign:'c',
+			success:function(){
+				mytable.renderNoPage({
+					elem:'#chooseInputOrder',
+					height:'460px',
+					url: myutil.config.ctx+'/ledger/inventory/getOrderOutSourcePutStorageDetails?id='+data.id,
+					cols:[[
+						{ type:'checkbox', },
+						{ field:'serialNumber',title:'入库单编号', },
+						{ field:'bacthNumber',title:'批次号', },
+						{ field:'number',title:'数量', },
+						{ field:'',title:'申请数量', edit:'number', },
+					]]
+				})
+			},
+			yes:function(index, layero){
+				
+			}
+		})
+	}
 	
 	function outInventory(data){
 		var allInputNumber = 0; //计算总库存数量，发货数量不能超过该值
