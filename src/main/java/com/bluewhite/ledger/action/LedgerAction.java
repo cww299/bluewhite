@@ -240,7 +240,8 @@ public class LedgerAction {
 		clearCascadeJSONSOutSource = ClearCascadeJSON.get()
 				.addRetainTerm(OrderOutSource.class, "id", "fill", "fillRemark", "outSourceNumber", "user",
 						"customer", "remark", "gramWeight", "processNumber", "openOrderTime", "flag", "audit",
-						"outsourceTask", "gramWeight", "kilogramWeight", "processingUser", "outsource","materialRequisition")
+						"outsourceTask", "gramWeight", "kilogramWeight", "processingUser", "outsource","materialRequisition",
+						"inventoryQuantity","mechanicalInventory","cotSurplusNumber","cotStatus")
 				.addRetainTerm(MaterialRequisition.class, "id",  "order")
 				.addRetainTerm(Order.class, "id", "orderNumber","product")
 				.addRetainTerm(Product.class, "id", "name")

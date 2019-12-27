@@ -37,5 +37,13 @@ public interface PutStorageService extends BaseCRUDService<PutStorage, Long> {
 	 */
 	public List<PutStorage>  detailsInventory(Long warehouseTypeId, Long productId);
 	
+	/**
+	 * 根据入库仓库和加工单id查找入库单
+	 * @param inwarehousetypeid
+	 * @param productId
+	 * @return
+	 */
+	List<PutStorage> findByWarehouseTypeIdAndOrderOutSourceId(Long warehouseTypeId, Long orderOutSourceId);
+	
 
 }

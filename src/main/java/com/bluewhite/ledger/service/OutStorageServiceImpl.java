@@ -280,7 +280,7 @@ public class OutStorageServiceImpl extends BaseServiceImpl<OutStorage, Long> imp
 	}
 
 	@Override
-	public Object getOrderOutSourcePutStorageDetails(Long id) {
+	public List<Map<String, Object>> getOrderOutSourcePutStorageDetails(Long id) {
 		List<Map<String, Object>> list = new ArrayList<>();
 		//根据仓管登陆用户权限，获取不同的仓库库存
 		CurrentUser cu = SessionManager.getUserSession();
@@ -346,6 +346,11 @@ public class OutStorageServiceImpl extends BaseServiceImpl<OutStorage, Long> imp
 			});
 		}
 		return list;
+	}
+
+	@Override
+	public List<OutStorage> findByOrderOutSourceId(Long orderoutsourceid) {
+		return 	dao.findByOrderOutSourceId(orderoutsourceid);
 	}
 
 }
