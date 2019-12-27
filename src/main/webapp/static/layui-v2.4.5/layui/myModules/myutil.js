@@ -274,6 +274,7 @@ layui.define(['jquery','layer','form','table'],function(exports){
 			var elemTemp = $(this);
 			var tableView = elemTemp.closest('.layui-table-view');
 			var trIndex = elemTemp.data('index');
+			var trElem = tableView.find('tr[data-index="' + trIndex + '"]');
 			var tableId = $(tableView).attr('lay-id');
 			if(noClick){
 				if(typeof(noClick)!=='object'){
@@ -284,7 +285,12 @@ layui.define(['jquery','layer','form','table'],function(exports){
 						return;
 				}
 			}
-			tableView.find('tr[data-index="' + trIndex + '"]').find('[name="layTableCheckbox"]+').last().click();
+			while($(trElem).find('[name="layTableCheckbox"]+').length==0){
+				trElem = $(trElem).prev();
+				if(trElem.length==0)
+					break;
+			}
+			$(trElem).find('[name="layTableCheckbox"]+').last().click();
 		})
 	};
 	myutil.keyDownEntry = function(callback){
