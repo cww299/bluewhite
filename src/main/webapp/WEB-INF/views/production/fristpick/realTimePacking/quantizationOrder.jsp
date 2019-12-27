@@ -145,7 +145,7 @@ layui.config({
 						printOrder();
 					}else if(obj.event=='send'){
 						myutil.deleTableIds({
-							 table:'tableData', 
+							 table:'tableData',  
 							 text:'请选择信息|是否确认发货？',
 							 url:'/temporaryPack/sendQuantitative',
 						})
