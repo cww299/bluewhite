@@ -91,11 +91,15 @@ layui.extend({
 			success:function(){
 				laydate.render({ elem:'#returnTime', type:'datetime', value: new Date(), })
 				allProcess='';
+				var allProcessId = [];
 				layui.each(data.outsourceTask,function(index,item){
 					allProcess += '<option value="'+item.id+'">'+item.name+'</option>';
+					allProcessId.push(item.id);
 				})
 				$('#processSelect').append(allProcess);
 				formSelects.render();
+				formSelects.value('processSelect', allProcessId); 
+				formSelects.disabled('processSelect');
 				if(data.id){	//如果存在id，进行数据回显
 					var processIds = [];
 					for(var i=0,len=data.outsourceTaskChoosed.length;i<len;i++)
