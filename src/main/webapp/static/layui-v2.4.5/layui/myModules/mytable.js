@@ -537,12 +537,16 @@ layui.extend({
 				    	    	if(check){
 				    	    		for(var i=0;i<allTableCheck.length;i++){
 				    	    			if($(allTableCheck[i]).prop("checked")!=check){
-				    	    				return;
+				    	    				return true;
 				    	    			}
 				    	    		}
 				    	    	}
 			    	    		$('input[lay-filter="allCheckbox"]').prop('checked',check);
-			    	    		form.render();
+			    	    		if(check)
+			    	    			$('input[lay-filter="allCheckbox"]+').addClass('layui-form-checked');
+			    	    		else
+			    	    			$('input[lay-filter="allCheckbox"]+').removeClass('layui-form-checked');
+			    	    		return true;
 			    	    	}
 			    	   	});
 					}
