@@ -104,8 +104,7 @@ public class OrderOutSourceServiceImpl extends BaseServiceImpl<OrderOutSource, L
 						return false;
 					}).mapToInt(OrderOutSource::getProcessNumber).sum();
 					// 查找该加工单该工序的通过审核的退货单
-					List<Integer> returnNumberList = refundBillsDao
-							.getReturnNumber(orderOutSource.getMaterialRequisitionId(), id);
+					List<Integer> returnNumberList = refundBillsDao.getReturnNumber(orderOutSource.getMaterialRequisitionId(), id);
 					// 退货总数
 					Integer returnNumber = returnNumberList.stream().reduce(Integer::sum).orElse(0);
 					// 实际数量=(总加工数-退货数)
