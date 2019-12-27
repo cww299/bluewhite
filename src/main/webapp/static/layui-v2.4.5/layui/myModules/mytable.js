@@ -516,10 +516,11 @@ layui.extend({
 					if(field=="0"){	//如果合并复选框
 						if($('#hiddenAllCheck').length==0){	//隐藏原本的全选复选框
 							$('head').append(hiddenAllSty);
-							$('div[lay-id="'+tableId+'"] .layui-table-header th[data-field="0"] div').append(
-									['<input type="checkbox" title="" lay-filter="allCheckbox" lay-skin="primary">'].join(' ')
-							);
 						}
+						if($('input[lay-filter="allCheckbox"]').length==0)
+							$('div[lay-id="'+tableId+'"] .layui-table-header th[data-field="0"] div').append(
+								['<input type="checkbox" title="" lay-filter="allCheckbox" lay-skin="primary">'].join(' ')
+							);
 						var inputAllCheck = false;
 			    	    form.on('checkbox(allCheckbox)', function(data){	//监听新加入复选框选择
 			    	    	inputAllCheck = true;

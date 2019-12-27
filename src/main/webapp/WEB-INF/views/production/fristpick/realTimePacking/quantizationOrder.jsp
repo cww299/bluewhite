@@ -118,7 +118,7 @@ layui.config({
 			limit:15,
 			limits:[10,15,20,30,50,100,200],
 			curd:{
-				btn: isStickBagStick?[]:[4],
+				btn: isStickBagAccount?[4]:[],
 				otherBtn:function(obj){
 					if(obj.event=='add'){
 						addEdit('add',{});
