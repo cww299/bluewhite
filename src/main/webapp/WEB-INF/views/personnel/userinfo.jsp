@@ -195,7 +195,7 @@
 		    <div class="layui-inline">
 		      <label class="layui-form-label">员工编号</label>
 		      <div class="layui-input-inline">
-		        <input type="text" name="number" value="{{ d.number }}" readonly="readonly"  autocomplete="off" class="layui-input">
+		        <input type="text" name="" value="{{ d.number }}" readonly="readonly"  autocomplete="off" class="layui-input">
 		      </div>
 		    </div>
 		    <div class="layui-inline">
