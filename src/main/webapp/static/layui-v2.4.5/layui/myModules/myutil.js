@@ -287,6 +287,8 @@ layui.define(['jquery','layer','form','table'],function(exports){
 			}
 			while($(trElem).find('[name="layTableCheckbox"]+').length==0){
 				trElem = $(trElem).prev();
+				if(trElem.length==0)
+					break;
 			}
 			$(trElem).find('[name="layTableCheckbox"]+').last().click();
 		})
