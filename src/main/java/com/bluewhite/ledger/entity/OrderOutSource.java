@@ -185,6 +185,12 @@ public class OrderOutSource extends BaseEntity<Long> {
 	private String customerName;
 
 	/**
+	 * (查询字段) 生产计划单id
+	 */
+	@Transient
+	private Long orderId;
+
+	/**
 	 * 工序ids
 	 */
 	@Transient
@@ -209,35 +215,23 @@ public class OrderOutSource extends BaseEntity<Long> {
 	private Long outsourceTaskId;
 
 	/**
-	 * 生产计划单id
-	 */
-	@Transient
-	private Long orderId;
-	
-	/**
-	 * 库存数量
-	 */
-	@Transient
-	private Integer inventoryQuantity;
-	
-	/**
 	 * 机工单生成入库后剩余数量
 	 */
 	@Transient
 	private Integer mechanicalInventory;
-	
+
 	/**
-	 * 针工单库存状态 (0.库存充足 1.库存不足，2.无库存)
+	 * 针工皮壳出库发货后剩余数量
 	 */
 	@Transient
-	private Integer needleStockStatus;
+	private Integer cotSurplusNumber;
 	
 	/**
-	 * 剩余数量
+	 * 针工皮壳库存状态
 	 */
 	@Transient
-	private Integer surplusNumber;
-	
+	private Integer cotStatus;
+
 	/**
 	 * 查询字段
 	 */
@@ -251,12 +245,20 @@ public class OrderOutSource extends BaseEntity<Long> {
 	
 	
 
-	public Integer getNeedleStockStatus() {
-		return needleStockStatus;
+	public Integer getCotStatus() {
+		return cotStatus;
 	}
 
-	public void setNeedleStockStatus(Integer needleStockStatus) {
-		this.needleStockStatus = needleStockStatus;
+	public void setCotStatus(Integer cotStatus) {
+		this.cotStatus = cotStatus;
+	}
+
+	public Integer getCotSurplusNumber() {
+		return cotSurplusNumber;
+	}
+
+	public void setCotSurplusNumber(Integer cotSurplusNumber) {
+		this.cotSurplusNumber = cotSurplusNumber;
 	}
 
 	public Integer getMechanicalInventory() {
@@ -265,22 +267,6 @@ public class OrderOutSource extends BaseEntity<Long> {
 
 	public void setMechanicalInventory(Integer mechanicalInventory) {
 		this.mechanicalInventory = mechanicalInventory;
-	}
-
-	public Integer getSurplusNumber() {
-		return surplusNumber;
-	}
-
-	public void setSurplusNumber(Integer surplusNumber) {
-		this.surplusNumber = surplusNumber;
-	}
-
-	public Integer getInventoryQuantity() {
-		return inventoryQuantity;
-	}
-
-	public void setInventoryQuantity(Integer inventoryQuantity) {
-		this.inventoryQuantity = inventoryQuantity;
 	}
 
 	public Long getOrderId() {
