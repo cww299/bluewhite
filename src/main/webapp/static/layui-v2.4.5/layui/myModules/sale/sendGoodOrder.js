@@ -36,8 +36,8 @@ layui.extend({
 	            <tr>
 	              <td class="titleTd">发货类型：</td>
 	              <td style="min-width:150px;">
-	              	  <input type="radio" value="1" title="成品" name="productType" {{ d.productType!=2?"checked":"" }}>
-					  <input type="radio" value="2" title="皮壳" name="productType" {{ d.productType==2?"checked":"" }}>
+	              	  <input type="radio" value="1" title="成品" name="productType" lay-filter="typeRadio" {{ d.productType!=2?"checked":"" }}>
+					  <input type="radio" value="2" title="皮壳" name="productType" lay-filter="typeRadio" {{ d.productType==2?"checked":"" }}>
 	              </td>
 	              <td class="titleTd"><b class="red">*</b>客户名称：</td>
 	              <td colspan="">
@@ -80,7 +80,7 @@ layui.extend({
 	      </div>
 	    </div>
 	    <div class="layui-card twoDiv" >
-	      <p class="smallTitle"><span class="blueBlock">&nbsp;</span>其他业务员库存所属信息
+	      <p class="smallTitle"><span class="blueBlock">&nbsp;</span>其他库存信息
 	            <span class="layui-btn layui-btn-xs layui-btn-normal fright" id="addAskfor">添加申请</span></p>
 	      <table id="otherWarehouseTable" lay-filter="otherWarehouseTable"></table>
 	    </div>
@@ -155,6 +155,9 @@ layui.extend({
 				$('#sureAddSendOrder').click(function(){
 					$("#sureAddSendOrderSubmit").click();
 				})
+				form.on('radio(typeRadio)', function(data){
+					getWarehouseInfo();
+				});  
 				mytable.renderNoPage({
 					elem:'#askForTable',
 					data:[],
