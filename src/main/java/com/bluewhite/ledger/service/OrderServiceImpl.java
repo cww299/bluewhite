@@ -277,7 +277,7 @@ public class OrderServiceImpl extends BaseServiceImpl<Order, Long> implements Or
 	public List<Map<String, Object>> findListSend(Order param) {
 		CurrentUser cu = SessionManager.getUserSession();
 		List<Map<String, Object>> result = new ArrayList<>();
-		// 通过产品查询所有的入库单
+		// 	通过产品查询所有的入库单
 		List<PutStorage> putStorageList = new ArrayList<>();
 		String warehouseTypeId = RoleUtil.getWarehouseTypeIds(param.getProductType());
 		if(StrUtil.isNotBlank(warehouseTypeId.toString())){
@@ -287,12 +287,12 @@ public class OrderServiceImpl extends BaseServiceImpl<Order, Long> implements Or
 				putStorageList.addAll(putStorageService.detailsInventory(id, param.getProductId()));
 			}
 		};
-		// 是否是自己的库存
+		// 	是否是自己的库存
 		// include = 0 false
 		// include = 1 true
 		if (putStorageList.size() > 0) {
 			putStorageList = putStorageList.stream().filter(p -> {
-				// 排除公共库存	
+				// 	排除公共库存	
 				if (p.getOrderOutSource() != null) {
 					List<OrderChild> ocList = p.getOrderOutSource().getMaterialRequisition().getOrder()
 							.getOrderChilds();
@@ -305,7 +305,7 @@ public class OrderServiceImpl extends BaseServiceImpl<Order, Long> implements Or
 				return param.isInclude();
 			}).collect(Collectors.toList());
 
-			// 通过入库单拿到所有的生产计划单
+			// 	通过入库单拿到所有的生产计划单
 			List<Map<String, Object>> listMap = new ArrayList<>();
 			putStorageList.forEach(p -> {
 				Map<String, Object> map = new HashMap<String, Object>();
@@ -317,7 +317,7 @@ public class OrderServiceImpl extends BaseServiceImpl<Order, Long> implements Or
 					listMap.add(map);
 				}
 			});
-			// 数据返回格式处理
+			// 	数据返回格式处理
 			if (listMap.size() > 0) {
 				Map<Object, List<Map<String, Object>>> mapOnlineOrderChildList = listMap.stream()
 						.collect(Collectors.groupingBy(m -> m.get("id").toString()));
@@ -333,7 +333,7 @@ public class OrderServiceImpl extends BaseServiceImpl<Order, Long> implements Or
 						map.put("id", o.getUserId());
 						userList.add(map);
 					});
-					// 当是自己库存时，判断下单数量是否大于库存数量，当大于时取库存作为返回数量，小于则取下单数返回 。
+					// 	当是自己库存时，判断下单数量是否大于库存数量，当大于时取库存作为返回数量，小于则取下单数返回 。
 					if (!param.isInclude()) {
 						int num = order.getOrderChilds().stream()
 								.filter(OrderChild -> cu.getId().equals(OrderChild.getUserId()))
@@ -348,9 +348,9 @@ public class OrderServiceImpl extends BaseServiceImpl<Order, Long> implements Or
 					result.add(nmap);
 				});
 			}
-			// 获取公共库存
+			// 	获取公共库存
 			List<PutStorage> publicStorageList = putStorageList.stream()
-					.filter(PutStorage -> PutStorage.getPublicStock() == null && PutStorage.getPublicStock() == 1)
+					.filter(PutStorage -> PutStorage.getPublicStock() != null && PutStorage.getPublicStock() == 1)
 					.collect(Collectors.toList());
 			if (publicStorageList.size() > 0) {
 				publicStorageList.forEach(p -> {
