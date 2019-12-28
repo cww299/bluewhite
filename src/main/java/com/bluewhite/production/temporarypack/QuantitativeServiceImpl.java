@@ -116,8 +116,9 @@ public class QuantitativeServiceImpl extends BaseServiceImpl<Quantitative, Long>
 			quantitative.setPrint(ot.getPrint());
 			quantitative.setFlag(ot.getFlag());
 		} else {
+			int count = dao.findByTimeBetween(DatesUtil.getfristDayOftime(quantitative.getTime()), DatesUtil.getLastDayOftime(quantitative.getTime())).size();
 			quantitative.setQuantitativeNumber(Constants.LHTB + DateUtil.format(quantitative.getTime(), "yyyyMMdd") + 
-					StringUtil.get0LeftString(dao.findByTimeBetween(quantitative.getTime(), DatesUtil.getLastDayOftime(quantitative.getTime())).size()+1,4));
+					StringUtil.get0LeftString((count+1),4));
 			quantitative.setAudit(0);
 			quantitative.setPrint(0);
 			quantitative.setFlag(0);

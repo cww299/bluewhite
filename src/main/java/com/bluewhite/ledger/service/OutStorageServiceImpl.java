@@ -209,8 +209,7 @@ public class OutStorageServiceImpl extends BaseServiceImpl<OutStorage, Long> imp
 		Long warehouseTypeDeliveryId = RoleUtil.getWarehouseTypeDelivery(cu.getRole());
 		SendGoods sendGoods = sendGoodsDao.findOne(id);
 		// 获取登陆库管的仓库出库单剩余数量
-		List<PutStorage> putStorageList = putStorageService.detailsInventory(warehouseTypeDeliveryId,
-				sendGoods.getProductId());
+		List<PutStorage> putStorageList = putStorageService.detailsInventory(warehouseTypeDeliveryId,sendGoods.getProductId());
 		// 获取发货申请人自己的库存
 		List<PutStorage> putStorageListSelf = putStorageList.stream().filter(p -> {
 			if (p.getOrderOutSource() != null) {

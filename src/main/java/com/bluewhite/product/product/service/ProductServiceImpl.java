@@ -22,12 +22,7 @@ import com.bluewhite.common.entity.CurrentUser;
 import com.bluewhite.common.entity.PageParameter;
 import com.bluewhite.common.entity.PageResult;
 import com.bluewhite.common.utils.NumUtils;
-import com.bluewhite.common.utils.RoleUtil;
 import com.bluewhite.common.utils.StringUtil;
-import com.bluewhite.ledger.dao.OutStorageDao;
-import com.bluewhite.ledger.dao.PutStorageDao;
-import com.bluewhite.ledger.entity.OutStorage;
-import com.bluewhite.ledger.entity.Packing;
 import com.bluewhite.ledger.entity.PutStorage;
 import com.bluewhite.ledger.service.PutStorageService;
 import com.bluewhite.product.primecost.cutparts.dao.CutPartsDao;
@@ -347,7 +342,7 @@ public class ProductServiceImpl extends BaseServiceImpl<Product, Long> implement
 			return null;
 		}, page);
 		// 获取所有的仓库类型
-		List<BaseData> baseDataList = baseDataDao.findByTypeAndOrd("warehouseType",param.getWarehouse());
+		List<BaseData> baseDataList = baseDataDao.findByParentId(param.getWarehouse());
 		pages.getContent().forEach(p -> {
 			baseDataList.forEach(b -> {
 				Map<String, Object> map = new HashMap<>();

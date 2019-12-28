@@ -21,13 +21,14 @@ import com.bluewhite.common.entity.PageParameter;
 import com.bluewhite.common.entity.PageResult;
 import com.bluewhite.common.utils.RoleUtil;
 import com.bluewhite.common.utils.StringUtil;
-import com.bluewhite.common.utils.StringUtil;
 import com.bluewhite.ledger.dao.OutStorageDao;
 import com.bluewhite.ledger.dao.PutOutStorageDao;
 import com.bluewhite.ledger.dao.PutStorageDao;
 import com.bluewhite.ledger.entity.PutOutStorage;
 import com.bluewhite.ledger.entity.PutStorage;
 import com.bluewhite.onlineretailers.inventory.service.InventoryService;
+
+import cn.hutool.core.util.StrUtil;
 
 @Service
 public class PutStorageServiceImpl extends BaseServiceImpl<PutStorage, Long> implements PutStorageService {
@@ -121,11 +122,8 @@ public class PutStorageServiceImpl extends BaseServiceImpl<PutStorage, Long> imp
 	}
 
 	@Override
-	public List<PutStorage> detailsInventory(Long warehouseTypeId, Long productId) {
-		List<PutStorage> putStorageList = dao.findByProductId(productId);
-		if (warehouseTypeId != null) {
-			putStorageList = dao.findByWarehouseTypeIdAndProductId(warehouseTypeId, productId);
-		}
+	public List<PutStorage> detailsInventory(Object warehouseTypeId, Long productId) {
+		List<PutStorage> putStorageList = dao.findByWarehouseTypeIdAndProductId(Long.valueOf(warehouseTypeId.toString()), productId);
 		putStorageList.forEach(m -> {
 			// 入库单实际出库数量
 			List<PutOutStorage> outPutStorageList = putOutStorageDao.findByPutStorageId(m.getId());
