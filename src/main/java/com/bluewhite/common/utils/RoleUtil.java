@@ -61,6 +61,9 @@ public class RoleUtil {
 		if (role.contains(Constants.EIGHTFINISHEDWAREHOUSE)) {
 			id = 275;
 		}
+		if (role.contains(Constants.COTWAREHOUSE)) {
+			id = 379;
+		}
 		return id == null ? null : Long.valueOf(id);
 	}
 	
