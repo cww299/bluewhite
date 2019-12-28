@@ -13,7 +13,7 @@
 		#editRoleDiv,#treeDiv{
 			height:90%;
 			float:left;
-			width:50%;
+			width:40%;
 			padding:10px;
 			
 		}
@@ -26,7 +26,7 @@
 			overflow-y: auto;
 		}
 		#userDiv{
-			width:9%;
+			width:19%;
 			margin-left:1%;
 			height:90%;
 			float:left;
