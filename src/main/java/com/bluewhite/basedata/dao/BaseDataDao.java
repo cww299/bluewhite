@@ -4,6 +4,7 @@ import java.util.List;
 
 import com.bluewhite.base.BaseRepository;
 import com.bluewhite.basedata.entity.BaseData;
+import java.lang.Long;
 
 public interface BaseDataDao extends BaseRepository<BaseData, Long>{
 
@@ -20,5 +21,12 @@ public interface BaseDataDao extends BaseRepository<BaseData, Long>{
 	 * @return
 	 */
 	public List<BaseData> findByTypeAndOrd(String type,String ord);
+	
+	/**
+	 * 通过fuid查找
+	 * @param parentid
+	 * @return
+	 */
+	List<BaseData> findByParentId(Long parentid);
 
 }

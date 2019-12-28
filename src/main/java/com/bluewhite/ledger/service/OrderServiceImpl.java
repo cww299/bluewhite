@@ -23,12 +23,14 @@ import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.bluewhite.base.BaseServiceImpl;
 import com.bluewhite.basedata.dao.BaseDataDao;
+import com.bluewhite.basedata.entity.BaseData;
 import com.bluewhite.common.BeanCopyUtils;
 import com.bluewhite.common.ServiceException;
 import com.bluewhite.common.SessionManager;
 import com.bluewhite.common.entity.CurrentUser;
 import com.bluewhite.common.entity.PageParameter;
 import com.bluewhite.common.entity.PageResult;
+import com.bluewhite.common.utils.RoleUtil;
 import com.bluewhite.common.utils.StringUtil;
 import com.bluewhite.ledger.dao.OrderChildDao;
 import com.bluewhite.ledger.dao.OrderDao;
@@ -38,6 +40,8 @@ import com.bluewhite.ledger.entity.OrderChild;
 import com.bluewhite.ledger.entity.PutStorage;
 import com.bluewhite.onlineretailers.inventory.dao.ProcurementDao;
 import com.bluewhite.onlineretailers.inventory.entity.Procurement;
+
+import cn.hutool.core.util.StrUtil;
 
 @Service
 public class OrderServiceImpl extends BaseServiceImpl<Order, Long> implements OrderService {
@@ -271,82 +275,93 @@ public class OrderServiceImpl extends BaseServiceImpl<Order, Long> implements Or
 
 	@Override
 	public List<Map<String, Object>> findListSend(Order param) {
-		// 是否是自己的库存
+		CurrentUser cu = SessionManager.getUserSession();
+		List<Map<String, Object>> result = new ArrayList<>();
+		// 	通过产品查询所有的入库单
+		List<PutStorage> putStorageList = new ArrayList<>();
+		String warehouseTypeId = RoleUtil.getWarehouseTypeIds(param.getProductType());
+		if(StrUtil.isNotBlank(warehouseTypeId.toString())){
+			String [] idsArr = warehouseTypeId.toString().split(",");
+			for(String idString : idsArr){
+				Long id = Long.valueOf(idString);
+				putStorageList.addAll(putStorageService.detailsInventory(id, param.getProductId()));
+			}
+		};
+		// 	是否是自己的库存
 		// include = 0 false
 		// include = 1 true
-		CurrentUser cu = SessionManager.getUserSession();
-		// 通过产品查询所有的入库单
-		List<PutStorage> putStorageList = putStorageService.detailsInventory(null, param.getProductId());
-		putStorageList = putStorageList.stream().filter(p -> {
-			// 排除公共库存
-			if (p.getOrderOutSource() != null) {
-				List<OrderChild> ocList = p.getOrderOutSource().getMaterialRequisition().getOrder().getOrderChilds();
-				for (OrderChild oc : ocList) {
-					if (cu.getId().equals(oc.getUserId())) {
-						return !param.isInclude();
+		if (putStorageList.size() > 0) {
+			putStorageList = putStorageList.stream().filter(p -> {
+				// 	排除公共库存	
+				if (p.getOrderOutSource() != null) {
+					List<OrderChild> ocList = p.getOrderOutSource().getMaterialRequisition().getOrder()
+							.getOrderChilds();
+					for (OrderChild oc : ocList) {
+						if (cu.getId().equals(oc.getUserId())) {
+							return !param.isInclude();
+						}
 					}
 				}
-			}
-			return param.isInclude();
-		}).collect(Collectors.toList());
+				return param.isInclude();
+			}).collect(Collectors.toList());
 
-		// 通过入库单拿到所有的生产计划单
-		List<Map<String, Object>> listMap = new ArrayList<>();
-		putStorageList.forEach(p -> {
-			Map<String, Object> map = new HashMap<String, Object>();
-			if (p.getOrderOutSource() != null) {
-				map.put("putStorageId", p.getId());
-				map.put("id", p.getOrderOutSourceId());
-				map.put("order", p.getOrderOutSource().getMaterialRequisition().getOrder());
-				map.put("number", p.getSurplusNumber());
-				listMap.add(map);
-			}
-		});
-
-		// 数据返回格式处理
-		List<Map<String, Object>> result = new ArrayList<>();
-		if (listMap.size() > 0) {
-			Map<Object, List<Map<String, Object>>> mapOnlineOrderChildList = listMap.stream()
-					.collect(Collectors.groupingBy(m -> m.get("id").toString()));
-			mapOnlineOrderChildList.forEach((k, slist) -> {
-				Map<String, Object> nmap = new HashMap<>();
-				IntSummaryStatistics sumcc = slist.stream()
-						.collect(Collectors.summarizingInt(e -> Integer.valueOf(e.get("number").toString())));
-				Order order = (Order) slist.get(0).get("order");
-				List<Map<String, Object>> userList = new ArrayList<>();
-				order.getOrderChilds().forEach(o -> {
-					Map<String, Object> map = new HashMap<String, Object>();
-					map.put("name", o.getUser().getUserName());
-					map.put("id", o.getUserId());
-					userList.add(map);
-				});
-				// 当是自己库存时，判断下单数量是否大于库存数量，当大于时取库存作为返回数量，小于则取下单数返回 。
-				if (!param.isInclude()) {
-					int num = order.getOrderChilds().stream()
-							.filter(OrderChild -> cu.getId().equals(OrderChild.getUserId()))
-							.mapToInt(OrderChild::getChildNumber).sum();
-					nmap.put("number", num >= (int) sumcc.getSum() ? (int) sumcc.getSum() : num);
-				} else {
-					nmap.put("number", sumcc.getSum());
-				}
-				nmap.put("bacth", order.getBacthNumber());
-				nmap.put("userList", userList);
-				nmap.put("putStorageId", slist.get(0).get("putStorageId"));
-				result.add(nmap);
-			});
-		}
-		// 获取公共库存
-		List<PutStorage> publicStorageList = putStorageList.stream()
-				.filter(PutStorage -> PutStorage.getPublicStock() == null && PutStorage.getPublicStock() == 1).collect(Collectors.toList());
-		if (publicStorageList.size() > 0) {
-			publicStorageList.forEach(p -> {
+			// 	通过入库单拿到所有的生产计划单
+			List<Map<String, Object>> listMap = new ArrayList<>();
+			putStorageList.forEach(p -> {
 				Map<String, Object> map = new HashMap<String, Object>();
-				map.put("putStorageId", p.getId());
-				map.put("bacth", p.getSerialNumber());
-				map.put("number", p.getSurplusNumber());
-				map.put("userList", "");
-				result.add(map);
+				if (p.getOrderOutSource() != null) {
+					map.put("putStorageId", p.getId());
+					map.put("id", p.getOrderOutSourceId());
+					map.put("order", p.getOrderOutSource().getMaterialRequisition().getOrder());
+					map.put("number", p.getSurplusNumber());
+					listMap.add(map);
+				}
 			});
+			// 	数据返回格式处理
+			if (listMap.size() > 0) {
+				Map<Object, List<Map<String, Object>>> mapOnlineOrderChildList = listMap.stream()
+						.collect(Collectors.groupingBy(m -> m.get("id").toString()));
+				mapOnlineOrderChildList.forEach((k, slist) -> {
+					Map<String, Object> nmap = new HashMap<>();
+					IntSummaryStatistics sumcc = slist.stream()
+							.collect(Collectors.summarizingInt(e -> Integer.valueOf(e.get("number").toString())));
+					Order order = (Order) slist.get(0).get("order");
+					List<Map<String, Object>> userList = new ArrayList<>();
+					order.getOrderChilds().forEach(o -> {
+						Map<String, Object> map = new HashMap<String, Object>();
+						map.put("name", o.getUser().getUserName());
+						map.put("id", o.getUserId());
+						userList.add(map);
+					});
+					// 	当是自己库存时，判断下单数量是否大于库存数量，当大于时取库存作为返回数量，小于则取下单数返回 。
+					if (!param.isInclude()) {
+						int num = order.getOrderChilds().stream()
+								.filter(OrderChild -> cu.getId().equals(OrderChild.getUserId()))
+								.mapToInt(OrderChild::getChildNumber).sum();
+						nmap.put("number", num >= (int) sumcc.getSum() ? (int) sumcc.getSum() : num);
+					} else {
+						nmap.put("number", sumcc.getSum());
+					}
+					nmap.put("bacth", order.getBacthNumber());
+					nmap.put("userList", userList);
+					nmap.put("putStorageId", slist.get(0).get("putStorageId"));
+					result.add(nmap);
+				});
+			}
+			// 	获取公共库存
+			List<PutStorage> publicStorageList = putStorageList.stream()
+					.filter(PutStorage -> PutStorage.getPublicStock() != null && PutStorage.getPublicStock() == 1)
+					.collect(Collectors.toList());
+			if (publicStorageList.size() > 0) {
+				publicStorageList.forEach(p -> {
+					Map<String, Object> map = new HashMap<String, Object>();
+					map.put("putStorageId", p.getId());
+					map.put("bacth", p.getSerialNumber());
+					map.put("number", p.getSurplusNumber());
+					map.put("userList", "");
+					result.add(map);
+				});
+			}
 		}
 		return result;
 	}

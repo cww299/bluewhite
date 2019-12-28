@@ -231,41 +231,50 @@ public class OrderOutSourceServiceImpl extends BaseServiceImpl<OrderOutSource, L
 			return null;
 		}, page);
 		PageResult<OrderOutSource> result = new PageResult<>(pages, page);
-		result.getRows().forEach(o->{
-			//1.入库,机工单，展示入库后剩余数量
-			List<PutStorage> putStorageList = putStorageService.findByWarehouseTypeIdAndOrderOutSourceId(warehouseTypeDeliveryId, o.getId());
-			if(putStorageList.size()>0){
-				int number = putStorageList.stream().mapToInt(PutStorage::getArrivalNumber).sum();
-				o.setMechanicalInventory(o.getProcessNumber()-number);
-			}
-			//2.出库,针工单，需要发货总数，已发货数量，未发货数量，库存状态
-			//总库存数量
-			List<PutStorage> allPutStorageList = putStorageService.detailsInventory(warehouseTypeDeliveryId, o.getMaterialRequisition().getOrder().getProductId());
-			if(allPutStorageList.size()>0){
-				int sumNumber = allPutStorageList.stream().mapToInt(PutStorage::getArrivalNumber).sum();			
-			}
-			//根据加工单获取已发货数量
-			List<OutStorage> outStorageList = outStorageService.findByOrderOutSourceId(o.getId());
-			if(outStorageList.size()>0){
-				int sendNumber = outStorageList.stream().filter(OutStorage->OutStorage.getOrderOutSourceId().equals(o.getId())).mapToInt(OutStorage::getArrivalNumber).sum();
-				//皮壳剩余数量
-				o.setCotSurplusNumber(o.getProcessNumber()-sendNumber);
-			}
-			List<Map<String, Object>> mapsList = outStorageService.getOrderOutSourcePutStorageDetails(o.getId());
-			if(mapsList.size()>0){
-				int status = 0;
-				int number = mapsList.stream().mapToInt(m->Integer.valueOf(m.get("number").toString())).sum();
-				if(o.getProcessNumber()>number){
-					status = 1;
+		if(warehouseTypeDeliveryId!=null){
+			result.getRows().forEach(o->{
+				//成品
+				
+				
+				
+				//皮壳
+				//1.入库,机工单，展示入库后剩余数量
+				List<PutStorage> putStorageList = putStorageService.findByWarehouseTypeIdAndOrderOutSourceId(warehouseTypeDeliveryId, o.getId());
+				o.setMechanicalInventory(o.getProcessNumber());
+				if(putStorageList.size()>0){
+					int number = putStorageList.stream().mapToInt(PutStorage::getArrivalNumber).sum();
+					o.setMechanicalInventory(o.getProcessNumber()-number);
 				}
-				if(number<=0){
-					status = 2;
+				//2.出库,针工单，需要发货总数，已发货数量，未发货数量，库存状态
+				//总库存数量
+				List<PutStorage> allPutStorageList = putStorageService.detailsInventory(warehouseTypeDeliveryId, o.getMaterialRequisition().getOrder().getProductId());
+				if(allPutStorageList.size()>0){
+					int sumNumber = allPutStorageList.stream().mapToInt(PutStorage::getArrivalNumber).sum();			
 				}
-				o.setCotStatus(status);
-			}else{
-				o.setCotStatus(2);
-			}
-		});
+				//根据加工单获取已发货数量
+				List<OutStorage> outStorageList = outStorageService.findByOrderOutSourceId(o.getId());
+				o.setCotSurplusNumber(o.getProcessNumber());
+				if(outStorageList.size()>0){
+					int sendNumber = outStorageList.stream().filter(OutStorage->OutStorage.getOrderOutSourceId().equals(o.getId())).mapToInt(OutStorage::getArrivalNumber).sum();
+					//皮壳剩余数量
+					o.setCotSurplusNumber(o.getProcessNumber()-sendNumber);
+				}
+				List<Map<String, Object>> mapsList = outStorageService.getOrderOutSourcePutStorageDetails(o.getId());
+				if(mapsList.size()>0){
+					int status = 0;
+					int number = mapsList.stream().mapToInt(m->Integer.valueOf(m.get("number").toString())).sum();
+					if(o.getCotSurplusNumber()>number){
+						status = 1;
+					}
+					if(number<=0){
+						status = 2;
+					}
+					o.setCotStatus(status);
+				}else{
+					o.setCotStatus(2);
+				}
+			});
+		}
 		return result;
 	}
 

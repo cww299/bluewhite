@@ -28,7 +28,6 @@ import com.bluewhite.common.utils.NumUtils;
 import com.bluewhite.common.utils.StringUtil;
 import com.bluewhite.finance.attendance.dao.AttendancePayDao;
 import com.bluewhite.finance.attendance.entity.AttendancePay;
-import com.bluewhite.production.task.service.TaskService;
 import com.bluewhite.system.user.entity.User;
 import com.bluewhite.system.user.service.UserService;
 
@@ -41,8 +40,6 @@ public class AttendancePayServiceImpl extends BaseServiceImpl<AttendancePay, Lon
 	private BaseDataService service;
 	@Autowired
 	private UserService userService;
-	@Autowired
-	private TaskService taskService;
 
 	@Override
 	public PageResult<AttendancePay> findPages(AttendancePay param, PageParameter page) {
@@ -181,11 +178,11 @@ public class AttendancePayServiceImpl extends BaseServiceImpl<AttendancePay, Lon
 						user.getUserName() + sdf.format(attendance.getAllotTime()) + "日已存在考情记录，无需再次添加，请重新选择");
 			}
 			if (attendancePay.getTurnWorkTimes()[i] != 0 || attendancePay.getOvertimes()[i] != 0) {
-				// 出勤时长
+				//	出勤时长
 				attendance.setTurnWorkTime(attendancePay.getTurnWorkTimes()[i]);
-				// 加班时长
+				//	加班时长
 				attendance.setOverTime(attendancePay.getOvertimes()[i]);
-				// 工作时长
+				//	工作时长
 				attendance.setWorkTime(
 						NumUtils.sum(attendancePay.getTurnWorkTimes()[i], attendancePay.getOvertimes()[i]));
 				attendance.setWorkPrice(user.getPrice());
@@ -229,7 +226,7 @@ public class AttendancePayServiceImpl extends BaseServiceImpl<AttendancePay, Lon
 					DatesUtil.getfristDayOftime(DatesUtil.getFirstDayOfMonth(attendancePay.getAllotTime())));
 			attendancePay.setOrderTimeEnd(
 					DatesUtil.getLastDayOftime(DatesUtil.getLastDayOfMonth(attendancePay.getAllotTime())));
-			// 获取所有的工资流水
+			// 	获取所有的工资流水
 			List<AttendancePay> attendancePayList = findAttendancePay(attendancePay);
 			for (AttendancePay pay : attendancePayList) {
 				pay.setWorkPrice(attendancePay.getWorkPrice());
@@ -250,7 +247,7 @@ public class AttendancePayServiceImpl extends BaseServiceImpl<AttendancePay, Lon
 		oldAttendancePay.setPayNumber(NumUtils.mul(oldAttendancePay.getWorkPrice(), oldAttendancePay.getWorkTime()));
 		dao.save(oldAttendancePay);
 //		if (oldAttendancePay.getType() == 2) {
-			// 获取该员工当天做过的所有任务
+			// 	获取该员工当天做过的所有任务
 //			List<Task> taskList = taskService.findByUserIdAndAllotTime(String.valueOf(oldAttendancePay.getUserId()),
 //					DatesUtil.getfristDayOftime(oldAttendancePay.getAllotTime()),
 //					DatesUtil.getLastDayOftime(oldAttendancePay.getAllotTime()));
