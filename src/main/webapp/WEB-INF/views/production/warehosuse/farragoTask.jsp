@@ -48,8 +48,8 @@
 							<td>时间:</td>
 							<td><input id="startTime" style="width: 180px;"  placeholder="请输入时间" class="layui-input laydate-icon"></td>
 							<td>&nbsp;&nbsp;</td>
-							<td>状态:</td>
-							<td><select name="status"><option value="">请选择</option><option value="0">进行中</option><option value="1">完成</option></select></td>
+							<td id="block">状态:</td>
+							<td id="block2" style="width: 100px;"><select id="status" name="status"><option value="">请选择</option><option value="0">进行中</option><option value="1">已完成</option></select></td>
 							<td>&nbsp;&nbsp;</td>
 							<td>
 								<div class="layui-inline">
@@ -312,6 +312,8 @@
 			
 			 var col="";
 			 if(mobileType){
+				 $("#block").hide();
+				 $("#block2").hide();
 				 col = [
 					  {type: 'checkbox',align: 'center',},
 					  {field: "bacth",title: "批次名",align: 'center',search: true,edit: false,},
@@ -327,13 +329,12 @@
 			 if(mobileType==false){
 				 col = [
 					  {type: 'checkbox',align: 'center',},
-					  {field: "bacth",title: "批次名",align: 'center',width:80, search: true,edit: false,},
 					  {field: "allotTime",title: "时间",width:160, height:'50px', align: 'center',},
-					  {field: "name",title: "工序名",width:270,align: 'center',},
-					  {field: "time",title: "时间",width:70,align: 'center',edit: false,},
+					  {field: "name",title: "工序名",width:200,align: 'center',},
+					  {field: "time",title: "时间",width:60,align: 'center',edit: false,},
 					  {field: "remarks",title: "备注",align: 'center',edit: false,},
 					  {field: "performancePrice",title: "加绩工资",width:70,align: 'center',templet:function(d){return parseFloat((d.performancePrice==null ? 0 : d.performancePrice).toFixed(3))}},
-					  {field: "status",title: "状态",align: 'center',width:90,templet:function(d){return d.status==0 ? "<span class='layui-badge '>进行中</span>" :"<span class='layui-badge layui-bg-green'>完成</span> "}},
+					  {field: "status",title: "状态",align: 'center',width:90,templet:function(d){return d.status==0 ? "<span class='layui-badge '>进行中</span>" :"<span class='layui-badge layui-bg-green'>已完成</span> "}},
 				 ]
 			 }
 			
@@ -348,8 +349,8 @@
 					orderTimeBegin:firstdate,
 			  		orderTimeEnd:lastdate,
 				},
-				limits:[15,20,50,100,500,1000],	
-				limit:15,
+				limits:[14,20,50,100,500,1000],	
+				limit:14,
 				request:{
 					pageName: 'page' ,//页码的参数名称，默认：page
 					limitName: 'size' //每页数据量的参数名，默认：limit

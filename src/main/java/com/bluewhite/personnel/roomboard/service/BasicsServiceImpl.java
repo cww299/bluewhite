@@ -73,7 +73,7 @@ public class BasicsServiceImpl extends BaseServiceImpl<Basics, Long>
 			double sum2=0;//当月应聘被录取人员数量
 			double sum3=0;//计划招聘人数
 			double ReceivePrice=0;//奖金
-			List<Reward> rewards=rewardDao.findByTypeAndTimeBetween(0, orderTimeBegin, orderTimeEnd);
+			List<Reward> rewards=rewardDao.findByTypeAndTimeBetween(1, orderTimeBegin, orderTimeEnd);
 			for (Reward reward : rewards) {
 				ReceivePrice=NumUtils.sum(ReceivePrice, reward.getPrice());
 			}
@@ -200,13 +200,15 @@ public class BasicsServiceImpl extends BaseServiceImpl<Basics, Long>
 		List<Reward> rewards=rewardDao.findByTypeAndTimeBetween(1,DatesUtil.getFirstDayOfMonth(basics.getTime()), DatesUtil.getLastDayOfMonth(basics.getTime()));
 		Basics basics2= findBasics(basics);
 		List<BaseData> baseDatas= baseDataDao.findByType("orgName");
+		List<Advertisement> list4=advertisementDao.findByTypeAndMold(1, 0);
 		for (BaseData baseData : baseDatas) {
 			long ps1=baseData.getId();
 			if(ps1!=2 && ps1!=1 && ps1!=3){
 			allMap =new HashMap<>();
 			Long f=list.stream().filter(Recruit->Recruit.getOrgNameId().equals(baseData.getId()) && Recruit.getState().equals(1) /*&& Recruit.getUser().getQuit().equals(0)*/).count();//已入职且在职
 			//得到入职且在职的人
-			List<Recruit> list2= list.stream().filter(Recruit->Recruit.getOrgNameId().equals(baseData.getId()) && Recruit.getState().equals(1) && Recruit.getUser().getQuit().equals(0)).collect(Collectors.toList());
+			//List<Recruit> list2= list.stream().filter(Recruit->Recruit.getUser()!=null && Recruit.getUser().getOrgNameId().equals(baseData.getId()) && Recruit.getState().equals(1)).collect(Collectors.toList());
+			List<Advertisement>list2=list4.stream().filter(Advertisement->Advertisement.getRecruitName().getUser()!=null && Advertisement.getRecruitName().getUser().getOrgNameId().equals(baseData.getId())).collect(Collectors.toList());
 			List<Plan> plans= planDao.findByTimeBetweenAndOrgNameId(DatesUtil.getFirstDayOfMonth(basics.getTime()), DatesUtil.getLastDayOfMonth(basics.getTime()), baseData.getId());
 			double sum3 = 0;
 			for (Plan plan : plans) {
@@ -254,45 +256,39 @@ public class BasicsServiceImpl extends BaseServiceImpl<Basics, Long>
 			double plan= NumUtils.mul(basics2.getPlanPrice(),sum3);//计划的应聘费用
 			double ReceivePrice=0;//奖金
 			double trainPrice=0;//培训费
-			if (list2.size()>0) {
-				for (Recruit recruit : list2) {
-					/*
-					 * 查询单个人的培训汇总
-					 */
-					List<Advertisement> advertisements=advertisementDao.findByRecruitIdAndTypeAndMold(recruit.getId(), 1,0);
-					List<Advertisement> listFilter2= advertisements.stream().filter(Advertisement->(Advertisement.getStartTime().compareTo(orderTimeBegin)==-1 && Advertisement.getEndTime().compareTo(orderTimeEnd)==1)
-							  ||(Advertisement.getStartTime().compareTo(orderTimeBegin)==1 && Advertisement.getStartTime().compareTo(orderTimeEnd)==-1 && Advertisement.getEndTime().compareTo(orderTimeEnd)==1)
-							  ||(Advertisement.getStartTime().compareTo(orderTimeBegin)==-1 && Advertisement.getEndTime().compareTo(orderTimeBegin)==1 && Advertisement.getEndTime().compareTo(orderTimeEnd)==-1)
-							  ||(Advertisement.getStartTime().compareTo(orderTimeBegin)!=-1 && Advertisement.getEndTime().compareTo(orderTimeEnd)!=1)
-								).collect(Collectors.toList());
-					if (listFilter2.size()>0) {
-						for (Advertisement advertisement : listFilter2) {
-							//过滤 1.开始时间在区间时间之前 结束时间在区间时间之后（4.1  5.1~5.31  6.1）
-							if (advertisement.getStartTime().compareTo(orderTimeBegin)==-1 && advertisement.getEndTime().compareTo(orderTimeEnd)==1) {
-								long day=DatesUtil.getDaySub(advertisement.getStartTime(),advertisement.getEndTime());//这条记录一共多少天
-								long day1=DatesUtil.getDaySub(orderTimeBegin,orderTimeEnd);//筛选后一共多少天
-								trainPrice=trainPrice+NumUtils.mul(NumUtils.div(Double.valueOf(day1).doubleValue(),Double.valueOf(day).doubleValue(),6),advertisement.getPrice());//筛选后的广告费
-								
-							}
-							//2. 开始时间在区间时间之后 结束时间在区间时间之后 （5.2  5.1~5.31  6.1）
-							if (advertisement.getStartTime().compareTo(orderTimeBegin)==1 && advertisement.getStartTime().compareTo(orderTimeEnd)==-1&& advertisement.getEndTime().compareTo(orderTimeEnd)==1) {
-								long day=DatesUtil.getDaySub(advertisement.getStartTime(),advertisement.getEndTime());//这条记录一共多少天
-								long day1=DatesUtil.getDaySub(advertisement.getStartTime(),orderTimeEnd);//筛选后一共多少天
-								trainPrice=trainPrice+NumUtils.mul(NumUtils.div(Double.valueOf(day1).doubleValue(),Double.valueOf(day).doubleValue(),6),advertisement.getPrice());//筛选后的广告费
-							}
-							//过滤 3.开始时间在区间时间之前 结束时间在区间时间之前 （4.1  5.1~5.31  5.30）
-							if (advertisement.getStartTime().compareTo(orderTimeBegin)==-1&& advertisement.getEndTime().compareTo(orderTimeBegin)==1 && advertisement.getEndTime().compareTo(orderTimeEnd)==-1) {
-								long day=DatesUtil.getDaySub(advertisement.getStartTime(),advertisement.getEndTime());//这条记录一共多少天
-								long day1=DatesUtil.getDaySub(orderTimeBegin,advertisement.getEndTime());//筛选后一共多少天
-								trainPrice=trainPrice+NumUtils.mul(NumUtils.div(Double.valueOf(day1).doubleValue(),Double.valueOf(day).doubleValue(),6),advertisement.getPrice());//筛选后的广告费
-							}
-							//4. 开始时间在区间时间之后 结束时间在区间时间之前（5.2  5.1~5.31  5.3）
-							if (advertisement.getStartTime().compareTo(orderTimeBegin)!=-1 && advertisement.getEndTime().compareTo(orderTimeEnd)!=1) {
-								trainPrice=trainPrice+advertisement.getPrice();
-							}
-						}
+			List<Advertisement> listFilter2= list2.stream().filter(Advertisement->(Advertisement.getStartTime().compareTo(orderTimeBegin)==-1 && Advertisement.getEndTime().compareTo(orderTimeEnd)==1)
+					  ||(Advertisement.getStartTime().compareTo(orderTimeBegin)!=-1 && Advertisement.getStartTime().compareTo(orderTimeEnd)==-1 && Advertisement.getEndTime().compareTo(orderTimeEnd)==1)
+					  ||(Advertisement.getStartTime().compareTo(orderTimeBegin)==-1 && Advertisement.getEndTime().compareTo(orderTimeBegin)==1 && Advertisement.getEndTime().compareTo(orderTimeEnd)==-1)
+					  ||(Advertisement.getStartTime().compareTo(orderTimeBegin)!=-1 && Advertisement.getEndTime().compareTo(orderTimeEnd)!=1)
+						).collect(Collectors.toList());
+			if (listFilter2.size()>0) {
+				for (Advertisement advertisement : listFilter2) {
+					//过滤 1.开始时间在区间时间之前 结束时间在区间时间之后（4.1  5.1~5.31  6.1）
+					if (advertisement.getStartTime().compareTo(orderTimeBegin)==-1 && advertisement.getEndTime().compareTo(orderTimeEnd)==1) {
+						long day=DatesUtil.getDaySub(advertisement.getStartTime(),advertisement.getEndTime());//这条记录一共多少天
+						long day1=DatesUtil.getDaySub(orderTimeBegin,orderTimeEnd);//筛选后一共多少天
+						//trainPrice=trainPrice+NumUtils.mul(NumUtils.div(Double.valueOf(day1).doubleValue(),Double.valueOf(day).doubleValue(),6),advertisement.getPrice());//筛选后的广告费
+						trainPrice=NumUtils.sum(trainPrice,NumUtils.mul(NumUtils.div(Double.valueOf(day1).doubleValue(),Double.valueOf(day).doubleValue(),6),advertisement.getPrice()));
 					}
-					
+					//2. 开始时间在区间时间之后 结束时间在区间时间之后 （5.2  5.1~5.31  6.1）
+					if (advertisement.getStartTime().compareTo(orderTimeBegin)!=-1 && advertisement.getStartTime().compareTo(orderTimeEnd)==-1&& advertisement.getEndTime().compareTo(orderTimeEnd)==1) {
+						long day=DatesUtil.getDaySub(advertisement.getStartTime(),advertisement.getEndTime());//这条记录一共多少天
+						long day1=DatesUtil.getDaySub(advertisement.getStartTime(),orderTimeEnd);//筛选后一共多少天
+						//trainPrice=trainPrice+NumUtils.mul(NumUtils.div(Double.valueOf(day1).doubleValue(),Double.valueOf(day).doubleValue(),6),advertisement.getPrice());//筛选后的广告费
+						trainPrice=NumUtils.sum(trainPrice,NumUtils.mul(NumUtils.div(Double.valueOf(day1).doubleValue(),Double.valueOf(day).doubleValue(),6),advertisement.getPrice()));
+					}
+					//过滤 3.开始时间在区间时间之前 结束时间在区间时间之前 （4.1  5.1~5.31  5.30）
+					if (advertisement.getStartTime().compareTo(orderTimeBegin)==-1&& advertisement.getEndTime().compareTo(orderTimeBegin)==1 && advertisement.getEndTime().compareTo(orderTimeEnd)==-1) {
+						long day=DatesUtil.getDaySub(advertisement.getStartTime(),advertisement.getEndTime());//这条记录一共多少天
+						long day1=DatesUtil.getDaySub(orderTimeBegin,advertisement.getEndTime());//筛选后一共多少天
+						//trainPrice=trainPrice+NumUtils.mul(NumUtils.div(Double.valueOf(day1).doubleValue(),Double.valueOf(day).doubleValue(),6),advertisement.getPrice());//筛选后的广告费
+						trainPrice=NumUtils.sum(trainPrice,NumUtils.mul(NumUtils.div(Double.valueOf(day1).doubleValue(),Double.valueOf(day).doubleValue(),6),advertisement.getPrice()));
+					}
+					//4. 开始时间在区间时间之后 结束时间在区间时间之前（5.2  5.1~5.31  5.3）
+					if (advertisement.getStartTime().compareTo(orderTimeBegin)!=-1 && advertisement.getEndTime().compareTo(orderTimeEnd)!=1) {
+						//trainPrice=trainPrice+advertisement.getPrice();
+						trainPrice=NumUtils.sum(trainPrice,advertisement.getPrice());
+					}
 				}
 			}
 			List<Reward>rewards2=rewards.stream().filter(Reward-> Reward.getRecruitName().getUser().getOrgNameId()!=null && Reward.getRecruitName().getUser().getOrgNameId().equals(baseData.getId())).collect(Collectors.toList());
