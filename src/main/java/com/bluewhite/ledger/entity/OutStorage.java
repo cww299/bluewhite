@@ -15,6 +15,7 @@ import javax.persistence.Table;
 import javax.persistence.Transient;
 
 import com.bluewhite.base.BaseEntity;
+import com.bluewhite.basedata.entity.BaseData;
 import com.bluewhite.product.product.entity.Product;
 import com.bluewhite.system.user.entity.User;
 
@@ -123,6 +124,19 @@ public class OutStorage extends BaseEntity<Long> {
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "user_storage_id", referencedColumnName = "id", insertable = false, updatable = false)
 	private User userStorage;
+	
+	/**
+	 * 仓库种类id
+	 */
+	@Column(name = "warehouse_type_id")
+	private Long warehouseTypeId;
+
+	/**
+	 * 仓库种类
+	 */
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "warehouse_type_id", referencedColumnName = "id", insertable = false, updatable = false)
+	private BaseData warehouseType;
 
 	/**
 	 * 物料名称
@@ -155,6 +169,22 @@ public class OutStorage extends BaseEntity<Long> {
 	
 	
 	
+
+	public Long getWarehouseTypeId() {
+		return warehouseTypeId;
+	}
+
+	public void setWarehouseTypeId(Long warehouseTypeId) {
+		this.warehouseTypeId = warehouseTypeId;
+	}
+
+	public BaseData getWarehouseType() {
+		return warehouseType;
+	}
+
+	public void setWarehouseType(BaseData warehouseType) {
+		this.warehouseType = warehouseType;
+	}
 
 	public Long getOrderOutSourceId() {
 		return orderOutSourceId;

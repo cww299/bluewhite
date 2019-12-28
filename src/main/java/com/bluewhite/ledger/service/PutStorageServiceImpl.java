@@ -15,6 +15,7 @@ import org.springframework.util.StringUtils;
 
 import com.bluewhite.base.BaseServiceImpl;
 import com.bluewhite.common.Constants;
+import com.bluewhite.common.ServiceException;
 import com.bluewhite.common.SessionManager;
 import com.bluewhite.common.entity.CurrentUser;
 import com.bluewhite.common.entity.PageParameter;
@@ -76,13 +77,11 @@ public class PutStorageServiceImpl extends BaseServiceImpl<PutStorage, Long> imp
 			}
 			// 按库位
 			if (param.getStorageLocationId() != null) {
-				predicate.add(
-						cb.equal(root.get("storageLocation").get("id").as(Long.class), param.getStorageLocationId()));
+				predicate.add(cb.equal(root.get("storageLocation").get("id").as(Long.class), param.getStorageLocationId()));
 			}
-			// 按库位
+			// 按仓库种类
 			if (param.getWarehouseTypeId() != null) {
-				predicate.add(
-						cb.equal(root.get("warehouseTypeId").as(Long.class), param.getWarehouseTypeId()));
+				predicate.add(cb.equal(root.get("warehouseTypeId").as(Long.class), param.getWarehouseTypeId()));
 			}
 			// 按到货日期
 			if (!StringUtils.isEmpty(param.getOrderTimeBegin()) && !StringUtils.isEmpty(param.getOrderTimeEnd())) {
@@ -114,7 +113,11 @@ public class PutStorageServiceImpl extends BaseServiceImpl<PutStorage, Long> imp
 			String[] idStrings = ids.split(",");
 			for (String idString : idStrings) {
 				Long id = Long.parseLong(idString);
-				delete(id);
+				try {
+					delete(id);
+				} catch (Exception e) {
+					throw new ServiceException("该入库单已有出库记录，无法撤销");
+				}
 				count++;
 			}
 		}
