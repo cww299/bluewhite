@@ -306,7 +306,7 @@ layui.extend({
 		if(pid){
 			var productType = $('input[name="productType"]:checked').val();
 			table.reload('otherWarehouseTable',{
-				url: myutil.config.ctx+'/ledger/getOrderSend?include=1?productType='+productType,
+				url: myutil.config.ctx+'/ledger/getOrderSend?include=1&productType='+productType,
 				where:{
 					productId: pid,
 				},
