@@ -304,14 +304,15 @@ layui.extend({
 	function getWarehouseInfo(){
 		var pid = $('#productIdHidden').val();
 		if(pid){
+			var productType = $('input[name="productType"]:checked').val();
 			table.reload('otherWarehouseTable',{
-				url: myutil.config.ctx+'/ledger/getOrderSend?include=1',
+				url: myutil.config.ctx+'/ledger/getOrderSend?include=1?productType='+productType,
 				where:{
 					productId: pid,
 				},
 			})
 			myutil.getData({
-				url: myutil.config.ctx+'/ledger/getOrderSend?include=0&productId='+pid,
+				url: myutil.config.ctx+'/ledger/getOrderSend?include=0&productId='+pid+'&productType='+productType,
 				success:function(d){
 					myNumber = 0;
 					layui.each(d,function(index,item){
