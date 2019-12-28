@@ -120,8 +120,8 @@ layui.extend({
 			       { title:'跟单人',   field:'user_userName',	width:120,},
 			       { title:'加工点',   field:'customer_name',	width:120,},
 			       { title:'是否外发',   field:'outsource',	transData:{ data:['否','是'],}, width:100,},];
-				if(productionInput.type==3)
-					arr.push({ title:'剩余数量',   field:'mechanicalInventory',width:100,	});
+				if(productionInput.type==3 || productionInput.type==2)
+					arr.push({ title:'剩余数量',   field:'remainingInventory',width:100,	});
 				else if(productionInput.type==4){
 					arr.push({ title:'剩余数量',   field:'cotSurplusNumber',	width:100,});
 					arr.push({ title:'库存状态',   field:'cotStatus',	transData:{data:['库存充足','库存不足','无库存',]}, width:100,});
