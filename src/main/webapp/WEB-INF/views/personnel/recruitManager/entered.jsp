@@ -116,7 +116,10 @@
 	
 			<div class="layui-form-item">
 				<label class="layui-form-label" style="width: 100px;">培训导师</label>
-				<div class="layui-input-inline" id="userId2">
+				<div class="layui-input-inline">
+					<select name="userId"  lay-verify="required" id="userId2" lay-search="true">
+								
+					</select>
 				</div>
 			</div>
 			
@@ -229,7 +232,55 @@ layui.config({
 		 		}) 
 		 	}
 	 	})
-	 			
+	 		
+	 	var htmlr='<option value="">请选择</option>';
+						 $.ajax({
+								url: '${ctx}/system/user/findUserList',
+								data:{
+									foreigns:0,
+									quit:0,
+									isAdmin:0,
+								},
+								type: "GET",
+								async: false,
+								success: function(result) {
+									var re = /^[0-9]+.?[0-9]*$/
+									$(result.data).each(function(i, o) {
+										htmlr += '<option value=' + o.id + '>' + o.userName + '</option>'
+									})
+									$("#userId2").html(htmlr);
+									layui.form.render()
+								},
+								error: function() {
+									layer.msg("操作失败！", {
+										icon: 2
+									});
+									layer.close(index);
+								}
+							});
+	 	
+						 var fn1 = function(field) {
+								return function(d) {
+									return [
+										'<select name="selectOne" class="selectop" lay-filter="lay_selecte" lay-search="true"  data-value="' + d.userId + '">' +
+										htmlr +
+										'</select>'
+									].join('');//数组转字符串
+
+								};
+							};
+						var fn2 = function(field) {
+							return function(d) {
+								return [
+									'<select name="selectTwo" class="selectop" lay-filter="lay_selecte" lay-search="true"  data-value="' + d.qualified + '">' ,
+									'<option value="">请选择</option>',	
+									'<option value="0">否</option>',
+									'<option value="1">是</option>',
+									'</select>'
+								].join('');//数组转字符串
+
+							};
+						};	
 		table.render({
 			elem:'#trainTable',
 			url:'${ctx}/personnel/getAdvertisement?type=1&mold=0',
@@ -246,9 +297,9 @@ layui.config({
 			       {align:'center', title:'开始时间',field:'startTime',edit: false, 	},
 			       {align:'center', title:'结束时间',field:'endTime',	  edit: false,}, 
 			       {align:'center', title:'培训内容',field:'train',   edit: true,},
-			       {align:'center', title:'培训导师',field:'userId',  edit: false, templet: function(d){return d.user==null ? "" : d.user.userName}, },
+			       {align:'center', title:'培训导师',field:'userId',  edit: false,templet:fn1('selectOne'), },
 			       {align:'center', title:'培训成本',field:'price',   edit: true,},
-			       {align:'center', title:'是否合格',field:'qualified',edit: false, templet: getQualifiedSelect(),  },
+			       {align:'center', title:'是否合格',field:'qualified',edit: false, templet:fn2('selectTwo'),  },
 			       {align:'center', title:'培训类型',field:'mold',edit: false, templet: function(d){if(d.mold==0){return "<span class='layui-badge layui-bg-green'>入职培训</span>"} if(d.mold==1){return "<span class='layui-badge'>内部培训</span>"}},  },
 			       ]],
 			done:function(){
@@ -286,8 +337,34 @@ layui.config({
 					updateAjax(postData);
 				})
 				form.render();
-			}
+			},
+			done: function(res, curr, count) {
+				var tableView = this.elem.next();
+				var tableElem = this.elem.next('.layui-table-view');
+				layui.each(tableElem.find('.layui-table-box').find('select'), function(index, item) {
+					var elem = $(item);
+					elem.val(elem.data('value'));
+				});
+				form.render();
+						},
 		})
+				form.on('select(lay_selecte)', function(data) {
+						var selectElem = $(data.elem);
+						var tdElem = selectElem.closest('td');
+						var trElem = tdElem.closest('tr');
+						var tableView = trElem.closest('.layui-table-view');
+						var field = tdElem.data('field');
+						var id = table.cache[tableView.attr('lay-id')][trElem.data('index')].id
+						var selectId=$(".selectop").find("option:selected").data('id')
+						table.cache[tableView.attr('lay-id')][trElem.data('index')][tdElem.data('field')] = data.value;
+					    var index = $(data.elem).closest('tr').data('index');
+						 var postData = {
+							id:id,
+							[field]:data.value
+						} 
+						updateAjax(postData); 
+					});
+		
 		table.on('toolbar(trainTable)',function(obj){
 			var config = obj.config;
 			var btnElem = $(this);
@@ -476,35 +553,6 @@ layui.config({
 			})
 			layer.close(load);
 		}
-		getUserIdSelect();
-		function getUserIdSelect(){
-	 		return function(d){
-	 			var html = '<select lay-filter="tableSelect" lay-search>';
-	 			var htm2 = '<select lay-filter="tableSelect2" name="userId" lay-search>';
-	 			layui.each(allTeacher,function(index,item){
-	 				var selected = (item.id==d.userId?"selected":"");
-	 				html+='<option value="'+item.id+'" '+selected+'>'+item.userName+'</option>'
-	 				htm2+='<option value="'+item.id+'" '+selected+'>'+item.userName+'</option>'
-	 			})
-	 			html+='</select>';
-	 			$("#userId2").html(htm2);
-	 			form.render();
-	 			if(d.userId == '')
-					layui.table.cache['trainTable'][d.LAY_INDEX]['userId'] = allTeacher[0].id;
-	 			return html;
-	 		} 
-	 	}
-	 	function getQualifiedSelect(){ //0 no 1 yes
-	 		return function(d){
-	 			var html = '<select lay-filter="tableSelect" lay-search>';
-	 			html+='<option value="0" '+ (d.qualified == 0? "selected":"")+'>否</option>';
-	 			html+='<option value="1" '+ (d.qualified == 1? "selected":"")+'>是</option>'
-	 			html+='</select>';
-	 			if(d.qualified == null)
-					layui.table.cache['trainTable'][d.LAY_INDEX]['qualified'] = 0;
-	 			return html;
-	 		}
-	 	}
 		function getRecruit(){
 			$.ajax({
 				url: '${ctx}/personnel/listRecruit',
