@@ -159,7 +159,7 @@ public class OrderOutSource extends BaseEntity<Long> {
 	private Integer chargeOff;
 
 	/**
-	 * (申请人申请时)金额
+	 * 	(申请人申请时)金额
 	 */
 	@Transient
 	private Double money;
@@ -171,21 +171,21 @@ public class OrderOutSource extends BaseEntity<Long> {
 	private String productName;
 
 	/**
-	 * (查询字段) 跟单人name
+	 *	 (查询字段) 跟单人name
 	 * 
 	 */
 	@Transient
 	private String userName;
 
 	/**
-	 * (查询字段) 加工点name
+	 * 	(查询字段) 加工点name
 	 * 
 	 */
 	@Transient
 	private String customerName;
 
 	/**
-	 * (查询字段) 生产计划单id
+	 * 	(查询字段) 生产计划单id
 	 */
 	@Transient
 	private Long orderId;
@@ -197,7 +197,7 @@ public class OrderOutSource extends BaseEntity<Long> {
 	private String outsourceTaskIds;
 
 	/**
-	 * (账单)申请日期
+	 * 	(账单)申请日期
 	 */
 	@Transient
 	private Date expenseDate;
@@ -215,17 +215,19 @@ public class OrderOutSource extends BaseEntity<Long> {
 	private Long outsourceTaskId;
 
 	/**
-	 * 机工单生成入库后剩余数量
+	 * 生成入库后剩余数量 
+	 * 成品 针工单入库后剩余入库数量 
+	 * 皮壳 机工单入库后剩余数量
 	 */
 	@Transient
-	private Integer mechanicalInventory;
+	private Integer remainingInventory;
 
 	/**
 	 * 针工皮壳出库发货后剩余数量
 	 */
 	@Transient
 	private Integer cotSurplusNumber;
-	
+
 	/**
 	 * 针工皮壳库存状态
 	 */
@@ -242,8 +244,6 @@ public class OrderOutSource extends BaseEntity<Long> {
 	 */
 	@Transient
 	private Date orderTimeEnd;
-	
-	
 
 	public Integer getCotStatus() {
 		return cotStatus;
@@ -261,12 +261,12 @@ public class OrderOutSource extends BaseEntity<Long> {
 		this.cotSurplusNumber = cotSurplusNumber;
 	}
 
-	public Integer getMechanicalInventory() {
-		return mechanicalInventory;
+	public Integer getRemainingInventory() {
+		return remainingInventory;
 	}
 
-	public void setMechanicalInventory(Integer mechanicalInventory) {
-		this.mechanicalInventory = mechanicalInventory;
+	public void setRemainingInventory(Integer remainingInventory) {
+		this.remainingInventory = remainingInventory;
 	}
 
 	public Long getOrderId() {
