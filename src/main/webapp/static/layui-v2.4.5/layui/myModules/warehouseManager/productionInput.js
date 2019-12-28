@@ -195,7 +195,7 @@ layui.extend({
 		var allInputNumber = 0; //计算总库存数量，发货数量不能超过该值
 		var sendGoodWin = layer.open({
 			type: 1,
-			title:'剩余发货数量：<b style="color:red">'+data.surplusNumber+'</b>',
+			title:'剩余发货数量：<b style="color:red">'+data.cotSurplusNumber+'</b>',
 			area:['50%','600px'],
 			content:[
 				'<div style="padding:10px 0;">',
@@ -249,6 +249,9 @@ layui.extend({
 					return myutil.emsg('发货数量不能超过库存数量！');
 				var childJson = [],allChildNumer = 0;
 				for(var i=0,len=checkChild.length;i<len;i++){
+					if(checkChild[i].sendNumber>checkChild[i].number){
+						return myutil.emsg('所选入库单数量不足，无法发货');
+					}
 					allChildNumer -= (-checkChild[i].sendNumber || 0);
 					childJson.push({
 						id: checkChild[i].id,
@@ -265,6 +268,8 @@ layui.extend({
 					}
 				}else if(inputNumber==0){
 					msg = '请填写发货数量';
+				}else if(inputNumber>allChildNumer){
+					msg = '所选入库单数量不足，无法发货';
 				}
 				if(msg)
 					return myutil.emsg(msg);
