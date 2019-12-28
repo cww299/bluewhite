@@ -1444,6 +1444,8 @@ public class LedgerAction {
 	public CommonResponse getPackingNumber(Date sendDate) {
 		CommonResponse cr = new CommonResponse();
 		String packingNumber = packingService.getPackingNumber(sendDate);
+		
+		
 		cr.setData(packingNumber);
 		cr.setMessage("获取成功");
 		return cr;
