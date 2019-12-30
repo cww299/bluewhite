@@ -12,12 +12,8 @@ import org.springframework.stereotype.Component;
 
 import com.bluewhite.basedata.entity.BaseData;
 import com.bluewhite.basedata.service.BaseDataService;
-import com.bluewhite.basedata.service.BaseDataServiceImpl;
 import com.bluewhite.common.Constants;
 import com.bluewhite.common.ServiceException;
-import com.bluewhite.common.utils.zkemUtils.SensorEvents;
-import com.bluewhite.common.utils.zkemUtils.ZkemSDKUtils;
-import com.bluewhite.system.user.service.UserService;
 
 /**
  * 权限工具表

@@ -23,7 +23,6 @@ import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.bluewhite.base.BaseServiceImpl;
 import com.bluewhite.basedata.dao.BaseDataDao;
-import com.bluewhite.basedata.entity.BaseData;
 import com.bluewhite.common.BeanCopyUtils;
 import com.bluewhite.common.ServiceException;
 import com.bluewhite.common.SessionManager;

@@ -1,6 +1,5 @@
 package com.bluewhite.common;
 
-import java.util.ResourceBundle;
 import java.util.Timer;
 import java.util.TimerTask;
 
