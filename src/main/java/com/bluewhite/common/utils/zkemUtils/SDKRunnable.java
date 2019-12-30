@@ -6,7 +6,6 @@ import java.util.Timer;
 import java.util.TimerTask;
 
 import com.bluewhite.common.Log;
-import com.bluewhite.common.MyExceptionHandlerExceptionResolver;
 import com.jacob.activeX.ActiveXComponent;
 
 public class SDKRunnable implements Runnable {
@@ -57,16 +56,16 @@ public class SDKRunnable implements Runnable {
 		Timer timer = new Timer();
 		timer.scheduleAtFixedRate(new TimerTask() {
 			public void run() {
-				// 使用获取机器ip方式，判断是否保持设备连接在线状态
+				// 	使用获取机器ip方式，判断是否保持设备连接在线状态
 				String ip = sdk.GetDeviceIP(1, zkem);
 				if (ip == null) {
 					System.out.println(address + "考勤机设备异常，重连中-------");
-					//判断是否重脸成功，重联成功则去除之前的定时任务
+					//	判断是否重脸成功，重联成功则去除之前的定时任务
 					sdk.regEvent(zkem);
 //					timer.cancel();
 				}
 			}
-		}, time, 60000);// 这里设定将延时每隔一分钟执行一次
+		}, time, 60000);//	 这里设定将延时每隔一分钟执行一次
 	}
 
 }

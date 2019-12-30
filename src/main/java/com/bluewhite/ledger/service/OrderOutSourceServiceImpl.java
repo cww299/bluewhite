@@ -34,7 +34,6 @@ import com.bluewhite.common.utils.StringUtil;
 import com.bluewhite.finance.consumption.dao.ConsumptionDao;
 import com.bluewhite.finance.consumption.entity.Consumption;
 import com.bluewhite.ledger.dao.MaterialRequisitionDao;
-import com.bluewhite.ledger.dao.OrderDao;
 import com.bluewhite.ledger.dao.OrderOutSourceDao;
 import com.bluewhite.ledger.dao.ProcessPriceDao;
 import com.bluewhite.ledger.dao.RefundBillsDao;
@@ -44,7 +43,6 @@ import com.bluewhite.ledger.entity.OutStorage;
 import com.bluewhite.ledger.entity.ProcessPrice;
 import com.bluewhite.ledger.entity.PutStorage;
 import com.bluewhite.ledger.entity.RefundBills;
-import com.bluewhite.onlineretailers.inventory.dao.InventoryDao;
 
 @Service
 public class OrderOutSourceServiceImpl extends BaseServiceImpl<OrderOutSource, Long> implements OrderOutSourceService {
