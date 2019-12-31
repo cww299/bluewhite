@@ -21,8 +21,13 @@
 				<td>客户名:</td>
 				<td><input type="text" name="customerName" class="layui-input"></td>
 				<td>&nbsp;&nbsp;&nbsp;</td>
-				<td>包装时间:</td>
-				<td><input type="text" name="orderTimeBegin" id="orderTimeBegin" class="layui-input"></td>
+				<td><select class="layui-input" id="selectone">
+							<option value="time">包装时间</option>
+							<option value="sendTime">发货时间</option>
+				</select></td>
+				<td>&nbsp;&nbsp;&nbsp;</td>
+				<td></td>
+				<td><input type="text" name="orderTimeBegin" id="orderTimeBegin" placeholder="请输入时间" class="layui-input"></td>
 				<td>&nbsp;&nbsp;&nbsp;</td>
 				<td>是否打印:</td>
 				<td style="width:100px;"><select name="print"><option value="">请选择</option>
@@ -99,7 +104,8 @@ layui.config({
 		, laydate = layui.laydate
 		, myutil = layui.myutil
 		, laytpl = layui.laytpl
-		, mytable = layui.mytable;
+		, mytable = layui.mytable
+		,tablePlug = layui.tablePlug; 
 		myutil.config.ctx = '${ctx}';
 		myutil.clickTr();
 		laydate.render({
@@ -117,7 +123,7 @@ layui.config({
 			url:'${ctx}/temporaryPack/findPagesQuantitative?'+((isStickBagStick && !isStickBagAccount)?'audit=1':''),
 			toolbar: $('#toolbarTpl').html(),
 			limit:15,
-			limits:[10,15,20,30,50,100,200],
+			limits:[10,50,200,500,1000],
 			curd:{
 				btn: isStickBagAccount?[4]:[],
 				otherBtn:function(obj){
@@ -180,6 +186,7 @@ layui.config({
 			       { type:'checkbox',},
 			       { title:'量化编号',   field:'quantitativeNumber', width:'12%',	},
 			       { title:'包装时间',   field:'time',  width:'10%', },
+			       { title:'发货时间',   field:'sendTime',  width:'10%', },
 			       { title:'贴包人',    field:'user_userName', width:'6%',	},
 			       { title:'客户',     field:'customer_name', width:'6%',	},
 			       { title:'是否审核',   field:'audit', 	transData:true, width:'5%', },
@@ -187,18 +194,19 @@ layui.config({
 			       { title:'是否打印',   field:'print', 	transData:true, width:'5%', },
 			       { title:'批次号',    field:'underGoods_bacthNumber',	width:'8%', },
 			       { title:'产品名',    field:'underGoods_product_name', 	},
+
 			       { title:'单包个数',   field:'singleNumber',	width:'6%', },
 			       { title:'实际数量',   field:'actualSingleNumber',	width:'6%',event:'transColor', 
 			    	   templet: function(d){
     	   					return '<span style="color:'+(d.checks?'red':"")+'">'+d.actualSingleNumber+'<span>'; },
 			       },
-			       { title:'备注',   field:'remarks',	width:'10%', edit:true,},  				
+			       { title:'备注',   field:'remarks',	width:'8%', edit:true,},  				
 			       ]],
 	       autoMerge:{
-	    	 field:['quantitativeNumber','time','audit','print','flag',
+	    	 field:['quantitativeNumber','time','sendTime','audit','print','flag',
 	    		 'user_userName','surplusSendNumber','surplusNumber','customer_name','0'],  
 	       },
-	       done:function(){
+	       done:function(ret,curr, count){
 	    	    form.render();
 				table.on('edit(tableData)',function(obj){
 					var data = obj.data; 
@@ -214,9 +222,27 @@ layui.config({
 					})
 				})
 				form.render();
+				var re = ret.data;
+				var array = [];
+				for (var i = 0; i < re.length; i++) {
+					var arr = [];
+					arr.push(re[i]["quantitativeNumber"]);
+					arr.push(re[i]["user_userName"]);
+					arr.push(re[i]["customer_name"]);
+					arr.push(re[i]["underGoods_bacthNumber"]);
+					arr.push(re[i]["underGoods_product_name"]);
+					arr.push(re[i]["singleNumber"]);
+					arr.push(re[i]["remarks"]);
+					arr.push(re[i]["sendTime"]);
+					array.push(arr);
+				}
+				
+			$(".layui-icon-export").on('click',function(){
+				$(this).attr('lay-event','excel');
+				table.exportFile(['量化编号','贴包人','客户','批次号','产品名','单包个数','备注','发货时间'],array,'csv'); 
+			})
 			}
 		})
-		
 		table.on('tool(tableData)',function(obj){
 			if(isStickBagAccount){
 				if(obj.event=='transColor'){
@@ -234,6 +260,7 @@ layui.config({
 					})
 				}
 			}
+			
 		})
 		function printOrder(){	
 			var choosed=layui.table.checkStatus('tableData').data;
@@ -529,6 +556,15 @@ layui.config({
 				field.orderTiemEnd = t[1]+' 23:59:59';
 			}else
 				field.orderTiemEnd = '';
+			var a="";
+			var b="";
+			if($("#selectone").val()=="time"){
+				a="2019-05-08 00:00:00"
+			}else{
+				b="2019-05-08 00:00:00"
+			}
+			field.time=a;
+			field.sendTime=b;
 			table.reload('tableData',{
 				where: field,
 				page:{ curr:1 },
