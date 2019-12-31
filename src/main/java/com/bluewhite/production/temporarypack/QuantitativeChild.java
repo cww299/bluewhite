@@ -10,7 +10,7 @@ import javax.persistence.Table;
 import com.bluewhite.base.BaseEntity;
 
 /**
- * 量化单
+ * 量化子单
  * @author zhangliang
  *
  */
