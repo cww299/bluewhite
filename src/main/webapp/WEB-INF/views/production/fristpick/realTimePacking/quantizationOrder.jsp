@@ -101,9 +101,7 @@ layui.config({
 		, laytpl = layui.laytpl
 		, mytable = layui.mytable;
 		myutil.config.ctx = '${ctx}';
-		myutil.clickTr({
-			noClick:'tableData',
-		});
+		myutil.clickTr();
 		laydate.render({
 			elem: '#orderTimeBegin', range: '~',
 		})
@@ -121,7 +119,7 @@ layui.config({
 			limit:15,
 			limits:[10,15,20,30,50,100,200],
 			curd:{
-				btn: isStickBagStick?[]:[4],
+				btn: isStickBagAccount?[4]:[],
 				otherBtn:function(obj){
 					if(obj.event=='add'){
 						addEdit('add',{});
@@ -148,9 +146,9 @@ layui.config({
 						})
 					}else if(obj.event=='print'){
 						printOrder();
-					}else if(obj.event=='send'){
+					}else if(obj.event=='send'){ 
 						myutil.deleTableIds({
-							 table:'tableData', 
+							 table:'tableData',  
 							 text:'请选择信息|是否确认发货？',
 							 url:'/temporaryPack/sendQuantitative',
 						})
@@ -182,16 +180,17 @@ layui.config({
 			       { type:'checkbox',},
 			       { title:'量化编号',   field:'quantitativeNumber', width:'12%',	},
 			       { title:'包装时间',   field:'time',  width:'10%', },
-			       { title:'贴包人',   field:'user_userName', width:'6%',	},
-			       { title:'客户',   field:'customer_name', width:'6%',	},
-			       { title:'是否审核',   field:'audit', 	transData:{data:['否','是']}, width:'5%', },
-			       { title:'是否发货',   field:'flag', 	transData:{data:['否','是']}, width:'5%', },
-			       { title:'是否打印',   field:'print', 	transData:{data:['否','是']}, width:'5%', },
-			       { title:'批次号',   field:'underGoods_bacthNumber',	width:'8%', },
-			       { title:'产品名',   field:'underGoods_product_name', 	},
+			       { title:'贴包人',    field:'user_userName', width:'6%',	},
+			       { title:'客户',     field:'customer_name', width:'6%',	},
+			       { title:'是否审核',   field:'audit', 	transData:true, width:'5%', },
+			       { title:'是否发货',   field:'flag', 	transData:true, width:'5%', },
+			       { title:'是否打印',   field:'print', 	transData:true, width:'5%', },
+			       { title:'批次号',    field:'underGoods_bacthNumber',	width:'8%', },
+			       { title:'产品名',    field:'underGoods_product_name', 	},
 			       { title:'单包个数',   field:'singleNumber',	width:'6%', },
-			       { title:'实际数量',   field:'actualSingleNumber',	width:'6%',event:'transColor', templet: function(d){
-			    	   				return '<span style="color:'+(d.checks?'red':"")+'">'+d.actualSingleNumber+'<span>'; },
+			       { title:'实际数量',   field:'actualSingleNumber',	width:'6%',event:'transColor', 
+			    	   templet: function(d){
+    	   					return '<span style="color:'+(d.checks?'red':"")+'">'+d.actualSingleNumber+'<span>'; },
 			       },
 			       { title:'备注',   field:'remarks',	width:'10%', edit:true,},  				
 			       ]],
@@ -429,8 +428,8 @@ layui.config({
 								{ type:'checkbox',},
 								{ title:'下货单~批次号~剩余数量', field:'underGoods_id', type:'select',
 									select:{data: allUoloadOrder, name:['product_name','bacthNumber','surplusStickNumber'],} },
-						        { title:'单包个数',   field:'singleNumber',	 edit: isStickBagAccount,	width:'10%',},
-						        { title:'实际发货数量',   field:'actualSingleNumber',	 edit: isStickBagStick,	width:'15%',},
+						        { title:'单包个数',   field:'singleNumber',	 edit: isStickBagAccount?'number':false,	width:'10%',},
+						        { title:'实际发货数量',   field:'actualSingleNumber',	 edit: isStickBagStick?'number':false,	width:'15%',},
 							];
 							if(isStickBagAccount)
 								cols.push({ title:'操作',field:'de', event:'deleteTr', edit:false,width:'10%',

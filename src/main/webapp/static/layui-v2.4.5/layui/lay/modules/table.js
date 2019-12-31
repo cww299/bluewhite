@@ -1580,7 +1580,10 @@ layui.define(['laytpl', 'laypage', 'layer', 'form', 'util'], function(exports){
       
       //显示编辑表单
       if(editType){
-        var input = $('<input class="layui-input '+ ELEM_EDIT +'">');
+    	var inputType = '';	//增加输入框类型设置
+    	if(editType=='number')
+    	  inputType = 'type="number"';
+        var input = $('<input class="layui-input '+ ELEM_EDIT +'" '+ inputType +'>');
         input[0].value = othis.data('content') || elemCell.text();
         othis.find('.'+ELEM_EDIT)[0] || othis.append(input);
         input.focus();

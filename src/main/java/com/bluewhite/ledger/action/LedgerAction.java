@@ -56,11 +56,10 @@ import com.bluewhite.product.primecostbasedata.entity.Materiel;
 import com.bluewhite.product.product.entity.Product;
 import com.bluewhite.system.user.entity.User;
 
-/**
- * 销售
- * 
- * @author zhangliang
+/** 生产计划环节
  *
+ * @author zhangliang
+ * @date 2020/12/30
  */
 @Controller
 public class LedgerAction {
@@ -201,8 +200,10 @@ public class LedgerAction {
 				.addRetainTerm(OrderProcurement.class, "id", "orderProcurementNumber", "placeOrderNumber",
 						"arrivalNumber", "placeOrderTime", "expectArrivalTime", "arrivalTime", "customer", "user",
 						"materielLocation", "price", "squareGram", "residueNumber")
-				.addRetainTerm(Customer.class, "id", "name").addRetainTerm(BaseOne.class, "id", "name")
-				.addRetainTerm(User.class, "id", "userName").addRetainTerm(Product.class, "id", "name");
+				.addRetainTerm(Customer.class, "id", "name")
+				.addRetainTerm(BaseOne.class, "id", "name")
+				.addRetainTerm(User.class, "id", "userName")
+				.addRetainTerm(Product.class, "id", "name");
 	}
 
 	private ClearCascadeJSON clearCascadeJSONOrderProcurement;
@@ -224,7 +225,7 @@ public class LedgerAction {
 	{
 		clearCascadeJSONScatteredOutbound = ClearCascadeJSON.get()
 				.addRetainTerm(ScatteredOutbound.class, "id", "outboundNumber", "orderMaterial", "orderProcurement",
-						"receiveUser", "user", "dosage", "remark", "audit", "auditTime", "placeOrderTime",
+						"receiveUser", "dosage", "remark", "audit", "auditTime", "placeOrderTime",
 						"openOrderAudit", "residueDosage", "dosageNumber", "residueDosageNumber")
 				.addRetainTerm(OrderProcurement.class, "id", "orderProcurementNumber")
 				.addRetainTerm(OrderMaterial.class, "id", "receiveMode", "materiel")
@@ -240,7 +241,8 @@ public class LedgerAction {
 		clearCascadeJSONSOutSource = ClearCascadeJSON.get()
 				.addRetainTerm(OrderOutSource.class, "id", "fill", "fillRemark", "outSourceNumber", "user",
 						"customer", "remark", "gramWeight", "processNumber", "openOrderTime", "flag", "audit",
-						"outsourceTask", "gramWeight", "kilogramWeight", "processingUser", "outsource","materialRequisition")
+						"outsourceTask", "gramWeight", "kilogramWeight", "processingUser", "outsource","materialRequisition",
+						"inventoryQuantity","remainingInventory","cotSurplusNumber","cotStatus")
 				.addRetainTerm(MaterialRequisition.class, "id",  "order")
 				.addRetainTerm(Order.class, "id", "orderNumber","product")
 				.addRetainTerm(Product.class, "id", "name")
@@ -255,9 +257,13 @@ public class LedgerAction {
 		clearCascadeJSONMaterialRequisition = ClearCascadeJSON.get()
 				.addRetainTerm(MaterialRequisition.class, "id", "order", "type", "requisitionNumber",
 						"scatteredOutbound", "customer", "user", "outsource", "processNumber", "dosage", "remark",
-						"audit","requisitionCount")
-				.addRetainTerm(Order.class, "id", "bacthNumber", "product", "number", "remark", "orderNumber")
+						"audit","requisitionCount","openOrderTime")
+		        .addRetainTerm(ScatteredOutbound.class, "id","orderProcurement","orderMaterial")
+		        .addRetainTerm(OrderProcurement.class, "id", "orderProcurementNumber")
+				.addRetainTerm(Order.class, "id", "bacthNumber", "number", "remark", "orderNumber")
+				.addRetainTerm(OrderMaterial.class, "id", "receiveMode")
 				.addRetainTerm(BaseOne.class, "id", "name")
+				.addRetainTerm(Customer.class, "id", "name")
 				.addRetainTerm(User.class, "id", "userName");
 	}
 
@@ -280,7 +286,8 @@ public class LedgerAction {
 						"arrivalNumber", "serialNumber", "userStorage")
 				.addRetainTerm(PutStorage.class, "id", "inStatus", "arrivalTime", "arrivalNumber", "serialNumber",
 						"storageArea", "storageLocation", "surplusNumber", "userStorage")
-				.addRetainTerm(Product.class, "id", "name", "number").addRetainTerm(User.class, "id", "userName");
+				.addRetainTerm(Product.class, "id", "name", "number")
+				.addRetainTerm(User.class, "id", "userName");
 	}
 
 	private ClearCascadeJSON clearCascadeJSONMaterialPutStorage;
@@ -326,7 +333,7 @@ public class LedgerAction {
 	}
 
 	/**
-	 * 分页查看生产计划单
+	 *	 分页查看生产计划单
 	 * 
 	 * @param page
 	 * @param order
@@ -342,7 +349,7 @@ public class LedgerAction {
 	}
 
 	/**
-	 * 查看生产计划单 当订单已经被销售部审核，且已经生成耗料单 1.生产计划部查看订单，有耗料单才可以查看 2.查看出库下单
+	 * 	查看生产计划单 当订单已经被销售部审核，且已经生成耗料单 1.生产计划部查看订单，有耗料单才可以查看 2.查看出库下单
 	 * 
 	 * @param order
 	 * @return
@@ -357,7 +364,7 @@ public class LedgerAction {
 	}
 	
 	/**
-	 * (销售部)新增生产计划单
+	 * 	(销售部)新增生产计划单
 	 * 
 	 * @param order
 	 * @return
@@ -372,7 +379,7 @@ public class LedgerAction {
 	}
 
 	/**
-	 * (销售部)修改生产计划单
+	 * 	(销售部)修改生产计划单
 	 * 
 	 * @return cr
 	 */
@@ -386,7 +393,7 @@ public class LedgerAction {
 	}
 
 	/**
-	 * (销售部) 删除生产计划单
+	 * 	(销售部) 删除生产计划单
 	 * 
 	 * @return cr
 	 */
@@ -400,7 +407,7 @@ public class LedgerAction {
 	}
 
 	/**
-	 * (销售部) 删除生产计划子单
+	 * 	(销售部) 删除生产计划子单
 	 * 
 	 * @return cr
 	 */
@@ -414,7 +421,7 @@ public class LedgerAction {
 	}
 
 	/**
-	 * (销售部) 审核生产计划单
+	 * 	(销售部) 审核生产计划单
 	 * 
 	 * @return cr
 	 */
@@ -428,7 +435,7 @@ public class LedgerAction {
 	}
 
 	/**
-	 * （生产计划部）查看耗料订单
+	 * 	(生产计划部)查看耗料订单
 	 * 
 	 * 
 	 * @param order
@@ -444,7 +451,7 @@ public class LedgerAction {
 	}
 
 	/**
-	 * （生产计划部）确认订单自动生成耗料表
+	 * 	(生产计划部)确认订单自动生成耗料表
 	 * 
 	 * @param order
 	 * @return
@@ -459,7 +466,7 @@ public class LedgerAction {
 	}
 
 	/**
-	 * （生产计划部）修改耗料表
+	 * 	(生产计划部)修改耗料表
 	 * 
 	 * @param order
 	 * @return
@@ -474,7 +481,7 @@ public class LedgerAction {
 	}
 
 	/**
-	 * （生产计划部）删除耗料表
+	 *	 (生产计划部)删除耗料表
 	 * 
 	 * @param order
 	 * @return
@@ -489,7 +496,7 @@ public class LedgerAction {
 	}
 
 	/**
-	 * （生产计划部）审核耗料表
+	 * 	(生产计划部)审核耗料表
 	 * 
 	 * @param order
 	 * @return
@@ -500,11 +507,11 @@ public class LedgerAction {
 		CommonResponse cr = new CommonResponse();
 		int count = orderMaterialService.auditOrderMaterial(ids);
 		cr.setMessage("成功审核" + count + "条耗料表");
-		return cr;
+		return cr; 
 	}
 
 	/**
-	 * （采购部）查看采购订单
+	 * 	(采购部)查看采购订单
 	 * 
 	 * @param order
 	 * @return
@@ -520,8 +527,8 @@ public class LedgerAction {
 	}
 
 	/**
-	 * （采购部）确认库存不足的面料 生成采购订单 需要自动新增物料编号 1.自动生成带克重的新物料编号 填写了平方克重
-	 * （面料-“花2大”119{平方克重:190克}） 2.自动生成新物料编号 （辅料-“花1大”54）
+	 * 	(采购部)确认库存不足的面料 生成采购订单 需要自动新增物料编号 1.自动生成带克重的新物料编号 填写了平方克重
+	 * 	(面料-“花2大”119{平方克重:190克}) 2.自动生成新物料编号 (辅料-“花1大”54)
 	 * 
 	 * @return
 	 */
@@ -540,7 +547,7 @@ public class LedgerAction {
 	}
 
 	/**
-	 * （采购部）审核采购单，进入面辅料仓库
+	 * 	(采购部)审核采购单，进入面辅料仓库
 	 * 
 	 * @param order
 	 * @return
@@ -555,7 +562,7 @@ public class LedgerAction {
 	}
 
 	/**
-	 * （采购部）删除采购单
+	 * 	(采购部)删除采购单
 	 * 
 	 * @param order
 	 * @return
@@ -570,7 +577,7 @@ public class LedgerAction {
 	}
 
 	/**
-	 * （采购部）采购单出入不符预警 采购单经过面辅料仓库审核入库后，将出入库数量不相同的进行标记预警
+	 * 	(采购部)采购单出入不符预警 采购单经过面辅料仓库审核入库后，将出入库数量不相同的进行标记预警
 	 * 
 	 * @param order
 	 * @return
@@ -586,7 +593,7 @@ public class LedgerAction {
 	}
 
 	/**
-	 * （采购部）当采购单出入不符预警 进行一键更新采购单数量
+	 * 	(采购部)当采购单出入不符预警 进行一键更新采购单数量
 	 * 
 	 * @param order
 	 * @return
@@ -601,7 +608,7 @@ public class LedgerAction {
 	}
 
 	/**
-	 * （采购部）生成采购应付账单
+	 * 	(采购部)生成采购应付账单
 	 * 
 	 * @param order
 	 * @return
@@ -616,7 +623,7 @@ public class LedgerAction {
 	}
 
 	/**
-	 * （采购部）将所有已有库存的耗料表生成分散出库记录 将已经订购的采购单面料当作库存， 进行出库 冻结当前下单合同的当前耗料表对于库存的消耗
+	 * 	(采购部)将所有已有库存的耗料表生成分散出库记录 将已经订购的采购单面料当作库存， 进行出库 冻结当前下单合同的当前耗料表对于库存的消耗
 	 * 
 	 * @return
 	 */
@@ -630,7 +637,7 @@ public class LedgerAction {
 	}
 
 	/**
-	 * （采购部）审核分散出库单
+	 * 	(采购部)审核分散出库单
 	 * 
 	 * @param order
 	 * @return
@@ -645,7 +652,7 @@ public class LedgerAction {
 	}
 
 	/**
-	 * （采购部）清除分散出库单
+	 * 	(采购部)清除分散出库单
 	 * 
 	 * @param order
 	 * @return
@@ -660,7 +667,7 @@ public class LedgerAction {
 	}
 
 	/**
-	 * （采购部）（生产计划部） 分页查看分散出库单 生产计划部查看的是审核之后的采购单
+	 * 	(采购部)(生产计划部) 分页查看分散出库单 生产计划部查看的是审核之后的采购单
 	 * 
 	 * @return
 	 */
@@ -675,7 +682,7 @@ public class LedgerAction {
 	}
 
 	/**
-	 * (生产计划部)查看领料单 (面辅料仓库)查看出库单 --- 查看审核后的 领料单对于仓库来说是出库单
+	 *	 (生产计划部)查看领料单 (面辅料仓库)查看出库单 --- 查看审核后的 领料单对于仓库来说是出库单
 	 * 
 	 * @return
 	 */
@@ -683,13 +690,13 @@ public class LedgerAction {
 	@ResponseBody
 	public CommonResponse getMaterialRequisition(PageParameter page, MaterialRequisition materialRequisition) {
 		CommonResponse cr = new CommonResponse();
-		cr.setData(clearCascadeJSONScatteredOutbound.format(materialRequisitionService.findPages(page, materialRequisition)).toJSON());
+		cr.setData(clearCascadeJSONMaterialRequisition.format(materialRequisitionService.findPages(page, materialRequisition)).toJSON());
 		cr.setMessage("查看成功");
 		return cr;
 	}
 
 	/**
-	 * (生产计划部)生成领料单 1.领料单 2.外发领料单 在生成领料单的时候，耗料单一定是已经审核出库的数据
+	 * 	(生产计划部)生成领料单 1.领料单 2.外发领料单 在生成领料单的时候，耗料单一定是已经审核出库的数据
 	 * 
 	 * @return
 	 */
@@ -703,7 +710,7 @@ public class LedgerAction {
 	}
 
 	/**
-	 * (生产计划部) 修改领料单
+	 *	 (生产计划部) 修改领料单
 	 * 
 	 * @return
 	 */
@@ -717,7 +724,7 @@ public class LedgerAction {
 	}
 
 	/**
-	 * (生产计划部) 删除领料单
+	 *	 (生产计划部) 删除领料单
 	 * 
 	 * @return cr
 	 */
@@ -731,7 +738,7 @@ public class LedgerAction {
 	}
 
 	/**
-	 * （生产计划部）审核领料单
+	 * 	(生产计划部)审核领料单
 	 * 
 	 * @param order
 	 * @return
@@ -746,8 +753,8 @@ public class LedgerAction {
 	}
 
 	/**
-	 * （生产计划部） 分页查看加工单 
-	 * （仓库）查看入库出库依据 
+	 * 	(生产计划部) 分页查看加工单 
+	 * 	(仓库)查看入库出库依据 
 	 * 
 	 * @param page
 	 * @param order
@@ -763,7 +770,7 @@ public class LedgerAction {
 	}
 	
 	/**
-	 * （生产计划部）根据工序查看当前领料单的工序还剩余多少可加工数量
+	 * 	(生产计划部)根据工序查看当前领料单的工序还剩余多少可加工数量
 	 * 
 	 * @param order
 	 * @return
@@ -779,8 +786,8 @@ public class LedgerAction {
 	}
 
 	/**
-	 * （生产计划部）新增加工单 1.加工单 2.外发加工单
-	 * 加工单数量等于领料单数量
+	 *	(生产计划部)新增加工单 1.加工单 2.外发加工单
+	 * 	加工单数量等于领料单数量
 	 * 
 	 * @param order
 	 * @return
@@ -796,7 +803,7 @@ public class LedgerAction {
 
 
 	/**
-	 * （生产计划部）修改加工单
+	 * 	(生产计划部)修改加工单
 	 * 
 	 * @param order
 	 * @return
@@ -811,7 +818,7 @@ public class LedgerAction {
 	}
 
 	/**
-	 * （生产计划部）删除加工单
+	 *	 (生产计划部)删除加工单
 	 * 
 	 * @param order
 	 * @return
@@ -826,11 +833,10 @@ public class LedgerAction {
 	}
 
 	/**
-	 * （生产计划部） 审核加工单，
-	 *  审核成功后，仓库可见
-	 *  面辅料仓库（机工领取）
-	 *  皮壳仓库（针工领取）
-	 *  成品仓库
+	 * 	(生产计划部) 审核加工单，审核成功后，仓库可见
+	 *	  面辅料仓库(机工领取)
+	 *	  皮壳仓库(针工领取)
+	 * 	 成品仓库
 	 * @param order
 	 * @return
 	 */
@@ -844,7 +850,7 @@ public class LedgerAction {
 	}
 
 	/**
-	 * （生产计划部） 分页查看加工退货单
+	 * 	(生产计划部) 分页查看加工退货单
 	 * 
 	 * @param page
 	 * @param order
@@ -860,7 +866,7 @@ public class LedgerAction {
 	}
 
 	/**
-	 * （生产计划部）生成加工退货单
+	 * 	(生产计划部)生成加工退货单
 	 * 
 	 * @param order
 	 * @return
@@ -875,7 +881,7 @@ public class LedgerAction {
 	}
 
 	/**
-	 * （生产计划部）修改加工退货单
+	 * (生产计划部)修改加工退货单
 	 * 
 	 * @param order
 	 * @return
@@ -890,7 +896,7 @@ public class LedgerAction {
 	}
 
 	/**
-	 * （生产计划部）删除加工退货单
+	 * (生产计划部)删除加工退货单
 	 * 
 	 * @param order
 	 * @return
@@ -906,7 +912,7 @@ public class LedgerAction {
 	
 	
 	/**
-	 * （生产计划部） 加工单工序价格表
+	 * (生产计划部) 加工单工序价格表
 	 * 
 	 * @param page
 	 * @param order
@@ -923,7 +929,7 @@ public class LedgerAction {
 	
 
 	/**
-	 * （生产计划部）将外发加工单,退货单,加工单价格糅合，得出加工单的工序的实际任务数量和价格，进行账单的生成
+	 * (生产计划部)将外发加工单,退货单,加工单价格糅合，得出加工单的工序的实际任务数量和价格，进行账单的生成
 	 * 
 	 * @param order
 	 * @return
@@ -938,7 +944,7 @@ public class LedgerAction {
 	}
 
 	/**
-	 * （生产计划部）对工序价值进行新增或者修改
+	 * (生产计划部)对工序价值进行新增或者修改
 	 * 
 	 * @param order
 	 * @return
@@ -953,7 +959,7 @@ public class LedgerAction {
 	}
 
 	/**
-	 * （生产计划部）生成外发加工单账单
+	 * (生产计划部)生成外发加工单账单
 	 * 
 	 * @param order
 	 * @return
@@ -970,7 +976,7 @@ public class LedgerAction {
 	/****************************** 库存管理 **************************/
 
 	/**
-	 * （面辅料仓库）生成物料入库单，进行入库
+	 * (面辅料仓库)生成物料入库单，进行入库
 	 * 
 	 * @param order
 	 * @return
@@ -989,7 +995,7 @@ public class LedgerAction {
 	}
 
 	/**
-	 * （面辅料仓库）入库单列表
+	 * (面辅料仓库)入库单列表
 	 * 
 	 * @return
 	 */
@@ -1002,7 +1008,7 @@ public class LedgerAction {
 	}
 
 	/**
-	 * （面辅料仓库）撤销入库单
+	 * (面辅料仓库)撤销入库单
 	 * 
 	 * @return
 	 */
@@ -1016,7 +1022,7 @@ public class LedgerAction {
 	}
 
 	/**
-	 * （面辅料仓库）质检入库单，进行验货
+	 * (面辅料仓库)质检入库单，进行验货
 	 * 
 	 * @param order
 	 * @return
@@ -1031,12 +1037,12 @@ public class LedgerAction {
 	}
 	
 	/**
-	 * （面辅料仓库）退货单新增
-	 * 
+	 * (面辅料仓库)采购入库单
+	 * 新增退货单
 	 * @param order
 	 * @return
 	 */
-	@RequestMapping(value = "/ledger/inventory/saveMaterialReturn", method = RequestMethod.GET)
+	@RequestMapping(value = "/ledger/inventory/saveMaterialReturn", method = RequestMethod.POST)
 	@ResponseBody
 	public CommonResponse saveMaterialReturn(OrderProcurementReturn orderProcurementReturn) {
 		CommonResponse cr = new CommonResponse();
@@ -1045,10 +1051,25 @@ public class LedgerAction {
 		return cr;
 	}
 	
+	
+	/**
+     * (面辅料仓库)采购入库单
+     *  退货单删除
+     * @param order
+     * @return
+     */
+    @RequestMapping(value = "/ledger/inventory/deleteMaterialReturn", method = RequestMethod.GET)
+    @ResponseBody
+    public CommonResponse deleteMaterialReturn(String ids) {
+        CommonResponse cr = new CommonResponse();
+        int count= materialPutStorageService.deleteMaterialReturn(ids);
+        cr.setMessage("成功删除"+count+"条数据");
+        return cr;
+    }
 
 	/**
-	 * （面辅料仓库）审核采购单是否全部到货 
-	 * （全部到货后，采购部才可以进行耗料分散出库）
+	 * (面辅料仓库)审核采购单是否全部到货 
+	 * (全部到货后，采购部才可以进行耗料分散出库)
 	 */
 	@RequestMapping(value = "/ledger/inventory/arrivalOrderProcurement", method = RequestMethod.GET)
 	@ResponseBody
@@ -1061,7 +1082,7 @@ public class LedgerAction {
 	
 	
 	/**
-	 * （面辅料仓库）审核领料单
+	 * (面辅料仓库)审核领料单
 	 *  领料出库(生产出库)
 	 * 
 	 * @param order
@@ -1078,8 +1099,8 @@ public class LedgerAction {
 	
 
 	/**
-	 * （面辅料仓库）生成物料出库单
-	 * （普通出库，根据申请出库）
+	 * (面辅料仓库)生成物料出库单
+	 * (普通出库，根据申请出库)
 	 * 
 	 * @param order
 	 * @return
@@ -1094,7 +1115,7 @@ public class LedgerAction {
 	}
 
 	/**
-	 * （面辅料仓库）物料出库单列表
+	 * (面辅料仓库)物料出库单列表
 	 * 
 	 * @return
 	 */
@@ -1107,9 +1128,9 @@ public class LedgerAction {
 	}
 
 	/**
-	 * （面辅料仓库）撤销物料出库
+	 * (面辅料仓库)撤销物料出库
 	 * 
-	 * 满足于 领取物料后未进入下一环节使用 才可以撤销
+	 * *满足于 领取物料后未进入下一环节使用 才可以撤销
 	 * @param order
 	 * @return
 	 */
@@ -1122,11 +1143,11 @@ public class LedgerAction {
 		return cr;
 	}
 
-	/************************ （1.成品仓库，2.皮壳仓库） ********************/
+	/************************ (1.成品仓库，2.皮壳仓库) ********************/
 
 
 	/**
-	 * （1.成品仓库，2.皮壳仓库）入库单列表
+	 * (1.成品仓库，2.皮壳仓库)入库单列表
 	 * 
 	 * @return
 	 */
@@ -1139,7 +1160,7 @@ public class LedgerAction {
 	}
 	
 	/**
-	 * （1.成品仓库，2.皮壳仓库）
+	 * (1.成品仓库，2.皮壳仓库)
 	 *  根据加工单收货入库
 	 * @return
 	 */
@@ -1153,7 +1174,7 @@ public class LedgerAction {
 	}
 
 	/**
-	 * （1.成品仓库，2.皮壳仓库）根据产品和库存查看实际入库单和生产计划单 （库存详情）
+	 * (1.成品仓库，2.皮壳仓库)根据产品和库存查看实际入库单和生产计划单 (库存详情)
 	 * @return
 	 */
 	@RequestMapping(value = "/ledger/inventory/detailsInventory", method = RequestMethod.GET)
@@ -1176,7 +1197,7 @@ public class LedgerAction {
 
 	
 	/**
-	 * （1.成品仓库，2.皮壳仓库）撤销入库单
+	 * (1.成品仓库，2.皮壳仓库)撤销入库单
 	 * 
 	 * @return
 	 */
@@ -1185,6 +1206,7 @@ public class LedgerAction {
 	public CommonResponse deletePutStorage(String ids) {
 		CommonResponse cr = new CommonResponse();
 		int count = putStorageService.deletePutStorage(ids);
+		cr.setMessage("成功撤销"+count+"条入库单");
 		return cr;
 	}
 
@@ -1222,7 +1244,7 @@ public class LedgerAction {
 	 * 1.成品仓库 对发货单进行出库
 	 * 2.皮壳仓库 对针工单进行出库
 	 * sendNumber 发货数量
-	 * putStorage （json 入库单的发货具体数量 ）
+	 * putStorage (json 入库单的发货具体数量 )
 	 * flag = 1 成品
 	 * flag = 2 皮壳
 	 * @return
@@ -1238,7 +1260,7 @@ public class LedgerAction {
 	
 	
 	/**
-	 * （1.成品仓库，2.皮壳仓库）生成出库单
+	 * (1.成品仓库，2.皮壳仓库)生成出库单
 	 * 
 	 * @return
 	 */
@@ -1252,7 +1274,7 @@ public class LedgerAction {
 	}
 
 	/**
-	 * （1.成品仓库，2.皮壳仓库）出库单列表
+	 * (1.成品仓库，2.皮壳仓库)出库单列表
 	 * 
 	 * @return
 	 */
@@ -1265,7 +1287,7 @@ public class LedgerAction {
 	}
 
 	/**
-	 * （1.成品仓库，2.皮壳仓库）撤销出库单
+	 * (1.成品仓库，2.皮壳仓库)撤销出库单
 	 * 
 	 * @return
 	 */
@@ -1308,7 +1330,7 @@ public class LedgerAction {
 	}
 
 	/**
-	 * 通过条件查找发货单
+	 *  通过条件查找发货单
 	 * 
 	 * @return cr
 	 */
@@ -1535,7 +1557,7 @@ public class LedgerAction {
 	}
 
 	/**
-	 * 审核销售单（财务）
+	 * 审核销售单(财务)
 	 * 
 	 * @return cr
 	 */

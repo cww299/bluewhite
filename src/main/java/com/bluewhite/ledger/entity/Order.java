@@ -188,8 +188,6 @@ public class Order extends BaseEntity<Long> {
 	private boolean include;
 	
 
-	
-
 	public boolean isInclude() {
 		return include;
 	}

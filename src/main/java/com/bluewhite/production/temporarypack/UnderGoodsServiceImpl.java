@@ -3,6 +3,7 @@ package com.bluewhite.production.temporarypack;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import javax.persistence.criteria.Predicate;
 
@@ -82,8 +83,7 @@ public class UnderGoodsServiceImpl extends BaseServiceImpl<UnderGoods, Long> imp
 		//贴包剩余数量
 		result.getRows().forEach(r->{
 			//贴包数量
-			List<Long> stickListId = quantitativeDao.findStickNumber(r.getId());
-			List<QuantitativeChild> stickListList = quantitativeChildDao.findByIdIn(stickListId);
+			List<QuantitativeChild> stickListList = quantitativeChildDao.findByUnderGoodsId(r.getId());
 			int numberStickSum = stickListList.stream().mapToInt(QuantitativeChild::getSingleNumber).sum();
 			r.setSurplusStickNumber(r.getNumber()-numberStickSum);
 			//发货数量
@@ -127,15 +127,14 @@ public class UnderGoodsServiceImpl extends BaseServiceImpl<UnderGoods, Long> imp
 	}
 
 	@Override
-	public List<UnderGoods> findAll() {
+	public List<UnderGoods> getAll() {
 		List<UnderGoods> result = dao.findAll();
-		//发货剩余数量
+		List<Long> longList = result.stream().map(UnderGoods::getId).collect(Collectors.toList());
+	     //贴包数量
+        List<QuantitativeChild> stickListList = quantitativeChildDao.findByUnderGoodsIdIn(longList);
 		//贴包剩余数量
 		result.forEach(r->{
-			//贴包数量
-			List<Long> stickListId = quantitativeDao.findStickNumber(r.getId());
-			List<QuantitativeChild> stickListList = quantitativeChildDao.findByIdIn(stickListId);
-			int numberStickSum = stickListList.stream().mapToInt(QuantitativeChild::getSingleNumber).sum();
+			int numberStickSum = stickListList.stream().filter(QuantitativeChild->r.getId().equals(QuantitativeChild.getUnderGoodsId())).mapToInt(QuantitativeChild::getSingleNumber).sum();
 			r.setSurplusStickNumber(r.getNumber()-numberStickSum);
 		});
 		return result;

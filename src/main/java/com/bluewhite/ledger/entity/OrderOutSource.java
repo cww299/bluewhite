@@ -78,7 +78,6 @@ public class OrderOutSource extends BaseEntity<Long> {
 
 	/**
 	 * 任务编号
-	 * 
 	 */
 	@Column(name = "out_source_number")
 	private String outSourceNumber;
@@ -104,14 +103,12 @@ public class OrderOutSource extends BaseEntity<Long> {
 
 	/**
 	 * 是否外发
-	 * 
 	 */
 	@Column(name = "outsource")
 	private Integer outsource;
 
 	/**
 	 * 加工点id
-	 * 
 	 */
 	@Column(name = "customer_id")
 	private Long customerId;
@@ -125,7 +122,6 @@ public class OrderOutSource extends BaseEntity<Long> {
 
 	/**
 	 * （在家加工）加工人id
-	 * 
 	 */
 	@Column(name = "processing_user_id")
 	private Long processingUserId;
@@ -139,7 +135,6 @@ public class OrderOutSource extends BaseEntity<Long> {
 
 	/**
 	 * 跟单人id（外协）
-	 * 
 	 */
 	@Column(name = "user_id")
 	private Long userId;
@@ -164,30 +159,36 @@ public class OrderOutSource extends BaseEntity<Long> {
 	private Integer chargeOff;
 
 	/**
-	 * (申请人申请时)金额
+	 * 	(申请人申请时)金额
 	 */
 	@Transient
 	private Double money;
 
 	/**
-	 * 产品name
+	 * (查询字段) 产品name
 	 */
 	@Transient
 	private String productName;
 
 	/**
-	 * 跟单人name
+	 *	 (查询字段) 跟单人name
 	 * 
 	 */
 	@Transient
 	private String userName;
 
 	/**
-	 * 加工点name
+	 * 	(查询字段) 加工点name
 	 * 
 	 */
 	@Transient
 	private String customerName;
+
+	/**
+	 * 	(查询字段) 生产计划单id
+	 */
+	@Transient
+	private Long orderId;
 
 	/**
 	 * 工序ids
@@ -196,7 +197,7 @@ public class OrderOutSource extends BaseEntity<Long> {
 	private String outsourceTaskIds;
 
 	/**
-	 * (申请人申请时)申请日期
+	 * 	(账单)申请日期
 	 */
 	@Transient
 	private Date expenseDate;
@@ -214,24 +215,25 @@ public class OrderOutSource extends BaseEntity<Long> {
 	private Long outsourceTaskId;
 
 	/**
-	 * 生产计划单id
+	 * 生成入库后剩余数量 
+	 * 成品 针工单入库后剩余入库数量 
+	 * 皮壳 机工单入库后剩余数量
 	 */
 	@Transient
-	private Long orderId;
-	
+	private Integer remainingInventory;
+
 	/**
-	 * 库存数量
+	 * 针工皮壳出库发货后剩余数量
 	 */
 	@Transient
-	private Integer inventoryQuantity;
-	
+	private Integer cotSurplusNumber;
+
 	/**
-	 * 剩余数量
+	 * 针工皮壳库存状态
 	 */
 	@Transient
-	private Integer surplusNumber;
-	
-	
+	private Integer cotStatus;
+
 	/**
 	 * 查询字段
 	 */
@@ -242,23 +244,29 @@ public class OrderOutSource extends BaseEntity<Long> {
 	 */
 	@Transient
 	private Date orderTimeEnd;
-	
-	
 
-	public Integer getSurplusNumber() {
-		return surplusNumber;
+	public Integer getCotStatus() {
+		return cotStatus;
 	}
 
-	public void setSurplusNumber(Integer surplusNumber) {
-		this.surplusNumber = surplusNumber;
+	public void setCotStatus(Integer cotStatus) {
+		this.cotStatus = cotStatus;
 	}
 
-	public Integer getInventoryQuantity() {
-		return inventoryQuantity;
+	public Integer getCotSurplusNumber() {
+		return cotSurplusNumber;
 	}
 
-	public void setInventoryQuantity(Integer inventoryQuantity) {
-		this.inventoryQuantity = inventoryQuantity;
+	public void setCotSurplusNumber(Integer cotSurplusNumber) {
+		this.cotSurplusNumber = cotSurplusNumber;
+	}
+
+	public Integer getRemainingInventory() {
+		return remainingInventory;
+	}
+
+	public void setRemainingInventory(Integer remainingInventory) {
+		this.remainingInventory = remainingInventory;
 	}
 
 	public Long getOrderId() {

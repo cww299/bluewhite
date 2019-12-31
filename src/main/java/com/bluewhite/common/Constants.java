@@ -77,7 +77,10 @@ public class Constants {
      * 八号成品仓库管理员
      */
     public final static String EIGHTFINISHEDWAREHOUSE  = "eightFinishedWarehouse";
-    
+    /**
+     * 蓝白皮壳仓库管理员
+     */
+    public final static String COTWAREHOUSE  = "cotWarehouse";
     
     /**
      * 人事考勤机ip

@@ -23,7 +23,7 @@
 				<td><button type="button" class="layui-btn layui-btn-sm" lay-submit lay-filter="search">搜索</button></td>
 			</tr>
 		</table>
-		<table id="tableData" lay-filt er="tableData"></table>
+		<table id="tableData" lay-filter="tableData"></table>
 	</div>
 </div>
 </body>
@@ -56,7 +56,7 @@ layui.config({
 			curd:{
 				btn:[],
 				otherBtn:function(obj){
-					if(obj.event=='askfor'){
+					if(obj.event=='cancelAskfor'){
 						myutil.deleTableIds({
 							url:'/ledger/dispatch/deleteApplyVoucher',
 							table:'tableData',
@@ -74,12 +74,11 @@ layui.config({
 				},
 			},
 			toolbar:[
-				'<span class="layui-btn layui-btn-sm layui-btn-danger" lay-event="askfor">撤销申请</span>',
+				'<span class="layui-btn layui-btn-sm layui-btn-danger" lay-event="cancelAskfor">撤销申请</span>',
 				'<span class="layui-btn layui-btn-sm layui-btn-" lay-event="add">新增申请</span>',
 				'<span class="layui-btn layui-btn-sm layui-btn-normal" lay-event="edit">修改申请</span>',
 			].join(' '),
-			autoUpdate:{
-			},
+			autoUpdate:{},
 			cols:[[
 			       { type:'checkbox',},
 			       { title:'申请编号',   field:'applyNumber',	},
@@ -89,7 +88,7 @@ layui.config({
 			       { title:'原因',   field:'cause',	},
 			       { title:'申请类型',   field:'applyVoucherType_name',	},
 			       { title:'申请种类',   field:'applyVoucherKind_name',	},
-			       { title:'是否通过',   field:'pass',	},
+			       { title:'是否通过',   field:'pass',	transData:true, },
 			       ]]
 		})
 		

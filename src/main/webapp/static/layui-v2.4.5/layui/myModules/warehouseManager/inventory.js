@@ -56,23 +56,14 @@ layui.extend({
 	
 	inventory.render = function(opt){
 		inventory.type = opt.type || inventory.type;
+		var warehouseId = inventory.type==2?157:160;	//成品仓库157 皮壳160
+		
 		$(opt.elem).append(TPL_MAIN);
 		if(opt.chooseProductWin){
 			$('#tipsInfo').html('双击进行选择');
 		}
 		form.render();
-		allWarehouseType = [];
-		myutil.getDataSync({
-			url: myutil.config.ctx+'/basedata/list?type=warehouseType',
-			success:function(d){
-				layui.each(d,function(index,item){
-					if(item.ord==inventory.type){
-						allWarehouseType.push(item);
-					}
-				})
-			}
-		});
-		
+		allWarehouseType = myutil.getDataSync( myutil.config.ctx+'/basedata/children?id='+warehouseId);
 		var cols = [
 	       { type:'checkbox',},
 	       { title:'产品编号',   field:'number',width:'10%',	},
@@ -94,6 +85,7 @@ layui.extend({
 		})
 		mytable.render({
 			elem:'#tableData',
+			url: opt.ctx+'/inventory/productPages?warehouse='+warehouseId,
 			parseData: function(r){
 				if(r.code==0){
 					layui.each(r.data.rows,function(i,item){
@@ -108,6 +100,11 @@ layui.extend({
 			},
 			limit: opt.chooseProductWin?10:15,
 			limits:[10,15,20,30,50,100],
+			toolbar: opt.chooseProductWin?'':[
+				'<span class="layui-btn layui-btn-sm layui-btn-" lay-event="addInp">生成入库单</span>',
+				'<span class="layui-btn layui-btn-sm layui-btn-normal" lay-event="addOut">生成出库单</span>',
+				'<span class="layui-btn layui-btn-sm layui-btn-warm" lay-event="askfor">申请单</span>',
+			].join(' '),
 			curd:{
 				btn:[],
 				otherBtn:function(obj){
@@ -133,12 +130,6 @@ layui.extend({
 					}
 				},
 			},
-			toolbar: opt.chooseProductWin?'':[
-					'<span class="layui-btn layui-btn-sm layui-btn-" lay-event="addInp">生成入库单</span>',
-					'<span class="layui-btn layui-btn-sm layui-btn-normal" lay-event="addOut">生成出库单</span>',
-					'<span class="layui-btn layui-btn-sm layui-btn-warm" lay-event="askfor">申请单</span>',
-				].join(' '),
-			url: opt.ctx+'/inventory/productPages?warehouse='+inventory.type,
 			cols:[ cols ]
 		})
 		table.on('tool(tableData)', function(obj){

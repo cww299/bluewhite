@@ -340,7 +340,6 @@ layui.config({
 				};
 				 $.ajax({
 						url:'${ctx}/roles/saveUserRole',
-						type:"post",
 						data:data,
 						success:function(result){
 							if(result.code!=0)
@@ -401,7 +400,6 @@ layui.config({
 					var load=layer.load(1);
 					$.ajax({
 						url:'${ctx}/roles/saveUserRole',
-						type:"post",
 						data:data,
 						success:function(result){
 							if(result.code==0){

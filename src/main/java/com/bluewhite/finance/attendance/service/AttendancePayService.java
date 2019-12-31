@@ -3,15 +3,12 @@ package com.bluewhite.finance.attendance.service;
 import java.util.Date;
 import java.util.List;
 
-import javax.servlet.http.HttpServletRequest;
-
 import org.springframework.stereotype.Service;
 
 import com.bluewhite.base.BaseCRUDService;
 import com.bluewhite.common.entity.PageParameter;
 import com.bluewhite.common.entity.PageResult;
 import com.bluewhite.finance.attendance.entity.AttendancePay;
-import com.bluewhite.production.bacth.entity.Bacth;
 
 @Service
 public interface AttendancePayService extends BaseCRUDService<AttendancePay, Long> {
@@ -28,7 +25,7 @@ public interface AttendancePayService extends BaseCRUDService<AttendancePay, Lon
 	/**
 	 * 批量新增考勤
 	 * 
-	 * @param attendancePay
+	 * @param attendancePays
 	 * @return
 	 */
 	public int addAttendancePay(AttendancePay attendancePay);

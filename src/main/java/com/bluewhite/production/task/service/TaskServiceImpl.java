@@ -42,7 +42,6 @@ import com.bluewhite.production.procedure.entity.Procedure;
 import com.bluewhite.production.productionutils.constant.ProTypeUtils;
 import com.bluewhite.production.task.dao.TaskDao;
 import com.bluewhite.production.task.entity.Task;
-import com.bluewhite.system.user.dao.TemporaryUserDao;
 import com.bluewhite.system.user.dao.UserDao;
 import com.bluewhite.system.user.entity.User;
 
@@ -53,8 +52,6 @@ public class TaskServiceImpl extends BaseServiceImpl<Task, Long> implements Task
 	private TaskDao dao;
 	@Autowired
 	private UserDao userDao;
-	@Autowired
-	private TemporaryUserDao temporaryUserDao;
 	@Autowired
 	private ProcedureDao procedureDao;
 	@Autowired

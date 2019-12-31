@@ -17,14 +17,12 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
 import com.bluewhite.base.BaseServiceImpl;
-import com.bluewhite.basedata.service.BaseDataService;
 import com.bluewhite.common.ServiceException;
 import com.bluewhite.common.entity.PageParameter;
 import com.bluewhite.common.entity.PageResult;
 import com.bluewhite.common.utils.DatesUtil;
 import com.bluewhite.common.utils.StringUtil;
 import com.bluewhite.onlineretailers.inventory.dao.CommodityDao;
-import com.bluewhite.onlineretailers.inventory.dao.InventoryDao;
 import com.bluewhite.onlineretailers.inventory.dao.WarningDao;
 import com.bluewhite.onlineretailers.inventory.entity.Commodity;
 import com.bluewhite.onlineretailers.inventory.entity.Inventory;
@@ -44,11 +42,7 @@ public class CommodityServiceImpl extends BaseServiceImpl<Commodity, Long> imple
 	@Autowired
 	private ProcurementService procurementService;
 	@Autowired
-	private BaseDataService service;
-	@Autowired
 	private CommodityDao commodityDao;
-	@Autowired
-	private InventoryDao inventoryDao;
 	@Autowired
 	private ProductDao productDao;
 

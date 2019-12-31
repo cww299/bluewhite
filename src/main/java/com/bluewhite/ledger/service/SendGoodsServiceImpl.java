@@ -44,16 +44,11 @@ public class SendGoodsServiceImpl extends BaseServiceImpl<SendGoods, Long> imple
 	@Autowired
 	private ApplyVoucherDao applyVoucherDao;
 	@Autowired
-	private PutStorageDao putStorageDao;
-	@Autowired
 	private OutStorageService outStorageService;
 	@Autowired
 	private OutStorageDao outStorageDao;
-	@Autowired
-	private OrderService orderService;
 	@Override
 	public PageResult<SendGoods> findPages(SendGoods param, PageParameter page) { 
-		CurrentUser cu = SessionManager.getUserSession();
 		Page<SendGoods> pages = dao.findAll((root, query, cb) -> {
 			List<Predicate> predicate = new ArrayList<>();
 			// 按id过滤
@@ -103,8 +98,8 @@ public class SendGoodsServiceImpl extends BaseServiceImpl<SendGoods, Long> imple
 			//3.查出共有库存
 			// 通过产品查询所有的入库单
 			List<Map<String, Object>> mapsList = outStorageService.getSendPutStorage(s.getId());
-			int status = 0;
 			if(mapsList.size()>0){
+				int status = 0;
 				int number = mapsList.stream().mapToInt(m->Integer.valueOf(m.get("number").toString())).sum();
 				if(s.getNumber()>number){
 					status = 1;
@@ -112,8 +107,10 @@ public class SendGoodsServiceImpl extends BaseServiceImpl<SendGoods, Long> imple
 				if(number<=0){
 					status = 2;
 				}
+				s.setStatus(status);
+			}else{
+				s.setStatus(2);
 			}
-			s.setStatus(status);
 			//实际出库单
 			List<OutStorage> outStorageList = outStorageDao.findBySendGoodsId(s.getId());
 			if(outStorageList.size()>0){
