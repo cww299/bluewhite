@@ -42,8 +42,6 @@ public class ScatteredOutboundServiceImpl extends BaseServiceImpl<ScatteredOutbo
 	@Autowired
 	private OrderMaterialDao orderMaterialDao;
 	@Autowired
-	private MaterielDao materielDao;
-	@Autowired
 	private OrderService orderService;
 
 	@Override

@@ -149,8 +149,7 @@ public class QuantitativeServiceImpl extends BaseServiceImpl<Quantitative, Long>
 					quantitativeChild.setSingleNumber(0);
 				}
 				// 获取贴包数量，用于判断是否可以新增或者修改
-				List<Long> stickListId = dao.findStickNumber(underGoodsId);
-				List<QuantitativeChild> stickListList = quantitativeChildDao.findByIdIn(stickListId);
+				List<QuantitativeChild> stickListList = quantitativeChildDao.findByUnderGoodsId(underGoodsId);
 				int numberStickSum = 0;
 				if (stickListList.size() > 0) {
 					numberStickSum = stickListList.stream().mapToInt(QuantitativeChild::getSingleNumber).sum();

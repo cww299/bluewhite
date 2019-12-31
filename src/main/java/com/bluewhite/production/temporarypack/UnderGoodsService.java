@@ -38,6 +38,6 @@ public interface UnderGoodsService extends BaseCRUDService<UnderGoods,Long>{
 	 * @param page
 	 * @return
 	 */
-	public List<UnderGoods> findAll();
+	public List<UnderGoods> getAll();
 
 }
