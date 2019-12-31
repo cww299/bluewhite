@@ -93,11 +93,13 @@ public class OrderOutSourceServiceImpl extends BaseServiceImpl<OrderOutSource, L
 					newOrderOutSource.getOutsourceTask().add(baseData);
 					save(newOrderOutSource);
 					// 	新增加工单工序的原始价格数据
-					ProcessPrice processPrice = new ProcessPrice();
-					processPrice.setOrderOutSourceId(newOrderOutSource.getId());
-					processPrice.setProcessTaskId(id);
-					processPrice.setCustomerId(newOrderOutSource.getCustomerId());
-					processPriceDao.save(processPrice);
+					if(orderOutSource.getOutsource()==1) {
+					    ProcessPrice processPrice = new ProcessPrice();
+					    processPrice.setOrderOutSourceId(newOrderOutSource.getId());
+					    processPrice.setProcessTaskId(id);
+					    processPrice.setCustomerId(newOrderOutSource.getCustomerId());
+					    processPriceDao.save(processPrice);
+					}
 					// 	对加工单数量进行限制判断，加工单数量和工序挂钩，每个工序最大数量为领料单数量，无法超出
 					// 	工序可以由不同的加工单加工，但是不能超出领料单数量
 					// 	该工序已经加工总数

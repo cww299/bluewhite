@@ -22,7 +22,6 @@ import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.bluewhite.base.BaseServiceImpl;
-import com.bluewhite.basedata.dao.BaseDataDao;
 import com.bluewhite.common.BeanCopyUtils;
 import com.bluewhite.common.ServiceException;
 import com.bluewhite.common.SessionManager;
@@ -33,7 +32,6 @@ import com.bluewhite.common.utils.RoleUtil;
 import com.bluewhite.common.utils.StringUtil;
 import com.bluewhite.ledger.dao.OrderChildDao;
 import com.bluewhite.ledger.dao.OrderDao;
-import com.bluewhite.ledger.dao.OutStorageDao;
 import com.bluewhite.ledger.entity.Order;
 import com.bluewhite.ledger.entity.OrderChild;
 import com.bluewhite.ledger.entity.PutStorage;
@@ -50,13 +48,9 @@ public class OrderServiceImpl extends BaseServiceImpl<Order, Long> implements Or
 	@Autowired
 	private ProcurementDao procurementDao;
 	@Autowired
-	private BaseDataDao baseDataDao;
-	@Autowired
 	private OrderChildDao orderChildDao;
 	@Autowired
 	private PutStorageService putStorageService;
-	@Autowired
-	private OutStorageDao outStorageDao;
 
 	@Override
 	public PageResult<Order> findPages(Order param, PageParameter page) {
@@ -257,6 +251,7 @@ public class OrderServiceImpl extends BaseServiceImpl<Order, Long> implements Or
 	}
 
 	@Override
+	@Transactional
 	public int deleteOrderChild(String ids) {
 		int count = 0;
 		if (!StringUtils.isEmpty(ids)) {

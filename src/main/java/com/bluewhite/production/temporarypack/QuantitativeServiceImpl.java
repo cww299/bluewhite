@@ -27,7 +27,6 @@ import com.bluewhite.common.entity.PageParameter;
 import com.bluewhite.common.entity.PageResult;
 import com.bluewhite.common.utils.DatesUtil;
 import com.bluewhite.common.utils.StringUtil;
-import com.bluewhite.ledger.dao.PackingMaterialsDao;
 import com.bluewhite.ledger.entity.PackingMaterials;
 
 import cn.hutool.core.date.DateUtil;
@@ -37,8 +36,6 @@ public class QuantitativeServiceImpl extends BaseServiceImpl<Quantitative, Long>
 
 	@Autowired
 	private QuantitativeDao dao;
-	@Autowired
-	private PackingMaterialsDao packingMaterialsDao;
 	@Autowired
 	private UnderGoodsDao underGoodsDao;
 	@Autowired

@@ -68,7 +68,7 @@ public class ZkemSDKRealTime {
 	 *            考勤号码
 	 * @return
 	 */
-	public List<Map<String, Object>> getUserInfoByNumber(String number, ActiveXComponent zkem) {
+	public static List<Map<String, Object>> getUserInfoByNumber(String number, ActiveXComponent zkem) {
 		Variant v0 = new Variant(1);
 		Variant sdwEnrollNumber = new Variant(number, true);
 		Variant sName = new Variant("", true);
@@ -101,7 +101,7 @@ public class ZkemSDKRealTime {
 	 * @param machineNumber 机器号
 	 * @return IP地址
 	 */
-	public String GetDeviceIP(int machineNumber,ActiveXComponent zkem){
+	public static String GetDeviceIP(int machineNumber,ActiveXComponent zkem){
 		Variant ipAddr=new Variant("",true);
 		boolean status= zkem.invoke("GetDeviceIP",new Variant(machineNumber),ipAddr).getBoolean();
 		if(!status){

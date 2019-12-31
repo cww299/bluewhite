@@ -27,7 +27,6 @@ import com.bluewhite.common.utils.NumUtils;
 import com.bluewhite.common.utils.StringUtil;
 import com.bluewhite.finance.attendance.dao.AttendancePayDao;
 import com.bluewhite.finance.attendance.entity.AttendancePay;
-import com.bluewhite.personnel.attendance.service.AttendanceService;
 import com.bluewhite.production.bacth.dao.BacthDao;
 import com.bluewhite.production.bacth.entity.Bacth;
 import com.bluewhite.production.finance.dao.PayBDao;
@@ -39,15 +38,12 @@ import com.bluewhite.production.procedure.entity.Procedure;
 import com.bluewhite.production.productionutils.constant.ProTypeUtils;
 import com.bluewhite.production.task.entity.Task;
 import com.bluewhite.production.task.service.TaskService;
-import com.bluewhite.system.user.dao.UserDao;
 
 @Service
 public class BacthServiceImpl extends BaseServiceImpl<Bacth, Long> implements BacthService {
 
 	@Autowired
 	private BacthDao dao;
-	@Autowired
-	private UserDao userDao;
 	@Autowired
 	private PayBDao payBDao;
 	@Autowired
@@ -58,8 +54,6 @@ public class BacthServiceImpl extends BaseServiceImpl<Bacth, Long> implements Ba
 	private TaskService taskService;
 	@Autowired
 	private AttendancePayDao attendancePayDao;
-	@Autowired
-	private AttendanceService attendanceService;
 
 	private static String GROUP = "返工组";
 

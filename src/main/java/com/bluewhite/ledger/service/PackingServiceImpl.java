@@ -6,7 +6,6 @@ import java.util.Calendar;
 import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
-import java.util.Set;
 
 import javax.persistence.criteria.Join;
 import javax.persistence.criteria.JoinType;
@@ -32,23 +31,16 @@ import com.bluewhite.common.entity.PageResult;
 import com.bluewhite.common.utils.DatesUtil;
 import com.bluewhite.common.utils.RoleUtil;
 import com.bluewhite.common.utils.StringUtil;
-import com.bluewhite.common.utils.StringUtil;
-import com.bluewhite.ledger.dao.OrderDao;
 import com.bluewhite.ledger.dao.PackingChildDao;
 import com.bluewhite.ledger.dao.PackingDao;
 import com.bluewhite.ledger.dao.PackingMaterialsDao;
 import com.bluewhite.ledger.dao.SaleDao;
 import com.bluewhite.ledger.dao.SendGoodsDao;
-import com.bluewhite.ledger.entity.Order;
 import com.bluewhite.ledger.entity.Packing;
 import com.bluewhite.ledger.entity.PackingChild;
 import com.bluewhite.ledger.entity.PackingMaterials;
 import com.bluewhite.ledger.entity.Sale;
 import com.bluewhite.ledger.entity.SendGoods;
-import com.bluewhite.onlineretailers.inventory.dao.InventoryDao;
-import com.bluewhite.onlineretailers.inventory.entity.Inventory;
-import com.bluewhite.product.product.dao.ProductDao;
-import com.bluewhite.product.product.entity.Product;
 
 @Service
 public class PackingServiceImpl extends BaseServiceImpl<Packing, Long> implements PackingService {
@@ -60,17 +52,7 @@ public class PackingServiceImpl extends BaseServiceImpl<Packing, Long> implement
 	@Autowired
 	private PackingChildDao packingChildDao;
 	@Autowired
-	private OrderDao orderDao;
-	@Autowired
 	private PackingMaterialsDao packingMaterialsDao;
-	@Autowired
-	private MixedService mixedService;
-	@Autowired
-	private ReceivedMoneyService receivedMoneyService;
-	@Autowired
-	private InventoryDao inventoryDao;
-	@Autowired
-	private ProductDao productDao;
 	@Autowired
 	private SaleDao saleDao;
 
@@ -464,8 +446,6 @@ public class PackingServiceImpl extends BaseServiceImpl<Packing, Long> implement
 	@Override
 	@Transactional
 	public int confirmPackingChild(String ids) {
-		CurrentUser cu = SessionManager.getUserSession();
-		Long warehouseTypeDeliveryId = RoleUtil.getWarehouseTypeDelivery(cu.getRole());
 		int count = 0;
 		if (!StringUtils.isEmpty(ids)) {
 			String[] idStrings = ids.split(",");
@@ -481,7 +461,6 @@ public class PackingServiceImpl extends BaseServiceImpl<Packing, Long> implement
 					throw new ServiceException("确认入库数量未填写，请先填写确认入库数量");
 				}
 				if (packingChild != null) {
-					Product product = packingChild.getProduct();
 					packingChild.setConfirm(1);
 					packingChildDao.save(packingChild);
 				};
@@ -585,7 +564,6 @@ public class PackingServiceImpl extends BaseServiceImpl<Packing, Long> implement
 					throw new ServiceException("调拨单未审核，请勿取消审核");
 				}
 				if (packingChild != null) {
-					Product product = packingChild.getProduct();
 					packingChild.setConfirm(0);
 					packingChildDao.save(packingChild);
 				};
