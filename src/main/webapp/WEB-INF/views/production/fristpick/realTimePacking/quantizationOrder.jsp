@@ -18,6 +18,9 @@
 				<td>产品名:</td>
 				<td><input type="text" name="productName" class="layui-input"></td>
 				<td>&nbsp;&nbsp;&nbsp;</td>
+				<td>客户名:</td>
+				<td><input type="text" name="customerName" class="layui-input"></td>
+				<td>&nbsp;&nbsp;&nbsp;</td>
 				<td>包装时间:</td>
 				<td><input type="text" name="orderTimeBegin" id="orderTimeBegin" class="layui-input"></td>
 				<td>&nbsp;&nbsp;&nbsp;</td>
