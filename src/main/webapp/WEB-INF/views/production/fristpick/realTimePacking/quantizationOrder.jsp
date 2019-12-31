@@ -194,7 +194,6 @@ layui.config({
 			       { title:'是否打印',   field:'print', 	transData:true, width:'5%', },
 			       { title:'批次号',    field:'underGoods_bacthNumber',	width:'8%', },
 			       { title:'产品名',    field:'underGoods_product_name', 	},
-
 			       { title:'单包个数',   field:'singleNumber',	width:'6%', },
 			       { title:'实际数量',   field:'actualSingleNumber',	width:'6%',event:'transColor', 
 			    	   templet: function(d){
@@ -228,18 +227,18 @@ layui.config({
 					var arr = [];
 					arr.push(re[i]["quantitativeNumber"]);
 					arr.push(re[i]["user_userName"]);
+					arr.push(re[i]["sendTime"]);
 					arr.push(re[i]["customer_name"]);
 					arr.push(re[i]["underGoods_bacthNumber"]);
 					arr.push(re[i]["underGoods_product_name"]);
 					arr.push(re[i]["singleNumber"]);
 					arr.push(re[i]["remarks"]);
-					arr.push(re[i]["sendTime"]);
 					array.push(arr);
 				}
 				
 			$(".layui-icon-export").on('click',function(){
 				$(this).attr('lay-event','excel');
-				table.exportFile(['量化编号','贴包人','客户','批次号','产品名','单包个数','备注','发货时间'],array,'csv'); 
+				table.exportFile(['量化编号','贴包人','发货时间','客户','批次号','产品名','单包个数','备注'],array,'xls'); 
 			})
 			}
 		})
