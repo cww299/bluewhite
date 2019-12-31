@@ -552,9 +552,9 @@ layui.config({
 			if(field.orderTimeBegin){
 				var t = field.orderTimeBegin.split(' ~ ');
 				field.orderTimeBegin = t[0]+' 00:00:00';
-				field.orderTiemEnd = t[1]+' 23:59:59';
+				field.orderTimeEnd = t[1]+' 23:59:59';
 			}else
-				field.orderTiemEnd = '';
+				field.orderTimeEnd = '';
 			var a="";
 			var b="";
 			if($("#selectone").val()=="time"){
