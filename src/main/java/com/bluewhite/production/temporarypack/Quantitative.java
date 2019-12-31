@@ -58,6 +58,12 @@ public class Quantitative extends BaseEntity<Long> {
 	private Date time;
 	
 	/**
+     * 发货时间
+     */
+    @Column(name = "send_time")
+    private Date sendTime;
+	
+	/**
 	 * 总包数
 	 */
 	@Column(name = "sum_package_number")
@@ -174,7 +180,16 @@ public class Quantitative extends BaseEntity<Long> {
 	
 	
 	
-	public String getIds() {
+	
+	public Date getSendTime() {
+        return sendTime;
+    }
+
+    public void setSendTime(Date sendTime) {
+        this.sendTime = sendTime;
+    }
+
+    public String getIds() {
 		return ids;
 	}
 

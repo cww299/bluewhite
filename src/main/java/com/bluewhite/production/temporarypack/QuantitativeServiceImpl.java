@@ -83,10 +83,15 @@ public class QuantitativeServiceImpl extends BaseServiceImpl<Quantitative, Long>
 						cb.equal(root.get("productNumber").as(String.class), "%" + param.getProductNumber() + "%"));
 			}
 			// 按下单日期
-			if (!StringUtils.isEmpty(param.getOrderTimeBegin()) && !StringUtils.isEmpty(param.getOrderTimeEnd())) {
+			if (!StringUtils.isEmpty(param.getTime()) && !StringUtils.isEmpty(param.getOrderTimeBegin()) && !StringUtils.isEmpty(param.getOrderTimeEnd())) {
 				predicate.add(cb.between(root.get("time").as(Date.class), param.getOrderTimeBegin(),
 						param.getOrderTimeEnd()));
 			}
+			// 按发货日期
+            if (!StringUtils.isEmpty(param.getSendTime()) && !StringUtils.isEmpty(param.getOrderTimeBegin()) && !StringUtils.isEmpty(param.getOrderTimeEnd())) {
+                predicate.add(cb.between(root.get("sendTime").as(Date.class), param.getOrderTimeBegin(),
+                        param.getOrderTimeEnd()));
+            }
 			Predicate[] pre = new Predicate[predicate.size()];
 			query.where(predicate.toArray(pre));
 			query.distinct(true);
@@ -242,6 +247,7 @@ public class QuantitativeServiceImpl extends BaseServiceImpl<Quantitative, Long>
 					if (quantitative.getFlag() == 1) {
 						throw new ServiceException("已发货请勿多次发货");
 					}
+					quantitative.setSendTime(new Date());
 					quantitative.setFlag(1);
 					dao.save(quantitative);
 				}
