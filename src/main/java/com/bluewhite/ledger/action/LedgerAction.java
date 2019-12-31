@@ -833,8 +833,7 @@ public class LedgerAction {
 	}
 
 	/**
-	 * 	(生产计划部) 审核加工单，
-	 *  	审核成功后，仓库可见
+	 * 	(生产计划部) 审核加工单，审核成功后，仓库可见
 	 *	  面辅料仓库(机工领取)
 	 *	  皮壳仓库(针工领取)
 	 * 	 成品仓库
@@ -1038,8 +1037,8 @@ public class LedgerAction {
 	}
 	
 	/**
-	 * (面辅料仓库)退货单新增
-	 * 
+	 * (面辅料仓库)采购入库单
+	 * 新增退货单
 	 * @param order
 	 * @return
 	 */
@@ -1054,8 +1053,8 @@ public class LedgerAction {
 	
 	
 	/**
-     * (面辅料仓库)退货单删除
-     * 
+     * (面辅料仓库)采购入库单
+     *  退货单删除
      * @param order
      * @return
      */
@@ -1466,8 +1465,6 @@ public class LedgerAction {
 	public CommonResponse getPackingNumber(Date sendDate) {
 		CommonResponse cr = new CommonResponse();
 		String packingNumber = packingService.getPackingNumber(sendDate);
-		
-		
 		cr.setData(packingNumber);
 		cr.setMessage("获取成功");
 		return cr;
