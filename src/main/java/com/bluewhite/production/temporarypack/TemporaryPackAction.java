@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
 
+import com.alibaba.excel.EasyExcel;
 import com.alibaba.excel.EasyExcelFactory;
 import com.alibaba.excel.metadata.Sheet;
 import com.alibaba.fastjson.JSONArray;
@@ -22,6 +23,7 @@ import com.bluewhite.common.ClearCascadeJSON;
 import com.bluewhite.common.entity.CommonResponse;
 import com.bluewhite.common.entity.PageParameter;
 import com.bluewhite.common.utils.excel.ExcelListener;
+import com.bluewhite.finance.consumption.entity.ConsumptionPoi;
 import com.bluewhite.ledger.entity.Customer;
 import com.bluewhite.ledger.entity.PackingMaterials;
 import com.bluewhite.product.product.entity.Product;
@@ -272,7 +274,7 @@ public class TemporaryPackAction {
 		CommonResponse cr = new CommonResponse();
 		InputStream inputStream = file.getInputStream();
 		ExcelListener excelListener = new ExcelListener();
-		EasyExcelFactory.readBySax(inputStream, new Sheet(1, 1, UnderGoodsPoi.class), excelListener);
+		EasyExcel.read(inputStream, UnderGoodsPoi.class, excelListener).sheet().doRead();
 		int count = underGoodsService.excelUnderGoods(excelListener);
 		inputStream.close();
 		cr.setMessage("成功导入" + count + "条下货单");
