@@ -210,16 +210,13 @@ public class MaterialPutStorageServiceImpl extends BaseServiceImpl<MaterialPutSt
             List<OrderProcurementReturn> orderProcurementReturnList =
                 orderProcurementReturnDao.findByMaterialPutStorageId(orderProcurementReturn.getMaterialPutStorageId());
             if (orderProcurementReturnList.size() > 0) {
-                double sumNumber =
-                    orderProcurementReturnList.stream().mapToDouble(OrderProcurementReturn::getNumber).sum();
-                if (materialPutStorage
-                    .getArrivalNumber() < (NumUtils.sum(sumNumber, orderProcurementReturn.getNumber()))) {
-                    throw new ServiceException("以退货:" + sumNumber + "退货数量超出,无法继续退货，请核实数值");
+                double sumNumber = orderProcurementReturnList.stream().mapToDouble(OrderProcurementReturn::getNumber).sum();
+                if (materialPutStorage.getArrivalNumber() < (NumUtils.sum(sumNumber, orderProcurementReturn.getNumber()))) {
+                    throw new ServiceException("已退货:" + sumNumber + "。退货数量超出,无法继续退货，请核实数值");
                 }
-                orderProcurementReturnDao.save(orderProcurementReturn);
             }
+            orderProcurementReturnDao.save(orderProcurementReturn);
         }
-
     }
 
     @Override
@@ -243,7 +240,7 @@ public class MaterialPutStorageServiceImpl extends BaseServiceImpl<MaterialPutSt
 
     @Override
     public List<OrderProcurementReturn> getMaterialReturnOne(Long orderProcurementId) {
-        // TODO Auto-generated method stub
+        
          return null;
     }
 }
