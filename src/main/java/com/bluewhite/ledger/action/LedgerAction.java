@@ -331,8 +331,15 @@ public class LedgerAction {
 				.addRetainTerm(Customer.class, "id", "name")
 				.addRetainTerm(BaseOne.class, "id", "name");
 	}
+	
+   private ClearCascadeJSON clearCascadeJSONOrderProcurementReturn;
+    {
+        clearCascadeJSONOrderProcurementReturn = ClearCascadeJSON.get()
+                .addRetainTerm(OrderProcurementReturn.class, "id", "serialNumber", "time", "number",
+                        "remark");
+    }
 
-	/**
+	/**s
 	 *	 分页查看生产计划单
 	 * 
 	 * @param page
@@ -606,6 +613,21 @@ public class LedgerAction {
 		cr.setMessage("更新成功" + count + "条");
 		return cr;
 	}
+	
+	/**
+     * (采购部)
+     * 查看退货单
+     * @param order
+     * @return
+     */
+    @RequestMapping(value = "/ledger/getMaterialReturn", method = RequestMethod.GET)
+    @ResponseBody
+    public CommonResponse getMaterialReturnOne(Long orderProcurementId) {
+        CommonResponse cr = new CommonResponse();
+        cr.setData(clearCascadeJSONOrderProcurementReturn.format(materialPutStorageService.getMaterialReturnOne(orderProcurementId)).toJSON());
+        cr.setMessage("成功");
+        return cr;
+    }
 
 	/**
 	 * 	(采购部)生成采购应付账单
@@ -1037,7 +1059,7 @@ public class LedgerAction {
 	}
 	
 	/**
-	 * (面辅料仓库)采购入库单
+	 * (面辅料仓库)
 	 * 新增退货单
 	 * @param order
 	 * @return
@@ -1051,9 +1073,24 @@ public class LedgerAction {
 		return cr;
 	}
 	
+	/**
+     * (面辅料仓库)
+     * 查看退货单
+     * @param order
+     * @return
+     */
+    @RequestMapping(value = "/ledger/inventory/getMaterialReturn", method = RequestMethod.GET)
+    @ResponseBody
+    public CommonResponse getMaterialReturn(Long materialPutStorageId) {
+        CommonResponse cr = new CommonResponse();
+        cr.setData(clearCascadeJSONOrderProcurementReturn.format(materialPutStorageService.getMaterialReturn(materialPutStorageId)).toJSON());
+        cr.setMessage("成功");
+        return cr;
+    }
+	
 	
 	/**
-     * (面辅料仓库)采购入库单
+     * (面辅料仓库)
      *  退货单删除
      * @param order
      * @return

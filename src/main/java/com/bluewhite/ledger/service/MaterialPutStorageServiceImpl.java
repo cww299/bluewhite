@@ -235,4 +235,15 @@ public class MaterialPutStorageServiceImpl extends BaseServiceImpl<MaterialPutSt
         }
         return count;
     }
+
+    @Override
+    public List<OrderProcurementReturn> getMaterialReturn(Long id) {
+        return orderProcurementReturnDao.findByMaterialPutStorageId(id);
+    }
+
+    @Override
+    public List<OrderProcurementReturn> getMaterialReturnOne(Long orderProcurementId) {
+        // TODO Auto-generated method stub
+         return null;
+    }
 }
