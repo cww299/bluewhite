@@ -36,12 +36,16 @@ public class SDKRunnable implements Runnable {
 	/**
 	 * 线程任务
 	 */
-	private void regEvent() {
+	private boolean regEvent() {
 		ZkemSDKRealTime sdk = new ZkemSDKRealTime();
 		ActiveXComponent zkem = sdk.initSTA(address);
-		sdk.connect(address, zkem);
+		boolean flag = sdk.connect(address, zkem);
+		if(!flag) {
+		    return false;
+		}
 		timerTask(sdk,zkem);
 		sdk.regEvent(zkem);
+        return true;
 	}
 
 	/**
@@ -59,10 +63,10 @@ public class SDKRunnable implements Runnable {
 				// 	使用获取机器ip方式，判断是否保持设备连接在线状态
 				String ip = sdk.GetDeviceIP(1, zkem);
 				if (ip == null) {
-					System.out.println(address + "考勤机设备异常，重连中-------");
-					//	判断是否重脸成功，重联成功则去除之前的定时任务
-					sdk.regEvent(zkem);
-//					timer.cancel();
+					log.error(address + "考勤机设备异常，重连中-------");
+					//	判断是否重连成功，重联成功则去除之前的定时任务
+					regEvent();
+					
 				}
 			}
 		}, time, 60000);//	 这里设定将延时每隔一分钟执行一次
