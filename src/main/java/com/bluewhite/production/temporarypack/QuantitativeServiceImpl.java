@@ -27,7 +27,6 @@ import com.bluewhite.common.entity.PageParameter;
 import com.bluewhite.common.entity.PageResult;
 import com.bluewhite.common.utils.DatesUtil;
 import com.bluewhite.common.utils.StringUtil;
-import com.bluewhite.ledger.dao.PackingMaterialsDao;
 import com.bluewhite.ledger.entity.PackingMaterials;
 
 import cn.hutool.core.date.DateUtil;
@@ -37,8 +36,6 @@ public class QuantitativeServiceImpl extends BaseServiceImpl<Quantitative, Long>
 
 	@Autowired
 	private QuantitativeDao dao;
-	@Autowired
-	private PackingMaterialsDao packingMaterialsDao;
 	@Autowired
 	private UnderGoodsDao underGoodsDao;
 	@Autowired
@@ -86,10 +83,15 @@ public class QuantitativeServiceImpl extends BaseServiceImpl<Quantitative, Long>
 						cb.equal(root.get("productNumber").as(String.class), "%" + param.getProductNumber() + "%"));
 			}
 			// 按下单日期
-			if (!StringUtils.isEmpty(param.getOrderTimeBegin()) && !StringUtils.isEmpty(param.getOrderTimeEnd())) {
+			if (!StringUtils.isEmpty(param.getTime()) && !StringUtils.isEmpty(param.getOrderTimeBegin()) && !StringUtils.isEmpty(param.getOrderTimeEnd())) {
 				predicate.add(cb.between(root.get("time").as(Date.class), param.getOrderTimeBegin(),
 						param.getOrderTimeEnd()));
 			}
+			// 按发货日期
+            if (!StringUtils.isEmpty(param.getSendTime()) && !StringUtils.isEmpty(param.getOrderTimeBegin()) && !StringUtils.isEmpty(param.getOrderTimeEnd())) {
+                predicate.add(cb.between(root.get("sendTime").as(Date.class), param.getOrderTimeBegin(),
+                        param.getOrderTimeEnd()));
+            }
 			Predicate[] pre = new Predicate[predicate.size()];
 			query.where(predicate.toArray(pre));
 			query.distinct(true);
@@ -147,8 +149,7 @@ public class QuantitativeServiceImpl extends BaseServiceImpl<Quantitative, Long>
 					quantitativeChild.setSingleNumber(0);
 				}
 				// 获取贴包数量，用于判断是否可以新增或者修改
-				List<Long> stickListId = dao.findStickNumber(underGoodsId);
-				List<QuantitativeChild> stickListList = quantitativeChildDao.findByIdIn(stickListId);
+				List<QuantitativeChild> stickListList = quantitativeChildDao.findByUnderGoodsId(underGoodsId);
 				int numberStickSum = 0;
 				if (stickListList.size() > 0) {
 					numberStickSum = stickListList.stream().mapToInt(QuantitativeChild::getSingleNumber).sum();
@@ -245,6 +246,7 @@ public class QuantitativeServiceImpl extends BaseServiceImpl<Quantitative, Long>
 					if (quantitative.getFlag() == 1) {
 						throw new ServiceException("已发货请勿多次发货");
 					}
+					quantitative.setSendTime(new Date());
 					quantitative.setFlag(1);
 					dao.save(quantitative);
 				}

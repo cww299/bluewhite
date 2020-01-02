@@ -44,16 +44,11 @@ public class SendGoodsServiceImpl extends BaseServiceImpl<SendGoods, Long> imple
 	@Autowired
 	private ApplyVoucherDao applyVoucherDao;
 	@Autowired
-	private PutStorageDao putStorageDao;
-	@Autowired
 	private OutStorageService outStorageService;
 	@Autowired
 	private OutStorageDao outStorageDao;
-	@Autowired
-	private OrderService orderService;
 	@Override
 	public PageResult<SendGoods> findPages(SendGoods param, PageParameter page) { 
-		CurrentUser cu = SessionManager.getUserSession();
 		Page<SendGoods> pages = dao.findAll((root, query, cb) -> {
 			List<Predicate> predicate = new ArrayList<>();
 			// 按id过滤

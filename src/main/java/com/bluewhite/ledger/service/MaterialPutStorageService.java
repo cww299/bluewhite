@@ -66,10 +66,16 @@ public interface MaterialPutStorageService  extends BaseCRUDService<MaterialPutS
 	 */
 	public List<MaterialPutStorage>  detailsInventory(Long warehouseTypeId, Long materielId);
 
-	/**
-	 * 新增物料退货单
+	/**新增物料退货单
+	 * 
 	 * @param materialPutOutStorage
 	 */
 	public void saveMaterialReturn(OrderProcurementReturn orderProcurementReturn);
+
+    /**删除退货单
+     * @param ids
+     * @return
+     */
+    public int deleteMaterialReturn(String ids);
 
 }

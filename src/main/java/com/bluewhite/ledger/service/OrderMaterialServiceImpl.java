@@ -19,7 +19,6 @@ import com.bluewhite.common.entity.PageResult;
 import com.bluewhite.common.utils.StringUtil;
 import com.bluewhite.ledger.dao.OrderDao;
 import com.bluewhite.ledger.dao.OrderMaterialDao;
-import com.bluewhite.ledger.dao.OrderProcurementDao;
 import com.bluewhite.ledger.dao.ScatteredOutboundDao;
 import com.bluewhite.ledger.entity.Order;
 import com.bluewhite.ledger.entity.OrderMaterial;
@@ -29,8 +28,6 @@ import com.bluewhite.product.primecost.cutparts.entity.CutParts;
 import com.bluewhite.product.primecost.cutparts.service.CutPartsService;
 import com.bluewhite.product.primecost.materials.entity.ProductMaterials;
 import com.bluewhite.product.primecost.materials.service.ProductMaterialsService;
-import com.bluewhite.product.primecost.tailor.service.TailorService;
-import com.bluewhite.product.primecostbasedata.dao.MaterielDao;
 
 @Service
 public class OrderMaterialServiceImpl extends BaseServiceImpl<OrderMaterial, Long> implements OrderMaterialService {
@@ -43,12 +40,6 @@ public class OrderMaterialServiceImpl extends BaseServiceImpl<OrderMaterial, Lon
 	private CutPartsService cutPartsService;
 	@Autowired
 	private ProductMaterialsService productMaterialsService;
-	@Autowired
-	private TailorService tailorService;
-	@Autowired
-	private MaterielDao materielDao;
-	@Autowired
-	private OrderProcurementDao orderProcurementDao;
 	@Autowired
 	private ScatteredOutboundDao scatteredOutboundDao;
 

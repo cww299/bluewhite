@@ -12,16 +12,16 @@ import javax.persistence.Table;
 import com.bluewhite.base.BaseEntity;
 import com.bluewhite.product.primecostbasedata.entity.Materiel;
 /**
- * 采购物料退货单
+ * .采购物料退货单
  * @author zhangliang
  *
  */
 @Entity
-@Table(name = "ledger_order_procurement")
+@Table(name = "ledger_order_procurement_return")
 public class OrderProcurementReturn extends BaseEntity<Long> {
 	
 	/**
-	 * 编号
+	 *  退货单编号
 	 */
 	@Column(name = "serial_number")
 	private String serialNumber;

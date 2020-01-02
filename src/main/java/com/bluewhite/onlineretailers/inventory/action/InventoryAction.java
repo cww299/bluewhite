@@ -43,7 +43,6 @@ import com.bluewhite.system.user.entity.User;
 @Controller
 public class InventoryAction {
 
-
 	@Autowired
 	private OnlineOrderService onlineOrderService;
 	@Autowired
@@ -60,9 +59,9 @@ public class InventoryAction {
 	private ClearCascadeJSON clearCascadeJSON;
 	{
 		clearCascadeJSON = ClearCascadeJSON.get()
-				.addRetainTerm(OnlineOrder.class, "documentNumber", "id", "user", "onlineCustomer", "onlineOrderChilds",
-						"sellerNick", "name", "buyerName", "picPath", "payment", "postFee", "consignTime",
-						"buyerRemarks", "num", "sumPrice", "status", "allBillPreferential",
+				.addRetainTerm(OnlineOrder.class, "documentNumber", "id      ", "user", "onlineCustomer",
+						"onlineOrderChilds", "sellerNick", "name", "buyerName", "picPath", "payment", "postFee",
+						"consignTime", "buyerRemarks", "num", "sumPrice", "status", "allBillPreferential",
 						"buyerMessage", "buyerMemo", "buyerFlag", "sellerMemo", "sellerFlag", "buyerRate",
 						"shippingType", "createdAt", "updatedAt", "address", "phone", "zipCode", "buyerName",
 						"provinces", "city", "county", "flag", "telephone", "residueNumber", "deliverys")
@@ -71,21 +70,19 @@ public class InventoryAction {
 						"residueNumber")
 				.addRetainTerm(Delivery.class, "id", "sumNumber", "trackingNumber", "deliveryChilds", "createdAt")
 				.addRetainTerm(DeliveryChild.class, "id", "number", "commodity")
-				.addRetainTerm(Commodity.class, "id", "skuCode","productId")
-				.addRetainTerm(BaseData.class, "id", "name")
-				.addRetainTerm(User.class, "id", "userName")
+				.addRetainTerm(Commodity.class, "id", "skuCode", "productId")
+				.addRetainTerm(BaseData.class, "id", "name").addRetainTerm(User.class, "id", "userName")
 				.addRetainTerm(RegionAddress.class, "id", "regionName", "parentId");
 	}
-	
+
 	private ClearCascadeJSON clearCascadeJSONChild;
 	{
 		clearCascadeJSONChild = ClearCascadeJSON.get()
-				.addRetainTerm(PackingChild.class, "id", "bacthNumber", "product", "count","sendDate"
-						,"customer" ,"remark","warehouse","warehouseType","confirm","confirmNumber","warehouseTypeDelivery","surplusNumber","flag")
-				.addRetainTerm(BaseData.class, "id", "name")
-				.addRetainTerm(Customer.class, "id", "name","user")
-				.addRetainTerm(User.class, "id", "userName")
-				.addRetainTerm(Product.class, "id", "name", "number");
+				.addRetainTerm(PackingChild.class, "id", "bacthNumber", "product", "count", "sendDate", "customer",
+						"remark", "warehouse", "warehouseType", "confirm", "confirmNumber", "warehouseTypeDelivery",
+						"surplusNumber", "flag")
+				.addRetainTerm(BaseData.class, "id", "name").addRetainTerm(Customer.class, "id", "name", "user")
+				.addRetainTerm(User.class, "id", "userName").addRetainTerm(Product.class, "id", "name", "number");
 	}
 
 	/****** 订单 *****/
@@ -133,8 +130,7 @@ public class InventoryAction {
 	}
 
 	/**
-	 * 一键发货 1.将父订单的状态改变成发货状态和一个仓库时，所有子订单的发货状态和仓库改变 2.子订单部分发货和不同仓库
-	 * （将销售状态改变,同时减少库存）
+	 * 一键发货 1.将父订单的状态改变成发货状态和一个仓库时，所有子订单的发货状态和仓库改变 2.子订单部分发货和不同仓库 （将销售状态改变,同时减少库存）
 	 * 
 	 */
 	@RequestMapping(value = "/inventory/delivery", method = RequestMethod.POST)
@@ -160,7 +156,7 @@ public class InventoryAction {
 	}
 
 	/****** 商品 *****/
-	/**  
+	/**
 	 * 获取商品列表
 	 * 
 	 */
@@ -171,11 +167,10 @@ public class InventoryAction {
 		cr.setData(ClearCascadeJSON.get()
 				.addRetainTerm(Commodity.class, "id", "productID", "skuCode", "fileId", "picUrl", "name", "description",
 						"weight", "size", "material", "fillers", "cost", "propagandaCost", "remark", "tianmaoPrice",
-						"oseePrice", "offlinePrice","number","productId","product","inventorys")
+						"oseePrice", "offlinePrice", "number", "productId", "product", "inventorys")
 				.addRetainTerm(Product.class, "id", "name")
 				.addRetainTerm(Inventory.class, "number", "place", "warehouse")
-				.addRetainTerm(BaseData.class, "id", "name")
-				.format(commodityService.findPage(commodity, page))
+				.addRetainTerm(BaseData.class, "id", "name").format(commodityService.findPage(commodity, page))
 				.toJSON());
 		cr.setMessage("查询成功");
 		return cr;
@@ -229,8 +224,8 @@ public class InventoryAction {
 	public CommonResponse onlineCustomerPage(Customer onlineCustomer, PageParameter page) {
 		CommonResponse cr = new CommonResponse();
 		cr.setData(ClearCascadeJSON.get()
-				.addRetainTerm(Commodity.class, "id", "user", "name", "buyerName", "grade", "type", "provinces",
-						"city", "county", "address", "phone", "account", "zipCode", "telephone")
+				.addRetainTerm(Commodity.class, "id", "user", "name", "buyerName", "grade", "type", "provinces", "city",
+						"county", "address", "phone", "account", "zipCode", "telephone")
 				.addRetainTerm(User.class, "userName")
 				.addRetainTerm(RegionAddress.class, "id", "regionName", "parentId")
 				.format(customerService.findPages(onlineCustomer, page)).toJSON());
@@ -284,7 +279,7 @@ public class InventoryAction {
 		cr.setData(ClearCascadeJSON.get()
 				.addRetainTerm(Procurement.class, "id", "documentNumber", "user", "procurementChilds", "number",
 						"residueNumber", "type", "flag", "remark", "transfersUser", "onlineCustomer", "status",
-						"createdAt","audit","conversion")
+						"createdAt", "audit", "conversion")
 				.addRetainTerm(ProcurementChild.class, "id", "commodity", "number", "residueNumber", "warehouse",
 						"status", "childRemark", "batchNumber")
 				.addRetainTerm(Commodity.class, "id", "skuCode", "name", "inventorys")
@@ -294,8 +289,7 @@ public class InventoryAction {
 		cr.setMessage("查询成功");
 		return cr;
 	}
-	
-	
+
 	/**
 	 * 分页查看生产子单
 	 * 
@@ -309,14 +303,12 @@ public class InventoryAction {
 		CommonResponse cr = new CommonResponse();
 		cr.setData(ClearCascadeJSON.get()
 				.addRetainTerm(ProcurementChild.class, "id", "commodity", "number", "residueNumber", "warehouse",
-						"status", "childRemark", "batchNumber" ,"procurement")
-				.addRetainTerm(Procurement.class, "id", "documentNumber", "user",  "number",
-						"residueNumber", "type", "flag", "remark", "transfersUser", "onlineCustomer", "status",
-						"createdAt")
-				.addRetainTerm(Commodity.class, "id", "skuCode", "name", "inventorys","productId")
+						"status", "childRemark", "batchNumber", "procurement")
+				.addRetainTerm(Procurement.class, "id", "documentNumber", "user", "number", "residueNumber", "type",
+						"flag", "remark", "transfersUser", "onlineCustomer", "status", "createdAt")
+				.addRetainTerm(Commodity.class, "id", "skuCode", "name", "inventorys", "productId")
 				.addRetainTerm(Inventory.class, "number", "place", "warehouse")
-				.addRetainTerm(User.class, "id", "userName")
-				.addRetainTerm(BaseData.class,"name")
+				.addRetainTerm(User.class, "id", "userName").addRetainTerm(BaseData.class, "name")
 				.format(procurementService.findPages(procurementChild, page)).toJSON());
 		cr.setMessage("查询成功");
 		return cr;
@@ -335,7 +327,7 @@ public class InventoryAction {
 		cr.setMessage("新增成功");
 		return cr;
 	}
-	
+
 	/**
 	 * 未审核前修改入库单
 	 */
@@ -347,7 +339,7 @@ public class InventoryAction {
 		cr.setMessage("修改成功");
 		return cr;
 	}
-	
+
 	/**
 	 * 审核入库单
 	 */
@@ -355,11 +347,10 @@ public class InventoryAction {
 	@ResponseBody
 	public CommonResponse auditProcurement(String ids) {
 		CommonResponse cr = new CommonResponse();
-		int count  = procurementService.auditProcurement(ids);
-		cr.setMessage("成功审核"+count+"条入库单");
+		int count = procurementService.auditProcurement(ids);
+		cr.setMessage("成功审核" + count + "条入库单");
 		return cr;
 	}
-	
 
 	/**
 	 * 一键反冲单据(整单)
@@ -534,11 +525,12 @@ public class InventoryAction {
 		cr.setMessage("成功");
 		return cr;
 	}
-	
-	/*************  电子商务库存管理  **************/
-	
+
+	/************* 电子商务库存管理 **************/
+
 	/**
 	 * 将出库单转换成发货清单
+	 * 
 	 * @param ids
 	 * @return
 	 */
@@ -550,23 +542,25 @@ public class InventoryAction {
 		cr.setMessage("成功转换成发货单");
 		return cr;
 	}
-	
-	
+
 	/**
 	 * 分页查看发货单
+	 * 
 	 * @return cr
 	 */
 	@RequestMapping(value = "/inventory/packingChildPage", method = RequestMethod.GET)
 	@ResponseBody
 	public CommonResponse packingChildPage(PageParameter page, PackingChild packingChild) {
 		CommonResponse cr = new CommonResponse();
-		cr.setData(clearCascadeJSONChild.format(packingService.findPackingChildElectricityPage(packingChild, page)).toJSON());
+		cr.setData(clearCascadeJSONChild.format(packingService.findPackingChildElectricityPage(packingChild, page))
+				.toJSON());
 		cr.setMessage("查看成功");
 		return cr;
 	}
-	
+
 	/**
 	 * 修改发货单(电商仓管填写 )
+	 * 
 	 * @return cr
 	 */
 	@RequestMapping(value = "/inventory/updateInventoryPackingChild", method = RequestMethod.POST)
@@ -577,9 +571,10 @@ public class InventoryAction {
 		cr.setMessage("修改成功");
 		return cr;
 	}
-	
+
 	/**
 	 * 发货清单成为销售单（审核发货）
+	 * 
 	 * @param ids
 	 * @return
 	 */
@@ -588,7 +583,7 @@ public class InventoryAction {
 	public CommonResponse sendProcurement(String ids) {
 		CommonResponse cr = new CommonResponse();
 		int count = procurementService.sendProcurement(ids);
-		cr.setMessage("成功审核"+count+"条发货清单");
+		cr.setMessage("成功审核" + count + "条发货清单");
 		return cr;
 	}
 

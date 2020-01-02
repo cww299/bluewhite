@@ -15,8 +15,8 @@ import com.jacob.com.Variant;
 public class ZkemSDKRealTime {
 
 	public ActiveXComponent initSTA(String address) {
-		// 静态加载zkemkeeper.dll, zkemkeeper.ZKEM.1为注册表中的ProgID数值
-		// 构建ActiveX组件实例
+		// 	静态加载zkemkeeper.dll, zkemkeeper.ZKEM.1为注册表中的ProgID数值
+		// 	构建ActiveX组件实例
 		ActiveXComponent zkem = new ActiveXComponent("zkemkeeper.ZKEM.1");
 		ComThread.InitSTA();
 		return zkem;
@@ -31,7 +31,7 @@ public class ZkemSDKRealTime {
 	 * @throws Exception
 	 */
 	public boolean connect(String address, ActiveXComponent zkem) {
-		// 连接考勤机，返回是否连接成功，成功返回true，失败返回false。
+		// 	连接考勤机，返回是否连接成功，成功返回true，失败返回false。
 		boolean result = false;
 		try {
 			result = zkem.invoke("Connect_NET", address, 4370).getBoolean();
@@ -49,14 +49,14 @@ public class ZkemSDKRealTime {
 	 */
 	public void regEvent(ActiveXComponent zkem) {
 		System.out.println("考勤机实时事件启动");
-		DispatchEvents de = new DispatchEvents(zkem.getObject(), new SensorEvents(zkem));
+		new DispatchEvents(zkem.getObject(), new SensorEvents(zkem));
 		Dispatch.call(zkem, "RegEvent", new Variant(1l), new Variant(65535l));
 		new STA().doMessagePump();
 	}
 
-	// 释放占用的内存空间但是这样调用会出现一个严重的问题，当访问量过大时，初始化的内存太多而不能及时释放，这样就会导致内存溢出，这个应用程序就会崩溃，最好还得重新启动服务，重新发布项目。
-	// 长连接原本就是在Windows平台上运行的，但是经过一些技术加工之后，在Java中也能够调用，此问题就出现了。解决的方法还是有的，Net开发webService调用，然后生成Java客户端代码，
-	// 再用java调用，这样问题就解决了，而且效率也很好，使用方便。
+	// 	释放占用的内存空间但是这样调用会出现一个严重的问题，当访问量过大时，初始化的内存太多而不能及时释放，这样就会导致内存溢出，这个应用程序就会崩溃，最好还得重新启动服务，重新发布项目。
+	// 	长连接原本就是在Windows平台上运行的，但是经过一些技术加工之后，在Java中也能够调用，此问题就出现了。解决的方法还是有的，Net开发webService调用，然后生成Java客户端代码，
+	// 	再用java调用，这样问题就解决了，而且效率也很好，使用方便。
 	public void release() {
 		ComThread.Release();
 	}
@@ -79,11 +79,10 @@ public class ZkemSDKRealTime {
 				.getBoolean();
 		List<Map<String, Object>> resultList = new ArrayList<Map<String, Object>>();
 		if (result) {
-			// 由于名字后面会产生乱码，所以这里采用了截取字符串的办法把后面的乱码去掉了，以后有待考察更好的办法。
-			// 只支持2位、3位、4位长度的中文名字。
+			// 	由于名字后面会产生乱码，所以这里采用了截取字符串的办法把后面的乱码去掉了，以后有待考察更好的办法。
+			// 	只支持2位、3位、4位长度的中文名字。
 			String name = sName.getStringRef();
 			int index = name.indexOf("\0");
-			String newStr = "";
 			if (index > -1) {
 				name = name.substring(0, index);
 			}

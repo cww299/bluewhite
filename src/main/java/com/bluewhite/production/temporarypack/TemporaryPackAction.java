@@ -12,9 +12,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
 
-import com.alibaba.excel.EasyExcelFactory;
-import com.alibaba.excel.metadata.Sheet;
-import com.alibaba.fastjson.JSON;
+import com.alibaba.excel.EasyExcel;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.bluewhite.basedata.entity.BaseData;
@@ -46,7 +44,7 @@ public class TemporaryPackAction {
 	{
 		clearCascadeJSONQuantitative = ClearCascadeJSON.get()
 				.addRetainTerm(Quantitative.class, "id", "quantitativeNumber", "time", "sumPackageNumber", "time",
-						"quantitativeChilds", "packingMaterials", "user", "flag", "print","customer","audit")
+						"quantitativeChilds", "packingMaterials", "user", "flag", "print","customer","audit","sendTime")
 				.addRetainTerm(Customer.class, "id", "name")
 				.addRetainTerm(QuantitativeChild.class, "id", "underGoods", "sumPackageNumber", "singleNumber",
 						"number","actualSingleNumber","checks","remarks")
@@ -95,7 +93,7 @@ public class TemporaryPackAction {
 	@ResponseBody
 	public CommonResponse findAllUnderGoods() {
 		CommonResponse cr = new CommonResponse();
-		cr.setData(clearCascadeJSON.format(underGoodsService.findAll()).toJSON());
+		cr.setData(clearCascadeJSON.format(underGoodsService.getAll()).toJSON());
 		cr.setMessage("查询成功");
 		return cr;
 	}
@@ -273,7 +271,7 @@ public class TemporaryPackAction {
 		CommonResponse cr = new CommonResponse();
 		InputStream inputStream = file.getInputStream();
 		ExcelListener excelListener = new ExcelListener();
-		EasyExcelFactory.readBySax(inputStream, new Sheet(1, 1, UnderGoodsPoi.class), excelListener);
+		EasyExcel.read(inputStream, UnderGoodsPoi.class, excelListener).sheet().doRead();
 		int count = underGoodsService.excelUnderGoods(excelListener);
 		inputStream.close();
 		cr.setMessage("成功导入" + count + "条下货单");
