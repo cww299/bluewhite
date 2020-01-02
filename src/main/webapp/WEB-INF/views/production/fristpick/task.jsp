@@ -218,28 +218,25 @@
 		  		_count=count;
 		  	}
 		 
-		  	var myDate = new Date(new Date().getTime() - 86400000);
+		  	var date = new Date();
 			//获取当前年
-			var year=myDate.getFullYear();
+			var year=date.getFullYear();
 			//获取当前月
-			var month=myDate.getMonth()+1;
+			var month=date.getMonth()+1;
 			if(month < 10){
 				month = "0" + month;
 				}
 			//获取当前日
-			var date=myDate.getDate(); 
 			var day = new Date(year,month,0);  
 			var firstdate = year + '-' +month + '-01'+' '+'00:00:00';
 			var lastdate = year + '-' +month + '-' + day.getDate() +' '+'23:59:59';
-			/* $('#startTime').val(firstdate);
-			$('#endTime').val(lastdate); */
-			 var data={
-						page:1,
-				  		size:13,	
-				  		type:2,
-				  		orderTimeBegin:firstdate,
-				  		orderTimeEnd:lastdate,
-				} 
+		    var data={
+					page:1,
+			  		size:13,	
+			  		type:2,
+			  		orderTimeBegin:firstdate,
+			  		orderTimeEnd:lastdate,
+			} 
 			
 			 layui.use(['laydate'],function(){
 					var laydate = layui.laydate;

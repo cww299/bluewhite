@@ -12,8 +12,6 @@ import javax.servlet.http.HttpServletRequest;
 
 import org.apache.shiro.crypto.hash.SimpleHash;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Sort;
-import org.springframework.data.domain.Sort.Direction;
 import org.springframework.stereotype.Controller;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -39,7 +37,6 @@ import com.bluewhite.personnel.attendance.service.AttendanceInitService;
 import com.bluewhite.production.group.dao.TemporarilyDao;
 import com.bluewhite.production.group.entity.Group;
 import com.bluewhite.production.group.entity.Temporarily;
-import com.bluewhite.production.group.service.GroupService;
 import com.bluewhite.production.productionutils.constant.ProTypeUtils;
 import com.bluewhite.system.sys.entity.SysLog;
 import com.bluewhite.system.user.dao.UserContractDao;
@@ -63,8 +60,6 @@ public class UserAction {
 	private UserContractDao userContractDao;
 	@Autowired
 	private AttendanceInitService attendanceInitService;
-	@Autowired
-	private GroupService groupService;
 	@Autowired
 	private TemporaryUserService temporaryUserService;
 	@Autowired

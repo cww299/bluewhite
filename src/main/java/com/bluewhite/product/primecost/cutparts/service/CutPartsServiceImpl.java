@@ -26,15 +26,12 @@ import com.bluewhite.product.primecost.tailor.entity.Tailor;
 import com.bluewhite.product.primecost.tailor.service.TailorService;
 import com.bluewhite.product.primecostbasedata.dao.MaterielDao;
 import com.bluewhite.product.primecostbasedata.entity.Materiel;
-import com.bluewhite.product.product.dao.ProductDao;
 
 @Service
 public class CutPartsServiceImpl  extends BaseServiceImpl<CutParts, Long> implements CutPartsService{
 
 	@Autowired
 	private CutPartsDao dao;
-	@Autowired
-	private ProductDao productdao;
 	@Autowired
 	private TailorDao tailorDao;
 	@Autowired
@@ -51,11 +48,9 @@ public class CutPartsServiceImpl  extends BaseServiceImpl<CutParts, Long> implem
 		NumUtils.setzro(cutParts);
 		//该片在这个货中的单只用料（累加处）
 		cutParts.setAddMaterial(NumUtils.mul(cutParts.getCutPartsNumber(), cutParts.getOneMaterial()));
-		countComposite(cutParts);
 		//使用片数周长
 		cutParts.setAllPerimeter(NumUtils.mul(cutParts.getPerimeter(),cutParts.getCutPartsNumber()));
 		dao.save(cutParts);
-		
 		//从cc裁片填写后，自动增加到裁剪页面
 		Tailor tailor = null;
 		if(cutParts.getTailorId()==null){
@@ -70,16 +65,18 @@ public class CutPartsServiceImpl  extends BaseServiceImpl<CutParts, Long> implem
 			tailor = tailorDao.findOne(cutParts.getTailorId());
 		}
 		NumUtils.setzro(tailor);
-		//批量产品数量或模拟批量数
-		tailor.setNumber(cutParts.getNumber());
 		//裁剪部位名称
 		tailor.setTailorName(cutParts.getCutPartsName());
 		//裁剪片数
 		tailor.setTailorNumber(cutParts.getCutPartsNumber());
-		//当批片数
-		tailor.setBacthTailorNumber(cutParts.getCutPartsNumber()*cutParts.getNumber());
-		//物料压价,通过cc裁片填写中该裁片该面料的价值 得到
-		tailor.setPriceDown(NumUtils.sum(cutParts.getBatchMaterialPrice(),cutParts.getBatchComplexAddPrice()));
+		//面料
+		Materiel materiel  =  materielDao.findOne(cutParts.getMaterielId());
+		//复合物
+		Materiel complexMateriel  =  materielDao.findOne(cutParts.getComplexMaterielId());
+		//物料压价,通过cc裁片填写中该裁片该面料和复合物的价值 得到（原表格公式为批次数值，先取单一片数计算）
+		tailor.setPriceDown(NumUtils.sum(materiel.getPrice(),complexMateriel.getPrice()));
+		//选择价格来源，默认选择得到理论(市场反馈）含管理价值
+		tailor.setCostPriceSelect(1);
 		tailorService.saveTailor(tailor);
 		//更新裁剪页面id到裁片中
 		cutParts.setTailorId(tailor.getId());

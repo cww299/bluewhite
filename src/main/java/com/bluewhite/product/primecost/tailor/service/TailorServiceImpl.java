@@ -25,15 +25,12 @@ import com.bluewhite.product.primecostbasedata.dao.BaseThreeDao;
 import com.bluewhite.product.primecostbasedata.dao.PrimeCoefficientDao;
 import com.bluewhite.product.primecostbasedata.entity.PrimeCoefficient;
 import com.bluewhite.product.primecostbasedata.service.MaterielService;
-import com.bluewhite.product.product.dao.ProductDao;
 
 @Service
 public class TailorServiceImpl extends BaseServiceImpl<Tailor, Long> implements TailorService {
 
 	@Autowired
 	private TailorDao dao;
-	@Autowired
-	private ProductDao productdao;
 	@Autowired
 	private CutPartsDao cutPartsDao;
 	@Autowired
@@ -48,48 +45,38 @@ public class TailorServiceImpl extends BaseServiceImpl<Tailor, Long> implements 
 	@Override
 	@Transactional
 	public Tailor saveTailor(Tailor tailor) {
-		NumUtils.setzro(tailor);
 		// 得到理论(市场反馈）含管理价值
 		Double managePrice = materielService.getBaseThreeOne(tailor.getTailorTypeId(), tailor.getTailorSizeId());
 		tailor.setManagePrice(managePrice);
 		//裁剪方式
-		OrdinaryLaser prams = null;
-		if(tailor.getOrdinaryLaserId()==null){
-			prams = new OrdinaryLaser();
-		}else{
+		OrdinaryLaser prams = new OrdinaryLaser();
+		prams.setTailorTypeId(tailor.getTailorTypeId());
+		if(prams.getTailorTypeId()!=null){
 			prams = ordinaryLaserDao.findOne(tailor.getOrdinaryLaserId());
 		}
 		NumUtils.setzro(prams);
 		// 得到实验推算价格
 		tailor.setExperimentPrice(prams.getStallPrice());
-		if(tailor.getCostPriceSelect() == 0){
-			tailor.setCostPriceSelect(1);
-		}
-		if(tailor.getCostPriceSelect() == 1){
-			tailor.setCostPrice(tailor.getManagePrice());
-		}else if(tailor.getCostPriceSelect() == 2){
-			tailor.setCostPrice(tailor.getExperimentPrice());
-		}
-		// 总入成本价格
-		tailor.setAllCostPrice(NumUtils.mul(tailor.getBacthTailorNumber() , tailor.getCostPrice()));
+		//单个成本价
+		tailor.setCostPrice(tailor.getCostPriceSelect() == 1 ? tailor.getManagePrice() :tailor.getExperimentPrice());
 		// 得到市场价与实推价比
 		if (tailor.getExperimentPrice() != 0) {
 			tailor.setRatePrice(NumUtils.div(tailor.getExperimentPrice(), tailor.getCostPrice(), 3));
 		}
-		// 各单道比全套工价
+		// 各单道比全套工价,单道工序和全套总工价比（原表格公式通过批次数量的数值计算，程序换成单件数量计算）
 		List<Tailor> tailorList = dao.findByProductId(tailor.getProductId());
-		double sumAllCostPrice = tailorList.stream().filter(Tailor -> Tailor.getAllCostPrice() != null).mapToDouble(Tailor::getAllCostPrice).sum();
-		if(sumAllCostPrice!=0){
-			tailor.setScaleMaterial(NumUtils.div(tailor.getAllCostPrice(),sumAllCostPrice,3));
+		double sumCostPrice = tailorList.stream().filter(Tailor -> Tailor.getCostPrice() != null).mapToDouble(Tailor::getCostPrice).sum();
+		if(sumCostPrice!=0){
+			tailor.setScaleMaterial(NumUtils.div(tailor.getCostPrice(),sumCostPrice,3));
 		}
+		
+		/**   压价环节，暂时无法知道压价具体作用      **/
 		// 不含绣花环节的为机工压价
 		tailor.setNoeMbroiderPriceDown(NumUtils.sum(tailor.getAllCostPrice() , tailor.getPriceDown()));
 		// 含绣花环节的为机工压价(填写了绣花工序时才会出现)
-		
 		// 为机工准备的压价
 		double machinistPriceDown = tailor.getNoeMbroiderPriceDown() >= tailor.getEmbroiderPriceDown() ? tailor.getNoeMbroiderPriceDown() : tailor.getEmbroiderPriceDown();
 		tailor.setMachinistPriceDown(machinistPriceDown);
-		prams.setTailorTypeId(tailor.getTailorTypeId());
 		getOrdinaryLaserDate(tailor, prams);
 		return tailor;
 	}
@@ -99,12 +86,10 @@ public class TailorServiceImpl extends BaseServiceImpl<Tailor, Long> implements 
 	public OrdinaryLaser getOrdinaryLaserDate(Tailor tailor, OrdinaryLaser prams) {
 		//裁剪页面的基础系数
 		PrimeCoefficient primeCoefficient = primeCoefficientDao.findByTailorTypeId(tailor.getTailorTypeId());
-		String type = null;
 		CutParts cutParts = cutPartsDao.findOne(tailor.getCutPartsId());
 		prams.setProductId(tailor.getProductId());
 		prams.setTailorTypeId(tailor.getTailorTypeId());
 		prams.setTailorName(tailor.getTailorName());
-		prams.setNumber(tailor.getNumber());
 		prams.setTailorNumber(tailor.getTailorNumber());
 		prams.setTailorSizeId(tailor.getTailorSizeId());
 		prams.setTailorId(tailor.getId());
@@ -196,8 +181,6 @@ public class TailorServiceImpl extends BaseServiceImpl<Tailor, Long> implements 
 			break;
 		case 74:// 设备电烫(暂无)
 			
-			
-
 			break;
 		case 75:// 冲床
 			// 得到理论(市场反馈）含管理价值

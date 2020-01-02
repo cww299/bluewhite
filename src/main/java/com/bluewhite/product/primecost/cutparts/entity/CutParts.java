@@ -13,7 +13,7 @@ import com.bluewhite.product.primecostbasedata.entity.BaseOne;
 import com.bluewhite.product.primecostbasedata.entity.Materiel;
 
 /**
- * cc裁片填写
+ * 裁片填写
  * 
  * @author zhangliang
  *
@@ -27,12 +27,6 @@ public class CutParts extends BaseEntity<Long> {
 	 */
 	@Column(name = "product_id")
 	private Long productId;
-
-	/**
-	 * 批量产品数量或模拟批量数(默认2000)
-	 */
-	@Column(name = "number")
-	private Integer number = 2000;
 
 	/**
 	 * 裁剪页面id
@@ -167,33 +161,33 @@ public class CutParts extends BaseEntity<Long> {
 	/**
 	 * 当批各单片用料
 	 */
-	@Column(name = "batch_material")
+	@Transient
 	private Double batchMaterial;
 
 	/**
-	 * 当批各单片价格
+	 * 当批单片价格
 	 */
-	@Column(name = "batch_material_price")
+	@Transient
 	private Double batchMaterialPrice;
 
 	/**
 	 * 当批复合物用料
 	 */
-	@Column(name = "complex_batch_material")
+	@Transient
 	private Double complexBatchMaterial;
 
 	/**
-	 * 当批复合物各单片价格
+	 * 当批复合物单片价格
 	 * 
 	 */
-	@Column(name = "batch_complex_material_price")
+	@Transient
 	private Double batchComplexMaterialPrice;
 
 	/**
 	 * 当批复合物加加工费价格
 	 * 
 	 */
-	@Column(name = "batch_complex_add_price")
+	@Transient
 	private Double batchComplexAddPrice;
 
 	/**
@@ -201,6 +195,12 @@ public class CutParts extends BaseEntity<Long> {
 	 */
 	@Transient
 	private Double oneCutPartsPrice;
+	
+	/**
+     * 批量产品数量或模拟批量数
+     */
+	@Transient
+    private Integer number;
 	
 	
 	public BaseOne getOverstock() {
