@@ -79,7 +79,6 @@ public class NumUtils {
 			 field.setAccessible(true);
 			 String type = field.getType().toString();// 得到此属性的类型
 			 if(type.endsWith("Double")){
-				 Object target =  field.getName();
 				 Object val;
 				try {
 					val = field.get(model);
@@ -89,7 +88,6 @@ public class NumUtils {
 				}
 			 } 
 			 if(type.endsWith("Integer")){
-				 Object target =  field.getName();
 				 Object val;
 				try {
 					val = field.get(model);

@@ -46,8 +46,8 @@ public class OrdinaryLaserServiceImpl extends BaseServiceImpl<OrdinaryLaser, Lon
 		switch (ordinaryLaser.getTailorTypeId().intValue()) {
 		case 71:// 普通激光切割
 			// 得到理论(市场反馈）含管理价值
-			ordinaryLaser.setManagePrice(NumUtils
-					.div(NumUtils.mul(primeCoefficient.getPeripheralLaser(), ordinaryLaser.getPerimeter()), 100, 3));
+		    managePrice = NumUtils.div(NumUtils.mul(primeCoefficient.getPeripheralLaser(), ordinaryLaser.getPerimeter()), 100, 3);
+			ordinaryLaser.setManagePrice(managePrice);
 			double singleLaserTime = NumUtils.mul(ordinaryLaser.getPerimeter(), primeCoefficient.getTime(),
 					(double) ordinaryLaser.getStallPoint(), primeCoefficient.getPauseTime());
 			// 单片激光需要用净时
@@ -157,18 +157,12 @@ public class OrdinaryLaserServiceImpl extends BaseServiceImpl<OrdinaryLaser, Lon
 			// 得到理论(市场反馈）含管理价值
 			ordinaryLaser.setManagePrice(managePrice);
 			// 叠布秒数（含快手)
-			ordinaryLaser
-					.setOverlappedSeconds(NumUtils.division(NumUtils.div(
-							(ordinaryLaser.getNumber() < primeCoefficient.getPuncherTwo()
-									? primeCoefficient.getPuncherFour()
+			ordinaryLaser.setOverlappedSeconds(NumUtils.division(NumUtils.div(
+							(ordinaryLaser.getNumber() < primeCoefficient.getPuncherTwo() ? primeCoefficient.getPuncherFour()
 									: NumUtils.mul(primeCoefficient.getPuncherOne(), ordinaryLaser.getLayerNumber())),
-							NumUtils.div(
-									NumUtils.mul(ordinaryLaser.getLayerNumber(), primeCoefficient.getPuncherThree(),
-											1.5),
+							NumUtils.div(NumUtils.mul(ordinaryLaser.getLayerNumber(), primeCoefficient.getPuncherThree(),1.5),
 									NumUtils.mul(ordinaryLaser.getTailorSize().getOrdinaryLaser(),
-											primeCoefficient.getQuickWorker()),
-									3),
-							3)));
+											primeCoefficient.getQuickWorker()),3),3)));
 			if (ordinaryLaser.getLayerNumber() != 0) {
 				ordinaryLaser.setPunchingSeconds(
 						NumUtils.mul(NumUtils.div(primeCoefficient.getPuncherFive(), ordinaryLaser.getLayerNumber(), 3),
@@ -206,8 +200,7 @@ public class OrdinaryLaserServiceImpl extends BaseServiceImpl<OrdinaryLaser, Lon
 			if (num != 0) {
 				ordinaryLaser.setOverlappedSeconds(NumUtils.div(NumUtils.sum(
 						NumUtils.mul(primeCoefficient.getElectricPushOne(), ordinaryLaser.getLayerNumber()),
-						primeCoefficient.getElectricPushThree(), (double) primeCoefficient.getElectricPushFour()), num,
-						3));
+						primeCoefficient.getElectricPushThree(), (double) primeCoefficient.getElectricPushFour()), num,3));
 			}
 			// 电推秒数（含快手)
 			if(primeCoefficient.getElectricPushFive() !=0 || primeCoefficient.getElectricPushSix()!=0 ||ordinaryLaser.getLayerNumber()!=0){
