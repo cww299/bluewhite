@@ -6,6 +6,7 @@ import com.bluewhite.base.BaseCRUDService;
 import com.bluewhite.common.entity.PageParameter;
 import com.bluewhite.common.entity.PageResult;
 import com.bluewhite.ledger.entity.MaterialPutStorage;
+import com.bluewhite.ledger.entity.MaterialRequisition;
 import com.bluewhite.ledger.entity.OrderProcurementReturn;
 
 public interface MaterialPutStorageService  extends BaseCRUDService<MaterialPutStorage, Long>{
@@ -77,5 +78,16 @@ public interface MaterialPutStorageService  extends BaseCRUDService<MaterialPutS
      * @return
      */
     public int deleteMaterialReturn(String ids);
+
+    /**查询退货单根据入库单id
+     * @param id
+     */
+    public List<OrderProcurementReturn> getMaterialReturn(Long id);
+
+    /**
+     * @param orderProcurementId
+     * @return
+     */
+    public  List<OrderProcurementReturn> getMaterialReturnOne(Long orderProcurementId);
 
 }

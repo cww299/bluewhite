@@ -79,7 +79,7 @@ public class InventoryDetail extends BaseEntity<Long> {
 	 * 出库（入库）数量
 	 */
 	@Column(name = "number")
-	private Integer number;
+	private Double number;
 
 	/**
 	 * 领用价值
@@ -170,11 +170,11 @@ public class InventoryDetail extends BaseEntity<Long> {
 		this.remark = remark;
 	}
 
-	public Integer getNumber() {
+	public Double getNumber() {
 		return number;
 	}
 
-	public void setNumber(Integer number) {
+	public void setNumber(Double number) {
 		this.number = number;
 	}
 

@@ -28,8 +28,6 @@ import com.bluewhite.personnel.officeshare.dao.OfficeSuppliesDao;
 import com.bluewhite.personnel.officeshare.entity.InventoryDetail;
 import com.bluewhite.personnel.officeshare.entity.OfficeSupplies;
 
-import cn.hutool.core.date.DateUnit;
-
 @Service
 public class InventoryDetailServiceImpl extends BaseServiceImpl<InventoryDetail, Long>
 		implements InventoryDetailService {
@@ -100,7 +98,7 @@ public class InventoryDetailServiceImpl extends BaseServiceImpl<InventoryDetail,
 			if (officeSupplies.getInventoryNumber() < onventoryDetail.getNumber()) {
 				throw new ServiceException("库存不足，无法出库");
 			}
-			officeSupplies.setInventoryNumber(officeSupplies.getInventoryNumber() - onventoryDetail.getNumber());
+			officeSupplies.setInventoryNumber(NumUtils.sub(officeSupplies.getInventoryNumber() , onventoryDetail.getNumber()));
 			onventoryDetail.setOutboundCost(NumUtils.mul(officeSupplies.getPrice(), onventoryDetail.getNumber()));
 		}
 		// 入库
