@@ -27,12 +27,6 @@ public class ProductMaterials extends BaseEntity<Long>{
     private Long productId;
 	
 	/**
-	 * 批量产品数量或模拟批量数
-	 */
-	@Column(name = "number")
-	private Integer number = 2000;
-	
-	/**
 	 * 物料名id
 	 */
 	@Column(name = "materiel_id")
@@ -93,13 +87,13 @@ public class ProductMaterials extends BaseEntity<Long>{
 	/**
 	 * 当批当品种用量(手选单位）
 	 */
-	@Column(name = "batch_material")
+	@Transient
     private Double batchMaterial;
 	
 	/**
 	 * 当批当品种价格
 	 */
-	@Column(name = "batch_material_price")
+	@Transient
     private Double batchMaterialPrice;
 	
 	/**
@@ -108,6 +102,11 @@ public class ProductMaterials extends BaseEntity<Long>{
 	@Transient
     private Double oneOtherCutPartsPrice;
 	
+	/**
+     * 批量产品数量或模拟批量数
+     */
+    @Transient
+    private Integer number;
 	
 	
 	

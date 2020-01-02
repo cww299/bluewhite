@@ -48,12 +48,6 @@ public class OrdinaryLaser extends BaseEntity<Long> {
 	private BaseOne tailorType;
 
 	/**
-	 * 批量产品数量或模拟批量数
-	 */
-	@Column(name = "number")
-	private Integer number;
-
-	/**
 	 * 裁剪部位
 	 */
 	@Column(name = "tailor_name")
@@ -85,7 +79,7 @@ public class OrdinaryLaser extends BaseEntity<Long> {
 	private Double managePrice;
 
 	/**
-	 * 裁片周长/CM(≈)
+	 * 裁片周长/CM
 	 */
 	@Column(name = "perimeter")
 	private Double perimeter;
@@ -236,8 +230,6 @@ public class OrdinaryLaser extends BaseEntity<Long> {
 
 	/**
 	 * 叠片数量（冲床）
-	 * 
-	 * @return
 	 */
 	@Column(name = "lamination")
 	private Integer lamination;
@@ -247,6 +239,12 @@ public class OrdinaryLaser extends BaseEntity<Long> {
 	 */
 	@Transient
 	private Double oneCutPrice;
+	
+	/**
+     * 批量产品数量或模拟批量数
+     */
+	@Transient
+    private Integer number;
 
 	public BaseOne getTailorType() {
 		return tailorType;
