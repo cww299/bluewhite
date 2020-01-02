@@ -66,7 +66,7 @@ public class OfficeSuppliesServiceImpl extends BaseServiceImpl<OfficeSupplies, L
 			OfficeSupplies ot = dao.findOne(officeSupplies.getId());
 			update(officeSupplies, ot);
 		}else{
-			officeSupplies.setInventoryNumber(0);
+			officeSupplies.setInventoryNumber(0.0);
 			officeSupplies.setLibraryValue(NumUtils.mul(officeSupplies.getInventoryNumber(),NumUtils.setzro(officeSupplies.getPrice())));
 			dao.save(officeSupplies);
 		}

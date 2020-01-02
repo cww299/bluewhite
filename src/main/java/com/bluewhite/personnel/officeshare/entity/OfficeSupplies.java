@@ -87,7 +87,7 @@ public class OfficeSupplies extends BaseEntity<Long> {
 	 * 
 	 */
 	@Column(name = "inventory_number")
-	private Integer inventoryNumber;
+	private Double inventoryNumber;
 
 	/**
 	 * 库位
@@ -212,11 +212,11 @@ public class OfficeSupplies extends BaseEntity<Long> {
 		this.type = type;
 	}
 
-	public Integer getInventoryNumber() {
+	public Double getInventoryNumber() {
 		return inventoryNumber;
 	}
 
-	public void setInventoryNumber(Integer inventoryNumber) {
+	public void setInventoryNumber(Double inventoryNumber) {
 		this.inventoryNumber = inventoryNumber;
 	}
 
