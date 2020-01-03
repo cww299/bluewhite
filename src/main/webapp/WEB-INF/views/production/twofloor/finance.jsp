@@ -363,7 +363,7 @@
 		  		_count=count;
 		  	}
 			 
-			 var myDate = new Date(new Date().getTime() - 86400000);
+			 var myDate = new Date();
 				//获取当前年
 				var year=myDate.getFullYear();
 				//获取当前月
