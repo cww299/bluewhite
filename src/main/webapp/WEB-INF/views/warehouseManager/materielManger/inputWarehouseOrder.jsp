@@ -174,9 +174,9 @@ layui.config({
 			toolbar:[
 				'<span class="layui-btn layui-btn-sm" lay-event="update">修改</span>',
 				'<span class="layui-btn layui-btn-normal layui-btn-sm" lay-event="verify">验货</span>',
-				'<span class="layui-btn layui-btn-warm layui-btn-sm" lay-event="addReturn">新增退货单</span>',
-				'<span class="layui-btn layui-btn-primary layui-btn-sm" lay-event="lookoverReturn">查看退货单</span>',
 			].join(''),
+				//'<span class="layui-btn layui-btn-warm layui-btn-sm" lay-event="addReturn">新增退货单</span>',
+				//'<span class="layui-btn layui-btn-primary layui-btn-sm" lay-event="lookoverReturn">查看退货单</span>',
 			autoUpdate:{
 				saveUrl:'',
 				deleUrl:'/ledger/inventory/deleteMaterialPutStorage',
