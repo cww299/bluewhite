@@ -17,8 +17,11 @@
 	<div class="layui-card-body">
 		<table class="layui-form">
 			<tr>
-				<td style="width:100px;"><select id="timeType"><option value="requisitionTime">领取时间</option>
-											   <option value="openOrderTime">开单时间</option></td>
+				<td style="width:100px;">
+					<select id="timeType">
+						<option value="requisitionTime">领取时间</option>
+						<option value="openOrderTime">开单时间</option>
+					</select></td>
 				<td><input type="text" name="orderTimeBegin" id="searchTime" class="layui-input"></td>
 				<td>&nbsp;&nbsp;&nbsp;</td>
 				<td>领取人：</td>
