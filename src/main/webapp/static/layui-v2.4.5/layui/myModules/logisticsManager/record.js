@@ -107,18 +107,31 @@ layui.extend({
 			limits:[10,50,100,200,500,1000],
 			toolbar: record.type==3?'<span class="layui-btn layui-btn-sm" lay-event="comparyPrice">费用对比</span>':
 					'<span class="layui-btn layui-btn-sm" lay-event="partPrice">部门分摊费用</span>',
-			cols:[[
-			       { type: 'checkbox', fixed: 'left', },
-			       { field: "time", title: "时间", },
-			       { field: "officeSupplies_name", title: "物品名", },
-			       { field: "officeSupplies_price", title: "单价", },
-			       { field: "flag", title: "出入库", transData:{data:['出库','入库']}  },
-			       { field: "number",  title: "数量", },
-			       { field: "outboundCost", title: "领用价值", },
-			       { field: "user_userName", title: "领取人", },
-			       { field: "orgName_name", title: "部门", },
-			       { field: "remark", title: "备注", },
-			       ]]
+			cols:[
+			       (function(){
+			    	   var arr = [
+			    		   { type: 'checkbox', fixed: 'left', },
+					       { field: "time", title: "时间", width:160,},
+					       { field: "officeSupplies_name", title: "物品名", },
+					       { field: "officeSupplies_price", title: "单价", width:100, },
+			    		   { field: "flag", title: "出入库", transData:{data:['出库','入库']} ,width:100, }
+			    	   ];
+			    	   if(record.type==3)
+			    		   arr.push({
+			    			   field: "mealType", title: "用餐类型", 
+			    			   transData:{data:['','早餐','午餐','晚餐','夜宵','早午晚餐','午晚餐']} ,
+			    			   width:100,
+			    		   })
+			    		var arr2 = [
+			    		       { field: "number",  title: "数量",width:150, },
+						       { field: "outboundCost", title: "领用价值",width:150, },
+						       { field: "user_userName", title: "领取人", width:100,},
+						       { field: "orgName_name", title: "部门", width:100,},
+						       { field: "remark", title: "备注", },
+						    ];
+			    	   return arr.concat(arr2);
+			       })(),
+			 ]
 		})
 		layui.use('echarts',function(){	//页面渲染结束后再进行echarts加载。
 			echarts = layui.echarts;

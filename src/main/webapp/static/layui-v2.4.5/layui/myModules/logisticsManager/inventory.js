@@ -311,7 +311,7 @@ layui.extend({
 				},
 			})
 			myutil.getData({
-				url: myutil.config.ctx+'/system/user/findUserList?foreigns=0&isAdmin=false',
+				url: myutil.config.ctx+'/system/user/findUserList?foreigns=0&isAdmin=false&quit=0',
 				success:function(d){
 					for(var i=0,len=d.length;i<len;i++){
 						userSelectHtml += '<option value="'+d[i].id+'">'+d[i].userName+'</option>';
