@@ -152,7 +152,7 @@ layui.define(['mytable','element'],function(exports){
 		element.render();
 		rederMyTable({			//裁片汇总表格
 			elem:'#'+allTable[0],
-			colsWidth:[0,7,6,6,7,10,6,6,6,10,6,8,6,10,10,10,10,10],
+			colsWidth:[0,7,6,7,10,6,6,6,10,6,8,6,10,10,10,10,10],
 			autoUpdate:{
 				saveUrl:'/product/addTailor',
 				field: { tailorSize_id:'tailorSizeId',},
@@ -161,7 +161,6 @@ layui.define(['mytable','element'],function(exports){
 			       { type:'checkbox',},
 			       { title:'裁剪部位',   		field:'tailorName',	},
 			       { title:'裁剪片数',   		field:'tailorNumber',	},
-			       { title:'当批片数',   		field:'bacthTailorNumber',	},
 			       { title:'裁片面积/M²',   		field:'tailorSize_id',	   type:'select', select:{ data: allOrdinaryLaser }},
 			       { title:'裁剪方式', 	 		field:'tailorTypeId',     type:'select', select:{ data: allType }  },
 			       { title:'市场价值',   		field:'managePrice',	},

@@ -59,18 +59,47 @@
 	</div>
 </div>
 <script>
+var addEditReturnTpl = [
+	'<div class="layui-form layui-form-pane" style="padding:20px;margin:10px 20px;">',
+	  '<div class="layui-form-item" pane>',
+	    '<label class="layui-form-label">退货时间</label>',
+	    '<div class="layui-input-block">',
+	      '<input type="text" name="time" class="layui-input" id="returnTime" required>',
+	    '</div>',
+	  '</div>',
+	  '<div class="layui-form-item" pane>',
+	    '<label class="layui-form-label">退货数量</label>',
+	    '<div class="layui-input-block">',
+	      '<input type="number" name="number" class="layui-input" lay-verify="number" value="{{ d.number || "" }}">',
+	    '</div>',
+	  '</div>',
+	  '<div class="layui-form-item" pane>',
+	    '<label class="layui-form-label">退货原因</label>',
+	    '<div class="layui-input-block">',
+	      '<input type="text" name="remark" class="layui-input" value="{{ d.remark || "" }}">',
+	    '</div>',
+	  '</div>',
+	  '<p style="display:none;">',
+	  	'<span lay-submit lay-filter="addReturn" id="addReturn"></span>',
+	  	'<input type="hidden" name="id" value="{{ d.id || "" }}">',
+	  	'<input type="hidden" name="materielId" value="{{ d.materielId || "" }}">',
+	  	'<input type="hidden" name="materialPutStorageId" value="{{ d.materialPutStorageId || ""}}">',
+	  '</p>',
+	'</div>',
+].join(' ');
 layui.config({
 	base : '${ctx}/static/layui-v2.4.5/'
 }).extend({
 	mytable : 'layui/myModules/mytable' ,
 	inputWarehouseOrder: 'layui/myModules/warehouseManager/inputWarehouseOrder',
 }).define(
-	['mytable','inputWarehouseOrder','laydate'],
+	['mytable','inputWarehouseOrder','laydate','laytpl'],
 	function(){
 		var $ = layui.jquery
 		, layer = layui.layer 				
 		, form = layui.form			 		
 		, table = layui.table 
+		, laytpl = layui.laytpl
 		, laydate = layui.laydate
 		, myutil = layui.myutil
 		, laytpl = layui.laytpl
@@ -127,6 +156,17 @@ layui.config({
 								table.reload('tableData');
 							}
 						});
+					}else if(obj.event=='addReturn'){
+						if(check.length!=1)
+							return myutil.emsg('只能修改一条数据');
+						addReturnOrder({
+							materialPutStorageId: check[0].id,
+							materielId: check[0].materiel.id,
+						});
+					}else if(obj.event=='lookoverReturn'){
+						if(check.length!=1)
+							return myutil.emsg('只能修改一条数据');
+						lookoverReturnOrder(check[0]);
 					}
 				},
 				btn:[4],
@@ -134,6 +174,8 @@ layui.config({
 			toolbar:[
 				'<span class="layui-btn layui-btn-sm" lay-event="update">修改</span>',
 				'<span class="layui-btn layui-btn-normal layui-btn-sm" lay-event="verify">验货</span>',
+				'<span class="layui-btn layui-btn-warm layui-btn-sm" lay-event="addReturn">新增退货单</span>',
+				'<span class="layui-btn layui-btn-primary layui-btn-sm" lay-event="lookoverReturn">查看退货单</span>',
 			].join(''),
 			autoUpdate:{
 				saveUrl:'',
@@ -168,7 +210,89 @@ layui.config({
 			table.reload('tableData',{
 				where: obj.field,
 			})
-		}) 
+		})
+		function addReturnOrder(data){
+			var title = '新增退货单';
+			if(data.id){
+				title = '修改退货单';
+			}
+			laytpl(addEditReturnTpl).render(data,function(h){
+				html = h;
+			})
+			layer.open({
+				type:1,
+				title: title,
+				content: html,
+				btn:['确定','取消'],
+				btnAlign:'c',
+				area:'auto',
+				offset:'150px',
+				success:function(winE,winIndex){
+					laydate.render({elem:'#returnTime',type:'datetime',value:data.time || new Date(), });
+					form.on('submit(addReturn)',function(obj){
+						var field = obj.field;
+						myutil.saveAjax({
+							url:'/ledger/inventory/saveMaterialReturn',
+							data:field,
+							success:function(){
+								layer.close(winIndex);
+								table.reload('tableData');
+								if(table.cache['returnOrderTable'])
+									table.reload('returnOrderTable');
+							}
+						})
+					})
+				},
+				yes:function(winE,winIndex){
+					$('#addReturn').click();
+				}
+			})
+		}
+		function lookoverReturnOrder(data){
+			layer.open({
+				type:1,
+				title: '退货单',
+				content: [
+					'<div style="padding:10px;">',
+						'<table id="returnOrderTable" lay-filter="returnOrderTable"></table>',
+					'</div>',
+				].join(' '),
+				area:['800px','600px'],
+				shadeClose:true,
+				offset:'150px',
+				success:function(winE,winIndex){
+					mytable.renderNoPage({
+						elem:'#returnOrderTable',
+						url: myutil.config.ctx+'/ledger/inventory/getMaterialReturn?materialPutStorageId='+data.id,
+						curd:{
+							btn:[4],
+							otherBtn:function(obj){
+								if(obj.event=='edit'){
+									var check = layui.table.checkStatus('returnOrderTable').data;
+									if(check.length!=1)
+										return myutil.emsg('只能修改一条数据');
+									check[0].materialPutStorageId = data.id;
+									check[0].materielId = data.materiel.id;
+									addReturnOrder(check[0]);
+								}
+							},
+						},
+						autoUpdate:{
+							deleUrl:'/ledger/inventory/deleteMaterialReturn ',
+						},
+						toolbar:[
+							'<span class="layui-btn layui-btn-normal layui-btn-sm" lay-event="edit">修改</span>',
+						].join(' '),
+						cols:[[
+							{ type:'checkbox', },
+							{ title:'退货时间',field:'time', },
+							{ title:'退货数量',field:'number', },
+							{ title:'退货原因',field:'remark', },
+						]]
+					})
+				},
+			})
+		}
 		inputWarehouseOrder.init(function(){
 			$('#storageLocationId').append(inputWarehouseOrder.allStorageLocation)
 			$('#storageAreaId').append(inputWarehouseOrder.allStorageArea)
