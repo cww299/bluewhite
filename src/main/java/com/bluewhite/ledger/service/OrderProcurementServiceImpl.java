@@ -27,7 +27,6 @@ import com.bluewhite.ledger.dao.ScatteredOutboundDao;
 import com.bluewhite.ledger.entity.MaterialPutStorage;
 import com.bluewhite.ledger.entity.OrderMaterial;
 import com.bluewhite.ledger.entity.OrderProcurement;
-import com.bluewhite.ledger.entity.OrderProcurementReturn;
 import com.bluewhite.ledger.entity.ScatteredOutbound;
 
 @Service
@@ -95,9 +94,7 @@ public class OrderProcurementServiceImpl extends BaseServiceImpl<OrderProcuremen
 		}, page);
 		PageResult<OrderProcurement> result = new PageResult<>(pages, page);
 		result.getRows().forEach(o->{
-		    List<OrderProcurementReturn> returnList = materialPutStorageService.findOrderProcurementIdGetMaterialPutStorage(o.getId());
-		    double returnNumber = returnList.stream().mapToDouble(OrderProcurementReturn::getNumber).sum();
-		    o.setReturnNumber(returnNumber);
+
 		});
 		return result;
 	}

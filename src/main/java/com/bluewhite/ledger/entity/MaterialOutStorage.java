@@ -65,7 +65,6 @@ public class MaterialOutStorage extends BaseEntity<Long>{
 	 * 退货出库：根据退货申请单出库
 	 * 盘盈出库：根据盘盈申请单出库
 	 * 
-	 * 
 	 */
 	@Column(name = "out_status")
 	private Integer outStatus;

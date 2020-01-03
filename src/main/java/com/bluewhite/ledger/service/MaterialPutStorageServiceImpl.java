@@ -25,14 +25,10 @@ import com.bluewhite.ledger.dao.MaterialOutStorageDao;
 import com.bluewhite.ledger.dao.MaterialPutOutStorageDao;
 import com.bluewhite.ledger.dao.MaterialPutStorageDao;
 import com.bluewhite.ledger.dao.OrderProcurementDao;
-import com.bluewhite.ledger.dao.OrderProcurementReturnDao;
 import com.bluewhite.ledger.entity.MaterialOutStorage;
 import com.bluewhite.ledger.entity.MaterialPutOutStorage;
 import com.bluewhite.ledger.entity.MaterialPutStorage;
 import com.bluewhite.ledger.entity.OrderProcurement;
-import com.bluewhite.ledger.entity.OrderProcurementReturn;
-
-import cn.hutool.core.util.StrUtil;
 
 @Service
 public class MaterialPutStorageServiceImpl extends BaseServiceImpl<MaterialPutStorage, Long>
@@ -46,8 +42,6 @@ public class MaterialPutStorageServiceImpl extends BaseServiceImpl<MaterialPutSt
     private MaterialOutStorageDao materialOutStorageDao;
     @Autowired
     private MaterialPutOutStorageDao materialPutOutStorageDao;
-    @Autowired
-    private OrderProcurementReturnDao orderProcurementReturnDao;
 
     @Override
     public void saveMaterialPutStorage(MaterialPutStorage materialPutStorage) {
@@ -103,6 +97,7 @@ public class MaterialPutStorageServiceImpl extends BaseServiceImpl<MaterialPutSt
             return null;
         }, page);
         pages.getContent().stream().forEach(m -> {
+            //出库数量
             List<Long> longList = materialOutStorageDao.findMaterialPutStorageId(m.getId());
             List<MaterialOutStorage> materialOutStorageList = materialOutStorageDao.findAll(longList);
             double arrNumber = materialOutStorageList.stream().mapToDouble(MaterialOutStorage::getArrivalNumber).sum();
@@ -191,8 +186,7 @@ public class MaterialPutStorageServiceImpl extends BaseServiceImpl<MaterialPutSt
         }
         putStorageList.forEach(m -> {
             // 入库单实际出库数量
-            List<MaterialPutOutStorage> outPutStorageList =
-                materialPutOutStorageDao.findByMaterialPutStorageId(m.getId());
+            List<MaterialPutOutStorage> outPutStorageList = materialPutOutStorageDao.findByMaterialPutStorageId(m.getId());
             double arrNumber = outPutStorageList.stream().mapToDouble(MaterialPutOutStorage::getNumber).sum();
             // 入库单剩余数量
             m.setSurplusNumber(NumUtils.sub(m.getArrivalNumber(), arrNumber));
@@ -203,44 +197,6 @@ public class MaterialPutStorageServiceImpl extends BaseServiceImpl<MaterialPutSt
         return putStorageList;
     }
 
-    @Override
-    public void saveMaterialReturn(OrderProcurementReturn orderProcurementReturn) {
-        if (orderProcurementReturn.getMaterialPutStorageId() != null) {
-            MaterialPutStorage materialPutStorage = dao.findOne(orderProcurementReturn.getMaterialPutStorageId());
-            List<OrderProcurementReturn> orderProcurementReturnList =
-                orderProcurementReturnDao.findByMaterialPutStorageId(orderProcurementReturn.getMaterialPutStorageId());
-            if (orderProcurementReturnList.size() > 0) {
-                double sumNumber = orderProcurementReturnList.stream().mapToDouble(OrderProcurementReturn::getNumber).sum();
-                if (materialPutStorage.getArrivalNumber() < (NumUtils.sum(sumNumber, orderProcurementReturn.getNumber()))) {
-                    throw new ServiceException("已退货:" + sumNumber + "。退货数量超出,无法继续退货，请核实数值");
-                }
-            }
-            orderProcurementReturnDao.save(orderProcurementReturn);
-        }
-    }
 
-    @Override
-    public int deleteMaterialReturn(String ids) {
-        int count = 0;
-        if (StrUtil.isNotBlank(ids)) {
-            String[] strArr = ids.split(",");
-            for (String idsString : strArr) {
-                Long id = Long.valueOf(idsString);
-                orderProcurementReturnDao.delete(id);
-                count++;
-            }
-        }
-        return count;
-    }
-
-    @Override
-    public List<OrderProcurementReturn> getMaterialReturn(Long id) {
-        return orderProcurementReturnDao.findByMaterialPutStorageId(id);
-    }
-
-    @Override
-    public List<OrderProcurementReturn> findOrderProcurementIdGetMaterialPutStorage(Long orderProcurementId) {
-        List<Long> materialPutStorageList =  dao.findOrderProcurementIdGetMaterialPutStorage(orderProcurementId);
-        return orderProcurementReturnDao.findAll(materialPutStorageList);
-    }
+   
 }
