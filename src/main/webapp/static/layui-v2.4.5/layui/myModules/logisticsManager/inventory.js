@@ -269,8 +269,8 @@ layui.extend({
 							form.on('submit(addOutBtn)',function(obj){
 								obj.field.officeSuppliesId = trData.id;
 								obj.field.time = obj.field.time+' 00:00:00';
-								if(inventory.type===3)
-									obj.field.mealType=3;
+								/*if(inventory.type===3)
+									obj.field.mealType=3;*/
 								myutil.saveAjax({
 									url:'/personnel/addInventoryDetail',
 									data: obj.field,
