@@ -43,11 +43,7 @@ public interface MaterialPutStorageDao  extends BaseRepository<MaterialPutStorag
      * @param materialputstorageid
      * @return
      */
-    @Query(nativeQuery=true,value ="SELECT r.id FROM ledger_order_procurement_return r, ledger_material_put_storage s,ledger_order_procurement p WHERE.material_put_storage_id = s.id AND p.id = ?1")
+    @Query(nativeQuery=true,value ="SELECT r.id FROM ledger_order_procurement_return r, ledger_material_put_storage s,ledger_order_procurement p WHERE r.material_put_storage_id = s.id AND p.id = ?1")
     List<Long> findOrderProcurementIdGetMaterialPutStorage(Long orderProcurementId);
 	
-	
-
-	
-
 }

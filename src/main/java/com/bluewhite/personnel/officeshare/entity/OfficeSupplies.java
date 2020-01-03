@@ -83,24 +83,18 @@ public class OfficeSupplies extends BaseEntity<Long> {
 	private Integer type;
 	
 	/**
-     * 入库类型 （1=正常出入库）（2=平账出入库）
-     */
-    @Column(name = "status")
-    private Integer status;
-
+	 * 库位
+	 * 
+	 */
+	@Column(name = "location")
+	private String location;
+	
 	/**
 	 * 库存数量
 	 * 
 	 */
 	@Column(name = "inventory_number")
 	private Double inventoryNumber;
-
-	/**
-	 * 库位
-	 * 
-	 */
-	@Column(name = "location")
-	private String location;
 
 	/**
 	 * 库值
@@ -121,15 +115,6 @@ public class OfficeSupplies extends BaseEntity<Long> {
 	private Date orderTimeEnd;
 	
 	
-
-	public Integer getStatus() {
-        return status;
-    }
-
-    public void setStatus(Integer status) {
-        this.status = status;
-    }
-
     public Long getSingleMealConsumptionId() {
 		return singleMealConsumptionId;
 	}

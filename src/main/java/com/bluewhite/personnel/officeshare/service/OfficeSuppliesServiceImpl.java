@@ -16,15 +16,17 @@ import com.bluewhite.common.entity.PageParameter;
 import com.bluewhite.common.entity.PageResult;
 import com.bluewhite.common.entity.PageResultStat;
 import com.bluewhite.common.utils.NumUtils;
+import com.bluewhite.personnel.officeshare.dao.InventoryDetailDao;
 import com.bluewhite.personnel.officeshare.dao.OfficeSuppliesDao;
 import com.bluewhite.personnel.officeshare.entity.OfficeSupplies;
 
 @Service
 public class OfficeSuppliesServiceImpl extends BaseServiceImpl<OfficeSupplies, Long> implements OfficeSuppliesService {
 	
-	
 	@Autowired
 	private OfficeSuppliesDao dao;
+	@Autowired
+    private InventoryDetailDao inventoryDetailDao;
 
 	@Override
 	public PageResult<OfficeSupplies> findPages(OfficeSupplies param, PageParameter page) {
@@ -42,6 +44,10 @@ public class OfficeSuppliesServiceImpl extends BaseServiceImpl<OfficeSupplies, L
 			if (param.getType()!=null) {
 				predicate.add(cb.equal(root.get("type").as(Integer.class), param.getType()));
 			}
+			// 按数量
+            if (param.getInventoryNumber()!=null) {
+                predicate.add(cb.equal(root.get("inventoryNumber").as(Double.class), param.getInventoryNumber()));
+            }
 			// 按仓位过滤
 			if (!StringUtils.isEmpty(param.getLocation())) {
 				predicate.add(cb.like(root.get("location").as(String.class), "%" + param.getLocation() + "%"));
@@ -57,6 +63,16 @@ public class OfficeSuppliesServiceImpl extends BaseServiceImpl<OfficeSupplies, L
 			return null;
 		}, page);
 		PageResultStat<OfficeSupplies> result = new PageResultStat<>(pages, page);
+//		result.getRows().forEach(o->{
+//		    List<InventoryDetail> inventoryDetailList = inventoryDetailDao.findByOfficeSuppliesId(o.getId());
+//		    //入库记录
+//		    List<InventoryDetail> inList = inventoryDetailList.stream().filter(InventoryDetail->InventoryDetail.getFlag().equals(0)).collect(Collectors.toList());
+//		    double inNumber = inList.stream().mapToDouble(InventoryDetail::getNumber).sum();
+//		    //出库记录
+//		    List<InventoryDetail> outList = inventoryDetailList.stream().filter(InventoryDetail->InventoryDetail.getFlag().equals(1)).collect(Collectors.toList());
+//		    double outNumber = outList.stream().mapToDouble(InventoryDetail::getNumber).sum();
+//		    o.setInventoryNumber(NumUtils.sub(inNumber,outNumber));
+//        });
 		return result;
 	}
 
