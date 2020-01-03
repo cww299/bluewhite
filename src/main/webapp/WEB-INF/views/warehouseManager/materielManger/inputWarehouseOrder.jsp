@@ -60,7 +60,7 @@
 </div>
 <script>
 var addEditReturnTpl = [
-	'<div class="layui-form layui-form-pane" style="padding:20px;margin:10px 20px;">',
+	'<div class="layui-form layui-form-pane" style="padding:20px;margin:10px 5px;">',
 	  '<div class="layui-form-item" pane>',
 	    '<label class="layui-form-label">退货时间</label>',
 	    '<div class="layui-input-block">',

@@ -24,14 +24,14 @@ layui.extend({
 			<tr>
 				<td>物品名:</td>
 				<td><input type="text" name="name" class="layui-input"></td>
-				<td>&nbsp;&nbsp;&nbsp;</td>
 				<td>仓位:</td>
 				<td><input type="text" name="location" class="layui-input"></td>
-				<td>&nbsp;&nbsp;&nbsp;</td>
 				<td>时间:</td>
 				<td><input type="text" name="" class="layui-input" id="searchTime"></td>
-				<td>&nbsp;&nbsp;&nbsp;</td>
-				<td><button type="button" class="layui-btn layui-btn-sm" lay-submit lay-filter="search">搜索</button></td>
+				<td>库存数量:</td>
+				<td><input type="number" name="inventoryNumber" class="layui-input"></td>
+				<td></td>
+				<td><button type="button" class="layui-btn layui-btn-" lay-submit lay-filter="search">搜索</button></td>
 			</tr>
 		</table>
 		<table id="tableData" lay-filter="tableData"></table>
