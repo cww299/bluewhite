@@ -624,7 +624,7 @@ public class LedgerAction {
     @ResponseBody
     public CommonResponse getMaterialReturnOne(Long orderProcurementId) {
         CommonResponse cr = new CommonResponse();
-        cr.setData(clearCascadeJSONOrderProcurementReturn.format(materialPutStorageService.getMaterialReturnOne(orderProcurementId)).toJSON());
+        cr.setData(clearCascadeJSONOrderProcurementReturn.format(materialPutStorageService.findOrderProcurementIdGetMaterialPutStorage(orderProcurementId)).toJSON());
         cr.setMessage("成功");
         return cr;
     }

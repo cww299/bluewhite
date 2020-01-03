@@ -88,6 +88,6 @@ public interface MaterialPutStorageService  extends BaseCRUDService<MaterialPutS
      * @param orderProcurementId
      * @return
      */
-    public  List<OrderProcurementReturn> getMaterialReturnOne(Long orderProcurementId);
+    public  List<OrderProcurementReturn> findOrderProcurementIdGetMaterialPutStorage(Long orderProcurementId);
 
 }

@@ -239,8 +239,8 @@ public class MaterialPutStorageServiceImpl extends BaseServiceImpl<MaterialPutSt
     }
 
     @Override
-    public List<OrderProcurementReturn> getMaterialReturnOne(Long orderProcurementId) {
-        
-         return null;
+    public List<OrderProcurementReturn> findOrderProcurementIdGetMaterialPutStorage(Long orderProcurementId) {
+        List<Long> materialPutStorageList =  dao.findOrderProcurementIdGetMaterialPutStorage(orderProcurementId);
+        return orderProcurementReturnDao.findAll(materialPutStorageList);
     }
 }
