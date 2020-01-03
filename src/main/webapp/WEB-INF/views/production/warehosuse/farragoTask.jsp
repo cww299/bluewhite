@@ -333,7 +333,7 @@
 					  {field: "name",title: "工序名",width:200,align: 'center',},
 					  {field: "time",title: "时间",width:60,align: 'center',edit: false,},
 					  {field: "remarks",title: "备注",align: 'center',edit: false,},
-					  {field: "performancePrice",title: "加绩工资",width:70,align: 'center',templet:function(d){return parseFloat((d.performancePrice==null ? 0 : d.performancePrice).toFixed(3))}},
+					  {field: "performancePrice",title: "加绩工资",width:90,align: 'center',templet:function(d){return parseFloat((d.performancePrice==null ? 0 : d.performancePrice).toFixed(3))}},
 					  {field: "status",title: "状态",align: 'center',width:90,templet:function(d){return d.status==0 ? "<span class='layui-badge '>进行中</span>" :"<span class='layui-badge layui-bg-green'>已完成</span> "}},
 				 ]
 			 }
