@@ -269,8 +269,8 @@ layui.extend({
 							form.on('submit(addOutBtn)',function(obj){
 								obj.field.officeSuppliesId = trData.id;
 								obj.field.time = obj.field.time+' 00:00:00';
-								if(inventory.type===3)
-									obj.field.mealType=3;
+								/*if(inventory.type===3)
+									obj.field.mealType=3;*/
 								myutil.saveAjax({
 									url:'/personnel/addInventoryDetail',
 									data: obj.field,
@@ -311,7 +311,7 @@ layui.extend({
 				},
 			})
 			myutil.getData({
-				url: myutil.config.ctx+'/system/user/findUserList?foreigns=0&isAdmin=false',
+				url: myutil.config.ctx+'/system/user/findUserList?foreigns=0&isAdmin=false&quit=0',
 				success:function(d){
 					for(var i=0,len=d.length;i<len;i++){
 						userSelectHtml += '<option value="'+d[i].id+'">'+d[i].userName+'</option>';
