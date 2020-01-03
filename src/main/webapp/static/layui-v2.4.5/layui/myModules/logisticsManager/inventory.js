@@ -77,6 +77,15 @@ layui.extend({
 		    </div>
 		  </div>
 		  <div class="layui-form-item" pane>
+		    <label class="layui-form-label">出库类型</label>
+		    <div class="layui-input-block">
+		      <select name="status">
+						<option value="1">正常出库</option>
+						<option value="2">平账出库</option>
+					</select>
+		    </div>
+		  </div>
+		  <div class="layui-form-item" pane>
 		    <label class="layui-form-label">备注</label>
 		    <div class="layui-input-block">
 		      <input type="text" name="remark" class="layui-input">
@@ -119,6 +128,15 @@ layui.extend({
 				    <label class="layui-form-label">备注</label>
 				    <div class="layui-input-block">
 				      <input type="text" name="remark" class="layui-input">
+				    </div>
+				  </div>
+				  <div class="layui-form-item" pane>
+				    <label class="layui-form-label">入库类型</label>
+				    <div class="layui-input-block">
+				      <select name="status">
+								<option value="1">正常入库</option>
+								<option value="2">平账入库</option>
+							</select>
 				    </div>
 				  </div>
 				  <p style="display:none;">
@@ -196,7 +214,7 @@ layui.extend({
 					var trData = table.cache['tableData'][index];
 					var win = layer.open({
 						type:1,
-						area:['30%',inventory.type==3?'350px':'300px'],
+						area:['30%',inventory.type==3?'400px':'350px'],
 						offset:'100px',
 						btnAlign:'c',
 						btn:['确定',"取消"],
@@ -233,7 +251,7 @@ layui.extend({
 					var win = layer.open({
 						type:1,
 						offset:'100px',
-						area:['30%','400px'],
+						area:['30%','450px'],
 						btn:['确定',"取消"],
 						btnAlign:'c',
 						title: trData.name,
