@@ -235,11 +235,10 @@ layui.config({
 					arr.push(re[i]["remarks"]);
 					array.push(arr);
 				}
-				
-			$(".layui-icon-export").on('click',function(){
-				$(this).attr('lay-event','excel');
-				table.exportFile(['量化编号','贴包人','发货时间','客户','批次号','产品名','单包个数','备注'],array,'xls'); 
-			})
+				$(".layui-icon-export").on('click',function(){
+					$(this).attr('lay-event','excel');
+					table.exportFile(['量化编号','贴包人','发货时间','客户','批次号','产品名','单包个数','备注'],array,'xls'); 
+				})
 			}
 		})
 		table.on('tool(tableData)',function(obj){
