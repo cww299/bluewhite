@@ -183,7 +183,10 @@ layui.extend({
 					cols:[[
 							{ type:'checkbox',},
 							{ title:'客户',   	field:'name', 	},
-							{ title:'下单人',    field:'userId',    type:'select', select:{data:allUser,name:'userName'}},
+							{ title:'下单人',    field:'userName',    
+								/*下单人不可能为空！
+								 * type:'select', select:{data:allUser,name:'userName',isDisabled:true,unsearch:true,}*/
+							},
 							{ title:'数量',   	field:'number',  	edit:true, },
 							{ title:'备注',   	field:'remark',	edit:true, },
 					       ]],
@@ -268,7 +271,7 @@ layui.extend({
 				success:function(){
 					mytable.render({
 						elem: '#choosedCustomerTable',
-						url: myutil.config.ctx+'/ledger/customerPage?', //type=1
+						url: myutil.config.ctx+'/ledger/customerPage?customerTypeId=459', //type=1
 						cols:[[
 								{ type:'checkbox',},
 								{ title:'客户编号',	field:'id',	},
@@ -350,7 +353,8 @@ layui.extend({
 							myutil.emsg('客户:'+item1.name+' 已存在请勿重复添加客户');
 						}
 					newCus.push({
-						userId: '',
+						userId: item1.user.id,	//业务员不可能为空！
+						userName: item1.user.userName,
 						name:item1.name,
 						remark: '',
 						number: 0,
