@@ -61,10 +61,10 @@ public class RoleUtil {
         if (role.contains(Constants.COTWAREHOUSE)) {
             id = 379;
         }
-        if (id == null) {
-            throw new ServiceException("无权限，无法操作");
-        }
-        return Long.valueOf(id);
+//        if (id == null) {
+//            throw new ServiceException("无权限，无法操作");
+//        }
+        return id == null ? null : Long.valueOf(id);
     }
 
     /**
