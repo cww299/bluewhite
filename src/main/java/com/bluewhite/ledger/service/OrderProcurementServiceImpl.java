@@ -105,6 +105,7 @@ public class OrderProcurementServiceImpl extends BaseServiceImpl<OrderProcuremen
 		result.getRows().forEach(o->{
 		    // 获取到货数量
 	        List<MaterialPutStorage> materialPutStorageList = materialPutStorageDao.findByOrderProcurementId(o.getId());
+	        double warehousingNumber = materialPutStorageList.stream().mapToDouble(MaterialPutStorage::getArrivalNumber).sum();
 	        // 计算退货总数
 	        List<MaterialOutStorage> list = new ArrayList<>();
 	        materialPutStorageList.stream().forEach(m -> {
@@ -117,6 +118,8 @@ public class OrderProcurementServiceImpl extends BaseServiceImpl<OrderProcuremen
 	        });
 	        double returnNumber = list.stream().mapToDouble(MaterialOutStorage::getArrivalNumber).sum();
 	        o.setReturnNumber(returnNumber);
+	        //获取已入库数量
+	        o.setWarehousingNumber(NumUtils.sub(warehousingNumber,returnNumber));
 	        if(returnNumber>0) {
 	            o.setReplenishment(1);
 	        }

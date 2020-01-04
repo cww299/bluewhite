@@ -264,7 +264,11 @@ public class OrderProcurement extends BaseEntity<Long> {
      */
     @Transient
     private Double returnNumber;
-
+    /**
+     * 已入库数量
+     */
+    @Transient
+    private Double warehousingNumber;
 	/**
 	 * 查询字段
 	 */
@@ -279,7 +283,15 @@ public class OrderProcurement extends BaseEntity<Long> {
 	
 	
 
-	public Double getReturnNumber() {
+	public Double getWarehousingNumber() {
+        return warehousingNumber;
+    }
+
+    public void setWarehousingNumber(Double warehousingNumber) {
+        this.warehousingNumber = warehousingNumber;
+    }
+
+    public Double getReturnNumber() {
         return returnNumber;
     }
 
