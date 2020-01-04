@@ -134,7 +134,7 @@ layui.config({
 					}
 				}
 			},
-			colsWidth:[0,10,8,8,40,6,6,6,6,6,8,8,8,6,8,8,8,8,8,8,6],
+			colsWidth:[0,10,8,8,40,6,6,6,6,6,8,8,8,8,6,8,8,8,8,8,8,6],
 			cols:[[
 					{ type:'checkbox',fixed:'left' },
 					{ title:'物料名', field:'materiel_name', fixed:'left',},
@@ -150,6 +150,7 @@ layui.config({
 					{ title:'预计到货日期', field:'expectArrivalTime',type:'date',},
 					{ title:'实际到货日期', field:'arrivalTime',  type:'date', },
 					{ title:'到货数量', field:'arrivalNumber', },
+					{ title:'退货数量', field:'returnNumber', },
 					{ title:'延期付款数量', field:'partDelayNumber', },
 					{ title:'延期付款金额', field:'partDelayPrice', },
 					{ title:'延期付款日期', field:'partDelayTime', type:'date',},
