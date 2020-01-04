@@ -75,7 +75,6 @@ layui.config({
 			       { field: "orderProcurement_interest", 	title: "占用资金利息",  }, 
 			       { field: "orderProcurement_materiel_materialQualitative_name", 	title: "货物类别",  }, 
 			       { field: "orderProcurement_price", 		title: "单价", 			}, 
-			       { field: "orderProcurement_materielLocation", 		title: "库位", 			}, 
 			       { field: "money", 		title: "金额", 			}, 
 			       { field: "expenseDate", 	title: "付款日期", 	type:'date',	 },
 			       { field: "orderProcurement_arrivalTime",title: "到货时间",	type:'date', },
