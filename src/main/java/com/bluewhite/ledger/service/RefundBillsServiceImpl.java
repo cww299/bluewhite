@@ -57,6 +57,7 @@ public class RefundBillsServiceImpl extends BaseServiceImpl<RefundBills, Long> i
             }
         }
         refundBills.setMaterialRequisitionId(orderOutSource.getMaterialRequisitionId());
+        refundBills.setAudit(0);
         save(refundBills);
     }
 
