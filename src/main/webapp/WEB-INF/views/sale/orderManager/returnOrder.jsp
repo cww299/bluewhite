@@ -92,6 +92,7 @@ layui.config({
 			       { title:'退货工序',   field:'outsourceTaskIds',templet: getProcess(),	},
 			       { title:'退货数量',   field:'returnNumber',	},
 			       { title:'退货原因',   field:'returnRemark', 	},
+			       { title:'是否审核',   field:'audit', transData:{data:['未审核','审核'],}	},
 			       ]]
 		})
 		function getProcess(){

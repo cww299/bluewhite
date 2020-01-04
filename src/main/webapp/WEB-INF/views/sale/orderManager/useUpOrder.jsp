@@ -509,6 +509,7 @@ layui.config({
 						area:['30%','20'],
 						btn:['确定','取消'],
 						content:['<div style="padding:20px;">',
+									'<p>审核时间:</p>',
 						         	'<input type="text" id="auditTime" class="layui-input">',
 						         '</div>',
 						         ].join(' '),

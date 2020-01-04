@@ -71,7 +71,7 @@ layui.extend({
 				'<div class="layui-item" pane>',
 					'<label class="layui-form-label">加工点</label>',
 					'<div class="layui-input-block">',
-						'<select lay-search name="customerId" id="customerId">',
+						'<select lay-search name="customerId" id="customerId" required>',
 							'<option value="">请选择</option></select>',
 					'</div>',
 				'</div>',
@@ -216,7 +216,7 @@ layui.extend({
 			}
 		})
 		myutil.getData({	//获取所有客户
-			url: myutil.config.ctx+'/ledger/allCustomer?type=5',
+			url: myutil.config.ctx+'/ledger/getCustomer?customerTypeId=460',
 			success:function(d){
 				for(var i=0,len=d.length;i<len;i++){
 					allCustom += '<option value="'+d[i].id+'">'+d[i].name+'</option>';
