@@ -5,6 +5,8 @@ import com.bluewhite.ledger.entity.MaterialPutStorage;
 import java.lang.Long;
 import java.util.List;
 
+import org.springframework.data.jpa.repository.Query;
+
 public interface MaterialPutStorageDao  extends BaseRepository<MaterialPutStorage, Long>{
 	
 	/**
@@ -36,5 +38,12 @@ public interface MaterialPutStorageDao  extends BaseRepository<MaterialPutStorag
 	 */
 	List<MaterialPutStorage> findByInWarehouseTypeIdAndMaterielId(Long warehouseTypeId, Long materielId);
 	
-
+	 /**
+     * 根据采购单查找
+     * @param materialputstorageid
+     * @return
+     */
+    @Query(nativeQuery=true,value ="SELECT r.id FROM ledger_order_procurement_return r, ledger_material_put_storage s,ledger_order_procurement p WHERE r.material_put_storage_id = s.id AND p.id = ?1")
+    List<Long> findOrderProcurementIdGetMaterialPutStorage(Long orderProcurementId);
+	
 }

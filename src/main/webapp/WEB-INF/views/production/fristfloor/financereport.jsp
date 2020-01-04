@@ -214,7 +214,7 @@
 			 function p(s) {
 					return s < 10 ? '0' + s: s;
 					}
-			 var myDate = new Date(new Date().getTime() - 86400000);
+			 var myDate = new Date();
 				//获取当前年
 				var year=myDate.getFullYear();
 				//获取当前月
@@ -229,8 +229,14 @@
 				var lastdate = year + '-' +p(month) + '-' + day.getDate() +' '+'23:59:59';
 				$('#startTime').val(firstdate);
 				$('#endTime').val(lastdate);
-				var a=year + '-' + p(month)+ '-' + date+' '+'00:00:00'
-				var b=year + '-' + p(month)+ '-' + date+' '+'23:59:59'
+				var myDate2 = new Date(new Date().getTime() - 86400000);
+				var year2=myDate2.getFullYear();
+				//获取当前月
+				var month2=myDate2.getMonth()+1;
+				//获取当前日
+				var date2=myDate2.getDate(); 
+				var a=year2 + '-' + p(month2)+ '-' + date2+' '+'00:00:00'
+				var b=year2 + '-' + p(month2)+ '-' + date2+' '+'23:59:59'
 				$('#startTimetw').val(a);
 				$('#endTimetw').val(b);
 				

@@ -23,7 +23,6 @@ import com.bluewhite.ledger.entity.OrderChild;
 import com.bluewhite.ledger.entity.OrderMaterial;
 import com.bluewhite.ledger.entity.OrderOutSource;
 import com.bluewhite.ledger.entity.OrderProcurement;
-import com.bluewhite.ledger.entity.OrderProcurementReturn;
 import com.bluewhite.ledger.entity.OutStorage;
 import com.bluewhite.ledger.entity.Packing;
 import com.bluewhite.ledger.entity.PackingChild;
@@ -199,7 +198,7 @@ public class LedgerAction {
 				.addRetainTerm(Materiel.class, "id", "name", "number", "orderProcurements", "inventoryNumber")
 				.addRetainTerm(OrderProcurement.class, "id", "orderProcurementNumber", "placeOrderNumber",
 						"arrivalNumber", "placeOrderTime", "expectArrivalTime", "arrivalTime", "customer", "user",
-						"materielLocation", "price", "squareGram", "residueNumber")
+						"materielLocation", "price", "residueNumber")
 				.addRetainTerm(Customer.class, "id", "name")
 				.addRetainTerm(BaseOne.class, "id", "name")
 				.addRetainTerm(User.class, "id", "userName")
@@ -211,10 +210,10 @@ public class LedgerAction {
 		clearCascadeJSONOrderProcurement = ClearCascadeJSON.get()
 				.addRetainTerm(OrderProcurement.class, "id", "orderProcurementNumber", "placeOrderNumber",
 						"arrivalNumber", "placeOrderTime", "expectArrivalTime", "arrivalTime", "customer", "user",
-						"materielLocation", "price", "squareGram", "userStorage", "arrival", "audit",
+						"materielLocation", "price", "userStorage", "arrival", "audit",
 						"expectPaymentTime", "materiel", "partDelayNumber", "partDelayTime",
 						"gramPrice", "interest", "paymentMoney", "bill", "conventionPrice", "conventionSquareGram",
-						"partDelayPrice", "arrivalStatus", "replenishment")
+						"partDelayPrice", "arrivalStatus", "replenishment","returnNumber")
 				.addRetainTerm(Materiel.class, "id", "name", "number", "materialQualitative")
 				.addRetainTerm(Customer.class, "id", "name")
 				.addRetainTerm(BaseOne.class, "id", "name")
@@ -261,8 +260,9 @@ public class LedgerAction {
 		        .addRetainTerm(ScatteredOutbound.class, "id","orderProcurement","orderMaterial")
 		        .addRetainTerm(OrderProcurement.class, "id", "orderProcurementNumber")
 				.addRetainTerm(Order.class, "id", "bacthNumber", "number", "remark", "orderNumber")
-				.addRetainTerm(OrderMaterial.class, "id", "receiveMode")
+				.addRetainTerm(OrderMaterial.class, "id", "receiveMode","materiel")
 				.addRetainTerm(BaseOne.class, "id", "name")
+				.addRetainTerm(Materiel.class, "id", "name","number")
 				.addRetainTerm(Customer.class, "id", "name")
 				.addRetainTerm(User.class, "id", "userName");
 	}
@@ -295,7 +295,7 @@ public class LedgerAction {
 		clearCascadeJSONMaterialPutStorage = ClearCascadeJSON.get()
 				.addRetainTerm(MaterialPutStorage.class, "id", "materiel", "orderProcurement", "inStatus",
 						"inWarehouseType", "arrivalTime", "arrivalNumber", "storageArea", "storageLocation",
-						"surplusNumber", "userStorage", "inspection", "serialNumber")
+						"surplusNumber", "userStorage", "inspection", "serialNumber","squareGram")
 				.addRetainTerm(OrderProcurement.class, "id", "orderProcurementNumber")
 				.addRetainTerm(Materiel.class, "id", "name")
 				.addRetainTerm(BaseOne.class, "id", "name")
@@ -332,15 +332,10 @@ public class LedgerAction {
 				.addRetainTerm(BaseOne.class, "id", "name");
 	}
 	
-   private ClearCascadeJSON clearCascadeJSONOrderProcurementReturn;
-    {
-        clearCascadeJSONOrderProcurementReturn = ClearCascadeJSON.get()
-                .addRetainTerm(OrderProcurementReturn.class, "id", "serialNumber", "time", "number",
-                        "remark");
-    }
+ 
 
-	/**s
-	 *	 分页查看生产计划单
+	/**
+	 * 分页查看生产计划单
 	 * 
 	 * @param page
 	 * @param order
@@ -613,21 +608,6 @@ public class LedgerAction {
 		cr.setMessage("更新成功" + count + "条");
 		return cr;
 	}
-	
-	/**
-     * (采购部)
-     * 查看退货单
-     * @param order
-     * @return
-     */
-    @RequestMapping(value = "/ledger/getMaterialReturn", method = RequestMethod.GET)
-    @ResponseBody
-    public CommonResponse getMaterialReturnOne(Long orderProcurementId) {
-        CommonResponse cr = new CommonResponse();
-        cr.setData(clearCascadeJSONOrderProcurementReturn.format(materialPutStorageService.getMaterialReturnOne(orderProcurementId)).toJSON());
-        cr.setMessage("成功");
-        return cr;
-    }
 
 	/**
 	 * 	(采购部)生成采购应付账单
@@ -1051,6 +1031,8 @@ public class LedgerAction {
 	 */
 	@RequestMapping(value = "/ledger/inventory/inspectionMaterialPutStorage", method = RequestMethod.GET)
 	@ResponseBody
+	
+	
 	public CommonResponse inspectionOrderProcurement(MaterialPutStorage materialPutStorage) {
 		CommonResponse cr = new CommonResponse();
 		materialPutStorageService.inspectionMaterialPutStorage(materialPutStorage);
@@ -1058,51 +1040,6 @@ public class LedgerAction {
 		return cr;
 	}
 	
-	/**
-	 * (面辅料仓库)
-	 * 新增退货单
-	 * @param order
-	 * @return
-	 */
-	@RequestMapping(value = "/ledger/inventory/saveMaterialReturn", method = RequestMethod.POST)
-	@ResponseBody
-	public CommonResponse saveMaterialReturn(OrderProcurementReturn orderProcurementReturn) {
-		CommonResponse cr = new CommonResponse();
-		materialPutStorageService.saveMaterialReturn(orderProcurementReturn);
-		cr.setMessage("退货成功");
-		return cr;
-	}
-	
-	/**
-     * (面辅料仓库)
-     * 查看退货单
-     * @param order
-     * @return
-     */
-    @RequestMapping(value = "/ledger/inventory/getMaterialReturn", method = RequestMethod.GET)
-    @ResponseBody
-    public CommonResponse getMaterialReturn(Long materialPutStorageId) {
-        CommonResponse cr = new CommonResponse();
-        cr.setData(clearCascadeJSONOrderProcurementReturn.format(materialPutStorageService.getMaterialReturn(materialPutStorageId)).toJSON());
-        cr.setMessage("成功");
-        return cr;
-    }
-	
-	
-	/**
-     * (面辅料仓库)
-     *  退货单删除
-     * @param order
-     * @return
-     */
-    @RequestMapping(value = "/ledger/inventory/deleteMaterialReturn", method = RequestMethod.GET)
-    @ResponseBody
-    public CommonResponse deleteMaterialReturn(String ids) {
-        CommonResponse cr = new CommonResponse();
-        int count= materialPutStorageService.deleteMaterialReturn(ids);
-        cr.setMessage("成功删除"+count+"条数据");
-        return cr;
-    }
 
 	/**
 	 * (面辅料仓库)审核采购单是否全部到货 
@@ -1167,7 +1104,7 @@ public class LedgerAction {
 	/**
 	 * (面辅料仓库)撤销物料出库
 	 * 
-	 * *满足于 领取物料后未进入下一环节使用 才可以撤销
+	 * 满足于 领取物料后未进入下一环节使用 才可以撤销
 	 * @param order
 	 * @return
 	 */
