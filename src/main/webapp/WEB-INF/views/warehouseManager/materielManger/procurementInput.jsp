@@ -65,7 +65,7 @@ layui.config({
 							return myutil.emsg('只能选择一条数据生成入库单');
 						inputWarehouseOrder.add({
 							data:{
-								inStatus: 2,	//采购入库
+								inStatus: 1,	//采购入库
 								materielId: check[0].materiel.id,
 								orderProcurementId: check[0].id,
 							}

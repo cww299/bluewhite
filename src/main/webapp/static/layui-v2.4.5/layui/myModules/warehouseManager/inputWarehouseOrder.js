@@ -7,11 +7,11 @@
  * type: 0,		//入库类型1:物料入库（默认）、2:成品入库、3:皮壳入库
  * inputWarehouseOrder.add({
  * 		inStatus: 1,    //采购入库	物料type=1时的值
- * 		inStatus: 2,    //生产入库 如果新增为这两种状态，请给定inStatus值
- * 		inStatus: 3,    //调拨入库,
- * 		inStatus: 4,	//退货入库,
- * 		inStatus: 5,	//换货入库,
- * 		inStatus: 6, 	//盘亏入库,
+ * 		inStatus: 1,    //生产入库 如果新增为这两种状态，请给定inStatus值
+ * 		inStatus: 2,    //调拨入库,
+ * 		inStatus: 3,	//退货入库,
+ * 		inStatus: 4,	//换货入库,
+ * 		inStatus: 5, 	//盘亏入库,
  * 		orderProcurementId:'',  //修改物料入库采购入库时，传入的订单id
  * 		materielId:'',			//物料入库时传入
  * 		productId:'',   		//成品、皮壳入库时传入
@@ -65,12 +65,12 @@ layui.extend({
 				'<div class="layui-form-item" pane>',
 					'<label class="layui-form-label">入库类型</label>',
 					'<div class="layui-input-block">',
-						'<select name="inStatus" {{(d.inStatus==1 || d.inStatus==2)?"disabled":""}} ',
-							' value="{{ d.inStatus || 3}}" id="inStatus">',
+						'<select name="inStatus" {{ (d.inStatus==1)?"disabled":""}} ',
+							' value="{{ d.inStatus || 2}}" id="inStatus">',
 							`{{#
 								 if(layui.inputWarehouseOrder.type==layui.inputWarehouseOrder.allType.WL){
 							 }}
-									<option value="2" {{ d.inStatus!=2?"disabled":"" }}>采购入库</option>
+									<option value="1" {{ d.inStatus!=1?"disabled":"" }}>采购入库</option>
 							 {{#
 							 	 }else{
 							  }}
@@ -79,10 +79,10 @@ layui.extend({
 							     }
 							  }}
 							  `,
-							'<option value="3">调拨入库</option>',
-							'<option value="4">退货入库</option>',
-							'<option value="5">换货入库</option>',
-							'<option value="6">盘亏入库</option>',
+							'<option value="2">调拨入库</option>',
+							'<option value="3">退货入库</option>',
+							'<option value="4">换货入库</option>',
+							'<option value="5">盘亏入库</option>',
 							'</select>',
 					'</div>',
 				'</div>',
@@ -204,7 +204,7 @@ layui.extend({
 			}
 		})
 		myutil.getData({	//获取所有人员
-			url: myutil.config.ctx+'/system/user/findUserList?quit=0',
+			url: myutil.config.ctx+'/system/user/findUserList?quit=0&orgNameIds=51',
 			success:function(d){
 				for(var i=0,len=d.length;i<len;i++){
 					allUser += '<option value="'+d[i].id+'">'+d[i].userName+'</option>';

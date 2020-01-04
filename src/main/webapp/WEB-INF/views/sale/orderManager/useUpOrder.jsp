@@ -212,7 +212,7 @@ layui.config({
 		})
 		var allCustom = [],allUser = [];
 		myutil.getData({
-			url: '${ctx}/ledger/getCustomer?type=4',
+			url: '${ctx}/ledger/getCustomer?customerTypeId=456',
 			success:function(d){
 				var html = '';
 				allCustom = d;
@@ -224,7 +224,7 @@ layui.config({
 			}
 		})
 		myutil.getData({
-			url: '${ctx}/system/user/findUserList?orgNameIds=20',
+			url: '${ctx}/system/user/findUserList?orgNameIds=29',
 			success:function(d){
 				var html = '';
 				allUser = d;
@@ -349,7 +349,7 @@ layui.config({
 								            		   html+=['<p>下单日期：'+d[i].placeOrderTime+'</p>',
 									            		      '<p>采购编号：'+d[i].orderProcurementNumber+'</p>',
 								            		          '<p>剩余数量：'+d[i].residueNumber+'</p>',
-								            		          '<p>预计价格：'+d[i].price+'</p>',
+								            		          '<p>约定价格：'+d[i].price+'</p>',
 								            		          '<p>订购人：'+d[i].user.userName+'</p>',
 									            		      '<p>供应商：'+d[i].customer.name+'</p>',
 								            		    ].join('');
@@ -572,19 +572,21 @@ layui.config({
 						var type = data.materiel.number.replace(/\d/ig,"");		//面料、辅料类型
 						str = type+'- “'+(allCustom[0]?allCustom[0].name:"")+'“ '+number+' ';	//拼接
 						$('#orderMaterialId').val(data.id);
+						$('#placeOrderTime').val(myutil.getSubDay(0,'yyyy-MM-dd hh:mm:ss'));
 					}else if(addOrEdit=='edit'){
 						var d = data;
 						var t = d.orderProcurementNumber.split('/');
 						str = t[t.length-1];
 						//设置下拉框、输入框数据
 						$('#addEditId').val(d.id);
-						$('#supplierSelect').val(d.customer.id);
+						$('#supplierSelect').val(d.customer?d.customer.id : "");
 						$('#userIdSelect').val(d.user.id);
 						$('#placeOrderTime').val(d.placeOrderTime);
 						$('#placeOrderNumber').val(d.placeOrderNumber);
 						$('#addEditPrice').val(d.conventionPrice);
 						$('#areaG').val(d.conventionSquareGram);
 						$('#comeDate').val(d.expectArrivalTime);
+						$('#exceptDate').val(d.expectPaymentTime);
 						$('#orderMaterialId').val('');
 					}
 					$('#autoNumber').val(str);
