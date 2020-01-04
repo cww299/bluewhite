@@ -276,6 +276,7 @@ layui.extend({
 								{ type:'checkbox',},
 								{ title:'客户编号',	field:'id',	},
 								{ title:'客户名称',	field:'name',	},
+								{ title:'业务员',	field:'user_userName',	},
 						       ]],
 						done: function(res){		//回显复选框选中
 							for(var i=0;i< res.data.length;i++){
