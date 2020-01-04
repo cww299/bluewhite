@@ -25,12 +25,12 @@ layui.extend({
 		table = layui.table,
 		mytable = layui.mytable,
 		myutil = layui.myutil;
-	
+	var firstCols =  { type: 'checkbox', fixed: 'left' };
 	var allCols = [
 		[],
 		[],
-		[	//type:2 采购应付
-	       { type: 'checkbox', fixed: 'left' },
+		[  //type:2 采购应付
+		   firstCols,
 	       { field: "content", title: "采购单编号",width:'25%',fixed: 'left'},
 	       { field: "orderProcurement_order_bacthNumber", 	title: "批次号", 	 width:'10%',},
 	       { field: "customer_name", 	title: "客户",   	width:'8%', }, 
@@ -42,100 +42,73 @@ layui.extend({
 	       { field: "money", 		title: "金额", 			}, 
 	       { field: "orderProcurement_arrivalTime",title: "到货时间",	type:'date', },
 	       { field: "expenseDate", 	title: "预计付款时间", 	type:'date',	 },
-	       { field: "paymentDate", 	title: "实际付款时间", 	 style:'background-color: #d8fe83',edit:true,type:'dateTime',fixed:'right', }, 
-	       { field: "paymentMoney",	title: "付款金额", 		  style:'background-color: #d8fe83', edit:'number', fixed:'right',},
-	       { field: "flag", 			title: "审核状态", 	 transData:{data:['未审核','审核'],},fixed:'right',}
 		],
 		[	//type:3 工资管理 wages
-			{ type: 'checkbox', fixed: 'left' }, 
+			firstCols,
 			{ field: "content", title: "工资内容", }, 
 			{ field: "money", title: "工资申请金额", }, 
 			{ field: "expenseDate", title: "工资申请日期", }, 
 			{ field: "withholdReason", title: "扣款事由", }, 
 			{ field: "withholdMoney", title: "扣款金额", }, 
-			{ field: "paymentDate", title: "付款时间", style:'background-color: #d8fe83', }, 
-			{ field: "paymentMoney", title: "付款金额", edit: 'text', style:'background-color: #d8fe83', }, 
-			{ field: "flag", title: "审核状态", }
 		],
 		[	//type:4 税点报销 tax
-			{ type: 'checkbox', fixed: 'left' }, 
+			firstCols,
 			{ field: "customer_name", title: "供应商名称", }, 
 			{ field: "money", title: "票面金额", },
 			{ field: "taxPoint", title: "税点", },
 			{ field: "expenseDate", title: "申请日期", }, 
 			{ field: "withholdReason", title: "扣款事由", }, 
 			{ field: "withholdMoney", title: "扣款金额", }, 
-			{ field: "paymentDate", title: "实际付款时间", style:'background-color: #d8fe83', }, 
-			{ field: "paymentMoney", title: "付款金额", edit: 'text', style:'background-color: #d8fe83', },
-			{ field: "flag", title: "审核状态", }
 		],
 		[	// type:5 物流管理  logistics
-			{ type: 'checkbox', fixed: 'left' }, 
+			firstCols,
 			{ field: "logisticsDate", title: "物流订单日期", }, 
 			{ field: "contact_conPartyNames", title: "客户名称", }, 
 			{ field: "custom_name", title: "物流点名称", }, 
 			{ field: "money", title: "支付金额", }, 
 			{ field: "expenseDate", title: "预计付款日期", }, 
-			{ field: "paymentDate", title: "实际付款时间", style:'background-color: #d8fe83', }, 
-			{ field: "paymentMoney", title: "付款金额", edit: 'text', style:'background-color: #d8fe83', }, 
-			{ field: "flag", title: "审核状态", }
 		],
 		[	//type:6  借款本金    loan
-		  	{ type: 'checkbox', fixed: 'left' },
+			firstCols,
 		  	{ field: "content", title: "借款方", },
 		  	{ field: "remark", title: "借款类型", },
 		  	{ field: "money", title: "支付金额", }, 
-		  	{ field: "expenseDate", title: "预计付款日期", }, 
-		  	{ field: "paymentDate", title: "实际付款时间", style:'background-color: #d8fe83', }, 
-		  	{ field: "paymentMoney", title: "付款金额", edit: 'text', style:'background-color: #d8fe83', }, 
-		  	{ field: "flag", title: "审核状态", }
+		  	{ field: "expenseDate", title: "预计付款日期", },
 		],
 		[	//type:7 社保税收    social
-			  { type: 'checkbox', fixed: 'left' },
-			  { field: "customer_name", title: "扣税单位", },
-			  { field: "content", title: "税种", },
-			  { field: "money", title: "金额", },
-			  { field: "expenseDate", title: "预计付款日期", type:'date',},
-			  { field: "paymentDate", title: "实际付款时间", style:'background-color: #d8fe83', edit:true,type:'dateTime',},
-			  { field: "paymentMoney", title: "付款金额", edit: 'number', style:'background-color: #d8fe83', },
-			  { field: "flag", 			title: "审核状态", 	 transData:{data:['未审核','审核'],},fixed:'right',}
+			firstCols,
+			{ field: "customer_name", title: "扣税单位", },
+			{ field: "content", title: "税种", },
+			{ field: "money", title: "金额", },
+			{ field: "expenseDate", title: "预计付款日期", type:'date',},
 		],
 		[	//type:8 材料管理财务审核 material
-			{ type: 'checkbox', fixed: 'left' }, 
+			firstCols,
 			{ field: "customer_name", title: "供应商", },
 			{ field: "content", title: "内容", }, 
 			{ field: "money", title: "预付金额", },
 			{ field: "expenseDate", title: "预计入库日期", }, 
 			{ field: "withholdReason", title: "扣款事由", }, 
 			{ field: "withholdMoney", title: "扣款金额", }, 
-			{ field: "paymentDate", title: "实际付款时间", style:'background-color: #d8fe83', }, 
-			{ field: "paymentMoney", title: "付款金额", edit: 'text', style:'background-color: #d8fe83', }, 
-			{ field: "flag", title: "审核状态", }
 		],
 		[	//type:9  周转资金   turnover
-			{ type: 'checkbox', fixed: 'left' },
+			firstCols,
 			{ field: "content", title: "申请内容", }, 
 			{ field: "user_userName", title: "申请人", }, 
 			{ field: "money", title: "金额", }, 
 			{ field: "expenseDate", title: "回款日期", }, 
 			{ field: "withholdReason", title: "扣款事由", }, 
 			{ field: "withholdMoney", title: "扣款金额", }, 
-			{ field: "paymentDate", title: "实际回款时间", style:'background-color: #d8fe83', }, 
-			{ field: "paymentMoney", title: "付款金额", edit: 'text', style:'background-color: #d8fe83', }, 
-			{ field: "flag", title: "审核状态", }
 		],
 		[	//type:10  利息 loanInterest
-		   { type: 'checkbox', fixed: 'left' },
-	       { field: "content", 	title: "借款方",},
-	       { field: "remark", 		title: "借款类型",},
-	       { field: "money", 			title: "支付金额", }, 
-	       { field: "expenseDate", 	title: "预计付款日期", },
-	       { field: "paymentDate", 	title: "实际付款时间", 	style:'background-color: #d8fe83', }, 
-	       { field: "paymentMoney",	title: "付款金额", 		style:'background-color: #d8fe83', edit: 'text', },
-	       { field: "flag", 		title: "审核状态", 		transData:{data:['未审核','审核'],},fixed:'right', }
+			firstCols,
+	        { field: "content", 	title: "借款方",},
+	        { field: "remark", 		title: "借款类型",},
+	        { field: "money", 			title: "支付金额", }, 
+	        { field: "expenseDate", 	title: "预计付款日期", },
 		],
 		[	//type:11  外发对账 
-			{ type:'checkbox',}, 
+			firstCols,
 			{ title:'申请日期', field:'expenseDate', type:'dateTime',},
 			{ title:'外发单编号', field:'orderOutSource_outSourceNumber', },
 			{ title:'生产单编号', field:'orderOutSource_materialRequisition_order_orderNumber', },
@@ -143,12 +116,15 @@ layui.extend({
 			{ title:'金额', field:'money', },
 			{ title:'备注', field:'remark', },
 	        { field: "expenseDate", 	title: "预计付款时间", 	type:'date',	 },
-	        { field: "paymentDate", 	title: "实际付款时间", 	 style:'background-color: #d8fe83',edit:true,type:'dateTime',fixed:'right', }, 
-	        { field: "paymentMoney",	title: "付款金额", 		  style:'background-color: #d8fe83', edit:true, fixed:'right',},
-	        { field: "flag", 			title: "审核状态", 	 transData:{data:['未审核','审核'],},fixed:'right',}
 	    ],
 	    
 	];
+	var lastCols = [
+	   { field: "paymentDate", 	title: "实际付款时间", style:'background-color: #d8fe83',edit:true,type:'date',fixed:'right', }, 
+       { field: "paymentMoney",	title: "付款金额",    style:'background-color: #d8fe83', edit:'number', fixed:'right',},
+       { field: "flag", 	    title: "审核状态", 	 transData:{data:['未审核','审核'],}, fixed:'right',}
+	];
+	
 	var audit = {
 		type: 1,
 	};
@@ -198,7 +174,6 @@ layui.extend({
 		$(opt.elem || '#app').html(TPL);
 		form.render();
 		laydate.render({ elem:'#searchTime', range:'~', })
-		
 		mytable.render({
 			elem: '#tableData',
 			url: myutil.config.ctx+'/fince/getConsumption?type='+audit.type ,
@@ -239,7 +214,7 @@ layui.extend({
 				}
 			},
 			cellMinWidth:120,
-			cols: [ allCols[audit.type] ],
+			cols: [ allCols[audit.type].concat(lastCols) ],
 		});
 		
 		form.on('submit(searchBtn)', function(obj) {
