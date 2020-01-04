@@ -11,6 +11,7 @@ import javax.persistence.criteria.Predicate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
 
 import com.bluewhite.base.BaseServiceImpl;
@@ -44,6 +45,7 @@ public class MaterialPutStorageServiceImpl extends BaseServiceImpl<MaterialPutSt
     private MaterialPutOutStorageDao materialPutOutStorageDao;
 
     @Override
+    @Transactional
     public void saveMaterialPutStorage(MaterialPutStorage materialPutStorage) {
         if (materialPutStorage.getId() != null) {
             MaterialPutStorage ot = dao.findOne(materialPutStorage.getId());
@@ -108,6 +110,7 @@ public class MaterialPutStorageServiceImpl extends BaseServiceImpl<MaterialPutSt
     }
 
     @Override
+    @Transactional
     public int deleteMaterialPutStorage(String ids) {
         int i = 0;
         if (!StringUtils.isEmpty(ids)) {
@@ -131,6 +134,7 @@ public class MaterialPutStorageServiceImpl extends BaseServiceImpl<MaterialPutSt
     }
 
     @Override
+    @Transactional
     public void inspectionMaterialPutStorage(MaterialPutStorage materialPutStorage) {
         MaterialPutStorage ot = findOne(materialPutStorage.getId());
         if (ot.getInspection() == 1) {
