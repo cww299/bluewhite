@@ -509,7 +509,6 @@ layui.config({
 						area:['30%','20'],
 						btn:['确定','取消'],
 						content:['<div style="padding:20px;">',
-						         	'<span class="layui-badge">提示：如果填写时间则为统一审核时间，已填写时间将会被覆盖</span>',
 						         	'<input type="text" id="auditTime" class="layui-input">',
 						         '</div>',
 						         ].join(' '),
