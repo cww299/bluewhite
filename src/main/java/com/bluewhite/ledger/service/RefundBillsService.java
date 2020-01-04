@@ -26,8 +26,20 @@ public interface RefundBillsService extends BaseCRUDService<RefundBills,Long>{
 	 * @param refundBills
 	 */
 	public void updateRefundBills(RefundBills refundBills);
-
+	
+	/**
+	 * 分页查看
+	 * @param refundBills
+	 * @param page
+	 * @return
+	 */
 	public PageResult<RefundBills> findPages(RefundBills refundBills, PageParameter page);
+
+    /**审核
+     * @param ids
+     * @return
+     */
+    public int auditRefundBills(String ids);
 	
 	
 

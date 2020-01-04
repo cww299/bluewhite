@@ -81,7 +81,7 @@ public class OrderOutSourceServiceImpl extends BaseServiceImpl<OrderOutSource, L
 			if (idStrings.length > 0) {
 				for (String ids : idStrings) {
 					Long id = Long.parseLong(ids);
-					BaseData baseData = baseDataDao.findOne(id);
+					BaseData bd = baseDataDao.findOne(id);
 					//	根据工序数量新建加工单，一个工序对应一个加工单
 					OrderOutSource newOrderOutSource = new OrderOutSource();
 					BeanCopyUtils.copyNotEmpty(orderOutSource, newOrderOutSource, "");
@@ -90,7 +90,7 @@ public class OrderOutSourceServiceImpl extends BaseServiceImpl<OrderOutSource, L
 					String outSourceNumber = (newOrderOutSource.getOutsource() == 0 ? Constants.JGD : Constants.WFJGD)
 							+ StringUtil.getDate() + StringUtil.get0LeftString((int) (dao.count() + 1), 8);
 					newOrderOutSource.setOutSourceNumber(outSourceNumber);
-					newOrderOutSource.getOutsourceTask().add(baseData);
+					newOrderOutSource.getOutsourceTask().add(bd);
 					save(newOrderOutSource);
 					// 	新增加工单工序的原始价格数据
 					if(orderOutSource.getOutsource()==1) {
@@ -105,7 +105,7 @@ public class OrderOutSourceServiceImpl extends BaseServiceImpl<OrderOutSource, L
 					// 	该工序已经加工总数
 					int sumNumber = orderOutSourceList.stream().filter(o -> {
 						Set<BaseData> baseDataSet = o.getOutsourceTask().stream()
-								.filter(BaseData -> baseData.getId().equals(id)).collect(Collectors.toSet());
+								.filter(BaseData -> BaseData.getId().equals(id)).collect(Collectors.toSet());
 						if (baseDataSet.size() > 0) {
 							return true;
 						}
@@ -118,7 +118,7 @@ public class OrderOutSourceServiceImpl extends BaseServiceImpl<OrderOutSource, L
 					// 	实际剩余数量
 					int actualNumber =  materialRequisition.getProcessNumber() - sumNumber - returnNumber;
 					if (actualNumber < newOrderOutSource.getProcessNumber()) {
-						throw new ServiceException(baseData.getName() + "的任务工序数量不足，无法生成加工单 ");
+						throw new ServiceException(bd.getName() + "的任务工序数量不足，无法生成加工单 ");
 					}
 				}
 			}
@@ -303,23 +303,21 @@ public class OrderOutSourceServiceImpl extends BaseServiceImpl<OrderOutSource, L
 		ot.getOutsourceTask().clear();
 		save(ot);
 		// 	领料单
-		MaterialRequisition materialRequisition = materialRequisitionDao
-				.findOne(orderOutSource.getMaterialRequisitionId());
+		MaterialRequisition materialRequisition = materialRequisitionDao.findOne(ot.getMaterialRequisitionId());
 		// 	根据领料单查找加工单
-		List<OrderOutSource> orderOutSourceList = dao
-				.findByMaterialRequisitionId(orderOutSource.getMaterialRequisitionId());
+		List<OrderOutSource> orderOutSourceList = dao.findByMaterialRequisitionId(ot.getMaterialRequisitionId());
 		// 	将工序任务变成set存入
 		if (!StringUtils.isEmpty(ot.getOutsourceTaskIds())) {
 			String[] idStrings = ot.getOutsourceTaskIds().split(",");
 			if (idStrings.length > 0) {
 				for (String ids : idStrings) {
 					Long id = Long.parseLong(ids);
-					BaseData baseData = baseDataDao.findOne(id);
+					BaseData bd = baseDataDao.findOne(id);
 					// 	对加工单数量进行限制判断，加工单数量和工序挂钩，每个工序最大数量为订单数量，无法超出
 					// 	工序可以由不同的加工单加工，但是不能超出订单数量
 					int sumNumber = orderOutSourceList.stream().filter(o -> {
 						Set<BaseData> baseDataSet = o.getOutsourceTask().stream()
-								.filter(BaseData -> baseData.getId().equals(id)).collect(Collectors.toSet());
+								.filter(BaseData -> BaseData.getId().equals(id)).collect(Collectors.toSet());
 						if (baseDataSet.size() > 0) {
 							return true;
 						}
@@ -330,11 +328,11 @@ public class OrderOutSourceServiceImpl extends BaseServiceImpl<OrderOutSource, L
 					// 	退货总数
 					Integer returnNumber = returnNumberList.stream().reduce(Integer::sum).orElse(0);
 					// 	实际数量=(总加工数-退货数)
-					int actualNumber = sumNumber - returnNumber;
-					if (actualNumber > materialRequisition.getProcessNumber()) {
-						throw new ServiceException(baseData.getName() + "的任务工序数量不足，无法修改加工单 ");
+					int actualNumber =  sumNumber - returnNumber;
+					if ((actualNumber + orderOutSource.getProcessNumber() )> materialRequisition.getProcessNumber()) {
+						throw new ServiceException(bd.getName() + "的任务工序数量不足，无法修改加工单 ");
 					}
-					ot.getOutsourceTask().add(baseData);
+					ot.getOutsourceTask().add(bd);
 				}
 			}
 		}

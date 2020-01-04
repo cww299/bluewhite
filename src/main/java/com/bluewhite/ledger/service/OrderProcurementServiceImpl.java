@@ -287,7 +287,7 @@ public class OrderProcurementServiceImpl extends BaseServiceImpl<OrderProcuremen
 							orderProcurement.setInOutError(1);
 						}
 						//缺克重价值
-						double gramPrice = materialPutStorageList.stream().mapToDouble(MaterialPutStorage->MaterialPutStorage.getGramPrice()).sum();
+						double gramPrice = materialPutStorageList.stream().filter(MaterialPutStorage->MaterialPutStorage.getGramPrice()!=null).mapToDouble(MaterialPutStorage->MaterialPutStorage.getGramPrice()).sum();
 						orderProcurement.setGramPrice(gramPrice);
 						orderProcurement.setArrival(1);
 						orderProcurement.setArrivalStatus(1);
@@ -299,11 +299,13 @@ public class OrderProcurementServiceImpl extends BaseServiceImpl<OrderProcuremen
 						if(orderProcurement.getExpectPaymentTime().after(orderProcurement.getArrivalTime())) {
 						     day = DateUtil.betweenDay(orderProcurement.getArrivalTime(), orderProcurement.getExpectPaymentTime(), true);
 						}
-                        orderProcurement.setInterest(
-                            NumUtils.mul(
-                            (NumUtils.sum(orderProcurement.getPartDelayNumber(),orderProcurement.getPartDelayPrice())),
-                            day.doubleValue(),
-                            OrderProcurement.getInterestday()));
+						if(orderProcurement.getPartDelayNumber()!=null && orderProcurement.getPartDelayPrice()!=null) {
+						    orderProcurement.setInterest(
+						        NumUtils.mul(
+						            (NumUtils.sum(orderProcurement.getPartDelayNumber(),orderProcurement.getPartDelayPrice())),
+						            day.doubleValue(),
+						            OrderProcurement.getInterestday()));
+						}
 						save(orderProcurement);
 						count++;
 					}
