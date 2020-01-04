@@ -52,7 +52,10 @@ layui.config({
 		mytable.render({
 			elem:'#tableData',
 			url:'${ctx}/ledger/refundBillsPage',
-			toolbar:[ '<span class="layui-btn layui-btn-sm" lay-event="update">修改</span>',].join(''),
+			toolbar:[ 
+				'<span class="layui-btn layui-btn-sm" lay-event="update">修改</span>',
+				'<span class="layui-btn layui-btn-warm layui-btn-sm" lay-event="audit">审核</span>',
+			].join(''),
 			curd:{
 				btn:[4],
 				otherBtn:function(obj){
@@ -70,6 +73,12 @@ layui.config({
 							success:function(){
 								table.reload('tableData');
 							}
+						})
+					}else if(obj.event=='audit'){
+						myutil.deleTableIds({
+							url:'/ledger/auditRefundBills',
+							table:'tableData',
+							text:'请选择数据|是否确认审核？',
 						})
 					}
 				}
