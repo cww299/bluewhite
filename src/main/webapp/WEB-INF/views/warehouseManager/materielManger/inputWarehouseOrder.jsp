@@ -174,9 +174,9 @@ layui.config({
 			toolbar:[
 				'<span class="layui-btn layui-btn-sm" lay-event="update">修改</span>',
 				'<span class="layui-btn layui-btn-normal layui-btn-sm" lay-event="verify">验货</span>',
-			].join(''),
 				//'<span class="layui-btn layui-btn-warm layui-btn-sm" lay-event="addReturn">新增退货单</span>',
 				//'<span class="layui-btn layui-btn-primary layui-btn-sm" lay-event="lookoverReturn">查看退货单</span>',
+			].join(''),
 			autoUpdate:{
 				saveUrl:'',
 				deleUrl:'/ledger/inventory/deleteMaterialPutStorage',
@@ -185,8 +185,8 @@ layui.config({
 			ifNull:'--',
 			cols:[[
 			       { type:'checkbox',},
-			       { title:'入库编号', field:'serialNumber',width:'15%',	},
-			       { title:'入库时间',   field:'arrivalTime', type:'date',width:'10%',	},
+			       { title:'入库编号', field:'serialNumber',width:200,	},
+			       { title:'入库时间',   field:'arrivalTime', type:'date',	width:120,	},
 			       { title:'入库数量',   field:'arrivalNumber',   },
 			       { title:'库区',   field:'storageArea_name', 	},
 			       { title:'库位',   field:'storageLocation_name',	},
