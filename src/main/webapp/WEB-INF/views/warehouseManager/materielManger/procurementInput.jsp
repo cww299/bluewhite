@@ -55,7 +55,7 @@ layui.config({
 			ifNull:'',
 			scrollX:true,
 			toolbar: [ '<span lay-event="add" class="layui-btn layui-btn-sm">生成入库单</span>',
-					   '<span lay-event="audit" class="layui-btn layui-btn-sm">审核到货</span>',].join(' '),
+					   '<span lay-event="audit" class="layui-btn layui-btn-warm layui-btn-sm">审核到货</span>',].join(' '),
 			curd:{
 				btn:[],
 				otherBtn:function(obj){
@@ -68,6 +68,11 @@ layui.config({
 								inStatus: 1,	//采购入库
 								materielId: check[0].materiel.id,
 								orderProcurementId: check[0].id,
+								warehousingNumber: check[0].warehousingNumber,	//已入库数量
+								placeOrderNumber: check[0].placeOrderNumber,	//采购数量
+							},
+							success:function(){
+								table.reload('tableData');
 							}
 						});
 					}else if(obj.event=='audit'){
