@@ -152,15 +152,17 @@ public class MaterialPutStorageServiceImpl extends BaseServiceImpl<MaterialPutSt
     }
 
     @Override
-    public double getArrivalNumber(Long id) {
+    public double getArrivalNumber(Long id) {   
         // 获取到货数量
         List<MaterialPutStorage> materialPutStorageList = dao.findByOrderProcurementId(id);
         // 计算退货总数
         List<MaterialOutStorage> list = new ArrayList<>();
         materialPutStorageList.stream().forEach(m -> {
-            MaterialOutStorage materialOutStorage = materialOutStorageDao.findOne(m.getId());
-            if (materialOutStorage != null) {
-                list.add(materialOutStorage);
+            List<Long> longList = materialOutStorageDao.findMaterialPutStorageId(m.getId());
+            List<MaterialOutStorage> listMaterialOutStorage =  materialOutStorageDao.findAll(longList);
+            if(listMaterialOutStorage.size()>0) {
+                List<MaterialOutStorage>  mList = listMaterialOutStorage.stream().filter(MaterialOutStorage->MaterialOutStorage.getOutStatus()==4).collect(Collectors.toList());
+                list.addAll(mList);
             }
         });
         double returnNumber = list.stream().mapToDouble(MaterialOutStorage::getArrivalNumber).sum();
