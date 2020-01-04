@@ -73,8 +73,10 @@ public class AttendanceTimeServiceImpl extends BaseServiceImpl<AttendanceTime, L
 		// 获取改时间段所有的打卡记录
 		List<Attendance> allAttList = null;
 		// 获取当前日期的固定休息日
-		PersonVariable restType = personVariableDao.findByTypeAndTime(0,
-				DatesUtil.getFirstDayOfMonth(attendance.getOrderTimeBegin()));
+		PersonVariable restType = personVariableDao.findByTypeAndTime(0, DatesUtil.getFirstDayOfMonth(attendance.getOrderTimeBegin()));
+		if(restType==null) {
+		    throw new ServiceException("当月未设定休息方式，请设定");
+		}
 		// 报餐系统所需要的人员
 		List<User> list = null;
 		List<AttendanceInit> attendanceInitList = null;
@@ -496,11 +498,6 @@ public class AttendanceTimeServiceImpl extends BaseServiceImpl<AttendanceTime, L
 				.filter(AttendanceTime -> AttendanceTime.getUserId() != null)
 				.collect(Collectors.groupingBy(AttendanceTime::getUserId, Collectors.toList()));
 		for (Long ps1 : mapAttendance.keySet()) {
-			// 获取单一员工日期区间所有的考勤数据
-			List<AttendanceTime> psList1 = mapAttendance.get(ps1);
-			// 按日期自然排序
-			List<AttendanceTime> attendanceTimeList1 = psList1.stream()
-					.sorted(Comparator.comparing(AttendanceTime::getTime)).collect(Collectors.toList());
 			AttendanceCollect attendanceCollect = attendanceCollectDao.findByUserIdAndTime(ps1,
 					attendanceTime.getOrderTimeBegin());
 			if (attendanceCollect != null) {
@@ -516,7 +513,6 @@ public class AttendanceTimeServiceImpl extends BaseServiceImpl<AttendanceTime, L
 	 */
 	@Transactional
 	private List<Map<String, Object>> attendanceCollect(List<AttendanceTime> attendanceTimeList, boolean sign) {
-		SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
 		// 最外层循环人员list
 		List<Map<String, Object>> allList = new ArrayList<>();
 		// 单向数据map
@@ -731,15 +727,15 @@ public class AttendanceTimeServiceImpl extends BaseServiceImpl<AttendanceTime, L
 								.collect(Collectors.toList());
 						if (applyAttendanceTime.size() > 0) {
 							AttendanceTime at = applyAttendanceTime.get(0);
-							if (al.getOvertimeType() == 2) {
-								at.setOvertime(NumUtils.sub(NumUtils.setzro(at.getOvertime()), time));
-							} else {
-								at.setOvertime(NumUtils.sum(NumUtils.setzro(at.getOvertime()), time));
-							}
-
+							//正常加班
 							if (al.getOvertimeType() == 1) {
-								at.setOrdinaryOvertime(NumUtils.sum(NumUtils.setzro(at.getOrdinaryOvertime()), time));
-							}
+                                at.setOrdinaryOvertime(NumUtils.sum(NumUtils.setzro(at.getOrdinaryOvertime()), time));
+                            }
+							//撤销加班
+							if (al.getOvertimeType() == 2) {
+								at.setOrdinaryOvertime(NumUtils.sub(NumUtils.setzro(at.getOrdinaryOvertime()), time));
+							} 
+							//生产加班
 							if (al.getOvertimeType() == 3) {
 								at.setProductionOvertime(
 										NumUtils.sum(NumUtils.setzro(at.getProductionOvertime()), time));

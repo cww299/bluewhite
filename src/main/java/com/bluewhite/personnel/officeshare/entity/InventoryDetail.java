@@ -86,6 +86,12 @@ public class InventoryDetail extends BaseEntity<Long> {
 	 */
 	@Column(name = "outbound_cost")
 	private Double outboundCost;
+	
+	/**
+     * 入库类型 （1=正常出入库）（2=平账出入库）
+     */
+    @Column(name = "status")
+    private Integer status;
 
 	/**
 	 * 备注
@@ -130,7 +136,15 @@ public class InventoryDetail extends BaseEntity<Long> {
 	
 	
 
-	public Long getSingleMealConsumptionId() {
+	public Integer getStatus() {
+        return status;
+    }
+
+    public void setStatus(Integer status) {
+        this.status = status;
+    }
+
+    public Long getSingleMealConsumptionId() {
 		return singleMealConsumptionId;
 	}
 
