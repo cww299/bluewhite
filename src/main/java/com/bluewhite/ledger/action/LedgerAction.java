@@ -198,7 +198,7 @@ public class LedgerAction {
 				.addRetainTerm(Materiel.class, "id", "name", "number", "orderProcurements", "inventoryNumber")
 				.addRetainTerm(OrderProcurement.class, "id", "orderProcurementNumber", "placeOrderNumber",
 						"arrivalNumber", "placeOrderTime", "expectArrivalTime", "arrivalTime", "customer", "user",
-						"materielLocation", "price", "squareGram", "residueNumber")
+						"materielLocation", "price", "residueNumber")
 				.addRetainTerm(Customer.class, "id", "name")
 				.addRetainTerm(BaseOne.class, "id", "name")
 				.addRetainTerm(User.class, "id", "userName")
@@ -210,10 +210,10 @@ public class LedgerAction {
 		clearCascadeJSONOrderProcurement = ClearCascadeJSON.get()
 				.addRetainTerm(OrderProcurement.class, "id", "orderProcurementNumber", "placeOrderNumber",
 						"arrivalNumber", "placeOrderTime", "expectArrivalTime", "arrivalTime", "customer", "user",
-						"materielLocation", "price", "squareGram", "userStorage", "arrival", "audit",
+						"materielLocation", "price", "userStorage", "arrival", "audit",
 						"expectPaymentTime", "materiel", "partDelayNumber", "partDelayTime",
 						"gramPrice", "interest", "paymentMoney", "bill", "conventionPrice", "conventionSquareGram",
-						"partDelayPrice", "arrivalStatus", "replenishment")
+						"partDelayPrice", "arrivalStatus", "replenishment","returnNumber")
 				.addRetainTerm(Materiel.class, "id", "name", "number", "materialQualitative")
 				.addRetainTerm(Customer.class, "id", "name")
 				.addRetainTerm(BaseOne.class, "id", "name")
@@ -260,9 +260,9 @@ public class LedgerAction {
 		        .addRetainTerm(ScatteredOutbound.class, "id","orderProcurement","orderMaterial")
 		        .addRetainTerm(OrderProcurement.class, "id", "orderProcurementNumber")
 				.addRetainTerm(Order.class, "id", "bacthNumber", "number", "remark", "orderNumber")
-				.addRetainTerm(OrderMaterial.class, "id", "receiveMode")
+				.addRetainTerm(OrderMaterial.class, "id", "receiveMode","materiel")
 				.addRetainTerm(BaseOne.class, "id", "name")
-				.addRetainTerm(Materiel.class, "id", "name")
+				.addRetainTerm(Materiel.class, "id", "name","number")
 				.addRetainTerm(Customer.class, "id", "name")
 				.addRetainTerm(User.class, "id", "userName");
 	}
@@ -295,7 +295,7 @@ public class LedgerAction {
 		clearCascadeJSONMaterialPutStorage = ClearCascadeJSON.get()
 				.addRetainTerm(MaterialPutStorage.class, "id", "materiel", "orderProcurement", "inStatus",
 						"inWarehouseType", "arrivalTime", "arrivalNumber", "storageArea", "storageLocation",
-						"surplusNumber", "userStorage", "inspection", "serialNumber")
+						"surplusNumber", "userStorage", "inspection", "serialNumber","squareGram")
 				.addRetainTerm(OrderProcurement.class, "id", "orderProcurementNumber")
 				.addRetainTerm(Materiel.class, "id", "name")
 				.addRetainTerm(BaseOne.class, "id", "name")
@@ -1031,6 +1031,8 @@ public class LedgerAction {
 	 */
 	@RequestMapping(value = "/ledger/inventory/inspectionMaterialPutStorage", method = RequestMethod.GET)
 	@ResponseBody
+	
+	
 	public CommonResponse inspectionOrderProcurement(MaterialPutStorage materialPutStorage) {
 		CommonResponse cr = new CommonResponse();
 		materialPutStorageService.inspectionMaterialPutStorage(materialPutStorage);

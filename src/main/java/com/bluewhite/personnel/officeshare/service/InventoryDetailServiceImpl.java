@@ -125,16 +125,13 @@ public class InventoryDetailServiceImpl extends BaseServiceImpl<InventoryDetail,
                     OfficeSupplies officeSupplies = officeSuppliesDao.findOne(onventoryDetail.getOfficeSuppliesId());
                     // 出库
                     if (onventoryDetail.getFlag() == 0) {
-                        officeSupplies
-                            .setInventoryNumber(officeSupplies.getInventoryNumber() + onventoryDetail.getNumber());
+                        officeSupplies .setInventoryNumber(officeSupplies.getInventoryNumber() + onventoryDetail.getNumber());
                     }
                     // 入库
                     if (onventoryDetail.getFlag() == 1) {
-                        officeSupplies
-                            .setInventoryNumber(officeSupplies.getInventoryNumber() - onventoryDetail.getNumber());
+                        officeSupplies.setInventoryNumber(officeSupplies.getInventoryNumber() - onventoryDetail.getNumber());
                     }
-                    officeSupplies
-                        .setLibraryValue(NumUtils.mul(officeSupplies.getInventoryNumber(), officeSupplies.getPrice()));
+                    officeSupplies.setLibraryValue(NumUtils.mul(officeSupplies.getInventoryNumber(), officeSupplies.getPrice()));
                     officeSuppliesDao.save(officeSupplies);
                     dao.delete(id);
                     count++;

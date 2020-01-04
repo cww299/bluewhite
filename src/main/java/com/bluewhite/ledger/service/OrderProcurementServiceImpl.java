@@ -21,13 +21,18 @@ import com.bluewhite.common.utils.NumUtils;
 import com.bluewhite.common.utils.StringUtil;
 import com.bluewhite.finance.consumption.entity.Consumption;
 import com.bluewhite.finance.consumption.service.ConsumptionService;
+import com.bluewhite.ledger.dao.MaterialOutStorageDao;
+import com.bluewhite.ledger.dao.MaterialPutStorageDao;
 import com.bluewhite.ledger.dao.OrderMaterialDao;
 import com.bluewhite.ledger.dao.OrderProcurementDao;
 import com.bluewhite.ledger.dao.ScatteredOutboundDao;
+import com.bluewhite.ledger.entity.MaterialOutStorage;
 import com.bluewhite.ledger.entity.MaterialPutStorage;
 import com.bluewhite.ledger.entity.OrderMaterial;
 import com.bluewhite.ledger.entity.OrderProcurement;
 import com.bluewhite.ledger.entity.ScatteredOutbound;
+
+import cn.hutool.core.date.DateUtil;
 
 @Service
 public class OrderProcurementServiceImpl extends BaseServiceImpl<OrderProcurement, Long>
@@ -43,6 +48,10 @@ public class OrderProcurementServiceImpl extends BaseServiceImpl<OrderProcuremen
 	private ConsumptionService consumptionService;
 	@Autowired
 	private MaterialPutStorageService materialPutStorageService;
+    @Autowired
+    private MaterialPutStorageDao materialPutStorageDao;
+	@Autowired
+	private MaterialOutStorageDao materialOutStorageDao;
 
 	@Override
 	public PageResult<OrderProcurement> findPages(OrderProcurement param, PageParameter page) {
@@ -94,7 +103,23 @@ public class OrderProcurementServiceImpl extends BaseServiceImpl<OrderProcuremen
 		}, page);
 		PageResult<OrderProcurement> result = new PageResult<>(pages, page);
 		result.getRows().forEach(o->{
-
+		    // 获取到货数量
+	        List<MaterialPutStorage> materialPutStorageList = materialPutStorageDao.findByOrderProcurementId(o.getId());
+	        // 计算退货总数
+	        List<MaterialOutStorage> list = new ArrayList<>();
+	        materialPutStorageList.stream().forEach(m -> {
+	            List<Long> longList = materialOutStorageDao.findMaterialPutStorageId(m.getId());
+	            List<MaterialOutStorage> listMaterialOutStorage =  materialOutStorageDao.findAll(longList);
+	            if(listMaterialOutStorage.size()>0) {
+	                List<MaterialOutStorage>  mList = listMaterialOutStorage.stream().filter(MaterialOutStorage->MaterialOutStorage.getOutStatus()==4).collect(Collectors.toList());
+	                list.addAll(mList);
+	            }
+	        });
+	        double returnNumber = list.stream().mapToDouble(MaterialOutStorage::getArrivalNumber).sum();
+	        o.setReturnNumber(returnNumber);
+	        if(returnNumber>0) {
+	            o.setReplenishment(1);
+	        }
 		});
 		return result;
 	}
@@ -252,17 +277,30 @@ public class OrderProcurementServiceImpl extends BaseServiceImpl<OrderProcuremen
 						if(size>0){
 							throw new ServiceException(orderProcurement.getOrderProcurementNumber()+"采购单有入库单，未完成验货，无法审核");
 						}
-						//已经到货数量
-						//不相同时则标记出
+						//已经到货数量，以排除退货数量
 						double arrivalNumber = materialPutStorageService.getArrivalNumber(id);
+						//不相同时则标记出
 						if(orderProcurement.getPlaceOrderNumber()!=arrivalNumber){
 							orderProcurement.setInOutError(1);
 						}
+						//缺克重价值
+						double gramPrice = materialPutStorageList.stream().mapToDouble(MaterialPutStorage->MaterialPutStorage.getGramPrice()).sum();
+						orderProcurement.setGramPrice(gramPrice);
 						orderProcurement.setArrival(1);
 						orderProcurement.setArrivalStatus(1);
 						orderProcurement.setArrivalTime(time);
 						orderProcurement.setArrivalNumber(arrivalNumber);
 						orderProcurement.setPaymentMoney(NumUtils.mul(orderProcurement.getPrice(), orderProcurement.getArrivalNumber()));
+						//占用供应商资金利息 总金额*(付款时间-到货时间)*日利息
+						Long day = (long)0;
+						if(orderProcurement.getExpectPaymentTime().after(orderProcurement.getArrivalTime())) {
+						     day = DateUtil.betweenDay(orderProcurement.getArrivalTime(), orderProcurement.getExpectPaymentTime(), true);
+						}
+                        orderProcurement.setInterest(
+                            NumUtils.mul(
+                            (NumUtils.sum(orderProcurement.getPartDelayNumber(),orderProcurement.getPartDelayPrice())),
+                            day.doubleValue(),
+                            OrderProcurement.getInterestday()));
 						save(orderProcurement);
 						count++;
 					}
