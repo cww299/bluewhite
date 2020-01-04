@@ -477,7 +477,7 @@ layui.config({
 								autoUpdate:{
 									deleUrl:'/ledger/deleteOrderProcurement',
 								},
-								colsWidth:[0,13,0,6,6,6,8,13,13,8],
+								colsWidth:[0,13,0,6,6,6,8,13,13,8,8],
 								cols:[[
 									   { type:'checkbox' },
 								       { title:'下单日期', field:'placeOrderTime', },
@@ -488,6 +488,7 @@ layui.config({
 								       { title:'供应商', field:'customer_name', },
 								       { title:'预计到货', field:'expectArrivalTime',},
 								       { title:'付款日期', field:'expectPaymentTime', },
+								       { title:'是否到货', field:'arrival', transData:true, },
 								       { title:'审核', field:'audit',transData:{data:['未审核','审核'],}},
 								       ]]
 							})
@@ -508,7 +509,6 @@ layui.config({
 						area:['30%','20'],
 						btn:['确定','取消'],
 						content:['<div style="padding:20px;">',
-						         	'<span class="layui-badge">提示：如果填写时间则为统一审核时间，已填写时间将会被覆盖</span>',
 						         	'<input type="text" id="auditTime" class="layui-input">',
 						         '</div>',
 						         ].join(' '),

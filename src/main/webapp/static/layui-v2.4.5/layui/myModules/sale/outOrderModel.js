@@ -168,6 +168,8 @@ layui.extend({
 					var processIds = [];
 					for(var i=0,len=data.outsourceTask.length;i<len;i++)
 						processIds.push(data.outsourceTask[i].id);
+					$('#processSelect').attr('disabled','disabled');
+					formSelects.render();
 					formSelects.value('processSelect',processIds); 
 					$('#userId').val(data.user?data.user.id:'');
 					if(data.outsource==1)

@@ -12,10 +12,15 @@
  * 		inStatus: 3,	//退货入库,
  * 		inStatus: 4,	//换货入库,
  * 		inStatus: 5, 	//盘亏入库,
+ * 		//物料采购入库新增传参：inStatus:1  type:1
  * 		orderProcurementId:'',  //修改物料入库采购入库时，传入的订单id
+ * 		placeOrderNumber: check[0].placeOrderNumber,	//采购数量
+ * 	    warehousingNumber: check[0].warehousingNumber,	//已入库数量，用于判断入库数量是否超出采购数量
+ * 
  * 		materielId:'',			//物料入库时传入
  * 		productId:'',   		//成品、皮壳入库时传入
  * 		orderOutSourceId:'',    //成品、皮壳生产入库时，传入的订单id
+ * 
  * })
  */
 layui.extend({
@@ -31,7 +36,7 @@ layui.extend({
 				'<div class="layui-form-item" pane>',
 					'<label class="layui-form-label">入库时间</label>',
 					'<div class="layui-input-block">',
-						'<input class="layui-input" lay-verify="required" name="arrivalTime" autocomplete="off" id="arrivalTime" value="{{ d.arrivalTime?d.arrivalTime:"" }}">',
+						'<input class="layui-input" lay-verify="required" name="arrivalTime" autocomplete="off" id="arrivalTime">',
 					'</div>',
 				'</div>',
 				'<div class="layui-form-item" pane>',
@@ -152,7 +157,7 @@ layui.extend({
 			title: title,
 			btnAlign:'c',
 			success:function(){
-				laydate.render({ elem:'#arrivalTime', type:'datetime', });
+				laydate.render({ elem:'#arrivalTime', type:'datetime', value: data.arrivalTime || new Date(), });
 				$('#userStorageId').append(allUser);
 				$('#storageLocationId').append(allStorageLocation);
 				$('#storageAreaId').append(allStorageArea);
@@ -170,16 +175,28 @@ layui.extend({
 				}
 				form.on('submit(sureAddOutOrder)',function(obj){
 					var url = '/ledger/inventory/savePutStorage';
-					if(inputWarehouseOrder.type==inputWarehouseOrder.allType.WL)
+					if(inputWarehouseOrder.type==inputWarehouseOrder.allType.WL){	//物料
 						url = '/ledger/inventory/saveMaterialPutStorage';
-					myutil.saveAjax({
-						url: url,
-						data: obj.field,
-						success:function(){
-							layer.close(win);
-							opt.success && opt.success();
+						if(!data.id && data.inStatus==1){	//如果是新增物料采购入库
+							if(data.placeOrderNumber<(obj.field.arrivalNumber - -data.warehousingNumber)){
+								layer.confirm('入库数量大于采购数量，是否确认入库！',{offset:'120px',},function(){
+									saveData();
+								})
+								return;
+							}
 						}
-					})
+					}
+					saveData();
+					function saveData(){
+						myutil.saveAjax({
+							url: url,
+							data: obj.field,
+							success:function(){
+								layer.close(win);
+								opt.success && opt.success();
+							}
+						})
+					}
 				})
 				form.render();
 			},
