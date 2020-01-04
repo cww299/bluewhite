@@ -896,6 +896,22 @@ public class LedgerAction {
 		cr.setMessage("修改成功");
 		return cr;
 	}
+	
+	
+	/**
+     * (生产计划部)审核加工退货单
+     * 
+     * @param order
+     * @return
+     */
+    @RequestMapping(value = "/ledger/auditRefundBills", method = RequestMethod.GET)
+    @ResponseBody
+    public CommonResponse auditRefundBills(String ids) {
+        CommonResponse cr = new CommonResponse();
+        int count = refundBillsService.auditRefundBills(ids);
+        cr.setMessage("成功审核"+count+"条数据");
+        return cr;
+    }
 
 	/**
 	 * (生产计划部)删除加工退货单
