@@ -111,12 +111,13 @@ layui.config({
 					}
 				}
 			},
-			colsWidth:[0,8,0,6,6,6,6,8,10,8,6,],
+			colsWidth:[0,8,0,6,7,06,6,6,8,10,8,6,],
 			cols:[[
 					{ type:'checkbox',fixed:'left' },
 					{ title:'下单日期', field:'placeOrderTime', type:'date'},
 					{ title:'采购编号', field:'orderProcurementNumber', },
 					{ title:'采购数量', field:'placeOrderNumber', },
+					{ title:'已入库数量', field:'warehousingNumber', },
 					{ title:'预计价格', field:'price', },
 					{ title:'约定克重', field:'conventionSquareGram', },
 					{ title:'订购人', field:'user_userName', },
