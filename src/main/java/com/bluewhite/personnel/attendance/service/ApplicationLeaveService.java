@@ -1,15 +1,11 @@
 package com.bluewhite.personnel.attendance.service;
 
 import java.text.ParseException;
-import java.util.Date;
-import java.util.List;
 
 import com.bluewhite.base.BaseCRUDService;
 import com.bluewhite.common.entity.PageParameter;
 import com.bluewhite.common.entity.PageResult;
-import com.bluewhite.finance.attendance.entity.AttendancePay;
 import com.bluewhite.personnel.attendance.entity.ApplicationLeave;
-import com.bluewhite.personnel.attendance.entity.AttendanceTime;
 
 public interface ApplicationLeaveService  extends BaseCRUDService<ApplicationLeave,Long>{
 	

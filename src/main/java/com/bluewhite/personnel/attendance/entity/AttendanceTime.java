@@ -84,7 +84,7 @@ public class AttendanceTime extends BaseEntity<Long> {
 	private Double turnWorkTime;
 	
 	/**
-	 * 加班时长
+	 * 总加班时长
 	 * 
 	 */
 	@Column(name = "overtime")

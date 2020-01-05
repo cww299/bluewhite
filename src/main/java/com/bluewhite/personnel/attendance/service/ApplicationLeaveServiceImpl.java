@@ -27,8 +27,6 @@ import com.bluewhite.common.utils.DatesUtil;
 import com.bluewhite.common.utils.NumUtils;
 import com.bluewhite.personnel.attendance.dao.ApplicationLeaveDao;
 import com.bluewhite.personnel.attendance.dao.AttendanceDao;
-import com.bluewhite.personnel.attendance.dao.AttendanceInitDao;
-import com.bluewhite.personnel.attendance.dao.AttendanceTimeDao;
 import com.bluewhite.personnel.attendance.dao.PersonVariableDao;
 import com.bluewhite.personnel.attendance.entity.ApplicationLeave;
 import com.bluewhite.personnel.attendance.entity.Attendance;
@@ -155,7 +153,7 @@ public class ApplicationLeaveServiceImpl extends BaseServiceImpl<ApplicationLeav
 				// 调休申请
 				if (applicationLeave.isTradeDays()) {
 					sumOverTime = attendanceTimeList.stream().mapToDouble(AttendanceTime::getOvertime).sum();
-					tradeDaysTime += Double.valueOf(time);
+					tradeDaysTime = NumUtils.sum(tradeDaysTime,Double.valueOf(time));
 					holidayDetail = holidayDetail.equals("") ? (date + "调休" + time + "小时")
 							: holidayDetail + "," + date + "调休" + time + "小时";
 					continue;
@@ -289,14 +287,14 @@ public class ApplicationLeaveServiceImpl extends BaseServiceImpl<ApplicationLeav
 							}
 							actualOverTime = DatesUtil.getTimeHour(NumUtils.sum(one, two));
 							if (attendanceInit.getRestTimeWork() == 3) {
-								actualOverTime += restTime;
+								actualOverTime = NumUtils.sum(actualOverTime,restTime);
 							}
 						} else {
 							if (workTimeEnd.before(attendanceTime.getCheckOut())) {
 								actualOverTime = DatesUtil.getTimeHour(workTimeEnd, attendanceTime.getCheckOut());
 								if (attendanceTime.getCheckIn().before(restBeginTime)
 										&& attendanceTime.getCheckOut().after(restEndTime)) {
-									actualOverTime += restTime;
+								    actualOverTime = NumUtils.sum(actualOverTime,restTime);
 								}
 							}
 						}

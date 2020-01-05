@@ -316,7 +316,7 @@ public class LedgerAction {
 	{
 		clearCascadeJSONSRefundBills = ClearCascadeJSON.get()
 				.addRetainTerm(RefundBills.class, "id", "orderOutSource", "outsourceTask", "returnNumber", "returnTime",
-						"returnRemark")
+						"returnRemark","audit")
 				.addRetainTerm(OrderOutSource.class, "id", "outsourceTask", "processNumber")
 				.addRetainTerm(BaseOne.class, "id", "name");
 	}
