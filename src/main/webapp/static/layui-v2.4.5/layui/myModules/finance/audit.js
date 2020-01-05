@@ -146,7 +146,7 @@ layui.extend({
 						case 3: text='工资内容'; name='content'; break;
 						case 4: text='供应商名称'; name='customerName'; break;
 						case 5: text='物流点名称'; name='customerName'; break;
-						case 6: text='借款方'; name='customerName'; break;
+						case 6: text='借款内容'; name='content'; break;
 						case 7: text='扣税单位'; name='customerName'; break;
 						case 8: text='公司名称'; name='customerName'; break;
 						case 9: text='申请内容'; name='content'; break;

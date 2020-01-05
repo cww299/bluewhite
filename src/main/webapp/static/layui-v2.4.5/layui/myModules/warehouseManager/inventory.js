@@ -176,7 +176,7 @@ layui.extend({
 										var index = elem.closest('tr').data('index');
 										var trData = table.cache['warehoseInof'][index];
 										if(trData.inStatus==1){		//如果是生产入库
-											var order = trData.orderOutSource.order;
+											var order = trData.orderOutSource.materialRequisition.order;
 											layui.each(order.orderChilds,function(i,d1){
 												d1.bacthNumber = order.bacthNumber;
 												d1.allNumber = order.number;
