@@ -337,7 +337,7 @@ layui.extend({
 			success:function(){
 				mytable.render({
 					elem: '#choosedCustomerTable',
-					url: myutil.config.ctx+'/ledger/customerPage?', //type=1
+					url: myutil.config.ctx+'/ledger/customerPage?customerTypeId=459',
 					cols:[[
 						{ title:'客户编号',	field:'id',	},
 						{ title:'客户名称',	field:'name',	},
