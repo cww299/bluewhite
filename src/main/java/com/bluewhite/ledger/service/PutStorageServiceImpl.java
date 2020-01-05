@@ -119,17 +119,24 @@ public class PutStorageServiceImpl extends BaseServiceImpl<PutStorage, Long> imp
 
 	@Override
 	public List<PutStorage> detailsInventory(Object warehouseTypeId, Long productId) {
-		List<PutStorage> putStorageList = dao.findByWarehouseTypeIdAndProductId(Long.valueOf(warehouseTypeId.toString()), productId);
-		putStorageList.forEach(m -> {
-			// 	入库单实际出库数量
-			List<PutOutStorage> outPutStorageList = putOutStorageDao.findByPutStorageId(m.getId());
-			int arrNumber = outPutStorageList.stream().mapToInt(PutOutStorage::getNumber).sum();
-			// 	入库单剩余数量
-			m.setSurplusNumber(m.getArrivalNumber() - arrNumber);
-		});
-		// 	排除掉已经全部出库的入库单
-		putStorageList = putStorageList.stream().filter(PutStorage -> PutStorage.getSurplusNumber() > 0)
-				.sorted(Comparator.comparing(PutStorage::getArrivalTime)).collect(Collectors.toList());
+	    List<PutStorage> putStorageList = null;
+	    if(warehouseTypeId!=null) {
+	        putStorageList = dao.findByWarehouseTypeIdAndProductId(Long.valueOf(warehouseTypeId.toString()), productId);
+	    } else {
+	        putStorageList = dao.findByProductId(productId);
+	    }
+	    if(putStorageList.size()>0) {
+	        putStorageList.forEach(m -> {
+	            // 	入库单实际出库数量
+	            List<PutOutStorage> outPutStorageList = putOutStorageDao.findByPutStorageId(m.getId());
+	            int arrNumber = outPutStorageList.stream().mapToInt(PutOutStorage::getNumber).sum();
+	            // 	入库单剩余数量
+	            m.setSurplusNumber(m.getArrivalNumber() - arrNumber);
+	        });
+	        // 	排除掉已经全部出库的入库单
+	        putStorageList = putStorageList.stream().filter(PutStorage -> PutStorage.getSurplusNumber() > 0)
+	            .sorted(Comparator.comparing(PutStorage::getArrivalTime)).collect(Collectors.toList());
+	    }
 		return putStorageList;
 	}
 
