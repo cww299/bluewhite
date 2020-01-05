@@ -15,12 +15,41 @@
 		<table class="layui-table" id="personTable" lay-filter="personTable"></table>
 	</div>
 </div>
+
+<div style="display: none;" id="layuiShare">
+			<div class="layui-form layui-card-header layuiadmin-card-header-auto">
+				<div class="layui-form-item">
+					<table>
+						<tr>
+							<td>查询时间:</td>
+							<td><input id="monthDate3" style="width: 180px;" placeholder="请输入时间" class="layui-input laydate-icon">
+							</td>
+							<td>&nbsp;&nbsp;</td>
+							<td><select class="form-control" name="type">
+							<option value="">请选择</option>
+							<option value="0">奖励金额</option>
+							<option value="1">领取金额</option></select></td>
+							<td>&nbsp;&nbsp;</td>
+							<td>
+								<div class="layui-inline">
+									<button class="layui-btn layuiadmin-btn-admin"  lay-submit lay-filter="LAY-search2">
+										<i class="layui-icon layui-icon-search layuiadmin-button-btn"></i>
+									</button>
+								</div>
+							</td>
+						</tr>
+					</table>
+				</div>
+			</div>
+			<table id="layuiShare2"  class="table_th_search" lay-filter="layuiShare"></table>
+</div>
 </body>
 <!-- 表格工具栏模板 --> 
 <script type="text/html" id="personToolbar">
 <div>
 	<span lay-event="lookoverGetMoney"  class="layui-btn layui-btn-sm" >领取流水</span>
 	<span lay-event="lookoverAward"  class="layui-btn layui-btn-sm" >奖励流水</span>
+	<span lay-event="lookoverSummary"  class="layui-btn layui-btn-sm" >汇总</span>
 </div>
 </script>
 <script type="text/html" id="rewardInfoToolbar">
@@ -49,6 +78,11 @@ layui.config({
 		, laydate = layui.laydate
 		, laytpl = layui.laytpl;
 		
+		laydate.render({
+			elem: '#monthDate3',
+			type : 'date',
+			range:'~'
+		});
 		tablePlug.smartReload.enable(true);  
 		var lookoverObj; 	//查看的行对象的数据
 		table.render({
@@ -66,7 +100,8 @@ layui.config({
 		})
 		table.on('toolbar(personTable)',function(obj){
 			var checked = layui.table.checkStatus('personTable').data;
-			if(checked.length!=1){
+			
+			if(checked.length!=1 && obj.event!='lookoverSummary'){
 				layer.msg('只能选择一条数据',{icon:2,offest:'200px'});
 				return;
 			}
@@ -74,8 +109,85 @@ layui.config({
 			switch(obj.event){
 			case 'lookoverAward': 	lookoverAward(0);      break;
 			case 'lookoverGetMoney':lookoverAward(1); 	break;
+			case 'lookoverSummary': 
+				var dicDiv=$('#layuiShare');
+				table.reload("layuiShare2");
+				layer.open({
+			         type: 1
+			        ,title: '每月汇总' //不显示标题栏
+			        ,closeBtn: false
+			        ,zindex:-1
+			        ,area:['70%', '91%']
+			        ,shade: 0.5
+			        ,id: 'LAY_layuipro10' //设定一个id，防止重复弹出
+			        ,btn: ['取消']
+			        ,btnAlign: 'c'
+			        ,moveType: 1 //拖拽模式，0或者1
+			        ,content:dicDiv
+			        ,success : function(layero, index) {
+			        	layero.addClass('layui-form');
+						// 将保存按钮改变成提交按钮
+						layero.find('.layui-layer-btn0').attr({
+							'lay-filter' : 'addRole2',
+							'lay-submit' : ''
+						})
+			        }
+			        ,end:function(){
+			        	$("#layuiShare").hide();
+					  } 
+			      });
+				break;
 			} 
 		})
+		form.on('submit(LAY-search2)', function(obj) {
+						onlyField=obj.field;
+						var orderTime=$("#monthDate3").val().split('~');
+						if($("#monthDate3").val()!=""){
+							onlyField.orderTimeBegin=orderTime[0]+' '+'00:00:00';
+							onlyField.orderTimeEnd=orderTime[1]+' '+'23:59:59';	
+						}
+						onlyField.type=onlyField.type;
+						eventd(onlyField);
+					})
+		var eventd=function(data){
+			table.reload("layuiShare2", {
+				url: '${ctx}/personnel/getReward',
+				where:data,
+              })
+		};
+		var data="";
+		table.render({
+			elem:'#layuiShare2',
+			where:data,
+			/* url: '${ctx}/personnel/getReward' , */
+			data:[],
+			request:{ pageName:'page', limitName:'size' },
+			limit:12,
+			page:true,
+			toolbar: '#toolbar5', //开启工具栏，此处显示默认图标，可以自定义模板，详见文档
+			totalRow: true,		 //开启合计行 */
+			parseData: function(ret) {
+				return {
+					code: ret.code,
+					msg: ret.message,
+					data: ret.data.rows,
+					count:ret.data.total,
+				}
+			},
+			cols: [[
+				{align:'center', type:'checkbox',totalRowText: '合计'},
+				{align:'center', title:'时间',   field:'time',templet:function(d){ return d.time==null ? "" : /\d{4}-\d{1,2}-\d{1,2}/g.exec(d.time)}},
+				{align:'center', title:'招聘人',   field:'recruitId', edit:false,templet:function(d){ return d.recruitName.recruitName; }},
+				{align:'center', title:'奖励',   field:'price', edit:true,totalRow: true},
+				{align:'center', title:'被聘人', templet:function(d){return d.recruitName==null ? "" : d.recruitName.name},edit:false,},
+				{align:'center', title:'入职时间',   field:'entry', edit:false,templet:function(d){ return d.recruitName.user==null ? "" : /\d{4}-\d{1,2}-\d{1,2}/g.exec(d.recruitName.user.entry)}},
+				{align:'center', title:'离职时间',   field:'quitDate', edit:false,templet:function(d){ return d.recruitName.user.quitDate==null ? "" : /\d{4}-\d{1,2}-\d{1,2}/g.exec(d.recruitName.user.quitDate)}},
+				{align:'center', title:'备注',   field:'remarks',	edit:true,},
+				{align:'center', title:'备注',   field:'type',	edit:true,templet:function(d){return d.type==0 ? "<span class='layui-badge '>奖励金额</span>" :"<span class='layui-badge layui-bg-green'>领取金额</span> "}},
+			]],
+					});
+		
+		
 		function lookoverAward(type){
 					 
 			var cols = [
