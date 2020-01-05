@@ -316,7 +316,6 @@ public class ApplicationLeaveServiceImpl extends BaseServiceImpl<ApplicationLeav
                 }
             }
         }
-
         // 调休
         if (applicationLeave.isTradeDays()) {
             // 总加班时长
