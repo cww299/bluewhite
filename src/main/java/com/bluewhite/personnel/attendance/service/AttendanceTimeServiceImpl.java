@@ -740,6 +740,7 @@ public class AttendanceTimeServiceImpl extends BaseServiceImpl<AttendanceTime, L
 								at.setProductionOvertime(
 										NumUtils.sum(NumUtils.setzro(at.getProductionOvertime()), time));
 							}
+							at.setOvertime(NumUtils.sum( NumUtils.setzro(at.getOrdinaryOvertime()),NumUtils.setzro(at.getProductionOvertime())));
 						}
 					}
 
