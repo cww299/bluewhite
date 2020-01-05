@@ -122,7 +122,7 @@ layui.extend({
 	var lastCols = [
 	   { field: "paymentDate", 	title: "实际付款时间", style:'background-color: #d8fe83',edit:true,type:'date',fixed:'right', }, 
        { field: "paymentMoney",	title: "付款金额",    style:'background-color: #d8fe83', edit:'number', fixed:'right',},
-       { field: "flag", 	    title: "审核状态", 	 transData:{data:['未审核','审核'],}, fixed:'right',}
+       { field: "flag", 	    title: "审核状态", 	 transData:{data:['未审核','审核','部分审核'],}, fixed:'right',}
 	];
 	
 	var audit = {
@@ -160,10 +160,11 @@ layui.extend({
 					`
 					<td>是否审核：</td>
 					<td style="width:100px;">
-						<select name="flag">
+						<select name="flags">
 							<option value="">请选择</option>
 							<option value="0" selected>未审核</option>
-							<option value="1">已审核</option></select></td>
+							<option value="1">已审核</option>
+							<option value="2">部分审核</option></select></td>
 					<td><span class="layui-btn" lay-submit lay-filter="searchBtn">
 							<i class="layui-icon layui-icon-search">搜索</i></span></td>
 				</tr>
@@ -177,7 +178,7 @@ layui.extend({
 		mytable.render({
 			elem: '#tableData',
 			url: myutil.config.ctx+'/fince/getConsumption?type='+audit.type ,
-			where:{ flag:0 },
+			where:{ flags:0 },
 			ifNull:'',
 			scrollX:true,
 			autoUpdate:{
