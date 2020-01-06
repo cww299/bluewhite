@@ -23,11 +23,11 @@ import com.bluewhite.common.SessionManager;
 import com.bluewhite.common.entity.CurrentUser;
 import com.bluewhite.common.entity.PageParameter;
 import com.bluewhite.common.entity.PageResult;
+import com.bluewhite.common.utils.RoleUtil;
 import com.bluewhite.common.utils.StringUtil;
 import com.bluewhite.ledger.dao.ApplyVoucherDao;
 import com.bluewhite.ledger.dao.OutStorageDao;
 import com.bluewhite.ledger.dao.PackingChildDao;
-import com.bluewhite.ledger.dao.PutStorageDao;
 import com.bluewhite.ledger.dao.SendGoodsDao;
 import com.bluewhite.ledger.entity.ApplyVoucher;
 import com.bluewhite.ledger.entity.OutStorage;
@@ -49,6 +49,10 @@ public class SendGoodsServiceImpl extends BaseServiceImpl<SendGoods, Long> imple
 	private OutStorageDao outStorageDao;
 	@Override
 	public PageResult<SendGoods> findPages(SendGoods param, PageParameter page) { 
+	    // 根据仓管登陆用户权限，获取不同的仓库库存
+        CurrentUser cu = SessionManager.getUserSession();
+        Long warehouseTypeDeliveryId = RoleUtil.getWarehouseTypeDelivery(cu.getRole());
+        param.setWarehouseTypeId(warehouseTypeDeliveryId);
 		Page<SendGoods> pages = dao.findAll((root, query, cb) -> {
 			List<Predicate> predicate = new ArrayList<>();
 			// 按id过滤
@@ -77,6 +81,10 @@ public class SendGoodsServiceImpl extends BaseServiceImpl<SendGoods, Long> imple
 			if (!StringUtils.isEmpty(param.getBacthNumber())) {
 				predicate.add(cb.like(root.get("bacthNumber").as(String.class), "%" + param.getBacthNumber() + "%"));
 			}
+			//   按仓库种类
+            if (param.getWarehouseTypeId() != null) {
+                predicate.add(cb.equal(root.get("warehouseTypeId").as(Long.class), param.getWarehouseTypeId()));
+            }
 			// 按发货日期
 			if (!StringUtils.isEmpty(param.getSendDate())) {
 				predicate.add(cb.equal(root.get("sendDate").as(Date.class), param.getSendDate()));

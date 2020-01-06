@@ -393,7 +393,7 @@ public class OrderOutSourceServiceImpl extends BaseServiceImpl<OrderOutSource, L
         }
         consumption.setOrderOutSourceId(orderOutSource.getId());
         // 外发加工对账单
-        consumption.setType(10);
+        consumption.setType(11);
         // 加工点
         consumption.setCustomerId(ot.getCustomerId());
         consumption.setSettleAccountsMode(2);
