@@ -22,10 +22,7 @@ import com.bluewhite.common.ServiceException;
 import com.bluewhite.common.entity.PageParameter;
 import com.bluewhite.common.entity.PageResult;
 import com.bluewhite.common.utils.zkemUtils.ZkemSDKUtils;
-import com.bluewhite.personnel.attendance.dao.ApplicationLeaveDao;
 import com.bluewhite.personnel.attendance.dao.AttendanceDao;
-import com.bluewhite.personnel.attendance.dao.AttendanceInitDao;
-import com.bluewhite.personnel.attendance.dao.AttendanceTimeDao;
 import com.bluewhite.personnel.attendance.entity.Attendance;
 import com.bluewhite.system.user.entity.User;
 import com.bluewhite.system.user.service.UserService;
@@ -37,21 +34,10 @@ public class AttendanceServiceImpl extends BaseServiceImpl<Attendance, Long> imp
 
 	@Autowired
 	private UserService userService;
-
 	@Autowired
 	private AttendanceDao dao;
-
 	@Autowired
 	private ZkemSDKUtils sdk;
-
-	@Autowired
-	private ApplicationLeaveDao applicationLeaveDao;
-
-	@Autowired
-	private AttendanceTimeDao attendanceTimeDao;
-
-	@Autowired
-	private AttendanceInitDao attendanceInitDao;
 
 	@Override
 	public List<Map<String, Object>> getAllUser(String address) {
