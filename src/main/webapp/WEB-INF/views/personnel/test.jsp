@@ -701,7 +701,7 @@ layui.config({
 			       {align:'center', title:'部门',field:'orgName',templet:function(d){return (d.orgName==null ? "" : d.orgName.name)}},
 			       {align:'center', title:'是否在职',field:'orgName',templet:function(d){return (d.quit==0 ? "在职" : "离职")}},
 			       {align:'center', title:'照片',field:'pictureUrl',templet:function(d){return "<div><img  src="+d.pictureUrl+" style='max-width:60px;'></div>"}},
-			       {align:'center', width:'14%', title:'操作',toolbar: '#barDemo'},
+			       {align:'center', title:'操作',toolbar: '#barDemo'},
 			       ]],
 			        filter: {
 		                clearFilter: true,

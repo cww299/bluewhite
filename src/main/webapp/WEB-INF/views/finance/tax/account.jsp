@@ -422,7 +422,7 @@
 										index;
 									},
 									success: function(result) {
-										$(result.data.rows).each(function(i,item) {
+										$(result.data).each(function(i,item) {
 											htmls+='<option value="'+item.id+'">'+item.name+'</option>'
 										})
 										$("#customerId").html(htmls)

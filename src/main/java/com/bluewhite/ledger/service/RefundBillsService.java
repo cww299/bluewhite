@@ -3,7 +3,6 @@ package com.bluewhite.ledger.service;
 import com.bluewhite.base.BaseCRUDService;
 import com.bluewhite.common.entity.PageParameter;
 import com.bluewhite.common.entity.PageResult;
-import com.bluewhite.ledger.entity.MaterialPutStorage;
 import com.bluewhite.ledger.entity.RefundBills;
 
 public interface RefundBillsService extends BaseCRUDService<RefundBills,Long>{

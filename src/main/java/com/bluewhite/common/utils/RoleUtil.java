@@ -66,7 +66,7 @@ public class RoleUtil {
 //        }
         return id == null ? null : Long.valueOf(id);
     }
-
+    
     /**
      * 根据仓库类型获取仓库种类的所有id
      * 

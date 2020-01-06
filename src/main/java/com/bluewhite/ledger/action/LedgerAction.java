@@ -241,7 +241,7 @@ public class LedgerAction {
 				.addRetainTerm(OrderOutSource.class, "id", "fill", "fillRemark", "outSourceNumber", "user",
 						"customer", "remark", "gramWeight", "processNumber", "openOrderTime", "flag", "audit",
 						"outsourceTask", "gramWeight", "kilogramWeight", "processingUser", "outsource","materialRequisition",
-						"inventoryQuantity","remainingInventory","cotSurplusNumber","cotStatus")
+						"inventoryQuantity","remainingInventory","cotSurplusNumber","cotStatus","refundBillsNumber","actualQuantity")
 				.addRetainTerm(MaterialRequisition.class, "id",  "order")
 				.addRetainTerm(Order.class, "id", "orderNumber","product")
 				.addRetainTerm(Product.class, "id", "name")
@@ -316,7 +316,7 @@ public class LedgerAction {
 	{
 		clearCascadeJSONSRefundBills = ClearCascadeJSON.get()
 				.addRetainTerm(RefundBills.class, "id", "orderOutSource", "outsourceTask", "returnNumber", "returnTime",
-						"returnRemark")
+						"returnRemark","audit")
 				.addRetainTerm(OrderOutSource.class, "id", "outsourceTask", "processNumber")
 				.addRetainTerm(BaseOne.class, "id", "name");
 	}
@@ -1174,7 +1174,8 @@ public class LedgerAction {
 		cr.setData(ClearCascadeJSON.get()
 				.addRetainTerm(PutStorage.class, "id", "orderOutSource", "inStatus", "arrivalTime", "arrivalNumber",
 						"serialNumber", "storageArea", "storageLocation", "surplusNumber")
-				.addRetainTerm(OrderOutSource.class, "id", "outSourceNumber", "outsourceTask", "order")
+				.addRetainTerm(OrderOutSource.class, "id", "outSourceNumber", "outsourceTask", "materialRequisition")
+			    .addRetainTerm(MaterialRequisition.class, "id", "order")
 				.addRetainTerm(Order.class, "id", "orderDate","orderNumber", "bacthNumber", "orderChilds", "number")
 				.addRetainTerm(OrderChild.class, "id","customer","user", "childNumber", "childRemark")
 				.addRetainTerm(Customer.class, "id", "name")

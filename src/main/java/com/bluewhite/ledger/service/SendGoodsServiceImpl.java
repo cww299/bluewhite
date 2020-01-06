@@ -23,11 +23,11 @@ import com.bluewhite.common.SessionManager;
 import com.bluewhite.common.entity.CurrentUser;
 import com.bluewhite.common.entity.PageParameter;
 import com.bluewhite.common.entity.PageResult;
+import com.bluewhite.common.utils.RoleUtil;
 import com.bluewhite.common.utils.StringUtil;
 import com.bluewhite.ledger.dao.ApplyVoucherDao;
 import com.bluewhite.ledger.dao.OutStorageDao;
 import com.bluewhite.ledger.dao.PackingChildDao;
-import com.bluewhite.ledger.dao.PutStorageDao;
 import com.bluewhite.ledger.dao.SendGoodsDao;
 import com.bluewhite.ledger.entity.ApplyVoucher;
 import com.bluewhite.ledger.entity.OutStorage;
@@ -49,6 +49,10 @@ public class SendGoodsServiceImpl extends BaseServiceImpl<SendGoods, Long> imple
 	private OutStorageDao outStorageDao;
 	@Override
 	public PageResult<SendGoods> findPages(SendGoods param, PageParameter page) { 
+	    // 根据仓管登陆用户权限，获取不同的仓库库存
+        CurrentUser cu = SessionManager.getUserSession();
+        Long warehouseTypeDeliveryId = RoleUtil.getWarehouseTypeDelivery(cu.getRole());
+        param.setWarehouseTypeId(warehouseTypeDeliveryId);
 		Page<SendGoods> pages = dao.findAll((root, query, cb) -> {
 			List<Predicate> predicate = new ArrayList<>();
 			// 按id过滤
@@ -77,6 +81,10 @@ public class SendGoodsServiceImpl extends BaseServiceImpl<SendGoods, Long> imple
 			if (!StringUtils.isEmpty(param.getBacthNumber())) {
 				predicate.add(cb.like(root.get("bacthNumber").as(String.class), "%" + param.getBacthNumber() + "%"));
 			}
+			//   按仓库种类
+            if (param.getWarehouseTypeId() != null) {
+                predicate.add(cb.equal(root.get("warehouseTypeId").as(Long.class), param.getWarehouseTypeId()));
+            }
 			// 按发货日期
 			if (!StringUtils.isEmpty(param.getSendDate())) {
 				predicate.add(cb.equal(root.get("sendDate").as(Date.class), param.getSendDate()));
@@ -96,7 +104,7 @@ public class SendGoodsServiceImpl extends BaseServiceImpl<SendGoods, Long> imple
 			//1.查出销售人员的生产计划单，有多少入库单
 			//2.查出销售人员和产品id通过的申请单，获取到申请数量
 			//3.查出共有库存
-			// 通过产品查询所有的入库单
+			//通过产品查询所有的入库单
 			List<Map<String, Object>> mapsList = outStorageService.getSendPutStorage(s.getId());
 			if(mapsList.size()>0){
 				int status = 0;
@@ -144,8 +152,7 @@ public class SendGoodsServiceImpl extends BaseServiceImpl<SendGoods, Long> imple
 				applyVoucher.setNumber(jsonObject.getInteger("number"));
 				applyVoucher.setApprovalUserId(jsonObject.getLong("approvalUserId"));
 				applyVoucher.setUserId(cu.getId());
-				applyVoucher.setApplyNumber(
-						Constants.SQD + StringUtil.getDate() + StringUtil.get0LeftString((int) (dao.count() + 1), 8));
+				applyVoucher.setApplyNumber(Constants.SQD + StringUtil.getDate() + StringUtil.get0LeftString((int) (dao.count() + 1), 8));
 				applyVoucherDao.save(applyVoucher);
 			}
 		}
