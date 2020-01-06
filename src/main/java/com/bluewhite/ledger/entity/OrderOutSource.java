@@ -233,7 +233,19 @@ public class OrderOutSource extends BaseEntity<Long> {
 	 */
 	@Transient
 	private Integer cotStatus;
-
+	
+	/**
+	 * 加工单退货数量
+	 */
+	@Transient
+	private Integer refundBillsNumber;
+	
+	/**
+     * 退货后实际数量
+     */
+    @Transient
+    private Integer actualQuantity;
+ 
 	/**
 	 * 查询字段
 	 */
@@ -244,8 +256,26 @@ public class OrderOutSource extends BaseEntity<Long> {
 	 */
 	@Transient
 	private Date orderTimeEnd;
+	
+	
 
-	public Integer getCotStatus() {
+	public Integer getActualQuantity() {
+        return actualQuantity;
+    }
+
+    public void setActualQuantity(Integer actualQuantity) {
+        this.actualQuantity = actualQuantity;
+    }
+
+    public Integer getRefundBillsNumber() {
+        return refundBillsNumber;
+    }
+
+    public void setRefundBillsNumber(Integer refundBillsNumber) {
+        this.refundBillsNumber = refundBillsNumber;
+    }
+
+    public Integer getCotStatus() {
 		return cotStatus;
 	}
 
