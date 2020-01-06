@@ -201,8 +201,8 @@ layui.extend({
 				'<div style="padding:10px 0;">',
 					'<table>',
 						'<tr>',
-							'<td>发货数量：</td>',
-							'<td><input type="text" class="layui-input" id="sendAllNumber"></td></tr>',
+							'<td>发货总数：</td>',
+							'<td><input type="text" class="layui-input" id="sendAllNumber" readonly></td></tr>',
 					'</table>',
 					'<table id="chooseInputOrder" lay-filter="chooseInputOrder"></table>',
 				'</div>',
@@ -216,6 +216,7 @@ layui.extend({
 					url: myutil.config.ctx+'/ledger/inventory/getOrderOutSourcePutStorageDetails?id='+data.id,
 					cols:[[
 						{ type:'checkbox',},
+						{ title:'批次号',field:'bacthNumber'},
 						{ title:'入库单编号',field:'serialNumber'},
 						{ title:'数量',field:'number'},
 						{ title:'发货数量',field:'sendNumber',edit:true,
