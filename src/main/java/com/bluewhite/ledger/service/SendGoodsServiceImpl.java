@@ -96,7 +96,7 @@ public class SendGoodsServiceImpl extends BaseServiceImpl<SendGoods, Long> imple
 			//1.查出销售人员的生产计划单，有多少入库单
 			//2.查出销售人员和产品id通过的申请单，获取到申请数量
 			//3.查出共有库存
-			// 通过产品查询所有的入库单
+			//通过产品查询所有的入库单
 			List<Map<String, Object>> mapsList = outStorageService.getSendPutStorage(s.getId());
 			if(mapsList.size()>0){
 				int status = 0;
@@ -144,8 +144,7 @@ public class SendGoodsServiceImpl extends BaseServiceImpl<SendGoods, Long> imple
 				applyVoucher.setNumber(jsonObject.getInteger("number"));
 				applyVoucher.setApprovalUserId(jsonObject.getLong("approvalUserId"));
 				applyVoucher.setUserId(cu.getId());
-				applyVoucher.setApplyNumber(
-						Constants.SQD + StringUtil.getDate() + StringUtil.get0LeftString((int) (dao.count() + 1), 8));
+				applyVoucher.setApplyNumber(Constants.SQD + StringUtil.getDate() + StringUtil.get0LeftString((int) (dao.count() + 1), 8));
 				applyVoucherDao.save(applyVoucher);
 			}
 		}
