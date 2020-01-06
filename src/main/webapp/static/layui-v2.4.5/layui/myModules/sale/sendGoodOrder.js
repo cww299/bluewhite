@@ -71,6 +71,7 @@ layui.extend({
 	              	<input type="hidden" id="customerIdHidden" name="customerId" value="{{ d.customer?d.customer.id:"" }}">
 	              	<input type="hidden" id="productIdHidden" name="productId" value="{{ d.product?d.product.id:"" }}">
 	              	<input type="hidden" name="id" value="{{ d.id || "" }}">
+	              	<input type="hidden" name="warehouseTypeId" id="warehouseTypeId" value="{{ d.warehouseTypeId || "" }}">
 					<span style="" lay-submit lay-filter="sureAddSendOrderSubmit" id="sureAddSendOrderSubmit"></span>
 				  </td>
 	            </tr>
@@ -368,14 +369,16 @@ layui.extend({
 					ctx: myutil.config.ctx,
 					type: $('input:radio[name="productType"]:checked').val()-(-1),
 					done:function(){
-						table.on('rowDouble(tableData)', function(obj){
+						table.on('tool(tableData)', function(obj){
+							var e = obj.event;
+							var field = $(this).data('field');
+							var th = $(this).closest('.layui-table-box').find('.layui-table-header th[data-field='+field+']');
+							var title = $(th[0]).find('div span').html();
 							var data = obj.data;
-							allWarehouseNum = 0;
-							layui.each(data.mapList,function(index,item){
-								allWarehouseNum += item.number;
-							})
+							$('#warehouseTypeId').val(e.split('-')[1]);
+							allWarehouseNum = data[field];
 							$('#productIdHidden').val(data.id);
-							$('#productInputChoose').val(data.name);
+							$('#productInputChoose').val(data.name+'-----'+title);
 							layer.close(chooseProductWinNew);
 							getWarehouseInfo();
 						});
