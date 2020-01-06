@@ -337,7 +337,7 @@ layui.define(['jquery','layer','form','table'],function(exports){
 	};
 	
 	myutil.getLastData = function(){	//用于记录表格单元格修改前的数据
-		$(document).on('mouseup','td[data-edit="true"],td[data-edit="text"]',function(obj){
+		$(document).on('mouseup','td[data-edit="true"],td[data-edit="text"],td[data-edit="number"]',function(obj){
 			var elem = obj.toElement;
 			var name = elem.tagName;
 			if(name=='TD'){		//如果点击的是td且存在输入框input

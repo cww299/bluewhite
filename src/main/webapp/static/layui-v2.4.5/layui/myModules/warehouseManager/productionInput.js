@@ -93,7 +93,7 @@ layui.extend({
 					}else if(obj.event=='addOutBtn'){
 						if(check.length!=1)
 							return myutil.emsg('只能选择一条数据操作！');
-						outInventory(check[0])
+						opt.outInventory.add(check[0]);
 					}else if(obj.event=='askfor'){
 						if(check.length!=1)
 							return myutil.emsg('只能选择一条数据操作！');
@@ -190,106 +190,5 @@ layui.extend({
 			}
 		})
 	}
-	
-	function outInventory(data){
-		var allInputNumber = 0; //计算总库存数量，发货数量不能超过该值
-		var sendGoodWin = layer.open({
-			type: 1,
-			title:'剩余发货数量：<b style="color:red">'+data.cotSurplusNumber+'</b>',
-			area:['50%','600px'],
-			content:[
-				'<div style="padding:10px 0;">',
-					'<table>',
-						'<tr>',
-							'<td>发货总数：</td>',
-							'<td><input type="text" class="layui-input" id="sendAllNumber" readonly></td></tr>',
-					'</table>',
-					'<table id="chooseInputOrder" lay-filter="chooseInputOrder"></table>',
-				'</div>',
-			].join(' '),
-			btn:['确定','取消'],
-			btnAlign:'c',
-			success:function(){
-				mytable.renderNoPage({
-					elem:'#chooseInputOrder',
-					height:'400px',
-					url: myutil.config.ctx+'/ledger/inventory/getOrderOutSourcePutStorageDetails?id='+data.id,
-					cols:[[
-						{ type:'checkbox',},
-						{ title:'批次号',field:'bacthNumber'},
-						{ title:'入库单编号',field:'serialNumber'},
-						{ title:'数量',field:'number'},
-						{ title:'发货数量',field:'sendNumber',edit:true,
-							templet:'<span>{{ d.sendNumber || "" }}</span>'},
-					]],
-					done:function(r){
-						layui.each(r.data,function(index,item){
-							allInputNumber -= (-item.number);
-						})
-					}
-				})
-				table.on('edit(chooseInputOrder)',function(obj){
-					var index = $(this).closest('tr').data('index');
-					var trData = table.cache['chooseInputOrder'][index];
-					var val = obj.value;
-					if(obj.field==='sendNumber'){
-						if(isNaN(val) || val<0 || val%1.0!=0.0){
-							$(this).val(myutil.lastData);
-							trData.sendNumber = myutil.lastData;
-							myutil.emsg('请正确填写发货数量');
-						}
-					}
-				})
-			},
-			yes:function(){
-				var checkChild = layui.table.checkStatus('chooseInputOrder').data;
-				if(checkChild.length<1)
-					return myutil.emsg('请选择入库单');
-				var inputNumber = $('#sendAllNumber').val() || 0;
-				if(allInputNumber<inputNumber)
-					return myutil.emsg('发货数量不能超过库存数量！');
-				var childJson = [],allChildNumer = 0;
-				for(var i=0,len=checkChild.length;i<len;i++){
-					if(checkChild[i].sendNumber>checkChild[i].number){
-						return myutil.emsg('所选入库单数量不足，无法发货');
-					}
-					allChildNumer -= (-checkChild[i].sendNumber || 0);
-					childJson.push({
-						id: checkChild[i].id,
-						number: checkChild[i].sendNumber || '',
-					})
-				}
-				var msg = '';
-				if(allChildNumer>0){
-					if(inputNumber>0){
-						if(inputNumber!=allChildNumer)
-							msg = '填写的发货数量与总发货数量不同！请检查';
-					}else{
-						inputNumber = allChildNumer;
-					}
-				}else if(inputNumber==0){
-					msg = '请填写发货数量';
-				}else if(inputNumber>allChildNumer){
-					msg = '所选入库单数量不足，无法发货';
-				}
-				if(msg)
-					return myutil.emsg(msg);
-				myutil.saveAjax({
-					url: '/ledger/inventory/sendOutStorage',
-					data:{
-						flag: 2,
-						id: data.id,
-						sendNumber: inputNumber,
-						putStorage: JSON.stringify(childJson),
-					},
-					success:function(){
-						layer.close(sendGoodWin);
-						table.reload('tableData');
-					}
-				})
-			}
-		})
-	};
-	
 	exports('productionInput',productionInput);
 })
