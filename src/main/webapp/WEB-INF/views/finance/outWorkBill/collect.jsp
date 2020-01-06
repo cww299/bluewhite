@@ -62,7 +62,7 @@ layui.config({
 		laydate.render({ elem: '#startTime', range: '~', });
 		mytable.render({
 			elem: '#tableData',
-			url: '${ctx}/fince/getConsumption?type=10' ,
+			url: '${ctx}/fince/getConsumption?type=11' ,
 			cellMinWidth: 120,
 			ifNull:'',
 			scrollX:true,
