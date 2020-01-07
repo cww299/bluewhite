@@ -210,14 +210,11 @@ public class OutStorageServiceImpl extends BaseServiceImpl<OutStorage, Long> imp
 	}
 
 	@Override
-	public List<Map<String, Object>> getSendPutStorage(Long id) {
+	public List<Map<String, Object>> getSendPutStorage(Long id,Long warehouseTypeId) {
 		List<Map<String, Object>> list = new ArrayList<>();
-		// 根据仓管登陆用户权限，获取不同的仓库库存
-		CurrentUser cu = SessionManager.getUserSession();
-		Long warehouseTypeDeliveryId = RoleUtil.getWarehouseTypeDelivery(cu.getRole());
 		SendGoods sendGoods = sendGoodsDao.findOne(id);
 		// 获取登陆库管的仓库出库单剩余数量
-		List<PutStorage> putStorageList = putStorageService.detailsInventory(warehouseTypeDeliveryId,
+		List<PutStorage> putStorageList = putStorageService.detailsInventory(warehouseTypeId,
 				sendGoods.getProductId());
 		// 获取发货申请人自己的库存
 		List<PutStorage> putStorageListSelf = putStorageList.stream().filter(p -> {
