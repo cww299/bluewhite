@@ -74,8 +74,7 @@ public class AttendanceTimeServiceImpl extends BaseServiceImpl<AttendanceTime, L
         // 获取改时间段所有的打卡记录
         List<Attendance> allAttList = null;
         // 获取当前日期的固定休息日
-        PersonVariable restType =
-            personVariableDao.findByTypeAndTime(0, DatesUtil.getFirstDayOfMonth(attendance.getOrderTimeBegin()));
+        PersonVariable restType = personVariableDao.findByTypeAndTime(0, DatesUtil.getFirstDayOfMonth(attendance.getOrderTimeBegin()));
         if (restType == null) {
             throw new ServiceException("当月未设定休息方式，请设定");
         }
