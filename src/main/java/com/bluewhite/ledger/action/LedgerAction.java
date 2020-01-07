@@ -1310,7 +1310,7 @@ public class LedgerAction {
 	 * 查看发货单
 	 * 
 	 * @return cr
-	 */
+	 */ 
 	@RequestMapping(value = "/ledger/getSendGoods", method = RequestMethod.GET)
 	@ResponseBody
 	public CommonResponse getSendGoods(PageParameter page, SendGoods sendGoods) {
