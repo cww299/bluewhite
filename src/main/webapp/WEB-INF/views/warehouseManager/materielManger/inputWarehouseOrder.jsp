@@ -167,19 +167,26 @@ layui.config({
 						if(check.length!=1)
 							return myutil.emsg('只能修改一条数据');
 						lookoverReturnOrder(check[0]);
+					}else if(obj.event=='deleteInput'){
+						myutil.deleTableIds({
+							url:'/ledger/inventory/deleteMaterialPutStorage',
+							table:'tableData',
+							text:'请选择数据|是否确认撤销？',
+						})
 					}
 				},
-				btn:[4],
+				btn:[],
 			},
 			toolbar:[
 				//'<span class="layui-btn layui-btn-sm" lay-event="update">修改</span>',
+				'<span class="layui-btn layui-btn-normal layui-btn-sm" lay-event="deleteInput">撤销入库</span>',
 				'<span class="layui-btn layui-btn-normal layui-btn-sm" lay-event="verify">验货</span>',
 				//'<span class="layui-btn layui-btn-warm layui-btn-sm" lay-event="addReturn">新增退货单</span>',
 				//'<span class="layui-btn layui-btn-primary layui-btn-sm" lay-event="lookoverReturn">查看退货单</span>',
 			].join(''),
 			autoUpdate:{
 				saveUrl:'',
-				deleUrl:'/ledger/inventory/deleteMaterialPutStorage',
+				//deleUrl:'/ledger/inventory/deleteMaterialPutStorage',
 				field:{ },
 			},
 			ifNull:'--',
