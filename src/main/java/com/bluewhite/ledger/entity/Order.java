@@ -121,6 +121,13 @@ public class Order extends BaseEntity<Long> {
 	 */
 	@Column(name = "complete")
 	private Integer complete;
+	
+    /**
+     * 选择发货仓库
+     * 仓库种类id
+     */
+	@Transient
+    private Long warehouseTypeId;
 
 	/**
 	 * 是否生成耗料单
@@ -187,8 +194,18 @@ public class Order extends BaseEntity<Long> {
 	@Transient
 	private boolean include;
 	
+	
+	
 
-	public boolean isInclude() {
+	public Long getWarehouseTypeId() {
+        return warehouseTypeId;
+    }
+
+    public void setWarehouseTypeId(Long warehouseTypeId) {
+        this.warehouseTypeId = warehouseTypeId;
+    }
+
+    public boolean isInclude() {
 		return include;
 	}
 
