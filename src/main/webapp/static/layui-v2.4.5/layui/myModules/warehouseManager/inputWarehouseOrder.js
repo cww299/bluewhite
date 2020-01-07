@@ -220,8 +220,14 @@ layui.extend({
 					done && done();
 			}
 		})
+		var orgNameId;
+		switch(inputWarehouseOrder.type){
+		case 1: orgNameId = 51;  break;	//面辅料仓库部门
+		case 2: orgNameId = 55;  break;	//成品仓库部门
+		case 3: orgNameId = 59;  break;	//皮壳仓库部门
+		}
 		myutil.getData({	//获取所有人员
-			url: myutil.config.ctx+'/system/user/findUserList?quit=0&orgNameIds='+(inputWarehouseOrder.type==3?59:51),
+			url: myutil.config.ctx+'/system/user/findUserList?quit=0&orgNameIds='+orgNameId,
 			success:function(d){
 				for(var i=0,len=d.length;i<len;i++){
 					allUser += '<option value="'+d[i].id+'">'+d[i].userName+'</option>';
