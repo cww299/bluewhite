@@ -20,27 +20,27 @@ public interface AttendanceTimeService extends BaseCRUDService<AttendanceTime,Lo
 	 * @param attendance
 	 * @return
 	 */
-	public List<AttendanceTime> findAttendanceTime(AttendanceTime attendanceTime) throws ParseException;
+	public List<AttendanceTime> findAttendanceTime(AttendanceTime attendanceTime) ;
 	
 	/**
 	 * 按日期将出勤中需要核算的请假事项计算到考勤详细中
 	 * @throws ParseException 
 	 */
-	public List<AttendanceTime> attendanceTimeByApplication(List<AttendanceTime> attendanceTimeList) throws ParseException;
+	public List<AttendanceTime> attendanceTimeByApplication(List<AttendanceTime> attendanceTimeList);
 	
 	/**
 	 * 加入申请事项考勤工作时长的汇总
 	 * @param attendance
 	 * @return
 	 */
-	public List<Map<String, Object>> findAttendanceTimeCollectAdd(AttendanceTime attendanceTime) throws ParseException;
+	public List<Map<String, Object>> findAttendanceTimeCollectAdd(AttendanceTime attendanceTime) ;
 	
 	/**
 	 * 默认下考勤工作时长的汇总
 	 * @param attendance
 	 * @return
 	 */
-	public List<Map<String, Object>> findAttendanceTimeCollect(AttendanceTime attendanceTime) throws ParseException;
+	public List<Map<String, Object>> findAttendanceTimeCollect(AttendanceTime attendanceTime) ;
 	
 	/**
 	 * 删除考勤工作汇总
@@ -73,11 +73,11 @@ public interface AttendanceTimeService extends BaseCRUDService<AttendanceTime,Lo
 	 * 同步更新考勤汇总
 	 * @param attendanceTime
 	 */
-	public List<Map<String, Object>> syncAttendanceTimeCollect(AttendanceTime attendanceTime)  throws ParseException;
+	public List<Map<String, Object>> syncAttendanceTimeCollect(AttendanceTime attendanceTime) ;
 	
 	/**
 	 * 车间人员根据填写考勤情况和打卡考勤汇总进行对比
 	 */
-	public List<Map<String, Object>> workshopAttendanceContrast(AttendanceTime attendanceTime) throws ParseException;
+	public List<Map<String, Object>> workshopAttendanceContrast(AttendanceTime attendanceTime);
 
 }

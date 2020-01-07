@@ -1,7 +1,5 @@
 package com.bluewhite.personnel.attendance.action;
 
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
@@ -9,19 +7,14 @@ import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.propertyeditors.CustomDateEditor;
 import org.springframework.stereotype.Controller;
 import org.springframework.util.StringUtils;
-import org.springframework.web.bind.WebDataBinder;
-import org.springframework.web.bind.annotation.InitBinder;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.multipart.support.ByteArrayMultipartFileEditor;
 
 import com.bluewhite.common.BeanCopyUtils;
 import com.bluewhite.common.ClearCascadeJSON;
-import com.bluewhite.common.DateTimePattern;
 import com.bluewhite.common.entity.CommonResponse;
 import com.bluewhite.common.entity.ErrorCode;
 import com.bluewhite.common.entity.PageParameter;
@@ -243,12 +236,12 @@ public class AttendanceAction {
 	 * @param request
 	 *            请求
 	 * @return cr
-	 * @throws ParseException
+	 * @ 
 	 */
 	@RequestMapping(value = "/personnel/intAttendanceTime", method = RequestMethod.POST)
 	@ResponseBody
 	public CommonResponse intAttendanceTime(HttpServletRequest request, AttendanceTime attendanceTime)
-			throws ParseException {
+			  {
 		CommonResponse cr = new CommonResponse();
 		cr.setData(attendanceTimeService.findAttendanceTimeCollect(attendanceTime));
 		cr.setMessage("初始化成功");
@@ -259,11 +252,11 @@ public class AttendanceAction {
 	 * 请假事项后的统计考勤
 	 * 
 	 * @return cr
-	 * @throws ParseException
+	 * @ 
 	 */
 	@RequestMapping(value = "/personnel/addAttendanceTime", method = RequestMethod.POST)
 	@ResponseBody
-	public CommonResponse addAttendanceTime(AttendanceTime attendanceTime) throws ParseException {
+	public CommonResponse addAttendanceTime(AttendanceTime attendanceTime)   {
 		CommonResponse cr = new CommonResponse();
 		// 同步锁，批量新增
 		synchronized (this) {
@@ -280,12 +273,12 @@ public class AttendanceAction {
 	 * @param request
 	 *            请求
 	 * @return cr
-	 * @throws ParseException
+	 * @ 
 	 */
 	@RequestMapping(value = "/personnel/findAttendanceTime", method = RequestMethod.GET)
 	@ResponseBody
 	public CommonResponse findAttendanceTime(HttpServletRequest request, AttendanceTime attendanceTime)
-			throws ParseException {
+			  {
 		CommonResponse cr = new CommonResponse();
 		cr.setData(attendanceTimeService.findAttendanceTimeCollectList(attendanceTime));
 		cr.setMessage("查询成功");
@@ -377,11 +370,11 @@ public class AttendanceAction {
 	 * 
 	 * @param attendanceCollect
 	 * @return
-	 * @throws ParseException 
+	 * @  
 	 */
 	@RequestMapping(value = "/personnel/workshopAttendanceContrast", method = RequestMethod.GET)
 	@ResponseBody
-	public CommonResponse workshopAttendanceContrast(AttendanceTime attendanceTime) throws ParseException {
+	public CommonResponse workshopAttendanceContrast(AttendanceTime attendanceTime){
 		CommonResponse cr = new CommonResponse();
 		cr.setData(attendanceTimeService.workshopAttendanceContrast(attendanceTime));
 		cr.setMessage("查询成功");
@@ -394,11 +387,11 @@ public class AttendanceAction {
 	 * @param request
 	 *            请求
 	 * @return cr
-	 * @throws ParseException
+	 * @ 
 	 */
 	@RequestMapping(value = "/personnel/addApplicationLeave", method = RequestMethod.POST)
 	@ResponseBody
-	public CommonResponse addApplicationLeave(ApplicationLeave applicationLeave, String userIds) throws ParseException {
+	public CommonResponse addApplicationLeave(ApplicationLeave applicationLeave, String userIds)   {
 		CommonResponse cr = new CommonResponse();
 		if (applicationLeave.getId() != null) {
 			cr.setMessage("修改成功");
@@ -430,11 +423,11 @@ public class AttendanceAction {
 	 * @param request
 	 *            请求
 	 * @return cr
-	 * @throws ParseException
+	 * @ 
 	 */
 	@RequestMapping(value = "/personnel/deleteApplicationLeave", method = RequestMethod.GET)
 	@ResponseBody
-	public CommonResponse deleteApplicationLeave(HttpServletRequest request, String ids) throws ParseException {
+	public CommonResponse deleteApplicationLeave(HttpServletRequest request, String ids)   {
 		CommonResponse cr = new CommonResponse();
 		if (!StringUtils.isEmpty(ids)) {
 			int count = applicationLeaveService.deleteApplicationLeave(ids);
@@ -452,12 +445,12 @@ public class AttendanceAction {
 	 * @param request
 	 * @param ids
 	 * @return
-	 * @throws ParseException
+	 * @ 
 	 */
 	@RequestMapping(value = "/personnel/defaultRetroactive", method = RequestMethod.GET)
 	@ResponseBody
 	public CommonResponse defaultRetroactive(HttpServletRequest request, ApplicationLeave applicationLeave)
-			throws ParseException {
+			  {
 		CommonResponse cr = new CommonResponse();
 		applicationLeaveService.defaultRetroactive(applicationLeave);
 		cr.setMessage("补签成功");

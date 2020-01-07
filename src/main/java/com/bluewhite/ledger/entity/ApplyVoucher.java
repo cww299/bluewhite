@@ -89,6 +89,7 @@ public class ApplyVoucher extends BaseEntity<Long> {
 	 * 申请种类id( 
 	 *  销售： 销售员借货申请
 	 *  出库入库：调拨申请，换货申请，退货申请，盘亏申请，返工申请，盘盈申请
+	 *  
 	 * )
 	 */
 	@Column(name = "apply_voucher_kind_id")
