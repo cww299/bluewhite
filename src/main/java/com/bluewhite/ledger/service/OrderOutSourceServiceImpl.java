@@ -171,8 +171,7 @@ public class OrderOutSourceServiceImpl extends BaseServiceImpl<OrderOutSource, L
             }
             // 按生产计划单id
             if (param.getOrderId() != null) {
-                predicate
-                    .add(cb.equal(root.get("materialRequisition").get("orderId").as(Long.class), param.getOrderId()));
+                predicate.add(cb.equal(root.get("materialRequisition").get("orderId").as(Long.class), param.getOrderId()));
             }
             // 按加工点id过滤
             if (param.getCustomerId() != null) {
