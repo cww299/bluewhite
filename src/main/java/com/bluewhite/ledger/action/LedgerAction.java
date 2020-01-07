@@ -1208,9 +1208,9 @@ public class LedgerAction {
 	 */
 	@RequestMapping(value = "/ledger/inventory/getPutStorageDetails", method = RequestMethod.GET)
 	@ResponseBody
-	public CommonResponse sendPutStorage(Long id) {
+	public CommonResponse sendPutStorage(Long id,Long warehouseTypeId) {
 		CommonResponse cr = new CommonResponse();
-		cr.setData(outStorageService.getSendPutStorage(id));
+		cr.setData(outStorageService.getSendPutStorage(id,warehouseTypeId));
 		cr.setMessage("查询成功");
 		return cr;
 	}

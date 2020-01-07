@@ -49,10 +49,15 @@ public class SendGoodsServiceImpl extends BaseServiceImpl<SendGoods, Long> imple
 	private OutStorageDao outStorageDao;
 	@Override
 	public PageResult<SendGoods> findPages(SendGoods param, PageParameter page) { 
-	    // 根据仓管登陆用户权限，获取不同的仓库库存
+	    // 当为仓库管理员登录查看发货单时，根据仓管登陆用户权限，获取不同的仓库库存
         CurrentUser cu = SessionManager.getUserSession();
         Long warehouseTypeDeliveryId = RoleUtil.getWarehouseTypeDelivery(cu.getRole());
-        param.setWarehouseTypeId(warehouseTypeDeliveryId);
+        if(warehouseTypeDeliveryId!=null) {
+            param.setWarehouseTypeId(warehouseTypeDeliveryId);
+        }else {
+            // 当为销售人员登录时，根据当前登录人id，查询当前登录人的发货清单
+            param.setUserId(cu.getId());
+        }
 		Page<SendGoods> pages = dao.findAll((root, query, cb) -> {
 			List<Predicate> predicate = new ArrayList<>();
 			// 按id过滤
@@ -63,6 +68,10 @@ public class SendGoodsServiceImpl extends BaseServiceImpl<SendGoods, Long> imple
 			if (param.getCustomerId() != null) {
 				predicate.add(cb.equal(root.get("customerId").as(Long.class), param.getCustomerId()));
 			}
+			// 按申请人id过滤
+            if (param.getUserId()!= null) {
+                predicate.add(cb.equal(root.get("userId").as(Long.class), param.getUserId()));
+            }
 			// 按产品类型
 			if (param.getProductType() != null) {
 				predicate.add(cb.equal(root.get("productType").as(Integer.class), param.getProductType()));
@@ -105,7 +114,7 @@ public class SendGoodsServiceImpl extends BaseServiceImpl<SendGoods, Long> imple
 			//2.查出销售人员和产品id通过的申请单，获取到申请数量
 			//3.查出共有库存
 			//通过产品查询所有的入库单
-			List<Map<String, Object>> mapsList = outStorageService.getSendPutStorage(s.getId());
+			List<Map<String, Object>> mapsList = outStorageService.getSendPutStorage(s.getId(),s.getWarehouseTypeId());
 			if(mapsList.size()>0){
 				int status = 0;
 				int number = mapsList.stream().mapToInt(m->Integer.valueOf(m.get("number").toString())).sum();
