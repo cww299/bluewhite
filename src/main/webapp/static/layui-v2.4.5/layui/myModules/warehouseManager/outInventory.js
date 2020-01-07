@@ -31,7 +31,8 @@ layui.define(['jquery','layer','form',],function(exports){
 					'<table>',
 						'<tr>',
 							'<td style="padding-left:19px;">发货数量：</td>',
-							'<td><input type="text" class="layui-input" id="sendAllNumber" value="0" readonly></td></tr>',
+							'<td><input type="text" class="layui-input" id="sendAllNumber" value="0" readonly'+
+							  ' style="border: none;></td></tr>',
 					'</table>',
 					'<table id="chooseInputOrder" lay-filter="chooseInputOrder"></table>',
 				'</div>',
@@ -109,19 +110,27 @@ layui.define(['jquery','layer','form',],function(exports){
 						number: checkChild[i].sendNumber || 0,
 					})
 				}
-				myutil.saveAjax({
-					url: '/ledger/inventory/sendOutStorage',
-					data:{
-						flag: outInventory.type,	//1.发货单发货    2.皮壳生产出库
-						id: data.id,
-						sendNumber: inputNumber,
-						putStorage: JSON.stringify(childJson),
-					},
-					success:function(){
-						layer.close(sendGoodWin);
-						table.reload(opt.reloadTable || 'tableData');
-					}
-				})
+				if(data[fieldNumber]==0){
+					layer.confirm('剩余发货数量为0是否确认发货',function(){
+						sendGoods();
+					})
+				}else
+					sendGoods();
+				function sendGoods(){
+					myutil.saveAjax({
+						url: '/ledger/inventory/sendOutStorage',
+						data:{
+							flag: outInventory.type,	//1.发货单发货    2.皮壳生产出库
+							id: data.id,
+							sendNumber: inputNumber,
+							putStorage: JSON.stringify(childJson),
+						},
+						success:function(){
+							layer.close(sendGoodWin);
+							table.reload(opt.reloadTable || 'tableData');
+						}
+					})
+				}
 			}
 		})
 	};

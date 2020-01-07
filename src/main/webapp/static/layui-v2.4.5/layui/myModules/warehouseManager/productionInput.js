@@ -116,17 +116,20 @@ layui.extend({
 			       { title:'加工单',   field:'materialRequisition_order_orderNumber',	},
 			       { title:'工序',   field:'process',	templet: getProcess(), width:100,},
 			       { title:'数量',   field:'processNumber',	width:100, },
-			       { title:'时间',   field:'openOrderTime', type:'dateTime', width:200,},
+			    ];
+				var lastArr = [
+				   { title:'时间',   field:'openOrderTime', type:'dateTime', width:200,},
 			       { title:'跟单人',   field:'user_userName',	width:120,},
 			       { title:'加工点',   field:'customer_name',	width:120,},
-			       { title:'是否外发',   field:'outsource',	transData:{ data:['否','是'],}, width:100,},];
-				if(productionInput.type==3 || productionInput.type==2)
+			       { title:'是否外发',   field:'outsource',	transData:{ data:['否','是'],}, width:100,},
+			    ];
+				if(productionInput.type==3 || productionInput.type==2)	//数量跟剩余数量放一起
 					arr.push({ title:'剩余数量',   field:'remainingInventory',width:100,	});
 				else if(productionInput.type==4){
 					arr.push({ title:'剩余数量',   field:'cotSurplusNumber',	width:100,});
-					arr.push({ title:'库存状态',   field:'cotStatus',	transData:{data:['库存充足','库存不足','无库存',]}, width:100,});
+					lastArr.push({ title:'库存状态',   field:'cotStatus',	transData:{data:['库存充足','库存不足','无库存',]}, width:100,});
 				}
-				return arr;
+				return arr.concat(lastArr);
 				})(),
 			]
 		})

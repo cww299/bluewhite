@@ -46,6 +46,7 @@ layui.extend({
 	              <td class="imgTd" colspan="4" rowspan="4">
 	                <div><b id="allWarehouseNumber">0</b><p>总库存数量</p></div>
 	                <div><b id="myNumber">0</b><p>业务员所属数量</p></div>
+					<div><b id="publicGood">0</b><p>公共库存</p></div>
 	                <div><b id="myState">无</b><p>发货状态</p></div>
 	              </td>
 	            </tr>
@@ -211,6 +212,20 @@ layui.extend({
 					data:[],
 					height:'420px',
 					totalRow:['number'],
+					parseData:function(ret){
+						var returnData = [];
+						var publicNumber = 0;
+						if(ret.code==0){
+							layui.each(ret.data,function(index,item){
+								if(item.userList.length==0)
+									publicNumber+=item.number;
+								else
+									returnData.push(item);
+							})
+						}
+						$('#publicGood').html(publicNumber);
+						return {  msg:ret.message,  code:ret.code , data: returnData, };
+					},
 					cols:[[
 						{ type:'checkbox', },
 						{ field:'bacth',title:'批次号',},
