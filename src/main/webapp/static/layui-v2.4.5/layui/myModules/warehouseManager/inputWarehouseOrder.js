@@ -221,7 +221,7 @@ layui.extend({
 			}
 		})
 		myutil.getData({	//获取所有人员
-			url: myutil.config.ctx+'/system/user/findUserList?quit=0&orgNameIds=51',
+			url: myutil.config.ctx+'/system/user/findUserList?quit=0&orgNameIds='+(inputWarehouseOrder.type==3?59:51),
 			success:function(d){
 				for(var i=0,len=d.length;i<len;i++){
 					allUser += '<option value="'+d[i].id+'">'+d[i].userName+'</option>';
