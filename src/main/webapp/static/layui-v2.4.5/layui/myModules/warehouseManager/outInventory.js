@@ -32,7 +32,7 @@ layui.define(['jquery','layer','form',],function(exports){
 						'<tr>',
 							'<td style="padding-left:19px;">发货数量：</td>',
 							'<td><input type="text" class="layui-input" id="sendAllNumber" value="0" readonly'+
-							  ' style="border: none;></td></tr>',
+							  ' style="border: none;"></td></tr>',
 					'</table>',
 					'<table id="chooseInputOrder" lay-filter="chooseInputOrder"></table>',
 				'</div>',
