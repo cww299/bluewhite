@@ -214,9 +214,9 @@ public class TemporaryPackAction {
 	 */
 	@RequestMapping(value = "/temporaryPack/sendQuantitative", method = RequestMethod.GET)
 	@ResponseBody
-	public CommonResponse sendQuantitative(String ids) {
+	public CommonResponse sendQuantitative(String ids,Integer flag) {
 		CommonResponse cr = new CommonResponse();
-		quantitativeService.sendQuantitative(ids);
+		quantitativeService.sendQuantitative(ids,flag);
 		cr.setMessage("发货成功");
 		return cr;
 	}
