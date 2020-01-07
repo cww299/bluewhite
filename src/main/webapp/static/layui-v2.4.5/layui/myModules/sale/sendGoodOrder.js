@@ -269,7 +269,7 @@ layui.extend({
 					if(data.id)
 						url = '';
 					var tableData = layui.table.cache['askForTable'],json = [];
-					var time = $('#askforDate').val(),msg = '';
+					var time = $('#askforDate').html(),msg = '';
 					layui.each(tableData,function(index,item){
 						if(msg)
 							return;
