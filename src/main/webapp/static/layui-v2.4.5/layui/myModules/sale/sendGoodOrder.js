@@ -125,12 +125,7 @@ layui.extend({
 		sendGoodOrder.update(opt)
 	}
 	var currUser;
-	myutil.getData({
-		url: myutil.config.ctx+'/getCurrentUser',
-		success:function(d){
-			currUser = d;
-		}
-	})
+	
 	sendGoodOrder.update = function(opt){
 		var data = opt.data,title="生成发货单";
 		if(!data){
@@ -432,6 +427,12 @@ layui.extend({
 	sendGoodOrder.init = function(done){
 		var filePath = layui.cache.modules.sendGoodOrder.substr(0, layui.cache.modules.sendGoodOrder.lastIndexOf('/'));
 		layui.link(filePath+"/../css/sale/sendGoodOrder.css");
+		myutil.getData({
+			url: myutil.config.ctx+'/getCurrentUser',
+			success:function(d){
+				currUser = d;
+			}
+		})
 		done && done();
 	};
 	exports("sendGoodOrder",sendGoodOrder);
