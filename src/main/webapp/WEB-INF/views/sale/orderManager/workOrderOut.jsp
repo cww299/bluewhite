@@ -351,7 +351,7 @@ layui.config({
 			})
 		}
 		function addBill(data){
-			layer.open({
+			var addBillWin = layer.open({
 				type:1,
 				title:'生成账单',
 				offset:'50px',
@@ -367,7 +367,7 @@ layui.config({
 						'<table id="addBillTable" lay-filter="addBillTable"></table>',
 					'</div>'
 				].join(' '),
-				success:function(o,addBillWin){
+				success:function(){
 					laydate.render({
 						elem:'#addBillTime',type:'datetime',value:new Date(),
 					})

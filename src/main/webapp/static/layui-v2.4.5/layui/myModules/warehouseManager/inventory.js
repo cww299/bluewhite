@@ -60,7 +60,7 @@ layui.extend({
 		
 		$(opt.elem).append(TPL_MAIN);
 		if(opt.chooseProductWin){
-			$('#tipsInfo').html('双击进行选择');
+			$('#tipsInfo').html('点击要发送的仓库单元格进行选择！');
 		}
 		form.render();
 		allWarehouseType = myutil.getDataSync( myutil.config.ctx+'/basedata/children?id='+warehouseId);
