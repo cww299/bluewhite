@@ -47,7 +47,7 @@ layui.extend({
 	                <div><b id="allWarehouseNumber">0</b><p>总库存数量</p></div>
 	                <div><b id="myNumber">0</b><p>业务员所属数量</p></div>
 					<div><b id="publicGood">0</b><p>公共库存</p></div>
-	                <div><b id="myState">无</b><p>发货状态</p></div>
+	                <div><b id="myState">无</b><p>库存状态</p></div>
 	              </td>
 	            </tr>
 	            <tr>
@@ -276,8 +276,10 @@ layui.extend({
 						layui.each(item.userList,function(i2,childItem){
 							if(msg)
 								return;
-							if(!item.askNumber || isNaN(item.askNumber) || item.askNumber%1.0!=0 )
-								msg = '请正确填写申请数量';
+							if(!item.askNumber || isNaN(item.askNumber) || item.askNumber%1.0!=0 ){
+								msg = '请正确填写申请借货单中的申请数量';
+								$('#askForTable').next().find('.layui-table-main tr[data-index="'+i2+'"] td[data-field="askNumber"]').click();
+							}
 							json.push({
 								time: time,
 								number: item.askNumber,
@@ -400,6 +402,9 @@ layui.extend({
 							$('#productInputChoose').val(data.name+'-----'+title);
 							layer.close(chooseProductWinNew);
 							getWarehouseInfo();
+							table.reload('askForTable',{
+								data:[],
+							})
 						});
 					}
 				})
