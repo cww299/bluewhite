@@ -276,9 +276,7 @@ public class OrderOutSourceServiceImpl extends BaseServiceImpl<OrderOutSource, L
                 } else {
                     o.setCotStatus(2);
                 }
-
             }
-
         });
         return result;
     }
