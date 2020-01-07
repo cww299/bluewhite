@@ -1,6 +1,5 @@
 package com.bluewhite.personnel.attendance.service;
 
-import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Comparator;
@@ -44,6 +43,8 @@ import com.bluewhite.personnel.attendance.entity.PersonVariable;
 import com.bluewhite.system.user.entity.User;
 import com.bluewhite.system.user.service.UserService;
 
+import cn.hutool.core.date.DateUtil;
+
 @Service
 public class AttendanceTimeServiceImpl extends BaseServiceImpl<AttendanceTime, Long> implements AttendanceTimeService {
 
@@ -69,11 +70,12 @@ public class AttendanceTimeServiceImpl extends BaseServiceImpl<AttendanceTime, L
     private AttendancePayDao attendancePayDao;
 
     @Override
-    public List<AttendanceTime> findAttendanceTime(AttendanceTime attendance) throws ParseException {
+    public List<AttendanceTime> findAttendanceTime(AttendanceTime attendance) {
         // 获取改时间段所有的打卡记录
         List<Attendance> allAttList = null;
         // 获取当前日期的固定休息日
-        PersonVariable restType = personVariableDao.findByTypeAndTime(0, DatesUtil.getFirstDayOfMonth(attendance.getOrderTimeBegin()));
+        PersonVariable restType =
+            personVariableDao.findByTypeAndTime(0, DatesUtil.getFirstDayOfMonth(attendance.getOrderTimeBegin()));
         if (restType == null) {
             throw new ServiceException("当月未设定休息方式，请设定");
         }
@@ -223,7 +225,6 @@ public class AttendanceTimeServiceImpl extends BaseServiceImpl<AttendanceTime, L
                     turnWorkTime = attendanceInit.getTurnWorkTimeWinter();
                 }
 
-                SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
                 boolean rout = false;
                 // 1.周休一天，
                 if (attendanceInit.getRestType() == 1) {
@@ -231,8 +232,7 @@ public class AttendanceTimeServiceImpl extends BaseServiceImpl<AttendanceTime, L
                         String[] weeklyRestDate = restType.getKeyValue().split(",");
                         if (weeklyRestDate.length > 0) {
                             for (int j = 0; j < weeklyRestDate.length; j++) {
-                                if (DatesUtil.getfristDayOftime(beginTimes)
-                                    .compareTo(sdf.parse(weeklyRestDate[j])) == 0) {
+                                if (DatesUtil.getfristDayOftime(beginTimes).compareTo(DateUtil.parse(weeklyRestDate[j])) == 0) {
                                     rout = true;
                                     break;
                                 }
@@ -247,8 +247,7 @@ public class AttendanceTimeServiceImpl extends BaseServiceImpl<AttendanceTime, L
                         String[] monthRestDate = restType.getKeyValueTwo().split(",");
                         if (monthRestDate.length > 0) {
                             for (int j = 0; j < monthRestDate.length; j++) {
-                                if (DatesUtil.getfristDayOftime(beginTimes)
-                                    .compareTo(sdf.parse(monthRestDate[j])) == 0) {
+                                if (DatesUtil.getfristDayOftime(beginTimes).compareTo(DateUtil.parse(monthRestDate[j])) == 0) {
                                     rout = true;
                                     break;
                                 }
@@ -264,7 +263,7 @@ public class AttendanceTimeServiceImpl extends BaseServiceImpl<AttendanceTime, L
                     restDayArr = attendanceInit.getRestDay().split(",");
                     if (restDayArr.length > 0) {
                         for (int j = 0; j < restDayArr.length; j++) {
-                            if (DatesUtil.getfristDayOftime(beginTimes).compareTo(sdf.parse(restDayArr[j])) == 0) {
+                            if (DatesUtil.getfristDayOftime(beginTimes).compareTo(DateUtil.parse(restDayArr[j])) == 0) {
                                 rout = true;
                                 break;
                             }
@@ -441,13 +440,13 @@ public class AttendanceTimeServiceImpl extends BaseServiceImpl<AttendanceTime, L
     }
 
     @Override
-    public List<Map<String, Object>> findAttendanceTimeCollectAdd(AttendanceTime attendanceTime) throws ParseException {
+    public List<Map<String, Object>> findAttendanceTimeCollectAdd(AttendanceTime attendanceTime) {
         return attendanceCollect(
             saveAttendanceTimeList(attendanceTimeByApplication(findAttendanceTime(attendanceTime))), true);
     }
 
     @Override
-    public List<Map<String, Object>> findAttendanceTimeCollect(AttendanceTime attendanceTime) throws ParseException {
+    public List<Map<String, Object>> findAttendanceTimeCollect(AttendanceTime attendanceTime) {
         return attendanceCollect(attendanceTimeByApplication(findAttendanceTime(attendanceTime)), false);
     }
 
@@ -607,9 +606,7 @@ public class AttendanceTimeServiceImpl extends BaseServiceImpl<AttendanceTime, L
 
     @Override
     @Transactional
-    public List<AttendanceTime> attendanceTimeByApplication(List<AttendanceTime> attendanceTimeList)
-        throws ParseException {
-        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+    public List<AttendanceTime> attendanceTimeByApplication(List<AttendanceTime> attendanceTimeList) {
         // 按人员分组
         Map<Long, List<AttendanceTime>> mapAttendanceTime =
             attendanceTimeList.stream().collect(Collectors.groupingBy(AttendanceTime::getUserId, Collectors.toList()));
@@ -637,7 +634,7 @@ public class AttendanceTimeServiceImpl extends BaseServiceImpl<AttendanceTime, L
                     // 获取请假事项的实际日期
                     Date dateLeave = null;
                     if (dateArr.length < 2) {
-                        dateLeave = sdf.parse(date);
+                        dateLeave = DateUtil.parse(date, "yyyy-MM-dd");
                         flag = DatesUtil.belongCalendar(dateLeave);
                         // flag=ture 为夏令时
                         if (flag) {
@@ -772,14 +769,14 @@ public class AttendanceTimeServiceImpl extends BaseServiceImpl<AttendanceTime, L
     }
 
     @Override
-    public List<Map<String, Object>> syncAttendanceTimeCollect(AttendanceTime attendanceTime) throws ParseException {
+    public List<Map<String, Object>> syncAttendanceTimeCollect(AttendanceTime attendanceTime) {
         checkAttendanceTime(attendanceTime);
         deleteAttendanceTimeCollect(attendanceTime);
         return findAttendanceTimeCollectAdd(attendanceTime);
     }
 
     @Override
-    public List<Map<String, Object>> workshopAttendanceContrast(AttendanceTime attendanceTime) throws ParseException {
+    public List<Map<String, Object>> workshopAttendanceContrast(AttendanceTime attendanceTime) {
         List<Map<String, Object>> mapList = new ArrayList<>();
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
         attendanceTime.setOrderTimeEnd(DatesUtil.getLastDayOfMonth(attendanceTime.getOrderTimeBegin()));
@@ -854,8 +851,9 @@ public class AttendanceTimeServiceImpl extends BaseServiceImpl<AttendanceTime, L
                 map.put("userId", aTime.getUserId());
                 // 针工 （检验 管理 开棉）
                 if (user.getGroup() != null && user.getGroup().getKindWorkId() != null
-                    && user.getGroup().getKindWorkId().equals(113) && user.getGroup().getKindWorkId().equals(116)
-                    && user.getGroup().getKindWorkId().equals(120)) {
+                    && user.getGroup().getKindWorkId().equals((long)113)
+                    && user.getGroup().getKindWorkId().equals((long)116)
+                    && user.getGroup().getKindWorkId().equals((long)120)) {
                     if (!aPay.getWorkTime().equals(aTime.getWorkTime())) {
                         // 记录工作时长
                         map.put("recordTurnWorkTime", aPay.getWorkTime());

@@ -1,7 +1,5 @@
 package com.bluewhite.personnel.attendance.service;
 
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
@@ -97,7 +95,7 @@ public class ApplicationLeaveServiceImpl extends BaseServiceImpl<ApplicationLeav
 
     @Override
     @Transactional
-    public ApplicationLeave saveApplicationLeave(ApplicationLeave applicationLeave) throws ParseException {
+    public ApplicationLeave saveApplicationLeave(ApplicationLeave applicationLeave){
         ApplicationLeave oldApplicationLeave = new ApplicationLeave();
         oldApplicationLeave = applicationLeave;
         if (applicationLeave.getId() != null) {
@@ -115,7 +113,7 @@ public class ApplicationLeaveServiceImpl extends BaseServiceImpl<ApplicationLeav
     }
 
     @Transactional
-    private ApplicationLeave setApp(ApplicationLeave applicationLeave) throws ParseException {
+    private ApplicationLeave setApp(ApplicationLeave applicationLeave){
         dao.save(applicationLeave);
         String holidayDetail = "";
         // 获取到当前员工统计一个月的考勤详细
@@ -333,7 +331,7 @@ public class ApplicationLeaveServiceImpl extends BaseServiceImpl<ApplicationLeav
 
     @Override
     @Transactional
-    public int deleteApplicationLeave(String ids) throws ParseException {
+    public int deleteApplicationLeave(String ids){
         int count = 0;
         String[] arrIds = ids.split(",");
         for (int i = 0; i < arrIds.length; i++) {
@@ -352,11 +350,10 @@ public class ApplicationLeaveServiceImpl extends BaseServiceImpl<ApplicationLeav
     }
 
     @Override
-    public void defaultRetroactive(ApplicationLeave applicationLeave) throws ParseException {
-        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+    public void defaultRetroactive(ApplicationLeave applicationLeave){
         JSONArray jsonArray = new JSONArray();
         JSONObject jsonObject = new JSONObject();
-        jsonObject.put("date", sdf.format(applicationLeave.getWriteTime()));
+        jsonObject.put("date", DateUtil.format(applicationLeave.getWriteTime(),"yyyy-MM-dd HH:mm:ss"));
         jsonObject.put("time", applicationLeave.getSign());
         jsonArray.add(jsonObject);
         applicationLeave.setTime(JSONArray.toJSONString(jsonArray));
