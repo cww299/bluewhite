@@ -235,7 +235,7 @@ public class QuantitativeServiceImpl extends BaseServiceImpl<Quantitative, Long>
 	}
 
 	@Override
-	public int sendQuantitative(String ids) {
+	public int sendQuantitative(String ids,Integer flag) {
 		int count = 0;
 		if (!StringUtils.isEmpty(ids)) {
 			String[] idArr = ids.split(",");
@@ -243,11 +243,14 @@ public class QuantitativeServiceImpl extends BaseServiceImpl<Quantitative, Long>
 				for (int i = 0; i < idArr.length; i++) {
 					Long id = Long.parseLong(idArr[i]);
 					Quantitative quantitative = dao.findOne(id);
-					if (quantitative.getFlag() == 1) {
+					if (flag == 1 && quantitative.getFlag() == 1) {
 						throw new ServiceException("已发货请勿多次发货");
 					}
+					if (flag == 0 && quantitative.getFlag() == 0) {
+                        throw new ServiceException("未发货请勿取消发货");
+                    }
 					quantitative.setSendTime(new Date());
-					quantitative.setFlag(1);
+					quantitative.setFlag(flag);
 					dao.save(quantitative);
 				}
 			}

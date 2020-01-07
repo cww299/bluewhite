@@ -50,6 +50,7 @@ public class ApplyVoucherServiceImpl extends BaseServiceImpl<ApplyVoucher, Long>
 		if(warehouseTypeId!=null){
 			param.setWarehouseTypeId(warehouseTypeId);
 		}
+		param.setUserId(cu.getId());
 		Page<ApplyVoucher> pages = dao.findAll((root, query, cb) -> {
 			List<Predicate> predicate = new ArrayList<>();
 			// 按产品名字
