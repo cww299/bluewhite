@@ -85,6 +85,7 @@
 	<shiro:hasAnyRoles name="superAdmin,stickBagStick">
 		<span class="layui-btn layui-btn-sm layui-btn-primary" lay-event="print" id="stickBagStickBtn">打印</span>
 		<span class="layui-btn layui-btn-sm layui-btn-normal" lay-event="send">发货</span>
+		<span class="layui-btn layui-btn-sm layui-btn-danger" lay-event="cancelSend">取消发货</span>
 	</shiro:hasAnyRoles>
 </div>
 <script type="text/html" >
@@ -156,7 +157,13 @@ layui.config({
 						myutil.deleTableIds({
 							 table:'tableData',  
 							 text:'请选择信息|是否确认发货？',
-							 url:'/temporaryPack/sendQuantitative',
+							 url:'/temporaryPack/sendQuantitative?flag=1',
+						})
+					}else if(obj.event=='cancelSend'){
+						myutil.deleTableIds({
+							 table:'tableData',  
+							 text:'请选择信息|是否确认取消发货？',
+							 url:'/temporaryPack/sendQuantitative?flag=0',
 						})
 					}
 				},
