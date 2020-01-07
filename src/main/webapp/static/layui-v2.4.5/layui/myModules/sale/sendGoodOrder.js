@@ -124,7 +124,13 @@ layui.extend({
 		opt.data = {};
 		sendGoodOrder.update(opt)
 	}
-	
+	var currUser;
+	myutil.getData({
+		url: myutil.config.ctx+'/getCurrentUser',
+		success:function(d){
+			currUser = d;
+		}
+	})
 	sendGoodOrder.update = function(opt){
 		var data = opt.data,title="生成发货单";
 		if(!data){
@@ -287,6 +293,7 @@ layui.extend({
 					if(msg)
 						return myutil.emsg(msg);
 					data.applyVoucher = JSON.stringify(json);
+					data.userId = currUser.id;
 					myutil.saveAjax({
 						url: url,
 						data: data,
@@ -325,13 +332,15 @@ layui.extend({
 		if(pid){
 			var productType = $('input[name="productType"]:checked').val();
 			table.reload('otherWarehouseTable',{
-				url: myutil.config.ctx+'/ledger/getOrderSend?include=1&productType='+productType,
+				url: myutil.config.ctx+'/ledger/getOrderSend?include=1&productType='+productType
+						+'&warehouseTypeId='+$('#warehouseTypeId').val(),
 				where:{
 					productId: pid,
 				},
 			})
 			myutil.getData({
-				url: myutil.config.ctx+'/ledger/getOrderSend?include=0&productId='+pid+'&productType='+productType,
+				url: myutil.config.ctx+'/ledger/getOrderSend?include=0&productId='+pid+'&productType='+productType
+				+'&warehouseTypeId='+$('#warehouseTypeId').val(),
 				success:function(d){
 					myNumber = 0;
 					layui.each(d,function(index,item){
