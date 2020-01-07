@@ -43,7 +43,7 @@ layui.extend({
 				'<table id="tableData" lay-filter="tableData"></table>',
 				`
 					<div style="display:none;" id="orderOutSourceTableWin">
-						<div style="width:600px;">
+						<div style="width:680px;">
 							<table id="orderOutSourceTable" lay-filter="orderOutSourceTable"></table>
 						</div>
 					</div>
@@ -186,12 +186,12 @@ layui.extend({
 												elem:'#orderOutSourceTable',
 												data: order.orderChilds,
 												cols:[[
-													{ title:'批次号', field:'bacthNumber',},
+													{ title:'批次号', field:'bacthNumber', width:150,},
 													{ title:'下单时间', field:'orderDate',},
-													{ title:'总数量', field:'allNumber',},
-													{ title:'数量', field:'childNumber',},
-													{ title:'客户', field:'customer_name',},
-													{ title:'跟单人', field:'user_userName',},
+													{ title:'总数量', field:'allNumber',width:90,},
+													{ title:'数量', field:'childNumber',width:90,},
+													{ title:'客户', field:'customer_name',width:90,},
+													{ title:'跟单人', field:'user_userName',width:90,},
 												]],
 												done:function(){
 													merge('bacthNumber');
@@ -210,7 +210,7 @@ layui.extend({
 													layer.close(tipInventory)
 													tipInventory = layer.tips($('#orderOutSourceTableWin').html(), elem,{
 														time:0,
-														area: '630px',
+														area: '710px',
 														tips: [2, 'rgb(95, 184, 120)'],
 													})
 													$('div[lay-id=orderOutSourceTable] tr').append(`
