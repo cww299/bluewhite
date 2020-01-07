@@ -25,6 +25,12 @@ import com.bluewhite.system.user.entity.User;
  * 
  * 生产计划部 加工单 1.加工单 2.外发加工单
  * 
+ * 加工单 需要分为仓库来源
+ * 电子商务部的加工单
+ * 如何区分？
+ * 当客户是电子商务部订单，加工单属于电子商务仓库
+ * 当客户为其他客户时，加工单属于蓝白仓库
+ * 
  * @author zhangliang
  *
  */
@@ -34,7 +40,6 @@ public class OrderOutSource extends BaseEntity<Long> {
 
 	/**
 	 * 领料单id
-	 * 
 	 */
 	@Column(name = "material_requisition_id")
 	private Long materialRequisitionId;
