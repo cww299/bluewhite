@@ -284,4 +284,21 @@ public class QuantitativeServiceImpl extends BaseServiceImpl<Quantitative, Long>
 		quantitativeChildDao.save(ot);
 	}
 
+    @Override
+    public int updateQuantitativeSendTime(String ids, Date sendTime) {
+        int count = 0;
+        if (!StringUtils.isEmpty(ids)) {
+            String[] idArr = ids.split(",");
+            if (idArr.length > 0) {
+                for (int i = 0; i < idArr.length; i++) {
+                    Long id = Long.parseLong(idArr[i]);
+                    Quantitative quantitative = dao.findOne(id);
+                    quantitative.setSendTime(sendTime);
+                    dao.save(quantitative);
+                }
+            }
+        }
+        return count;
+    }
+
 }

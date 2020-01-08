@@ -461,4 +461,12 @@ public class OrderOutSourceServiceImpl extends BaseServiceImpl<OrderOutSource, L
         return result;
     }
 
+    @Override
+    public void orderOutSourceToBacth() {
+        
+        
+        
+         
+    }
+
 }
