@@ -147,6 +147,7 @@ public class SendGoodsServiceImpl extends BaseServiceImpl<SendGoods, Long> imple
 	public void addSendGoods(SendGoods sendGoods) {
 		CurrentUser cu = SessionManager.getUserSession();
 		sendGoods.setUserId(cu.getId());
+		save(sendGoods);
 		// 新增借货申请单
 		if (!StringUtils.isEmpty(sendGoods.getApplyVoucher())) {
 			JSONArray jsonArray = JSON.parseArray(sendGoods.getApplyVoucher());
@@ -162,13 +163,14 @@ public class SendGoodsServiceImpl extends BaseServiceImpl<SendGoods, Long> imple
 				applyVoucher.setApprovalUserId(jsonObject.getLong("approvalUserId"));
 				applyVoucher.setUserId(cu.getId());
 				applyVoucher.setPass(0);
-				//仓库
-//				applyVoucher.setWarehouseTypeId(sendGoods.getWarehouseTypeId());
-				applyVoucher.setApplyNumber(Constants.SQD + StringUtil.getDate() + StringUtil.get0LeftString((int) (dao.count() + 1), 8));
+				//向申请单里添加仓库类型，使仓库进行查看
+				applyVoucher.setWarehouseTypeId(sendGoods.getWarehouseTypeId());
+				applyVoucher.setSendGoodsId(sendGoods.getId());
+				applyVoucher.setApplyNumber(Constants.JHSQD + StringUtil.getDate() + StringUtil.get0LeftString((int) (dao.count() + 1), 8));
 				applyVoucherDao.save(applyVoucher);
 			}
 		}
-		save(sendGoods);
+		
 	}
 
 	@Override

@@ -70,11 +70,9 @@ public class OrderOutSourceServiceImpl extends BaseServiceImpl<OrderOutSource, L
     @Transactional
     public void saveOrderOutSource(OrderOutSource orderOutSource) {
         // 领料单
-        MaterialRequisition materialRequisition =
-            materialRequisitionDao.findOne(orderOutSource.getMaterialRequisitionId());
+        MaterialRequisition materialRequisition = materialRequisitionDao.findOne(orderOutSource.getMaterialRequisitionId());
         // 根据领料单查找加工单
-        List<OrderOutSource> orderOutSourceList =
-            dao.findByMaterialRequisitionId(orderOutSource.getMaterialRequisitionId());
+        List<OrderOutSource> orderOutSourceList = dao.findByMaterialRequisitionId(orderOutSource.getMaterialRequisitionId());
         // 将工序任务变成set存入，存在退货情况是，要去除退货数量
         if (!StringUtils.isEmpty(orderOutSource.getOutsourceTaskIds())) {
             String[] idStrings = orderOutSource.getOutsourceTaskIds().split(",");
@@ -243,8 +241,7 @@ public class OrderOutSourceServiceImpl extends BaseServiceImpl<OrderOutSource, L
                 // 皮壳
                 // 1.入库,机工单，展示入库后剩余数量
                 // remainingInventory
-                List<PutStorage> putStorageList =
-                    putStorageService.findByWarehouseTypeIdAndOrderOutSourceId(warehouseTypeDeliveryId, o.getId());
+                List<PutStorage> putStorageList = putStorageService.findByWarehouseTypeIdAndOrderOutSourceId(warehouseTypeDeliveryId, o.getId());
                 o.setRemainingInventory(o.getProcessNumber());
                 if (putStorageList.size() > 0) {
                     int number = putStorageList.stream().mapToInt(PutStorage::getArrivalNumber).sum();
