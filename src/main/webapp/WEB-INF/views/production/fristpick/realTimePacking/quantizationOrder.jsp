@@ -86,6 +86,7 @@
 		<span class="layui-btn layui-btn-sm layui-btn-primary" lay-event="print" id="stickBagStickBtn">打印</span>
 		<span class="layui-btn layui-btn-sm layui-btn-normal" lay-event="send">发货</span>
 		<span class="layui-btn layui-btn-sm layui-btn-danger" lay-event="cancelSend">取消发货</span>
+		<span class="layui-btn layui-btn-sm layui-btn-normal" lay-event="updateSendTime">修改发货时间</span>
 	</shiro:hasAnyRoles>
 </div>
 <script type="text/html" >
@@ -164,6 +165,38 @@ layui.config({
 							 table:'tableData',  
 							 text:'请选择信息|是否确认取消发货？',
 							 url:'/temporaryPack/sendQuantitative?flag=0',
+						})
+					}else if(obj.event=='updateSendTime'){
+						var check = layui.table.checkStatus('tableData').data;
+						if(check.length==0)
+							return myutil.emsg('请选择数据');
+						var updateWin = layer.open({
+							type:1,
+							title:'修改发货时间',
+							offset:'120px',
+							content:'<div style="padding:15px;"><input type="text" id="updateTime" class="layui-input"></div>',
+							btn:['确定','取消'],
+							btnAlign:'c',
+							area:'auto',
+							success:function(){
+								laydate.render({
+									elem:'#updateTime',type:'datetime',value:new Date(),
+								});
+							},
+							yes:function(){
+								var ids = [];
+								layui.each(check,function(idex,item){
+									ids.push(item.id);
+								})
+								myutil.deleteAjax({
+									url:'/temporaryPack/updateQuantitativeSendTime?sendTime='+$('#updateTime').val(),
+									ids: ids.join(','),
+									success:function(){
+										table.reload('tableData');
+										layer.close(updateWin);
+									}
+								})
+							}
 						})
 					}
 				},
