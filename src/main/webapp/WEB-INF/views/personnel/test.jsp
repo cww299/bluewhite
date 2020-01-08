@@ -566,7 +566,6 @@ layui.config({
       			form.render();
 		      }
 		  });
-		
 		var allPlatform = [];
 		var chosedMember=[];
 	 	tablePlug.smartReload.enable(true);  
@@ -584,14 +583,6 @@ layui.config({
 			request:{ pageName:'page', limitName:'size' },
 			parseData:function(ret){ return { data:ret.data.rows, count:ret.data.total, msg:ret.message, code:ret.code } },
 			overflow: 'tips',
-			rowDrag: {/*trigger: 'row',*/ done: function(obj) {
-	            // 完成时（松开时）触发
-	            // 如果拖动前和拖动后无变化，则不会触发此方法
-	            console.log(obj.row) // 当前行数据
-	            console.log(obj.cache) // 改动后全表数据
-	            console.log(obj.oldIndex) // 原来的数据索引
-	            console.log(obj.newIndex) // 改动后数据索引
-	        }},
 	        drag: {toolbar: true},
 	        contextmenu:{
 	            // 表头右键菜单配置
@@ -701,7 +692,7 @@ layui.config({
 			       {align:'center', title:'部门',field:'orgName',templet:function(d){return (d.orgName==null ? "" : d.orgName.name)}},
 			       {align:'center', title:'是否在职',field:'orgName',templet:function(d){return (d.quit==0 ? "在职" : "离职")}},
 			       {align:'center', title:'照片',field:'pictureUrl',templet:function(d){return "<div><img  src="+d.pictureUrl+" style='max-width:60px;'></div>"}},
-			       {align:'center', title:'操作',toolbar: '#barDemo'},
+			      /*  {align:'center', title:'操作',toolbar: '#barDemo'} */
 			       ]],
 			        filter: {
 		                clearFilter: true,
@@ -710,8 +701,11 @@ layui.config({
 			            items:['column','data','condition','editCondition','excel','clearCache'] // 加入了清除缓存按钮
 			            ,cache: true 
 			        },  */
-			       done: function () {
+			       done: function (ret,curr, count) {
 			            soulTable.render(this)
+				 	$('div[lay-event="LAYTABLE_EXPORT"]').on('click',function(e){
+				 		$(this).attr('data-id','1');
+				 	})
 			        }
 		});
 	 	table.on('sort(recruitTable)', function() {
