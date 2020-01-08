@@ -294,7 +294,7 @@ public class QuantitativeServiceImpl extends BaseServiceImpl<Quantitative, Long>
                     Long id = Long.parseLong(idArr[i]);
                     Quantitative quantitative = dao.findOne(id);
                     if (quantitative.getFlag() == 0) {
-                        throw new ServiceException("第"+count+"条记录未发货无法修改");
+                        throw new ServiceException("第"+(count+1)+"条记录未发货无法修改");
                     }
                     quantitative.setSendTime(sendTime);
                     dao.save(quantitative);
