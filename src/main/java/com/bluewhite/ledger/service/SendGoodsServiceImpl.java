@@ -49,10 +49,15 @@ public class SendGoodsServiceImpl extends BaseServiceImpl<SendGoods, Long> imple
 	private OutStorageDao outStorageDao;
 	@Override
 	public PageResult<SendGoods> findPages(SendGoods param, PageParameter page) { 
-	    // 根据仓管登陆用户权限，获取不同的仓库库存
+	    // 当为仓库管理员登录查看发货单时，根据仓管登陆用户权限，获取不同的仓库库存
         CurrentUser cu = SessionManager.getUserSession();
         Long warehouseTypeDeliveryId = RoleUtil.getWarehouseTypeDelivery(cu.getRole());
-        param.setWarehouseTypeId(warehouseTypeDeliveryId);
+        if(warehouseTypeDeliveryId!=null) {
+            param.setWarehouseTypeId(warehouseTypeDeliveryId);
+        }else {
+            // 当为销售人员登录时，根据当前登录人id，查询当前登录人的发货清单
+            param.setUserId(cu.getId());
+        }
 		Page<SendGoods> pages = dao.findAll((root, query, cb) -> {
 			List<Predicate> predicate = new ArrayList<>();
 			// 按id过滤
@@ -63,6 +68,10 @@ public class SendGoodsServiceImpl extends BaseServiceImpl<SendGoods, Long> imple
 			if (param.getCustomerId() != null) {
 				predicate.add(cb.equal(root.get("customerId").as(Long.class), param.getCustomerId()));
 			}
+			// 按申请人id过滤
+            if (param.getUserId()!= null) {
+                predicate.add(cb.equal(root.get("userId").as(Long.class), param.getUserId()));
+            }
 			// 按产品类型
 			if (param.getProductType() != null) {
 				predicate.add(cb.equal(root.get("productType").as(Integer.class), param.getProductType()));
@@ -138,6 +147,7 @@ public class SendGoodsServiceImpl extends BaseServiceImpl<SendGoods, Long> imple
 	public void addSendGoods(SendGoods sendGoods) {
 		CurrentUser cu = SessionManager.getUserSession();
 		sendGoods.setUserId(cu.getId());
+		save(sendGoods);
 		// 新增借货申请单
 		if (!StringUtils.isEmpty(sendGoods.getApplyVoucher())) {
 			JSONArray jsonArray = JSON.parseArray(sendGoods.getApplyVoucher());
@@ -152,11 +162,15 @@ public class SendGoodsServiceImpl extends BaseServiceImpl<SendGoods, Long> imple
 				applyVoucher.setNumber(jsonObject.getInteger("number"));
 				applyVoucher.setApprovalUserId(jsonObject.getLong("approvalUserId"));
 				applyVoucher.setUserId(cu.getId());
-				applyVoucher.setApplyNumber(Constants.SQD + StringUtil.getDate() + StringUtil.get0LeftString((int) (dao.count() + 1), 8));
+				applyVoucher.setPass(0);
+				//向申请单里添加仓库类型，使仓库进行查看
+				applyVoucher.setWarehouseTypeId(sendGoods.getWarehouseTypeId());
+				applyVoucher.setSendGoodsId(sendGoods.getId());
+				applyVoucher.setApplyNumber(Constants.JHSQD + StringUtil.getDate() + StringUtil.get0LeftString((int) (dao.count() + 1), 8));
 				applyVoucherDao.save(applyVoucher);
 			}
 		}
-		save(sendGoods);
+		
 	}
 
 	@Override

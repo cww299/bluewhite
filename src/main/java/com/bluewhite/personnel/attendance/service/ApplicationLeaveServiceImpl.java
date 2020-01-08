@@ -1,7 +1,5 @@
 package com.bluewhite.personnel.attendance.service;
 
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
@@ -97,7 +95,7 @@ public class ApplicationLeaveServiceImpl extends BaseServiceImpl<ApplicationLeav
 
     @Override
     @Transactional
-    public ApplicationLeave saveApplicationLeave(ApplicationLeave applicationLeave) throws ParseException {
+    public ApplicationLeave saveApplicationLeave(ApplicationLeave applicationLeave) {
         ApplicationLeave oldApplicationLeave = new ApplicationLeave();
         oldApplicationLeave = applicationLeave;
         if (applicationLeave.getId() != null) {
@@ -115,8 +113,12 @@ public class ApplicationLeaveServiceImpl extends BaseServiceImpl<ApplicationLeav
     }
 
     @Transactional
-    private ApplicationLeave setApp(ApplicationLeave applicationLeave) throws ParseException {
+    private ApplicationLeave setApp(ApplicationLeave applicationLeave) {
         dao.save(applicationLeave);
+        // 获取当前日期的固定休息日
+        PersonVariable restType =
+            personVariableDao.findByTypeAndTime(0, DatesUtil.getFirstDayOfMonth(applicationLeave.getWriteTime()));
+        // 详细
         String holidayDetail = "";
         // 获取到当前员工统计一个月的考勤详细
         AttendanceTime attendanceTimeParme = new AttendanceTime();
@@ -136,6 +138,51 @@ public class ApplicationLeaveServiceImpl extends BaseServiceImpl<ApplicationLeav
             String time = jsonObject.getString("time");
             // 请假
             if (applicationLeave.isHoliday()) {
+                String[] dateArr = date.split("~");
+                for (String dateString : dateArr) {
+                    Date de = DateUtil.parse(dateString);
+                    // 1.周休一天，
+                    if (attendanceInit.getRestType() == 1) {
+                        if (!StringUtils.isEmpty(restType.getKeyValue())) {
+                            String[] weeklyRestDate = restType.getKeyValue().split(",");
+                            if (weeklyRestDate.length > 0) {
+                                for (int j = 0; j < weeklyRestDate.length; j++) {
+                                    if (DatesUtil.getfristDayOftime(de)
+                                        .compareTo(DateUtil.parse(weeklyRestDate[j])) == 0) {
+                                        throw new ServiceException(dateString + "为固定休息日，无需请假");
+                                    }
+                                }
+                            }
+                        }
+                    }
+                    // 2.月休两天
+                    if (attendanceInit.getRestType() == 2) {
+                        if (!StringUtils.isEmpty(restType.getKeyValue())) {
+                            String[] monthRestDate = restType.getKeyValueTwo().split(",");
+                            if (monthRestDate.length > 0) {
+                                for (int j = 0; j < monthRestDate.length; j++) {
+                                    if (DatesUtil.getfristDayOftime(de)
+                                        .compareTo(DateUtil.parse(monthRestDate[j])) == 0) {
+                                        throw new ServiceException(dateString + "为固定休息日，无需请假");
+                                    }
+                                }
+                            }
+                        }
+                    }
+                    // 获取约定休息的日期
+                    String[] restDayArr = null;
+                    if (!StringUtils.isEmpty(attendanceInit.getRestDay())) {
+                        restDayArr = attendanceInit.getRestDay().split(",");
+                        if (restDayArr.length > 0) {
+                            for (int j = 0; j < restDayArr.length; j++) {
+                                if (DatesUtil.getfristDayOftime(de).compareTo(DateUtil.parse(restDayArr[j])) == 0) {
+                                    throw new ServiceException(dateString + "为约定休息日，无需请假");
+                                }
+                            }
+                        }
+                    }
+                }
+                
                 String detail = "";
                 switch (applicationLeave.getHolidayType()) {
                     case 0:
@@ -247,8 +294,6 @@ public class ApplicationLeaveServiceImpl extends BaseServiceImpl<ApplicationLeav
                 if (attendanceTime.getCheckIn() != null && attendanceTime.getCheckOut() != null) {
                     // 获取所有的休息日
                     if (attendanceInit.getRestDay() != null || attendanceInit.getRestType() != null) {
-                        PersonVariable restType = personVariableDao.findByTypeAndTime(0,
-                            DatesUtil.getFirstDayOfMonth(applicationLeave.getWriteTime()));
                         List<String> allArr = new ArrayList<>();
                         if (attendanceInit.getRestType() == 1) {
                             String[] weekArr = restType.getKeyValue().split(",");
@@ -333,7 +378,7 @@ public class ApplicationLeaveServiceImpl extends BaseServiceImpl<ApplicationLeav
 
     @Override
     @Transactional
-    public int deleteApplicationLeave(String ids) throws ParseException {
+    public int deleteApplicationLeave(String ids) {
         int count = 0;
         String[] arrIds = ids.split(",");
         for (int i = 0; i < arrIds.length; i++) {
@@ -352,11 +397,10 @@ public class ApplicationLeaveServiceImpl extends BaseServiceImpl<ApplicationLeav
     }
 
     @Override
-    public void defaultRetroactive(ApplicationLeave applicationLeave) throws ParseException {
-        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+    public void defaultRetroactive(ApplicationLeave applicationLeave) {
         JSONArray jsonArray = new JSONArray();
         JSONObject jsonObject = new JSONObject();
-        jsonObject.put("date", sdf.format(applicationLeave.getWriteTime()));
+        jsonObject.put("date", DateUtil.format(applicationLeave.getWriteTime(), "yyyy-MM-dd HH:mm:ss"));
         jsonObject.put("time", applicationLeave.getSign());
         jsonArray.add(jsonObject);
         applicationLeave.setTime(JSONArray.toJSONString(jsonArray));

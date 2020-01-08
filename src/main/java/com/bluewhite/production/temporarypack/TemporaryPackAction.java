@@ -2,6 +2,7 @@ package com.bluewhite.production.temporarypack;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.Date;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -214,12 +215,25 @@ public class TemporaryPackAction {
 	 */
 	@RequestMapping(value = "/temporaryPack/sendQuantitative", method = RequestMethod.GET)
 	@ResponseBody
-	public CommonResponse sendQuantitative(String ids) {
+	public CommonResponse sendQuantitative(String ids,Integer flag) {
 		CommonResponse cr = new CommonResponse();
-		quantitativeService.sendQuantitative(ids);
+		quantitativeService.sendQuantitative(ids,flag);
 		cr.setMessage("发货成功");
 		return cr;
 	}
+	
+
+    /**
+     * 批量修改量化单的发货时间
+     */
+    @RequestMapping(value = "/temporaryPack/updateQuantitativeSendTime", method = RequestMethod.GET)
+    @ResponseBody
+    public CommonResponse updateQuantitativeSendTime(String ids,Date sendTime) {
+        CommonResponse cr = new CommonResponse();
+        int count = quantitativeService.updateQuantitativeSendTime(ids,sendTime);
+        cr.setMessage("成功修改"+count+"条量化单的发货时间");
+        return cr;
+    }
 
 	/**
 	 * 打印 量化单

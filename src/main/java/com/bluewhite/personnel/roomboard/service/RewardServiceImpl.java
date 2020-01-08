@@ -12,7 +12,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
 import com.bluewhite.base.BaseServiceImpl;
-import com.bluewhite.common.ServiceException;
 import com.bluewhite.common.entity.PageParameter;
 import com.bluewhite.common.entity.PageResult;
 import com.bluewhite.common.utils.NumUtils;
@@ -61,7 +60,7 @@ public class RewardServiceImpl extends BaseServiceImpl<Reward, Long>
 	 */
 	@Override
 	public Reward addReward(Reward reward) {
-		if (reward.getType().equals(1)) {
+		/*if (reward.getType().equals(1)) {
 			List<Reward> list=dao.findBycoverRecruitIdAndType(reward.getCoverRecruitId(),0);//累计奖励
 			double price=0;
 			for (Reward reward2 : list) {
@@ -85,9 +84,9 @@ public class RewardServiceImpl extends BaseServiceImpl<Reward, Long>
 					return dao.save(reward);
 				}
 			}
-		}else{
+		}else{*/
 			return dao.save(reward);
-		}
+		
 	}
 	/*
 	 *查看剩余 累计发放奖励

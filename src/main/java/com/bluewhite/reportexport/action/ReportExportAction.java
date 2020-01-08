@@ -117,7 +117,6 @@ public class ReportExportAction {
 			cr.setMessage("成功导入" + count + "条数据");
 		}
 		in.close();
-
 		return cr;
 	}
 
@@ -398,6 +397,7 @@ public class ReportExportAction {
 			wb.write(outputStream);
 			outputStream.flush();
 			outputStream.close();
+			wb.close();
 		} catch (IOException e1) {
 			e1.printStackTrace();
 		}
@@ -446,6 +446,7 @@ public class ReportExportAction {
 			wb.write(outputStream);
 			outputStream.flush();
 			outputStream.close();
+			wb.close();
 		} catch (IOException e1) {
 			e1.printStackTrace();
 		}
@@ -518,7 +519,6 @@ public class ReportExportAction {
 			headnum1 = headnum1String.split("\\.");
 			excelHeader2 = excelHeader2String.split(",");
 		}
-
 		// 第一步，创建一个webbook，对应一个Excel文件
 		XSSFWorkbook wb = new XSSFWorkbook();
 		// 第二步，在webbook中添加一个sheet,对应Excel文件中的sheet
@@ -607,6 +607,7 @@ public class ReportExportAction {
 			wb.write(outputStream);
 			outputStream.flush();
 			outputStream.close();
+			wb.close();
 		} catch (IOException e1) {
 			e1.printStackTrace();
 		}
@@ -641,6 +642,7 @@ public class ReportExportAction {
 	 * @param listmap
 	 * @return
 	 */
+	@SuppressWarnings("unchecked")
 	private List<List<String>> head(List<Map<String, Object>> listmap) {
 		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
 		List<List<String>> list = new ArrayList<List<String>>();
@@ -710,6 +712,7 @@ public class ReportExportAction {
 	 * @param listmap
 	 * @return
 	 */
+	@SuppressWarnings("unchecked")
 	private List<List<Object>> data(List<Map<String, Object>> listmap) {
 		List<List<Object>> list = new ArrayList<>();
 		if (listmap.size() != 0) {

@@ -1047,8 +1047,6 @@ public class LedgerAction {
 	 */
 	@RequestMapping(value = "/ledger/inventory/inspectionMaterialPutStorage", method = RequestMethod.GET)
 	@ResponseBody
-	
-	
 	public CommonResponse inspectionOrderProcurement(MaterialPutStorage materialPutStorage) {
 		CommonResponse cr = new CommonResponse();
 		materialPutStorageService.inspectionMaterialPutStorage(materialPutStorage);
@@ -1208,7 +1206,7 @@ public class LedgerAction {
 	 */
 	@RequestMapping(value = "/ledger/inventory/getPutStorageDetails", method = RequestMethod.GET)
 	@ResponseBody
-	public CommonResponse sendPutStorage(Long id) {
+	public CommonResponse sendPutStorage(Long id ) {
 		CommonResponse cr = new CommonResponse();
 		cr.setData(outStorageService.getSendPutStorage(id));
 		cr.setMessage("查询成功");
@@ -1310,7 +1308,7 @@ public class LedgerAction {
 	 * 查看发货单
 	 * 
 	 * @return cr
-	 */
+	 */ 
 	@RequestMapping(value = "/ledger/getSendGoods", method = RequestMethod.GET)
 	@ResponseBody
 	public CommonResponse getSendGoods(PageParameter page, SendGoods sendGoods) {
@@ -1358,7 +1356,7 @@ public class LedgerAction {
 	public CommonResponse deleteSendGoods(String ids) {
 		CommonResponse cr = new CommonResponse();
 		int count = sendGoodsService.deleteSendGoods(ids);
-		cr.setMessage("成功删除" + count + "待发货单");
+		cr.setMessage("成功删除" + count + "条数据");
 		return cr;
 	}
 

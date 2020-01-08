@@ -73,7 +73,7 @@ public class DispatchAction {
 	public CommonResponse passApplyVoucher(String ids) {
 		CommonResponse cr = new CommonResponse();
 		int count = applyVoucherService.passApplyVoucher(ids);
-		cr.setMessage("成功");
+		cr.setMessage("成功通过"+count+"条申请");
 		return cr;
 	}
 	

@@ -10,11 +10,11 @@ public interface ApplyVoucherDao  extends BaseRepository<ApplyVoucher, Long>{
 	/**
 	 * 根据发货单获取申请单
 	 */
-	List<ApplyVoucher> findBySendGoodsIdAndPass(Long sendgoodsid,Integer pass);
+	List<ApplyVoucher> findBySendGoodsIdAndPass(Long sendgoodsId,Integer pass);
 	
 	
 	/**
 	 * 根据加工单获取申请单
 	 */
-	List<ApplyVoucher> findByOrderOutSourceIdAndPass(Long orderoutsourceid,Integer pass);
+	List<ApplyVoucher> findByOrderOutSourceIdAndPass(Long orderoutsourceId,Integer pass);
 }

@@ -1,5 +1,7 @@
 package com.bluewhite.production.temporarypack;
 
+import java.util.Date;
+
 import com.bluewhite.base.BaseCRUDService;
 import com.bluewhite.common.entity.PageParameter;
 import com.bluewhite.common.entity.PageResult;
@@ -21,7 +23,7 @@ public interface QuantitativeService extends BaseCRUDService<Quantitative,Long>{
 	public void saveQuantitative(Quantitative quantitative);
 	
 	/**
-	 * 发货
+	 * 审核
 	 * @param ids
 	 * @return
 	 */
@@ -41,11 +43,11 @@ public interface QuantitativeService extends BaseCRUDService<Quantitative,Long>{
 	int deleteQuantitative(String ids);
 	
 	/**
-	 * 审核
+	 * 发货
 	 * @param ids
 	 * @return
 	 */
-	int sendQuantitative(String ids);
+	int sendQuantitative(String ids,Integer flag);
 	
 	/**
 	 * 设置发货数量
@@ -65,6 +67,12 @@ public interface QuantitativeService extends BaseCRUDService<Quantitative,Long>{
 	 * @param quantitativeChild
 	 */
 	public void updateActualSingleNumber(QuantitativeChild quantitativeChild);
+
+    /**批量修改量化单的发货时间
+     * @param ids
+     * @param sendTime
+     */
+	public int updateQuantitativeSendTime(String ids, Date sendTime);
 
 	
 

@@ -20,20 +20,20 @@ public interface ApplicationLeaveService  extends BaseCRUDService<ApplicationLea
 	 * 新增修改请假事项
 	 * @param applicationLeave
 	 */
-	ApplicationLeave saveApplicationLeave(ApplicationLeave applicationLeave)  throws ParseException;
+	ApplicationLeave saveApplicationLeave(ApplicationLeave applicationLeave) ;
 	/**
 	 * 批量删除
 	 * @param ids
 	 * @return
 	 */
-	public int deleteApplicationLeave(String ids) throws ParseException;
+	public int deleteApplicationLeave(String ids) ;
 	
 	/**
 	 * 默认补签
 	 * @param applicationLeave
 	 * @throws ParseException
 	 */
-	public void defaultRetroactive(ApplicationLeave applicationLeave)  throws ParseException ;
+	public void defaultRetroactive(ApplicationLeave applicationLeave) ;
 ;
 
 }

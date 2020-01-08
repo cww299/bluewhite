@@ -119,12 +119,7 @@ public class PutStorageServiceImpl extends BaseServiceImpl<PutStorage, Long> imp
 
 	@Override
 	public List<PutStorage> detailsInventory(Object warehouseTypeId, Long productId) {
-	    List<PutStorage> putStorageList = null;
-	    if(warehouseTypeId!=null) {
-	        putStorageList = dao.findByWarehouseTypeIdAndProductId(Long.valueOf(warehouseTypeId.toString()), productId);
-	    } else {
-	        putStorageList = dao.findByProductId(productId);
-	    }
+	    List<PutStorage> putStorageList = dao.findByWarehouseTypeIdAndProductId(Long.valueOf(warehouseTypeId.toString()), productId);
 	    if(putStorageList.size()>0) {
 	        putStorageList.forEach(m -> {
 	            // 	入库单实际出库数量

@@ -21,9 +21,15 @@ import com.bluewhite.system.user.entity.User;
 /**
  * 加工单由领料单而来，加工单的实际数量等于领料单的实际数量
  * 
- * 加工单 有工序任务 加工单领取部门有领取人部门决定 加工单的任务工序，由实际的领料单决定，领料单中有领取模式，针工，机工，包装，绣花，裁剪
+ * 加工单 有工序任务 加工单领取部门有领取人部门决定 加工单的任务工序，由实际的领料单决定，领料单中有领取模式，裁剪,绣花,机工,针工,包装
  * 
  * 生产计划部 加工单 1.加工单 2.外发加工单
+ * 
+ * 加工单 需要分为仓库来源
+ * 电子商务部的加工单
+ * 如何区分？
+ * 当客户是电子商务部订单，加工单属于电子商务仓库
+ * 当客户为其他客户时，加工单属于蓝白仓库
  * 
  * @author zhangliang
  *
@@ -34,7 +40,6 @@ public class OrderOutSource extends BaseEntity<Long> {
 
 	/**
 	 * 领料单id
-	 * 
 	 */
 	@Column(name = "material_requisition_id")
 	private Long materialRequisitionId;
@@ -157,6 +162,12 @@ public class OrderOutSource extends BaseEntity<Long> {
 	 */
 	@Column(name = "charge_off")
 	private Integer chargeOff;
+	
+	/**
+     * 归属仓库种类id
+     */
+    @Column(name = "warehouse_type_id")
+    private Long warehouseTypeId;
 
 	/**
 	 * 	(申请人申请时)金额
@@ -259,7 +270,15 @@ public class OrderOutSource extends BaseEntity<Long> {
 	
 	
 
-	public Integer getActualQuantity() {
+	public Long getWarehouseTypeId() {
+        return warehouseTypeId;
+    }
+
+    public void setWarehouseTypeId(Long warehouseTypeId) {
+        this.warehouseTypeId = warehouseTypeId;
+    }
+
+    public Integer getActualQuantity() {
         return actualQuantity;
     }
 

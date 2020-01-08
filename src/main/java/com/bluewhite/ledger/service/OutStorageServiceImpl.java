@@ -212,13 +212,9 @@ public class OutStorageServiceImpl extends BaseServiceImpl<OutStorage, Long> imp
 	@Override
 	public List<Map<String, Object>> getSendPutStorage(Long id) {
 		List<Map<String, Object>> list = new ArrayList<>();
-		// 根据仓管登陆用户权限，获取不同的仓库库存
-		CurrentUser cu = SessionManager.getUserSession();
-		Long warehouseTypeDeliveryId = RoleUtil.getWarehouseTypeDelivery(cu.getRole());
 		SendGoods sendGoods = sendGoodsDao.findOne(id);
 		// 获取登陆库管的仓库出库单剩余数量
-		List<PutStorage> putStorageList = putStorageService.detailsInventory(warehouseTypeDeliveryId,
-				sendGoods.getProductId());
+		List<PutStorage> putStorageList = putStorageService.detailsInventory(sendGoods.getWarehouseTypeId(),sendGoods.getProductId());
 		// 获取发货申请人自己的库存
 		List<PutStorage> putStorageListSelf = putStorageList.stream().filter(p -> {
 			if (p.getOrderOutSource() != null) {
@@ -265,8 +261,7 @@ public class OutStorageServiceImpl extends BaseServiceImpl<OutStorage, Long> imp
 						Map<String, Object> map = new HashMap<String, Object>();
 						map.put("id", p.getId());
 						map.put("number", p.getSurplusNumber());
-						map.put("bacthNumber",
-								p.getOrderOutSource().getMaterialRequisition().getOrder().getBacthNumber());
+						map.put("bacthNumber",p.getOrderOutSource().getMaterialRequisition().getOrder().getBacthNumber());
 						map.put("serialNumber", p.getSerialNumber());
 						list.add(map);
 					});
@@ -281,7 +276,7 @@ public class OutStorageServiceImpl extends BaseServiceImpl<OutStorage, Long> imp
 				Map<String, Object> map = new HashMap<String, Object>();
 				map.put("id", p.getId());
 				map.put("number", p.getSurplusNumber());
-				map.put("bacthNumber", "");
+				map.put("bacthNumber", "公共库存");
 				map.put("serialNumber", p.getSerialNumber());
 				list.add(map);
 			});
@@ -340,8 +335,7 @@ public class OutStorageServiceImpl extends BaseServiceImpl<OutStorage, Long> imp
 						Map<String, Object> map = new HashMap<String, Object>();
 						map.put("id", p.getId());
 						map.put("number", p.getSurplusNumber());
-						map.put("bacthNumber",
-								p.getOrderOutSource().getMaterialRequisition().getOrder().getBacthNumber());
+						map.put("bacthNumber",p.getOrderOutSource().getMaterialRequisition().getOrder().getBacthNumber());
 						map.put("serialNumber", p.getSerialNumber());
 						list.add(map);
 					});
@@ -357,7 +351,7 @@ public class OutStorageServiceImpl extends BaseServiceImpl<OutStorage, Long> imp
 				Map<String, Object> map = new HashMap<String, Object>();
 				map.put("id", p.getId());
 				map.put("number", p.getSurplusNumber());
-				map.put("bacthNumber", "");
+				map.put("bacthNumber", "公共库存");
 				map.put("serialNumber", p.getSerialNumber());
 				list.add(map);
 			});
