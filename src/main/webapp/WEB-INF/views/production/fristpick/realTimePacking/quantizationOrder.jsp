@@ -174,7 +174,23 @@ layui.config({
 							type:1,
 							title:'修改发货时间',
 							offset:'120px',
-							content:'<div style="padding:15px;"><input type="text" id="updateTime" class="layui-input"></div>',
+							content:
+							['<div style="padding:10px;">',
+								'<table>',
+									'<tr>',
+										'<td>发货时间：</td>',
+										'<td>',
+											'<input type="text" class="layui-input" id="updateTime">',
+										'</td>',
+									'</tr>',
+									'<tr>',
+										'<td style="padding-top:10px;">密码：</td>',
+										'<td style="padding-top:10px;">',
+											'<input type="password" class="layui-input" id="pwd">',
+										'</td>',
+									'</tr>',
+								'</table>',
+							  '</div>'].join(' '),
 							btn:['确定','取消'],
 							btnAlign:'c',
 							area:'auto',
@@ -184,6 +200,8 @@ layui.config({
 								});
 							},
 							yes:function(){
+								if($('#pwd').val()!='456789')
+									return myutil.emsg('密码错误！');
 								var ids = [];
 								layui.each(check,function(idex,item){
 									ids.push(item.id);
