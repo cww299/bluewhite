@@ -53,23 +53,30 @@ layui.config({
 		, sendGoodOrder = layui.sendGoodOrder
 		, outInventory = layui.outInventory
 		, mytable = layui.mytable;
-		
 		myutil.config.ctx = '${ctx}';
 		myutil.clickTr();
 		myutil.getLastData();
+		var currUser = myutil.getDataSync({ url: myutil.config.ctx+'/getCurrentUser', });
+		var roles = currUser.role;
+		var isSaleUser = roles.indexOf('salesUser')>-1 || roles.indexOf('superAdmin')>-1;
+		var isWarehouseRole = ( roles.indexOf('eightFinishedWarehouse')>-1 || 
+								roles.indexOf('onlineWarehouse')>-1 || 
+								roles.indexOf('sceneWarehouse')>-1 || 
+								roles.indexOf('finishedWarehouse')>-1 || 
+								roles.indexOf('superAdmin')>-1); 
 		laydate.render({ elem:'#searchTime',range:'~'  })
 		mytable.render({
 			elem:'#sendTable',
 			url: myutil.config.ctx+'/ledger/getSendGoods',
 			toolbar: [
-				'<span class="layui-btn layui-btn-sm" lay-event="addSendOrder">新增发货单</span>',
-				'<span class="layui-btn layui-btn-sm layui-btn-warm" lay-event="sendGood">发货</span>',
+				isSaleUser?'<span class="layui-btn layui-btn-sm" lay-event="addSendOrder">新增发货单</span>':'',
+				isWarehouseRole?'<span class="layui-btn layui-btn-sm layui-btn-warm" lay-event="sendGood">发货</span>':'',
 			].join(' '),
 			curd:{
-				btn:[4],
+				btn: isSaleUser?[4]:[],
 				otherBtn:function(obj){
 					if(obj.event=='addSendOrder'){
-						sendGoodOrder.add({});
+						sendGoodOrder.add({currUser: currUser});
 					}else if(obj.event=='sendGood'){
 						var check = layui.table.checkStatus('sendTable').data;
 						if(check.length!=1)
