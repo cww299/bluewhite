@@ -1287,6 +1287,10 @@ layui.define(['laytpl', 'laypage', 'layer', 'form', 'util'], function(exports){
           });
         break;
         case 'LAYTABLE_EXPORT': //导出
+        	var	a="";
+        	if(othis.attr("data-id")==1){
+        		a='<li data-type="allnull"  id="allExport" lay-event="allExport">导出 全部 文件</li>';
+        	}
           if(device.ie){
             layer.tips('导出功能不支持 IE，请用 Chrome 等高级浏览器导出', this, {
               tips: 3
@@ -1296,13 +1300,14 @@ layui.define(['laytpl', 'laypage', 'layer', 'form', 'util'], function(exports){
               list: function(){
                 return [
                   '<li data-type="csv">导出到 Csv 文件</li>'
-                  ,'<li data-type="xls">导出到 Excel 文件</li>'
+                  ,'<li data-type="xls">导出到 Excel 文件</li>',
+                  a
                 ].join('')
               }()
               ,done: function(panel, list){
                 list.on('click', function(){
                   var type = $(this).data('type')
-                  table.exportFile(options.id, null, type);
+                  table.exportFile(options.id, null, type,options.url);
                 });
               }
             });
@@ -1833,10 +1838,20 @@ layui.define(['laytpl', 'laypage', 'layer', 'form', 'util'], function(exports){
   };
   
   //表格导出
-  table.exportFile = function(id, data, type){
+  table.exportFile = function(id, data, type,url){
     data = data || table.clearCacheKey(table.cache[id]);
     type = type || 'csv';
-    
+    if(type=='allnull'){
+    	$.ajax({
+		      url:url,
+		      type:"GET",
+		      data:{page:1,size:0},
+    		  success: function (result) {
+    		  table.exportFile(id, result.data.rows)
+    		  }
+    	})
+    	return "";
+    };
     var config = thisTable.config[id] || {}
     ,textType = ({
       csv: 'text/csv'
