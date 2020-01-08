@@ -644,6 +644,7 @@ layui.config({
 						success:function(){
 							laydate.render({
 								elem:'#finishTime',
+								value: new Date(),
 							})
 						},
 						yes:function(){
