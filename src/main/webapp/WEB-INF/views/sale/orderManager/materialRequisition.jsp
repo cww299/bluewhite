@@ -106,7 +106,7 @@ layui.config({
 		outOrderModel.init();
 		var allUserSelect,allCustomSelect;
 		myutil.getData({
-			url: myutil.config.ctx+'/system/user/findUserList',
+			url: myutil.config.ctx+'/system/user/findUserList?quit=0',
 			success:function(d){
 				for(var i=0,len=d.length;i<len;i++){
 					allUserSelect += '<option value="'+d[i].id+'">'+d[i].userName+'</option>';
@@ -114,7 +114,7 @@ layui.config({
 			}
 		})
 		myutil.getData({
-			url: myutil.config.ctx+'/ledger/allCustomer?type=5',
+			url: myutil.config.ctx+'/ledger/allCustomer?customerTypeId=460',
 			success:function(d){
 				for(var i=0,len=d.length;i<len;i++){
 					allCustomSelect += '<option value="'+d[i].id+'">'+d[i].name+'</option>';

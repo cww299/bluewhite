@@ -27,7 +27,7 @@
 			<table>
 				<tr>
 					<td>报销人:</td>
-					<td><input type="text" name="Username" id="firstNames" class="layui-input" /></td>
+					<td><input type="text" name="userName" id="firstNames" class="layui-input" /></td>
 					<td>&nbsp;&nbsp;</td>
 					<td>报销内容:</td>
 					<td><input type="text" name="content"  class="layui-input" /></td>
@@ -487,7 +487,7 @@ layui.config({
 			var field = obj.field;
 			if(field.orderTimeBegin!=''){
 				var orderTime=field.orderTimeBegin.split('~');
-				field.orderTimeBegin=orderTime[0];
+				field.orderTimeBegin=orderTime[0]+' 00:00:00';
 				if(orderTime[1]){
 					orderTime[1] = orderTime[1].split(' ')[1]+' 23:59:59';
 				}
@@ -558,7 +558,7 @@ layui.config({
 		function getDate(data){
 			if(document.getElementById("totalAll")!=null){
 				$.ajax({
-					url:"${ctx}/fince/countConsumptionMoney",
+					url:"${ctx}/fince/countConsumptionMoney?type=1",
 					data: data || null,
 					success:function(result){
 						if(0==result.code){
@@ -662,7 +662,9 @@ layui.config({
 				page: { },
 				request:{ pageName: 'page' , limitName: 'size' },
 				parseData: function(ret) { 
-					return { code: ret.code, msg: ret.message, count:ret.data.total, data: ret.data.rows } 
+					if(ret.code==0)
+						return { code: ret.code, msg: ret.message, count:ret.data.total, data: ret.data.rows }; 
+					return { code: ret.code, msg: ret.message, count:ret.data, data: ret.data };
 				},
 				done:function(res, curr, count){
 					var tableView = this.elem.next();

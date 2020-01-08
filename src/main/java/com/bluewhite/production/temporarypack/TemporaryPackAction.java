@@ -12,8 +12,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
 
-import com.alibaba.excel.EasyExcelFactory;
-import com.alibaba.excel.metadata.Sheet;
+import com.alibaba.excel.EasyExcel;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.bluewhite.basedata.entity.BaseData;
@@ -215,9 +214,9 @@ public class TemporaryPackAction {
 	 */
 	@RequestMapping(value = "/temporaryPack/sendQuantitative", method = RequestMethod.GET)
 	@ResponseBody
-	public CommonResponse sendQuantitative(String ids) {
+	public CommonResponse sendQuantitative(String ids,Integer flag) {
 		CommonResponse cr = new CommonResponse();
-		quantitativeService.sendQuantitative(ids);
+		quantitativeService.sendQuantitative(ids,flag);
 		cr.setMessage("发货成功");
 		return cr;
 	}
@@ -272,7 +271,7 @@ public class TemporaryPackAction {
 		CommonResponse cr = new CommonResponse();
 		InputStream inputStream = file.getInputStream();
 		ExcelListener excelListener = new ExcelListener();
-		EasyExcelFactory.readBySax(inputStream, new Sheet(1, 1, UnderGoodsPoi.class), excelListener);
+		EasyExcel.read(inputStream, UnderGoodsPoi.class, excelListener).sheet().doRead();
 		int count = underGoodsService.excelUnderGoods(excelListener);
 		inputStream.close();
 		cr.setMessage("成功导入" + count + "条下货单");

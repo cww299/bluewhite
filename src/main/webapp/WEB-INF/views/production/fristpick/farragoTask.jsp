@@ -511,32 +511,30 @@ window.onload = function(){
 		  	this.setCount = function(count){
 		  		_count=count;
 		  	}
-			  	var myDate = new Date(new Date().getTime() - 86400000);
+			  	var date = new Date();
 				//获取当前年
-				var year=myDate.getFullYear();
+				var year=date.getFullYear();
 				//获取当前月
-				var month=myDate.getMonth()+1;
-				//获取当前日
-				var date=myDate.getDate(); 
+				var month=date.getMonth()+1;
 				var day = new Date(year,month,0);  
 				if(month < 10){
 					month = "0" + month;
 					}
 				var firstdate = year + '-' +month + '-01'+' '+'00:00:00';
 				var lastdate = year + '-' +month + '-' + day.getDate() +' '+'23:59:59'; 
-				function p(s) {
+		/* 		function p(s) {
 					return s < 10 ? '0' + s: s;
 					}
-				var myDate2 = new Date(new Date().getTime());
+				var myDate2 = new Date();
 				var year2=myDate2.getFullYear();
 				//获取当前月
 				var month2=myDate2.getMonth()+1;
 				//获取当前日
 				var date2=myDate2.getDate();
-				var h=myDate.getHours();              //获取当前小时数(0-23)
-				var m=myDate.getMinutes();          //获取当前分钟数(0-59)
-				var s=myDate.getSeconds();
-				var now=year2+'-'+p(month2)+"-"+p(date2)+" "+p(h)+':'+p(m)+":"+p(s);//当前时间
+				var h=myDate2.getHours();              //获取当前小时数(0-23)
+				var m=myDate2.getMinutes();          //获取当前分钟数(0-59)
+				var s=myDate2.getSeconds();
+				var now=year2+'-'+p(month2)+"-"+p(date2)+" "+p(h)+':'+p(m)+":"+p(s);//当前时间 */
 			 layui.use(['laydate'],function(){
 					var laydate = layui.laydate;
 					laydate.render({

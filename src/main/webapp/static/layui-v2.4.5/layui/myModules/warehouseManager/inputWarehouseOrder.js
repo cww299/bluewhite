@@ -7,15 +7,20 @@
  * type: 0,		//入库类型1:物料入库（默认）、2:成品入库、3:皮壳入库
  * inputWarehouseOrder.add({
  * 		inStatus: 1,    //采购入库	物料type=1时的值
- * 		inStatus: 2,    //生产入库 如果新增为这两种状态，请给定inStatus值
- * 		inStatus: 3,    //调拨入库,
- * 		inStatus: 4,	//退货入库,
- * 		inStatus: 5,	//换货入库,
- * 		inStatus: 6, 	//盘亏入库,
+ * 		inStatus: 1,    //生产入库 如果新增为这两种状态，请给定inStatus值
+ * 		inStatus: 2,    //调拨入库,
+ * 		inStatus: 3,	//退货入库,
+ * 		inStatus: 4,	//换货入库,
+ * 		inStatus: 5, 	//盘亏入库,
+ * 		//物料采购入库新增传参：inStatus:1  type:1
  * 		orderProcurementId:'',  //修改物料入库采购入库时，传入的订单id
+ * 		placeOrderNumber: check[0].placeOrderNumber,	//采购数量
+ * 	    warehousingNumber: check[0].warehousingNumber,	//已入库数量，用于判断入库数量是否超出采购数量
+ * 
  * 		materielId:'',			//物料入库时传入
  * 		productId:'',   		//成品、皮壳入库时传入
  * 		orderOutSourceId:'',    //成品、皮壳生产入库时，传入的订单id
+ * 
  * })
  */
 layui.extend({
@@ -31,7 +36,7 @@ layui.extend({
 				'<div class="layui-form-item" pane>',
 					'<label class="layui-form-label">入库时间</label>',
 					'<div class="layui-input-block">',
-						'<input class="layui-input" lay-verify="required" name="arrivalTime" autocomplete="off" id="arrivalTime" value="{{ d.arrivalTime?d.arrivalTime:"" }}">',
+						'<input class="layui-input" lay-verify="required" name="arrivalTime" autocomplete="off" id="arrivalTime">',
 					'</div>',
 				'</div>',
 				'<div class="layui-form-item" pane>',
@@ -65,12 +70,12 @@ layui.extend({
 				'<div class="layui-form-item" pane>',
 					'<label class="layui-form-label">入库类型</label>',
 					'<div class="layui-input-block">',
-						'<select name="inStatus" {{(d.inStatus==1 || d.inStatus==2)?"disabled":""}} ',
-							' value="{{ d.inStatus || 3}}" id="inStatus">',
+						'<select name="inStatus" {{ (d.inStatus==1)?"disabled":""}} ',
+							' value="{{ d.inStatus || 2}}" id="inStatus">',
 							`{{#
 								 if(layui.inputWarehouseOrder.type==layui.inputWarehouseOrder.allType.WL){
 							 }}
-									<option value="2" {{ d.inStatus!=2?"disabled":"" }}>采购入库</option>
+									<option value="1" {{ d.inStatus!=1?"disabled":"" }}>采购入库</option>
 							 {{#
 							 	 }else{
 							  }}
@@ -79,10 +84,10 @@ layui.extend({
 							     }
 							  }}
 							  `,
-							'<option value="3">调拨入库</option>',
-							'<option value="4">退货入库</option>',
-							'<option value="5">换货入库</option>',
-							'<option value="6">盘亏入库</option>',
+							'<option value="2">调拨入库</option>',
+							'<option value="3">退货入库</option>',
+							'<option value="4">换货入库</option>',
+							'<option value="5">盘亏入库</option>',
 							'</select>',
 					'</div>',
 				'</div>',
@@ -152,7 +157,7 @@ layui.extend({
 			title: title,
 			btnAlign:'c',
 			success:function(){
-				laydate.render({ elem:'#arrivalTime', type:'datetime', });
+				laydate.render({ elem:'#arrivalTime', type:'datetime', value: data.arrivalTime || new Date(), });
 				$('#userStorageId').append(allUser);
 				$('#storageLocationId').append(allStorageLocation);
 				$('#storageAreaId').append(allStorageArea);
@@ -170,16 +175,28 @@ layui.extend({
 				}
 				form.on('submit(sureAddOutOrder)',function(obj){
 					var url = '/ledger/inventory/savePutStorage';
-					if(inputWarehouseOrder.type==inputWarehouseOrder.allType.WL)
+					if(inputWarehouseOrder.type==inputWarehouseOrder.allType.WL){	//物料
 						url = '/ledger/inventory/saveMaterialPutStorage';
-					myutil.saveAjax({
-						url: url,
-						data: obj.field,
-						success:function(){
-							layer.close(win);
-							opt.success && opt.success();
+						if(!data.id && data.inStatus==1){	//如果是新增物料采购入库
+							if(data.placeOrderNumber<(obj.field.arrivalNumber - -data.warehousingNumber)){
+								layer.confirm('入库数量大于采购数量，是否确认入库！',{offset:'120px',},function(){
+									saveData();
+								})
+								return;
+							}
 						}
-					})
+					}
+					saveData();
+					function saveData(){
+						myutil.saveAjax({
+							url: url,
+							data: obj.field,
+							success:function(){
+								layer.close(win);
+								opt.success && opt.success();
+							}
+						})
+					}
 				})
 				form.render();
 			},
@@ -203,8 +220,14 @@ layui.extend({
 					done && done();
 			}
 		})
+		var orgNameId;
+		switch(inputWarehouseOrder.type){
+		case 1: orgNameId = 51;  break;	//面辅料仓库部门
+		case 2: orgNameId = 55;  break;	//成品仓库部门
+		case 3: orgNameId = 59;  break;	//皮壳仓库部门
+		}
 		myutil.getData({	//获取所有人员
-			url: myutil.config.ctx+'/system/user/findUserList?quit=0',
+			url: myutil.config.ctx+'/system/user/findUserList?quit=0&orgNameIds='+orgNameId,
 			success:function(d){
 				for(var i=0,len=d.length;i<len;i++){
 					allUser += '<option value="'+d[i].id+'">'+d[i].userName+'</option>';

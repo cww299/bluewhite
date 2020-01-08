@@ -60,12 +60,6 @@ public class Tailor extends BaseEntity<Long> {
 	private Long embroideryId;
 
 	/**
-	 * 批量产品数量或模拟批量数
-	 */
-	@Column(name = "number")
-	private Integer number;
-
-	/**
 	 * 裁剪部位
 	 */
 	@Column(name = "tailor_name")
@@ -76,12 +70,6 @@ public class Tailor extends BaseEntity<Long> {
 	 */
 	@Column(name = "tailor_number")
 	private Integer tailorNumber;
-
-	/**
-	 * 当批片数
-	 */
-	@Column(name = "bacth_tailor_number")
-	private Integer bacthTailorNumber;
 
 	/**
 	 * 手选该裁片的平方M
@@ -115,7 +103,7 @@ public class Tailor extends BaseEntity<Long> {
 	private Double ratePrice;
 	
 	/**
-	 * 选择单个入成本价格
+	 * 选择单个入成本价格(1.得到理论(市场反馈）含管理价值   2.得到实验推算价格 )
 	 */
 	@Column(name = "cost_price_select")
 	private Integer costPriceSelect;
@@ -125,12 +113,6 @@ public class Tailor extends BaseEntity<Long> {
 	 */
 	@Column(name = "cost_price")
 	private Double costPrice;
-
-	/**
-	 * 总入成本价格
-	 */
-	@Column(name = "all_cost_price")
-	private Double allCostPrice;
 
 	/**
 	 * 各单片比全套工价
@@ -168,9 +150,23 @@ public class Tailor extends BaseEntity<Long> {
 	@Transient
 	private Double oneCutPrice;
 	
+	/**
+     * 批量产品数量或模拟批量数
+     */
+	@Transient
+    private Integer number;
 	
+	/**
+     * 总入成本价格
+     */
+	@Transient
+    private Double allCostPrice;
 
-	
+    /**
+     * 当批裁剪片数
+     */
+	@Transient
+    private Integer bacthTailorNumber;
 
 	public BaseOne getTailorType() {
 		return tailorType;

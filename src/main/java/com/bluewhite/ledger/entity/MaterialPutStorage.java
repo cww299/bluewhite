@@ -140,10 +140,10 @@ public class MaterialPutStorage extends BaseEntity<Long> {
 	private Integer inspection;
 	
 	/**
-	 * 实际平方克重
-	 */
-	@Column(name = "square_gram")
-	private Double squareGram;
+     * 实际平方克重
+     */
+    @Column(name = "square_gram")
+    private Double squareGram;
 	
 	/**
 	 * 偷克重产生被偷价值(缺克重价值)
@@ -182,7 +182,15 @@ public class MaterialPutStorage extends BaseEntity<Long> {
 	
 	
 	
-	public String getSerialNumber() {
+	public Double getSquareGram() {
+        return squareGram;
+    }
+
+    public void setSquareGram(Double squareGram) {
+        this.squareGram = squareGram;
+    }
+
+    public String getSerialNumber() {
 		return serialNumber;
 	}
 
@@ -220,14 +228,6 @@ public class MaterialPutStorage extends BaseEntity<Long> {
 
 	public void setMaterielNumber(String materielNumber) {
 		this.materielNumber = materielNumber;
-	}
-
-	public Double getSquareGram() {
-		return squareGram;
-	}
-
-	public void setSquareGram(Double squareGram) {
-		this.squareGram = squareGram;
 	}
 
 	public Double getGramPrice() {

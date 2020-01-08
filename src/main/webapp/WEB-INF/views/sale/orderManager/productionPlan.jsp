@@ -72,6 +72,7 @@ layui.config({
 		, mytable = layui.mytable;
 		myutil.config.ctx = '${ctx}';
 		myutil.getLastData();
+		myutil.clickTr();
 		myutil.config.msgOffset = '250px';
 		
 		var noTransTableData = [];
@@ -124,37 +125,10 @@ layui.config({
 			       { title:'备注',   field:'childRemark',	},
 			       { title:'跟单人',   field:'childUser_userName',	},
 			       ]],
-			done:function(){
-				merge('0');
-				merge('bacthNumber');
-				merge('orderDate');
-				merge('product_number');
-				merge('product_name');
-				merge('number');
-				merge('remark');
-				merge('audit');
-				function merge(field){
-					var rowspan = 1,mainCols=0;
-					var cache = table.cache['tableAgreement'];
-					var allCol = $('#tableAgreement').next().find('td[data-field="'+field+'"]');
-					layui.each(allCol,function(index,item){
-						if(index!=0){
-							var thisData = cache[index],lastData = index!=0?cache[index-1]:{id:-1};
-							if(!thisData)
-								return;
-							if(thisData.id!=lastData.id){
-								$(allCol[mainCols]).attr('rowspan',rowspan)
-								mainCols = index;
-								rowspan = 1;
-							}else{	//与上一列相同
-								rowspan++;
-								$(item).css('display','none')
-							}
-						}
-					})
-					$(allCol[mainCols]).attr('rowspan',rowspan)
-				}
-			}
+	       autoMerge:{
+		    	 field:['bacthNumber','orderDate','product_number','product_name','number','remark',
+		    		 'audit','0'],  
+		   },
 		})
 		form.on('submit(search)',function(obj){
 			var time = $('#searchTime').val();

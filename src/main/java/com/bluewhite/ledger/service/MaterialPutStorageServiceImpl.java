@@ -11,6 +11,7 @@ import javax.persistence.criteria.Predicate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
 
 import com.bluewhite.base.BaseServiceImpl;
@@ -25,14 +26,10 @@ import com.bluewhite.ledger.dao.MaterialOutStorageDao;
 import com.bluewhite.ledger.dao.MaterialPutOutStorageDao;
 import com.bluewhite.ledger.dao.MaterialPutStorageDao;
 import com.bluewhite.ledger.dao.OrderProcurementDao;
-import com.bluewhite.ledger.dao.OrderProcurementReturnDao;
 import com.bluewhite.ledger.entity.MaterialOutStorage;
 import com.bluewhite.ledger.entity.MaterialPutOutStorage;
 import com.bluewhite.ledger.entity.MaterialPutStorage;
 import com.bluewhite.ledger.entity.OrderProcurement;
-import com.bluewhite.ledger.entity.OrderProcurementReturn;
-
-import cn.hutool.core.util.StrUtil;
 
 @Service
 public class MaterialPutStorageServiceImpl extends BaseServiceImpl<MaterialPutStorage, Long>
@@ -46,10 +43,9 @@ public class MaterialPutStorageServiceImpl extends BaseServiceImpl<MaterialPutSt
     private MaterialOutStorageDao materialOutStorageDao;
     @Autowired
     private MaterialPutOutStorageDao materialPutOutStorageDao;
-    @Autowired
-    private OrderProcurementReturnDao orderProcurementReturnDao;
 
     @Override
+    @Transactional
     public void saveMaterialPutStorage(MaterialPutStorage materialPutStorage) {
         if (materialPutStorage.getId() != null) {
             MaterialPutStorage ot = dao.findOne(materialPutStorage.getId());
@@ -103,6 +99,7 @@ public class MaterialPutStorageServiceImpl extends BaseServiceImpl<MaterialPutSt
             return null;
         }, page);
         pages.getContent().stream().forEach(m -> {
+            //出库数量
             List<Long> longList = materialOutStorageDao.findMaterialPutStorageId(m.getId());
             List<MaterialOutStorage> materialOutStorageList = materialOutStorageDao.findAll(longList);
             double arrNumber = materialOutStorageList.stream().mapToDouble(MaterialOutStorage::getArrivalNumber).sum();
@@ -113,6 +110,7 @@ public class MaterialPutStorageServiceImpl extends BaseServiceImpl<MaterialPutSt
     }
 
     @Override
+    @Transactional
     public int deleteMaterialPutStorage(String ids) {
         int i = 0;
         if (!StringUtils.isEmpty(ids)) {
@@ -136,6 +134,7 @@ public class MaterialPutStorageServiceImpl extends BaseServiceImpl<MaterialPutSt
     }
 
     @Override
+    @Transactional
     public void inspectionMaterialPutStorage(MaterialPutStorage materialPutStorage) {
         MaterialPutStorage ot = findOne(materialPutStorage.getId());
         if (ot.getInspection() == 1) {
@@ -157,15 +156,17 @@ public class MaterialPutStorageServiceImpl extends BaseServiceImpl<MaterialPutSt
     }
 
     @Override
-    public double getArrivalNumber(Long id) {
+    public double getArrivalNumber(Long id) {   
         // 获取到货数量
         List<MaterialPutStorage> materialPutStorageList = dao.findByOrderProcurementId(id);
         // 计算退货总数
         List<MaterialOutStorage> list = new ArrayList<>();
         materialPutStorageList.stream().forEach(m -> {
-            MaterialOutStorage materialOutStorage = materialOutStorageDao.findOne(m.getId());
-            if (materialOutStorage != null) {
-                list.add(materialOutStorage);
+            List<Long> longList = materialOutStorageDao.findMaterialPutStorageId(m.getId());
+            List<MaterialOutStorage> listMaterialOutStorage =  materialOutStorageDao.findAll(longList);
+            if(listMaterialOutStorage.size()>0) {
+                List<MaterialOutStorage>  mList = listMaterialOutStorage.stream().filter(MaterialOutStorage->MaterialOutStorage.getOutStatus()==4).collect(Collectors.toList());
+                list.addAll(mList);
             }
         });
         double returnNumber = list.stream().mapToDouble(MaterialOutStorage::getArrivalNumber).sum();
@@ -191,8 +192,7 @@ public class MaterialPutStorageServiceImpl extends BaseServiceImpl<MaterialPutSt
         }
         putStorageList.forEach(m -> {
             // 入库单实际出库数量
-            List<MaterialPutOutStorage> outPutStorageList =
-                materialPutOutStorageDao.findByMaterialPutStorageId(m.getId());
+            List<MaterialPutOutStorage> outPutStorageList = materialPutOutStorageDao.findByMaterialPutStorageId(m.getId());
             double arrNumber = outPutStorageList.stream().mapToDouble(MaterialPutOutStorage::getNumber).sum();
             // 入库单剩余数量
             m.setSurplusNumber(NumUtils.sub(m.getArrivalNumber(), arrNumber));
@@ -203,36 +203,6 @@ public class MaterialPutStorageServiceImpl extends BaseServiceImpl<MaterialPutSt
         return putStorageList;
     }
 
-    @Override
-    public void saveMaterialReturn(OrderProcurementReturn orderProcurementReturn) {
-        if (orderProcurementReturn.getMaterialPutStorageId() != null) {
-            MaterialPutStorage materialPutStorage = dao.findOne(orderProcurementReturn.getMaterialPutStorageId());
-            List<OrderProcurementReturn> orderProcurementReturnList =
-                orderProcurementReturnDao.findByMaterialPutStorageId(orderProcurementReturn.getMaterialPutStorageId());
-            if (orderProcurementReturnList.size() > 0) {
-                double sumNumber =
-                    orderProcurementReturnList.stream().mapToDouble(OrderProcurementReturn::getNumber).sum();
-                if (materialPutStorage
-                    .getArrivalNumber() < (NumUtils.sum(sumNumber, orderProcurementReturn.getNumber()))) {
-                    throw new ServiceException("以退货:" + sumNumber + "退货数量超出,无法继续退货，请核实数值");
-                }
-                orderProcurementReturnDao.save(orderProcurementReturn);
-            }
-        }
 
-    }
-
-    @Override
-    public int deleteMaterialReturn(String ids) {
-        int count = 0;
-        if (StrUtil.isNotBlank(ids)) {
-            String[] strArr = ids.split(",");
-            for (String idsString : strArr) {
-                Long id = Long.valueOf(idsString);
-                orderProcurementReturnDao.delete(id);
-                count++;
-            }
-        }
-        return count;
-    }
+   
 }

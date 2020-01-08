@@ -42,13 +42,17 @@ public class ApplyVoucherServiceImpl extends BaseServiceImpl<ApplyVoucher, Long>
 		applyVoucher.setPass(0);
 		save(applyVoucher);
 	}
-
+	
+	
 	@Override
 	public PageResult<ApplyVoucher> findPages(ApplyVoucher param, PageParameter page) {
+	    //  申请单，申请单列表根据权限区分  
 		CurrentUser cu = SessionManager.getUserSession();
 		Long warehouseTypeId = RoleUtil.getWarehouseTypeDelivery(cu.getRole());
 		if(warehouseTypeId!=null){
 			param.setWarehouseTypeId(warehouseTypeId);
+		} else {
+		    param.setUserId(cu.getId());
 		}
 		Page<ApplyVoucher> pages = dao.findAll((root, query, cb) -> {
 			List<Predicate> predicate = new ArrayList<>();
@@ -96,7 +100,6 @@ public class ApplyVoucherServiceImpl extends BaseServiceImpl<ApplyVoucher, Long>
 				predicate.add(cb.between(root.get("passTime").as(Date.class), param.getOrderTimeBegin(),
 						param.getOrderTimeEnd()));
 			}
-
 			Predicate[] pre = new Predicate[predicate.size()];
 			query.where(predicate.toArray(pre));
 			return null;

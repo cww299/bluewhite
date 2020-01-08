@@ -198,7 +198,7 @@ layui.define(['mytable','form'],function(exports){
 				notNull: ['materiel'],
 				price:['oneMaterial','manualLoss','batchMaterial','batchMaterialPrice'] 
 			},
-			colsWidth:[0,0,6,8,6,8,8,8,15],
+			colsWidth:[0,0,6,8,6,8,15],
 			cols:[[
 			       { type:'checkbox',},
 			       { title:'物料编号/名称/价格/单位',   	field:'materiel',	templet: getSelectHtml(), edit:false, },
@@ -207,8 +207,6 @@ layui.define(['mytable','form'],function(exports){
 			    	   select:{ data: [{id:0,name:'不转换'},{id:1,name:'转换'}],layFilter:'convertUnitSelect',unsearch:true, } ,},
 			       { title:'单只用料',   	field:'oneMaterial',	edit:true, },
 			       { title:'手动损耗', 		field:'manualLoss',  	edit:true, },
-			       { title:'当批当品种用量',  field:'batchMaterial',	edit:false, },
-			       { title:'当批当品种价格',  field:'batchMaterialPrice',   edit:false, },
 			       { title:'压货环节',   	field:'overstock_id', type:'select', select:{ data: allOverstock } ,},
 			       ]],
 	        done:function(){

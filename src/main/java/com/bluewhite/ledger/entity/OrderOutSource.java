@@ -25,6 +25,12 @@ import com.bluewhite.system.user.entity.User;
  * 
  * 生产计划部 加工单 1.加工单 2.外发加工单
  * 
+ * 加工单 需要分为仓库来源
+ * 电子商务部的加工单
+ * 如何区分？
+ * 当客户是电子商务部订单，加工单属于电子商务仓库
+ * 当客户为其他客户时，加工单属于蓝白仓库
+ * 
  * @author zhangliang
  *
  */
@@ -34,7 +40,6 @@ public class OrderOutSource extends BaseEntity<Long> {
 
 	/**
 	 * 领料单id
-	 * 
 	 */
 	@Column(name = "material_requisition_id")
 	private Long materialRequisitionId;
@@ -233,7 +238,19 @@ public class OrderOutSource extends BaseEntity<Long> {
 	 */
 	@Transient
 	private Integer cotStatus;
-
+	
+	/**
+	 * 加工单退货数量
+	 */
+	@Transient
+	private Integer refundBillsNumber;
+	
+	/**
+     * 退货后实际数量
+     */
+    @Transient
+    private Integer actualQuantity;
+ 
 	/**
 	 * 查询字段
 	 */
@@ -244,8 +261,26 @@ public class OrderOutSource extends BaseEntity<Long> {
 	 */
 	@Transient
 	private Date orderTimeEnd;
+	
+	
 
-	public Integer getCotStatus() {
+	public Integer getActualQuantity() {
+        return actualQuantity;
+    }
+
+    public void setActualQuantity(Integer actualQuantity) {
+        this.actualQuantity = actualQuantity;
+    }
+
+    public Integer getRefundBillsNumber() {
+        return refundBillsNumber;
+    }
+
+    public void setRefundBillsNumber(Integer refundBillsNumber) {
+        this.refundBillsNumber = refundBillsNumber;
+    }
+
+    public Integer getCotStatus() {
 		return cotStatus;
 	}
 

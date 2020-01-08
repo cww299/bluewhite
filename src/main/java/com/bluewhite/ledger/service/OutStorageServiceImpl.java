@@ -47,8 +47,6 @@ public class OutStorageServiceImpl extends BaseServiceImpl<OutStorage, Long> imp
 	@Autowired
 	private SendGoodsDao sendGoodsDao;
 	@Autowired
-	private OrderService orderService;
-	@Autowired
 	private PutStorageService putStorageService;
 	@Autowired
 	private PutOutStorageDao putOutStorageDao;
@@ -147,8 +145,6 @@ public class OutStorageServiceImpl extends BaseServiceImpl<OutStorage, Long> imp
 		CurrentUser cu = SessionManager.getUserSession();
 		Long warehouseTypeDeliveryId = RoleUtil.getWarehouseTypeDelivery(cu.getRole());
 		Long productId = null;
-		// 总数
-		Integer oriNumber = null;
 		// 生成出库单
 		OutStorage outStorage = new OutStorage();
 		SendGoods sendGoods = null;
@@ -157,7 +153,6 @@ public class OutStorageServiceImpl extends BaseServiceImpl<OutStorage, Long> imp
 			outStorage.setSendGoodsId(id);
 			sendGoods = sendGoodsDao.findOne(id);
 			productId = sendGoods.getProductId();
-			oriNumber = sendGoods.getNumber();
 		}
 		OrderOutSource orderOutSource = null;
 		// 皮壳使用加工单
@@ -165,7 +160,6 @@ public class OutStorageServiceImpl extends BaseServiceImpl<OutStorage, Long> imp
 			outStorage.setOrderOutSourceId(id);
 			orderOutSource = orderOutSourceService.findOne(id);
 			productId = orderOutSource.getMaterialRequisition().getOrder().getProductId();
-			oriNumber = orderOutSource.getProcessNumber();
 		}
 		outStorage.setArrivalNumber(sendNumber);
 		outStorage.setArrivalTime(new Date());
@@ -196,20 +190,21 @@ public class OutStorageServiceImpl extends BaseServiceImpl<OutStorage, Long> imp
 				if (number != null) {
 					putOutStorage.setNumber(number);
 					putOutStorageDao.save(putOutStorage);
-				} else {
-					// 当发货数量小于等于剩余数量时,当前入库单可以满足出库数量，终止循环
-					if (sendNumber <= p.getSurplusNumber()) {
-						putOutStorage.setNumber(sendNumber);
-						putOutStorageDao.save(putOutStorage);
-						break;
-					}
-					// 当发货数量大于剩余数量时,当前入库单数量无法满足出库数量，库存相减后继续循环出库
-					if (sendNumber > p.getSurplusNumber()) {
-						putOutStorage.setNumber(p.getSurplusNumber());
-						sendNumber -= p.getSurplusNumber();
-						putOutStorageDao.save(putOutStorage);
-					}
-				}
+				} 
+//				else {
+//					// 当发货数量小于等于剩余数量时,当前入库单可以满足出库数量，终止循环
+//					if (sendNumber <= p.getSurplusNumber()) {
+//						putOutStorage.setNumber(sendNumber);
+//						putOutStorageDao.save(putOutStorage);
+//						break;
+//					}
+//					// 当发货数量大于剩余数量时,当前入库单数量无法满足出库数量，库存相减后继续循环出库
+//					if (sendNumber > p.getSurplusNumber()) {
+//						putOutStorage.setNumber(p.getSurplusNumber());
+//						sendNumber -= p.getSurplusNumber();
+//						putOutStorageDao.save(putOutStorage);
+//					}
+//				}
 			}
 		}
 	}
@@ -217,13 +212,9 @@ public class OutStorageServiceImpl extends BaseServiceImpl<OutStorage, Long> imp
 	@Override
 	public List<Map<String, Object>> getSendPutStorage(Long id) {
 		List<Map<String, Object>> list = new ArrayList<>();
-		// 根据仓管登陆用户权限，获取不同的仓库库存
-		CurrentUser cu = SessionManager.getUserSession();
-		Long warehouseTypeDeliveryId = RoleUtil.getWarehouseTypeDelivery(cu.getRole());
 		SendGoods sendGoods = sendGoodsDao.findOne(id);
 		// 获取登陆库管的仓库出库单剩余数量
-		List<PutStorage> putStorageList = putStorageService.detailsInventory(warehouseTypeDeliveryId,
-				sendGoods.getProductId());
+		List<PutStorage> putStorageList = putStorageService.detailsInventory(sendGoods.getWarehouseTypeId(),sendGoods.getProductId());
 		// 获取发货申请人自己的库存
 		List<PutStorage> putStorageListSelf = putStorageList.stream().filter(p -> {
 			if (p.getOrderOutSource() != null) {
@@ -270,8 +261,7 @@ public class OutStorageServiceImpl extends BaseServiceImpl<OutStorage, Long> imp
 						Map<String, Object> map = new HashMap<String, Object>();
 						map.put("id", p.getId());
 						map.put("number", p.getSurplusNumber());
-						map.put("bacthNumber",
-								p.getOrderOutSource().getMaterialRequisition().getOrder().getBacthNumber());
+						map.put("bacthNumber",p.getOrderOutSource().getMaterialRequisition().getOrder().getBacthNumber());
 						map.put("serialNumber", p.getSerialNumber());
 						list.add(map);
 					});
@@ -286,7 +276,7 @@ public class OutStorageServiceImpl extends BaseServiceImpl<OutStorage, Long> imp
 				Map<String, Object> map = new HashMap<String, Object>();
 				map.put("id", p.getId());
 				map.put("number", p.getSurplusNumber());
-				map.put("bacthNumber", "");
+				map.put("bacthNumber", "公共库存");
 				map.put("serialNumber", p.getSerialNumber());
 				list.add(map);
 			});
@@ -345,8 +335,7 @@ public class OutStorageServiceImpl extends BaseServiceImpl<OutStorage, Long> imp
 						Map<String, Object> map = new HashMap<String, Object>();
 						map.put("id", p.getId());
 						map.put("number", p.getSurplusNumber());
-						map.put("bacthNumber",
-								p.getOrderOutSource().getMaterialRequisition().getOrder().getBacthNumber());
+						map.put("bacthNumber",p.getOrderOutSource().getMaterialRequisition().getOrder().getBacthNumber());
 						map.put("serialNumber", p.getSerialNumber());
 						list.add(map);
 					});
@@ -362,7 +351,7 @@ public class OutStorageServiceImpl extends BaseServiceImpl<OutStorage, Long> imp
 				Map<String, Object> map = new HashMap<String, Object>();
 				map.put("id", p.getId());
 				map.put("number", p.getSurplusNumber());
-				map.put("bacthNumber", "");
+				map.put("bacthNumber", "公共库存");
 				map.put("serialNumber", p.getSerialNumber());
 				list.add(map);
 			});

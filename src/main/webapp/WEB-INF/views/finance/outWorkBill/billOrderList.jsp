@@ -36,7 +36,7 @@ layui.config({
 	
 	mytable.render({
 		elem: '#tableData',
-		url: myutil.config.ctx+'/fince/getConsumption?type=10',
+		url: myutil.config.ctx+'/fince/getConsumption?type=11',
 		curd:{
 			btn:[4],
 		},

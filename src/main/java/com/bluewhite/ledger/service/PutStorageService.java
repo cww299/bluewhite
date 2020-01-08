@@ -31,7 +31,7 @@ public interface PutStorageService extends BaseCRUDService<PutStorage, Long> {
 	public int deletePutStorage(String ids);
 	
 	/**
-	 * 根据产品和库存查看实际入库单和生产计划单 （库存详情）
+	 * 根据产品和仓库查看实际入库单和生产计划单 （库存详情）
 	 * @param warehouseTypeId
 	 * @param productId
 	 */

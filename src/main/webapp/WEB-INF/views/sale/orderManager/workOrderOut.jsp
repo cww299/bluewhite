@@ -247,20 +247,22 @@ layui.config({
 				},
 			},
 			ifNull:'---',
-			colsWidth:[0,0,18,4,7,6,8,7,4,4,4], 
 			toolbar: $('#toolbarTpl').html(),
+			cellMinWidth:100,
 			cols:[[
 			       { type:'checkbox',},
-			       { title:'编号',   field:'outSourceNumber',	},
-			       { title:'工序',   field:'process', templet: getProcess(),	},
-			       { title:'数量',   field:'processNumber',	},
-			       { title:'时间',   field:'openOrderTime', type:'date',},
+			       { title:'编号',   field:'outSourceNumber',	width:210, },
+			       { title:'工序',   field:'process', templet: getProcess(),	width:110, },
+			       { title:'开单数',   field:'processNumber',	},
+			       { title:'退货数',   field:'refundBillsNumber',	},
+			       { title:'实际数',   field:'actualQuantity',	},
+			       { title:'时间',   field:'openOrderTime', type:'date', width:110,},
 			       { title:'跟单人',   field:'user_userName',	},
 			       { title:'加工点',   field:'customer_name',	},
 			       { title:'棉花类型',   field:'fill',	},
 			       { title:'千克',   field:'kilogramWeight',	},
 			       { title:'克重',   field:'gramWeight',	},
-			       { title:'审核',   field:'audit',	transData:{ data:['否','是'],}, },
+			       { title:'审核',   field:'audit',	transData:true, width:90,},
 			       ]],
 			done:function(){
 				var tipWin;
@@ -349,7 +351,7 @@ layui.config({
 			})
 		}
 		function addBill(data){
-			layer.open({
+			var addBillWin = layer.open({
 				type:1,
 				title:'生成账单',
 				offset:'50px',
@@ -365,7 +367,7 @@ layui.config({
 						'<table id="addBillTable" lay-filter="addBillTable"></table>',
 					'</div>'
 				].join(' '),
-				success:function(o,addBillWin){
+				success:function(){
 					laydate.render({
 						elem:'#addBillTime',type:'datetime',value:new Date(),
 					})

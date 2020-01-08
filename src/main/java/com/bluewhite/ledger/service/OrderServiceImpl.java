@@ -28,7 +28,6 @@ import com.bluewhite.common.SessionManager;
 import com.bluewhite.common.entity.CurrentUser;
 import com.bluewhite.common.entity.PageParameter;
 import com.bluewhite.common.entity.PageResult;
-import com.bluewhite.common.utils.RoleUtil;
 import com.bluewhite.common.utils.StringUtil;
 import com.bluewhite.ledger.dao.OrderChildDao;
 import com.bluewhite.ledger.dao.OrderDao;
@@ -37,8 +36,6 @@ import com.bluewhite.ledger.entity.OrderChild;
 import com.bluewhite.ledger.entity.PutStorage;
 import com.bluewhite.onlineretailers.inventory.dao.ProcurementDao;
 import com.bluewhite.onlineretailers.inventory.entity.Procurement;
-
-import cn.hutool.core.util.StrUtil;
 
 @Service
 public class OrderServiceImpl extends BaseServiceImpl<Order, Long> implements OrderService {
@@ -269,18 +266,10 @@ public class OrderServiceImpl extends BaseServiceImpl<Order, Long> implements Or
 
 	@Override
 	public List<Map<String, Object>> findListSend(Order param) {
-		CurrentUser cu = SessionManager.getUserSession();
-		List<Map<String, Object>> result = new ArrayList<>();
-		// 	通过产品查询所有的入库单
-		List<PutStorage> putStorageList = new ArrayList<>();
-		String warehouseTypeId = RoleUtil.getWarehouseTypeIds(param.getProductType());
-		if(StrUtil.isNotBlank(warehouseTypeId.toString())){
-			String [] idsArr = warehouseTypeId.toString().split(",");
-			for(String idString : idsArr){
-				Long id = Long.valueOf(idString);
-				putStorageList.addAll(putStorageService.detailsInventory(id, param.getProductId()));
-			}
-		};
+	    CurrentUser cu = SessionManager.getUserSession();
+	    List<Map<String, Object>> result = new ArrayList<>();
+	    //根据仓库获取入库单
+		List<PutStorage> putStorageList = putStorageService.detailsInventory(param.getWarehouseTypeId(), param.getProductId());
 		// 	是否是自己的库存
 		// include = 0 false
 		// include = 1 true
@@ -311,6 +300,7 @@ public class OrderServiceImpl extends BaseServiceImpl<Order, Long> implements Or
 					listMap.add(map);
 				}
 			});
+			
 			// 	数据返回格式处理
 			if (listMap.size() > 0) {
 				Map<Object, List<Map<String, Object>>> mapOnlineOrderChildList = listMap.stream()

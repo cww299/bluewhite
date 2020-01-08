@@ -8,8 +8,6 @@ import java.util.stream.Collectors;
 
 import javax.persistence.EntityManager;
 
-import org.hibernate.Session;
-import org.hibernate.jpa.HibernateEntityManager;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.util.StringUtils;
@@ -333,9 +331,6 @@ public class ProductAction {
 	@ResponseBody
 	public CommonResponse copyProduct(Long id, Long oldId) {
 		CommonResponse cr = new CommonResponse();
-		HibernateEntityManager hEntityManager = (HibernateEntityManager) entityManager;
-		Session session = hEntityManager.getSession();
-		Product oldIdProduct = productService.findOne(oldId);
 		Product product = productService.findOne(id);
 		productService.save(product);
 

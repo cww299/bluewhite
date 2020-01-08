@@ -55,8 +55,8 @@
 					<shiro:lacksRole name="attendanceStatistician">
 						<td><button type="button" id="synchronization2" class="layui-btn layui-btn-danger">考勤重置</button></td>
 						<td>&nbsp;&nbsp;</td>
-						<td><button type="button" id="export" class="layui-btn layui-btn-normal">导出</button></td>
 					</shiro:lacksRole>
+					<td><button type="button" id="export" class="layui-btn layui-btn-normal">导出</button></td>
 				</tr>
 			</table>
 			<table id="tableData" lay-filter="tableData"></table>

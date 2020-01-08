@@ -81,20 +81,20 @@ public class OfficeSupplies extends BaseEntity<Long> {
 	 */
 	@Column(name = "type")
 	private Integer type;
-
-	/**
-	 * 库存数量
-	 * 
-	 */
-	@Column(name = "inventory_number")
-	private Integer inventoryNumber;
-
+	
 	/**
 	 * 库位
 	 * 
 	 */
 	@Column(name = "location")
 	private String location;
+	
+	/**
+	 * 库存数量
+	 * 
+	 */
+	@Column(name = "inventory_number")
+	private Double inventoryNumber;
 
 	/**
 	 * 库值
@@ -115,8 +115,7 @@ public class OfficeSupplies extends BaseEntity<Long> {
 	private Date orderTimeEnd;
 	
 	
-
-	public Long getSingleMealConsumptionId() {
+    public Long getSingleMealConsumptionId() {
 		return singleMealConsumptionId;
 	}
 
@@ -212,11 +211,11 @@ public class OfficeSupplies extends BaseEntity<Long> {
 		this.type = type;
 	}
 
-	public Integer getInventoryNumber() {
+	public Double getInventoryNumber() {
 		return inventoryNumber;
 	}
 
-	public void setInventoryNumber(Integer inventoryNumber) {
+	public void setInventoryNumber(Double inventoryNumber) {
 		this.inventoryNumber = inventoryNumber;
 	}
 

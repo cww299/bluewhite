@@ -109,7 +109,7 @@ layui.config({
 			}
 		})
 		myutil.getData({
-			url:'${ctx}/ledger/allCustomer?type=5',
+			url:'${ctx}/ledger/getCustomer?customerTypeId=460',
 			success:function(d){
 				for(var i=0,len=d.length;i<len;i++){
 					allCustomSelect += '<option value="'+d[i].id+'">'+d[i].name+'</option>';

@@ -30,16 +30,12 @@ import com.bluewhite.common.utils.excel.ExcelListener;
 import com.bluewhite.finance.consumption.dao.ConsumptionDao;
 import com.bluewhite.finance.consumption.entity.Consumption;
 import com.bluewhite.finance.consumption.entity.ConsumptionPoi;
-import com.bluewhite.system.user.dao.UserDao;
 
 @Service
 public class ConsumptionServiceImpl extends BaseServiceImpl<Consumption, Long> implements ConsumptionService {
 
 	@Autowired
 	private ConsumptionDao dao;
-
-	@Autowired
-	private UserDao userDao;
 
 	@Override
 	public PageResult<Consumption> findPages(Consumption param, PageParameter page) {
@@ -307,11 +303,11 @@ public class ConsumptionServiceImpl extends BaseServiceImpl<Consumption, Long> i
 
 	@Override
 	public Map<String, Object> countConsumptionMoney(Consumption consumption) {
+	    CurrentUser cu = SessionManager.getUserSession();
 		Map<String, Object> map = new HashMap<>();
-		CurrentUser cu = SessionManager.getUserSession();
 		consumption.setOrgNameId(cu.getOrgNameId());
 		List<Consumption> cpList = findList(consumption);
-		List<Consumption> consumptionList = cpList.stream().filter(Consumption -> Consumption.getBudget() == 0)
+		List<Consumption> consumptionList = cpList.stream().filter(Consumption ->  Consumption.getBudget() == 0)
 				.collect(Collectors.toList());
 		List<Consumption> consumptionList1 = cpList.stream().filter(Consumption -> Consumption.getBudget() == 1)
 				.collect(Collectors.toList());

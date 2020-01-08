@@ -190,7 +190,7 @@ public class AttendanceCollect extends BaseEntity<Long>{
     	time = list.get(0).getTime();
     	userId = list.get(0).getUserId();
     	turnWork =  list.stream().filter(AttendanceTime->AttendanceTime.getTurnWorkTime()!=null).mapToDouble(AttendanceTime::getTurnWorkTime).sum();
-    	overtime =  list.stream().filter(AttendanceTime->AttendanceTime.getOvertime()!=null).mapToDouble(AttendanceTime::getOvertime).sum();
+    	//overtime =  list.stream().filter(AttendanceTime->AttendanceTime.getOvertime()!=null).mapToDouble(AttendanceTime::getOvertime).sum();
     	ordinaryOvertime = list.stream().filter(AttendanceTime->AttendanceTime.getOrdinaryOvertime()!=null).mapToDouble(AttendanceTime::getOrdinaryOvertime).sum();
     	productionOvertime =  list.stream().filter(AttendanceTime->AttendanceTime.getProductionOvertime()!=null).mapToDouble(AttendanceTime::getProductionOvertime).sum();
     	dutyWork = list.stream().filter(AttendanceTime->AttendanceTime.getDutytime()!=null).mapToDouble(AttendanceTime::getDutytime).sum();

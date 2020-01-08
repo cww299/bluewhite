@@ -19,7 +19,7 @@ public class StartupListener implements ApplicationListener<ContextRefreshedEven
 		if (event.getApplicationContext().getParent() == null) {
 		} else {
 			if (IpUtil.getLocalIP().equals("192.168.1.74")) {
-				regEvent();
+			    regEvent();
 			}
 		}
 	}

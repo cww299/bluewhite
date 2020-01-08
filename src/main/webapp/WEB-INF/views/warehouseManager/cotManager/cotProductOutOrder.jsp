@@ -19,19 +19,21 @@ layui.config({
 	base : '${ctx}/static/layui-v2.4.5/'
 }).extend({
 	productionInput : 'layui/myModules/warehouseManager/productionInput' ,
+	outInventory: 'layui/myModules/warehouseManager/outInventory' ,
 }).define(
-	['productionInput','myutil'],
+	['productionInput','myutil','outInventory'],
 	function(){
 		var $ = layui.jquery
 		,myutil = layui.myutil
 		,productionInput = layui.productionInput;
-		
 		myutil.config.ctx = '${ctx}';
+		layui.outInventory.type = 2;
 		myutil.clickTr();
 		productionInput.type = 4;
 		productionInput.render({
 			elem:'#app',
 			ctx:'${ctx}',
+			outInventory: layui.outInventory,
 		})
 	}//end define function
 )//endedefine
