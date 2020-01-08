@@ -1047,8 +1047,6 @@ public class LedgerAction {
 	 */
 	@RequestMapping(value = "/ledger/inventory/inspectionMaterialPutStorage", method = RequestMethod.GET)
 	@ResponseBody
-	
-	
 	public CommonResponse inspectionOrderProcurement(MaterialPutStorage materialPutStorage) {
 		CommonResponse cr = new CommonResponse();
 		materialPutStorageService.inspectionMaterialPutStorage(materialPutStorage);

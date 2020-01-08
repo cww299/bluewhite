@@ -162,6 +162,12 @@ public class OrderOutSource extends BaseEntity<Long> {
 	 */
 	@Column(name = "charge_off")
 	private Integer chargeOff;
+	
+	/**
+     * 归属仓库种类id
+     */
+    @Column(name = "warehouse_type_id")
+    private Long warehouseTypeId;
 
 	/**
 	 * 	(申请人申请时)金额
@@ -264,7 +270,15 @@ public class OrderOutSource extends BaseEntity<Long> {
 	
 	
 
-	public Integer getActualQuantity() {
+	public Long getWarehouseTypeId() {
+        return warehouseTypeId;
+    }
+
+    public void setWarehouseTypeId(Long warehouseTypeId) {
+        this.warehouseTypeId = warehouseTypeId;
+    }
+
+    public Integer getActualQuantity() {
         return actualQuantity;
     }
 

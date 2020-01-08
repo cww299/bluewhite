@@ -38,7 +38,7 @@ public class ApplyVoucherServiceImpl extends BaseServiceImpl<ApplyVoucher, Long>
 			applyVoucher.setWarehouseTypeId(warehouseTypeDeliveryId);
 		}
 		applyVoucher.setUserId(cu.getId());
-		applyVoucher.setApplyNumber(Constants.SQD + StringUtil.getDate() + StringUtil.get0LeftString((int) (count() + 1), 8));
+		applyVoucher.setApplyNumber(Constants.JHSQD + StringUtil.getDate() + StringUtil.get0LeftString((int) (count() + 1), 8));
 		applyVoucher.setPass(0);
 		save(applyVoucher);
 	}
