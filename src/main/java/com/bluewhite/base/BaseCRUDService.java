@@ -1,13 +1,8 @@
 package com.bluewhite.base;
 
 import java.util.List;
-import java.util.Map;
 
 import org.springframework.data.jpa.domain.Specification;
-
-import com.bluewhite.common.entity.PageParameter;
-import com.bluewhite.common.entity.PageResult;
-import com.bluewhite.ledger.entity.OutStorage;
 
 public interface BaseCRUDService<T,ID> {
 	/**

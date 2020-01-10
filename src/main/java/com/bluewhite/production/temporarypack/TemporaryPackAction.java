@@ -321,7 +321,6 @@ public class TemporaryPackAction {
 
     /**
      * 分页查询尾数清算单
-     * 
      */
     @RequestMapping(value = "/temporaryPack/findPagesMantissaLiquidation", method = RequestMethod.GET)
     @ResponseBody
@@ -347,5 +346,18 @@ public class TemporaryPackAction {
         cr.setMessage("成功删除"+count+"条数据");
         return cr;
     }
+    
+    /**
+     * 尾数出库成为下货单
+     */
+    @RequestMapping(value = "/temporaryPack/mantissaLiquidationToUnderGoods", method = RequestMethod.POST)
+    @ResponseBody
+    public CommonResponse mantissaLiquidationToUnderGoods(MantissaLiquidation mantissaLiquidation) {
+        CommonResponse cr = new CommonResponse();
+        mantissaLiquidationService.mantissaLiquidationToUnderGoods(mantissaLiquidation);
+        cr.setMessage("出库成功");
+        return cr;
+    }
+
 
 }
