@@ -156,7 +156,7 @@ layui.config({
 			toolbar:[
 				'<span class="layui-btn layui-btn-sm" lay-event="add">新增数据</span>',
 				'<span class="layui-btn layui-btn-sm layui-btn-warm" lay-event="update">修改数据</span>',
-				'<span class="layui-btn layui-btn-sm layui-btn-primary" lay-event="numberClear">位数清算</span>',
+				'<span class="layui-btn layui-btn-sm layui-btn-primary" lay-event="numberClear">尾数清算</span>',
 				'<span class="layui-btn layui-btn-sm layui-btn-normal" id="uploadBtn">导入数据</span>',
 			].join(' '),
 			cols:[[
