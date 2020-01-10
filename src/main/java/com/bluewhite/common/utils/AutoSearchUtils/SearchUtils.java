@@ -101,11 +101,7 @@ public class SearchUtils {
                             predicates.add(path.in(convertQueryParamsType(type, value)));
                             break;
                         case SearchType.BE:
-                            // 介于操作会出现开始和结束参数
-                            String[] values = String.valueOf(value).split(" ~ ");
-                            Date valueDate1 = DateUtil.parseDateTime(values[0].toString());
-                            Date valueDate2 = DateUtil.parseDateTime(values[1].toString());
-                            predicates.add(cb.between(path.as(Date.class), valueDate1, valueDate2));
+                            predicates.add(convertParamsTypeAndBuildQuery(oper, cb, path, type, value));
                             break;
                         case SearchType.NOTIN:
                             predicates.add(path.in(convertQueryParamsType(type, value)).not());
@@ -161,7 +157,7 @@ public class SearchUtils {
                 object = Integer.parseInt((String)value);
                 break;
             case SearchType.TODATE:
-                object = DateUtil.parseDateTime(String.valueOf(value));
+                object = new Date(DateUtil.parseDateTime(String.valueOf(value)).getTime());
                 break;
             default:
                 object = value.toString();
@@ -203,6 +199,13 @@ public class SearchUtils {
             }
         }
         if (SearchType.TOINT.equals(type)) {
+            if (SearchType.BE.equals(oper)) {
+                String[] values = String.valueOf(value).split(" ~ ");
+                int valueIntStart = Integer.parseInt((String)values[0]);
+                int valueIntEnd = Integer.parseInt((String)values[1]);
+                predicate = cb.between(path.as(Integer.class), valueIntStart, valueIntEnd);
+                return predicate;
+            }
             int valueInt = Integer.parseInt((String)value);
             switch (oper) {
                 case SearchType.LT:
@@ -217,12 +220,20 @@ public class SearchUtils {
                 case SearchType.GE:
                     predicate = cb.greaterThanOrEqualTo(path.as(Integer.class), valueInt);
                     break;
+
                 default:
                     break;
             }
         }
         if (SearchType.TODATE.equals(type)) {
-            Date valueDate = DateUtil.parseDateTime(value.toString());
+            if (SearchType.BE.equals(oper)) {
+                String[] values = String.valueOf(value).split(" ~ ");
+                Date valueDateStart = new Date(DateUtil.beginOfDay(DateUtil.parseDate(values[0].toString())).getTime());
+                Date valueDateEnd = new Date(DateUtil.endOfDay(DateUtil.parseDate(values[1].toString())).getTime());
+                predicate = cb.between(path.as(Date.class), valueDateStart, valueDateEnd);
+                return predicate;
+            }
+            Date valueDate = new Date(DateUtil.parseDateTime(value.toString()).getTime());
             switch (oper) {
                 case SearchType.LT:
                     predicate = cb.lessThan(path.as(Date.class), valueDate);
