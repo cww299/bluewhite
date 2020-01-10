@@ -47,7 +47,7 @@ public class SearchUtils {
             String key = entry.getKey();
             String[] keys = key.split("_");
             Object value = entry.getValue();
-            boolean valueIsNull = ObjectUtil.isNull(value);
+            boolean valueIsNull = ObjectUtil.isEmpty(value);
             // field_oper_type : tableColumnName_SqlOperator_convertDataType
             // 字段名_sql操作_转换类型
             // 字段名可能是多表查询 table.field
