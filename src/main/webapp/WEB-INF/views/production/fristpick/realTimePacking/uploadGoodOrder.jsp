@@ -39,7 +39,6 @@
 		<table id="tableData" lay-filter="tableData"></table>
 	</div>
 </div>
-
 </body>
 <script>
 var TPL = [
@@ -109,8 +108,9 @@ layui.config({
 	base : '${ctx}/static/layui-v2.4.5/'
 }).extend({
 	mytable : 'layui/myModules/mytable' ,
+	clearNumberOrder : 'layui/myModules/product/clearNumberOrder' ,
 }).define(
-	['mytable','laydate','upload'],
+	['mytable','laydate','upload','clearNumberOrder'],
 	function(){
 		var $ = layui.jquery
 		, layer = layui.layer 				
@@ -119,6 +119,7 @@ layui.config({
 		, myutil = layui.myutil
 		, laydate = layui.laydate
 		, laytpl = layui.laytpl
+		, clearNumberOrder = layui.clearNumberOrder
 		, upload = layui.upload
 		, mytable = layui.mytable;
 		myutil.config.ctx = '${ctx}';
@@ -139,6 +140,11 @@ layui.config({
 						if(check.length!=1)
 							return myutil.emsg('只能选择一条数据编辑');
 						addEdit('update',check[0]);
+					}else if(obj.event=='numberClear'){
+						var check = layui.table.checkStatus('tableData').data;
+						if(check.length!=1)
+							return myutil.emsg('只能选择一条数据编辑');
+						clearNumberOrder.add(check[0].id);
 					}
 				},
 			},
@@ -150,6 +156,7 @@ layui.config({
 			toolbar:[
 				'<span class="layui-btn layui-btn-sm" lay-event="add">新增数据</span>',
 				'<span class="layui-btn layui-btn-sm layui-btn-warm" lay-event="update">修改数据</span>',
+				'<span class="layui-btn layui-btn-sm layui-btn-primary" lay-event="numberClear">位数清算</span>',
 				'<span class="layui-btn layui-btn-sm layui-btn-normal" id="uploadBtn">导入数据</span>',
 			].join(' '),
 			cols:[[
@@ -197,7 +204,7 @@ layui.config({
 				where: obj.field,
 				page:{ curr:1 },
 			})
-		}) 
+		});
 		function addEdit(type,data){
 			var title = '新增下货单'
 			var html = '';
