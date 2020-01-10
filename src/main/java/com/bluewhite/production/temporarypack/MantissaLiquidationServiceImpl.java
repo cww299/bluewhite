@@ -67,6 +67,7 @@ public class MantissaLiquidationServiceImpl extends BaseServiceImpl<MantissaLiqu
             underGoods.setId(null);
             underGoods.setNumber(mantissaLiquidation.getNumber());
             underGoods.setMantissaLiquidationId(mantissaLiquidation.getId());
+            underGoods.setAllotTime(mantissaLiquidation.getTime());
             underGoodsDao.save(underGoods);
         }
     }
