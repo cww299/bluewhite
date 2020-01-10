@@ -5,7 +5,6 @@ import java.util.Date;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
-import javax.persistence.Index;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
@@ -16,9 +15,8 @@ import com.bluewhite.product.product.entity.Product;
 
 /**
  * 下货单
- * 
- * @author
- *
+ * @author zhangliang
+ * @date 2020/01/10
  */
 @Entity
 @Table(name = "pro_under_goods")

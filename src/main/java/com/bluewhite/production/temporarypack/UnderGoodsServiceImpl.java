@@ -32,7 +32,7 @@ public class UnderGoodsServiceImpl extends BaseServiceImpl<UnderGoods, Long> imp
 	private QuantitativeChildDao quantitativeChildDao;
 	@Autowired
 	private QuantitativeDao quantitativeDao;
-
+  
 	
 	@Override
 	public PageResult<UnderGoods> findPages(UnderGoods param, PageParameter page) {
@@ -139,5 +139,7 @@ public class UnderGoodsServiceImpl extends BaseServiceImpl<UnderGoods, Long> imp
 		});
 		return result;
 	}
+
+ 
 
 }

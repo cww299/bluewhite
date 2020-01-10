@@ -40,4 +40,6 @@ public interface UnderGoodsService extends BaseCRUDService<UnderGoods,Long>{
 	 */
 	public List<UnderGoods> getAll();
 
+
+
 }
