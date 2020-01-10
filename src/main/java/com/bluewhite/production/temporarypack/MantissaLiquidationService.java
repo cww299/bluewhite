@@ -7,7 +7,7 @@ import com.bluewhite.common.entity.PageParameter;
 import com.bluewhite.common.entity.PageResult;
 
 /**
- * @author zhangliang
+ * @author ZhangLiang
  * @date 2020/01/10
  */
 public interface MantissaLiquidationService extends BaseCRUDService<MantissaLiquidation,Long>{
@@ -23,4 +23,9 @@ public interface MantissaLiquidationService extends BaseCRUDService<MantissaLiqu
      * @return
      */
     public PageResult<MantissaLiquidation> findPages(Map<String, Object> params, PageParameter page);
+
+    /**尾数单出库转换成下货单
+     * @param underGoods
+     */
+    public void mantissaLiquidationToUnderGoods(MantissaLiquidation mantissaLiquidation);
 }

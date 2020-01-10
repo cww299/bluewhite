@@ -8,6 +8,7 @@ import javax.persistence.FetchType;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 
 import com.bluewhite.base.BaseEntity;
 
@@ -61,6 +62,22 @@ public class MantissaLiquidation extends BaseEntity<Long>{
      */
     @Column(name = "type")
     private String type;
+    
+    /**
+     * 数量
+     */
+    @Transient
+    private Integer surplusNumber;
+    
+    
+
+    public Integer getSurplusNumber() {
+        return surplusNumber;
+    }
+
+    public void setSurplusNumber(Integer surplusNumber) {
+        this.surplusNumber = surplusNumber;
+    }
 
     public Long getUnderGoodsId() {
         return underGoodsId;

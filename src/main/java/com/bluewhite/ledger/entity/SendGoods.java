@@ -27,7 +27,6 @@ public class SendGoods extends BaseEntity<Long> {
 
     /**
      * 发货客户id
-     * 
      */
     @Column(name = "customer_id")
     private Long customerId;
@@ -41,7 +40,6 @@ public class SendGoods extends BaseEntity<Long> {
 
     /**
      * 发货申请人id
-     * 
      */
     @Column(name = "user_id")
     private Long userId;
