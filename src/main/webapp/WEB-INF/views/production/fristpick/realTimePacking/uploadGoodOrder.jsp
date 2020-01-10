@@ -143,7 +143,7 @@ layui.config({
 				},
 			},
 			limit:15,
-			limits:[10,15,20,30,50,100,200],
+			limits:[15,50,200,500,1000],
 			autoUpdate:{
 				deleUrl:'/temporaryPack/deleteUnderGoods',
 			},
@@ -154,13 +154,13 @@ layui.config({
 			].join(' '),
 			cols:[[
 			       { type:'checkbox',},
-			       { title:'下单时间',   field:'allotTime',	},
-			       { title:'批次号',   field:'bacthNumber',   },
+			       { title:'下单时间',   field:'allotTime',	width:165,},
+			       { title:'批次号',   field:'bacthNumber',  width:165, },
 			       { title:'产品名',   field:'product_name',	},
-			       { title:'批次数量',   field:'number', 	},
-			       { title:'剩余发货数量',   field:'surplusSendNumber', 	},
-			       { title:'剩余量化数量',   field:'surplusStickNumber', 	},
-			       { title:'备注',   field:'remarks',	},
+			       { title:'批次数量',   field:'number', 	width:130, },
+			       { title:'剩余发货数量',   field:'surplusSendNumber', width:130,	},
+			       { title:'剩余量化数量',   field:'surplusStickNumber', width:130,	},
+			       { title:'备注',   field:'remarks',	width:200,},
 			       { title:'是否天猫',  width:'6%', field:'internal',	transData:{data:['否','是'],text:'未知'}},
 			       ]],
 			 done:function(){

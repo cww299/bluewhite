@@ -86,6 +86,7 @@
 		<span class="layui-btn layui-btn-sm layui-btn-primary" lay-event="print" id="stickBagStickBtn">打印</span>
 		<span class="layui-btn layui-btn-sm layui-btn-normal" lay-event="send">发货</span>
 		<span class="layui-btn layui-btn-sm layui-btn-danger" lay-event="cancelSend">取消发货</span>
+		<span class="layui-btn layui-btn-sm layui-btn-normal" lay-event="updateSendTime">修改发货时间</span>
 	</shiro:hasAnyRoles>
 </div>
 <script type="text/html" >
@@ -165,6 +166,56 @@ layui.config({
 							 text:'请选择信息|是否确认取消发货？',
 							 url:'/temporaryPack/sendQuantitative?flag=0',
 						})
+					}else if(obj.event=='updateSendTime'){
+						var check = layui.table.checkStatus('tableData').data;
+						if(check.length==0)
+							return myutil.emsg('请选择数据');
+						var updateWin = layer.open({
+							type:1,
+							title:'修改发货时间',
+							offset:'120px',
+							content:
+							['<div style="padding:10px;">',
+								'<table>',
+									'<tr>',
+										'<td>发货时间：</td>',
+										'<td>',
+											'<input type="text" class="layui-input" id="updateTime">',
+										'</td>',
+									'</tr>',
+									'<tr>',
+										'<td style="padding-top:10px;">密码：</td>',
+										'<td style="padding-top:10px;">',
+											'<input type="password" class="layui-input" id="pwd">',
+										'</td>',
+									'</tr>',
+								'</table>',
+							  '</div>'].join(' '),
+							btn:['确定','取消'],
+							btnAlign:'c',
+							area:'auto',
+							success:function(){
+								laydate.render({
+									elem:'#updateTime',type:'datetime',value:new Date(),
+								});
+							},
+							yes:function(){
+								if($('#pwd').val()!='456789')
+									return myutil.emsg('密码错误！');
+								var ids = [];
+								layui.each(check,function(idex,item){
+									ids.push(item.id);
+								})
+								myutil.deleteAjax({
+									url:'/temporaryPack/updateQuantitativeSendTime?sendTime='+$('#updateTime').val(),
+									ids: ids.join(','),
+									success:function(){
+										table.reload('tableData');
+										layer.close(updateWin);
+									}
+								})
+							}
+						})
 					}
 				},
 			},
@@ -191,22 +242,22 @@ layui.config({
 			ifNull:'',
 			cols:[[
 			       { type:'checkbox',},
-			       { title:'量化编号',   field:'quantitativeNumber', width:'12%',	},
-			       { title:'包装时间',   field:'time',  width:'10%', },
-			       { title:'发货时间',   field:'sendTime',  width:'10%', },
-			       { title:'贴包人',    field:'user_userName', width:'6%',	},
-			       { title:'客户',     field:'customer_name', width:'6%',	},
-			       { title:'是否审核',   field:'audit', 	transData:true, width:'5%', },
-			       { title:'是否发货',   field:'flag', 	transData:true, width:'5%', },
-			       { title:'是否打印',   field:'print', 	transData:true, width:'5%', },
+			       { title:'量化编号',   field:'quantitativeNumber', width:145,	},
+			       { title:'包装时间',   field:'time', width:110, type:'date', },
+			       { title:'发货时间',   field:'sendTime',  width:110,type:'date',  },
+			       { title:'贴包人',    field:'user_userName', width:100,	},
+			       { title:'客户',     field:'customer_name',	},
+			       { title:'审核',   field:'audit', 	transData:true, width:60, },
+			       { title:'发货',   field:'flag', 	transData:true, width:60, },
+			       { title:'打印',   field:'print', 	transData:true, width:60, },
 			       { title:'批次号',    field:'underGoods_bacthNumber',	width:'8%', },
-			       { title:'产品名',    field:'underGoods_product_name', 	},
-			       { title:'单包个数',   field:'singleNumber',	width:'6%', },
-			       { title:'实际数量',   field:'actualSingleNumber',	width:'6%',event:'transColor', 
+			       { title:'产品名',    field:'underGoods_product_name', width:360,	},
+			       { title:'单包个数',   field:'singleNumber',	width:80, },
+			       { title:'实际数量',   field:'actualSingleNumber',	width:90,event:'transColor', 
 			    	   templet: function(d){
     	   					return '<span style="color:'+(d.checks?'red':"")+'">'+d.actualSingleNumber+'<span>'; },
 			       },
-			       { title:'备注',   field:'remarks',	width:'8%', edit:true,},  				
+			       { title:'备注',   field:'remarks',	width:90, edit:true,},  				
 			       ]],
 	       autoMerge:{
 	    	 field:['quantitativeNumber','time','sendTime','audit','print','flag',
