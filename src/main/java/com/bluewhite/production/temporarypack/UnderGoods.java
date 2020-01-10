@@ -68,7 +68,6 @@ public class UnderGoods extends BaseEntity<Long> {
 	@Column(name = "internal")
 	private Integer internal;
 
-
 	/**
 	 * 产品名称
 	 */
