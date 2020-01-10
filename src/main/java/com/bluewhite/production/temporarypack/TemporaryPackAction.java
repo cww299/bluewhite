@@ -310,12 +310,12 @@ public class TemporaryPackAction {
     @ResponseBody
     public CommonResponse saveMantissaLiquidation(MantissaLiquidation mantissaLiquidation) {
         CommonResponse cr = new CommonResponse();
-        mantissaLiquidationService.saveMantissaLiquidation(mantissaLiquidation);
         if (mantissaLiquidation.getId() == null) {
             cr.setMessage("新增成功");
         } else {
             cr.setMessage("修改成功");
         }
+        mantissaLiquidationService.saveMantissaLiquidation(mantissaLiquidation);
         return cr;
     }
 
