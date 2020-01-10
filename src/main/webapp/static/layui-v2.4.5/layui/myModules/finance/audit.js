@@ -28,7 +28,16 @@ layui.extend({
 	var firstCols =  { type: 'checkbox', fixed: 'left' };
 	var allCols = [
 		[],
-		[],
+		[	//type:1  报销审核  expenseAccount
+			{ field: "content", title: "报销内容", }, 
+			{ field: "user_userName", title: "报销人", width:120,}, 
+			{ field: "money", title: "报销申请金额", width:140,sort:true,}, 
+			{ field: "expenseDate", title: "报销申请日期", type:'date',width:120, }, 
+			{ field: "withholdReason", title: "扣款事由", width:150,}, 
+			{ field: "withholdMoney", title: "扣款金额", width:120,}, 
+			{ field: "settleAccountsMode", title: "结款模式", transData:{ data:["","现金","月结"], },width:120, }, 
+			{ field: "orgName_name",  title: "申请部门", width:150,}, 
+		],
 		[  //type:2 采购应付
 		   firstCols,
 	       { field: "content", title: "采购单编号",width:'25%',fixed: 'left'},
@@ -120,9 +129,9 @@ layui.extend({
 	    
 	];
 	var lastCols = [
-	   { field: "paymentDate", 	title: "实际付款时间", style:'background-color: #d8fe83',edit:true,type:'date',fixed:'right', }, 
-       { field: "paymentMoney",	title: "付款金额",    style:'background-color: #d8fe83', edit:'number', fixed:'right',},
-       { field: "flag", 	    title: "审核状态", 	 transData:{data:['未审核','审核','部分审核'],}, fixed:'right',}
+	   { field: "paymentDate", 	title: "实际付款时间", style:'background-color: #d8fe83',edit:true,type:'date',fixed:'right', width:120, }, 
+       { field: "paymentMoney",	title: "付款金额",    style:'background-color: #d8fe83', edit:'number', fixed:'right', width:120, },
+       { field: "flag", 	    title: "审核状态", 	 transData:{data:['未审核','审核','部分审核'],}, fixed:'right',width:120, }
 	];
 	
 	var audit = {
@@ -140,8 +149,15 @@ layui.extend({
 					<td><input id="searchTime" name="orderTimeBegin"  class="layui-input" autocomplete="off"></td>
 					`+
 					(function(){
+						var otherHtml = '';
 						var text = '', name = '';
 						switch(audit.type){
+						case 1: text='报销内容'; name='content'; 
+								otherHtml = '<td>报销人：</td>'+
+								   			'<td><input type="text" name="Username" class="layui-input" /></td>'+
+								   			'<td>报销金额：</td>'+
+								   			'<td><input type="number" name="money" class="layui-input" /></td>';
+								break;
 						case 2: text='采购单编号'; name='content'; break;
 						case 3: text='工资内容'; name='content'; break;
 						case 4: text='供应商名称'; name='customerName'; break;
@@ -154,7 +170,7 @@ layui.extend({
 						case 11: text='加工单编号'; name='content'; break;
 						}
 						return '<td>'+text+'：</td>'+
-							   '<td><input type="text" name="'+name+'" class="layui-input" /></td>';
+							   '<td><input type="text" name="'+name+'" class="layui-input" /></td>'+otherHtml;
 					})()
 					+
 					`
@@ -191,6 +207,8 @@ layui.extend({
 					'<span class="layui-btn layui-btn-sm layui-btn-success" lay-event="audit">审核</span>',
 					'<span class="layui-btn layui-btn-sm layui-btn-danger" lay-event="noAudit">取消审核</span>',
 				].join(''),
+			limit:15,
+			limits:[15,20,50,100,200,],
 			curd:{
 				btn:[],
 				otherBtn:function(obj){
