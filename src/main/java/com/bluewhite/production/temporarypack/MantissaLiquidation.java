@@ -12,7 +12,7 @@ import javax.persistence.Table;
 import com.bluewhite.base.BaseEntity;
 
 /**
- * @author zhangliang
+ * @author ZhangLiang
  * @date 2020/01/10
  */
 @Entity

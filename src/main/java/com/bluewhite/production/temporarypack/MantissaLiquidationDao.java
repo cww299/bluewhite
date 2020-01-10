@@ -17,5 +17,13 @@ public interface MantissaLiquidationDao  extends BaseRepository<MantissaLiquidat
      * @param time
      * @return
      */
-    List<Quantitative> findByTimeBetween(Date startTime ,Date endTime);
+    List<MantissaLiquidation> findByTimeBetween(Date startTime ,Date endTime);
+    
+    
+    /**
+     * 根据下单
+     * @param id
+     * @return
+     */
+    List<MantissaLiquidation>  findByUnderGoodsId(Long id);
 }
