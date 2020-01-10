@@ -207,7 +207,7 @@ layui.extend({
 		mytable.render({
 			elem: '#tableData',
 			url: myutil.config.ctx+'/fince/getConsumption?type='+collect.type ,
-			where:{ flags:0 },
+			where:{ flags:'0,2', },
 			ifNull:'',
 			scrollX:true,
 			autoUpdate:{
@@ -249,7 +249,7 @@ layui.extend({
 			cols: [ allCols[collect.type].concat(lastCols) ],
 		});
 		myutil.getData({
-			url: myutil.config.ctx+'/fince/totalAmount?flag=0&type='+collect.type,
+			url: myutil.config.ctx+'/fince/totalAmount?flags=0,2&type='+collect.type,
 			success:function(d){
 				$('#allPrice').html(d);
 			}
@@ -274,9 +274,8 @@ layui.extend({
 			table.reload('tableData', {
 				where: f
 			});
-			delete f.flag;
 			myutil.getData({
-				url: myutil.config.ctx+'/fince/totalAmount?flag=0&type='+collect.type,
+				url: myutil.config.ctx+'/fince/totalAmount?type='+collect.type,
 				data: f,
 				success:function(d){
 					$('#allPrice').html(d);
