@@ -102,9 +102,10 @@ public class SearchUtils {
                             break;
                         case SearchType.BE:
                             // 介于操作会出现开始和结束参数
-                            String[] values = String.valueOf(value).split("_");
-                            predicates.add(convertParamsTypeAndBuildQuery(SearchType.GE, cb, path, type, values[0]));
-                            predicates.add(convertParamsTypeAndBuildQuery(SearchType.LE, cb, path, type, values[1]));
+                            String[] values = String.valueOf(value).split(" ~ ");
+                            Date valueDate1 = DateUtil.parseDateTime(values[0].toString());
+                            Date valueDate2 = DateUtil.parseDateTime(values[1].toString());
+                            predicates.add(cb.between(path.as(Date.class), valueDate1, valueDate2));
                             break;
                         case SearchType.NOTIN:
                             predicates.add(path.in(convertQueryParamsType(type, value)).not());

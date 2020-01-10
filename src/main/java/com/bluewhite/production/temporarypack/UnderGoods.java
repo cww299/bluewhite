@@ -35,6 +35,12 @@ public class UnderGoods extends BaseEntity<Long> {
 	private Product product;
 	
 	/**
+     * 尾数单id（将尾货单转换成下货单）
+     */
+    @Column(name = "mantissa_liquidation_id")
+    private Long mantissaLiquidationId;
+
+	/**
 	 * 批次号
 	 */
 	@Column(name = "bacth_number")
@@ -105,7 +111,15 @@ public class UnderGoods extends BaseEntity<Long> {
 
 	
 	
-	public Integer getInternal() {
+	public Long getMantissaLiquidationId() {
+        return mantissaLiquidationId;
+    }
+
+    public void setMantissaLiquidationId(Long mantissaLiquidationId) {
+        this.mantissaLiquidationId = mantissaLiquidationId;
+    }
+
+    public Integer getInternal() {
 		return internal;
 	}
 
