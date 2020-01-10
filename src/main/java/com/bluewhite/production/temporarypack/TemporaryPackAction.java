@@ -64,9 +64,9 @@ public class TemporaryPackAction {
     }
     private ClearCascadeJSON clearCascadeJSONMantissaLiquidation;
     {
-        clearCascadeJSONMantissaLiquidation = ClearCascadeJSON
-            .get().addRetainTerm(MantissaLiquidation.class, "id", "underGoods", "mantissaNumber", "number", "time", "remarks",
-                "type")
+        clearCascadeJSONMantissaLiquidation = ClearCascadeJSON.get()
+            .addRetainTerm(MantissaLiquidation.class, "id", "underGoods", "mantissaNumber", "number", "time", "remarks",
+                "type","surplusNumber")
             .addRetainTerm(UnderGoods.class, "id", "remarks", "product", "number", "bacthNumber", "status", "allotTime");
     }
     
