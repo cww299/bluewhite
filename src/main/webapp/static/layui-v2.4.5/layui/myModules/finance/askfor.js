@@ -1,5 +1,5 @@
-/**2020/1/10  author:299  财务汇总模板
- * collect
+/**2020/1/4  author:299  财务审核模板
+ * audit
  * type:{
  *   	1.报销
  *   	2.采购应付财务审核
@@ -50,25 +50,21 @@ layui.extend({
 	       { field: "orderProcurement_materiel_materialQualitative_name", 	title: "货物类别",  }, 
 	       { field: "orderProcurement_price", 		title: "单价", 			}, 
 	       { field: "money", 		title: "金额", 			}, 
-	       { field: "expenseDate", 	title: "付款日期", 	type:'date',	 },
 	       { field: "orderProcurement_arrivalTime",title: "到货时间",	type:'date', },
-	       { field: "orderProcurement_expectPaymentTime", 	title: "预计付款时间", 	type:'date' }, 
-	       { field: "paymentDate", 	title: "实际付款时间", 	type:'date',fixed:'right', }, 
-	       { field: "paymentMoney",	title: "付款金额", 		 fixed:'right',},
+	       { field: "expenseDate", 	title: "预计付款时间", 	type:'date',	 },
 		],
 		[	//type:3 工资管理 wages
 			firstCols,
-			{ field: "content", title: "工资内容", },
-			{ field: "money", title: "工资申请金额", },
-			{ field: "expenseDate", title: "工资申请日期", },
-			{ field: "paymentDate", title: "实际付款日期", },
-			{ field: "withholdReason", title: "扣款事由", },
-			{ field: "withholdMoney", title: "扣款金额", },
+			{ field: "content", title: "工资内容", }, 
+			{ field: "money", title: "工资申请金额", }, 
+			{ field: "expenseDate", title: "工资申请日期", }, 
+			{ field: "withholdReason", title: "扣款事由", }, 
+			{ field: "withholdMoney", title: "扣款金额", }, 
 		],
 		[	//type:4 税点报销 tax
 			firstCols,
-			{ field: "customer_name", title: "供应商名称", },
-			{ field: "money", title: "面票金额", },
+			{ field: "customer_name", title: "供应商名称", }, 
+			{ field: "money", title: "票面金额", },
 			{ field: "taxPoint", title: "税点", },
 			{ field: "expenseDate", title: "申请日期", }, 
 			{ field: "withholdReason", title: "扣款事由", }, 
@@ -76,19 +72,18 @@ layui.extend({
 		],
 		[	// type:5 物流管理  logistics
 			firstCols,
-			{ field: "logisticsDate", title: "物流订单日期", },
+			{ field: "logisticsDate", title: "物流订单日期", }, 
 			{ field: "contact_conPartyNames", title: "客户名称", }, 
-			{ field: "withholdReason", title: "物流点名称", },
-			{ field: "money", title: "支付金额", },
-			{ field: "expenseDate", title: "申请日期", }, 
+			{ field: "custom_name", title: "物流点名称", }, 
+			{ field: "money", title: "支付金额", }, 
+			{ field: "expenseDate", title: "预计付款日期", }, 
 		],
 		[	//type:6  借款本金    loan
 			firstCols,
-			{ field: "content", title: "借款方", },
-			{ field: "remark", title: "借款类型", },
-			{ field: "money", title: "报销申请金额", },
-			{ field: "expenseDate", title: "报销申请日期", },
-			{ field: "paymentDate", title: "实际付款日期", },
+		  	{ field: "content", title: "借款方", },
+		  	{ field: "remark", title: "借款类型", },
+		  	{ field: "money", title: "支付金额", }, 
+		  	{ field: "expenseDate", title: "预计付款日期", },
 		],
 		[	//type:7 社保税收    social
 			firstCols,
@@ -96,20 +91,19 @@ layui.extend({
 			{ field: "content", title: "税种", },
 			{ field: "money", title: "金额", },
 			{ field: "expenseDate", title: "预计付款日期", type:'date',},
-			{ field: "paymentDate", title: "实际付款日期", type:'date',},
 		],
 		[	//type:8 材料管理财务审核 material
 			firstCols,
 			{ field: "customer_name", title: "供应商", },
 			{ field: "content", title: "内容", }, 
 			{ field: "money", title: "预付金额", },
-			{ field: "expenseDate", title: "预计付款日期", },
-			{ field: "paymentDate", title: "实际付款日期", },
+			{ field: "expenseDate", title: "预计入库日期", }, 
 			{ field: "withholdReason", title: "扣款事由", }, 
 			{ field: "withholdMoney", title: "扣款金额", }, 
 		],
 		[	//type:9  周转资金   turnover
 			firstCols,
+			{ field: "content", title: "申请内容", }, 
 			{ field: "user_userName", title: "申请人", }, 
 			{ field: "money", title: "金额", }, 
 			{ field: "expenseDate", title: "回款日期", }, 
@@ -118,11 +112,10 @@ layui.extend({
 		],
 		[	//type:10  利息 loanInterest
 			firstCols,
-			{ field: "content", 	title: "借款方",},
-	        { field: "remark", 		title: "借款类型", },
-		    { field: "money", 		title: "报销申请金额", },
-		    { field: "expenseDate", title: "报销申请日期", },
-		    { field: "paymentDate", title: "实际付款日期",},
+	        { field: "content", 	title: "借款方",},
+	        { field: "remark", 		title: "借款类型",},
+	        { field: "money", 			title: "支付金额", }, 
+	        { field: "expenseDate", 	title: "预计付款日期", },
 		],
 		[	//type:11  外发对账 
 			firstCols,
@@ -132,18 +125,21 @@ layui.extend({
 			{ title:'供应商', field:'customer_name', },
 			{ title:'金额', field:'money', },
 			{ title:'备注', field:'remark', },
+	        { field: "expenseDate", 	title: "预计付款时间", 	type:'date',	 },
 	    ],
 	    
 	];
 	var lastCols = [
-       { field: "flag", title: "审核状态", 	 transData:{data:['未审核','审核','部分审核'],}, fixed:'right',width:120, }
+	   { field: "paymentDate", 	title: "实际付款时间", style:'background-color: #d8fe83',edit:true,type:'date',fixed:'right', width:120, }, 
+       { field: "paymentMoney",	title: "付款金额",    style:'background-color: #d8fe83', edit:'number', fixed:'right', width:120, },
+       { field: "flag", 	    title: "审核状态", 	 transData:{data:['未审核','审核','部分审核'],}, fixed:'right',width:120, }
 	];
 	
-	var collect = {
+	var audit = {
 		type: 1,
 	};
 	
-	collect.render = function(opt){
+	audit.render = function(opt){
 		opt = opt || {};
 		var TPL = `
 			<table class="layui-form searchTable">
@@ -156,18 +152,12 @@ layui.extend({
 					(function(){
 						var otherHtml = '';
 						var text = '', name = '';
-						switch(collect.type){
-						case 1: text='内容'; name='content'; 
+						switch(audit.type){
+						case 1: text='报销内容'; name='content'; 
 								otherHtml = '<td>报销人：</td>'+
-								   			'<td style="width: 100px;"><input type="text" name="Username" class="layui-input" /></td>'+
-								   			'<td>金额：</td>'+
-								   			'<td style="width: 100px;"><input type="number" name="money" class="layui-input" /></td>'+
-								   			'<td>是否预算：</td>'+
-								   			'<td style="width:100px;"><select name="budget">'+
-								   				'<option value="">请选择</option>'+
-												'<option value="0">否</option>'+
-												'<option value="1">是</option>'+
-								   			'</select></td>';
+								   			'<td><input type="text" name="Username" class="layui-input" /></td>'+
+								   			'<td>报销金额：</td>'+
+								   			'<td><input type="number" name="money" class="layui-input" /></td>';
 								break;
 						case 2: text='采购单编号'; name='content'; break;
 						case 3: text='工资内容'; name='content'; break;
@@ -194,9 +184,6 @@ layui.extend({
 							<option value="2">部分审核</option></select></td>
 					<td><span class="layui-btn" lay-submit lay-filter="searchBtn">
 							<i class="layui-icon layui-icon-search">搜索</i></span></td>
-					<td style="width: 30px;"></td>
-					<td style="font-size: 20px;">未支付总额:</td>
-					<td id="allPrice" style="color:red;font-size: 20px;">0</td>
 				</tr>
 			</table>
 			<table id="tableData" lay-filter="tableData"></table>
@@ -204,11 +191,11 @@ layui.extend({
 		
 		$(opt.elem || '#app').html(TPL);
 		form.render();
-		laydate.render({ elem:'#searchTime', range:'~', });
+		laydate.render({ elem:'#searchTime', range:'~', })
 		mytable.render({
 			elem: '#tableData',
-			url: myutil.config.ctx+'/fince/getConsumption?type='+collect.type ,
-			where:{ flags:'0,2', },
+			url: myutil.config.ctx+'/fince/getConsumption?type='+audit.type ,
+			where:{ flags:0 },
 			ifNull:'',
 			scrollX:true,
 			autoUpdate:{
@@ -247,14 +234,9 @@ layui.extend({
 				}
 			},
 			cellMinWidth:120,
-			cols: [ allCols[collect.type].concat(lastCols) ],
+			cols: [ allCols[audit.type].concat(lastCols) ],
 		});
-		myutil.getData({
-			url: myutil.config.ctx+'/fince/totalAmount?flags=0,2&type='+collect.type,
-			success:function(d){
-				$('#allPrice').html(d);
-			}
-		})
+		
 		form.on('submit(searchBtn)', function(obj) {
 			var f = obj.field;
 			var timeType = $('#selectone').val();
@@ -275,15 +257,8 @@ layui.extend({
 			table.reload('tableData', {
 				where: f
 			});
-			myutil.getData({
-				url: myutil.config.ctx+'/fince/totalAmount?type='+collect.type,
-				data: f,
-				success:function(d){
-					$('#allPrice').html(d);
-				}
-			})
 		});
 		form.render();
 	}
-	exports('collect',collect);
+	exports('audit',audit);
 })
