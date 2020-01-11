@@ -25,7 +25,7 @@ layui.config({
 	function() {
 		layui.myutil.config.ctx = '${ctx}';
 		layui.myutil.clickTr();
-		layui.collect.type = 9;
+		layui.collect.type = 3;
 		layui.collect.render();
 	}
 )
