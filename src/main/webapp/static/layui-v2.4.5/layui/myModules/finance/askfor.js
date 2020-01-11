@@ -195,6 +195,7 @@ layui.extend({
 			<table id="tableData" lay-filter="tableData"></table>
 		`;
 		$(opt.elem || '#app').html(TPL);
+		myutil.clickTr();
 		form.render();
 		laydate.render({ elem:'#searchTime', range:'~', });
 		if(askfor.type==3){	//如果是工资、增加导入按钮

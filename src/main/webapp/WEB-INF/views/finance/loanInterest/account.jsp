@@ -24,7 +24,6 @@ layui.config({
 	['mytable','askfor'],
 	function() {
 		layui.myutil.config.ctx = '${ctx}';
-		layui.myutil.clickTr();
 		layui.askfor.type = 10;
 		layui.askfor.render();
 	}

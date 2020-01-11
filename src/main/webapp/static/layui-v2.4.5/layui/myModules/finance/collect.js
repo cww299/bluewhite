@@ -204,6 +204,7 @@ layui.extend({
 		
 		$(opt.elem || '#app').html(TPL);
 		form.render();
+		myutil.clickTr();
 		laydate.render({ elem:'#searchTime', range:'~', });
 		mytable.render({
 			elem: '#tableData',

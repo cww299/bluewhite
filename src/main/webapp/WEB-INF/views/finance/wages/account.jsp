@@ -21,10 +21,9 @@ layui.config({
 	mytable : 'layui/myModules/mytable' ,
 	askfor : 'layui/myModules/finance/askfor' ,
 }).define(
-	['mytable', 'laydate', 'element','askfor'],
+	['mytable','askfor'],
 	function() {
 		layui.myutil.config.ctx = '${ctx}';
-		layui.myutil.clickTr();
 		layui.askfor.type = 3;
 		layui.askfor.render();
 	}

@@ -4,11 +4,10 @@
 <!DOCTYPE html>
 <html class="no-js">
 <head>
-	<script src="${ctx }/static/layui-v2.4.5/layui/layui.js"></script>
-	<link rel="stylesheet" href="${ctx }/static/layui-v2.4.5/layui/css/layui.css" media="all">
 	<meta charset="utf-8">
 	<title>报销管理财务汇总</title>
-	<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+	<script src="${ctx }/static/layui-v2.4.5/layui/layui.js"></script>
+	<link rel="stylesheet" href="${ctx }/static/layui-v2.4.5/layui/css/layui.css" media="all">
 </head>
 <body>
 <div class="layui-card">
@@ -21,10 +20,9 @@ layui.config({
 	mytable : 'layui/myModules/mytable' ,
 	collect : 'layui/myModules/finance/collect' ,
 }).define(
-	['mytable', 'laydate', 'element','collect'],
+	['mytable','collect'],
 	function() {
 		layui.myutil.config.ctx = '${ctx}';
-		layui.myutil.clickTr();
 		layui.collect.type = 1;
 		layui.collect.render();
 	}

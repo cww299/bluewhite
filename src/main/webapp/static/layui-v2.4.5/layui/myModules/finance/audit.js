@@ -188,8 +188,8 @@ layui.extend({
 			</table>
 			<table id="tableData" lay-filter="tableData"></table>
 		`;
-		
 		$(opt.elem || '#app').html(TPL);
+		myutil.clickTr();
 		form.render();
 		laydate.render({ elem:'#searchTime', range:'~', })
 		mytable.render({

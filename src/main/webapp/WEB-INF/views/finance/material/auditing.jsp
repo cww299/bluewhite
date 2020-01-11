@@ -22,15 +22,11 @@ layui.config({
 	mytable : 'layui/myModules/mytable' ,
 	audit : 'layui/myModules/finance/audit' ,
 }).define(
-	['mytable', 'laydate', 'element','audit'],
+	['mytable','audit'],
 	function() {
-		var $ = layui.jquery,
-			audit = layui.audit,
-			myutil = layui.myutil
-			myutil.config.ctx = '${ctx}';
-		myutil.clickTr();
-		audit.type = 8;
-		audit.render();
+		layui.myutil.config.ctx = '${ctx}';
+		layui.audit.type = 8;
+		layui.audit.render();
 	}
 )
 </script>

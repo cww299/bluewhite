@@ -8,7 +8,6 @@
 	<title>借款本金财务申请</title>
 	<script src="${ctx }/static/layui-v2.4.5/layui/layui.js"></script>
 	<link rel="stylesheet" href="${ctx }/static/layui-v2.4.5/layui/css/layui.css" media="all">
-	<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
 </head>
 <body>
 <div class="layui-card">
@@ -24,7 +23,6 @@ layui.config({
 	['mytable','askfor'],
 	function() {
 		layui.myutil.config.ctx = '${ctx}';
-		layui.myutil.clickTr();
 		layui.askfor.type = 6;
 		layui.askfor.render();
 	}
