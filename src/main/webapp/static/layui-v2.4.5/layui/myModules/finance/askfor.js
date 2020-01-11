@@ -1,5 +1,5 @@
-/**2020/1/4  author:299  财务审核模板
- * audit
+/**2020/1/11  author:299  财务申请模板
+ * askfor
  * type:{
  *   	1.报销
  *   	2.采购应付财务审核
@@ -15,11 +15,12 @@
  * }
  */
 layui.extend({
-}).define(['jquery','layer','form','laytpl','laydate','mytable','table'],function(exports){
+}).define(['jquery','layer','form','laytpl','laydate','mytable','table','upload'],function(exports){
 	"use strict";
 	var $ = layui.jquery,
 		form = layui.form,
 		laydate = layui.laydate,
+		upload = layui.upload,
 		layer = layui.layer,
 		laytpl = layui.laytpl,
 		table = layui.table,
@@ -55,67 +56,67 @@ layui.extend({
 		],
 		[	//type:3 工资管理 wages
 			firstCols,
-			{ field: "content", title: "工资内容", }, 
-			{ field: "money", title: "工资申请金额", }, 
-			{ field: "expenseDate", title: "工资申请日期", }, 
-			{ field: "withholdReason", title: "扣款事由", }, 
-			{ field: "withholdMoney", title: "扣款金额", }, 
+			{ field: "content", title: "工资内容",edit:true, }, 
+			{ field: "money", title: "工资申请金额", edit:'number',}, 
+			{ field: "expenseDate", title: "工资申请日期", type:'dateTime',edit:true,}, 
+			{ field: "withholdReason", title: "扣款事由",edit:true, }, 
+			{ field: "withholdMoney", title: "扣款金额",edit:true, }, 
 		],
-		[	//type:4 税点报销 tax
+		[	//type:4 税点应付申请 tax
 			firstCols,
-			{ field: "customer_name", title: "供应商名称", }, 
-			{ field: "money", title: "票面金额", },
-			{ field: "taxPoint", title: "税点", },
-			{ field: "expenseDate", title: "申请日期", }, 
-			{ field: "withholdReason", title: "扣款事由", }, 
-			{ field: "withholdMoney", title: "扣款金额", }, 
+			{ field: "customer_id", title: "供应商名称", type:'select',select:{data:[],},}, 
+			{ field: "money", title: "票面金额", edit:'number',},
+			{ field: "taxPoint", title: "税点", edit:true,},
+			{ field: "expenseDate", title: "申请日期", edit:true,type:'dateTime', }, 
+			{ field: "withholdReason", title: "扣款事由",edit:true, }, 
+			{ field: "withholdMoney", title: "扣款金额", edit:true,}, 
 		],
 		[	// type:5 物流管理  logistics
 			firstCols,
-			{ field: "logisticsDate", title: "物流订单日期", }, 
-			{ field: "contact_conPartyNames", title: "客户名称", }, 
-			{ field: "custom_name", title: "物流点名称", }, 
-			{ field: "money", title: "支付金额", }, 
-			{ field: "expenseDate", title: "预计付款日期", }, 
+			{ field: "logisticsDate", title: "物流订单日期", type:'dateTime', edit:true,}, 
+			{ field: "contact_id", title: "客户名称", type:'select',select:{data:[],name:'userName', }, }, 
+			{ field: "custom_name", title: "物流点名称", edit:true, }, 
+			{ field: "money", title: "支付金额",  edit:'number',}, 
+			{ field: "expenseDate", title: "预计付款日期",type:'dateTime', edit:true, }, 
 		],
 		[	//type:6  借款本金    loan
 			firstCols,
-		  	{ field: "content", title: "借款方", },
-		  	{ field: "remark", title: "借款类型", },
-		  	{ field: "money", title: "支付金额", }, 
-		  	{ field: "expenseDate", title: "预计付款日期", },
+		  	{ field: "content", title: "借款方", edit:true, },
+		  	{ field: "remark", title: "借款类型", edit:true, },
+		  	{ field: "money", title: "支付金额", edit:'number', }, 
+		  	{ field: "expenseDate", title: "预计付款日期", edit:true, type:'dateTime', },
 		],
 		[	//type:7 社保税收    social
 			firstCols,
-			{ field: "customer_name", title: "扣税单位", },
-			{ field: "content", title: "税种", },
-			{ field: "money", title: "金额", },
-			{ field: "expenseDate", title: "预计付款日期", type:'date',},
+			{ field: "customer_id", title: "扣税单位", type:'select',select:{data:[], },},
+			{ field: "content", title: "税种",edit:true, },
+			{ field: "money", title: "金额", edit:true, },
+			{ field: "expenseDate", title: "预计付款日期", type:'dateTime',edit:true, },
 		],
 		[	//type:8 材料管理财务审核 material
 			firstCols,
-			{ field: "customer_name", title: "供应商", },
-			{ field: "content", title: "内容", }, 
-			{ field: "money", title: "预付金额", },
-			{ field: "expenseDate", title: "预计入库日期", }, 
-			{ field: "withholdReason", title: "扣款事由", }, 
-			{ field: "withholdMoney", title: "扣款金额", }, 
+			{ field: "customer_id", title: "供应商",type:'select',select:{data:[],}, },
+			{ field: "content", title: "内容", edit:true,  }, 
+			{ field: "money", title: "预付金额", edit:'number', },
+			{ field: "expenseDate", title: "预计入库日期",type:'dateTime',edit:true, }, 
+			{ field: "withholdReason", title: "扣款事由", edit:true, }, 
+			{ field: "withholdMoney", title: "扣款金额", edit:true, }, 
 		],
 		[	//type:9  周转资金   turnover
 			firstCols,
-			{ field: "content", title: "申请内容", }, 
-			{ field: "user_userName", title: "申请人", }, 
-			{ field: "money", title: "金额", }, 
-			{ field: "expenseDate", title: "回款日期", }, 
-			{ field: "withholdReason", title: "扣款事由", }, 
-			{ field: "withholdMoney", title: "扣款金额", }, 
+			{ field: "content", title: "申请内容", edit:true,}, 
+			{ field: "user_id", title: "申请人",type:'select',select:{data:[],name:'userName', }, }, 
+			{ field: "money", title: "金额", edit:'number',}, 
+			{ field: "expenseDate", title: "回款日期", type:'dateTime',edit:true,}, 
+			{ field: "withholdReason", title: "扣款事由", edit:true, }, 
+			{ field: "withholdMoney", title: "扣款金额", edit:true,}, 
 		],
 		[	//type:10  利息 loanInterest
 			firstCols,
-	        { field: "content", 	title: "借款方",},
-	        { field: "remark", 		title: "借款类型",},
-	        { field: "money", 			title: "支付金额", }, 
-	        { field: "expenseDate", 	title: "预计付款日期", },
+	        { field: "content", 	title: "借款方", edit:true, },
+	        { field: "remark", 		title: "借款类型", edit:true,},
+	        { field: "money", 			title: "支付金额", edit:'number',}, 
+	        { field: "expenseDate", 	title: "预计付款日期", edit:true, type:'dateTime', },
 		],
 		[	//type:11  外发对账 
 			firstCols,
@@ -130,16 +131,14 @@ layui.extend({
 	    
 	];
 	var lastCols = [
-	   { field: "paymentDate", 	title: "实际付款时间", style:'background-color: #d8fe83',edit:true,type:'date',fixed:'right', width:120, }, 
-       { field: "paymentMoney",	title: "付款金额",    style:'background-color: #d8fe83', edit:'number', fixed:'right', width:120, },
-       { field: "flag", 	    title: "审核状态", 	 transData:{data:['未审核','审核','部分审核'],}, fixed:'right',width:120, }
+       { field: "flag",title: "审核状态",transData:{data:['未审核','审核','部分审核'],}, fixed:'right',width:120, }
 	];
 	
-	var audit = {
+	var askfor = {
 		type: 1,
 	};
 	
-	audit.render = function(opt){
+	askfor.render = function(opt){
 		opt = opt || {};
 		var TPL = `
 			<table class="layui-form searchTable">
@@ -152,7 +151,7 @@ layui.extend({
 					(function(){
 						var otherHtml = '';
 						var text = '', name = '';
-						switch(audit.type){
+						switch(askfor.type){
 						case 1: text='报销内容'; name='content'; 
 								otherHtml = '<td>报销人：</td>'+
 								   			'<td><input type="text" name="Username" class="layui-input" /></td>'+
@@ -183,58 +182,75 @@ layui.extend({
 							<option value="1">已审核</option>
 							<option value="2">部分审核</option></select></td>
 					<td><span class="layui-btn" lay-submit lay-filter="searchBtn">
-							<i class="layui-icon layui-icon-search">搜索</i></span></td>
+							<i class="layui-icon layui-icon-search">搜索</i></span></td><td></td>
+					`+
+					(function(){
+						if(askfor.type==3)
+							return '<td><span class="layui-btn" id="importWageBtn"><i class="layui-icon layui-icon-upload"></i>导入工资</span></td>';
+						return "";
+					})()
+					+`
 				</tr>
 			</table>
 			<table id="tableData" lay-filter="tableData"></table>
 		`;
-		
 		$(opt.elem || '#app').html(TPL);
 		form.render();
-		laydate.render({ elem:'#searchTime', range:'~', })
+		laydate.render({ elem:'#searchTime', range:'~', });
+		if(askfor.type==3){	//如果是工资、增加导入按钮
+			upload.render({
+			    elem: '#importWageBtn',
+			    url: myutil.config.ctx+'/fince/excel/addConsumption?type=3',
+			    accept: 'file',
+			    done: function(res){
+			        if(res.code==0){
+			    	    table.reload("tableData")
+			    	    return myutil.smsg(res.message);
+			        }else{
+			    	    return myutil.emsg('导入失败');
+			        }
+			    }
+			});
+		}else if(askfor.type==4 || askfor.type==8){	//如果是税点应付申请或者材料管理、获取供应商
+			var allCustomer = myutil.getDataSync({
+				url:myutil.config.ctx+'/ledger/getCustomer?customerAttributionId=449&customerTypeId=456',
+			});
+			allCustomer.unshift({id:'',name:'请选择'});
+			allCols[askfor.type][1].select.data = allCustomer;
+		}else if(askfor.type==9 || askfor.type==5){	//应付周转资金,   物流暂时用员工
+			var allCustomer = myutil.getDataSync({
+				url:myutil.config.ctx+'/system/user/findAllUser',
+			});
+			allCustomer.unshift({id:'',userName:'请选择'});
+			allCols[askfor.type][2].select.data = allCustomer;
+		}else if(askfor.type==7){	//如果是社保税收
+			var allCustomer = myutil.getDataSync({
+				url:myutil.config.ctx+'/ledger/getCustomer?customerAttributionId=448&customerTypeId=454',
+			});
+			allCustomer.unshift({id:'',name:'请选择'});
+			allCols[askfor.type][1].select.data = allCustomer;
+		}
 		mytable.render({
 			elem: '#tableData',
-			url: myutil.config.ctx+'/fince/getConsumption?type='+audit.type ,
+			url: myutil.config.ctx+'/fince/getConsumption?type='+askfor.type ,
 			where:{ flags:0 },
 			ifNull:'',
-			scrollX:true,
+			size:'lg',
 			autoUpdate:{
-				saveUrl:'/fince/addConsumption',
+				saveUrl:'/fince/addConsumption?type='+askfor.type,
+				deleUrl:'/fince/deleteConsumption',
+				field:{ customer_id:'customerId',user_id:'userId',contact_id:'contactId' },
 			},
 			verify:{
-				price:['paymentMoney'],
+				price:['money','withholdMoney'],
+				notNull:['content','expenseDate','money','customer_id','user_id','contact_id'],
 			},
-			toolbar: [
-					'<span class="layui-btn layui-btn-sm layui-btn-success" lay-event="audit">审核</span>',
-					'<span class="layui-btn layui-btn-sm layui-btn-danger" lay-event="noAudit">取消审核</span>',
-				].join(''),
-			limit:15,
-			limits:[15,20,50,100,200,],
+			limits:[10,20,50,100,200,],
 			curd:{
-				btn:[],
-				otherBtn:function(obj){
-					switch(obj.event) {
-					case 'audit':
-						myutil.deleTableIds({
-							url:'/fince/auditConsumption?flag=1',
-							table:'tableData',
-							type:'post',
-							text:'请选择相关信息进行审核|是否确认审核？',
-						})
-						break;
-					case 'noAudit':
-						myutil.deleTableIds({
-							url:'/fince/auditConsumption?flag=0',
-							table:'tableData',
-							type:'post',
-							text:'请选择相关信息进行审核|是否确认取消审核？',
-						})
-						break;
-					}
-				}
+				btn:[1,2,3,4],
 			},
 			cellMinWidth:120,
-			cols: [ allCols[audit.type].concat(lastCols) ],
+			cols: [ allCols[askfor.type].concat(lastCols) ],
 		});
 		
 		form.on('submit(searchBtn)', function(obj) {
@@ -260,5 +276,5 @@ layui.extend({
 		});
 		form.render();
 	}
-	exports('audit',audit);
+	exports('askfor',askfor);
 })
