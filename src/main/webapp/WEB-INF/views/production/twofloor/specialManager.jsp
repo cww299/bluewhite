@@ -4,10 +4,10 @@
 <!DOCTYPE html>
 <html>
 <head>
-	<link rel="stylesheet" href="${ctx }/static/layui-v2.4.5/layui/css/layui.css" media="all">
+	<title>特急管理</title>
 	<script src="${ctx}/static/layui-v2.4.5/layui/layui.js"></script>
 	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-<title>特急管理</title>
+	<link rel="stylesheet" href="${ctx }/static/layui-v2.4.5/layui/css/layui.css" media="all">
 </head>
 <body>
 <div class="layui-card">
@@ -32,15 +32,13 @@
 </div>
 </body>
 <script>
-var TYPE = 3;			//常量
 layui.config({
 	base : '${ctx}/static/layui-v2.4.5/'
 }).extend({						
 	specialManager : 'layui/myModules/specialManager'
 }).use(['specialManager'],
 	function(){
-		var specialManager = layui.specialManager;
-		specialManager.render(TYPE,'${ctx}');
+		layui.specialManager.render(3,'${ctx}');
 	}
 )
 </script>

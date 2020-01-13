@@ -7,10 +7,9 @@
 	<link rel="stylesheet" href="${ctx }/static/layui-v2.4.5/layui/css/layui.css" media="all">
 	<script src="${ctx}/static/layui-v2.4.5/layui/layui.js"></script>
 	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-<title>特急汇总</title>
+	<title>特急汇总</title>
 </head>
 <body>
-
 <div class="layui-card">
 	<div class="layui-card-body">
 		<table class="layui-form">
@@ -33,16 +32,13 @@
 </div>
 </body>
 <script>
-var TYPE = 1;			//常量
 layui.config({
 	base : '${ctx}/static/layui-v2.4.5/'
 }).extend({						
 	specialManager : 'layui/myModules/specialManager'
 }).use(['specialManager'],
 	function(){
-		var specialManager = layui.specialManager;
-		
-		specialManager.render(TYPE,'${ctx}');
+		layui.specialManager.render(1,'${ctx}');
 	}
 )
 </script>

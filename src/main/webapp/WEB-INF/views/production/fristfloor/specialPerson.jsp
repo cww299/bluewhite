@@ -4,10 +4,10 @@
 <!DOCTYPE html>
 <html>
 <head>
-	<link rel="stylesheet" href="${ctx }/static/layui-v2.4.5/layui/css/layui.css" media="all">
+	<title>一楼特急人员</title>
 	<script src="${ctx}/static/layui-v2.4.5/layui/layui.js"></script>
 	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-	<title>一楼特急人员</title>
+	<link rel="stylesheet" href="${ctx }/static/layui-v2.4.5/layui/css/layui.css" media="all">
 </head>
 <body>
 	<div class="layui-card">
@@ -15,7 +15,6 @@
 			<div id="div"></div>
 		</div>
 	</div>
-</body>
 </body>
 <script>
 layui.config({
@@ -25,11 +24,7 @@ layui.config({
 }).define(
 	['specialPerson'],
 	function(){
-		var $ = layui.jquery
-		, layer = layui.layer 				
-		, specialPerson = layui.specialPerson;
-		
-		specialPerson.render({
+		layui.specialPerson.render({
 			elem:'#div',
 			ctx:'${ctx}',
 			type:1,
@@ -37,5 +32,4 @@ layui.config({
 	}//end define function
 )//endedefine
 </script>
-
 </html>
