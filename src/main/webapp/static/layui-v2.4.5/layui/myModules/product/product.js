@@ -33,75 +33,101 @@ layui.config({
 	};
 	
 	var TPL = [		//主页面模板
-	           '<table class="layui-form">',
-	             '<tr>',
-	             	'<td>&nbsp;&nbsp;</td>',
-	             	'<td>产品编号:</td>',
-	             	'<td><input type="text" name="departmentNumber" class="layui-input"></td>',
-	             	'<td>&nbsp;&nbsp;</td>',
-	             	'<td>产品名称:</td>',
-	             	'<td><input type="text" name="name" class="layui-input"></td>',
-	             	'<td>&nbsp;&nbsp;</td>',
-	             	'<td><span class="layui-btn" lay-submit lay-filter="search">搜索</span></td>',
-	             	'<td>&nbsp;&nbsp;</td>',
-	             	'<td><span class="layui-btn layui-btn-normal" style="display:none;" id="addNewPro">新增产品</span></td>',
-	             '</tr>',
-	           '</table>',
-	           '<table id="tableData" lay-filter="tableData"></table>',
-	           ].join(' ');
+       '<table class="layui-form">',
+         '<tr>',
+         	'<td>&nbsp;&nbsp;</td>',
+         	'<td>产品编号:</td>',
+         	'<td><input type="text" name="departmentNumber" class="layui-input"></td>',
+         	'<td>&nbsp;&nbsp;</td>',
+         	'<td>产品名称:</td>',
+         	'<td><input type="text" name="name" class="layui-input"></td>',
+         	'<td>&nbsp;&nbsp;</td>',
+         	'<td><span class="layui-btn" lay-submit lay-filter="search">搜索</span></td>',
+         	'<td>&nbsp;&nbsp;</td>',
+         	'<td><span class="layui-btn layui-btn-normal" style="display:none;" id="addNewPro">新增产品</span></td>',
+         '</tr>',
+       '</table>',
+       '<table id="tableData" lay-filter="tableData"></table>',
+	].join(' ');
 	
 	var ADD_PRODUCE_TPL = [	//填写工序模板
-                     	 '<div style="padding:15px;" >',
-                     	 	'<table id="addProduceTable" lay-filter="addProduceTable"></table>',
-	                     '</div>',
-	                     ].join(' ');
+	 	 '<div style="padding:15px;" >',
+	 	 	'<table id="addProduceTable" lay-filter="addProduceTable"></table>',
+	     '</div>',
+     ].join(' ');
+	
+	var ADD_PRODUCT_TPL = [	//添加产品模板
+		'<div class="layui-form layui-form-pane" style="padding:20px;">',
+			'<div class="layui-form-item" pane>',
+	  			'<label class="layui-form-label">产品编号</label>',
+	  			'<div class="layui-input-block">',
+	  				'<input type="text" name="departmentNumber" lay-verify="required" autocomplete="off" class="layui-input">',
+				'</div>',
+			'</div>',
+			'<div class="layui-form-item" pane>',
+				'<label class="layui-form-label">备注</label>',
+				'<div class="layui-input-block">',
+					' <input type="text" name="remark" autocomplete="off" class="layui-input">',
+				'</div>',
+			'</div>',
+		    '<div class="layui-form-item" pane>',
+		    	'<label class="layui-form-label">产品名</label>',
+	    		'<div class="layui-input-block">',
+	      			' <input type="text" name="name" required  lay-verify="required" autocomplete="off" class="layui-input">',
+	      		'</div>',
+		  	'</div>',
+		  	'<p style="display:none;">',
+		  		'<span id="sureAddProductBtn" lay-filter="sureAddProductBtn" lay-submit>新增</span>',
+		  	'</p>',
+		'</div>',
+	].join(' ');
 	
 	var  ADD_BATCH_TPL= [	//填写批次模板
-	                      '<div style="padding:15px;" >',
-		                  	'<div class="layui-form layui-form-pane">',
-		                  		'<div class="layui-form-item" pane>',
-		                    		'<label class="layui-form-label">产品名</label>',
-		                    		'<div class="layui-input-block">',
-		                    			'<input type="text" class="layui-input" id="productName" disabled>',
-				                    '</div>',
-				                '</div>',
-				                '<div class="layui-form-item" pane id="addSelectDiv" style="display:none;">',
-		                    		'<label class="layui-form-label" id="selectText">机工选择</label>',
-		                    		'<div class="layui-input-block">',
-		                    			'<select id="addSelect">',
-		                    				'<option value="0">二楼机工</option>',
-		                    				'<option value="1">三楼机工</option>',
-		                    			'</select>',
-				                    '</div>',
-				                '</div>',
-				                '<div class="layui-form-item" pane>',
-		                    		'<label class="layui-form-label">批次号</label>',
-		                    		'<div class="layui-input-block">',
-		                    			'<input type="text" class="layui-input" name="bacthNumber" lay-verify="required">',
-				                    '</div>',
-				                '</div>',
-				                '<div class="layui-form-item" pane>',
-			                		'<label class="layui-form-label">数量</label>',
-			                		'<div class="layui-input-block">',
-				                      '<input type="text" class="layui-input" name="number" lay-verify="number">',
-				                    '</div>',
-				                '</div>',
-				                '<div class="layui-form-item" pane>',
-			                		'<label class="layui-form-label">备注</label>',
-			                		'<div class="layui-input-block">',
-				                      '<input type="text" class="layui-input" name="remarks">',
-				                    '</div>',
-			                    '</div>',
-				                '<div class="layui-form-item" pane>',
-				                	'<label class="layui-form-label">批次时间</label>',
-				                	'<div class="layui-input-block">',
-				                		'<input type="text" class="layui-input" name="allotTime" id="allotTime">',
-				                    '</div>',
-				                '</div>',
-				                '<span lay-submit lay-filter="addSure" id="addSure" style="display:none;">add</span>',
-			          		 '</div>',
-		                   '</div>',
-	                       ].join(' ');
+      '<div style="padding:15px;" >',
+      	'<div class="layui-form layui-form-pane">',
+      		'<div class="layui-form-item" pane>',
+        		'<label class="layui-form-label">产品名</label>',
+        		'<div class="layui-input-block">',
+        			'<input type="text" class="layui-input" id="productName" disabled>',
+                '</div>',
+            '</div>',
+            '<div class="layui-form-item" pane id="addSelectDiv" style="display:none;">',
+        		'<label class="layui-form-label" id="selectText">机工选择</label>',
+        		'<div class="layui-input-block">',
+        			'<select id="addSelect">',
+        				'<option value="0">二楼机工</option>',
+        				'<option value="1">三楼机工</option>',
+        			'</select>',
+                '</div>',
+            '</div>',
+            '<div class="layui-form-item" pane>',
+        		'<label class="layui-form-label">批次号</label>',
+        		'<div class="layui-input-block">',
+        			'<input type="text" class="layui-input" name="bacthNumber" lay-verify="required">',
+                '</div>',
+            '</div>',
+            '<div class="layui-form-item" pane>',
+        		'<label class="layui-form-label">数量</label>',
+        		'<div class="layui-input-block">',
+                  '<input type="text" class="layui-input" name="number" lay-verify="number">',
+                '</div>',
+            '</div>',
+            '<div class="layui-form-item" pane>',
+        		'<label class="layui-form-label">备注</label>',
+        		'<div class="layui-input-block">',
+                  '<input type="text" class="layui-input" name="remarks">',
+                '</div>',
+            '</div>',
+            '<div class="layui-form-item" pane>',
+            	'<label class="layui-form-label">批次时间</label>',
+            	'<div class="layui-input-block">',
+            		'<input type="text" class="layui-input" name="allotTime" id="allotTime">',
+                '</div>',
+            '</div>',
+            '<span lay-submit lay-filter="addSure" id="addSure" style="display:none;">add</span>',
+  		 '</div>',
+       '</div>',
+   ].join(' ');
 	
 	var baseType = ['','productFristQuality','productFristPack','productTwoDeedle','productTwoMachinist','productEightTailor'];
 	var baseReType = ['','','','productTwoReDeedle','productTwoReMachinist',''];
@@ -110,18 +136,18 @@ layui.config({
 		myutil.clickTr();
 		var usallyCols = [		//通用表头
 		                  	{ type:'checkbox', },
-	                  		{ title:'产品序号', field:'id', },
-	                  		{ title:'产品编号', field:'number', edit:opt.type==2, },		//此两列在一楼包装2时可修改
+	                  		{ title:'产品序号', field:'id',width:150, },
+	                  		{ title:'产品编号', field:'number', edit:opt.type==2,width:150, },		//此两列在一楼包装2时可修改
 	                  		{ title:'产品名称', field:'name',  edit:opt.type==2, },
-	                  		{ title: (opt.type==5?'激光':"")+'生产单价', field:'departmentPrice', },
-	                  		{ title: (opt.type==5?'激光':"")+'外发价格', field:'hairPrice', edit:opt.type>2, },	//此列在3，4，5，type时可修改
+	                  		{ title: (opt.type==5?'激光':"")+'生产单价', field:'departmentPrice', width:150,},
+	                  		{ title: (opt.type==5?'激光':"")+'外发价格', field:'hairPrice', edit:opt.type>2,width:150, },	//此列在3，4，5，type时可修改
                   		];
 		var needPrice = [		//二楼针工表头 type 3
-	                 		{ title:'针工价格', field:'deedlePrice', },
+	                 		{ title:'针工价格', field:'deedlePrice', width:150,},
                  		];
 		var eightPrice = [		//八号裁剪表头 type 5
-	                  		{ title:'冲床生产单价', field:'puncherDepartmentPrice', },
-	                  		{ title:'冲床外发价格', field:'puncherHairPrice', edit:true, },
+	                  		{ title:'冲床生产单价', field:'puncherDepartmentPrice',width:150, },
+	                  		{ title:'冲床外发价格', field:'puncherHairPrice', edit:true,width:150, },
                   		];
 		var cols = [];
 		switch(opt.type){
@@ -143,7 +169,30 @@ layui.config({
 					layer.open({
 						type:1,
 						title:'新增产品',
-						
+						content: ADD_PRODUCT_TPL,
+						btn:['确定','取消'],
+						area:'450px',
+						btnAlign:'c',
+						success:function(layerElem,layerIndex){
+							form.on('submit(sureAddProductBtn)',function(obj){
+								var field = obj.field;
+								if(field.remark){
+									field.departmentNumber += ('-'+field.remark);
+								}
+								delete field.remark;
+								myutil.saveAjax({
+									url:'/addProduct',
+									data: field,
+									success:function(){
+										table.reload('tableData');
+										layer.close(layerIndex);
+									}
+								})
+							})
+						},
+						yes:function(){
+							$('#sureAddProductBtn').click();
+						}
 					})
 				})
 			}
