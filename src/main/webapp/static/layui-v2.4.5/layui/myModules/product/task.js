@@ -57,12 +57,13 @@ layui.base({
 		{ title:'任务编号',field:'id', },
 		{ title:'批次号',field:'bacthNumber', },
 		{ title:'产品名',field:'productName', },
-		{ title:'时间',field:'allotTime', },
+		{ title:'时间',field:'allotTime', edit:true, type:'date', },
 		{ title:'工序',field:'procedureName', },
 		{ title:'预计时间',field:'expectTime', },
 		{ title:'任务价值',field:'expectTaskPrice', },
 		{ title:'b工资净值',field:'payB', },
-		{ title:'数量',field:'number', },
+		{ title:'数量',field:'number', edit:'number',  },
+		{ title:'备注',field:'remark', edit:true,  },
 	];
 	var tableId = 'tableData',defaultElem = '#app';
 	Class.prototype.render = function(opt){
@@ -70,6 +71,8 @@ layui.base({
 		laydate.render({elem:'#searchTime',range:'~'});
 		myutil.clickTr();
 		form.render();
+		if(task.type==2)
+			cols.push({ title:'加绩工资',field:'performancePrice',});
 		mytable.render({
 			elem: '#'+tableId,
 			url: '/task/allTask?type='+task.type,
@@ -77,8 +80,10 @@ layui.base({
 				'<span class="layui-btn layui-btn-sm" lay-event="lookover">查看人员</span>',
 				(function(){
 					if(task.type==2)
-						return '<span class="layui-btn layui-btn-sm layui-btn-warm" lay-event="lookoverPrice">查看加价</span>';
-					return '';
+						return '<span class="layui-btn layui-btn-sm layui-btn-normal" lay-event="addPrice">加绩</span>'+
+						 '<span class="layui-btn layui-btn-sm layui-btn-warm" lay-event="lookoverPrice">查看加价</span>';
+					else
+						return '';
 				})(),
 			].join(' '),
 			curd:{
@@ -88,11 +93,15 @@ layui.base({
 					if(obj.event=='lookover'){
 						if(check.length!=1)
 							return myutil.emsg('请选择一条数据进行操作！');
-						lookoverPeople(check[0].id);
+						lookover(check[0].id,true);
 					}else if(obj.event=='lookoverPrice'){
 						if(check.length!=1)
 							return myutil.emsg('请选择一条数据进行操作！');
-						lookoverPrice(check[0].id);
+						lookover(check[0].id);
+					}else if(obj.event=='addPrice'){
+						if(check.length!=1)
+							return myutil.emsg('请选择一条数据进行操作！');
+						addPrice(check[0]);
 					}
 				}
 			},
@@ -145,6 +154,55 @@ layui.base({
 						})(),
 					]
 				})
+			}
+		})
+	};
+	function addPrice(data){
+		layer.open({
+			title: data.productName,
+			area:'630px',
+			btn:['确定','取消'],
+			btnAlign:'c',
+			content:[
+				'<div style="padding:10px;">',
+					'<table>',
+						'<tr>',
+							'<td>工序：</td>',
+							'<td><input type="text" class="layui-input" disabled id="procedureName"></td>',
+							'<td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>',
+							'<td>工序：</td>',
+							'<td>',
+								'<select name="performance" id="performance" lay-verify="required"><option value="">请选择</option></select>',
+								'<input type="hidden" name="update" value="1">',
+								'<input type="hidden" name="taskIds" id="taskIds">',
+							'</td>',
+						'</tr>',
+					'</table>',
+				'</div>',
+			].join(' '),
+			success:function(layerElem,layerIndex){
+				$('#procedureName').val(data.procedureName);
+				$('#taskIds').val(data.id);
+				$('#performanceNumber').val(data.performanceNumber);
+				myutil.getData({
+					url:'/task/taskUser?id='+data.id,
+				});
+				myutil.getData({
+					url:'/task/pickTaskPerformance?procedureId='+data.procedure.id,
+					success:function(data){
+						var html = '';
+						layui.each(data,function(index,item){
+							
+						})
+						$('#performance').append(html);
+						form.render();
+					}
+				})
+				
+				//performanceNumber
+			},
+			yes:function(){
+				
 			}
 		})
 	};
