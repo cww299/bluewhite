@@ -230,7 +230,7 @@ layui.config({
 				if(checked.length==0)
 					return myutil.emsg('请选择相关信息');
 				if(checked.length>1)
-					return myutil.esmg('只能选择一天信息进行编辑');
+					return myutil.emsg('只能选择一条信息进行操作');
 				switch(obj.event){
 				case 'addBatch': addBatch(); break;
 				case 'addProduce': addProduce(); break;
