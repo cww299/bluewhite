@@ -91,7 +91,7 @@ public class UnderGoodsServiceImpl extends BaseServiceImpl<UnderGoods, Long> imp
 			//发货数量
 			List<Long> quantitativeListId = quantitativeDao.findSendNumber(r.getId());
 			List<QuantitativeChild> quantitativeList = quantitativeChildDao.findByIdIn(quantitativeListId);
-			int numberSendSum = quantitativeList.stream().filter(QuantitativeChild->QuantitativeChild.getChecks()==1).mapToInt(QuantitativeChild::getSingleNumber).sum();
+			int numberSendSum = quantitativeList.stream().mapToInt(QuantitativeChild::getActualSingleNumber).sum();		
 			r.setSurplusSendNumber(r.getNumber()-numberSendSum);
 			//尾数清算数量
 			List<MantissaLiquidation> mantissaLiquidationList = mantissaLiquidationDao.findByUnderGoodsId(r.getId());
