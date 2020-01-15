@@ -15,19 +15,16 @@
 	<div class="layui-card-body">
 		<table class="layui-form">
 			<tr>
+				<td style="width:100px;"><select class="layui-input" id="selectone">
+							<option value="time">包装时间</option>
+							<option value="sendTime">发货时间</option></select></td>
+				<td><input type="text" name="orderTimeBegin" id="orderTimeBegin" placeholder="请输入时间" class="layui-input"></td>
+				<td>&nbsp;&nbsp;&nbsp;</td>
 				<td>产品名:</td>
 				<td><input type="text" name="productName" class="layui-input"></td>
 				<td>&nbsp;&nbsp;&nbsp;</td>
 				<td>客户名:</td>
 				<td><input type="text" name="customerName" class="layui-input"></td>
-				<td>&nbsp;&nbsp;&nbsp;</td>
-				<td><select class="layui-input" id="selectone">
-							<option value="time">包装时间</option>
-							<option value="sendTime">发货时间</option>
-				</select></td>
-				<td>&nbsp;&nbsp;&nbsp;</td>
-				<td></td>
-				<td><input type="text" name="orderTimeBegin" id="orderTimeBegin" placeholder="请输入时间" class="layui-input"></td>
 				<td>&nbsp;&nbsp;&nbsp;</td>
 				<td>是否打印:</td>
 				<td style="width:100px;"><select name="print"><option value="">请选择</option>

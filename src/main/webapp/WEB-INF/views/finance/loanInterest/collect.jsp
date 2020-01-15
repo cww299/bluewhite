@@ -21,10 +21,9 @@ layui.config({
 	mytable : 'layui/myModules/mytable' ,
 	collect : 'layui/myModules/finance/collect' ,
 }).define(
-	['mytable', 'laydate', 'element','collect'],
+	['mytable','collect'],
 	function() {
 		layui.myutil.config.ctx = '${ctx}';
-		layui.myutil.clickTr();
 		layui.collect.type = 10;
 		layui.collect.render();
 	}

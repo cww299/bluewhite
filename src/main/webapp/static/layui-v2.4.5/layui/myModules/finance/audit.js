@@ -29,6 +29,7 @@ layui.extend({
 	var allCols = [
 		[],
 		[	//type:1  报销审核  expenseAccount
+			firstCols,
 			{ field: "content", title: "报销内容", }, 
 			{ field: "user_userName", title: "报销人", width:120,}, 
 			{ field: "money", title: "报销申请金额", width:140,sort:true,}, 
@@ -187,8 +188,8 @@ layui.extend({
 			</table>
 			<table id="tableData" lay-filter="tableData"></table>
 		`;
-		
 		$(opt.elem || '#app').html(TPL);
+		myutil.clickTr();
 		form.render();
 		laydate.render({ elem:'#searchTime', range:'~', })
 		mytable.render({

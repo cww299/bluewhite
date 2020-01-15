@@ -142,6 +142,10 @@ public class UnderGoodsServiceImpl extends BaseServiceImpl<UnderGoods, Long> imp
 		result.forEach(r->{
 			int numberStickSum = stickListList.stream().filter(QuantitativeChild->r.getId().equals(QuantitativeChild.getUnderGoodsId())).mapToInt(QuantitativeChild::getSingleNumber).sum();
 			r.setSurplusStickNumber(r.getNumber()-numberStickSum);
+			//尾数清算数量
+			List<MantissaLiquidation> mantissaLiquidationList = mantissaLiquidationDao.findByUnderGoodsId(r.getId());
+			int numberMantissaLiquidationSum = mantissaLiquidationList.stream().mapToInt(MantissaLiquidation::getNumber).sum();
+			r.setSurplusStickNumber(r.getSurplusStickNumber()-numberMantissaLiquidationSum);
 		});
 		return result;
 	}

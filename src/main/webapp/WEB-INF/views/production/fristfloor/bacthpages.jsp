@@ -4,11 +4,11 @@
 <!DOCTYPE html>
 <html>
 <head>
-	<link rel="stylesheet" href="${ctx }/static/layui-v2.4.5/layui/css/layui.css" media="all">
-	<link rel="stylesheet" href="${ctx }/static/layui-v2.4.5/layui/myModules/css/bacthManager.css" media="all">
+	<title>一楼质检批次管理</title>
 	<script src="${ctx}/static/layui-v2.4.5/layui/layui.js"></script>
 	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-	<title>一楼质检批次管理</title>
+	<link rel="stylesheet" href="${ctx }/static/layui-v2.4.5/layui/css/layui.css" media="all">
+	<link rel="stylesheet" href="${ctx }/static/layui-v2.4.5/layui/myModules/css/bacthManager.css" media="all">
 </head>
 <body>
 	<div class="layui-card">
@@ -16,7 +16,6 @@
 			<div id="div"></div>
 		</div>
 	</div>
-</body>
 </body>
 <script>
 layui.config({
@@ -26,11 +25,7 @@ layui.config({
 }).define(
 	['bacthManager'],
 	function(){
-		var $ = layui.jquery
-		, layer = layui.layer 	
-		, bacthManager = layui.bacthManager;
-		
-		bacthManager.render({
+		layui.bacthManager.render({
 			elem:'#div',
 			ctx:'${ctx}',
 			type:1,
@@ -38,5 +33,4 @@ layui.config({
 	}//end define function
 )//endedefine
 </script>
-
 </html>
