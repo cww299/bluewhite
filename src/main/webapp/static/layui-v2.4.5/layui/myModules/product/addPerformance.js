@@ -38,7 +38,14 @@ layui.base({
 			'</tr>',
 		'</table>',
 		'<div>',
-			'<ul id=""></ul>',
+			'<ul class="">',
+				'{{#',
+					'layui.each(d,function(index,item){',
+					
+					
+					'})',
+				'}}',
+			'</ul>',
 		'</div>',
 	'</div>',
 	].join(' ');
