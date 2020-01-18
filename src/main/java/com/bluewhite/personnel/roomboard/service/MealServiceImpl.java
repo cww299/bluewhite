@@ -1,7 +1,6 @@
 package com.bluewhite.personnel.roomboard.service;
 
 import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Comparator;
@@ -27,7 +26,6 @@ import com.bluewhite.common.entity.PageParameter;
 import com.bluewhite.common.entity.PageResult;
 import com.bluewhite.common.utils.DatesUtil;
 import com.bluewhite.common.utils.NumUtils;
-import com.bluewhite.finance.consumption.dao.ConsumptionDao;
 import com.bluewhite.finance.wage.dao.WageDao;
 import com.bluewhite.finance.wage.entity.Wage;
 import com.bluewhite.personnel.attendance.dao.AttendanceInitDao;
@@ -35,7 +33,6 @@ import com.bluewhite.personnel.attendance.dao.PersonVariableDao;
 import com.bluewhite.personnel.attendance.entity.AttendanceInit;
 import com.bluewhite.personnel.attendance.entity.AttendanceTime;
 import com.bluewhite.personnel.attendance.entity.PersonVariable;
-import com.bluewhite.personnel.attendance.service.AttendanceInitService;
 import com.bluewhite.personnel.attendance.service.AttendanceTimeService;
 import com.bluewhite.personnel.roomboard.dao.CostLivingDao;
 import com.bluewhite.personnel.roomboard.dao.MealDao;
@@ -60,10 +57,6 @@ public class MealServiceImpl extends BaseServiceImpl<Meal, Long> implements Meal
 	private UserService userService;
 	@Autowired
 	private AttendanceTimeService attendanceTimeService;
-	@Autowired
-	private AttendanceInitService attendanceInitService;
-	@Autowired
-	private ConsumptionDao consumptionDao;
 	@Autowired
 	private SingleMealDao singleMealDao;
 	@Autowired
@@ -252,26 +245,10 @@ public class MealServiceImpl extends BaseServiceImpl<Meal, Long> implements Meal
 			throw new ServiceException("未查询到当月电费，请先添加");
 		}
 		// 房租
-		List<CostLiving> costLivingList = costLivingDao.findByCostTypeIdAndSiteTypeId((long) 289, siteTypeId);
-		// 当房租缴费开始日期小于等于当月开始日期并且房租缴费结束日期大于当月结束日期
-		// 当房租缴费开始日期小于等于当月开始日期并且房租缴费结束日期大于当月开始日期并且小于当月结束日期
-		// 当房租缴费开始日期大于等于当月开始日期并且小于当月结束日期并且房租缴费结束日期大于当月结束日期
-		costLivingList = costLivingList.stream()
-				.filter(CostLiving -> (CostLiving.getBeginTime().compareTo(timeBegin) != 1
-						&& CostLiving.getEndTime().compareTo(timeEnd) != -1)
-						|| (CostLiving.getBeginTime().compareTo(timeBegin) != 1
-								&& CostLiving.getEndTime().compareTo(timeBegin) == 1
-								&& CostLiving.getEndTime().compareTo(timeEnd) == -1)
-						|| (CostLiving.getBeginTime().compareTo(timeBegin) != 1
-								&& CostLiving.getBeginTime().compareTo(timeEnd) == -1 && CostLiving.getEndTime()
-										.compareTo(timeEnd) == -1))
-				.collect(Collectors.toList());
-		if (costLivingList.size() > 0) {
-			// 平均每天
-			Double averageCost = NumUtils.div(costLivingList.stream().mapToDouble(CostLiving::getAverageCost).sum(),
-					costLivingList.size(), 2);
+		CostLiving costLiving = costLivingDao.findByCostTypeIdAndSiteTypeIdAndBeginTimeAndEndTime((long) 289, siteTypeId,timeBegin, timeEnd);
+		if (costLiving !=null) {
 			// 总费用
-			sum3 = NumUtils.mul(averageCost, day);
+			sum3 = NumUtils.mul(costLiving.getAverageCost(), day);
 		} else {
 			throw new ServiceException("未查询到当月房租，请先添加");
 		}
@@ -338,9 +315,7 @@ public class MealServiceImpl extends BaseServiceImpl<Meal, Long> implements Meal
 		double valPrice2 = NumUtils.mul(NumUtils.div(valwage, 25 * val, 2),
 				Double.parseDouble(personVariable1.getKeyValueThree()));// 第二个含管理收入
 		double valPrice3 = NumUtils.mul(NumUtils.sum(valPrice, valPrice2), day);// 每月
-																				// 物料采购和数据跟进费
 
-		// double valPrice4 = NumUtils.div(valwage, day, 2);// 人工工资
 		List<Wage> wages = wageDao.findByTypeAndTimeBetween((long) 282,
 				DatesUtil.getFristDayOfLastMonth(meal.getOrderTimeBegin()),
 				DatesUtil.getLastDayOLastMonth(meal.getOrderTimeBegin()));
@@ -366,25 +341,11 @@ public class MealServiceImpl extends BaseServiceImpl<Meal, Long> implements Meal
 		}
 		double merits = NumUtils.mul((double) meals.size(), than, (double) 0.5);// 人工绩效
 		PersonVariable restType = personVariableDao.findByType(5);
-		// double water = NumUtils.div(NumUtils.mul(sum1,
-		// Double.parseDouble(restType.getKeyValue())), day, 2);// 每天水费
-		// double electric = NumUtils.div(NumUtils.mul(sum2,
-		// Double.parseDouble(restType.getKeyValueTwo())), day, 2);// 每天电费
-		// double rent = NumUtils.div(NumUtils.mul(sum3,
-		// Double.parseDouble(restType.getKeyValueThree())), day, 2);// 每天房租费
-		// double coal = NumUtils.div(NumUtils.mul(sum4,
-		// Double.parseDouble(restType.getKeyValueThree())), day, 2);// 每天煤气费
-		// double merits2=NumUtils.div(merits,day,2);
-		// double sum = NumUtils.div(NumUtils.sum(water, electric, rent, coal,
-		// valPrice3, valPrice4, merits2),(double)4, 2);// 划分到每一餐
 		double water = NumUtils.mul(sum1, Double.parseDouble(restType.getKeyValue()));// 每月水费
 		double electric = NumUtils.mul(sum2, Double.parseDouble(restType.getKeyValueTwo()));// 每月电费
 		double rent = NumUtils.mul(sum3, Double.parseDouble(restType.getKeyValueThree()));// 每月房租费
 		double coal = NumUtils.mul(sum4, Double.parseDouble(restType.getKeyValueThree()));// 每月煤气费
 		double sumd = NumUtils.sum(water, electric, rent, coal, valPrice3, valwage, merits);// 所有费用汇总
-		// long day1 = DatesUtil.getDaySub(meal.getOrderTimeBegin(),
-		// meal.getOrderTimeEnd());
-		// double sumd = NumUtils.mul(sum, day1);// 选则时间内 水电费的总和
 		List<Double> listDouble2 = new ArrayList<>();
 		List<Double> listDouble3 = new ArrayList<>();
 		List<Double> listDouble4 = new ArrayList<>();
@@ -673,8 +634,6 @@ public class MealServiceImpl extends BaseServiceImpl<Meal, Long> implements Meal
 			dao.deleteList(idLong);
 		}
 		List<Meal> meals = new ArrayList<Meal>();
-		// 0=休息日期,
-		PersonVariable restType = personVariableDao.findByTypeAndTime(0, attendanceTime.getOrderTimeBegin());
 		// 4=设定早中晚三餐对于吃饭统计而延迟的分钟数
 		PersonVariable lagMin = personVariableDao.findByType(4);
 
@@ -895,26 +854,10 @@ public class MealServiceImpl extends BaseServiceImpl<Meal, Long> implements Meal
 			throw new ServiceException("未查询到当月电费，请先添加");
 		}
 		// 房租
-		List<CostLiving> costLivingList = costLivingDao.findByCostTypeIdAndSiteTypeId((long) 289, siteTypeId);
-		// 当房租缴费开始日期小于等于当月开始日期并且房租缴费结束日期大于当月结束日期
-		// 当房租缴费开始日期小于等于当月开始日期并且房租缴费结束日期大于当月开始日期并且小于当月结束日期
-		// 当房租缴费开始日期大于等于当月开始日期并且小于当月结束日期并且房租缴费结束日期大于当月结束日期
-		costLivingList = costLivingList.stream()
-				.filter(CostLiving -> (CostLiving.getBeginTime().compareTo(timeBegin) != 1
-						&& CostLiving.getEndTime().compareTo(timeEnd) != -1)
-						|| (CostLiving.getBeginTime().compareTo(timeBegin) != 1
-								&& CostLiving.getEndTime().compareTo(timeBegin) == 1
-								&& CostLiving.getEndTime().compareTo(timeEnd) == -1)
-						|| (CostLiving.getBeginTime().compareTo(timeBegin) != 1
-								&& CostLiving.getBeginTime().compareTo(timeEnd) == -1 && CostLiving.getEndTime()
-										.compareTo(timeEnd) == -1))
-				.collect(Collectors.toList());
-		if (costLivingList.size() > 0) {
-			// 平均每天
-			Double averageCost = NumUtils.div(costLivingList.stream().mapToDouble(CostLiving::getAverageCost).sum(),
-					costLivingList.size(), 2);
+		CostLiving costLiving = costLivingDao.findByCostTypeIdAndSiteTypeIdAndBeginTimeAndEndTime((long) 289, siteTypeId,timeBegin, timeEnd);
+		if (costLiving!=null) {
 			// 总费用
-			sum3 = NumUtils.mul(averageCost, day);
+			sum3 = NumUtils.mul(costLiving.getAverageCost(), day);
 		} else {
 			throw new ServiceException("未查询到当月房租，请先添加");
 		}
@@ -1049,9 +992,6 @@ public class MealServiceImpl extends BaseServiceImpl<Meal, Long> implements Meal
 		Date timeBegin = DatesUtil.getFirstDayOfMonth(meal.getOrderTimeBegin());
 		// 当月结束日期
 		Date timeEnd = DatesUtil.getLastDayOfMonth(meal.getOrderTimeBegin());
-		// 当月天数
-		Long day = DatesUtil.getDaySub(DatesUtil.getFirstDayOfMonth(meal.getOrderTimeBegin()),
-				DatesUtil.getLastDayOfMonth(meal.getOrderTimeBegin()));
 		// 水费
 		CostLiving costLivingWater = costLivingDao.findByCostTypeIdAndSiteTypeIdAndBeginTimeAndEndTime((long) 290,
 				siteTypeId, timeBegin, timeEnd);
@@ -1059,33 +999,16 @@ public class MealServiceImpl extends BaseServiceImpl<Meal, Long> implements Meal
 		CostLiving costLivingElectricity = costLivingDao.findByCostTypeIdAndSiteTypeIdAndBeginTimeAndEndTime((long) 291,
 				siteTypeId, timeBegin, timeEnd);
 		// 房租
-		List<CostLiving> costLivingList = costLivingDao.findByCostTypeIdAndSiteTypeId((long) 289, siteTypeId);
-		// 当房租缴费开始日期小于等于当月开始日期并且房租缴费结束日期大于当月结束日期
-		// 当房租缴费开始日期小于等于当月开始日期并且房租缴费结束日期大于当月开始日期并且小于当月结束日期
-		// 当房租缴费开始日期大于等于当月开始日期并且小于当月结束日期并且房租缴费结束日期大于当月结束日期
-		costLivingList = costLivingList.stream()
-				.filter(CostLiving -> (CostLiving.getBeginTime().compareTo(timeBegin) != 1
-						&& CostLiving.getEndTime().compareTo(timeEnd) != -1)
-						|| (CostLiving.getBeginTime().compareTo(timeBegin) != 1
-								&& CostLiving.getEndTime().compareTo(timeBegin) == 1
-								&& CostLiving.getEndTime().compareTo(timeEnd) == -1)
-						|| (CostLiving.getBeginTime().compareTo(timeBegin) != 1
-								&& CostLiving.getBeginTime().compareTo(timeEnd) == -1 && CostLiving.getEndTime()
-										.compareTo(timeEnd) == -1))
-				.collect(Collectors.toList());
-		if (costLivingList.size() > 0) {
+		CostLiving costLiving = costLivingDao.findByCostTypeIdAndSiteTypeIdAndBeginTimeAndEndTime((long) 289, siteTypeId,timeBegin, timeEnd);
+		if (costLiving != null) {
 			Map<String, Object> allMap = new HashMap<>();
-			// 平均每天
-			Double averageCost = NumUtils.div(costLivingList.stream().mapToDouble(CostLiving::getAverageCost).sum(),
-					costLivingList.size(), 2);
 			// 总费用
-			Double totalCost = NumUtils.mul(averageCost, day);
 			allMap.put("name", "房租");
 			allMap.put("modify", "keyValueThree");
-			allMap.put("sum1", totalCost);
+			allMap.put("sum1", costLiving.getTotalCost());
 			allMap.put("valPrice1", restType.getKeyValueThree());
-			allMap.put("val", NumUtils.mul(totalCost, Double.parseDouble(restType.getKeyValueThree())));
-			allMap.put("sumday1", NumUtils.mul(averageCost, Double.parseDouble(restType.getKeyValueThree())));
+			allMap.put("val", NumUtils.mul(costLiving.getTotalCost(), Double.parseDouble(restType.getKeyValueThree())));
+			allMap.put("sumday1", costLiving.getAverageCost());
 			allList.add(allMap);
 		}
 		if (costLivingWater != null) {
