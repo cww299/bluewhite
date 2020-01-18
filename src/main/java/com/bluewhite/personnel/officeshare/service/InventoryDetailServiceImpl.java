@@ -156,20 +156,20 @@ public class InventoryDetailServiceImpl extends BaseServiceImpl<InventoryDetail,
                 .collect(Collectors.groupingBy(InventoryDetail::getOrgNameId, Collectors.toList()));
         // 后勤部费用分摊到所有部门
         double logisticsCost = onventoryDetailList.stream()
-            .filter(InventoryDetail -> InventoryDetail.getOutboundCost() == 60
+            .filter(InventoryDetail ->InventoryDetail.getOrgNameId()!=null && InventoryDetail.getOrgNameId().equals((long)60)
                 && InventoryDetail.getOfficeSupplies().getType().equals(onventoryDetail.getType()))
             .mapToDouble(InventoryDetail::getOutboundCost).sum();
 
         // 查询出所有的部门
         List<BaseData> baseDatas = baseDataService.getBaseDataTreeByType("orgName");
         for (BaseData bData : baseDatas) {
-            if (mapAttendance.size() > 0) {
+            if (mapAttendance.size() > 0 && !bData.getId().equals((long)60)) {
                 // 均分费用
                 double averageLogisticsCost = NumUtils.div(logisticsCost, mapAttendance.size(), 2);
                 Map<String, Object> map = new HashMap<>();
                 List<InventoryDetail> psList = onventoryDetailList.stream()
                     .filter(InventoryDetail -> InventoryDetail.getOrgNameId() != null
-                        && InventoryDetail.getOrgNameId().equals(bData.getId())
+                        && InventoryDetail.getOrgNameId().equals(bData.getId()) && !InventoryDetail.getOrgNameId().equals((long)60)
                         && InventoryDetail.getOfficeSupplies().getType().equals(onventoryDetail.getType()))
                     .collect(Collectors.toList());
                 double sumCost = psList.stream().mapToDouble(InventoryDetail::getOutboundCost).sum();
@@ -182,8 +182,7 @@ public class InventoryDetailServiceImpl extends BaseServiceImpl<InventoryDetail,
         }
 
         // 按备注分组
-        Map<String,
-            List<InventoryDetail>> mapAttendanceRemark = onventoryDetailList.stream()
+        Map<String,List<InventoryDetail>> mapAttendanceRemark = onventoryDetailList.stream()
                 .filter(InventoryDetail -> InventoryDetail.getOrgNameId() == null
                     && InventoryDetail.getOfficeSupplies().getType().equals(onventoryDetail.getType()))
                 .collect(Collectors.groupingBy(InventoryDetail::getRemark, Collectors.toList()));
