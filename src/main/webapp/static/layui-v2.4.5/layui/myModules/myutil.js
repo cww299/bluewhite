@@ -77,9 +77,10 @@ layui.define(['jquery','layer','form','table'],function(exports){
 		}
 		if(myutil.config.ctx!='')
 			options.url = myutil.config.ctx+options.url;
-		var load = layer.load(1,{
-			shade: [0.5,'black'], 
-		});
+		if(!options.closeLoad)
+			var load = layer.load(1,{
+				shade: [0.5,'black'], 
+			});
 		$.ajax({
 			url : options.url,
 			type : options.type || 'get',	
@@ -99,6 +100,8 @@ layui.define(['jquery','layer','form','table'],function(exports){
 					error && error();
 					options.error && options.error(r);
 				}
+				if(!options.closeLoad)
+					layer.close(load);
 			},
 			error:function(){
 				if(!options.closeLoad){
@@ -107,7 +110,6 @@ layui.define(['jquery','layer','form','table'],function(exports){
 				myutil.emsg('请求发生错误！');
 			}
 		})
-		layer.close(load);
 	}
 	
 	Class.prototype.getSelectHtml = function(options,init){ /* data、url、tips、name、filter、selectOption、value、title、*/

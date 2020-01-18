@@ -402,19 +402,19 @@ layui.extend({
 							for(var i=0;i<notNull.length;i++){
 								var t = notNull[i];
 								t = opt.autoUpdate.field[t]? opt.autoUpdate.field[t] : t;
-								if(isNull(item[t]))
+								if(typeof(item[t])!="undefined" && isNull(item[t]))
 									msg = '新增失败，'+china[notNull[i]]+'不能为空';
 							}
 							for(var i=0;i<price.length;i++){
 								var t = price[i];
 								t = opt.autoUpdate.field[t]? opt.autoUpdate.field[t] : t;
-								if(!isPrice(item[t]))
+								if(typeof(item[t])!="undefined" && !isPrice(item[t]))
 									msg = '新增失败，请正确填写'+china[t];
 							}
 							for(var i=0;i<count.length;i++){
 								var t = count[i];
 								t = opt.autoUpdate.field[t]? opt.autoUpdate.field[t] : t;
-								if(!isCount(item[t]))
+								if(typeof(item[t])!="undefined" && !isCount(item[t]))
 									msg = '新增失败，请正确填写'+china[t];
 							}
 						})

@@ -38,8 +38,8 @@ layui.extend({
 					<tr>
 						<td>库位:</td>
 						<td><select name="storageLocationId" id="storageLocationId"><option value="">请选择</option></select></td>
-						<td>是否验货:</td>
-						<td><select name="inspection"><option value="">请选择</option>
+						<td class="verifyGood">是否验货:</td>
+						<td class="verifyGood"><select name="inspection"><option value="">请选择</option>
 													  <option value="0">否</option>
 													  <option value="1">是</option></select></td>
 						<td>采购单状态:</td>
@@ -62,6 +62,8 @@ layui.extend({
 	};
 	inputOrderList.render = function(opt){
 		$(opt.elem).append(TPL_MAIN);
+		if(inputOrderList.type==2 || inputOrderList.type==3)
+			$('.verifyGood').hide();
 		laydate.render({elem:'#inputDate',range:'~'})
 		form.render();
 		mytable.render({

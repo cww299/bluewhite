@@ -95,4 +95,9 @@ public interface OrderOutSourceService extends BaseCRUDService<OrderOutSource, L
 	 */
 	public PageResult<ProcessPrice> processNumberPage(ProcessPrice processPrice, PageParameter page);
 
+    /**
+     * 通过部门获取加工单归属
+     */
+    public void orderOutSourceToBacth();
+
 }

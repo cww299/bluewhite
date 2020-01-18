@@ -124,7 +124,6 @@ layui.extend({
 		opt.data = {};
 		sendGoodOrder.update(opt)
 	}
-	var currUser;
 	
 	sendGoodOrder.update = function(opt){
 		var data = opt.data,title="生成发货单";
@@ -290,7 +289,7 @@ layui.extend({
 					if(msg)
 						return myutil.emsg(msg);
 					data.applyVoucher = JSON.stringify(json);
-					data.userId = currUser.id;
+					data.userId = opt.currUser.id;
 					myutil.saveAjax({
 						url: url,
 						data: data,
@@ -432,12 +431,6 @@ layui.extend({
 	sendGoodOrder.init = function(done){
 		var filePath = layui.cache.modules.sendGoodOrder.substr(0, layui.cache.modules.sendGoodOrder.lastIndexOf('/'));
 		layui.link(filePath+"/../css/sale/sendGoodOrder.css");
-		myutil.getData({
-			url: myutil.config.ctx+'/getCurrentUser',
-			success:function(d){
-				currUser = d;
-			}
-		})
 		done && done();
 	};
 	exports("sendGoodOrder",sendGoodOrder);

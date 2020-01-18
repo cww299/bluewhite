@@ -4,10 +4,10 @@
 <!DOCTYPE html>
 <html class="no-js">
 <head>
-	<meta charset="utf-8">
-	<title>物流管理财务申请</title>
 	<script src="${ctx }/static/layui-v2.4.5/layui/layui.js"></script>
 	<link rel="stylesheet" href="${ctx }/static/layui-v2.4.5/layui/css/layui.css" media="all">
+	<meta charset="utf-8">
+	<title>位数丢失记录</title>
 	<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
 </head>
 <body>
@@ -19,13 +19,11 @@ layui.config({
 	base: '${ctx}/static/layui-v2.4.5/'
 }).extend({
 	mytable : 'layui/myModules/mytable' ,
-	askfor : 'layui/myModules/finance/askfor' ,
+	numberList : 'layui/myModules/product/numberList' ,
 }).define(
-	['mytable','askfor'],
+	['mytable', 'numberList'],
 	function() {
-		layui.myutil.config.ctx = '${ctx}';
-		layui.askfor.type = 5;
-		layui.askfor.render();
+		layui.numberList.render({ type:1,ctx:'${ctx}',})
 	}
 )
 </script>

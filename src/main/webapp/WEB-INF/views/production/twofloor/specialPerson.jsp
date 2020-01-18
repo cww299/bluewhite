@@ -16,7 +16,6 @@
 		</div>
 	</div>
 </body>
-</body>
 <script>
 layui.config({
 	base : '${ctx}/static/layui-v2.4.5/'
@@ -25,11 +24,7 @@ layui.config({
 }).define(
 	['specialPerson'],
 	function(){
-		var $ = layui.jquery
-		, layer = layui.layer 				
-		, specialPerson = layui.specialPerson;
-		
-		specialPerson.render({
+		layui.specialPerson.render({
 			elem:'#div',
 			ctx:'${ctx}',
 			type:3,
@@ -37,5 +32,4 @@ layui.config({
 	}//end define function
 )//endedefine
 </script>
-
 </html>

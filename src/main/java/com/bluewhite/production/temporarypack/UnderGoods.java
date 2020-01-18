@@ -5,7 +5,6 @@ import java.util.Date;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
-import javax.persistence.Index;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
@@ -16,9 +15,8 @@ import com.bluewhite.product.product.entity.Product;
 
 /**
  * 下货单
- * 
- * @author
- *
+ * @author zhangliang
+ * @date 2020/01/10
  */
 @Entity
 @Table(name = "pro_under_goods")
@@ -36,6 +34,12 @@ public class UnderGoods extends BaseEntity<Long> {
 	@JoinColumn(name = "product_id", referencedColumnName = "id", insertable = false, updatable = false)
 	private Product product;
 	
+	/**
+     * 尾数单id（将尾货单转换成下货单）
+     */
+    @Column(name = "mantissa_liquidation_id")
+    private Long mantissaLiquidationId;
+
 	/**
 	 * 批次号
 	 */
@@ -69,7 +73,6 @@ public class UnderGoods extends BaseEntity<Long> {
 	 */
 	@Column(name = "internal")
 	private Integer internal;
-
 
 	/**
 	 * 产品名称
@@ -108,7 +111,15 @@ public class UnderGoods extends BaseEntity<Long> {
 
 	
 	
-	public Integer getInternal() {
+	public Long getMantissaLiquidationId() {
+        return mantissaLiquidationId;
+    }
+
+    public void setMantissaLiquidationId(Long mantissaLiquidationId) {
+        this.mantissaLiquidationId = mantissaLiquidationId;
+    }
+
+    public Integer getInternal() {
 		return internal;
 	}
 

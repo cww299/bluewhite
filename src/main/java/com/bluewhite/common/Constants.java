@@ -152,7 +152,7 @@ public class Constants {
     public final static String  PKRK = "PKRK";
     //量化单
     public final static String  LHTB = "LHTB";
-    //申请单
-    public final static String  SQD = "SQD";
+    //借货申请单
+    public final static String  JHSQD = "JHSQD";
     
 }

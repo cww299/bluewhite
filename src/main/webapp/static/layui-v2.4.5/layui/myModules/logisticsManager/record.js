@@ -195,6 +195,7 @@ layui.extend({
 						orderTimeBegin: firstDay+' 00:00:00',
 						orderTimeEnd: nowDay+' 23:59:59',
 					},
+					curd:{ btn:[], },
 					totalRow:['sumCost','accounted'],
 					height:'450',
 					cols:[[

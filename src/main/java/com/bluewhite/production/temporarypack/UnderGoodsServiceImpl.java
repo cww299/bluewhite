@@ -32,7 +32,9 @@ public class UnderGoodsServiceImpl extends BaseServiceImpl<UnderGoods, Long> imp
 	private QuantitativeChildDao quantitativeChildDao;
 	@Autowired
 	private QuantitativeDao quantitativeDao;
-
+	@Autowired
+	private MantissaLiquidationDao mantissaLiquidationDao;
+  
 	
 	@Override
 	public PageResult<UnderGoods> findPages(UnderGoods param, PageParameter page) {
@@ -89,8 +91,12 @@ public class UnderGoodsServiceImpl extends BaseServiceImpl<UnderGoods, Long> imp
 			//发货数量
 			List<Long> quantitativeListId = quantitativeDao.findSendNumber(r.getId());
 			List<QuantitativeChild> quantitativeList = quantitativeChildDao.findByIdIn(quantitativeListId);
-			int numberSendSum = quantitativeList.stream().filter(QuantitativeChild->QuantitativeChild.getChecks()==1).mapToInt(QuantitativeChild::getSingleNumber).sum();
+			int numberSendSum = quantitativeList.stream().mapToInt(QuantitativeChild::getActualSingleNumber).sum();		
 			r.setSurplusSendNumber(r.getNumber()-numberSendSum);
+			//尾数清算数量
+			List<MantissaLiquidation> mantissaLiquidationList = mantissaLiquidationDao.findByUnderGoodsId(r.getId());
+			int numberMantissaLiquidationSum = mantissaLiquidationList.stream().mapToInt(MantissaLiquidation::getNumber).sum();
+			r.setSurplusStickNumber(r.getSurplusStickNumber()-numberMantissaLiquidationSum);
 		});
 		return result;
 	}
@@ -136,8 +142,14 @@ public class UnderGoodsServiceImpl extends BaseServiceImpl<UnderGoods, Long> imp
 		result.forEach(r->{
 			int numberStickSum = stickListList.stream().filter(QuantitativeChild->r.getId().equals(QuantitativeChild.getUnderGoodsId())).mapToInt(QuantitativeChild::getSingleNumber).sum();
 			r.setSurplusStickNumber(r.getNumber()-numberStickSum);
+			//尾数清算数量
+			List<MantissaLiquidation> mantissaLiquidationList = mantissaLiquidationDao.findByUnderGoodsId(r.getId());
+			int numberMantissaLiquidationSum = mantissaLiquidationList.stream().mapToInt(MantissaLiquidation::getNumber).sum();
+			r.setSurplusStickNumber(r.getSurplusStickNumber()-numberMantissaLiquidationSum);
 		});
 		return result;
 	}
+
+ 
 
 }

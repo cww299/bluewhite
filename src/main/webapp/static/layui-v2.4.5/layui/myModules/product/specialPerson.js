@@ -31,20 +31,20 @@ layui.config({
 	};
 	
 	var TPL = [
-	           '<table class="layui-form">',
-	             '<tr>',
-	             	'<td>&nbsp;&nbsp;</td>',
-	             	'<td>姓名:</td>',
-	             	'<td><input type="text" name="userName" class="layui-input"></td>',
-	             	'<td>&nbsp;&nbsp;</td>',
-	             	'<td>分组:</td>',
-	             	'<td><select name="groupId" id="searchSelect"><option value="">请选择</option></select></td>',
-	             	'<td>&nbsp;&nbsp;</td>',
-	             	'<td><span class="layui-btn" lay-submit lay-filter="search">搜索</span></td>',
-	             '</tr>',
-	           '</table>',
-	           '<table id="tableData" lay-filter="tableData"></table>',
-	           ].join(' ');
+       '<table class="layui-form">',
+         '<tr>',
+         	'<td>&nbsp;&nbsp;</td>',
+         	'<td>姓名:</td>',
+         	'<td><input type="text" name="userName" class="layui-input"></td>',
+         	'<td>&nbsp;&nbsp;</td>',
+         	'<td>分组:</td>',
+         	'<td><select name="groupId" id="searchSelect"><option value="">请选择</option></select></td>',
+         	'<td>&nbsp;&nbsp;</td>',
+         	'<td><span class="layui-btn" lay-submit lay-filter="search">搜索</span></td>',
+         '</tr>',
+       '</table>',
+       '<table id="tableData" lay-filter="tableData"></table>',
+    ].join(' ');
 	
 	
 	Class.prototype.render = function(opt){
