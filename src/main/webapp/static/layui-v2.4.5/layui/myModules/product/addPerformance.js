@@ -21,7 +21,6 @@ layui.base({
 		type: 1,
 	};
 	
-	
 	var MAIN_TPL = [
 	'<div style="padding:10px;">',
 		'<table>',
@@ -39,15 +38,22 @@ layui.base({
 			'</tr>',
 		'</table>',
 		'<div>',
-			'<ul id=""></ul>',
+			'<ul class="">',
+				'{{#',
+					'layui.each(d,function(index,item){',
+					
+					
+					'})',
+				'}}',
+			'</ul>',
 		'</div>',
 	'</div>',
 	].join(' ');
 	
 	
 	addPerformance.addEdit = function(opt){
-		opt = opt || {};
-		var check = layui.table.checkStatus(opt.table || 'tableData').data;
+		opt = opt || { type:1, };	//默认任务加绩
+		var check = table.checkStatus(opt.table || 'tableData').data;
 		if(check.length==0)
 			myutil.emsg('请选择信息进行加绩！');
 		var isAdd = 0;
@@ -58,7 +64,9 @@ layui.base({
 		if(isAdd!=check.length)
 			return myutil.emsg('无法同时新增修改加绩!');
 		
-		
+		///task/pickTaskPerformance   获取所有工序    传参    id
+		///farragoTask/taskUser      获取所有人员   传参  id
+		///farragoTask/getUserPerformance		获取修改  传参  id
 	};
 	
 	function addEdit(data){
