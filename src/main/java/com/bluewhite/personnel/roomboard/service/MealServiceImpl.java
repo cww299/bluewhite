@@ -364,10 +364,10 @@ public class MealServiceImpl extends BaseServiceImpl<Meal, Long> implements Meal
 		double budget11 = 0;
 		double budget12 = 0;
 		double budget13 = 0;
-		long l = meals.stream().filter(Meal -> Meal.getMode() != null && Meal.getMode().equals(1)).count();// 早餐数
-		long q = meals.stream().filter(Meal -> Meal.getMode() != null && Meal.getMode().equals(2)).count();// 中餐数
-		long w = meals.stream().filter(Meal -> Meal.getMode() != null && Meal.getMode().equals(3)).count();// 晚餐数
-		long r = meals.stream().filter(Meal -> Meal.getMode() != null && Meal.getMode().equals(4)).count();// 夜宵数
+		long l = meals.stream().filter(Meal -> Meal.getMode() != null && Meal.getMode().equals(1) && !Meal.getOrgNameId().equals((long) 1)).count();// 早餐数
+		long q = meals.stream().filter(Meal -> Meal.getMode() != null && Meal.getMode().equals(2) && !Meal.getOrgNameId().equals((long) 1)).count();// 中餐数
+		long w = meals.stream().filter(Meal -> Meal.getMode() != null && Meal.getMode().equals(3) && !Meal.getOrgNameId().equals((long) 1)).count();// 晚餐数
+		long r = meals.stream().filter(Meal -> Meal.getMode() != null && Meal.getMode().equals(4) && !Meal.getOrgNameId().equals((long) 1)).count();// 夜宵数
 		long t = meals.stream().filter(Meal -> Meal.getMode() != null && Meal.getMode().equals(1)
 				&& Meal.getUserId() != null && Meal.getOrgNameId().equals((long) 1)).count();// 总经办早餐数
 		long y = meals.stream().filter(Meal -> Meal.getMode() != null && Meal.getMode().equals(2)
@@ -530,15 +530,17 @@ public class MealServiceImpl extends BaseServiceImpl<Meal, Long> implements Meal
 		long a1 = l;
 		long a2 = q;
 		long a3 = w;
+		long a4 = r;
 		if ((meal.getOrgNameId() != null) && (meal.getOrgNameId().equals((long) 1))) {
 			a1 = t;
 			a2 = y;
 			a3 = u;
+			a4 = 1;
 		}
 		double g = NumUtils.sum(NumUtils.division(NumUtils.div(f, a1 == 0 ? 1 : a1, 2)), q1); // 早餐平均
 		double i = NumUtils.sum(NumUtils.division(NumUtils.div(z, a2 == 0 ? 1 : a2, 2)), q1);// 中餐平均
 		double n = NumUtils.sum(NumUtils.division(NumUtils.div(x, a3 == 0 ? 1 : a3, 2)), q1);// 晚餐平均
-		double h = NumUtils.sum(NumUtils.division(NumUtils.div(c, r == 0 ? 1 : r, 2)), q1);// 夜宵平均
+		double h = NumUtils.sum(NumUtils.division(NumUtils.div(c, a4 == 0 ? 1 : a4, 2)), q1);// 夜宵平均
 
 		// 获取用餐记录
 		List<Meal> mealsList = findMeal(meal);
