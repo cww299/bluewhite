@@ -159,21 +159,21 @@ public class InventoryDetailServiceImpl extends BaseServiceImpl<InventoryDetail,
             .filter(InventoryDetail ->InventoryDetail.getOrgNameId()!=null && InventoryDetail.getOrgNameId().equals((long)60)
                 && InventoryDetail.getOfficeSupplies().getType().equals(onventoryDetail.getType()))
             .mapToDouble(InventoryDetail::getOutboundCost).sum();
-
+        // 均分费用
+        double averageLogisticsCost = NumUtils.div(logisticsCost, mapAttendance.size(), 2);
+        
         // 查询出所有的部门
         List<BaseData> baseDatas = baseDataService.getBaseDataTreeByType("orgName");
         for (BaseData bData : baseDatas) {
-            if (mapAttendance.size() > 0 && !bData.getId().equals((long)60)) {
-                // 均分费用
-                double averageLogisticsCost = NumUtils.div(logisticsCost, mapAttendance.size(), 2);
+            if (mapAttendance.size() > 0) {
                 Map<String, Object> map = new HashMap<>();
                 List<InventoryDetail> psList = onventoryDetailList.stream()
                     .filter(InventoryDetail -> InventoryDetail.getOrgNameId() != null
-                        && InventoryDetail.getOrgNameId().equals(bData.getId()) && !InventoryDetail.getOrgNameId().equals((long)60)
+                        && InventoryDetail.getOrgNameId().equals(bData.getId())
                         && InventoryDetail.getOfficeSupplies().getType().equals(onventoryDetail.getType()))
                     .collect(Collectors.toList());
                 double sumCost = psList.stream().mapToDouble(InventoryDetail::getOutboundCost).sum();
-                sumCost = NumUtils.sum(sumCost, averageLogisticsCost);
+                sumCost = NumUtils.sum(sumCost, !bData.getId().equals((long)60) ? averageLogisticsCost : 0);
                 map.put("orgName", bData.getName());
                 map.put("sumCost", NumUtils.round(sumCost, 2));
                 map.put("accounted", NumUtils.mul(NumUtils.div(sumCost, sumCostList, 4), 100) + "%");
