@@ -576,9 +576,9 @@ layui.config({
 			loading:true,
 			page:true,
 			method:'GET',
-			soulSort: false,
-			limit: 14,
 			soulSort: true,
+			limit: 14,
+			totalRow:true,
 			smartReloadModel: true,    // 开启智能重载
 			request:{ pageName:'page', limitName:'size' },
 			parseData:function(ret){ return { data:ret.data.rows, count:ret.data.total, msg:ret.message, code:ret.code } },
@@ -679,12 +679,12 @@ layui.config({
 	            ] 
 	        },
 			cols:[[{align: 'center',type: 'checkbox'},
-			       {align:'center', title:'位置编号',field:'lotionNumber', edit: false},
+			       {align:'center', title:'位置编号',field:'lotionNumber', edit: false,totalRowText:'合计'},
 			       {align:'center', title:'姓名',   field:'userName', filter: true,},
-			       {align:'center', title:'手机号', 	field:'phone',edit: false,sort: true,filter: true},
-			       {align:'center', title:'年龄',   field:'age',	  edit: false,templet:function(d){return d.age==null ? "" : d.age}},
-			       {align:'center',title: "合同", field:"commitment",templet: function(d){if(d.commitment==0){return "未签"}else if (d.commitment==1){return "已签"} else if (d.commitment==2){return "续签"} else {return ""}}},
-			       {align:'center',field: "positionId",title: "承诺书",templet: function(d){if(d.promise==0){return "未签"}else if(d.promise==1){return "已签"}else{return ""}}},
+			       {align:'center', title:'手机号', 	field:'phone',edit: false,sort: true,filter: true,totalRow : true},
+			       {align:'center', title:'年龄',   field:'age',	  edit: false,totalRow : true,templet:function(d){return d.age==null ? "" : d.age}},
+			       {align:'center', title:'合同', field:"commitment",templet: function(d){if(d.commitment==0){return "未签"}else if (d.commitment==1){return "已签"} else if (d.commitment==2){return "续签"} else {return ""}}},
+			       {align:'center', title:'承诺书',field: "positionId",templet: function(d){if(d.promise==0){return "未签"}else if(d.promise==1){return "已签"}else{return ""}}},
 			       {align:'center', title:'保险',field:'safe',templet: function(d){if(d.safe==0){return "未缴"}else if(d.safe==1){return "已缴"}else{return ""}}},
 			       {align:'center', title:'合同到期时间',field:'contractDateEnd' ,filter: true,templet:function(d){return (/\d{4}-\d{1,2}-\d{1,2}/g.exec(d.contractDateEnd)==null ? "" :  /\d{4}-\d{1,2}-\d{1,2}/g.exec(d.contractDateEnd))}}, 
 			       {align:'center', title:'预计转正时间',field:'estimate',templet:function(d){return (/\d{4}-\d{1,2}-\d{1,2}/g.exec(d.estimate)==null ? "" :  /\d{4}-\d{1,2}-\d{1,2}/g.exec(d.estimate))}}, 
@@ -692,7 +692,7 @@ layui.config({
 			       {align:'center', title:'部门',field:'orgName',templet:function(d){return (d.orgName==null ? "" : d.orgName.name)}},
 			       {align:'center', title:'是否在职',field:'orgName',templet:function(d){return (d.quit==0 ? "在职" : "离职")}},
 			       {align:'center', title:'照片',field:'pictureUrl',templet:function(d){return "<div><img  src="+d.pictureUrl+" style='max-width:60px;'></div>"}},
-			      /*  {align:'center', title:'操作',toolbar: '#barDemo'} */
+			       {align:'center', title:'操作',toolbar: '#barDemo'} 
 			       ]],
 			        filter: {
 		                clearFilter: true,

@@ -1286,7 +1286,7 @@ layui.define(['laytpl', 'laypage', 'layer', 'form', 'util'], function(exports){
             }
           });
         break;
-        case 'LAYTABLE_EXPORT': //导出
+        case 'LAYTABLE_EXPORT': //导出全部
         	var	a="";
         	if(othis.attr("data-id")==1){
         		a='<li data-type="allnull"  id="allExport" lay-event="allExport">导出 全部 文件</li>';
@@ -1307,7 +1307,9 @@ layui.define(['laytpl', 'laypage', 'layer', 'form', 'util'], function(exports){
               ,done: function(panel, list){
                 list.on('click', function(){
                   var type = $(this).data('type')
-                  table.exportFile(options.id, null, type,options.url);
+                  var totalRow=options.totalRow//判断是否开启合计行
+                  var column=options.cols//获取table数据
+                  table.exportFile(options.id, null, type,options.url,totalRow,column);
                 });
               }
             });
@@ -1838,20 +1840,50 @@ layui.define(['laytpl', 'laypage', 'layer', 'form', 'util'], function(exports){
   };
   
   //表格导出
-  table.exportFile = function(id, data, type,url){
-    data = data || table.clearCacheKey(table.cache[id]);
+  table.exportFile = function(id, data, type,url,totalRow,column){
+	  var  data=data || table.cache[id];//合计行开始
+	  if(type!='allnull' && type!=undefined){
+		  var  columns=column[0];
+		  // 处理合计行
+		  if (totalRow !== false && totalRow) {
+			  var obj = {}, totalRows = {};
+			  for (var i = 0; i < columns.length; i++) {
+				  if (columns[i].totalRowText) {
+					  obj[columns[i].type === 'numbers' ? 'LAY_TABLE_INDEX' : columns[i].field] = columns[i].totalRowText
+				  } else if (columns[i].totalRow) {
+					  totalRows[columns[i].type === 'numbers' ? 'LAY_TABLE_INDEX' : columns[i].field] = 0
+				  }
+			  }
+			  if (JSON.stringify(totalRows) !== '{}') {
+				  for (i = 0; i < data.length; i++) {
+					  for (var key in totalRows) {
+						  totalRows[key] += Number(data[i][key])||0
+					  }
+				  }
+			  }
+			  data.push(Object.assign(obj, totalRows));
+		  }
+		  
+	  }
+	  
+    data = data || table.clearCacheKey(data);
     type = type || 'csv';
     if(type=='allnull'){
     	$.ajax({
 		      url:url,
 		      type:"GET",
-		      data:{page:1,size:0},
+		      data:{size:0},
     		  success: function (result) {
-    		  table.exportFile(id, result.data.rows)
+    			var  data1=result.data.rows
+    		  table.exportFile(id, data1)
     		  }
     	})
     	return "";
     };
+  
+    
+    
+    
     var config = thisTable.config[id] || {}
     ,textType = ({
       csv: 'text/csv'
