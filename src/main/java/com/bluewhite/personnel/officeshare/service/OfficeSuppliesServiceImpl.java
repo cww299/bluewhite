@@ -84,7 +84,7 @@ public class OfficeSuppliesServiceImpl extends BaseServiceImpl<OfficeSupplies, L
             OfficeSupplies ot = dao.findOne(officeSupplies.getId());
             BeanCopyUtils.copyNotEmpty(officeSupplies, ot, "");
             ot.setLibraryValue(
-                NumUtils.mul(officeSupplies.getInventoryNumber(), NumUtils.setzro(officeSupplies.getPrice())));
+                NumUtils.mul(ot.getInventoryNumber(), NumUtils.setzro(ot.getPrice())));
             save(ot);
         } else {
             officeSupplies.setInventoryNumber(0.0);
