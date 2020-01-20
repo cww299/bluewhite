@@ -146,6 +146,7 @@ layui.extend({
 				</div>
 			</div>
 			`;
+		layui.tablePlug.smartReload.enable(true);
 		$(opt.elem || '#app').html(TPL_MAIN);
 		laydate.render({ elem:'#searchTime', range:'~', })
 		form.render();
