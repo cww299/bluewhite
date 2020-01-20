@@ -142,7 +142,7 @@ layui.config({
 		      type:"GET",
 		      async:false,
     		  success: function (result) {				//初始填充部门
-    			  var htmls="<option>请选择</option>";
+    			  var htmls="<option value=''>请选择</option>";
     			  $(result.data).each(function(k,j){
     				htmls +='<option value="'+j.recruitId+'">'+j.recruitName+'</option>'
     			  });
@@ -152,7 +152,7 @@ layui.config({
 		      }
 		  });
 		 form.on('select(recruitId)', function(data){
-			 var html="<option value=' '>请选择</option>"
+			 var html="<option value=''>请选择</option>"
       			$.ajax({								
       				  url:"${ctx}/personnel/findCondition",
 				      data:{
