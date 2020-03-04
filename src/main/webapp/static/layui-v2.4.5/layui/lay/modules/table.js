@@ -1843,7 +1843,7 @@ layui.define(['laytpl', 'laypage', 'layer', 'form', 'util'], function(exports){
   table.exportFile = function(id, data, type,url,totalRow,column){
 	  var  data=data || table.cache[id];//合计行开始
 	  if(type!='allnull' && type!=undefined){
-		  var  columns=column[0];
+		  var  columns= column?column[0]:null;	// colum为null或者column不传时报错bug
 		  // 处理合计行
 		  if (totalRow !== false && totalRow) {
 			  var obj = {}, totalRows = {};
