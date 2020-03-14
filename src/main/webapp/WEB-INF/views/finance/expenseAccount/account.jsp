@@ -27,7 +27,7 @@
 			<table>
 				<tr>
 					<td>报销人:</td>
-					<td><input type="text" name="userName" id="firstNames" class="layui-input" /></td>
+					<td><select name="userId" id="firstNames" lay-search><option value="">请选择</option></select></td>
 					<td>&nbsp;&nbsp;</td>
 					<td>报销内容:</td>
 					<td><input type="text" name="content"  class="layui-input" /></td>
@@ -622,6 +622,8 @@ layui.config({
 					$(result.data).each(function(i, o) {
 						htmls += '<option value=' + o.id + '>' + o.userName + '</option>'
 					})
+					$('#firstNames').append(htmls);
+					form.render();
 				},
 				error: function() {
 					layer.msg("操作失败！", { icon: 2 });
