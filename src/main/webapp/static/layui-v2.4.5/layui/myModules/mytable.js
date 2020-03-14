@@ -564,7 +564,14 @@ layui.extend({
 							break;
 					}
 					while($(trElem).length>0){		//从父元素开始，每个子元素变色
-						$(trElem).css('backgroundColor',color);
+						//opt.even
+						var c = color;
+						if(color=='white' && opt.even){	//如果开启斑马线
+							var index = $(trElem).data('index');
+							if(index%2!=0)
+								c = '#f2f2f2';
+						}
+						$(trElem).css('backgroundColor',c);
 						trElem = $(trElem).next();
 						if($(trElem).find('[name="layTableCheckbox"]+').length>0)
 							break;
