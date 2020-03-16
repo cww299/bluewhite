@@ -51,7 +51,7 @@
 </div>
 </body>
 <script type="text/html" id="printPackTpl">
-<div style="padding:20px; 0px">
+<div style="padding:20px 0px;page-break-after: always;">
 	<table border="1" style="margin: auto;width: 90%;text-align:center;">
 		<tr>
        	 	<td style="padding:15px 0;">收货人名</td>
@@ -262,7 +262,7 @@ layui.config({
 			       { title:'审核',   field:'audit', 	transData:true, width:60, },
 			       { title:'发货',   field:'flag', 	transData:true, width:60, },
 			       { title:'打印',   field:'print', 	transData:true, width:60, },
-			       { title:'批次号',    field:'underGoods_bacthNumber',	width:130, },
+			       { title:'批次号',    field:'underGoods_bacthNumber',	minWidth:130, },
 			       { title:'产品名',    field:'underGoods_product_name', width:360,	},
 			       { title:'单包个数',   field:'singleNumber',	width:80, },
 			       { title:'实际数量',   field:'actualSingleNumber',	width:90,event:'transColor', 
@@ -604,6 +604,10 @@ layui.config({
 			}
 		})
 		var searchTableWhere = '';
+		document.onkeydown = function(event) {  
+			if(event.keyCode==13)
+				$('button[lay-filter="search"]').click();
+		}
 		form.on('submit(search)',function(obj){
 			var field = obj.field;
 			if(field.orderTimeBegin){
