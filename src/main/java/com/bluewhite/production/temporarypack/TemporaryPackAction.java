@@ -187,9 +187,9 @@ public class TemporaryPackAction {
 	 */
 	@RequestMapping(value = "/temporaryPack/auditQuantitative", method = RequestMethod.GET)
 	@ResponseBody
-	public CommonResponse auditQuantitative(String ids) {
+	public CommonResponse auditQuantitative(String ids,Integer audit) {
 		CommonResponse cr = new CommonResponse();
-		quantitativeService.auditQuantitative(ids);
+		quantitativeService.auditQuantitative(ids,audit);
 		cr.setMessage("审核成功");
 		return cr;
 	}
