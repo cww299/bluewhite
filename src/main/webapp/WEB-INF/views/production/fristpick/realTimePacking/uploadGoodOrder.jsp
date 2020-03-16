@@ -60,7 +60,7 @@ var TPL = [
 			'<label class="layui-form-label">批次数量</label>',
 			'<div class="layui-input-block">',
 				'<input class="layui-input" lay-verify="number" name="number" ',
-					'value="{{ d.number || 0 }}">',
+					'value="{{ d.number || 1 }}">',
 			'</div>',
 		'</div>',
 		'<div class="layui-form-item" pane>',
@@ -253,6 +253,8 @@ layui.config({
 						})
 					})
 					form.on('submit(sureAddOrder)',function(obj){
+						if(obj.field.number<1)
+							return myutil.emsg('清正确填写批次数量！');
 						myutil.saveAjax({
 							url:'/temporaryPack/saveUnderGoods',
 							data: obj.field,
