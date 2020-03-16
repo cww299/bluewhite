@@ -27,7 +27,7 @@ public interface QuantitativeService extends BaseCRUDService<Quantitative,Long>{
 	 * @param ids
 	 * @return
 	 */
-	int auditQuantitative(String ids);
+	int auditQuantitative(String ids,Integer audit);
 	
 	/**
 	 * 打印

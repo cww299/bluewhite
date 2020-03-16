@@ -179,7 +179,7 @@ public class QuantitativeServiceImpl extends BaseServiceImpl<Quantitative, Long>
 	}
 
 	@Override
-	public int auditQuantitative(String ids) {
+	public int auditQuantitative(String ids,Integer audit) {
 		int count = 0;
 		if (!StringUtils.isEmpty(ids)) {
 			String[] idArr = ids.split(",");
@@ -187,9 +187,12 @@ public class QuantitativeServiceImpl extends BaseServiceImpl<Quantitative, Long>
 				for (int i = 0; i < idArr.length; i++) {
 					Long id = Long.parseLong(idArr[i]);
 					Quantitative quantitative = dao.findOne(id);
-					if (quantitative.getAudit() == 1) {
-						throw new ServiceException("已审核请勿多次审核");
-					}
+					if (audit == 1 && quantitative.getAudit() == 1) {
+                        throw new ServiceException("已审核请勿多次审核");
+                    }
+                    if (audit == 0 && quantitative.getAudit() == 0) {
+                        throw new ServiceException("未审核请勿取消审核");
+                    }
 					quantitative.setAudit(1);
 					dao.save(quantitative);
 				}
