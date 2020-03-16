@@ -267,7 +267,8 @@ layui.config({
 			       { title:'单包个数',   field:'singleNumber',	width:80, },
 			       { title:'实际数量',   field:'actualSingleNumber',	width:90,event:'transColor', 
 			    	   templet: function(d){
-    	   					return '<span style="color:'+(d.checks?'red':"")+'">'+d.actualSingleNumber+'<span>'; },
+    	   					return '<span style="color:'+(d.checks?'red':"")+'" data-red="'+(d.checks?'red':"")+'">'+
+    	   					d.actualSingleNumber+'<span>'; },
 			       },
 			       { title:'备注',   field:'remarks',	width:90, edit:true,},  				
 			       ]],
@@ -301,18 +302,20 @@ layui.config({
 		table.on('tool(tableData)',function(obj){
 			if(isStickBagAccount){
 				if(obj.event=='transColor'){
-					var data = obj.data;
-					myutil.saveAjax({
-						url:'/temporaryPack/checkNumber',
-						data:{
-							id: data.childId,
-							check: data.checks?0:1,
-						},
-						type:'get',
-						success:function(){
-							table.reload('tableData');
-						}
-					})
+					if(obj.data.checks)
+						layer.confirm('是否核对！<br>注意：核对后无法回溯原始贴包数字',function(){
+							var data = obj.data;
+							myutil.saveAjax({
+								url:'/temporaryPack/checkNumber',
+								data:{
+									id: data.childId,
+								},
+								type:'get',
+								success:function(){
+									table.reload('tableData');
+								}
+							})
+						})
 				}
 			}
 			
