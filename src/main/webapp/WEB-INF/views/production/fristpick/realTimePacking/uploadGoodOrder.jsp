@@ -153,6 +153,7 @@ layui.config({
 			autoUpdate:{
 				deleUrl:'/temporaryPack/deleteUnderGoods',
 			},
+			even:true,
 			toolbar:[
 				'<span class="layui-btn layui-btn-sm" lay-event="add">新增数据</span>',
 				'<span class="layui-btn layui-btn-sm layui-btn-warm" lay-event="update">修改数据</span>',

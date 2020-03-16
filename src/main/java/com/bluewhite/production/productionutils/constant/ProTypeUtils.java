@@ -66,16 +66,16 @@ public class ProTypeUtils {
 	/**
 	 * 当部门预计生产价格计算系数 2=一楼包装
 	 */
-	private final static double FRIST_PACK = 0.00750375;
+	private final static double FRIST_PACK = 0.00646875;
 	/**
 	 * 当部门预计生产价格计算系数 3=二楼针工
 	 */
-	private final static double TOW_DEEDLE = 0.0067275;
+	private final static double TOW_DEEDLE = 0.00621;
 
 	/**
 	 * 当部门预计生产价格计算系数 4=二楼机工
 	 */
-	private final static double TOW_MACHINIST = 0.00383;
+	private final static double TOW_MACHINIST = 0.005175;
 
 	/**
 	 * 当部门预计生产价格计算系数 5=八号裁剪

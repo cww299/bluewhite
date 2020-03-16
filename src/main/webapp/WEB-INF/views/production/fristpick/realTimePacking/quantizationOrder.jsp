@@ -9,6 +9,13 @@
 	<script src="${ctx}/static/layui-v2.4.5/layui/layui.js"></script>
 	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 	<title>量化单</title>
+	<style>
+		/* .layui-table th, .layui-table td, .layui-table[lay-skin="line"], .layui-table[lay-skin="row"], .layui-table-view, .layui-table-tool, .layui-table-header, .layui-table-col-set, .layui-table-total, .layui-table-page, .layui-table-fixed-r, .layui-table-tips-main, .layui-table-grid-down {
+		    
+		    border-color: gray;
+		} */
+	
+	</style>
 </head>
 <body>
 <div class="layui-card">
@@ -122,7 +129,8 @@ layui.config({
 			url:'${ctx}/temporaryPack/findPagesQuantitative?'+((isStickBagStick && !isStickBagAccount)?'audit=1':''),
 			toolbar: $('#toolbarTpl').html(),
 			limit:15,
-			limits:[10,50,200,500,1000],
+			even:true,
+			limits:[15,50,200,500,1000],
 			curd:{
 				btn: isStickBagAccount?[4]:[],
 				otherBtn:function(obj){
@@ -247,7 +255,7 @@ layui.config({
 			       { title:'审核',   field:'audit', 	transData:true, width:60, },
 			       { title:'发货',   field:'flag', 	transData:true, width:60, },
 			       { title:'打印',   field:'print', 	transData:true, width:60, },
-			       { title:'批次号',    field:'underGoods_bacthNumber',	width:'8%', },
+			       { title:'批次号',    field:'underGoods_bacthNumber',	width:130, },
 			       { title:'产品名',    field:'underGoods_product_name', width:360,	},
 			       { title:'单包个数',   field:'singleNumber',	width:80, },
 			       { title:'实际数量',   field:'actualSingleNumber',	width:90,event:'transColor', 
@@ -276,23 +284,10 @@ layui.config({
 					})
 				})
 				form.render();
-				var re = ret.data;
-				var array = [];
-				for (var i = 0; i < re.length; i++) {
-					var arr = [];
-					arr.push(re[i]["quantitativeNumber"]);
-					arr.push(re[i]["user_userName"]);
-					arr.push(re[i]["sendTime"]);
-					arr.push(re[i]["customer_name"]);
-					arr.push(re[i]["underGoods_bacthNumber"]);
-					arr.push(re[i]["underGoods_product_name"]);
-					arr.push(re[i]["singleNumber"]);
-					arr.push(re[i]["remarks"]);
-					array.push(arr);
-				}
-				$('div[lay-event="LAYTABLE_EXPORT"]').on('click',function(e){
+				$('div[lay-event="LAYTABLE_EXPORT"]').unbind().on('click',function(e){
 					layui.stope(e);
-					table.exportFile(['量化编号','贴包人','发货时间','客户','批次号','产品名','单包个数','备注'],array,'xls'); 
+					var url = myutil.config.ctx+"/temporaryPack/import/excelQuantitative?"+searchTableWhere;
+					location.href= url;
 				})
 			}
 		})
@@ -601,6 +596,7 @@ layui.config({
 				})
 			}
 		})
+		var searchTableWhere = '';
 		form.on('submit(search)',function(obj){
 			var field = obj.field;
 			if(field.orderTimeBegin){
@@ -618,6 +614,10 @@ layui.config({
 			}
 			field.time=a;
 			field.sendTime=b;
+			searchTableWhere = '';
+			for(var key in field){
+				searchTableWhere += ('&'+key+"="+field[key]);
+			}
 			table.reload('tableData',{
 				where: field,
 				page:{ curr:1 },
