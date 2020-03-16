@@ -125,13 +125,16 @@ public class InventoryDetailServiceImpl extends BaseServiceImpl<InventoryDetail,
                     OfficeSupplies officeSupplies = officeSuppliesDao.findOne(onventoryDetail.getOfficeSuppliesId());
                     // 出库
                     if (onventoryDetail.getFlag() == 0) {
-                        officeSupplies .setInventoryNumber(officeSupplies.getInventoryNumber() + onventoryDetail.getNumber());
+                        officeSupplies
+                            .setInventoryNumber(officeSupplies.getInventoryNumber() + onventoryDetail.getNumber());
                     }
                     // 入库
                     if (onventoryDetail.getFlag() == 1) {
-                        officeSupplies.setInventoryNumber(officeSupplies.getInventoryNumber() - onventoryDetail.getNumber());
+                        officeSupplies
+                            .setInventoryNumber(officeSupplies.getInventoryNumber() - onventoryDetail.getNumber());
                     }
-                    officeSupplies.setLibraryValue(NumUtils.mul(officeSupplies.getInventoryNumber(), officeSupplies.getPrice()));
+                    officeSupplies
+                        .setLibraryValue(NumUtils.mul(officeSupplies.getInventoryNumber(), officeSupplies.getPrice()));
                     officeSuppliesDao.save(officeSupplies);
                     dao.delete(id);
                     count++;
@@ -144,24 +147,30 @@ public class InventoryDetailServiceImpl extends BaseServiceImpl<InventoryDetail,
     @Override
     public List<Map<String, Object>> statisticalInventoryDetail(InventoryDetail onventoryDetail) {
         List<Map<String, Object>> mapList = new ArrayList<>();
-        List<InventoryDetail> onventoryDetailList =  dao.findByFlagAndStatusAndTimeBetween(0,1,onventoryDetail.getOrderTimeBegin(), onventoryDetail.getOrderTimeEnd());
+        List<InventoryDetail> onventoryDetailList = dao.findByFlagAndStatusAndTimeBetween(0, 1,
+            onventoryDetail.getOrderTimeBegin(), onventoryDetail.getOrderTimeEnd());
         double sumCostList = onventoryDetailList.stream()
             .filter(InventoryDetail -> InventoryDetail.getOfficeSupplies().getType().equals(onventoryDetail.getType()))
             .mapToDouble(InventoryDetail::getOutboundCost).sum();
 
         // 按部门分组
-        Map<Long,List<InventoryDetail>> mapAttendance = onventoryDetailList.stream()
+        Map<Long,
+            List<InventoryDetail>> mapAttendance = onventoryDetailList.stream()
                 .filter(InventoryDetail -> InventoryDetail.getOrgNameId() != null
                     && InventoryDetail.getOfficeSupplies().getType().equals(onventoryDetail.getType()))
                 .collect(Collectors.groupingBy(InventoryDetail::getOrgNameId, Collectors.toList()));
         // 后勤部费用分摊到所有部门
         double logisticsCost = onventoryDetailList.stream()
-            .filter(InventoryDetail ->InventoryDetail.getOrgNameId()!=null && InventoryDetail.getOrgNameId().equals((long)60)
+            .filter(InventoryDetail -> InventoryDetail.getOrgNameId() != null
+                && InventoryDetail.getOrgNameId().equals((long)60)
                 && InventoryDetail.getOfficeSupplies().getType().equals(onventoryDetail.getType()))
             .mapToDouble(InventoryDetail::getOutboundCost).sum();
         // 均分费用
-        double averageLogisticsCost = NumUtils.div(logisticsCost, mapAttendance.size(), 2);
-        
+        double averageLogisticsCost = 0;
+        if (mapAttendance.size() != 0) {
+            averageLogisticsCost = NumUtils.div(logisticsCost, mapAttendance.size(), 2);
+        }
+
         // 查询出所有的部门
         List<BaseData> baseDatas = baseDataService.getBaseDataTreeByType("orgName");
         for (BaseData bData : baseDatas) {
@@ -182,7 +191,8 @@ public class InventoryDetailServiceImpl extends BaseServiceImpl<InventoryDetail,
         }
 
         // 按备注分组
-        Map<String,List<InventoryDetail>> mapAttendanceRemark = onventoryDetailList.stream()
+        Map<String,
+            List<InventoryDetail>> mapAttendanceRemark = onventoryDetailList.stream()
                 .filter(InventoryDetail -> InventoryDetail.getOrgNameId() == null
                     && InventoryDetail.getOfficeSupplies().getType().equals(onventoryDetail.getType()))
                 .collect(Collectors.groupingBy(InventoryDetail::getRemark, Collectors.toList()));
@@ -206,8 +216,8 @@ public class InventoryDetailServiceImpl extends BaseServiceImpl<InventoryDetail,
     public Map<String, Object> ingredientsStatisticalInventoryDetail(InventoryDetail onventoryDetail) {
         Map<String, Object> sumMap = new HashMap<>();
         List<Map<String, Object>> mapList = new ArrayList<>();
-        List<InventoryDetail> onventoryDetailList = dao.findByFlagAndStatusAndTimeBetween(0, 1,onventoryDetail.getOrderTimeBegin(),
-            DatesUtil.getLastDayOfMonth(onventoryDetail.getOrderTimeBegin()));
+        List<InventoryDetail> onventoryDetailList = dao.findByFlagAndStatusAndTimeBetween(0, 1,
+            onventoryDetail.getOrderTimeBegin(), DatesUtil.getLastDayOfMonth(onventoryDetail.getOrderTimeBegin()));
         double sumCostList = onventoryDetailList.stream()
             .filter(InventoryDetail -> InventoryDetail.getOfficeSupplies().getType().equals(onventoryDetail.getType()))
             .mapToDouble(InventoryDetail::getOutboundCost).sum();
