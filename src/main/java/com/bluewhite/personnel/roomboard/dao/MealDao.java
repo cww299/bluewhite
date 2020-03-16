@@ -22,6 +22,11 @@ public interface MealDao extends BaseRepository<Meal, Long>{
 	 * @return
 	 */
 	public List<Meal> findByTradeDaysTimeBetween(Date orderTimeBegin, Date orderTimeEnd);
+	
+	/**
+	 * 批量删除
+	 * @param ids
+	 */
 	@Modifying
 	@Query(nativeQuery= true,value ="delete from person_application_meal where id in (?1)")
 	public void deleteList(List<Long> ids);
