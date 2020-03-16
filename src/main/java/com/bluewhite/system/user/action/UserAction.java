@@ -438,10 +438,26 @@ public class UserAction {
 				userCardList.add(us);
 			}
 		}
-
+		
+	    // 健康证到期时间
+        List<Map<String, Object>> healthCertificateList = new ArrayList<Map<String, Object>>();
+        List<User> healthCertificate = userList.stream().filter(User -> User.getHealthCertificateTime() != null && User.getQuit() != 1
+                && User.getQuit() != null).collect(Collectors.toList());
+        for (User user : healthCertificate) {
+            Map<String, Object> us = new HashMap<String, Object>();
+            long co = DatesUtil.getDaySub(DatesUtil.getfristDayOftime(new Date()),
+                    DatesUtil.getfristDayOftime(user.getHealthCertificateTime()));
+            if (co <= 30) {
+                us.put("userId", user.getId());
+                us.put("username", user.getUserName());
+                us.put("healthCertificateTime", sdf.format(user.getHealthCertificateTime()));
+                healthCertificateList.add(us);
+            }
+        }
 		map.put("userBirth", userBirthList);
 		map.put("userContract", userContractList);
 		map.put("userCard", userCardList);
+		map.put("healthCertificate", healthCertificateList);
 		cr.setMessage("查询成功");
 		cr.setData(map);
 		return cr;
