@@ -123,6 +123,7 @@ layui.extend({
 			    			   width:100,
 			    		   })
 			    		var arr2 = [
+			    			   { field: "status",  title: "类型",width:100, transData:{data:['','正常','平账',]}, },
 			    		       { field: "number",  title: "数量",width:150, },
 						       { field: "outboundCost", title: "领用价值",width:150, },
 						       { field: "user_userName", title: "领取人", width:100,},
