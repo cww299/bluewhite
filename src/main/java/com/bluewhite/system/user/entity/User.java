@@ -4,12 +4,9 @@ import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
 
-import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
-import javax.persistence.Inheritance;
-import javax.persistence.InheritanceType;
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
@@ -394,6 +391,12 @@ public class User extends BaseEntity<Long> {
 	 */
 	@Column(name = "lotion_number")
 	private String lotionNumber;
+	
+	/**
+     * 健康证到期时间
+     */
+	@Column(name = "health_certificate_time")
+    private Date healthCertificateTime;
 
 	/**
 	 * 权限
@@ -450,7 +453,15 @@ public class User extends BaseEntity<Long> {
 
 
 
-	public String getLotionNumber() {
+	public Date getHealthCertificateTime() {
+        return healthCertificateTime;
+    }
+
+    public void setHealthCertificateTime(Date healthCertificateTime) {
+        this.healthCertificateTime = healthCertificateTime;
+    }
+
+    public String getLotionNumber() {
 		return lotionNumber;
 	}
 
