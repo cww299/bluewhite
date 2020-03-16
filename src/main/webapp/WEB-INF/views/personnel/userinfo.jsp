@@ -11,6 +11,10 @@
 	.layui-form-label{
 		width: 120px !important;
 	}
+	.contractDiv .layui-form-pane .layui-form-switch, .layui-form-pane .layui-form-radio{
+	    margin-left: 4px;
+	    margin-right: 4px;
+	}
 	</style>
 <title>员工信息</title>
 </head>
@@ -122,56 +126,54 @@
 
 <div id="userin" style="display: none; padding-left: 19px;" >
 	<table>
-			<tr>
-				<th style="vertical-align: top">
-					<table class="layui-table" lay-filter="demoEvent">
-						<thead>
-							<tr>
-								<th class="text-center">即将退休人员</th>
-								<th class="text-center" style="text-align: inherit;">时间</th>
-							</tr>
-						</thead>
-						<thead>
-						<tbody id="tablecontentfv">
-
-						</tbody>
-
-					</table>
-				</th>
-
-				<th style="vertical-align: top">
-					<table class="layui-table">
-						<thead>
-							<tr>
-								<th class="text-center">合同即将到期人员</th>
-								<th class="text-center" style="text-align: inherit;">时间</th>
-							</tr>
-						</thead>
-						<thead>
-						<tbody id="tablecontentff">
-
-						</tbody>
-					</table>
-				</th>
-				<th style="vertical-align: top">
-					<table class="layui-table">
-						<thead>
-							<tr>
-								<th class="text-center">身份证即将到期人员</th>
-								<th class="text-center" style="text-align: inherit;">时间</th>
-							</tr>
-						</thead>
-						<thead>
-						<tbody id="tablecontentff1">
-
-						</tbody>
-					</table>
-				</th>
-			</tr>
-		</table>
-	
+		<tr>
+			<th style="vertical-align: top">
+				<table class="layui-table">
+					<thead>
+						<tr>
+							<th class="text-center">即将退休人员</th>
+							<th class="text-center" style="text-align: inherit;">时间</th>
+						</tr>
+					</thead>
+					<tbody id="tablecontentfv"></tbody>
+				</table>
+			</th>
+			<th style="vertical-align: top">
+				<table class="layui-table">
+					<thead>
+						<tr>
+							<th class="text-center">合同即将到期人员</th>
+							<th class="text-center" style="text-align: inherit;">时间</th>
+						</tr>
+					</thead>
+					<tbody id="tablecontentff"></tbody>
+				</table>
+			</th>
+			<th style="vertical-align: top">
+				<table class="layui-table">
+					<thead>
+						<tr>
+							<th class="text-center">身份证即将到期人员</th>
+							<th class="text-center" style="text-align: inherit;">时间</th>
+						</tr>
+					</thead>
+					<tbody id="tablecontentff1"></tbody>
+				</table>
+			</th>
+			<th style="vertical-align: top">
+				<table class="layui-table">
+					<thead>
+						<tr>
+							<th class="text-center">健康证将到期</th>
+							<th class="text-center" style="text-align: inherit;">时间</th>
+						</tr>
+					</thead>
+					<tbody id="healthCertificateTimeTable"></tbody>
+				</table>
+			</th>
+		</tr>
+	</table>
 </div>
-
 </body>
 <script type="text/html" id="addEditTpl">
 <form action="" id="layuiadmin-form-admin2"
@@ -461,12 +463,16 @@
   			</div>			
 
 			<div class="layui-form-item">
-			<div class="layui-inline">
-		      <label class="layui-form-label">合同</label>
-				<div class="layui-input-block"  id="commitmentId" style="width: 955px;">
-		     
-			 	 </div>
-		    </div>			
+			  <div class="layui-inline contractDiv">
+		        <label class="layui-form-label">合同</label>
+				  <div class="layui-input-block"  id="commitmentId" style="width: 874px;"></div>
+		        </div>	
+			  <div class="layui-inline">
+		      	<label class="layui-form-label">健康证时间</label>
+		      	<div class="layui-input-inline">
+		        	<input type="text" name="healthCertificateTime" id="healthCertificateTimeInput" value="{{ d.healthCertificateTime || ""}}"  autocomplete="off" class="layui-input">
+		      	</div>
+		      </div>		
 			</div>
 		</div>
 	</form>
@@ -508,7 +514,6 @@ layui.config({
 			elem: '#startTime',
 			type: 'date',
 			range: '~',
-			
 		});
 		
  		$.ajax({
@@ -517,15 +522,14 @@ layui.config({
 		  type:"GET",
 		  async:false,
  		  success: function (result) {
-		var htmls='<option value="">请选择</option>';	
-	  			  $(result.data).each(function(index,item){
-	  				htmls+='<option value="'+item.id+'">'+item.name+'</option>'
-	  				$("#orgName").html(htmls);
-	  				form.render();
-	  			  });
-	    	}
+			  var htmls='<option value="">请选择</option>';	
+			  $(result.data).each(function(index,item){
+				htmls+='<option value="'+item.id+'">'+item.name+'</option>'
+				$("#orgName").html(htmls);
+				form.render();
+			  });
+	      }
 		});
-		
  		$.ajax({
 			url:'${ctx}/basedata/list',
 			data:{type:"commitments"},		
@@ -535,26 +539,23 @@ layui.config({
 	  				htmls+='<option value="'+item.id+'">'+item.name+'</option>'
 	  				$("#commitments").html(htmls);
 	  				form.render();
-	  			  });
-				}
+  			    });
+			}
 		})
-		
-					    
 	    $.ajax({
 		      url:"${ctx}/basedata/list",
 		      data:{type:'agreements'},
 		      type:"GET",
 		      async:false,
       		  success: function (result) {
-      			var htmls='<option value="">请选择</option>';
+      			  var htmls='<option value="">请选择</option>';
       			  $(result.data).each(function(index,item){
       				htmls+='<option value="'+item.id+'">'+item.name+'</option>'
       			  });
-      			$("#agreementsSelect").html(htmls);
-      			form.render();
+      			  $("#agreementsSelect").html(htmls);
+      			  form.render();
 		      }
-		  });
-		
+		});
 		var allPlatform = [];
 	 	tablePlug.smartReload.enable(true);  
 	 	table.render({
@@ -592,9 +593,6 @@ layui.config({
 				break;
 			}
 		})
-		
-
-		
 		function addbatch(data){
 			var id=data.id;
 			var tpl=addEditTpl.innerHTML;
@@ -609,14 +607,13 @@ layui.config({
 			  type:"GET",
 			  async:false,
 	 		  success: function (result) {
-		  			  $(result.data).each(function(index,item){
-		  				  var select="";
-		  				  if(item.id==data.quitTypeId){select="selected"}
-		  				htmls+='<option value="'+item.id+'"  '+select+'>'+item.name+'</option>'
-		  			  });
-		    	}
+	  			  $(result.data).each(function(index,item){
+	  				  var select="";
+	  				  if(item.id==data.quitTypeId){select="selected"}
+	  					htmls+='<option value="'+item.id+'"  '+select+'>'+item.name+'</option>'
+	  			  });
+		      }
 			});
-     		
      		var agreementId=data.agreementId.split(',')
      		var htmlth='';
      		$.ajax({
@@ -699,7 +696,6 @@ layui.config({
 					      }
 					  });
 			 }) 
-		    
      		var htmltt='';
      		$.ajax({
 			      url:"${ctx}/basedata/list",
@@ -747,6 +743,7 @@ layui.config({
 					laydate.render({ elem:'#idCardEnd', type:'datetime', value :data.idCardEnd , });
 					laydate.render({ elem:'#quitDate', type:'datetime', value :data.quitDate , });
 					laydate.render({ elem:'#contractDateEnd', type:'datetime', value :data.contractDateEnd , });
+					laydate.render({ elem:'#healthCertificateTimeInput', type:'datetime', value :data.healthCertificateTime , });
 		        	layero.addClass('layui-form');
 		        	
 		        	$("#bankCard1").blur(function(){
@@ -819,7 +816,6 @@ layui.config({
 		      });
 		    }
 		  });
-					
 					// 将保存按钮改变成提交按钮
 					layero.find('.layui-layer-btn0').attr({
 						'lay-filter' : 'addRole',
@@ -837,11 +833,11 @@ layui.config({
 						data.field.agreementId=values
 						data.field.pictureUrl=pictureUrl
 						if(data.field.quit==1 &&  data.field.quitTypeId==""){
-						return	layer.msg("请填写离职类型", {icon: 2});
+							return	layer.msg("请填写离职类型", {icon: 2});
 						}
 						if(data.field.quit==1 &&  data.field.quitDate==""){
 							return	layer.msg("请填写离职时间", {icon: 2});
-							}
+						}
 						$.ajax({
 							url:"${ctx}/system/user/update",
 							data:data.field,
@@ -934,30 +930,6 @@ layui.config({
 		       			}
 		       		   }
 					}); 
-						
-						 /* indexs = layer.confirm('<div>确定删除考勤机上的指纹吗？</div>', {btn: ['确定', '取消']},function(){
-								layer.close(indexs);
-							 var arr = ['192.168.1.204','192.168.7.123','192.168.1.205','192.168.14.201','192.168.6.73']
-								for (var i = 0; i < arr.length; i++) {
-						    	  var postData={
-											number:$('.number').val(),
-											address:arr[i],
-									}
-								   $.ajax({
-									url:"${ctx}/personnel/deleteUser",
-									data:postData,
-									async: false,
-									
-									type:"GET",
-									success:function(result){
-										
-									},error:function(){
-										layer.msg("操作失败！", {icon: 2});
-									}
-								});  
-								}
-						 }) */
-						
 	 		}
 	 	})
 	 	table.on('toolbar(recruitTable)',function(obj){
@@ -980,32 +952,31 @@ layui.config({
 				var index;
 				 index = layer.confirm('<div>输入密码:<input id="password"  class="layui-input" /></div>', {btn: ['确定', '取消']},function(){
 					 if($("#password").val()==3116){
-				 $.ajax({
-					url:"${ctx}/system/user/deleteUser",
-					data:{id:checkedIds},
-					type:"GET",
-					traditional: true,
-					beforeSend:function(){
-						index = layer.load(1, {
-							  shade: [0.1,'#fff'] //0.1透明度的白色背景
-							});
-					},
-					success:function(result){
-						if(0==result.code){
-						layer.msg(result.message, {icon: 1});
-						layer.close(index);
-						}else if(1500==result.code){
-							layer.msg("该名人员无法删除 存在数据关联", {icon: 2});
-							layer.close(index);
-						}else{
-							layer.msg(result.message, {icon: 2});
-							layer.close(index);
-						}
-					},error:function(){
-						layer.msg("操作失败！", {icon: 2});
-						layer.close(index);
-					}
-				}); 
+						 $.ajax({
+							url:"${ctx}/system/user/deleteUser",
+							data:{id:checkedIds},
+							traditional: true,
+							beforeSend:function(){
+								index = layer.load(1, {
+									  shade: [0.1,'#fff'] //0.1透明度的白色背景
+								});
+							},
+							success:function(result){
+								if(0==result.code){
+								layer.msg(result.message, {icon: 1});
+								layer.close(index);
+								}else if(1500==result.code){
+									layer.msg("该名人员无法删除 存在数据关联", {icon: 2});
+									layer.close(index);
+								}else{
+									layer.msg(result.message, {icon: 2});
+									layer.close(index);
+								}
+							},error:function(){
+								layer.msg("操作失败！", {icon: 2});
+								layer.close(index);
+							}
+						}); 
 					 }else{
 						 return layer.msg("请填写正确密码", {icon: 2});
 					 }
@@ -1017,7 +988,8 @@ layui.config({
 	 		layer.open({
 				title:'员工信息 ',
 				type:1,
-				area:['45%','80%'],
+				shadeClose:true,
+				area:['1000px','80%'],
 				content:$('#userin'),
 				end:function(){
 					$('#userin').hide();		//在弹窗销毁后，隐藏弹窗内容DIV
@@ -1029,7 +1001,7 @@ layui.config({
 			      type:"GET",
 			      beforeSend:function(){
 				 	  index = layer.load(1, {
-					  shade: [0.1,'#fff'] //0.1透明度的白色背景
+					  	shade: [0.1,'#fff'] //0.1透明度的白色背景
 					  });
 				  }, 
 	      		  success: function (result) {
@@ -1045,7 +1017,6 @@ layui.config({
 	      				+'<td class="text-center edit username2" data-id="'+o.userId+'">'+o.username+'</td>'
 	      				+'<td class="text-center edit price">'+o.contractDateEnd+'</td></tr>'
 	      			});
-	      			   
 	      			$("#tablecontentff").html(htmlh);
 	      			$(result.data.userCard).each(function(i,o){
 	      				htmlh1 +='<tr>'
@@ -1053,11 +1024,18 @@ layui.config({
 	      				+'<td class="text-center edit price">'+o.idCardEnd+'</td></tr>'
 	      			});
 	      			$("#tablecontentff1").html(htmlh1);
+	      			var htmlHealth="";
+	      			$(result.data.healthCertificateTime).each(function(i,o){
+	      				htmlh1 +='<tr>'
+	      				+'<td class="text-center edit username2" data-id="'+o.userId+'">'+o.username+'</td>'
+	      				+'<td class="text-center edit price">'+o.healthCertificateTime+'</td></tr>'
+	      			});
+	      			$("#healthCertificateTimeTable").html(htmlHealth);
 	      			tips();//调用点击事件
 	      			layer.close(index);
 			      },error:function(){
-						layer.msg("加载失败！", {icon: 2});
-						layer.close(index);
+					layer.msg("加载失败！", {icon: 2});
+					layer.close(index);
 				  }
 			  }); 
 	 	}
@@ -1110,11 +1088,11 @@ layui.config({
 			});
 	 	})
 	 	$(document).on('click', '.layui-table-view tbody tr', function(event) {
-						var elemTemp = $(this);
-						var tableView = elemTemp.closest('.layui-table-view');
-						var trIndex = elemTemp.data('index');
-						tableView.find('tr[data-index="' + trIndex + '"]').find('[name="layTableCheckbox"]+').last().click();
-					})
+			var elemTemp = $(this);
+			var tableView = elemTemp.closest('.layui-table-view');
+			var trIndex = elemTemp.data('index');
+			tableView.find('tr[data-index="' + trIndex + '"]').find('[name="layTableCheckbox"]+').last().click();
+		})
 	 	//待转正人员
 	 	/* function openSpecialWin(){					//打开特急人员弹窗
 			var specialWin=layer.open({
