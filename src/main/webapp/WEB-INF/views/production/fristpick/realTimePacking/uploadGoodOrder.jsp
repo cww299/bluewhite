@@ -193,6 +193,10 @@ layui.config({
 				})
 			 }
 		})
+		document.onkeyup = function(event) {  
+			if(event.keyCode==13)
+				$('button[lay-filter="search"]').click();
+		}
 		form.on('submit(search)',function(obj){
 			var field = obj.field;
 			if(field.orderTimeBegin){

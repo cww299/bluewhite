@@ -291,6 +291,11 @@ layui.config({
 						}
 					})
 				})
+				//background: white;
+				var whiteTd = ['0','quantitativeNumber','time','sendTime','user_userName','customer_name','audit','flag','print'];
+				layui.each(whiteTd,function(index,item){
+					$('#tableData').next().find('td[data-field="'+item+'"]').css('background','white');
+				})
 				form.render();
 				$('div[lay-event="LAYTABLE_EXPORT"]').unbind().on('click',function(e){
 					layui.stope(e);
@@ -607,7 +612,7 @@ layui.config({
 			}
 		})
 		var searchTableWhere = '';
-		document.onkeydown = function(event) {  
+		document.onkeyup = function(event) {  
 			if(event.keyCode==13)
 				$('button[lay-filter="search"]').click();
 		}
