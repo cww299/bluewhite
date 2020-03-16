@@ -16,10 +16,9 @@
 	    margin-right: 4px;
 	}
 	</style>
-<title>员工信息</title>
+	<title>员工信息</title>
 </head>
 <body>
-
 <div class="layui-card">
 	<div class="layui-card-body">
 		<table class="layui-form">
@@ -123,7 +122,6 @@
 <!-- <div id="specialWinDiv" style="diaplay:none;">
 	<table class="layui-table" id="specialTable" lay-filter="specialTable"></table>
 </div> -->
-
 <div id="userin" style="display: none; padding-left: 19px;" >
 	<table>
 		<tr>
@@ -176,18 +174,15 @@
 </div>
 </body>
 <script type="text/html" id="addEditTpl">
-<form action="" id="layuiadmin-form-admin2"
-		style="padding: 20px 0px 0 50px;  text-align:">
-		<div class="layui-form layui-form-pane" lay-filter="layuiadmin-form-admin">
-				
-					<div class="layui-upload" style="text-align: center;">
-  					<div class="layui-upload-list">
+<form action="" id="layuiadmin-form-admin2" style="padding: 20px 0px 0 50px;  text-align:">
+	<div class="layui-form layui-form-pane" lay-filter="layuiadmin-form-admin">
+		<div class="layui-upload" style="text-align: center;">
+  			<div class="layui-upload-list">
     			<img class="layui-upload-img" id="demo1" src="{{ d.pictureUrl }}" style="width:150px; height:180px;">
     			<p id="demoText"></p>
-  				</div>
-				</div>
-				
-			<div class="layui-form-item">
+  			</div>
+		</div>
+		<div class="layui-form-item">
 		    <div class="layui-inline">
 		      <label class="layui-form-label">员工姓名</label>
 		      <div class="layui-input-inline">
@@ -212,9 +207,8 @@
 		        <input type="text" name="lotionNumber" value="{{ d.lotionNumber}}"  autocomplete="off" class="layui-input">
 		      </div>
 		    </div>			
-  			</div>
-			
-			<div class="layui-form-item">
+  		</div>
+		<div class="layui-form-item">
 		    <div class="layui-inline">
 		      <label class="layui-form-label">手机号</label>
 		      <div class="layui-input-inline">
@@ -239,9 +233,8 @@
 		        <input type="tel"  name="bankCard1" id="bankCard1" value="{{ d.bankCard1==null ? "" : d.bankCard1}}"   autocomplete="off" class="layui-input">
 		      </div>
 		    </div>
-  			</div>
-			
-			<div class="layui-form-item">
+  		</div>
+		<div class="layui-form-item">
 		    <div class="layui-inline">
 		      <label class="layui-form-label">合同</label>
 		      <div class="layui-input-inline">
@@ -266,9 +259,8 @@
 		        <input type="text" name="ascriptionBank1" readonly="readonly" id="ascriptionBank1" value="{{ d.ascriptionBank1==null ? "" : d.ascriptionBank1}}"  autocomplete="off" class="layui-input">
 		      </div>
 		    </div>
-  			</div>
-			
-			<div class="layui-form-item">
+  		</div>
+		<div class="layui-form-item">
 		    <div class="layui-inline">
 		      <label class="layui-form-label">身份证号</label>
 		      <div class="layui-input-inline">
@@ -293,9 +285,8 @@
 				<select class="form-control safe" name="safe"><option value="0" {{ d.safe==0?'selected':'' }}>未缴</option> <option value="1" {{ d.safe==1?'selected':'' }}>已缴</option></select>
 		      </div>
 		    </div>
-  			</div>
-			
-			<div class="layui-form-item">
+  		</div>
+		<div class="layui-form-item">
 		    <div class="layui-inline">
 		      <label class="layui-form-label" >实际转正时间</label>
 		      <div class="layui-input-inline">
@@ -320,9 +311,8 @@
 				<select class="form-control quit" lay-filter="lay_selecte" name="quit"><option value="0" {{ d.quit==0?'selected':'' }}>在职</option> <option value="1" {{ d.quit==1?'selected':'' }}>离职</option></select>
 		      </div>
 		    </div>
-  			</div>
-			
-			<div class="layui-form-item">
+  		</div>
+		<div class="layui-form-item">
 		    <div class="layui-inline">
 		      <label class="layui-form-label">预计转正时间</label>
 		      <div class="layui-input-inline">
@@ -347,9 +337,8 @@
 		        <input type="text" name="quitDate" id="quitDate"  autocomplete="off" class="layui-input">
 		      </div>
 		    </div>
-  			</div>
-
-			<div class="layui-form-item">
+  		</div>
+		<div class="layui-form-item">
 		    <div class="layui-inline">
 		      <label class="layui-form-label">承诺书</label>
 		      <div class="layui-input-inline">
@@ -381,9 +370,8 @@
 				</select>
 		      </div>
 		    </div>
-  			</div>
-			
-			<div class="layui-form-item">
+  		</div>
+		<div class="layui-form-item">
 		    <div class="layui-inline">
 		      <label class="layui-form-label">合同签订时间</label>
 		      <div class="layui-input-inline">
@@ -408,9 +396,8 @@
 		        <input type="text" name="reason" value="{{ d.reason==null ? "" : d.reason}}"  autocomplete="off" class="layui-input">
 		      </div>
 		    </div>
-  			</div>
-
-			<div class="layui-form-item">
+  		</div>
+		<div class="layui-form-item">
 			 <div class="layui-inline">
 		      <label class="layui-form-label">合同到期时间</label>
 		      <div class="layui-input-inline">
@@ -429,7 +416,6 @@
 		      <label class="layui-form-label">职位</label>
 		      <div class="layui-input-inline" >
 		        <select class="form-control" lay-search="true" name="positionId" id="positionId">
-							
 				</select>
 		      </div>
 		    </div>	
@@ -439,9 +425,8 @@
 		        <input type="tel"  name="idCardEnd" id="idCardEnd"  autocomplete="off" class="layui-input">
 		      </div>
 		    </div>
-			</div>
-
-			<div class="layui-form-item">
+		</div>
+		<div class="layui-form-item">
 		    <div class="layui-inline">
 		      <label class="layui-form-label">毕业学校</label>
 		      <div class="layui-input-inline">
@@ -460,9 +445,8 @@
 		     
 			  </div>
 		    </div>
-  			</div>			
-
-			<div class="layui-form-item">
+  		</div>			
+		<div class="layui-form-item">
 			  <div class="layui-inline contractDiv">
 		        <label class="layui-form-label">合同</label>
 				  <div class="layui-input-block"  id="commitmentId" style="width: 874px;"></div>
@@ -477,9 +461,6 @@
 		</div>
 	</form>
 </script>
-
-
-
 <!-- 表格工具栏模板 -->
 <script type="text/html" id="barDemo">
 	<span class="layui-btn layui-btn-trans layui-btn-xs layui-bg-green"  lay-event="addbatch">员工详情</span>
@@ -492,7 +473,6 @@
 </div>
 </script>
 </body>
-
 <script>
 layui.config({
 	base : '${ctx}/static/layui-v2.4.5/'
@@ -585,7 +565,6 @@ layui.config({
 			       {align:'center', width:'14%', title:'操作',toolbar: '#barDemo'},
 			       ]],
 		})
-		
 		table.on('tool(recruitTable)', function(obj) {
 			var data=obj.data;
 			switch(obj.event){
