@@ -571,7 +571,11 @@ layui.extend({
 							if(index%2!=0)
 								c = '#f2f2f2';
 						}
-						$(trElem).css('backgroundColor',c);
+						$(trElem).find('td').css('backgroundColor',c);
+						if(color=='white' && opt.even)
+							layui.each(opt.autoMerge.field,function(index2,item2){
+								$(trElem).find('td[data-field="'+item2+'"]').css('backgroundColor',color);
+							})
 						trElem = $(trElem).next();
 						if($(trElem).find('[name="layTableCheckbox"]+').length>0)
 							break;
