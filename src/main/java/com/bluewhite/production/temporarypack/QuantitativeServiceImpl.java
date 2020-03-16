@@ -185,13 +185,6 @@ public class QuantitativeServiceImpl extends BaseServiceImpl<Quantitative, Long>
 	}
 
 	
-	
-	public static void main(String[] args) {
-	    System.out.println( Integer.valueOf("004") +1);
-    }
-	
-	
-	
 	@Override
 	public int auditQuantitative(String ids,Integer audit) {
 		int count = 0;
@@ -290,7 +283,7 @@ public class QuantitativeServiceImpl extends BaseServiceImpl<Quantitative, Long>
 	@Override
 	public void checkNumber(Long id) {
 		QuantitativeChild quantitativeChild = quantitativeChildDao.findOne(id);
-		quantitativeChild.setChecks(1);
+		quantitativeChild.setChecks(0);
 		quantitativeChild.setSingleNumber(quantitativeChild.getActualSingleNumber());
 		quantitativeChildDao.save(quantitativeChild);
 	}
