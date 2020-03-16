@@ -15,7 +15,7 @@ public interface InventoryDetailDao extends BaseRepository<InventoryDetail, Long
 	 * @param endTime
 	 * @return
 	 */
-	List<InventoryDetail> findByFlagAndStatusAndTimeBetween(Integer flag ,Integer Status, Date startTime, Date endTime);
+	List<InventoryDetail> findByFlagAndStatusAndTimeBetween(Integer flag ,Integer status, Date startTime, Date endTime);
 	/**
 	 * 按出庫时间 部门查询
 	 * 
@@ -23,7 +23,7 @@ public interface InventoryDetailDao extends BaseRepository<InventoryDetail, Long
 	 * @param endTime
 	 * @return
 	 */
-	List<InventoryDetail> findByFlagAndStatusAndTimeBetweenAndOrgNameId(Integer flag ,  Integer Status, Date startTime, Date endTime,Long orgNameId);
+	List<InventoryDetail> findByFlagAndStatusAndTimeBetweenAndOrgNameId(Integer flag ,Integer status, Date startTime, Date endTime,Long orgNameId);
 	/**
      * 根据物品查找出入库记录
      * 

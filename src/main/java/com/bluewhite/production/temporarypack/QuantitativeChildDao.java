@@ -1,10 +1,8 @@
 package com.bluewhite.production.temporarypack;
 
-import com.bluewhite.base.BaseRepository;
-import java.lang.Long;
-import com.bluewhite.production.temporarypack.QuantitativeChild;
 import java.util.List;
-import java.io.Serializable;
+
+import com.bluewhite.base.BaseRepository;
 
 public interface QuantitativeChildDao  extends BaseRepository<QuantitativeChild, Long>{
 	

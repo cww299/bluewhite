@@ -47,7 +47,7 @@ public class OfficeSuppliesAction {
 	{
 		clearCascadeJSONInventoryDetail = ClearCascadeJSON.get()
 				.addRetainTerm(InventoryDetail.class,"id","officeSupplies", "flag", "orgName", "user"
-						, "time","number","remark","outboundCost","mealType")
+						, "time","number","remark","outboundCost","mealType","status")
 				.addRetainTerm(OfficeSupplies.class, "id", "name","price","singleMealConsumption")
 				.addRetainTerm(BaseData.class, "id", "name")
 				.addRetainTerm(User.class, "id", "userName");
