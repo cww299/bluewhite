@@ -84,6 +84,7 @@
 	<span class="layui-btn layui-btn-sm layui-btn-warm" lay-event="update">修改数据</span>
 	<shiro:hasAnyRoles name="superAdmin,stickBagAccount">
 		<span class="layui-btn layui-btn-sm layui-btn-" lay-event="add" id="stickBagAccountBtn">新增数据</span>
+		<span class="layui-btn layui-btn-sm layui-btn-danger" lay-event="cancelAudit">取消审核</span>
 		<span class="layui-btn layui-btn-sm layui-btn-normal" lay-event="audit">审核</span>
 	</shiro:hasAnyRoles>
 	<shiro:hasAnyRoles name="superAdmin,stickBagStick">
@@ -155,7 +156,13 @@ layui.config({
 						myutil.deleTableIds({
 							 table:'tableData', 
 							 text:'请选择信息|是否确认审核？',
-							 url:'/temporaryPack/auditQuantitative',
+							 url:'/temporaryPack/auditQuantitative?audit=1',
+						})
+					}else if(obj.event=='cancelAudit'){
+						myutil.deleTableIds({
+							 table:'tableData', 
+							 text:'请选择信息|是否确认取消审核？',
+							 url:'/temporaryPack/auditQuantitative?audit=0',
 						})
 					}else if(obj.event=='print'){
 						printOrder();
