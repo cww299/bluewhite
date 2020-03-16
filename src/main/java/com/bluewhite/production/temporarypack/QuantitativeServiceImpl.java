@@ -30,6 +30,7 @@ import com.bluewhite.common.utils.StringUtil;
 import com.bluewhite.ledger.entity.PackingMaterials;
 
 import cn.hutool.core.date.DateUtil;
+import cn.hutool.core.util.StrUtil;
 
 @Service
 public class QuantitativeServiceImpl extends BaseServiceImpl<Quantitative, Long> implements QuantitativeService {
@@ -118,11 +119,17 @@ public class QuantitativeServiceImpl extends BaseServiceImpl<Quantitative, Long>
 			quantitative.setPrint(ot.getPrint());
 			quantitative.setFlag(ot.getFlag());
 		} else {
-			int count = dao.findByTimeBetween(DatesUtil.getfristDayOftime(quantitative.getTime()), DatesUtil.getLastDayOftime(quantitative.getTime())).size();
+		    // 按最后一条数据编号进行新增
+		    List<Quantitative> list = dao.findByTimeBetweenOrderByCreatedAtDesc(DatesUtil.getfristDayOftime(quantitative.getTime()), DatesUtil.getLastDayOftime(quantitative.getTime()));
+		    int count = 0;
+			if(list.size()>0) {
+			   String quantitativeNumber = list.get(0).getQuantitativeNumber();
+			   count = Integer.valueOf(StrUtil.sub(quantitativeNumber,12,16));
+			}
 			quantitative.setQuantitativeNumber(Constants.LHTB + DateUtil.format(quantitative.getTime(), "yyyyMMdd") + 
 					StringUtil.get0LeftString((count+1),4));
 			quantitative.setAudit(0);
-			quantitative.setPrint(0);
+			quantitative.setPrint(0); 
 			quantitative.setFlag(0);
 		}
 		// 新增子单
@@ -158,9 +165,8 @@ public class QuantitativeServiceImpl extends BaseServiceImpl<Quantitative, Long>
 				if (jsonObject.getInteger("singleNumber") > underGoods.getSurplusStickNumber()) {
 					throw new ServiceException("剩余贴包数量不足，无法新增或修改");
 				}
-				
 				quantitativeChild.setSingleNumber(jsonObject.getInteger("singleNumber"));
-				quantitativeChild.setActualSingleNumber((id==null || quantitative.getAudit()==0 )? jsonObject.getInteger("singleNumber") : quantitativeChild.getActualSingleNumber());
+				quantitativeChild.setActualSingleNumber(id == null ? quantitativeChild.getSingleNumber(): quantitativeChild.getActualSingleNumber());
 				quantitative.getQuantitativeChilds().add(quantitativeChild);
 			}
 		}
@@ -178,6 +184,14 @@ public class QuantitativeServiceImpl extends BaseServiceImpl<Quantitative, Long>
 		save(quantitative);
 	}
 
+	
+	
+	public static void main(String[] args) {
+	    System.out.println( Integer.valueOf("004") +1);
+    }
+	
+	
+	
 	@Override
 	public int auditQuantitative(String ids,Integer audit) {
 		int count = 0;
@@ -193,7 +207,7 @@ public class QuantitativeServiceImpl extends BaseServiceImpl<Quantitative, Long>
                     if (audit == 0 && quantitative.getAudit() == 0) {
                         throw new ServiceException("未审核请勿取消审核");
                     }
-					quantitative.setAudit(1);
+					quantitative.setAudit(audit);
 					dao.save(quantitative);
 				}
 			}
@@ -274,9 +288,10 @@ public class QuantitativeServiceImpl extends BaseServiceImpl<Quantitative, Long>
 	}
 
 	@Override
-	public void checkNumber(Long id, Integer check) {
+	public void checkNumber(Long id) {
 		QuantitativeChild quantitativeChild = quantitativeChildDao.findOne(id);
-		quantitativeChild.setChecks(check);
+		quantitativeChild.setChecks(1);
+		quantitativeChild.setSingleNumber(quantitativeChild.getActualSingleNumber());
 		quantitativeChildDao.save(quantitativeChild);
 	}
 

@@ -20,6 +20,6 @@ public interface QuantitativeDao  extends BaseRepository<Quantitative, Long>{
 	 * @param time
 	 * @return
 	 */
-	List<Quantitative> findByTimeBetween(Date startTime ,Date endTime);
+	List<Quantitative> findByTimeBetweenOrderByCreatedAtDesc(Date startTime ,Date endTime);
 }
 

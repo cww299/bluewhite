@@ -60,7 +60,7 @@ public interface QuantitativeService extends BaseCRUDService<Quantitative,Long>{
 	 * 核对成功
 	 * @param id
 	 */
-	void checkNumber(Long id,Integer check);
+	void checkNumber(Long id);
 	
 	/**
 	 * 修改子单
