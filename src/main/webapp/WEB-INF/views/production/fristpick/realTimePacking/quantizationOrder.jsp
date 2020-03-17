@@ -124,6 +124,7 @@ layui.config({
 		var allMaterials = [];
 		var allUser ='',allCustomer='';
 		var tableDataNoTrans = [];
+		var evenColor = 'rgb(133, 219, 245)';
 		mytable.render({
 			elem:'#tableData',
 			size:'sm',
@@ -274,7 +275,8 @@ layui.config({
 			       ]],
 	       autoMerge:{
 	    	 field:['quantitativeNumber','time','sendTime','audit','print','flag',
-	    		 'user_userName','surplusSendNumber','surplusNumber','customer_name','0'],  
+	    		 'user_userName','surplusSendNumber','surplusNumber','customer_name','0'], 
+	    	 evenColor: evenColor,
 	       },
 	       done:function(ret,curr, count){
 	    	    form.render();
@@ -295,6 +297,10 @@ layui.config({
 				var whiteTd = ['0','quantitativeNumber','time','sendTime','user_userName','customer_name','audit','flag','print'];
 				layui.each(whiteTd,function(index,item){
 					$('#tableData').next().find('td[data-field="'+item+'"]').css('background','white');
+				})
+				var blueTd = ['underGoods_bacthNumber','underGoods_product_name','actualSingleNumber','singleNumber','remarks'];
+				layui.each(blueTd,function(index,item){
+					$('#tableData').next().find('tr:nth-child(even) td[data-field="'+item+'"]').css('background',evenColor);
 				})
 				form.render();
 				$('div[lay-event="LAYTABLE_EXPORT"]').unbind().on('click',function(e){
