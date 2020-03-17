@@ -116,7 +116,6 @@ public class UnderGoodsServiceImpl extends BaseServiceImpl<UnderGoods, Long> imp
                 predicate.add(cb.like(root.get("product").get("name").as(String.class),
                         "%" + StringUtil.specialStrKeyword(param.getProductName()) + "%"));
             }
-            predicate.add(cb.greaterThan(root.get("number").as(Integer.class),0));
             Predicate[] pre = new Predicate[predicate.size()];
             query.where(predicate.toArray(pre));
             return null;
