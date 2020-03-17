@@ -366,7 +366,7 @@ layui.define('layer', function(exports){
                   		success: function(res){
                   			var searchOnlineResultDl = [],searchOnlineResultOrigin = [];
                   			if(res.code==0){
-                  				layui.each(res.data,function(index,item){
+                  				layui.each((res.data.rows || res.data),function(index,item){
                   					if(originalElem.find('option[value='+item[onlineSelect.showId]+']').length>0)
                   						return;
                   					searchOnlineResultDl.push([
