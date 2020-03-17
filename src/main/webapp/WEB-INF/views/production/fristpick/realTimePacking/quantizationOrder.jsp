@@ -120,7 +120,6 @@ layui.config({
 		})
 		var isStickBagStick = $('#stickBagStickBtn').length>0;
 		var isStickBagAccount = $('#stickBagAccountBtn').length>0;
-		var allUoloadOrder = [];
 		var allMaterials = [];
 		var allUser ='',allCustomer='';
 		var tableDataNoTrans = [];
@@ -426,7 +425,7 @@ layui.config({
 			laytpl(tpl).render(data,function(h){
 				html = h;
 			})
-			getDataOfUoloadOrder();
+			//getDataOfUoloadOrder();
 			var addEditWin = layer.open({
 				type:1,
 				area:['90%','80%'],
@@ -507,7 +506,7 @@ layui.config({
 							},
 							deleFun:function(ids,check){ },
 							addTemp:{
-								underGoodsId: allUoloadOrder[0]?allUoloadOrder[0].id:"",
+								underGoodsId: "",
 								singleNumber: 0,actualSingleNumber:0,
 							},
 						},
@@ -522,8 +521,11 @@ layui.config({
 						cols:[(function(){
 							var cols = [
 								{ type:'checkbox',},
-								{ title:'下货单~批次号~剩余数量', field:'underGoods_id', type:'select',
-									select:{data: allUoloadOrder, name:['product_name','bacthNumber','surplusStickNumber'],} },
+								{ title:'下货单~批次号~剩余数量', field:'underGoods_id', edit:false,
+									/* type:'select',
+									select:{data: allUoloadOrder, name:['product_name','bacthNumber','surplusStickNumber'],} */  
+									templet: getTableSelect(),
+								},
 						        { title:'单包个数',   field:'singleNumber',	 edit: isStickBagAccount?'number':false,	width:'10%',},
 						        { title:'实际发货数量',   field:'actualSingleNumber',	 edit: isStickBagStick?'number':false,	width:'15%',},
 							];
@@ -542,8 +544,34 @@ layui.config({
 								 	});
 								}
 							})
+							form.on('select(tableSelect)',function(obj){
+								var index = $(obj.elem).closest('tr').data('index');
+								var trData = layui.table.cache['addTable'][index];
+								trData['underGoodsId'] = obj.value;
+							})
 						}
 					})
+					function getTableSelect(){
+						return function(d){
+							return ['<select lay-filter="tableSelect" lay-search '+
+								'lay-url="${ctx}/temporaryPack/findUnderGoods" lay-searchName="productName"'+
+								' lay-name="productName|bacthNumber|surplusStickNumber">',
+									'<option value="">请选择</option>',
+									(function(){
+										if(d.id){
+											var getData = myutil.getDataSync({
+												url: myutil.config.ctx+'/temporaryPack/findUnderGoods?id='+d.underGoods.id,
+											})
+											var number = getData.surplusStickNumber || 0;
+											return '<option value="'+d.id+'" selected>'+d.underGoods.product.name+' ~ '+
+											d.underGoods.bacthNumber+' ~ '+number+'</option>';
+										}
+										return "";
+									})(),
+								'</select>',
+							].join(' ');
+						}
+					}
 					mytable.renderNoPage({
 						elem: '#addMaterTable',
 						data: addMate,
@@ -590,10 +618,6 @@ layui.config({
 					form.render();
 				}
 			})
-		}
-		function getDataOfUoloadOrder(){
-			allUoloadOrder = myutil.getDataSync({ url: myutil.config.ctx + '/temporaryPack/findAllUnderGoods', });
-			allUoloadOrder.unshift({id:'',bacthNumber:'请选择'})
 		}
 		myutil.getData({
 			url: myutil.config.ctx+'/basedata/list?type=packagingMaterials',
