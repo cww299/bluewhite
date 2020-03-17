@@ -103,8 +103,9 @@ public class UnderGoodsServiceImpl extends BaseServiceImpl<UnderGoods, Long> imp
 	
 	
     @Override
-    public List<UnderGoods> findList(UnderGoods param) {
-        List<UnderGoods> result = dao.findAll((root, query, cb) -> {
+    public PageResult<UnderGoods> findList(UnderGoods param) {
+        PageParameter page = new PageParameter(0,15);
+        Page<UnderGoods> pages = dao.findAll((root, query, cb) -> {
             List<Predicate> predicate = new ArrayList<>();
             // 按id过滤
             if (param.getId() != null) {
@@ -115,32 +116,17 @@ public class UnderGoodsServiceImpl extends BaseServiceImpl<UnderGoods, Long> imp
                 predicate.add(cb.like(root.get("product").get("name").as(String.class),
                         "%" + StringUtil.specialStrKeyword(param.getProductName()) + "%"));
             }
-            // 按产品编号
-            if (!StringUtils.isEmpty(param.getProductNumber())) {
-                predicate.add(cb.like(root.get("product").get("number").as(String.class),
-                        "%" + param.getProductNumber() + "%"));
-            }
-            // 按批次
-            if (!StringUtils.isEmpty(param.getBacthNumber())) {
-                predicate.add(cb.like(root.get("bacthNumber").as(String.class), "%" + param.getBacthNumber() + "%"));
-            }
             predicate.add(cb.greaterThan(root.get("number").as(Integer.class),0));
             Predicate[] pre = new Predicate[predicate.size()];
             query.where(predicate.toArray(pre));
             return null;
-        });
-        //发货剩余数量
-        //贴包剩余数量
-        result.forEach(r->{
+        },new PageParameter());
+        PageResult<UnderGoods> result = new PageResult<>(pages, page);
+        result.getRows().forEach(r->{
             //贴包数量
             List<QuantitativeChild> stickListList = quantitativeChildDao.findByUnderGoodsId(r.getId());
             int numberStickSum = stickListList.stream().mapToInt(QuantitativeChild::getSingleNumber).sum();
             r.setSurplusStickNumber(r.getNumber()-numberStickSum);
-            //发货数量
-            List<Long> quantitativeListId = quantitativeDao.findSendNumber(r.getId());
-            List<QuantitativeChild> quantitativeList = quantitativeChildDao.findByIdIn(quantitativeListId);
-            int numberSendSum = quantitativeList.stream().mapToInt(QuantitativeChild::getActualSingleNumber).sum();     
-            r.setSurplusSendNumber(r.getNumber()-numberSendSum);
             //尾数清算数量
             List<MantissaLiquidation> mantissaLiquidationList = mantissaLiquidationDao.findByUnderGoodsId(r.getId());
             int numberMantissaLiquidationSum = mantissaLiquidationList.stream().mapToInt(MantissaLiquidation::getNumber).sum();

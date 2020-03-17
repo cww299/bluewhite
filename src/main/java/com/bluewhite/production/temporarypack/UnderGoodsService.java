@@ -24,7 +24,7 @@ public interface UnderGoodsService extends BaseCRUDService<UnderGoods,Long>{
      * @param page
      * @return
      */
-    public List<UnderGoods> findList(UnderGoods underGoods);
+    public PageResult<UnderGoods> findList(UnderGoods underGoods);
 	
 	/**
 	 * 新增下货单
