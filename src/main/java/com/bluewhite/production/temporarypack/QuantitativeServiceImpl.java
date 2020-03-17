@@ -124,10 +124,10 @@ public class QuantitativeServiceImpl extends BaseServiceImpl<Quantitative, Long>
 		    int count = 0;
 			if(list.size()>0) {
 			   String quantitativeNumber = list.get(0).getQuantitativeNumber();
-			   count = Integer.valueOf(StrUtil.sub(quantitativeNumber,12,16))+1;
+			   count = Integer.valueOf(StrUtil.sub(quantitativeNumber,12,16));
 			}
 			quantitative.setQuantitativeNumber(Constants.LHTB + DateUtil.format(quantitative.getTime(), "yyyyMMdd") + 
-					StringUtil.get0LeftString(count,4));
+					StringUtil.get0LeftString((count+1),4));
 			quantitative.setAudit(0);
 			quantitative.setPrint(0); 
 			quantitative.setFlag(0);
