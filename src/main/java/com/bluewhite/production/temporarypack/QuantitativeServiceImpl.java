@@ -120,7 +120,7 @@ public class QuantitativeServiceImpl extends BaseServiceImpl<Quantitative, Long>
 			quantitative.setFlag(ot.getFlag());
 		} else {
 		    // 按最后一条数据编号进行新增
-		    List<Quantitative> list = dao.findByTimeBetweenOrderByCreatedAtDesc(DatesUtil.getfristDayOftime(quantitative.getTime()), DatesUtil.getLastDayOftime(quantitative.getTime()));
+		    List<Quantitative> list = dao.findByTimeBetweenOrderByIdDesc(DatesUtil.getfristDayOftime(quantitative.getTime()), DatesUtil.getLastDayOftime(quantitative.getTime()));
 		    int count = 0;
 			if(list.size()>0) {
 			   String quantitativeNumber = list.get(0).getQuantitativeNumber();
