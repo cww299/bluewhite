@@ -116,6 +116,8 @@ public class UnderGoodsServiceImpl extends BaseServiceImpl<UnderGoods, Long> imp
                 predicate.add(cb.like(root.get("product").get("name").as(String.class),
                         "%" + StringUtil.specialStrKeyword(param.getProductName()) + "%"));
             }
+            // 默认过滤未完成的数据
+            predicate.add(cb.equal(root.get("status").as(Integer.class), 0));
             Predicate[] pre = new Predicate[predicate.size()];
             query.where(predicate.toArray(pre));
             return null;
@@ -164,7 +166,7 @@ public class UnderGoodsServiceImpl extends BaseServiceImpl<UnderGoods, Long> imp
 			underGoods.setAllotTime(cPoi.getAllotTime());
 			underGoodsList.add(underGoods);
 		}
-		dao.save(underGoodsList);
+		dao.save(underGoodsList); 
 		return underGoodsList.size();
 	}
 

@@ -162,12 +162,16 @@ public class QuantitativeServiceImpl extends BaseServiceImpl<Quantitative, Long>
 					numberStickSum = stickListList.stream().mapToInt(QuantitativeChild::getSingleNumber).sum();
 				}
 				underGoods.setSurplusStickNumber(underGoods.getNumber() - (numberStickSum -  quantitativeChild.getSingleNumber()));
+				if(underGoods.getSurplusStickNumber()==0) {
+				    underGoods.setStatus(1);
+				}
 				if (jsonObject.getInteger("singleNumber") > underGoods.getSurplusStickNumber()) {
 					throw new ServiceException("剩余贴包数量不足，无法新增或修改");
 				}
 				quantitativeChild.setSingleNumber(jsonObject.getInteger("singleNumber"));
 				quantitativeChild.setActualSingleNumber(id == null ? quantitativeChild.getSingleNumber(): quantitativeChild.getActualSingleNumber());
 				quantitative.getQuantitativeChilds().add(quantitativeChild);
+				underGoodsDao.equals(underGoods);
 			}
 		}
 		// 新增贴包物

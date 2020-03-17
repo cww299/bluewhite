@@ -13,6 +13,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -48,12 +49,16 @@ public class TemporaryPackAction {
     private QuantitativeService quantitativeService;
     @Autowired
     private MantissaLiquidationService mantissaLiquidationService;
+    @Autowired
+    private QuantitativeChildDao quantitativeChildDao;
+    @Autowired
+    private MantissaLiquidationDao mantissaLiquidationDao;
 
     private ClearCascadeJSON clearCascadeJSON;
     {
-        clearCascadeJSON = ClearCascadeJSON
-            .get().addRetainTerm(UnderGoods.class, "id", "remarks", "product", "number", "bacthNumber", "status",
-                "allotTime", "surplusStickNumber", "surplusSendNumber", "internal","productName")
+        clearCascadeJSON = ClearCascadeJSON.get()
+            .addRetainTerm(UnderGoods.class, "id", "remarks", "product", "number", "bacthNumber", "status", "allotTime",
+                "surplusStickNumber", "surplusSendNumber", "internal", "productName")
             .addRetainTerm(Product.class, "id", "name");
     }
     private ClearCascadeJSON clearCascadeJSONQuantitative;
@@ -450,5 +455,29 @@ public class TemporaryPackAction {
         return quantitativePoiList;
     }
 
-    
+    @RequestMapping(value = "/temporaryPack/test", method = RequestMethod.GET)
+    @ResponseBody
+    public CommonResponse test() {
+        CommonResponse cr = new CommonResponse();
+        List<UnderGoods> result = underGoodsService.findAll();
+        result.forEach(r -> {
+            r.setProductName(r.getProduct().getName());
+            // 贴包数量
+            List<QuantitativeChild> stickListList = quantitativeChildDao.findByUnderGoodsId(r.getId());
+            int numberStickSum = stickListList.stream().mapToInt(QuantitativeChild::getSingleNumber).sum();
+            r.setSurplusStickNumber(r.getNumber() - numberStickSum);
+            // 尾数清算数量
+            List<MantissaLiquidation> mantissaLiquidationList = mantissaLiquidationDao.findByUnderGoodsId(r.getId());
+            int numberMantissaLiquidationSum =
+                mantissaLiquidationList.stream().mapToInt(MantissaLiquidation::getNumber).sum();
+            r.setSurplusStickNumber(r.getSurplusStickNumber() - numberMantissaLiquidationSum);
+            if(r.getSurplusStickNumber()==0) {
+                r.setStatus(1);
+            }
+        });
+        underGoodsService.save(result);
+        cr.setMessage("成功");
+        return cr;
+    }
+
 }
