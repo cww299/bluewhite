@@ -455,29 +455,5 @@ public class TemporaryPackAction {
         return quantitativePoiList;
     }
 
-    @RequestMapping(value = "/temporaryPack/test", method = RequestMethod.GET)
-    @ResponseBody
-    public CommonResponse test() {
-        CommonResponse cr = new CommonResponse();
-        List<UnderGoods> result = underGoodsService.findAll();
-        result.forEach(r -> {
-            r.setProductName(r.getProduct().getName());
-            // 贴包数量
-            List<QuantitativeChild> stickListList = quantitativeChildDao.findByUnderGoodsId(r.getId());
-            int numberStickSum = stickListList.stream().mapToInt(QuantitativeChild::getSingleNumber).sum();
-            r.setSurplusStickNumber(r.getNumber() - numberStickSum);
-            // 尾数清算数量
-            List<MantissaLiquidation> mantissaLiquidationList = mantissaLiquidationDao.findByUnderGoodsId(r.getId());
-            int numberMantissaLiquidationSum =
-                mantissaLiquidationList.stream().mapToInt(MantissaLiquidation::getNumber).sum();
-            r.setSurplusStickNumber(r.getSurplusStickNumber() - numberMantissaLiquidationSum);
-            if(r.getSurplusStickNumber()==0) {
-                r.setStatus(1);
-            }
-        });
-        underGoodsService.save(result);
-        cr.setMessage("成功");
-        return cr;
-    }
 
 }
