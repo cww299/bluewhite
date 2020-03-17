@@ -119,9 +119,10 @@ public class UnderGoodsServiceImpl extends BaseServiceImpl<UnderGoods, Long> imp
             Predicate[] pre = new Predicate[predicate.size()];
             query.where(predicate.toArray(pre));
             return null;
-        },new PageParameter());
+        },page);
         PageResult<UnderGoods> result = new PageResult<>(pages, page);
         result.getRows().forEach(r->{
+            r.setProductName(r.getProduct().getName());
             //贴包数量
             List<QuantitativeChild> stickListList = quantitativeChildDao.findByUnderGoodsId(r.getId());
             int numberStickSum = stickListList.stream().mapToInt(QuantitativeChild::getSingleNumber).sum();
@@ -137,6 +138,7 @@ public class UnderGoodsServiceImpl extends BaseServiceImpl<UnderGoods, Long> imp
 
 	@Override
 	public void saveUnderGoods(UnderGoods underGoods) {
+	    underGoods.setStatus(0);
 		save(underGoods);
 	}
 
