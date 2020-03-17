@@ -13,6 +13,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -48,12 +49,16 @@ public class TemporaryPackAction {
     private QuantitativeService quantitativeService;
     @Autowired
     private MantissaLiquidationService mantissaLiquidationService;
+    @Autowired
+    private QuantitativeChildDao quantitativeChildDao;
+    @Autowired
+    private MantissaLiquidationDao mantissaLiquidationDao;
 
     private ClearCascadeJSON clearCascadeJSON;
     {
-        clearCascadeJSON = ClearCascadeJSON
-            .get().addRetainTerm(UnderGoods.class, "id", "remarks", "product", "number", "bacthNumber", "status",
-                "allotTime", "surplusStickNumber", "surplusSendNumber", "internal","productName")
+        clearCascadeJSON = ClearCascadeJSON.get()
+            .addRetainTerm(UnderGoods.class, "id", "remarks", "product", "number", "bacthNumber", "status", "allotTime",
+                "surplusStickNumber", "surplusSendNumber", "internal", "productName")
             .addRetainTerm(Product.class, "id", "name");
     }
     private ClearCascadeJSON clearCascadeJSONQuantitative;
@@ -450,5 +455,5 @@ public class TemporaryPackAction {
         return quantitativePoiList;
     }
 
-    
+
 }
