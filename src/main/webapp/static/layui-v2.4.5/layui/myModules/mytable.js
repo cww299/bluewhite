@@ -34,7 +34,8 @@
  *			return true;		//合并
  *		else
  *			return false;
- *	}		
+ *	},
+ *  evenColor:red,  //斑马纹颜色		
  *}
  */
 layui.extend({
@@ -569,7 +570,7 @@ layui.extend({
 						if(color=='white' && opt.even){	//如果开启斑马线
 							var index = $(trElem).data('index');
 							if(index%2!=0)
-								c = '#f2f2f2';
+								c = opt.autoMerge.evenColor || '#f2f2f2';
 						}
 						$(trElem).find('td').css('backgroundColor',c);
 						if(color=='white' && opt.even)
