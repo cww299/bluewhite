@@ -116,7 +116,7 @@ public class TemporaryPackAction {
     @ResponseBody
     public CommonResponse findUnderGoods(UnderGoods underGoods) {
         CommonResponse cr = new CommonResponse();
-        cr.setData(clearCascadeJSON.format(underGoodsService.findList(underGoods)).toJSON());
+        cr.setData(clearCascadeJSON.format(underGoodsService.findList(underGoods).getRows()).toJSON());
         cr.setMessage("查询成功");
         return cr;
     }
