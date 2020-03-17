@@ -414,7 +414,7 @@ public class TemporaryPackAction {
     }
 
     /**
-     * 构建实际发货下货单
+     * 构建实际发货单
      * 
      * @param quantitative
      * @return
@@ -428,6 +428,7 @@ public class TemporaryPackAction {
                 QuantitativePoi quantitativePoi = new QuantitativePoi();
                 if (q.getCustomer() != null) {
                     quantitativePoi.setCustomerName(q.getCustomer().getName());
+                    quantitativePoi.setCustomerName1(q.getCustomer().getName());
                 }
                 if (q.getUser() != null) {
                     quantitativePoi.setUserName(q.getUser().getUserName());
@@ -449,4 +450,5 @@ public class TemporaryPackAction {
         return quantitativePoiList;
     }
 
+    
 }

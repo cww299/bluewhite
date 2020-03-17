@@ -14,6 +14,7 @@ import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.Transient;
+import javax.persistence.UniqueConstraint;
 
 import com.bluewhite.base.BaseEntity;
 import com.bluewhite.ledger.entity.Customer;
@@ -27,7 +28,7 @@ import com.bluewhite.system.user.entity.User;
  *
  */
 @Entity
-@Table(name = "pro_quantitative")
+@Table(name = "pro_quantitative",uniqueConstraints = {@UniqueConstraint(columnNames="quantitative_number")} )
 public class Quantitative extends BaseEntity<Long> {
 	
 	
