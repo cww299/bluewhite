@@ -355,7 +355,7 @@ layui.define('layer', function(exports){
               return false;
             }
             notOption(value, function(none){
-              if(none){
+              if(true){
             	  if(onlineSelect && value!=''){
                   	var searchData = {};
                   	searchData[onlineSelect.searchName] = value;
@@ -366,9 +366,13 @@ layui.define('layer', function(exports){
                   		success: function(res){
                   			var searchOnlineResultDl = [],searchOnlineResultOrigin = [];
                   			if(res.code==0){
-                  				layui.each((res.data.rows || res.data),function(index,item){
-                  					if(originalElem.find('option[value='+item[onlineSelect.showId]+']').length>0)
-                  						return;
+                  				var foreachData = res.data.rows || res.data;
+                  				for(var i=0;i<foreachData.length;i++){
+                  					var item = foreachData[i];
+                  					if(originalElem.find('option[value='+item[onlineSelect.showId]+']').length>0){
+                  						dl.find('dd[lay-value="'+item[onlineSelect.showId]+'"]').removeClass('layui-hide');
+                  						continue;
+                  					}
                   					searchOnlineResultDl.push([
                   						'<dd lay-value="'+item[onlineSelect.showId]+'">', 
                   							showName(item),
@@ -379,7 +383,7 @@ layui.define('layer', function(exports){
               								showName(item),
               							'</option>',
               						].join(''));
-                  				})
+                  				}
                   				originalElem.append(searchOnlineResultOrigin.join(' '));
                   				dl.append(searchOnlineResultDl.join(' '));
                   				if(res.data.length==0)
