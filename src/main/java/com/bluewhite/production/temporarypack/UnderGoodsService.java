@@ -50,5 +50,11 @@ public interface UnderGoodsService extends BaseCRUDService<UnderGoods,Long>{
 	public List<UnderGoods> getAll();
 
 
+    /**修改
+     * @param underGoods
+     */
+    public void updateUnderGoods(UnderGoods underGoods);
+
+
 
 }

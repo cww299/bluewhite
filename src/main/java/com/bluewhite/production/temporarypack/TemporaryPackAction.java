@@ -13,7 +13,6 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
-import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -91,10 +90,11 @@ public class TemporaryPackAction {
     @ResponseBody
     public CommonResponse saveUnderGoods(UnderGoods underGoods) {
         CommonResponse cr = new CommonResponse();
-        underGoodsService.saveUnderGoods(underGoods);
         if (underGoods.getId() == null) {
+            underGoodsService.saveUnderGoods(underGoods);
             cr.setMessage("新增成功");
         } else {
+            underGoodsService.updateUnderGoods(underGoods);
             cr.setMessage("修改成功");
         }
         return cr;
