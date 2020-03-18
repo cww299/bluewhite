@@ -48,10 +48,6 @@ public class TemporaryPackAction {
     private QuantitativeService quantitativeService;
     @Autowired
     private MantissaLiquidationService mantissaLiquidationService;
-    @Autowired
-    private QuantitativeChildDao quantitativeChildDao;
-    @Autowired
-    private MantissaLiquidationDao mantissaLiquidationDao;
 
     private ClearCascadeJSON clearCascadeJSON;
     {
