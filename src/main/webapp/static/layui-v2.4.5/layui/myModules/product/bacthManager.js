@@ -233,6 +233,7 @@ layui.config({
 			       { title:'预计生产单价', 	field:'bacthDepartmentPrice', templet: getFixed('bacthDepartmentPrice',3), },
 			       { title:'外发价格', 	field:'bacthHairPrice', },
 			       { title:'针工价格', field:'bacthDeedlePrice',templet: getFixed('bacthDeedlePrice',3), },
+			       { title:'外发价值', 	field:'sumOutPrice', },
 			       { title:'任务价值', 	field:'sumTaskPrice', templet: getFixed('sumTaskPrice',3),  },
 			       { title:'地区差价	', 	field:'regionalPrice',templet: getFixed('regionalPrice',3), },
 			       { title:'当批用时	', 	field:'time', templet: getFixed('time',3),  },
