@@ -171,7 +171,7 @@ public class QuantitativeServiceImpl extends BaseServiceImpl<Quantitative, Long>
 				quantitativeChild.setSingleNumber(jsonObject.getInteger("singleNumber"));
 				quantitativeChild.setActualSingleNumber(id == null ? quantitativeChild.getSingleNumber(): quantitativeChild.getActualSingleNumber());
 				quantitative.getQuantitativeChilds().add(quantitativeChild);
-				underGoodsDao.equals(underGoods);
+				underGoodsDao.save(underGoods);
 			}
 		}
 		// 新增贴包物

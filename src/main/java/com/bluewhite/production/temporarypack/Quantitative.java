@@ -179,10 +179,23 @@ public class Quantitative extends BaseEntity<Long> {
 	@Transient
 	private String ids;
 	
+    /**
+     * 物流点id
+     */
+	@Transient
+    private Long logisticsId;
 	
 	
 	
-	public Date getSendTime() {
+	public Long getLogisticsId() {
+        return logisticsId;
+    }
+
+    public void setLogisticsId(Long logisticsId) {
+        this.logisticsId = logisticsId;
+    }
+
+    public Date getSendTime() {
         return sendTime;
     }
 

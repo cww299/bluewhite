@@ -48,6 +48,8 @@ public class TemporaryPackAction {
     private QuantitativeService quantitativeService;
     @Autowired
     private MantissaLiquidationService mantissaLiquidationService;
+    @Autowired
+    private SendOrderService sendOrderService;
 
     private ClearCascadeJSON clearCascadeJSON;
     {
@@ -163,6 +165,12 @@ public class TemporaryPackAction {
                     quantitativeService.saveQuantitative(ot);
                 }
             }
+            //生成贴包单时生成发货单发货单，将发货单id存入提保单
+            
+            sendOrderService.saveSendOrder(quantitative);
+            
+            
+            
             cr.setMessage("新增成功");
         } else {
             String[] idArr = quantitative.getIds().split(",");
@@ -395,8 +403,7 @@ public class TemporaryPackAction {
         response.setHeader("Content-disposition", "attachment;filename=sendorder.xlsx");
         List<QuantitativePoi> quantitativePoiList = structureQuantitativeList(quantitative);
         // 按合并策略 合并单元格
-        AutoMergeStrategy autoMergeStrategy =
-            new AutoMergeStrategy(quantitativePoiList, getGroupData(quantitativePoiList));
+        AutoMergeStrategy autoMergeStrategy = new AutoMergeStrategy(quantitativePoiList, getGroupData(quantitativePoiList));
         // 这里 需要指定写用哪个class去写，然后写到第一个sheet，名字为模板 然后文件流会自动关闭
         EasyExcel.write(response.getOutputStream(), QuantitativePoi.class)
             .registerWriteHandler(new LongestMatchColumnWidthStyleStrategy()).registerWriteHandler(autoMergeStrategy)

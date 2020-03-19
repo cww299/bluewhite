@@ -203,12 +203,6 @@ public class BacthServiceImpl extends BaseServiceImpl<Bacth, Long> implements Ba
 							}
 						}
 					}
-					//当批次完成为针工时，上车工序直接分配完成，分配给当天所有正式员工
-//					if (bacth.getType() == 2 && bacth.getFlag() == 0 && UnUtil.isFromMobile(request) ) {
-//						List<Attendance> attendanceList = attendanceService.findBySourceMachineAndTimeBetween(
-//								 "ELEVEN_WAREHOUSE", , );
-//					}
-					
 					bacth.setStatus(1);
 					bacth.setStatusTime(time);
 					dao.save(bacth);
@@ -262,6 +256,7 @@ public class BacthServiceImpl extends BaseServiceImpl<Bacth, Long> implements Ba
 		bacth.setAllotTime(ProTypeUtils.countAllotTime(bacth.getAllotTime()));
 		bacth.setStatus(0);
 		bacth.setReceive(0);
+		bacth.setSumOutPrice(NumUtils.mul(bacth.getNumber(), bacth.getBacthDeedlePrice()));
 		List<Procedure> procedureList = procedureDao.findByProductIdAndTypeAndFlag(bacth.getProductId(),
 				bacth.getType(), bacth.getFlag());
 		double time = procedureList.stream().mapToDouble(Procedure::getWorkingTime).sum();
