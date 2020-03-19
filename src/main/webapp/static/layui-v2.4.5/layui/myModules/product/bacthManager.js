@@ -305,6 +305,8 @@ layui.config({
 				$('.layui-table-total').find('td[data-field="sumTaskPrice"]').find('div').html(statData.sumTaskPrice);
 				$('.layui-table-total').find('td[data-field="time"]').find('div').html(statData.time);
 				$('.layui-table-total').find('td[data-field="regionalPrice"]').find('div').html(statData.regionalPrice);
+				if(opt.type==3)
+					$('.layui-table-total').find('td[data-field="sumOutPrice"]').find('div').html(statData.sumOutPrice);
 			}
 		}) 
 		table.on('tool(tableData)', function(obj){
