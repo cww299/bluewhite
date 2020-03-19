@@ -353,7 +353,7 @@ layui.config({
 						'<tr>',
 							'<td>物流点：</td>',
 							'<td colspan="2">',
-								'<select name="logisticsId" lay-verify="required">',
+								'<select name="logisticsId" lay-verify="required" lay-search>',
 									'<option value="">请选择</option>',
 									allLogistics,
 								'</select>',
@@ -386,6 +386,7 @@ layui.config({
 							ids: ids.join(','),
 							success:function(){
 								layer.close(layerIndex);
+								table.reload('tableData');
 							}
 						})
 						function PrefixInteger(num, length) {
