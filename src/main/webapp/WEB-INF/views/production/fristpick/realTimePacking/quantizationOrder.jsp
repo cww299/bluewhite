@@ -36,6 +36,11 @@
 				<td>上车编号:</td>
 				<td><input type="text" name="vehicleNumber" class="layui-input"></td>
 				<td>&nbsp;&nbsp;&nbsp;</td>
+				<td>是否审核:</td>
+				<td style="width:100px;"><select name="audit"><option value="">请选择</option>
+										<option value="0">否</option>
+										<option value="1">是</option></select></td>
+				<td>&nbsp;&nbsp;&nbsp;</td>
 				<td>是否打印:</td>
 				<td style="width:100px;"><select name="print"><option value="">请选择</option>
 										<option value="0">否</option>
