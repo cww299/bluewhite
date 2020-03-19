@@ -27,6 +27,9 @@
 				<td>批次号:</td>
 				<td><input type="text" name="bacthNumber" class="layui-input"></td>
 				<td>&nbsp;&nbsp;&nbsp;</td>
+				<td>备注:</td>
+				<td><input type="text" name="remarks" class="layui-input"></td>
+				<td>&nbsp;&nbsp;&nbsp;</td>
 				<td>是否天猫:</td>
 				<td style="width:100px;">
 					<select name="internal"><option value="">请选择</option>
