@@ -87,7 +87,8 @@ public class QuantitativeServiceImpl extends BaseServiceImpl<Quantitative, Long>
             }
             // 按上车编号过滤
             if (!StringUtils.isEmpty(param.getVehicleNumber())) {
-                predicate.add(cb.like(root.get("vehicleNumber").as(String.class), "%" + param.getVehicleNumber() + "%"));
+                predicate.add(cb.like(root.get("vehicleNumber").as(String.class),
+                    "%" + StringUtil.specialStrKeyword(param.getVehicleNumber()) + "%"));
             }
             // 按下单日期
             if (!StringUtils.isEmpty(param.getTime()) && !StringUtils.isEmpty(param.getOrderTimeBegin())
@@ -275,7 +276,7 @@ public class QuantitativeServiceImpl extends BaseServiceImpl<Quantitative, Long>
                         throw new ServiceException("未发货请勿取消发货");
                     }
                     if (flag == 1) {
-                        quantitative.setVehicleNumber(Constants.WLSC+vehicleNumber);
+                        quantitative.setVehicleNumber(Constants.WLSC + vehicleNumber);
                         quantitative.setSendTime(DateUtil.parse(StrUtil.sub(vehicleNumber, 0, 8)));
                     } else {
                         quantitative.setVehicleNumber(null);
