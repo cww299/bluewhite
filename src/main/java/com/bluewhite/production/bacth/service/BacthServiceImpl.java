@@ -124,7 +124,7 @@ public class BacthServiceImpl extends BaseServiceImpl<Bacth, Long> implements Ba
 			return null;
 		}, StringUtil.getQueryNoPageParameter());
 		PageResultStat<Bacth> result = new PageResultStat<>(pages, page);
-		result.setAutoStateField("number", "sumTaskPrice","sumOutPrice","regionalPrice","time");
+		result.setAutoStateField("number","sumTaskPrice","sumOutPrice","regionalPrice","time");
 		result.count();
 		return result;
 	}
