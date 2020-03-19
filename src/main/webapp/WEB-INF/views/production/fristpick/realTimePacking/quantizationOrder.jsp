@@ -167,10 +167,49 @@ layui.config({
 					}else if(obj.event=='print'){
 						printOrder();
 					}else if(obj.event=='send'){ 
-						myutil.deleTableIds({
-							 table:'tableData',  
-							 text:'请选择信息|是否确认发货？',
-							 url:'/temporaryPack/sendQuantitative?flag=1',
+						var check = layui.table.checkStatus('tableData').data;
+						if(check.length==0)
+							return myutil.emsg('请选择数据');
+						var ids = [];
+						for(var i in check)
+							ids.push(check[i].id);
+						layer.open({
+							type:1,title:'是否确认发货',offset:'50px',
+							content:[
+								'<div style="padding:25px;">',
+								'<table class="layui-form">',
+									'<tr>',
+										'<td><input type="text" class="layui-input" id="sendTimeInput" lay-verify="required" name="time"></td>',
+										'<td><input type="text" class="layui-input" name="no" lay-verify="required" ',
+											' onkeyup="value=value.replace(/[^\\d]/g,\'\')"  placeholder="上车编号"></td>',
+										'<td><span style="display:none;" lay-submit lay-filter="sureSendGoodBtn"></td>',
+									'</tr>',
+								'</table>',
+								'</div>',
+							].join(' '),
+							btn:['确定','取消'],
+							btnAlign:'c',
+							success:function(layerElem,layerIndex){
+								laydate.render({ elem:'#sendTimeInput',format:'yyyyMMdd',value:new Date(), });
+								form.on('submit(sureSendGoodBtn)',function(obj){
+									var f = obj.field;
+									f.no = PrefixInteger(f.no,4);
+									var vehicleNumber = f.time+ f.no;
+									myutil.deleteAjax({
+										url:'/temporaryPack/sendQuantitative?flag=1&vehicleNumber='+vehicleNumber,
+										ids: ids.join(','),
+										success:function(){
+											layer.close(layerIndex);
+										}
+									})
+									function PrefixInteger(num, length) {
+									 return ( "0000000000000000" + num ).substr( -length );
+									}
+								})
+							},
+							yes:function(){
+								$('span[lay-filter="sureSendGoodBtn"]').click();
+							}
 						})
 					}else if(obj.event=='cancelSend'){
 						myutil.deleTableIds({
@@ -255,6 +294,7 @@ layui.config({
 			cols:[[
 			       { type:'checkbox',},
 			       { title:'量化编号',   field:'quantitativeNumber', width:145,	},
+			       { title:'上车编号',   field:'vehicleNumber', width:115,	},
 			       { title:'包装时间',   field:'time', width:110, type:'date', },
 			       { title:'发货时间',   field:'sendTime',  width:110,type:'date',  },
 			       { title:'贴包人',    field:'user_userName', width:100,	},
@@ -273,7 +313,7 @@ layui.config({
 			       { title:'备注',   field:'remarks',	width:90, edit:true,},  				
 			       ]],
 	       autoMerge:{
-	    	 field:['quantitativeNumber','time','sendTime','audit','print','flag',
+	    	 field:['quantitativeNumber','vehicleNumber','time','sendTime','audit','print','flag',
 	    		 'user_userName','surplusSendNumber','surplusNumber','customer_name','0'], 
 	    	 evenColor: evenColor,
 	       },
