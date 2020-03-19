@@ -165,12 +165,8 @@ public class TemporaryPackAction {
                     quantitativeService.saveQuantitative(ot);
                 }
             }
-            //生成贴包单时生成发货单发货单，将发货单id存入提保单
-            
-            sendOrderService.saveSendOrder(quantitative);
-            
-            
-            
+            //生成贴包单时生成发货单发货单，将发货单id存入贴包单
+//          sendOrderService.saveSendOrder(quantitative);
             cr.setMessage("新增成功");
         } else {
             String[] idArr = quantitative.getIds().split(",");
