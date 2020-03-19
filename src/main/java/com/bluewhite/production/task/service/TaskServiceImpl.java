@@ -362,6 +362,9 @@ public class TaskServiceImpl extends BaseServiceImpl<Task, Long> implements Task
 			bacth.setStatus(1);
 			bacth.setStatusTime(task.getAllotTime());
 		}
+        if (bacth.getType() == 3) {
+            bacth.setSumOutPrice(NumUtils.mul(bacth.getNumber(), bacth.getBacthDeedlePrice()));
+        }
 		bacth.setSumTaskPrice(NumUtils.round(sumTaskPrice, 5));
 		bacth.setBacthDepartmentPrice(bacthDepartmentPrice);
 		// 计算出该批次的地区差价

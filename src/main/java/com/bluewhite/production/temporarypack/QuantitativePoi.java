@@ -35,6 +35,12 @@ public class QuantitativePoi {
 	 */
 	@ExcelProperty("客户")
 	private String customerName;
+	
+	/**
+     * 上车编号
+     */
+    @ExcelProperty("上车编号")
+    private String vehicleNumber;
 
 	/**
 	 * 批次号
@@ -102,7 +108,13 @@ public class QuantitativePoi {
 	
 	
 	
-	public String getBacth() {
+	public String getVehicleNumber() {
+        return vehicleNumber;
+    }
+    public void setVehicleNumber(String vehicleNumber) {
+        this.vehicleNumber = vehicleNumber;
+    }
+    public String getBacth() {
 		return bacth;
 	}
 	public void setBacth(String bacth) {

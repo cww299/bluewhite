@@ -55,6 +55,9 @@ public class AutoMergeStrategy extends AbstractMergeStrategy {
 			case 1:
 				this.mergeGroupColumn(1);
 				break;
+			case 2:
+                this.mergeGroupColumn(1);
+                break;
 			default:
 				break;
 			}

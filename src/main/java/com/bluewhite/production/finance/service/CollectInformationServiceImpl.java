@@ -62,11 +62,12 @@ public class CollectInformationServiceImpl extends BaseServiceImpl<CollectInform
 		List<Task> taskList = taskService.findByTypeAndAllotTimeBetween(collectInformation.getType(),collectInformation.getOrderTimeBegin(),collectInformation.getOrderTimeEnd());
 		double sumTask = taskList.stream().filter(Task->Task.getFlag()==0).mapToDouble(Task::getTaskPrice).sum();
 		collectInformation.setSumTask(NumUtils.round(sumTask,4));
-
+		//外发价值
+		double sumOutPrice = bacthList.stream().filter(Bacth->Bacth.getSumOutPrice()!=null).mapToDouble(Bacth::getSumOutPrice).sum();
+		collectInformation.setSumOutPrice(sumOutPrice);
 		//返工费 汇总
 		double sumTaskFlag = taskList.stream().filter(Task->Task.getFlag()==1).mapToDouble(Task::getTaskPrice).sum();
 		collectInformation.setSumTaskFlag(NumUtils.round(sumTaskFlag,4));
-		
 		//杂工费 汇总
 		List<FarragoTask> farragoTaskList = farragoTaskService.findByTypeAndAllotTimeBetween(collectInformation.getType(),collectInformation.getOrderTimeBegin(),collectInformation.getOrderTimeEnd());
 		double sumFarragoTask = farragoTaskList.stream().filter(FarragoTask->FarragoTask.getPrice()!=null).mapToDouble(FarragoTask::getPrice).sum();
