@@ -10,7 +10,6 @@ import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.authc.IncorrectCredentialsException;
 import org.apache.shiro.authc.UsernamePasswordToken;
 import org.apache.shiro.authz.SimpleAuthorizationInfo;
-import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.apache.shiro.cache.Cache;
 import org.apache.shiro.cache.CacheManager;
 import org.apache.shiro.subject.Subject;
@@ -20,7 +19,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import com.bluewhite.common.Log;
 import com.bluewhite.common.ServiceException;
 import com.bluewhite.common.SessionManager;
 import com.bluewhite.common.entity.CommonResponse;
@@ -28,9 +26,7 @@ import com.bluewhite.common.entity.CurrentUser;
 import com.bluewhite.common.entity.ErrorCode;
 import com.bluewhite.system.user.dao.MenuDao;
 import com.bluewhite.system.user.entity.Menu;
-import com.bluewhite.system.user.entity.Role;
 import com.bluewhite.system.user.entity.User;
-import com.bluewhite.system.user.service.MenuService;
 import com.bluewhite.system.user.service.RoleService;
 import com.bluewhite.system.user.service.UserService;
 
@@ -41,8 +37,6 @@ import com.bluewhite.system.user.service.UserService;
  */
 @Controller
 public class IndexAction {
-
-	private final static Log log = Log.getLog(IndexAction.class);
 
 	@Autowired
 	private UserService userService;

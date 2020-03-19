@@ -53,6 +53,7 @@ public class SendOrderServiceImpl extends BaseServiceImpl<SendOrder, Long> imple
     
     @Override
     public void updateSendOrder(SendOrder sendOrder) {
+        //通过修改单价，计算总运费价格
         SendOrder ot = findOne(sendOrder.getId());
         
         
