@@ -1,0 +1,90 @@
+ package com.bluewhite.ledger.action;
+
+import java.util.Map;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
+
+import com.bluewhite.basedata.entity.BaseData;
+import com.bluewhite.common.ClearCascadeJSON;
+import com.bluewhite.common.ServiceException;
+import com.bluewhite.common.entity.CommonResponse;
+import com.bluewhite.common.entity.PageParameter;
+import com.bluewhite.common.entity.PageUtil;
+import com.bluewhite.ledger.entity.LogisticsCosts;
+import com.bluewhite.ledger.service.LogisticsCostsService;
+
+import cn.hutool.core.map.MapUtil;
+
+/**
+ * @author ZhangLiang
+ * @date 2020/03/19
+ */
+public class LogisticsCostsAction {
+    
+    @Autowired
+    private LogisticsCostsService logisticsCostsService;
+    
+    
+    
+    private ClearCascadeJSON clearCascadeJSON;
+    {
+        clearCascadeJSON = ClearCascadeJSON.get()
+                .addRetainTerm(LogisticsCosts.class, "id", "remark", "orderDate", "bacthNumber", "product", "number",
+                        "orderMaterials", "prepareEnough", "orderChilds", "audit", "orderNumber", "orderType")
+                .addRetainTerm(BaseData.class, "id", "name");
+    }
+    
+    
+    /**
+     * 分页查看客户
+     * 
+     * @return cr
+     */
+    @RequestMapping(value = "/ledger/logisticsCostsPage", method = RequestMethod.GET)
+    @ResponseBody
+    public CommonResponse logisticsCostsPage(@RequestParam Map<String, Object> params) {
+        CommonResponse cr = new CommonResponse();
+        if(MapUtil.isEmpty(params)){
+            throw new ServiceException("参数不能为空");
+        };
+        PageParameter page = PageUtil.mapToPage(params);
+        cr.setData(clearCascadeJSON.format(logisticsCostsService.findPages(params, page)).toJSON());
+        cr.setMessage("查询成功");
+        return cr;
+    }
+    
+    /**
+     * 客户新增
+     * 
+     * @return cr
+     */
+    @RequestMapping(value = "/ledger/addlogisticsCosts", method = RequestMethod.POST)
+    @ResponseBody
+    public CommonResponse addlogisticsCosts(LogisticsCosts logisticsCosts) {
+        CommonResponse cr = new CommonResponse();
+        logisticsCostsService.save(logisticsCosts);
+        cr.setMessage("添加成功");
+        return cr;
+    }
+
+    /**
+     * 客户批量删除
+     * 
+     * @return cr
+     */
+    @RequestMapping(value = "/ledger/deleteLogisticsCosts", method = RequestMethod.GET)
+    @ResponseBody
+    public CommonResponse deleteCustomer(String ids) {
+        CommonResponse cr = new CommonResponse();
+        int count = logisticsCostsService.deleteLogisticsCosts(ids);
+        cr.setMessage("成功删除" + count + "条数据");
+        return cr;
+    }
+
+    
+
+}
