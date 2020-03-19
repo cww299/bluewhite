@@ -254,7 +254,7 @@ layui.config({
 			cols:[[
 			       { type:'checkbox',},
 			       { title:'量化编号',   field:'quantitativeNumber', width:145,	},
-			       { title:'上车编号',   field:'vehicleNumber', width:130,	},
+			       { title:'上车编号',   field:'vehicleNumber', width:145,	},
 			       { title:'包装时间',   field:'time', width:110, type:'date', },
 			       { title:'发货时间',   field:'sendTime',  width:110,type:'date',  },
 			       { title:'贴包人',    field:'user_userName', width:100,	},
