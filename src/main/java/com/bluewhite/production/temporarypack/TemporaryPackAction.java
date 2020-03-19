@@ -62,7 +62,7 @@ public class TemporaryPackAction {
     {
         clearCascadeJSONQuantitative = ClearCascadeJSON.get()
             .addRetainTerm(Quantitative.class, "id", "quantitativeNumber", "time", "sumPackageNumber", "time",
-                "quantitativeChilds", "packingMaterials", "user", "flag", "print", "customer", "audit", "sendTime")
+                "quantitativeChilds", "packingMaterials", "user", "flag", "print", "customer", "audit", "sendTime","vehicleNumber")
             .addRetainTerm(Customer.class, "id", "name")
             .addRetainTerm(QuantitativeChild.class, "id", "underGoods", "sumPackageNumber", "singleNumber", "number",
                 "actualSingleNumber", "checks", "remarks")

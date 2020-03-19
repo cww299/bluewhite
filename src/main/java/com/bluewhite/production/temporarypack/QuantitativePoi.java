@@ -5,6 +5,7 @@ import java.util.Date;
 
 import com.alibaba.excel.annotation.ExcelIgnore;
 import com.alibaba.excel.annotation.ExcelProperty;
+import com.alibaba.excel.annotation.format.DateTimeFormat;
 
 /**
  * 导出量化单实体 客户 批次号 产品名 单包个数 备注
@@ -26,6 +27,7 @@ public class QuantitativePoi {
 	/**
 	 * 发货时间
 	 */
+	@DateTimeFormat("yyyy-MM-dd")
 	@ExcelProperty("发货时间")
 	private Date sendTime;
 
@@ -71,6 +73,7 @@ public class QuantitativePoi {
     /**
      * 发货时间
      */
+	@DateTimeFormat("yyyy-MM-dd")
     @ExcelProperty("发货时间")
     private Date sendTime1;
 
