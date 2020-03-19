@@ -17,13 +17,15 @@ import com.bluewhite.base.BaseEntity;
 import com.bluewhite.basedata.entity.BaseData;
 import com.bluewhite.ledger.entity.Customer;
 
-/**财务发货单
+/**
+ * 财务发货单
+ * 
  * @author ZhangLiang
  * @date 2020/03/18
  */
 @Entity
 @Table(name = "pro_send_order")
-public class SendOrder extends BaseEntity<Long>{
+public class SendOrder extends BaseEntity<Long> {
 
     /**
      * 客户id
@@ -44,15 +46,14 @@ public class SendOrder extends BaseEntity<Long>{
      */
     @Column(name = "send_order_number")
     private String sendOrderNumber;
-    
-    
+
     /**
      * 子单list
      */
-    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY,orphanRemoval = true)
+    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, orphanRemoval = true)
     @JoinColumn(name = "send_order_id")
     private List<SendOrderChild> sendOrderChild = new ArrayList<>();
-    
+
     /**
      * 发货时间（多包发货时取最后发货时间）
      */
@@ -66,23 +67,23 @@ public class SendOrder extends BaseEntity<Long>{
     private Integer sumPackageNumber;
 
     /**
-     * 总发货数量
+     * 总数量
      */
     @Column(name = "number")
     private Integer number;
-    
+
     /**
      * 已发货包数
      */
     @Column(name = "send_package_number")
     private Integer sendPackageNumber;
-    
+
     /**
      * 已发货数量
      */
     @Column(name = "send_number")
     private Integer sendNumber;
-    
+
     /**
      * 物流点id
      */
@@ -97,25 +98,95 @@ public class SendOrder extends BaseEntity<Long>{
     private BaseData logistics;
     
     /**
-     * 物流编号
+     * 外包装方式id
+     */
+    @Column(name = "outerPackaging_id")
+    private Long outerPackagingId;
+
+    /**
+     * 外包装方式
+     */
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "outerPackaging_id", referencedColumnName = "id", insertable = false, updatable = false)
+    private BaseData outerPackaging;
+
+    /**
+     * 物流编号(货运单号)
      */
     @Column(name = "logistics_number")
     private String logisticsNumber;
-    
+
     /**
-     * 物流总费用（包数*单价）
+     * 是否含税
      */
-    @Column(name = "logistics_price")
-    private Double logisticsPrice;
+    @Column(name = "tax")
+    private Integer tax;
+
+    /**
+     * 实际单包费用
+     */
+    @Column(name = "singer_price")
+    private Double singerPrice;
     
     /**
-     * 已发货费用
+     * 已发货费用(包数*单价)
      */
     @Column(name = "send_price")
     private Double sendPrice;
     
+    /**
+     * 额外费用
+     */
+    @Column(name = "extra_price")
+    private Double extraPrice;
+    
+    /**
+     * 物流总费用（已发货费用+额外费用）
+     */
+    @Column(name = "logistics_price")
+    private Double logisticsPrice;
     
 
+    
+    public Long getOuterPackagingId() {
+        return outerPackagingId;
+    }
+
+    public void setOuterPackagingId(Long outerPackagingId) {
+        this.outerPackagingId = outerPackagingId;
+    }
+
+    public BaseData getOuterPackaging() {
+        return outerPackaging;
+    }
+
+    public void setOuterPackaging(BaseData outerPackaging) {
+        this.outerPackaging = outerPackaging;
+    }
+
+    public Integer getTax() {
+        return tax;
+    }
+
+    public void setTax(Integer tax) {
+        this.tax = tax;
+    }
+
+    public Double getSingerPrice() {
+        return singerPrice;
+    }
+
+    public void setSingerPrice(Double singerPrice) {
+        this.singerPrice = singerPrice;
+    }
+
+    public Double getExtraPrice() {
+        return extraPrice;
+    }
+
+    public void setExtraPrice(Double extraPrice) {
+        this.extraPrice = extraPrice;
+    }
 
     public List<SendOrderChild> getSendOrderChild() {
         return sendOrderChild;
@@ -228,10 +299,5 @@ public class SendOrder extends BaseEntity<Long>{
     public String getLogisticsNumber() {
         return logisticsNumber;
     }
-
-  
-    
-    
-    
 
 }

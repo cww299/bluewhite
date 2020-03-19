@@ -44,10 +44,11 @@ public interface QuantitativeService extends BaseCRUDService<Quantitative,Long>{
 	
 	/**
 	 * 发货
+	 * 上车编号，物流点
 	 * @param ids
 	 * @return
 	 */
-	int sendQuantitative(String ids,Integer flag);
+	int sendQuantitative(String ids,Integer flag,String vehicleNumber,Long logisticsId);
 	
 	/**
 	 * 设置发货数量

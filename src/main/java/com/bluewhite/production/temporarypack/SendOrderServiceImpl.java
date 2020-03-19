@@ -8,7 +8,6 @@ import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.bluewhite.base.BaseServiceImpl;
-import com.bluewhite.common.ServiceException;
 
 /**
  * @author ZhangLiang
@@ -23,7 +22,7 @@ public class SendOrderServiceImpl extends BaseServiceImpl<SendOrder, Long> imple
     private UnderGoodsDao underGoodsDao;
 
     @Override
-    public void saveSendOrder(Quantitative quantitative) {
+    public Quantitative saveSendOrder(Quantitative quantitative) {
         SendOrder sendOrder = new SendOrder();
         sendOrder.setCustomerId(quantitative.getCustomerId());
         sendOrder.setSumPackageNumber(quantitative.getSumPackageNumber());
@@ -37,9 +36,6 @@ public class SendOrderServiceImpl extends BaseServiceImpl<SendOrder, Long> imple
                 //下货单id
                 Long underGoodsId = jsonObject.getLong("underGoodsId");
                 UnderGoods underGoods = underGoodsDao.findOne(underGoodsId);
-                if (underGoods.getNumber() == null) {
-                    throw new ServiceException("贴包数量未填写，无法新增");
-                }
                 SendOrderChild sendOrderChild = new SendOrderChild();
                 sendOrderChild.setProductId(underGoods.getProductId());
                 sendOrderChild.setBacthNumber(underGoods.getBacthNumber());
@@ -49,8 +45,18 @@ public class SendOrderServiceImpl extends BaseServiceImpl<SendOrder, Long> imple
             }
         }
         sendOrder.setNumber(sumNuber);
-        
         dao.save(sendOrder);
+        quantitative.setSendOrderId(sendOrder.getId());
+        return quantitative;
+    }
+
+    
+    @Override
+    public void updateSendOrder(SendOrder sendOrder) {
+        SendOrder ot = findOne(sendOrder.getId());
+        
+        
+        
          
     }
     

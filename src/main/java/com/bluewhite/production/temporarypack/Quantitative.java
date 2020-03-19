@@ -31,6 +31,12 @@ import com.bluewhite.system.user.entity.User;
 @Table(name = "pro_quantitative",uniqueConstraints = {@UniqueConstraint(columnNames="quantitative_number")} )
 public class Quantitative extends BaseEntity<Long> {
 	
+    /**
+     * 客户id
+     * 
+     */
+    @Column(name = "send_order_id")
+    private Long sendOrderId;
 	
 	/**
 	 * 客户id
@@ -51,6 +57,12 @@ public class Quantitative extends BaseEntity<Long> {
 	 */
 	@Column(name = "quantitative_number")
 	private String quantitativeNumber;
+	
+	/**
+     * 上车编号（上车时间+序号）
+     */
+    @Column(name = "vehicle_number")
+    private String vehicleNumber;
 	
 	/**
 	 * 包装时间
@@ -187,7 +199,24 @@ public class Quantitative extends BaseEntity<Long> {
 	
 	
 	
-	public Long getLogisticsId() {
+	
+	public Long getSendOrderId() {
+        return sendOrderId;
+    }
+
+    public void setSendOrderId(Long sendOrderId) {
+        this.sendOrderId = sendOrderId;
+    }
+
+    public String getVehicleNumber() {
+        return vehicleNumber;
+    }
+
+    public void setVehicleNumber(String vehicleNumber) {
+        this.vehicleNumber = vehicleNumber;
+    }
+
+    public Long getLogisticsId() {
         return logisticsId;
     }
 

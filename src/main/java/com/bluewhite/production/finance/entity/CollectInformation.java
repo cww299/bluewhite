@@ -30,6 +30,12 @@ public class CollectInformation extends BaseEntity<Long>{
 	 */
 	@Column(name = "sum_task")
 	private Double sumTask;
+	
+    /**
+     * 外发总价
+     */
+    @Column(name = "sum_out_price")
+    private Double sumOutPrice;
 
 	/**
 	 * 返工费 汇总
@@ -98,8 +104,6 @@ public class CollectInformation extends BaseEntity<Long>{
 	 */
 	@Column(name = "analog_deploy_price")
 	private Double analogDeployPrice;
-	
-	
 	
 	/**
 	 * 从A考勤开始日期以消费的房租
@@ -216,14 +220,21 @@ public class CollectInformation extends BaseEntity<Long>{
 	private Integer flag;
 	
 	/**
-	 * 是否
+	 * 详情
 	 */
 	@Transient
 	private Integer status;
 	
 	
-	
-	public Integer getStatus() {
+	public Double getSumOutPrice() {
+        return sumOutPrice;
+    }
+
+    public void setSumOutPrice(Double sumOutPrice) {
+        this.sumOutPrice = sumOutPrice;
+    }
+
+    public Integer getStatus() {
 		return status;
 	}
 

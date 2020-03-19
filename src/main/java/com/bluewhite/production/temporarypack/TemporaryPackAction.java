@@ -100,7 +100,6 @@ public class TemporaryPackAction {
 
     /**
      * 分页查询下货单
-     * 
      */
     @RequestMapping(value = "/temporaryPack/findPagesUnderGoods", method = RequestMethod.GET)
     @ResponseBody
@@ -113,7 +112,6 @@ public class TemporaryPackAction {
 
     /**
      * 查询下货单
-     * 
      */
     @RequestMapping(value = "/temporaryPack/findUnderGoods", method = RequestMethod.GET)
     @ResponseBody
@@ -126,7 +124,6 @@ public class TemporaryPackAction {
 
     /**
      * 查询下货单
-     * 
      */
     @RequestMapping(value = "/temporaryPack/findAllUnderGoods", method = RequestMethod.GET)
     @ResponseBody
@@ -156,7 +153,9 @@ public class TemporaryPackAction {
     @ResponseBody
     public CommonResponse saveQuantitative(Quantitative quantitative) {
         CommonResponse cr = new CommonResponse();
+        // 生成贴包单时生成发货单发货单，将发货单id存入贴包单
         if (StringUtils.isEmpty(quantitative.getIds())) {
+            sendOrderService.saveSendOrder(quantitative);
             if (quantitative.getSumPackageNumber() > 0) {
                 for (int i = 0; i < quantitative.getSumPackageNumber(); i++) {
                     Quantitative ot = new Quantitative();
@@ -165,8 +164,6 @@ public class TemporaryPackAction {
                     quantitativeService.saveQuantitative(ot);
                 }
             }
-            //生成贴包单时生成发货单发货单，将发货单id存入贴包单
-//          sendOrderService.saveSendOrder(quantitative);
             cr.setMessage("新增成功");
         } else {
             String[] idArr = quantitative.getIds().split(",");
@@ -248,14 +245,18 @@ public class TemporaryPackAction {
     }
 
     /**
-     * 发货 量化单
+     * 发货 上车编号
      */
     @RequestMapping(value = "/temporaryPack/sendQuantitative", method = RequestMethod.GET)
     @ResponseBody
-    public CommonResponse sendQuantitative(String ids, Integer flag) {
+    public CommonResponse sendQuantitative(String ids, Integer flag, String vehicleNumber, Long logisticsId) {
         CommonResponse cr = new CommonResponse();
-        quantitativeService.sendQuantitative(ids, flag);
-        cr.setMessage("发货成功");
+        quantitativeService.sendQuantitative(ids, flag, vehicleNumber, logisticsId);
+        if (flag == 0) {
+            cr.setMessage("取消发货");
+        } else {
+            cr.setMessage("成功发货");
+        }
         return cr;
     }
 
@@ -399,7 +400,8 @@ public class TemporaryPackAction {
         response.setHeader("Content-disposition", "attachment;filename=sendorder.xlsx");
         List<QuantitativePoi> quantitativePoiList = structureQuantitativeList(quantitative);
         // 按合并策略 合并单元格
-        AutoMergeStrategy autoMergeStrategy = new AutoMergeStrategy(quantitativePoiList, getGroupData(quantitativePoiList));
+        AutoMergeStrategy autoMergeStrategy =
+            new AutoMergeStrategy(quantitativePoiList, getGroupData(quantitativePoiList));
         // 这里 需要指定写用哪个class去写，然后写到第一个sheet，名字为模板 然后文件流会自动关闭
         EasyExcel.write(response.getOutputStream(), QuantitativePoi.class)
             .registerWriteHandler(new LongestMatchColumnWidthStyleStrategy()).registerWriteHandler(autoMergeStrategy)
@@ -439,6 +441,7 @@ public class TemporaryPackAction {
                 }
                 quantitativePoi.setId(q.getId());
                 quantitativePoi.setQuantitativeNumber(q.getQuantitativeNumber());
+                quantitativePoi.setVehicleNumber(q.getVehicleNumber());
                 quantitativePoi.setName(c.getUnderGoods().getProduct().getName());
                 quantitativePoi.setName1(c.getUnderGoods().getProduct().getName());
                 quantitativePoi.setNumber(c.getActualSingleNumber());
@@ -453,6 +456,18 @@ public class TemporaryPackAction {
         });
         return quantitativePoiList;
     }
-
+    
+    
+    /**
+     * 修改发货单
+     */
+    @RequestMapping(value = "/temporaryPack/updateSendOrder", method = RequestMethod.GET)
+    @ResponseBody
+    public CommonResponse updateSendOrder(SendOrder sendOrder) {
+        CommonResponse cr = new CommonResponse();
+        sendOrderService.updateSendOrder(sendOrder);
+        cr.setMessage("修改成功");
+        return cr;
+    }
 
 }
