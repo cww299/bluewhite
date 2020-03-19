@@ -33,6 +33,9 @@
 				<td>客户名:</td>
 				<td><input type="text" name="customerName" class="layui-input"></td>
 				<td>&nbsp;&nbsp;&nbsp;</td>
+				<td>上车编号:</td>
+				<td><input type="text" name="vehicleNumber" class="layui-input"></td>
+				<td>&nbsp;&nbsp;&nbsp;</td>
 				<td>是否打印:</td>
 				<td style="width:100px;"><select name="print"><option value="">请选择</option>
 										<option value="0">否</option>
@@ -167,50 +170,7 @@ layui.config({
 					}else if(obj.event=='print'){
 						printOrder();
 					}else if(obj.event=='send'){ 
-						var check = layui.table.checkStatus('tableData').data;
-						if(check.length==0)
-							return myutil.emsg('请选择数据');
-						var ids = [];
-						for(var i in check)
-							ids.push(check[i].id);
-						layer.open({
-							type:1,title:'是否确认发货',offset:'50px',
-							content:[
-								'<div style="padding:25px;">',
-								'<table class="layui-form">',
-									'<tr>',
-										'<td><input type="text" class="layui-input" id="sendTimeInput" lay-verify="required" name="time"></td>',
-										'<td><input type="text" class="layui-input" name="no" lay-verify="required" ',
-											' onkeyup="value=value.replace(/[^\\d]/g,\'\')"  placeholder="上车编号"></td>',
-										'<td><span style="display:none;" lay-submit lay-filter="sureSendGoodBtn"></td>',
-									'</tr>',
-								'</table>',
-								'</div>',
-							].join(' '),
-							btn:['确定','取消'],
-							btnAlign:'c',
-							success:function(layerElem,layerIndex){
-								laydate.render({ elem:'#sendTimeInput',format:'yyyyMMdd',value:new Date(), });
-								form.on('submit(sureSendGoodBtn)',function(obj){
-									var f = obj.field;
-									f.no = PrefixInteger(f.no,4);
-									var vehicleNumber = f.time+ f.no;
-									myutil.deleteAjax({
-										url:'/temporaryPack/sendQuantitative?flag=1&vehicleNumber='+vehicleNumber,
-										ids: ids.join(','),
-										success:function(){
-											layer.close(layerIndex);
-										}
-									})
-									function PrefixInteger(num, length) {
-									 return ( "0000000000000000" + num ).substr( -length );
-									}
-								})
-							},
-							yes:function(){
-								$('span[lay-filter="sureSendGoodBtn"]').click();
-							}
-						})
+						openSendGoodWin();
 					}else if(obj.event=='cancelSend'){
 						myutil.deleTableIds({
 							 table:'tableData',  
@@ -370,6 +330,74 @@ layui.config({
 			}
 			
 		})
+		var allLogistics = '';
+		myutil.getData({
+			url:myutil.config.ctx+'/basedata/list?type=logistics',
+			success:function(data){
+				for(var i in data)
+					allLogistics += '<option value="'+data[i].id+'">'+data[i].name+'</option>';
+			}
+		})
+		function openSendGoodWin(){
+			var check = layui.table.checkStatus('tableData').data;
+			if(check.length==0)
+				return myutil.emsg('请选择数据');
+			var ids = [];
+			for(var i in check)
+				ids.push(check[i].id);
+			layer.open({
+				type:1,title:'是否确认发货',offset:'50px',
+				content:[
+					'<div style="padding:25px;">',
+					'<table class="layui-form">',
+						'<tr>',
+							'<td>物流点：</td>',
+							'<td colspan="2">',
+								'<select name="logisticsId" lay-verify="required">',
+									'<option value="">请选择</option>',
+									allLogistics,
+								'</select>',
+							'</td>',
+						'</tr>',
+						'<tr>',
+							'<td>上车编号：</td>',
+							'<td style="width:95px;padding-top: 8px;">',
+							   '<input type="text" class="layui-input" id="sendTimeInput" lay-verify="required" name="time"></td>',
+							'<td style="width:95px;padding-top: 8px;">',
+							   '<input type="text" class="layui-input" name="no" lay-verify="required" ',
+								' onkeyup="value=value.replace(/[^\\d]/g,\'\')"  placeholder="上车编号"></td>',
+							'<td><span style="display:none;" lay-submit lay-filter="sureSendGoodBtn"></td>',
+						'</tr>',
+					'</table>',
+					'</div>',
+				].join(' '),
+				btn:['确定','取消'],
+				btnAlign:'c',
+				success:function(layerElem,layerIndex){
+					form.render();
+					laydate.render({ elem:'#sendTimeInput',format:'yyyyMMdd',value:new Date(), });
+					form.on('submit(sureSendGoodBtn)',function(obj){
+						var f = obj.field;
+						f.no = PrefixInteger(f.no,4);
+						var vn = f.time+ f.no;
+						var lid = f.logisticsId;
+						myutil.deleteAjax({
+							url:'/temporaryPack/sendQuantitative?flag=1&vehicleNumber='+vn+'&logisticsId='+lid,
+							ids: ids.join(','),
+							success:function(){
+								layer.close(layerIndex);
+							}
+						})
+						function PrefixInteger(num, length) {
+						 return ( "0000000000000000" + num ).substr( -length );
+						}
+					})
+				},
+				yes:function(){
+					$('span[lay-filter="sureSendGoodBtn"]').click();
+				}
+			})
+		}
 		function printOrder(){	
 			var choosed=layui.table.checkStatus('tableData').data;
 			if(choosed.length<1)
