@@ -13,6 +13,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
 import com.bluewhite.base.BaseServiceImpl;
+import com.bluewhite.common.Constants;
 import com.bluewhite.common.ServiceException;
 import com.bluewhite.common.entity.PageParameter;
 import com.bluewhite.common.entity.PageResult;
@@ -20,6 +21,8 @@ import com.bluewhite.common.utils.StringUtil;
 import com.bluewhite.common.utils.excel.ExcelListener;
 import com.bluewhite.product.product.dao.ProductDao;
 import com.bluewhite.product.product.entity.Product;
+
+import cn.hutool.core.util.StrUtil;
 
 @Service
 public class UnderGoodsServiceImpl extends BaseServiceImpl<UnderGoods, Long> implements UnderGoodsService {
@@ -34,6 +37,8 @@ public class UnderGoodsServiceImpl extends BaseServiceImpl<UnderGoods, Long> imp
     private QuantitativeDao quantitativeDao;
     @Autowired
     private MantissaLiquidationDao mantissaLiquidationDao;
+
+    private static final String END = "end";
 
     @Override
     public PageResult<UnderGoods> findPages(UnderGoods param, PageParameter page) {
@@ -150,9 +155,17 @@ public class UnderGoodsServiceImpl extends BaseServiceImpl<UnderGoods, Long> imp
         for (int i = 0; i < excelListenerList.size(); i++) {
             UnderGoods underGoods = new UnderGoods();
             UnderGoodsPoi cPoi = (UnderGoodsPoi)excelListenerList.get(i);
-            Product product = productDao.findByName(cPoi.getName());
-            if (product != null) {
-                underGoods.setProductId(product.getId());
+            if (cPoi.getName().equals(END)) {
+                break;
+            }
+            List<Product> productList = productDao.findByName(cPoi.getName());
+            if (productList.size() > 0) {
+                productList.forEach(p -> {
+                    if (StrUtil.isNotBlank(p.getNumber()) || (StrUtil.isNotBlank(p.getOriginDepartment())
+                        && p.getOriginDepartment().equals(Constants.PRODUCT_FRIST_PACK))) {
+                        underGoods.setProductId(p.getId());
+                    }
+                });
             } else {
                 throw new ServiceException("当前导入excel第" + (i + 2) + "条数据的商品不存在，请先添加");
             }
@@ -161,7 +174,6 @@ public class UnderGoodsServiceImpl extends BaseServiceImpl<UnderGoods, Long> imp
             }
             underGoods.setNumber(cPoi.getNumber());
             underGoods.setBacthNumber(cPoi.getBacthNumber());
-            underGoods.setProductId(product.getId());
             underGoods.setAllotTime(cPoi.getAllotTime());
             underGoodsList.add(underGoods);
         }
@@ -198,7 +210,8 @@ public class UnderGoodsServiceImpl extends BaseServiceImpl<UnderGoods, Long> imp
             int numberStickSum = stickListList.stream().mapToInt(QuantitativeChild::getSingleNumber).sum();
             underGoods.setSurplusStickNumber(underGoods.getNumber() - numberStickSum);
             // 尾数清算数量
-            List<MantissaLiquidation> mantissaLiquidationList = mantissaLiquidationDao.findByUnderGoodsId(underGoods.getId());
+            List<MantissaLiquidation> mantissaLiquidationList =
+                mantissaLiquidationDao.findByUnderGoodsId(underGoods.getId());
             int numberMantissaLiquidationSum =
                 mantissaLiquidationList.stream().mapToInt(MantissaLiquidation::getNumber).sum();
             underGoods.setSurplusStickNumber(underGoods.getSurplusStickNumber() - numberMantissaLiquidationSum);
@@ -206,7 +219,7 @@ public class UnderGoodsServiceImpl extends BaseServiceImpl<UnderGoods, Long> imp
             if (underGoods.getSurplusStickNumber() > 0) {
                 underGoods.setStatus(0);
             }
-            if(underGoods.getSurplusStickNumber() == 0) {
+            if (underGoods.getSurplusStickNumber() == 0) {
                 underGoods.setStatus(1);
             }
             save(underGoods);

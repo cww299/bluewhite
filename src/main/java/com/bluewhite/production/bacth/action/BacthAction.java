@@ -40,7 +40,7 @@ public class BacthAction {
 				.addRetainTerm(Bacth.class, "id", "machinist", "sign", "time", "statusTime", "bacthDeedlePrice",
 						"receive", "sumReworkPrice", "sumTaskPrice", "regionalPrice", "name", "allotTime", "number",
 						"createdAt", "remarks", "status", "bacthDepartmentPrice", "bacthHairPrice", "bacthNumber",
-						"price", "type", "product")
+						"price", "type", "product","sumOutPrice")
 				.addRetainTerm(Product.class, "id", "number", "name");
 	}
 	
@@ -71,7 +71,7 @@ public class BacthAction {
 			cr.setMessage("修改成功");
 		} else {
 			if (bacth.getProductId() != null) {
-				bacthService.saveBacth(bacth);
+				bacthService.saveBacth(bacth);  
 				cr.setMessage("添加成功");
 			} else {
 				cr.setCode(ErrorCode.ILLEGAL_ARGUMENT.getCode());
