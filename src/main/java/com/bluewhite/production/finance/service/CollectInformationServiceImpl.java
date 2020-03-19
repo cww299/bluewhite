@@ -6,7 +6,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.bluewhite.base.BaseServiceImpl;
-import com.bluewhite.common.entity.PageParameter;
 import com.bluewhite.common.utils.NumUtils;
 import com.bluewhite.finance.attendance.entity.AttendancePay;
 import com.bluewhite.finance.attendance.service.AttendancePayService;
@@ -28,25 +27,18 @@ public class CollectInformationServiceImpl extends BaseServiceImpl<CollectInform
 	
 	@Autowired
 	private CollectInformationDao dao;
-	
 	@Autowired
 	private BacthService bacthService;
-	
 	@Autowired
 	private TaskService taskService;
-	
 	@Autowired
 	private FarragoTaskService farragoTaskService;
-	
 	@Autowired
 	private AttendancePayService attendancePayService;
-	
 	@Autowired
 	private UsualConsumeService usualConsumeService;
-	
 	@Autowired
 	private NonLineDao nonLineDao;
-	
 	@Autowired
 	private CollectPayService collectPayService;
 	
@@ -209,30 +201,6 @@ public class CollectInformationServiceImpl extends BaseServiceImpl<CollectInform
 		return collectInformation;
 	}
 	
-	//将之前的数据汇总到现在的数据中，作为起点
-	private void beforeData(CollectInformation collectInformation){
-		
-		switch (collectInformation.getType()) {
-		case 1:// 生产部一楼质检
-			
-			break;
-		case 2://生产部一楼打包
-			
-			break;
-		case 3://生产部二楼针工
-			
-			break;
-		case 4://生产部二楼机工
-			
-			break;
-		case 5://八号裁剪
-			
-			break;
-		default:
-			break;
-		}
-		
-	}
 
 	@Override
 	public CollectInformation savaDepartmentalExpenditure(CollectInformation collectInformation) {
