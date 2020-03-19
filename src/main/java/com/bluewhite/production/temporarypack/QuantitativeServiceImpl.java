@@ -83,12 +83,11 @@ public class QuantitativeServiceImpl extends BaseServiceImpl<Quantitative, Long>
             // 按产品编号过滤
             if (!StringUtils.isEmpty(param.getProductNumber())) {
                 predicate
-                    .add(cb.equal(root.get("productNumber").as(String.class), "%" + param.getProductNumber() + "%"));
+                    .add(cb.like(root.get("productNumber").as(String.class), "%" + param.getProductNumber() + "%"));
             }
             // 按上车编号过滤
             if (!StringUtils.isEmpty(param.getVehicleNumber())) {
-                predicate.add(cb.equal(root.get("vehicleNumber").as(String.class),
-                    "%" + StringUtil.specialStrKeyword(param.getVehicleNumber()) + "%"));
+                predicate.add(cb.like(root.get("vehicleNumber").as(String.class), "%" + param.getVehicleNumber() + "%"));
             }
             // 按下单日期
             if (!StringUtils.isEmpty(param.getTime()) && !StringUtils.isEmpty(param.getOrderTimeBegin())
@@ -261,32 +260,39 @@ public class QuantitativeServiceImpl extends BaseServiceImpl<Quantitative, Long>
     }
 
     @Override
-	public int sendQuantitative(String ids,Integer flag,String vehicleNumber,Long logisticsId) {
-		int count = 0;
-		if (!StringUtils.isEmpty(ids)) {
-			String[] idArr = ids.split(",");
-			if (idArr.length > 0) {
-				for (int i = 0; i < idArr.length; i++) {
-					Long id = Long.parseLong(idArr[i]);
-					Quantitative quantitative = dao.findOne(id);
-					if (flag == 1 && quantitative.getFlag() == 1) {
-						throw new ServiceException("已发货请勿多次发货");
-					}
-					if (flag == 0 && quantitative.getFlag() == 0) {
+    public int sendQuantitative(String ids, Integer flag, String vehicleNumber, Long logisticsId) {
+        int count = 0;
+        if (!StringUtils.isEmpty(ids)) {
+            String[] idArr = ids.split(",");
+            if (idArr.length > 0) {
+                for (int i = 0; i < idArr.length; i++) {
+                    Long id = Long.parseLong(idArr[i]);
+                    Quantitative quantitative = dao.findOne(id);
+                    if (flag == 1 && quantitative.getFlag() == 1) {
+                        throw new ServiceException("已发货请勿多次发货");
+                    }
+                    if (flag == 0 && quantitative.getFlag() == 0) {
                         throw new ServiceException("未发货请勿取消发货");
                     }
-					quantitative.setVehicleNumber(vehicleNumber);
-					quantitative.setSendTime(DateUtil.parse(StrUtil.sub(vehicleNumber,0,8)));
-					quantitative.setFlag(flag);
-					SendOrder sendOrder = sendOrderDao.findOne(quantitative.getSendOrderId());
-					sendOrder.setLogisticsId(logisticsId);
-					sendOrderDao.save(sendOrder);
-					dao.save(quantitative);
-				}
-			}
-		}
-		return count;
-	}
+                    if (flag == 1) {
+                        quantitative.setVehicleNumber(Constants.WLSC+vehicleNumber);
+                        quantitative.setSendTime(DateUtil.parse(StrUtil.sub(vehicleNumber, 0, 8)));
+                    } else {
+                        quantitative.setVehicleNumber(null);
+                        quantitative.setSendTime(null);
+                    }
+                    quantitative.setFlag(flag);
+                    if (quantitative.getSendOrderId() != null) {
+                        SendOrder sendOrder = sendOrderDao.findOne(quantitative.getSendOrderId());
+                        sendOrder.setLogisticsId(logisticsId);
+                        sendOrderDao.save(sendOrder);
+                    }
+                    dao.save(quantitative);
+                }
+            }
+        }
+        return count;
+    }
 
     @Override
     public void setActualSingleNumber(Long id, Integer actualSingleNumber) {

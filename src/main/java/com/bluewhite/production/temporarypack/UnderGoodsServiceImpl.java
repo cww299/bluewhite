@@ -74,7 +74,11 @@ public class UnderGoodsServiceImpl extends BaseServiceImpl<UnderGoods, Long> imp
             if (!StringUtils.isEmpty(param.getStatus())) {
                 predicate.add(cb.equal(root.get("status").as(Integer.class), param.getStatus()));
             }
-
+            // 按产品名称
+            if (!StringUtils.isEmpty(param.getRemarks())) {
+                predicate.add(cb.like(root.get("remarks").as(String.class),
+                    "%" + StringUtil.specialStrKeyword(param.getRemarks()) + "%"));
+            }
             // 按生成时间过滤
             if (!StringUtils.isEmpty(param.getOrderTimeBegin()) && !StringUtils.isEmpty(param.getOrderTimeEnd())) {
                 predicate.add(cb.between(root.get("allotTime").as(Date.class), param.getOrderTimeBegin(),

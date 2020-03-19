@@ -154,5 +154,7 @@ public class Constants {
     public final static String  LHTB = "LHTB";
     //借货申请单
     public final static String  JHSQD = "JHSQD";
+    //物流上车单
+    public final static String  WLSC = "WLSC";
     
 }
