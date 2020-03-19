@@ -155,7 +155,7 @@ public class TemporaryPackAction {
         CommonResponse cr = new CommonResponse();
         // 生成贴包单时生成发货单发货单，将发货单id存入贴包单
         if (StringUtils.isEmpty(quantitative.getIds())) {
-            sendOrderService.saveSendOrder(quantitative);
+//            sendOrderService.saveSendOrder(quantitative);
             if (quantitative.getSumPackageNumber() > 0) {
                 for (int i = 0; i < quantitative.getSumPackageNumber(); i++) {
                     Quantitative ot = new Quantitative();

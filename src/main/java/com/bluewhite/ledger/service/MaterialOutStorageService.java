@@ -4,7 +4,6 @@ import com.bluewhite.base.BaseCRUDService;
 import com.bluewhite.common.entity.PageParameter;
 import com.bluewhite.common.entity.PageResult;
 import com.bluewhite.ledger.entity.MaterialOutStorage;
-import com.bluewhite.ledger.entity.MaterialPutStorage;
 
 public interface MaterialOutStorageService  extends BaseCRUDService<MaterialOutStorage, Long>{
 	

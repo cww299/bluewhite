@@ -145,9 +145,6 @@ public class AttendanceTimeServiceImpl extends BaseServiceImpl<AttendanceTime, L
                         attUserList.add(at);
                     }
                 }
-                // 获取员工一天内的打卡记录并按照自然排序
-                List<Attendance> attList =
-                    attUserList.stream().sorted(Comparator.comparing(Attendance::getTime)).collect(Collectors.toList());
                 // 获取每个人当天的考勤记录
                 AttendanceTime attendanceTime = new AttendanceTime();
                 // 考勤汇总当天的日期
@@ -299,9 +296,17 @@ public class AttendanceTimeServiceImpl extends BaseServiceImpl<AttendanceTime, L
                         }
                     }
                 }
+                // 获取员工一天内的打卡记录并按照自然排序
+                List<Attendance> attList = attUserList.stream().sorted(Comparator.comparing(Attendance::getTime)).collect(Collectors.toList());
+                // 排除集合中每相邻的不超过5分钟的打卡记录
+                
+                // 打卡记录是4条
+                
+                // 打卡记录是小于1条，等于3条,超过4条,处理成异常考勤
+                
                 // 考情记录有三种情况。当一天的考勤记录条数等于大于2时,为正常的考勤
-                // 大于2时，取集合中的最后一条数据作为考勤记录
-                if (attList.size() >= 2) {
+                // 等于2时，取集合中的最后一条数据作为考勤记录
+                if (attList.size() == 2) {
                     // 获取签入签出时间
                     if (attList.get(0).getTime().before(attList.get(attList.size() - 1).getTime())) {
                         // 上班
