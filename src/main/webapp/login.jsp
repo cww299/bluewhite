@@ -67,10 +67,13 @@ layui.data('cookieMenu', {key:'openMenu',value:[],});
 layui.data('cookieMenu', {key:'thisMenu',value:'',});
 if(layui.data('cookieMenu').remeberMenu==='undefined')
 	layui.data('cookieMenu', {key:'remeberMenu',value:false,});
+if(window.top.location != window.location){
+	top.location.href= location.href;  
+};
 $('#submitBtn').on('click',function(){
 	var index = layer.load(1, {
 		  shade: [0.5,'#black']
-		  });
+	});
 	 $.ajax({
 	      url:"${ctx}/login",
 	      type:"post", 
