@@ -58,11 +58,16 @@ public class Attendance extends BaseEntity<Long> {
 	private Date time;
 
 	/**
-	 * 
-	 * 签到状态 1正常签到 2补签
+	 * 签到状态 1正常签到, 2补签
 	 */
 	@Column(name = "inout_mode")
 	private Integer inOutMode;
+	
+	/**
+     * 签到类型 1上班签到, 2下班
+     */
+    @Column(name = "inout_type")
+    private Integer inoutType;
 
 	/**
 	 * 
@@ -120,7 +125,15 @@ public class Attendance extends BaseEntity<Long> {
 	
 	
 
-	public Date getManualTime() {
+	public Integer getInoutType() {
+        return inoutType;
+    }
+
+    public void setInoutType(Integer inoutType) {
+        this.inoutType = inoutType;
+    }
+
+    public Date getManualTime() {
 		return manualTime;
 	}
 

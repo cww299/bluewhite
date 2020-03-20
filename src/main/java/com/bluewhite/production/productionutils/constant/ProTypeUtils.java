@@ -375,29 +375,18 @@ public class ProTypeUtils {
 	/**
 	 * 二楼针工价格
 	 * 
+	 * 实际上是外发生产单价
+	 * 
 	 * @param price
 	 * @param type
 	 * @return
 	 */
 	public static Double getDEEDLE(Double time, Integer type) {
-		Double sumPrice = 0.0;
-		switch (type) {
-		case 1:// 生产部一楼质检
-			break;
-		case 2:// 生产部一楼打包
-			break;
-		case 3:// 生产部二楼针工
-			sumPrice = NumUtils.div(NumUtils.mul(NumUtils.sub(time, 0.5), 1.08, 1.15, 0.167, 1.5), ProTypeUtils.TIME,5);
-			break;
-		default:
-			break;
-		}
-		return sumPrice;
+		return (type == 3 || type == 4) ? NumUtils.div(NumUtils.mul(time, 1.08, 1.15, 0.167, 1.5), ProTypeUtils.TIME,5) : 0;
 	}
 
-	/********
-	 * ****************************** ******************************
-	 ******************************/
+	
+	/**************************************/
 
 	/**
 	 * 根据不同权限返回工序的不同类型 1=一楼质检，2=一楼包装，3=二楼针工

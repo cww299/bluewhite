@@ -42,12 +42,6 @@ public class SendOrder extends BaseEntity<Long> {
     private Customer customer;
 
     /**
-     * 发货单编号
-     */
-    @Column(name = "send_order_number")
-    private String sendOrderNumber;
-
-    /**
      * 子单list
      */
     @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, orphanRemoval = true)
@@ -246,14 +240,6 @@ public class SendOrder extends BaseEntity<Long> {
 
     public void setCustomer(Customer customer) {
         this.customer = customer;
-    }
-
-    public String getSendOrderNumber() {
-        return sendOrderNumber;
-    }
-
-    public void setSendOrderNumber(String sendOrderNumber) {
-        this.sendOrderNumber = sendOrderNumber;
     }
 
     public Date getSendTime() {
