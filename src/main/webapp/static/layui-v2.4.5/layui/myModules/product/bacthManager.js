@@ -223,6 +223,26 @@ layui.config({
 			    	   return '<span class="layui-btn layui-btn-sm">分配</span>';
 			       	 } },
 			      ];
+		if(opt.type==4){	//二楼机工增加针工价格
+			col = [
+		           { type:'checkbox' },
+			       { title:'批次号', 	field:'bacthNumber', },
+			       { title:'时间', 	field:'allotTime', type:'date', edit:true, },
+			       { title:'产品名', 	field:'product_name', },
+			       { title:'数量', 	field:'number',edit:true, },
+			       { title:'预计生产单价', 	field:'bacthDepartmentPrice', templet: getFixed('bacthDepartmentPrice',3),  },
+			       { title:'外发价格', 	field:'bacthHairPrice', },
+			       { title:'外发价值', 	field:'sumOutPrice', templet: getFixed('sumOutPrice',3), },
+			       { title:'任务价值', 	field:'sumTaskPrice', templet: getFixed('sumTaskPrice',3),  },
+			       { title:'地区差价	', 	field:'regionalPrice',templet: getFixed('regionalPrice',3),  },
+			       { title:'当批用时	', 	field:'time', templet: getFixed('time',3),  },
+			       { title:'备注	', 	field:'remarks', edit:true,},
+			       { title:'状态	', 	field:'status', transData:{data:['未完成','已完成'],} },
+			       { title:'操作', event:'allocation', templet:function(d){
+			    	   return '<span class="layui-btn layui-btn-sm">分配</span>';
+			       	 } },
+			      ];
+		}
 		if(opt.type==3){		//二楼针工增加针工价格
 			col = [
 		           { type:'checkbox' },
@@ -233,7 +253,7 @@ layui.config({
 			       { title:'预计生产单价', 	field:'bacthDepartmentPrice', templet: getFixed('bacthDepartmentPrice',3), },
 			       { title:'外发价格', 	field:'bacthHairPrice', },
 			       { title:'针工价格', field:'bacthDeedlePrice',templet: getFixed('bacthDeedlePrice',3), },
-			       { title:'外发价值', 	field:'sumOutPrice', },
+			       { title:'外发价值', 	field:'sumOutPrice', templet: getFixed('sumOutPrice',3), },
 			       { title:'任务价值', 	field:'sumTaskPrice', templet: getFixed('sumTaskPrice',3),  },
 			       { title:'地区差价	', 	field:'regionalPrice',templet: getFixed('regionalPrice',3), },
 			       { title:'当批用时	', 	field:'time', templet: getFixed('time',3),  },
