@@ -36,10 +36,8 @@
 				<td>上车编号:</td>
 				<td><input type="text" name="vehicleNumber" class="layui-input"></td>
 				<td>&nbsp;&nbsp;&nbsp;</td>
-				<td>是否审核:</td>
-				<td style="width:100px;"><select name="audit"><option value="">请选择</option>
-										<option value="0">否</option>
-										<option value="1">是</option></select></td>
+				<td id="isAuditSearchTextTd"></td>
+				<td id="isAuditSearchTd"></td>
 				<td>&nbsp;&nbsp;&nbsp;</td>
 				<td>是否打印:</td>
 				<td style="width:100px;"><select name="print"><option value="">请选择</option>
@@ -87,7 +85,9 @@
 </div>
 <hr>
 </script>
-
+<!-- 
+stickBagAccount: 吴婷
+ -->
 <div id="toolbarTpl" style="display:none;">
 	<span class="layui-btn layui-btn-sm layui-btn-warm" lay-event="update">修改数据</span>
 	<shiro:hasAnyRoles name="superAdmin,stickBagAccount">
@@ -128,6 +128,16 @@ layui.config({
 		})
 		var isStickBagStick = $('#stickBagStickBtn').length>0;
 		var isStickBagAccount = $('#stickBagAccountBtn').length>0;
+		if(isStickBagAccount){
+			$('#isAuditSearchTd').html([
+				'<select name="audit"><option value="">请选择</option>',
+				'<option value="0">否</option>',
+				'<option value="1">是</option></select>',
+			].join(''));
+			$('#isAuditSearchTd').css('width','100px');
+			$('#isAuditSearchTextTd').html('是否审核:');
+			form.render();
+		}
 		var allMaterials = [];
 		var allUser ='',allCustomer='';
 		var tableDataNoTrans = [];
@@ -135,7 +145,10 @@ layui.config({
 		mytable.render({
 			elem:'#tableData',
 			size:'sm',
-			url:'${ctx}/temporaryPack/findPagesQuantitative?'+((isStickBagStick && !isStickBagAccount)?'audit=1':''),
+			url:'${ctx}/temporaryPack/findPagesQuantitative',
+			where:{
+				audit: isStickBagAccount?'':1
+			},
 			toolbar: $('#toolbarTpl').html(),
 			limit:15,
 			even:true,
