@@ -15,7 +15,6 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import com.bluewhite.basedata.entity.BaseData;
 import com.bluewhite.common.BeanCopyUtils;
 import com.bluewhite.common.ClearCascadeJSON;
-import com.bluewhite.common.Log;
 import com.bluewhite.common.entity.CommonResponse;
 import com.bluewhite.common.entity.ErrorCode;
 import com.bluewhite.production.bacth.entity.Bacth;
@@ -26,7 +25,6 @@ import com.bluewhite.production.procedure.service.ProcedureService;
 @Controller
 public class ProcedureAction {
 
-	private static final Log log = Log.getLog(ProcedureAction.class);
 
 	@Autowired
 	private ProcedureService procedureService;

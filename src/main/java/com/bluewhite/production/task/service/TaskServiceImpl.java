@@ -134,7 +134,6 @@ public class TaskServiceImpl extends BaseServiceImpl<Task, Long> implements Task
 			}
 		}
 
-		Double sumTaskPrice = 0.0;
 		// 将工序ids分成多个任务
 		if (task.getProcedureIds().length > 0) {
 			Task newTask = null;
@@ -333,13 +332,13 @@ public class TaskServiceImpl extends BaseServiceImpl<Task, Long> implements Task
 			}
 		}
 
-		// 查出该批次的所有任务
 		Bacth bacth = bacthDao.findOne(task.getBacthId());
 		// 计算出该批次下所有人的实际成本总和
-		int count = 0;
 		double bacthDepartmentPrice = 0;
+		//分配的实际工序时间
+		List<Double> listDouble = new ArrayList<>();
+		double workProceDureTime = 0;
 		if (bacth.getTasks().size() > 0) {
-			List<Double> listDouble = new ArrayList<>();
 			bacth.getTasks().stream().filter(StringUtil.distinctByKey(Task::getProcedureId)).forEach(a -> {
 				if(a.getProcedureId()!=null ){
 					Procedure procedure  = procedureDao.findOne(a.getProcedureId());
@@ -347,24 +346,30 @@ public class TaskServiceImpl extends BaseServiceImpl<Task, Long> implements Task
 				}
 			});
 			if(listDouble.size()>0){
-				bacthDepartmentPrice = ProTypeUtils.sumProTypePrice(NumUtils.sum(listDouble), bacth.getType());
+			    workProceDureTime = NumUtils.sum(listDouble);
+				bacthDepartmentPrice = ProTypeUtils.sumProTypePrice(workProceDureTime, bacth.getType());
 			}
 		}
-		for (Task ta : bacth.getTasks()) {
-			sumTaskPrice += ta.getTaskPrice();
-			if (task.getType() == 2) {
-				if (ta.getProcedureName().indexOf(Constants.BAGABOARD) != -1) {
-					count += ta.getNumber();
-				}
-			}
-		};
-		if (bacth.getNumber() == count) {
-			bacth.setStatus(1);
-			bacth.setStatusTime(task.getAllotTime());
+		//包装  上车数量达到时，自动完成批次
+		if(bacth.getType()==2) {
+		    int count = bacth.getTasks().stream().filter(t->t.getType()==2 && t.getProcedureName().indexOf(Constants.BAGABOARD) != -1).mapToInt(t->t.getNumber()).sum();
+		    if (bacth.getNumber() == count) {
+		        bacth.setStatus(1);
+		        bacth.setStatusTime(task.getAllotTime());
+		    }
 		}
+		//针工的外发总价值
         if (bacth.getFlag() == 0 && bacth.getType() == 3) {
-            bacth.setSumOutPrice(NumUtils.mul(bacth.getNumber(), bacth.getBacthDeedlePrice()));
+            bacth.setBacthDeedlePrice(ProTypeUtils.getDEEDLE(workProceDureTime, bacth.getType()));
+            bacth.setSumOutPrice(NumUtils.mul(bacth.getNumber(),bacth.getBacthDeedlePrice()));
         }
+        //机工的外发总价值
+        if (bacth.getFlag() == 0 && bacth.getType() == 4) {
+            bacth.setBacthHairPrice(ProTypeUtils.getDEEDLE(workProceDureTime, bacth.getType()));
+            bacth.setSumOutPrice(NumUtils.mul(bacth.getNumber(),bacth.getBacthDeedlePrice()));
+        }
+        //实际任务价值
+        Double sumTaskPrice = bacth.getTasks().stream().mapToDouble(t->t.getTaskPrice()).sum();
 		bacth.setSumTaskPrice(NumUtils.round(sumTaskPrice, 5));
 		bacth.setBacthDepartmentPrice(bacthDepartmentPrice);
 		// 计算出该批次的地区差价

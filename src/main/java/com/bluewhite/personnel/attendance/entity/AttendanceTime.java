@@ -16,458 +16,440 @@ import com.fasterxml.jackson.annotation.JsonFormat;
 
 /**
  * 考勤数据记录 （按日期和员工记录数据，一个员工一天有且仅有一条考勤记录）
+ * 
  * @author LB-BY06
  *
  */
 @Entity
-@Table(name = "person_attendance_time" )
+@Table(name = "person_attendance_time")
 public class AttendanceTime extends BaseEntity<Long> {
-	
-	
-	/**
-	 * 员工考勤汇总日期
-	 * 
-	 */
-	@JsonFormat(pattern="yyyy-MM-dd",timezone="GMT+8")
-	@Column(name = "time")
-	private Date time;
-	
-	/**
-	 * 员工编号（考勤机上的编号）
-	 * 
-	 */
-	@Column(name = "number")
-	private String number;
-	
-	/**
-	 * 员工id
-	 */
-	@Column(name = "user_id")
-	private Long userId;
-	
-	/**
-	 * 员工
-	 */
-	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "user_id", referencedColumnName = "id", insertable = false, updatable = false)
-	private User user;
-    
-	
-	/**
-	 * 上班签到时间  0—Check-In 
-	 * 
-	 */
-	@JsonFormat(pattern="yyyy-MM-dd HH:mm:ss",timezone="GMT+8")
-	@Column(name = "check_in")	
-	private Date checkIn;
-	
-	/**
-	 * 下班签到时间 1—Check-Out
-	 * 
-	 */
-	@JsonFormat(pattern="yyyy-MM-dd HH:mm:ss",timezone="GMT+8")
-	@Column(name = "check_out")	
-	private Date checkOut;
-	
-	/**
-	 * 
-	 * 实际工作时长
-	 */
-	@Column(name = "workTime")
-	private Double workTime;
-	
-	/**
-	 * 
-	 * 出勤时长
-	 */
-	@Column(name = "turnWorkTime")
-	private Double turnWorkTime;
-	
-	/**
-	 * 总加班时长
-	 * 
-	 */
-	@Column(name = "overtime")
-	private Double overtime;
-	
-	/**
-	 * 普通加班时长
-	 * 
-	 */
-	@Column(name = "ordinary_overtime")
-	private Double ordinaryOvertime;
-	
-	/**
-	 * 生产加班时长
-	 * 
-	 */
-	@Column(name = "production_overtime")
-	private Double productionOvertime;
-	
-	
-	/**
-	 * 缺勤时长
-	 * 
-	 */
-	@Column(name = "dutytime")
-	private Double dutytime;
-	
-	/**
-	 * 实际缺勤时长（分钟数）
-	 * 
-	 */
-	@Column(name = "duty_time_minute")
-	private Double dutytimMinute;
-	
-	/**
-	 * 请假时长
-	 * 
-	 */
-	@Column(name = "leave_time")
-	private Double leaveTime;
-	
-	/**
-	 * 调休时长
-	 * 
-	 */
-	@Column(name = "take_work")
-	private Double takeWork;
-	
-	/**
-	 * 请假类型(0=事假、1=病假、2=丧假、3=婚假、4=产假、5=护理假、6=抵消迟到）
-	 */
-	@Column(name = "holiday_type")
-	private Integer holidayType;
-	
-	/**
-	 * 星期
-	 * 
-	 */
-	@Column(name = "week")
-	private String week;
-	
-	/**
-	 * 考勤状态(0=正常，1=签到缺失，2=请假,3=默认休息日)
-	 * 
-	 */
-	@Column(name = "flag")
-	private Integer flag ;
-	
-	/**
-	 * 是否早退(0=否，1=是)
-	 * 
-	 */
-	@Column(name = "leave_early")
-	private Integer leaveEarly ;
-	
-	/**
-	 * 早退时长（超过30分钟算缺勤）
-	 * 
-	 */
-	@Column(name = "leave_early_time")
-	private Double leaveEarlyTime;
-	
-	/**
-	 * 是否迟到(0=否，1=是)
-	 * 
-	 */
-	@Column(name = "belate")
-	private Integer belate ;
-	
-	
-	/**
-	 * 迟到时长（超过30分钟算缺勤）
-	 * 
-	 */
-	@Column(name = "belate_time")
-	private Double belateTime ;
-	
-	/**
-	 * 详情
-	 */
-	@Column(name = "holiday_detail")
-	private String holidayDetail;
-	/**
-	 * 员工姓名
-	 */
-	@Transient
-	private String userName;
-	
-	/**
-	 * 查询字段（部门）
-	 */
-	@Transient
-	private Long orgNameId;
-	
-	/**
-	 * 查询字段（部门）
-	 */
-	@Transient
-	private String orgName;
-	
-	/**
-	 * 将考勤设定将入，避免查询 
-	 */
-	@Transient
-	private AttendanceInit AttendanceInit;
-	
-	/**
-	 * 查询字段
-	 */
-	@Transient
-	private Date orderTimeBegin;
-	/**
-	 * 查询字段
-	 */
-	@Transient
-	private Date orderTimeEnd;
-	
 
-	
-	
+    /**
+     * 员工考勤汇总日期
+     * 
+     */
+    @JsonFormat(pattern = "yyyy-MM-dd", timezone = "GMT+8")
+    @Column(name = "time")
+    private Date time;
 
-	
+    /**
+     * 员工编号（考勤机上的编号）
+     * 
+     */
+    @Column(name = "number")
+    private String number;
 
-	
+    /**
+     * 员工id
+     */
+    @Column(name = "user_id")
+    private Long userId;
 
-	public Double getDutytimMinute() {
-		return dutytimMinute;
-	}
+    /**
+     * 员工
+     */
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "user_id", referencedColumnName = "id", insertable = false, updatable = false)
+    private User user;
 
-	public void setDutytimMinute(Double dutytimMinute) {
-		this.dutytimMinute = dutytimMinute;
-	}
+    /**
+     * 上班签到时间 0—Check-In
+     * 
+     */
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+8")
+    @Column(name = "check_in")
+    private Date checkIn;
 
-	public Double getOrdinaryOvertime() {
-		return ordinaryOvertime;
-	}
+    /**
+     * 下班签到时间 1—Check-Out
+     * 
+     */
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+8")
+    @Column(name = "check_out")
+    private Date checkOut;
 
-	public void setOrdinaryOvertime(Double ordinaryOvertime) {
-		this.ordinaryOvertime = ordinaryOvertime;
-	}
+    /**
+     * 
+     * 实际工作时长
+     */
+    @Column(name = "workTime")
+    private Double workTime;
 
-	public Double getProductionOvertime() {
-		return productionOvertime;
-	}
+    /**
+     * 
+     * 出勤时长
+     */
+    @Column(name = "turnWorkTime")
+    private Double turnWorkTime;
 
-	public void setProductionOvertime(Double productionOvertime) {
-		this.productionOvertime = productionOvertime;
-	}
+    /**
+     * 总加班时长
+     * 
+     */
+    @Column(name = "overtime")
+    private Double overtime;
 
-	public AttendanceInit getAttendanceInit() {
-		return AttendanceInit;
-	}
+    /**
+     * 普通加班时长
+     * 
+     */
+    @Column(name = "ordinary_overtime")
+    private Double ordinaryOvertime;
 
-	public void setAttendanceInit(AttendanceInit attendanceInit) {
-		attendanceInit.setUser(null);
-		AttendanceInit = attendanceInit;
-	}
+    /**
+     * 生产加班时长
+     * 
+     */
+    @Column(name = "production_overtime")
+    private Double productionOvertime;
 
-	
-	public Double getTakeWork() {
-		return takeWork;
-	}
+    /**
+     * 缺勤时长
+     * 
+     */
+    @Column(name = "dutytime")
+    private Double dutytime;
 
-	public void setTakeWork(Double takeWork) {
-		this.takeWork = takeWork;
-	}
+    /**
+     * 实际缺勤时长（分钟数）
+     * 
+     */
+    @Column(name = "duty_time_minute")
+    private Double dutytimMinute;
 
-	public Integer getHolidayType() {
-		return holidayType;
-	}
+    /**
+     * 请假时长
+     * 
+     */
+    @Column(name = "leave_time")
+    private Double leaveTime;
 
-	public void setHolidayType(Integer holidayType) {
-		this.holidayType = holidayType;
-	}
+    /**
+     * 调休时长
+     * 
+     */
+    @Column(name = "take_work")
+    private Double takeWork;
 
-	public String getHolidayDetail() {
-		return holidayDetail;
-	}
+    /**
+     * 请假类型(0=事假、1=病假、2=丧假、3=婚假、4=产假、5=护理假、6=抵消迟到）
+     */
+    @Column(name = "holiday_type")
+    private Integer holidayType;
 
-	public void setHolidayDetail(String holidayDetail) {
-		this.holidayDetail = holidayDetail;
-	}
+    /**
+     * 星期
+     * 
+     */
+    @Column(name = "week")
+    private String week;
 
-	public Double getLeaveTime() {
-		return leaveTime;
-	}
+    /**
+     * 考勤状态(0=正常，1=签到缺失，2=请假,3=默认休息日)
+     * 
+     */
+    @Column(name = "flag")
+    private Integer flag;
 
-	public void setLeaveTime(Double leaveTime) {
-		this.leaveTime = leaveTime;
-	}
+    /**
+     * 是否早退(0=否，1=是)
+     * 
+     */
+    @Column(name = "leave_early")
+    private Integer leaveEarly;
 
-	public Integer getLeaveEarly() {
-		return leaveEarly;
-	}
+    /**
+     * 早退时长（超过30分钟算缺勤）
+     * 
+     */
+    @Column(name = "leave_early_time")
+    private Double leaveEarlyTime;
 
-	public void setLeaveEarly(Integer leaveEarly) {
-		this.leaveEarly = leaveEarly;
-	}
+    /**
+     * 是否迟到(0=否，1=是)
+     * 
+     */
+    @Column(name = "belate")
+    private Integer belate;
 
-	public Double getLeaveEarlyTime() {
-		return leaveEarlyTime;
-	}
+    /**
+     * 迟到时长（超过30分钟算缺勤）
+     * 
+     */
+    @Column(name = "belate_time")
+    private Double belateTime;
 
-	public void setLeaveEarlyTime(Double leaveEarlyTime) {
-		this.leaveEarlyTime = leaveEarlyTime;
-	}
+    /**
+     * 详情
+     */
+    @Column(name = "holiday_detail")
+    private String holidayDetail;
+    /**
+     * 员工姓名
+     */
+    @Transient
+    private String userName;
 
-	public String getUserName() {
-		return userName;
-	}
+    /**
+     * 查询字段（部门）
+     */
+    @Transient
+    private Long orgNameId;
 
-	public void setUserName(String userName) {
-		this.userName = userName;
-	}
+    /**
+     * 查询字段（部门）
+     */
+    @Transient
+    private String orgName;
 
-	public Date getOrderTimeBegin() {
-		return orderTimeBegin;
-	}
+    /**
+     * 将考勤设定将入，避免查询
+     */
+    @Transient
+    private AttendanceInit AttendanceInit;
 
-	public void setOrderTimeBegin(Date orderTimeBegin) {
-		this.orderTimeBegin = orderTimeBegin;
-	}
+    /**
+     * 查询字段
+     */
+    @Transient
+    private Date orderTimeBegin;
+    /**
+     * 查询字段
+     */
+    @Transient
+    private Date orderTimeEnd;
 
-	public Date getOrderTimeEnd() {
-		return orderTimeEnd;
-	}
+    public Double getDutytimMinute() {
+        return dutytimMinute;
+    }
 
-	public void setOrderTimeEnd(Date orderTimeEnd) {
-		this.orderTimeEnd = orderTimeEnd;
-	}
+    public void setDutytimMinute(Double dutytimMinute) {
+        this.dutytimMinute = dutytimMinute;
+    }
 
-	public Long getOrgNameId() {
-		return orgNameId;
-	}
+    public Double getOrdinaryOvertime() {
+        return ordinaryOvertime;
+    }
 
-	public void setOrgNameId(Long orgNameId) {
-		this.orgNameId = orgNameId;
-	}
+    public void setOrdinaryOvertime(Double ordinaryOvertime) {
+        this.ordinaryOvertime = ordinaryOvertime;
+    }
 
-	public String getOrgName() {
-		return orgName;
-	}
+    public Double getProductionOvertime() {
+        return productionOvertime;
+    }
 
-	public void setOrgName(String orgName) {
-		this.orgName = orgName;
-	}
+    public void setProductionOvertime(Double productionOvertime) {
+        this.productionOvertime = productionOvertime;
+    }
 
-	public Long getUserId() {
-		return userId;
-	}
+    public AttendanceInit getAttendanceInit() {
+        return AttendanceInit;
+    }
 
-	public void setUserId(Long userId) {
-		this.userId = userId;
-	}
+    public void setAttendanceInit(AttendanceInit attendanceInit) {
+        attendanceInit.setUser(null);
+        AttendanceInit = attendanceInit;
+    }
 
-	public User getUser() {
-		return user;
-	}
+    public Double getTakeWork() {
+        return takeWork;
+    }
 
-	public void setUser(User user) {
-		this.user = user;
-	}
+    public void setTakeWork(Double takeWork) {
+        this.takeWork = takeWork;
+    }
 
-	public Integer getBelate() {
-		return belate;
-	}
+    public Integer getHolidayType() {
+        return holidayType;
+    }
 
-	public void setBelate(Integer belate) {
-		this.belate = belate;
-	}
+    public void setHolidayType(Integer holidayType) {
+        this.holidayType = holidayType;
+    }
 
+    public String getHolidayDetail() {
+        return holidayDetail;
+    }
 
-	public Double getBelateTime() {
-		return belateTime;
-	}
+    public void setHolidayDetail(String holidayDetail) {
+        this.holidayDetail = holidayDetail;
+    }
 
-	public void setBelateTime(Double belateTime) {
-		this.belateTime = belateTime;
-	}
+    public Double getLeaveTime() {
+        return leaveTime;
+    }
 
-	public Integer getFlag() {
-		return flag;
-	}
+    public void setLeaveTime(Double leaveTime) {
+        this.leaveTime = leaveTime;
+    }
 
-	public void setFlag(Integer flag) {
-		this.flag = flag;
-	}
+    public Integer getLeaveEarly() {
+        return leaveEarly;
+    }
 
-	public Double getDutytime() {
-		return dutytime;
-	}
+    public void setLeaveEarly(Integer leaveEarly) {
+        this.leaveEarly = leaveEarly;
+    }
 
-	public void setDutytime(Double dutytime) {
-		this.dutytime = Math.abs(dutytime);
-	}
+    public Double getLeaveEarlyTime() {
+        return leaveEarlyTime;
+    }
 
-	public Double getWorkTime() {
-		return workTime;
-	}
+    public void setLeaveEarlyTime(Double leaveEarlyTime) {
+        this.leaveEarlyTime = leaveEarlyTime;
+    }
 
-	public void setWorkTime(Double workTime) {
-		this.workTime = Math.abs(workTime);
-	}
+    public String getUserName() {
+        return userName;
+    }
 
-	public Date getTime() {
-		return time;
-	}
+    public void setUserName(String userName) {
+        this.userName = userName;
+    }
 
-	public void setTime(Date time) {
-		this.time = time;
-	}
+    public Date getOrderTimeBegin() {
+        return orderTimeBegin;
+    }
 
-	public String getNumber() {
-		return number;
-	}
+    public void setOrderTimeBegin(Date orderTimeBegin) {
+        this.orderTimeBegin = orderTimeBegin;
+    }
 
-	public void setNumber(String number) {
-		this.number = number;
-	}
+    public Date getOrderTimeEnd() {
+        return orderTimeEnd;
+    }
 
+    public void setOrderTimeEnd(Date orderTimeEnd) {
+        this.orderTimeEnd = orderTimeEnd;
+    }
 
-	public Date getCheckIn() {
-		return checkIn;
-	}
+    public Long getOrgNameId() {
+        return orgNameId;
+    }
 
-	public void setCheckIn(Date checkIn) {
-		this.checkIn = checkIn;
-	}
+    public void setOrgNameId(Long orgNameId) {
+        this.orgNameId = orgNameId;
+    }
 
-	public Date getCheckOut() {
-		return checkOut;
-	}
+    public String getOrgName() {
+        return orgName;
+    }
 
-	public void setCheckOut(Date checkOut) {
-		this.checkOut = checkOut;
-	}
+    public void setOrgName(String orgName) {
+        this.orgName = orgName;
+    }
 
-	public Double getTurnWorkTime() {
-		return turnWorkTime;
-	}
+    public Long getUserId() {
+        return userId;
+    }
 
-	public void setTurnWorkTime(Double turnWorkTime) {
-		this.turnWorkTime = Math.abs(turnWorkTime);
-	}
+    public void setUserId(Long userId) {
+        this.userId = userId;
+    }
 
-	public Double getOvertime() {
-		return overtime;
-	}
+    public User getUser() {
+        return user;
+    }
 
-	public void setOvertime(Double overtime) {
-		this.overtime = Math.abs(overtime);
-	}
+    public void setUser(User user) {
+        this.user = user;
+    }
 
-	public String getWeek() {
-		return week;
-	}
+    public Integer getBelate() {
+        return belate;
+    }
 
-	public void setWeek(String week) {
-		this.week = week;
-	}
-	
-	
-	
-	
+    public void setBelate(Integer belate) {
+        this.belate = belate;
+    }
+
+    public Double getBelateTime() {
+        return belateTime;
+    }
+
+    public void setBelateTime(Double belateTime) {
+        this.belateTime = belateTime;
+    }
+
+    public Integer getFlag() {
+        return flag;
+    }
+
+    public void setFlag(Integer flag) {
+        this.flag = flag;
+    }
+
+    public Double getDutytime() {
+        return dutytime;
+    }
+
+    public void setDutytime(Double dutytime) {
+        this.dutytime = Math.abs(dutytime);
+    }
+
+    public Double getWorkTime() {
+        return workTime;
+    }
+
+    public void setWorkTime(Double workTime) {
+        this.workTime = Math.abs(workTime);
+    }
+
+    public Date getTime() {
+        return time;
+    }
+
+    public void setTime(Date time) {
+        this.time = time;
+    }
+
+    public String getNumber() {
+        return number;
+    }
+
+    public void setNumber(String number) {
+        this.number = number;
+    }
+
+    public Date getCheckIn() {
+        return checkIn;
+    }
+
+    public void setCheckIn(Date checkIn) {
+        this.checkIn = checkIn;
+    }
+
+    public Date getCheckOut() {
+        return checkOut;
+    }
+
+    public void setCheckOut(Date checkOut) {
+        this.checkOut = checkOut;
+    }
+
+    public Double getTurnWorkTime() {
+        return turnWorkTime;
+    }
+
+    public void setTurnWorkTime(Double turnWorkTime) {
+        this.turnWorkTime = Math.abs(turnWorkTime);
+    }
+
+    public Double getOvertime() {
+        return overtime;
+    }
+
+    public void setOvertime(Double overtime) {
+        this.overtime = Math.abs(overtime);
+    }
+
+    public String getWeek() {
+        return week;
+    }
+
+    public void setWeek(String week) {
+        this.week = week;
+    }
 
 }

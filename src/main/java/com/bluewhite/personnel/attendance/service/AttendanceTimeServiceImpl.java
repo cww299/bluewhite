@@ -74,7 +74,8 @@ public class AttendanceTimeServiceImpl extends BaseServiceImpl<AttendanceTime, L
         // 获取改时间段所有的打卡记录
         List<Attendance> allAttList = null;
         // 获取当前日期的固定休息日
-        PersonVariable restType = personVariableDao.findByTypeAndTime(0, DatesUtil.getFirstDayOfMonth(attendance.getOrderTimeBegin()));
+        PersonVariable restType =
+            personVariableDao.findByTypeAndTime(0, DatesUtil.getFirstDayOfMonth(attendance.getOrderTimeBegin()));
         if (restType == null) {
             throw new ServiceException("当月未设定休息方式，请设定");
         }
@@ -228,7 +229,8 @@ public class AttendanceTimeServiceImpl extends BaseServiceImpl<AttendanceTime, L
                         String[] weeklyRestDate = restType.getKeyValue().split(",");
                         if (weeklyRestDate.length > 0) {
                             for (int j = 0; j < weeklyRestDate.length; j++) {
-                                if (DatesUtil.getfristDayOftime(beginTimes).compareTo(DateUtil.parse(weeklyRestDate[j])) == 0) {
+                                if (DatesUtil.getfristDayOftime(beginTimes)
+                                    .compareTo(DateUtil.parse(weeklyRestDate[j])) == 0) {
                                     rout = true;
                                     break;
                                 }
@@ -243,7 +245,8 @@ public class AttendanceTimeServiceImpl extends BaseServiceImpl<AttendanceTime, L
                         String[] monthRestDate = restType.getKeyValueTwo().split(",");
                         if (monthRestDate.length > 0) {
                             for (int j = 0; j < monthRestDate.length; j++) {
-                                if (DatesUtil.getfristDayOftime(beginTimes).compareTo(DateUtil.parse(monthRestDate[j])) == 0) {
+                                if (DatesUtil.getfristDayOftime(beginTimes)
+                                    .compareTo(DateUtil.parse(monthRestDate[j])) == 0) {
                                     rout = true;
                                     break;
                                 }
@@ -297,69 +300,34 @@ public class AttendanceTimeServiceImpl extends BaseServiceImpl<AttendanceTime, L
                     }
                 }
                 // 获取员工一天内的打卡记录并按照自然排序
-                List<Attendance> attList = attUserList.stream().sorted(Comparator.comparing(Attendance::getTime)).collect(Collectors.toList());
-                // 排除集合中每相邻的不超过5分钟的打卡记录
-                
-                // 打卡记录是4条
-                
-                // 打卡记录是小于1条，等于3条,超过4条,处理成异常考勤
-                
+                List<Attendance> attList =
+                    attUserList.stream().sorted(Comparator.comparing(Attendance::getTime)).collect(Collectors.toList());
+                // 排除集合中无效的打卡记录
+                attList = AttendanceTool.sumIntervalDate(attList, 20);
                 // 考情记录有三种情况。当一天的考勤记录条数等于大于2时,为正常的考勤
-                // 等于2时，取集合中的最后一条数据作为考勤记录
+                // 打卡记录是4条 正常签入签出，中途签出一次签入一次
+//                if (attList.size() == 4) {
+//                    // 上班
+//                    attendanceTime.setCheckIn(new Date(attList.get(0).getTime().getTime()));
+//                    // 下班
+//                    attendanceTime.setCheckOut(new Date(attList.get(1).getTime().getTime()));
+//                    // 计算实际工作时长
+//                    countWorkTime(attendanceTime, restBeginTime, restEndTime, workTimeEnd, workTime, restTime);
+//                    // 上班
+//                    attendanceTime.setCheckIn(new Date(attList.get(2).getTime().getTime()));
+//                    // 下班
+//                    attendanceTime.setCheckOut(new Date(attList.get(3).getTime().getTime()));
+//                }
+
+                // 等于2时，正常签入签出
                 if (attList.size() == 2) {
                     // 获取签入签出时间
-                    if (attList.get(0).getTime().before(attList.get(attList.size() - 1).getTime())) {
-                        // 上班
-                        attendanceTime.setCheckIn(new Date(attList.get(0).getTime().getTime()));
-                        // 下班
-                        attendanceTime.setCheckOut(new Date(attList.get(attList.size() - 1).getTime().getTime()));
-                    } else {
-                        // 上班
-                        attendanceTime.setCheckIn(new Date(attList.get(attList.size() - 1).getTime().getTime()));
-                        // 下班
-                        attendanceTime.setCheckOut(new Date(attList.get(0).getTime().getTime()));
-                    }
-
-                    // 工作总时长(签到签出时间总和减去休息时间)
-                    // 多种情况
-                    // :1.当签到签出时间同时在休息时间之前2.当签到签出时间都在休息时间之后3.当签到签出时间（任一or全部）在休息时间之间（当出现这种情况
-                    // , 均不用计算休息时间）
-                    // 在上午同时签到签出
-                    if (attendanceTime.getCheckIn().compareTo(restBeginTime) != 1
-                        && attendanceTime.getCheckOut().compareTo(restBeginTime) != 1) {
-                        attendanceTime.setWorkTime(
-                            DatesUtil.getTimeHour(attendanceTime.getCheckIn(), attendanceTime.getCheckOut()));
-                    } else
-                    // 在下午同时签到签出
-                    if (attendanceTime.getCheckIn().compareTo(restEndTime) != -1
-                        && attendanceTime.getCheckOut().compareTo(restEndTime) != -1) {
-                        attendanceTime.setWorkTime(DatesUtil.getTimeHour(attendanceTime.getCheckIn(),
-                            attendanceTime.getCheckOut().after(workTimeEnd) ? workTimeEnd
-                                : attendanceTime.getCheckOut()));
-                    } else
-                    // 当签出时间在休息时间之间 （从签出时间到休息时间开始）
-                    if (attendanceTime.getCheckOut().compareTo(restBeginTime) != -1
-                        && attendanceTime.getCheckOut().compareTo(restEndTime) != 1) {
-                        attendanceTime.setWorkTime(DatesUtil.getTimeHour(attendanceTime.getCheckIn(), restBeginTime));
-                    } else
-                    // 当签入时间在休息时间之间 （从休息时间结束到签出时间）
-                    if (attendanceTime.getCheckIn().compareTo(restBeginTime) != -1
-                        && attendanceTime.getCheckIn().compareTo(restEndTime) != 1) {
-                        attendanceTime.setWorkTime(
-                            DatesUtil.getTimeHour(restEndTime, attendanceTime.getCheckOut().after(workTimeEnd)
-                                ? workTimeEnd : attendanceTime.getCheckOut()));
-                    } else {
-                        // 实际工作时长
-                        attendanceTime.setWorkTime(NumUtils.sub(DatesUtil.getTimeHour(
-                            // 签入小于等于工作开始时间时，取工作开始时间计算，否则取签入时间
-                            attendanceTime.getCheckIn().compareTo(workTime) != 1 ? workTime
-                                : attendanceTime.getCheckIn(),
-                            // 签出大于等于工作结束时间时，取工作开始时间计算，否则取签出时间
-                            attendanceTime.getCheckOut().compareTo(workTimeEnd) != -1 ? workTimeEnd
-                                : attendanceTime.getCheckOut()),
-                            restTime));
-                    }
-
+                    // 上班
+                    attendanceTime.setCheckIn(new Date(attList.get(0).getTime().getTime()));
+                    // 下班
+                    attendanceTime.setCheckOut(new Date(attList.get(attList.size() - 1).getTime().getTime()));
+                    // 计算实际工作时长
+                    countWorkTime(attendanceTime, restBeginTime, restEndTime, workTimeEnd, workTime, restTime);
                     // 当休息日有打卡记录时，不需要申请加班的人自动算加班时长
                     if (rout) {
                         attendanceTime.setFlag(3);
@@ -395,7 +363,7 @@ public class AttendanceTimeServiceImpl extends BaseServiceImpl<AttendanceTime, L
                         continue;
                     }
 
-                    // 当外协部或者物流部有打卡记录时，按打开记录核算考勤
+                    // 当外协部或者物流部有打卡记录时，按打卡记录核算考勤
                     if (us.getOrgNameId() != null && us.getOrgNameId() != 45 && us.getOrgNameId() != 23) {
                         // 无到岗要求和无打卡要求
                         if (attendanceInit.getWorkType() == 1 || attendanceInit.getWorkType() == 2) {
@@ -410,8 +378,9 @@ public class AttendanceTimeServiceImpl extends BaseServiceImpl<AttendanceTime, L
                     AttendanceTool.attendanceIntTool(sign, workTime, workTimeEnd, restBeginTime, restEndTime, minute,
                         turnWorkTime, attendanceTime, attendanceInit, us, restTime);
                 }
-                // 当一天的考勤记录条数小于2时。为异常的考勤
-                if (attList.size() < 2) {
+
+                // 打卡记录是小于1条，等于3条,超过4条,为异常的考勤
+                if (attList.size() < 2 || attList.size() == 3 || attList.size() > 4) {
                     if (attList.size() == 1) {
                         attendanceTime.setCheckIn(new Date(attList.get(0).getTime().getTime()));
                     }
@@ -441,6 +410,45 @@ public class AttendanceTimeServiceImpl extends BaseServiceImpl<AttendanceTime, L
             beginTimes = DatesUtil.nextDay(beginTimes);
         }
         return attendanceTimeList;
+    }
+
+    private AttendanceTime countWorkTime(AttendanceTime attendanceTime, Date restBeginTime, Date restEndTime,
+        Date workTimeEnd, Date workTime, Double restTime) {
+        // 工作总时长(签到签出时间总和减去休息时间)
+        // 多种情况
+        // 1.当签到签出时间同时在休息时间之前2.当签到签出时间都在休息时间之后3.当签到签出时间（任一or全部）在休息时间之间（当出现这种情况 均不用计算休息时间）
+        // 在上午同时签到签出
+        if (attendanceTime.getCheckIn().compareTo(restBeginTime) != 1
+            && attendanceTime.getCheckOut().compareTo(restBeginTime) != 1) {
+            attendanceTime
+                .setWorkTime(DatesUtil.getTimeHour(attendanceTime.getCheckIn(), attendanceTime.getCheckOut()));
+        } else
+        // 在下午同时签到签出
+        if (attendanceTime.getCheckIn().compareTo(restEndTime) != -1
+            && attendanceTime.getCheckOut().compareTo(restEndTime) != -1) {
+            attendanceTime.setWorkTime(DatesUtil.getTimeHour(attendanceTime.getCheckIn(),
+                attendanceTime.getCheckOut().after(workTimeEnd) ? workTimeEnd : attendanceTime.getCheckOut()));
+        } else
+        // 当签出时间在休息时间之间 （从签出时间到休息时间开始）
+        if (attendanceTime.getCheckOut().compareTo(restBeginTime) != -1
+            && attendanceTime.getCheckOut().compareTo(restEndTime) != 1) {
+            attendanceTime.setWorkTime(DatesUtil.getTimeHour(attendanceTime.getCheckIn(), restBeginTime));
+        } else
+        // 当签入时间在休息时间之间 （从休息时间结束到签出时间）
+        if (attendanceTime.getCheckIn().compareTo(restBeginTime) != -1
+            && attendanceTime.getCheckIn().compareTo(restEndTime) != 1) {
+            attendanceTime.setWorkTime(DatesUtil.getTimeHour(restEndTime,
+                attendanceTime.getCheckOut().after(workTimeEnd) ? workTimeEnd : attendanceTime.getCheckOut()));
+        } else {
+            // 实际工作时长
+            attendanceTime.setWorkTime(NumUtils.sub(DatesUtil.getTimeHour(
+                // 签入小于等于工作开始时间时，取工作开始时间计算，否则取签入时间
+                attendanceTime.getCheckIn().compareTo(workTime) != 1 ? workTime : attendanceTime.getCheckIn(),
+                // 签出大于等于工作结束时间时，取工作开始时间计算，否则取签出时间
+                attendanceTime.getCheckOut().compareTo(workTimeEnd) != -1 ? workTimeEnd : attendanceTime.getCheckOut()),
+                restTime));
+        }
+        return attendanceTime;
     }
 
     @Override
