@@ -55,11 +55,6 @@ public class ProTypeUtils {
 	private final static double EXCELONE = 1.08;
 
 	/**
-	 * excel常量
-	 */
-	private final static double EXCELTWO = 1.0;
-
-	/**
 	 * 当部门预计生产价格计算系数 1=一楼质检
 	 */
 	private final static double FRIST_QUALITY = 0.00750375;
@@ -367,7 +362,7 @@ public class ProTypeUtils {
 	private static double getAC8TWOREWORK(Double AC5) {
 		return NumUtils.div(
 				NumUtils.mul((AC5 == null ? proTypeUtils.service.findByExcelNameAndType("AC5", 4).getNumber() : AC5),
-						ProTypeUtils.EXCELTWO, proTypeUtils.service.findByExcelNameAndType("AC3", 4).getNumber(),
+						ProTypeUtils.EXCELONE, proTypeUtils.service.findByExcelNameAndType("AC3", 4).getNumber(),
 						proTypeUtils.service.findByExcelNameAndType("AC7", 4).getNumber()),
 				NumUtils.mul(ProTypeUtils.TIME, ProTypeUtils.TIME), 5);
 	}

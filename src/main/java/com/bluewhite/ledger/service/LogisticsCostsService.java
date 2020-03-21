@@ -1,5 +1,6 @@
  package com.bluewhite.ledger.service;
 
+import java.util.List;
 import java.util.Map;
 
 import com.bluewhite.base.BaseCRUDService;
@@ -25,5 +26,13 @@ public interface LogisticsCostsService extends BaseCRUDService<LogisticsCosts, L
      * @return
      */
     public int deleteLogisticsCosts(String ids);
+    
+    
+    /**按条件查找查询
+     * @param logisticsCosts
+     * @param page
+     * @return
+     */
+    public List<LogisticsCosts> findAll(LogisticsCosts params);
 
 }

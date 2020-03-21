@@ -123,6 +123,11 @@ public class QuantitativeServiceImpl extends BaseServiceImpl<Quantitative, Long>
             if (ot.getFlag() == 1) {
                 throw new ServiceException("已发货，无法修改");
             }
+            if(quantitative.getSendOrderId()!=null) {
+                SendOrder sendOrder = sendOrderDao.findOne(quantitative.getSendOrderId());
+                sendOrder.setCustomerId(ot.getCustomerId());
+                sendOrderDao.save(sendOrder);
+            }
             quantitative.setQuantitativeNumber(ot.getQuantitativeNumber());
             quantitative.setAudit(ot.getAudit());
             quantitative.setPrint(ot.getPrint());

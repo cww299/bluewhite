@@ -1,8 +1,11 @@
  package com.bluewhite.ledger.action;
 
+import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -14,6 +17,7 @@ import com.bluewhite.common.ServiceException;
 import com.bluewhite.common.entity.CommonResponse;
 import com.bluewhite.common.entity.PageParameter;
 import com.bluewhite.common.entity.PageUtil;
+import com.bluewhite.ledger.entity.Customer;
 import com.bluewhite.ledger.entity.LogisticsCosts;
 import com.bluewhite.ledger.service.LogisticsCostsService;
 
@@ -23,6 +27,7 @@ import cn.hutool.core.map.MapUtil;
  * @author ZhangLiang
  * @date 2020/03/19
  */
+@Controller
 public class LogisticsCostsAction {
     
     @Autowired
@@ -33,14 +38,15 @@ public class LogisticsCostsAction {
     private ClearCascadeJSON clearCascadeJSON;
     {
         clearCascadeJSON = ClearCascadeJSON.get()
-                .addRetainTerm(LogisticsCosts.class, "id", "remark", "orderDate", "bacthNumber", "product", "number",
-                        "orderMaterials", "prepareEnough", "orderChilds", "audit", "orderNumber", "orderType")
+                .addRetainTerm(LogisticsCosts.class, "id", "customer", "logistics", "outerPackaging", "taxIncluded", "excludingTax",
+                        "settlement", "payment")
+                .addRetainTerm(Customer.class, "id", "name")
                 .addRetainTerm(BaseData.class, "id", "name");
     }
     
     
     /**
-     * 分页查看客户
+     * 分页查看物流单价
      * 
      * @return cr
      */
@@ -58,7 +64,7 @@ public class LogisticsCostsAction {
     }
     
     /**
-     * 客户新增
+     * 新增物流单价
      * 
      * @return cr
      */
@@ -72,7 +78,7 @@ public class LogisticsCostsAction {
     }
 
     /**
-     * 客户批量删除
+     * 删除物流单价
      * 
      * @return cr
      */
@@ -85,6 +91,27 @@ public class LogisticsCostsAction {
         return cr;
     }
 
+    /**
+     * 按条件查询价格
+     * @return cr
+     */
+    @RequestMapping(value = "/ledger/deleteLogisticsCosts", method = RequestMethod.GET)
+    @ResponseBody
+    public CommonResponse deleteCustomer(LogisticsCosts logisticsCosts) {
+        CommonResponse cr = new CommonResponse();
+        List<LogisticsCosts> logisticsCostsList = logisticsCostsService.findAll(logisticsCosts);
+        List<Double> list = null;
+        //含税
+        if(logisticsCosts.getTax()==0) {
+            list = logisticsCostsList.stream().map(l->l.getTaxIncluded()).collect(Collectors.toList());
+        }
+        //不含税
+        if(logisticsCosts.getTax()==1) {
+            list = logisticsCostsList.stream().map(l->l.getExcludingTax()).collect(Collectors.toList());
+        }   
+        cr.setData(list);
+        return cr;
+    }
     
 
 }

@@ -21,5 +21,10 @@ public interface QuantitativeDao  extends BaseRepository<Quantitative, Long>{
 	 * @return
 	 */
 	List<Quantitative> findByTimeBetweenOrderByIdDesc(Date startTime ,Date endTime);
+	
+	/**
+     * 根据发货单id 查找 贴包单
+     */
+	List<Quantitative> findBysendOrderId(Long id);
 }
 

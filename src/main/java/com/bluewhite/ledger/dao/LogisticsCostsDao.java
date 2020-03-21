@@ -8,5 +8,7 @@ import com.bluewhite.ledger.entity.LogisticsCosts;
  * @date 2020/03/19
  */
 public interface LogisticsCostsDao extends BaseRepository<LogisticsCosts, Long>{
+    
+    
 
 }

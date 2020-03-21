@@ -32,7 +32,7 @@ import com.bluewhite.system.user.entity.User;
 public class Quantitative extends BaseEntity<Long> {
 	
     /**
-     * 客户id
+     * 发货单id
      * 
      */
     @Column(name = "send_order_id")

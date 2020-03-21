@@ -366,7 +366,7 @@ public class TaskServiceImpl extends BaseServiceImpl<Task, Long> implements Task
         //机工的外发总价值
         if (bacth.getFlag() == 0 && bacth.getType() == 4) {
             bacth.setBacthHairPrice(ProTypeUtils.getDEEDLE(workProceDureTime, bacth.getType()));
-            bacth.setSumOutPrice(NumUtils.mul(bacth.getNumber(),bacth.getBacthDeedlePrice()));
+            bacth.setSumOutPrice(NumUtils.mul(bacth.getNumber(),bacth.getBacthHairPrice()));
         }
         //实际任务价值
         Double sumTaskPrice = bacth.getTasks().stream().mapToDouble(t->t.getTaskPrice()).sum();
