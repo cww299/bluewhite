@@ -398,5 +398,19 @@ layui.define(['jquery','layer','form','table'],function(exports){
             }, false); 
 	}
 	
+	myutil.getBaseDataSelect = function(opt){
+		var html = "";
+		this.getDataSync({
+			url: this.config.ctx+'/basedata/list?type='+opt.type,
+			success:function(d){
+				for(var i in d){
+					var selected = d[i].id === opt.id ? 'selected':"";
+					html += '<option value="'+d[i].id+'" '+selected+'>'+d[i].name+'</option>';
+				}
+			}
+		})
+		return html;
+	};
+	
 	exports('myutil',myutil);
 })
