@@ -38,11 +38,6 @@ public class CustomerServiceImpl extends BaseServiceImpl<Customer, Long> impleme
 				predicate.add(cb.like(root.get("name").as(String.class),
 						"%" + StringUtil.specialStrKeyword(param.getName()) + "%"));
 			}
-			// 按真实名称过滤
-			if (!StringUtils.isEmpty(param.getBuyerName())) {
-				predicate.add(cb.like(root.get("buyerName").as(String.class),
-						"%" + StringUtil.specialStrKeyword(param.getBuyerName()) + "%"));
-			}
 			// 按手机号过滤
 			if (!StringUtils.isEmpty(param.getPhone())) {
 				predicate.add(cb.like(root.get("phone").as(String.class),
@@ -120,11 +115,6 @@ public class CustomerServiceImpl extends BaseServiceImpl<Customer, Long> impleme
 			if (!StringUtils.isEmpty(param.getName())) {
 				predicate.add(cb.like(root.get("name").as(String.class),
 						"%" + StringUtil.specialStrKeyword(param.getName()) + "%"));
-			}
-			// 按真实名称过滤
-			if (!StringUtils.isEmpty(param.getBuyerName())) {
-				predicate.add(cb.like(root.get("buyerName").as(String.class),
-						"%" + StringUtil.specialStrKeyword(param.getBuyerName()) + "%"));
 			}
 			// 按手机号过滤
 			if (!StringUtils.isEmpty(param.getPhone())) {

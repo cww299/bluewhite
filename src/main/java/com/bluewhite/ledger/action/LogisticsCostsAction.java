@@ -84,7 +84,7 @@ public class LogisticsCostsAction {
      */
     @RequestMapping(value = "/ledger/deleteLogisticsCosts", method = RequestMethod.GET)
     @ResponseBody
-    public CommonResponse deleteCustomer(String ids) {
+    public CommonResponse deleteLogisticsCosts(String ids) {
         CommonResponse cr = new CommonResponse();
         int count = logisticsCostsService.deleteLogisticsCosts(ids);
         cr.setMessage("成功删除" + count + "条数据");
@@ -95,9 +95,9 @@ public class LogisticsCostsAction {
      * 按条件查询价格
      * @return cr
      */
-    @RequestMapping(value = "/ledger/deleteLogisticsCosts", method = RequestMethod.GET)
+    @RequestMapping(value = "/ledger/findLogisticsCostsPrice", method = RequestMethod.GET)
     @ResponseBody
-    public CommonResponse deleteCustomer(LogisticsCosts logisticsCosts) {
+    public CommonResponse findLogisticsCostsPrice(LogisticsCosts logisticsCosts) {
         CommonResponse cr = new CommonResponse();
         List<LogisticsCosts> logisticsCostsList = logisticsCostsService.findAll(logisticsCosts);
         List<Double> list = null;

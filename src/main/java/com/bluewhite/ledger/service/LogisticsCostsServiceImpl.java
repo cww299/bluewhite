@@ -7,6 +7,7 @@ import java.util.Map;
 import javax.persistence.criteria.Predicate;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 import com.bluewhite.base.BaseServiceImpl;
 import com.bluewhite.common.entity.PageParameter;
@@ -18,6 +19,7 @@ import com.bluewhite.ledger.entity.LogisticsCosts;
  * @author ZhangLiang
  * @date 2020/03/19
  */
+@Service
 public class LogisticsCostsServiceImpl extends BaseServiceImpl<LogisticsCosts, Long> implements LogisticsCostsService {
     
     @Autowired
