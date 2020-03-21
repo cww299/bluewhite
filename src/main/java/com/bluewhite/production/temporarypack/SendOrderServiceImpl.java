@@ -1,5 +1,6 @@
  package com.bluewhite.production.temporarypack;
 
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
@@ -14,6 +15,8 @@ import com.bluewhite.base.BaseServiceImpl;
 import com.bluewhite.common.ServiceException;
 import com.bluewhite.common.entity.PageParameter;
 import com.bluewhite.common.entity.PageResult;
+import com.bluewhite.finance.consumption.entity.Consumption;
+import com.bluewhite.finance.consumption.service.ConsumptionService;
 
 /**
  * @author ZhangLiang
@@ -28,6 +31,8 @@ public class SendOrderServiceImpl extends BaseServiceImpl<SendOrder, Long> imple
     private UnderGoodsDao underGoodsDao;
     @Autowired
     private QuantitativeDao quantitativeDao;
+    @Autowired
+    private ConsumptionService consumptionService;
 
     @Override
     public Quantitative saveSendOrder(Quantitative quantitative) {
@@ -89,6 +94,15 @@ public class SendOrderServiceImpl extends BaseServiceImpl<SendOrder, Long> imple
                     //审核，进行物流费用的新增
                     if(audit==1) {
                         
+//                        consumptionService.findList(consumption)
+                        
+                        Consumption consumption = new Consumption();
+                        consumption.setType(5);
+                        consumption.setCustomerId(sendOrder.getCustomerId());
+                        consumption.setMoney(sendOrder.getLogisticsPrice());
+                        consumption.setExpenseDate(new Date());
+                        consumption.setFlag(0);
+                        consumptionService.addConsumption(consumption);
                     }
                     //取消审核，进行物流费用的减少
                     if(audit==0) {

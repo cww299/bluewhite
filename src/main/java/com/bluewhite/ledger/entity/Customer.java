@@ -35,17 +35,11 @@ public class Customer extends BaseEntity<Long> {
 	private User user;
 
 	/**
-	 * 客户昵称
+	 * 客户真实姓名
 	 * 
 	 */
 	@Column(name = "name")
 	private String name;
-
-	/**
-	 * 客户真实姓名
-	 */
-	@Column(name = "buyer_name")
-	private String buyerName;
 
 	/**
 	 * 客户等级
@@ -162,14 +156,6 @@ public class Customer extends BaseEntity<Long> {
 
 	public void setAccount(String account) {
 		this.account = account;
-	}
-
-	public String getBuyerName() {
-		return buyerName;
-	}
-
-	public void setBuyerName(String buyerName) {
-		this.buyerName = buyerName;
 	}
 
 	public Integer getGrade() {
