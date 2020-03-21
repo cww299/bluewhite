@@ -1,5 +1,6 @@
 package com.bluewhite.finance.consumption.service;
 
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
@@ -74,5 +75,17 @@ public interface ConsumptionService extends BaseCRUDService<Consumption, Long> {
 	 * @return
 	 */
 	double totalAmount(Consumption consumption);
+	
+	 /**
+     * 根据客户id和类型和申请时间查出所有的
+     * 
+     * @param type
+     * @param flag
+     * @param flag1
+     * @return
+     */
+    public Consumption findByTypeAndCustomerIdAndExpenseDateBetween(Integer type, Long id, Date beginTime,
+        Date endTime);
+
 
 }
