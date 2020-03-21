@@ -6,6 +6,7 @@ import javax.persistence.FetchType;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 
 import com.bluewhite.base.BaseEntity;
 import com.bluewhite.basedata.entity.BaseData;
@@ -84,8 +85,22 @@ public class LogisticsCosts extends BaseEntity<Long>{
     @Column(name = "payment")
     private Integer payment;
     
+    /**
+     * 是否含税
+     */
+    @Transient
+    private Integer tax;
+
     
     
+
+    public Integer getTax() {
+        return tax;
+    }
+
+    public void setTax(Integer tax) {
+        this.tax = tax;
+    }
 
     public Integer getSettlement() {
         return settlement;

@@ -140,8 +140,21 @@ public class SendOrder extends BaseEntity<Long> {
     @Column(name = "logistics_price")
     private Double logisticsPrice;
     
+    /**
+     * 是否审核
+     */
+    @Column(name = "audit")
+    private Integer audit;
 
     
+    public Integer getAudit() {
+        return audit;
+    }
+
+    public void setAudit(Integer audit) {
+        this.audit = audit;
+    }
+
     public Long getOuterPackagingId() {
         return outerPackagingId;
     }

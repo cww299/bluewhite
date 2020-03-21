@@ -155,7 +155,7 @@ public class TemporaryPackAction {
         CommonResponse cr = new CommonResponse();
         // 生成贴包单时生成发货单发货单，将发货单id存入贴包单
         if (StringUtils.isEmpty(quantitative.getIds())) {
-//            sendOrderService.saveSendOrder(quantitative);
+            sendOrderService.saveSendOrder(quantitative);
             if (quantitative.getSumPackageNumber() > 0) {
                 for (int i = 0; i < quantitative.getSumPackageNumber(); i++) {
                     Quantitative ot = new Quantitative();
@@ -459,6 +459,24 @@ public class TemporaryPackAction {
     
     
     /**
+     * 分页查看发货单
+     * 
+     * @return cr
+     */
+    @RequestMapping(value = "/ledger/sendOrderPage", method = RequestMethod.GET)
+    @ResponseBody
+    public CommonResponse sendOrderPage(@RequestParam Map<String, Object> params) {
+        CommonResponse cr = new CommonResponse();
+        if(MapUtil.isEmpty(params)){
+            throw new ServiceException("参数不能为空");
+        };
+        PageParameter page = PageUtil.mapToPage(params);
+        cr.setData(clearCascadeJSON.format(sendOrderService.findPages(params, page)).toJSON());
+        cr.setMessage("查询成功");
+        return cr;
+    }
+    
+    /**
      * 修改发货单
      */
     @RequestMapping(value = "/temporaryPack/updateSendOrder", method = RequestMethod.GET)
@@ -467,6 +485,31 @@ public class TemporaryPackAction {
         CommonResponse cr = new CommonResponse();
         sendOrderService.updateSendOrder(sendOrder);
         cr.setMessage("修改成功");
+        return cr;
+    }
+    
+    /**
+     * 查看发货单实际已发货的贴包明细
+     */
+    @RequestMapping(value = "/temporaryPack/getQuantitativeList", method = RequestMethod.GET)
+    @ResponseBody
+    public CommonResponse getQuantitativeList(Long id) {
+        CommonResponse cr = new CommonResponse();
+        cr.setData(clearCascadeJSONQuantitative.format(sendOrderService.getQuantitativeList(id)).toJSON());
+        cr.setMessage("成功");
+        return cr;
+    }
+    
+    /**
+     * 审核 发货单（审核发货单之后,已经产生费用的贴包单，无法删除，同时在财务物流费用中自动生成费用）
+     * 取消审核，费用自动从物流费用中删除
+     */
+    @RequestMapping(value = "/temporaryPack/auditSendOrder", method = RequestMethod.GET)
+    @ResponseBody
+    public CommonResponse auditSendOrder(String ids, Integer audit) {
+        CommonResponse cr = new CommonResponse();
+        sendOrderService.auditSendOrder(ids, audit);
+        cr.setMessage("审核成功");
         return cr;
     }
 

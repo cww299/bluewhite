@@ -306,18 +306,24 @@ public class AttendanceTimeServiceImpl extends BaseServiceImpl<AttendanceTime, L
                 attList = AttendanceTool.sumIntervalDate(attList, 20);
                 // 考情记录有三种情况。当一天的考勤记录条数等于大于2时,为正常的考勤
                 // 打卡记录是4条 正常签入签出，中途签出一次签入一次
-//                if (attList.size() == 4) {
-//                    // 上班
-//                    attendanceTime.setCheckIn(new Date(attList.get(0).getTime().getTime()));
-//                    // 下班
-//                    attendanceTime.setCheckOut(new Date(attList.get(1).getTime().getTime()));
-//                    // 计算实际工作时长
-//                    countWorkTime(attendanceTime, restBeginTime, restEndTime, workTimeEnd, workTime, restTime);
-//                    // 上班
-//                    attendanceTime.setCheckIn(new Date(attList.get(2).getTime().getTime()));
-//                    // 下班
-//                    attendanceTime.setCheckOut(new Date(attList.get(3).getTime().getTime()));
-//                }
+                if (attList.size() == 4) {
+                    // 上班
+                    attendanceTime.setCheckIn(new Date(attList.get(0).getTime().getTime()));
+                    // 下班
+                    attendanceTime.setCheckOut(new Date(attList.get(1).getTime().getTime()));
+                    // 计算实际工作时长
+                    countWorkTime(attendanceTime, restBeginTime, restEndTime, workTimeEnd, workTime, restTime);
+                    double fristWorkTime = attendanceTime.getWorkTime();
+                    // 上班
+                    attendanceTime.setCheckIn(new Date(attList.get(2).getTime().getTime()));
+                    // 下班
+                    attendanceTime.setCheckOut(new Date(attList.get(3).getTime().getTime()));
+                    double lastWorkTime = attendanceTime.getWorkTime();
+                    attendanceTime.setWorkTime(NumUtils.sum(fristWorkTime,lastWorkTime));
+                    
+                    
+                    
+                }
 
                 // 等于2时，正常签入签出
                 if (attList.size() == 2) {
@@ -331,8 +337,7 @@ public class AttendanceTimeServiceImpl extends BaseServiceImpl<AttendanceTime, L
                     // 当休息日有打卡记录时，不需要申请加班的人自动算加班时长
                     if (rout) {
                         attendanceTime.setFlag(3);
-                        if (attendanceInit.getOverTimeType() == 2 && attendanceTime.getCheckIn() != null
-                            && attendanceTime.getCheckOut() != null) {
+                        if (attendanceInit.getOverTimeType() == 2 && attendanceTime.getCheckIn() != null && attendanceTime.getCheckOut() != null) {
                             if (attendanceInit.getRestTimeWork() == 3) {
                                 attendanceTime
                                     .setOvertime(DatesUtil.getTimeHour(attendanceTime.getCheckIn().before(workTime)
@@ -343,8 +348,7 @@ public class AttendanceTimeServiceImpl extends BaseServiceImpl<AttendanceTime, L
                                         : attendanceTime.getCheckIn(), attendanceTime.getCheckOut()),
                                     attendanceTime.getCheckOut().after(restEndTime) ? restTime : 0));
                             }
-                            if (attendanceInit.isEarthWork()
-                                && DatesUtil.getTime(attendanceTime.getCheckIn(), workTime) >= 20) {
+                            if (attendanceInit.isEarthWork() && DatesUtil.getTime(attendanceTime.getCheckIn(), workTime) >= 20) {
                                 attendanceTime.setOvertime(NumUtils.sum(attendanceTime.getOvertime(), 0.5));
                             }
 
@@ -376,7 +380,7 @@ public class AttendanceTimeServiceImpl extends BaseServiceImpl<AttendanceTime, L
 
                     // 进行出勤，加班，缺勤，迟到，早退的计算
                     AttendanceTool.attendanceIntTool(sign, workTime, workTimeEnd, restBeginTime, restEndTime, minute,
-                        turnWorkTime, attendanceTime, attendanceInit, us, restTime);
+                        turnWorkTime, attendanceTime, attendanceInit, us.getOrgNameId(), restTime);
                 }
 
                 // 打卡记录是小于1条，等于3条,超过4条,为异常的考勤
