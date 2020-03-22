@@ -9,12 +9,40 @@
 	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 	<style type="text/css">
 	.layui-form-label{
-		width: 120px !important;
+		width: 130px !important;
 	}
 	.contractDiv .layui-form-pane .layui-form-switch, .layui-form-pane .layui-form-radio{
 	    margin-left: 4px;
 	    margin-right: 4px;
 	}
+	.userInfo{
+		width:100%;
+	}
+	.userInfo td{
+		height:48px;
+	}
+	.userInfo .titleTr{
+	
+	}
+	.userInfo .titleTr td{
+		color: gray;
+	    font-weight: bold;
+	    font-size: 15px;
+	    padding: 4px 20px;
+	    height: 25px;
+	    background: #f2f2f2;
+	}
+	.userInfo .layui-input, .layui-textarea, .layui-form-select {
+	    width: 160px;
+	}
+	@media screen and (max-width: 1420px){
+      .layui-form-label,.layui-input-inline{
+      	width:100% !important;
+      }
+      .userInfo .layui-input, .layui-textarea, .layui-form-select {
+    	width:100% !important;
+	  }
+    }
 	</style>
 	<title>员工信息</title>
 </head>
@@ -174,292 +202,394 @@
 </div>
 </body>
 <script type="text/html" id="addEditTpl">
-<form action="" id="layuiadmin-form-admin2" style="padding: 20px 0px 0 50px;  text-align:">
-	<div class="layui-form layui-form-pane" lay-filter="layuiadmin-form-admin">
-		<div class="layui-upload" style="text-align: center;">
-  			<div class="layui-upload-list">
-    			<img class="layui-upload-img" id="demo1" src="{{ d.pictureUrl }}" style="width:150px; height:180px;">
+<div style="padding:10px;">
+	<table class="layui-form layui-form-pane userInfo">
+		<tr class="titleTr">
+			<td colspan="4"><i class="layui-icon layui-icon-app"></i>&nbsp;&nbsp;&nbsp;&nbsp;员工基本信息</td>
+		</tr>
+		<tr class="layui-form-item">
+			<td rowspan="4" style="text-align: center;">
+				<img class="layui-upload-img" id="demo1" src="{{ d.pictureUrl }}" style="width:150px; height:166px;">
     			<p id="demoText"></p>
-  			</div>
-		</div>
-		<div class="layui-form-item">
-		    <div class="layui-inline">
-		      <label class="layui-form-label">员工姓名</label>
-		      <div class="layui-input-inline">
-		        <input type="tel"  name="userName" value="{{ d.userName }}"  autocomplete="off" class="layui-input">
-		      </div>
-		    </div>
-		    <div class="layui-inline">
-		      <label class="layui-form-label">员工编号</label>
-		      <div class="layui-input-inline">
-		        <input type="text" name="" value="{{ d.number }}" readonly="readonly"  autocomplete="off" class="layui-input">
-		      </div>
-		    </div>
-		    <div class="layui-inline">
-		      <label class="layui-form-label">户籍地址</label>
-		      <div class="layui-input-inline">
-		        <input type="text" name="permanentAddress" value="{{ d.permanentAddress }}"  autocomplete="off" class="layui-input">
-		      </div>
-		    </div>
-			<div class="layui-inline">
-		      <label class="layui-form-label">位置编号</label>
-		      <div class="layui-input-inline">
-		        <input type="text" name="lotionNumber" value="{{ d.lotionNumber}}"  autocomplete="off" class="layui-input">
-		      </div>
-		    </div>			
-  		</div>
-		<div class="layui-form-item">
-		    <div class="layui-inline">
-		      <label class="layui-form-label">手机号</label>
-		      <div class="layui-input-inline">
-		        <input type="tel"  name="phone" value="{{ d.phone }}" lay-verify="required|phone" autocomplete="off" class="layui-input">
-		      </div>
-		    </div>
-		    <div class="layui-inline">
-		      <label class="layui-form-label">名族</label>
-		      <div class="layui-input-inline">
-				<select class="form-control nation" name="nation"><option value="汉" {{ d.nation=='汉'?'selected':'' }}>汉</option><option value="少数民族" {{ d.nation=='少数民族'?'selected':'' }}>少数名族</option></select>
-		      </div>
-		    </div>
-		    <div class="layui-inline">
-		      <label class="layui-form-label">现居住地址</label>
-		      <div class="layui-input-inline">
-		        <input type="text" name="livingAddress" value="{{ d.livingAddress }}"  autocomplete="off" class="layui-input">
-		      </div>
-		    </div>
-			<div class="layui-inline">
-		      <label class="layui-form-label">银行卡</label>
-		      <div class="layui-input-inline">
-		        <input type="tel"  name="bankCard1" id="bankCard1" value="{{ d.bankCard1==null ? "" : d.bankCard1}}"   autocomplete="off" class="layui-input">
-		      </div>
-		    </div>
-  		</div>
-		<div class="layui-form-item">
-		    <div class="layui-inline">
-		      <label class="layui-form-label">合同</label>
-		      <div class="layui-input-inline">
-				<select class="form-control" name="commitment"><option value="0" {{ d.commitment==0?'selected':'' }}>未签</option><option value="1" {{ d.commitment==1?'selected':'' }}>已签</option><option value="2" {{ d.commitment==2?'selected':'' }}>续签</option></select>
-		      </div>
-		    </div>
-		    <div class="layui-inline">
-		      <label class="layui-form-label">性别</label>
-		      <div class="layui-input-inline">
-				<select class="form-control gender" id="gender" name="gender" ><option value="0" {{ d.gender==0?'selected':'' }}>男</option><option value="1" {{ d.gender==1?'selected':'' }}>女</option></select>
-		      </div>
-		    </div>
-		    <div class="layui-inline">
-		      <label class="layui-form-label">出生日期</label>
-		      <div class="layui-input-inline">
-		        <input type="text" name="birthDate" id="birthDate" value="{{ d.birthDate==null ? "" : d.birthDate}}" readonly="readonly"  autocomplete="off" class="layui-input">
-		      </div>
-		    </div>
-			<div class="layui-inline">
-		      <label class="layui-form-label">所属银行</label>
-		      <div class="layui-input-inline">
-		        <input type="text" name="ascriptionBank1" readonly="readonly" id="ascriptionBank1" value="{{ d.ascriptionBank1==null ? "" : d.ascriptionBank1}}"  autocomplete="off" class="layui-input">
-		      </div>
-		    </div>
-  		</div>
-		<div class="layui-form-item">
-		    <div class="layui-inline">
-		      <label class="layui-form-label">身份证号</label>
-		      <div class="layui-input-inline">
-		        <input type="tel"  name="idCard" id="idCard" value="{{ d.idCard }}"  autocomplete="off" class="layui-input">
-		      </div>
-		    </div>
-		    <div class="layui-inline">
-		      <label class="layui-form-label">婚姻状况</label>
-		      <div class="layui-input-inline">
-				<select class="form-control marriage" name="marriage"><option value="0" {{ d.marriage==0?'selected':'' }}>已婚</option> <option value="1" {{ d.marriage==1?'selected':'' }}>未婚</option></select>
-		      </div>
-		    </div>
-		    <div class="layui-inline">
-		      <label class="layui-form-label">生育状况</label>
-		      <div class="layui-input-inline">
-				<select class="form-control procreate" name="procreate"><option value="0" {{ d.procreate==0?'selected':'' }}>已育</option> <option value="1" {{ d.procreate==1?'selected':'' }}>未育</option></select>
-		      </div>
-		    </div>
-			 <div class="layui-inline">
-		      <label class="layui-form-label">保险情况</label>
-		      <div class="layui-input-inline">
-				<select class="form-control safe" name="safe"><option value="0" {{ d.safe==0?'selected':'' }}>未缴</option> <option value="1" {{ d.safe==1?'selected':'' }}>已缴</option></select>
-		      </div>
-		    </div>
-  		</div>
-		<div class="layui-form-item">
-		    <div class="layui-inline">
-		      <label class="layui-form-label" >实际转正时间</label>
-		      <div class="layui-input-inline">
-		        <input type="tel"  name="actua" id="actua"  autocomplete="off" class="layui-input">
-		      </div>
-		    </div>
-		    <div class="layui-inline">
-		      <label class="layui-form-label">紧急联系方式</label>
-		      <div class="layui-input-inline">
-		        <input type="text" name="information" value="{{ d.information==null ? "" : d.information}}"   autocomplete="off" class="layui-input">
-		      </div>
-		    </div>
-		    <div class="layui-inline">
-		      <label class="layui-form-label">入职时间</label>
-		      <div class="layui-input-inline">
-		        <input type="text" name="entry" id="entry"  autocomplete="off" class="layui-input">
-		      </div>
-		    </div>
-			<div class="layui-inline">
-		      <label class="layui-form-label">工作状态</label>
-		      <div class="layui-input-inline">
-				<select class="form-control quit" lay-filter="lay_selecte" name="quit"><option value="0" {{ d.quit==0?'selected':'' }}>在职</option> <option value="1" {{ d.quit==1?'selected':'' }}>离职</option></select>
-		      </div>
-		    </div>
-  		</div>
-		<div class="layui-form-item">
-		    <div class="layui-inline">
-		      <label class="layui-form-label">预计转正时间</label>
-		      <div class="layui-input-inline">
-		        <input type="tel"  name="estimate" id="estimate"   autocomplete="off" class="layui-input">
-		      </div>
-		    </div>
-		    <div class="layui-inline">
-		      <label class="layui-form-label">紧急联系人</label>
-		      <div class="layui-input-inline">
-		        <input type="text" name="contacts" value="{{ d.contacts==null ? "" : d.contacts}}"  autocomplete="off" class="layui-input">
-		      </div>
-		    </div>
-		    <div class="layui-inline">
-		      <label class="layui-form-label">社保缴纳时间</label>
-		      <div class="layui-input-inline">
-		        <input type="text" name="socialSecurity" id="socialSecurity"  autocomplete="off" class="layui-input">
-		      </div>
-		    </div>
-			<div class="layui-inline">
-		      <label class="layui-form-label">离职时间</label>
-		      <div class="layui-input-inline">
-		        <input type="text" name="quitDate" id="quitDate"  autocomplete="off" class="layui-input">
-		      </div>
-		    </div>
-  		</div>
-		<div class="layui-form-item">
-		    <div class="layui-inline">
-		      <label class="layui-form-label">承诺书</label>
-		      <div class="layui-input-inline">
-				<select class="form-control promise" name="promise"><option value="0" {{ d.promise==0?'selected':'' }}>未签</option> <option value="1" {{ d.promise==1?'selected':'' }}>已签</option></select>
-		      </div>
-		    </div>
-		    <div class="layui-inline">
-		      <label class="layui-form-label">邮箱</label>
-		      <div class="layui-input-inline">
-		        <input type="text" name="email" value="{{ d.email==null ? "" : d.email}}"  autocomplete="off" class="layui-input">
-		      </div>
-		    </div>
-		    <div class="layui-inline">
-		      <label class="layui-form-label">学历</label>
-		      <div class="layui-input-inline">
-				<select class="form-control education" name="education">
-					<option value="本科" {{ d.education=='本科'?'selected':'' }}>本科</option>
-					<option value="大专" {{ d.education=='大专'?'selected':'' }}>大专</option>
-					<option value="高中" {{ d.education=='高中'?'selected':'' }}>高中</option>
-					<option value="初中及以下" {{ d.education=='初中及以下'?'selected':'' }}>初中及以下</option>
-				</select>
-		      </div>
-		    </div>
-			 <div class="layui-inline">
-		      <label class="layui-form-label">离职类型</label>
-		      <div class="layui-input-inline" >
-		        <select class="form-control" name="quitTypeId" id="quitType">
-							
-				</select>
-		      </div>
-		    </div>
-  		</div>
-		<div class="layui-form-item">
-		    <div class="layui-inline">
-		      <label class="layui-form-label">合同签订时间</label>
-		      <div class="layui-input-inline">
-		        <input type="tel"  name="contractDate" id="contractDate"  autocomplete="off" class="layui-input">
-		      </div>
-		    </div>
-		    <div class="layui-inline">
-		      <label class="layui-form-label">合同签订次数</label>
-		      <div class="layui-input-inline">
-		        <input type="text" name="frequency" value="{{ d.frequency==null ? "" : d.frequency}}"  autocomplete="off" class="layui-input">
-		      </div>
-		    </div>
-		    <div class="layui-inline">
-		      <label class="layui-form-label">签订单位</label>
-		      <div class="layui-input-inline">
-		        <input type="text" name="company" value="{{ d.company==null ? "" : d.company}}"  autocomplete="off" class="layui-input">
-		      </div>
-		    </div>
-			<div class="layui-inline">
-		      <label class="layui-form-label">离职理由</label>
-		      <div class="layui-input-inline">
-		        <input type="text" name="reason" value="{{ d.reason==null ? "" : d.reason}}"  autocomplete="off" class="layui-input">
-		      </div>
-		    </div>
-  		</div>
-		<div class="layui-form-item">
-			 <div class="layui-inline">
-		      <label class="layui-form-label">合同到期时间</label>
-		      <div class="layui-input-inline">
-		        <input type="tel"  name="contractDateEnd" id="contractDateEnd"  autocomplete="off" class="layui-input">
-		      </div>
-		    </div>
-		   	<div class="layui-inline">
-		      <label class="layui-form-label">部门</label>
-		      <div class="layui-input-inline" >
-		        <select class="form-control" lay-search="true" lay-filter="lay_selecte2" name="orgNameId" id="orgNameId">
-							
-				</select>
-		      </div>
-		    </div>
-			<div class="layui-inline">
-		      <label class="layui-form-label">职位</label>
-		      <div class="layui-input-inline" >
-		        <select class="form-control" lay-search="true" name="positionId" id="positionId">
-				</select>
-		      </div>
-		    </div>	
-			<div class="layui-inline">
-		      <label class="layui-form-label">身份证到期时间</label>
-		      <div class="layui-input-inline">
-		        <input type="tel"  name="idCardEnd" id="idCardEnd"  autocomplete="off" class="layui-input">
-		      </div>
-		    </div>
-		</div>
-		<div class="layui-form-item">
-		    <div class="layui-inline">
-		      <label class="layui-form-label">毕业学校</label>
-		      <div class="layui-input-inline">
-		        <input type="text" name="school" value="{{ d.school==null ? "" : d.school}}" autocomplete="off" class="layui-input">
-		      </div>
-		    </div>
-		    <div class="layui-inline">
-		      <label class="layui-form-label">专业</label>
-		      <div class="layui-input-inline">
-		      	 <input type="text" name="major" value="{{ d.major==null ? "" : d.major}}"  autocomplete="off" class="layui-input">
-			  </div>
-		    </div>
-			<div class="layui-inline" >
-		      <label class="layui-form-label">协议</label>
-		      <div class="layui-input-block"  name="agreementId" id="agreementId" style="width: 285px;">
-		     
-			  </div>
-		    </div>
-  		</div>			
-		<div class="layui-form-item">
-			  <div class="layui-inline contractDiv">
+			</td>
+			<td>
+				<div class="layui-inline">
+			      <label class="layui-form-label">员工姓名</label>
+			      <div class="layui-input-inline">
+			        <input type="tel"  name="userName" value="{{ d.userName }}"  autocomplete="off" class="layui-input">
+			      </div>
+			    </div>
+			</td>
+			<td>
+				<div class="layui-inline">
+			      <label class="layui-form-label">性别</label>
+			      <div class="layui-input-inline">
+					<select class="form-control gender" id="gender" name="gender" ><option value="0" {{ d.gender==0?'selected':'' }}>男</option><option value="1" {{ d.gender==1?'selected':'' }}>女</option></select>
+			      </div>
+			    </div>
+			</td>
+		    <td>
+				<div class="layui-inline">
+			      <label class="layui-form-label">手机号</label>
+			      <div class="layui-input-inline">
+			        <input type="tel"  name="phone" value="{{ d.phone }}" lay-verify="required|phone" autocomplete="off" class="layui-input">
+			      </div>
+			    </div>
+		    </td>
+		</tr>
+		<tr class="layui-form-item">
+			<td colspan="">
+				<div class="layui-inline">
+			      <label class="layui-form-label">户籍地址</label>
+			      <div class="layui-input-inline">
+			        <input type="text" name="permanentAddress" value="{{ d.permanentAddress }}"  autocomplete="off" class="layui-input">
+			      </div>
+			    </div>
+			</td>
+			<td>
+				<div class="layui-inline">
+			      <label class="layui-form-label">现居住地址</label>
+			      <div class="layui-input-inline">
+			        <input type="text" name="livingAddress" value="{{ d.livingAddress }}"  autocomplete="off" class="layui-input">
+			      </div>
+			    </div>
+			</td>
+			<td>
+				<div class="layui-inline">
+			      <label class="layui-form-label">名族</label>
+			      <div class="layui-input-inline">
+					<select class="form-control nation" name="nation"><option value="汉" {{ d.nation=='汉'?'selected':'' }}>汉</option><option value="少数民族" {{ d.nation=='少数民族'?'selected':'' }}>少数名族</option></select>
+			      </div>
+			    </div>
+			</td>
+		</tr>
+		<tr class="layui-form-item">
+			<td>
+				<div class="layui-inline">
+			      <label class="layui-form-label">出生日期</label>
+			      <div class="layui-input-inline">
+			        <input type="text" name="birthDate" id="birthDate" value="{{ d.birthDate==null ? "" : d.birthDate}}" readonly="readonly"  autocomplete="off" class="layui-input">
+			      </div>
+			    </div>
+			</td>
+			<td>
+				<div class="layui-inline">
+			      <label class="layui-form-label">身份证号</label>
+			      <div class="layui-input-inline">
+			        <input type="tel"  name="idCard" id="idCard" value="{{ d.idCard }}"  autocomplete="off" class="layui-input">
+			      </div>
+			    </div>
+			</td>
+			<td>
+				<div class="layui-inline">
+			      <label class="layui-form-label">身份证到期时间</label>
+			      <div class="layui-input-inline">
+			        <input type="tel"  name="idCardEnd" id="idCardEnd"  autocomplete="off" class="layui-input">
+			      </div>
+			    </div>
+			</td>
+		</tr>
+		<tr class="layui-form-item">
+			<td>
+				 <div class="layui-inline">
+			      <label class="layui-form-label">婚姻状况</label>
+			      <div class="layui-input-inline">
+					<select class="form-control marriage" name="marriage"><option value="0" {{ d.marriage==0?'selected':'' }}>已婚</option> <option value="1" {{ d.marriage==1?'selected':'' }}>未婚</option></select>
+			      </div>
+			    </div>
+			</td>
+			<td>
+			    <div class="layui-inline">
+			      <label class="layui-form-label">生育状况</label>
+			      <div class="layui-input-inline">
+					<select class="form-control procreate" name="procreate"><option value="0" {{ d.procreate==0?'selected':'' }}>已育</option> <option value="1" {{ d.procreate==1?'selected':'' }}>未育</option></select>
+			      </div>
+			    </div>
+			</td>
+			<td>
+				<div class="layui-inline">
+			      <label class="layui-form-label">邮箱</label>
+			      <div class="layui-input-inline">
+			        <input type="text" name="email" value="{{ d.email==null ? "" : d.email}}"  autocomplete="off" class="layui-input">
+			      </div>
+			    </div>
+			</td>
+		</tr>
+		<tr class="layui-form-item">
+			<td>
+				<div class="layui-inline">
+			      <label class="layui-form-label">所属银行</label>
+			      <div class="layui-input-inline">
+			        <input type="text" name="ascriptionBank1" readonly="readonly" id="ascriptionBank1" value="{{ d.ascriptionBank1==null ? "" : d.ascriptionBank1}}"  autocomplete="off" class="layui-input">
+			      </div>
+			    </div>
+			</td>
+			<td>
+				<div class="layui-inline">
+			      <label class="layui-form-label">银行卡</label>
+			      <div class="layui-input-inline">
+			        <input type="tel"  name="bankCard1" id="bankCard1" value="{{ d.bankCard1==null ? "" : d.bankCard1}}"   autocomplete="off" class="layui-input">
+			      </div>
+			    </div>
+			</td>
+			<td>
+				<div class="layui-inline">
+			      <label class="layui-form-label">紧急联系人</label>
+			      <div class="layui-input-inline">
+			        <input type="text" name="contacts" value="{{ d.contacts==null ? "" : d.contacts}}"  autocomplete="off" class="layui-input">
+			      </div>
+			    </div>
+			</td>
+			<td>
+				<div class="layui-inline">
+			      <label class="layui-form-label">紧急联系方式</label>
+			      <div class="layui-input-inline">
+			        <input type="text" name="information" value="{{ d.information==null ? "" : d.information}}"   autocomplete="off" class="layui-input">
+			      </div>
+			    </div>
+			</td>
+		</tr>
+		<tr class="layui-form-item">
+			<td>
+				<div class="layui-inline">
+			      <label class="layui-form-label">学历</label>
+			      <div class="layui-input-inline">
+					<select class="form-control education" name="education">
+						<option value="本科" {{ d.education=='本科'?'selected':'' }}>本科</option>
+						<option value="大专" {{ d.education=='大专'?'selected':'' }}>大专</option>
+						<option value="高中" {{ d.education=='高中'?'selected':'' }}>高中</option>
+						<option value="初中及以下" {{ d.education=='初中及以下'?'selected':'' }}>初中及以下</option>
+					</select>
+			      </div>
+			    </div>
+			</td>
+			<td>
+				<div class="layui-inline">
+			      <label class="layui-form-label">毕业学校</label>
+			      <div class="layui-input-inline">
+			        <input type="text" name="school" value="{{ d.school==null ? "" : d.school}}" autocomplete="off" class="layui-input">
+			      </div>
+			    </div>
+			</td>
+			<td>
+				<div class="layui-inline">
+			      <label class="layui-form-label">专业</label>
+			      <div class="layui-input-inline">
+			      	 <input type="text" name="major" value="{{ d.major==null ? "" : d.major}}"  autocomplete="off" class="layui-input">
+				  </div>
+			    </div>
+			</td>
+			<td>
+			</td>
+		</tr>
+		<tr class="titleTr">
+			<td colspan="4"><i class="layui-icon layui-icon-app"></i>公司信息</td>
+		</tr>
+		<tr class="layui-form-item">
+			<td>
+				<div class="layui-inline">
+			      <label class="layui-form-label">打卡机编号</label>
+			      <div class="layui-input-inline">
+			        <input type="text" name="" value="{{ d.number }}" readonly="readonly"  autocomplete="off" class="layui-input">
+			      </div>
+			    </div>
+			</td>
+			<td>
+				<div class="layui-inline">
+			      <label class="layui-form-label">档案编号</label>
+			      <div class="layui-input-inline">
+			        <input type="text" name="lotionNumber" value="{{ d.lotionNumber}}"  autocomplete="off" class="layui-input">
+			      </div>
+			    </div>		
+			</td>
+			<td>
+				<div class="layui-inline">
+			      <label class="layui-form-label">签订单位</label>
+			      <div class="layui-input-inline">
+			        <input type="text" name="company" value="{{ d.company==null ? "" : d.company}}"  autocomplete="off" class="layui-input">
+			      </div>
+			    </div>
+			</td>
+			<td>
+				<div class="layui-inline">
+			      <label class="layui-form-label">承诺书</label>
+			      <div class="layui-input-inline">
+					<select class="form-control promise" name="promise"><option value="0" {{ d.promise==0?'selected':'' }}>未签</option> <option value="1" {{ d.promise==1?'selected':'' }}>已签</option></select>
+			      </div>
+			    </div>
+			</td>
+		</tr>
+		<tr class="layui-form-item">
+			<td>
+				<div class="layui-inline">
+			      <label class="layui-form-label">工作状态</label>
+			      <div class="layui-input-inline">
+					<select class="form-control quit" lay-filter="lay_selecte" name="quit"><option value="0" {{ d.quit==0?'selected':'' }}>在职</option> <option value="1" {{ d.quit==1?'selected':'' }}>离职</option></select>
+			      </div>
+			    </div>
+			</td>
+			<td>
+				<div class="layui-inline">
+			      <label class="layui-form-label">离职时间</label>
+			      <div class="layui-input-inline">
+			        <input type="text" name="quitDate" id="quitDate"  autocomplete="off" class="layui-input">
+			      </div>
+			    </div>
+			</td>
+			<td>
+				<div class="layui-inline">
+			      <label class="layui-form-label">离职类型</label>
+			      <div class="layui-input-inline" >
+			        <select class="form-control" name="quitTypeId" id="quitType">
+					</select>
+			      </div>
+			    </div>
+			</td>
+			<td>
+				<div class="layui-inline">
+			      <label class="layui-form-label">离职理由</label>
+			      <div class="layui-input-inline">
+			        <input type="text" name="reason" value="{{ d.reason==null ? "" : d.reason}}"  autocomplete="off" class="layui-input">
+			      </div>
+			    </div>
+			</td>
+		</tr>
+		<tr class="layui-form-item">
+			<td>
+				<div class="layui-inline">
+			      <label class="layui-form-label">合同</label>
+			      <div class="layui-input-inline">
+					<select class="form-control" name="commitment"><option value="0" {{ d.commitment==0?'selected':'' }}>未签</option><option value="1" {{ d.commitment==1?'selected':'' }}>已签</option><option value="2" {{ d.commitment==2?'selected':'' }}>续签</option></select>
+			      </div>
+			    </div>
+			</td>
+			<td>
+				 <div class="layui-inline">
+			      <label class="layui-form-label">合同签订时间</label>
+			      <div class="layui-input-inline">
+			        <input type="tel"  name="contractDate" id="contractDate"  autocomplete="off" class="layui-input">
+			      </div>
+			    </div>
+			</td>
+			<td>
+				<div class="layui-inline">
+			      <label class="layui-form-label">合同到期时间</label>
+			      <div class="layui-input-inline">
+			        <input type="tel"  name="contractDateEnd" id="contractDateEnd"  autocomplete="off" class="layui-input">
+			      </div>
+			    </div>
+			</td>
+			<td>
+			    <div class="layui-inline">
+			      <label class="layui-form-label">合同签订次数</label>
+			      <div class="layui-input-inline">
+			        <input type="text" name="frequency" value="{{ d.frequency==null ? "" : d.frequency}}"  autocomplete="off" class="layui-input">
+			      </div>
+			    </div>
+			</td>
+		</tr>
+		<tr class="layui-form-item">
+			<td>
+				<div class="layui-inline">
+			      <label class="layui-form-label">入职时间</label>
+			      <div class="layui-input-inline">
+			        <input type="text" name="entry" id="entry"  autocomplete="off" class="layui-input">
+			      </div>
+			    </div>
+			</td>
+			<td>
+				<div class="layui-inline">
+			      <label class="layui-form-label">预计转正时间</label>
+			      <div class="layui-input-inline">
+			        <input type="tel"  name="estimate" id="estimate"   autocomplete="off" class="layui-input">
+			      </div>
+			    </div>
+			</td>
+			<td>
+	 			<div class="layui-inline">
+			      <label class="layui-form-label" >实际转正时间</label>
+			      <div class="layui-input-inline">
+			        <input type="tel"  name="actua" id="actua"  autocomplete="off" class="layui-input">
+			      </div>
+			    </div>
+			</td>
+			<td>
+				<div class="layui-inline">
+			      <label class="layui-form-label">健康证时间</label>
+			      <div class="layui-input-inline">
+			        <input type="text" name="healthCertificateTime" id="healthCertificateTimeInput" value="{{ d.healthCertificateTime || ""}}"  autocomplete="off" class="layui-input">
+			      </div>
+			    </div>	
+			</td>
+		</tr>
+		<tr class="layui-form-item">
+			<td>
+				<div class="layui-inline">
+			      <label class="layui-form-label">部门</label>
+			      <div class="layui-input-inline" >
+			        <select class="form-control" lay-search="true" lay-filter="lay_selecte2" name="orgNameId" id="orgNameId">
+								
+					</select>
+			      </div>
+			    </div>
+			</td>
+			<td>
+				<div class="layui-inline">
+			      <label class="layui-form-label">职位</label>
+			      <div class="layui-input-inline" >
+			        <select class="form-control" lay-search="true" name="positionId" id="positionId">
+					</select>
+			      </div>
+			    </div>	
+			</td>
+			<td colspan="2">
+				<div class="layui-inline" >
+			      <label class="layui-form-label">协议</label>
+			      <div class="layui-input-inline"  name="agreementId" id="agreementId" style="width: 285px;">
+				  </div>
+			    </div>
+			</td>
+			<td>
+			    
+			</td>
+		</tr>
+		<tr class="layui-form-item">
+			<td>
+				<div class="layui-inline">
+			      <label class="layui-form-label">保险情况</label>
+			      <div class="layui-input-inline">
+					<select class="form-control safe" name="safe"><option value="0" {{ d.safe==0?'selected':'' }}>未缴</option> <option value="1" {{ d.safe==1?'selected':'' }}>已缴</option></select>
+			      </div>
+			    </div>
+			</td>
+			<td>
+			   <div class="layui-inline">
+			      <label class="layui-form-label">社保缴纳时间</label>
+			      <div class="layui-input-inline">
+			        <input type="text" name="socialSecurity" id="socialSecurity"  autocomplete="off" class="layui-input">
+			      </div>
+			    </div>
+			</td>
+			<td>
+			</td>
+			<td>
+			</td>
+		</tr>
+		<tr class="layui-form-item">
+			<td colspan="4">
+		      <div class="layui-inline contractDiv">
 		        <label class="layui-form-label">合同</label>
-				  <div class="layui-input-block"  id="commitmentId" style="width: 874px;"></div>
-		        </div>	
-			  <div class="layui-inline">
-		      	<label class="layui-form-label">健康证时间</label>
-		      	<div class="layui-input-inline">
-		        	<input type="text" name="healthCertificateTime" id="healthCertificateTimeInput" value="{{ d.healthCertificateTime || ""}}"  autocomplete="off" class="layui-input">
-		      	</div>
-		      </div>		
-			</div>
-		</div>
-	</form>
+				<div class="layui-input-block"  id="commitmentId" style="width: 874px;">
+				</div>
+		      </div>	
+			</td>
+		</tr>
+	</table>
+</div>
+
+
+		    
+			
 </script>
 <!-- 表格工具栏模板 -->
 <script type="text/html" id="barDemo">
@@ -578,7 +708,7 @@ layui.config({
 			var html="";
 			laytpl(tpl).render(data,function(h){
 				html=h;
-     			})
+     		})
      		var htmls='<option value="">请选择</option>';	
      		$.ajax({
 			  url:"${ctx}/basedata/list",
@@ -702,7 +832,7 @@ layui.config({
 			var index=layer.open({
 				type:1,
 				title:data.userName+'个人信息',
-				area:['83%','95%'],
+				area:['90%','95%'],
 				btn:['确认','取消'],
 				content:html,
 				id: 'LAY_layuipro6' ,
