@@ -2,6 +2,7 @@ package com.bluewhite.system.user.action;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -32,6 +33,7 @@ import com.bluewhite.common.entity.PageParameter;
 import com.bluewhite.common.entity.PageUtil;
 import com.bluewhite.common.utils.BankUtil;
 import com.bluewhite.common.utils.DatesUtil;
+import com.bluewhite.personnel.attendance.entity.Attendance;
 import com.bluewhite.personnel.attendance.entity.AttendanceInit;
 import com.bluewhite.personnel.attendance.service.AttendanceInitService;
 import com.bluewhite.production.group.dao.TemporarilyDao;
@@ -76,7 +78,7 @@ public class UserAction {
                 "socialSecurity", "bankCard1", "bankCard2", "agreement", "safe", "commitment", "promise", "contract",
                 "contractDate", "contractDateEnd", "frequency", "quitDate", "quit", "reason", "train", "remark",
                 "userContract", "commitments", "agreementId", "company", "age", "type", "ascriptionBank1", "sale",
-                "roles", "turnWorkTime", "quitTypeId", "quitType", "lotionNumber")
+                "roles", "turnWorkTime", "quitTypeId", "quitType", "lotionNumber","healthCertificateTime")
             .addRetainTerm(Group.class, "id", "name", "type", "price")
             .addRetainTerm(Role.class, "name", "role", "description", "id")
             .addRetainTerm(BaseData.class, "id", "name", "type");
@@ -386,7 +388,7 @@ public class UserAction {
             .filter(User -> User.getBirthDate() != null && User.getGender() != null && User.getQuit() != null
                 && User.getQuit() != 1 && User.getCommitmentId() != null && User.getCommitmentId() != 144
                 && User.getCommitmentId() != 145 && User.getCommitmentId() != 317)
-            .collect(Collectors.toList());
+            .sorted(Comparator.comparing(User::getBirthDate)).collect(Collectors.toList());
         for (User user : userBirth) {
             Map<String, Object> us = new HashMap<String, Object>();
             int co = DatesUtil.getAgeByBirth(user.getBirthDate());
@@ -412,7 +414,9 @@ public class UserAction {
         List<Map<String, Object>> userContractList = new ArrayList<Map<String, Object>>();
         List<User> userContract =
             userList.stream().filter(User -> User.getContractDateEnd() != null && User.getQuit() != null
-                && User.getQuit() != 1 && User.getCommitmentId() != null).collect(Collectors.toList());
+                && User.getQuit() != 1 && User.getCommitmentId() != null)
+            .sorted(Comparator.comparing(User::getContractDateEnd))
+            .collect(Collectors.toList());
         for (User user : userContract) {
             Map<String, Object> us = new HashMap<String, Object>();
             long co = DatesUtil.getDaySub(DatesUtil.getfristDayOftime(new Date()),
@@ -428,7 +432,9 @@ public class UserAction {
         // 身份证到期
         List<Map<String, Object>> userCardList = new ArrayList<Map<String, Object>>();
         List<User> userrCard = userList.stream().filter(User -> User.getIdCardEnd() != null && User.getQuit() != 1
-            && User.getQuit() != null && User.getCommitmentId() != null).collect(Collectors.toList());
+            && User.getQuit() != null && User.getCommitmentId() != null)
+            .sorted(Comparator.comparing(User::getIdCardEnd))
+            .collect(Collectors.toList());
         for (User user : userrCard) {
             Map<String, Object> us = new HashMap<String, Object>();
             long co = DatesUtil.getDaySub(DatesUtil.getfristDayOftime(new Date()),
@@ -445,6 +451,7 @@ public class UserAction {
         List<Map<String, Object>> healthCertificateList = new ArrayList<Map<String, Object>>();
         List<User> healthCertificate = userList.stream()
             .filter(User -> User.getHealthCertificateTime() != null && User.getQuit() != 1 && User.getQuit() != null)
+            .sorted(Comparator.comparing(User::getHealthCertificateTime))
             .collect(Collectors.toList());
         for (User user : healthCertificate) {
             Map<String, Object> us = new HashMap<String, Object>();

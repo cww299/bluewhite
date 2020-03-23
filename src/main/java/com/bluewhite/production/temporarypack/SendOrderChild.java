@@ -24,11 +24,10 @@ public class SendOrderChild extends BaseEntity<Long>{
      @Column(name = "product_id")
      private Long productId;
      /**
-      * 产品
+      * 产品名称
       */
-     @ManyToOne(fetch = FetchType.LAZY)
-     @JoinColumn(name = "product_id", referencedColumnName = "id", insertable = false, updatable = false)
-     private Product product;
+     @Column(name = "product_name")
+     private String productName;
      
      /**
       * 批次号
@@ -41,6 +40,16 @@ public class SendOrderChild extends BaseEntity<Long>{
       */
      @Column(name = "single_number")
      private Integer singleNumber;
+     
+     
+
+    public String getProductName() {
+        return productName;
+    }
+
+    public void setProductName(String productName) {
+        this.productName = productName;
+    }
 
     public Long getProductId() {
         return productId;
@@ -48,14 +57,6 @@ public class SendOrderChild extends BaseEntity<Long>{
 
     public void setProductId(Long productId) {
         this.productId = productId;
-    }
-
-    public Product getProduct() {
-        return product;
-    }
-
-    public void setProduct(Product product) {
-        this.product = product;
     }
 
     public String getBacthNumber() {

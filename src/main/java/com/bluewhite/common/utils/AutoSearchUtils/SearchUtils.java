@@ -1,6 +1,8 @@
 package com.bluewhite.common.utils.AutoSearchUtils;
 
 import java.lang.reflect.Field;
+import java.lang.reflect.ParameterizedType;
+import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -57,7 +59,11 @@ public class SearchUtils {
             // 转换类型
             String type = keys.length > 2 ? keys[2] : "";
             // 验证字段以防止SQL注入。
-            validateFieldKey(root.getJavaType(), field);
+            try {
+                validateFieldKey(root.getJavaType(), field);
+            } catch (InstantiationException | IllegalAccessException e) {
+                throw new ServiceException("系统错误");
+            }
             // 多表查询
             Path<String> path = simpleExpression(field, root);
             if (keys.length == 1) {
@@ -260,8 +266,10 @@ public class SearchUtils {
      * @param entityClass
      * @param fieldName
      * @return
+     * @throws IllegalAccessException 
+     * @throws InstantiationException 
      */
-    private static void validateFieldKey(Class<?> entityClass, String fieldName) {
+    private static void validateFieldKey(Class<?> entityClass, String fieldName) throws InstantiationException, IllegalAccessException {
         boolean check = true;
         if (fieldName.contains(".")) {
             String[] names = StringUtils.split(fieldName, ".");
@@ -275,6 +283,17 @@ public class SearchUtils {
                         throw new ServiceException("查询字段[" + names[i] + "]不存在");
                     }
                     entityClass = field.getType();
+                    if(entityClass.equals(List.class)) {
+                        Type type = field.getGenericType();
+                        if (null == type) {
+                            continue;
+                        }
+                        if (type instanceof ParameterizedType) {
+                            ParameterizedType pt = (ParameterizedType) type;
+                            // 得到泛型里的class类型对象
+                            entityClass = (Class<?>)pt.getActualTypeArguments()[0];
+                        }
+                    }
                 }
             }
         } else {
