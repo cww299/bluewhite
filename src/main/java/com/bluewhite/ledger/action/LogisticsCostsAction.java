@@ -1,5 +1,6 @@
  package com.bluewhite.ledger.action;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -100,15 +101,14 @@ public class LogisticsCostsAction {
     public CommonResponse findLogisticsCostsPrice(LogisticsCosts logisticsCosts) {
         CommonResponse cr = new CommonResponse();
         List<LogisticsCosts> logisticsCostsList = logisticsCostsService.findAll(logisticsCosts);
-        List<Double> list = null;
-        //含税
-        if(logisticsCosts.getTax()==0) {
+        List<Double> list = new ArrayList<Double>();
+        if(logisticsCostsList.size()>0){
             list = logisticsCostsList.stream().map(l->l.getTaxIncluded()).collect(Collectors.toList());
+            //不含税
+            if(logisticsCosts.getTax()==1) {
+                list = logisticsCostsList.stream().map(l->l.getExcludingTax()).collect(Collectors.toList());
+            }   
         }
-        //不含税
-        if(logisticsCosts.getTax()==1) {
-            list = logisticsCostsList.stream().map(l->l.getExcludingTax()).collect(Collectors.toList());
-        }   
         cr.setData(list);
         return cr;
     }

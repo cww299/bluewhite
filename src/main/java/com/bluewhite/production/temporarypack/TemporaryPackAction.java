@@ -511,23 +511,6 @@ public class TemporaryPackAction {
         return cr;
     }
     
-    
-    /**
-     * 生成物流费用前检测还有多少条贴包单未发货
-     * 
-     * 条数=0，不提示直接生成
-     * 条数>0，提示数量
-     */
-    @RequestMapping(value = "/temporaryPack/checkSendOrder", method = RequestMethod.GET)
-    @ResponseBody
-    public CommonResponse checkSendOrder(Long id) {
-        CommonResponse cr = new CommonResponse();
-        cr.setData(sendOrderService.checkSendOrder(id));
-        cr.setMessage("成功");
-        return cr;
-    }
-    
-    
     /**
      * 生成物流费用（审核发货单之后,已经产生费用的贴包单，无法删除，同时在财务物流费用中自动生成费用）
      * 取消审核，费用自动从物流费用中删除
@@ -536,8 +519,12 @@ public class TemporaryPackAction {
     @ResponseBody
     public CommonResponse auditSendOrder(String ids, Integer audit) {
         CommonResponse cr = new CommonResponse();
+        if(audit==1) {
+            cr.setMessage("物流费用生成成功");
+        }else {
+            cr.setMessage("物流费用取消成功");
+        }
         sendOrderService.auditSendOrder(ids, audit);
-        cr.setMessage("审核成功");
         return cr;
     }
 

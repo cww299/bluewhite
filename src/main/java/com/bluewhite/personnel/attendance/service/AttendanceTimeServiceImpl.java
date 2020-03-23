@@ -303,7 +303,8 @@ public class AttendanceTimeServiceImpl extends BaseServiceImpl<AttendanceTime, L
                 List<Attendance> attList =
                     attUserList.stream().sorted(Comparator.comparing(Attendance::getTime)).collect(Collectors.toList());
                 // 排除集合中无效的打卡记录
-                attList = AttendanceTool.sumIntervalDate(attList, 20);
+                AttendanceTool attendanceTool = new AttendanceTool();
+                attList =attendanceTool.sumIntervalDate(attList, 20);
                 // 考情记录有三种情况。当一天的考勤记录条数等于大于2时,为正常的考勤
                 // 打卡记录是4条 正常签入签出，中途签出一次签入一次
                 if (attList.size() == 4) {
