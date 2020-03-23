@@ -291,7 +291,7 @@ layui.extend({
 									success: function(){
 										if(opt.autoUpdate.isReload)
 											table.reload(tableId);
-										opt.autoUpdate.success && opt.autoUpdate.success();
+										opt.autoUpdate.success && opt.autoUpdate.success(field,trData,obj);
 									},
 									error: function(){
 										table.reload(tableId);
@@ -336,7 +336,7 @@ layui.extend({
 							success: function(){
 								if(opt.autoUpdate.isReload)
 									table.reload(tableId);
-								opt.autoUpdate.success && opt.autoUpdate.success();
+								opt.autoUpdate.success && opt.autoUpdate.success(field,trData,this);
 							},
 							error: function(){
 								var index = $(obj.tr).data('index');
