@@ -291,6 +291,7 @@ public class QuantitativeServiceImpl extends BaseServiceImpl<Quantitative, Long>
                     quantitative.setFlag(flag);
                     if (quantitative.getSendOrderId() != null) {
                         SendOrder sendOrder = sendOrderDao.findOne(quantitative.getSendOrderId());
+                        sendOrder.setSendTime(quantitative.getSendTime());
                         sendOrder.setLogisticsId(logisticsId);
                         sendOrderDao.save(sendOrder);
                     }

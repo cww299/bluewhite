@@ -79,6 +79,16 @@ public class TemporaryPackAction {
             .addRetainTerm(UnderGoods.class, "id", "remarks", "product", "number", "bacthNumber", "status",
                 "allotTime");
     }
+    private ClearCascadeJSON clearCascadeJSONSendOrder;
+    {
+        clearCascadeJSONSendOrder = ClearCascadeJSON.get()
+            .addRetainTerm(SendOrder.class, "id", "customer", "sendOrderChild", "sendTime", "sumPackageNumber", "number",
+                "sendPackageNumber", "logistics","outerPackaging","logisticsNumber","tax","singerPrice"
+                ,"sendPrice","extraPrice","logisticsPrice","audit")
+            .addRetainTerm(SendOrderChild.class, "id", "product", "bacthNumber", "singleNumber")
+            .addRetainTerm(Product.class, "id", "name")
+            .addRetainTerm(BaseData.class, "id", "name");
+    }
 
     /**
      * 新增下货单
@@ -472,7 +482,7 @@ public class TemporaryPackAction {
             throw new ServiceException("参数不能为空");
         };
         PageParameter page = PageUtil.mapToPage(params);
-        cr.setData(clearCascadeJSON.format(sendOrderService.findPages(params, page)).toJSON());
+        cr.setData(clearCascadeJSONSendOrder.format(sendOrderService.findPages(params, page)).toJSON());
         cr.setMessage("查询成功");
         return cr;
     }
@@ -480,7 +490,7 @@ public class TemporaryPackAction {
     /**
      * 修改发货单
      */
-    @RequestMapping(value = "/temporaryPack/updateSendOrder", method = RequestMethod.GET)
+    @RequestMapping(value = "/temporaryPack/updateSendOrder", method = RequestMethod.POST)
     @ResponseBody
     public CommonResponse updateSendOrder(SendOrder sendOrder) {
         CommonResponse cr = new CommonResponse();
