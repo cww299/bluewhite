@@ -1,5 +1,6 @@
 package com.bluewhite.production.temporarypack;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -115,25 +116,25 @@ public class SendOrder extends BaseEntity<Long> {
      * 实际单包费用
      */
     @Column(name = "singer_price")
-    private Double singerPrice;
+    private BigDecimal singerPrice;
     
     /**
      * 已发货费用(包数*单价)
      */
     @Column(name = "send_price")
-    private Double sendPrice;
+    private BigDecimal sendPrice;
     
     /**
      * 额外费用
      */
     @Column(name = "extra_price")
-    private Double extraPrice;
+    private BigDecimal extraPrice;
     
     /**
      * 物流总费用（已发货费用+额外费用）
      */
     @Column(name = "logistics_price")
-    private Double logisticsPrice;
+    private BigDecimal logisticsPrice;
     
     /**
      * 是否生成物流费用
@@ -174,21 +175,6 @@ public class SendOrder extends BaseEntity<Long> {
         this.tax = tax;
     }
 
-    public Double getSingerPrice() {
-        return singerPrice;
-    }
-
-    public void setSingerPrice(Double singerPrice) {
-        this.singerPrice = singerPrice;
-    }
-
-    public Double getExtraPrice() {
-        return extraPrice;
-    }
-
-    public void setExtraPrice(Double extraPrice) {
-        this.extraPrice = extraPrice;
-    }
 
     public List<SendOrderChild> getSendOrderChild() {
         return sendOrderChild;
@@ -206,20 +192,38 @@ public class SendOrder extends BaseEntity<Long> {
         this.sendPackageNumber = sendPackageNumber;
     }
 
-    public Double getLogisticsPrice() {
-        return logisticsPrice;
+  
+
+    public BigDecimal getSingerPrice() {
+        return singerPrice;
     }
 
-    public void setLogisticsPrice(Double logisticsPrice) {
-        this.logisticsPrice = logisticsPrice;
+    public void setSingerPrice(BigDecimal singerPrice) {
+        this.singerPrice = singerPrice;
     }
 
-    public Double getSendPrice() {
+    public BigDecimal getSendPrice() {
         return sendPrice;
     }
 
-    public void setSendPrice(Double sendPrice) {
+    public void setSendPrice(BigDecimal sendPrice) {
         this.sendPrice = sendPrice;
+    }
+
+    public BigDecimal getExtraPrice() {
+        return extraPrice;
+    }
+
+    public void setExtraPrice(BigDecimal extraPrice) {
+        this.extraPrice = extraPrice;
+    }
+
+    public BigDecimal getLogisticsPrice() {
+        return logisticsPrice;
+    }
+
+    public void setLogisticsPrice(BigDecimal logisticsPrice) {
+        this.logisticsPrice = logisticsPrice;
     }
 
     public void setLogisticsNumber(String logisticsNumber) {

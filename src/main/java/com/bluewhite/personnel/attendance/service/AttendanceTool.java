@@ -3,19 +3,14 @@ package com.bluewhite.personnel.attendance.service;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.stream.Collectors;
-
-import javax.persistence.Column;
 
 import com.bluewhite.common.utils.DatesUtil;
 import com.bluewhite.common.utils.NumUtils;
 import com.bluewhite.personnel.attendance.entity.Attendance;
 import com.bluewhite.personnel.attendance.entity.AttendanceInit;
 import com.bluewhite.personnel.attendance.entity.AttendanceTime;
-import com.bluewhite.system.user.entity.User;
 
 import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.date.DateUnit;
@@ -31,13 +26,10 @@ public class AttendanceTool {
 
     // 计算缺勤时满足的分钟数(30)
     private final static int DUTYMIN = 30;
-
     // 计算早上提前上班时算加班所满足的分钟数(20)
     private final static int OVERMIN = 20;
-
     // 计算员工可以加班后晚到岗,迟到分钟不超过的分钟数不算迟到(10)
     private final static int LATERMIN = 10;
-
     // 一小时的分钟数
     private final static int MINUTES = 60;
 
