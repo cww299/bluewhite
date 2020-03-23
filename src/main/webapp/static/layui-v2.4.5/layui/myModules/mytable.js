@@ -37,6 +37,8 @@
  *	},
  *  evenColor:red,  //斑马纹颜色		
  *}
+ *
+ *智能重载  smartReloadModel:true,       layui.tablePlug.smartReload.enable(true);
  */
 layui.extend({
 	myutil: 'layui/myModules/myutil',
@@ -289,9 +291,9 @@ layui.extend({
 									url: opt.autoUpdate.updateUrl || opt.autoUpdate.saveUrl,
 									data: data,
 									success: function(){
+										opt.autoUpdate.success && opt.autoUpdate.success(field,trData,obj);
 										if(opt.autoUpdate.isReload)
 											table.reload(tableId);
-										opt.autoUpdate.success && opt.autoUpdate.success(field,trData,obj);
 									},
 									error: function(){
 										table.reload(tableId);
@@ -334,9 +336,9 @@ layui.extend({
 							url: opt.autoUpdate.updateUrl || opt.autoUpdate.saveUrl,
 							data: data,
 							success: function(){
+								opt.autoUpdate.success && opt.autoUpdate.success(field,trData,this);
 								if(opt.autoUpdate.isReload)
 									table.reload(tableId);
-								opt.autoUpdate.success && opt.autoUpdate.success(field,trData,this);
 							},
 							error: function(){
 								var index = $(obj.tr).data('index');

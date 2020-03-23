@@ -59,19 +59,15 @@ layui.config({
 		var allLogistics = myutil.getBaseData({ type: 'logistics', });
 		var allPackagMethod = myutil.getBaseData({ type: 'outerPackaging', });
 		var isTax = [{ id:"",name:'请选择',},{id:0,name:"不含税"},{name:"含税",id:1,}];
-		laydate.render({
-			elem: '#orderTimeBegin', range: '~',
-		})
-		var evenColor = 'rgb(133, 219, 245)';
+		layui.tablePlug.smartReload.enable(true);
 		mytable.render({
 			elem:'#tableData',
 			size:'lg',
 			url: myutil.config.ctx+'/ledger/sendOrderPage',
-			where:{
-			},
+			where:{ },
+			smartReloadModel:true,
 			toolbar: $('#toolbarTpl').html(),
 			limit:15,
-			even:true,
 			limits:[15,50,200,500,1000],
 			curd:{
 				btn: [],
@@ -107,41 +103,7 @@ layui.config({
 			autoUpdate:{
 				updateUrl: '/temporaryPack/updateSendOrder',
 				field:{ logistics_id:'logisticsId', outerPackaging_id:'outerPackagingId'},
-				success:function(field,data,obj){
-					if(field=="tax" || field=="logistics_id" || field == "outerPackaging_id"){
-						if(data.customer && data.logistics && data.outerPackaging){
-							myutil.getData({
-								url: myutil.config.ctx+'/ledger/findLogisticsCostsPrice',
-								data:{
-									customerId: data.customer.id,
-									logisticsId: data.logistics.id,
-									outerPackagingId: data.outerPackaging.id,
-									tax: data.tax,
-								},
-								success:function(d){
-									var html = "<option value=''>请选择</option>";
-									layui.each(d,function(index,item){
-										html += "<option value='"+item+"'>￥"+item+"</option>";
-									})
-									$(obj.elem).closest('tr').find('td[data-field="singerPrice"] select').removeAttr('disabled');
-									$(obj.elem).closest('tr').find('td[data-field="singerPrice"] select').html(html);
-									form.render();
-								}
-							})
-						}
-					}else if(field=="extraPrice"){
-						myutil.saveAjax({
-							url:'/temporaryPack/updateSendOrder',
-							data:{
-								id: data.id,
-								logisticsPrice: (data.sendPrice || 0)+(obj.data.extraPrice || 0),
-							},
-							success:function(){
-								table.reload('tableData');
-							}
-						})
-					}
-				}
+				isReload: true,
 			},
 			parseData:function(ret){
 				if(ret.code==0){
@@ -160,7 +122,7 @@ layui.config({
 					return {  msg:ret.message,  code:ret.code , data:[], count:0 }; 
 			},
 			ifNull:'',
-			scrollX:true,
+			//scrollX:true,
 			cols:[[
 			       { type:'checkbox',},
 			       { title:'客户名称',   field:'customer_name', width:145,	},
@@ -186,20 +148,10 @@ layui.config({
 	    	 field:['customer_name','sendTime','sumPackageNumber','number','sendPackageNumber','sendNumber','logistics_id',
 	    		 'outerPackaging_id','logisticsNumber','tax','singerPrice','0','sendPrice','extraPrice','logisticsPrice',
 	    		 'audit',], 
-	    	 evenColor: evenColor,
 	       }, 
 	       done:function(ret,curr, count){
 	    	    allDataId = [];
 	    	    form.render();
-				var whiteTd = ['0','quantitativeNumber','vehicleNumber','time','sendTime','user_userName','customer_name','audit','flag','print'];
-				layui.each(whiteTd,function(index,item){
-					$('#tableData').next().find('td[data-field="'+item+'"]').css('background','white');
-				})
-				var blueTd = ['underGoods_bacthNumber','underGoods_product_name','actualSingleNumber','singleNumber','remarks'];
-				layui.each(blueTd,function(index,item){
-					$('#tableData').next().find('tr:nth-child(even) td[data-field="'+item+'"]').css('background',evenColor);
-				})
-				form.render();
 			}
 		})
 		var allDataId = [];
