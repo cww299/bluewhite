@@ -130,10 +130,4 @@ public class SendOrderServiceImpl extends BaseServiceImpl<SendOrder, Long> imple
         return quantitativeDao.findBysendOrderId(id);
     }
 
-    @Override
-    public Long checkSendOrder(Long id) {
-        List<Quantitative> list = getQuantitativeList(id);
-        return list.stream().filter(Quantitative->Quantitative.getAudit()==0).count();
-    }
-
 }
