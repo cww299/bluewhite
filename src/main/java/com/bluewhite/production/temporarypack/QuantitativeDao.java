@@ -25,6 +25,6 @@ public interface QuantitativeDao  extends BaseRepository<Quantitative, Long>{
 	/**
      * 根据发货单id 查找 贴包单
      */
-	List<Quantitative> findBysendOrderId(Long id);
+	List<Quantitative> findBySendOrderId(Long id);
 }
 

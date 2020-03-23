@@ -146,6 +146,7 @@ public class SearchUtils {
         query.where(predicates.toArray(pre));
         query.orderBy(orderList);
         query.groupBy(groupList);
+        query.distinct(true);
         return query;
     }
 

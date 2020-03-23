@@ -104,8 +104,8 @@ public class SendOrderServiceImpl extends BaseServiceImpl<SendOrder, Long> imple
                         || sendOrder.getOuterPackagingId() == null) {
                         throw new ServiceException("客户或物流公司或包装方式为空，无法审核发货单");
                     }
-                    // 根据申请时间查询是否有
-                    Consumption consumption = consumptionService.findByTypeAndCustomerIdAndExpenseDateBetween(5,
+                    // 根据申请时间和物流点查询是否有已存在数据
+                    Consumption consumption = consumptionService.findByTypeAndLogisticsIdAndExpenseDateBetween(5,
                         sendOrder.getCustomerId(), DateUtil.beginOfMonth(sendOrder.getSendTime()),
                         DateUtil.endOfMonth(sendOrder.getSendTime()));
                     // 审核，进行物流费用的新增
@@ -118,6 +118,7 @@ public class SendOrderServiceImpl extends BaseServiceImpl<SendOrder, Long> imple
                             consumption.setExpenseDate(sendOrder.getSendTime());
                             consumption.setFlag(0);
                             consumption.setMoney(sendOrder.getLogisticsPrice().doubleValue());
+                            consumption.setLogisticsId(sendOrder.getLogisticsId());
                         } else {
                             consumption.setMoney(NumberUtil.add(consumption.getMoney(), sendOrder.getLogisticsPrice()).doubleValue());
                         }
@@ -137,7 +138,7 @@ public class SendOrderServiceImpl extends BaseServiceImpl<SendOrder, Long> imple
 
     @Override
     public List<Quantitative> getQuantitativeList(Long id) {
-        return quantitativeDao.findBysendOrderId(id);
+        return quantitativeDao.findBySendOrderId(id);
     }
 
 }
