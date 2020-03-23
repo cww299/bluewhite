@@ -1,5 +1,7 @@
  package com.bluewhite.ledger.dao;
 
+import java.util.List;
+
 import com.bluewhite.base.BaseRepository;
 import com.bluewhite.ledger.entity.LogisticsCosts;
 
@@ -9,6 +11,12 @@ import com.bluewhite.ledger.entity.LogisticsCosts;
  */
 public interface LogisticsCostsDao extends BaseRepository<LogisticsCosts, Long>{
     
-    
-
+    /**
+     * 根据客户物流包装查询价格
+     * @param customerId
+     * @param logisticsId
+     * @param outerPackagingId
+     * @return
+     */
+    List<LogisticsCosts> findByCustomerIdAndLogisticsIdAndOuterPackagingId(Long customerId,Long logisticsId,Long outerPackagingId);
 }
