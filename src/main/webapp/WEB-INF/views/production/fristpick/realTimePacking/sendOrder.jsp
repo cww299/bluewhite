@@ -18,7 +18,7 @@
 		<table class="layui-form searchTable">
 			<tr>
 				<td>产品名:</td>
-				<td><input type="text" name="sendOrderChild.product.name_like" class="layui-input"></td>
+				<td><input type="text" name="sendOrderChild.productName_like" class="layui-input"></td>
 				<td>客户名:</td>
 				<td><input type="text" name="customer_name_like" class="layui-input"></td>
 				<!-- 
