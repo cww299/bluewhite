@@ -141,7 +141,7 @@ layui.config({
 			       { title:'额外费用',   field:'extraPrice',	width:90, edit:'number', },
 			       { title:'物流总费用',   field:'logisticsPrice',	width:120, },  
 			       { title:'批次号',    field:'bacthNumber',	width:120,},
-			       { title:'商品名',    field:'product_name',	width:180,},
+			       { title:'商品名',    field:'productName',	width:180,},
 			       { title:'单包数量',    field:'singleNumber',width:90,	},
 			       ]],
 	       autoMerge:{
@@ -197,6 +197,9 @@ layui.config({
 					singerPrice: obj.value,
 					sendPrice: obj.value*(trData.sendPackageNumber || 0),
 					logisticsPrice: obj.value*(trData.sendPackageNumber || 0)+(trData.extraPrice || 0),
+				},
+				success:function(){
+					table.reload('taleData');
 				}
 			})
 		})
