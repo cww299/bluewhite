@@ -73,12 +73,6 @@ public class SendOrder extends BaseEntity<Long> {
     private Integer sendPackageNumber;
 
     /**
-     * 已发货数量
-     */
-    @Column(name = "send_number")
-    private Integer sendNumber;
-
-    /**
      * 物流点id
      */
     @Column(name = "logistics_id")
@@ -209,14 +203,6 @@ public class SendOrder extends BaseEntity<Long> {
 
     public void setSendPackageNumber(Integer sendPackageNumber) {
         this.sendPackageNumber = sendPackageNumber;
-    }
-
-    public Integer getSendNumber() {
-        return sendNumber;
-    }
-
-    public void setSendNumber(Integer sendNumber) {
-        this.sendNumber = sendNumber;
     }
 
     public Double getLogisticsPrice() {
