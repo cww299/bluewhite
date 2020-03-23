@@ -411,6 +411,17 @@ layui.define(['jquery','layer','form','table'],function(exports){
 		})
 		return html;
 	};
+	myutil.getBaseData = function(opt){
+		var data = [ ];
+		this.getDataSync({
+			url: this.config.ctx+'/basedata/list?type='+opt.type,
+			success:function(d){
+				data = d;
+				data.unshift({ id:"", name:"请选择"});
+			}
+		})
+		return data;
+	};
 	
 	exports('myutil',myutil);
 })
