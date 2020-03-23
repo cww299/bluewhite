@@ -770,26 +770,28 @@ layui.config({
 			      }
 			  });
 		    
-		    var htmll='<option value="">请选择</option>'
-		    $.ajax({
-			      url:"${ctx}/basedata/list",
-			      data:{type:"position"},
-			      type:"GET",
-			      async:false,
-			      beforeSend:function(){
-			    	  indextwo = layer.load(1, {
-					  shade: [0.1,'#fff'] //0.1透明度的白色背景
-					  });
-				  }, 
-	      		  success: function (result) {
-	      			  $(result.data).each(function(k,j){
-	      				  var select="";
-	      				 if(j.id==(data.position==null ? "" : data.position.id)){select="selected"}
-	      				htmll +='<option value="'+j.id+'" '+select+'>'+j.name+'</option>'
-	      			  });
-	      			layer.close(indextwo);
-			      }
-			  });
+		    var htmll='<option value="">请选择</option>';
+		    if(data.orgName){
+			    $.ajax({
+				      url:"${ctx}/basedata/children",
+				      data:{id: data.orgName.id},
+				      type:"GET",
+				      async:false,
+				      beforeSend:function(){
+				    	  indextwo = layer.load(1, {
+						  shade: [0.1,'#fff'] //0.1透明度的白色背景
+						  });
+					  }, 
+		      		  success: function (result) {
+		      			  $(result.data).each(function(k,j){
+		      				  var select="";
+		      				 if(j.id==(data.position==null ? "" : data.position.id)){select="selected"}
+		      				htmll +='<option value="'+j.id+'" '+select+'>'+j.name+'</option>'
+		      			  });
+		      			layer.close(indextwo);
+				      }
+				  });
+		    }
 		     form.on('select(lay_selecte2)', function(data){
 	      			$.ajax({								//获取当前部门下拉框选择的子数据：职位
 					      url:"${ctx}/basedata/children",
