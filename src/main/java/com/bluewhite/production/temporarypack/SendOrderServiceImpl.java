@@ -12,14 +12,17 @@ import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.bluewhite.base.BaseServiceImpl;
+import com.bluewhite.common.BeanCopyUtils;
 import com.bluewhite.common.ServiceException;
 import com.bluewhite.common.entity.PageParameter;
 import com.bluewhite.common.entity.PageResult;
-import com.bluewhite.common.utils.NumUtils;
 import com.bluewhite.finance.consumption.entity.Consumption;
 import com.bluewhite.finance.consumption.service.ConsumptionService;
+import com.bluewhite.product.product.dao.ProductDao;
+import com.bluewhite.product.product.entity.Product;
 
 import cn.hutool.core.date.DateUtil;
+import cn.hutool.core.util.NumberUtil;
 
 /**
  * @author ZhangLiang
@@ -36,6 +39,8 @@ public class SendOrderServiceImpl extends BaseServiceImpl<SendOrder, Long> imple
     private QuantitativeDao quantitativeDao;
     @Autowired
     private ConsumptionService consumptionService;
+    @Autowired
+    private ProductDao productDao;
 
     @Override
     @Transactional
@@ -56,6 +61,8 @@ public class SendOrderServiceImpl extends BaseServiceImpl<SendOrder, Long> imple
                 UnderGoods underGoods = underGoodsDao.findOne(underGoodsId);
                 SendOrderChild sendOrderChild = new SendOrderChild();
                 sendOrderChild.setProductId(underGoods.getProductId());
+                Product pro = productDao.findOne(sendOrderChild.getProductId());
+                sendOrderChild.setProductName(pro.getName());
                 sendOrderChild.setBacthNumber(underGoods.getBacthNumber());
                 sendOrderChild.setSingleNumber(jsonObject.getInteger("singleNumber"));
                 sendOrder.getSendOrderChild().add(sendOrderChild);
@@ -72,7 +79,10 @@ public class SendOrderServiceImpl extends BaseServiceImpl<SendOrder, Long> imple
     public void updateSendOrder(SendOrder sendOrder) {
         // 通过修改单价，计算总运费价格
         SendOrder ot = findOne(sendOrder.getId());
-        update(sendOrder, ot, "");
+        BeanCopyUtils.copyNotEmpty(sendOrder, ot, "");
+        ot.setSendPrice(NumberUtil.mul(ot.getSumPackageNumber(),ot.getSingerPrice()));
+        ot.setLogisticsPrice(NumberUtil.add(ot.getExtraPrice(), ot.getSingerPrice()));
+        save(ot);
     }
 
     @Override
@@ -107,14 +117,14 @@ public class SendOrderServiceImpl extends BaseServiceImpl<SendOrder, Long> imple
                             // 将发货时间赋值给申请时间
                             consumption.setExpenseDate(sendOrder.getSendTime());
                             consumption.setFlag(0);
-                            consumption.setMoney(sendOrder.getLogisticsPrice());
+                            consumption.setMoney(sendOrder.getLogisticsPrice().doubleValue());
                         } else {
-                            consumption.setMoney(NumUtils.sum(consumption.getMoney(), sendOrder.getLogisticsPrice()));
+                            consumption.setMoney(NumberUtil.add(consumption.getMoney(), sendOrder.getLogisticsPrice()).doubleValue());
                         }
                     }
                     // 取消审核，进行物流费用的减少
                     if (audit == 0) {
-                        consumption.setMoney(NumUtils.sub(consumption.getMoney(), sendOrder.getLogisticsPrice()));
+                        consumption.setMoney(NumberUtil.sub(consumption.getMoney(), sendOrder.getLogisticsPrice()).doubleValue());
                     }
                     consumptionService.addConsumption(consumption);
                 }
