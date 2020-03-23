@@ -418,7 +418,7 @@ public class ConsumptionServiceImpl extends BaseServiceImpl<Consumption, Long> i
 			// 按客户姓名查找
 			if (!StringUtils.isEmpty(param.getCustomerName())) {
 				predicate.add(
-						cb.like(root.get("custom").get("name").as(String.class), "%" + param.getCustomerName() + "%"));
+						cb.like(root.get("customer").get("name").as(String.class), "%" + param.getCustomerName() + "%"));
 			}
 			// 按报销內容查找
 			if (!StringUtils.isEmpty(param.getContent())) {
@@ -442,4 +442,13 @@ public class ConsumptionServiceImpl extends BaseServiceImpl<Consumption, Long> i
 		});
 		return result;
 	}
+
+    /* (non-Javadoc)
+     * @see com.bluewhite.finance.consumption.service.ConsumptionService#findByTypeAndCustomerIdAndExpenseDateBetween(java.lang.Integer, java.lang.Integer, java.util.Date, java.util.Date)
+     */
+    @Override
+    public Consumption findByTypeAndCustomerIdAndExpenseDateBetween(Integer type, Long id, Date beginTime,
+        Date endTime) {
+         return dao.findByTypeAndCustomerIdAndExpenseDateBetween(type, id,beginTime, endTime);
+    }
 }

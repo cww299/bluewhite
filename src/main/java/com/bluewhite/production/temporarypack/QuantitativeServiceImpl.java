@@ -123,10 +123,11 @@ public class QuantitativeServiceImpl extends BaseServiceImpl<Quantitative, Long>
             if (ot.getFlag() == 1) {
                 throw new ServiceException("已发货，无法修改");
             }
-            if(quantitative.getSendOrderId()!=null) {
-                SendOrder sendOrder = sendOrderDao.findOne(quantitative.getSendOrderId());
-                sendOrder.setCustomerId(ot.getCustomerId());
+            if(ot.getSendOrderId()!=null) {
+                SendOrder sendOrder = sendOrderDao.findOne(ot.getSendOrderId());
+                sendOrder.setCustomerId(quantitative.getCustomerId());
                 sendOrderDao.save(sendOrder);
+                quantitative.setSendOrderId(ot.getSendOrderId());
             }
             quantitative.setQuantitativeNumber(ot.getQuantitativeNumber());
             quantitative.setAudit(ot.getAudit());
@@ -290,6 +291,7 @@ public class QuantitativeServiceImpl extends BaseServiceImpl<Quantitative, Long>
                     quantitative.setFlag(flag);
                     if (quantitative.getSendOrderId() != null) {
                         SendOrder sendOrder = sendOrderDao.findOne(quantitative.getSendOrderId());
+                        sendOrder.setSendTime(quantitative.getSendTime());
                         sendOrder.setLogisticsId(logisticsId);
                         sendOrderDao.save(sendOrder);
                     }

@@ -51,4 +51,9 @@ public interface SendOrderService extends BaseCRUDService<SendOrder, Long> {
      */
     public List<Quantitative> getQuantitativeList(Long id);
 
+    /**审核前检测是否还有贴包单未发货
+     * @param id
+     */
+    public Long checkSendOrder(Long id);
+
 }

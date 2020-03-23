@@ -79,6 +79,16 @@ public class TemporaryPackAction {
             .addRetainTerm(UnderGoods.class, "id", "remarks", "product", "number", "bacthNumber", "status",
                 "allotTime");
     }
+    private ClearCascadeJSON clearCascadeJSONSendOrder;
+    {
+        clearCascadeJSONSendOrder = ClearCascadeJSON.get()
+            .addRetainTerm(SendOrder.class, "id", "customer", "sendOrderChild", "sendTime", "sumPackageNumber", "number",
+                "sendPackageNumber", "logistics","outerPackaging","logisticsNumber","tax","singerPrice"
+                ,"sendPrice","extraPrice","logisticsPrice","audit")
+            .addRetainTerm(SendOrderChild.class, "id", "product", "bacthNumber", "singleNumber")
+            .addRetainTerm(Product.class, "id", "name")
+            .addRetainTerm(BaseData.class, "id", "name");
+    }
 
     /**
      * 新增下货单
@@ -170,15 +180,15 @@ public class TemporaryPackAction {
             if (idArr.length > 0) {
                 for (int i = 0; i < idArr.length; i++) {
                     Long id = Long.parseLong(idArr[i]);
-                    Quantitative ot = new Quantitative();
-                    BeanCopyUtils.copyNotEmpty(quantitative, ot, "");
-                    ot.setId(id);
+                    Quantitative ot = quantitativeService.findOne(id);
+                    Quantitative newQuantitative = new Quantitative();
+                    BeanCopyUtils.copyNotEmpty(quantitative, newQuantitative, "");
+                    newQuantitative.setId(id);
                     // 子单内容无法批量修改
                     if (idArr.length > 1) {
-                        Quantitative qt = quantitativeService.findOne(ot.getId());
                         JSONArray jsonArray = new JSONArray();
-                        if (qt.getQuantitativeChilds().size() > 0) {
-                            for (QuantitativeChild quantitativeChild : qt.getQuantitativeChilds()) {
+                        if (ot.getQuantitativeChilds().size() > 0) {
+                            for (QuantitativeChild quantitativeChild : ot.getQuantitativeChilds()) {
                                 JSONObject jsonObject = new JSONObject();
                                 jsonObject.put("id", quantitativeChild.getId());
                                 jsonObject.put("underGoodsId", quantitativeChild.getUnderGoodsId());
@@ -186,9 +196,9 @@ public class TemporaryPackAction {
                                 jsonArray.add(jsonObject);
                             }
                         }
-                        ot.setChild(jsonArray.toJSONString());
+                        newQuantitative.setChild(jsonArray.toJSONString());
                     }
-                    quantitativeService.saveQuantitative(ot);
+                    quantitativeService.saveQuantitative(newQuantitative);
                 }
             }
             cr.setMessage("修改成功");
@@ -472,7 +482,7 @@ public class TemporaryPackAction {
             throw new ServiceException("参数不能为空");
         };
         PageParameter page = PageUtil.mapToPage(params);
-        cr.setData(clearCascadeJSON.format(sendOrderService.findPages(params, page)).toJSON());
+        cr.setData(clearCascadeJSONSendOrder.format(sendOrderService.findPages(params, page)).toJSON());
         cr.setMessage("查询成功");
         return cr;
     }
@@ -480,7 +490,7 @@ public class TemporaryPackAction {
     /**
      * 修改发货单
      */
-    @RequestMapping(value = "/temporaryPack/updateSendOrder", method = RequestMethod.GET)
+    @RequestMapping(value = "/temporaryPack/updateSendOrder", method = RequestMethod.POST)
     @ResponseBody
     public CommonResponse updateSendOrder(SendOrder sendOrder) {
         CommonResponse cr = new CommonResponse();
@@ -501,8 +511,25 @@ public class TemporaryPackAction {
         return cr;
     }
     
+    
     /**
-     * 审核 发货单（审核发货单之后,已经产生费用的贴包单，无法删除，同时在财务物流费用中自动生成费用）
+     * 生成物流费用前检测还有多少条贴包单未发货
+     * 
+     * 条数=0，不提示直接生成
+     * 条数>0，提示数量
+     */
+    @RequestMapping(value = "/temporaryPack/checkSendOrder", method = RequestMethod.GET)
+    @ResponseBody
+    public CommonResponse checkSendOrder(Long id) {
+        CommonResponse cr = new CommonResponse();
+        cr.setData(sendOrderService.checkSendOrder(id));
+        cr.setMessage("成功");
+        return cr;
+    }
+    
+    
+    /**
+     * 生成物流费用（审核发货单之后,已经产生费用的贴包单，无法删除，同时在财务物流费用中自动生成费用）
      * 取消审核，费用自动从物流费用中删除
      */
     @RequestMapping(value = "/temporaryPack/auditSendOrder", method = RequestMethod.GET)
