@@ -73,10 +73,8 @@ layui.extend({
 		],
 		[	// type:5 物流管理  logistics
 			firstCols,
-			{ field: "logisticsDate", title: "物流订单日期", type:'dateTime', edit:true,}, 
-			{ field: "contact_id", title: "客户名称", type:'select',select:{data:[],name:'userName', }, }, 
-			{ field: "custom_name", title: "物流点名称", edit:true, }, 
-			{ field: "money", title: "支付金额",  edit:'number',}, 
+			{ field: "logistics_name", title: "物流点名称",  }, 
+			{ field: "money", title: "支付金额",  }, 
 			{ field: "expenseDate", title: "预计付款日期",type:'dateTime', edit:true, }, 
 		],
 		[	//type:6  借款本金    loan
@@ -218,7 +216,7 @@ layui.extend({
 			});
 			allCustomer.unshift({id:'',name:'请选择'});
 			allCols[askfor.type][1].select.data = allCustomer;
-		}else if(askfor.type==9 || askfor.type==5){	//应付周转资金,   物流暂时用员工
+		}else if(askfor.type==9){	//应付周转资金, 
 			var allCustomer = myutil.getDataSync({
 				url:myutil.config.ctx+'/system/user/findAllUser',
 			});
