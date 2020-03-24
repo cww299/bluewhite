@@ -284,7 +284,7 @@ public class SearchUtils {
                         throw new ServiceException("查询字段[" + names[i] + "]不存在");
                     }
                     entityClass = field.getType();
-                    if(entityClass.equals(List.class)) {
+                    if(entityClass.equals(List.class) || entityClass.equals(Set.class) || entityClass.equals(Map.class)) {
                         Type type = field.getGenericType();
                         if (null == type) {
                             continue;

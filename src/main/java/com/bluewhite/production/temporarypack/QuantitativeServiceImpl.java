@@ -123,7 +123,7 @@ public class QuantitativeServiceImpl extends BaseServiceImpl<Quantitative, Long>
             if (ot.getFlag() == 1) {
                 throw new ServiceException("已发货，无法修改");
             }
-            if(ot.getSendOrderId()!=null) {
+            if (ot.getSendOrderId() != null) {
                 SendOrder sendOrder = sendOrderDao.findOne(ot.getSendOrderId());
                 sendOrder.setCustomerId(quantitative.getCustomerId());
                 sendOrderDao.save(sendOrder);
@@ -286,20 +286,22 @@ public class QuantitativeServiceImpl extends BaseServiceImpl<Quantitative, Long>
                         quantitative.setSendTime(DateUtil.parse(StrUtil.sub(vehicleNumber, 0, 8)));
                         if (quantitative.getSendOrderId() != null) {
                             SendOrder sendOrder = sendOrderDao.findOne(quantitative.getSendOrderId());
-                            sendOrder.setSendPackageNumber(sendOrder.getSendPackageNumber()+1);
+                            sendOrder.setSendPackageNumber(sendOrder.getSendPackageNumber() + 1);
                             sendOrder.setSendTime(quantitative.getSendTime());
                             sendOrder.setLogisticsId(logisticsId);
                             sendOrderDao.save(sendOrder);
                         }
                     } else {
-                        SendOrder sendOrder = sendOrderDao.findOne(quantitative.getSendOrderId());
-                        sendOrder.setSendPackageNumber(sendOrder.getSendPackageNumber()-1);
-                        sendOrderDao.save(sendOrder);
+                        if (quantitative.getSendOrderId() != null) {
+                            SendOrder sendOrder = sendOrderDao.findOne(quantitative.getSendOrderId());
+                            sendOrder.setSendPackageNumber(sendOrder.getSendPackageNumber() - 1);
+                            sendOrderDao.save(sendOrder);
+                        }
                         quantitative.setVehicleNumber(null);
                         quantitative.setSendTime(null);
                     }
                     quantitative.setFlag(flag);
-                 
+
                     dao.save(quantitative);
                 }
             }
