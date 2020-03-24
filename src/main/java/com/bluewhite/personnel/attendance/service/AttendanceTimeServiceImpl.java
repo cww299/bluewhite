@@ -306,27 +306,26 @@ public class AttendanceTimeServiceImpl extends BaseServiceImpl<AttendanceTime, L
                 attList = AttendanceTool.sumIntervalDate(attList, 20);
                 // 考情记录有三种情况。当一天的考勤记录条数等于大于2时,为正常的考勤
                 // 打卡记录是4条 正常签入签出，中途签出一次签入一次
-//                if (attList.size() == 4) {
-//                    // 上班
-//                    attendanceTime.setCheckIn(new Date(attList.get(0).getTime().getTime()));
-//                    // 下班
-//                    attendanceTime.setCheckOut(new Date(attList.get(1).getTime().getTime()));
-//                    // 计算实际工作时长
-//                    countWorkTime(attendanceTime, restBeginTime, restEndTime, workTimeEnd, workTime, restTime);
-//                    double fristWorkTime = attendanceTime.getWorkTime();
-//                    // 上班
-//                    attendanceTime.setCheckIn(new Date(attList.get(2).getTime().getTime()));
-//                    // 下班
-//                    attendanceTime.setCheckOut(new Date(attList.get(3).getTime().getTime()));
-//                    double lastWorkTime = attendanceTime.getWorkTime();
-//                    attendanceTime.setWorkTime(NumUtils.sum(fristWorkTime,lastWorkTime));
-//                    
-//                    
-//                    
-//                }
+                if (attList.size() == 4) {
+                    // 当外协部或者物流部有打卡记录时，按打卡记录核算考勤
+                    if (us.getOrgNameId() != null && us.getOrgNameId() != 45 && us.getOrgNameId() != 23) {
+                        // 无到岗要求和无打卡要求
+                        if (attendanceInit.getWorkType() == 1 || attendanceInit.getWorkType() == 2) {
+                            attendanceTime.setFlag(0);
+                            attendanceTime.setTurnWorkTime(turnWorkTime);
+                            attendanceTimeList.add(attendanceTime);
+                            continue;
+                        }
+                    }
+                    AttendanceTool attendanceTool = new AttendanceTool();
+                    // 进行出勤，加班，缺勤，迟到，早退的计算
+                    attendanceTool.attendanceIntToolTwo(sign, workTime, workTimeEnd, restBeginTime, restEndTime, minute,
+                        turnWorkTime, attendanceTime, attendanceInit, us.getOrgNameId(), restTime,
+                        attList.get(0).getTime(),attList.get(1).getTime(),attList.get(2).getTime(),attList.get(3).getTime());
+                }
 
                 // 等于2时，正常签入签出
-                if (attList.size() >=2) {
+                if (attList.size() == 2) {
                     // 获取签入签出时间
                     // 上班
                     attendanceTime.setCheckIn(new Date(attList.get(0).getTime().getTime()));
@@ -339,13 +338,12 @@ public class AttendanceTimeServiceImpl extends BaseServiceImpl<AttendanceTime, L
                         attendanceTime.setFlag(3);
                         if (attendanceInit.getOverTimeType() == 2 && attendanceTime.getCheckIn() != null && attendanceTime.getCheckOut() != null) {
                             if (attendanceInit.getRestTimeWork() == 3) {
-                                attendanceTime
-                                    .setOvertime(DatesUtil.getTimeHour(attendanceTime.getCheckIn().before(workTime)
+                                attendanceTime.setOvertime(DatesUtil.getTimeHour(attendanceTime.getCheckIn().before(workTime)
                                         ? workTime : attendanceTime.getCheckIn(), attendanceTime.getCheckOut()));
                             } else {
                                 attendanceTime.setOvertime(NumUtils.sub(
                                     DatesUtil.getTimeHour(attendanceTime.getCheckIn().before(workTime) ? workTime
-                                        : attendanceTime.getCheckIn(), attendanceTime.getCheckOut()),
+                                        : attendanceTime.getCheckIn(), attendanceTime.getCheckOut()),   
                                     attendanceTime.getCheckOut().after(restEndTime) ? restTime : 0));
                             }
                             if (attendanceInit.isEarthWork() && DatesUtil.getTime(attendanceTime.getCheckIn(), workTime) >= 20) {
@@ -424,8 +422,7 @@ public class AttendanceTimeServiceImpl extends BaseServiceImpl<AttendanceTime, L
         // 在上午同时签到签出
         if (attendanceTime.getCheckIn().compareTo(restBeginTime) != 1
             && attendanceTime.getCheckOut().compareTo(restBeginTime) != 1) {
-            attendanceTime
-                .setWorkTime(DatesUtil.getTimeHour(attendanceTime.getCheckIn(), attendanceTime.getCheckOut()));
+            attendanceTime.setWorkTime(DatesUtil.getTimeHour(attendanceTime.getCheckIn(), attendanceTime.getCheckOut()));
         } else
         // 在下午同时签到签出
         if (attendanceTime.getCheckIn().compareTo(restEndTime) != -1
@@ -697,8 +694,7 @@ public class AttendanceTimeServiceImpl extends BaseServiceImpl<AttendanceTime, L
                                         }
                                     }
 
-                                    if (oneAtList.get(0).getDutytimMinute() != null
-                                        && NumUtils.mul(time, 60) < oneAtList.get(0).getDutytimMinute()) {
+                                    if (oneAtList.get(0).getDutytimMinute() != null  && NumUtils.mul(time, 60) < oneAtList.get(0).getDutytimMinute()) {
                                         if (oneAtList.get(0).getDutytimMinute() > 30) {
                                             oneAtList.get(0).setBelate(1);
                                             oneAtList.get(0).setBelateTime(NumUtils

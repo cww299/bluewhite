@@ -33,7 +33,6 @@ import com.bluewhite.common.entity.PageParameter;
 import com.bluewhite.common.entity.PageUtil;
 import com.bluewhite.common.utils.BankUtil;
 import com.bluewhite.common.utils.DatesUtil;
-import com.bluewhite.personnel.attendance.entity.Attendance;
 import com.bluewhite.personnel.attendance.entity.AttendanceInit;
 import com.bluewhite.personnel.attendance.service.AttendanceInitService;
 import com.bluewhite.production.group.dao.TemporarilyDao;
@@ -81,7 +80,7 @@ public class UserAction {
                 "roles", "turnWorkTime", "quitTypeId", "quitType", "lotionNumber","healthCertificateTime")
             .addRetainTerm(Group.class, "id", "name", "type", "price")
             .addRetainTerm(Role.class, "name", "role", "description", "id")
-            .addRetainTerm(BaseData.class, "id", "name", "type");
+            .addRetainTerm(BaseData.class, "id", "name");
     }
 
     private ClearCascadeJSON clearCascadeJSONTemporaryUser;

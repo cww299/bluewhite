@@ -15,6 +15,7 @@ import com.bluewhite.personnel.attendance.entity.AttendanceTime;
 import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.date.DateUnit;
 import cn.hutool.core.date.DateUtil;
+import cn.hutool.core.util.NumberUtil;
 
 /**
  * 用于计算考勤数据的工具方法
@@ -282,11 +283,8 @@ public class AttendanceTool {
     private Date workTimeEnd;
     // 签到时间在下班时间之后是否合算加班（1.看加班申请2.按打卡正常核算加班）
     private Integer overTimeType;
-    // 中午休息时长,1=默认休息,2=出勤,3=加班
-    private Integer restTimeWork;
     //早于默认上班时间前15分钟，进行加班0.5计算。
     private boolean earthWork; 
-    
 
     /**
      * 进行出勤，加班，缺勤，迟到，早退的计算 举例出能满足的所有条件，合适条件的进行 第二种计算方式
@@ -307,7 +305,6 @@ public class AttendanceTool {
         this.workTimeStrat = DateUtil.offsetMinute(workTimeStrat, 1);
         this.workTimeEnd = workTimeEnd;
         this.overTimeType = attendanceInit.getOverTimeType();
-        this.restTimeWork = attendanceInit.getRestTimeWork();
         this.earthWork = attendanceInit.isEarthWork();
 
         // 正常情况下：员工不可以加班后晚到岗
@@ -323,9 +320,16 @@ public class AttendanceTool {
                 && DateUtil.isIn(two, workTimeStrat, workTimeEnd) 
                 && DateUtil.isIn(three, workTimeStrat, workTimeEnd);
             if (flag) {
-                // 等于默认出勤-实际出勤
+                // 加班
+                if(overTimeType==2) {
+                    actualOverTime =  DatesUtil.getTimeHour(workTimeEnd, four);
+                }
+                actualTurnWorkTime = attendanceTime.getWorkTime();
                 actualDutyTime = NumUtils.sub(turnWorkTime, attendanceTime.getWorkTime());
-                flag = false;
+                // 实际缺勤时长分钟数
+                actualDutytimMinute = NumUtils.mul(actualDutyTime, MINUTES);
+                attendanceTime.setFlag(1);
+                
             }
             // 第一次打卡在上班时间，第二次打卡在上班期间内，后两次打卡在下班后（缺勤）（加班）
             flag = one.before(DateUtil.offsetMinute(workTimeStrat,DUTYMIN)) 
@@ -333,67 +337,57 @@ public class AttendanceTool {
                 && three.after(workTimeEnd)
                 && four.after(workTimeEnd);
             if (flag) {
-                
-                
-                flag = false;
+                //加班
+                if(overTimeType==2) {
+                    actualOverTime =  DatesUtil.getTimeHour(three, four);
+                }
+                actualTurnWorkTime = attendanceTime.getWorkTime();
+                actualDutyTime = NumUtils.sub(turnWorkTime, attendanceTime.getWorkTime());
+                // 实际缺勤时长分钟数
+                actualDutytimMinute = NumUtils.mul(actualDutyTime, MINUTES);
+                attendanceTime.setFlag(1);
             }
             
-            // 第一次打卡在上班时间，后三次打卡在下班后（加班）
+            // 第一次打卡在上班时间，后三次打卡在下班后（加班）(唯一不缺勤情况)
             flag = one.before(DateUtil.offsetMinute(workTimeStrat,DUTYMIN)) 
                 && two.after(workTimeEnd)
                 && three.after(workTimeEnd)
                 && four.after(workTimeEnd);
             if (flag) {
-                
-                
-                flag = false;
-            }
-            
-            //迟到
-            if(belate(one)>0) {
-                attendanceTime.setBelate(1);
-                actualbelateTime = belate(one);
-            }
-            //早退
-            if(LeaveEarly(four)>0) {
-                attendanceTime.setLeaveEarly(1);
-                actualLeaveEarlyTime = LeaveEarly(four);
-            }
-            //上班前加班
-            if(overTimeUp(one)>0) {
-                actualOverTime = overTimeUp(one);
-            }
-            //下班后加班
-            if(overTimeDown(four)>0) {
-                actualOverTime = overTimeDown(four);
+                if(overTimeType==2) {
+                   double actualOverTimeOne =  DatesUtil.getTimeHour(workTimeEnd, two);
+                   double actualOverTimeTwo =  DatesUtil.getTimeHour(three, four);
+                   actualOverTime = NumberUtil.add(actualOverTimeOne, actualOverTimeTwo);
+                }
+                actualTurnWorkTime = turnWorkTime;
             }
         }
 
+        // 中午休息时长是否算加班
+        // 当第二次打卡在中午休息之后（加班）
+        // 当第三次打卡在中午休息之前（加班）
         if (attendanceInit.getRestTimeWork() == 3) {
             // 签入在休息时间之前
-            if (attendanceTime.getCheckIn().compareTo(restBeginTime) != 1
-                && attendanceTime.getCheckOut().compareTo(restEndTime) != -1) {
+            if (two.after(restEndTime) || four.after(restEndTime)) {
                 actualOverTime += restTime;
             }
-            if (attendanceTime.getCheckIn().compareTo(restBeginTime) == 1
-                && attendanceTime.getCheckIn().compareTo(restEndTime) == -1
-                && attendanceTime.getCheckOut().compareTo(restEndTime) == 1) {
-                actualOverTime += DatesUtil.getTimeHour(attendanceTime.getCheckIn(), restEndTime);
-            }
-            if (attendanceTime.getCheckIn().compareTo(restBeginTime) == -1
-                && attendanceTime.getCheckOut().compareTo(restBeginTime) == 1
-                && attendanceTime.getCheckOut().compareTo(restEndTime) == -1) {
-                actualOverTime += DatesUtil.getTimeHour(restBeginTime, attendanceTime.getCheckOut());
-            }
-            // 之间
-            if (attendanceTime.getCheckIn().compareTo(restBeginTime) == 1
-                && attendanceTime.getCheckOut().compareTo(restEndTime) == -1) {
-                actualOverTime += DatesUtil.getTimeHour(attendanceTime.getCheckIn(), attendanceTime.getCheckOut());
+            if (one.before(restBeginTime) || three.before(restBeginTime)) {
+                actualOverTime += restTime;
             }
         }
-
-        if (attendanceInit.isEarthWork() && DatesUtil.getTime(attendanceTime.getCheckIn(), workTimeStrat) >= OVERMIN) {
-            actualOverTime += 0.5;
+        //迟到
+        if(belate(one)>0) {
+            attendanceTime.setBelate(1);
+            actualbelateTime = belate(one);
+        }
+        //早退
+        if(LeaveEarly(four)>0) {
+            attendanceTime.setLeaveEarly(1);
+            actualLeaveEarlyTime = LeaveEarly(four);
+        }
+        //上班前加班
+        if(overTimeUp(one)>0) {
+            actualOverTime += overTimeUp(one);
         }
         attendanceTime.setTurnWorkTime(actualTurnWorkTime);
         attendanceTime.setOrdinaryOvertime(actualOverTime);
@@ -403,7 +397,6 @@ public class AttendanceTool {
         attendanceTime.setBelateTime(actualbelateTime);
         attendanceTime.setDutytimMinute(actualDutytimMinute);
         return attendanceTime;
-
     }
 
     /**
@@ -413,7 +406,7 @@ public class AttendanceTool {
      * @return
      */
     private long belate(Date signTime) {
-        if (signTime.before(workTimeStrat) && signTime.before(DateUtil.offsetMinute(workTimeStrat, DUTYMIN))) {
+        if (signTime.after(workTimeStrat) && signTime.before(DateUtil.offsetMinute(workTimeStrat, DUTYMIN))) {
             return DateUtil.between(signTime, workTimeStrat, DateUnit.MINUTE);
         }
         return 0;
@@ -445,32 +438,7 @@ public class AttendanceTool {
         return 0;
     }
 
-    /**
-     * 下班加班
-     * 
-     * @param signTime
-     * @return
-     */
-    private Double overTimeDown(Date signTime) {
-        if (signTime.after(DateUtil.offsetMinute(workTimeEnd, DUTYMIN)) && overTimeType ==2) {
-            return DatesUtil.getTimeHour(Double.valueOf(DateUtil.between(signTime, workTimeEnd, DateUnit.MINUTE)));
-        }
-        return 0.0;
-    }
     
-    /**
-     * 中午加班
-     * 
-     * @param signTime
-     * @return
-     */
-    private long overTimeCentre(Date signTime) {
-    
-        
-        
-        
-        return 0;
-    }
     
     
     
@@ -490,7 +458,9 @@ public class AttendanceTool {
                 Long diffMin = DateUtil.between(date, lastAttendance.getTime(), DateUnit.MINUTE);
                 if (lastAttendance.getInoutType() == 0) { // 如果上次打卡是签入
                     if (diffMin > intervalMin) { // 本次打卡，跟上次打卡大于规定间隔时间，记录本次打卡为签出
-                        lastAttendance.setInoutType(1);
+                        Attendance attendance = attendanceList.get(i);
+                        attendance.setInoutType(1);
+                        ms.add(attendance);
                     }
                 } else { // 如果上次打卡为签出
                     if (diffMin > intervalMin) { // 本次打卡与上次签出打卡间隔大于规定时间。记录为签入时间
