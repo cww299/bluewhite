@@ -12,7 +12,9 @@
  * 					cols:[[ { type:'count', }  ]]	修改时只能是正整数
  * 开启自动修改功能：autoUpdate:{  saveUrl:'新增的接口', deleUrl:'删除接口', updateUrl:'修改接口（如果不存在时，默认使用新增接口）',
  * 								nolyUpdateField:[],		//自动修改的字段，用于过滤可修改但需要点击保存的字段
- * 									field:{ 虚拟字段:'对应的上传值' },isReload：修改成功是否重载表格 ,success:成功后的回调 },   如：customer_id 对应的上传值customerId
+ * 								closeMsg:关闭保存成功提示
+ * 								closeLoad:关闭遮罩
+ * 								field:{ 虚拟字段:'对应的上传值' },isReload：修改成功是否重载表格 ,success:成功后的回调 },   如：customer_id 对应的上传值customerId
  * 增加自动curd工具模板：curd: {
  * 							btn:[1,2,3,4],  需要显示的按钮，按顺序，默认全显
  *							addTemp:{ },  新增一行给定的默认值。不给的时候、默认为空值
@@ -257,6 +259,8 @@ layui.extend({
 									myutil.saveAjax({
 										url: opt.autoUpdate.updateUrl || opt.autoUpdate.saveUrl,
 										data: data,
+										closeMsg: opt.autoUpdate.closeMsg,
+										closeLoad: opt.autoUpdate.closeLoad,
 										success:function(){
 											opt.autoUpdate.success && opt.autoUpdate.success();
 										}
@@ -290,6 +294,8 @@ layui.extend({
 								myutil.saveAjax({
 									url: opt.autoUpdate.updateUrl || opt.autoUpdate.saveUrl,
 									data: data,
+									closeMsg: opt.autoUpdate.closeMsg,
+									closeLoad: opt.autoUpdate.closeLoad,
 									success: function(){
 										opt.autoUpdate.success && opt.autoUpdate.success(field,trData,obj);
 										if(opt.autoUpdate.isReload)
@@ -335,6 +341,8 @@ layui.extend({
 						myutil.saveAjax({
 							url: opt.autoUpdate.updateUrl || opt.autoUpdate.saveUrl,
 							data: data,
+							closeMsg: opt.autoUpdate.closeMsg,
+							closeLoad: opt.autoUpdate.closeLoad,
 							success: function(){
 								opt.autoUpdate.success && opt.autoUpdate.success(field,trData,this);
 								if(opt.autoUpdate.isReload)
@@ -432,7 +440,8 @@ layui.extend({
 								myutil.saveAjax({
 									url: opt.autoUpdate.saveUrl,
 									data: data[i],
-									closeMsg: true,
+									closeMsg: opt.autoUpdate.closeMsg,
+									closeLoad: opt.autoUpdate.closeLoad,
 									success: function(){
 										success++;
 										if(success==data.length){
