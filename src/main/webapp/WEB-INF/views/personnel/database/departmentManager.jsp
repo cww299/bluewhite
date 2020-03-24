@@ -125,7 +125,7 @@ layui.config({
 						parseData : function(ret) { return { code : ret.code, msg : ret.message, data : ret.data, } },
 						cols:[[
 						        {type: 'checkbox',align : 'center',},
-								{field : "name",title : "部门名称",align : 'center'},
+								{field : "name",title : "部门名称",align : 'center',sort:true, },
 								{field : "remark",title : "备注",align : 'center'},
 								{field : "flag",title : "是否可用",align : 'center',templet:function(d){ return d.flag==1?"是":"否";}},
 						      ]],
