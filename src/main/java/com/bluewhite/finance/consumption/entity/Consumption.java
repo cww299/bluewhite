@@ -197,6 +197,18 @@ public class Consumption extends BaseEntity<Long> {
 	@JoinColumn(name = "order_outSource_id", referencedColumnName = "id", insertable = false, updatable = false)
 	private OrderOutSource orderOutSource;
 	
+    /**
+     * 物流点id
+     */
+    @Column(name = "logistics_id")
+    private Long logisticsId;
+
+    /**
+     * 物流点
+     */
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "logistics_id", referencedColumnName = "id", insertable = false, updatable = false)
+    private BaseData logistics;
 	/**
 	 * 过滤参数(报销人姓名)
 	 */
@@ -235,7 +247,24 @@ public class Consumption extends BaseEntity<Long> {
 	
 	
 	
-	public String getOrderNumber() {
+	
+	public Long getLogisticsId() {
+        return logisticsId;
+    }
+
+    public void setLogisticsId(Long logisticsId) {
+        this.logisticsId = logisticsId;
+    }
+
+    public BaseData getLogistics() {
+        return logistics;
+    }
+
+    public void setLogistics(BaseData logistics) {
+        this.logistics = logistics;
+    }
+
+    public String getOrderNumber() {
 		return orderNumber;
 	}
 
