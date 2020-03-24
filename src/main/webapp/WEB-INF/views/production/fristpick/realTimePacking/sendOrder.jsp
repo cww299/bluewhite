@@ -103,7 +103,9 @@ layui.config({
 			autoUpdate:{
 				updateUrl: '/temporaryPack/updateSendOrder',
 				field:{ logistics_id:'logisticsId', outerPackaging_id:'outerPackagingId'},
+				closeMsg:true,
 				isReload: true,
+				closeLoad: true,
 			},
 			parseData:function(ret){
 				if(ret.code==0){
