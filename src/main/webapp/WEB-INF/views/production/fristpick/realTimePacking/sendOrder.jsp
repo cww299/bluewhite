@@ -84,13 +84,13 @@ layui.config({
 						}
 						myutil.deleTableIds({
 							 table:'tableData', 
-							 text:'请选择信息|是否确认取消审核？',
+							 text:'请选择信息|是否确认生成物流费用？',
 							 url:'/temporaryPack/auditSendOrder?audit=1',
 						})
 					}else if(obj.event=='cancelAudit'){
 						myutil.deleTableIds({
 							 table:'tableData', 
-							 text:'请选择信息|是否确认取消审核？',
+							 text:'请选择信息|取消生成物流费用？',
 							 url:'/temporaryPack/auditSendOrder?audit=0',
 						})
 					}else if(obj.event=="info"){
