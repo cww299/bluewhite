@@ -168,6 +168,7 @@ public class BaseDataServiceImpl extends BaseServiceImpl<BaseData, Long> impleme
         if(recruitList.size()>0) {
             recruitList.forEach(r -> {
                 r.setPositionId(null);
+                r.setPosition(null);
             });
             recruitDao.save(recruitList);
         }
@@ -175,6 +176,7 @@ public class BaseDataServiceImpl extends BaseServiceImpl<BaseData, Long> impleme
         if(userList.size()>0) {
             userList.forEach(r -> {
                 r.setPositionId(null);
+                r.setPosition(null);
             });
             userDao.save(userList);
         }

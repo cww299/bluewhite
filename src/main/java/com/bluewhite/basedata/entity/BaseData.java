@@ -11,8 +11,6 @@ import javax.persistence.Transient;
 import com.bluewhite.base.BaseEntity;
 import com.bluewhite.system.user.entity.User;
 
-import javassist.expr.NewArray;
-
 @Entity
 @Table(name = "sys_base_data")
 public class BaseData extends BaseEntity<Long>{

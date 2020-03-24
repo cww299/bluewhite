@@ -311,7 +311,7 @@ public class AttendanceTool {
         this.earthWork = attendanceInit.isEarthWork();
 
         // 正常情况下：员工不可以加班后晚到岗
-        //加班
+        // 加班
         // 第一次打卡在上班开始之前，后面三次打卡在上班结束之后(加班)
         // 第一次打卡在上班时间，第二次打卡在上班期间内，后两次打卡在下班后，
 
@@ -338,6 +338,16 @@ public class AttendanceTool {
                 flag = false;
             }
             
+            // 第一次打卡在上班时间，后三次打卡在下班后（加班）
+            flag = one.before(DateUtil.offsetMinute(workTimeStrat,DUTYMIN)) 
+                && two.after(workTimeEnd)
+                && three.after(workTimeEnd)
+                && four.after(workTimeEnd);
+            if (flag) {
+                
+                
+                flag = false;
+            }
             
             //迟到
             if(belate(one)>0) {
@@ -357,10 +367,6 @@ public class AttendanceTool {
             if(overTimeDown(four)>0) {
                 actualOverTime = overTimeDown(four);
             }
-            
-            
-            
-       
         }
 
         if (attendanceInit.getRestTimeWork() == 3) {
@@ -470,7 +476,7 @@ public class AttendanceTool {
     
 
     // 排除集合中每相邻的不超过数值的打卡记录
-    public List<Attendance> sumIntervalDate(List<Attendance> attendanceList, int intervalMin) {
+    public static List<Attendance> sumIntervalDate(List<Attendance> attendanceList, int intervalMin) {
         List<Attendance> ms = new ArrayList<Attendance>();
         for (int i = 0; i < attendanceList.size(); i++) {
             Date date = attendanceList.get(i).getTime();
