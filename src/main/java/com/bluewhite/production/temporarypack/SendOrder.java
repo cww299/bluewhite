@@ -13,7 +13,6 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
-import javax.persistence.Transient;
 
 import com.bluewhite.base.BaseEntity;
 import com.bluewhite.basedata.entity.BaseData;
@@ -139,7 +138,7 @@ public class SendOrder extends BaseEntity<Long> {
     /**
      * 是否生成物流费用
      */
-    @Transient
+    @Column(name = "audit")
     private Integer audit;
 
     

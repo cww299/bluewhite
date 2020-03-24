@@ -48,6 +48,7 @@ public class SendOrderServiceImpl extends BaseServiceImpl<SendOrder, Long> imple
         SendOrder sendOrder = new SendOrder();
         sendOrder.setAudit(0);
         sendOrder.setCustomerId(quantitative.getCustomerId());
+        sendOrder.setSendPackageNumber(0);
         sendOrder.setSumPackageNumber(quantitative.getSumPackageNumber());
         sendOrder.setLogisticsId(quantitative.getLogisticsId());
         int sumNuber = 0;
@@ -80,8 +81,10 @@ public class SendOrderServiceImpl extends BaseServiceImpl<SendOrder, Long> imple
         // 通过修改单价，计算总运费价格
         SendOrder ot = findOne(sendOrder.getId());
         BeanCopyUtils.copyNotEmpty(sendOrder, ot, "");
-        ot.setSendPrice(NumberUtil.mul(ot.getSumPackageNumber(),ot.getSingerPrice()));
-        ot.setLogisticsPrice(NumberUtil.add(ot.getExtraPrice(), ot.getSingerPrice()));
+        if(ot.getSumPackageNumber()!=null && ot.getSingerPrice()!=null) {
+            ot.setSendPrice(NumberUtil.mul(ot.getSumPackageNumber(),ot.getSingerPrice()));
+            ot.setLogisticsPrice(NumberUtil.add(ot.getExtraPrice(), ot.getSingerPrice()));
+        }
         save(ot);
     }
 
@@ -128,6 +131,8 @@ public class SendOrderServiceImpl extends BaseServiceImpl<SendOrder, Long> imple
                         consumption.setMoney(NumberUtil.sub(consumption.getMoney(), sendOrder.getLogisticsPrice()).doubleValue());
                     }
                     consumptionService.addConsumption(consumption);
+                    sendOrder.setAudit(audit);
+                    save(sendOrder);
                 }
                 count++;
             }

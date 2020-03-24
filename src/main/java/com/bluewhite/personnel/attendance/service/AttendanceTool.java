@@ -311,22 +311,15 @@ public class AttendanceTool {
         this.earthWork = attendanceInit.isEarthWork();
 
         // 正常情况下：员工不可以加班后晚到岗
-        // 第一次打卡在上班开始之前，最后一次打卡在上班结束之后，中间两次打卡在上班中间（缺勤）
+        // 加班
         // 第一次打卡在上班开始之前，后面三次打卡在上班结束之后(加班)
-        // 第一次打卡在上班开始之后，最后一次打卡在上班结束之后，中间两次打卡在上班中间（迟到和缺勤）
-        // 第一次打卡在上班开始之后, 后面三次打卡在上班结束之后(迟到或缺勤和加班)
-        // 第一次打卡在上班开始之后，最后一次打卡在上班结束之前，中间两次打卡在上班中间（迟到和缺勤和早退）（全是缺勤）
-        // 7.前二次打卡在上班开始之前，第三次打卡在上班中间，最后一次打卡在上班结束之后（加班和缺勤）
-        // 8.前二次打卡在上班开始之前，最后二次打卡在上班结束之前（加班和缺勤）
-        // 9.前三次打卡在上班开始之前，最后一次打卡在上班结束之后（加班）
-        // 10.前三次打卡在上班开始之前，最后一次打卡在上班结束之前（加班和缺勤）
-        // 11.前四次打卡在上班开始之前（加班和缺勤）
-        // 12.前四次打卡在上班结束之后（加班和缺勤）
+        // 第一次打卡在上班时间，第二次打卡在上班期间内，后两次打卡在下班后，
 
         if (!sign) {
-            // 第一次打卡在上班开始之前，最后一次打卡在上班结束之后，中间两次打卡在上班中间（缺勤）
-            flag = one.before(workTimeStrat) 
-                && four.after(workTimeEnd)
+            // 缺勤
+            // 第一次打卡在上班开始之前，最后一次打卡在上班结束之后，中间两次打卡在上班中间(缺勤)
+            flag = one.before(DateUtil.offsetMinute(workTimeStrat,DUTYMIN)) 
+                && four.after(DateUtil.offsetMinute(workTimeEnd, -DUTYMIN))
                 && DateUtil.isIn(two, workTimeStrat, workTimeEnd) 
                 && DateUtil.isIn(three, workTimeStrat, workTimeEnd);
             if (flag) {
@@ -334,104 +327,46 @@ public class AttendanceTool {
                 actualDutyTime = NumUtils.sub(turnWorkTime, attendanceTime.getWorkTime());
                 flag = false;
             }
-
-            // 第一次打卡在上班开始之前，后面三次打卡在上班结束之后(加班)
-            flag = one.before(workTimeStrat) 
-                && two.after(workTimeEnd) 
-                && three.after(workTimeEnd)
-                && four.after(workTimeEnd);
-            if (flag) {
-                actualTurnWorkTime = attendanceTime.getWorkTime();
-                actualOverTime = DatesUtil.getTimeHour(workTimeEnd, four);
-                flag = false;
-            }
-
-            // 第一次打卡在上班开始之后，最后一次打卡在上班结束之后，中间两次打卡在上班中间（迟到和缺勤）
-            flag = one.after(workTimeStrat) 
-                && four.after(workTimeEnd) 
-                && DateUtil.isIn(two, workTimeStrat, workTimeEnd)
-                && DateUtil.isIn(three, workTimeStrat, workTimeEnd);
-            if (flag) {
-                if (one.after(DatesUtil.getDaySum(workTimeStrat, DUTYMIN))) {
-                    actualTurnWorkTime = attendanceTime.getWorkTime();
-                    attendanceTime.setBelate(1);
-                    actualbelateTime = DateUtil.between(workTimeStrat, one, DateUnit.MINUTE);
-                }
-                actualDutyTime = NumUtils.sub(turnWorkTime, attendanceTime.getWorkTime());
-                // 实际缺勤时长分钟数
-                actualDutytimMinute += DatesUtil.getTime(attendanceTime.getCheckOut(), workTimeEnd);
-                flag = false;
-            }
-
-            // 第一次打卡在上班开始之后, 后面三次打卡在上班结束之后(迟到或缺勤和加班)
-            flag = one.after(workTimeStrat) 
-                && two.after(workTimeEnd) 
-                && three.after(workTimeEnd)
-                && four.after(workTimeEnd);
-            if (flag) {
-                // 迟到
-                if (belate(one)>0) {
-                    attendanceTime.setBelate(1);
-                    actualbelateTime = belate(one);
-                } else {
-                    // 缺勤
-                    actualDutyTime = NumUtils.sub(turnWorkTime, attendanceTime.getWorkTime());
-                }   
-                // 加班
-                actualOverTime = DatesUtil.getTimeHour(workTimeEnd, four);
-                flag = false;
-            }
-
-            // 第一次打卡在上班开始之后，最后一次打卡在上班结束之前，中间两次打卡在上班中间（迟到和缺勤和早退）（全是缺勤）
-            flag = one.after(workTimeStrat) 
-                && four.before(workTimeEnd)
+            // 第一次打卡在上班时间，第二次打卡在上班期间内，后两次打卡在下班后（缺勤）（加班）
+            flag = one.before(DateUtil.offsetMinute(workTimeStrat,DUTYMIN)) 
                 && DateUtil.isIn(two, workTimeStrat, workTimeEnd) 
-                && DateUtil.isIn(three, workTimeStrat, workTimeEnd);
+                && three.after(workTimeEnd)
+                && four.after(workTimeEnd);
             if (flag) {
-                if (belate(one)>0) {
-                    // 迟到
-                    attendanceTime.setBelate(1);
-                    actualbelateTime = belate(one);
-                }  
-                if(LeaveEarly(four)>0) {
-                    // 早退
-                    attendanceTime.setLeaveEarly(1);
-                    actualLeaveEarlyTime = LeaveEarly(four);
-                }
-                // 缺勤
-                actualDutyTime = NumUtils.sub(turnWorkTime, attendanceTime.getWorkTime());
+                
+                
                 flag = false;
             }
-
-            // 前二次打卡在上班开始之前，第三次打卡在上班之间,最后一次打卡在上班结束之后（缺勤 和加班）
-            flag = one.before(workTimeStrat) && two.before(workTimeStrat)
-                && DateUtil.isIn(three, workTimeStrat, workTimeEnd) && four.after(workTimeEnd);
+            
+            // 第一次打卡在上班时间，后三次打卡在下班后（加班）
+            flag = one.before(DateUtil.offsetMinute(workTimeStrat,DUTYMIN)) 
+                && two.after(workTimeEnd)
+                && three.after(workTimeEnd)
+                && four.after(workTimeEnd);
             if (flag) {
-                if (belate(three)>0) {
-                    // 迟到
-                    attendanceTime.setBelate(1);
-                    actualbelateTime = belate(three);
-                }  
+                
+                
                 flag = false;
             }
-            //前二次打卡在上班开始之前，最后二次打卡在上班结束之前（加班和缺勤）
-            flag = one.before(workTimeStrat) && two.before(workTimeStrat)
-                && three.before(workTimeEnd) && four.before(workTimeEnd);
-            if(flag) {
-                if(LeaveEarly(four)>0) {
-                    // 早退
-                    attendanceTime.setLeaveEarly(1);
-                    actualLeaveEarlyTime = LeaveEarly(four);
-                }
-                
+            
+            //迟到
+            if(belate(one)>0) {
+                attendanceTime.setBelate(1);
+                actualbelateTime = belate(one);
             }
-            //前三次打卡在上班开始之前，最后一次打卡在上班结束之后（加班）
-            flag = one.before(workTimeStrat) && two.before(workTimeStrat)
-                && three.before(workTimeStrat) && four.after(workTimeEnd);
-            if(flag) {
-                
+            //早退
+            if(LeaveEarly(four)>0) {
+                attendanceTime.setLeaveEarly(1);
+                actualLeaveEarlyTime = LeaveEarly(four);
             }
-       
+            //上班前加班
+            if(overTimeUp(one)>0) {
+                actualOverTime = overTimeUp(one);
+            }
+            //下班后加班
+            if(overTimeDown(four)>0) {
+                actualOverTime = overTimeDown(four);
+            }
         }
 
         if (attendanceInit.getRestTimeWork() == 3) {
@@ -516,10 +451,24 @@ public class AttendanceTool {
      * @param signTime
      * @return
      */
-    private long overTimeDown(Date signTime) {
+    private Double overTimeDown(Date signTime) {
         if (signTime.after(DateUtil.offsetMinute(workTimeEnd, DUTYMIN)) && overTimeType ==2) {
-            return DateUtil.between(signTime, workTimeEnd, DateUnit.MINUTE);
+            return DatesUtil.getTimeHour(Double.valueOf(DateUtil.between(signTime, workTimeEnd, DateUnit.MINUTE)));
         }
+        return 0.0;
+    }
+    
+    /**
+     * 中午加班
+     * 
+     * @param signTime
+     * @return
+     */
+    private long overTimeCentre(Date signTime) {
+    
+        
+        
+        
         return 0;
     }
     
@@ -527,7 +476,7 @@ public class AttendanceTool {
     
 
     // 排除集合中每相邻的不超过数值的打卡记录
-    public List<Attendance> sumIntervalDate(List<Attendance> attendanceList, int intervalMin) {
+    public static List<Attendance> sumIntervalDate(List<Attendance> attendanceList, int intervalMin) {
         List<Attendance> ms = new ArrayList<Attendance>();
         for (int i = 0; i < attendanceList.size(); i++) {
             Date date = attendanceList.get(i).getTime();

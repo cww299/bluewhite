@@ -35,5 +35,5 @@ public interface ContractService extends BaseCRUDService<Contract,Long>{
 	 * 合同到期提醒
 	 * @return
 	 */
-	public List<Map<String,Object>> remindContract();
+	public Map<String,Object> remindContract();
 }
