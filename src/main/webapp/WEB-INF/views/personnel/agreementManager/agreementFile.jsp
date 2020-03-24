@@ -214,19 +214,37 @@ layui.config({
 			layer.open({
 				type:1,
 				title:'合同预警',
-				area:['40%','60%'],
+				area:['80%','70%'],
 				shadeClose:true,
 				content:'<div style="padding:0 10px;"><table id="warmTable" lay-filter="warmTable"></div>',
 				success:function(){
-					mytable.renderNoPage({
-						elem: '#warmTable',
-						url: '${ctx}/contract/remindContract',
-						cols: [[
-						        { title:'合同种类', field:'kind' },
-						        { title:'合同类型', field:'type' },
-						        { title:'结束时间', field:'time' },
-						        { title:'合同内容', field:'content' },
-						        ]]
+					myutil.getData({
+						url:'${ctx}/contract/remindContract',
+						success:function(d){
+							//合同到期   付款到期
+							layui.each(d.contractEnd,function(index,item){
+								item.warmType = "合同到期";
+							})
+							mytable.renderNoPage({
+								elem: '#warmTable',
+								limit:999,
+								data: d.contractEnd.concat(d.contractPay),
+								cols: [[
+								        { title:'合同种类', field:'kind' },
+								        { title:'合同类型', field:'type' },
+								        { title:'结束时间', field:'time' },
+								        { title:'合同内容', field:'content' },
+								        { title:'预警类型', field:'warmType',templet: getWarmType(), },
+								        ]]
+							})
+							function getWarmType(){
+								return function(d){
+									if(d.warmType)
+										return '<span class="layui-badge layui-bg-">合同到期</span>';
+									return '<span class="layui-badge layui-bg-blue">付款到期</span>';
+								}
+							}
+						}
 					})
 				}
 			})
@@ -234,8 +252,8 @@ layui.config({
 		myutil.getDataSync({
 			url:'${ctx}/contract/remindContract',
 			success:function(d){
-				if(d.length>0){
-					$('#warmNumber').html(d.length);
+				if(d.contractEnd.length>0 || d.contractPay.length>0){
+					$('#warmNumber').html(d.contractEnd.length+d.contractPay.length);
 					$('#warm').click();
 				}else
 					$('#warmNumber').html(0);
