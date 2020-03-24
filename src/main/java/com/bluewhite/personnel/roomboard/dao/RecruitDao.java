@@ -15,4 +15,10 @@ public interface RecruitDao extends BaseRepository<Recruit, Long>{
 	public List<Recruit> findByRecruitId(Long recruitId);
 	public List<Recruit> findByRecruitIdAndState(Long long1,Integer state);
 	public List<Recruit> findByPhone(String phone);
+	
+	/**
+     * 根据职位查找
+     */
+	public List<Recruit> findByPositionId(Long id);
+	
 }

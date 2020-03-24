@@ -76,6 +76,12 @@ public interface UserDao extends BaseRepository<User, Long> {
 	 */
 	public List<User> findByGroupId(Long groupId);
 	
+	/**
+	 * 按指纹查找
+	 * @return
+	 */
+	public List<User> findByPositionId(Long id);
+	
 }
 
 
