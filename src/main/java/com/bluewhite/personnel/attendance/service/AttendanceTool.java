@@ -284,6 +284,8 @@ public class AttendanceTool {
     private Integer overTimeType;
     // 中午休息时长,1=默认休息,2=出勤,3=加班
     private Integer restTimeWork;
+    //早于默认上班时间前15分钟，进行加班0.5计算。
+    private boolean earthWork; 
     
 
     /**
@@ -304,6 +306,9 @@ public class AttendanceTool {
         // 将上班开始时间延长一分钟计算迟到
         this.workTimeStrat = DateUtil.offsetMinute(workTimeStrat, 1);
         this.workTimeEnd = workTimeEnd;
+        this.overTimeType = attendanceInit.getOverTimeType();
+        this.restTimeWork = attendanceInit.getRestTimeWork();
+        this.earthWork = attendanceInit.isEarthWork();
 
         // 正常情况下：员工不可以加班后晚到岗
         // 第一次打卡在上班开始之前，最后一次打卡在上班结束之后，中间两次打卡在上班中间（缺勤）
@@ -407,7 +412,6 @@ public class AttendanceTool {
                     attendanceTime.setBelate(1);
                     actualbelateTime = belate(three);
                 }  
-              
                 flag = false;
             }
             //前二次打卡在上班开始之前，最后二次打卡在上班结束之前（加班和缺勤）
@@ -494,13 +498,13 @@ public class AttendanceTool {
     }
 
     /**
-     * 上班加班
+     * 上班前加班
      * 
      * @param signTime
      * @return
      */
     private double overTimeUp(Date signTime) {
-        if (signTime.after(DateUtil.offsetMinute(workTimeStrat, OVERMIN))) {
+        if (signTime.after(DateUtil.offsetMinute(workTimeStrat, OVERMIN)) &&  earthWork) {
             return 0.5;
         }
         return 0;
@@ -513,7 +517,7 @@ public class AttendanceTool {
      * @return
      */
     private long overTimeDown(Date signTime) {
-        if (signTime.after(DateUtil.offsetMinute(workTimeEnd, DUTYMIN))) {
+        if (signTime.after(DateUtil.offsetMinute(workTimeEnd, DUTYMIN)) && overTimeType ==2) {
             return DateUtil.between(signTime, workTimeEnd, DateUnit.MINUTE);
         }
         return 0;

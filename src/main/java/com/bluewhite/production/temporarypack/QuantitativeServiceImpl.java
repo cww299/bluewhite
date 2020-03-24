@@ -123,7 +123,7 @@ public class QuantitativeServiceImpl extends BaseServiceImpl<Quantitative, Long>
             if (ot.getFlag() == 1) {
                 throw new ServiceException("已发货，无法修改");
             }
-            if(ot.getSendOrderId()!=null) {
+            if (ot.getSendOrderId() != null) {
                 SendOrder sendOrder = sendOrderDao.findOne(ot.getSendOrderId());
                 sendOrder.setCustomerId(quantitative.getCustomerId());
                 sendOrderDao.save(sendOrder);
@@ -284,17 +284,24 @@ public class QuantitativeServiceImpl extends BaseServiceImpl<Quantitative, Long>
                     if (flag == 1) {
                         quantitative.setVehicleNumber(Constants.WLSC + vehicleNumber);
                         quantitative.setSendTime(DateUtil.parse(StrUtil.sub(vehicleNumber, 0, 8)));
+                        if (quantitative.getSendOrderId() != null) {
+                            SendOrder sendOrder = sendOrderDao.findOne(quantitative.getSendOrderId());
+                            sendOrder.setSendPackageNumber(sendOrder.getSendPackageNumber() + 1);
+                            sendOrder.setSendTime(quantitative.getSendTime());
+                            sendOrder.setLogisticsId(logisticsId);
+                            sendOrderDao.save(sendOrder);
+                        }
                     } else {
+                        if (quantitative.getSendOrderId() != null) {
+                            SendOrder sendOrder = sendOrderDao.findOne(quantitative.getSendOrderId());
+                            sendOrder.setSendPackageNumber(sendOrder.getSendPackageNumber() - 1);
+                            sendOrderDao.save(sendOrder);
+                        }
                         quantitative.setVehicleNumber(null);
                         quantitative.setSendTime(null);
                     }
                     quantitative.setFlag(flag);
-                    if (quantitative.getSendOrderId() != null) {
-                        SendOrder sendOrder = sendOrderDao.findOne(quantitative.getSendOrderId());
-                        sendOrder.setSendTime(quantitative.getSendTime());
-                        sendOrder.setLogisticsId(logisticsId);
-                        sendOrderDao.save(sendOrder);
-                    }
+
                     dao.save(quantitative);
                 }
             }

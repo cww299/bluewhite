@@ -2,10 +2,7 @@ package com.bluewhite.finance.consumption.entity;
 
 import java.util.Date;
 
-import javax.persistence.Column;
-
 import com.alibaba.excel.annotation.ExcelProperty;
-import com.alibaba.excel.metadata.BaseRowModel;
 
 public class ConsumptionPoi {
 
