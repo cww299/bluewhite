@@ -30,6 +30,7 @@ import com.bluewhite.common.utils.StringUtil;
 import com.bluewhite.ledger.entity.PackingMaterials;
 
 import cn.hutool.core.date.DateUtil;
+import cn.hutool.core.util.NumberUtil;
 import cn.hutool.core.util.StrUtil;
 
 @Service
@@ -208,6 +209,7 @@ public class QuantitativeServiceImpl extends BaseServiceImpl<Quantitative, Long>
     }
 
     @Override
+    @Transactional
     public int auditQuantitative(String ids, Integer audit) {
         int count = 0;
         if (!StringUtils.isEmpty(ids)) {
@@ -231,6 +233,7 @@ public class QuantitativeServiceImpl extends BaseServiceImpl<Quantitative, Long>
     }
 
     @Override
+    @Transactional
     public int printQuantitative(String ids) {
         int count = 0;
         if (!StringUtils.isEmpty(ids)) {
@@ -248,6 +251,7 @@ public class QuantitativeServiceImpl extends BaseServiceImpl<Quantitative, Long>
     }
 
     @Override
+    @Transactional
     public int deleteQuantitative(String ids) {
         int count = 0;
         if (!StringUtils.isEmpty(ids)) {
@@ -259,6 +263,21 @@ public class QuantitativeServiceImpl extends BaseServiceImpl<Quantitative, Long>
                     if (quantitative.getFlag() == 1) {
                         throw new ServiceException("已发货无法删除");
                     }
+                    if (quantitative.getAudit() == 1) {
+                        throw new ServiceException("已审核无法删除");
+                    }
+                    SendOrder sendOrder = sendOrderDao.findOne(quantitative.getSendOrderId());
+                    if(sendOrder.getAudit()==1) {
+                        throw new ServiceException("财务已审核付款，无法删除");
+                    }
+                    sendOrder.setSumPackageNumber(sendOrder.getSumPackageNumber()-1);
+                    int number = quantitative.getQuantitativeChilds().stream().mapToInt(q->q.getSingleNumber()).sum();
+                    sendOrder.setNumber(sendOrder.getNumber()-number);
+                    if(sendOrder.getSumPackageNumber()==0) {
+                        sendOrderDao.delete(sendOrder);
+                    }else {
+                        sendOrderDao.save(sendOrder);
+                    }
                     dao.delete(id);
                 }
             }
@@ -267,6 +286,7 @@ public class QuantitativeServiceImpl extends BaseServiceImpl<Quantitative, Long>
     }
 
     @Override
+    @Transactional
     public int sendQuantitative(String ids, Integer flag, String vehicleNumber, Long logisticsId) {
         int count = 0;
         if (!StringUtils.isEmpty(ids)) {
@@ -287,6 +307,10 @@ public class QuantitativeServiceImpl extends BaseServiceImpl<Quantitative, Long>
                         if (quantitative.getSendOrderId() != null) {
                             SendOrder sendOrder = sendOrderDao.findOne(quantitative.getSendOrderId());
                             sendOrder.setSendPackageNumber(sendOrder.getSendPackageNumber() + 1);
+                            if(sendOrder.getSumPackageNumber()!=null && sendOrder.getSingerPrice()!=null) {
+                                sendOrder.setSendPrice(NumberUtil.mul(sendOrder.getSumPackageNumber(),sendOrder.getSingerPrice()));
+                                sendOrder.setLogisticsPrice(NumberUtil.add(sendOrder.getExtraPrice(), sendOrder.getSingerPrice()));
+                            }
                             sendOrder.setSendTime(quantitative.getSendTime());
                             sendOrder.setLogisticsId(logisticsId);
                             sendOrderDao.save(sendOrder);

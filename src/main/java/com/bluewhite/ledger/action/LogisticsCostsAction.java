@@ -105,7 +105,7 @@ public class LogisticsCostsAction {
         if(logisticsCostsList.size()>0){
             list = logisticsCostsList.stream().map(l->l.getTaxIncluded()).collect(Collectors.toList());
             //不含税
-            if(logisticsCosts.getTax()==1) {
+            if(logisticsCosts.getTax()!=null && logisticsCosts.getTax()==1) {
                 list = logisticsCostsList.stream().map(l->l.getExcludingTax()).collect(Collectors.toList());
             }   
         }
