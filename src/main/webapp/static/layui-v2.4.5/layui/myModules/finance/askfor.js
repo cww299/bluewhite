@@ -246,7 +246,7 @@ layui.extend({
 			},
 			limits:[10,20,50,100,200,],
 			curd:{
-				btn:[1,2,3,4],
+				btn: askfor.type==5?[]:[1,2,3,4],
 			},
 			cellMinWidth:120,
 			cols: [ allCols[askfor.type].concat(lastCols) ],
