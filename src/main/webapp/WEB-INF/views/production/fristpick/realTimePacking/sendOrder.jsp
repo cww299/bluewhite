@@ -199,7 +199,7 @@ layui.config({
 					logisticsPrice: obj.value*(trData.sendPackageNumber || 0)+(trData.extraPrice || 0),
 				},
 				success:function(){
-					table.reload('taleData');
+					table.reload('tableData');
 				}
 			})
 		})
