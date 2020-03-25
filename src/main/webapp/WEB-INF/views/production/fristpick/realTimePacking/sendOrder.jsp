@@ -107,7 +107,7 @@ layui.config({
 				isReload: true,
 				closeLoad: true,
 			},
-			parseData:function(ret){
+			/* parseData:function(ret){
 				if(ret.code==0){
 					var data = [],d = ret.data.rows;
 					for(var i=0,len=d.length;i<len;i++){
@@ -121,51 +121,35 @@ layui.config({
 					return {  msg:ret.message,  code:ret.code , data: data, count:ret.data.total }; 
 				}
 				else
-					return {  msg:ret.message,  code:ret.code , data:[], count:0 }; 
-			},
+					return {  msg:ret.message,  code:ret.code , data:[], count:0 };  
+			}, */
 			ifNull:'',
-			//scrollX:true,
 			cols:[[
 			       { type:'checkbox',},
-			       { title:'客户名称',   field:'customer_name', width:145,	},
+			       { title:'客户名称',   field:'customer_name', event:'lookoverInfo', },
 			       { title:'发货时间',   field:'sendTime', width:110, type:'date', },
 			       { title:'总包数',   field:'sumPackageNumber', width:80,	},
 			       { title:'总数量',   field:'number',  width:80,  },
 			       { title:'已发货包数',    field:'sendPackageNumber', width:100,	},
-			       { title:'已发货费用',   field:'sendPrice',	width:100,  },
-			       { title:'物流编号',   field:'logisticsNumber',width:100, edit:true,	},
+			       { title:'物流编号',   field:'logisticsNumber',width:130, edit:true,	},
 			       { title:'物流点',   field:'logistics_id', type:'select',select:{ data:allLogistics, },width:150, },
 			       { title:'外包装方式',   field:'outerPackaging_id',type:'select', select:{ data:allPackagMethod, },width:150, 	 },
 			       { title:'是否含税',    field:'tax',	 width:120, type:'select',select:{ 
 			    	   data: isTax, }, 
 			    	  },
 			       { title:'包装实际费用',    field:'singerPrice',width:120,templet: getSingerPriceSelect(), },
-			       { title:'额外费用',   field:'extraPrice',	width:90, edit:'number', },
+			       { title:'已发货费用',   field:'sendPrice',	width:100,  },
+			       { title:'额外费用',   field:'extraPrice',	width:100, edit:'number', },
 			       { title:'物流总费用',   field:'logisticsPrice',	width:120, },  
-			       { title:'批次号',    field:'bacthNumber',	width:120,},
-			       { title:'商品名',    field:'productName',	width:180,},
-			       { title:'单包数量',    field:'singleNumber',width:90,	},
 			       ]],
-	       autoMerge:{
-	    	 field:['customer_name','sendTime','sumPackageNumber','number','sendPackageNumber','sendNumber','logistics_id',
-	    		 'outerPackaging_id','logisticsNumber','tax','singerPrice','0','sendPrice','extraPrice','logisticsPrice',
-	    		 'audit',], 
-	       }, 
 	       done:function(ret,curr, count){
-	    	    allDataId = [];
 	    	    form.render();
 			}
 		})
-		var allDataId = [];
 		function getSingerPriceSelect(){
 			return function(data){
 				var disabled = "",search = "",option = '<option value="">请选择</option>';
 				if(data.customer && data.logistics && data.outerPackaging){
-					for(var i in allDataId){
-						if(allDataId[i]==data.id)
-							return "";
-					}
-					allDataId.push(data.id);
 					myutil.getDataSync({
 						url: myutil.config.ctx+'/ledger/findLogisticsCostsPrice',
 						data:{
@@ -188,6 +172,11 @@ layui.config({
 				return '<select lay-filter="changePriceSelect" '+search+' '+disabled+'>'+option+'</select>';
 			}
 		}
+		table.on('tool(tableData)',function(obj){
+			if(obj.event=="lookoverInfo"){
+				lookoverInfo(obj);
+			}
+		})
 		form.on('select(changePriceSelect)',function(obj){
 			var index = $(obj.elem).closest('tr').data('index');
 			var trData = table.cache['tableData'][index];
@@ -205,6 +194,44 @@ layui.config({
 				}
 			})
 		})
+		function lookoverInfo(obj){
+			var data = obj.data;
+			var index = $(obj.tr).data('index');
+			layer.open({
+				type:1,
+				offset: ['100px', (index+1)*60+250+'px'],
+				title: data.customer_name,
+				shade:0,
+				area:['400px'],
+				btn:['关闭全部','关闭'],
+				yes:function(){
+					layer.closeAll();
+				},
+				content:[
+					'<table class="layui-table">',
+						'<thead>',
+						    '<tr>',
+						      '<th>批次号</th><th>商品名</th><th>单包数量</th>',
+						    '</tr> ',
+						'</thead>',
+						'<tbody>',
+							(function(){
+								var html ="";
+								layui.each(data.sendOrderChild,function(index,d){
+									html += "<tr>"+
+											"<td>"+d.bacthNumber+"</td>"+
+											"<td>"+d.productName+"</td>"+
+											"<td>"+d.singleNumber+"</td>"+
+										"</tr>";
+								})
+								return html;
+							})(),
+						'</tbody>',
+					'</table>',
+				].join(' '),
+				
+			})
+		}
 		function openInfoWin(data){
 			myutil.getDataSync({
 				url: myutil.config.ctx+'/temporaryPack/getQuantitativeList?id='+data.id,
