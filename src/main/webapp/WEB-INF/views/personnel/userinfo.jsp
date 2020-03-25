@@ -284,7 +284,7 @@
 				<div class="layui-inline">
 			      <label class="layui-form-label">身份证到期时间</label>
 			      <div class="layui-input-inline">
-			        <input type="tel"  name="idCardEnd" id="idCardEnd"  autocomplete="off" class="layui-input">
+			        <input type="tel"  name="idCardEnd" value="{{ d.idCardEnd ||"" }}" id="idCardEnd"  autocomplete="off" class="layui-input">
 			      </div>
 			    </div>
 			</td>
@@ -432,7 +432,7 @@
 				<div class="layui-inline">
 			      <label class="layui-form-label">离职时间</label>
 			      <div class="layui-input-inline">
-			        <input type="text" name="quitDate" id="quitDate"  autocomplete="off" class="layui-input">
+			        <input type="text" name="quitDate" value="{{ d.quitDate || "" }}" id="quitDate"  autocomplete="off" class="layui-input">
 			      </div>
 			    </div>
 			</td>
@@ -467,7 +467,7 @@
 				 <div class="layui-inline">
 			      <label class="layui-form-label">合同签订时间</label>
 			      <div class="layui-input-inline">
-			        <input type="tel"  name="contractDate" id="contractDate"  autocomplete="off" class="layui-input">
+			        <input type="tel"  name="contractDate" value="{{ d.contractDate || "" }}" id="contractDate"  autocomplete="off" class="layui-input">
 			      </div>
 			    </div>
 			</td>
@@ -475,7 +475,7 @@
 				<div class="layui-inline">
 			      <label class="layui-form-label">合同到期时间</label>
 			      <div class="layui-input-inline">
-			        <input type="tel"  name="contractDateEnd" id="contractDateEnd"  autocomplete="off" class="layui-input">
+			        <input type="tel"  name="contractDateEnd" value="{{ d.contractDateEnd || "" }}" id="contractDateEnd"  autocomplete="off" class="layui-input">
 			      </div>
 			    </div>
 			</td>
@@ -493,7 +493,7 @@
 				<div class="layui-inline">
 			      <label class="layui-form-label">入职时间</label>
 			      <div class="layui-input-inline">
-			        <input type="text" name="entry" id="entry"  autocomplete="off" class="layui-input">
+			        <input type="text" name="entry" id="entry" value="{{d.entry || ""}}" autocomplete="off" class="layui-input">
 			      </div>
 			    </div>
 			</td>
@@ -501,7 +501,7 @@
 				<div class="layui-inline">
 			      <label class="layui-form-label">预计转正时间</label>
 			      <div class="layui-input-inline">
-			        <input type="tel"  name="estimate" id="estimate"   autocomplete="off" class="layui-input">
+			        <input type="tel"  name="estimate" value="{{ d.estimate || "" }}" id="estimate"   autocomplete="off" class="layui-input">
 			      </div>
 			    </div>
 			</td>
@@ -509,7 +509,7 @@
 	 			<div class="layui-inline">
 			      <label class="layui-form-label" >实际转正时间</label>
 			      <div class="layui-input-inline">
-			        <input type="tel"  name="actua" id="actua"  autocomplete="off" class="layui-input">
+			        <input type="tel"  name="actua" id="actua" value="{{ d.actua || "" }}" autocomplete="off" class="layui-input">
 			      </div>
 			    </div>
 			</td>
@@ -566,7 +566,7 @@
 			   <div class="layui-inline">
 			      <label class="layui-form-label">社保缴纳时间</label>
 			      <div class="layui-input-inline">
-			        <input type="text" name="socialSecurity" id="socialSecurity"  autocomplete="off" class="layui-input">
+			        <input type="text" name="socialSecurity" value="{{ d.socialSecurity ||"" }}" id="socialSecurity"  autocomplete="off" class="layui-input">
 			      </div>
 			    </div>
 			</td>
@@ -846,15 +846,15 @@ layui.config({
 					$("#commitmentId").html(htmltt);
 					$("#orgNameId").html(htmlst);
 					$("#positionId").html(htmll);
-					laydate.render({ elem:'#actua', type:'datetime', value :data.actua,});
-					laydate.render({ elem:'#entry', type:'datetime', value :data.entry,});
-					laydate.render({ elem:'#estimate', type:'datetime', value :data.estimate , });
-					laydate.render({ elem:'#socialSecurity', type:'datetime', value :data.socialSecurity , });
-					laydate.render({ elem:'#contractDate', type:'datetime', value :data.contractDate , });
-					laydate.render({ elem:'#idCardEnd', type:'datetime', value :data.idCardEnd , });
-					laydate.render({ elem:'#quitDate', type:'datetime', value :data.quitDate , });
-					laydate.render({ elem:'#contractDateEnd', type:'datetime', value :data.contractDateEnd , });
-					laydate.render({ elem:'#healthCertificateTimeInput', type:'datetime', value :data.healthCertificateTime , });
+					laydate.render({ elem:'#actua', type:'datetime', });
+					laydate.render({ elem:'#entry', type:'datetime', });
+					laydate.render({ elem:'#estimate', type:'datetime',  });
+					laydate.render({ elem:'#socialSecurity', type:'datetime',  });
+					laydate.render({ elem:'#contractDate', type:'datetime',  });
+					laydate.render({ elem:'#idCardEnd', type:'datetime',  });
+					laydate.render({ elem:'#quitDate', type:'datetime',  });
+					laydate.render({ elem:'#contractDateEnd', type:'datetime',  }); 
+					laydate.render({ elem:'#healthCertificateTimeInput', type:'datetime', });
 		        	layero.addClass('layui-form');
 		        	
 		        	$("#bankCard1").blur(function(){
