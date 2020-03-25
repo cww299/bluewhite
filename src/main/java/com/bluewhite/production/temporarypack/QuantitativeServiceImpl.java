@@ -27,6 +27,8 @@ import com.bluewhite.common.entity.PageParameter;
 import com.bluewhite.common.entity.PageResult;
 import com.bluewhite.common.utils.DatesUtil;
 import com.bluewhite.common.utils.StringUtil;
+import com.bluewhite.ledger.dao.CustomerDao;
+import com.bluewhite.ledger.entity.Customer;
 import com.bluewhite.ledger.entity.PackingMaterials;
 
 import cn.hutool.core.date.DateUtil;
@@ -44,6 +46,8 @@ public class QuantitativeServiceImpl extends BaseServiceImpl<Quantitative, Long>
     private SendOrderDao sendOrderDao;
     @Autowired
     private QuantitativeChildDao quantitativeChildDao;
+    @Autowired
+    private CustomerDao customerDao;
 
     @Override
     public PageResult<Quantitative> findPages(Quantitative param, PageParameter page) {
@@ -306,16 +310,33 @@ public class QuantitativeServiceImpl extends BaseServiceImpl<Quantitative, Long>
                     if (flag == 1) {
                         quantitative.setVehicleNumber(Constants.WLSC + vehicleNumber);
                         quantitative.setSendTime(DateUtil.parse(StrUtil.sub(vehicleNumber, 0, 8)));
-                        if (quantitative.getSendOrderId() != null) {
-                            SendOrder sendOrder = sendOrderDao.findOne(quantitative.getSendOrderId());
-                            sendOrder.setSendPackageNumber(sendOrder.getSendPackageNumber() + 1);
-                            if(sendOrder.getSumPackageNumber()!=null && sendOrder.getSingerPrice()!=null) {
-                                sendOrder.setSendPrice(NumberUtil.mul(sendOrder.getSumPackageNumber(),sendOrder.getSingerPrice()));
-                                sendOrder.setLogisticsPrice(NumberUtil.add(sendOrder.getExtraPrice(), sendOrder.getSingerPrice()));
+                        //内部客户发货时，创建发货单
+                        Customer customer =  customerDao.findOne(quantitative.getCustomerId());
+                        if(customer.getInterior()==1) {
+                            SendOrder sendOrder = sendOrderDao.findByLogisticsIdAndVehicleNumber(logisticsId,quantitative.getVehicleNumber());
+                            if(sendOrder==null) {
+                                sendOrder = new SendOrder();
+                                sendOrder.setAudit(0);
+                                sendOrder.setCustomerId(quantitative.getCustomerId());
+                                sendOrder.setSumPackageNumber(1);
+                                sendOrder.setLogisticsId(quantitative.getLogisticsId());
+                                sendOrder.setInterior(1);
+                                sendOrder.setVehicleNumber(quantitative.getVehicleNumber());
+                                sendOrderDao.save(sendOrder);
+                                quantitative.setSendOrderId(sendOrder.getId());
                             }
-                            sendOrder.setSendTime(quantitative.getSendTime());
-                            sendOrder.setLogisticsId(logisticsId);
-                            sendOrderDao.save(sendOrder);
+                        }else {
+                            if (quantitative.getSendOrderId() != null) {
+                                SendOrder sendOrder = sendOrderDao.findOne(quantitative.getSendOrderId());
+                                sendOrder.setSendPackageNumber(sendOrder.getSendPackageNumber() + 1);
+                                if(sendOrder.getSumPackageNumber()!=null && sendOrder.getSingerPrice()!=null) {
+                                    sendOrder.setSendPrice(NumberUtil.mul(sendOrder.getSumPackageNumber(),sendOrder.getSingerPrice()));
+                                    sendOrder.setLogisticsPrice(NumberUtil.add(sendOrder.getExtraPrice(), sendOrder.getSingerPrice()));
+                                }
+                                sendOrder.setSendTime(quantitative.getSendTime());
+                                sendOrder.setLogisticsId(logisticsId);
+                                sendOrderDao.save(sendOrder);
+                            }
                         }
                     } else {
                         if (quantitative.getSendOrderId() != null) {

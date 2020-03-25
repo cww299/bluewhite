@@ -22,7 +22,6 @@ public class Customer extends BaseEntity<Long> {
 
 	/**
 	 * 销售人员id
-	 * 
 	 */
 	@Column(name = "user_id")
 	private Long userId;
@@ -36,14 +35,12 @@ public class Customer extends BaseEntity<Long> {
 
 	/**
 	 * 客户真实姓名
-	 * 
 	 */
 	@Column(name = "name")
 	private String name;
 
 	/**
 	 * 客户等级
-	 * 
 	 */
 	@Column(name = "grade")
 	private Integer grade;
@@ -77,7 +74,6 @@ public class Customer extends BaseEntity<Long> {
 
 	/**
 	 * 收货人的所在省份
-	 * 
 	 */
 	@Column(name = "provinces_id")
 	private Long provincesId;
@@ -104,7 +100,6 @@ public class Customer extends BaseEntity<Long> {
 
 	/**
 	 * 收货人的所在县
-	 * 
 	 */
 	@Column(name = "county_id")
 	private Long countyId;
@@ -117,40 +112,50 @@ public class Customer extends BaseEntity<Long> {
 
 	/**
 	 * 收货人的详细地址
-	 * 
 	 */
 	@Column(name = "address")
 	private String address;
 
 	/**
 	 * 手机号
-	 * 
 	 */
 	@Column(name = "phone")
 	private String phone;
 
 	/**
 	 * 帐号
-	 * 
 	 */
 	@Column(name = "account")
 	private String account;
 
 	/**
 	 * 联系方式
-	 * 
 	 */
 	@Column(name = "contact")
 	private String contact;
 
 	/**
 	 * 联系人姓名
-	 * 
 	 */
 	@Column(name = "contact_name")
 	private String contactName;
 
-	public String getAccount() {
+	/**
+     * 是否内部客户
+     */
+    @Column(name = "interior")
+    private Integer interior;
+
+    
+	public Integer getInterior() {
+        return interior;
+    }
+
+    public void setInterior(Integer interior) {
+        this.interior = interior;
+    }
+
+    public String getAccount() {
 		return account;
 	}
 
