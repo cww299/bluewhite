@@ -140,8 +140,38 @@ public class SendOrder extends BaseEntity<Long> {
      */
     @Column(name = "audit")
     private Integer audit;
-
     
+    /**
+     * 是否内部数据
+     */
+    @Column(name = "interior")
+    private Integer interior;
+
+    /**
+     * 上车编号（上车时间+序号）
+     */
+    @Column(name = "vehicle_number")
+    private String vehicleNumber;
+    
+    
+    
+    
+    public String getVehicleNumber() {
+        return vehicleNumber;
+    }
+
+    public void setVehicleNumber(String vehicleNumber) {
+        this.vehicleNumber = vehicleNumber;
+    }
+
+    public Integer getInterior() {
+        return interior;
+    }
+
+    public void setInterior(Integer interior) {
+        this.interior = interior;
+    }
+
     public Integer getAudit() {
         return audit;
     }

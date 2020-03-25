@@ -282,7 +282,7 @@ public class UserAction {
             user.setGroupId(null);
             user.setNumber(null);
         }
-        BeanCopyUtils.copyNotEmpty(user, oldUser, "");
+        BeanCopyUtils.copyNotEmpty(user, oldUser,"contractDate","contractDateEnd");
         AttendanceInit attendanceInit = attendanceInitService.findByUserId(user.getId());
         if (attendanceInit == null) {
             cr.setCode(2);
