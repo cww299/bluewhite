@@ -82,9 +82,11 @@ layui.config({
 						var ids = [],msg = "";
 						if(check.length<1)
 							return myutil.emsg('请选择需要审核得数据');
-						for(var i in check){
-							if(check[i].sumPackageNumber != check[i].sendPackageNumber){
-								return myutil.emsg("当前选择的第"+(i-(-1))+"条数据有未发货，无法生成物流费用");
+						if(!isCompany){
+							for(var i in check){
+								if(check[i].sumPackageNumber != check[i].sendPackageNumber){
+									return myutil.emsg("当前选择的第"+(i-(-1))+"条数据有未发货，无法生成物流费用");
+								}
 							}
 						}
 						myutil.deleTableIds({
@@ -272,8 +274,10 @@ layui.config({
 				}
 			})
 		}
+		var isCompany = false;
 		form.on('radio(tableType)', function(data){
 			if(data.value=="gs"){
+				isCompany = true;
 				table.reload('tableData',{
 					where: { interior:1, },
 					page: { curr: 1},
