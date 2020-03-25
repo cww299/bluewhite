@@ -73,6 +73,12 @@ public class LogisticsCosts extends BaseEntity<Long>{
     @Column(name = "excluding_tax")
     private Double excludingTax;
     
+    /**结算类型
+     * 1.按包装 2.按车
+     */
+    @Column(name = "settlement_type")
+    private Integer settlement_type;
+    
     /**结算方式
      * 1.单月结 2. 双月结
      */
@@ -93,6 +99,14 @@ public class LogisticsCosts extends BaseEntity<Long>{
 
     
     
+
+    public Integer getSettlement_type() {
+        return settlement_type;
+    }
+
+    public void setSettlement_type(Integer settlement_type) {
+        this.settlement_type = settlement_type;
+    }
 
     public Integer getTax() {
         return tax;

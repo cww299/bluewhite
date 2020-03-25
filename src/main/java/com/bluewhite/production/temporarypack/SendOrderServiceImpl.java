@@ -18,6 +18,8 @@ import com.bluewhite.common.entity.PageParameter;
 import com.bluewhite.common.entity.PageResult;
 import com.bluewhite.finance.consumption.entity.Consumption;
 import com.bluewhite.finance.consumption.service.ConsumptionService;
+import com.bluewhite.ledger.dao.CustomerDao;
+import com.bluewhite.ledger.entity.Customer;
 import com.bluewhite.product.product.dao.ProductDao;
 import com.bluewhite.product.product.entity.Product;
 
@@ -41,16 +43,26 @@ public class SendOrderServiceImpl extends BaseServiceImpl<SendOrder, Long> imple
     private ConsumptionService consumptionService;
     @Autowired
     private ProductDao productDao;
+    @Autowired
+    private CustomerDao customerDao;
 
     @Override
     @Transactional
     public Quantitative saveSendOrder(Quantitative quantitative) {
+        if (quantitative.getCustomerId() != null) {
+            //内部员工发货单在发货时创建
+            Customer customer = customerDao.findOne(quantitative.getCustomerId());
+            if (customer.getInterior() == 1) {
+                return quantitative;
+            }
+        }
         SendOrder sendOrder = new SendOrder();
         sendOrder.setAudit(0);
         sendOrder.setCustomerId(quantitative.getCustomerId());
         sendOrder.setSendPackageNumber(0);
         sendOrder.setSumPackageNumber(quantitative.getSumPackageNumber());
         sendOrder.setLogisticsId(quantitative.getLogisticsId());
+        sendOrder.setInterior(0);
         int sumNuber = 0;
         // 新增子单
         if (!StringUtils.isEmpty(quantitative.getChild())) {
@@ -81,8 +93,8 @@ public class SendOrderServiceImpl extends BaseServiceImpl<SendOrder, Long> imple
         // 通过修改单价，计算总运费价格
         SendOrder ot = findOne(sendOrder.getId());
         BeanCopyUtils.copyNotEmpty(sendOrder, ot, "");
-        if(ot.getSumPackageNumber()!=null && ot.getSingerPrice()!=null) {
-            ot.setSendPrice(NumberUtil.mul(ot.getSumPackageNumber(),ot.getSingerPrice()));
+        if (ot.getSumPackageNumber() != null && ot.getSingerPrice() != null) {
+            ot.setSendPrice(NumberUtil.mul(ot.getSumPackageNumber(), ot.getSingerPrice()));
             ot.setLogisticsPrice(NumberUtil.add(ot.getExtraPrice(), ot.getSingerPrice()));
         }
         save(ot);
@@ -107,15 +119,15 @@ public class SendOrderServiceImpl extends BaseServiceImpl<SendOrder, Long> imple
                         || sendOrder.getOuterPackagingId() == null) {
                         throw new ServiceException("客户或物流公司或包装方式为空，无法审核发货单");
                     }
-                    if(sendOrder.getAudit()==1) {
-                        throw new ServiceException("发货单已生成物流费用，无需多次生成");
-                    }
                     // 根据申请时间和物流点查询是否有已存在数据
                     Consumption consumption = consumptionService.findByTypeAndLogisticsIdAndExpenseDateBetween(5,
                         sendOrder.getLogisticsId(), DateUtil.beginOfMonth(sendOrder.getSendTime()),
                         DateUtil.endOfMonth(sendOrder.getSendTime()));
                     // 审核，进行物流费用的新增
                     if (audit == 1) {
+                        if (sendOrder.getAudit() == 1) {
+                            throw new ServiceException("发货单已生成物流费用，无需多次生成");
+                        }
                         if (consumption == null) {
                             consumption = new Consumption();
                             consumption.setType(5);
@@ -126,12 +138,17 @@ public class SendOrderServiceImpl extends BaseServiceImpl<SendOrder, Long> imple
                             consumption.setMoney(sendOrder.getLogisticsPrice().doubleValue());
                             consumption.setLogisticsId(sendOrder.getLogisticsId());
                         } else {
-                            consumption.setMoney(NumberUtil.add(consumption.getMoney(), sendOrder.getLogisticsPrice()).doubleValue());
+                            consumption.setMoney(
+                                NumberUtil.add(consumption.getMoney(), sendOrder.getLogisticsPrice()).doubleValue());
                         }
                     }
                     // 取消审核，进行物流费用的减少
                     if (audit == 0) {
-                        consumption.setMoney(NumberUtil.sub(consumption.getMoney(), sendOrder.getLogisticsPrice()).doubleValue());
+                        if (sendOrder.getAudit() == 0) {
+                            throw new ServiceException("发货单未生成费用，无需取消");
+                        }
+                        consumption.setMoney(
+                            NumberUtil.sub(consumption.getMoney(), sendOrder.getLogisticsPrice()).doubleValue());
                     }
                     consumptionService.addConsumption(consumption);
                     sendOrder.setAudit(audit);
