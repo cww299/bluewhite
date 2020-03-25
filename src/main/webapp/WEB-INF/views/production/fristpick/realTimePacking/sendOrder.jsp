@@ -14,19 +14,20 @@
 </head>
 <body>
 <div class="layui-card">
-	<div class="layui-card-body">
-		<table class="layui-form searchTable">
+	<div class="layui-card-body layui-form">
+		<span style="float:right;">
+			<input type="radio" name="sex" value="gs" lay-filter="tableType" title="公司">
+			<input type="radio" name="sex" value="kh" lay-filter="tableType" title="客户" checked></span>
+		<table class=" layui-form searchTable">
 			<tr>
+				<td>发货时间:</td>
+				<td><input type="text" name="sendTime_be_date" class="layui-input" id="searchTime"></td>
 				<td>产品名:</td>
 				<td><input type="text" name="sendOrderChild.productName_like" class="layui-input"></td>
 				<td>客户名:</td>
 				<td><input type="text" name="customer_name_like" class="layui-input"></td>
-				<!-- 
-				<td>是否发货:</td>
-				<td style="width:100px;"><select name="flag"><option value="">请选择</option>
-										<option value="0">否</option>
-										<option value="1">是</option></select></td> -->
 				<td><button type="button" class="layui-btn layui-btn-" lay-submit lay-filter="search">搜索</button></td>
+				<td></td>
 			</tr>
 		</table>
 		<table id="tableData" lay-filter="tableData"></table>
@@ -56,15 +57,19 @@ layui.config({
 		, mytable = layui.mytable; 
 		myutil.config.ctx = '${ctx}';
 		myutil.clickTr();
+		form.render();
 		var allLogistics = myutil.getBaseData({ type: 'logistics', });
 		var allPackagMethod = myutil.getBaseData({ type: 'outerPackaging', });
 		var isTax = [{ id:"",name:'请选择',},{id:0,name:"不含税"},{name:"含税",id:1,}];
+		laydate.render({ elem:'#searchTime', range:'~' });
 		layui.tablePlug.smartReload.enable(true);
 		mytable.render({
 			elem:'#tableData',
 			size:'lg',
 			url: myutil.config.ctx+'/ledger/sendOrderPage',
-			where:{ },
+			where:{ 
+				interior:0,
+			},
 			smartReloadModel:true,
 			toolbar: $('#toolbarTpl').html(),
 			limit:15,
@@ -107,44 +112,25 @@ layui.config({
 				isReload: true,
 				closeLoad: true,
 			},
-			/* parseData:function(ret){
-				if(ret.code==0){
-					var data = [],d = ret.data.rows;
-					for(var i=0,len=d.length;i<len;i++){
-						var child = d[i].sendOrderChild;
-						if(!child)
-							continue;
-						for(var j=0,l=child.length;j<l;j++){
-							data.push($.extend({},child[j],{childId: child[j].id,},d[i])); 
-						}
-					}
-					return {  msg:ret.message,  code:ret.code , data: data, count:ret.data.total }; 
-				}
-				else
-					return {  msg:ret.message,  code:ret.code , data:[], count:0 };  
-			}, */
 			ifNull:'',
 			cols:[[
 			       { type:'checkbox',},
 			       { title:'客户名称',   field:'customer_name', event:'lookoverInfo', },
 			       { title:'发货时间',   field:'sendTime', width:110, type:'date', },
-			       { title:'总包数',   field:'sumPackageNumber', width:80,	},
-			       { title:'总数量',   field:'number',  width:80,  },
+			       { title:'总数',   field:'sumPackageNumber', width:80,	},
+			       { title:'总个数',   field:'number',  width:80,  },
 			       { title:'已发货包数',    field:'sendPackageNumber', width:100,	},
 			       { title:'物流编号',   field:'logisticsNumber',width:130, edit:true,	},
 			       { title:'物流点',   field:'logistics_id', type:'select',select:{ data:allLogistics, },width:150, },
 			       { title:'外包装方式',   field:'outerPackaging_id',type:'select', select:{ data:allPackagMethod, },width:150, 	 },
-			       { title:'是否含税',    field:'tax',	 width:120, type:'select',select:{ 
-			    	   data: isTax, }, 
-			    	  },
-			       { title:'包装实际费用',    field:'singerPrice',width:120,templet: getSingerPriceSelect(), },
+			       { title:'是否含税',    field:'tax',	 width:120, type:'select',select:{  data: isTax, },  },
+			       { title:'单价',    field:'singerPrice',width:120,templet: getSingerPriceSelect(), },
 			       { title:'已发货费用',   field:'sendPrice',	width:100,  },
 			       { title:'额外费用',   field:'extraPrice',	width:100, edit:'number', },
 			       { title:'物流总费用',   field:'logisticsPrice',	width:120, },  
 			       { title:'是否生成',   field:'audit',	width:90,transData:true, },  
 			       ]],
 	       done:function(ret,curr, count){
-	    	    form.render();
 			}
 		})
 		function getSingerPriceSelect(){
@@ -286,7 +272,42 @@ layui.config({
 				}
 			})
 		}
+		form.on('radio(tableType)', function(data){
+			if(data.value=="gs"){
+				table.reload('tableData',{
+					where: { interior:1, },
+					page: { curr: 1},
+					done:function(){
+						//table.thisTable.that
+						var cols = table.thisTable.that.tableData.config.cols[0];
+						cols[4].hide = true;
+						cols[5].hide = true;
+						cols[6].hide = true;
+						table.thisTable.that.tableData.elem.find('*[data-field="number"]').addClass('layui-hide');
+						table.thisTable.that.tableData.elem.find('*[data-field="sendPackageNumber"]').addClass('layui-hide');
+						table.thisTable.that.tableData.elem.find('*[data-field="logisticsNumber"]').addClass('layui-hide');
+						table.resize();
+					}
+				})
+			}else{
+				table.reload('tableData',{
+					where: { interior:0, },
+					page: { curr: 1},
+					done:function(){
+						var cols = table.thisTable.that.tableData.config.cols[0];
+						cols[4].hide = false;
+						cols[5].hide = false;
+						cols[6].hide = false;
+						table.thisTable.that.tableData.elem.find('*[data-field="number"]').removeClass('layui-hide');
+						table.thisTable.that.tableData.elem.find('*[data-field="sendPackageNumber"]').removeClass('layui-hide');
+						table.thisTable.that.tableData.elem.find('*[data-field="logisticsNumber"]').removeClass('layui-hide');
+						table.resize();
+					}
+				})
+			}
+		});
 		form.on('submit(search)',function(obj){
+			delete obj.field.sex;
 			table.reload('tableData',{
 				where: obj.field,
 				page:{ curr:1 },
