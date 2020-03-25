@@ -523,8 +523,15 @@ layui.config({
 					form.on('submit(saveBtn)',function(obj){
 						if(obj.field.sumPackageNumber==0)
 							return myutil.emsg('总包数数量不能为0');
-						formData = obj.field;
-						$('span[lay-event="saveTempData"]').click();
+						if(!obj.field.customerId){
+							layer.confirm("客户未填，若是名创客户可忽略填写,确定则新增，取消则返回填写。",function(){
+								formData = obj.field;
+								$('span[lay-event="saveTempData"]').click();
+							})
+						}else{
+							formData = obj.field;
+							$('span[lay-event="saveTempData"]').click();
+						}
 					})
 					var addTable = [],addMate = [];
 					laydate.render({
