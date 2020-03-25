@@ -36,9 +36,11 @@ layui.extend({
 				<td>客户名称</td>
 				<td><input type="text" class="layui-input" name="name" lay-verify="required"
 					value="{{ d.name || '' }}" ></td>
-				<td>真实姓名</td>
-				<td><input type="text" class="layui-input" name="buyerName" 
-						value="{{ d.buyerName || '' }}"></td>
+				<td>是否内部</td>
+				<td><select name="interior">
+						<option value="0" {{ d.interior!=1?"selected":"" }}>否</option>
+						<option value="1" {{ d.interior==1?"selected":"" }}>是</option>
+					</select></td>
 			<tr>
 				<td>手机</td>
 				<td><input type="text" class="layui-input" name="phone" lay-verify="required" value="{{ d.phone || '' }}"></td>
