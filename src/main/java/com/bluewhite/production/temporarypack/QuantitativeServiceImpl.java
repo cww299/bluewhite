@@ -266,17 +266,19 @@ public class QuantitativeServiceImpl extends BaseServiceImpl<Quantitative, Long>
                     if (quantitative.getAudit() == 1) {
                         throw new ServiceException("已审核无法删除");
                     }
-                    SendOrder sendOrder = sendOrderDao.findOne(quantitative.getSendOrderId());
-                    if(sendOrder.getAudit()==1) {
-                        throw new ServiceException("财务已审核付款，无法删除");
-                    }
-                    sendOrder.setSumPackageNumber(sendOrder.getSumPackageNumber()-1);
-                    int number = quantitative.getQuantitativeChilds().stream().mapToInt(q->q.getSingleNumber()).sum();
-                    sendOrder.setNumber(sendOrder.getNumber()-number);
-                    if(sendOrder.getSumPackageNumber()==0) {
-                        sendOrderDao.delete(sendOrder);
-                    }else {
-                        sendOrderDao.save(sendOrder);
+                    if(quantitative.getSendOrderId()!=null) {
+                        SendOrder sendOrder = sendOrderDao.findOne(quantitative.getSendOrderId());
+                        if(sendOrder.getAudit()==1) {
+                            throw new ServiceException("财务已审核付款，无法删除");
+                        }
+                        sendOrder.setSumPackageNumber(sendOrder.getSumPackageNumber()-1);
+                        int number = quantitative.getQuantitativeChilds().stream().mapToInt(q->q.getSingleNumber()).sum();
+                        sendOrder.setNumber(sendOrder.getNumber()-number);
+                        if(sendOrder.getSumPackageNumber()==0) {
+                            sendOrderDao.delete(sendOrder);
+                        }else {
+                            sendOrderDao.save(sendOrder);
+                        }
                     }
                     dao.delete(id);
                 }

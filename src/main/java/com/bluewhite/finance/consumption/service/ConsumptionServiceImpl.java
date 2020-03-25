@@ -443,12 +443,10 @@ public class ConsumptionServiceImpl extends BaseServiceImpl<Consumption, Long> i
 		return result;
 	}
 
-    /* (non-Javadoc)
-     * @see com.bluewhite.finance.consumption.service.ConsumptionService#findByTypeAndCustomerIdAndExpenseDateBetween(java.lang.Integer, java.lang.Integer, java.util.Date, java.util.Date)
-     */
+
     @Override
-    public Consumption findByTypeAndCustomerIdAndExpenseDateBetween(Integer type, Long id, Date beginTime,
+    public Consumption findByTypeAndLogisticsIdAndExpenseDateBetween(Integer type, Long id, Date beginTime,
         Date endTime) {
-         return dao.findByTypeAndCustomerIdAndExpenseDateBetween(type, id,beginTime, endTime);
+         return dao.findByTypeAndLogisticsIdAndExpenseDateBetween(type, id, beginTime, endTime);
     }
 }

@@ -307,6 +307,10 @@ public class AttendanceTimeServiceImpl extends BaseServiceImpl<AttendanceTime, L
                 // 考情记录有三种情况。当一天的考勤记录条数等于大于2时,为正常的考勤
                 // 打卡记录是4条 正常签入签出，中途签出一次签入一次
                 if (attList.size() == 4) {
+                    // 上班
+                    attendanceTime.setCheckIn(new Date(attList.get(0).getTime().getTime()));
+                    // 下班
+                    attendanceTime.setCheckOut(new Date(attList.get(attList.size() - 1).getTime().getTime()));
                     // 当外协部或者物流部有打卡记录时，按打卡记录核算考勤
                     if (us.getOrgNameId() != null && us.getOrgNameId() != 45 && us.getOrgNameId() != 23) {
                         // 无到岗要求和无打卡要求

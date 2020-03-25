@@ -49,6 +49,12 @@ public class ContractServiceImpl extends BaseServiceImpl<Contract, Long> impleme
         }
         if (contract.getId() == null) {
             contract.setFlag(1);
+        } else {
+            if (new Date().after(contract.getEndTime())) {
+                contract.setFlag(0);
+            } else {
+                contract.setFlag(1);
+            }
         }
         save(contract);
     }
@@ -101,6 +107,7 @@ public class ContractServiceImpl extends BaseServiceImpl<Contract, Long> impleme
 
     @Override
     public Map<String, Object> remindContract() {
+        checkContract();
         Map<String, Object> map = new HashMap<String, Object>();
         List<Contract> contractList = dao.findByFlag(1);
         List<Map<String, Object>> contractEndList = new ArrayList<Map<String, Object>>();
@@ -134,6 +141,16 @@ public class ContractServiceImpl extends BaseServiceImpl<Contract, Long> impleme
         }
         map.put("contractPay", contractPayList);
         return map;
+    }
+
+    private void checkContract() {
+        List<Contract> contractList = dao.findByFlag(1);
+        contractList.forEach(c -> {
+            if (new Date().after(c.getEndTime())) {
+                c.setFlag(0);
+            }
+        });
+        save(contractList);
     }
 
 }

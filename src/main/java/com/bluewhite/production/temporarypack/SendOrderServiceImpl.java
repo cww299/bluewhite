@@ -107,9 +107,12 @@ public class SendOrderServiceImpl extends BaseServiceImpl<SendOrder, Long> imple
                         || sendOrder.getOuterPackagingId() == null) {
                         throw new ServiceException("客户或物流公司或包装方式为空，无法审核发货单");
                     }
+                    if(sendOrder.getAudit()==1) {
+                        throw new ServiceException("发货单已生成物流费用，无需多次生成");
+                    }
                     // 根据申请时间和物流点查询是否有已存在数据
                     Consumption consumption = consumptionService.findByTypeAndLogisticsIdAndExpenseDateBetween(5,
-                        sendOrder.getCustomerId(), DateUtil.beginOfMonth(sendOrder.getSendTime()),
+                        sendOrder.getLogisticsId(), DateUtil.beginOfMonth(sendOrder.getSendTime()),
                         DateUtil.endOfMonth(sendOrder.getSendTime()));
                     // 审核，进行物流费用的新增
                     if (audit == 1) {

@@ -282,9 +282,11 @@ public class AttendanceTool {
     // 下班时间
     private Date workTimeEnd;
     // 签到时间在下班时间之后是否合算加班（1.看加班申请2.按打卡正常核算加班）
-    private Integer overTimeType;
-    //早于默认上班时间前15分钟，进行加班0.5计算。
+    private int overTimeType;
+    //早于默认上班时间前20分钟，进行加班0.5计算。
     private boolean earthWork; 
+    //员工可以加班后晚到岗 延长时间
+    private int minute = 0;
 
     /**
      * 进行出勤，加班，缺勤，迟到，早退的计算 举例出能满足的所有条件，合适条件的进行 第二种计算方式
@@ -324,8 +326,8 @@ public class AttendanceTool {
                 if(overTimeType==2) {
                     actualOverTime =  DatesUtil.getTimeHour(workTimeEnd, four);
                 }
-                actualTurnWorkTime = attendanceTime.getWorkTime();
-                actualDutyTime = NumUtils.sub(turnWorkTime, attendanceTime.getWorkTime());
+                actualTurnWorkTime = NumberUtil.add(DatesUtil.getTimeHour(one, two),DatesUtil.getTimeHour(three, four));
+                actualDutyTime = NumUtils.sub(turnWorkTime, actualTurnWorkTime);
                 // 实际缺勤时长分钟数
                 actualDutytimMinute = NumUtils.mul(actualDutyTime, MINUTES);
                 attendanceTime.setFlag(1);
@@ -341,8 +343,8 @@ public class AttendanceTool {
                 if(overTimeType==2) {
                     actualOverTime =  DatesUtil.getTimeHour(three, four);
                 }
-                actualTurnWorkTime = attendanceTime.getWorkTime();
-                actualDutyTime = NumUtils.sub(turnWorkTime, attendanceTime.getWorkTime());
+                actualTurnWorkTime =  DatesUtil.getTimeHour(one, two);
+                actualDutyTime = NumUtils.sub(turnWorkTime, actualTurnWorkTime);
                 // 实际缺勤时长分钟数
                 actualDutytimMinute = NumUtils.mul(actualDutyTime, MINUTES);
                 attendanceTime.setFlag(1);
@@ -362,16 +364,42 @@ public class AttendanceTool {
                 actualTurnWorkTime = turnWorkTime;
             }
         }
+        
+        if(sign) {
+            this.minute = (int)minute;
+            // 缺勤
+            // 因为是延后上班，所以上班开始时间可推迟minute
+            // 第一次打卡在上班开始之前，最后一次打卡在上班结束之后，中间两次打卡在上班中间(缺勤)
+            flag = one.before(DateUtil.offsetMinute(workTimeStrat,this.minute+DUTYMIN))
+                && four.after(DateUtil.offsetMinute(workTimeEnd, -DUTYMIN))
+                && DateUtil.isIn(two, workTimeStrat, workTimeEnd) 
+                && DateUtil.isIn(three, workTimeStrat, workTimeEnd);
+            if (flag) {
+                // 加班
+                if(overTimeType==2) {
+                    actualOverTime =  DatesUtil.getTimeHour(workTimeEnd, four);
+                }
+                actualTurnWorkTime = NumberUtil.add(DatesUtil.getTimeHour(one, two),DatesUtil.getTimeHour(three, four));
+                actualDutyTime = NumUtils.sub(turnWorkTime, actualTurnWorkTime);
+                // 实际缺勤时长分钟数
+                actualDutytimMinute = NumUtils.mul(actualDutyTime, MINUTES);
+                attendanceTime.setFlag(1);
+                
+            }
+            
+            
+            
+        }
 
         // 中午休息时长是否算加班
         // 当第二次打卡在中午休息之后（加班）
         // 当第三次打卡在中午休息之前（加班）
         if (attendanceInit.getRestTimeWork() == 3) {
-            // 签入在休息时间之前
-            if (two.after(restEndTime) || four.after(restEndTime)) {
+            // 签入在休息时间之前,签出在休息之后
+            if (one.before(restBeginTime) && two.after(restEndTime)) {
                 actualOverTime += restTime;
             }
-            if (one.before(restBeginTime) || three.before(restBeginTime)) {
+            if (three.before(restBeginTime) && four.after(restEndTime)) {
                 actualOverTime += restTime;
             }
         }
@@ -406,7 +434,7 @@ public class AttendanceTool {
      * @return
      */
     private long belate(Date signTime) {
-        if (signTime.after(workTimeStrat) && signTime.before(DateUtil.offsetMinute(workTimeStrat, DUTYMIN))) {
+        if (signTime.after(workTimeStrat) && signTime.before(DateUtil.offsetMinute(workTimeStrat, minute+DUTYMIN))) {
             return DateUtil.between(signTime, workTimeStrat, DateUnit.MINUTE);
         }
         return 0;
