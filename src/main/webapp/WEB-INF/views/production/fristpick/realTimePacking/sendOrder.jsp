@@ -141,6 +141,7 @@ layui.config({
 			       { title:'已发货费用',   field:'sendPrice',	width:100,  },
 			       { title:'额外费用',   field:'extraPrice',	width:100, edit:'number', },
 			       { title:'物流总费用',   field:'logisticsPrice',	width:120, },  
+			       { title:'是否生成',   field:'audit',	width:90,transData:true, },  
 			       ]],
 	       done:function(ret,curr, count){
 	    	    form.render();
@@ -206,7 +207,8 @@ layui.config({
 				offset: ['100px', (index+1)*60+250+'px'],
 				title: data.customer_name,
 				shade:0,
-				area:['400px'],
+				area:['500px'],
+				resize:true,
 				btn:['关闭全部','关闭'],
 				yes:function(){
 					layer.closeAll();
@@ -217,6 +219,7 @@ layui.config({
 				},
 				content:[
 					'<table class="layui-table">',
+					'<colgroup><col width="120"><col><col  width="90"> </colgroup>',
 						'<thead>',
 						    '<tr>',
 						      '<th>批次号</th><th>商品名</th><th>单包数量</th>',
