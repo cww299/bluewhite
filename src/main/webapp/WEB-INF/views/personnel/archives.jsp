@@ -115,7 +115,7 @@
 		      </div>
 		    </div>
 			<div class="layui-inline">
-		      <label class="layui-form-label">其他资料</label>
+		      <label class="layui-form-label">复工</label>
 		      <div class="layui-input-inline">
 		        <input type="text" name="remark"  id="remark"   autocomplete="off" class="layui-input">
 		      </div>
@@ -213,7 +213,7 @@ layui.config({
 			       {align:'center', title:'其他协议',field:'agreement'},
 			       {align:'center', title:'保密协议',field:'secrecyAgreement'},
 			       {align:'center', title:'合同数量',field:'contract'},
-			       {align:'center', title:'其他资料',field:'remark'},
+			       {align:'center', title:'复工',field:'remark'},
 			       ]],
 		})
 		
