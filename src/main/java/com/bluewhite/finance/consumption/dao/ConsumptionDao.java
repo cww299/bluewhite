@@ -35,7 +35,7 @@ public interface ConsumptionDao extends BaseRepository<Consumption, Long> {
      * @param flag1
      * @return
      */
-    public Consumption findByTypeAndCustomerIdAndExpenseDateBetween(Integer type,Long id, Date beginTime,
+    public Consumption findByTypeAndLogisticsIdAndExpenseDateBetween(Integer type,Long id, Date beginTime,
         Date endTime);
 
 }

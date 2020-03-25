@@ -33,7 +33,6 @@ import com.bluewhite.common.entity.PageParameter;
 import com.bluewhite.common.entity.PageUtil;
 import com.bluewhite.common.utils.BankUtil;
 import com.bluewhite.common.utils.DatesUtil;
-import com.bluewhite.personnel.attendance.entity.Attendance;
 import com.bluewhite.personnel.attendance.entity.AttendanceInit;
 import com.bluewhite.personnel.attendance.service.AttendanceInitService;
 import com.bluewhite.production.group.dao.TemporarilyDao;
@@ -81,7 +80,7 @@ public class UserAction {
                 "roles", "turnWorkTime", "quitTypeId", "quitType", "lotionNumber","healthCertificateTime")
             .addRetainTerm(Group.class, "id", "name", "type", "price")
             .addRetainTerm(Role.class, "name", "role", "description", "id")
-            .addRetainTerm(BaseData.class, "id", "name", "type");
+            .addRetainTerm(BaseData.class, "id", "name");
     }
 
     private ClearCascadeJSON clearCascadeJSONTemporaryUser;
@@ -631,14 +630,13 @@ public class UserAction {
     public CommonResponse addPlan(HttpServletRequest request, UserContract userContract) {
         CommonResponse cr = new CommonResponse();
         if (userContract.getId() != null) {
-            UserContract userContract2 = userContractService.findOne(userContract.getId());
-            BeanCopyUtils.copyNullProperties(userContract2, userContract);
-            userContract.setCreatedAt(userContract2.getCreatedAt());
+            UserContract ot = userContractService.findOne(userContract.getId());
+            userContractService.update(userContract, ot, "");
             cr.setMessage("修改成功");
         } else {
+            userContractService.addUserContract(userContract);
             cr.setMessage("添加成功");
         }
-        userContractService.addUserContract(userContract);
         return cr;
     }
 

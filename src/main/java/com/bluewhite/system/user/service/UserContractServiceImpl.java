@@ -39,10 +39,6 @@ public class UserContractServiceImpl extends BaseServiceImpl<UserContract, Long>
 
 	@Override
 	public UserContract addUserContract(UserContract userContract) {
-		UserContract userContract2=dao.findByUserId(userContract.getUserId());
-		if (userContract2!=null) {
-			throw new ServiceException("该员工已经添加过档案");
-		}
 		return dao.save(userContract);
 	}
 
