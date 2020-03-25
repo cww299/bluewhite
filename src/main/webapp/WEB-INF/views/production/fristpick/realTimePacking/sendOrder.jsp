@@ -194,9 +194,13 @@ layui.config({
 				}
 			})
 		})
+		var openWinIndex =[];
 		function lookoverInfo(obj){
 			var data = obj.data;
 			var index = $(obj.tr).data('index');
+			if(openWinIndex.indexOf(index)>-1)
+				return;
+			openWinIndex.push(index);
 			layer.open({
 				type:1,
 				offset: ['100px', (index+1)*60+250+'px'],
@@ -206,6 +210,10 @@ layui.config({
 				btn:['关闭全部','关闭'],
 				yes:function(){
 					layer.closeAll();
+					openWinIndex = [];
+				},
+				end:function(){
+					openWinIndex.splice(openWinIndex.indexOf(index),1);
 				},
 				content:[
 					'<table class="layui-table">',
