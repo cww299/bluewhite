@@ -22,8 +22,8 @@
 			<tr>
 				<td>发货时间:</td>
 				<td><input type="text" name="sendTime_be_date" class="layui-input" id="searchTime"></td>
-				<td>产品名:</td>
-				<td><input type="text" name="sendOrderChild.productName_like" class="layui-input"></td>
+				<td class="isNoCompany">产品名:</td>
+				<td class="isNoCompany"><input type="text" name="sendOrderChild.productName_like" class="layui-input"></td>
 				<td>客户名:</td>
 				<td><input type="text" name="customer_name_like" class="layui-input"></td>
 				<td><button type="button" class="layui-btn layui-btn-" lay-submit lay-filter="search">搜索</button></td>
@@ -185,6 +185,8 @@ layui.config({
 		})
 		var openWinIndex =[];
 		function lookoverInfo(obj){
+			if(isCompany)
+				return;
 			var data = obj.data;
 			var index = $(obj.tr).data('index');
 			if(openWinIndex.indexOf(index)>-1)
@@ -291,6 +293,7 @@ layui.config({
 						table.thisTable.that.tableData.elem.find('*[data-field="sendPackageNumber"]').addClass('layui-hide');
 						table.thisTable.that.tableData.elem.find('*[data-field="logisticsNumber"]').addClass('layui-hide');
 						table.resize();
+						$('.isNoCompany').hide();
 					}
 				})
 			}else{
@@ -306,12 +309,15 @@ layui.config({
 						table.thisTable.that.tableData.elem.find('*[data-field="sendPackageNumber"]').removeClass('layui-hide');
 						table.thisTable.that.tableData.elem.find('*[data-field="logisticsNumber"]').removeClass('layui-hide');
 						table.resize();
+						$('.isNoCompany').show();
 					}
 				})
 			}
 		});
 		form.on('submit(search)',function(obj){
 			delete obj.field.sex;
+			if(isCompany)
+				delete obj.field["sendOrderChild.productName_like"];
 			table.reload('tableData',{
 				where: obj.field,
 				page:{ curr:1 },

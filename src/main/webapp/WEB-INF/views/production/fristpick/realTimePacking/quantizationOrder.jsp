@@ -281,7 +281,7 @@ layui.config({
 			       { title:'发货',   field:'flag', 	transData:true, width:60, },
 			       { title:'打印',   field:'print', 	transData:true, width:60, },
 			       { title:'批次号',    field:'underGoods_bacthNumber',	minWidth:130, },
-			       { title:'产品名',    field:'underGoods_product_name', width:360,	},
+			       { title:'产品名',    field:'underGoods_product_name', width:280,	},
 			       { title:'单包个数',   field:'singleNumber',	width:80, },
 			       { title:'实际数量',   field:'actualSingleNumber',	width:90,event:'transColor', 
 			    	   templet: function(d){
