@@ -76,9 +76,7 @@ layui.extend({
 		],
 		[	// type:5 物流管理  logistics
 			firstCols,
-			{ field: "logisticsDate", title: "物流订单日期", },
-			{ field: "contact_conPartyNames", title: "客户名称", }, 
-			{ field: "withholdReason", title: "物流点名称", },
+			{ field: "logistics_name", title: "物流点名称", },
 			{ field: "money", title: "支付金额", },
 			{ field: "expenseDate", title: "申请日期", }, 
 		],
