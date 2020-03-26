@@ -440,10 +440,8 @@ public class AttendanceTimeServiceImpl extends BaseServiceImpl<AttendanceTime, L
             attendanceTime.setWorkTime(DatesUtil.getTimeHour(attendanceTime.getCheckIn(), restBeginTime));
         } else
         // 当签入时间在休息时间之间 （从休息时间结束到签出时间）
-        if (attendanceTime.getCheckIn().compareTo(restBeginTime) != -1
-            && attendanceTime.getCheckIn().compareTo(restEndTime) != 1) {
-            attendanceTime.setWorkTime(DatesUtil.getTimeHour(restEndTime,
-                attendanceTime.getCheckOut().after(workTimeEnd) ? workTimeEnd : attendanceTime.getCheckOut()));
+        if (attendanceTime.getCheckIn().compareTo(restBeginTime) != -1 && attendanceTime.getCheckIn().compareTo(restEndTime) != 1) {
+            attendanceTime.setWorkTime(DatesUtil.getTimeHour(restEndTime, attendanceTime.getCheckOut().after(workTimeEnd) ? workTimeEnd : attendanceTime.getCheckOut()));
         } else {
             // 实际工作时长
             attendanceTime.setWorkTime(NumUtils.sub(DatesUtil.getTimeHour(

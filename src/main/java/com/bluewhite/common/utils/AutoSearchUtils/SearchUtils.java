@@ -65,7 +65,10 @@ public class SearchUtils {
                 throw new ServiceException("系统错误");
             }
             // 多表查询
-            Path<String> path = simpleExpression(field, root);
+            Path<String> path = null;
+            if (!valueIsNull) {
+                path = simpleExpression(field, root);
+            }
             if (keys.length == 1) {
                 if (!valueIsNull) {
                     predicates.add(cb.equal(path, convertQueryParamsType(type, value)));
