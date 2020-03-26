@@ -322,6 +322,7 @@ public class QuantitativeServiceImpl extends BaseServiceImpl<Quantitative, Long>
                                 sendOrder.setAudit(0);
                                 sendOrder.setCustomerId(quantitative.getCustomerId());
                                 sendOrder.setSumPackageNumber(1);
+                                sendOrder.setSendPackageNumber(1);
                                 sendOrder.setLogisticsId(logisticsId);
                                 sendOrder.setInterior(1);
                                 sendOrder.setVehicleNumber(quantitative.getVehicleNumber());
@@ -333,7 +334,7 @@ public class QuantitativeServiceImpl extends BaseServiceImpl<Quantitative, Long>
                             if (quantitative.getSendOrderId() != null) {
                                 SendOrder sendOrder = sendOrderDao.findOne(quantitative.getSendOrderId());
                                 sendOrder.setSendPackageNumber(sendOrder.getSendPackageNumber() + 1);
-                                if (sendOrder.getSendPackageNumber() != null && !sendOrder.getSingerPrice().equals(BigDecimal.ZERO)) {
+                                if (sendOrder.getSendPackageNumber() != null && sendOrder.getSingerPrice()!=null &&!sendOrder.getSingerPrice().equals(BigDecimal.ZERO)) {
                                     sendOrder.setSendPrice(
                                         NumberUtil.mul(sendOrder.getSendPackageNumber(), sendOrder.getSingerPrice()));
                                     sendOrder.setLogisticsPrice(
