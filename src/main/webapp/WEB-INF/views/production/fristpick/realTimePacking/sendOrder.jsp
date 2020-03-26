@@ -22,8 +22,8 @@
 			<tr>
 				<td>发货时间:</td>
 				<td><input type="text" name="sendTime_be_date" class="layui-input" id="searchTime"></td>
-				<td class="isNoCompany">产品名:</td>
-				<td class="isNoCompany"><input type="text" name="sendOrderChild.productName_like" class="layui-input"></td>
+				<td>产品名:</td>
+				<td><input type="text" name="sendOrderChild.productName_like" class="layui-input"></td>
 				<td>客户名:</td>
 				<td><input type="text" name="customer_name_like" class="layui-input"></td>
 				<td><button type="button" class="layui-btn layui-btn-" lay-submit lay-filter="search">搜索</button></td>
@@ -294,7 +294,6 @@ layui.config({
 						table.thisTable.that.tableData.elem.find('*[data-field="sendPackageNumber"]').addClass('layui-hide');
 						table.thisTable.that.tableData.elem.find('*[data-field="logisticsNumber"]').addClass('layui-hide');
 						table.resize();
-						$('.isNoCompany').hide();
 					}
 				})
 			}else{
@@ -311,7 +310,6 @@ layui.config({
 						table.thisTable.that.tableData.elem.find('*[data-field="sendPackageNumber"]').removeClass('layui-hide');
 						table.thisTable.that.tableData.elem.find('*[data-field="logisticsNumber"]').removeClass('layui-hide');
 						table.resize();
-						$('.isNoCompany').show();
 					}
 				})
 			}
