@@ -48,7 +48,7 @@ public interface QuantitativeService extends BaseCRUDService<Quantitative,Long>{
 	 * @param ids
 	 * @return
 	 */
-	int sendQuantitative(String ids,Integer flag,String vehicleNumber,Long logisticsId);
+	int sendQuantitative(String ids,Integer flag,String vehicleNumber,Long logisticsId,Long outerPackagingId);
 	
 	/**
 	 * 设置发货数量

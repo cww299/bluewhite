@@ -295,7 +295,7 @@ public class QuantitativeServiceImpl extends BaseServiceImpl<Quantitative, Long>
 
     @Override
     @Transactional
-    public int sendQuantitative(String ids, Integer flag, String vehicleNumber, Long logisticsId) {
+    public int sendQuantitative(String ids, Integer flag, String vehicleNumber, Long logisticsId ,Long outerPackagingId) {
         int count = 0;
         if (!StringUtils.isEmpty(ids)) {
             String[] idArr = ids.split(",");
@@ -319,6 +319,9 @@ public class QuantitativeServiceImpl extends BaseServiceImpl<Quantitative, Long>
                                 quantitative.getVehicleNumber());
                             if (sendOrder == null) {
                                 sendOrder = new SendOrder();
+                                if(outerPackagingId!=null) {
+                                    sendOrder.setOuterPackagingId(outerPackagingId); 
+                                }
                                 sendOrder.setAudit(0);
                                 sendOrder.setCustomerId(quantitative.getCustomerId());
                                 sendOrder.setSumPackageNumber(1);
