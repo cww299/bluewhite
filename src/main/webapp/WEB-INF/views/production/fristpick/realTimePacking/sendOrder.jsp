@@ -297,6 +297,7 @@ layui.config({
 					}
 				})
 			}else{
+				isCompany = false;
 				table.reload('tableData',{
 					where: { interior:0, },
 					page: { curr: 1},
