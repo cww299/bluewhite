@@ -26,6 +26,20 @@
 				<td><input type="text" name="sendOrderChild.productName_like" class="layui-input"></td>
 				<td>客户名:</td>
 				<td><input type="text" name="customer_name_like" class="layui-input"></td>
+				<td>物流点:</td>
+				<td style="width:150px;"><select name="logisticsId" id="logisticsIdSelect">
+						<option value="">请选择</option>
+					</select></td>
+				<td>包装方式:</td>
+				<td style="width:120px;"><select name="outerPackagingId" id="outerPackagingIdSelect">
+						<option value="">请选择</option>
+					</select></td>
+				<td>是否生成:</td>
+				<td style="width:100px;"><select name="audit" id="">
+						<option value="">请选择</option>
+						<option value="1">是</option>
+						<option value="0">否</option>
+					</select></td>
 				<td><button type="button" class="layui-btn layui-btn-" lay-submit lay-filter="search">搜索</button></td>
 				<td></td>
 			</tr>
@@ -57,10 +71,24 @@ layui.config({
 		, mytable = layui.mytable; 
 		myutil.config.ctx = '${ctx}';
 		myutil.clickTr();
-		form.render();
 		var allLogistics = myutil.getBaseData({ type: 'logistics', });
 		var allPackagMethod = myutil.getBaseData({ type: 'outerPackaging', });
 		var isTax = [{ id:"",name:'请选择',},{id:0,name:"不含税"},{name:"含税",id:1,}];
+		$('#outerPackagingIdSelect').html((function(){
+			var html = "";
+			for(var i in allPackagMethod){
+				html += "<option value='"+allPackagMethod[i].id+"'>"+allPackagMethod[i].name+"</option>";
+			}
+			return html;
+		})());
+		$('#logisticsIdSelect').html((function(){
+			var html = "";
+			for(var i in allLogistics){
+				html += "<option value='"+allLogistics[i].id+"'>"+allLogistics[i].name+"</option>";
+			}
+			return html;
+		})());
+		form.render();
 		laydate.render({ elem:'#searchTime', range:'~' });
 		layui.tablePlug.smartReload.enable(true);
 		mytable.render({

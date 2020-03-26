@@ -126,6 +126,7 @@ layui.config({
 		laydate.render({
 			elem: '#orderTimeBegin', range: '~',
 		})
+		var allPackagMethodHtml = myutil.getBaseDataSelect({ type: 'outerPackaging', });
 		var isStickBagStick = $('#stickBagStickBtn').length>0;
 		var isStickBagAccount = $('#stickBagAccountBtn').length>0;
 		if(isStickBagAccount){
@@ -378,6 +379,15 @@ layui.config({
 							'</td>',
 						'</tr>',
 						'<tr>',
+							'<td>包装方式：</td>',
+							'<td colspan="2">',
+								'<select name="outerPackagingId" lay-search>',
+									'<option value="">请选择</option>',
+									allPackagMethodHtml,
+								'</select>',
+							'</td>',
+						'</tr>',
+						'<tr>',
 							'<td>上车编号：</td>',
 							'<td style="width:95px;padding-top: 8px;">',
 							   '<input type="text" class="layui-input" id="sendTimeInput" lay-verify="required" name="time"></td>',
@@ -400,7 +410,8 @@ layui.config({
 						var vn = f.time+ f.no;
 						var lid = f.logisticsId;
 						myutil.deleteAjax({
-							url:'/temporaryPack/sendQuantitative?flag=1&vehicleNumber='+vn+'&logisticsId='+lid,
+							url:'/temporaryPack/sendQuantitative?flag=1&vehicleNumber='+vn
+									+'&logisticsId='+lid+'&outerPackagingId='+f.outerPackagingId,
 							ids: ids.join(','),
 							success:function(){
 								layer.close(layerIndex);
