@@ -74,7 +74,7 @@ layui.extend({
 			firstCols,
 			{ field: "logistics_name", title: "物流点名称", }, 
 			{ field: "money", title: "支付金额", }, 
-			{ field: "expenseDate", title: "预计付款日期", }, 
+			{ field: "expenseDate", title: "申请日期", }, 
 		],
 		[	//type:6  借款本金    loan
 			firstCols,

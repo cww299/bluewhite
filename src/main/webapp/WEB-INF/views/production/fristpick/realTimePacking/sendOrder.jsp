@@ -172,6 +172,7 @@ layui.config({
 			
 			myutil.saveAjax({
 				url:'/temporaryPack/updateSendOrder',
+				closeLoad:true,
 				data:{
 					id: trData.id,
 					singerPrice: obj.value,

@@ -82,7 +82,7 @@ layui.extend({
 		  	{ field: "content", title: "借款方", edit:true, },
 		  	{ field: "remark", title: "借款类型", edit:true, },
 		  	{ field: "money", title: "支付金额", edit:'number', }, 
-		  	{ field: "expenseDate", title: "预计付款日期", edit:true, type:'dateTime', },
+		  	{ field: "expenseDate", title: "申请日期", edit:true, type:'dateTime', },
 		],
 		[	//type:7 社保税收    social
 			firstCols,
