@@ -62,13 +62,13 @@ public class TemporaryPackAction {
     {
         clearCascadeJSONQuantitative = ClearCascadeJSON.get()
             .addRetainTerm(Quantitative.class, "id", "quantitativeNumber", "time", "sumPackageNumber", "time",
-                "quantitativeChilds", "packingMaterials", "user", "flag", "print", "customer", "audit", "sendTime","vehicleNumber")
+                "quantitativeChilds", "packingMaterials", "user", "flag", "print", "customer", "audit", "sendTime",
+                "vehicleNumber")
             .addRetainTerm(Customer.class, "id", "name")
             .addRetainTerm(QuantitativeChild.class, "id", "underGoods", "sumPackageNumber", "singleNumber", "number",
                 "actualSingleNumber", "checks", "remarks")
             .addRetainTerm(PackingMaterials.class, "id", "packagingMaterials", "packagingCount")
-            .addRetainTerm(User.class, "id", "userName")
-            .addRetainTerm(BaseData.class, "id", "name")
+            .addRetainTerm(User.class, "id", "userName").addRetainTerm(BaseData.class, "id", "name")
             .addRetainTerm(UnderGoods.class, "id", "remarks", "product", "number", "bacthNumber", "status", "allotTime")
             .addRetainTerm(Product.class, "id", "name");
     }
@@ -83,9 +83,9 @@ public class TemporaryPackAction {
     private ClearCascadeJSON clearCascadeJSONSendOrder;
     {
         clearCascadeJSONSendOrder = ClearCascadeJSON.get()
-            .addRetainTerm(SendOrder.class, "id", "customer", "sendOrderChild", "sendTime", "sumPackageNumber", "number",
-                "sendPackageNumber", "logistics","outerPackaging","logisticsNumber","tax","singerPrice"
-                ,"sendPrice","extraPrice","logisticsPrice","audit")
+            .addRetainTerm(SendOrder.class, "id", "customer", "sendOrderChild", "sendTime", "sumPackageNumber",
+                "number", "sendPackageNumber", "logistics", "outerPackaging", "logisticsNumber", "tax", "singerPrice",
+                "sendPrice", "extraPrice", "logisticsPrice", "audit")
             .addRetainTerm(SendOrderChild.class, "id", "productName", "bacthNumber", "singleNumber")
             .addRetainTerm(BaseData.class, "id", "name");
     }
@@ -259,9 +259,10 @@ public class TemporaryPackAction {
      */
     @RequestMapping(value = "/temporaryPack/sendQuantitative", method = RequestMethod.GET)
     @ResponseBody
-    public CommonResponse sendQuantitative(String ids, Integer flag, String vehicleNumber, Long logisticsId) {
+    public CommonResponse sendQuantitative(String ids, Integer flag, String vehicleNumber, Long logisticsId,
+        Long outerPackagingId) {
         CommonResponse cr = new CommonResponse();
-        quantitativeService.sendQuantitative(ids, flag, vehicleNumber, logisticsId);
+        quantitativeService.sendQuantitative(ids, flag, vehicleNumber, logisticsId, outerPackagingId);
         if (flag == 0) {
             cr.setMessage("取消发货");
         } else {
@@ -466,9 +467,8 @@ public class TemporaryPackAction {
         });
         return quantitativePoiList;
     }
-    
-    
-    /*****************************发货单***************************/
+
+    /***************************** 发货单 ***************************/
     /**
      * 分页查看发货单
      * 
@@ -478,15 +478,15 @@ public class TemporaryPackAction {
     @ResponseBody
     public CommonResponse sendOrderPage(@RequestParam Map<String, Object> params) {
         CommonResponse cr = new CommonResponse();
-        if(MapUtil.isEmpty(params)){
+        if (MapUtil.isEmpty(params)) {
             throw new ServiceException("参数不能为空");
-        };
+        } ;
         PageParameter page = PageUtil.mapToPage(params);
         cr.setData(clearCascadeJSONSendOrder.format(sendOrderService.findPages(params, page)).toJSON());
         cr.setMessage("查询成功");
         return cr;
     }
-    
+
     /**
      * 修改发货单
      */
@@ -498,7 +498,7 @@ public class TemporaryPackAction {
         cr.setMessage("修改成功");
         return cr;
     }
-    
+
     /**
      * 查看发货单实际已发货的贴包明细
      */
@@ -510,18 +510,17 @@ public class TemporaryPackAction {
         cr.setMessage("成功");
         return cr;
     }
-    
+
     /**
-     * 生成物流费用（审核发货单之后,已经产生费用的贴包单，无法删除，同时在财务物流费用中自动生成费用）
-     * 取消审核，费用自动从物流费用中删除
+     * 生成物流费用（审核发货单之后,已经产生费用的贴包单，无法删除，同时在财务物流费用中自动生成费用） 取消审核，费用自动从物流费用中删除
      */
     @RequestMapping(value = "/temporaryPack/auditSendOrder", method = RequestMethod.GET)
     @ResponseBody
     public CommonResponse auditSendOrder(String ids, Integer audit) {
         CommonResponse cr = new CommonResponse();
-        if(audit==1) {
+        if (audit == 1) {
             cr.setMessage("物流费用生成成功");
-        }else {
+        } else {
             cr.setMessage("物流费用取消成功");
         }
         sendOrderService.auditSendOrder(ids, audit);
