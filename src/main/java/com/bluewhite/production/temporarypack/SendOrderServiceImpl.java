@@ -1,5 +1,6 @@
 package com.bluewhite.production.temporarypack;
 
+import java.math.BigDecimal;
 import java.util.List;
 import java.util.Map;
 
@@ -92,10 +93,13 @@ public class SendOrderServiceImpl extends BaseServiceImpl<SendOrder, Long> imple
     public void updateSendOrder(SendOrder sendOrder) {
         // 通过修改单价，计算总运费价格
         SendOrder ot = findOne(sendOrder.getId());
+        if(ot.getAudit()==1) {
+            throw new ServiceException("发货单已生成物流费用，无法修改");
+        }
         BeanCopyUtils.copyNotEmpty(sendOrder, ot, "");
-        if (ot.getSumPackageNumber() != null && ot.getSingerPrice() != null) {
-            ot.setSendPrice(NumberUtil.mul(ot.getSumPackageNumber(), ot.getSingerPrice()));
-            ot.setLogisticsPrice(NumberUtil.add(ot.getExtraPrice(), ot.getSingerPrice()));
+        if (ot.getSendPackageNumber() != null && !ot.getSingerPrice().equals(BigDecimal.ZERO)) {
+            ot.setSendPrice(NumberUtil.mul(ot.getSendPackageNumber(), ot.getSingerPrice()));
+            ot.setLogisticsPrice(NumberUtil.add(ot.getExtraPrice(), ot.getSendPrice()));
         }
         save(ot);
     }

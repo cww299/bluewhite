@@ -1,5 +1,6 @@
 package com.bluewhite.production.temporarypack;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -332,11 +333,11 @@ public class QuantitativeServiceImpl extends BaseServiceImpl<Quantitative, Long>
                             if (quantitative.getSendOrderId() != null) {
                                 SendOrder sendOrder = sendOrderDao.findOne(quantitative.getSendOrderId());
                                 sendOrder.setSendPackageNumber(sendOrder.getSendPackageNumber() + 1);
-                                if (sendOrder.getSumPackageNumber() != null && sendOrder.getSingerPrice() != null) {
+                                if (sendOrder.getSendPackageNumber() != null && !sendOrder.getSingerPrice().equals(BigDecimal.ZERO)) {
                                     sendOrder.setSendPrice(
-                                        NumberUtil.mul(sendOrder.getSumPackageNumber(), sendOrder.getSingerPrice()));
+                                        NumberUtil.mul(sendOrder.getSendPackageNumber(), sendOrder.getSingerPrice()));
                                     sendOrder.setLogisticsPrice(
-                                        NumberUtil.add(sendOrder.getExtraPrice(), sendOrder.getSingerPrice()));
+                                        NumberUtil.add(sendOrder.getExtraPrice(),sendOrder.getSendPrice()));
                                 }
                                 sendOrder.setSendTime(quantitative.getSendTime());
                                 sendOrder.setLogisticsId(logisticsId);
@@ -359,6 +360,10 @@ public class QuantitativeServiceImpl extends BaseServiceImpl<Quantitative, Long>
                             } else {
                                 SendOrder sendOrder = sendOrderDao.findOne(quantitative.getSendOrderId());
                                 sendOrder.setSendPackageNumber(sendOrder.getSendPackageNumber() - 1);
+                                if (sendOrder.getSendPackageNumber() != null && !sendOrder.getSingerPrice().equals(BigDecimal.ZERO)) {
+                                    sendOrder.setSendPrice(NumberUtil.mul(sendOrder.getSendPackageNumber(), sendOrder.getSingerPrice()));
+                                    sendOrder.setLogisticsPrice(NumberUtil.add(sendOrder.getExtraPrice(), sendOrder.getSendPrice()));
+                                }
                                 sendOrderDao.save(sendOrder);
                             }
                         }
