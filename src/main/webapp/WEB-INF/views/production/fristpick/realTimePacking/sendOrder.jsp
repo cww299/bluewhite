@@ -318,8 +318,7 @@ layui.config({
 		});
 		form.on('submit(search)',function(obj){
 			delete obj.field.sex;
-			if(isCompany)
-				delete obj.field["sendOrderChild.productName_like"];
+			delete obj.field.layTableCheckbox;
 			table.reload('tableData',{
 				where: obj.field,
 				page:{ curr:1 },
