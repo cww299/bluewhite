@@ -164,48 +164,10 @@ public class TemporaryPackAction {
     @ResponseBody
     public CommonResponse saveQuantitative(Quantitative quantitative) {
         CommonResponse cr = new CommonResponse();
-        
         quantitativeService.saveUpdateQuantitative(quantitative);
-        
-        
-        // 生成贴包单时生成发货单发货单，将发货单id存入贴包单
         if (StringUtils.isEmpty(quantitative.getIds())) {
-            sendOrderService.saveSendOrder(quantitative);
-            if (quantitative.getSumPackageNumber() > 0) {
-                for (int i = 0; i < quantitative.getSumPackageNumber(); i++) {
-                    Quantitative ot = new Quantitative();
-                    BeanCopyUtils.copyNotEmpty(quantitative, ot, "");
-                    quantitative.setId(null);
-                    quantitativeService.saveQuantitative(ot);
-                }
-            }
             cr.setMessage("新增成功");
         } else {
-            String[] idArr = quantitative.getIds().split(",");
-            if (idArr.length > 0) {
-                for (int i = 0; i < idArr.length; i++) {
-                    Long id = Long.parseLong(idArr[i]);
-                    Quantitative ot = quantitativeService.findOne(id);
-                    Quantitative newQuantitative = new Quantitative();
-                    BeanCopyUtils.copyNotEmpty(quantitative, newQuantitative, "");
-                    newQuantitative.setId(id);
-                    // 子单内容无法批量修改
-                    if (idArr.length > 1) {
-                        JSONArray jsonArray = new JSONArray();
-                        if (ot.getQuantitativeChilds().size() > 0) {
-                            for (QuantitativeChild quantitativeChild : ot.getQuantitativeChilds()) {
-                                JSONObject jsonObject = new JSONObject();
-                                jsonObject.put("id", quantitativeChild.getId());
-                                jsonObject.put("underGoodsId", quantitativeChild.getUnderGoodsId());
-                                jsonObject.put("singleNumber", quantitativeChild.getSingleNumber());
-                                jsonArray.add(jsonObject);
-                            }
-                        }
-                        newQuantitative.setChild(jsonArray.toJSONString());
-                    }
-                    quantitativeService.saveQuantitative(newQuantitative);
-                }
-            }
             cr.setMessage("修改成功");
         }
         return cr;
