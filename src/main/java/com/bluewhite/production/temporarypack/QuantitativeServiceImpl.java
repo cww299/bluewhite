@@ -135,7 +135,22 @@ public class QuantitativeServiceImpl extends BaseServiceImpl<Quantitative, Long>
                 sendOrderDao.save(sendOrder);
                 quantitative.setSendOrderId(ot.getSendOrderId());
             }
-            quantitative.setQuantitativeNumber(ot.getQuantitativeNumber());
+            // 如果修改了包装时间，包装编号也要进行修改
+            if(!DateUtil.isSameDay(quantitative.getTime(), ot.getTime())){
+                // 按最后一条数据编号进行新增
+                List<Quantitative> list =
+                    dao.findByTimeBetweenOrderByIdDesc(DatesUtil.getfristDayOftime(quantitative.getTime()),
+                        DatesUtil.getLastDayOftime(quantitative.getTime()));
+                int count = 0;
+                if (list.size() > 0) {
+                    String quantitativeNumber = list.get(0).getQuantitativeNumber();
+                    count = Integer.valueOf(StrUtil.sub(quantitativeNumber, 12, 16));
+                }
+                quantitative.setQuantitativeNumber(Constants.LHTB + DateUtil.format(quantitative.getTime(), "yyyyMMdd")
+                    + StringUtil.get0LeftString((count + 1), 4));
+            }else {
+                quantitative.setQuantitativeNumber(ot.getQuantitativeNumber());
+            }
             quantitative.setAudit(ot.getAudit());
             quantitative.setPrint(ot.getPrint());
             quantitative.setFlag(ot.getFlag());
@@ -309,6 +324,9 @@ public class QuantitativeServiceImpl extends BaseServiceImpl<Quantitative, Long>
                     if (flag == 0 && quantitative.getFlag() == 0) {
                         throw new ServiceException("未发货请勿取消发货");
                     }
+                    if(quantitative.getCustomerId()==null) {
+                        throw new ServiceException("贴包单无客户，无法发货");
+                    }
                     // 内部客户发货时，创建发货单
                     Customer customer = customerDao.findOne(quantitative.getCustomerId());
                     if (flag == 1) {
@@ -364,7 +382,7 @@ public class QuantitativeServiceImpl extends BaseServiceImpl<Quantitative, Long>
                             } else {
                                 SendOrder sendOrder = sendOrderDao.findOne(quantitative.getSendOrderId());
                                 sendOrder.setSendPackageNumber(sendOrder.getSendPackageNumber() - 1);
-                                if (sendOrder.getSendPackageNumber() != null && !sendOrder.getSingerPrice().equals(BigDecimal.ZERO)) {
+                                if (sendOrder.getSendPackageNumber() != null &&  sendOrder.getSingerPrice() !=null && !sendOrder.getSingerPrice().equals(BigDecimal.ZERO)) {
                                     sendOrder.setSendPrice(NumberUtil.mul(sendOrder.getSendPackageNumber(), sendOrder.getSingerPrice()));
                                     sendOrder.setLogisticsPrice(NumberUtil.add(sendOrder.getExtraPrice(), sendOrder.getSendPrice()));
                                 }

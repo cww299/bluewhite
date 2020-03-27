@@ -19,6 +19,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.servlet.ModelAndView;
 
 import com.alibaba.excel.EasyExcel;
 import com.alibaba.excel.write.style.column.LongestMatchColumnWidthStyleStrategy;
@@ -526,5 +527,18 @@ public class TemporaryPackAction {
         sendOrderService.auditSendOrder(ids, audit);
         return cr;
     }
+    
+    
+    /**
+     * 扫码发货页面
+     */
+    @RequestMapping(value = "/twoDimensionalCode/scanSendOrder", method = RequestMethod.GET)
+    public ModelAndView  scanSend(Long id) {
+        ModelAndView mav = new ModelAndView();
+        Quantitative quantitative = quantitativeService.findOne(id);
+        mav.setViewName("visitor/scanSend.jsp");
+        mav.addObject("data", quantitative);
+        return mav;
 
+    }
 }
