@@ -49,6 +49,8 @@ public class QuantitativeServiceImpl extends BaseServiceImpl<Quantitative, Long>
     private QuantitativeChildDao quantitativeChildDao;
     @Autowired
     private CustomerDao customerDao;
+    @Autowired
+    private SendOrderService sendOrderService;
 
     @Override
     public PageResult<Quantitative> findPages(Quantitative param, PageParameter page) {
@@ -136,7 +138,7 @@ public class QuantitativeServiceImpl extends BaseServiceImpl<Quantitative, Long>
                 quantitative.setSendOrderId(ot.getSendOrderId());
             }
             // 如果修改了包装时间，包装编号也要进行修改
-            if(!DateUtil.isSameDay(quantitative.getTime(), ot.getTime())){
+            if (!DateUtil.isSameDay(quantitative.getTime(), ot.getTime())) {
                 // 按最后一条数据编号进行新增
                 List<Quantitative> list =
                     dao.findByTimeBetweenOrderByIdDesc(DatesUtil.getfristDayOftime(quantitative.getTime()),
@@ -148,7 +150,7 @@ public class QuantitativeServiceImpl extends BaseServiceImpl<Quantitative, Long>
                 }
                 quantitative.setQuantitativeNumber(Constants.LHTB + DateUtil.format(quantitative.getTime(), "yyyyMMdd")
                     + StringUtil.get0LeftString((count + 1), 4));
-            }else {
+            } else {
                 quantitative.setQuantitativeNumber(ot.getQuantitativeNumber());
             }
             quantitative.setAudit(ot.getAudit());
@@ -310,7 +312,8 @@ public class QuantitativeServiceImpl extends BaseServiceImpl<Quantitative, Long>
 
     @Override
     @Transactional
-    public int sendQuantitative(String ids, Integer flag, String vehicleNumber, Long logisticsId ,Long outerPackagingId) {
+    public int sendQuantitative(String ids, Integer flag, String vehicleNumber, Long logisticsId,
+        Long outerPackagingId) {
         int count = 0;
         if (!StringUtils.isEmpty(ids)) {
             String[] idArr = ids.split(",");
@@ -324,7 +327,7 @@ public class QuantitativeServiceImpl extends BaseServiceImpl<Quantitative, Long>
                     if (flag == 0 && quantitative.getFlag() == 0) {
                         throw new ServiceException("未发货请勿取消发货");
                     }
-                    if(quantitative.getCustomerId()==null) {
+                    if (quantitative.getCustomerId() == null) {
                         throw new ServiceException("贴包单无客户，无法发货");
                     }
                     // 内部客户发货时，创建发货单
@@ -337,8 +340,8 @@ public class QuantitativeServiceImpl extends BaseServiceImpl<Quantitative, Long>
                                 quantitative.getVehicleNumber());
                             if (sendOrder == null) {
                                 sendOrder = new SendOrder();
-                                if(outerPackagingId!=null) {
-                                    sendOrder.setOuterPackagingId(outerPackagingId); 
+                                if (outerPackagingId != null) {
+                                    sendOrder.setOuterPackagingId(outerPackagingId);
                                 }
                                 sendOrder.setAudit(0);
                                 sendOrder.setCustomerId(quantitative.getCustomerId());
@@ -355,11 +358,12 @@ public class QuantitativeServiceImpl extends BaseServiceImpl<Quantitative, Long>
                             if (quantitative.getSendOrderId() != null) {
                                 SendOrder sendOrder = sendOrderDao.findOne(quantitative.getSendOrderId());
                                 sendOrder.setSendPackageNumber(sendOrder.getSendPackageNumber() + 1);
-                                if (sendOrder.getSendPackageNumber() != null && sendOrder.getSingerPrice()!=null &&!sendOrder.getSingerPrice().equals(BigDecimal.ZERO)) {
+                                if (sendOrder.getSendPackageNumber() != null && sendOrder.getSingerPrice() != null
+                                    && !sendOrder.getSingerPrice().equals(BigDecimal.ZERO)) {
                                     sendOrder.setSendPrice(
                                         NumberUtil.mul(sendOrder.getSendPackageNumber(), sendOrder.getSingerPrice()));
                                     sendOrder.setLogisticsPrice(
-                                        NumberUtil.add(sendOrder.getExtraPrice(),sendOrder.getSendPrice()));
+                                        NumberUtil.add(sendOrder.getExtraPrice(), sendOrder.getSendPrice()));
                                 }
                                 sendOrder.setSendTime(quantitative.getSendTime());
                                 sendOrder.setLogisticsId(logisticsId);
@@ -369,22 +373,26 @@ public class QuantitativeServiceImpl extends BaseServiceImpl<Quantitative, Long>
                     } else {
                         if (quantitative.getSendOrderId() != null) {
                             SendOrder ot = sendOrderDao.findOne(quantitative.getSendOrderId());
-                            if(ot.getAudit()==1) {
+                            if (ot.getAudit() == 1) {
                                 throw new ServiceException("财务已审核生成物流费用,无法取消发货");
                             }
                             if (customer.getInterior() == 1) {
-                               List<Quantitative> quantitativeList =  dao.findBySendOrderId(quantitative.getSendOrderId());
-                               if(quantitativeList.size()==1) {
-                                   sendOrderDao.delete(quantitative.getSendOrderId());
-                               }else {
-                                   quantitative.setSendOrderId(null);
-                               }
+                                List<Quantitative> quantitativeList =
+                                    dao.findBySendOrderId(quantitative.getSendOrderId());
+                                if (quantitativeList.size() == 1) {
+                                    sendOrderDao.delete(quantitative.getSendOrderId());
+                                } else {
+                                    quantitative.setSendOrderId(null);
+                                }
                             } else {
                                 SendOrder sendOrder = sendOrderDao.findOne(quantitative.getSendOrderId());
                                 sendOrder.setSendPackageNumber(sendOrder.getSendPackageNumber() - 1);
-                                if (sendOrder.getSendPackageNumber() != null &&  sendOrder.getSingerPrice() !=null && !sendOrder.getSingerPrice().equals(BigDecimal.ZERO)) {
-                                    sendOrder.setSendPrice(NumberUtil.mul(sendOrder.getSendPackageNumber(), sendOrder.getSingerPrice()));
-                                    sendOrder.setLogisticsPrice(NumberUtil.add(sendOrder.getExtraPrice(), sendOrder.getSendPrice()));
+                                if (sendOrder.getSendPackageNumber() != null && sendOrder.getSingerPrice() != null
+                                    && !sendOrder.getSingerPrice().equals(BigDecimal.ZERO)) {
+                                    sendOrder.setSendPrice(
+                                        NumberUtil.mul(sendOrder.getSendPackageNumber(), sendOrder.getSingerPrice()));
+                                    sendOrder.setLogisticsPrice(
+                                        NumberUtil.add(sendOrder.getExtraPrice(), sendOrder.getSendPrice()));
                                 }
                                 sendOrderDao.save(sendOrder);
                             }
@@ -446,6 +454,49 @@ public class QuantitativeServiceImpl extends BaseServiceImpl<Quantitative, Long>
             }
         }
         return count;
+    }
+
+    @Override
+    @Transactional
+    public void saveUpdateQuantitative(Quantitative quantitative) {
+        // 生成贴包单时生成发货单发货单，将发货单id存入贴包单
+        if (StringUtils.isEmpty(quantitative.getIds())) {
+            sendOrderService.saveSendOrder(quantitative);
+            if (quantitative.getSumPackageNumber() > 0) {
+                for (int i = 0; i < quantitative.getSumPackageNumber(); i++) {
+                    Quantitative ot = new Quantitative();
+                    BeanCopyUtils.copyNotEmpty(quantitative, ot, "");
+                    quantitative.setId(null);
+                    saveQuantitative(ot);
+                }
+            }
+        } else {
+            String[] idArr = quantitative.getIds().split(",");
+            if (idArr.length > 0) {
+                for (int i = 0; i < idArr.length; i++) {
+                    Long id = Long.parseLong(idArr[i]);
+                    Quantitative ot = findOne(id);
+                    Quantitative newQuantitative = new Quantitative();
+                    BeanCopyUtils.copyNotEmpty(quantitative, newQuantitative, "");
+                    newQuantitative.setId(id);
+                    // 子单内容无法批量修改
+                    if (idArr.length > 1) {
+                        JSONArray jsonArray = new JSONArray();
+                        if (ot.getQuantitativeChilds().size() > 0) {
+                            for (QuantitativeChild quantitativeChild : ot.getQuantitativeChilds()) {
+                                JSONObject jsonObject = new JSONObject();
+                                jsonObject.put("id", quantitativeChild.getId());
+                                jsonObject.put("underGoodsId", quantitativeChild.getUnderGoodsId());
+                                jsonObject.put("singleNumber", quantitativeChild.getSingleNumber());
+                                jsonArray.add(jsonObject);
+                            }
+                        }
+                        newQuantitative.setChild(jsonArray.toJSONString());
+                    }
+                    saveQuantitative(newQuantitative);
+                }
+            }
+        }
     }
 
 }

@@ -75,6 +75,11 @@ public interface QuantitativeService extends BaseCRUDService<Quantitative,Long>{
      */
 	public int updateQuantitativeSendTime(String ids, Date sendTime);
 
+    /**新增修改
+     * @param quantitative
+     */
+	public void saveUpdateQuantitative(Quantitative quantitative);
+
 	
 
 }
