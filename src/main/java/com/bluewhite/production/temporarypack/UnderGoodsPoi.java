@@ -2,8 +2,6 @@ package com.bluewhite.production.temporarypack;
 
 import java.util.Date;
 
-import javax.persistence.Column;
-
 import com.alibaba.excel.annotation.ExcelProperty;
 import com.alibaba.excel.metadata.BaseRowModel;
 
@@ -33,8 +31,24 @@ public class UnderGoodsPoi extends BaseRowModel{
 	 */
 	@ExcelProperty(index = 3)
 	private Date allotTime;
+	
+	/**
+     * 是否天猫
+     */
+    @ExcelProperty(index = 4)
+    private Integer internal;
 
-	public String getName() {
+    
+    
+	public Integer getInternal() {
+        return internal;
+    }
+
+    public void setInternal(Integer internal) {
+        this.internal = internal;
+    }
+
+    public String getName() {
 		return name;
 	}
 

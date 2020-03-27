@@ -288,9 +288,9 @@ public class ApplicationLeaveServiceImpl extends BaseServiceImpl<ApplicationLeav
                 }
                 // 获取所有的加班时间
                 double actualOverTime = 0.0;
-                if (applicationLeave.getOvertimeType() != 2 && attendanceInit.getOverTimeType() == 2) {
-                    throw new ServiceException("该员工属于按打卡核算加班，无需填写加班申请");
-                }
+//                if (applicationLeave.getOvertimeType() != 2 && attendanceInit.getOverTimeType() == 2) {
+//                    throw new ServiceException("该员工属于按打卡核算加班，无需填写加班申请");
+//                }
                 if (attendanceTime.getCheckIn() != null && attendanceTime.getCheckOut() != null) {
                     // 获取所有的休息日
                     if (attendanceInit.getRestDay() != null || attendanceInit.getRestType() != null) {

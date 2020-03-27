@@ -171,10 +171,10 @@ public class UnderGoodsServiceImpl extends BaseServiceImpl<UnderGoods, Long> imp
                     }
                 });
             } else {
-                throw new ServiceException("当前导入excel第" + (i + 2) + "条数据的商品不存在，请先添加");
+                throw new ServiceException("当前导入excel第" + (i + 1) + "条商品不存在，请先添加");
             }
             if (cPoi.getNumber() == null) {
-                throw new ServiceException("当前导入excel第" + (i + 2) + "条数据的数量不存在，请先添加");
+                throw new ServiceException("当前导入excel第" + (i + 1) + "条商品的数量不存在，请先添加");
             }
             underGoods.setNumber(cPoi.getNumber());
             underGoods.setBacthNumber(cPoi.getBacthNumber());

@@ -24,7 +24,6 @@ import org.springframework.web.servlet.ModelAndView;
 import com.alibaba.excel.EasyExcel;
 import com.alibaba.excel.write.style.column.LongestMatchColumnWidthStyleStrategy;
 import com.alibaba.fastjson.JSONArray;
-import com.alibaba.fastjson.JSONObject;
 import com.bluewhite.basedata.entity.BaseData;
 import com.bluewhite.common.BeanCopyUtils;
 import com.bluewhite.common.ClearCascadeJSON;
@@ -39,6 +38,7 @@ import com.bluewhite.product.product.entity.Product;
 import com.bluewhite.system.user.entity.User;
 
 import cn.hutool.core.map.MapUtil;
+import cn.hutool.json.JSONObject;
 
 @Controller
 public class TemporaryPackAction {
@@ -164,6 +164,10 @@ public class TemporaryPackAction {
     @ResponseBody
     public CommonResponse saveQuantitative(Quantitative quantitative) {
         CommonResponse cr = new CommonResponse();
+        
+        quantitativeService.saveUpdateQuantitative(quantitative);
+        
+        
         // 生成贴包单时生成发货单发货单，将发货单id存入贴包单
         if (StringUtils.isEmpty(quantitative.getIds())) {
             sendOrderService.saveSendOrder(quantitative);
@@ -535,10 +539,8 @@ public class TemporaryPackAction {
     @RequestMapping(value = "/twoDimensionalCode/scanSendOrder", method = RequestMethod.GET)
     public ModelAndView  scanSend(Long id) {
         ModelAndView mav = new ModelAndView();
-        Quantitative quantitative = quantitativeService.findOne(id);
-        mav.setViewName("visitor/scanSend.jsp");
-        mav.addObject("data", quantitative);
+        mav.setViewName("/visitor/scanSend");
+        mav.addObject("data",  clearCascadeJSONQuantitative.format(quantitativeService.findOne(id)).toJSON());
         return mav;
-
     }
 }

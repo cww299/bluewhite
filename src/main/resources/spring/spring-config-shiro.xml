@@ -117,6 +117,7 @@
 			<value>
 			  <!-- anon表示此地址不需要任何权限即可访问 -->
 					/logout=logout<!-- 退出登录 -->
+					/basedata/list=anon
 			  	 	/twoDimensionalCode/scanSendOrder=anon 
 			  	 	/views/visitor/scanSend.jsp=anon
 					/static/**=anon <!--设置静态资源文件为游客可访问-->
