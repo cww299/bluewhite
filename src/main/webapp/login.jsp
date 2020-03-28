@@ -22,7 +22,7 @@
 	<li></li>
 </ul>
 <div class="container-fluid">
-	<div class="row cb-slideshow-text-container ">
+	<div class="row cb-slideshow-text-container">
 		<div class="tm-content col-xl-6 col-sm-8 col-xs-8 ml-auto section">
 			<header class="mb-5">
 				<h1>
