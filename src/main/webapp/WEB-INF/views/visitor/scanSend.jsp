@@ -128,7 +128,7 @@ layui.config({
 				return;
 			}
 			var f = obj.field;
-			if(!f.no || !f.time || !f.logisticsId || !f.outerPackagingId){
+			if(!f.no || !f.time){
 				return layer.msg('请正确填写发货数据',{ time:500,icon:2 })
 			}
 			f.no = PrefixInteger(f.no,4);

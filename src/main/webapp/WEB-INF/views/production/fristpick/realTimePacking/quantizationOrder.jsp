@@ -58,6 +58,10 @@
 </body>
 <script type="text/html" id="printPackTpl">
 <div style="padding:20px 0px;page-break-after: always;">
+	<div style="text-align:center;">
+		<div id="qrcode{{ d.id }}"></div>
+		<img id='qrcodeImg{{ d.id }}'/>  
+	</div>
 	<table border="1" style="margin: auto;width: 90%;text-align:center;">
 		<tr>
        	 	<td style="padding:15px 0;">收货人名</td>
@@ -83,7 +87,6 @@
 	    {{# }) }}
 	</table>
 </div>
-<hr>
 </script>
 <!-- 
 stickBagAccount: 吴婷
@@ -108,9 +111,10 @@ stickBagAccount: 吴婷
 layui.config({
 	base : '${ctx}/static/layui-v2.4.5/'
 }).extend({
-	mytable : 'layui/myModules/mytable' ,
+	mytable : 'layui/myModules/mytable',
+	qrcode : 'layui/myModules/common/qrcode',
 }).define(
-	['mytable','laydate'],
+	['mytable','laydate','qrcode'],
 	function(){
 		var $ = layui.jquery
 		, layer = layui.layer 				
@@ -442,7 +446,9 @@ layui.config({
 				})
 			})
 			var tpl = $('#printPackTpl').html(), html='<div id="printDiv">';
+			var allId = [];
 			layui.each(printData,function(index,item){
+				allId.push(item.id);
 				laytpl(tpl).render(item,function(h){ html += h; })
 			})
 			layer.open({
@@ -453,6 +459,17 @@ layui.config({
 				btnAlign: 'c',
 				btn: ['打印','取消'],
 				shadeClose: true,
+				success:function(){
+					for(var i in allId){
+						var qrcode = $('#qrcode'+allId[i]).qrcode({
+							render:'canvas',
+							text:"http://192.168.1.199:8080/bluewhite/twoDimensionalCode/scanSendOrder?id="+allId[i],
+							width:160,height:160
+						}).hide();	
+						 var canvas=qrcode.find('canvas').get(0);  
+						 $('#qrcodeImg'+allId[i]).attr('src',canvas.toDataURL('image/jpg'))  
+					}
+				},
 				yes: function(){
 					var ids = new Set();
 					layui.each(choosed,function(i,item){
