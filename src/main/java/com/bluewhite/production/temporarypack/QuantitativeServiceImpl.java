@@ -2,6 +2,8 @@ package com.bluewhite.production.temporarypack;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
 
@@ -143,6 +145,7 @@ public class QuantitativeServiceImpl extends BaseServiceImpl<Quantitative, Long>
                 List<Quantitative> list =
                     dao.findByTimeBetweenOrderByIdDesc(DatesUtil.getfristDayOftime(quantitative.getTime()),
                         DatesUtil.getLastDayOftime(quantitative.getTime()));
+                compareQuantitativeNumber(list);
                 int count = 0;
                 if (list.size() > 0) {
                     String quantitativeNumber = list.get(0).getQuantitativeNumber();
@@ -229,6 +232,25 @@ public class QuantitativeServiceImpl extends BaseServiceImpl<Quantitative, Long>
         }
         save(quantitative);
     }
+    
+    
+    /**
+     * 按编号重新排序
+     * @param list
+     * @return
+     */
+    private List<Quantitative> compareQuantitativeNumber(List<Quantitative> list) {
+        Collections.sort(list, new Comparator<Quantitative>() {
+            @Override
+            public int compare(Quantitative q1, Quantitative q2) {
+                int a = Integer.valueOf(StrUtil.sub(q1.getQuantitativeNumber(), 12, 16));
+                int b = Integer.valueOf(StrUtil.sub(q2.getQuantitativeNumber(), 12, 16));
+                return b-a;
+            }
+        });
+        return list;
+    }
+    
 
     @Override
     @Transactional

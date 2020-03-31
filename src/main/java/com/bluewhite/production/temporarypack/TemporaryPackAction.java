@@ -23,9 +23,7 @@ import org.springframework.web.servlet.ModelAndView;
 
 import com.alibaba.excel.EasyExcel;
 import com.alibaba.excel.write.style.column.LongestMatchColumnWidthStyleStrategy;
-import com.alibaba.fastjson.JSONArray;
 import com.bluewhite.basedata.entity.BaseData;
-import com.bluewhite.common.BeanCopyUtils;
 import com.bluewhite.common.ClearCascadeJSON;
 import com.bluewhite.common.ServiceException;
 import com.bluewhite.common.entity.CommonResponse;
@@ -38,7 +36,6 @@ import com.bluewhite.product.product.entity.Product;
 import com.bluewhite.system.user.entity.User;
 
 import cn.hutool.core.map.MapUtil;
-import cn.hutool.json.JSONObject;
 
 @Controller
 public class TemporaryPackAction {
@@ -222,7 +219,8 @@ public class TemporaryPackAction {
     }
 
     /**
-     * 发货 上车编号
+     * 发货 
+     * 上车编号
      */
     @RequestMapping(value = "/temporaryPack/sendQuantitative", method = RequestMethod.GET)
     @ResponseBody
