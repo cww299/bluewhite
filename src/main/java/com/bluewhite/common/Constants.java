@@ -88,7 +88,7 @@ public class Constants {
     public final static String THREE_FLOOR = "192.168.1.204";
     public final static String ONE_FLOOR = "192.168.1.205";
 //    public final static String TWO_FLOOR= "192.168.1.250";
-    public final static String EIGHT_WAREHOUSE = "192.168.7.123";
+    public final static String EIGHT_WAREHOUSE = "192.168.7.128";
     public final static String NEW_IGHT_WAREHOUSE = "192.168.6.73";
     public final static String ELEVEN_WAREHOUSE = "192.168.14.201";
     
