@@ -474,17 +474,22 @@
 									  }, 
 						      			 
 						      		  success: function (result) {
-						      			
+						      			  var allTime = 0;		//汇总时间
 						      			  $(result.data).each(function(i,o){
-						      				  
+						      				allTime+=o.workingTime;
 						      				htmltwo +='<tr><td class="text-center reste"><label> <input type="checkbox" class="ace checkboxIdtw" value="'+o.id+'"/><span class="lbl"></span></label></td>'
 						      				+'<td class="text-center edit workingnametwo id">'+o.name+'</td>'
 						      				+'<td class="text-center edit workingtimetwo">'+o.workingTime+'</td>'
 						      				+'<td data-id="'+o.id+'" class="text-center" data-code="'+o.procedureType.id+'">'+htmlfr+'</td>' 
 											+'<td class="text-center"><button class="btn btn-xs btn-primary btn-3d updateworking" data-id='+o.id+'>编辑</button> </td></tr>'
-											
-						      			});  
-									   	   
+						      			  });  
+						      			  htmltwo += ['<tr>',
+				      						'<td class="text-center">合计</td>',
+				      						'<td></td>',
+				      						'<td class="text-center">'+allTime+'</td>',
+				      						'<td></td>',
+				      						'<td></td>',
+			      						  '</tr>'].join(' ');
 									   	layer.close(indextwo);
 									   	//新增时 查找工序类型
 								      			htmltwo="<tr><td class='text-center'><label><input type='checkbox' class='ace checkstw' /><span class='lbl'></span></label></td><td class='text-center'><input type='text' class='input-large workingname'></td><td class='text-center'><input type='text' class='input-small workingtime' ></td><td class='text-center'>"+htmlfr+"</td><td class='text-center'><button class='btn btn-xs btn-primary btn-3d add' data-productid="+productId+">新增</button></td></tr>"+htmltwo;
