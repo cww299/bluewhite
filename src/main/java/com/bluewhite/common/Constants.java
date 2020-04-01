@@ -14,9 +14,6 @@ public class Constants {
 	/**	获取  accessToken 的url   **/
 	public final static String  ALI_URL = "https://gw.open.1688.com/openapi/http/1/system.oauth2/getToken/4879538";
 	
-	
-	
-	
     
     /**   角色英文名称           **/
     /**
