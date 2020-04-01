@@ -329,7 +329,7 @@ public class AttendanceTimeServiceImpl extends BaseServiceImpl<AttendanceTime, L
                 }
 
                 // 等于2时，正常签入签出
-                if (attList.size() == 2) {
+                if (attList.size() == 2 | attList.size() == 3) {
                     // 获取签入签出时间
                     // 上班
                     attendanceTime.setCheckIn(new Date(attList.get(0).getTime().getTime()));
@@ -386,7 +386,7 @@ public class AttendanceTimeServiceImpl extends BaseServiceImpl<AttendanceTime, L
                 }
 
                 // 打卡记录是小于1条，等于3条,超过4条,为异常的考勤
-                if (attList.size() < 2 || attList.size() == 3 || attList.size() > 4) {
+                if (attList.size() < 2 || attList.size() > 4) {
                     if (attList.size() == 1) {
                         attendanceTime.setCheckIn(new Date(attList.get(0).getTime().getTime()));
                     }
