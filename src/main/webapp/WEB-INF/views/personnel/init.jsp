@@ -183,8 +183,8 @@
 			<div class="layui-input-inline">
 				<select name="comeWork" id="comeWork" lay-filter="comeWork" lay-verify="required" lay-search="true">
 					<option value="1">按点上班</option>
-					<option value="2">第二天上班时间超过24:00往后推</option>
-					<option value="3">超过24:30后默认休息7.5小时</option></select>
+					<option value="2">延迟24:00到下班时</option>
+					<option value="3">延迟24:30到下班时</option></select>
 			</div>
 		</div>
 		<div class="layui-form-item">
@@ -531,7 +531,7 @@ layui.config({
 				        ,title: "新增" //不显示标题栏
 				        ,closeBtn: false
 				        ,zindex:-1
-				        ,area:['30%', '100%']
+				        ,area:['45%', '100%']
 				        ,shade: 0.5
 				        ,id: 'LAY_layuipro' //设定一个id，防止重复弹出
 				        ,btn: ['确认', '取消']
