@@ -420,7 +420,7 @@ public class UserAction {
             Map<String, Object> us = new HashMap<String, Object>();
             long co = DatesUtil.getDaySub(DatesUtil.getfristDayOftime(new Date()),
                 DatesUtil.getfristDayOftime(user.getContractDateEnd()));
-            if (co <= 80) {
+            if (co <= 75) {
                 us.put("userId", user.getId());
                 us.put("username", user.getUserName());
                 us.put("contractDateEnd", sdf.format(user.getContractDateEnd()));

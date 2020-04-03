@@ -116,7 +116,6 @@
 		<property name="filterChainDefinitions">
 			<value>
 			  <!-- anon表示此地址不需要任何权限即可访问 -->
-					/logout=logout<!-- 退出登录 -->
 					/basedata/list=anon
 					/temporaryPack/sendQuantitative=anon
 			  	 	/twoDimensionalCode/scanSendOrder=anon 

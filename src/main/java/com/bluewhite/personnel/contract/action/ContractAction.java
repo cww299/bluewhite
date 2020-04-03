@@ -1,20 +1,13 @@
 package com.bluewhite.personnel.contract.action;
 
-import java.text.SimpleDateFormat;
-
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.propertyeditors.CustomDateEditor;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.WebDataBinder;
-import org.springframework.web.bind.annotation.InitBinder;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.multipart.support.ByteArrayMultipartFileEditor;
 
 import com.bluewhite.basedata.entity.BaseData;
 import com.bluewhite.common.ClearCascadeJSON;
-import com.bluewhite.common.DateTimePattern;
 import com.bluewhite.common.entity.CommonResponse;
 import com.bluewhite.common.entity.PageParameter;
 import com.bluewhite.personnel.contract.entity.Contract;
@@ -80,7 +73,7 @@ public class ContractAction {
 	public CommonResponse deleteContract(String ids) {
 		CommonResponse cr = new CommonResponse();
 		int count = contractService.delete(ids);
-		cr.setMessage("成功删除" + ids + "条合同");
+		cr.setMessage("成功删除" + count + "条合同");
 		return cr;
 	}
 
@@ -95,13 +88,6 @@ public class ContractAction {
 		CommonResponse cr = new CommonResponse();
 		cr.setData(contractService.remindContract());
 		return cr;
-	}
-
-	@InitBinder
-	protected void initBinder(WebDataBinder binder) {
-		SimpleDateFormat dateTimeFormat = new SimpleDateFormat(DateTimePattern.DATEHMS.getPattern());
-		binder.registerCustomEditor(java.util.Date.class, null, new CustomDateEditor(dateTimeFormat, true));
-		binder.registerCustomEditor(byte[].class, new ByteArrayMultipartFileEditor());
 	}
 
 }
