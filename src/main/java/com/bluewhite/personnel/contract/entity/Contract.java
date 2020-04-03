@@ -26,6 +26,17 @@ import com.bluewhite.system.sys.entity.Files;
 @Table(name = "person_contract")
 public class Contract extends BaseEntity<Long>{
 	
+	/**
+	 * 合同编号
+	 */
+	@Column(name = "code")
+	private String code;
+	
+	/**
+	 * 是否为当前最新合同。（0=未续签，为当前合同最新一份，1=已经续签）
+	 */
+	@Column(name = "is_renew")
+	private Integer isRenew=0;
 	
 	/**
 	 * 合同种类id
@@ -270,11 +281,22 @@ public class Contract extends BaseEntity<Long>{
 		this.amount = amount;
 	}
 
-	
-	
-	
-	
-	
+	public String getCode() {
+		return code;
+	}
+
+	public void setCode(String code) {
+		this.code = code;
+	}
+
+	public Integer getIsRenew() {
+		return isRenew;
+	}
+
+	public void setIsRenew(Integer isRenew) {
+		this.isRenew = isRenew;
+	}
+
 	
 	
 }

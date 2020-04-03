@@ -1,11 +1,13 @@
 package com.bluewhite.personnel.contract.service;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Random;
 import java.util.Set;
 
 import javax.persistence.criteria.Predicate;
@@ -49,16 +51,49 @@ public class ContractServiceImpl extends BaseServiceImpl<Contract, Long> impleme
         }
         if (contract.getId() == null) {
             contract.setFlag(1);
+            if(contract.getCode()==null) {	//没有合同编号且id为null。合同新增
+            	contract.setCode(getContractCode());
+            }
         } else {
             if (new Date().after(contract.getEndTime())) {
                 contract.setFlag(0);
             } else {
                 contract.setFlag(1);
             }
+            if(contract.getIsRenew()==1) {	//如果修改操作为续签
+            	renewContract(contract);
+            	return;
+            }
         }
         save(contract);
     }
 
+    public void renewContract(Contract contract) {
+    	Contract lastContract = dao.getOne(contract.getId());	//续签合同的上一份
+    	lastContract.setIsRenew(1);		//设置合同已被续签
+    	if (new Date().after(lastContract.getEndTime())) {	//判断合同是否过期
+    		lastContract.setFlag(0);
+        } else {
+        	lastContract.setFlag(1);
+        }
+    	save(lastContract);	//保存续签合同
+    	contract.setId(null);	
+    	contract.setIsRenew(0);
+    	addContract(contract);	//新增合同
+    }
+    
+    public String getContractCode() {
+    	String d = new SimpleDateFormat("yyMMdd").format(new Date());
+    	while(true) {
+    		int random =  new Random().nextInt(900) + 100;	//取100~999之间的随机数
+    		String code = "HT"+d+random;
+    		Contract contract = dao.findByCode(code);
+    		if(contract==null || contract.getId()==null) {
+    			return code;
+    		}
+    	}
+    }
+    
     @Override
     public PageResult<Contract> findContractPage(Contract param, PageParameter page) {
         Page<Contract> pages = dao.findAll((root, query, cb) -> {
@@ -92,6 +127,11 @@ public class ContractServiceImpl extends BaseServiceImpl<Contract, Long> impleme
                 predicate.add(
                     cb.between(root.get("endTime").as(Date.class), param.getOrderTimeBegin(), param.getOrderTimeEnd()));
             }
+            if (param.getCode() != null) {
+                predicate.add(cb.equal(root.get("code").as(String.class), param.getCode()));
+            }
+            if(param.getIsRenew()<2)	//传2的时候全查
+            	predicate.add(cb.equal(root.get("isRenew").as(Integer.class), param.getIsRenew()));
             Predicate[] pre = new Predicate[predicate.size()];
             query.where(predicate.toArray(pre));
             return null;

@@ -14,6 +14,8 @@ public interface ContractDao extends BaseRepository<Contract, Long> {
 	 * @return
 	 */
 	List<Contract> findByFlag(Integer flag);
+
+	Contract findByCode(String code);
 	
 
 }

@@ -30,7 +30,7 @@ public class ContractAction {
 	private ClearCascadeJSON clearCascadeJSON;
 	{
 		clearCascadeJSON = ClearCascadeJSON.get().addRetainTerm(Contract.class, "id", "contractKind", "contractType",
-				"duration", "pictureUrl", "startTime", "endTime", "content","amount","flag","company","fileSet","paymentWay","paymentTime")
+				"duration", "pictureUrl", "startTime", "code","isRenew","endTime", "content","amount","flag","company","fileSet","paymentWay","paymentTime")
 				.addRetainTerm(Files.class, "id", "url")
 				.addRetainTerm(BaseData.class, "id", "name");
 	}
@@ -45,7 +45,10 @@ public class ContractAction {
 	public CommonResponse getAllUser(Contract contract) {
 		CommonResponse cr = new CommonResponse();
 		if (contract != null) {
-			cr.setMessage("修改成功");
+			if(contract.getIsRenew()==1)
+				cr.setMessage("续签成功");
+			else
+				cr.setMessage("修改成功");
 		} else {
 			cr.setMessage("新增成功");
 		}

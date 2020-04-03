@@ -57,30 +57,28 @@
 </div>
 </body>
 <script type="text/html" id="printPackTpl">
-<div style="padding:20px 0px;page-break-after: always;">
-	<div style="text-align:center;">
-		<div id="qrcode{{ d.id }}"></div>
-		<img id='qrcodeImg{{ d.id }}'/>  
-	</div>
-	<table border="1" style="margin: auto;width: 90%;text-align:center;">
+<div style="page-break-after: always;">
+	<table border="1" style="margin: auto;width: 95%;text-align:center;">
 		<tr>
-       	 	<td style="padding:15px 0;">收货人名</td>
+       	 	<td style="">收货人</td>
         	<td>{{ d.customer?d.customer.name:'---' }}</td>
-			<td>收货人地址电话</td>
+			<td rowspan="2">
+				<div id="qrcode{{ d.id }}"></div>
+				<img id='qrcodeImg{{ d.id }}'/>  
+			</td>
 	    </tr>
 		<tr>
-	        <td style="padding:15px 0;">当批外包编号</td>
+	        <td style="">编号</td>
 	        <td>{{ d.quantitativeNumber || '---' }}</td>
-			<td>电话</td>
 	    </tr>
 		<tr>
-			<td style="padding:15px 0;">批次号</td>
+			<td style="">批次号</td>
 	        <td>产品名</td>
-	        <td>当件内装数量</td>
+	        <td>数量</td>
 	    </tr>
 		{{# layui.each(d.quantitativeChilds,function(index,item){  }}
 		<tr>
-			<td style="padding:15px 0;">{{ item.underGoods.bacthNumber}}</td>
+			<td style="">{{ item.underGoods.bacthNumber}}</td>
 	        <td>{{ item.underGoods.product.name}}</td>
 	        <td>{{ item.singleNumber}}</td>
 	    </tr>
@@ -460,7 +458,7 @@ layui.config({
 				btn: ['打印','取消'],
 				shadeClose: true,
 				success:function(){
-					/* for(var i in allId){
+					for(var i in allId){
 						var qrcode = $('#qrcode'+allId[i]).qrcode({
 							render:'canvas',
 							text:"http://192.168.1.199:8080/bluewhite/twoDimensionalCode/scanSendOrder?id="+allId[i],
@@ -468,7 +466,7 @@ layui.config({
 						}).hide();	
 						var canvas=qrcode.find('canvas').get(0);  
 						$('#qrcodeImg'+allId[i]).attr('src',canvas.toDataURL('image/jpg'))  
-					} */
+					} 
 				},
 				yes: function(){
 					var ids = new Set();

@@ -67,6 +67,10 @@
 				<td style="width:150px;">
 					<select name="contractKindId" id="searchKind" lay-search><option value="">请选择</option></select></td>
 				<td>&nbsp;&nbsp;</td>
+				<td>合同编号:</td>
+				<td style="width:150px;">
+					<input name="code" class="layui-input"></td>
+				<td>&nbsp;&nbsp;</td>
 				<td>合同类型:</td>
 				<td style="width:150px;">
 					<select name="contractTypeId" id="searchType" lay-search><option value="">请选择</option></select></td>
@@ -94,6 +98,12 @@
 <!-- 新增修改模板 -->
 <script type="text/html" id="addEditTpl">
 <div class="layui-form layui-form-pane" style="padding:20px;">
+  <div class="layui-form-item">
+    <label class="layui-form-label">合同编号</label>
+    <div class="layui-input-block">
+      <input name="code" readonly value="{{ d.code || "" }}" class="layui-input">
+    </div>
+  </div>
   <div class="layui-form-item">
     <label class="layui-form-label">合同种类</label>
     <div class="layui-input-block">
@@ -176,18 +186,35 @@
   <div id="addEditImgDiv">
     
   </div>
- 
-
-  <input type="hidden" name="id" value="{{d.id}}">
+  <input type="hidden" name="isRenew" value="{{d.isRenew }}">
+  <input type="hidden" name="id" value="{{d.id || "" }}">
   <span style="display:none;" id="sureBtn" lay-submit lay-filter="sureBtn"></span>
 </div>
 </script>
 <!-- 表格工具栏模板 -->
 <script type="text/html" id="tableTool">
 <div>
-	<span lay-event="add"  class="layui-btn layui-btn-sm" >新增合同</span>
-	<span lay-event="update"  class="layui-btn layui-btn-sm" >修改合同</span>
+	<span lay-event="add"  class="layui-btn layui-btn-sm">新增合同</span>
+	<span lay-event="update"  class="layui-btn layui-btn-sm layui-btn-normal">修改合同</span>
+	<span lay-event="renew"  class="layui-btn layui-btn-sm layui-btn-primary">合同续签</span>
+	<span lay-event="info"  class="layui-btn layui-btn-sm layui-btn-warm">合同详情</span>
 </div>
+</script>
+<script type="text/html" id="infoTool">
+<ul class="layui-timeline">
+  {{# layui.each(d,function(index,item){  }}
+	  <li class="layui-timeline-item">
+	    <i class="layui-icon layui-timeline-axis">&#xe63f;</i>
+	    <div class="layui-timeline-content layui-text">
+	      <h3 class="layui-timeline-title">{{ item.startTime }}</h3>
+	      <p>合同内容：{{ item.content }} </p>
+		  <p>合同金额：{{ item.amount }} </p>
+		  <p>开始时间：{{ item.startTime }} </p>
+		  <p>结束时间：{{ item.endTime }} </p>
+	    </div>
+	  </li>
+  {{# }) }}
+</ul>
 </script>
 </body>
 <script>
@@ -300,6 +327,7 @@ layui.config({
 			ifNull:'---',
 			cols:[[
 			       {type:'checkbox',},
+			       {title:'合同编号',   		field:'code',	},
 			       {title:'合同种类',   field:'contractKind_name',	},
 			       {title:'公司',   		field:'company',	},
 			       {title:'合同类型',   field:'contractType_name',	},
@@ -343,6 +371,8 @@ layui.config({
 			case 'add':	addEdit('add');		break;
 			case 'update':	addEdit('edit'); 	break;
 			case 'delete':	deletes();			break;
+			case 'renew': addEdit('renew'); break;
+			case 'info' : openInfoWin();	break;
 			}
 		})
 		table.on('tool(tableData)',function(obj){
@@ -400,6 +430,35 @@ layui.config({
 				}
 			})
 		})
+		function openInfoWin(){
+			var choosed=layui.table.checkStatus('tableData').data;
+			choosed.length>1 && (msg = "不能查看多条合同信息");
+			choosed.length<1 && (msg = "请选择要查看的合同");
+			if(choosed.length!=1)
+				return myutil.emsg(msg);
+			layer.open({
+				type:1,
+				title: '合同信息',
+				area:['500px','500px'],
+				content:[
+					'<div id="infoContent" style="padding: 10px;">',
+					'</div>',
+				].join(' '),
+				success: function(){
+					myutil.getData({
+						url:'${ctx}/contract/findContract',
+						data:{
+							limit:999,
+							code: choosed[0].code,
+							isRenew: 2,
+						},
+						success:function(d){
+							$('#infoContent').html(layui.laytpl($('#infoTool').html()).render(d));
+						}
+					})
+				}
+			})
+		}
 		function addEdit(type){
 			var data={ id:'',contractKind:{name:''},contractType:{name:''},duration:'',
 					startTime:'',endTime:'',content:'',amount:'',flag:1,company:'', fileSet:[],
@@ -416,6 +475,16 @@ layui.config({
 					return myutil.emsg(msg);
 				data=choosed[0];
 				title="修改合同";
+			}
+			if(type=='renew'){
+				var msg = '';
+				choosed.length>1 && (msg = "不能同时续签多条信息");
+				choosed.length<1 && (msg = "至少选择一条信息续签");
+				if(choosed.length!=1)
+					return myutil.emsg(msg);
+				data=choosed[0];
+				data.isRenew = 1;
+				title='续签合同';
 			}
 			laytpl(tpl).render(data,function(h){
 				html=h;
