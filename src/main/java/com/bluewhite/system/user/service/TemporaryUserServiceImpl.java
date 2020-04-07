@@ -17,7 +17,6 @@ import com.bluewhite.common.entity.PageParameter;
 import com.bluewhite.common.entity.PageResult;
 import com.bluewhite.common.utils.StringUtil;
 import com.bluewhite.system.user.dao.TemporaryUserDao;
-import com.bluewhite.system.user.dao.UserDao;
 import com.bluewhite.system.user.entity.TemporaryUser;
 
 @Service
@@ -25,8 +24,6 @@ public class TemporaryUserServiceImpl  extends BaseServiceImpl<TemporaryUser, Lo
 	
 	@Autowired
 	private TemporaryUserDao dao;
-	@Autowired
-	private UserDao userDao;
 	
 	@Override
 	public PageResult<TemporaryUser> getPagedUser(PageParameter page, TemporaryUser param) {

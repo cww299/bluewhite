@@ -2,7 +2,15 @@ package com.bluewhite.common.utils.apiUtil;
 
 import java.util.HashMap;
 
+import javax.annotation.PostConstruct;
+
+import org.apache.shiro.cache.Cache;
+import org.apache.shiro.cache.CacheManager;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
+
 import com.bluewhite.common.entity.CommonResponse;
+import com.bluewhite.system.user.entity.User;
 
 import cn.hutool.http.HttpRequest;
 import cn.hutool.http.HttpUtil;
@@ -15,13 +23,29 @@ import cn.hutool.json.JSONUtil;
  * @author ZhangLiang
  * @date 2020/04/01
  */
+@Component
 public class ApiUtil {
+    
+    @Autowired
+    private static CacheManager cacheManager;
+
+    private static ApiUtil apiUtil;
+
+    @PostConstruct
+    public void init() {
+        apiUtil = this;
+        apiUtil.cacheManager = this.cacheManager; // 初使化时将已静态化的Service实例化
+    }
 
     /** api工厂 商户号和密匙 **/
     public final static String API_MERCHANTNO = "2002200667633022";
     public final static String API_MERCHANTKEY = "d2847356722bdad2652268957eb82eea";
     public final static String API_URl = "https://user.api.it120.cc";
-
+    /**
+     * token 有效性验证
+     */
+    public final static String userCheckToken = "/user/checkToken";
+  
     /**
      * 登录接口
      */
@@ -78,11 +102,16 @@ public class ApiUtil {
         String result = HttpUtil.post(API_URl + loginKey, paramMap);
         JSONObject jSONObject = JSONUtil.parseObj(result);
         return (String)jSONObject.get("data");
+//        Cache<String, User> token = ApiUtil.cacheManager.getCache("api-token");
+//        if(token==null) {
+//        }else {
+//            return token.toString();
+//        }
     }
 
     public static void main(String[] args) {
         HashMap<String, Object> paramMap = new HashMap<>();
-        System.out.println(userApi(paramMap, userApiExtOrderlist).getData());
+        System.out.println(userApi(paramMap, userApiExtOrderListGoods).getData());
     }
 
 }
