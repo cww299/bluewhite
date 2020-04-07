@@ -16,7 +16,7 @@
 			<tr>
 				<td><input id="uploadTime" class="layui-input" placeholder="导出时间"></td>
 				<td></td>
-				<td><span class="layui-btn layui-btn-" id="downloadBtn">导出</span></td>
+				<td><span class="layui-btn layui-btn-" id="downloadBtn">导出销售明细</span></td>
 			</tr>
 		</table>
 		<table id="tableData" lay-filter="tableData"></table>
