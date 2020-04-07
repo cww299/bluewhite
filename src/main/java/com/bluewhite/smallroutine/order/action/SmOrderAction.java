@@ -20,8 +20,19 @@ import cn.hutool.core.map.MapUtil;
  */
  @Controller
 public class SmOrderAction {
-    
-    
+     
+     
+     /**
+      * 获取订单信息 
+      */
+     @RequestMapping(value = "/apiExtOrder/list", method = RequestMethod.GET)
+     @ResponseBody
+     public CommonResponse apiExtOrderList(@RequestParam HashMap<String, Object> paramMap) {
+         if (MapUtil.isEmpty(paramMap)) {
+             throw new ServiceException("参数不能为空");
+         };
+         return ApiUtil.userApi(paramMap, ApiUtil.userApiExtOrderlist);
+     }
     
      /**
       * 拉取订单商品明细
@@ -30,10 +41,10 @@ public class SmOrderAction {
       */
      @RequestMapping(value = "/apiExtOrder/list/goods", method = RequestMethod.GET)
      @ResponseBody
-     public CommonResponse goods(@RequestParam HashMap<String, Object> paramMap) {
+     public CommonResponse apiExtOrderListGoods(@RequestParam HashMap<String, Object> paramMap) {
          if (MapUtil.isEmpty(paramMap)) {
              throw new ServiceException("参数不能为空");
-         } ;
+         };
          return ApiUtil.userApi(paramMap, ApiUtil.userApiExtOrderListGoods);
      }
 
