@@ -86,8 +86,7 @@ public class ApiUtil {
             .execute().body();
         JSONObject jSONObject = JSONUtil.parseObj(result);
         commonResponse.setCode(jSONObject.getInt("code"));
-        JSONObject data = (JSONObject)jSONObject.getObj("data");
-        commonResponse.setData(data.getObj("result"));
+        commonResponse.setData(jSONObject.getObj("data"));
         commonResponse.setMessage(jSONObject.getStr("msg"));
         return commonResponse;
     }
