@@ -458,10 +458,11 @@ layui.config({
 				btn: ['打印','取消'],
 				shadeClose: true,
 				success:function(){
+					var host = window.location.host+myutil.config.ctx;
 					for(var i in allId){
 						var qrcode = $('#qrcode'+allId[i]).qrcode({
 							render:'canvas',
-							text:"http://192.168.1.199:8080/bluewhite/twoDimensionalCode/scanSendOrder?id="+allId[i],
+							text: "http://"+host+"/twoDimensionalCode/scanSendOrder?id="+allId[i],
 							width:160,height:160
 						}).hide();	
 						var canvas=qrcode.find('canvas').get(0);  
