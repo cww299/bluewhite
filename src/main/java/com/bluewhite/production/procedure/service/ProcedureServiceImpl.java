@@ -1,9 +1,7 @@
 package com.bluewhite.production.procedure.service;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.stream.Collectors;
 
 import javax.persistence.criteria.Predicate;
@@ -137,42 +135,6 @@ public class ProcedureServiceImpl extends BaseServiceImpl<Procedure, Long> imple
 		Procedure procedure = procedureDao.findOne(id);
 		procedureDao.delete(id);
 		this.countPrice(procedure);
-	}
-
-	@Override
-	public List<Map<String, Object>> soon(Procedure procedure) {
-		List<Map<String, Object>> allList = new ArrayList<>();
-		Map<String, Object> allMap = null;
-		List<Procedure> list = procedureDao.findByType(6);
-		Map<String, List<Procedure>> map = list.stream().filter(Procedure -> Procedure.getSourg() != null)
-				.collect(Collectors.groupingBy(Procedure::getSourg, Collectors.toList()));
-		for (String ps1 : map.keySet()) {
-			allMap = new HashMap<>();
-			allMap.put("sourg", ps1);
-			allList.add(allMap);
-		}
-		return allList;
-	}
-
-	@Override
-	public void add(Procedure procedure) {
-		List<Procedure> procedures = procedureDao.findBySourg(procedure.getSourg());
-		List<Procedure> procedureList = new ArrayList<Procedure>();
-		for (Procedure procedure2 : procedures) {
-			Procedure procedures1 = new Procedure();
-			procedures1.setFlag(0);
-			procedures1.setName(procedure2.getName());
-			procedures1.setWorkingTime(procedure2.getWorkingTime());
-			procedures1.setSourg("");
-			procedures1.setType(procedure2.getType());
-			procedures1.setProcedureTypeId(procedure2.getProcedureTypeId());
-			procedures1.setProductId(procedure.getProductId());
-			procedures1.setDeedlePrice(0.0);
-			procedures1.setDepartmentPrice(0.0);
-			procedures1.setHairPrice(0.0);
-			procedureList.add(procedures1);
-		}
-		save(procedureList);
 	}
 
 }

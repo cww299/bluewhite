@@ -98,23 +98,6 @@ public class ProcedureAction {
 	}
 
 	/**
-	 * 根据产品查询工序
-	 * 
-	 * @param request
-	 * @param procedure
-	 * @return
-	 */
-	@RequestMapping(value = "/production/getsoon", method = RequestMethod.GET)
-	@ResponseBody
-	public CommonResponse getSoon(HttpServletRequest request, Procedure procedure) {
-		CommonResponse cr = new CommonResponse();
-		List<Map<String, Object>> list = procedureService.soon(procedure);
-		cr.setData(clearCascadeJSON.format(list).toJSON());
-		cr.setMessage("查询成功");
-		return cr;
-	}
-
-	/**
 	 * 根据产品和工序类型查询工序具体
 	 * 
 	 * @param request
@@ -136,22 +119,6 @@ public class ProcedureAction {
 			cr.setCode(ErrorCode.ILLEGAL_ARGUMENT.getCode());
 			cr.setMessage("产品不能为空");
 		}
-		return cr;
-	}
-
-	/**
-	 * 根据保存工序新增
-	 * 
-	 * @param request
-	 * @param procedure
-	 * @return
-	 */
-	@RequestMapping(value = "/production/getAdd", method = RequestMethod.GET)
-	@ResponseBody
-	public CommonResponse getAdd(HttpServletRequest request, Procedure procedure) {
-		CommonResponse cr = new CommonResponse();
-		procedureService.add(procedure);
-		cr.setMessage("新增成功");
 		return cr;
 	}
 

@@ -1,7 +1,6 @@
 package com.bluewhite.production.procedure.service;
 
 import java.util.List;
-import java.util.Map;
 
 import org.springframework.stereotype.Service;
 
@@ -44,22 +43,8 @@ public interface ProcedureService extends BaseCRUDService<Procedure,Long>{
 	List<Procedure> saveList(List<Procedure> procedureList);
 	
 	/**
-	 * 分组工序
-	 * @param procedure
-	 * @return
-	 */
-	 List<Map<String, Object>> soon(Procedure procedure);
-	
-	/**
 	 * 删除工序
 	 * @param id
 	 */
 	void deleteProcedure(Long id);
-	
-	/**
-	 * 保存
-	 * @param procedureList
-	 */
-	public void add(Procedure procedure);
-
 }
