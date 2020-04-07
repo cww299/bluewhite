@@ -82,7 +82,7 @@ public class ApiUtil {
 
     public static void main(String[] args) {
         HashMap<String, Object> paramMap = new HashMap<>();
-        System.out.println(userApi(paramMap, userApiExtOrderlist).getData());
+        System.out.println(userApi(paramMap, userApiExtOrderListGoods).getData());
     }
 
 }

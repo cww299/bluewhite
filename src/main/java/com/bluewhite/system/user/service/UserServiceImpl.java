@@ -45,8 +45,6 @@ public class UserServiceImpl extends BaseServiceImpl<User, Long> implements User
 	@Autowired
 	private PermissionService permissionService;
 	@Autowired
-	private UserContractDao userContractDao;
-	@Autowired
 	private UserDao userDao;
 	@Autowired
 	private BaseDataDao baseDataDao;
