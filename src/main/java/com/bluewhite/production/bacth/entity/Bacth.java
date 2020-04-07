@@ -65,7 +65,7 @@ public class Bacth extends BaseEntity<Long> {
     @Column(name = "bacth_number")
     private String bacthNumber;
 
-    /**
+    /** 
      * 该批次产品数量
      */
     @Column(name = "number")
@@ -193,6 +193,7 @@ public class Bacth extends BaseEntity<Long> {
      * 包装子单内容（存在多条，用json形式接收）
      * 
      * 产品名称
+     * 产品id
      * 总数量
      * 预计生产单价  departmentPrice;
      * 外发单价  outPrice;

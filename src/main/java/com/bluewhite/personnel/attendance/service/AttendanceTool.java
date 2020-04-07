@@ -148,8 +148,7 @@ public class AttendanceTool {
                 && attendanceTime.getCheckIn().before(DatesUtil.getDaySum(workTimeStrat, NumUtils.sum(minute, 0)))
                 && attendanceInit.getOverTimeType() == 2;
             if (flag) {
-                actualOverTime =
-                    NumUtils.sum(DatesUtil.getTimeHour(workTimeEnd, attendanceTime.getCheckOut()), earlyTime);
+                actualOverTime = NumUtils.sum(DatesUtil.getTimeHour(workTimeEnd, attendanceTime.getCheckOut()), earlyTime);
                 flag = false;
             }
 
@@ -169,6 +168,13 @@ public class AttendanceTool {
                 actualOverTime = DatesUtil.getTimeHour(workTimeEnd, attendanceTime.getCheckOut());
                 flag = false;
             }
+            // 满足于：员工可以加班后晚到岗 ，早于上班时间
+            flag = attendanceTime.getCheckIn().before(DatesUtil.getDaySum(workTimeStrat, NumUtils.sum(minute, DUTYMIN)));
+            if (flag) {
+                actualOverTime += DatesUtil.getTimeHour(DatesUtil.getDaySum(workTimeStrat, NumUtils.sum(minute, DUTYMIN)), attendanceTime.getCheckIn());
+                flag = false;
+            }
+            
         }
 
         // 正常情况下：员工不可以加班后晚到岗

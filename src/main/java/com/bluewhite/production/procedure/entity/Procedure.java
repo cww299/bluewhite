@@ -97,12 +97,6 @@ public class Procedure extends BaseEntity<Long> {
 	private Integer sign;
 
 	/**
-	 * 保存工序类型(用于仓库量化，对于重复工序批量一键添加)
-	 */
-	@Column(name = "sourg")
-	private String sourg;
-	
-	/**
 	 * 工序添加人id
 	 */
 	@Column(name = "user_id")
@@ -133,14 +127,6 @@ public class Procedure extends BaseEntity<Long> {
 
 	public void setSign(Integer sign) {
 		this.sign = sign;
-	}
-
-	public String getSourg() {
-		return sourg;
-	}
-
-	public void setSourg(String sourg) {
-		this.sourg = sourg;
 	}
 
 	public Double getDeedlePrice() {

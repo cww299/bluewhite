@@ -273,7 +273,7 @@ public class AttendanceTimeServiceImpl extends BaseServiceImpl<AttendanceTime, L
                 boolean sign = false;
                 Double minute = 0.0;
                 // 当员工的签到时间在上班时间之后，需要进行，对于员工前一天上班时间的延后处理，重新设定上班时间
-                // 加班后默认到岗时间(1.按点上班，2.第二天上班时间以超过24:00后的时间往后推,3.超过24:30后默认休息7.5小时)
+                // 加班后延迟到岗  (1.按点上班，2.延迟24:00到下班时,3.延迟24:30到下班时)
                 // 获取前一天员工的签出时间。是当天的24:00到6:00之间的签出记录
                 List<Attendance> afterAttendance = null;
                 if (attendance.getUserId() != null || attendance.getOrgNameId() != null) {
