@@ -41,12 +41,32 @@ layui.config({
 		laydate.render({
 			elem:'#uploadTime',range:'~'
 		})
-		mytable.renderNoPage({
+		mytable.render({
 			elem:'#tableData',
 			url: myutil.config.ctx+'/apiExtOrder/list',
+			request:{ pageName: 'page' ,limitName: 'pageSize'},
+			parseData:function(ret){
+				if(ret.code==0){
+					for(var i in ret.data.apiExtUserMap){
+						var user = ret.data.apiExtUserMap[i];
+						for(var j in ret.data.result){
+							var order = ret.data.result[j];
+							if(order.uid==i){
+								order.user = user;
+								break;
+							}
+						}
+					}
+					return {  msg:ret.message,  code:ret.code , data:ret.data.result, 
+						count:ret.data.totalRow }; 
+				}
+				else
+					return {  msg:ret.message,  code:ret.code , data:[], count:0 }; 
+			},
+			limit:50,
 			cols:[[
 				{ type:'checkbox', },
-				{ title:'用户信息', field:'', },
+				{ title:'用户信息', field:'user_nick', },
 				{ title:'订单数/订单号', field:'orderNumber', },
 				{ title:'状态', field:'statusStr', },
 				{ title:'价格', field:'amount', },
@@ -66,6 +86,7 @@ layui.config({
 					dateEnd: t[1],
 				},
 				success:function(data){
+					data = data.result;
 					var newData = [];
 					for(var i in data){
 						var d = data[i];
@@ -83,7 +104,6 @@ layui.config({
 							d.amount,
 						])
 					}
-					console.log(newData)
 					table.exportFile(['下单日期','商品名','单价','数量','金额',], newData, 'xls'); 
 				}
 			})
