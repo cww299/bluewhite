@@ -126,7 +126,6 @@ public class BaseDataServiceImpl extends BaseServiceImpl<BaseData, Long> impleme
         List<BaseData> baseDatas = baseDataDao.findAll((root, query, cb) -> {
             List<Predicate> predicates = new ArrayList<Predicate>();
             predicates.add(cb.equal(root.get("flag").as(Integer.class), 1));// 启用状态
-            predicates.add(cb.equal(root.get("type").as(String.class), BaseData.BASE_DATA_TYPE_DYNAMICFORM));// 查询动态表单数据源类型
             Predicate[] preArr = new Predicate[predicates.size()];
             predicates.toArray(preArr);
             query.where(preArr);

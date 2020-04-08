@@ -356,7 +356,7 @@ public class AttendanceTimeServiceImpl extends BaseServiceImpl<AttendanceTime, L
                                 attendanceTime.setOvertime(NumUtils.sum(attendanceTime.getOvertime(), 0.5));
                             }
                             
-                            if(attendance.getOrgNameId()==84) {
+                            if(us.getOrgNameId()==84) {
                                 attendanceTime.setOvertime(DatesUtil.getTimeHour(attendanceTime.getCheckIn().before(workTime)
                                     ? workTime : attendanceTime.getCheckIn(), attendanceTime.getCheckOut()));
                             }
