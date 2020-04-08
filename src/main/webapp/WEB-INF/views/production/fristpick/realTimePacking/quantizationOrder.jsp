@@ -522,10 +522,10 @@ layui.config({
 					'</tr>',
 				'</table>',
 			'</div>',
-			'<div style="float:left;width:68%;">',
+			'<div style="float:left;width:58%;">',
 				'<table id="addTable" lay-filter="addTable"></table>',
 			'</div>',
-			'<div style="float:right;width:30%;">',
+			'<div style="float:right;width:40%;">',
 				'<table id="addMaterTable" lay-filter="addMaterTable"></table>',
 			'</div>',
 		'</div>',
@@ -702,6 +702,7 @@ layui.config({
 							addTemp:{
 								packagingId: allMaterials[0]?allMaterials[0].id:"",
 								packagingCount: 0,
+								productCount: 0,
 							},
 							deleFun:function(ids,check){ },
 						},
@@ -709,14 +710,15 @@ layui.config({
 							field: { packagingMaterials_id:'packagingId', },
 						},
 						verify:{
-							count:['packagingCount'],
+							count:['packagingCount','productCount'],
 						},
 						cols:[
 							(function(){
 								var cols = [
 									{ type:'checkbox',},
 									{ title:'材料', field:'packagingMaterials_id', type:'select',select:{data: allMaterials, } },
-									{ title:'数量',   field:'packagingCount',	edit:isStickBagStick, width:'25%', },
+									{ title:'数量',   field:'packagingCount',	edit:isStickBagStick, width:'15%', },
+									{ title:'包装单个数量',   field:'productCount',	edit:isStickBagStick, width:'25%', },
 									
 								];
 								if(isStickBagStick)
