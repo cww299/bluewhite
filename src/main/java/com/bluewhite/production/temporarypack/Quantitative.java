@@ -3,7 +3,9 @@ package com.bluewhite.production.temporarypack;
 
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
@@ -17,8 +19,10 @@ import javax.persistence.Transient;
 import javax.persistence.UniqueConstraint;
 
 import com.bluewhite.base.BaseEntity;
+import com.bluewhite.basedata.entity.BaseData;
 import com.bluewhite.ledger.entity.Customer;
 import com.bluewhite.ledger.entity.PackingMaterials;
+import com.bluewhite.production.task.entity.Task;
 import com.bluewhite.system.user.entity.User;
 
 /**
@@ -131,6 +135,90 @@ public class Quantitative extends BaseEntity<Long> {
 	 */
 	@Column(name = "audit")
 	private Integer audit;
+	
+	
+	/****** 量化数值 *******/
+	
+    /**
+     * 包装方式id
+     */
+    @Column(name = "packag_method_id")
+    private Long packagMethodId;
+
+    /**
+     * 包装方式
+     */
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "packag_method_id", referencedColumnName = "id", insertable = false, updatable = false)
+    private BaseData packagMethod;
+    
+    /**
+     * 备注
+     */
+    @Column(name = "remarks")
+    private String remarks;
+    
+    /**
+     * 任务
+     */
+    @OneToMany(mappedBy = "bacth", cascade = CascadeType.REMOVE, orphanRemoval = true)
+    private Set<Task> tasks = new HashSet<Task>();
+    
+    /**
+     * 批次外发单价
+     */
+    @Column(name = "bacth_out_price")
+    private Double bacthOutPrice;
+
+    /**
+     * 批次部门预计生产单价
+     */
+    @Column(name = "bacth_department_price")
+    private Double bacthDepartmentPrice;
+
+    /**
+     * 地区差价
+     */
+    @Column(name = "regional_price")
+    private Double regionalPrice;
+
+    /**
+     * 总任务价值(实际成本费用总和)
+     */
+    @Column(name = "sum_task_price")
+    private Double sumTaskPrice;
+
+    /**
+     * 批次分配时间（默认当前时间前一天）
+     */
+    @Column(name = "allot_time")
+    private Date allotTime;
+
+    /**
+     * 当批用时(分钟)
+     */
+    @Column(name = "sum_time")
+    private Double sumTime;
+
+    /**
+     * 任务分配人id
+     */
+    @Column(name = "oper_user_id")
+    private Long operUserId;
+
+    /**
+     * 任务分配人
+     */
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "oper_user_id", referencedColumnName = "id", insertable = false, updatable = false)
+    private User operUser;
+    
+    /**
+     * 状态，是否完成（0=未完成，1=完成）
+     */
+    @Column(name = "status")
+    private Integer status;
+	
 	
 	/**
 	 * 产品名称

@@ -7,7 +7,7 @@ import javax.persistence.Table;
 import com.bluewhite.base.BaseEntity;
 
 /**
- * 工序实体
+ * 包装工序实体
  * 
  * @author ZhangLiang
  * @date 2020/04/03
@@ -27,6 +27,21 @@ public class Processes extends BaseEntity<Long> {
      */
     @Column(name = "time")
     private Double time;
+    
+    /**
+     * 是否为公共属性
+     */
+    @Column(name = "public_type")
+    private Integer publicType;
+    
+
+    public Integer getPublicType() {
+        return publicType;
+    }
+
+    public void setPublicType(Integer publicType) {
+        this.publicType = publicType;
+    }
 
     public String getName() {
         return name;
