@@ -15,8 +15,6 @@ import com.bluewhite.system.user.entity.User;
 @Table(name = "sys_base_data")
 public class BaseData extends BaseEntity<Long>{
 	
-	/** 动态表单基础数据类型定义*/
-	public static final String BASE_DATA_TYPE_DYNAMICFORM = "dynamicform";
 	/**
 	 * 数据名称
 	 */

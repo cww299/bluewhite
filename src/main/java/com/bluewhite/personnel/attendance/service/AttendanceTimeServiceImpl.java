@@ -94,37 +94,39 @@ public class AttendanceTimeServiceImpl extends BaseServiceImpl<AttendanceTime, L
             throw new ServiceException("请不要同时选择部门和人员");
         }
 
+   
+        //获取日期内当月签到，同时获取所有人员
+        List<AttendanceTime> attendanceTimeList = new ArrayList<>();
+        List<User> userList = new ArrayList<>();
+        if (!StringUtils.isEmpty(attendance.getOrgNameId())) {
+            userList = userService.findByOrgNameId(attendance.getOrgNameId());
+            Attendance ae = new Attendance();
+            ae.setOrgNameId(attendance.getOrgNameId());
+            ae.setOrderTimeBegin(DateUtil.offsetHour(attendance.getOrderTimeBegin(),(int)5.5).toJdkDate());
+            ae.setOrderTimeEnd(DateUtil.offsetHour(DatesUtil.getLastDayOfMonth(attendance.getOrderTimeBegin()),(int)5.5).toJdkDate());
+            allAttList =
+                attendanceService.findPageAttendance(ae, new PageParameter(0, Integer.MAX_VALUE)).getRows();
+        }
+        if (!StringUtils.isEmpty(attendance.getUserId())) {
+            User user = userService.findOne(attendance.getUserId());
+            allAttList = attendanceDao.findByUserIdAndTimeBetween(attendance.getUserId(),
+                DateUtil.offsetHour(attendance.getOrderTimeBegin(),(int)5.5).toJdkDate(),DateUtil.offsetHour(DatesUtil.getLastDayOfMonth(attendance.getOrderTimeBegin()),(int)5.5));
+            userList.add(user);
+        }
+        if (attendance.getUserId() == null && attendance.getOrgNameId() == null) {
+            userList.addAll(list);
+        }
+        
         // 检查当前月份属于夏令时或冬令时 flag=ture 为夏令时
         boolean flag = DatesUtil.belongCalendar(attendance.getOrderTimeBegin());
         long size = DatesUtil.getDaySub(attendance.getOrderTimeBegin(),
             DatesUtil.getLastDayOfMonth(attendance.getOrderTimeBegin()));
-        List<AttendanceTime> attendanceTimeList = new ArrayList<>();
 
         // 第一天的开始签到时间从6点开始新一天的签到
-        Date beginTimes = DatesUtil.dayTime(attendance.getOrderTimeBegin(), "06:00:00");
+        Date beginTimes = DatesUtil.dayTime(attendance.getOrderTimeBegin(), "05:30:00");
         for (int i = 0; i < size; i++) {
             // 获取一天的签到结束时间,第二天的6点之前
             Date endTimes = DatesUtil.nextDay(beginTimes);
-            // 当部门不为null时，按部门查找出所有的人员
-            List<User> userList = new ArrayList<>();
-            if (!StringUtils.isEmpty(attendance.getOrgNameId())) {
-                userList = userService.findByOrgNameId(attendance.getOrgNameId());
-                Attendance ae = new Attendance();
-                ae.setOrgNameId(attendance.getOrgNameId());
-                ae.setOrderTimeBegin(attendance.getOrderTimeBegin());
-                ae.setOrderTimeEnd(DatesUtil.getLastDayOfMonth(attendance.getOrderTimeBegin()));
-                allAttList =
-                    attendanceService.findPageAttendance(ae, new PageParameter(0, Integer.MAX_VALUE)).getRows();
-            }
-            if (!StringUtils.isEmpty(attendance.getUserId())) {
-                User user = userService.findOne(attendance.getUserId());
-                allAttList = attendanceDao.findByUserIdAndTimeBetween(attendance.getUserId(),
-                    attendance.getOrderTimeBegin(), DatesUtil.getLastDayOfMonth(attendance.getOrderTimeBegin()));
-                userList.add(user);
-            }
-            if (attendance.getUserId() == null && attendance.getOrgNameId() == null) {
-                userList.addAll(list);
-            }
             // 满足于输入时间内离职和入职
             userList = userList.stream().filter(User -> (User.getQuit() != null && User.getQuit() == 0)
                 || (User.getQuitDate() != null && User.getQuitDate().compareTo(attendance.getOrderTimeBegin()) != -1))
@@ -279,7 +281,7 @@ public class AttendanceTimeServiceImpl extends BaseServiceImpl<AttendanceTime, L
                 if (attendance.getUserId() != null || attendance.getOrgNameId() != null) {
                     if (attendanceInit.getComeWork() == 2) {
                         afterAttendance = attendanceDao.findByUserIdAndTimeBetween(us.getId(),
-                            DatesUtil.dayTime(beginTimes, "00:00:00"), DatesUtil.dayTime(beginTimes, "06:00:00"));
+                            DatesUtil.dayTime(beginTimes, "00:00:00"), DatesUtil.dayTime(beginTimes, "05:30:00"));
                         if (afterAttendance.size() > 0) {
                             // 得到最后一次签到记录离24：00相差分钟数
                             minute = DatesUtil.getTime(DatesUtil.dayTime(beginTimes, "00:00:00"),
@@ -290,7 +292,7 @@ public class AttendanceTimeServiceImpl extends BaseServiceImpl<AttendanceTime, L
                     // 2.超过24:30后默认休息7.5小时
                     if (attendanceInit.getComeWork() == 3) {
                         afterAttendance = attendanceDao.findByUserIdAndTimeBetween(us.getId(),
-                            DatesUtil.dayTime(beginTimes, "00:30:00"), DatesUtil.dayTime(beginTimes, "06:00:00"));
+                            DatesUtil.dayTime(beginTimes, "00:30:00"), DatesUtil.dayTime(beginTimes, "05:30:00"));
                         if (afterAttendance.size() > 0) {
                             // 得到最后一次签到记录离24：30相差分钟数
                             minute = DatesUtil.getTime(DatesUtil.dayTime(beginTimes, "00:30:00"),
@@ -349,9 +351,14 @@ public class AttendanceTimeServiceImpl extends BaseServiceImpl<AttendanceTime, L
                                     DatesUtil.getTimeHour(attendanceTime.getCheckIn().before(workTime) ? workTime
                                         : attendanceTime.getCheckIn(), attendanceTime.getCheckOut()),   
                                     attendanceTime.getCheckOut().after(restEndTime) ? restTime : 0));
-                            }
+                            } 
                             if (attendanceInit.isEarthWork() && DatesUtil.getTime(attendanceTime.getCheckIn(), workTime) >= 20) {
                                 attendanceTime.setOvertime(NumUtils.sum(attendanceTime.getOvertime(), 0.5));
+                            }
+                            
+                            if(us.getOrgNameId()==84) {
+                                attendanceTime.setOvertime(DatesUtil.getTimeHour(attendanceTime.getCheckIn().before(workTime)
+                                    ? workTime : attendanceTime.getCheckIn(), attendanceTime.getCheckOut()));
                             }
 
                             // 设定加班后可以晚到岗加班时间
@@ -390,6 +397,7 @@ public class AttendanceTimeServiceImpl extends BaseServiceImpl<AttendanceTime, L
                     if (attList.size() == 1) {
                         attendanceTime.setCheckIn(new Date(attList.get(0).getTime().getTime()));
                     }
+                   
                     if (rout) {
                         attendanceTime.setFlag(3);
                         attendanceTimeList.add(attendanceTime);

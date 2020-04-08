@@ -492,7 +492,6 @@ public class TemporaryPackAction {
         return cr;
     }
     
-    
     /**
      * 扫码发货页面
      */
@@ -503,4 +502,10 @@ public class TemporaryPackAction {
         mav.addObject("data",  clearCascadeJSONQuantitative.format(quantitativeService.findOne(id)).toJSON());
         return mav;
     }
+    
+    
+    
+    
+    
+    
 }

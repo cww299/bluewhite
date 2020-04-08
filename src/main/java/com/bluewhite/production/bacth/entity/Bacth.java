@@ -187,23 +187,6 @@ public class Bacth extends BaseEntity<Long> {
     private User user;
     
     
-    /****包装量化任务字段****/
-    
-    /**
-     * 包装子单内容（存在多条，用json形式接收）
-     * 
-     * 产品名称
-     * 产品id
-     * 总数量
-     * 预计生产单价  departmentPrice;
-     * 外发单价  outPrice;
-     * 地区差价  regionalPrice;
-     * 总任务价值(实际成本费用总和) sumTaskPrice;
-     * 当批用时(分钟) time;
-     */
-    @Column(name = "child_json")
-    private String childJson;
-
     /**
      * 产品名称
      */
@@ -240,22 +223,12 @@ public class Bacth extends BaseEntity<Long> {
     private Double hairPrice;
     
     
-    
-
     public Double getSumOutPrice() {
         return sumOutPrice;
     }
 
     public void setSumOutPrice(Double sumOutPrice) {
         this.sumOutPrice = sumOutPrice;
-    }
-
-    public String getChildJson() {
-        return childJson;
-    }
-
-    public void setChildJson(String childJson) {
-        this.childJson = childJson;
     }
 
     public Long getUserId() {
