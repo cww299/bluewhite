@@ -1,5 +1,6 @@
 package com.bluewhite.production.task.service;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
@@ -16,6 +17,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
 
+import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONArray;
+import com.alibaba.fastjson.JSONObject;
 import com.bluewhite.base.BaseServiceImpl;
 import com.bluewhite.common.BeanCopyUtils;
 import com.bluewhite.common.Constants;
@@ -39,9 +43,14 @@ import com.bluewhite.production.group.dao.TemporarilyDao;
 import com.bluewhite.production.group.entity.Temporarily;
 import com.bluewhite.production.procedure.dao.ProcedureDao;
 import com.bluewhite.production.procedure.entity.Procedure;
+import com.bluewhite.production.processes.entity.Processes;
+import com.bluewhite.production.processes.service.ProcessesService;
 import com.bluewhite.production.productionutils.constant.ProTypeUtils;
 import com.bluewhite.production.task.dao.TaskDao;
 import com.bluewhite.production.task.entity.Task;
+import com.bluewhite.production.temporarypack.Quantitative;
+import com.bluewhite.production.temporarypack.QuantitativeService;
+import com.bluewhite.production.temporarypack.UnderGoods;
 import com.bluewhite.system.user.dao.UserDao;
 import com.bluewhite.system.user.entity.User;
 
@@ -64,7 +73,11 @@ public class TaskServiceImpl extends BaseServiceImpl<Task, Long> implements Task
 	private TemporarilyDao temporarilyDao;
 	@Autowired
 	private AttendancePayDao attendancePayDao;
-
+	@Autowired
+	private QuantitativeService quantitativeService;
+	@Autowired
+	private ProcessesService processesService;
+	
 	private final static String QUALITY_STRING = "贴破洞";
 
 	@Override
@@ -374,7 +387,7 @@ public class TaskServiceImpl extends BaseServiceImpl<Task, Long> implements Task
 		bacth.setBacthDepartmentPrice(bacthDepartmentPrice);
 		// 计算出该批次的地区差价
 		if (bacth.getFlag() == 0) {
-			bacth.setRegionalPrice(NumUtils.round(ProTypeUtils.sumRegionalPrice(bacth, bacth.getType()), 5));
+			bacth.setRegionalPrice(NumUtils.round(ProTypeUtils.sumRegionalPrice(bacth.getSumTaskPrice(),bacth.getBacthHairPrice(),bacth.getBacthDepartmentPrice()), 5));
 		}
 		bacthDao.save(bacth);
 		return task;
@@ -487,7 +500,7 @@ public class TaskServiceImpl extends BaseServiceImpl<Task, Long> implements Task
 					if (bacth.getFlag() == 0) {
 						// 计算出该批次的地区差价
 						bacth.setRegionalPrice(
-								NumUtils.round(ProTypeUtils.sumRegionalPrice(bacth, bacth.getType()), 4));
+								NumUtils.round(ProTypeUtils.sumRegionalPrice(bacth.getSumTaskPrice(),bacth.getBacthHairPrice(),bacth.getBacthDepartmentPrice()), 4));
 					}
 					// 更新批次
 					bacthDao.save(bacth);
@@ -497,69 +510,6 @@ public class TaskServiceImpl extends BaseServiceImpl<Task, Long> implements Task
 		}
 	}
 
-	@Override
-	public List<Task> assembleTask(Task task) {
-
-		Integer number = task.getNumber();
-		List<Task> taskList = new ArrayList<Task>();
-
-		// 总时间
-		double sumTime = 0;
-		// 将时间段转变成数组,计算出总时间
-		if (!StringUtils.isEmpty(task.getTimes())) {
-			String[] timeArr = task.getTimes().split(",");
-			if (timeArr.length > 0) {
-				for (int i = 0; i < timeArr.length; i++) {
-					if (!timeArr[i].equals("delete")) {
-						double time = Double.valueOf(timeArr[i]);
-						sumTime += time;
-					}
-				}
-			}
-		}
-
-		int sumNumber = 0;
-		// 将时间段转变成数组
-		if (!StringUtils.isEmpty(task.getTimes())) {
-			String[] timeArr = task.getTimes().split(",");
-			if (timeArr.length > 0) {
-				for (int i = 0; i < timeArr.length; i++) {
-					Task tasks = new Task();
-					double time = 0;
-					if (!timeArr[i].equals("delete")) {
-						time = Double.valueOf(timeArr[i]);
-						tasks.setBacthId(task.getBacthId());
-						tasks.setExpectTime(task.getExpectTime());
-						tasks.setAllotTime(task.getAllotTime());
-						tasks.setType(task.getType());
-						tasks.setBacthNumber(task.getBacthNumber());
-						tasks.setProductName(task.getProductName());
-						tasks.setProcedureIds(task.getProcedureIds());
-						tasks.setPerformance(task.getPerformance());
-						tasks.setPerformanceNumber(task.getPerformanceNumber());
-						tasks.setNumber(NumUtils.roundInt(time * number / sumTime));
-						tasks.setHoleNumber(NumUtils.roundInt(time * number / sumTime));
-						sumNumber += tasks.getNumber();
-						if (i == timeArr.length - 1) {
-							tasks.setNumber(tasks.getNumber() + (number - sumNumber));
-						}
-						// 将用户段转换成数组,将同顺序的用户添加到任务中
-						if (!StringUtils.isEmpty(task.getUsers())) {
-							String[] userArr = task.getUsers().split("\\.");
-							if (userArr.length > 0) {
-								if (!timeArr[i].equals("delete")) {
-									tasks.setUserIds(userArr[i]);
-								}
-							}
-						}
-						taskList.add(tasks);
-					}
-				}
-			}
-		}
-		return taskList;
-
-	}
 
 	@Override
 	@Transactional
@@ -696,5 +646,155 @@ public class TaskServiceImpl extends BaseServiceImpl<Task, Long> implements Task
 	public List<Task> findInSetTemporaryIds(String id, Date startTime, Date endTime) {
 		return dao.findInSetTemporaryIds(id, startTime, endTime);
 	}
+
+    @Override
+    public void addTaskPack(Task task, boolean isFromMobile, String processes) {
+        CurrentUser cu = SessionManager.getUserSession();
+        Date orderTimeBegin = DatesUtil.getfristDayOftime(task.getAllotTime());
+        Date orderTimeEnd = DatesUtil.getLastDayOftime(task.getAllotTime());
+        // 正式员工出勤记录ids
+        String[] idStrings = task.getIds().split(",");
+        List<Long> idsList = Arrays.asList(idStrings).stream().map(a -> Long.parseLong(a)).collect(Collectors.toList());
+        // 借调员工出勤记录ids
+        String[] loanIdsStrings = task.getLoanIds().split(",");
+        List<Long> loanIdsList =
+            Arrays.asList(loanIdsStrings).stream().map(a -> Long.parseLong(a)).collect(Collectors.toList());
+        // 临时员工出勤记录ids
+        String[] temporaryIds = task.getTemporaryIds().split(",");
+        List<Long> temporaryIdList =
+            Arrays.asList(temporaryIds).stream().map(a -> Long.parseLong(a)).collect(Collectors.toList());
+        // 正式员工出勤记录
+        List<AttendancePay> attendancePayList = attendancePayDao.findByIdInAndTypeAndAllotTimeBetween(idsList,
+            task.getType(), orderTimeBegin, orderTimeEnd);
+        // 借调员工出勤记录
+        List<Temporarily> loanList =
+            temporarilyDao.findByIdInAndTemporarilyDateAndType(loanIdsList, orderTimeBegin, task.getType());
+        // 临时员工出勤记录
+        List<Temporarily> temporarilyList =
+            temporarilyDao.findByIdInAndTemporarilyDateAndType(temporaryIdList, orderTimeBegin, task.getType());
+        //总人数
+        int userCount = idStrings.length + loanIdsStrings.length + temporaryIds.length;
+        List<PayB> payBList = new ArrayList<>();
+        // 将工序分成多个任务
+        
+        if (!StringUtils.isEmpty(processes)) {
+            JSONArray jsonArray = JSON.parseArray(processes);
+            for (int i = 0; i < jsonArray.size(); i++) {
+                JSONObject jsonObject = jsonArray.getJSONObject(i);
+                // 工序id
+                long id = jsonObject.getLong("id");
+                double time = jsonObject.getDoubleValue("time");
+                Task newTask = new Task();
+                newTask.setUserId(cu.getId());
+                //默认是包装
+                newTask.setType(2);
+                newTask.setProcedureId(id);
+                newTask.setBacthId(task.getBacthId());
+                newTask.setNumber(task.getNumber());
+                // 实际完成时长
+                newTask.setTaskTime(NumUtils.round(
+                    ProTypeUtils.sumTaskTime(time, 2, newTask.getNumber()), 5));
+                // 实际任务价值（通过实际完成时间得出）
+                newTask.setTaskPrice(NumUtils.round(
+                    ProTypeUtils.sumTaskPrice(newTask.getTaskTime(),2, newTask.getFlag(), null), 5));
+                // B工资净值
+                newTask.setPayB(NumUtils.round(ProTypeUtils.sumBPrice(newTask.getTaskPrice(),2), 5));
+                dao.save(newTask);
+
+                // 正式员工
+                if (attendancePayList.size() > 0) {
+                    attendancePayList.forEach(a -> {
+                        PayB payB = new PayB();
+                        payB.setUserId(a.getUserId());
+                        payB.setGroupId(a.getGroupId());
+                        payB.setUserName(a.getUser().getUserName());
+                        payB.setTaskId(newTask.getId());
+                        payB.setType(newTask.getType());
+                        payB.setAllotTime(newTask.getAllotTime());
+                        // 计算B工资数值
+                        if (isFromMobile && newTask.getType() == 2) {
+                            payB.setPayNumber(NumUtils.div(newTask.getPayB(), userCount, 5));
+                        } else {
+                            // 包装分配任务，员工b工资根据考情占比分配，其他部门是均分
+                            // 按考情时间占比分配B工资
+                            double sumTime = attendancePayList.stream().mapToDouble(AttendancePay::getWorkTime).sum();
+                            payB.setPayNumber(NumUtils.div(NumUtils.mul(newTask.getPayB(), a.getWorkTime()), sumTime, 5));
+                        }
+                        payBList.add(payB);
+                    });
+                }
+                // 借调员工
+                if (loanList.size() > 0) {
+                    loanList.forEach(l -> {
+                        PayB payB = new PayB();
+                        payB.setUserId(l.getUserId());
+                        payB.setGroupId(l.getGroupId());
+                        payB.setUserName(l.getUser().getUserName());
+                        payB.setTaskId(newTask.getId());
+                        payB.setType(newTask.getType());
+                        payB.setAllotTime(newTask.getAllotTime());
+                        payB.setFlag(newTask.getFlag());
+                        // 计算B工资数值
+                        if (isFromMobile && newTask.getType() == 2) {
+                            payB.setPayNumber(NumUtils.div(newTask.getPayB(), userCount, 5));
+                        } else {
+                            // 包装分配任务，员工b工资根据考情占比分配，其他部门是均分
+                            // 按考情时间占比分配B工资
+                            double sumTime = loanList.stream().mapToDouble(Temporarily::getWorkTime).sum();
+                            payB.setPayNumber(NumUtils.div(NumUtils.mul(newTask.getPayB(), l.getWorkTime()), sumTime, 5));
+                        }
+                        payBList.add(payB);
+                    });
+                }
+                // 临时员工
+                if (temporarilyList.size() > 0) {
+                    temporarilyList.forEach(t -> {
+                        PayB payB = new PayB();
+                        payB.setTemporaryUserId(t.getTemporaryUserId());
+                        payB.setGroupId(t.getGroupId());
+                        payB.setUserName(t.getTemporaryUser().getUserName());
+                        payB.setTaskId(newTask.getId());
+                        payB.setType(newTask.getType());
+                        payB.setAllotTime(newTask.getAllotTime());
+                        payB.setFlag(newTask.getFlag());
+                        // 计算B工资数值
+                        if (isFromMobile && newTask.getType() == 2) {
+                            payB.setPayNumber(NumUtils.div(newTask.getPayB(), userCount, 5));
+                        } else {
+                            // 包装分配任务，员工b工资根据考情占比分配，其他部门是均分
+                            // 按考情时间占比分配B工资
+                            double sumTime = temporarilyList.stream().mapToDouble(Temporarily::getWorkTime).sum();
+                            payB.setPayNumber( NumUtils.div(NumUtils.mul(newTask.getPayB(), t.getWorkTime()), sumTime, 5));
+                        }
+                        payBList.add(payB);
+                    });
+                }
+            }
+        }
+        payBService.batchSave(payBList);
+        Quantitative quantitative = quantitativeService.findOne(task.getQuantitativeId());
+        // 总任务价值
+        Double sumTaskPrice = quantitative.getTasks().stream().mapToDouble(Task::getTaskPrice).sum();
+        quantitative.setSumTaskPrice(NumUtils.round(sumTaskPrice, 5));
+        // 计算出该批次的地区差价
+        if (quantitative.getFlag() == 0) {
+            quantitative.setRegionalPrice(NumUtils.round(ProTypeUtils.sumRegionalPrice(quantitative.getSumTaskPrice(),quantitative.getOutPrice(),quantitative.getDepartmentPrice()), 5));
+        }
+    }
+    @Override
+    public void checkTask(Task task) {
+        Quantitative quantitative = quantitativeService.findOne(task.getQuantitativeId());
+            for (int i = 0; i < task.getProcedureIds().length; i++) {
+                int num = i;
+                // 获取该工序的已分配的任务数量
+                int count = quantitative.getTasks().stream()
+                    .filter(Task -> Task.getProcedureId().equals(Long.valueOf(task.getProcedureIds()[num])))
+                    .mapToInt(Task::getNumber).sum();
+                // 当前分配数量加已分配数量大于批次总数量则不通过
+                if ((task.getNumber() + count) > quantitative.getNumber()) {
+                    throw new ServiceException("当前数量剩余不足，请确认数量");
+                }
+            }
+    }
 
 }

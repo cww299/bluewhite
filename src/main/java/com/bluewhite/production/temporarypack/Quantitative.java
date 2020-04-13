@@ -159,22 +159,16 @@ public class Quantitative extends BaseEntity<Long> {
     private String remarks;
     
     /**
-     * 任务
-     */
-    @OneToMany(mappedBy = "bacth", cascade = CascadeType.REMOVE, orphanRemoval = true)
-    private Set<Task> tasks = new HashSet<Task>();
-    
-    /**
      * 批次外发单价
      */
-    @Column(name = "bacth_out_price")
-    private Double bacthOutPrice;
+    @Column(name = "out_price")
+    private Double OutPrice;
 
     /**
      * 批次部门预计生产单价
      */
-    @Column(name = "bacth_department_price")
-    private Double bacthDepartmentPrice;
+    @Column(name = "department_price")
+    private Double departmentPrice;
 
     /**
      * 地区差价
@@ -219,6 +213,11 @@ public class Quantitative extends BaseEntity<Long> {
     @Column(name = "status")
     private Integer status;
 	
+    /**
+     * 任务
+     */
+    @OneToMany(mappedBy = "bacth", cascade = CascadeType.REMOVE, orphanRemoval = true)
+    private Set<Task> tasks = new HashSet<Task>();
 	
 	/**
 	 * 产品名称
@@ -288,7 +287,111 @@ public class Quantitative extends BaseEntity<Long> {
 	
 	
 	
-	public Long getSendOrderId() {
+	public Set<Task> getTasks() {
+        return tasks;
+    }
+
+    public void setTasks(Set<Task> tasks) {
+        this.tasks = tasks;
+    }
+
+    public Long getPackagMethodId() {
+        return packagMethodId;
+    }
+
+    public void setPackagMethodId(Long packagMethodId) {
+        this.packagMethodId = packagMethodId;
+    }
+
+    public BaseData getPackagMethod() {
+        return packagMethod;
+    }
+
+    public void setPackagMethod(BaseData packagMethod) {
+        this.packagMethod = packagMethod;
+    }
+
+    public String getRemarks() {
+        return remarks;
+    }
+
+    public void setRemarks(String remarks) {
+        this.remarks = remarks;
+    }
+
+    public Double getOutPrice() {
+        return OutPrice;
+    }
+
+    public void setOutPrice(Double outPrice) {
+        OutPrice = outPrice;
+    }
+
+    public Double getDepartmentPrice() {
+        return departmentPrice;
+    }
+
+    public void setDepartmentPrice(Double departmentPrice) {
+        this.departmentPrice = departmentPrice;
+    }
+
+    public Double getRegionalPrice() {
+        return regionalPrice;
+    }
+
+    public void setRegionalPrice(Double regionalPrice) {
+        this.regionalPrice = regionalPrice;
+    }
+
+    public Double getSumTaskPrice() {
+        return sumTaskPrice;
+    }
+
+    public void setSumTaskPrice(Double sumTaskPrice) {
+        this.sumTaskPrice = sumTaskPrice;
+    }
+
+    public Date getAllotTime() {
+        return allotTime;
+    }
+
+    public void setAllotTime(Date allotTime) {
+        this.allotTime = allotTime;
+    }
+
+    public Double getSumTime() {
+        return sumTime;
+    }
+
+    public void setSumTime(Double sumTime) {
+        this.sumTime = sumTime;
+    }
+
+    public Long getOperUserId() {
+        return operUserId;
+    }
+
+    public void setOperUserId(Long operUserId) {
+        this.operUserId = operUserId;
+    }
+
+    public User getOperUser() {
+        return operUser;
+    }
+
+    public void setOperUser(User operUser) {
+        this.operUser = operUser;
+    }
+
+    public Integer getStatus() {
+        return status;
+    }
+
+    public void setStatus(Integer status) {
+        this.status = status;
+    }
+
+    public Long getSendOrderId() {
         return sendOrderId;
     }
 
@@ -503,5 +606,6 @@ public class Quantitative extends BaseEntity<Long> {
 	public void setTime(Date time) {
 		this.time = time;
 	}
+	
 
 }

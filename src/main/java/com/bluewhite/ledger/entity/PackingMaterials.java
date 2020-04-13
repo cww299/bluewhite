@@ -21,21 +21,6 @@ public class PackingMaterials extends BaseEntity<Long>{
 	
 	
 	/**
-	 * 订单id
-	 * 
-	 */
-	@Column(name = "packing_id")
-	private Long packingId;
-	
-
-	/**
-	 * 父订单实体
-	 */
-	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "packing_id", referencedColumnName = "id", insertable = false, updatable = false)
-	private Packing packing;
-	
-	/**
 	 * 包装物名称id
 	 */
 	@Column(name = "packaging_id")
@@ -53,8 +38,23 @@ public class PackingMaterials extends BaseEntity<Long>{
 	 */
 	@Column(name = "packaging_count")
 	private Integer packagingCount;
+	
+	/**
+     * 单个包装物，包装产品数量
+     */
+    @Column(name = "product_count")
+    private Integer productCount;
+    
+    
+    public Integer getProductCount() {
+        return productCount;
+    }
 
-	public Long getPackagingId() {
+    public void setProductCount(Integer productCount) {
+        this.productCount = productCount;
+    }
+
+    public Long getPackagingId() {
 		return packagingId;
 	}
 

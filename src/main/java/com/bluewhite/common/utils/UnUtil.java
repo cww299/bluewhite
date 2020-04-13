@@ -1,8 +1,5 @@
 package com.bluewhite.common.utils;
 
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-
 import javax.servlet.http.HttpServletRequest;
 
 import cn.hutool.http.useragent.UserAgent;

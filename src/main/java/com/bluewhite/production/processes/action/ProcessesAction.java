@@ -50,7 +50,7 @@ public class ProcessesAction {
         }else {
             cr.setMessage("修改成功");
         }
-        processesService.save(processes);
+        processesService.saveProcesses(processes);
         return cr;
     }
     
@@ -89,9 +89,9 @@ public class ProcessesAction {
      */
     @RequestMapping(value = "/processes/getProcesses", method = RequestMethod.GET)
     @ResponseBody
-    public CommonResponse deleteProcesses(Long id) {
+    public CommonResponse deleteProcesses(Long id,int count,int taskNumber) {
         CommonResponse cr = new CommonResponse();
-        cr.setData(clearCascadeJSON.format(processesService.findByPackagMethodId(id)).toJSON());
+        cr.setData(clearCascadeJSON.format(processesService.findByPackagMethodId(id,count,taskNumber)).toJSON());
         cr.setMessage("查询成功");
         return cr;
     }

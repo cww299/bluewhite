@@ -158,13 +158,11 @@ public class AttendanceTimeServiceImpl extends BaseServiceImpl<AttendanceTime, L
                 attendanceTime.setUserName(us.getUserName());
                 attendanceTime.setBelate(0);
                 attendanceTime.setFlag(0);
-                attendanceTime.setLeaveEarly(0);
                 attendanceTime.setBelateTime(0.0);
                 attendanceTime.setLeaveTime(0.0);
                 attendanceTime.setTurnWorkTime(0.0);
                 attendanceTime.setWorkTime(0.0);
                 attendanceTime.setOvertime(0.0);
-                attendanceTime.setLeaveEarlyTime(0.0);
                 attendanceTime.setDutytime(0.0);
 
                 // 获取员工考勤的初始化参数
@@ -458,6 +456,11 @@ public class AttendanceTimeServiceImpl extends BaseServiceImpl<AttendanceTime, L
                 // 签出大于等于工作结束时间时，取工作开始时间计算，否则取签出时间
                 attendanceTime.getCheckOut().compareTo(workTimeEnd) != -1 ? workTimeEnd : attendanceTime.getCheckOut()),
                 restTime));
+            
+            if (attendanceTime.getCheckIn().before(restBeginTime) && attendanceTime.getCheckOut().after(restEndTime)
+                && attendanceTime.getAttendanceInit().getRestTimeWork() == 2) {
+                attendanceTime.setWorkTime(attendanceTime.getWorkTime()+1.0);
+            }
         }
         return attendanceTime;
     }
@@ -695,15 +698,6 @@ public class AttendanceTimeServiceImpl extends BaseServiceImpl<AttendanceTime, L
                                             oneAtList.get(0).setBelateTime(0.0);
                                         }
                                     }
-
-                                    // 存在早退
-                                    if (oneAtList.get(0).getLeaveEarly() == 1) {
-                                        if (NumUtils.mul(time, 60) >= oneAtList.get(0).getLeaveEarlyTime()) {
-                                            oneAtList.get(0).setLeaveEarly(0);
-                                            oneAtList.get(0).setLeaveEarlyTime(0.0);
-                                        }
-                                    }
-
                                     if (oneAtList.get(0).getDutytimMinute() != null  && NumUtils.mul(time, 60) < oneAtList.get(0).getDutytimMinute()) {
                                         if (oneAtList.get(0).getDutytimMinute() > 30) {
                                             oneAtList.get(0).setBelate(1);
@@ -771,12 +765,9 @@ public class AttendanceTimeServiceImpl extends BaseServiceImpl<AttendanceTime, L
                                 at.setDutytime(NumUtils.sub(at.getDutytime(), time));
                             }
                             // 当调休时间大于或等于迟到时间，
-                            if (NumUtils.mul(time, 60) >= at.getBelateTime()
-                                || NumUtils.mul(time, 60) >= at.getLeaveEarlyTime()) {
+                            if (NumUtils.mul(time, 60) >= at.getBelateTime()) {
                                 at.setBelate(0);
                                 at.setBelateTime(0.0);
-                                at.setLeaveEarly(0);
-                                at.setLeaveEarlyTime(0.0);
                             }
                         }
                     }

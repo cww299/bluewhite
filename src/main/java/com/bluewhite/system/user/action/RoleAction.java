@@ -24,7 +24,6 @@ import com.bluewhite.common.entity.CommonResponse;
 import com.bluewhite.common.entity.ErrorCode;
 import com.bluewhite.common.entity.PageParameter;
 import com.bluewhite.common.entity.PageResult;
-import com.bluewhite.shiro.realm.UserRealm;
 import com.bluewhite.system.user.dao.RoleMenuPermissionDao;
 import com.bluewhite.system.user.entity.Menu;
 import com.bluewhite.system.user.entity.Permission;
@@ -52,8 +51,6 @@ public class RoleAction {
 	private MenuService menuService;
 	@Autowired
 	private PermissionService permissionService;
-	@Autowired
-	private UserRealm userRealm;
 
 	private ClearCascadeJSON clearCascadeJSON;
 	{

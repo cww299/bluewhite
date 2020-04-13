@@ -9,7 +9,6 @@ import com.bluewhite.base.BaseCRUDService;
 import com.bluewhite.common.entity.PageParameter;
 import com.bluewhite.common.entity.PageResult;
 import com.bluewhite.production.processes.entity.Processes;
-import com.bluewhite.production.temporarypack.SendOrder;
 
 /**
  * @author ZhangLiang
@@ -28,11 +27,17 @@ public interface ProcessesService extends BaseCRUDService<Processes,Long>{
     public PageResult<Processes> findPages(Map<String, Object> params, PageParameter page);
     
     /**
-     * 根据包装方式
+     * 根据包装方式和工序数量组装出需要的工序和时间，任务总数量
+     * 返回公共工序，包装方式工序
      * @param id
      * @return
      */
-    List<Processes> findByPackagMethodId(Long id);
+    List<Processes> findByPackagMethodId(Long id,int count,int taskNumber);
+
+    /**新增工序
+     * @param processes
+     */
+    public void saveProcesses(Processes processes);
     
 
 }

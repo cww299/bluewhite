@@ -310,6 +310,26 @@ public class QuantitativeServiceImpl extends BaseServiceImpl<Quantitative, Long>
                     if (quantitative.getAudit() == 1) {
                         throw new ServiceException("已审核无法删除");
                     }
+                    if(quantitative.getQuantitativeChilds()!=null) {
+                        quantitative.getQuantitativeChilds().forEach(qc->{
+                            UnderGoods underGoods = qc.getUnderGoods();
+                            // 获取贴包数量，用于判断是否可以新增或者修改
+                            List<QuantitativeChild> stickListList = quantitativeChildDao.findByUnderGoodsId(qc.getUnderGoodsId());
+                            int numberStickSum = 0;
+                            if (stickListList.size() > 0) {
+                                numberStickSum = stickListList.stream().mapToInt(QuantitativeChild::getSingleNumber).sum();
+                            }
+                            underGoods.setSurplusStickNumber(
+                                underGoods.getNumber() - (numberStickSum - qc.getSingleNumber()));
+                            if (underGoods.getSurplusStickNumber() == 0) {
+                                underGoods.setStatus(1);
+                            }else {
+                                underGoods.setStatus(0);
+                            }
+                        });
+                        save(quantitative);
+                    }
+                    
                     if (quantitative.getSendOrderId() != null) {
                         SendOrder sendOrder = sendOrderDao.findOne(quantitative.getSendOrderId());
                         if (sendOrder.getAudit() == 1) {
