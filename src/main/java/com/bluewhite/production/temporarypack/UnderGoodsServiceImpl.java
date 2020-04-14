@@ -15,6 +15,8 @@ import org.springframework.util.StringUtils;
 import com.bluewhite.base.BaseServiceImpl;
 import com.bluewhite.common.Constants;
 import com.bluewhite.common.ServiceException;
+import com.bluewhite.common.SessionManager;
+import com.bluewhite.common.entity.CurrentUser;
 import com.bluewhite.common.entity.PageParameter;
 import com.bluewhite.common.entity.PageResult;
 import com.bluewhite.common.utils.StringUtil;
@@ -149,6 +151,15 @@ public class UnderGoodsServiceImpl extends BaseServiceImpl<UnderGoods, Long> imp
     @Override
     public void saveUnderGoods(UnderGoods underGoods) {
         underGoods.setStatus(0);
+        CurrentUser cu = SessionManager.getUserSession();
+        //蓝白仓库
+        if(cu.getRole().contains("stickBagAccount")) {
+            underGoods.setWarehouseTypeId((long)274);
+        }
+        //11号仓库
+        if(cu.getRole().contains("packScene")) {
+            underGoods.setWarehouseTypeId((long)275);
+        }
         save(underGoods);
     }
 

@@ -11,6 +11,7 @@ import javax.persistence.Table;
 import javax.persistence.Transient;
 
 import com.bluewhite.base.BaseEntity;
+import com.bluewhite.basedata.entity.BaseData;
 import com.bluewhite.product.product.entity.Product;
 
 /**
@@ -74,7 +75,20 @@ public class UnderGoods extends BaseEntity<Long> {
      */
     @Column(name = "internal")
     private Integer internal;
+    
+    /**
+     * 仓库种类id
+     */
+    @Column(name = "warehouse_type_id")
+    private Long warehouseTypeId;
 
+    /**
+     * 仓库种类
+     */
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "warehouse_type_id", referencedColumnName = "id", insertable = false, updatable = false)
+    private BaseData warehouseType;
+    
     /**
      * 产品名称
      */
@@ -109,6 +123,24 @@ public class UnderGoods extends BaseEntity<Long> {
      */
     @Transient
     private Date orderTimeEnd;
+    
+    
+
+    public Long getWarehouseTypeId() {
+        return warehouseTypeId;
+    }
+
+    public void setWarehouseTypeId(Long warehouseTypeId) {
+        this.warehouseTypeId = warehouseTypeId;
+    }
+
+    public BaseData getWarehouseType() {
+        return warehouseType;
+    }
+
+    public void setWarehouseType(BaseData warehouseType) {
+        this.warehouseType = warehouseType;
+    }
 
     public Long getMantissaLiquidationId() {
         return mantissaLiquidationId;

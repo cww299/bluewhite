@@ -12,6 +12,7 @@ import javax.persistence.Table;
 import javax.persistence.Transient;
 
 import com.bluewhite.base.BaseEntity;
+import com.bluewhite.basedata.entity.BaseData;
 import com.bluewhite.production.bacth.entity.Bacth;
 import com.bluewhite.production.procedure.entity.Procedure;
 import com.bluewhite.production.processes.entity.Processes;
@@ -238,6 +239,19 @@ public class Task extends BaseEntity<Long> {
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "user_id", referencedColumnName = "id", insertable = false, updatable = false)
 	private User user;
+	
+	/**
+     * 仓库种类id
+     */
+    @Column(name = "warehouse_type_id")
+    private Long warehouseTypeId;
+
+    /**
+     * 仓库种类
+     */
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "warehouse_type_id", referencedColumnName = "id", insertable = false, updatable = false)
+    private BaseData warehouseType;
 
 	/**
 	 * 查询字段
@@ -312,7 +326,23 @@ public class Task extends BaseEntity<Long> {
 	
 	
 
-	public Double getSingleTime() {
+	public Long getWarehouseTypeId() {
+        return warehouseTypeId;
+    }
+
+    public void setWarehouseTypeId(Long warehouseTypeId) {
+        this.warehouseTypeId = warehouseTypeId;
+    }
+
+    public BaseData getWarehouseType() {
+        return warehouseType;
+    }
+
+    public void setWarehouseType(BaseData warehouseType) {
+        this.warehouseType = warehouseType;
+    }
+
+    public Double getSingleTime() {
         return singleTime;
     }
 

@@ -219,6 +219,7 @@ public class QuantitativeServiceImpl extends BaseServiceImpl<Quantitative, Long>
                     id == null ? quantitativeChild.getSingleNumber() : quantitativeChild.getActualSingleNumber());
                 quantitative.getQuantitativeChilds().add(quantitativeChild);
                 underGoodsDao.save(underGoods);
+                quantitative.setWarehouseTypeId(underGoods.getWarehouseTypeId());
             }
         }
         // 新增贴包物
@@ -502,9 +503,9 @@ public class QuantitativeServiceImpl extends BaseServiceImpl<Quantitative, Long>
 
     @Override
     @Transactional
-    public void saveUpdateQuantitative(Quantitative quantitative) {
+    public void saveUpdateQuantitative(Quantitative quantitative,String ids) {
         // 生成贴包单时生成发货单发货单，将发货单id存入贴包单
-        if (StringUtils.isEmpty(quantitative.getIds())) {
+        if (StringUtils.isEmpty(ids)) {
             sendOrderService.saveSendOrder(quantitative);
             if (quantitative.getSumPackageNumber() > 0) {
                 for (int i = 0; i < quantitative.getSumPackageNumber(); i++) {
@@ -515,7 +516,7 @@ public class QuantitativeServiceImpl extends BaseServiceImpl<Quantitative, Long>
                 }
             }
         } else {
-            String[] idArr = quantitative.getIds().split(",");
+            String[] idArr = ids.split(",");
             if (idArr.length > 0) {
                 for (int i = 0; i < idArr.length; i++) {
                     Long id = Long.parseLong(idArr[i]);

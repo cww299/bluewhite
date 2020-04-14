@@ -1,6 +1,5 @@
 package com.bluewhite.production.task.service;
 
-import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
@@ -43,7 +42,6 @@ import com.bluewhite.production.group.dao.TemporarilyDao;
 import com.bluewhite.production.group.entity.Temporarily;
 import com.bluewhite.production.procedure.dao.ProcedureDao;
 import com.bluewhite.production.procedure.entity.Procedure;
-import com.bluewhite.production.processes.service.ProcessesService;
 import com.bluewhite.production.productionutils.constant.ProTypeUtils;
 import com.bluewhite.production.task.dao.TaskDao;
 import com.bluewhite.production.task.entity.Task;
@@ -684,6 +682,7 @@ public class TaskServiceImpl extends BaseServiceImpl<Task, Long> implements Task
                 // 工序id
                 long id = jsonObject.getLong("id");
                 double time = jsonObject.getDoubleValue("time");
+                String name = jsonObject.getString("name");
                 Task newTask = new Task();
                 newTask.setUserId(cu.getId());
                 // 默认是包装
@@ -692,6 +691,7 @@ public class TaskServiceImpl extends BaseServiceImpl<Task, Long> implements Task
                 newTask.setBacthId(task.getBacthId());
                 newTask.setNumber(task.getNumber());
                 newTask.setSingleTime(time);
+                newTask.setProcedureName(name);
                 // 实际完成时长
                 newTask.setTaskTime(NumUtils.round(ProTypeUtils.sumTaskTime(time, 2, newTask.getNumber()), 5));
                 // 实际任务价值（通过实际完成时间得出）

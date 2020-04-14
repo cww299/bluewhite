@@ -61,7 +61,8 @@ public class TemporaryPackAction {
         clearCascadeJSONQuantitative = ClearCascadeJSON.get()
             .addRetainTerm(Quantitative.class, "id", "quantitativeNumber", "time", "sumPackageNumber", "time",
                 "quantitativeChilds", "packingMaterials", "user", "flag", "print", "customer", "audit", "sendTime",
-                "vehicleNumber")
+                "vehicleNumber","packagMethod","remarks","outPrice","departmentPrice","regionalPrice","sumTaskPrice"
+                ,"sumTime","status")
             .addRetainTerm(Customer.class, "id", "name")
             .addRetainTerm(QuantitativeChild.class, "id", "underGoods", "sumPackageNumber", "singleNumber", "number",
                 "actualSingleNumber", "checks", "remarks")
@@ -159,10 +160,10 @@ public class TemporaryPackAction {
      */
     @RequestMapping(value = "/temporaryPack/saveQuantitative", method = RequestMethod.POST)
     @ResponseBody
-    public CommonResponse saveQuantitative(Quantitative quantitative) {
+    public CommonResponse saveQuantitative(Quantitative quantitative,String ids) {
         CommonResponse cr = new CommonResponse();
-        quantitativeService.saveUpdateQuantitative(quantitative);
-        if (StringUtils.isEmpty(quantitative.getIds())) {
+        quantitativeService.saveUpdateQuantitative(quantitative,ids);
+        if (StringUtils.isEmpty(ids)) {
             cr.setMessage("新增成功");
         } else {
             cr.setMessage("修改成功");

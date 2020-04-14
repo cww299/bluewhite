@@ -64,7 +64,6 @@ public class AttendanceTool {
         double actualTurnWorkTime = 0;
         double actualOverTime = 0;
         double actualDutyTime = 0;
-        double actualLeaveEarlyTime = 0;
         double actualbelateTime = 0;
         double actualDutytimMinute = 0;
         // 将上班开始时间延长一分钟计算迟到
@@ -105,8 +104,7 @@ public class AttendanceTool {
 
             // 满足于：员工可以加班后晚到岗 ，签入时间在（初始化上班开始时间后的加班分钟数+30分钟）之后，签出时间在工作结束时间之后 出现缺勤
             // (早退时间过长出现缺勤)
-            flag = attendanceTime.getCheckOut().before(workTimeEnd)
-                && DatesUtil.getTime(attendanceTime.getCheckOut(), workTimeEnd) > DUTYMIN;
+            flag = attendanceTime.getCheckOut().before(DateUtil.offsetMinute(workTimeEnd, -DUTYMIN));
             if (flag) {
                 actualTurnWorkTime = NumUtils.sum(attendanceTime.getWorkTime(), DatesUtil.getTimeHour(minute));
                 actualDutyTime = NumUtils.sub(turnWorkTime, actualTurnWorkTime);
@@ -176,8 +174,8 @@ public class AttendanceTool {
         // 正常情况下：员工不可以加班后晚到岗
         if (!sign) {
             // 签入时间在默认上班开始时间之前，签出时间在工作结束时间之后 没有缺勤出现（没缺勤）
-            flag = attendanceTime.getCheckIn().before(DateUtil.offsetMinute(workTimeStrat, DUTYMIN))
-                && attendanceTime.getCheckOut().after(DateUtil.offsetMinute(workTimeEnd, -DUTYMIN));
+            flag = attendanceTime.getCheckIn().before(DateUtil.offsetMinute(workTimeStrat, DUTYMIN).toJdkDate())
+                && attendanceTime.getCheckOut().after(DateUtil.offsetMinute(workTimeEnd, -DUTYMIN).toJdkDate());
             if (flag) {
                 actualTurnWorkTime = turnWorkTime;
                 flag = false;
@@ -198,8 +196,7 @@ public class AttendanceTool {
             }
 
             // 签出时间在工作结束时间之前 出现缺勤 (早退时间过长出现缺勤)
-            flag = attendanceTime.getCheckOut().before(workTimeEnd)
-                && DatesUtil.getTime(attendanceTime.getCheckOut(), workTimeEnd) > DUTYMIN;
+            flag = attendanceTime.getCheckOut().before(DateUtil.offsetMinute(workTimeEnd, -DUTYMIN));
             if (flag) {
                 actualTurnWorkTime = attendanceTime.getWorkTime();
                 actualDutyTime = NumUtils.sub(turnWorkTime, actualTurnWorkTime);
@@ -264,7 +261,7 @@ public class AttendanceTool {
         return attendanceTime;
 
     }
-
+    
     // 上班时间
     private Date workTimeStrat;
     // 下班时间
