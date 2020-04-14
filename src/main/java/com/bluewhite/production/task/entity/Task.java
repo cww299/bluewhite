@@ -146,6 +146,13 @@ public class Task extends BaseEntity<Long> {
 	 */
 	@Column(name = "status")
 	private Integer status;
+	
+	/**
+     * 工序单个时间
+     */
+    @Column(name = "single_time")
+    private Double singleTime;
+
 
 	/**
 	 * 预计完成时间
@@ -305,7 +312,15 @@ public class Task extends BaseEntity<Long> {
 	
 	
 
-	public Long getProcessesId() {
+	public Double getSingleTime() {
+        return singleTime;
+    }
+
+    public void setSingleTime(Double singleTime) {
+        this.singleTime = singleTime;
+    }
+
+    public Long getProcessesId() {
         return processesId;
     }
 

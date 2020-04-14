@@ -195,19 +195,6 @@ public class Quantitative extends BaseEntity<Long> {
     private Double sumTime;
 
     /**
-     * 任务分配人id
-     */
-    @Column(name = "oper_user_id")
-    private Long operUserId;
-
-    /**
-     * 任务分配人
-     */
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "oper_user_id", referencedColumnName = "id", insertable = false, updatable = false)
-    private User operUser;
-    
-    /**
      * 状态，是否完成（0=未完成，1=完成）
      */
     @Column(name = "status")
@@ -365,22 +352,6 @@ public class Quantitative extends BaseEntity<Long> {
 
     public void setSumTime(Double sumTime) {
         this.sumTime = sumTime;
-    }
-
-    public Long getOperUserId() {
-        return operUserId;
-    }
-
-    public void setOperUserId(Long operUserId) {
-        this.operUserId = operUserId;
-    }
-
-    public User getOperUser() {
-        return operUser;
-    }
-
-    public void setOperUser(User operUser) {
-        this.operUser = operUser;
     }
 
     public Integer getStatus() {

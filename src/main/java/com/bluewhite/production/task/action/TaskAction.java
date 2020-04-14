@@ -132,7 +132,7 @@ public class TaskAction {
         CommonResponse cr = new CommonResponse();
         // 新增
         if (!StringUtils.isEmpty(task.getIds()) || !StringUtils.isEmpty(task.getTemporaryIds())) {
-            taskService.checkTask(task);
+            taskService.checkTask(task,processes);
             taskService.addTaskPack(task, UnUtil.isFromMobile(request),processes);
             cr.setMessage("任务分配成功");
         } else {

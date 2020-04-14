@@ -108,6 +108,6 @@ public interface TaskService extends BaseCRUDService<Task, Long> {
     /**检查数量是否足够
      * @param task
      */
-    public void checkTask(Task task);
+    public void checkTask(Task task,String processes);
 
 }

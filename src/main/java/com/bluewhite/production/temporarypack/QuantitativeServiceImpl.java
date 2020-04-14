@@ -174,6 +174,8 @@ public class QuantitativeServiceImpl extends BaseServiceImpl<Quantitative, Long>
             quantitative.setAudit(0);
             quantitative.setPrint(0);
             quantitative.setFlag(0);
+            quantitative.setOutPrice(0.2);
+            quantitative.setStatus(0);
         }
         // 新增子单
         if (!StringUtils.isEmpty(quantitative.getChild())) {
