@@ -651,43 +651,10 @@ public class ProTypeUtils {
 	 * @param type
 	 * @return
 	 */
-	public static Double sumRegionalPrice(Bacth bacth, Integer type) {
-		Double sumRegionalPrice = 0.0;
-		bacth.setBacthHairPrice(NumUtils.setzro(bacth.getBacthHairPrice()));
-		bacth.setBacthDepartmentPrice(bacth.getBacthDepartmentPrice() == null ? 0.0 : bacth.getBacthDepartmentPrice());
-		switch (type) {
-		case 1:// 生产部一楼质检
-			sumRegionalPrice = NumUtils.sub(bacth.getSumTaskPrice(),
-					NumUtils.mul(NumUtils.div(bacth.getBacthHairPrice(), bacth.getBacthDepartmentPrice(), 5),
-							bacth.getSumTaskPrice()));
-			break;
-		case 2:// 生产部一楼打包
-			sumRegionalPrice = NumUtils.sub(bacth.getSumTaskPrice(),
-					NumUtils.mul(NumUtils.div(bacth.getBacthHairPrice(), bacth.getBacthDepartmentPrice(), 5),
-							bacth.getSumTaskPrice()));
-			break;
-		case 3:// 生产部二楼针工
-			sumRegionalPrice = NumUtils.sub(bacth.getSumTaskPrice(),
-					NumUtils.mul(NumUtils.div(bacth.getBacthHairPrice(), bacth.getBacthDepartmentPrice(), 5),
-							bacth.getSumTaskPrice()));
-			break;
-		case 4:// 生产部二楼机工
-			sumRegionalPrice = NumUtils.sub(bacth.getSumTaskPrice(),
-					NumUtils.mul(NumUtils.div(bacth.getBacthHairPrice(), bacth.getBacthDepartmentPrice(), 5),
-							bacth.getSumTaskPrice()));
-			break;
-		case 5:// 八号裁剪
-			sumRegionalPrice = NumUtils.sub(bacth.getSumTaskPrice(),
-					NumUtils.mul(NumUtils.div(bacth.getBacthHairPrice(), bacth.getBacthDepartmentPrice(), 5),
-							bacth.getSumTaskPrice()));
-			break;
-		default:
-			break;
-		}
-		if (bacth.getBacthHairPrice() == 0) {
-			sumRegionalPrice = 0.0;
-		}
-		return sumRegionalPrice;
+	public static Double sumRegionalPrice(double sumTaskPrice, double bacthHairPrice,double bacthDepartmentPrice) {
+		NumUtils.setzro(bacthHairPrice);
+		NumUtils.setzro(bacthDepartmentPrice);
+		return NumUtils.sub(sumTaskPrice,NumUtils.mul(NumUtils.div(bacthHairPrice, bacthDepartmentPrice, 5),sumTaskPrice));
 	}
 
 	/**

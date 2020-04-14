@@ -152,20 +152,6 @@ public class AttendanceTime extends BaseEntity<Long> {
     private Integer flag;
 
     /**
-     * 是否早退(0=否，1=是)
-     * 
-     */
-    @Column(name = "leave_early")
-    private Integer leaveEarly;
-
-    /**
-     * 早退时长（超过30分钟算缺勤）
-     * 
-     */
-    @Column(name = "leave_early_time")
-    private Double leaveEarlyTime;
-
-    /**
      * 是否迟到(0=否，1=是)
      * 
      */
@@ -282,22 +268,6 @@ public class AttendanceTime extends BaseEntity<Long> {
 
     public void setLeaveTime(Double leaveTime) {
         this.leaveTime = leaveTime;
-    }
-
-    public Integer getLeaveEarly() {
-        return leaveEarly;
-    }
-
-    public void setLeaveEarly(Integer leaveEarly) {
-        this.leaveEarly = leaveEarly;
-    }
-
-    public Double getLeaveEarlyTime() {
-        return leaveEarlyTime;
-    }
-
-    public void setLeaveEarlyTime(Double leaveEarlyTime) {
-        this.leaveEarlyTime = leaveEarlyTime;
     }
 
     public String getUserName() {

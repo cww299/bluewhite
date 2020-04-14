@@ -22,6 +22,7 @@ import com.bluewhite.common.entity.CommonResponse;
 import com.bluewhite.common.entity.CurrentUser;
 import com.bluewhite.common.entity.ErrorCode;
 import com.bluewhite.common.entity.PageParameter;
+import com.bluewhite.common.utils.UnUtil;
 import com.bluewhite.production.bacth.entity.Bacth;
 import com.bluewhite.production.bacth.service.BacthService;
 import com.bluewhite.production.finance.dao.PayBDao;
@@ -114,11 +115,43 @@ public class TaskAction {
         }
         return cr;
     }
+    
+    
+    
+    /**
+     *  量化单分配任务
+     * 
+     * @param request
+     * @param task  任务
+     * @param processes 工序json数据
+     * @return
+     */
+    @RequestMapping(value = "/task/addTaskPack", method = RequestMethod.POST)
+    @ResponseBody
+    public CommonResponse addTaskPack(HttpServletRequest request,Task task,String processes) {
+        CommonResponse cr = new CommonResponse();
+        // 新增
+        if (!StringUtils.isEmpty(task.getIds()) || !StringUtils.isEmpty(task.getTemporaryIds())) {
+            taskService.checkTask(task,processes);
+            taskService.addTaskPack(task, UnUtil.isFromMobile(request),processes);
+            cr.setMessage("任务分配成功");
+        } else {
+            cr.setCode(ErrorCode.ILLEGAL_ARGUMENT.getCode());
+            cr.setMessage("领取人不能为空");
+        }
+        return cr;
+    }
+    
+    
+    
+    
+    
+    
+    
+    
 
     /**
      * 修改任务
-     * 
-     * 
      */
     @RequestMapping(value = "/task/upTask", method = RequestMethod.POST)
     @ResponseBody
@@ -145,32 +178,6 @@ public class TaskAction {
         } else {
             cr.setCode(ErrorCode.ILLEGAL_ARGUMENT.getCode());
             cr.setMessage("任务不能为空");
-        }
-        return cr;
-    }
-
-    /**
-     * 给批次添加任务(方式2) 应业务要求，增加按时间占比，分配不同任务数量给不同的员工，进行新增任务
-     * 
-     * @throws Exception
-     * 
-     */
-    @RequestMapping(value = "/task/addTaskTwo", method = RequestMethod.POST)
-    @ResponseBody
-    public CommonResponse addTaskTwo(HttpServletRequest request, Task task) throws Exception {
-        CommonResponse cr = new CommonResponse();
-        // 根据时间占比，组装出新任务
-        List<Task> taskList = taskService.assembleTask(task);
-        // 新增
-        for (Task tasks : taskList) {
-            if (!StringUtils.isEmpty(tasks.getUserIds())) {
-                tasks.setAllotTime(ProTypeUtils.countAllotTime(task.getAllotTime()));
-                taskService.addTask(tasks, request);
-                cr.setMessage("任务分配成功");
-            } else {
-                cr.setCode(ErrorCode.ILLEGAL_ARGUMENT.getCode());
-                cr.setMessage("领取人不能为空");
-            }
         }
         return cr;
     }

@@ -14,6 +14,8 @@ import javax.persistence.Transient;
 import com.bluewhite.base.BaseEntity;
 import com.bluewhite.production.bacth.entity.Bacth;
 import com.bluewhite.production.procedure.entity.Procedure;
+import com.bluewhite.production.processes.entity.Processes;
+import com.bluewhite.production.temporarypack.Quantitative;
 import com.bluewhite.system.user.entity.User;
 
 /**
@@ -45,6 +47,19 @@ public class Task extends BaseEntity<Long> {
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "bacth_id", referencedColumnName = "id", insertable = false, updatable = false)
 	private Bacth bacth;
+	
+	/**
+     * 量化单id
+     */
+    @Column(name = "quantitative_id")
+    private Long quantitativeId;
+
+    /**
+     * 量化单 任务多对一量化
+     */
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "quantitative_id", referencedColumnName = "id", insertable = false, updatable = false)
+    private Quantitative quantitative;
 
 	/**
 	 * 领取任务人员ids(任务和员工多对多关系)
@@ -69,6 +84,12 @@ public class Task extends BaseEntity<Long> {
 	 */
 	@Column(name = "temporary_ids")
 	private String temporaryIds;
+	
+    /**
+     * 借调员工出勤记录ids
+     */
+    @Column(name = "loan_ids")
+    private String loanIds;
 
 	/**
 	 * 产品名称
@@ -83,17 +104,30 @@ public class Task extends BaseEntity<Long> {
 	private Long productId;
 
 	/**
-	 * 工序id
+	 * 包装工序id
 	 */
-	@Column(name = "procedure_id")
-	private Long procedureId;
+	@Column(name = "processes_id")
+	private Long processesId;
 
 	/**
-	 * 工序
+	 * 包装工序
 	 */
 	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "procedure_id", referencedColumnName = "id", insertable = false, updatable = false)
-	private Procedure procedure;
+	@JoinColumn(name = "processes_id", referencedColumnName = "id", insertable = false, updatable = false)
+	private Processes processes;
+	
+	/**
+     * 工序id
+     */
+    @Column(name = "procedure_id")
+    private Long procedureId;
+
+    /**
+     * 工序
+     */
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "procedure_id", referencedColumnName = "id", insertable = false, updatable = false)
+    private Procedure procedure;
 
 	/**
 	 * 工序名称
@@ -112,6 +146,13 @@ public class Task extends BaseEntity<Long> {
 	 */
 	@Column(name = "status")
 	private Integer status;
+	
+	/**
+     * 工序单个时间
+     */
+    @Column(name = "single_time")
+    private Double singleTime;
+
 
 	/**
 	 * 预计完成时间
@@ -271,7 +312,59 @@ public class Task extends BaseEntity<Long> {
 	
 	
 
-	public String getIds() {
+	public Double getSingleTime() {
+        return singleTime;
+    }
+
+    public void setSingleTime(Double singleTime) {
+        this.singleTime = singleTime;
+    }
+
+    public Long getProcessesId() {
+        return processesId;
+    }
+
+    public void setProcessesId(Long processesId) {
+        this.processesId = processesId;
+    }
+
+    public Processes getProcesses() {
+        return processes;
+    }
+
+    public void setProcesses(Processes processes) {
+        this.processes = processes;
+    }
+
+    public String getLoanIds() {
+        return loanIds;
+    }
+
+    public void setLoanIds(String loanIds) {
+        this.loanIds = loanIds;
+    }
+
+    public void setProductPrice(Double productPrice) {
+        this.productPrice = productPrice;
+    }
+
+    public Long getQuantitativeId() {
+        return quantitativeId;
+    }
+
+    public void setQuantitativeId(Long quantitativeId) {
+        this.quantitativeId = quantitativeId;
+    }
+
+    public Quantitative getQuantitative() {
+        return quantitative;
+    }
+
+    public void setQuantitative(Quantitative quantitative) {
+        this.quantitative = quantitative;
+    }
+
+    public String getIds() {
 		return ids;
 	}
 

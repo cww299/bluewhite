@@ -24,7 +24,6 @@ import com.bluewhite.common.entity.PageParameter;
 import com.bluewhite.common.entity.PageResult;
 import com.bluewhite.system.sys.dao.SysLogDao;
 import com.bluewhite.system.sys.entity.SysLog;
-import com.bluewhite.system.user.dao.UserDao;
 
 @Service
 public class SysLogServiceImpl extends BaseServiceImpl<SysLog, Long> implements
@@ -32,8 +31,6 @@ public class SysLogServiceImpl extends BaseServiceImpl<SysLog, Long> implements
 
 	@Autowired
 	private SysLogDao dao;
-	@Autowired
-	private UserDao userDao;
 
 	@Override
 	public void log(SysLog log) {

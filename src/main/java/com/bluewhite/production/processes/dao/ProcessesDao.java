@@ -17,5 +17,23 @@ public interface ProcessesDao extends BaseRepository<Processes, Long> {
      * @return
      */
     List<Processes> findByPackagMethodId(Long id);
+    
+    /**
+     * 是否公共工序
+     * @return
+     */
+    List<Processes> findByPublicType(Integer publicType);
+    
+    /**
+     * 根据名字和公共工序
+     * @return
+     */
+    Processes findByPublicTypeAndNameAndSumCount(Integer publicType,String name,int sumCount);
+    
+    /**
+     * 是否手填工序
+     * @return
+     */
+    List<Processes> findByIsWrite(Integer isWrite);
 
 }

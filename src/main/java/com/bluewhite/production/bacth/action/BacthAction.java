@@ -60,7 +60,7 @@ public class BacthAction {
 			BeanCopyUtils.copyNullProperties(oldBacth, bacth);
 			bacth.setCreatedAt(oldBacth.getCreatedAt());
 			if (bacth.getFlag() == 0 && bacth.getRegionalPrice() != null) {
-				bacth.setRegionalPrice(NumUtils.round(ProTypeUtils.sumRegionalPrice(bacth, bacth.getType()), null));
+				bacth.setRegionalPrice(NumUtils.round(ProTypeUtils.sumRegionalPrice(bacth.getSumTaskPrice(),bacth.getBacthHairPrice(),bacth.getBacthDepartmentPrice()), null));
 			}
 			List<Procedure> procedureList = procedureDao.findByProductIdAndTypeAndFlag(bacth.getProductId(),bacth.getType(), bacth.getFlag());
 			double time = procedureList.stream().mapToDouble(Procedure::getWorkingTime).sum();

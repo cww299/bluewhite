@@ -25,6 +25,12 @@ public class Processes extends BaseEntity<Long> {
      */
     @Column(name = "name")
     private String name;
+    
+    /**
+     * 是否手填工序时间 
+     */
+    @Column(name = "is_write")
+    private Integer isWrite;
 
     /**
      * 工序耗时
@@ -33,10 +39,19 @@ public class Processes extends BaseEntity<Long> {
     private Double time;
     
     /**
-     * 是否为公共属性
+     * 是否为公共工序
      */
     @Column(name = "public_type")
     private Integer publicType;
+    
+    /**
+     * 工序耗时总数量
+     * 
+     * 当为公共工序时，会出现多种数量的耗时
+     * 常见的是 3，6,10,12
+     */
+    @Column(name = "sum_count")
+    private Integer sumCount;
     
     /**
      * 包装方式id
@@ -50,6 +65,25 @@ public class Processes extends BaseEntity<Long> {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "packag_method_id", referencedColumnName = "id", insertable = false, updatable = false)
     private BaseData packagMethod;
+    
+    
+    
+
+    public Integer getSumCount() {
+        return sumCount;
+    }
+
+    public void setSumCount(Integer sumCount) {
+        this.sumCount = sumCount;
+    }
+
+    public Integer getIsWrite() {
+        return isWrite;
+    }
+
+    public void setIsWrite(Integer isWrite) {
+        this.isWrite = isWrite;
+    }
 
     public Long getPackagMethodId() {
         return packagMethodId;
@@ -66,9 +100,7 @@ public class Processes extends BaseEntity<Long> {
     public void setPackagMethod(BaseData packagMethod) {
         this.packagMethod = packagMethod;
     }
-
     
-
     public Integer getPublicType() {
         return publicType;
     }

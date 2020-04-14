@@ -116,8 +116,7 @@ public class ApplicationLeaveServiceImpl extends BaseServiceImpl<ApplicationLeav
     private ApplicationLeave setApp(ApplicationLeave applicationLeave) {
         dao.save(applicationLeave);
         // 获取当前日期的固定休息日
-        PersonVariable restType =
-            personVariableDao.findByTypeAndTime(0, DatesUtil.getFirstDayOfMonth(applicationLeave.getWriteTime()));
+        PersonVariable restType = personVariableDao.findByTypeAndTime(0, DatesUtil.getFirstDayOfMonth(applicationLeave.getWriteTime()));
         // 详细
         String holidayDetail = "";
         // 获取到当前员工统计一个月的考勤详细
@@ -268,7 +267,7 @@ public class ApplicationLeaveServiceImpl extends BaseServiceImpl<ApplicationLeav
             // 补签
             if (applicationLeave.isAddSignIn()) {
                 Attendance attendance = new Attendance();
-                Date tm = DateUtil.parse(date);
+                Date tm = DateUtil.parse(date).toJdkDate();
                 if (DatesUtil.timeIsZero(tm)) {
                     tm = time.equals("0") ? workTime : workTimeEnd;
                 }
@@ -277,7 +276,7 @@ public class ApplicationLeaveServiceImpl extends BaseServiceImpl<ApplicationLeav
                 attendance.setApplicationLeaveId(applicationLeave.getId());
                 attendance.setInOutMode(2);
                 attendanceDao.save(attendance);
-                holidayDetail += date + (time.equals("0") ? "补签入," : "补签出,");
+                holidayDetail += DateUtil.format(tm, "yyyy-MM-dd HH:mm:ss") + (time.equals("0") ? "补签入," : "补签出,");
                 continue;
             }
 
@@ -288,9 +287,6 @@ public class ApplicationLeaveServiceImpl extends BaseServiceImpl<ApplicationLeav
                 }
                 // 获取所有的加班时间
                 double actualOverTime = 0.0;
-//                if (applicationLeave.getOvertimeType() != 2 && attendanceInit.getOverTimeType() == 2) {
-//                    throw new ServiceException("该员工属于按打卡核算加班，无需填写加班申请");
-//                }
                 if (attendanceTime.getCheckIn() != null && attendanceTime.getCheckOut() != null) {
                     // 获取所有的休息日
                     if (attendanceInit.getRestDay() != null || attendanceInit.getRestType() != null) {
@@ -330,8 +326,7 @@ public class ApplicationLeaveServiceImpl extends BaseServiceImpl<ApplicationLeav
                         } else {
                             if (workTimeEnd.before(attendanceTime.getCheckOut())) {
                                 actualOverTime = DatesUtil.getTimeHour(workTimeEnd, attendanceTime.getCheckOut());
-                                if (attendanceTime.getCheckIn().before(restBeginTime)
-                                    && attendanceTime.getCheckOut().after(restEndTime)) {
+                                if (attendanceTime.getCheckIn().before(restBeginTime) && attendanceTime.getCheckOut().after(restEndTime)) {
                                     actualOverTime = NumUtils.sum(actualOverTime, restTime);
                                 }
                             }
@@ -340,8 +335,7 @@ public class ApplicationLeaveServiceImpl extends BaseServiceImpl<ApplicationLeav
                 }
                 // 加班申请
                 if (applicationLeave.isApplyOvertime()) {
-                    if (attendanceTime.getCheckIn() != null && attendanceTime.getCheckOut() != null
-                        && actualOverTime < Double.valueOf(time)) {
+                    if (attendanceTime.getCheckIn() != null && attendanceTime.getCheckOut() != null  && actualOverTime < Double.valueOf(time)) {
                         throw new ServiceException("根据" + date + "的签到时间该员工加班时间为" + actualOverTime + "小时，加班申请时间有误请重新核对");
                     }
                     String overString = "";

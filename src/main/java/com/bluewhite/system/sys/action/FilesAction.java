@@ -11,15 +11,12 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.bluewhite.common.ClearCascadeJSON;
-import com.bluewhite.common.Log;
 import com.bluewhite.common.entity.CommonResponse;
 import com.bluewhite.system.sys.entity.Files;
 import com.bluewhite.system.sys.service.FilesService;
 
 @Controller
 public class FilesAction {
-	
-	private final static Log log = Log.getLog(FilesAction.class);
 	
 	@Autowired
 	private FilesService fileService;
