@@ -173,7 +173,7 @@ public class GroupAction {
 					return false;
 				}
 			}).collect(Collectors.toList());
-			/// secondment =0 临时, secondment = 1 正式
+			// secondment =0 借调, secondment = 1 正式
 			if (temporarilyList.size() > 0) {
 				for (Temporarily temporarily : temporarilyList) {
 					// 查询出该分组临时员工的出勤数据
@@ -213,7 +213,6 @@ public class GroupAction {
 							.findByUserIdAndSourceMachineAndTimeBetween(user.getId(), sourceMachine, startTime, endTime)
 							.stream().sorted(Comparator.comparing(Attendance::getTime)).collect(Collectors.toList());
 					Attendance attendanceIn = null;
-					Attendance attendanceOut = null;
 					Double time = null;
 					Double timeH = null;
 					int flag = 0;

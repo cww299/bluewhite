@@ -130,14 +130,14 @@ public class TaskAction {
      */
     @RequestMapping(value = "/task/addTaskPack", method = RequestMethod.POST)
     @ResponseBody
-    public CommonResponse addTaskPack(HttpServletRequest request,Task task,String processes) {
+    public CommonResponse addTaskPack(HttpServletRequest request,Task task, String processesJson) {
         CommonResponse cr = new CommonResponse();
         // 新增
         if (!StringUtils.isEmpty(task.getIds()) 
             || !StringUtils.isEmpty(task.getTemporaryIds()) 
-            ||  !StringUtils.isEmpty(task.getLoanIds())) {
-            taskService.checkTask(task,processes);
-            taskService.addTaskPack(task,UnUtil.isFromMobile(request),processes);
+            || !StringUtils.isEmpty(task.getLoanIds())) {
+            taskService.checkTask(task,processesJson);
+            taskService.addTaskPack(task,UnUtil.isFromMobile(request),processesJson);
             cr.setMessage("任务分配成功");
         } else {
             cr.setCode(ErrorCode.ILLEGAL_ARGUMENT.getCode());
@@ -145,13 +145,6 @@ public class TaskAction {
         }
         return cr;
     }
-    
-    
-    
-    
-    
-    
-    
     
 
     /**

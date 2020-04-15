@@ -103,11 +103,11 @@ public interface TaskService extends BaseCRUDService<Task, Long> {
      * @param task
      * @param fromMobile
      */
-    public void addTaskPack(Task task, boolean isFromMobile,String processes);
+    public void addTaskPack(Task task, boolean isFromMobile,String processesJson);
 
     /**检查数量是否足够
      * @param task
      */
-    public void checkTask(Task task,String processes);
+    public void checkTask(Task task,String processesJson);
 
 }
