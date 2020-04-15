@@ -20,8 +20,6 @@ import com.bluewhite.production.processes.entity.Processes;
 import com.bluewhite.production.task.entity.Task;
 import com.bluewhite.production.temporarypack.Quantitative;
 import com.bluewhite.production.temporarypack.QuantitativeService;
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
 
 /**
  * @author ZhangLiang
@@ -65,7 +63,7 @@ public class ProcessesServiceImpl extends BaseServiceImpl<Processes, Long> imple
         // 是否公共查找
         List<Processes> processesListPub = dao.findByPublicType(1);
         // 过滤出相符数量工序
-        processesListPub = processesListPub.stream().filter(Processes -> Processes.getSumCount().equals(count))
+        processesListPub = processesListPub.stream().filter(p -> p.getSumCount()==count)
             .collect(Collectors.toList());
         processesListPub.forEach(p -> {
             p.setTime(NumUtils.div(p.getTime(), count, 5));
@@ -75,18 +73,11 @@ public class ProcessesServiceImpl extends BaseServiceImpl<Processes, Long> imple
         List<Processes> processesIsWrite = dao.findByIsWrite(1);
         newProcessesList.addAll(processesIsWrite);
         Quantitative quantitative = quantitativeService.findOne(quantitativeId);
-        Map<String,Object> properties = new HashMap<String,Object>();
-        ObjectMapper mapper = new ObjectMapper();
         newProcessesList.forEach(p->{
             // 获取该工序的已分配的任务数量
             int surplusCount = quantitative.getTasks().stream().filter(Task -> Task.getProcessesId().equals(id))
                 .mapToInt(Task::getNumber).sum();
-            properties.put("surplusCount",surplusCount);
-            try {
-                mapper.writeValueAsString(ReflectUtil.getTarget(p,properties));
-            } catch (JsonProcessingException e) {
-                 e.printStackTrace();
-            }
+            p.setSurplusCount(quantitative.getNumber()-surplusCount);
         });
         return newProcessesList;
     }

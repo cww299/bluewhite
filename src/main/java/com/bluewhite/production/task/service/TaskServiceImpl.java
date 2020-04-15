@@ -777,7 +777,6 @@ public class TaskServiceImpl extends BaseServiceImpl<Task, Long> implements Task
             }
         }
         payBService.batchSave(payBList);
-        
         int count = quantitative.getTasks().stream()
             .filter(t -> t.getType() == 2 && t.getProcedureName().indexOf(Constants.BAGABOARD) != -1)
             .mapToInt(t -> t.getNumber()).sum();
