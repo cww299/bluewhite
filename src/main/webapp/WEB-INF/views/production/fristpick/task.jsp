@@ -459,12 +459,12 @@
 							$("#savegroup").css("display","block");  
 						}
 					 var postData={
-							id:id,
+							 taskId:id,
 					}
 					 var arr=new Array();
 					var html="";
 					$.ajax({
-						url:"${ctx}/task/taskUser",
+						url:"${ctx}/task/taskUserPack",
 						data:postData,
 						type:"GET",
 						beforeSend:function(){
@@ -692,10 +692,10 @@
 			      				var htmltwo = "";
 			      				var	id=$(this).val()
 								   var data={
-										  id:arr,
+			      					  taskId:arr,
 								   }
 			      				$.ajax({
-									url:"${ctx}/task/taskUser",
+									url:"${ctx}/task/taskUserPack ",
 									data:data,
 									type:"GET",
 									beforeSend:function(){
