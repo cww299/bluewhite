@@ -56,7 +56,7 @@ public class ProcessesServiceImpl extends BaseServiceImpl<Processes, Long> imple
         // 是否公共查找
         List<Processes> processesListPub = dao.findByPublicType(1);
         // 过滤出相符数量工序
-        processesListPub = processesListPub.stream().filter(Processes -> Processes.getSumCount() == count)
+        processesListPub = processesListPub.stream().filter(Processes -> Processes.getSumCount().equals(count))
             .collect(Collectors.toList());
         processesListPub.forEach(p -> {
             p.setTime(NumUtils.div(p.getTime(), count, 5));
