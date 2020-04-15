@@ -777,11 +777,23 @@ public class TaskServiceImpl extends BaseServiceImpl<Task, Long> implements Task
             }
         }
         payBService.batchSave(payBList);
+        
+        int count = quantitative.getTasks().stream()
+            .filter(t -> t.getType() == 2 && t.getProcedureName().indexOf(Constants.BAGABOARD) != -1)
+            .mapToInt(t -> t.getNumber()).sum();
+        if (quantitative.getNumber() == count) {
+            quantitative.setStatus(1);
+            quantitative.setStatusTime(task.getAllotTime());
+        }
+        //量化单工序总时长
+        double sumSingleTime = quantitative.getTasks().stream().mapToDouble(Task::getSingleTime).sum();
+        double bacthDepartmentPrice = ProTypeUtils.sumProTypePrice(sumSingleTime,2);
+        quantitative.setDepartmentPrice(bacthDepartmentPrice);
         // 总任务时长
-        Double sumTaskTime = quantitative.getTasks().stream().mapToDouble(Task::getTaskTime).sum();
+        double sumTaskTime = quantitative.getTasks().stream().mapToDouble(Task::getTaskTime).sum();
         quantitative.setSumTime(NumUtils.round(sumTaskTime, 5));
         // 总任务价值
-        Double sumTaskPrice = quantitative.getTasks().stream().mapToDouble(Task::getTaskPrice).sum();
+        double sumTaskPrice = quantitative.getTasks().stream().mapToDouble(Task::getTaskPrice).sum();
         quantitative.setSumTaskPrice(NumUtils.round(sumTaskPrice, 5));
         // 计算出该批次的地区差价
         if (quantitative.getFlag() == 0) {
