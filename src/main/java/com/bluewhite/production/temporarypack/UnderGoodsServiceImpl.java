@@ -15,6 +15,8 @@ import org.springframework.util.StringUtils;
 import com.bluewhite.base.BaseServiceImpl;
 import com.bluewhite.common.Constants;
 import com.bluewhite.common.ServiceException;
+import com.bluewhite.common.SessionManager;
+import com.bluewhite.common.entity.CurrentUser;
 import com.bluewhite.common.entity.PageParameter;
 import com.bluewhite.common.entity.PageResult;
 import com.bluewhite.common.utils.StringUtil;
@@ -51,6 +53,10 @@ public class UnderGoodsServiceImpl extends BaseServiceImpl<UnderGoods, Long> imp
             // 按产品id
             if (param.getProductId() != null) {
                 predicate.add(cb.equal(root.get("productId").as(Long.class), param.getId()));
+            }
+            // 按库区
+            if (param.getWarehouseTypeId() !=null) {
+                predicate.add(cb.equal(root.get("warehouseTypeId").as(Long.class), param.getWarehouseTypeId()));
             }
             // 是否天猫
             if (param.getInternal() != null) {
@@ -97,8 +103,10 @@ public class UnderGoodsServiceImpl extends BaseServiceImpl<UnderGoods, Long> imp
             int numberStickSum = stickListList.stream().mapToInt(QuantitativeChild::getSingleNumber).sum();
             r.setSurplusStickNumber(r.getNumber() - numberStickSum);
             // 发货数量
-            List<Long> quantitativeListId = quantitativeDao.findSendNumber(r.getId());
-            List<QuantitativeChild> quantitativeList = quantitativeChildDao.findByIdIn(quantitativeListId);
+            List<Object> quantitativeListId = quantitativeDao.findSendNumber(r.getId());
+            List<Long> quantitativeListIdLong =  quantitativeListId.stream().map(x -> Long.valueOf(x.toString())).collect(Collectors.toList());
+            List<QuantitativeChild> quantitativeList = quantitativeChildDao.findByIdIn(quantitativeListIdLong);
+            
             int numberSendSum = quantitativeList.stream().mapToInt(QuantitativeChild::getActualSingleNumber).sum();
             r.setSurplusSendNumber(r.getNumber() - numberSendSum);
             // 尾数清算数量
@@ -149,6 +157,15 @@ public class UnderGoodsServiceImpl extends BaseServiceImpl<UnderGoods, Long> imp
     @Override
     public void saveUnderGoods(UnderGoods underGoods) {
         underGoods.setStatus(0);
+        CurrentUser cu = SessionManager.getUserSession();
+        //蓝白仓库
+        if(cu.getRole().contains("stickBagAccount")) {
+            underGoods.setWarehouseTypeId((long)274);
+        }
+        //11号仓库
+        if(cu.getRole().contains("packScene")) {
+            underGoods.setWarehouseTypeId((long)275);
+        }
         save(underGoods);
     }
 

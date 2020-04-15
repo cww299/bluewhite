@@ -162,7 +162,7 @@ public class Quantitative extends BaseEntity<Long> {
      * 批次外发单价
      */
     @Column(name = "out_price")
-    private Double OutPrice;
+    private Double outPrice;
 
     /**
      * 批次部门预计生产单价
@@ -183,12 +183,6 @@ public class Quantitative extends BaseEntity<Long> {
     private Double sumTaskPrice;
 
     /**
-     * 批次分配时间（默认当前时间前一天）
-     */
-    @Column(name = "allot_time")
-    private Date allotTime;
-
-    /**
      * 当批用时(分钟)
      */
     @Column(name = "sum_time")
@@ -203,14 +197,21 @@ public class Quantitative extends BaseEntity<Long> {
     /**
      * 任务
      */
-    @OneToMany(mappedBy = "bacth", cascade = CascadeType.REMOVE, orphanRemoval = true)
+    @OneToMany(mappedBy = "quantitative", cascade = CascadeType.REMOVE, orphanRemoval = true)
     private Set<Task> tasks = new HashSet<Task>();
-	
-	/**
-	 * 产品名称
-	 */
-	@Transient
-	private String name;
+    
+    /**
+     * 仓库种类id
+     */
+    @Column(name = "warehouse_type_id")
+    private Long warehouseTypeId;
+
+    /**
+     * 仓库种类
+     */
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "warehouse_type_id", referencedColumnName = "id", insertable = false, updatable = false)
+    private BaseData warehouseType;
 	
 	/**
 	 * 产品名称
@@ -259,12 +260,6 @@ public class Quantitative extends BaseEntity<Long> {
 	@Transient
 	private String customerName;
 	
-	/**
-	 * ids
-	 */
-	@Transient
-	private String ids;
-	
     /**
      * 物流点id
      */
@@ -274,7 +269,23 @@ public class Quantitative extends BaseEntity<Long> {
 	
 	
 	
-	public Set<Task> getTasks() {
+	public Long getWarehouseTypeId() {
+        return warehouseTypeId;
+    }
+
+    public void setWarehouseTypeId(Long warehouseTypeId) {
+        this.warehouseTypeId = warehouseTypeId;
+    }
+
+    public BaseData getWarehouseType() {
+        return warehouseType;
+    }
+
+    public void setWarehouseType(BaseData warehouseType) {
+        this.warehouseType = warehouseType;
+    }
+
+    public Set<Task> getTasks() {
         return tasks;
     }
 
@@ -307,11 +318,11 @@ public class Quantitative extends BaseEntity<Long> {
     }
 
     public Double getOutPrice() {
-        return OutPrice;
+        return outPrice;
     }
 
     public void setOutPrice(Double outPrice) {
-        OutPrice = outPrice;
+        this.outPrice = outPrice;
     }
 
     public Double getDepartmentPrice() {
@@ -337,15 +348,6 @@ public class Quantitative extends BaseEntity<Long> {
     public void setSumTaskPrice(Double sumTaskPrice) {
         this.sumTaskPrice = sumTaskPrice;
     }
-
-    public Date getAllotTime() {
-        return allotTime;
-    }
-
-    public void setAllotTime(Date allotTime) {
-        this.allotTime = allotTime;
-    }
-
     public Double getSumTime() {
         return sumTime;
     }
@@ -393,14 +395,6 @@ public class Quantitative extends BaseEntity<Long> {
     public void setSendTime(Date sendTime) {
         this.sendTime = sendTime;
     }
-
-    public String getIds() {
-		return ids;
-	}
-
-	public void setIds(String ids) {
-		this.ids = ids;
-	}
 
 	public Integer getAudit() {
 		return audit;
@@ -512,14 +506,6 @@ public class Quantitative extends BaseEntity<Long> {
 
 	public void setQuantitativeChilds(List<QuantitativeChild> quantitativeChilds) {
 		this.quantitativeChilds = quantitativeChilds;
-	}
-
-	public String getName() {
-		return name;
-	}
-
-	public void setName(String name) {
-		this.name = name;
 	}
 
 	public String getProductName() {

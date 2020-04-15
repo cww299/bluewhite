@@ -78,7 +78,7 @@ public interface QuantitativeService extends BaseCRUDService<Quantitative,Long>{
     /**新增修改
      * @param quantitative
      */
-	public void saveUpdateQuantitative(Quantitative quantitative);
+	public void saveUpdateQuantitative(Quantitative quantitative,String ids);
 
 	
 

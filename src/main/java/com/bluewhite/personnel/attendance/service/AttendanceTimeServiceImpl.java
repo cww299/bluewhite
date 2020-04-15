@@ -424,30 +424,41 @@ public class AttendanceTimeServiceImpl extends BaseServiceImpl<AttendanceTime, L
         return attendanceTimeList;
     }
 
+    
+    // 根据中午出勤方式进行出勤的核算实际出勤时长
     private AttendanceTime countWorkTime(AttendanceTime attendanceTime, Date restBeginTime, Date restEndTime,
         Date workTimeEnd, Date workTime, Double restTime) {
+        //午休方式1=默认休息,2=出勤,3=加班
+        int restTimeWork = attendanceTime.getAttendanceInit().getRestTimeWork();
         // 工作总时长(签到签出时间总和减去休息时间)
         // 多种情况
         // 1.当签到签出时间同时在休息时间之前2.当签到签出时间都在休息时间之后3.当签到签出时间（任一or全部）在休息时间之间（当出现这种情况 均不用计算休息时间）
         // 在上午同时签到签出
-        if (attendanceTime.getCheckIn().compareTo(restBeginTime) != 1
-            && attendanceTime.getCheckOut().compareTo(restBeginTime) != 1) {
+        if (attendanceTime.getCheckIn().compareTo(restBeginTime) != 1 && attendanceTime.getCheckOut().compareTo(restBeginTime) != 1) {
             attendanceTime.setWorkTime(DatesUtil.getTimeHour(attendanceTime.getCheckIn(), attendanceTime.getCheckOut()));
         } else
         // 在下午同时签到签出
-        if (attendanceTime.getCheckIn().compareTo(restEndTime) != -1
-            && attendanceTime.getCheckOut().compareTo(restEndTime) != -1) {
+        if (attendanceTime.getCheckIn().compareTo(restEndTime) != -1 && attendanceTime.getCheckOut().compareTo(restEndTime) != -1) {
             attendanceTime.setWorkTime(DatesUtil.getTimeHour(attendanceTime.getCheckIn(),
                 attendanceTime.getCheckOut().after(workTimeEnd) ? workTimeEnd : attendanceTime.getCheckOut()));
         } else
         // 当签出时间在休息时间之间 （从签出时间到休息时间开始）
-        if (attendanceTime.getCheckOut().compareTo(restBeginTime) != -1
-            && attendanceTime.getCheckOut().compareTo(restEndTime) != 1) {
-            attendanceTime.setWorkTime(DatesUtil.getTimeHour(attendanceTime.getCheckIn(), restBeginTime));
+        if (attendanceTime.getCheckOut().compareTo(restBeginTime) != -1 && attendanceTime.getCheckOut().compareTo(restEndTime) != 1) {
+            if(restTimeWork==2) {
+                attendanceTime.setWorkTime(DatesUtil.getTimeHour(attendanceTime.getCheckIn(), attendanceTime.getCheckOut()));
+            }else {
+                attendanceTime.setWorkTime(DatesUtil.getTimeHour(attendanceTime.getCheckIn(), restBeginTime));
+            }
         } else
         // 当签入时间在休息时间之间 （从休息时间结束到签出时间）
         if (attendanceTime.getCheckIn().compareTo(restBeginTime) != -1 && attendanceTime.getCheckIn().compareTo(restEndTime) != 1) {
-            attendanceTime.setWorkTime(DatesUtil.getTimeHour(restEndTime, attendanceTime.getCheckOut().after(workTimeEnd) ? workTimeEnd : attendanceTime.getCheckOut()));
+            if(restTimeWork==2) {
+                attendanceTime.setWorkTime(DatesUtil.getTimeHour(attendanceTime.getCheckIn(), 
+                    attendanceTime.getCheckOut().after(workTimeEnd) ? workTimeEnd : attendanceTime.getCheckOut()));
+            }else {
+                attendanceTime.setWorkTime(DatesUtil.getTimeHour(restEndTime, 
+                    attendanceTime.getCheckOut().after(workTimeEnd) ? workTimeEnd : attendanceTime.getCheckOut()));
+            }
         } else {
             // 实际工作时长
             attendanceTime.setWorkTime(NumUtils.sub(DatesUtil.getTimeHour(
@@ -459,7 +470,7 @@ public class AttendanceTimeServiceImpl extends BaseServiceImpl<AttendanceTime, L
             
             if (attendanceTime.getCheckIn().before(restBeginTime) && attendanceTime.getCheckOut().after(restEndTime)
                 && attendanceTime.getAttendanceInit().getRestTimeWork() == 2) {
-                attendanceTime.setWorkTime(attendanceTime.getWorkTime()+1.0);
+                attendanceTime.setWorkTime(attendanceTime.getWorkTime()+restTime);
             }
         }
         return attendanceTime;
