@@ -74,6 +74,7 @@ layui.config({
 		cols.push({ title:'备注',field:'remarks', });
 		mytable.render({
 			elem:'#tableData',
+			colFilterRecord:'local',
 			url: myutil.config.ctx+'/temporaryPack/findPagesMantissaLiquidation?type='+numberList.type,
 			toolbar:[
 				'<span class="layui-btn layui-btn-sm layui-btn-warm" lay-event="edit">修改</span>',

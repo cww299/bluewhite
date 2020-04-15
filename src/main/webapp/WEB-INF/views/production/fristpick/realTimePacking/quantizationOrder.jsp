@@ -155,6 +155,7 @@ layui.config({
 			toolbar: $('#toolbarTpl').html(),
 			limit:15,
 			even:true,
+			colFilterRecord:'local',
 			limits:[15,50,200,500,1000],
 			curd:{
 				btn: isStickBagAccount?[4]:[],

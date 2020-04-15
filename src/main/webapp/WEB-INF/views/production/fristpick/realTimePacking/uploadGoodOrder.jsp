@@ -133,6 +133,7 @@ layui.config({
 			elem:'#tableData',
 			url:'${ctx}/temporaryPack/findPagesUnderGoods',
 			data:[],
+			colFilterRecord:'local',
 			curd:{
 				btn:[4],
 				otherBtn: function(obj){

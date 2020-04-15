@@ -93,6 +93,7 @@ layui.config({
 		layui.tablePlug.smartReload.enable(true);
 		mytable.render({
 			elem:'#tableData',
+			colFilterRecord:'local',
 			size:'lg',
 			url: myutil.config.ctx+'/ledger/sendOrderPage',
 			where:{ 

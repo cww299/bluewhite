@@ -29,12 +29,26 @@
 		</div>
 	</div>
     <div class="layui-form-item" pane>
-	    <label class="layui-form-label">工序耗时</label>
-	    <div class="layui-input-block">
-		    <input type="number" name="time" lay-verify="number" value="{{ d.time || ""}}" class="layui-input">
+        <label class="layui-form-label">是否手填</label>
+        <div class="layui-input-block">
+            <input type="checkbox" lay-skin="switch" lay-filter="isWrite" 
+				name="isWrite" lay-text="是|否" {{ d.isWrite?'checked':'' }} >
 		</div>
 	</div>
-    <div class="layui-form-item" pane>
+	<div class="layui-form-item isHide" pane>
+	    <label class="layui-form-label">工序耗时</label>
+	    <div class="layui-input-block">
+		    <input type="number" name="time" value="{{ d.time || ""}}" class="layui-input">
+		</div>
+	</div>
+	<div class="layui-form-item isHide" pane>
+        <label class="layui-form-label">公共属性</label>
+        <div class="layui-input-block">
+            <input type="checkbox" lay-skin="switch" lay-filter="publicType" name="publicType" 
+				lay-text="是|否" {{ d.publicType?'checked':'' }} >
+		</div>
+	</div>
+	<div class="layui-form-item isHide noPublic" pane {{ d.publicType?"style='display:none;'":"" }}>
 	    <label class="layui-form-label">包装方式</label>
 	    <div class="layui-input-block">
 			<select name="packagMethodId" id="addEditSelect">
@@ -42,10 +56,10 @@
 			</select>
 		</div>
 	</div>
-    <div class="layui-form-item" pane>
-        <label class="layui-form-label">公共属性</label>
-        <div class="layui-input-block">
-            <input type="checkbox" lay-skin="switch" name="publicType" lay-text="是|否" {{ d.publicType?'checked':'' }} >
+	<div class="layui-form-item isHide isPublic" pane {{ d.publicType?"":"style='display:none;'" }}>
+	    <label class="layui-form-label">耗时总数量</label>
+	    <div class="layui-input-block">
+		    <input type="number" name="sumCount" value="{{ d.sumCount || ""}}" class="layui-input">
 		</div>
 	</div>
 	<input type="hidden" name="id" value="{{ d.id || "" }}" >
@@ -97,8 +111,10 @@ function() {
 		       { type:'checkbox',},
 		       { title:'工序名称',   field:'name', 	},
 		       { title:'工序耗时',   field:'time', 	},
+		       { title:'耗时总数量',   field:'sumCount', 	},
 		       { title:'包装方式',   field:'packagMethod_name',    },
 		       { title:'公共属性',   field:'publicType', transData:true, width:110,},
+		       { title:'是否手填',   field:'isWrite', transData:true, width:110,},
 		       ]],
 	})
 	
@@ -113,7 +129,7 @@ function() {
 			title : title
 			,type : 1
 			,btn : ['确定','取消']
-			,area:['25%','400px']
+			,area:['25%','470px']
 			,content : laytpl(addEditTpl.innerHTML).render(data)
 			,yes : function(){
 				$('#submitBtn').click();
@@ -124,16 +140,45 @@ function() {
 					id: data.packagMethod?data.packagMethod.id : "",
 				}))
 				form.on('submit(submitBtn)',function(obj){
-					obj.field.publicType = obj.field.publicType?1:0;
+					var f = obj.field;
+					f.isWrite = f.isWrite?1:0;
+					f.publicType = f.publicType?1:0;
+					if(f.isWrite){
+						delete f.time;
+						delete f.sumCount;
+						delete f.packagMethodId;
+						f.publicType = 0;
+					}else{
+						if(f.publicType)
+							delete f.packagMethodId;
+						else
+							delete f.sumCount;
+					}
 					myutil.saveAjax({
 						url:'/processes/addProcesses',
-						data: obj.field,
+						data: f,
 						success:function(){
 							layer.close(layerIndex);
 							table.reload('tableData');
 						}
 					})
 				})
+				form.on('switch(isWrite)', function(data){
+					if(data.elem.checked)
+						$('.isHide').hide();
+					else
+						$('.isHide').show();
+				});
+				form.on('switch(publicType)', function(data){
+					if(data.elem.checked){
+						$('.isPublic').show();
+						$('.noPublic').hide();
+					}
+					else{
+						$('.isPublic').hide();
+						$('.noPublic').show();
+					}
+				});
 				form.render();	
 			}
 		});
