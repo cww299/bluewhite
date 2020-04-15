@@ -34,9 +34,10 @@ public class ProcessesAction {
     {
         clearCascadeJSON =
             ClearCascadeJSON.get()
-                .addRetainTerm(Processes.class, "id", "name", "time", "publicType", "packagMethod")
+                .addRetainTerm(Processes.class, "id", "name", "time", "publicType", "packagMethod","isWrite","sumCount")
                 .addRetainTerm(BaseData.class, "id", "name");
     }
+    
     
     /**
      * 新增工序

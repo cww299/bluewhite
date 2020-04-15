@@ -34,9 +34,7 @@ public class ProcessesServiceImpl extends BaseServiceImpl<Processes, Long> imple
             if (ps != null) {
                 throw new ServiceException("发货单已生成物流费用，无法修改");
             }
-
         }
-
         dao.save(processes);
     }
 
@@ -64,7 +62,7 @@ public class ProcessesServiceImpl extends BaseServiceImpl<Processes, Long> imple
             p.setTime(NumUtils.div(p.getTime(), count, 5));
         });
         newProcessesList.addAll(processesListPub);
-        // 是否公共查找
+        // 是否手填
         List<Processes> processesIsWrite = dao.findByIsWrite(1);
         newProcessesList.addAll(processesIsWrite);
         return newProcessesList;
