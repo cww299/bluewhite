@@ -304,32 +304,32 @@ public class TaskAction {
                     }
                 }
             }
-            if (!StringUtils.isEmpty(task.getTemporaryIds())) {
-                String[] idArr = task.getTemporaryIds().split(",");
-                if (idArr.length > 0) {
-                    for (int i = 0; i < idArr.length; i++) {
-                        Map<String, Object> userMap = new HashMap<>();
-                        Long id = Long.parseLong(idArr[i]);
-                        Temporarily  temporarily = temporarilyDao.findOne(id);
-                        userMap.put("id",temporarily.getTemporaryUser().getId());
-                        userMap.put("userName", temporarily.getTemporaryUser().getUserName());
-                        list.add(userMap);
-                    }
-                }
-            }
-            if (!StringUtils.isEmpty(task.getLoanIds())) {
-                String[] idArr = task.getLoanIds().split(",");
-                if (idArr.length > 0) {
-                    for (int i = 0; i < idArr.length; i++) {
-                        Map<String, Object> userMap = new HashMap<>();
-                        Long id = Long.parseLong(idArr[i]);
-                        Temporarily  temporarily = temporarilyDao.findOne(id);
-                        userMap.put("id", temporarily.getUser().getId());
-                        userMap.put("userName", temporarily.getUser().getUserName());
-                        list.add(userMap);
-                    }
-                }
-            }
+//            if (!StringUtils.isEmpty(task.getTemporaryIds())) {
+//                String[] idArr = task.getTemporaryIds().split(",");
+//                if (idArr.length > 0) {
+//                    for (int i = 0; i < idArr.length; i++) {
+//                        Map<String, Object> userMap = new HashMap<>();
+//                        Long id = Long.parseLong(idArr[i]);
+//                        Temporarily  temporarily = temporarilyDao.findOne(id);
+//                        userMap.put("id",temporarily.getTemporaryUser().getId());
+//                        userMap.put("userName", temporarily.getTemporaryUser().getUserName());
+//                        list.add(userMap);
+//                    }
+//                }
+//            }
+//            if (!StringUtils.isEmpty(task.getLoanIds())) {
+//                String[] idArr = task.getLoanIds().split(",");
+//                if (idArr.length > 0) {
+//                    for (int i = 0; i < idArr.length; i++) {
+//                        Map<String, Object> userMap = new HashMap<>();
+//                        Long id = Long.parseLong(idArr[i]);
+//                        Temporarily  temporarily = temporarilyDao.findOne(id);
+//                        userMap.put("id", temporarily.getUser().getId());
+//                        userMap.put("userName", temporarily.getUser().getUserName());
+//                        list.add(userMap);
+//                    }
+//                }
+//            }
             cr.setData(list);
             cr.setMessage("查询成功");
         } else {
@@ -358,7 +358,6 @@ public class TaskAction {
                         }
                     });
                 }
-
                 if (procedureName.indexOf("写编码") != -1) {
                     mapList.stream().forEach(m -> {
                         if (String.valueOf(m.get("name")).equals("精细填写工序")) {
@@ -366,7 +365,6 @@ public class TaskAction {
                         }
                     });
                 }
-
                 if (procedureName.indexOf("大包堆放原打包位") != -1 || procedureName.indexOf("压包") != -1
                     || procedureName.indexOf("点数") != -1 || procedureName.indexOf("绞口") != -1
                     || procedureName.indexOf("套袋") != -1 || procedureName.indexOf("封箱") != -1
@@ -378,7 +376,6 @@ public class TaskAction {
                         }
                     });
                 }
-
                 if (procedureName.indexOf("上车") != -1) {
                     mapList.stream().forEach(m -> {
                         if (String.valueOf(m.get("name")).equals("上下车力工工序")) {
@@ -386,7 +383,6 @@ public class TaskAction {
                         }
                     });
                 }
-                
         }
         cr.setData(mapList);
         cr.setMessage("查询成功");
@@ -398,8 +394,8 @@ public class TaskAction {
      */
     @RequestMapping(value = "/task/giveTaskPerformance", method = RequestMethod.POST)
     @ResponseBody
-    public CommonResponse giveTaskPerformance(HttpServletRequest request, String[] taskIds, String[] ids,
-        String[] performance, Double[] performanceNumber, Integer update) {
+    public CommonResponse giveTaskPerformance(String[] taskIds, String[] ids,String[] performance, 
+        Double[] performanceNumber, Integer update) {
         CommonResponse cr = new CommonResponse();
         taskService.giveTaskPerformance(taskIds, ids, performance, performanceNumber, update);
         cr.setMessage("添加成功");
