@@ -654,6 +654,9 @@ public class ProTypeUtils {
 	public static Double sumRegionalPrice(double sumTaskPrice, double bacthHairPrice,double bacthDepartmentPrice) {
 		NumUtils.setzro(bacthHairPrice);
 		NumUtils.setzro(bacthDepartmentPrice);
+		if(bacthHairPrice==0 || bacthDepartmentPrice==0) {
+		    return 0.0;
+		}
 		return NumUtils.sub(sumTaskPrice,NumUtils.mul(NumUtils.div(bacthHairPrice, bacthDepartmentPrice, 5),sumTaskPrice));
 	}
 

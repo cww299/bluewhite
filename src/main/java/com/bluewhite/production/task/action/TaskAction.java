@@ -60,7 +60,7 @@ public class TaskAction {
             .addRetainTerm(Task.class, "id", "remark", "userNames", "bacthNumber", "allotTime", "productName",
                 "userIds", "procedure", "procedureName", "number", "status", "expectTime", "expectTaskPrice",
                 "taskTime", "payB", "taskPrice", "taskActualTime", "type", "createdAt", "performance",
-                "performanceNumber", "performancePrice", "flag","quantitativeNumber")
+                "performanceNumber", "performancePrice", "flag","quantitativeNumber","processesId")
             .addRetainTerm(Procedure.class, "id", "procedureTypeId");
     }
     
@@ -271,14 +271,12 @@ public class TaskAction {
      */
     @RequestMapping(value = "/task/pickTaskPerformance", method = RequestMethod.GET)
     @ResponseBody
-    public CommonResponse pickTaskPerformance(Long procedureId) {
+    public CommonResponse pickTaskPerformance(String procedureName) {
         CommonResponse cr = new CommonResponse();
         List<Map<String, Object>> mapList = ProTypeUtils.pickTaskPerformance();
-        if (procedureId != null) {
-            Procedure procedure = procedureService.findOne(procedureId);
-            if (procedure != null) {
-                if (procedure.getName().indexOf("发货位堆放") != -1 || procedure.getName().indexOf("推包到发货位") != -1
-                    || procedure.getName().indexOf("推箱到发货位") != -1) {
+        if (!StringUtils.isEmpty(procedureName)) {
+                if (procedureName.indexOf("发货位堆放") != -1 || procedureName.indexOf("推包到发货位") != -1
+                    || procedureName.indexOf("推箱到发货位") != -1) {
                     mapList.stream().forEach(m -> {
                         if (String.valueOf(m.get("name")).equals("推货工序")) {
                             m.put("checked", 1);
@@ -286,7 +284,7 @@ public class TaskAction {
                     });
                 }
 
-                if (procedure.getName().indexOf("写编码") != -1) {
+                if (procedureName.indexOf("写编码") != -1) {
                     mapList.stream().forEach(m -> {
                         if (String.valueOf(m.get("name")).equals("精细填写工序")) {
                             m.put("checked", 1);
@@ -294,11 +292,11 @@ public class TaskAction {
                     });
                 }
 
-                if (procedure.getName().indexOf("大包堆放原打包位") != -1 || procedure.getName().indexOf("压包") != -1
-                    || procedure.getName().indexOf("点数") != -1 || procedure.getName().indexOf("绞口") != -1
-                    || procedure.getName().indexOf("套袋") != -1 || procedure.getName().indexOf("封箱") != -1
-                    || procedure.getName().indexOf("封空箱") != -1 || procedure.getName().indexOf("原打包位") != -1
-                    || procedure.getName().indexOf("推箱") != -1 || procedure.getName().indexOf("码包") != -1) {
+                if (procedureName.indexOf("大包堆放原打包位") != -1 || procedureName.indexOf("压包") != -1
+                    || procedureName.indexOf("点数") != -1 || procedureName.indexOf("绞口") != -1
+                    || procedureName.indexOf("套袋") != -1 || procedureName.indexOf("封箱") != -1
+                    || procedureName.indexOf("封空箱") != -1 || procedureName.indexOf("原打包位") != -1
+                    || procedureName.indexOf("推箱") != -1 || procedureName.indexOf("码包") != -1) {
                     mapList.stream().forEach(m -> {
                         if (String.valueOf(m.get("name")).equals("装箱装包工序")) {
                             m.put("checked", 1);
@@ -306,17 +304,14 @@ public class TaskAction {
                     });
                 }
 
-                if (procedure.getName().indexOf("上车") != -1) {
+                if (procedureName.indexOf("上车") != -1) {
                     mapList.stream().forEach(m -> {
                         if (String.valueOf(m.get("name")).equals("上下车力工工序")) {
                             m.put("checked", 1);
                         }
                     });
                 }
-
                 
-                
-            }
         }
         cr.setData(mapList);
         cr.setMessage("查询成功");
