@@ -273,12 +273,18 @@
 		      				if(o.flag==1){
 		      					a="(返工)"
 		      				}
-		      				html +='<tr><td class="center reste"><label> <input type="checkbox" class="ace checkboxId" value="'+o.id+'" data-procedurename="'+s+a+'" data-proname="'+o.productName+'" data-procedure="'+o.procedure.id+'" data-performance="'+o.performance+'"/><span class="lbl"></span></label></td>'
+		      				html +='<tr><td class="center reste"><label> <input type="checkbox" class="ace checkboxId" '
+		      				+'value="'+o.id+'" '
+		      				+'data-procedurename="'+s+a
+		      				+'" data-proname="'+o.productName
+		      				+'" data-procedure="'+(o.productName)
+		      				+'" data-performance="'+o.performance+'"/><span class="lbl"></span></label></td>'
+		      				
 		      				+'<td class="text-center hidden-sm">'+o.bacthNumber+'</td>'
-		      				+'<td class="text-center ">'+o.productName+'</td>'
+		      				+'<td class="text-center ">'+(o.quantitativeNumber || o.productName)+'</td>'
 		      				+'<td class="text-center edit allotTime">'+o.allotTime+'</td>'
 		      				+'<td class="text-center">'+s+a+'</td>'
-		      				+'<td class="text-center hidden-sm">'+parseFloat((o.expectTime).toFixed(4))+'</td>'
+		      				+'<td class="text-center hidden-sm">'+parseFloat((o.taskTime).toFixed(4))+'</td>'
 		      				+'<td class="text-center hidden-sm">'+parseFloat((o.taskPrice).toFixed(4))+'</td>'
 		      				+'<td class="text-center hidden-sm">'+parseFloat((o.payB).toFixed(4))+'</td>'
 		      				+'<td class="text-center edit number">'+o.number+'</td>'
@@ -314,8 +320,7 @@
 					      }
 					    });  
 					   	layer.close(index);
-					   
-					   	 $("#tablecontent").html(html); 
+					   	$("#tablecontent").html(html); 
 					   	self.loadEvents();
 					   	self.checkedd();
 				      },error:function(){
@@ -744,7 +749,7 @@
 						var array_element2 =arryth[i];
 						var array_element3 =arryfr[i];
 						data={
-								procedureId:array_element3
+								name: array_element
 								}
 							var id="";
 							var htmls="<option>请选择</option>"

@@ -118,7 +118,8 @@ layui.config({
 			where:{
 				audit: 1
 			},
-			toolbar: '<span class="layui-btn layui-btn-sm" lay-event="disbatch">分配</span>',
+			toolbar: '<span class="layui-btn layui-btn-sm" lay-event="disbatch">分配</span>'+
+					 '<span class="layui-btn layui-btn-sm layui-btn-normal" lay-event="lookover">查看分配工序</span>',
 			limit:15,
 			even:true,
 			limits:[15,50,200,500,1000],
@@ -130,6 +131,11 @@ layui.config({
 						if(check.length!=1)
 							return myutil.emsg("请选择一条数据分配");
 						disbatch(check[0]);
+					}else if(obj.event=="lookover"){
+						var check = table.checkStatus('tableData').data;
+						if(check.length!=1)
+							return myutil.emsg("请选择一条数据分配");
+						lookover(check[0]);
 					}
 				},
 			},
@@ -208,6 +214,69 @@ layui.config({
 				}
 			},
 		})
+		function lookover(data){
+			var area = isSmall?['100%','80%']:['80%','80%'];
+			layer.open({
+				type:1,
+				title: data.quantitativeNumber,
+				offset:'50px',
+				shadeClose:true,
+				area:area,
+				content: `<div style="padding:15px;">
+						<table id="lookTable" lay-filter="lookTable"></table>
+					</div>
+				`,
+				success: function(){
+					mytable.render({
+						elem:'#lookTable',
+						url: myutil.config.ctx+'/task/allTask',
+						autoUpdate:{
+							deleUrl:'/task/delete',
+						},
+						curd:{
+							btn:[4],
+						},
+						cols:[[
+						       { type:'checkbox', },
+						       { title:'分配时间', field:'allotTime',width:'15%'},
+						       { title:'工序', field:'procedureName', },
+						       { title:'预计时间', field:'expectTime', templet: getFixed('expectTime',4), },
+						       { title:'任务价值', field:'expectTaskPrice', templet: getFixed('expectTaskPrice',4), },
+						       { title:'b工资净值', field:'payB', templet: getFixed('payB',4), },
+						       { title:'数量', field:'number', },
+						       { title:'工序加价', field:'performance', },
+						       { title:'加绩工资', field:'performancePrice', templet: getFixed('performancePrice',4), },
+						       { title:'完成人', event:'finishPeople', templet:function(d){
+						    	   return '<span class="layui-btn layui-btn-sm">查看完成人</span>';
+						       	 	} },
+						       ]],
+						done:function(){
+							table.on('tool(lookTable)', function(obj){
+								if(obj.event=='finishPeople'){
+									layer.open({
+										type:1,
+										shadeClose:true,
+										offset:'80px',
+										area:['20%','70%'],
+										content:'<div><table id="peopleTable"></table></div>',
+										success:function(){
+											 mytable.renderNoPage({
+												 elem:'#peopleTable',
+												 url:opt.ctx+'/task/taskUser?id='+obj.data.id,
+												 cols:[[
+												        { field:'id', title:'id', },
+												        { field:'userName', title:'完成人', },
+												        ]]
+											 })
+										}
+									})
+								}
+							})
+						}
+					})
+				}
+			})//later open end
+		}
 		function disbatch(trData){
 			layer.open({		//分配弹窗
 				type:1,
