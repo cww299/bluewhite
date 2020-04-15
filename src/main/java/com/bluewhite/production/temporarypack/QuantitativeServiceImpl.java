@@ -272,6 +272,8 @@ public class QuantitativeServiceImpl extends BaseServiceImpl<Quantitative, Long>
                     if (audit == 0 && quantitative.getAudit() == 0) {
                         throw new ServiceException("未审核请勿取消审核");
                     }
+                    int number = quantitative.getQuantitativeChilds().stream().mapToInt(QuantitativeChild->QuantitativeChild.getSingleNumber()).sum();
+                    quantitative.setNumber(number);
                     quantitative.setAudit(audit);
                     dao.save(quantitative);
                 }
