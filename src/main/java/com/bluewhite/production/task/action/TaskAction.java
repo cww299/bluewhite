@@ -23,10 +23,14 @@ import com.bluewhite.common.entity.CurrentUser;
 import com.bluewhite.common.entity.ErrorCode;
 import com.bluewhite.common.entity.PageParameter;
 import com.bluewhite.common.utils.UnUtil;
+import com.bluewhite.finance.attendance.dao.AttendancePayDao;
+import com.bluewhite.finance.attendance.entity.AttendancePay;
 import com.bluewhite.production.bacth.entity.Bacth;
 import com.bluewhite.production.bacth.service.BacthService;
 import com.bluewhite.production.finance.dao.PayBDao;
 import com.bluewhite.production.finance.entity.PayB;
+import com.bluewhite.production.group.dao.TemporarilyDao;
+import com.bluewhite.production.group.entity.Temporarily;
 import com.bluewhite.production.procedure.entity.Procedure;
 import com.bluewhite.production.procedure.service.ProcedureService;
 import com.bluewhite.production.productionutils.constant.ProTypeUtils;
@@ -43,8 +47,6 @@ public class TaskAction {
     @Autowired
     private TaskService taskService;
     @Autowired
-    private ProcedureService procedureService;
-    @Autowired
     private UserService userService;
     @Autowired
     private PayBDao payBDao;
@@ -52,6 +54,13 @@ public class TaskAction {
     private TemporaryUserService temporaryUserService;
     @Autowired
     private BacthService bacthService;
+    @Autowired
+    private TemporarilyDao temporarilyDao;
+    @Autowired
+    private AttendancePayDao attendancePayDao;
+    
+    
+    
 
     private ClearCascadeJSON clearCascadeJSON;
 
@@ -265,6 +274,72 @@ public class TaskAction {
     }
 
     /******** 一楼包装 *********/
+    
+    
+
+    /**
+     * 查询该任务的所有领取人
+     * 通过查询考勤记录查询人员
+     * 
+     * @param request
+     * @return
+     */
+    @RequestMapping(value = "/task/taskUserPack", method = RequestMethod.GET)
+    @ResponseBody
+    public CommonResponse taskUserPack(Long taskId) {
+        CommonResponse cr = new CommonResponse();
+        List<Map<String, Object>> list = new ArrayList<>();
+        if (taskId != null) {
+            Task task = taskService.findOne(taskId);
+            if (!StringUtils.isEmpty(task.getIds())) {
+                String[] idArr = task.getIds().split(",");
+                if (idArr.length > 0) {
+                    for (int i = 0; i < idArr.length; i++) {
+                        Map<String, Object> userMap = new HashMap<>();
+                        Long id = Long.parseLong(idArr[i]);
+                        AttendancePay attendancePay =  attendancePayDao.findOne(id);
+                        userMap.put("id", attendancePay.getUser().getId());
+                        userMap.put("userName", attendancePay.getUser().getUserName());
+                        list.add(userMap);
+                    }
+                }
+            }
+            if (!StringUtils.isEmpty(task.getTemporaryIds())) {
+                String[] idArr = task.getTemporaryIds().split(",");
+                if (idArr.length > 0) {
+                    for (int i = 0; i < idArr.length; i++) {
+                        Map<String, Object> userMap = new HashMap<>();
+                        Long id = Long.parseLong(idArr[i]);
+                        Temporarily  temporarily = temporarilyDao.findOne(id);
+                        userMap.put("id",temporarily.getTemporaryUser().getId());
+                        userMap.put("userName", temporarily.getTemporaryUser().getUserName());
+                        list.add(userMap);
+                    }
+                }
+            }
+            if (!StringUtils.isEmpty(task.getLoanIds())) {
+                String[] idArr = task.getLoanIds().split(",");
+                if (idArr.length > 0) {
+                    for (int i = 0; i < idArr.length; i++) {
+                        Map<String, Object> userMap = new HashMap<>();
+                        Long id = Long.parseLong(idArr[i]);
+                        Temporarily  temporarily = temporarilyDao.findOne(id);
+                        userMap.put("id", temporarily.getUser().getId());
+                        userMap.put("userName", temporarily.getUser().getUserName());
+                        list.add(userMap);
+                    }
+                }
+            }
+            cr.setData(list);
+            cr.setMessage("查询成功");
+        } else {
+            cr.setCode(ErrorCode.ILLEGAL_ARGUMENT.getCode());
+            cr.setMessage("不能为空");
+        }
+        return cr;
+    }
+    
+    
 
     /**
      * 获取任务加绩类型列表
