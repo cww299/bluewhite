@@ -193,6 +193,12 @@ public class Quantitative extends BaseEntity<Long> {
      */
     @Column(name = "status")
     private Integer status;
+    
+    /**
+     * 完成时间
+     */
+    @Column(name = "status_time")
+    private Date statusTime;
 	
     /**
      * 任务
@@ -269,7 +275,15 @@ public class Quantitative extends BaseEntity<Long> {
 	
 	
 	
-	public Long getWarehouseTypeId() {
+	public Date getStatusTime() {
+        return statusTime;
+    }
+
+    public void setStatusTime(Date statusTime) {
+        this.statusTime = statusTime;
+    }
+
+    public Long getWarehouseTypeId() {
         return warehouseTypeId;
     }
 
