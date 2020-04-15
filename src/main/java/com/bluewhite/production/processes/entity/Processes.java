@@ -6,6 +6,7 @@ import javax.persistence.FetchType;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 
 import com.bluewhite.base.BaseEntity;
 import com.bluewhite.basedata.entity.BaseData;
@@ -67,8 +68,19 @@ public class Processes extends BaseEntity<Long> {
     @JoinColumn(name = "packag_method_id", referencedColumnName = "id", insertable = false, updatable = false)
     private BaseData packagMethod;
     
+    @Transient
+    private Integer surplusCount;
     
     
+    
+
+    public Integer getSurplusCount() {
+        return surplusCount;
+    }
+
+    public void setSurplusCount(Integer surplusCount) {
+        this.surplusCount = surplusCount;
+    }
 
     public Integer getSumCount() {
         return sumCount;
