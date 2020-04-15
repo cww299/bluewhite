@@ -27,7 +27,7 @@ public class Processes extends BaseEntity<Long> {
     private String name;
     
     /**
-     * 是否手填工序时间 
+     * 是否手填工序耗时
      */
     @Column(name = "is_write")
     private Integer isWrite;
@@ -45,7 +45,7 @@ public class Processes extends BaseEntity<Long> {
     private Integer publicType;
     
     /**
-     * 工序耗时总数量
+     * 工序耗时数量
      * 
      * 当为公共工序时，会出现多种数量的耗时
      * 常见的是 3，6,10,12
@@ -54,6 +54,7 @@ public class Processes extends BaseEntity<Long> {
     private Integer sumCount;
     
     /**
+     * 当不为公共工序时，填写工序耗时，根据传入总数量进行计算
      * 包装方式id
      */
     @Column(name = "packag_method_id")
