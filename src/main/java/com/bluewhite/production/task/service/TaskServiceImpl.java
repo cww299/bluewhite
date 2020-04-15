@@ -647,6 +647,7 @@ public class TaskServiceImpl extends BaseServiceImpl<Task, Long> implements Task
     }
 
     @Override
+    @Transactional
     public void addTaskPack(Task task, boolean isFromMobile, String processesJson) {
         Date orderTimeBegin = DatesUtil.getfristDayOftime(task.getAllotTime());
         Date orderTimeEnd = DatesUtil.getLastDayOftime(task.getAllotTime());
@@ -686,6 +687,9 @@ public class TaskServiceImpl extends BaseServiceImpl<Task, Long> implements Task
                 String name = jsonObject.getString("name");
                 Task newTask = new Task();
                 newTask.setWarehouseTypeId(quantitative.getWarehouseTypeId());
+                newTask.setIds(task.getIds());
+                newTask.setLoanIds(task.getLoanIds());
+                newTask.setTemporaryUserIds(task.getTemporaryUserIds());
                 // 默认是包装
                 newTask.setType(2);
                 newTask.setProcessesId(id);
