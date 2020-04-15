@@ -425,7 +425,7 @@ layui.config({
 										if(t[k].status==1)
 											var type = 'l';
 											data.children.push({
-												id: type+'~'+t[k].id,
+												id: type+'~'+t[k].userId,
 												name: t[k].name+' ---- <span class="layui-badge">临</span>',
 											});
 								}
@@ -438,7 +438,7 @@ layui.config({
 											var text = t[k].secondment?"正":"借";
 											var type = t[k].secondment?"z":"j";
 											data.children.push({
-												id: type+'~'+t[k].id,
+												id: type+'~'+t[k].userId,
 												name: t[k].name+' ---- <span class="layui-badge layui-bg-'+color+'">'+text+'</span>',
 											})
 										}
