@@ -41,6 +41,12 @@ public class Task extends BaseEntity<Long> {
 	 */
 	@Column(name = "bacth_number")
 	private String bacthNumber;
+	
+	/**
+     * 量化编号 (冗余字段，用于前台的展示)
+     */
+    @Column(name = "quantitative_number")
+    private String quantitativeNumber;
 
 	/**
 	 * 批次 任务多对一批次
@@ -326,7 +332,15 @@ public class Task extends BaseEntity<Long> {
 	
 	
 
-	public Long getWarehouseTypeId() {
+	public String getQuantitativeNumber() {
+        return quantitativeNumber;
+    }
+
+    public void setQuantitativeNumber(String quantitativeNumber) {
+        this.quantitativeNumber = quantitativeNumber;
+    }
+
+    public Long getWarehouseTypeId() {
         return warehouseTypeId;
     }
 

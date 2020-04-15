@@ -684,14 +684,15 @@ public class TaskServiceImpl extends BaseServiceImpl<Task, Long> implements Task
                 double time = jsonObject.getDoubleValue("time");
                 String name = jsonObject.getString("name");
                 Task newTask = new Task();
-                newTask.setUserId(cu.getId());
+                newTask.setWarehouseTypeId(newTask.getWarehouseTypeId());
                 // 默认是包装
                 newTask.setType(2);
                 newTask.setProcedureId(id);
-                newTask.setBacthId(task.getBacthId());
+                newTask.setBacthId(task.getQuantitativeId());
                 newTask.setNumber(task.getNumber());
                 newTask.setSingleTime(time);
                 newTask.setProcedureName(name);
+                newTask.setQuantitativeNumber(task.getQuantitativeNumber());
                 // 实际完成时长
                 newTask.setTaskTime(NumUtils.round(ProTypeUtils.sumTaskTime(time, 2, newTask.getNumber()), 5));
                 // 实际任务价值（通过实际完成时间得出）

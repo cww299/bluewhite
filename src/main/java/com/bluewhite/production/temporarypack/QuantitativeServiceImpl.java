@@ -219,6 +219,7 @@ public class QuantitativeServiceImpl extends BaseServiceImpl<Quantitative, Long>
                     id == null ? quantitativeChild.getSingleNumber() : quantitativeChild.getActualSingleNumber());
                 quantitative.getQuantitativeChilds().add(quantitativeChild);
                 underGoodsDao.save(underGoods);
+                //添加地点
                 quantitative.setWarehouseTypeId(underGoods.getWarehouseTypeId());
             }
         }

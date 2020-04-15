@@ -54,6 +54,10 @@ public class UnderGoodsServiceImpl extends BaseServiceImpl<UnderGoods, Long> imp
             if (param.getProductId() != null) {
                 predicate.add(cb.equal(root.get("productId").as(Long.class), param.getId()));
             }
+            // 按库区
+            if (param.getWarehouseTypeId() !=null) {
+                predicate.add(cb.equal(root.get("warehouseTypeId").as(Long.class), param.getWarehouseTypeId()));
+            }
             // 是否天猫
             if (param.getInternal() != null) {
                 predicate.add(cb.equal(root.get("internal").as(Integer.class), param.getInternal()));
@@ -99,8 +103,10 @@ public class UnderGoodsServiceImpl extends BaseServiceImpl<UnderGoods, Long> imp
             int numberStickSum = stickListList.stream().mapToInt(QuantitativeChild::getSingleNumber).sum();
             r.setSurplusStickNumber(r.getNumber() - numberStickSum);
             // 发货数量
-            List<Long> quantitativeListId = quantitativeDao.findSendNumber(r.getId());
-            List<QuantitativeChild> quantitativeList = quantitativeChildDao.findByIdIn(quantitativeListId);
+            List<Object> quantitativeListId = quantitativeDao.findSendNumber(r.getId());
+            List<Long> quantitativeListIdLong =  quantitativeListId.stream().map(x -> Long.valueOf(x.toString())).collect(Collectors.toList());
+            List<QuantitativeChild> quantitativeList = quantitativeChildDao.findByIdIn(quantitativeListIdLong);
+            
             int numberSendSum = quantitativeList.stream().mapToInt(QuantitativeChild::getActualSingleNumber).sum();
             r.setSurplusSendNumber(r.getNumber() - numberSendSum);
             // 尾数清算数量
