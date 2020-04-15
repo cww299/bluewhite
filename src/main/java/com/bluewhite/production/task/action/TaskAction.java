@@ -60,9 +60,11 @@ public class TaskAction {
             .addRetainTerm(Task.class, "id", "remark", "userNames", "bacthNumber", "allotTime", "productName",
                 "userIds", "procedure", "procedureName", "number", "status", "expectTime", "expectTaskPrice",
                 "taskTime", "payB", "taskPrice", "taskActualTime", "type", "createdAt", "performance",
-                "performanceNumber", "performancePrice", "flag")
+                "performanceNumber", "performancePrice", "flag","quantitativeNumber")
             .addRetainTerm(Procedure.class, "id", "procedureTypeId");
     }
+    
+    
 
     /**
      * 质检获取任务加绩类型列表
@@ -131,9 +133,11 @@ public class TaskAction {
     public CommonResponse addTaskPack(HttpServletRequest request,Task task,String processes) {
         CommonResponse cr = new CommonResponse();
         // 新增
-        if (!StringUtils.isEmpty(task.getIds()) || !StringUtils.isEmpty(task.getTemporaryIds())) {
+        if (!StringUtils.isEmpty(task.getIds()) 
+            || !StringUtils.isEmpty(task.getTemporaryIds()) 
+            ||  !StringUtils.isEmpty(task.getLoanIds())) {
             taskService.checkTask(task,processes);
-            taskService.addTaskPack(task, UnUtil.isFromMobile(request),processes);
+            taskService.addTaskPack(task,UnUtil.isFromMobile(request),processes);
             cr.setMessage("任务分配成功");
         } else {
             cr.setCode(ErrorCode.ILLEGAL_ARGUMENT.getCode());

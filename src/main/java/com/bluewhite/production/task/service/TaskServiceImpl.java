@@ -673,6 +673,8 @@ public class TaskServiceImpl extends BaseServiceImpl<Task, Long> implements Task
             temporarilyDao.findByIdInAndTemporarilyDateAndType(temporaryIdList, orderTimeBegin, task.getType());
         // 总人数
         int userCount = idStrings.length + loanIdsStrings.length + temporaryIds.length;
+        //量化单
+        Quantitative quantitative = quantitativeService.findOne(task.getQuantitativeId());
         List<PayB> payBList = new ArrayList<>();
         // 将工序分成多个任务
         if (!StringUtils.isEmpty(processes)) {
@@ -684,7 +686,7 @@ public class TaskServiceImpl extends BaseServiceImpl<Task, Long> implements Task
                 double time = jsonObject.getDoubleValue("time");
                 String name = jsonObject.getString("name");
                 Task newTask = new Task();
-                newTask.setWarehouseTypeId(newTask.getWarehouseTypeId());
+                newTask.setWarehouseTypeId(quantitative.getWarehouseTypeId());
                 // 默认是包装
                 newTask.setType(2);
                 newTask.setProcedureId(id);
@@ -692,7 +694,7 @@ public class TaskServiceImpl extends BaseServiceImpl<Task, Long> implements Task
                 newTask.setNumber(task.getNumber());
                 newTask.setSingleTime(time);
                 newTask.setProcedureName(name);
-                newTask.setQuantitativeNumber(task.getQuantitativeNumber());
+                newTask.setQuantitativeNumber(quantitative.getQuantitativeNumber());
                 // 实际完成时长
                 newTask.setTaskTime(NumUtils.round(ProTypeUtils.sumTaskTime(time, 2, newTask.getNumber()), 5));
                 // 实际任务价值（通过实际完成时间得出）
@@ -776,7 +778,6 @@ public class TaskServiceImpl extends BaseServiceImpl<Task, Long> implements Task
             }
         }
         payBService.batchSave(payBList);
-        Quantitative quantitative = quantitativeService.findOne(task.getQuantitativeId());
         // 总任务时长
         Double sumTaskTime = quantitative.getTasks().stream().mapToDouble(Task::getTaskTime).sum();
         quantitative.setSumTime(NumUtils.round(sumTaskTime, 5));
