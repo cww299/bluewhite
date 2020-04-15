@@ -689,7 +689,7 @@ public class TaskServiceImpl extends BaseServiceImpl<Task, Long> implements Task
                 // 默认是包装
                 newTask.setType(2);
                 newTask.setProcedureId(id);
-                newTask.setBacthId(task.getQuantitativeId());
+                newTask.setQuantitativeId(task.getQuantitativeId());
                 newTask.setNumber(task.getNumber());
                 newTask.setSingleTime(time);
                 newTask.setProcedureName(name);
