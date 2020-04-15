@@ -1,25 +1,18 @@
 package com.bluewhite.finance.attendance.action;
 
-import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.propertyeditors.CustomDateEditor;
 import org.springframework.stereotype.Controller;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
-import org.springframework.web.bind.WebDataBinder;
-import org.springframework.web.bind.annotation.InitBinder;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.multipart.support.ByteArrayMultipartFileEditor;
 
-import com.bluewhite.common.DateTimePattern;
-import com.bluewhite.common.Log;
 import com.bluewhite.common.entity.CommonResponse;
 import com.bluewhite.common.entity.ErrorCode;
 import com.bluewhite.common.utils.DatesUtil;
@@ -29,7 +22,6 @@ import com.bluewhite.production.farragotask.entity.FarragoTask;
 import com.bluewhite.production.farragotask.service.FarragoTaskService;
 import com.bluewhite.production.task.entity.Task;
 import com.bluewhite.production.task.service.TaskService;
-import com.bluewhite.system.user.service.UserService;
 
 /**
  * 财务部 考勤
@@ -40,12 +32,9 @@ import com.bluewhite.system.user.service.UserService;
 @Controller
 public class AttendancePayAction {
 
-	private static final Log log = Log.getLog(AttendancePayAction.class);
 
 	@Autowired
 	private AttendancePayService attendancePayService;
-	@Autowired
-	private UserService userService;
 	@Autowired
 	private TaskService taskService;
 	@Autowired
