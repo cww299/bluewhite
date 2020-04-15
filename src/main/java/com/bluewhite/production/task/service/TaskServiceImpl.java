@@ -652,15 +652,15 @@ public class TaskServiceImpl extends BaseServiceImpl<Task, Long> implements Task
         Date orderTimeEnd = DatesUtil.getLastDayOftime(task.getAllotTime());
         // 正式员工出勤记录ids
         String[] idStrings = task.getIds().split(",");
-        List<Long> idsList = Arrays.asList(idStrings).stream().filter(a->a!=null).map(a -> Long.parseLong(a)).collect(Collectors.toList());
+        List<Long> idsList = Arrays.asList(idStrings).stream().filter(a->!StringUtils.isEmpty(a)).map(a -> Long.parseLong(a)).collect(Collectors.toList());
         // 借调员工出勤记录ids
         String[] loanIdsStrings = task.getLoanIds().split(",");
         List<Long> loanIdsList =
-            Arrays.asList(loanIdsStrings).stream().filter(a->a!=null).map(a -> Long.parseLong(a)).collect(Collectors.toList());
+            Arrays.asList(loanIdsStrings).stream().filter(a->!StringUtils.isEmpty(a)).map(a -> Long.parseLong(a)).collect(Collectors.toList());
         // 临时员工出勤记录ids
         String[] temporaryIds = task.getTemporaryIds().split(",");
         List<Long> temporaryIdList =
-            Arrays.asList(temporaryIds).stream().filter(a->a!=null).map(a -> Long.parseLong(a)).collect(Collectors.toList());
+            Arrays.asList(temporaryIds).stream().filter(a->!StringUtils.isEmpty(a)).map(a -> Long.parseLong(a)).collect(Collectors.toList());
         // 正式员工出勤记录
         List<AttendancePay> attendancePayList = attendancePayDao.findByIdInAndTypeAndAllotTimeBetween(idsList,
             task.getType(), orderTimeBegin, orderTimeEnd);
