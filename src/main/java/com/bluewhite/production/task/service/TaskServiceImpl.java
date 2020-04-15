@@ -647,7 +647,7 @@ public class TaskServiceImpl extends BaseServiceImpl<Task, Long> implements Task
     }
 
     @Override
-    public void addTaskPack(Task task, boolean isFromMobile, String processes) {
+    public void addTaskPack(Task task, boolean isFromMobile, String processesJson) {
         CurrentUser cu = SessionManager.getUserSession();
         Date orderTimeBegin = DatesUtil.getfristDayOftime(task.getAllotTime());
         Date orderTimeEnd = DatesUtil.getLastDayOftime(task.getAllotTime());
@@ -677,8 +677,8 @@ public class TaskServiceImpl extends BaseServiceImpl<Task, Long> implements Task
         Quantitative quantitative = quantitativeService.findOne(task.getQuantitativeId());
         List<PayB> payBList = new ArrayList<>();
         // 将工序分成多个任务
-        if (!StringUtils.isEmpty(processes)) {
-            JSONArray jsonArray = JSON.parseArray(processes);
+        if (!StringUtils.isEmpty(processesJson)) {
+            JSONArray jsonArray = JSON.parseArray(processesJson);
             for (int i = 0; i < jsonArray.size(); i++) {
                 JSONObject jsonObject = jsonArray.getJSONObject(i);
                 // 工序id

@@ -90,9 +90,9 @@ public class ProcessesAction {
      */
     @RequestMapping(value = "/processes/getProcesses", method = RequestMethod.GET)
     @ResponseBody
-    public CommonResponse deleteProcesses(Long id,int count,int taskNumber) {
+    public CommonResponse deleteProcesses(Long id,int count,int taskNumber,Long quantitativeId) {
         CommonResponse cr = new CommonResponse();
-        cr.setData(clearCascadeJSON.format(processesService.findByPackagMethodId(id,count,taskNumber)).toJSON());
+        cr.setData(clearCascadeJSON.format(processesService.findByPackagMethodId(id,count,taskNumber,quantitativeId)).toJSON());
         cr.setMessage("查询成功");
         return cr;
     }

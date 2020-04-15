@@ -1,6 +1,7 @@
 package com.bluewhite.production.processes.service;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -13,8 +14,14 @@ import com.bluewhite.common.ServiceException;
 import com.bluewhite.common.entity.PageParameter;
 import com.bluewhite.common.entity.PageResult;
 import com.bluewhite.common.utils.NumUtils;
+import com.bluewhite.common.utils.ReflectUtil;
 import com.bluewhite.production.processes.dao.ProcessesDao;
 import com.bluewhite.production.processes.entity.Processes;
+import com.bluewhite.production.task.entity.Task;
+import com.bluewhite.production.temporarypack.Quantitative;
+import com.bluewhite.production.temporarypack.QuantitativeService;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 /**
  * @author ZhangLiang
@@ -25,6 +32,8 @@ public class ProcessesServiceImpl extends BaseServiceImpl<Processes, Long> imple
 
     @Autowired
     private ProcessesDao dao;
+    @Autowired
+    private QuantitativeService quantitativeService;
 
     @Override
     public void saveProcesses(Processes processes) {
@@ -44,7 +53,7 @@ public class ProcessesServiceImpl extends BaseServiceImpl<Processes, Long> imple
     }
 
     @Override
-    public List<Processes> findByPackagMethodId(Long id, int count, int taskNumber) {
+    public List<Processes> findByPackagMethodId(Long id, int count, int taskNumber,Long quantitativeId) {
         List<Processes> newProcessesList = new ArrayList<Processes>();
         // 通过工序查找
         List<Processes> processesList = dao.findByPackagMethodId(id);
@@ -65,6 +74,20 @@ public class ProcessesServiceImpl extends BaseServiceImpl<Processes, Long> imple
         // 是否手填
         List<Processes> processesIsWrite = dao.findByIsWrite(1);
         newProcessesList.addAll(processesIsWrite);
+        Quantitative quantitative = quantitativeService.findOne(quantitativeId);
+        Map<String,Object> properties = new HashMap<String,Object>();
+        ObjectMapper mapper = new ObjectMapper();
+        newProcessesList.forEach(p->{
+            // 获取该工序的已分配的任务数量
+            int surplusCount = quantitative.getTasks().stream().filter(Task -> Task.getProcessesId().equals(id))
+                .mapToInt(Task::getNumber).sum();
+            properties.put("surplusCount",surplusCount);
+            try {
+                mapper.writeValueAsString(ReflectUtil.getTarget(p,properties));
+            } catch (JsonProcessingException e) {
+                 e.printStackTrace();
+            }
+        });
         return newProcessesList;
     }
 
