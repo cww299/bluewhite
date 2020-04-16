@@ -46,11 +46,11 @@ public class UnderGoodsServiceImpl extends BaseServiceImpl<UnderGoods, Long> imp
     public PageResult<UnderGoods> findPages(UnderGoods param, PageParameter page) {
         CurrentUser cu = SessionManager.getUserSession();
         //蓝白仓库
-        if(cu.getRole().contains("stickBagAccount")) {
+        if(cu.getRole().contains("stickBagAccount") || cu.getRole().contains("stickBagStick") ) {
             param.setWarehouseTypeId((long)274);
         }
         //11号仓库
-        if(cu.getRole().contains("packScene")) {
+        if(cu.getRole().contains("packScene") || cu.getRole().contains("elevenSend")) {
             param.setWarehouseTypeId((long)275);
         }
         Page<UnderGoods> pages = dao.findAll((root, query, cb) -> {
@@ -129,6 +129,15 @@ public class UnderGoodsServiceImpl extends BaseServiceImpl<UnderGoods, Long> imp
 
     @Override
     public PageResult<UnderGoods> findList(UnderGoods param) {
+        CurrentUser cu = SessionManager.getUserSession();
+        //蓝白仓库
+        if(cu.getRole().contains("stickBagAccount") || cu.getRole().contains("stickBagStick") ) {
+            param.setWarehouseTypeId((long)274);
+        }
+        //11号仓库
+        if(cu.getRole().contains("packScene") || cu.getRole().contains("elevenSend")) {
+            param.setWarehouseTypeId((long)275);
+        }
         PageParameter page = new PageParameter(0, 50);
         Page<UnderGoods> pages = dao.findAll((root, query, cb) -> {
             List<Predicate> predicate = new ArrayList<>();
@@ -140,6 +149,10 @@ public class UnderGoodsServiceImpl extends BaseServiceImpl<UnderGoods, Long> imp
             if (!StringUtils.isEmpty(param.getProductName())) {
                 predicate.add(cb.like(root.get("product").get("name").as(String.class),
                     "%" + StringUtil.specialStrKeyword(param.getProductName()) + "%"));
+            }
+            // 按库区
+            if (param.getWarehouseTypeId() !=null) {
+                predicate.add(cb.equal(root.get("warehouseTypeId").as(Long.class), param.getWarehouseTypeId()));
             }
             // 默认过滤未完成的数据
             predicate.add(cb.equal(root.get("status").as(Integer.class), 0));
@@ -234,6 +247,15 @@ public class UnderGoodsServiceImpl extends BaseServiceImpl<UnderGoods, Long> imp
 
     @Override
     public void updateUnderGoods(UnderGoods underGoods) {
+        CurrentUser cu = SessionManager.getUserSession();
+        //蓝白仓库
+        if(cu.getRole().contains("stickBagAccount")) {
+            underGoods.setWarehouseTypeId((long)274);
+        }
+        //11号仓库
+        if(cu.getRole().contains("packScene")) {
+            underGoods.setWarehouseTypeId((long)275);
+        }
         if (underGoods.getId() != null) {
             // 贴包数量
             List<QuantitativeChild> stickListList = quantitativeChildDao.findByUnderGoodsId(underGoods.getId());

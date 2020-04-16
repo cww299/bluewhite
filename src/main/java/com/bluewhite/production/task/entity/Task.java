@@ -17,7 +17,6 @@ import com.bluewhite.production.bacth.entity.Bacth;
 import com.bluewhite.production.procedure.entity.Procedure;
 import com.bluewhite.production.processes.entity.Processes;
 import com.bluewhite.production.temporarypack.Quantitative;
-import com.bluewhite.system.user.entity.User;
 
 /**
  * 产品批次任务
@@ -234,19 +233,6 @@ public class Task extends BaseEntity<Long> {
 	private String remark;
 
 	/**
-	 * 任务分配人id
-	 */
-	@Column(name = "user_id")
-	private Long userId;
-
-	/**
-	 * 任务分配人
-	 */
-	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "user_id", referencedColumnName = "id", insertable = false, updatable = false)
-	private User user;
-	
-	/**
      * 仓库种类id
      */
     @Column(name = "warehouse_type_id")
@@ -422,22 +408,6 @@ public class Task extends BaseEntity<Long> {
 
 	public void setTemporaryIds(String temporaryIds) {
 		this.temporaryIds = temporaryIds;
-	}
-
-	public Long getUserId() {
-		return userId;
-	}
-
-	public void setUserId(Long userId) {
-		this.userId = userId;
-	}
-
-	public User getUser() {
-		return user;
-	}
-
-	public void setUser(User user) {
-		this.user = user;
 	}
 
 	public String[] getTemporaryUsersIds() {

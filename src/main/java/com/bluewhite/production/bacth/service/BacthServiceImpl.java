@@ -59,15 +59,20 @@ public class BacthServiceImpl extends BaseServiceImpl<Bacth, Long> implements Ba
 
     @Override
     public PageResult<Bacth> findPages(Bacth param, PageParameter page) {
+        CurrentUser cu = SessionManager.getUserSession();
+        //蓝白仓库
+        if(cu.getRole().contains("stickBagAccount") || cu.getRole().contains("stickBagStick") ) {
+            param.setWarehouseTypeId((long)274);
+        }
+        //11号仓库
+        if(cu.getRole().contains("packScene") || cu.getRole().contains("elevenSend")) {
+            param.setWarehouseTypeId((long)275);
+        }
         Page<Bacth> pages = dao.findAll((root, query, cb) -> {
             List<Predicate> predicate = new ArrayList<>();
             // 按id过滤
             if (param.getId() != null) {
                 predicate.add(cb.equal(root.get("id").as(Long.class), param.getId()));
-            }
-            // 按分配人过滤
-            if (param.getUserId() != null) {
-                predicate.add(cb.equal(root.get("userId").as(Long.class), param.getUserId()));
             }
             // 按产品id
             if (param.getProductId() != null) {
@@ -254,7 +259,14 @@ public class BacthServiceImpl extends BaseServiceImpl<Bacth, Long> implements Ba
     @Override
     public Bacth saveBacth(Bacth bacth) {
         CurrentUser cu = SessionManager.getUserSession();
-        bacth.setUserId(cu.getId());
+        //蓝白仓库
+        if(cu.getRole().contains("stickBagAccount")) {
+            bacth.setWarehouseTypeId((long)274);
+        }
+        //11号仓库
+        if(cu.getRole().contains("packScene")) {
+            bacth.setWarehouseTypeId((long)275);
+        }
         bacth.setAllotTime(ProTypeUtils.countAllotTime(bacth.getAllotTime()));
         bacth.setStatus(0);
         bacth.setReceive(0);
