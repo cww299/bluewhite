@@ -44,6 +44,15 @@ public class UnderGoodsServiceImpl extends BaseServiceImpl<UnderGoods, Long> imp
 
     @Override
     public PageResult<UnderGoods> findPages(UnderGoods param, PageParameter page) {
+        CurrentUser cu = SessionManager.getUserSession();
+        //蓝白仓库
+        if(cu.getRole().contains("stickBagAccount")) {
+            param.setWarehouseTypeId((long)274);
+        }
+        //11号仓库
+        if(cu.getRole().contains("packScene")) {
+            param.setWarehouseTypeId((long)275);
+        }
         Page<UnderGoods> pages = dao.findAll((root, query, cb) -> {
             List<Predicate> predicate = new ArrayList<>();
             // 按id过滤
