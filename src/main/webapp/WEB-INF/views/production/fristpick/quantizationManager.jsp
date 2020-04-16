@@ -110,7 +110,7 @@ layui.config({
 		if(device.android===true || device.ios===true)
 			isSmall = true;
 		var tableDataNoTrans = [];
-		var evenColor = 'rgb(133, 219, 245)';
+		//var evenColor = 'rgb(133, 219, 245)';
 		mytable.render({
 			elem:'#tableData',
 			size:'sm',
@@ -121,7 +121,8 @@ layui.config({
 			toolbar: '<span class="layui-btn layui-btn-sm" lay-event="disbatch">分配</span>'+
 					 '<span class="layui-btn layui-btn-sm layui-btn-normal" lay-event="lookover">查看分配工序</span>',
 			limit:15,
-			even:true,
+			//even:true,
+			colFilterRecord:'local',
 			limits:[15,50,200,500,1000],
 			curd:{
 				btn: [],
@@ -180,18 +181,18 @@ layui.config({
 	       autoMerge:{
 	    	 field:['quantitativeNumber','time','customer_name','0','departmentPrice','number',
 	    		 'outPrice','sumTaskPrice','regionalPrice','sumTime','remarks'], 
-	    	 evenColor: evenColor,
+	    	 //evenColor: evenColor,
 	       },
 	       done:function(ret,curr, count){
 				//background: white;
-				var whiteTd = ['0','quantitativeNumber','vehicleNumber','time','sendTime','user_userName','customer_name','audit','flag','print'];
+				/* var whiteTd = ['0','quantitativeNumber','vehicleNumber','time','sendTime','user_userName','customer_name','audit','flag','print'];
 				layui.each(whiteTd,function(index,item){
 					$('#tableData').next().find('td[data-field="'+item+'"]').css('background','white');
 				})
 				var blueTd = ['underGoods_bacthNumber','underGoods_product_name','actualSingleNumber','singleNumber','remarks'];
 				layui.each(blueTd,function(index,item){
 					$('#tableData').next().find('tr:nth-child(even) td[data-field="'+item+'"]').css('background',evenColor);
-				})
+				}) */
 				form.render();
 			}
 		})
