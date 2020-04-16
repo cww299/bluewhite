@@ -56,11 +56,24 @@ public class QuantitativeServiceImpl extends BaseServiceImpl<Quantitative, Long>
 
     @Override
     public PageResult<Quantitative> findPages(Quantitative param, PageParameter page) {
+        CurrentUser cu = SessionManager.getUserSession();
+        //蓝白仓库
+        if(cu.getRole().contains("stickBagAccount")) {
+            param.setWarehouseTypeId((long)274);
+        }
+        //11号仓库
+        if(cu.getRole().contains("packScene")) {
+            param.setWarehouseTypeId((long)275);
+        }
         Page<Quantitative> pages = dao.findAll((root, query, cb) -> {
             List<Predicate> predicate = new ArrayList<>();
             // 按id过滤
             if (param.getId() != null) {
                 predicate.add(cb.equal(root.get("id").as(Long.class), param.getId()));
+            }
+            // 按库区
+            if (param.getWarehouseTypeId() !=null) {
+                predicate.add(cb.equal(root.get("warehouseTypeId").as(Long.class), param.getWarehouseTypeId()));
             }
             // 按客户名称
             if (!StringUtils.isEmpty(param.getCustomerName())) {

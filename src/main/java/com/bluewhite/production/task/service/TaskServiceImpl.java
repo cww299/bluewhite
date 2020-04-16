@@ -397,11 +397,24 @@ public class TaskServiceImpl extends BaseServiceImpl<Task, Long> implements Task
 
     @Override
     public PageResult<Task> findPages(Task param, PageParameter page) {
+        CurrentUser cu = SessionManager.getUserSession();
+        //蓝白仓库
+        if(cu.getRole().contains("stickBagAccount")) {
+            param.setWarehouseTypeId((long)274);
+        }
+        //11号仓库
+        if(cu.getRole().contains("packScene")) {
+            param.setWarehouseTypeId((long)275);
+        }
         Page<Task> pages = dao.findAll((root, query, cb) -> {
             List<Predicate> predicate = new ArrayList<>();
             // 按id过滤
             if (param.getId() != null) {
                 predicate.add(cb.equal(root.get("id").as(Long.class), param.getId()));
+            }
+            // 按库区
+            if (param.getWarehouseTypeId() !=null) {
+                predicate.add(cb.equal(root.get("warehouseTypeId").as(Long.class), param.getWarehouseTypeId()));
             }
             // 按分配人过滤
             if (param.getUserId() != null) {
@@ -664,13 +677,13 @@ public class TaskServiceImpl extends BaseServiceImpl<Task, Long> implements Task
             Arrays.asList(temporaryIds).stream().filter(a->!StringUtils.isEmpty(a)).map(a -> Long.parseLong(a)).collect(Collectors.toList());
         // 正式员工出勤记录
         List<AttendancePay> attendancePayList = attendancePayDao.findByIdInAndTypeAndAllotTimeBetween(idsList,
-            task.getType(), orderTimeBegin, orderTimeEnd);
+            2, orderTimeBegin, orderTimeEnd);
         // 借调员工出勤记录
         List<Temporarily> loanList =
-            temporarilyDao.findByIdInAndTemporarilyDateAndType(loanIdsList, orderTimeBegin, task.getType());
+            temporarilyDao.findByIdInAndTemporarilyDateAndType(loanIdsList, orderTimeBegin, 2);
         // 临时员工出勤记录
         List<Temporarily> temporarilyList =
-            temporarilyDao.findByIdInAndTemporarilyDateAndType(temporaryIdList, orderTimeBegin, task.getType());
+            temporarilyDao.findByIdInAndTemporarilyDateAndType(temporaryIdList, orderTimeBegin, 2);
         // 总人数
         int userCount = idStrings.length + loanIdsStrings.length + temporaryIds.length;
         //量化单
@@ -690,6 +703,7 @@ public class TaskServiceImpl extends BaseServiceImpl<Task, Long> implements Task
                 newTask.setIds(task.getIds());
                 newTask.setLoanIds(task.getLoanIds());
                 newTask.setTemporaryUserIds(task.getTemporaryUserIds());
+                newTask.setAllotTime(task.getAllotTime());
                 // 默认是包装
                 newTask.setType(2);
                 newTask.setProcessesId(id);
