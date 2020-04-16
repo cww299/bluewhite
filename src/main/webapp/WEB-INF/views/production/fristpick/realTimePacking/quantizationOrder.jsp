@@ -88,15 +88,17 @@
 </script>
 <!-- 
 stickBagAccount: 吴婷
+packScene: 陈蒋红
+stickBagStick： 刘英芹
  -->
 <div id="toolbarTpl" style="display:none;">
 	<span class="layui-btn layui-btn-sm layui-btn-warm" lay-event="update">修改数据</span>
-	<shiro:hasAnyRoles name="superAdmin,stickBagAccount">
+	<shiro:hasAnyRoles name="superAdmin,stickBagAccount,packScene">
 		<span class="layui-btn layui-btn-sm layui-btn-" lay-event="add" id="stickBagAccountBtn">新增数据</span>
 		<span class="layui-btn layui-btn-sm layui-btn-danger" lay-event="cancelAudit">取消审核</span>
 		<span class="layui-btn layui-btn-sm layui-btn-normal" lay-event="audit">审核</span>
 	</shiro:hasAnyRoles>
-	<shiro:hasAnyRoles name="superAdmin,stickBagStick">
+	<shiro:hasAnyRoles name="superAdmin,stickBagStick,elevenSend">
 		<span class="layui-btn layui-btn-sm layui-btn-primary" lay-event="print" id="stickBagStickBtn">打印</span>
 		<span class="layui-btn layui-btn-sm layui-btn-normal" lay-event="send">发货</span>
 		<span class="layui-btn layui-btn-sm layui-btn-danger" lay-event="cancelSend">取消发货</span>
