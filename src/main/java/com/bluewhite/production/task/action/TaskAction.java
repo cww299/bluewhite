@@ -17,9 +17,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.bluewhite.common.BeanCopyUtils;
 import com.bluewhite.common.ClearCascadeJSON;
-import com.bluewhite.common.SessionManager;
 import com.bluewhite.common.entity.CommonResponse;
-import com.bluewhite.common.entity.CurrentUser;
 import com.bluewhite.common.entity.ErrorCode;
 import com.bluewhite.common.entity.PageParameter;
 import com.bluewhite.common.utils.UnUtil;
@@ -32,7 +30,6 @@ import com.bluewhite.production.finance.entity.PayB;
 import com.bluewhite.production.group.dao.TemporarilyDao;
 import com.bluewhite.production.group.entity.Temporarily;
 import com.bluewhite.production.procedure.entity.Procedure;
-import com.bluewhite.production.procedure.service.ProcedureService;
 import com.bluewhite.production.productionutils.constant.ProTypeUtils;
 import com.bluewhite.production.task.entity.Task;
 import com.bluewhite.production.task.service.TaskService;
@@ -65,7 +62,7 @@ public class TaskAction {
             .addRetainTerm(Task.class, "id", "remark", "userNames", "bacthNumber", "allotTime", "productName",
                 "userIds", "procedure", "procedureName", "number", "status", "expectTime", "expectTaskPrice",
                 "taskTime", "payB", "taskPrice", "taskActualTime", "type", "createdAt", "performance",
-                "performanceNumber", "performancePrice", "flag","quantitativeNumber","processesId")
+                "performanceNumber", "performancePrice", "flag","quantitativeNumber","processesId","singleTime")
             .addRetainTerm(Procedure.class, "id", "procedureTypeId");
     }
     
@@ -192,10 +189,6 @@ public class TaskAction {
     @ResponseBody
     public CommonResponse allTask(HttpServletRequest request, Task task, PageParameter page) {
         CommonResponse cr = new CommonResponse();
-        CurrentUser cu = SessionManager.getUserSession();
-        if (!cu.getRole().contains("superAdmin") && !cu.getRole().contains("personnel")) {
-            task.setUserId(cu.getId());
-        }
         cr.setData(clearCascadeJSON.format(taskService.findPages(task, page)).toJSON());
         cr.setMessage("查询成功");
         return cr;
@@ -287,42 +280,71 @@ public class TaskAction {
         List<Map<String, Object>> list = new ArrayList<>();
         if (taskId != null) {
             Task task = taskService.findOne(taskId);
-            if (!StringUtils.isEmpty(task.getIds())) {
-                String[] idArr = task.getIds().split(",");
-                if (idArr.length > 0) {
-                    for (int i = 0; i < idArr.length; i++) {
-                        Map<String, Object> userMap = new HashMap<>();
-                        Long id = Long.parseLong(idArr[i]);
-                        AttendancePay attendancePay =  attendancePayDao.findOne(id);
-                        userMap.put("id", attendancePay.getUser().getId());
-                        userMap.put("userName", attendancePay.getUser().getUserName());
-                        list.add(userMap);
+            if(task.getBacthId()!=null) {
+                if (!StringUtils.isEmpty(task.getUserIds())) {
+                    String[] idArr = task.getUserIds().split(",");
+                    if (idArr.length > 0) {
+                        for (int i = 0; i < idArr.length; i++) {
+                            Map<String, Object> userMap = new HashMap<>();
+                            Long userid = Long.parseLong(idArr[i]);
+                            User user = userService.findOne(userid);
+                            userMap.put("id", user.getId());
+                            userMap.put("userName", user.getUserName());
+                            list.add(userMap);
+                        }
                     }
                 }
-            }
-            if (!StringUtils.isEmpty(task.getTemporaryIds())) {
-                String[] idArr = task.getTemporaryIds().split(",");
-                if (idArr.length > 0) {
-                    for (int i = 0; i < idArr.length; i++) {
-                        Map<String, Object> userMap = new HashMap<>();
-                        Long id = Long.parseLong(idArr[i]);
-                        Temporarily  temporarily = temporarilyDao.findOne(id);
-                        userMap.put("id",temporarily.getTemporaryUser().getId());
-                        userMap.put("userName", temporarily.getTemporaryUser().getUserName());
-                        list.add(userMap);
+                if (!StringUtils.isEmpty(task.getTemporaryUserIds())) {
+                    String[] idArr = task.getTemporaryUserIds().split(",");
+                    if (idArr.length > 0) {
+                        for (int i = 0; i < idArr.length; i++) {
+                            Map<String, Object> userMap = new HashMap<>();
+                            Long userid = Long.parseLong(idArr[i]);
+                            TemporaryUser temporaryUser = temporaryUserService.findOne(userid);
+                            userMap.put("id", temporaryUser.getId());
+                            userMap.put("userName", temporaryUser.getUserName());
+                            list.add(userMap);
+                        }
                     }
                 }
-            }
-            if (!StringUtils.isEmpty(task.getLoanIds())) {
-                String[] idArr = task.getLoanIds().split(",");
-                if (idArr.length > 0) {
-                    for (int i = 0; i < idArr.length; i++) {
-                        Map<String, Object> userMap = new HashMap<>();
-                        Long id = Long.parseLong(idArr[i]);
-                        Temporarily  temporarily = temporarilyDao.findOne(id);
-                        userMap.put("id", temporarily.getUser().getId());
-                        userMap.put("userName", temporarily.getUser().getUserName());
-                        list.add(userMap);
+            }else {
+                if (!StringUtils.isEmpty(task.getIds())) {
+                    String[] idArr = task.getIds().split(",");
+                    if (idArr.length > 0) {
+                        for (int i = 0; i < idArr.length; i++) {
+                            Map<String, Object> userMap = new HashMap<>();
+                            Long id = Long.parseLong(idArr[i]);
+                            AttendancePay attendancePay =  attendancePayDao.findOne(id);
+                            userMap.put("id", attendancePay.getUser().getId());
+                            userMap.put("userName", attendancePay.getUser().getUserName());
+                            list.add(userMap);
+                        }
+                    }
+                }
+                if (!StringUtils.isEmpty(task.getTemporaryIds())) {
+                    String[] idArr = task.getTemporaryIds().split(",");
+                    if (idArr.length > 0) {
+                        for (int i = 0; i < idArr.length; i++) {
+                            Map<String, Object> userMap = new HashMap<>();
+                            Long id = Long.parseLong(idArr[i]);
+                            Temporarily  temporarily = temporarilyDao.findOne(id);
+                            userMap.put("id",temporarily.getTemporaryUser().getId());
+                            userMap.put("userName", temporarily.getTemporaryUser().getUserName());
+                            list.add(userMap);
+                        }
+                    }
+                }
+                if (!StringUtils.isEmpty(task.getLoanIds())) {
+                    String[] idArr = task.getLoanIds().split(",");
+                    if (idArr.length > 0) {
+                        for (int i = 0; i < idArr.length; i++) {
+                            Map<String, Object> userMap = new HashMap<>();
+                            Long id = Long.parseLong(idArr[i]);
+                            Temporarily  temporarily = temporarilyDao.findOne(id);
+                            userMap.put("id", temporarily.getUser().getId());
+                            userMap.put("userName", temporarily.getUser().getUserName());
+                            list.add(userMap);
+                        }
                     }
                 }
             }

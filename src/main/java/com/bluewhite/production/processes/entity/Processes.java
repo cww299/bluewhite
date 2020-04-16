@@ -68,11 +68,25 @@ public class Processes extends BaseEntity<Long> {
     @JoinColumn(name = "packag_method_id", referencedColumnName = "id", insertable = false, updatable = false)
     private BaseData packagMethod;
     
+    /**
+     * 顺序
+     */
+    @Column(name = "order_no")
+    private Integer orderNo;
+    
     @Transient
     private Integer surplusCount;
     
     
     
+
+    public Integer getOrderNo() {
+        return orderNo;
+    }
+
+    public void setOrderNo(Integer orderNo) {
+        this.orderNo = orderNo;
+    }
 
     public Integer getSurplusCount() {
         return surplusCount;

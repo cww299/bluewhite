@@ -45,6 +45,13 @@ public class Bacth extends BaseEntity<Long> {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "order_outsource_id", referencedColumnName = "id", insertable = false, updatable = false)
     private OrderOutSource OrderOutSource;
+    
+
+    /**
+     * 仓库种类id
+     */
+    @Column(name = "warehouse_type_id")
+    private Long warehouseTypeId;
 
     /**
      * 产品id
@@ -174,20 +181,6 @@ public class Bacth extends BaseEntity<Long> {
     private Double time;
 
     /**
-     * 任务分配人id
-     */
-    @Column(name = "user_id")
-    private Long userId;
-
-    /**
-     * 任务分配人
-     */
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "user_id", referencedColumnName = "id", insertable = false, updatable = false)
-    private User user;
-    
-    
-    /**
      * 产品名称
      */
     @Transient
@@ -223,28 +216,22 @@ public class Bacth extends BaseEntity<Long> {
     private Double hairPrice;
     
     
+    
+    
+    public Long getWarehouseTypeId() {
+        return warehouseTypeId;
+    }
+
+    public void setWarehouseTypeId(Long warehouseTypeId) {
+        this.warehouseTypeId = warehouseTypeId;
+    }
+
     public Double getSumOutPrice() {
         return sumOutPrice;
     }
 
     public void setSumOutPrice(Double sumOutPrice) {
         this.sumOutPrice = sumOutPrice;
-    }
-
-    public Long getUserId() {
-        return userId;
-    }
-
-    public void setUserId(Long userId) {
-        this.userId = userId;
-    }
-
-    public User getUser() {
-        return user;
-    }
-
-    public void setUser(User user) {
-        this.user = user;
     }
 
     public Integer getSign() {
