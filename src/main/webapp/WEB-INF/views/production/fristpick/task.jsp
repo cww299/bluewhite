@@ -75,6 +75,7 @@
 					<th class="text-center hidden-sm">批次号</th>
 					<th class="text-center" style="width: 250px;">产品名</th>
 					<th class="text-center">时间</th>
+					<th class="text-center">工序用时</th>
 					<th class="text-center">工序</th>
 					<th class="text-center hidden-sm">预计时间</th>
 					<th class="text-center hidden-sm">任务价值</th>
@@ -283,6 +284,7 @@
 		      				+'<td class="text-center hidden-sm">'+o.bacthNumber+'</td>'
 		      				+'<td class="text-center ">'+(o.quantitativeNumber || o.productName)+'</td>'
 		      				+'<td class="text-center edit allotTime">'+o.allotTime+'</td>'
+		      				+'<td class="text-center">'+o.singleTime+'</td>'
 		      				+'<td class="text-center">'+s+a+'</td>'
 		      				+'<td class="text-center hidden-sm">'+parseFloat((o.taskTime).toFixed(4))+'</td>'
 		      				+'<td class="text-center hidden-sm">'+parseFloat((o.taskPrice).toFixed(4))+'</td>'
