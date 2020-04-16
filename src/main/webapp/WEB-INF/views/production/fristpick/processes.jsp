@@ -48,6 +48,12 @@
 		    <input type="text" name="name" value="{{ d.name || "" }}" lay-verify="required" class="layui-input">
 		</div>
 	</div>
+	<div class="layui-form-item" pane >
+	    <label class="layui-form-label">排序</label>
+	    <div class="layui-input-block">
+		    <input type="number" name="orderNo" value="{{ d.orderNo || ""}}" class="layui-input">
+		</div>
+	</div>
     <div class="layui-form-item" pane>
         <label class="layui-form-label">是否手填</label>
         <div class="layui-input-block">
@@ -135,6 +141,7 @@ function() {
 		       { title:'工序耗时',   field:'time', 	},
 		       { title:'耗时总数量',   field:'sumCount', 	},
 		       { title:'包装方式',   field:'packagMethod_name',    },
+		       { title:'排序',   field:'orderNo',    },
 		       { title:'公共属性',   field:'publicType', transData:true, width:110,},
 		       { title:'是否手填',   field:'isWrite', transData:true, width:110,},
 		       ]],
