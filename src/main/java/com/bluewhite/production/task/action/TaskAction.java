@@ -59,11 +59,7 @@ public class TaskAction {
     @Autowired
     private AttendancePayDao attendancePayDao;
     
-    
-    
-
     private ClearCascadeJSON clearCascadeJSON;
-
     {
         clearCascadeJSON = ClearCascadeJSON.get()
             .addRetainTerm(Task.class, "id", "remark", "userNames", "bacthNumber", "allotTime", "productName",
@@ -304,32 +300,32 @@ public class TaskAction {
                     }
                 }
             }
-//            if (!StringUtils.isEmpty(task.getTemporaryIds())) {
-//                String[] idArr = task.getTemporaryIds().split(",");
-//                if (idArr.length > 0) {
-//                    for (int i = 0; i < idArr.length; i++) {
-//                        Map<String, Object> userMap = new HashMap<>();
-//                        Long id = Long.parseLong(idArr[i]);
-//                        Temporarily  temporarily = temporarilyDao.findOne(id);
-//                        userMap.put("id",temporarily.getTemporaryUser().getId());
-//                        userMap.put("userName", temporarily.getTemporaryUser().getUserName());
-//                        list.add(userMap);
-//                    }
-//                }
-//            }
-//            if (!StringUtils.isEmpty(task.getLoanIds())) {
-//                String[] idArr = task.getLoanIds().split(",");
-//                if (idArr.length > 0) {
-//                    for (int i = 0; i < idArr.length; i++) {
-//                        Map<String, Object> userMap = new HashMap<>();
-//                        Long id = Long.parseLong(idArr[i]);
-//                        Temporarily  temporarily = temporarilyDao.findOne(id);
-//                        userMap.put("id", temporarily.getUser().getId());
-//                        userMap.put("userName", temporarily.getUser().getUserName());
-//                        list.add(userMap);
-//                    }
-//                }
-//            }
+            if (!StringUtils.isEmpty(task.getTemporaryIds())) {
+                String[] idArr = task.getTemporaryIds().split(",");
+                if (idArr.length > 0) {
+                    for (int i = 0; i < idArr.length; i++) {
+                        Map<String, Object> userMap = new HashMap<>();
+                        Long id = Long.parseLong(idArr[i]);
+                        Temporarily  temporarily = temporarilyDao.findOne(id);
+                        userMap.put("id",temporarily.getTemporaryUser().getId());
+                        userMap.put("userName", temporarily.getTemporaryUser().getUserName());
+                        list.add(userMap);
+                    }
+                }
+            }
+            if (!StringUtils.isEmpty(task.getLoanIds())) {
+                String[] idArr = task.getLoanIds().split(",");
+                if (idArr.length > 0) {
+                    for (int i = 0; i < idArr.length; i++) {
+                        Map<String, Object> userMap = new HashMap<>();
+                        Long id = Long.parseLong(idArr[i]);
+                        Temporarily  temporarily = temporarilyDao.findOne(id);
+                        userMap.put("id", temporarily.getUser().getId());
+                        userMap.put("userName", temporarily.getUser().getUserName());
+                        list.add(userMap);
+                    }
+                }
+            }
             cr.setData(list);
             cr.setMessage("查询成功");
         } else {

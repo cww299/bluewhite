@@ -74,7 +74,6 @@ public class GroupAction {
 
 	/**
 	 * 添加，修改分组
-	 * 
 	 * type 分组所属部门类型 (1=一楼质检，2=一楼包装，3=二楼针工,4=二楼机工)
 	 * 
 	 * @return cr
