@@ -15,6 +15,26 @@
 <body>
 	<div class="layui-card" >
 		<div class="layui-card-body">
+			<table class="layui-form searchTable">
+				<tr>
+				   <td class="">工序名称：</td>
+		           <td class=""><input type="text" name="name" class="layui-input" placeholder="请输入工序名称"></td>
+		           <td>包装方式：</td>
+		           <td><select name="packagMethodId" lay-search id="searchSelect">
+		           			<option value="">请选择</option></select></td>
+		           <td>是否手填：</td>
+		           <td style="width:120px;"><select name="isWrite">
+		           						<option value="">请选择</option>
+		           						<option value="0">否</option>
+		           						<option value="1">是</option></select></td>
+		           <td>公共属性：</td>
+		           <td style="width:120px;"><select name="publicType">
+		           						<option value="">请选择</option>
+		           						<option value="0">否</option>
+		           						<option value="1">是</option></select></td>
+		           <td><span class="layui-btn layui-btn-sm" lay-submit lay-filter="search">查找</span></td>
+				</tr>
+			</table>
 			<table id="tableData" lay-filter="tableData"></table>
 		</div> 
 	</div>
@@ -85,6 +105,8 @@ function() {
 	myutil.config.ctx = '${ctx}';
 	myutil.clickTr();
 	
+	$('#searchSelect').append(myutil.getBaseDataSelect({ type:'packagMethod', }));
+	form.render();
 	mytable.render({
 		elem : '#tableData',
 		url :  myutil.config.ctx+"/processes/processesPage",
@@ -118,7 +140,7 @@ function() {
 		       ]],
 	})
 	
-	function addEdit(d){			
+	function addEdit(d){		
 		var html=""
 		,title ='新增'
 		,data= d || {};
@@ -183,6 +205,13 @@ function() {
 			}
 		});
 	}
+	
+	form.on('submit(search)',function(obj){
+		table.reload('tableData',{
+			where: obj.field,
+			page: { curr:1 },
+		})
+	})
 });
 </script>
 </html>

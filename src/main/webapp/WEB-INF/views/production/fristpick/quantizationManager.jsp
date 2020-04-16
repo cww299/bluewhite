@@ -72,7 +72,7 @@
 		</div>
 	</div>
     <div class="layui-form-item">
-		<label class="layui-form-label">单个OPP袋装个数：</label>
+		<label class="layui-form-label" style="width: 70px;padding: 0px 18px;">单个OPP袋装个数</label>
 		<div class="layui-input-block">
 			<input type="number" class="layui-input" name="count" lay-verify="number" style="width: 100px;display: inline;">
 			<span class="layui-btn layui-btn-sm" lay-submit lay-filter="getProcess">获取工序</span>
