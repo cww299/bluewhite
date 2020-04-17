@@ -16,13 +16,13 @@ public interface ProcessesDao extends BaseRepository<Processes, Long> {
      * @param id
      * @return
      */
-    List<Processes> findByPackagMethodId(Long id);
+    List<Processes> findByPackagMethodIdOrderByOrderNoAsc(Long id);
     
     /**
      * 是否公共工序
      * @return
      */
-    List<Processes> findByPublicType(Integer publicType);
+    List<Processes> findByPublicTypeOrderByOrderNoAsc(Integer publicType);
     
     /**
      * 根据名字和公共工序
@@ -34,6 +34,6 @@ public interface ProcessesDao extends BaseRepository<Processes, Long> {
      * 是否手填工序
      * @return
      */
-    List<Processes> findByIsWrite(Integer isWrite);
+    List<Processes> findByIsWriteOrderByOrderNoAsc(Integer isWrite);
 
 }

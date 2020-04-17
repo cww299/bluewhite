@@ -89,10 +89,6 @@ public class BacthAction {
 	@ResponseBody
 	public CommonResponse allBacth(HttpServletRequest request, Bacth bacth, PageParameter page) {
 		CommonResponse cr = new CommonResponse();
-		CurrentUser cu = SessionManager.getUserSession();
-		if(!cu.getRole().contains("superAdmin") && !cu.getRole().contains("personnel")){
-			bacth.setUserId(cu.getId());
-		}
 		cr.setData(clearCascadeJSON.format(bacthService.findPages(bacth, page)).toJSON());
 		cr.setMessage("查询成功");
 		return cr;

@@ -250,7 +250,7 @@ public class AttendanceTool {
         }
         
         if (attendanceInit.isEarthWork() && DatesUtil.getTime(attendanceTime.getCheckIn(), workTimeStrat) >= OVERMIN) {
-            actualOverTime += 0.5;
+            actualOverTime += DatesUtil.getTimeHour(attendanceTime.getCheckIn(), workTimeStrat);
         }
         attendanceTime.setTurnWorkTime(actualTurnWorkTime);
         attendanceTime.setOrdinaryOvertime(actualOverTime);
@@ -446,7 +446,7 @@ public class AttendanceTool {
      */
     private double overTimeUp(Date signTime) {
         if (signTime.after(DateUtil.offsetMinute(workTimeStrat, OVERMIN)) && earthWork) {
-            return 0.5;
+            return DatesUtil.getTimeHour(signTime, workTimeStrat);
         }
         return 0;
     }

@@ -77,8 +77,6 @@ public class TaskServiceImpl extends BaseServiceImpl<Task, Long> implements Task
     @Override
     @Transactional
     public Task addTask(Task task, HttpServletRequest request) {
-        CurrentUser cu = SessionManager.getUserSession();
-        task.setUserId(cu.getId());
         List<Long> idsList = new ArrayList<>();
         List<Long> temporaryIdList = new ArrayList<>();
         List<Long> userIdsList = new ArrayList<>();
@@ -399,11 +397,11 @@ public class TaskServiceImpl extends BaseServiceImpl<Task, Long> implements Task
     public PageResult<Task> findPages(Task param, PageParameter page) {
         CurrentUser cu = SessionManager.getUserSession();
         //蓝白仓库
-        if(cu.getRole().contains("stickBagAccount")) {
+        if(cu.getRole().contains("stickBagAccount") || cu.getRole().contains("stickBagStick") ) {
             param.setWarehouseTypeId((long)274);
         }
         //11号仓库
-        if(cu.getRole().contains("packScene")) {
+        if(cu.getRole().contains("packScene") || cu.getRole().contains("elevenSend")) {
             param.setWarehouseTypeId((long)275);
         }
         Page<Task> pages = dao.findAll((root, query, cb) -> {
@@ -415,10 +413,6 @@ public class TaskServiceImpl extends BaseServiceImpl<Task, Long> implements Task
             // 按库区
             if (param.getWarehouseTypeId() !=null) {
                 predicate.add(cb.equal(root.get("warehouseTypeId").as(Long.class), param.getWarehouseTypeId()));
-            }
-            // 按分配人过滤
-            if (param.getUserId() != null) {
-                predicate.add(cb.equal(root.get("userId").as(Long.class), param.getUserId()));
             }
             // 按批次id过滤
             if (param.getBacthId() != null) {
@@ -526,8 +520,6 @@ public class TaskServiceImpl extends BaseServiceImpl<Task, Long> implements Task
     @Override
     @Transactional
     public Task addReTask(Task task) {
-        CurrentUser cu = SessionManager.getUserSession();
-        task.setUserId(cu.getId());
         // 将用户变成string类型储存
         if (!StringUtils.isEmpty(task.getUserIds())) {
             String[] idArr = task.getUserIds().split(",");

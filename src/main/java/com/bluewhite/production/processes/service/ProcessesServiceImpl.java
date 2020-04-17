@@ -54,14 +54,14 @@ public class ProcessesServiceImpl extends BaseServiceImpl<Processes, Long> imple
     public List<Processes> findByPackagMethodId(Long id, int count, int taskNumber,Long quantitativeId) {
         List<Processes> newProcessesList = new ArrayList<Processes>();
         // 通过工序查找
-        List<Processes> processesList = dao.findByPackagMethodId(id);
+        List<Processes> processesList = dao.findByPackagMethodIdOrderByOrderNoAsc(id);
         // 计算耗时
         processesList.forEach(p -> {
             p.setTime(NumUtils.div(p.getTime(), taskNumber, 5));
         });
         newProcessesList.addAll(processesList);
         // 是否公共查找
-        List<Processes> processesListPub = dao.findByPublicType(1);
+        List<Processes> processesListPub = dao.findByPublicTypeOrderByOrderNoAsc(1);
         // 过滤出相符数量工序
         processesListPub = processesListPub.stream().filter(p -> p.getSumCount()==count)
             .collect(Collectors.toList());
@@ -70,7 +70,7 @@ public class ProcessesServiceImpl extends BaseServiceImpl<Processes, Long> imple
         });
         newProcessesList.addAll(processesListPub);
         // 是否手填
-        List<Processes> processesIsWrite = dao.findByIsWrite(1);
+        List<Processes> processesIsWrite = dao.findByIsWriteOrderByOrderNoAsc(1);
         newProcessesList.addAll(processesIsWrite);
         Quantitative quantitative = quantitativeService.findOne(quantitativeId);
         newProcessesList.forEach(p->{
