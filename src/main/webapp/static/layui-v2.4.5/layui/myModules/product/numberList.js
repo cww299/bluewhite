@@ -2,6 +2,7 @@
  * 位数记录列表模块  numberList
  * type:1  尾数找回，进行入库  库存
  * type:2  尾数丢失，清报财务  记录
+ * type:3  次品退回库房  跟2一样
  */
 layui.config({
 	base: 'static/layui-v2.4.5/'

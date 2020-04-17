@@ -34,6 +34,7 @@ layui.define(['jquery','layer','form','laytpl','laydate','mytable','table'],func
 					'<select name="type" value="{{ d.type || "" }}" {{ d.id?"disabled":""}}>',
 						'<option value="1" {{ d.type==1?"selected":"" }}>尾数找回，进行入库</option>',
 						'<option value="2" {{ d.type==2?"selected":"" }}>尾数丢失，清报财务</option>',
+						'<option value="3" {{ d.type==3?"selected":"" }}>次品退回库房</option>',
 					'</select>',
 				'</div>',
 			'</div>',
