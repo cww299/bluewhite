@@ -33,6 +33,8 @@ public class AttendanceTool {
     private final static int LATERMIN = 10;
     // 一小时的分钟数
     private final static int MINUTES = 60;
+    // 计算早退缺勤时满足的分钟数
+    private final static int LATEMIN = 5;
 
     /**
      * 进行出勤，加班，缺勤，迟到，早退的计算 举例出能满足的所有条件，合适条件的进行
@@ -104,7 +106,7 @@ public class AttendanceTool {
 
             // 满足于：员工可以加班后晚到岗 ，签入时间在（初始化上班开始时间后的加班分钟数+30分钟）之后，签出时间在工作结束时间之后 出现缺勤
             // (早退时间过长出现缺勤)
-            flag = attendanceTime.getCheckOut().before(DateUtil.offsetMinute(workTimeEnd, -DUTYMIN));
+            flag = attendanceTime.getCheckOut().before(DateUtil.offsetMinute(workTimeEnd, -LATEMIN));
             if (flag) {
                 actualTurnWorkTime = NumUtils.sum(attendanceTime.getWorkTime(), DatesUtil.getTimeHour(minute));
                 actualDutyTime = NumUtils.sub(turnWorkTime, actualTurnWorkTime);
@@ -196,7 +198,7 @@ public class AttendanceTool {
             }
 
             // 签出时间在工作结束时间之前 出现缺勤 (早退时间过长出现缺勤)
-            flag = attendanceTime.getCheckOut().before(DateUtil.offsetMinute(workTimeEnd, -DUTYMIN));
+            flag = attendanceTime.getCheckOut().before(DateUtil.offsetMinute(workTimeEnd, -LATEMIN));
             if (flag) {
                 actualTurnWorkTime = attendanceTime.getWorkTime();
                 actualDutyTime = NumUtils.sub(turnWorkTime, actualTurnWorkTime);

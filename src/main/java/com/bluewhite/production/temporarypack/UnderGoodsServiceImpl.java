@@ -123,6 +123,7 @@ public class UnderGoodsServiceImpl extends BaseServiceImpl<UnderGoods, Long> imp
             int numberMantissaLiquidationSum =
                 mantissaLiquidationList.stream().mapToInt(MantissaLiquidation::getNumber).sum();
             r.setSurplusStickNumber(r.getSurplusStickNumber() - numberMantissaLiquidationSum);
+            r.setSurplusSendNumber(r.getSurplusSendNumber() - numberMantissaLiquidationSum);
         });
         return result;
     }

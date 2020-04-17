@@ -76,7 +76,7 @@
            timeToIdleSeconds="0"
            statistics="true"/>
            
-    <!-- 工厂api token 2小时 -->
+    <!-- 工厂api token 2小时 
     <cache name="api-token"
            maxEntriesLocalHeap="2000"
            eternal="false"
@@ -85,5 +85,5 @@
            overflowToDisk="false"
            statistics="true">
     </cache>
-
+	-->
 </ehcache>

@@ -351,7 +351,7 @@ public class AttendanceTimeServiceImpl extends BaseServiceImpl<AttendanceTime, L
                                     attendanceTime.getCheckOut().after(restEndTime) ? restTime : 0));
                             } 
                             if (attendanceInit.isEarthWork() && DatesUtil.getTime(attendanceTime.getCheckIn(), workTime) >= 20) {
-                                attendanceTime.setOvertime(NumUtils.sum(attendanceTime.getOvertime(), 0.5));
+                                attendanceTime.setOvertime(NumUtils.sum(attendanceTime.getOvertime(),DatesUtil.getTimeHour(attendanceTime.getCheckIn(), workTime)));
                             }
                             
                             if(us.getOrgNameId()==84) {

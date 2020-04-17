@@ -34,7 +34,8 @@ public class ProcessesAction {
     {
         clearCascadeJSON =
             ClearCascadeJSON.get()
-                .addRetainTerm(Processes.class, "id", "name", "time", "publicType", "packagMethod","isWrite","sumCount","surplusCount")
+                .addRetainTerm(Processes.class, "id", "name", "time", "publicType", "packagMethod",
+                    "isWrite","sumCount","surplusCount","orderNo")
                 .addRetainTerm(BaseData.class, "id", "name");
     }
     

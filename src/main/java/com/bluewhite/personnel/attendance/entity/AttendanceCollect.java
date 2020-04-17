@@ -139,6 +139,12 @@ public class AttendanceCollect extends BaseEntity<Long>{
 	private String belateDetails="";
 	
 	/**
+     * 缺勤事项详情
+     */
+    @Column(name = "duty_details")
+    private String dutyDetails="";
+	
+	/**
 	 * 备注
 	 */
 	@Column(name = "remarks")
@@ -220,17 +226,22 @@ public class AttendanceCollect extends BaseEntity<Long>{
     		productionOvertime = NumUtils.sum(productionOvertime, ot);
     	}
     	overtime = NumUtils.sum(productionOvertime,ordinaryOvertime);
-    	
+    	//迟到详情
     	List<AttendanceTime> belateAttendanceTime = list.stream().filter(AttendanceTime->AttendanceTime.getBelate()==1).collect(Collectors.toList());
     	belateAttendanceTime.forEach(at->{
     					belateDetails += formatter.format(at.getTime())+"迟到"+ at.getBelateTime().intValue()+"分钟,";
     				}
     			);
+    	belateDetails = "共迟到"+belateAttendanceTime.size()+"次："+belateDetails;
+    	//请假详情
     	list.stream().filter(AttendanceTime->AttendanceTime.getHolidayDetail()!=null).collect(Collectors.toList())
     	.stream().filter(StringUtil.distinctByKey(b -> b.getHolidayDetail())).forEach(at->{
     					leaveDetails += at.getHolidayDetail()+",";
     	});
-    	belateDetails = "共迟到"+belateAttendanceTime.size()+"次："+belateDetails;
+    	//调休详情
+    	
+    	//缺勤详情
+    	
     	allWork = NumUtils.sum(turnWork, overtime);
     }
 	
@@ -238,7 +249,15 @@ public class AttendanceCollect extends BaseEntity<Long>{
     
     
 
-	public Double getOrdinaryOvertime() {
+	public String getDutyDetails() {
+        return dutyDetails;
+    }
+
+    public void setDutyDetails(String dutyDetails) {
+        this.dutyDetails = dutyDetails;
+    }
+
+    public Double getOrdinaryOvertime() {
 		return ordinaryOvertime;
 	}
 	
