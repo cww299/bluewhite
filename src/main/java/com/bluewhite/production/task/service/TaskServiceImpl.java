@@ -396,12 +396,12 @@ public class TaskServiceImpl extends BaseServiceImpl<Task, Long> implements Task
     @Override
     public PageResult<Task> findPages(Task param, PageParameter page) {
         CurrentUser cu = SessionManager.getUserSession();
-        //蓝白仓库
-        if(cu.getRole().contains("stickBagAccount") || cu.getRole().contains("stickBagStick") ) {
+        // 蓝白仓库
+        if (cu.getRole().contains("stickBagAccount") || cu.getRole().contains("stickBagStick")) {
             param.setWarehouseTypeId((long)274);
         }
-        //11号仓库
-        if(cu.getRole().contains("packScene") || cu.getRole().contains("elevenSend")) {
+        // 11号仓库
+        if (cu.getRole().contains("packScene") || cu.getRole().contains("elevenSend")) {
             param.setWarehouseTypeId((long)275);
         }
         Page<Task> pages = dao.findAll((root, query, cb) -> {
@@ -411,7 +411,7 @@ public class TaskServiceImpl extends BaseServiceImpl<Task, Long> implements Task
                 predicate.add(cb.equal(root.get("id").as(Long.class), param.getId()));
             }
             // 按库区
-            if (param.getWarehouseTypeId() !=null) {
+            if (param.getWarehouseTypeId() != null) {
                 predicate.add(cb.equal(root.get("warehouseTypeId").as(Long.class), param.getWarehouseTypeId()));
             }
             // 按批次id过滤
@@ -491,27 +491,51 @@ public class TaskServiceImpl extends BaseServiceImpl<Task, Long> implements Task
                     }
                     // 更新该批次的数值(sumTaskPrice(总任务价值),regionalPrice（地区差价）)
                     Task task = dao.findOne(id);
-                    Bacth bacth = task.getBacth();
-                    Double sumTaskPrice = 0.0;
-                    // 计算出该批次下所有人的实际成本总和
-                    CopyOnWriteArraySet<Task> taskset = new CopyOnWriteArraySet<Task>(bacth.getTasks());
-                    for (Task ta : taskset) {
-                        // 排除要删除的任务id
-                        if (!ta.getId().equals(id)) {
-                            sumTaskPrice += ta.getTaskPrice();
-                        } else {
-                            dao.delete(ta);
-                            bacth.getTasks().remove(ta);
+                    if (task.getBacth() != null) {
+                        Bacth bacth = task.getBacth();
+                        Double sumTaskPrice = 0.0;
+                        // 计算出该批次下所有人的实际成本总和
+                        CopyOnWriteArraySet<Task> taskset = new CopyOnWriteArraySet<Task>(bacth.getTasks());
+                        for (Task ta : taskset) {
+                            // 排除要删除的任务id
+                            if (!ta.getId().equals(id)) {
+                                sumTaskPrice += ta.getTaskPrice();
+                            } else {
+                                dao.delete(ta);
+                                bacth.getTasks().remove(ta);
+                            }
+                        } ;
+                        bacth.setSumTaskPrice(sumTaskPrice);
+                        if (bacth.getFlag() == 0) {
+                            // 计算出该批次的地区差价
+                            bacth.setRegionalPrice(NumUtils.round(ProTypeUtils.sumRegionalPrice(bacth.getSumTaskPrice(),
+                                bacth.getBacthHairPrice(), bacth.getBacthDepartmentPrice()), 4));
                         }
-                    } ;
-                    bacth.setSumTaskPrice(sumTaskPrice);
-                    if (bacth.getFlag() == 0) {
+                        // 更新批次
+                        bacthDao.save(bacth);
+                    } else {
+                        Quantitative quantitative = task.getQuantitative();
+                        Double sumTaskPrice = 0.0;
+                        // 计算出该批次下所有人的实际成本总和
+                        CopyOnWriteArraySet<Task> taskset = new CopyOnWriteArraySet<Task>(quantitative.getTasks());
+                        for (Task ta : taskset) {
+                            // 排除要删除的任务id
+                            if (!ta.getId().equals(id)) {
+                                sumTaskPrice += ta.getTaskPrice();
+                            } else {
+                                dao.delete(ta);
+                                quantitative.getTasks().remove(ta);
+                            }
+                        } ;
+                        quantitative.setSumTaskPrice(sumTaskPrice);
                         // 计算出该批次的地区差价
-                        bacth.setRegionalPrice(NumUtils.round(ProTypeUtils.sumRegionalPrice(bacth.getSumTaskPrice(),
-                            bacth.getBacthHairPrice(), bacth.getBacthDepartmentPrice()), 4));
+                        quantitative.setRegionalPrice(
+                            NumUtils.round(ProTypeUtils.sumRegionalPrice(quantitative.getSumTaskPrice(),
+                                quantitative.getOutPrice(), quantitative.getDepartmentPrice()), 4));
+                        // 更新批次
+                        quantitativeService.save(quantitative);
                     }
-                    // 更新批次
-                    bacthDao.save(bacth);
+
                 } ;
             }
         }
@@ -658,27 +682,27 @@ public class TaskServiceImpl extends BaseServiceImpl<Task, Long> implements Task
         Date orderTimeEnd = DatesUtil.getLastDayOftime(task.getAllotTime());
         // 正式员工出勤记录ids
         String[] idStrings = task.getIds().split(",");
-        List<Long> idsList = Arrays.asList(idStrings).stream().filter(a->!StringUtils.isEmpty(a)).map(a -> Long.parseLong(a)).collect(Collectors.toList());
+        List<Long> idsList = Arrays.asList(idStrings).stream().filter(a -> !StringUtils.isEmpty(a))
+            .map(a -> Long.parseLong(a)).collect(Collectors.toList());
         // 借调员工出勤记录ids
         String[] loanIdsStrings = task.getLoanIds().split(",");
-        List<Long> loanIdsList =
-            Arrays.asList(loanIdsStrings).stream().filter(a->!StringUtils.isEmpty(a)).map(a -> Long.parseLong(a)).collect(Collectors.toList());
+        List<Long> loanIdsList = Arrays.asList(loanIdsStrings).stream().filter(a -> !StringUtils.isEmpty(a))
+            .map(a -> Long.parseLong(a)).collect(Collectors.toList());
         // 临时员工出勤记录ids
         String[] temporaryIds = task.getTemporaryIds().split(",");
-        List<Long> temporaryIdList =
-            Arrays.asList(temporaryIds).stream().filter(a->!StringUtils.isEmpty(a)).map(a -> Long.parseLong(a)).collect(Collectors.toList());
+        List<Long> temporaryIdList = Arrays.asList(temporaryIds).stream().filter(a -> !StringUtils.isEmpty(a))
+            .map(a -> Long.parseLong(a)).collect(Collectors.toList());
         // 正式员工出勤记录
-        List<AttendancePay> attendancePayList = attendancePayDao.findByIdInAndTypeAndAllotTimeBetween(idsList,
-            2, orderTimeBegin, orderTimeEnd);
+        List<AttendancePay> attendancePayList =
+            attendancePayDao.findByIdInAndTypeAndAllotTimeBetween(idsList, 2, orderTimeBegin, orderTimeEnd);
         // 借调员工出勤记录
-        List<Temporarily> loanList =
-            temporarilyDao.findByIdInAndTemporarilyDateAndType(loanIdsList, orderTimeBegin, 2);
+        List<Temporarily> loanList = temporarilyDao.findByIdInAndTemporarilyDateAndType(loanIdsList, orderTimeBegin, 2);
         // 临时员工出勤记录
         List<Temporarily> temporarilyList =
             temporarilyDao.findByIdInAndTemporarilyDateAndType(temporaryIdList, orderTimeBegin, 2);
         // 总人数
         int userCount = idStrings.length + loanIdsStrings.length + temporaryIds.length;
-        //量化单
+        // 量化单
         Quantitative quantitative = quantitativeService.findOne(task.getQuantitativeId());
         List<PayB> payBList = new ArrayList<>();
         // 将工序分成多个任务
@@ -794,9 +818,9 @@ public class TaskServiceImpl extends BaseServiceImpl<Task, Long> implements Task
             quantitative.setStatus(1);
             quantitative.setStatusTime(task.getAllotTime());
         }
-        //量化单工序总时长
+        // 量化单工序总时长
         double sumSingleTime = quantitative.getTasks().stream().mapToDouble(Task::getSingleTime).sum();
-        double bacthDepartmentPrice = ProTypeUtils.sumProTypePrice(sumSingleTime,2);
+        double bacthDepartmentPrice = ProTypeUtils.sumProTypePrice(sumSingleTime, 2);
         quantitative.setDepartmentPrice(bacthDepartmentPrice);
         // 总任务时长
         double sumTaskTime = quantitative.getTasks().stream().mapToDouble(Task::getTaskTime).sum();
@@ -812,7 +836,7 @@ public class TaskServiceImpl extends BaseServiceImpl<Task, Long> implements Task
     }
 
     @Override
-    public void checkTask(Task task,String processes) {
+    public void checkTask(Task task, String processes) {
         Quantitative quantitative = quantitativeService.findOne(task.getQuantitativeId());
         if (!StringUtils.isEmpty(processes)) {
             JSONArray jsonArray = JSON.parseArray(processes);
