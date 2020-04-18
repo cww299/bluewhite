@@ -153,6 +153,12 @@ public class Quantitative extends BaseEntity<Long> {
     private BaseData packagMethod;
     
     /**
+     * 单个包装物，包装产品数量
+     */
+    @Column(name = "product_count")
+    private Integer productCount;
+    
+    /**
      * 备注
      */
     @Column(name = "remarks")
@@ -275,7 +281,15 @@ public class Quantitative extends BaseEntity<Long> {
 	
 	
 	
-	public Date getStatusTime() {
+	public Integer getProductCount() {
+        return productCount;
+    }
+
+    public void setProductCount(Integer productCount) {
+        this.productCount = productCount;
+    }
+
+    public Date getStatusTime() {
         return statusTime;
     }
 

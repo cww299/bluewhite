@@ -75,7 +75,7 @@ public class ProcessesServiceImpl extends BaseServiceImpl<Processes, Long> imple
         Quantitative quantitative = quantitativeService.findOne(quantitativeId);
         newProcessesList.forEach(p->{
             // 获取该工序的已分配的任务数量
-            int surplusCount = quantitative.getTasks().stream().filter(Task -> Task.getProcessesId().equals(id))
+            int surplusCount = quantitative.getTasks().stream().filter(Task -> Task.getProcessesId().equals(p.getId()))
                 .mapToInt(Task::getNumber).sum();
             p.setSurplusCount(quantitative.getNumber()-surplusCount);
         });

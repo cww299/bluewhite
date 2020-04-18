@@ -13,6 +13,7 @@ import com.bluewhite.common.entity.CommonResponse;
 import com.bluewhite.common.utils.apiUtil.ApiUtil;
 
 import cn.hutool.core.map.MapUtil;
+import cn.hutool.json.JSONObject;
 
 /**
  * @author ZhangLiang
@@ -31,7 +32,7 @@ public class SmOrderAction {
          if (MapUtil.isEmpty(paramMap)) {
              throw new ServiceException("参数不能为空");
          };
-         return ApiUtil.userApi(paramMap, ApiUtil.userApiExtOrderlist);
+         return ApiUtil.useApiCommonResponse(paramMap, ApiUtil.userApiExtOrderlist);
      }
     
      /**
@@ -45,8 +46,72 @@ public class SmOrderAction {
          if (MapUtil.isEmpty(paramMap)) {
              throw new ServiceException("参数不能为空");
          };
-         return ApiUtil.userApi(paramMap, ApiUtil.userApiExtOrderListGoods);
+         return ApiUtil.useApiCommonResponse(paramMap, ApiUtil.userApiExtOrderListGoods);
      }
+     
+     
+     /**
+      * 获取所有用户（获取所有分销商）
+      * 
+      * isSeller true
+      */
+     @RequestMapping(value = "/user/apiExtUser/list", method = RequestMethod.GET)
+     @ResponseBody
+     public CommonResponse userApiExtUserList(@RequestParam HashMap<String, Object> paramMap) {
+         if (MapUtil.isEmpty(paramMap)) {
+             throw new ServiceException("参数不能为空");
+         };
+         return ApiUtil.useApiCommonResponse(paramMap, ApiUtil.userApiExtUserList);
+     }
+     
+     
+     /**
+      *  用户发展关系
+      *  邀请人id  uidm
+      *  获取分销商团队人数统计(根据时间  dateAddBegin   dateAddEnd)
+      *  level  直接发展为1，间接发展为2
+      */
+     @RequestMapping(value = "/user/apiExtUserInviter/list", method = RequestMethod.GET)
+     @ResponseBody
+     public CommonResponse userApiExtUserInviterList(@RequestParam HashMap<String, Object> paramMap) {
+         if (MapUtil.isEmpty(paramMap)) {
+             throw new ServiceException("参数不能为空");
+         };
+         return ApiUtil.useApiCommonResponse(paramMap, ApiUtil.userApiExtUserInviterList);
+     }
+     
+     /**
+      *  用户佣金明细
+      *  分销商一段时间内的销售额
+      *  uidm 收入用户编号
+      *  uids 消费用户编号
+      *  
+      *  unit 0 现金返佣  1 积分返佣
+      *  
+      *  level 发展级别，1，2，3
+      *  
+      *  
+      *  个人 团队
+      */
+     @RequestMapping(value = "/user/saleDistributionCommisionLog/list", method = RequestMethod.GET)
+     @ResponseBody
+     public CommonResponse userSaleDistributionCommisionLogList(@RequestParam HashMap<String, Object> paramMap) {
+         CommonResponse commonResponse = new CommonResponse();
+         if (MapUtil.isEmpty(paramMap)) {
+             throw new ServiceException("参数不能为空");
+         };
+         JSONObject jSONObject = ApiUtil.useApi(paramMap, ApiUtil.userSaleDistributionCommisionLogList);
+         JSONObject obj = (JSONObject)jSONObject.getObj("data");
+         //佣金明细
+         JSONObject result =  (JSONObject)obj.get("result");
+         //
+         JSONObject userMapm =  (JSONObject)obj.get("userMapm");
+         
+         JSONObject userMaps = (JSONObject)obj.get("userMaps");
+         
+         return commonResponse;
+     }
+     
 
 
 }

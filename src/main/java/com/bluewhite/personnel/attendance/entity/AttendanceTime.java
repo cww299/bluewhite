@@ -166,10 +166,17 @@ public class AttendanceTime extends BaseEntity<Long> {
     private Double belateTime;
 
     /**
-     * 详情
+     * 请假详情
      */
     @Column(name = "holiday_detail")
     private String holidayDetail;
+    
+    /**
+     * 调休事项详情
+     */
+    @Column(name = "take_details")
+    private String takeDetails;
+    
     /**
      * 员工姓名
      */
@@ -204,6 +211,16 @@ public class AttendanceTime extends BaseEntity<Long> {
      */
     @Transient
     private Date orderTimeEnd;
+    
+    
+
+    public String getTakeDetails() {
+        return takeDetails;
+    }
+
+    public void setTakeDetails(String takeDetails) {
+        this.takeDetails = takeDetails;
+    }
 
     public Double getDutytimMinute() {
         return dutytimMinute;

@@ -11,6 +11,7 @@ import javax.persistence.Table;
 import javax.persistence.Transient;
 
 import com.bluewhite.base.BaseEntity;
+import com.bluewhite.basedata.entity.BaseData;
 
 /**
  * @author ZhangLiang
@@ -64,12 +65,41 @@ public class MantissaLiquidation extends BaseEntity<Long>{
     private String type;
     
     /**
+     * 仓库种类id
+     */
+    @Column(name = "warehouse_type_id")
+    private Long warehouseTypeId;
+
+    /**
+     * 仓库种类
+     */
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "warehouse_type_id", referencedColumnName = "id", insertable = false, updatable = false)
+    private BaseData warehouseType;
+    
+    /**
      * 数量
      */
     @Transient
     private Integer surplusNumber;
     
     
+
+    public Long getWarehouseTypeId() {
+        return warehouseTypeId;
+    }
+
+    public void setWarehouseTypeId(Long warehouseTypeId) {
+        this.warehouseTypeId = warehouseTypeId;
+    }
+
+    public BaseData getWarehouseType() {
+        return warehouseType;
+    }
+
+    public void setWarehouseType(BaseData warehouseType) {
+        this.warehouseType = warehouseType;
+    }
 
     public Integer getSurplusNumber() {
         return surplusNumber;
