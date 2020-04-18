@@ -104,6 +104,13 @@ public interface AttendanceService extends BaseCRUDService<Attendance, Long> {
 	public List<Attendance> findByUserIdInAndTimeBetween(List<Long> userLong, Date startTime, Date endTime);
 	
 	/**
+     * 根据ids
+     * 
+     * @param userLong
+     */
+    public List<Attendance> findByIdIn(List<Long> id);
+	
+	/**
 	 * 根据员工id和打卡时间和打卡地点来源查找
 	 * 
 	 * @param userId
