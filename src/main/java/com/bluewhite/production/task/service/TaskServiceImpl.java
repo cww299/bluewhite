@@ -677,7 +677,7 @@ public class TaskServiceImpl extends BaseServiceImpl<Task, Long> implements Task
 
     @Override
     @Transactional
-    public void addTaskPack(Task task, boolean isFromMobile, String processesJson,int productCount) {
+    public void addTaskPack(Task task, boolean isFromMobile, String processesJson,int productCount,long warehouseTypeId) {
         Date orderTimeBegin = DatesUtil.getfristDayOftime(task.getAllotTime());
         Date orderTimeEnd = DatesUtil.getLastDayOftime(task.getAllotTime());
         // 正式员工出勤记录ids
@@ -705,6 +705,7 @@ public class TaskServiceImpl extends BaseServiceImpl<Task, Long> implements Task
         // 量化单
         Quantitative quantitative = quantitativeService.findOne(task.getQuantitativeId());
         quantitative.setProductCount(productCount);
+        quantitative.setWarehouseTypeId(warehouseTypeId);
         List<PayB> payBList = new ArrayList<>();
         // 将工序分成多个任务
         if (!StringUtils.isEmpty(processesJson)) {
