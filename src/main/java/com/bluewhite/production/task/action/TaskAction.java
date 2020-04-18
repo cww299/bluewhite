@@ -132,14 +132,14 @@ public class TaskAction {
      */
     @RequestMapping(value = "/task/addTaskPack", method = RequestMethod.POST)
     @ResponseBody
-    public CommonResponse addTaskPack(HttpServletRequest request,Task task, String processesJson,int productCount,long warehouseTypeId) {
+    public CommonResponse addTaskPack(HttpServletRequest request,Task task, String processesJson,int productCount,long packagMethodId) {
         CommonResponse cr = new CommonResponse();
         // 新增
         if (!StringUtils.isEmpty(task.getIds()) 
             || !StringUtils.isEmpty(task.getTemporaryIds()) 
             || !StringUtils.isEmpty(task.getLoanIds())) {
             taskService.checkTask(task,processesJson);
-            taskService.addTaskPack(task,UnUtil.isFromMobile(request),processesJson,productCount,warehouseTypeId);
+            taskService.addTaskPack(task,UnUtil.isFromMobile(request),processesJson,productCount,packagMethodId);
             cr.setMessage("任务分配成功");
         } else {
             cr.setCode(ErrorCode.ILLEGAL_ARGUMENT.getCode());
@@ -314,7 +314,7 @@ public class TaskAction {
                         for (int i = 0; i < idArr.length; i++) {
                             Map<String, Object> userMap = new HashMap<>();
                             Long id = Long.parseLong(idArr[i]);
-                            AttendancePay attendancePay =  attendancePayDao.findOne(id);
+                            AttendancePay attendancePay = attendancePayDao.findOne(id);
                             userMap.put("id", attendancePay.getUser().getId());
                             userMap.put("userName", attendancePay.getUser().getUserName());
                             list.add(userMap);
