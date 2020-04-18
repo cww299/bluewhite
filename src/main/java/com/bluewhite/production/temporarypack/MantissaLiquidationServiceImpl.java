@@ -9,6 +9,8 @@ import org.springframework.stereotype.Service;
 import com.bluewhite.base.BaseServiceImpl;
 import com.bluewhite.common.BeanCopyUtils;
 import com.bluewhite.common.Constants;
+import com.bluewhite.common.SessionManager;
+import com.bluewhite.common.entity.CurrentUser;
 import com.bluewhite.common.entity.PageParameter;
 import com.bluewhite.common.entity.PageResult;
 import com.bluewhite.common.utils.DatesUtil;
@@ -46,6 +48,15 @@ public class MantissaLiquidationServiceImpl extends BaseServiceImpl<MantissaLiqu
 
     @Override
     public PageResult<MantissaLiquidation> findPages(Map<String, Object> params, PageParameter page) {
+        CurrentUser cu = SessionManager.getUserSession();
+        //蓝白仓库
+        if(cu.getRole().contains("stickBagAccount") || cu.getRole().contains("stickBagStick") ) {
+            params.put("warehouseTypeId", 274);
+        }
+        //11号仓库
+        if(cu.getRole().contains("packScene") || cu.getRole().contains("elevenSend")) {
+            params.put("warehouseTypeId", 275); 
+        }
         PageResult<MantissaLiquidation> result = findAll(page, params);
         result.getRows().stream().forEach(m -> {
             List<UnderGoods> list = underGoodsDao.findByMantissaLiquidationId(m.getId());

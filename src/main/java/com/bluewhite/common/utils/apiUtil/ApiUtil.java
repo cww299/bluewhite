@@ -59,7 +59,6 @@ public class ApiUtil {
     public final static String userApiExtOrderListGoods = "/user/apiExtOrder/list/goods";
     /**
      * 用户列表
-     * 
      */
     public final static String userApiExtUserList = "/user/apiExtUser/list";
     
@@ -80,7 +79,7 @@ public class ApiUtil {
     /**
      * 返回数据格式化 url 接口地址 paramMap参数
      */
-    public static CommonResponse userApi(HashMap<String, Object> paramMap, String url) {
+    public static CommonResponse useApiCommonResponse(HashMap<String, Object> paramMap, String url) {
         CommonResponse commonResponse = new CommonResponse();
         String result = HttpRequest.post(API_URl + url).header("X-Token", loginGetToken())// 头信息，多个头信息多次调用此方法即可
             .form(paramMap)// 表单内容
@@ -91,6 +90,17 @@ public class ApiUtil {
         commonResponse.setMessage(jSONObject.getStr("msg"));
         return commonResponse;
     }
+    
+    /**
+     * 返回数据格式化 url 接口地址 paramMap参数
+     */
+    public static JSONObject useApi(HashMap<String, Object> paramMap, String url) {
+        String result = HttpRequest.post(API_URl + url).header("X-Token", loginGetToken())// 头信息，多个头信息多次调用此方法即可
+            .form(paramMap)// 表单内容
+            .execute().body();
+        return JSONUtil.parseObj(result);
+    }
+    
 
     /**
      * 登录获取token
@@ -111,7 +121,7 @@ public class ApiUtil {
 
     public static void main(String[] args) {
         HashMap<String, Object> paramMap = new HashMap<>();
-        System.out.println(userApi(paramMap, userApiExtOrderListGoods).getData());
+        System.out.println(useApiCommonResponse(paramMap, userApiExtUserList).getData());
     }
 
 }

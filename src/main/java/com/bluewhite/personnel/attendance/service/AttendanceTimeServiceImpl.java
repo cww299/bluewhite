@@ -780,6 +780,7 @@ public class AttendanceTimeServiceImpl extends BaseServiceImpl<AttendanceTime, L
                                 at.setBelate(0);
                                 at.setBelateTime(0.0);
                             }
+                            at.setTakeDetails(al.getHolidayDetail());
                         }
                     }
                 }

@@ -1,6 +1,5 @@
 package com.bluewhite.personnel.attendance.entity;
 
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -20,6 +19,9 @@ import com.bluewhite.common.utils.NumUtils;
 import com.bluewhite.common.utils.StringUtil;
 import com.bluewhite.system.user.entity.User;
 import com.fasterxml.jackson.annotation.JsonFormat;
+
+import cn.hutool.core.date.DateUtil;
+import cn.hutool.core.util.StrUtil;
 
 /**
  * 考勤汇总列总表，按月按员工汇总（员工每月一条汇总数据）
@@ -143,6 +145,12 @@ public class AttendanceCollect extends BaseEntity<Long>{
      */
     @Column(name = "duty_details")
     private String dutyDetails="";
+    
+    /**
+     * 调休事项详情
+     */
+    @Column(name = "take_details")
+    private String takeDetails="";
 	
 	/**
 	 * 备注
@@ -192,7 +200,6 @@ public class AttendanceCollect extends BaseEntity<Long>{
     
 	//有参构造，直接传入AttendanceTime的list，计算出汇总后的数据
     public AttendanceCollect (List<AttendanceTime> list){
-    	SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
     	time = list.get(0).getTime();
     	userId = list.get(0).getUserId();
     	turnWork =  list.stream().filter(AttendanceTime->AttendanceTime.getTurnWorkTime()!=null).mapToDouble(AttendanceTime::getTurnWorkTime).sum();
@@ -228,28 +235,43 @@ public class AttendanceCollect extends BaseEntity<Long>{
     	overtime = NumUtils.sum(productionOvertime,ordinaryOvertime);
     	//迟到详情
     	List<AttendanceTime> belateAttendanceTime = list.stream().filter(AttendanceTime->AttendanceTime.getBelate()==1).collect(Collectors.toList());
-    	belateAttendanceTime.forEach(at->{
-    					belateDetails += formatter.format(at.getTime())+"迟到"+ at.getBelateTime().intValue()+"分钟,";
-    				}
-    			);
-    	belateDetails = "共迟到"+belateAttendanceTime.size()+"次："+belateDetails;
+    	String templateBelate = "{}迟到{}分钟";
+    	belateDetails = belateAttendanceTime.stream().map(at-> StrUtil.format(templateBelate, DateUtil.format(at.getTime(),"yyyy-MM-dd"),at.getBelateTime()) ).collect(Collectors.joining(","));
+    	if(StrUtil.isNotBlank(belateDetails)) {
+    	    belateDetails = "共迟到"+belateAttendanceTime.size()+"次:" + belateDetails;
+    	}
     	//请假详情
-    	list.stream().filter(AttendanceTime->AttendanceTime.getHolidayDetail()!=null).collect(Collectors.toList())
-    	.stream().filter(StringUtil.distinctByKey(b -> b.getHolidayDetail())).forEach(at->{
-    					leaveDetails += at.getHolidayDetail()+",";
-    	});
+    	list.stream().filter(AttendanceTime-> StrUtil.isNotBlank(AttendanceTime.getHolidayDetail()))
+    	.collect(Collectors.toList())
+    	.stream()
+    	.filter(StringUtil.distinctByKey(b -> b.getHolidayDetail()))
+    	.forEach(at->{leaveDetails += at.getHolidayDetail()+",";});
     	//调休详情
-    	
+	   list.stream().filter(AttendanceTime-> StrUtil.isNotBlank(AttendanceTime.getTakeDetails()))
+       .collect(Collectors.toList())
+       .stream()
+       .filter(StringUtil.distinctByKey(b -> b.getTakeDetails()))
+       .forEach(at->{takeDetails += at.getTakeDetails()+",";});
     	//缺勤详情
-    	
-    	allWork = NumUtils.sum(turnWork, overtime);
+       List<AttendanceTime> dutyAttendanceTime = list.stream().filter(AttendanceTime->AttendanceTime.getDutytime()!=0).collect(Collectors.toList());
+       String templateDuty = "{}缺勤{}小时";
+       dutyDetails = dutyAttendanceTime.stream().map(at-> StrUtil.format(templateDuty, DateUtil.format(at.getTime(),"yyyy-MM-dd"),at.getDutytime()) ).collect(Collectors.joining(","));
+       allWork = NumUtils.sum(turnWork, overtime);
     }
 	
     
     
     
 
-	public String getDutyDetails() {
+	public String getTakeDetails() {
+        return takeDetails;
+    }
+
+    public void setTakeDetails(String takeDetails) {
+        this.takeDetails = takeDetails;
+    }
+
+    public String getDutyDetails() {
         return dutyDetails;
     }
 

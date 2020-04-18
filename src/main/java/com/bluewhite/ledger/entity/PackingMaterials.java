@@ -39,20 +39,6 @@ public class PackingMaterials extends BaseEntity<Long>{
 	@Column(name = "packaging_count")
 	private Integer packagingCount;
 	
-	/**
-     * 单个包装物，包装产品数量
-     */
-    @Column(name = "product_count")
-    private Integer productCount;
-    
-    
-    public Integer getProductCount() {
-        return productCount;
-    }
-
-    public void setProductCount(Integer productCount) {
-        this.productCount = productCount;
-    }
 
     public Long getPackagingId() {
 		return packagingId;

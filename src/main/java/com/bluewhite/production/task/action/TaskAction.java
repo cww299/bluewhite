@@ -132,14 +132,14 @@ public class TaskAction {
      */
     @RequestMapping(value = "/task/addTaskPack", method = RequestMethod.POST)
     @ResponseBody
-    public CommonResponse addTaskPack(HttpServletRequest request,Task task, String processesJson) {
+    public CommonResponse addTaskPack(HttpServletRequest request,Task task, String processesJson,int productCount,long warehouseTypeId) {
         CommonResponse cr = new CommonResponse();
         // 新增
         if (!StringUtils.isEmpty(task.getIds()) 
             || !StringUtils.isEmpty(task.getTemporaryIds()) 
             || !StringUtils.isEmpty(task.getLoanIds())) {
             taskService.checkTask(task,processesJson);
-            taskService.addTaskPack(task,UnUtil.isFromMobile(request),processesJson);
+            taskService.addTaskPack(task,UnUtil.isFromMobile(request),processesJson,productCount,warehouseTypeId);
             cr.setMessage("任务分配成功");
         } else {
             cr.setCode(ErrorCode.ILLEGAL_ARGUMENT.getCode());
@@ -364,37 +364,37 @@ public class TaskAction {
      */
     @RequestMapping(value = "/task/pickTaskPerformance", method = RequestMethod.GET)
     @ResponseBody
-    public CommonResponse pickTaskPerformance(String procedureName) {
+    public CommonResponse pickTaskPerformance(String name) {
         CommonResponse cr = new CommonResponse();
         List<Map<String, Object>> mapList = ProTypeUtils.pickTaskPerformance();
-        if (!StringUtils.isEmpty(procedureName)) {
-                if (procedureName.indexOf("发货位堆放") != -1 || procedureName.indexOf("推包到发货位") != -1
-                    || procedureName.indexOf("推箱到发货位") != -1) {
+        if (!StringUtils.isEmpty(name)) {
+                if (name.indexOf("发货位堆放") != -1 || name.indexOf("推包到发货位") != -1
+                    || name.indexOf("推箱到发货位") != -1) {
                     mapList.stream().forEach(m -> {
                         if (String.valueOf(m.get("name")).equals("推货工序")) {
                             m.put("checked", 1);
                         }
                     });
                 }
-                if (procedureName.indexOf("写编码") != -1) {
+                if (name.indexOf("写编码") != -1) {
                     mapList.stream().forEach(m -> {
                         if (String.valueOf(m.get("name")).equals("精细填写工序")) {
                             m.put("checked", 1);
                         }
                     });
                 }
-                if (procedureName.indexOf("大包堆放原打包位") != -1 || procedureName.indexOf("压包") != -1
-                    || procedureName.indexOf("点数") != -1 || procedureName.indexOf("绞口") != -1
-                    || procedureName.indexOf("套袋") != -1 || procedureName.indexOf("封箱") != -1
-                    || procedureName.indexOf("封空箱") != -1 || procedureName.indexOf("原打包位") != -1
-                    || procedureName.indexOf("推箱") != -1 || procedureName.indexOf("码包") != -1) {
+                if (name.indexOf("大包堆放原打包位") != -1 || name.indexOf("压包") != -1
+                    || name.indexOf("点数") != -1 || name.indexOf("绞口") != -1
+                    || name.indexOf("套袋") != -1 || name.indexOf("封箱") != -1
+                    || name.indexOf("封空箱") != -1 || name.indexOf("原打包位") != -1
+                    || name.indexOf("推箱") != -1 || name.indexOf("码包") != -1) {
                     mapList.stream().forEach(m -> {
                         if (String.valueOf(m.get("name")).equals("装箱装包工序")) {
                             m.put("checked", 1);
                         }
                     });
                 }
-                if (procedureName.indexOf("上车") != -1) {
+                if (name.indexOf("上车") != -1) {
                     mapList.stream().forEach(m -> {
                         if (String.valueOf(m.get("name")).equals("上下车力工工序")) {
                             m.put("checked", 1);

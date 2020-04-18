@@ -87,13 +87,13 @@ public class SendOrder extends BaseEntity<Long> {
     private BaseData logistics;
     
     /**
-     * 外包装方式id
+     * 外包装规格id
      */
     @Column(name = "outerPackaging_id")
     private Long outerPackagingId;
 
     /**
-     * 外包装方式
+     * 外包装规格
      */
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "outerPackaging_id", referencedColumnName = "id", insertable = false, updatable = false)
