@@ -2,7 +2,6 @@ package com.bluewhite.production.task.service;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArraySet;
@@ -704,7 +703,7 @@ public class TaskServiceImpl extends BaseServiceImpl<Task, Long> implements Task
         if (!isFromMobile) {
             attendancePayList = attendancePayDao.findByIdInAndTypeAndAllotTimeBetween(idsList, 2, orderTimeBegin, orderTimeEnd);
         }else {
-            attendanceList  = attendanceService.findByUserIdInAndTimeBetween(idsList, orderTimeBegin, orderTimeEnd);
+            attendanceList  = attendanceService.findByIdIn(idsList);
         }
         // 借调员工出勤记录
         List<Temporarily> loanList = temporarilyDao.findByIdInAndTemporarilyDateAndType(loanIdsList, orderTimeBegin, 2);
