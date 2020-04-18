@@ -1,7 +1,6 @@
 package com.bluewhite.production.processes.service;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -14,7 +13,6 @@ import com.bluewhite.common.ServiceException;
 import com.bluewhite.common.entity.PageParameter;
 import com.bluewhite.common.entity.PageResult;
 import com.bluewhite.common.utils.NumUtils;
-import com.bluewhite.common.utils.ReflectUtil;
 import com.bluewhite.production.processes.dao.ProcessesDao;
 import com.bluewhite.production.processes.entity.Processes;
 import com.bluewhite.production.task.entity.Task;

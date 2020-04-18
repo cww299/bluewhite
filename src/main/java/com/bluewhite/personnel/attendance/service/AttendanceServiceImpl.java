@@ -338,4 +338,12 @@ public class AttendanceServiceImpl extends BaseServiceImpl<Attendance, Long> imp
 		return dao.findBySourceMachineAndTimeBetween(sourceMachine,startTime,endTime);
 	}
 
+    /* (non-Javadoc)
+     * @see com.bluewhite.personnel.attendance.service.AttendanceService#findByIdIn(java.util.List)
+     */
+    @Override
+    public List<Attendance> findByIdIn(List<Long> id) {
+         return dao.findByIdIn(id);
+    }
+
 }

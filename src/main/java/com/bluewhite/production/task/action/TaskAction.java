@@ -22,13 +22,11 @@ import com.bluewhite.common.entity.ErrorCode;
 import com.bluewhite.common.entity.PageParameter;
 import com.bluewhite.common.utils.UnUtil;
 import com.bluewhite.finance.attendance.dao.AttendancePayDao;
-import com.bluewhite.finance.attendance.entity.AttendancePay;
 import com.bluewhite.production.bacth.entity.Bacth;
 import com.bluewhite.production.bacth.service.BacthService;
 import com.bluewhite.production.finance.dao.PayBDao;
 import com.bluewhite.production.finance.entity.PayB;
 import com.bluewhite.production.group.dao.TemporarilyDao;
-import com.bluewhite.production.group.entity.Temporarily;
 import com.bluewhite.production.procedure.entity.Procedure;
 import com.bluewhite.production.productionutils.constant.ProTypeUtils;
 import com.bluewhite.production.task.entity.Task;
@@ -51,22 +49,16 @@ public class TaskAction {
     private TemporaryUserService temporaryUserService;
     @Autowired
     private BacthService bacthService;
-    @Autowired
-    private TemporarilyDao temporarilyDao;
-    @Autowired
-    private AttendancePayDao attendancePayDao;
-    
+
     private ClearCascadeJSON clearCascadeJSON;
     {
         clearCascadeJSON = ClearCascadeJSON.get()
             .addRetainTerm(Task.class, "id", "remark", "userNames", "bacthNumber", "allotTime", "productName",
                 "userIds", "procedure", "procedureName", "number", "status", "expectTime", "expectTaskPrice",
                 "taskTime", "payB", "taskPrice", "taskActualTime", "type", "createdAt", "performance",
-                "performanceNumber", "performancePrice", "flag","quantitativeNumber","processesId","singleTime")
+                "performanceNumber", "performancePrice", "flag", "quantitativeNumber", "processesId", "singleTime")
             .addRetainTerm(Procedure.class, "id", "procedureTypeId");
     }
-    
-    
 
     /**
      * 质检获取任务加绩类型列表
@@ -119,27 +111,27 @@ public class TaskAction {
         }
         return cr;
     }
-    
-    
-    
+
     /**
-     *  量化单分配任务
+     * 量化单分配任务
      * 
      * @param request
-     * @param task  任务
-     * @param processes 工序json数据
+     * @param task
+     *            任务
+     * @param processes
+     *            工序json数据
      * @return
      */
     @RequestMapping(value = "/task/addTaskPack", method = RequestMethod.POST)
     @ResponseBody
-    public CommonResponse addTaskPack(HttpServletRequest request,Task task, String processesJson,int productCount,long packagMethodId) {
+    public CommonResponse addTaskPack(HttpServletRequest request, Task task, String processesJson, int productCount,
+        long packagMethodId) {
         CommonResponse cr = new CommonResponse();
         // 新增
-        if (!StringUtils.isEmpty(task.getIds()) 
-            || !StringUtils.isEmpty(task.getTemporaryIds()) 
+        if (!StringUtils.isEmpty(task.getIds()) || !StringUtils.isEmpty(task.getTemporaryIds())
             || !StringUtils.isEmpty(task.getLoanIds())) {
-            taskService.checkTask(task,processesJson);
-            taskService.addTaskPack(task,UnUtil.isFromMobile(request),processesJson,productCount,packagMethodId);
+            taskService.checkTask(task, processesJson);
+            taskService.addTaskPack(task, UnUtil.isFromMobile(request), processesJson, productCount, packagMethodId);
             cr.setMessage("任务分配成功");
         } else {
             cr.setCode(ErrorCode.ILLEGAL_ARGUMENT.getCode());
@@ -147,7 +139,6 @@ public class TaskAction {
         }
         return cr;
     }
-    
 
     /**
      * 修改任务
@@ -263,12 +254,9 @@ public class TaskAction {
     }
 
     /******** 一楼包装 *********/
-    
-    
 
     /**
-     * 查询该任务的所有领取人
-     * 通过查询考勤记录查询人员
+     * 查询该任务的所有领取人 通过查询考勤记录查询人员
      * 
      * @param request
      * @return
@@ -279,75 +267,13 @@ public class TaskAction {
         CommonResponse cr = new CommonResponse();
         List<Map<String, Object>> list = new ArrayList<>();
         if (taskId != null) {
-            Task task = taskService.findOne(taskId);
-            if(task.getBacthId()!=null) {
-                if (!StringUtils.isEmpty(task.getUserIds())) {
-                    String[] idArr = task.getUserIds().split(",");
-                    if (idArr.length > 0) {
-                        for (int i = 0; i < idArr.length; i++) {
-                            Map<String, Object> userMap = new HashMap<>();
-                            Long userid = Long.parseLong(idArr[i]);
-                            User user = userService.findOne(userid);
-                            userMap.put("id", user.getId());
-                            userMap.put("userName", user.getUserName());
-                            list.add(userMap);
-                        }
-                    }
-                }
-                if (!StringUtils.isEmpty(task.getTemporaryUserIds())) {
-                    String[] idArr = task.getTemporaryUserIds().split(",");
-                    if (idArr.length > 0) {
-                        for (int i = 0; i < idArr.length; i++) {
-                            Map<String, Object> userMap = new HashMap<>();
-                            Long userid = Long.parseLong(idArr[i]);
-                            TemporaryUser temporaryUser = temporaryUserService.findOne(userid);
-                            userMap.put("id", temporaryUser.getId());
-                            userMap.put("userName", temporaryUser.getUserName());
-                            list.add(userMap);
-                        }
-                    }
-                }
-            }else {
-                if (!StringUtils.isEmpty(task.getIds())) {
-                    String[] idArr = task.getIds().split(",");
-                    if (idArr.length > 0) {
-                        for (int i = 0; i < idArr.length; i++) {
-                            Map<String, Object> userMap = new HashMap<>();
-                            Long id = Long.parseLong(idArr[i]);
-                            AttendancePay attendancePay = attendancePayDao.findOne(id);
-                            userMap.put("id", attendancePay.getUser().getId());
-                            userMap.put("userName", attendancePay.getUser().getUserName());
-                            list.add(userMap);
-                        }
-                    }
-                }
-                if (!StringUtils.isEmpty(task.getTemporaryIds())) {
-                    String[] idArr = task.getTemporaryIds().split(",");
-                    if (idArr.length > 0) {
-                        for (int i = 0; i < idArr.length; i++) {
-                            Map<String, Object> userMap = new HashMap<>();
-                            Long id = Long.parseLong(idArr[i]);
-                            Temporarily  temporarily = temporarilyDao.findOne(id);
-                            userMap.put("id",temporarily.getTemporaryUser().getId());
-                            userMap.put("userName", temporarily.getTemporaryUser().getUserName());
-                            list.add(userMap);
-                        }
-                    }
-                }
-                if (!StringUtils.isEmpty(task.getLoanIds())) {
-                    String[] idArr = task.getLoanIds().split(",");
-                    if (idArr.length > 0) {
-                        for (int i = 0; i < idArr.length; i++) {
-                            Map<String, Object> userMap = new HashMap<>();
-                            Long id = Long.parseLong(idArr[i]);
-                            Temporarily  temporarily = temporarilyDao.findOne(id);
-                            userMap.put("id", temporarily.getUser().getId());
-                            userMap.put("userName", temporarily.getUser().getUserName());
-                            list.add(userMap);
-                        }
-                    }
-                }
-            }
+            List<PayB> listPayB = payBDao.findByTaskId(taskId);
+            listPayB.forEach(p->{
+                Map<String, Object> userMap = new HashMap<>();
+                userMap.put("id", p.getUserId());
+                userMap.put("userName", p.getUserName());
+                list.add(userMap);
+            });
             cr.setData(list);
             cr.setMessage("查询成功");
         } else {
@@ -356,8 +282,6 @@ public class TaskAction {
         }
         return cr;
     }
-    
-    
 
     /**
      * 获取任务加绩类型列表
@@ -368,39 +292,37 @@ public class TaskAction {
         CommonResponse cr = new CommonResponse();
         List<Map<String, Object>> mapList = ProTypeUtils.pickTaskPerformance();
         if (!StringUtils.isEmpty(name)) {
-                if (name.indexOf("发货位堆放") != -1 || name.indexOf("推包到发货位") != -1
-                    || name.indexOf("推箱到发货位") != -1) {
-                    mapList.stream().forEach(m -> {
-                        if (String.valueOf(m.get("name")).equals("推货工序")) {
-                            m.put("checked", 1);
-                        }
-                    });
-                }
-                if (name.indexOf("写编码") != -1) {
-                    mapList.stream().forEach(m -> {
-                        if (String.valueOf(m.get("name")).equals("精细填写工序")) {
-                            m.put("checked", 1);
-                        }
-                    });
-                }
-                if (name.indexOf("大包堆放原打包位") != -1 || name.indexOf("压包") != -1
-                    || name.indexOf("点数") != -1 || name.indexOf("绞口") != -1
-                    || name.indexOf("套袋") != -1 || name.indexOf("封箱") != -1
-                    || name.indexOf("封空箱") != -1 || name.indexOf("原打包位") != -1
-                    || name.indexOf("推箱") != -1 || name.indexOf("码包") != -1) {
-                    mapList.stream().forEach(m -> {
-                        if (String.valueOf(m.get("name")).equals("装箱装包工序")) {
-                            m.put("checked", 1);
-                        }
-                    });
-                }
-                if (name.indexOf("上车") != -1) {
-                    mapList.stream().forEach(m -> {
-                        if (String.valueOf(m.get("name")).equals("上下车力工工序")) {
-                            m.put("checked", 1);
-                        }
-                    });
-                }
+            if (name.indexOf("发货位堆放") != -1 || name.indexOf("推包到发货位") != -1 || name.indexOf("推箱到发货位") != -1) {
+                mapList.stream().forEach(m -> {
+                    if (String.valueOf(m.get("name")).equals("推货工序")) {
+                        m.put("checked", 1);
+                    }
+                });
+            }
+            if (name.indexOf("写编码") != -1) {
+                mapList.stream().forEach(m -> {
+                    if (String.valueOf(m.get("name")).equals("精细填写工序")) {
+                        m.put("checked", 1);
+                    }
+                });
+            }
+            if (name.indexOf("大包堆放原打包位") != -1 || name.indexOf("压包") != -1 || name.indexOf("点数") != -1
+                || name.indexOf("绞口") != -1 || name.indexOf("套袋") != -1 || name.indexOf("封箱") != -1
+                || name.indexOf("封空箱") != -1 || name.indexOf("原打包位") != -1 || name.indexOf("推箱") != -1
+                || name.indexOf("码包") != -1) {
+                mapList.stream().forEach(m -> {
+                    if (String.valueOf(m.get("name")).equals("装箱装包工序")) {
+                        m.put("checked", 1);
+                    }
+                });
+            }
+            if (name.indexOf("上车") != -1) {
+                mapList.stream().forEach(m -> {
+                    if (String.valueOf(m.get("name")).equals("上下车力工工序")) {
+                        m.put("checked", 1);
+                    }
+                });
+            }
         }
         cr.setData(mapList);
         cr.setMessage("查询成功");
@@ -412,7 +334,7 @@ public class TaskAction {
      */
     @RequestMapping(value = "/task/giveTaskPerformance", method = RequestMethod.POST)
     @ResponseBody
-    public CommonResponse giveTaskPerformance(String[] taskIds, String[] ids,String[] performance, 
+    public CommonResponse giveTaskPerformance(String[] taskIds, String[] ids, String[] performance,
         Double[] performanceNumber, Integer update) {
         CommonResponse cr = new CommonResponse();
         taskService.giveTaskPerformance(taskIds, ids, performance, performanceNumber, update);
