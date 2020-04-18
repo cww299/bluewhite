@@ -231,7 +231,7 @@ function(){
 			success: function(){
 				mytable.render({
 					elem:'#lookTable',
-					url: myutil.config.ctx+'/task/allTask',
+					url: myutil.config.ctx+'/task/allTask?quantitativeId='+data.id,
 					autoUpdate:{
 						deleUrl:'/task/delete',
 					},
