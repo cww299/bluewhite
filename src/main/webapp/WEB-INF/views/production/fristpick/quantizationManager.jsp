@@ -291,7 +291,7 @@ layui.config({
 				success:function(){
 					$('#taskNumberInput').val(trData.number);
 					$('#packMethodSelect').append(allPackMethodHtml);
-					$('#packMethodSelect').val(trData.packagMethod.id);
+					$('#packMethodSelect').val(trData.packagMethod?trData.packagMethod.id:"");
 					laydate.render({
 						elem:'#allotTime',
 						value: trData.time.split(' ')[0],
