@@ -52,13 +52,14 @@
   	<div class="layui-form-item">
   		<label class="layui-form-label">任务数量：</label>
   		<div class="layui-input-block">
-  			<input type="number" class="layui-input" name="taskNumber" lay-verify="number" id="taskNumberInput">
+  			<input type="number" class="layui-input" value="{{ d.number || "" }}"
+				name="taskNumber" lay-verify="number" id="taskNumberInput">
   		</div>
   	</div>
     <div class="layui-form-item">
   		<label class="layui-form-label">包装类型：</label>
   		<div class="layui-input-block">
-  			<select name="id" lay-verify="required" id="packMethodSelect"><option value=""></option></select>
+  			<select name="id" lay-verify="required" id="packMethodSelect" value={{ d.packagMethodId || "" }}><option value=""></option></select>
   		</div>
   	</div>
   	<p>工序：</p>
@@ -74,7 +75,8 @@
     <div class="layui-form-item">
 		<label class="layui-form-label" style="width: 70px;padding: 0px 18px;">单个OPP袋装个数</label>
 		<div class="layui-input-block">
-			<input type="number" class="layui-input" name="count" lay-verify="number" style="width: 100px;display: inline;">
+			<input type="number" class="layui-input" name="count" value={{ d.productCount || "" }} 
+					lay-verify="number" style="width: 100px;display: inline;">
 			<span class="layui-btn layui-btn-sm" lay-submit lay-filter="getProcess">获取工序</span>
 		</div>
 	</div>
@@ -223,10 +225,9 @@ layui.config({
 				offset:'50px',
 				shadeClose:true,
 				area:area,
-				content: `<div style="padding:15px;">
-						<table id="lookTable" lay-filter="lookTable"></table>
-					</div>
-				`,
+				content: '<div style="padding:15px;">'+
+						'<table id="lookTable" lay-filter="lookTable"></table>'+
+					'</div>',
 				success: function(){
 					mytable.render({
 						elem:'#lookTable',
@@ -284,12 +285,13 @@ layui.config({
 				area: isSmall?['100%','100%']:['800px',"80%"],
 				offset: isSmall?"0px":'20px',
 				title: trData.quantitativeNumber,
-				content: laytpl($('#ALLO_TPL').html()).render({}),
+				content: laytpl($('#ALLO_TPL').html()).render(trData),
 				btn:['确定','取消'],
 				btnAlign: 'c',
 				success:function(){
 					$('#taskNumberInput').val(trData.number);
 					$('#packMethodSelect').append(allPackMethodHtml);
+					$('#packMethodSelect').val(trData.packagMethod.id);
 					laydate.render({
 						elem:'#allotTime',
 						value: trData.time.split(' ')[0],
@@ -315,6 +317,9 @@ layui.config({
 							success:function(d){
 								var html = "<div class='processP'>当前任务数量：<b id='taskNumbers'>"+obj.field.taskNumber+"</b></div>"; 
 								html += "<table>";
+								html += '<tr class="processP">',
+								html += '<td><input type="checkbox" value="0" title="全选"  lay-skin="primary"'+
+									' lay-filter="choosedAllProcess"></td><td></td></tr>';
 								for(var i in d){
 									html += '<tr class="processP">',
 									html += '<td><input type="checkbox" value="'+d[i].id+'" data-name="'+d[i].name+'" title="'+d[i].name+
@@ -324,13 +329,25 @@ layui.config({
 									html += '</td></tr>';
 								}
 								$('#procedureTree').html(html+'</table>');
+								form.on('checkbox(choosedAllProcess)',function(obj,checked){
+									var checked = obj.elem.checked;
+									layui.each($('#procedureTree input[type="checkbox"]'),function(index,item){
+										var check = $(item).prop('checked');
+										var value = $(item).val();
+										if(value && check!=checked)
+											$(item).click();
+									})
+									form.render();
+								})
 								form.render();
 							}
 						})
 					})
+					if(trData.productCount && trData.number && trData.packagMethod.id)
+						$('span[lay-filter="getProcess"]').click();
 					form.render();
 				},
-				yes:function(){
+				yes:function(layerIndex){
 					var taskNumber = $('#taskNumbers').html();
 					var allotTime = $('#allotTime').val();
 					var ids = [],loanIds = [],temporaryIds=[];
@@ -344,8 +361,6 @@ layui.config({
 						text = "请选择分配人员";
 					if(text)
 						return myutil.emsg(text);
-					if($('#procedureTree input[type="checkbox"]:checked').length==0)
-						return myutil.emsg('请选择工序！');
 					var jsonData = [];
 					var isTrue = true;
 					layui.each($('#procedureTree input[type="checkbox"]:checked'),function(index,item){
@@ -354,17 +369,20 @@ layui.config({
 						var time =  $(item).data('time');
 						if(!time){
 							time = $(item).closest('tr').find('input[type="text"]').val();
-							if(!time){
+							if(!time && id!="0"){
 								isTrue = false;
 								return;
 							}
 						}
-						jsonData.push({
-							id: id,
-							name: name,
-							time: time,
-						})
+						if(id)
+							jsonData.push({
+								id: id,
+								name: name,
+								time: time,
+							})
 					})
+					if(jsonData.length==0)
+						return myutil.emsg('请选择工序！');
 					if(!isTrue)
 						return myutil.emsg('请填写工序时间！');
 					for(var i in userTreeId){
@@ -384,6 +402,8 @@ layui.config({
 					var data = {
 						quantitativeId: trData.id,
 						number: taskNumber,
+						productCount: $('input[name="count"]').val(),
+						packagMethodId:$ ('#packMethodSelect').val(),
 						allotTime: allotTime+" 00:00:00",
 						ids: ids.join(','),  	//正式
 						loanIds: loanIds.join(','),	//借调

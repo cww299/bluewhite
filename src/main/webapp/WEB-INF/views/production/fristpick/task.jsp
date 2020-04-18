@@ -697,7 +697,7 @@
 			      					  taskId:arr,
 								   }
 			      				$.ajax({
-									url:"${ctx}/task/taskUserPack ",
+									url:"${ctx}/task/taskUserPack",
 									data:data,
 									type:"GET",
 									beforeSend:function(){
