@@ -112,6 +112,7 @@ public class TaskAction {
 
     /**
      * 量化单分配任务
+     * 批量分配
      * 
      * @param request
      * @param task
@@ -123,17 +124,22 @@ public class TaskAction {
     @RequestMapping(value = "/task/addTaskPack", method = RequestMethod.POST)
     @ResponseBody
     public CommonResponse addTaskPack(HttpServletRequest request, Task task, String processesJson, int productCount,
-        long packagMethodId) {
+        long packagMethodId ,String quantitativeIds) {
         CommonResponse cr = new CommonResponse();
-        // 新增
-        if (!StringUtils.isEmpty(task.getIds()) || !StringUtils.isEmpty(task.getTemporaryIds())|| !StringUtils.isEmpty(task.getLoanIds())) {
-            taskService.checkTask(task, processesJson);
-            taskService.addTaskPack(task, UnUtil.isFromMobile(request), processesJson, productCount, packagMethodId);
-            cr.setMessage("任务分配成功");
-        } else {
+        if (StringUtils.isEmpty(task.getIds()) || StringUtils.isEmpty(task.getTemporaryIds())|| StringUtils.isEmpty(task.getLoanIds())) {
             cr.setCode(ErrorCode.ILLEGAL_ARGUMENT.getCode());
             cr.setMessage("领取人不能为空");
         }
+        // 批量新增
+        if(!StringUtils.isEmpty(quantitativeIds)) {
+            String[] idsArr = quantitativeIds.split(",");
+            for(String idString :idsArr) {
+                task.setQuantitativeId(Long.valueOf(idString));
+                taskService.checkTask(task, processesJson);
+                taskService.addTaskPack(task, UnUtil.isFromMobile(request), processesJson, productCount, packagMethodId);
+            }
+        }
+        cr.setMessage("任务分配成功");
         return cr;
     }
 
