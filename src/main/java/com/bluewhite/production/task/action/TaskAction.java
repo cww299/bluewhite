@@ -21,12 +21,10 @@ import com.bluewhite.common.entity.CommonResponse;
 import com.bluewhite.common.entity.ErrorCode;
 import com.bluewhite.common.entity.PageParameter;
 import com.bluewhite.common.utils.UnUtil;
-import com.bluewhite.finance.attendance.dao.AttendancePayDao;
 import com.bluewhite.production.bacth.entity.Bacth;
 import com.bluewhite.production.bacth.service.BacthService;
 import com.bluewhite.production.finance.dao.PayBDao;
 import com.bluewhite.production.finance.entity.PayB;
-import com.bluewhite.production.group.dao.TemporarilyDao;
 import com.bluewhite.production.procedure.entity.Procedure;
 import com.bluewhite.production.productionutils.constant.ProTypeUtils;
 import com.bluewhite.production.task.entity.Task;
@@ -128,8 +126,7 @@ public class TaskAction {
         long packagMethodId) {
         CommonResponse cr = new CommonResponse();
         // 新增
-        if (!StringUtils.isEmpty(task.getIds()) || !StringUtils.isEmpty(task.getTemporaryIds())
-            || !StringUtils.isEmpty(task.getLoanIds())) {
+        if (!StringUtils.isEmpty(task.getIds()) || !StringUtils.isEmpty(task.getTemporaryIds())|| !StringUtils.isEmpty(task.getLoanIds())) {
             taskService.checkTask(task, processesJson);
             taskService.addTaskPack(task, UnUtil.isFromMobile(request), processesJson, productCount, packagMethodId);
             cr.setMessage("任务分配成功");

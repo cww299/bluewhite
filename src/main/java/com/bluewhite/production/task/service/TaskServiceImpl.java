@@ -422,6 +422,10 @@ public class TaskServiceImpl extends BaseServiceImpl<Task, Long> implements Task
             if (param.getBacthId() != null) {
                 predicate.add(cb.equal(root.get("bacthId").as(Long.class), param.getBacthId()));
             }
+            // 按量化编号id过滤
+            if (param.getQuantitativeId() != null) {
+                predicate.add(cb.equal(root.get("quantitativeId").as(Long.class), param.getQuantitativeId()));
+            }
             // 按批次号
             if (!StringUtils.isEmpty(param.getBacthNumber())) {
                 predicate.add(cb.like(root.get("bacthNumber").as(String.class), "%" + param.getBacthNumber() + "%"));

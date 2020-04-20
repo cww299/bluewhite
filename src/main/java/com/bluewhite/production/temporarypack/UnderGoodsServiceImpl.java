@@ -196,6 +196,7 @@ public class UnderGoodsServiceImpl extends BaseServiceImpl<UnderGoods, Long> imp
     public int excelUnderGoods(ExcelListener excelListener) {
         List<Object> excelListenerList = excelListener.getData();
         List<UnderGoods> underGoodsList = new ArrayList<>();
+        CurrentUser cu = SessionManager.getUserSession();
         for (int i = 0; i < excelListenerList.size(); i++) {
             UnderGoods underGoods = new UnderGoods();
             UnderGoodsPoi cPoi = (UnderGoodsPoi)excelListenerList.get(i);
@@ -216,6 +217,15 @@ public class UnderGoodsServiceImpl extends BaseServiceImpl<UnderGoods, Long> imp
             if (cPoi.getNumber() == null) {
                 throw new ServiceException("当前导入excel第" + (i + 1) + "条商品的数量不存在，请先添加");
             }
+            //蓝白仓库
+            if(cu.getRole().contains("stickBagAccount")) {
+                underGoods.setWarehouseTypeId((long)274);
+            }
+            //11号仓库
+            if(cu.getRole().contains("packScene")) {
+                underGoods.setWarehouseTypeId((long)275);
+            }
+            underGoods.setStatus(0);
             underGoods.setNumber(cPoi.getNumber());
             underGoods.setBacthNumber(cPoi.getBacthNumber());
             underGoods.setAllotTime(cPoi.getAllotTime());
