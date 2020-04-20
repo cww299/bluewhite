@@ -865,6 +865,7 @@ public class TaskServiceImpl extends BaseServiceImpl<Task, Long> implements Task
     }
 
     @Override
+    @Transactional
     public void checkTask(Task task, String processes) {
         Quantitative quantitative = quantitativeService.findOne(task.getQuantitativeId());
         if (!StringUtils.isEmpty(processes)) {
@@ -883,5 +884,24 @@ public class TaskServiceImpl extends BaseServiceImpl<Task, Long> implements Task
             }
         }
     }
+    
+    
+    @Override
+    @Transactional
+    public void addTaskPackBatch(Task task, boolean isFromMobile, String processesJson, int productCount,
+        long packagMethodId,String quantitativeIds) {
+        // 批量新增
+        if(!StringUtils.isEmpty(quantitativeIds)) {
+            String[] idsArr = quantitativeIds.split(",");
+            for(String idString :idsArr) {
+                task.setQuantitativeId(Long.valueOf(idString));
+                checkTask(task, processesJson);
+                addTaskPack(task, isFromMobile, processesJson, productCount, packagMethodId);
+            }
+        }
+    }
+    
+    
+    
 
 }

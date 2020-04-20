@@ -109,5 +109,11 @@ public interface TaskService extends BaseCRUDService<Task, Long> {
      * @param task
      */
     public void checkTask(Task task,String processesJson);
+    
+    /**包装分配任务
+     * @param task
+     * @param fromMobile
+     */
+    public void addTaskPackBatch(Task task, boolean isFromMobile,String processesJson,int productCount,long packagMethodId,String quantitativeIds);
 
 }
