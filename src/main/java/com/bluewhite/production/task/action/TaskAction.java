@@ -130,15 +130,7 @@ public class TaskAction {
             cr.setCode(ErrorCode.ILLEGAL_ARGUMENT.getCode());
             cr.setMessage("领取人不能为空");
         }
-        // 批量新增
-        if(!StringUtils.isEmpty(quantitativeIds)) {
-            String[] idsArr = quantitativeIds.split(",");
-            for(String idString :idsArr) {
-                task.setQuantitativeId(Long.valueOf(idString));
-                taskService.checkTask(task, processesJson);
-                taskService.addTaskPack(task, UnUtil.isFromMobile(request), processesJson, productCount, packagMethodId);
-            }
-        }
+        taskService.addTaskPackBatch(task, UnUtil.isFromMobile(request), processesJson, productCount, packagMethodId,quantitativeIds);
         cr.setMessage("任务分配成功");
         return cr;
     }
