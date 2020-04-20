@@ -45,7 +45,7 @@
 </body>
 <script>
 var TPL = [
-	'<div class="layui-form layui-form-pane" style="padding:20px;">',
+	'<div class="layui-form layui-form-pane" style="padding:5px;">',
 		'<p style="display:none;"><button lay-submit lay-filter="sureAddOrder" id="sureAddOrder">确定</button></p>',
 		'<div class="layui-form-item" pane>',
 			'<label class="layui-form-label">下单时间</label>',
@@ -234,7 +234,7 @@ layui.config({
 					$('#productNameInput').unbind().on('click',function(){
 						var chooseProducyWin = layer.open({
 							type:1,
-							area:['700px','520px'],
+							area:['720px','520px'],
 							title:'商品选择',
 							content: TPL_CHOOSE_PRODUCT,
 							success:function(){
