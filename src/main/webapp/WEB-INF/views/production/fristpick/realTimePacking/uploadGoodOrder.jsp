@@ -70,7 +70,7 @@ var TPL = [
 			'<label class="layui-form-label">产品名</label>',
 			'<div class="layui-input-block">',
 				'<input class="layui-input" id="productNameInput" lay-verify="required" placeholder="点击进行选择商品" ', 
-					'value="{{ d.product?d.product.name:"" }}">',
+					'value="{{ d.product?d.product.name:"" }}" autocomplete="off" readonly>',
 			'</div>',
 		'</div>',
 		'<div class="layui-form-item" pane>',
@@ -234,13 +234,14 @@ layui.config({
 					$('#productNameInput').unbind().on('click',function(){
 						var chooseProducyWin = layer.open({
 							type:1,
-							area:['700px','700px'],
+							area:['700px','520px'],
 							title:'商品选择',
 							content: TPL_CHOOSE_PRODUCT,
 							success:function(){
 								mytable.render({
 									elem: '#productTable',
 									url: '${ctx}/productPages?type=2',
+									size:'sm',
 									cols:[[
 										{ title:'商品编号', field:'number',},
 										{ title:'商品名称', field:'name',},
