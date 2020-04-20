@@ -131,9 +131,9 @@ function(){
 			otherBtn:function(obj){
 				if(obj.event=="disbatch"){
 					var check = table.checkStatus('tableData').data;
-					if(check.length!=1)
-						return myutil.emsg("请选择一条数据分配");
-					disbatch(check[0]);
+					if(check.length==0)
+						return myutil.emsg("请选择数据分配");
+					disbatch(check);
 				}else if(obj.event=="lookover"){
 					var check = table.checkStatus('tableData').data;
 					if(check.length!=1)
@@ -279,7 +279,8 @@ function(){
 			}
 		})//later open end
 	}
-	function disbatch(trData){
+	function disbatch(check){
+		var trData = check[0];
 		layer.open({		//分配弹窗
 			type:1,
 			area: isSmall?['100%','100%']:['800px',"80%"],
@@ -420,8 +421,11 @@ function(){
 				}
 				if(ids.length==0 && temporaryIds.length==0 && loanIds==0)
 					return myutil.emsg("请选择分配人员！");
+				var allIds = [];
+				for(var i in check)
+					allIds.push(check[i].id)
 				var data = {
-					quantitativeId: trData.id,
+					quantitativeIds: allIds.join(','),
 					number: taskNumber,
 					productCount: $('input[name="count"]').val(),
 					packagMethodId:$ ('#packMethodSelect').val(),
