@@ -39,9 +39,10 @@ public class MantissaLiquidationServiceImpl extends BaseServiceImpl<MantissaLiqu
         } else {
             int count = dao.findByTimeBetween(DatesUtil.getfristDayOftime(mantissaLiquidation.getTime()),
                 DatesUtil.getLastDayOftime(mantissaLiquidation.getTime())).size();
-            mantissaLiquidation
-                .setMantissaNumber(Constants.LHTB + DateUtil.format(mantissaLiquidation.getTime(), "yyyyMMdd")
+            mantissaLiquidation.setMantissaNumber(Constants.LHTB + DateUtil.format(mantissaLiquidation.getTime(), "yyyyMMdd")
                     + StringUtil.get0LeftString((count + 1), 4));
+            UnderGoods underGoods = underGoodsDao.findOne(mantissaLiquidation.getUnderGoodsId());
+            mantissaLiquidation.setWarehouseTypeId(underGoods.getWarehouseTypeId());
             save(mantissaLiquidation);
         }
     }
