@@ -53,7 +53,7 @@
   		<label class="layui-form-label">任务数量：</label>
   		<div class="layui-input-block">
   			<input type="number" class="layui-input" value="{{ d.number || "" }}"
-				name="taskNumber" lay-verify="number" id="taskNumberInput">
+				name="taskNumber" id="taskNumberInput">
   		</div>
   	</div>
     <div class="layui-form-item">
@@ -290,7 +290,7 @@ function(){
 			btn:['确定','取消'],
 			btnAlign: 'c',
 			success:function(){
-				$('#taskNumberInput').val(trData.number);
+				//$('#taskNumberInput').val(trData.number);
 				$('#packMethodSelect').append(allPackMethodHtml);
 				$('#packMethodSelect').val(trData.packagMethod?trData.packagMethod.id:"");
 				laydate.render({
