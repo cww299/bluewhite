@@ -69,7 +69,7 @@ public class Quantitative extends BaseEntity<Long> {
     private String vehicleNumber;
 	
 	/**
-	 * 包装时间
+	 * 量化包装时间
 	 */
 	@Column(name = "time")
 	private Date time;
@@ -224,7 +224,25 @@ public class Quantitative extends BaseEntity<Long> {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "warehouse_type_id", referencedColumnName = "id", insertable = false, updatable = false)
     private BaseData warehouseType;
-	
+    
+    /**以量化任务长时间未发货，自动入库
+     * 是否入库
+     */
+    @Column(name = "warehousing")
+    private Integer warehousing;
+    
+    /**
+     * 库区
+     */
+    @Column(name = "reservoir_area")
+    private String reservoirArea;
+    
+    /**
+     * 库位
+     */
+    @Column(name = "location")
+    private String location;
+    
 	/**
 	 * 产品名称
 	 */
