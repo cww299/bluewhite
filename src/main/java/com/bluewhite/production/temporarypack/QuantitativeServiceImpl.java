@@ -94,7 +94,10 @@ public class QuantitativeServiceImpl extends BaseServiceImpl<Quantitative, Long>
             }
             // 按批次
             if (!StringUtils.isEmpty(param.getBacthNumber())) {
-                predicate.add(cb.like(root.get("bacthNumber").as(String.class), "%" + param.getBacthNumber() + "%"));
+                Join<Quantitative, QuantitativeChild> join =
+                    root.join(root.getModel().getList("quantitativeChilds", QuantitativeChild.class), JoinType.LEFT);
+                predicate.add(cb.like(join.get("underGoods").get("bacthNumber").as(String.class),
+                    "%" + StringUtil.specialStrKeyword(param.getBacthNumber()) + "%"));
             }
             // 按商品名称过滤
             if (!StringUtils.isEmpty(param.getProductName())) {

@@ -129,9 +129,10 @@ public class TaskAction {
         if (StringUtils.isEmpty(task.getIds()) || StringUtils.isEmpty(task.getTemporaryIds())|| StringUtils.isEmpty(task.getLoanIds())) {
             cr.setCode(ErrorCode.ILLEGAL_ARGUMENT.getCode());
             cr.setMessage("领取人不能为空");
+        }else {
+            taskService.addTaskPackBatch(task, UnUtil.isFromMobile(request), processesJson, productCount, packagMethodId,quantitativeIds);
+            cr.setMessage("任务分配成功");
         }
-        taskService.addTaskPackBatch(task, UnUtil.isFromMobile(request), processesJson, productCount, packagMethodId,quantitativeIds);
-        cr.setMessage("任务分配成功");
         return cr;
     }
 
