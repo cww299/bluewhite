@@ -28,10 +28,10 @@
 	<div class="layui-card-body">
 		<table class="layui-form searchTable">
 			<tr>
-			   <td class="">批次号：</td>
-	           <td class=""><input type="text" name="bacthNumber" class="layui-input" placeholder="请输入批次号"></td>
+			   <td>批次号：</td>
+	           <td><input type="text" name="bacthNumber" class="layui-input" placeholder="请输入产品名称"></td>
 	           <td>产品名称：</td>
-	           <td><input type="text" name="name" class="layui-input" placeholder="请输入产品名称"></td>
+	           <td><input type="text" name="productName" class="layui-input" placeholder="请输入产品名称"></td>
 	           <td>时间：</td>
 	           <td><input style="width:230px !important;" type="text" name="orderTimeBegin" id="searchTime" class="layui-input" placeholder="请输入时间"></td>
 	           <td>完成状态：</td>
@@ -513,8 +513,11 @@ function(){
 			time = time.split('~');
 			obj.field.orderTimeBegin = time[0].trim()+' 00:00:00';
 			obj.field.orderTimeEnd = time[1].trim()+' 23:59:59';
-		}else
+			obj.field.time = obj.field.orderTimeBegin;
+		}else{
 			obj.field.orderTimeEnd = '';
+			obj.field.time = "";
+		}
 		table.reload('tableData',{
 			where: obj.field,
 			page: { curr:1 },
