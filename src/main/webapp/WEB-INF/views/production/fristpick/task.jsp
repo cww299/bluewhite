@@ -35,6 +35,9 @@
 					placeholder="请输入批次号"
 					class="form-control search-query number" /></td>
 				<td>&nbsp;&nbsp;</td>
+				<td>量化编号:</td>
+				<td><input id="quantitativeNumber" placeholder="请输入量化编号" class="form-control"></td>
+				<td>&nbsp;&nbsp;</td>
 				<td>产品名:</td>
 				<td><input type="text" name="name" id="name"
 					placeholder="请输入产品名称" style="width: 120px;"
@@ -572,6 +575,7 @@
 				  			orderTimeBegin:orderTime[0],
 				  			orderTimeEnd:orderTime[1], 
 				  			flag:$('.selectchoice').val(),
+				  			quantitativeNumber: $('#quantitativeNumber').val(),
 				  	}
 		            self.loadPagination(data);
 				});

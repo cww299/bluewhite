@@ -264,7 +264,7 @@ function(){
 									success:function(){
 										 mytable.renderNoPage({
 											 elem:'#peopleTable',
-											 url:opt.ctx+'/task/taskUser?id='+obj.data.id,
+											 url: myutil.config.ctx+'/task/taskUser?id='+obj.data.id,
 											 cols:[[
 											        { field:'id', title:'id', },
 											        { field:'userName', title:'完成人', },
