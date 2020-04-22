@@ -347,7 +347,7 @@ public class TaskServiceImpl extends BaseServiceImpl<Task, Long> implements Task
             }
         }
 
-        
+        bacth = bacthDao.findOne(task.getBacthId());
         // 计算出该批次下所有人的实际成本总和
         double bacthDepartmentPrice = 0;
         // 分配的实际工序时间
@@ -733,6 +733,9 @@ public class TaskServiceImpl extends BaseServiceImpl<Task, Long> implements Task
                 // 工序id
                 long id = jsonObject.getLong("id");
                 double time = jsonObject.getDoubleValue("time");
+                if(time == 0D) {
+                    time = NumUtils.div(jsonObject.getDoubleValue("time"), task.getNumber(), 5);
+                }
                 String name = jsonObject.getString("name");
                 Task newTask = new Task();
                 newTask.setWarehouseTypeId(quantitative.getWarehouseTypeId());

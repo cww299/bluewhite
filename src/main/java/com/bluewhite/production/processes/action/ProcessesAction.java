@@ -91,7 +91,7 @@ public class ProcessesAction {
      */
     @RequestMapping(value = "/processes/getProcesses", method = RequestMethod.GET)
     @ResponseBody
-    public CommonResponse getProcesses(Long id,int count,int taskNumber,Long quantitativeId) {
+    public CommonResponse getProcesses(Long id,Integer count,Integer taskNumber,Long quantitativeId) {
         CommonResponse cr = new CommonResponse();
         cr.setData(clearCascadeJSON.format(processesService.findByPackagMethodId(id,count,taskNumber,quantitativeId)).toJSON());
         cr.setMessage("查询成功");
