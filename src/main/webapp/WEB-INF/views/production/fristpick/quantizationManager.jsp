@@ -52,7 +52,7 @@
   	<div class="layui-form-item">
   		<label class="layui-form-label">任务数量：</label>
   		<div class="layui-input-block">
-  			<input type="number" class="layui-input" value="{{ d.number || "" }}"
+  			<input type="number" class="layui-input" "
 				name="taskNumber" id="taskNumberInput">
   		</div>
   	</div>
@@ -375,9 +375,7 @@ function(){
 				var ids = [],loanIds = [],temporaryIds=[];
 				var userTreeId = menuTree.getVal('userTree');
 				var text = "";
-				if(!taskNumber)
-					text = "请填写任务数量";
-				else if(!allotTime)
+				if(!allotTime)
 					text = "请填写分配时间";
 				else if(userTreeId.length==0)
 					text = "请选择分配人员";
