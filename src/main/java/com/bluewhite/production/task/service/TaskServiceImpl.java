@@ -141,7 +141,7 @@ public class TaskServiceImpl extends BaseServiceImpl<Task, Long> implements Task
                 }
             }
         }
-
+        Bacth bacth = bacthDao.findOne(task.getBacthId());
         // 将工序ids分成多个任务
         if (task.getProcedureIds().length > 0) {
             Task newTask = null;
@@ -157,6 +157,7 @@ public class TaskServiceImpl extends BaseServiceImpl<Task, Long> implements Task
                         newTask.setNumber(task.getNumber());
                     }
                 }
+                newTask.setWarehouseTypeId(bacth.getWarehouseTypeId());
                 newTask.setProcedureId(id);
                 newTask.setProcedureName(procedure.getName());
                 // 二楼特殊业务，当存在实际时间不为null的时候，先 计算出任务数量
@@ -346,7 +347,7 @@ public class TaskServiceImpl extends BaseServiceImpl<Task, Long> implements Task
             }
         }
 
-        Bacth bacth = bacthDao.findOne(task.getBacthId());
+        
         // 计算出该批次下所有人的实际成本总和
         double bacthDepartmentPrice = 0;
         // 分配的实际工序时间
@@ -538,7 +539,7 @@ public class TaskServiceImpl extends BaseServiceImpl<Task, Long> implements Task
                                 dao.delete(ta);
                                 quantitative.getTasks().remove(ta);
                             }
-                        } ;
+                        };
                         quantitative.setSumTaskPrice(sumTaskPrice);
                         // 计算出该批次的地区差价
                         quantitative.setRegionalPrice(
@@ -843,7 +844,8 @@ public class TaskServiceImpl extends BaseServiceImpl<Task, Long> implements Task
             }
         }
         payBService.batchSave(payBList);
-        int count = quantitative.getTasks().stream()
+        List<Task> taskList = dao.findByQuantitativeId(task.getQuantitativeId());
+        int count = taskList.stream()
             .filter(t -> t.getType() == 2 && t.getProcedureName().indexOf(Constants.BAGABOARD) != -1)
             .mapToInt(t -> t.getNumber()).sum();
         if (quantitative.getNumber() == count) {
@@ -851,14 +853,14 @@ public class TaskServiceImpl extends BaseServiceImpl<Task, Long> implements Task
             quantitative.setStatusTime(task.getAllotTime());
         }
         // 量化单工序总时长
-        double sumSingleTime = quantitative.getTasks().stream().mapToDouble(Task::getSingleTime).sum();
+        double sumSingleTime = taskList.stream().mapToDouble(Task::getSingleTime).sum();
         double bacthDepartmentPrice = ProTypeUtils.sumProTypePrice(sumSingleTime, 2);
         quantitative.setDepartmentPrice(bacthDepartmentPrice);
         // 总任务时长
-        double sumTaskTime = quantitative.getTasks().stream().mapToDouble(Task::getTaskTime).sum();
+        double sumTaskTime = taskList.stream().mapToDouble(Task::getTaskTime).sum();
         quantitative.setSumTime(NumUtils.round(sumTaskTime, 5));
         // 总任务价值
-        double sumTaskPrice = quantitative.getTasks().stream().mapToDouble(Task::getTaskPrice).sum();
+        double sumTaskPrice = taskList.stream().mapToDouble(Task::getTaskPrice).sum();
         quantitative.setSumTaskPrice(NumUtils.round(sumTaskPrice, 5));
         // 计算出该批次的地区差价
         if (quantitative.getFlag() == 0) {
@@ -898,7 +900,12 @@ public class TaskServiceImpl extends BaseServiceImpl<Task, Long> implements Task
         if(!StringUtils.isEmpty(quantitativeIds)) {
             String[] idsArr = quantitativeIds.split(",");
             for(String idString :idsArr) {
-                task.setQuantitativeId(Long.valueOf(idString));
+                long id = Long.valueOf(idString);
+                task.setQuantitativeId(id);
+                Quantitative quantitative = quantitativeService.findOne(id);
+                if(task.getNumber()==null) {
+                    task.setNumber(quantitative.getNumber());
+                }
                 checkTask(task, processesJson);
                 addTaskPack(task, isFromMobile, processesJson, productCount, packagMethodId);
             }

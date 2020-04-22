@@ -55,4 +55,10 @@ public interface TaskDao  extends BaseRepository<Task, Long>{
 	 */
 	@Query(nativeQuery=true,value ="SELECT * FROM pro_task where find_in_set(?1,temporary_ids) AND allot_time BETWEEN ?2 AND ?3")
 	List<Task> findInSetTemporaryIds(String temporaryIds,Date beginTime,Date endTime);
+	
+	/**
+	 * 根据量化单id 查询
+	 * @return
+	 */
+	List<Task> findByQuantitativeId(Long id);
 }
