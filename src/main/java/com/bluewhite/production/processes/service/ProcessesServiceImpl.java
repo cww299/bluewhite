@@ -49,13 +49,17 @@ public class ProcessesServiceImpl extends BaseServiceImpl<Processes, Long> imple
     }
 
     @Override
-    public List<Processes> findByPackagMethodId(Long id, int count, int taskNumber,Long quantitativeId) {
+    public List<Processes> findByPackagMethodId(Long id, Integer count, Integer taskNumber,Long quantitativeId) {
         List<Processes> newProcessesList = new ArrayList<Processes>();
         // 通过工序查找
         List<Processes> processesList = dao.findByPackagMethodIdOrderByOrderNoAsc(id);
         // 计算耗时
         processesList.forEach(p -> {
-            p.setTime(NumUtils.div(p.getTime(), taskNumber, 5));
+            if(taskNumber == null) {
+                p.setTime(null);
+            }else {
+                p.setTime(NumUtils.div(p.getTime(), taskNumber, 5));
+            }
         });
         newProcessesList.addAll(processesList);
         // 是否公共查找

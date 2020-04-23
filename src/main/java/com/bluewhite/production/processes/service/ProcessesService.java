@@ -32,7 +32,7 @@ public interface ProcessesService extends BaseCRUDService<Processes,Long>{
      * @param id
      * @return
      */
-    List<Processes> findByPackagMethodId(Long id,int count,int taskNumber,Long quantitativeId);
+    List<Processes> findByPackagMethodId(Long id,Integer count,Integer taskNumber,Long quantitativeId);
 
     /**新增工序
      * @param processes
