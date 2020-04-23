@@ -126,7 +126,7 @@ public class TaskAction {
     public CommonResponse addTaskPack(HttpServletRequest request, Task task, String processesJson, int productCount,
         long packagMethodId ,String quantitativeIds) {
         CommonResponse cr = new CommonResponse();
-        if (StringUtils.isEmpty(task.getIds()) || StringUtils.isEmpty(task.getTemporaryIds())|| StringUtils.isEmpty(task.getLoanIds())) {
+        if (StringUtils.isEmpty(task.getIds()) && StringUtils.isEmpty(task.getTemporaryIds()) && StringUtils.isEmpty(task.getLoanIds())) {
             cr.setCode(ErrorCode.ILLEGAL_ARGUMENT.getCode());
             cr.setMessage("领取人不能为空");
         }else {
