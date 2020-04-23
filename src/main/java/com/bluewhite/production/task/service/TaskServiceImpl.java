@@ -44,6 +44,8 @@ import com.bluewhite.production.group.dao.TemporarilyDao;
 import com.bluewhite.production.group.entity.Temporarily;
 import com.bluewhite.production.procedure.dao.ProcedureDao;
 import com.bluewhite.production.procedure.entity.Procedure;
+import com.bluewhite.production.processes.entity.Processes;
+import com.bluewhite.production.processes.service.ProcessesService;
 import com.bluewhite.production.productionutils.constant.ProTypeUtils;
 import com.bluewhite.production.task.dao.TaskDao;
 import com.bluewhite.production.task.entity.Task;
@@ -75,6 +77,8 @@ public class TaskServiceImpl extends BaseServiceImpl<Task, Long> implements Task
     private QuantitativeService quantitativeService;
     @Autowired
     private AttendanceService attendanceService;
+    @Autowired
+    private ProcessesService processesService;
 
     private final static String QUALITY_STRING = "贴破洞";
 
@@ -734,7 +738,13 @@ public class TaskServiceImpl extends BaseServiceImpl<Task, Long> implements Task
                 long id = jsonObject.getLong("id");
                 double time = jsonObject.getDoubleValue("time");
                 if(time == 0D) {
-                    time = NumUtils.div(jsonObject.getDoubleValue("time"), task.getNumber(), 5);
+                    Processes processes = processesService.findOne(id);
+                    if(processes.getIsWrite()==0) {
+                        time = NumUtils.div(processes.getTime(), task.getNumber(), 5);
+                    }
+                    if(processes.getIsWrite()==1) {
+                        throw new ServiceException("请填写工序时间！");
+                    }
                 }
                 String name = jsonObject.getString("name");
                 Task newTask = new Task();
@@ -853,7 +863,7 @@ public class TaskServiceImpl extends BaseServiceImpl<Task, Long> implements Task
             .mapToInt(t -> t.getNumber()).sum();
         if (quantitative.getNumber() == count) {
             quantitative.setStatus(1);
-            quantitative.setStatusTime(task.getAllotTime());
+            quantitative.setStatusTime(new Date());
         }
         // 量化单工序总时长
         double sumSingleTime = taskList.stream().mapToDouble(Task::getSingleTime).sum();
@@ -866,10 +876,8 @@ public class TaskServiceImpl extends BaseServiceImpl<Task, Long> implements Task
         double sumTaskPrice = taskList.stream().mapToDouble(Task::getTaskPrice).sum();
         quantitative.setSumTaskPrice(NumUtils.round(sumTaskPrice, 5));
         // 计算出该批次的地区差价
-        if (quantitative.getFlag() == 0) {
-            quantitative.setRegionalPrice(NumUtils.round(ProTypeUtils.sumRegionalPrice(quantitative.getSumTaskPrice(),
-                quantitative.getOutPrice(), quantitative.getDepartmentPrice()), 5));
-        }
+        quantitative.setRegionalPrice(NumUtils.round(ProTypeUtils.sumRegionalPrice(quantitative.getSumTaskPrice(),
+            quantitative.getOutPrice(), quantitative.getDepartmentPrice()), 5));
         quantitativeService.save(quantitative);
     }
 

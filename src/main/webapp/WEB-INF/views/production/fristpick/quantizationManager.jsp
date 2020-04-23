@@ -382,18 +382,18 @@ function(){
 				if(text)
 					return myutil.emsg(text);
 				var jsonData = [];
-				var isTrue = true;
+				/* var isTrue = true; */
 				layui.each($('#procedureTree input[type="checkbox"]:checked'),function(index,item){
 					var id =  $(item).attr('value');
 					var name = $(item).data('name');
 					var time =  $(item).data('time');
 					if(!time){
 						time = $(item).closest('tr').find('input[type="text"]').val();
-						if(!time && id!="0"){
+						/*  if(!time && id!="0"){
 							isTrue = false;
 							return;
-						}
-					}
+						}  */
+					} 
 					if(id)
 						jsonData.push({
 							id: id,
@@ -403,8 +403,8 @@ function(){
 				})
 				if(jsonData.length==0)
 					return myutil.emsg('请选择工序！');
-				if(!isTrue)
-					return myutil.emsg('请填写工序时间！');
+		/* 		if(!isTrue)
+					return myutil.emsg('请填写工序时间！'); */
 				for(var i in userTreeId){
 					var d = userTreeId[i];
 					var id = d.split('~');
