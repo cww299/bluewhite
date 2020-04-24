@@ -327,8 +327,8 @@ function(){
 							}
 							
 							
-							
-							var html = "<div class='processP'>当前任务数量：<b id='taskNumbers'>"+obj.field.taskNumber+"</b></div>"; 
+							var html = "<div class='processP'>当前任务数量：<b id='taskNumbers'>"+
+											obj.field.taskNumber+"</b></div>"; 
 							html += "<table>";
 							html += '<tr class="processP">',
 							html += '<td><input type="checkbox" value="0" title="全选"  lay-skin="primary"'+
@@ -370,7 +370,7 @@ function(){
 				form.render();
 			},
 			yes:function(layerIndex){
-				var taskNumber = $('#taskNumbers').html();
+				var taskNumber = $('#taskNumberInput').val();
 				var allotTime = $('#allotTime').val();
 				var ids = [],loanIds = [],temporaryIds=[];
 				var userTreeId = menuTree.getVal('userTree');
