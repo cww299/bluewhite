@@ -176,8 +176,8 @@ public class AttendanceTool {
         // 正常情况下：员工不可以加班后晚到岗
         if (!sign) {
             // 签入时间在默认上班开始时间之前，签出时间在工作结束时间之后 没有缺勤出现（没缺勤）
-            flag = attendanceTime.getCheckIn().before(DateUtil.offsetMinute(workTimeStrat, DUTYMIN).toJdkDate())
-                && attendanceTime.getCheckOut().after(DateUtil.offsetMinute(workTimeEnd, -DUTYMIN).toJdkDate());
+            flag = attendanceTime.getCheckIn().before(DateUtil.offsetMinute(workTimeStrat, DUTYMIN))
+                && attendanceTime.getCheckOut().after(DateUtil.offsetMinute(workTimeEnd, -LATEMIN));
             if (flag) {
                 actualTurnWorkTime = turnWorkTime;
                 flag = false;
@@ -185,7 +185,7 @@ public class AttendanceTool {
 
             // 签入时间在默认上班开始时间之后，签出时间在工作结束时间之后 出现缺勤 (迟到时间过长导致缺勤)
             flag = attendanceTime.getCheckIn().after(DateUtil.offsetMinute(workTimeStrat, DUTYMIN))
-                && attendanceTime.getCheckOut().after(DateUtil.offsetMinute(workTimeEnd, -DUTYMIN));
+                && attendanceTime.getCheckOut().after(DateUtil.offsetMinute(workTimeEnd, -LATEMIN));
             if (flag) {
                 // 等于实际工作时间
                 actualTurnWorkTime = attendanceTime.getWorkTime();

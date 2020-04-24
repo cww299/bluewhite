@@ -225,6 +225,7 @@ public class Quantitative extends BaseEntity<Long> {
     @JoinColumn(name = "warehouse_type_id", referencedColumnName = "id", insertable = false, updatable = false)
     private BaseData warehouseType;
     
+    
     /**以量化任务长时间未发货，自动入库
      * 是否入库
      */
@@ -242,6 +243,13 @@ public class Quantitative extends BaseEntity<Long> {
      */
     @Column(name = "location")
     private String location;
+    
+    /**
+     * 入库时间
+     */
+    @Column(name = "warehousing_time")
+    private Integer warehousingTime;
+    
     
 	/**
 	 * 产品名称
@@ -299,7 +307,31 @@ public class Quantitative extends BaseEntity<Long> {
 	
 	
 	
-	public Integer getProductCount() {
+	public Integer getWarehousing() {
+        return warehousing;
+    }
+
+    public void setWarehousing(Integer warehousing) {
+        this.warehousing = warehousing;
+    }
+
+    public String getReservoirArea() {
+        return reservoirArea;
+    }
+
+    public void setReservoirArea(String reservoirArea) {
+        this.reservoirArea = reservoirArea;
+    }
+
+    public String getLocation() {
+        return location;
+    }
+
+    public void setLocation(String location) {
+        this.location = location;
+    }
+
+    public Integer getProductCount() {
         return productCount;
     }
 

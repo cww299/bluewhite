@@ -62,7 +62,7 @@ public class TemporaryPackAction {
             .addRetainTerm(Quantitative.class, "id", "quantitativeNumber", "time", "sumPackageNumber", "time",
                 "quantitativeChilds", "packingMaterials", "user", "flag", "print", "customer", "audit", "sendTime",
                 "vehicleNumber","packagMethod","outPrice","departmentPrice","regionalPrice","sumTaskPrice"
-                ,"sumTime","status","number","productCount")
+                ,"sumTime","status","number","productCount","location","reservoirArea")
             .addRetainTerm(Customer.class, "id", "name")
             .addRetainTerm(QuantitativeChild.class, "id", "underGoods", "sumPackageNumber", "singleNumber", "number",
                 "actualSingleNumber", "checks", "remarks")
@@ -503,5 +503,31 @@ public class TemporaryPackAction {
         mav.addObject("data",  clearCascadeJSONQuantitative.format(quantitativeService.findOne(id)).toJSON());
         return mav;
     }
+    
+    /**
+     * 自动检测
+     * 量化单以量化时间过长为发货的进行入库
+     */
+    @RequestMapping(value = "/temporaryPack/checkWarehousing", method = RequestMethod.GET)
+    @ResponseBody
+    public CommonResponse warehousing() {
+        CommonResponse cr = new CommonResponse();
+        cr.setData(clearCascadeJSONQuantitative.format(quantitativeService.warehousing()).toJSON());
+        cr.setMessage("成功");
+        return cr;
+    }
+    
+    /**
+     * 入库 库位库区
+     */
+    @RequestMapping(value = "/temporaryPack/putWarehousing", method = RequestMethod.POST)
+    @ResponseBody
+    public CommonResponse putWarehousing(String ids , String location ,String reservoirArea) {
+        CommonResponse cr = new CommonResponse();
+        int count =  quantitativeService.putWarehousing(ids,location,reservoirArea); 
+        cr.setMessage("成功入库"+count+"条数据");
+        return cr;
+    }
+    
     
 }

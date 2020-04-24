@@ -26,5 +26,15 @@ public interface QuantitativeDao  extends BaseRepository<Quantitative, Long>{
      * 根据发货单id 查找 贴包单
      */
 	List<Quantitative> findBySendOrderId(Long id);
+
+    /**自动检测
+     * 以量化
+     * 未发货发货
+     * 且时间超过三天
+     * @return 
+     * 
+     */
+	@Query(nativeQuery = true ,value = "SELECT * FROM pro_quantitative where flag = 0 and time < SUBDATE(now(),interval 3 day)")
+    List<Quantitative> warehousing();
 }
 
