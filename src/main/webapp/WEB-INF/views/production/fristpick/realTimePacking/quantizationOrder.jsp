@@ -147,6 +147,121 @@ layui.config({
 		var allUser ='',allCustomer='';
 		var tableDataNoTrans = [];
 		var evenColor = 'rgb(133, 219, 245)';
+		var cols = [
+		       { type:'checkbox',},
+		       { title:'量化编号',   field:'quantitativeNumber', width:145,	},
+		       { title:'上车编号',   field:'vehicleNumber', width:145,	},
+		       { title:'包装时间',   field:'time', width:110, type:'date', },
+		       { title:'发货时间',   field:'sendTime',  width:110,type:'date',  },
+		       { title:'贴包人',    field:'user_userName', width:100,	},
+		       { title:'客户',     field:'customer_name',	},
+		       { title:'审核',   field:'audit', 	transData:true, width:60, },
+		       { title:'发货',   field:'flag', 	transData:true, width:60, },
+		       { title:'打印',   field:'print', 	transData:true, width:60, },
+		       { title:'批次号',    field:'underGoods_bacthNumber',	minWidth:130, },
+		       { title:'产品名',    field:'underGoods_product_name', width:280,	},
+		       { title:'单包个数',   field:'singleNumber',	width:80, },
+		       { title:'实际数量',   field:'actualSingleNumber',	width:90,event:'transColor', 
+		    	   templet: function(d){
+	   					return '<span style="color:'+(d.checks?'red':"")+'" data-red="'+(d.checks?'red':"")+'">'+
+	   					d.actualSingleNumber+'<span>'; },
+		       },
+		       { title:'备注',   field:'remarks',	width:90, edit:true,},  				
+		];
+		myutil.getData({
+			url:myutil.config.ctx+'/temporaryPack/checkWarehousing',
+			success:function(d){
+				var data = [];
+				for(var i=0,len=d.length;i<len;i++){
+					var child = d[i].quantitativeChilds;
+					if(!child)
+						continue;
+					for(var j=0,l=child.length;j<l;j++){
+						data.push($.extend({},child[j],{childId: child[j].id,},d[i])); 
+					}
+				}
+				if(d.length>0){
+					layer.open({
+						type:1,
+						title:'入库单',
+						area:['100%','100%'],
+						btn:['返回'],
+						content:[
+							'<div>',
+								'<table>',
+									'<tr>',
+										'<td>库区：</td>',
+										'<td><input id="region" class="layui-input"></td>',
+										'<td>&nbsp;&nbsp;</td>',
+										'<td>库位：</td>',
+										'<td><input id="position" class="layui-input"></td>',
+									'</tr>',
+								'</table>',
+								'<table id="checkTable" lay-filter="checkTable"></table>',
+							'</div>',
+						].join(' '),
+						success:function(){
+							mytable.renderNoPage({
+								elem:'#checkTable',
+								size:'sm',
+								autoMerge:{
+							    	 field:['quantitativeNumber','vehicleNumber','time','sendTime','audit','print','flag',
+							    		 'user_userName','surplusSendNumber','surplusNumber','customer_name','0'], 
+							    	 evenColor: evenColor,
+						        },
+						        even:true,
+								cols:[cols],
+								data:data,
+								limit:9999,
+								toolbar:[
+									'<span class="layui-btn layui-btn-sm" lay-event="onekey">一键入库</span>'
+								].join(' '),
+								curd:{
+									btn: [],
+									otherBtn:function(obj){
+										if(obj.event=="onekey"){
+											var check = table.checkStatus("checkTable").data;
+											if(check.length==0)
+												return myutil.emsg("请选择入库数据");
+											var region = $('#region').val();
+											var position = $('#position').val();
+											if(!region || !position)
+												return myutil.emsg("请填写库区库位");
+											var ids = [];
+											for(var i in check)
+												ids.push(check[i].id);
+											myutil.saveAjax({
+												url: '/temporaryPack/putWarehousing',
+												data:{
+													ids: ids.join(','),
+													location:position,
+													reservoirArea: region,
+												},
+												success:function(){
+													var cache = table.cache['checkTable'];
+													for(var i in ids){
+														for(var j=cache.length-1;j>=0;j--){
+															if(ids[i]==cache[j].id)
+																cache.splice(j,1);
+														}
+													}
+													table.reload('checkTable',{
+														data: cache,
+													})
+												}
+											})
+										}
+									}
+								},
+								done:function(){
+									renderTableColor('#checkTable');
+								}
+							})
+						}
+					})
+				}
+			}
+		})
 		mytable.render({
 			elem:'#tableData',
 			size:'sm',
@@ -257,45 +372,9 @@ layui.config({
 			autoUpdate:{
 				deleUrl:'/temporaryPack/deleteQuantitative',
 			},
-			parseData:function(ret){
-				if(ret.code==0){
-					var data = [],d = ret.data.rows;
-					tableDataNoTrans = d;
-					for(var i=0,len=d.length;i<len;i++){
-						var child = d[i].quantitativeChilds;
-						if(!child)
-							continue;
-						for(var j=0,l=child.length;j<l;j++){
-							data.push($.extend({},child[j],{childId: child[j].id,},d[i])); 
-						}
-					}
-					return {  msg:ret.message,  code:ret.code , data: data, count:ret.data.total }; 
-				}
-				else
-					return {  msg:ret.message,  code:ret.code , data:[], count:0 }; 
-			},
+			parseData: parseData(),
 			ifNull:'',
-			cols:[[
-			       { type:'checkbox',},
-			       { title:'量化编号',   field:'quantitativeNumber', width:145,	},
-			       { title:'上车编号',   field:'vehicleNumber', width:145,	},
-			       { title:'包装时间',   field:'time', width:110, type:'date', },
-			       { title:'发货时间',   field:'sendTime',  width:110,type:'date',  },
-			       { title:'贴包人',    field:'user_userName', width:100,	},
-			       { title:'客户',     field:'customer_name',	},
-			       { title:'审核',   field:'audit', 	transData:true, width:60, },
-			       { title:'发货',   field:'flag', 	transData:true, width:60, },
-			       { title:'打印',   field:'print', 	transData:true, width:60, },
-			       { title:'批次号',    field:'underGoods_bacthNumber',	minWidth:130, },
-			       { title:'产品名',    field:'underGoods_product_name', width:280,	},
-			       { title:'单包个数',   field:'singleNumber',	width:80, },
-			       { title:'实际数量',   field:'actualSingleNumber',	width:90,event:'transColor', 
-			    	   templet: function(d){
-    	   					return '<span style="color:'+(d.checks?'red':"")+'" data-red="'+(d.checks?'red':"")+'">'+
-    	   					d.actualSingleNumber+'<span>'; },
-			       },
-			       { title:'备注',   field:'remarks',	width:90, edit:true,},  				
-			       ]],
+			cols:[ cols ],
 	       autoMerge:{
 	    	 field:['quantitativeNumber','vehicleNumber','time','sendTime','audit','print','flag',
 	    		 'user_userName','surplusSendNumber','surplusNumber','customer_name','0'], 
@@ -317,14 +396,7 @@ layui.config({
 					})
 				})
 				//background: white;
-				var whiteTd = ['0','quantitativeNumber','vehicleNumber','time','sendTime','user_userName','customer_name','audit','flag','print'];
-				layui.each(whiteTd,function(index,item){
-					$('#tableData').next().find('td[data-field="'+item+'"]').css('background','white');
-				})
-				var blueTd = ['underGoods_bacthNumber','underGoods_product_name','actualSingleNumber','singleNumber','remarks'];
-				layui.each(blueTd,function(index,item){
-					$('#tableData').next().find('tr:nth-child(even) td[data-field="'+item+'"]').css('background',evenColor);
-				})
+				renderTableColor('#tableData');
 				form.render();
 				$('div[lay-event="LAYTABLE_EXPORT"]').unbind().on('click',function(e){
 					layui.stope(e);
@@ -333,6 +405,16 @@ layui.config({
 				})
 			}
 		})
+		function renderTableColor(tableId){
+			var whiteTd = ['0','quantitativeNumber','vehicleNumber','time','sendTime','user_userName','customer_name','audit','flag','print'];
+			layui.each(whiteTd,function(index,item){
+				$(tableId).next().find('td[data-field="'+item+'"]').css('background','white');
+			})
+			var blueTd = ['underGoods_bacthNumber','underGoods_product_name','actualSingleNumber','singleNumber','remarks'];
+			layui.each(blueTd,function(index,item){
+				$(tableId).next().find('tr:nth-child(even) td[data-field="'+item+'"]').css('background',evenColor);
+			})
+		}
 		table.on('tool(tableData)',function(obj){
 			if(isStickBagAccount){
 				if(obj.event=='transColor'){
@@ -744,6 +826,25 @@ layui.config({
 					form.render();
 				}
 			})
+		}
+		function parseData(){
+			return function(ret){
+				if(ret.code==0){
+					var data = [],d = ret.data.rows;
+					tableDataNoTrans = d;
+					for(var i=0,len=d.length;i<len;i++){
+						var child = d[i].quantitativeChilds;
+						if(!child)
+							continue;
+						for(var j=0,l=child.length;j<l;j++){
+							data.push($.extend({},child[j],{childId: child[j].id,},d[i])); 
+						}
+					}
+					return {  msg:ret.message,  code:ret.code , data: data, count:ret.data.total }; 
+				}
+				else
+					return {  msg:ret.message,  code:ret.code , data:[], count:0 }; 
+			}
 		}
 		myutil.getData({
 			url: myutil.config.ctx+'/basedata/list?type=packagingMaterials',

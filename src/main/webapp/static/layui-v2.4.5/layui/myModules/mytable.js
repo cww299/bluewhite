@@ -479,12 +479,13 @@ layui.extend({
 			}
 			if(opt.autoMerge){
 				var hiddenAllSty = `
-				<style id="hiddenAllCheck">
+				<style id="hiddenAllCheck`+tableId+`">
 					div[lay-id="`+tableId+`"] .layui-table-header th[data-field="0"] input[name="layTableCheckbox"]+.layui-form-checkbox{
 						display:none !important;
 					}
 				</style>
 				`;
+				var checkBoxLayFilter = "allCheckbox_"+tableId;
 				$('input[lay-filter="allCheckbox"]').prop('checked',false);
 				layui.each(opt.autoMerge.field,function(index,mergeField){
 					merge(mergeField);
@@ -519,12 +520,12 @@ layui.extend({
 						if($('#hiddenAllCheck').length==0){	//隐藏原本的全选复选框
 							$('head').append(hiddenAllSty);
 						}
-						if($('input[lay-filter="allCheckbox"]').length==0)
+						if($('input[lay-filter="'+checkBoxLayFilter+'"]').length==0)
 							$('div[lay-id="'+tableId+'"] .layui-table-header th[data-field="0"] div').append(
-								['<input type="checkbox" title="" lay-filter="allCheckbox" lay-skin="primary">'].join(' ')
+								['<input type="checkbox" title="" lay-filter="'+checkBoxLayFilter+'" lay-skin="primary">'].join(' ')
 							);
 						var inputAllCheck = false;
-			    	    form.on('checkbox(allCheckbox)', function(data){	//监听新加入复选框选择
+			    	    form.on('checkbox('+checkBoxLayFilter+')', function(data){	//监听新加入复选框选择
 			    	    	inputAllCheck = true;
 			    	    	var check = data.elem.checked;
 			    	    	var allCheck = $('#'+tableId).next().find('.layui-table-main').find('.layui-form-checkbox');
@@ -553,11 +554,11 @@ layui.extend({
 				    	    			}
 				    	    		}
 				    	    	}
-			    	    		$('input[lay-filter="allCheckbox"]').prop('checked',check);
+			    	    		$('input[lay-filter="'+checkBoxLayFilter+'"]').prop('checked',check);
 			    	    		if(check)
-			    	    			$('input[lay-filter="allCheckbox"]+').addClass('layui-form-checked');
+			    	    			$('input[lay-filter="'+checkBoxLayFilter+'"]+').addClass('layui-form-checked');
 			    	    		else
-			    	    			$('input[lay-filter="allCheckbox"]+').removeClass('layui-form-checked');
+			    	    			$('input[lay-filter="'+checkBoxLayFilter+'"]+').removeClass('layui-form-checked');
 			    	    		return true;
 			    	    	}
 			    	   	});
