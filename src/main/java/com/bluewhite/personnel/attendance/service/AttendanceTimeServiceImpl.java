@@ -460,15 +460,20 @@ public class AttendanceTimeServiceImpl extends BaseServiceImpl<AttendanceTime, L
                     attendanceTime.getCheckOut().after(workTimeEnd) ? workTimeEnd : attendanceTime.getCheckOut()));
             }
         } else {
+            //签入时间大于工作开始时间，且超过30分钟  ,迟到，按工作开始时间计算出勤时长
+            boolean t = (attendanceTime.getCheckIn().compareTo(workTime) == 1 
+            && attendanceTime.getCheckIn().compareTo(DateUtil.offsetMinute(workTime, 30)) != 1) ||  attendanceTime.getCheckIn().compareTo(workTime) != 1;
             // 实际工作时长
-            attendanceTime.setWorkTime(NumUtils.sub(DatesUtil.getTimeHour(
+            attendanceTime.setWorkTime(
+                NumUtils.sub(DatesUtil.getTimeHour(
                 // 签入小于等于工作开始时间时，取工作开始时间计算，否则取签入时间
-                attendanceTime.getCheckIn().compareTo(workTime) != 1 ? workTime : attendanceTime.getCheckIn(),
+                t ? workTime : attendanceTime.getCheckIn(),
                 // 签出大于等于工作结束时间时，取工作开始时间计算，否则取签出时间
                 attendanceTime.getCheckOut().compareTo(workTimeEnd) != -1 ? workTimeEnd : attendanceTime.getCheckOut()),
                 restTime));
-            
-            if (attendanceTime.getCheckIn().before(restBeginTime) && attendanceTime.getCheckOut().after(restEndTime)
+            //午休时间算出勤
+            if (attendanceTime.getCheckIn().before(restBeginTime) 
+                && attendanceTime.getCheckOut().after(restEndTime)
                 && attendanceTime.getAttendanceInit().getRestTimeWork() == 2) {
                 attendanceTime.setWorkTime(attendanceTime.getWorkTime()+restTime);
             }

@@ -57,12 +57,12 @@ public class QuantitativeServiceImpl extends BaseServiceImpl<Quantitative, Long>
     @Override
     public PageResult<Quantitative> findPages(Quantitative param, PageParameter page) {
         CurrentUser cu = SessionManager.getUserSession();
-        //蓝白仓库
-        if(cu.getRole().contains("stickBagAccount") || cu.getRole().contains("stickBagStick") ) {
+        // 蓝白仓库
+        if (cu.getRole().contains("stickBagAccount") || cu.getRole().contains("stickBagStick")) {
             param.setWarehouseTypeId((long)274);
         }
-        //11号仓库
-        if(cu.getRole().contains("packScene") || cu.getRole().contains("elevenSend")) {
+        // 11号仓库
+        if (cu.getRole().contains("packScene") || cu.getRole().contains("elevenSend")) {
             param.setWarehouseTypeId((long)275);
         }
         Page<Quantitative> pages = dao.findAll((root, query, cb) -> {
@@ -72,7 +72,7 @@ public class QuantitativeServiceImpl extends BaseServiceImpl<Quantitative, Long>
                 predicate.add(cb.equal(root.get("id").as(Long.class), param.getId()));
             }
             // 按库区
-            if (param.getWarehouseTypeId() !=null) {
+            if (param.getWarehouseTypeId() != null) {
                 predicate.add(cb.equal(root.get("warehouseTypeId").as(Long.class), param.getWarehouseTypeId()));
             }
             // 按客户名称
@@ -114,6 +114,15 @@ public class QuantitativeServiceImpl extends BaseServiceImpl<Quantitative, Long>
             if (!StringUtils.isEmpty(param.getProductNumber())) {
                 predicate
                     .add(cb.like(root.get("productNumber").as(String.class), "%" + param.getProductNumber() + "%"));
+            }
+            // 按库位
+            if (!StringUtils.isEmpty(param.getLocation())) {
+                predicate.add(cb.like(root.get("location").as(String.class), "%" + param.getLocation() + "%"));
+            }
+
+            // 按库区
+            if (!StringUtils.isEmpty(param.getReservoirArea())) {
+                predicate.add(cb.like(root.get("reservoirArea").as(String.class), "%" + param.getReservoirArea() + "%"));
             }
             // 按上车编号过滤
             if (!StringUtils.isEmpty(param.getVehicleNumber())) {
@@ -226,7 +235,8 @@ public class QuantitativeServiceImpl extends BaseServiceImpl<Quantitative, Long>
                 if (stickListList.size() > 0) {
                     numberStickSum = stickListList.stream().mapToInt(QuantitativeChild::getSingleNumber).sum();
                 }
-                underGoods.setSurplusStickNumber(underGoods.getNumber() - (numberStickSum - quantitativeChild.getSingleNumber()));
+                underGoods.setSurplusStickNumber(
+                    underGoods.getNumber() - (numberStickSum - quantitativeChild.getSingleNumber()));
                 if (underGoods.getSurplusStickNumber() <= 0) {
                     underGoods.setStatus(1);
                     underGoodsDao.save(underGoods);
@@ -238,7 +248,7 @@ public class QuantitativeServiceImpl extends BaseServiceImpl<Quantitative, Long>
                 quantitativeChild.setActualSingleNumber(
                     id == null ? quantitativeChild.getSingleNumber() : quantitativeChild.getActualSingleNumber());
                 quantitative.getQuantitativeChilds().add(quantitativeChild);
-                //添加地点
+                // 添加地点
                 quantitative.setWarehouseTypeId(underGoods.getWarehouseTypeId());
             }
         }
@@ -255,10 +265,10 @@ public class QuantitativeServiceImpl extends BaseServiceImpl<Quantitative, Long>
         }
         save(quantitative);
     }
-    
-    
+
     /**
      * 按编号重新排序
+     * 
      * @param list
      * @return
      */
@@ -268,12 +278,11 @@ public class QuantitativeServiceImpl extends BaseServiceImpl<Quantitative, Long>
             public int compare(Quantitative q1, Quantitative q2) {
                 int a = Integer.valueOf(StrUtil.sub(q1.getQuantitativeNumber(), 12, 16));
                 int b = Integer.valueOf(StrUtil.sub(q2.getQuantitativeNumber(), 12, 16));
-                return b-a;
+                return b - a;
             }
         });
         return list;
     }
-    
 
     @Override
     @Transactional
@@ -291,7 +300,8 @@ public class QuantitativeServiceImpl extends BaseServiceImpl<Quantitative, Long>
                     if (audit == 0 && quantitative.getAudit() == 0) {
                         throw new ServiceException("未审核请勿取消审核");
                     }
-                    int number = quantitative.getQuantitativeChilds().stream().mapToInt(QuantitativeChild->QuantitativeChild.getSingleNumber()).sum();
+                    int number = quantitative.getQuantitativeChilds().stream()
+                        .mapToInt(QuantitativeChild -> QuantitativeChild.getSingleNumber()).sum();
                     quantitative.setNumber(number);
                     quantitative.setAudit(audit);
                     dao.save(quantitative);
@@ -335,40 +345,26 @@ public class QuantitativeServiceImpl extends BaseServiceImpl<Quantitative, Long>
                     if (quantitative.getAudit() == 1) {
                         throw new ServiceException("已审核无法删除");
                     }
-                    if(quantitative.getQuantitativeChilds()!=null) {
-                        quantitative.getQuantitativeChilds().forEach(qc->{
+                    if (quantitative.getQuantitativeChilds() != null) {
+                        quantitative.getQuantitativeChilds().forEach(qc -> {
                             UnderGoods underGoods = qc.getUnderGoods();
                             // 获取贴包数量，用于判断是否可以新增或者修改
-                            List<QuantitativeChild> stickListList = quantitativeChildDao.findByUnderGoodsId(qc.getUnderGoodsId());
+                            List<QuantitativeChild> stickListList =
+                                quantitativeChildDao.findByUnderGoodsId(qc.getUnderGoodsId());
                             int numberStickSum = 0;
                             if (stickListList.size() > 0) {
-                                numberStickSum = stickListList.stream().mapToInt(QuantitativeChild::getSingleNumber).sum();
+                                numberStickSum =
+                                    stickListList.stream().mapToInt(QuantitativeChild::getSingleNumber).sum();
                             }
                             underGoods.setSurplusStickNumber(
                                 underGoods.getNumber() - (numberStickSum - qc.getSingleNumber()));
                             if (underGoods.getSurplusStickNumber() == 0) {
                                 underGoods.setStatus(1);
-                            }else {
+                            } else {
                                 underGoods.setStatus(0);
                             }
                         });
                         save(quantitative);
-                    }
-                    
-                    if (quantitative.getSendOrderId() != null) {
-                        SendOrder sendOrder = sendOrderDao.findOne(quantitative.getSendOrderId());
-                        if (sendOrder.getAudit() == 1) {
-                            throw new ServiceException("财务已审核付款，无法删除");
-                        }
-                        sendOrder.setSumPackageNumber(sendOrder.getSumPackageNumber() - 1);
-                        int number =
-                            quantitative.getQuantitativeChilds().stream().mapToInt(q -> q.getSingleNumber()).sum();
-                        sendOrder.setNumber(sendOrder.getNumber() - number);
-                        if (sendOrder.getSumPackageNumber() == 0) {
-                            sendOrderDao.delete(sendOrder);
-                        } else {
-                            sendOrderDao.save(sendOrder);
-                        }
                     }
                     dao.delete(id);
                 }
@@ -440,28 +436,14 @@ public class QuantitativeServiceImpl extends BaseServiceImpl<Quantitative, Long>
                     } else {
                         if (quantitative.getSendOrderId() != null) {
                             SendOrder ot = sendOrderDao.findOne(quantitative.getSendOrderId());
-                            if (ot.getAudit() == 1) {
+                            if (ot.getAudit() != null && ot.getAudit() == 1) {
                                 throw new ServiceException("财务已审核生成物流费用,无法取消发货");
                             }
-                            if (customer.getInterior() == 1) {
-                                List<Quantitative> quantitativeList =
-                                    dao.findBySendOrderId(quantitative.getSendOrderId());
-                                if (quantitativeList.size() == 1) {
-                                    sendOrderDao.delete(quantitative.getSendOrderId());
-                                } else {
-                                    quantitative.setSendOrderId(null);
-                                }
+                            List<Quantitative> quantitativeList = dao.findBySendOrderId(quantitative.getSendOrderId());
+                            if (quantitativeList.size() == 1) {
+                                sendOrderDao.delete(quantitative.getSendOrderId());
                             } else {
-                                SendOrder sendOrder = sendOrderDao.findOne(quantitative.getSendOrderId());
-                                sendOrder.setSendPackageNumber(sendOrder.getSendPackageNumber() - 1);
-                                if (sendOrder.getSendPackageNumber() != null && sendOrder.getSingerPrice() != null
-                                    && !sendOrder.getSingerPrice().equals(BigDecimal.ZERO)) {
-                                    sendOrder.setSendPrice(
-                                        NumberUtil.mul(sendOrder.getSendPackageNumber(), sendOrder.getSingerPrice()));
-                                    sendOrder.setLogisticsPrice(
-                                        NumberUtil.add(sendOrder.getExtraPrice(), sendOrder.getSendPrice()));
-                                }
-                                sendOrderDao.save(sendOrder);
+                                quantitative.setSendOrderId(null);
                             }
                         }
                         quantitative.setVehicleNumber(null);
@@ -525,16 +507,17 @@ public class QuantitativeServiceImpl extends BaseServiceImpl<Quantitative, Long>
 
     @Override
     @Transactional
-    public void saveUpdateQuantitative(Quantitative quantitative,String ids) {
+    public void saveUpdateQuantitative(Quantitative quantitative, String ids) {
         // 生成贴包单时生成发货单发货单，将发货单id存入贴包单
         if (StringUtils.isEmpty(ids)) {
             sendOrderService.saveSendOrder(quantitative);
+            // 根据总包数进行多条新增
             if (quantitative.getSumPackageNumber() > 0) {
                 for (int i = 0; i < quantitative.getSumPackageNumber(); i++) {
-                    Quantitative ot = new Quantitative();
-                    BeanCopyUtils.copyNotEmpty(quantitative, ot, "");
+                    Quantitative newQuantitative = new Quantitative();
+                    BeanCopyUtils.copyNotEmpty(quantitative, newQuantitative, "");
                     quantitative.setId(null);
-                    saveQuantitative(ot);
+                    saveQuantitative(newQuantitative);
                 }
             }
         } else {
@@ -542,10 +525,11 @@ public class QuantitativeServiceImpl extends BaseServiceImpl<Quantitative, Long>
             if (idArr.length > 0) {
                 for (int i = 0; i < idArr.length; i++) {
                     Long id = Long.parseLong(idArr[i]);
+                    // 原始数据
                     Quantitative ot = findOne(id);
                     Quantitative newQuantitative = new Quantitative();
                     BeanCopyUtils.copyNotEmpty(quantitative, newQuantitative, "");
-                    newQuantitative.setId(id);
+                    BeanCopyUtils.copyNotEmpty(ot, newQuantitative, "");
                     // 子单内容无法批量修改
                     if (idArr.length > 1) {
                         JSONArray jsonArray = new JSONArray();
@@ -566,4 +550,25 @@ public class QuantitativeServiceImpl extends BaseServiceImpl<Quantitative, Long>
         }
     }
 
+    @Override
+    public List<Quantitative> warehousing() {
+        return dao.warehousing();
+    }
+
+    @Override
+    public int putWarehousing(String ids, String location, String reservoirArea) {
+        int count = 0;
+        if (StrUtil.isNotEmpty(ids)) {
+            String[] idsArr = ids.split(",");
+            for (String idString : idsArr) {
+                Quantitative quantitative = findOne(Long.valueOf(idString));
+                quantitative.setLocation(location);
+                quantitative.setReservoirArea(reservoirArea);
+                quantitative.setWarehousing(1);
+                save(quantitative);
+                count++;
+            }
+        }
+        return count;
+    }
 }

@@ -859,8 +859,7 @@ public class TaskServiceImpl extends BaseServiceImpl<Task, Long> implements Task
         payBService.batchSave(payBList);
         List<Task> taskList = dao.findByQuantitativeId(task.getQuantitativeId());
         int count = taskList.stream()
-            .filter(t -> t.getType() == 2 && t.getProcedureName().indexOf(Constants.BAGABOARD) != -1)
-            .mapToInt(t -> t.getNumber()).sum();
+            .filter(t ->t.getProcedureName().indexOf(Constants.BAGABOARD) != -1).mapToInt(t -> t.getNumber()).sum();
         if (quantitative.getNumber() == count) {
             quantitative.setStatus(1);
             quantitative.setStatusTime(new Date());
@@ -877,7 +876,7 @@ public class TaskServiceImpl extends BaseServiceImpl<Task, Long> implements Task
         quantitative.setSumTaskPrice(NumUtils.round(sumTaskPrice, 5));
         // 计算出该批次的地区差价
         quantitative.setRegionalPrice(NumUtils.round(ProTypeUtils.sumRegionalPrice(quantitative.getSumTaskPrice(),
-            quantitative.getOutPrice(), quantitative.getDepartmentPrice()), 5));
+            quantitative.getOutPrice()==null ? 0.2 : quantitative.getOutPrice() , quantitative.getDepartmentPrice()), 5));
         quantitativeService.save(quantitative);
     }
 

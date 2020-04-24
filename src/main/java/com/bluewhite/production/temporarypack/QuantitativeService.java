@@ -1,6 +1,7 @@
 package com.bluewhite.production.temporarypack;
 
 import java.util.Date;
+import java.util.List;
 
 import com.bluewhite.base.BaseCRUDService;
 import com.bluewhite.common.entity.PageParameter;
@@ -79,6 +80,21 @@ public interface QuantitativeService extends BaseCRUDService<Quantitative,Long>{
      * @param quantitative
      */
 	public void saveUpdateQuantitative(Quantitative quantitative,String ids);
+
+    /**
+     * 自动检测
+     * 以量化
+     * 未发货发货
+     * 且时间超过三天
+     */
+	public List<Quantitative> warehousing();
+
+    /**入库
+     * @param ids
+     * @param location
+     * @param reservoirArea
+     */
+    int putWarehousing(String ids, String location, String reservoirArea);
 
 	
 
