@@ -510,9 +510,9 @@ public class TemporaryPackAction {
      */
     @RequestMapping(value = "/temporaryPack/checkWarehousing", method = RequestMethod.GET)
     @ResponseBody
-    public CommonResponse warehousing() {
+    public CommonResponse warehousing(int page , int size) {
         CommonResponse cr = new CommonResponse();
-        cr.setData(clearCascadeJSONQuantitative.format(quantitativeService.warehousing()).toJSON());
+        cr.setData(clearCascadeJSONQuantitative.format(quantitativeService.warehousing(page,size)).toJSON());
         cr.setMessage("成功");
         return cr;
     }
