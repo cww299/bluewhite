@@ -168,98 +168,90 @@ layui.config({
 		       },
 		       { title:'备注',   field:'remarks',	width:90, edit:true,},  				
 		];
-		myutil.getData({
-			url:myutil.config.ctx+'/temporaryPack/checkWarehousing',
-			success:function(d){
-				var data = [];
-				for(var i=0,len=d.length;i<len;i++){
-					var child = d[i].quantitativeChilds;
-					if(!child)
-						continue;
-					for(var j=0,l=child.length;j<l;j++){
-						data.push($.extend({},child[j],{childId: child[j].id,},d[i])); 
-					}
-				}
-				if(d.length>0){
-					layer.open({
-						type:1,
-						title:'入库单',
-						area:['100%','100%'],
-						btn:['返回'],
-						content:[
-							'<div>',
-								'<table>',
-									'<tr>',
-										'<td>库区：</td>',
-										'<td><input id="region" class="layui-input"></td>',
-										'<td>&nbsp;&nbsp;</td>',
-										'<td>库位：</td>',
-										'<td><input id="position" class="layui-input"></td>',
-									'</tr>',
-								'</table>',
-								'<table id="checkTable" lay-filter="checkTable"></table>',
-							'</div>',
-						].join(' '),
-						success:function(){
-							mytable.renderNoPage({
-								elem:'#checkTable',
-								size:'sm',
-								autoMerge:{
-							    	 field:['quantitativeNumber','vehicleNumber','time','sendTime','audit','print','flag',
-							    		 'user_userName','surplusSendNumber','surplusNumber','customer_name','0'], 
-							    	 evenColor: evenColor,
-						        },
-						        even:true,
-								cols:[cols],
-								data:data,
-								limit:9999,
-								toolbar:[
-									'<span class="layui-btn layui-btn-sm" lay-event="onekey">一键入库</span>'
-								].join(' '),
-								curd:{
-									btn: [],
-									otherBtn:function(obj){
-										if(obj.event=="onekey"){
-											var check = table.checkStatus("checkTable").data;
-											if(check.length==0)
-												return myutil.emsg("请选择入库数据");
-											var region = $('#region').val();
-											var position = $('#position').val();
-											if(!region || !position)
-												return myutil.emsg("请填写库区库位");
-											var ids = [];
-											for(var i in check)
-												ids.push(check[i].id);
-											myutil.saveAjax({
-												url: '/temporaryPack/putWarehousing',
-												data:{
-													ids: ids.join(','),
-													location:position,
-													reservoirArea: region,
-												},
-												success:function(){
-													var cache = table.cache['checkTable'];
-													for(var i in ids){
-														for(var j=cache.length-1;j>=0;j--){
-															if(ids[i]==cache[j].id)
-																cache.splice(j,1);
-														}
-													}
-													table.reload('checkTable',{
-														data: cache,
-													})
-												}
-											})
+		var colsChcek = [
+		       { type:'checkbox',},
+		       { title:'量化编号',   field:'quantitativeNumber', width:185,	},
+		       { title:'上车编号',   field:'vehicleNumber', width:145,	},
+		       { title:'包装时间',   field:'time', width:110, type:'date', },
+		       { title:'发货时间',   field:'sendTime',  width:110,type:'date',  },
+		       { title:'贴包人',    field:'user_userName', width:100,	},
+		       { title:'客户',     field:'customer_name',	},
+		       { title:'批次号',    field:'underGoods_bacthNumber',	minWidth:130, },
+		       { title:'产品名',    field:'underGoods_product_name', width:280,	},
+		       { title:'单包个数',   field:'singleNumber',	width:80, },
+		       { title:'备注',   field:'remarks',	width:90, edit:true,},  				
+		];
+		layer.open({
+			type:1,
+			title:'入库单',
+			area:['90%','90%'],
+			btn:['返回'],
+			content:[
+				'<div>',
+					'<table id="checkTable" lay-filter="checkTable"></table>',
+				'</div>',
+			].join(' '),
+			success:function(){
+				mytable.render({
+					elem:'#checkTable',
+					size:'sm',
+					height:'600px',
+					autoMerge:{
+				    	 field:['quantitativeNumber','vehicleNumber','time','sendTime',
+				    		 'user_userName','surplusSendNumber','surplusNumber','customer_name','0'], 
+				    	 evenColor: evenColor,
+			        },
+			        even:true,
+					cols:[colsChcek],
+					url: myutil.config.ctx+'/temporaryPack/checkWarehousing',
+					parseData: parseData(),
+					page:true,
+					toolbar:[
+						'<input id="region" class="layui-btn layui-btn-sm layui-btn-primary" placeholder="库区">',
+						'<input id="position" class="layui-btn layui-btn-sm layui-btn-primary"  placeholder="库位">',
+						'<span class="layui-btn layui-btn-sm" lay-event="onekey">一键入库</span>'
+					].join(' '),
+					curd:{
+						btn: [],
+						otherBtn:function(obj){
+							if(obj.event=="onekey"){
+								var check = table.checkStatus("checkTable").data;
+								if(check.length==0)
+									return myutil.emsg("请选择入库数据");
+								var region = $('#region').val();
+								var position = $('#position').val();
+								if(!region || !position)
+									return myutil.emsg("请填写库区库位");
+								var ids = [];
+								for(var i in check)
+									ids.push(check[i].id);
+								myutil.saveAjax({
+									url: '/temporaryPack/putWarehousing',
+									data:{
+										ids: ids.join(','),
+										location:position,
+										reservoirArea: region,
+									},
+									success:function(){
+										var cache = table.cache['checkTable'];
+										for(var i in ids){
+											for(var j=cache.length-1;j>=0;j--){
+												if(ids[i]==cache[j].id)
+													cache.splice(j,1);
+											}
 										}
+										table.reload('checkTable',{
+											data: cache,
+										})
 									}
-								},
-								done:function(){
-									renderTableColor('#checkTable');
-								}
-							})
+								})
+							}
 						}
-					})
-				}
+					},
+					done:function(){
+						renderTableColor('#checkTable');
+					}
+				})
 			}
 		})
 		mytable.render({
