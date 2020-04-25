@@ -528,8 +528,11 @@ public class QuantitativeServiceImpl extends BaseServiceImpl<Quantitative, Long>
                     // 原始数据
                     Quantitative ot = findOne(id);
                     Quantitative newQuantitative = new Quantitative();
-                    BeanCopyUtils.copyNotEmpty(quantitative, newQuantitative, "");
                     BeanCopyUtils.copyNotEmpty(ot, newQuantitative, "");
+                    newQuantitative.setTime(quantitative.getTime());
+                    newQuantitative.setCustomerId(quantitative.getCustomerId());
+                    newQuantitative.setUserId(quantitative.getUserId());
+                    newQuantitative.setChild(quantitative.getChild());
                     // 子单内容无法批量修改
                     if (idArr.length > 1) {
                         JSONArray jsonArray = new JSONArray();
