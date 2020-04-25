@@ -87,7 +87,7 @@ public interface QuantitativeService extends BaseCRUDService<Quantitative,Long>{
      * 未发货发货
      * 且时间超过三天
      */
-	public List<Quantitative> warehousing();
+	public List<Quantitative> warehousing(int page , int size);
 
     /**入库
      * @param ids

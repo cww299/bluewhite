@@ -34,7 +34,7 @@ public interface QuantitativeDao  extends BaseRepository<Quantitative, Long>{
      * @return 
      * 
      */
-	@Query(nativeQuery = true ,value = "SELECT * FROM pro_quantitative where flag = 0 and time < SUBDATE(now(),interval 3 day)")
-    List<Quantitative> warehousing();
+	@Query(nativeQuery = true ,value = "SELECT * FROM pro_quantitative where flag = 0 and time < SUBDATE(now(),interval 3 day) limit (?1),(?2) ")
+    List<Quantitative> warehousing(int page , int size);
 }
 
