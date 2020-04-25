@@ -554,8 +554,11 @@ public class QuantitativeServiceImpl extends BaseServiceImpl<Quantitative, Long>
     }
 
     @Override
-    public List<Quantitative> warehousing(int page , int size) {
-        return dao.warehousing(page,size);
+    public PageResult<Quantitative> warehousing(int page,int size) {
+        PageResult<Quantitative>  pageQuantitative =  new PageResult<Quantitative>();
+        pageQuantitative.setRows( dao.warehousing(page,size));
+        pageQuantitative.setTotal((long)dao.warehousing());
+        return pageQuantitative;
     }
 
     @Override
