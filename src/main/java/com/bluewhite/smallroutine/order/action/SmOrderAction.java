@@ -13,7 +13,6 @@ import com.bluewhite.common.entity.CommonResponse;
 import com.bluewhite.common.utils.apiUtil.ApiUtil;
 
 import cn.hutool.core.map.MapUtil;
-import cn.hutool.json.JSONObject;
 
 /**
  * @author ZhangLiang
@@ -21,7 +20,6 @@ import cn.hutool.json.JSONObject;
  */
  @Controller
 public class SmOrderAction {
-     
      
      /**
       * 获取订单信息 
@@ -96,22 +94,13 @@ public class SmOrderAction {
      @RequestMapping(value = "/user/saleDistributionCommisionLog/list", method = RequestMethod.GET)
      @ResponseBody
      public CommonResponse userSaleDistributionCommisionLogList(@RequestParam HashMap<String, Object> paramMap) {
-         CommonResponse commonResponse = new CommonResponse();
          if (MapUtil.isEmpty(paramMap)) {
              throw new ServiceException("参数不能为空");
          };
-         JSONObject jSONObject = ApiUtil.useApi(paramMap, ApiUtil.userSaleDistributionCommisionLogList);
-         JSONObject obj = (JSONObject)jSONObject.getObj("data");
-         //佣金明细
-         JSONObject result =  (JSONObject)obj.get("result");
-         //
-         JSONObject userMapm =  (JSONObject)obj.get("userMapm");
-         
-         JSONObject userMaps = (JSONObject)obj.get("userMaps");
-         
-         return commonResponse;
+         paramMap.put("pageSize", Integer.MAX_VALUE);
+         CommonResponse cr = ApiUtil.useApiCommonResponse(paramMap, ApiUtil.userSaleDistributionCommisionLogList);
+         return cr;
      }
      
-
 
 }

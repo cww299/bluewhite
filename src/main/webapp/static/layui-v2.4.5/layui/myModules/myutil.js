@@ -174,7 +174,11 @@ layui.define(['jquery','layer','form','table'],function(exports){
 					options.success && options.success(data);
 					options.done && options.done(data);
 					return data;
-				}
+				}else
+					options.error && options.error(data);
+			},
+			error:function(r){
+				options.error && options.error(data);
 			}
 		}
 		$.ajax(ajax);
