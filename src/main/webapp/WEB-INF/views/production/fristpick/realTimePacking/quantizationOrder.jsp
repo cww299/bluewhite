@@ -451,7 +451,7 @@ layui.config({
 						'<tr>',
 							'<td>物流点：</td>',
 							'<td colspan="2">',
-								'<select name="logisticsId" lay-verify="required" lay-search>',
+								'<select name="logisticsId" lay-search>',
 									'<option value="">请选择</option>',
 									allLogistics,
 								'</select>',
