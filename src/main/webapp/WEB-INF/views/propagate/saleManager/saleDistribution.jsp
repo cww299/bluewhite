@@ -22,7 +22,7 @@
 				<td>注册时间：</td>
 				<td><input id="searchTime" class="layui-input" name="dateAddBegin" autocomplete="off"></td>
 				<td>手机号：</td>
-				<td><input class="layui-input" name="mobile" value="13006203740"></td>
+				<td><input class="layui-input" name="mobile" value=""></td>
 				<td>昵称：</td>
 				<td><input class="layui-input" name="nickLike"></td>
 				<td>是否分销：</td>
