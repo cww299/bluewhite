@@ -51,7 +51,7 @@ public class ContractServiceImpl extends BaseServiceImpl<Contract, Long> impleme
         }
         if (contract.getId() == null) {
             contract.setFlag(1);
-            if(contract.getCode()==null) {	//没有合同编号且id为null。合同新增
+            if(contract.getCode()==null || contract.getCode().isEmpty()) {	//没有合同编号且id为null。合同新增
             	contract.setCode(getContractCode());
             }
         } else {
@@ -127,7 +127,7 @@ public class ContractServiceImpl extends BaseServiceImpl<Contract, Long> impleme
                 predicate.add(
                     cb.between(root.get("endTime").as(Date.class), param.getOrderTimeBegin(), param.getOrderTimeEnd()));
             }
-            if (param.getCode() != null) {
+            if (param.getCode() != null && !param.getCode().isEmpty()) {
                 predicate.add(cb.equal(root.get("code").as(String.class), param.getCode()));
             }
             if(param.getIsRenew()<2)	//传2的时候全查
@@ -149,13 +149,16 @@ public class ContractServiceImpl extends BaseServiceImpl<Contract, Long> impleme
     public Map<String, Object> remindContract() {
         checkContract();
         Map<String, Object> map = new HashMap<String, Object>();
-        List<Contract> contractList = dao.findByFlag(1);
+        List<Contract> contractList = dao.findByFlagAndIsRenew(1,0);
         List<Map<String, Object>> contractEndList = new ArrayList<Map<String, Object>>();
         for (Contract contract : contractList) {
+        	if(contract.getIsRenew()==1)	//如果已经续签
+        		continue;
             Map<String, Object> us = new HashMap<String, Object>();
             long co = DatesUtil.getDaySub(DatesUtil.getfristDayOftime(new Date()),
                 DatesUtil.getfristDayOftime(contract.getEndTime()));
             if (co <= 45) {
+            	us.put("code", contract.getCode());
                 us.put("id", contract.getId());
                 us.put("content", contract.getContent());
                 us.put("kind", contract.getContractKind().getName());
@@ -168,10 +171,13 @@ public class ContractServiceImpl extends BaseServiceImpl<Contract, Long> impleme
         List<Map<String, Object>> contractPayList = new ArrayList<Map<String, Object>>();
         for (Contract contract : contractList) {
             Map<String, Object> us = new HashMap<String, Object>();
+            if(contract.getPaymentTime()==null)
+            	continue;
             long co = DatesUtil.getDaySub(DatesUtil.getfristDayOftime(new Date()),
                 DatesUtil.getfristDayOftime(contract.getPaymentTime()));
             if (co <= 60) {
                 us.put("id", contract.getId());
+                us.put("code", contract.getCode());
                 us.put("content", contract.getContent());
                 us.put("kind", contract.getContractKind().getName());
                 us.put("type", contract.getContractType().getName());

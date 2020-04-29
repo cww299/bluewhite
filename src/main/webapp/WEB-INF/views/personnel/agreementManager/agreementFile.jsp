@@ -54,7 +54,9 @@
 		.transparentLayer{
 			background-color: #ffffff00 !important;
 		}
-	
+		a.info{
+			cursor:pointer;
+		}
 	</style>
 </head>
 <body>
@@ -186,7 +188,7 @@
   <div id="addEditImgDiv">
     
   </div>
-  <input type="hidden" name="isRenew" value="{{d.isRenew }}">
+  <input type="hidden" name="isRenew" value="{{d.isRenew || 0 }}">
   <input type="hidden" name="id" value="{{d.id || "" }}">
   <span style="display:none;" id="sureBtn" lay-submit lay-filter="sureBtn"></span>
 </div>
@@ -211,6 +213,7 @@
 		  <p>合同金额：{{ item.amount }} </p>
 		  <p>开始时间：{{ item.startTime }} </p>
 		  <p>结束时间：{{ item.endTime }} </p>
+		  <p><a data-id="{{ item.id }}" class="info">合同详情</a></p>
 	    </div>
 	  </li>
   {{# }) }}
@@ -257,12 +260,29 @@ layui.config({
 								limit:999,
 								data: d.contractEnd.concat(d.contractPay),
 								cols: [[
-								        { title:'合同种类', field:'kind' },
-								        { title:'合同类型', field:'type' },
-								        { title:'结束时间', field:'time' },
-								        { title:'合同内容', field:'content' },
-								        { title:'预警类型', field:'warmType',templet: getWarmType(), },
-								        ]]
+									{title:'合同编号',  field:'code',	},
+							        { title:'合同种类', field:'kind' },
+							        { title:'合同类型', field:'type' },
+							        { title:'结束时间', field:'time' },
+							        { title:'合同内容', field:'content' },
+							        { title:'预警类型', field:'warmType',templet: getWarmType(), },
+							        { title:'操作', field:'',templet: function(d){
+							        	return '<span class="layui-btn layui-btn-xs layui-btn-primary" lay-event="renew">续签</span>';
+							        }, },
+					        	]],
+					        	done:function(r){
+					        		$('#warmNumber').html(r.count);
+					        	}
+							})
+							table.on('tool(warmTable)',function(obj){
+								if(obj.event=="renew"){
+									myutil.getData({
+										url:'${ctx}/contract/getOne?id='+obj.data.id,
+										success:function(d){
+											addEdit('renew',d);
+										}
+									})
+								}
 							})
 							function getWarmType(){
 								return function(d){
@@ -350,12 +370,12 @@ layui.config({
 		form.on('submit(search)',function(obj){
 			obj.field.startTime = '';
 			obj.field.endTime = '';
-			if(obj.field.searchTimeType == 'star'){
-				obj.field.startTime = '2019-09-29 00:00:00';
-			}else
-				obj.field.endTime = '2019-09-29 00:00:00';
 			delete obj.field.searchTimeType;
 			if(obj.field.orderTimeBegin){
+				if(obj.field.searchTimeType == 'star'){
+					obj.field.startTime = '2019-09-29 00:00:00';
+				}else
+					obj.field.endTime = '2019-09-29 00:00:00';
 				var time = obj.field.orderTimeBegin;
 				obj.field.orderTimeBegin = time.split('~')[0].trim()+' 00:00:00';
 				obj.field.orderTimeEnd = time.split('~')[1].trim()+' 23:59:59';
@@ -438,7 +458,8 @@ layui.config({
 				return myutil.emsg(msg);
 			layer.open({
 				type:1,
-				title: '合同信息',
+				shadeClose:true,
+				title: '合同信息     <b style="color:red">'+choosed[0].code+'</b>',
 				area:['500px','500px'],
 				content:[
 					'<div id="infoContent" style="padding: 10px;">',
@@ -454,12 +475,21 @@ layui.config({
 						},
 						success:function(d){
 							$('#infoContent').html(layui.laytpl($('#infoTool').html()).render(d));
+							$('a.info').unbind().on('click',function(){
+								var id = $(this).data('id');
+								myutil.getData({
+									url:'${ctx}/contract/getOne?id='+id,
+									success:function(d){
+										addEdit('edit',d);
+									}
+								})
+							})
 						}
 					})
 				}
 			})
 		}
-		function addEdit(type){
+		function addEdit(type,addEditData){
 			var data={ id:'',contractKind:{name:''},contractType:{name:''},duration:'',
 					startTime:'',endTime:'',content:'',amount:'',flag:1,company:'', fileSet:[],
 					paymentTime:'', paymentWay:'', },
@@ -477,12 +507,16 @@ layui.config({
 				title="修改合同";
 			}
 			if(type=='renew'){
-				var msg = '';
-				choosed.length>1 && (msg = "不能同时续签多条信息");
-				choosed.length<1 && (msg = "至少选择一条信息续签");
-				if(choosed.length!=1)
-					return myutil.emsg(msg);
-				data=choosed[0];
+				if(addEditData)
+					data = addEditData;
+				else{
+					var msg = '';
+					choosed.length>1 && (msg = "不能同时续签多条信息");
+					choosed.length<1 && (msg = "至少选择一条信息续签");
+					if(choosed.length!=1)
+						return myutil.emsg(msg);
+					data=choosed[0];
+				}
 				data.isRenew = 1;
 				title='续签合同';
 			}
@@ -566,7 +600,8 @@ layui.config({
 							url:'/contract/addContract',
 							data:obj.field,
 							success:function(result){
-								table.reload('tableData');
+								var tableId = addEditData?'warmTable':'tableData';
+								table.reload(tableId);
 								layer.close(addEditWin);
 							},
 						}) 

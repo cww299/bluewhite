@@ -89,5 +89,18 @@ public class ContractAction {
 		cr.setData(contractService.remindContract());
 		return cr;
 	}
+	
+	/**
+	 * 合同提醒
+	 * 
+	 * @return cr
+	 */
+	@RequestMapping(value = "/contract/getOne", method = RequestMethod.GET)
+	@ResponseBody
+	public CommonResponse remindContract(Long id) {
+		CommonResponse cr = new CommonResponse();
+		cr.setData(clearCascadeJSON.format(contractService.findOne(id)).toJSON());
+		return cr;
+	}
 
 }
