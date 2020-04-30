@@ -47,7 +47,6 @@ public abstract class BaseServiceImpl<T extends AbstractEntity<ID>, ID extends S
      */
     public T save(T t) {
         return baseRepository.save(t);
-        
     }
     
     /**
@@ -211,6 +210,7 @@ public abstract class BaseServiceImpl<T extends AbstractEntity<ID>, ID extends S
         return var1;
     }
     
+    @Transactional
     public <S extends T> Iterable<S> batchUpdate(Iterable<S> var1) {
         Iterator<S> iterator = var1.iterator();
         int index = 0;

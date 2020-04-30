@@ -122,7 +122,8 @@ public class QuantitativeServiceImpl extends BaseServiceImpl<Quantitative, Long>
 
             // 按库区
             if (!StringUtils.isEmpty(param.getReservoirArea())) {
-                predicate.add(cb.like(root.get("reservoirArea").as(String.class), "%" + param.getReservoirArea() + "%"));
+                predicate
+                    .add(cb.like(root.get("reservoirArea").as(String.class), "%" + param.getReservoirArea() + "%"));
             }
             // 按上车编号过滤
             if (!StringUtils.isEmpty(param.getVehicleNumber())) {
@@ -439,12 +440,8 @@ public class QuantitativeServiceImpl extends BaseServiceImpl<Quantitative, Long>
                             if (ot.getAudit() != null && ot.getAudit() == 1) {
                                 throw new ServiceException("财务已审核生成物流费用,无法取消发货");
                             }
-                            List<Quantitative> quantitativeList = dao.findBySendOrderId(quantitative.getSendOrderId());
-                            if (quantitativeList.size() == 1) {
-                                sendOrderDao.delete(quantitative.getSendOrderId());
-                            } else {
-                                quantitative.setSendOrderId(null);
-                            }
+                            sendOrderDao.delete(quantitative.getSendOrderId());
+                            quantitative.setSendOrderId(null);
                         }
                         quantitative.setVehicleNumber(null);
                         quantitative.setSendTime(null);
@@ -554,9 +551,9 @@ public class QuantitativeServiceImpl extends BaseServiceImpl<Quantitative, Long>
     }
 
     @Override
-    public PageResult<Quantitative> warehousing(int page,int size) {
-        PageResult<Quantitative>  pageQuantitative =  new PageResult<Quantitative>();
-        pageQuantitative.setRows( dao.warehousing(page,size));
+    public PageResult<Quantitative> warehousing(int page, int size) {
+        PageResult<Quantitative> pageQuantitative = new PageResult<Quantitative>();
+        pageQuantitative.setRows(dao.warehousing(page, size));
         pageQuantitative.setTotal((long)dao.warehousing());
         return pageQuantitative;
     }
