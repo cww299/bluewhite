@@ -35,6 +35,9 @@
 	.userInfo .layui-input, .layui-textarea, .layui-form-select {
 	    width: 160px;
 	}
+	.minWidth{
+	
+	}
 	@media screen and (max-width: 1420px){
       .layui-form-label,.layui-input-inline{
       	width:100% !important;
@@ -55,7 +58,7 @@
 				<td><input  class="layui-input" name="userName" /></td>
 				<td>&nbsp;&nbsp;</td>
 				<td>在离职:</td>
-				<td><select class="form-control" name="quit">
+				<td class="minWidth"><select class="form-control" name="quit">
 						<option value="">请选择</option>
 						<option value="0">在职</option>
 						<option value="1">离职</option></select></td>
@@ -64,15 +67,19 @@
 				<td ><select class="form-control" id="orgName" name="orgNameIds" lay-search="true"></select></td>
 				<td>&nbsp;&nbsp;</td>
 				<td>性别:</td>
-				<td><select class="form-control" name="gender">
+				<td class="minWidth"><select class="form-control" name="gender">
 						<option value="">请选择</option>
 						<option value="0">男</option>
 						<option value="1">女</option></select></td>
 				<td>&nbsp;&nbsp;</td>
 				<td>退休返聘:</td>
-				<td><select class="form-control" id="retire" name="retire">
+				<td class="minWidth"><select class="form-control" id="retire" name="retire">
 				 		<option value="">否</option>
 						<option value="0">是</option></select></td>
+				<td>&nbsp;&nbsp;</td>
+				<td>政治面貌:</td>
+				<td class="minWidth"><select class="form-control" id="politicsSelectSearch" name="politicsId">
+				 		<option value="">政治面貌</option></td>
 			</tr>
 			<tr>
 				<td><div style="height: 10px"></div></td>
@@ -82,7 +89,7 @@
 				<td><input type="text" name="lotionNumber" class="layui-input" /></td>
 				<td>&nbsp;&nbsp;</td>
 				<td>保险详情:</td>
-				<td><select class="form-control" name="safe">
+				<td class="minWidth"><select class="form-control" name="safe">
 						<option value="">请选择</option>
 						<option value="0">未缴</option>
 						<option value="1">已缴</option></select></td>
@@ -95,20 +102,18 @@
 						<option value="estimate">预计转正时间</option></select></td>
 				<td>&nbsp;&nbsp;</td>
 				<td>输入时间:</td>
-				<td><input id="startTime" placeholder="请输入时间"  class="layui-input laydate-icon">
+				<td><input id="startTime" placeholder="请输入时间"  class="layui-input laydate-icon" autocomplete="off" style="width:160px;">
 				</td>
 				<td>&nbsp;&nbsp;</td>
 				<td>合同种类:</td>
 				<td><select class="form-control" lay-search="true" id="commitments" name="commitmentId">
 			 		<option value="">请选择</option></select></td>
-			 	<td>&nbsp;&nbsp;</td>	
-		 		<td>
-				<div class="layui-inline">
-					<button class="layui-btn layuiadmin-btn-admin" lay-submit lay-filter="LAY-search">
-						<i class="layui-icon layui-icon-search layuiadmin-button-btn"></i>
-					</button>
-				</div>
-				</td>
+			 	<td>&nbsp;&nbsp;</td>
+				<td>退伍军人:</td>
+				<td><select class="form-control" name="retireSoldier">
+			 		<option value="">请选择</option>
+			 		<option value="0">否</option>
+			 		<option value="1">是</option></select></td>
 			</tr>
 			<tr>
 				<td><div style="height: 10px"></div></td>
@@ -117,6 +122,23 @@
 				<td>所属银行:</td>
 				<td><input type="text" name="ascriptionBank1" class="layui-input" /></td>
 				<td>&nbsp;&nbsp;</td>
+				<td>承诺书:</td>
+				<td class="minWidth"><select class="form-control" name="promise">
+						<option value="">请选择</option>
+						<option value="0">未签</option>
+						<option value="1">已签</option></select></td>	
+				<td>&nbsp;&nbsp;</td>    <!-- 修改此处 -->
+				<td>协议:</td>
+				<td><select id="agreementsSelect" name="agreementId" class="form-control">
+					</select></td>
+					<td>&nbsp;&nbsp;</td>
+				<td>合同状态:</td>
+				<td class="minWidth"><select class="form-control" name="commitment">
+						<option value="">请选择</option>
+						<option value="0">未签</option>
+						<option value="1">已签</option>
+						<option value="2">续签</option></select></td>
+					<td>&nbsp;&nbsp;</td>
 				<td>学历查询:</td>
 				<td><select id="education2" class="form-control" name="education">
 						<option value="">请选择</option>
@@ -124,23 +146,14 @@
 						<option value="大专">大专</option>
 						<option value="高中">高中</option>
 						<option value="初中及以下">初中及以下</option></select></td>
-				<td>&nbsp;&nbsp;</td>    <!-- 修改此处 -->
-				<td>协议:</td>
-				<td><select id="agreementsSelect" name="agreementId" class="form-control">
-					</select></td>
-					<td>&nbsp;&nbsp;</td>
-				<td>合同状态:</td>
-				<td><select class="form-control" name="commitment">
-						<option value="">请选择</option>
-						<option value="0">未签</option>
-						<option value="1">已签</option>
-						<option value="2">续签</option></select></td>
-					<td>&nbsp;&nbsp;</td>
-				<td>承诺书:</td>
-				<td><select class="form-control" name="promise">
-						<option value="">请选择</option>
-						<option value="0">未签</option>
-						<option value="1">已签</option></select></td>	
+				<td>&nbsp;&nbsp;</td>	
+		 		<td colspan="2">
+					<div class="layui-inline">
+						<button class="layui-btn layuiadmin-btn-admin" lay-submit lay-filter="LAY-search">
+							<i class="layui-icon layui-icon-search layuiadmin-button-btn"></i>搜索
+						</button>
+					</div>
+				</td>
 			</tr>
 		</table>
 		<table class="layui-form" id="recruitTable" lay-filter="recruitTable" ></table>
@@ -380,6 +393,28 @@
 			    </div>
 			</td>
 			<td>
+				<div class="layui-inline">
+			      <label class="layui-form-label">政治面貌</label>
+			      <div class="layui-input-inline">
+			      	 <select class="form-control" lay-search="true" name="politicsId" id="politicsSelect">
+						<option value="">政治面貌</option>
+					 </select>
+				  </div>
+			    </div>
+			</td>
+		</tr>
+		<tr class="layui-form-item">
+			<td>
+				<div class="layui-inline">
+			      <label class="layui-form-label">退伍军人</label>
+			      <div class="layui-input-inline">
+					<select class="form-control" name="retireSoldier">
+						<option value="">请选择</option>
+						<option value="0" {{ d.retireSoldier==0?'selected':'' }}>否</option>
+						<option value="1" {{ d.education==1?'selected':'' }}>是</option>
+					</select>
+			      </div>
+			    </div>
 			</td>
 		</tr>
 		<tr class="titleTr">
@@ -586,10 +621,6 @@
 		</tr>
 	</table>
 </div>
-
-
-		    
-			
 </script>
 <!-- 表格工具栏模板 -->
 <script type="text/html" id="barDemo">
@@ -608,8 +639,9 @@ layui.config({
 	base : '${ctx}/static/layui-v2.4.5/'
 }).extend({
 	tablePlug : 'tablePlug/tablePlug',
+	myutil: 'layui/myModules/myutil',
 }).define(
-	['tablePlug','laydate','upload'],
+	['tablePlug','laydate','upload','myutil'],
 	function(){
 		var $ = layui.jquery
 		, layer = layui.layer 				
@@ -618,8 +650,9 @@ layui.config({
 		, laydate = layui.laydate
 		, laytpl = layui.laytpl
 		, tablePlug = layui.tablePlug
+		, myutil = layui.myutil
 		,upload = layui.upload;
-		
+		myutil.config.ctx = "${ctx}";
 		laydate.render({
 			elem: '#startTime',
 			type: 'date',
@@ -666,6 +699,7 @@ layui.config({
       			  form.render();
 		      }
 		});
+ 		$('#politicsSelectSearch').append(myutil.getBaseDataSelect({type:'politicsType'}));
 		var allPlatform = [];
 	 	tablePlug.smartReload.enable(true);  
 	 	table.render({
@@ -830,7 +864,7 @@ layui.config({
 			      }
 			  });
      		
-     		 var pictureUrl=data.pictureUrl;	
+     		var pictureUrl=data.pictureUrl;	
 			var index=layer.open({
 				type:1,
 				title:data.userName+'个人信息',
@@ -846,6 +880,7 @@ layui.config({
 					$("#commitmentId").html(htmltt);
 					$("#orgNameId").html(htmlst);
 					$("#positionId").html(htmll);
+					$('#politicsSelect').append(myutil.getBaseDataSelect({type:'politicsType',id: data.politics?data.politics.id:""}));
 					laydate.render({ elem:'#actua', type:'datetime', });
 					laydate.render({ elem:'#entry', type:'datetime', });
 					laydate.render({ elem:'#estimate', type:'datetime',  });

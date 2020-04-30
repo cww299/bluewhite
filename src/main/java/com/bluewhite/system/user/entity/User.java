@@ -334,6 +334,26 @@ public class User extends BaseEntity<Long> {
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "orgName_id", referencedColumnName = "id", insertable = false, updatable = false)
 	private BaseData orgName;
+	
+	/**
+	 * 政治面貌id
+	 */
+	@Column(name = "politics_id")
+	private Long politicsId;
+	
+	/**
+	 * 是否退伍军人 0否 1是
+	 */
+	@Column(name = "retire_soldier")
+	private Integer retireSoldier;
+	
+	/**
+	 * 部门
+	 */
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "politics_id", referencedColumnName = "id", insertable = false, updatable = false)
+	private BaseData politics;
+
 
 	/**
 	 * 分组id
@@ -1022,4 +1042,28 @@ public class User extends BaseEntity<Long> {
 		this.hostelId = hostelId;
 	}
 
+	public Long getPoliticsId() {
+		return politicsId;
+	}
+
+	public void setPoliticsId(Long politicsId) {
+		this.politicsId = politicsId;
+	}
+
+	public BaseData getPolitics() {
+		return politics;
+	}
+
+	public void setPolitics(BaseData politics) {
+		this.politics = politics;
+	}
+
+	public Integer getRetireSoldier() {
+		return retireSoldier;
+	}
+
+	public void setRetireSoldier(Integer retireSoldier) {
+		this.retireSoldier = retireSoldier;
+	}
+	
 }

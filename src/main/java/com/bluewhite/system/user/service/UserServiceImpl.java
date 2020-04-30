@@ -31,7 +31,6 @@ import com.bluewhite.common.entity.PageResult;
 import com.bluewhite.common.utils.DatesUtil;
 import com.bluewhite.personnel.attendance.dao.AttendanceInitDao;
 import com.bluewhite.personnel.attendance.entity.AttendanceInit;
-import com.bluewhite.system.user.dao.UserContractDao;
 import com.bluewhite.system.user.dao.UserDao;
 import com.bluewhite.system.user.entity.Role;
 import com.bluewhite.system.user.entity.RoleMenuPermission;
@@ -191,6 +190,14 @@ public class UserServiceImpl extends BaseServiceImpl<User, Long> implements User
 					orgNameIdList.add(id);
 				}
 				predicate.add(cb.and(root.get("orgNameId").as(Long.class).in(orgNameIdList)));
+			}
+			// 政治面貌
+			if (user.getPoliticsId()!=null) {
+				predicate.add(cb.equal(root.get("politicsId").as(Long.class), user.getPoliticsId()));
+			}
+			// 退伍军人
+			if (user.getRetireSoldier()!=null) {
+				predicate.add(cb.equal(root.get("retireSoldier").as(Integer.class), user.getRetireSoldier()));
 			}
 			// 按时间过滤
 			if (!StringUtils.isEmpty(user.getOrderTimeBegin()) && !StringUtils.isEmpty(user.getOrderTimeEnd())) {
