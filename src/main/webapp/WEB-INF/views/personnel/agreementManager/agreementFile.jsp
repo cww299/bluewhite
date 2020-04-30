@@ -65,25 +65,24 @@
 	<div class="layui-card-body">
 		<table class="layui-form">
 			<tr>
-				<td>合同种类:</td>
-				<td style="width:150px;">
-					<select name="contractKindId" id="searchKind" lay-search><option value="">请选择</option></select></td>
+				<td style="width:110px;">
+					<select name="contractKindId" id="searchKind" lay-search><option value="">合同种类</option></select></td>
 				<td>&nbsp;&nbsp;</td>
-				<td>合同编号:</td>
 				<td style="width:150px;">
-					<input name="code" class="layui-input"></td>
+					<input name="code" class="layui-input" placeholder="合同编号"></td>
 				<td>&nbsp;&nbsp;</td>
-				<td>合同类型:</td>
 				<td style="width:150px;">
-					<select name="contractTypeId" id="searchType" lay-search><option value="">请选择</option></select></td>
+					<input name="content" class="layui-input" placeholder="合同内容"></td>
 				<td>&nbsp;&nbsp;</td>
-				<td style="width:120px;"><select name="searchTimeType">
+				<td style="width:150px;">
+					<select name="contractTypeId" id="searchType" lay-search><option value="">合同类型</option></select></td>
+				<td>&nbsp;&nbsp;</td>
+				<td style="width:100px;"><select name="searchTimeType">
 						<option value="star">开始时间</option>
 						<option value="end">结束时间</option></select></td>
-				<td><input name="orderTimeBegin" class="layui-input" id="searchStar"></td>
+				<td><input name="orderTimeBegin" class="layui-input" id="searchStar" autocomplete="off"></td>
 				<td>&nbsp;&nbsp;</td>
-				<td>是否有效:</td>
-				<td style="width:80px;"><select name="flag"><option value="">请选择</option>
+				<td style="width:80px;"><select name="flag"><option value="">是否有效</option>
 										<option value="0">无效</option>
 										<option value="1" selected>有效</option></select></td>
 				<td>&nbsp;&nbsp;</td>
@@ -408,48 +407,52 @@ layui.config({
 				content: html+'</div>',
 				shadeClose:true,
 				success:function(){
-					var deg = 0;
-					$('.imgDiv').on('click',function(obj){
-						var imgElem = null;
-						if($(obj.target).find('img').length>0)
-							imgElem = $(obj.target).find('img');
-						else
-							imgElem = $(obj.target);
-						var lookoverWin = layer.open({
-							shadeClose:true,
-							type:1,
-							area:['100%','100%'],
-							title:'查看照片',
-							skin: 'transparentLayer',
-							btn:['旋转','关闭','上一张','下一张',],
-							content:'<div id="imgDivLook"><img style="max-width:50%;max-height:100%;" src="'+$(imgElem).attr('src')+'"'+
-									' data-id="'+$(imgElem).data('id')+'">',
-							yes: function(index, layero){
-								deg+=90;
-								$('#imgDivLook').find('img').css('transform','rotate('+deg+'deg)');
-						    },
-							btn2: function(index, layero){
-						    },
-						    btn3: function(index, layero){
-						    	var id = $('#imgDivLook').find('img').attr('data-id');
-						    	id = (id-1)<0?length-1:id-1;
-						    	$('#imgDivLook').find('img').attr('src',img[id].url);
-						    	$('#imgDivLook').find('img').attr('data-id',id);
-						    	return false;
-						    },
-						    btn4: function(){ 
-						    	$('#imgDivLook').find('img').data('id');
-						    	var id = $('#imgDivLook').find('img').attr('data-id');
-						    	id = (id-(-1))%length;
-						    	$('#imgDivLook').find('img').attr('src',img[id].url);
-						    	$('#imgDivLook').find('img').attr('data-id',id);
-						    	return false;
-							}
-						})
-					})
+					lookoverPic(img);
 				}
 			})
 		})
+		function lookoverPic(img){
+			var deg = 0;
+			var length = img.length;
+			$('.imgDiv').on('click',function(obj){
+				var imgElem = null;
+				if($(obj.target).find('img').length>0)
+					imgElem = $(obj.target).find('img');
+				else
+					imgElem = $(obj.target);
+				var lookoverWin = layer.open({
+					shadeClose:true,
+					type:1,
+					area:['100%','100%'],
+					title:'查看照片',
+					skin: 'transparentLayer',
+					btn:['旋转','关闭','上一张','下一张',],
+					content:'<div id="imgDivLook"><img style="max-width:50%;max-height:100%;" src="'+$(imgElem).attr('src')+'"'+
+							' data-id="'+$(imgElem).data('id')+'">',
+					yes: function(index, layero){
+						deg+=90;
+						$('#imgDivLook').find('img').css('transform','rotate('+deg+'deg)');
+				    },
+					btn2: function(index, layero){
+				    },
+				    btn3: function(index, layero){
+				    	var id = $('#imgDivLook').find('img').attr('data-id');
+				    	id = (id-1)<0?length-1:id-1;
+				    	$('#imgDivLook').find('img').attr('src',img[id].url);
+				    	$('#imgDivLook').find('img').attr('data-id',id);
+				    	return false;
+				    },
+				    btn4: function(){ 
+				    	$('#imgDivLook').find('img').data('id');
+				    	var id = $('#imgDivLook').find('img').attr('data-id');
+				    	id = (id-(-1))%length;
+				    	$('#imgDivLook').find('img').attr('src',img[id].url);
+				    	$('#imgDivLook').find('img').attr('data-id',id);
+				    	return false;
+					}
+				})
+			})
+		}
 		function openInfoWin(){
 			var choosed=layui.table.checkStatus('tableData').data;
 			choosed.length>1 && (msg = "不能查看多条合同信息");
@@ -542,10 +545,11 @@ layui.config({
 					var img = data.fileSet;
 					var html = '';
 					for(var i in img){
-						html+='<div class="imgDiv"><img src="'+img[i].url+'"><i data-id="'+img[i].id+
+						html+='<div class="imgDiv"><img src="'+img[i].url+'" data-id="'+img[i].id+'"><i data-id="'+img[i].id+
 								'" class="layui-icon layui-icon-close closeBtn"></i></div>';
 					}
 					$('#addEditImgDiv').append(html);
+					lookoverPic(img);
 					$('.closeBtn').unbind().on('click',function(obj){
 						var id = $(obj.target).data('id');
 						fileIds.splice(fileIds.indexOf(id),1);
