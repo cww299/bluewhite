@@ -318,12 +318,12 @@ public class AttendanceAction {
 	 */
 	@RequestMapping(value = "/personnel/findAttendanceCollect", method = RequestMethod.POST)
 	@ResponseBody
-	public CommonResponse findAttendanceCollect(HttpServletRequest request, AttendanceCollect attendanceCollect) {
+	public CommonResponse findAttendanceCollect(AttendanceCollect attendanceCollect) {
 		CommonResponse cr = new CommonResponse();
 		cr.setData(ClearCascadeJSON.get()
 				.addRetainTerm(AttendanceCollect.class, "id", "time", "turnWork", "overtime", "dutyWork", "allWork",
 						"manDay", "manDayOvertime", "weekendTurnWork", "leaveTime", "takeWork", "leaveDetails",
-						"remarks", "userName", "sign", "belateDetails", "ordinaryOvertime", "productionOvertime")
+						"remarks", "userName", "sign", "belateDetails", "ordinaryOvertime", "productionOvertime","dutyDetails","takeDetails")
 				.format(attendanceCollectService.findAttendanceCollect(attendanceCollect)).toJSON());
 		cr.setMessage("查找成功");
 		return cr;

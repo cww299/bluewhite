@@ -437,10 +437,12 @@ public class QuantitativeServiceImpl extends BaseServiceImpl<Quantitative, Long>
                     } else {
                         if (quantitative.getSendOrderId() != null) {
                             SendOrder ot = sendOrderDao.findOne(quantitative.getSendOrderId());
-                            if (ot.getAudit() != null && ot.getAudit() == 1) {
-                                throw new ServiceException("财务已审核生成物流费用,无法取消发货");
+                            if(ot != null ) {
+                                if (ot.getAudit() != null && ot.getAudit() == 1) {
+                                    throw new ServiceException("财务已审核生成物流费用,无法取消发货");
+                                }
+                                sendOrderDao.delete(quantitative.getSendOrderId());
                             }
-                            sendOrderDao.delete(quantitative.getSendOrderId());
                             quantitative.setSendOrderId(null);
                         }
                         quantitative.setVehicleNumber(null);
