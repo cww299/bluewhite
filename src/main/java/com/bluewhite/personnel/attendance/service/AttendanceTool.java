@@ -244,7 +244,7 @@ public class AttendanceTool {
                 && attendanceTime.getCheckOut().compareTo(restEndTime) == -1) {
                 actualOverTime += DatesUtil.getTimeHour(restBeginTime, attendanceTime.getCheckOut());
             }
-            // 之间
+            
             if (attendanceTime.getCheckIn().compareTo(restBeginTime) == 1
                 && attendanceTime.getCheckOut().compareTo(restEndTime) == -1) {
                 actualOverTime += DatesUtil.getTimeHour(attendanceTime.getCheckIn(), attendanceTime.getCheckOut());
