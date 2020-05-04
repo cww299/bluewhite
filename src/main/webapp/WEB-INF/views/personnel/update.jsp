@@ -52,7 +52,7 @@
 						<td><select id="orgNameId" class="form-control search-query name" lay-search="true" name="orgNameId"><option value="">请选择</option></select></td>
 						<td>&nbsp;&nbsp;</td>
 						<td>考勤汇总月份:</td>
-						<td><input name="orderTimeBegin" id="startTime" style="width: 200px;" placeholder="请输入考勤汇总月份" lay-verify="required" class="layui-input laydate-icon"></td>
+						<td><input name="orderTimeBegin" autocomplete="off" id="startTime" style="width: 200px;" placeholder="请输入考勤汇总月份" lay-verify="required" class="layui-input laydate-icon"></td>
 						<td>&nbsp;&nbsp;</td>
 						<td>
 							<div class="layui-inline">
@@ -458,8 +458,10 @@ layui.config({
 				cols: [
 					[ { field: "userName", title: "人名", align: 'center',
 					},{ field: "leaveDetails", title: "请假详情", align: 'center',
-					},{ field: "belateDetails", title: "迟到详情", align: 'center', width:'50%'
+					},{ field: "belateDetails", title: "迟到详情", align: 'center', width:500,
 					},{ field: "dutyWork", title: "请假时长", align: 'center',
+					},{ field: "dutyDetails", title: "缺勤事项详情", align: 'center',
+					},{ field: "takeDetails", title: "调休事项详情", align: 'center',
 					},{ field: "turnWork", title: "出勤时长", align: 'center',
 					},{ field: "ordinaryOvertime", title: "普通加班时长", align: 'center',
 					},{ field: "productionOvertime", title: "生产加班时长", align: 'center',
