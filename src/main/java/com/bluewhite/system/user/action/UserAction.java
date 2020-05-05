@@ -1,5 +1,6 @@
 package com.bluewhite.system.user.action;
 
+import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Comparator;
@@ -10,6 +11,7 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
 import org.apache.shiro.crypto.hash.SimpleHash;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,6 +22,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import com.alibaba.excel.EasyExcel;
 import com.bluewhite.basedata.entity.BaseData;
 import com.bluewhite.common.BeanCopyUtils;
 import com.bluewhite.common.ClearCascadeJSON;
@@ -39,12 +42,14 @@ import com.bluewhite.production.group.dao.TemporarilyDao;
 import com.bluewhite.production.group.entity.Group;
 import com.bluewhite.production.group.entity.Temporarily;
 import com.bluewhite.production.productionutils.constant.ProTypeUtils;
+import com.bluewhite.production.temporarypack.Quantitative;
 import com.bluewhite.system.sys.entity.SysLog;
 import com.bluewhite.system.user.dao.UserContractDao;
 import com.bluewhite.system.user.entity.Role;
 import com.bluewhite.system.user.entity.TemporaryUser;
 import com.bluewhite.system.user.entity.User;
 import com.bluewhite.system.user.entity.UserContract;
+import com.bluewhite.system.user.entity.UserPoi;
 import com.bluewhite.system.user.service.TemporaryUserService;
 import com.bluewhite.system.user.service.UserContractService;
 import com.bluewhite.system.user.service.UserService;
@@ -362,6 +367,50 @@ public class UserAction {
         return cr;
     }
 
+    /**
+     * 导出合同到期人员
+     */
+    @RequestMapping(value = "/excelContract", method = RequestMethod.GET)
+    @ResponseBody
+    public void excelQuantitative(HttpServletResponse response, Quantitative quantitative) throws IOException {
+        response.setContentType("application/vnd.ms-excel");
+        response.setCharacterEncoding("utf-8");
+        response.setHeader("Content-disposition", "attachment;filename=userCotract.xlsx");
+        List<UserPoi> userPoiList = getContractUser();
+        EasyExcel.write(response.getOutputStream(), UserPoi.class)
+            .sheet("合同到期人员").doWrite(userPoiList);
+    }
+
+    public List<UserPoi> getContractUser(){
+    	List<UserPoi> list = new ArrayList<UserPoi>();
+    	List<User> userList = userService.findAll();
+        List<User> userContract =
+             userList.stream().filter(User -> User.getContractDateEnd() != null && User.getQuit() != null
+                 && User.getQuit() != 1 && User.getCommitmentId() != null)
+             .sorted(Comparator.comparing(User::getContractDateEnd))
+             .collect(Collectors.toList());
+        for (User user : userContract) {
+        	long co = DatesUtil.getDaySub(DatesUtil.getfristDayOftime(new Date()),
+                    DatesUtil.getfristDayOftime(user.getContractDateEnd()));
+            if (co <= 75) {
+            	UserPoi poi = new UserPoi();
+            	UserContract uc = userContractDao.findByUserId(user.getId());
+            	poi.setId(user.getId());
+            	poi.setName(user.getUserName());
+            	poi.setAge(user.getAge());
+            	poi.setOrg(user.getOrgName()!=null?user.getOrgName().getName():"");
+            	poi.setNumbers(user.getNumber());
+            	poi.setPost(user.getPosition()!=null?user.getPosition().getName():"");
+            	poi.setInputTime(user.getEntry());
+            	poi.setBirthTime(user.getBirthDate());
+            	poi.setContract(user.getCommitments()!=null?user.getCommitments().getName():"");
+            	poi.setLotionNumber(uc!=null?uc.getNumber():"");
+            	poi.setContractTime(user.getContractDateEnd());
+            	list.add(poi);
+            }
+        }
+    	return list;
+    }
     /**
      * 合同到期，退休时间到期提醒
      * 

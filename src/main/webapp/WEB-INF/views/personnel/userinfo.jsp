@@ -152,6 +152,7 @@
 						<button class="layui-btn layuiadmin-btn-admin" lay-submit lay-filter="LAY-search">
 							<i class="layui-icon layui-icon-search layuiadmin-button-btn"></i>搜索
 						</button>
+						<button class="layui-btn layui-btn-primary" id="downLoadContractBtn">导出合同到期</button>
 					</div>
 				</td>
 			</tr>
@@ -658,7 +659,9 @@ layui.config({
 			type: 'date',
 			range: '~',
 		});
-		
+		$('#downLoadContractBtn').click(function(){
+			location.href="${ctx}/system/user/excelContract";
+		})
  		$.ajax({
 		  url:"${ctx}/basedata/list",
 		  data:{type:"orgName"},

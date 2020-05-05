@@ -175,10 +175,10 @@ layui.define(['jquery','layer','form','table'],function(exports){
 					options.done && options.done(data);
 					return data;
 				}else
-					options.error && options.error(data);
+					options.error && options.error(r);
 			},
 			error:function(r){
-				options.error && options.error(data);
+				options.error && options.error(r);
 			}
 		}
 		$.ajax(ajax);
