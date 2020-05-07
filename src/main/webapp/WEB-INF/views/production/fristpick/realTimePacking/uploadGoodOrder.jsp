@@ -173,7 +173,7 @@ layui.config({
 			       { title:'剩余发货数量',   field:'surplusSendNumber', width:130,	},
 			       { title:'剩余量化数量',   field:'surplusStickNumber', width:130,	},
 			       { title:'备注',   field:'remarks',	width:200,},
-			       { title:'是否天猫',  width:'6%', field:'internal',	transData:{data:['否','是'],text:'未知'}},
+			       { title:'是否天猫',  width:'6%', field:'internal',	templet: getSwitchTm(), },
 			       ]],
 			 done:function(){
 				 upload.render({
@@ -197,6 +197,33 @@ layui.config({
 				})
 			 }
 		})
+		function getSwitchTm(){
+			return function(d){
+				var checked = d.internal?"checked":"";
+				return '<input type="checkbox" lay-filter="isTm" lay-skin="switch" '+checked+' lay-text="是|否">';
+			}
+		}
+		form.on('switch(isTm)', function(obj){
+			var checked = obj.elem.checked;
+			var index = $(obj.elem).closest("tr").data('index');
+			var trData = table.cache['tableData'][index];
+			myutil.saveAjax({
+				url:'/temporaryPack/saveUnderGoods',
+				data:{
+					allotTime: trData.allotTime,
+					bacthNumber: trData.bacthNumber,
+					number: trData.number,
+					internal: checked?1:0,
+					remarks: trData.remarks,
+					id: trData.id,
+					productId: trData.product.id,
+				},
+				success:function(){
+					
+				}
+			})
+			console.log(trData)
+		});  
 		document.onkeyup = function(event) {  
 			if(event.keyCode==13)
 				$('button[lay-filter="search"]').click();
