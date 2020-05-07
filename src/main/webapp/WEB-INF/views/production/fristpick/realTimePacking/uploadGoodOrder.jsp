@@ -164,6 +164,7 @@ layui.config({
 				'<span class="layui-btn layui-btn-sm layui-btn-primary" lay-event="numberClear">尾数清算</span>',
 				'<span class="layui-btn layui-btn-sm layui-btn-normal" id="uploadBtn">导入数据</span>',
 			].join(' '),
+			totalRow:['number','surplusSendNumber','surplusStickNumber'],
 			cols:[[
 			       { type:'checkbox',},
 			       { title:'下单时间',   field:'allotTime',	width:165,},
