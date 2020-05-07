@@ -452,6 +452,8 @@ layui.config({
 					for(var k in ret.data){
 						ret.data[k].belateDetails = ret.data[k].belateDetails.split(',').join('。');
 						ret.data[k].leaveDetails = ret.data[k].leaveDetails.split(',').join('。');
+						ret.data[k].dutyDetails = ret.data[k].dutyDetails.split(',').join('。');
+						ret.data[k].takeDetails = ret.data[k].takeDetails.split(',').join('。');
 					}
 					return { code: ret.code, msg: ret.message, count:ret.data.total, data: ret.data } 
 				},
