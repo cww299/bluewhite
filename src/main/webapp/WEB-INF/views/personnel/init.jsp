@@ -796,12 +796,12 @@ layui.config({
 			        }
 			        ,yes: function(index, layero){
 			        	form.on('submit(addRole)', function(data) {
-			        		var restDay = '';
-		        			layui.each($('#agreedShowTime').find('span'),function(index,item){
+			        		var restDay = [];
+		        			layui.each($('#inputapplytime').find('span'),function(index,item){
 								var val = $(item).attr('data-value');
-								restDay += (val+',');
+								restDay.push(val);
 							})
-							data.field.restDay = restDay;
+							data.field.restDay = restDay.join(',');
 			        	 	mainJs.fAdd(data.field); 
 						})
 			        }
