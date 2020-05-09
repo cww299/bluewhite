@@ -45,6 +45,8 @@ public class TemporaryPackAction {
     @Autowired
     private QuantitativeService quantitativeService;
     @Autowired
+    private QuantitativeChildDao quantitativeChildDao;
+    @Autowired
     private MantissaLiquidationService mantissaLiquidationService;
     @Autowired
     private SendOrderService sendOrderService;
@@ -286,6 +288,18 @@ public class TemporaryPackAction {
         return cr;
     }
 
+    /**
+     * 删除量化子单
+     */
+    @RequestMapping(value = "/temporaryPack/deleteQuantitativeChild", method = RequestMethod.GET)
+    @ResponseBody
+    public CommonResponse deleteQuantitativeChild(Long id) {
+        CommonResponse cr = new CommonResponse();
+        quantitativeChildDao.delete(id);
+        cr.setMessage("删除成功");
+        return cr;
+    }
+    
     /**
      * 新增下货单(导入)
      * 

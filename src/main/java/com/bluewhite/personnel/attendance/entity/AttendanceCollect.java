@@ -253,7 +253,7 @@ public class AttendanceCollect extends BaseEntity<Long>{
        .filter(StringUtil.distinctByKey(b -> b.getTakeDetails()))
        .forEach(at->{takeDetails += at.getTakeDetails()+",";});
     	//缺勤详情
-       List<AttendanceTime> dutyAttendanceTime = list.stream().filter(AttendanceTime->AttendanceTime.getDutytime()!=0).collect(Collectors.toList());
+       List<AttendanceTime> dutyAttendanceTime = list.stream().filter(AttendanceTime->AttendanceTime.getDutytime()!=0 && AttendanceTime.getHolidayType()==null ).collect(Collectors.toList());
        String templateDuty = "{}缺勤{}小时";
        dutyDetails = dutyAttendanceTime.stream().map(at-> StrUtil.format(templateDuty, DateUtil.format(at.getTime(),"yyyy-MM-dd"),at.getDutytime()) ).collect(Collectors.joining(","));
        allWork = NumUtils.sum(turnWork, overtime);
