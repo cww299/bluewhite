@@ -737,8 +737,19 @@ layui.config({
 							table.on('tool(addTable)', function(obj){
 								if(obj.event === 'deleteTr'){ //删除
 								    layer.confirm('是否确认删除？', function(index){
-								        obj.del();
-								        layer.close(index);
+								        $.ajax({
+								        	url:'${ctx}/temporaryPack/deleteQuantitativeChild',
+								        	data:{
+								        		id: obj.data.id,
+								        	},
+								        	success:function(r){
+								        		if(r.code==0){
+									        		obj.del();
+									        		table.reload('tableData');
+									        		layer.close(index);
+								        		}
+								        	}
+								        })
 								 	});
 								}
 							})
