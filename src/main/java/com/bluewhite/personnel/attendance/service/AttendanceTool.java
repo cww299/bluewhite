@@ -136,7 +136,7 @@ public class AttendanceTool {
             // 满足于：员工可以加班后晚到岗 ，属于包装部，签入时间在（初始化上班开始时间后的加班分钟数）之前，工作时间结束后签到加班
             // 早到时间 ,包装部员工的签入时间早于实际上班时间超过30分钟后算0.5个加班，超过60分钟算1个加班
             double earlyTime = Math.floor(DatesUtil.getTime(attendanceTime.getCheckIn(),
-                DatesUtil.getDaySum(workTimeStrat, NumUtils.sum(minute, 0))) / MINUTES) * 0.5;
+                DatesUtil.getDaySum(workTimeStrat,minute)) / MINUTES) * 0.5;
             flag = orgNameId == 79
                 && attendanceTime.getCheckIn().before(DatesUtil.getDaySum(workTimeStrat, NumUtils.sum(minute, 0)))
                 && attendanceInit.getOverTimeType() == 2;
@@ -162,12 +162,10 @@ public class AttendanceTool {
                 actualOverTime = DatesUtil.getTimeHour(workTimeEnd, attendanceTime.getCheckOut());
                 flag = false;
             }
-            // 满足于：员工可以加班后晚到岗 ，早于上班时间
-            flag =
-                attendanceTime.getCheckIn().before(DatesUtil.getDaySum(workTimeStrat, NumUtils.sum(minute, DUTYMIN)));
+            // 满足于：员工可以加班后晚到岗 ，签入时间早于真正上班时间
+            flag = attendanceTime.getCheckIn().before(DatesUtil.getDaySum(workTimeStrat,minute));
             if (flag) {
-                actualOverTime += DatesUtil.getTimeHour(
-                    DatesUtil.getDaySum(workTimeStrat, NumUtils.sum(minute, DUTYMIN)), attendanceTime.getCheckIn());
+                actualOverTime += DatesUtil.getTimeHour(attendanceTime.getCheckIn(),DatesUtil.getDaySum(workTimeStrat,minute));
                 flag = false;
             }
 
