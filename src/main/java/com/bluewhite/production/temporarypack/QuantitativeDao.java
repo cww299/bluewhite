@@ -8,6 +8,8 @@ import org.springframework.data.repository.query.Param;
 
 import com.bluewhite.base.BaseRepository;
 
+import cn.hutool.core.date.DateTime;
+
 public interface QuantitativeDao extends BaseRepository<Quantitative, Long> {
 
     /**
@@ -47,4 +49,11 @@ public interface QuantitativeDao extends BaseRepository<Quantitative, Long> {
     @Query(nativeQuery = true,
         value = "SELECT count(*) FROM pro_quantitative where flag = 0 and time < SUBDATE(now(),interval 3 day)")
     int warehousing();
+    
+
+    /**根据发货时间
+     * @param beginOfDay
+     * @param endOfDay
+     */
+    List<Quantitative> findBySendTimeBetweenAndCustomerId(Date startTime, Date endTime,long id);
 }

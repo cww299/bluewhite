@@ -141,7 +141,7 @@ public class Customer extends BaseEntity<Long> {
 	private String contactName;
 
 	/**
-     * 是否内部客户
+     * 是否新厂
      */
     @Column(name = "interior")
     private Integer interior;

@@ -63,11 +63,11 @@ public class Quantitative extends BaseEntity<Long> {
 	private String quantitativeNumber;
 	
 	/**
-     * 上车编号（上车时间+序号）
+     * 上车编号（上车时间+序号+包数）
      */
     @Column(name = "vehicle_number")
     private String vehicleNumber;
-	
+    
 	/**
 	 * 量化包装时间
 	 */
