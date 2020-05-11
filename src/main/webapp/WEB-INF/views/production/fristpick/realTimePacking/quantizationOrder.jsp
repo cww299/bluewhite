@@ -487,7 +487,7 @@ layui.config({
 						var f = obj.field;
 						var _lastNo = '';
 						if(f.no.indexOf('-')>0){
-							_lastNo = f.no.split('-')[1];
+							_lastNo = '-'+f.no.split('-')[1];
 							f.no = f.no.split('-')[0];
 						}
 						f.no = PrefixInteger(f.no,4);

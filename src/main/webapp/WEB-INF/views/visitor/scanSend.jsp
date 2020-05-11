@@ -156,7 +156,7 @@ layui.config({
 				return layer.msg('请正确填写发货数据',{ time:500,icon:2 })
 			}
 			f.no = PrefixInteger(f.no,4);
-			var vn = f.time+ f.no + data.vehicleNumber.split('-')[1];
+			var vn = f.time+ f.no + '-' +data.vehicleNumber.split('-')[1];
 			var lid = f.logisticsId;
 			myutil.deleteAjax({
 				url:'/temporaryPack/sendQuantitative?flag=1&vehicleNumber='+vn
