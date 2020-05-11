@@ -54,8 +54,7 @@
 				<td>
 				   <input type="text" class="layui-input" id="sendTimeInput" name="time" readonly></td>
 				<td>
-				   <input type="text" class="layui-input" name="no" 
-					onkeyup="value=value.replace(/[^\d]/g,'')"  placeholder="上车编号" >
+				   <input type="text" class="layui-input" name="no" placeholder="上车编号" >
 				</td>
 			</tr>
 			<tr>

@@ -472,7 +472,7 @@ layui.config({
 							   '<input type="text" class="layui-input" id="sendTimeInput" lay-verify="required" name="time"></td>',
 							'<td style="width:95px;padding-top: 8px;">',
 							   '<input type="text" class="layui-input" name="no" lay-verify="required" ',
-								' onkeyup="value=value.replace(/[^\\d]/g,\'\')"  placeholder="上车编号"></td>',
+								' placeholder="上车编号"></td>',
 							'<td><span style="display:none;" lay-submit lay-filter="sureSendGoodBtn"></td>',
 						'</tr>',
 					'</table>',
@@ -485,8 +485,13 @@ layui.config({
 					laydate.render({ elem:'#sendTimeInput',format:'yyyyMMdd',value:new Date(), });
 					form.on('submit(sureSendGoodBtn)',function(obj){
 						var f = obj.field;
+						var _lastNo = '';
+						if(f.no.indexOf('-')>0){
+							_lastNo = f.no.split('-')[1];
+							f.no = f.no.split('-')[0];
+						}
 						f.no = PrefixInteger(f.no,4);
-						var vn = f.time+ f.no;
+						var vn = f.time + f.no + _lastNo;
 						var lid = f.logisticsId;
 						myutil.deleteAjax({
 							url:'/temporaryPack/sendQuantitative?flag=1&vehicleNumber='+vn
