@@ -120,7 +120,7 @@ layui.config({
 		, laytpl = layui.laytpl;			//模板引擎
 		myutil.config.ctx = '${ctx}';
 		myutil.clickTr();
-		
+		// http://localhost:8080/bluewhite/twoDimensionalCode/scanSendOrder?id=25464
 		function GetQueryString(name)
 		{
 		    var reg = new RegExp("\\b"+ name +"=([^&]*)");
@@ -135,6 +135,7 @@ layui.config({
 		    location.href=qr;
 		}else{
 			var data = JSON.parse('${data}');
+			$('input[name="no"]').val(data.vehicleNumber);
 			if (location.href.indexOf("qrresult=")>-1)
 			    alert(location.href.split("qrresult=")[1]); //在您的程序中可对此数据进行处理
 			laytpl($('#printPackTpl').html()).render(data,function(h){ $('#content').html(h) });
