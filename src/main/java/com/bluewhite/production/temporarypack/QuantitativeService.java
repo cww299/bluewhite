@@ -1,10 +1,13 @@
 package com.bluewhite.production.temporarypack;
 
 import java.util.Date;
+import java.util.List;
 
 import com.bluewhite.base.BaseCRUDService;
 import com.bluewhite.common.entity.PageParameter;
 import com.bluewhite.common.entity.PageResult;
+
+import cn.hutool.core.date.DateTime;
 
 public interface QuantitativeService extends BaseCRUDService<Quantitative,Long>{
 	
@@ -94,6 +97,12 @@ public interface QuantitativeService extends BaseCRUDService<Quantitative,Long>{
      * @param reservoirArea
      */
     int putWarehousing(String ids, String location, String reservoirArea);
+
+    /**通过发货时间查找
+     * @param beginOfDay
+     * @param endOfDay
+     */
+    List<Quantitative> findBySendTime(DateTime beginOfDay, DateTime endOfDay);
 
 	
 

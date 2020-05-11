@@ -3,6 +3,8 @@ package com.bluewhite.production.temporarypack;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.Date;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -25,17 +27,21 @@ import com.alibaba.excel.EasyExcel;
 import com.alibaba.excel.write.style.column.LongestMatchColumnWidthStyleStrategy;
 import com.bluewhite.basedata.entity.BaseData;
 import com.bluewhite.common.ClearCascadeJSON;
+import com.bluewhite.common.Constants;
 import com.bluewhite.common.ServiceException;
 import com.bluewhite.common.entity.CommonResponse;
 import com.bluewhite.common.entity.PageParameter;
 import com.bluewhite.common.entity.PageUtil;
+import com.bluewhite.common.utils.StringUtil;
 import com.bluewhite.common.utils.excel.ExcelListener;
 import com.bluewhite.ledger.entity.Customer;
 import com.bluewhite.ledger.entity.PackingMaterials;
 import com.bluewhite.product.product.entity.Product;
 import com.bluewhite.system.user.entity.User;
 
+import cn.hutool.core.date.DateUtil;
 import cn.hutool.core.map.MapUtil;
+import cn.hutool.core.util.StrUtil;
 
 @Controller
 public class TemporaryPackAction {
@@ -357,7 +363,7 @@ public class TemporaryPackAction {
      * 删除尾数清算单
      */
     @RequestMapping(value = "/temporaryPack/deleteMantissaLiquidation", method = RequestMethod.GET)
-    @ResponseBody
+    @ResponseBody 
     public CommonResponse deleteMantissaLiquidation(String ids) {
         CommonResponse cr = new CommonResponse();
         int count = mantissaLiquidationService.delete(ids);
@@ -507,15 +513,78 @@ public class TemporaryPackAction {
         return cr;
     }
     
-    /**
+    /** 
      * 扫码发货页面
      */
     @RequestMapping(value = "/twoDimensionalCode/scanSendOrder", method = RequestMethod.GET)
     public ModelAndView  scanSend(Long id) {
         ModelAndView mav = new ModelAndView();
+        Quantitative quantitative = quantitativeService.findOne(id);
+        //通过量化单的发货时间进行查询出当前上车的编号进度
+        if(quantitative.getCustomerId()!=null && quantitative.getCustomerId()==(long)363) {
+            List<Quantitative> quantitativeList =  quantitativeService.findBySendTime(DateUtil.beginOfDay(new Date()) ,DateUtil.endOfDay(new Date()));
+            compareQuantitativeNumber(quantitativeList);
+            if (quantitativeList.size() > 0) {
+                int count = 0;
+                //获取最后一个上车编号
+                String vehicleNumber = StrUtil.sub(quantitativeList.get(0).getVehicleNumber(), 12, 16);
+                //获取上车发货总包数
+                long number = quantitativeList.stream().filter(Quantitative->StrUtil.sub(Quantitative.getVehicleNumber(), 12, 16).equals(vehicleNumber)).count();
+                count = Integer.valueOf(vehicleNumber);
+                quantitative.setVehicleNumber(Constants.WLSC + DateUtil.format(new Date(), "yyyyMMdd")
+                + StringUtil.get0LeftString(count, 4) + (number+1) );
+            }else {
+                quantitative.setVehicleNumber(Constants.WLSC + DateUtil.format(new Date(), "yyyyMMdd")
+                + StringUtil.get0LeftString(1, 4) + 1 );
+            }
+        }
         mav.setViewName("/visitor/scanSend");
         mav.addObject("data",  clearCascadeJSONQuantitative.format(quantitativeService.findOne(id)).toJSON());
         return mav;
+    }
+    
+    
+    @RequestMapping(value = "/temporaryPack/getVehicleNumber", method = RequestMethod.GET)
+    @ResponseBody
+    public ModelAndView  getVehicleNumber(Long id) {
+        ModelAndView mav = new ModelAndView();
+        Quantitative quantitative = quantitativeService.findOne(id);
+        //通过量化单的发货时间进行查询出当前上车的编号进度
+        if(quantitative.getCustomerId()!=null && quantitative.getCustomerId()==(long)363) {
+            List<Quantitative> quantitativeList =  quantitativeService.findBySendTime(DateUtil.beginOfDay(new Date()) ,DateUtil.endOfDay(new Date()));
+            compareQuantitativeNumber(quantitativeList);
+            if (quantitativeList.size() > 0) {
+                int count = 0;
+                //获取最后一个上车编号
+                String vehicleNumber = StrUtil.sub(quantitativeList.get(0).getVehicleNumber(), 12, 16);
+                //获取上车发货总包数
+                long number = quantitativeList.stream().filter(Quantitative->StrUtil.sub(Quantitative.getVehicleNumber(), 12, 16).equals(vehicleNumber)).count();
+                count = Integer.valueOf(vehicleNumber);
+                quantitative.setVehicleNumber(Constants.WLSC + DateUtil.format(new Date(), "yyyyMMdd")
+                + StringUtil.get0LeftString(count, 4) + (number+1) );
+            }else {
+                quantitative.setVehicleNumber(Constants.WLSC + DateUtil.format(new Date(), "yyyyMMdd")
+                + StringUtil.get0LeftString(1, 4) + 1 );
+            }
+        }
+        return mav;
+    }
+    
+    /**
+     * 按上车重新排序
+     * @param list
+     * @return
+     */
+    private List<Quantitative> compareQuantitativeNumber(List<Quantitative> list) {
+        Collections.sort(list, new Comparator<Quantitative>() {
+            @Override
+            public int compare(Quantitative q1, Quantitative q2) {
+                int a = Integer.valueOf(StrUtil.sub(q1.getVehicleNumber(), 12, 16));
+                int b = Integer.valueOf(StrUtil.sub(q2.getVehicleNumber(), 12, 16));
+                return b - a;
+            }
+        });
+        return list;
     }
     
     /**
@@ -527,7 +596,7 @@ public class TemporaryPackAction {
     public CommonResponse warehousing(int page,int size) {
         CommonResponse cr = new CommonResponse();
         cr.setData(clearCascadeJSONQuantitative.format(quantitativeService.warehousing(page,size)).toJSON());
-        cr.setMessage("成功");
+        cr.setMessage("成功");    
         return cr;
     }
     

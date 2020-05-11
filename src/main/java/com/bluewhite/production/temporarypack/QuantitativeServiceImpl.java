@@ -34,6 +34,7 @@ import com.bluewhite.ledger.dao.CustomerDao;
 import com.bluewhite.ledger.entity.Customer;
 import com.bluewhite.ledger.entity.PackingMaterials;
 
+import cn.hutool.core.date.DateTime;
 import cn.hutool.core.date.DateUtil;
 import cn.hutool.core.util.NumberUtil;
 import cn.hutool.core.util.StrUtil;
@@ -575,5 +576,10 @@ public class QuantitativeServiceImpl extends BaseServiceImpl<Quantitative, Long>
             }
         }
         return count;
+    }
+
+    @Override
+    public List<Quantitative> findBySendTime(DateTime beginOfDay, DateTime endOfDay) {
+        return dao.findBySendTimeBetweenAndCustomerId(beginOfDay, endOfDay,(long)363);
     }
 }
