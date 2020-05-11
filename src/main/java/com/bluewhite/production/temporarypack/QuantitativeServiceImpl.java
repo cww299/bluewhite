@@ -398,10 +398,14 @@ public class QuantitativeServiceImpl extends BaseServiceImpl<Quantitative, Long>
                     // 内部客户发货时，创建发货单
                     Customer customer = customerDao.findOne(quantitative.getCustomerId());
                     if (flag == 1) {
-                        quantitative.setVehicleNumber(Constants.WLSC + vehicleNumber);
                         quantitative.setSendTime(DateUtil.parse(StrUtil.sub(vehicleNumber, 0, 8)));
                         if (customer.getInterior() == 1) {
-                            SendOrder sendOrder = sendOrderDao.findByLogisticsIdAndVehicleNumber(logisticsId,
+                            Quantitative qt = dao.findByVehicleNumber(Constants.WLSC + vehicleNumber);
+                            if(null != qt) {
+                                throw new ServiceException("上车编号已存在，请更正");
+                            }
+                            quantitative.setVehicleNumber(Constants.WLSC + vehicleNumber);
+                            SendOrder sendOrder = sendOrderDao.getLogisticsIdAndVehicleNumber(logisticsId,
                                 quantitative.getVehicleNumber());
                             if (sendOrder == null) {
                                 sendOrder = new SendOrder();
