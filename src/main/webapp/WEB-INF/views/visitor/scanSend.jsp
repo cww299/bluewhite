@@ -163,8 +163,6 @@ layui.config({
 				f.no = PrefixInteger(f.no,4);
 			var vn = f.time+ f.no;
 			var lid = f.logisticsId;
-			console.log(vn)
-			return
 			myutil.deleteAjax({
 				url:'/temporaryPack/sendQuantitative?flag=1&vehicleNumber='+vn
 						+'&logisticsId='+lid+'&outerPackagingId='+f.outerPackagingId,
