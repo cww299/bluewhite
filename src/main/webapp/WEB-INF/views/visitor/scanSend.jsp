@@ -134,7 +134,7 @@ layui.config({
 		    location.href=qr;
 		}else{
 			var data = JSON.parse('${data}');
-			$('input[name="no"]').val(data.vehicleNumber.split('-')[0]);
+			$('input[name="no"]').val(data.vehicleNumber);
 			if (location.href.indexOf("qrresult=")>-1)
 			    alert(location.href.split("qrresult=")[1]); //在您的程序中可对此数据进行处理
 			laytpl($('#printPackTpl').html()).render(data,function(h){ $('#content').html(h) });
@@ -155,9 +155,16 @@ layui.config({
 			if(!f.no || !f.time){
 				return layer.msg('请正确填写发货数据',{ time:500,icon:2 })
 			}
-			f.no = PrefixInteger(f.no,4);
-			var vn = f.time+ f.no + '-' +data.vehicleNumber.split('-')[1];
+			if(f.no.indexOf('-')>-1){
+				var last = f.no.split('-')[1];
+				f.no = PrefixInteger(f.no.split('-')[0],4);
+				f.no += ('-'+last);
+			}else
+				f.no = PrefixInteger(f.no,4);
+			var vn = f.time+ f.no;
 			var lid = f.logisticsId;
+			console.log(vn)
+			return
 			myutil.deleteAjax({
 				url:'/temporaryPack/sendQuantitative?flag=1&vehicleNumber='+vn
 						+'&logisticsId='+lid+'&outerPackagingId='+f.outerPackagingId,
