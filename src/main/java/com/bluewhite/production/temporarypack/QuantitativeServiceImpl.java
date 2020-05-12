@@ -398,27 +398,30 @@ public class QuantitativeServiceImpl extends BaseServiceImpl<Quantitative, Long>
                     // 内部客户发货时，创建发货单
                     Customer customer = customerDao.findOne(quantitative.getCustomerId());
                     if (flag == 1) {
-                        quantitative.setVehicleNumber(Constants.WLSC + vehicleNumber);
                         quantitative.setSendTime(DateUtil.parse(StrUtil.sub(vehicleNumber, 0, 8)));
                         if (customer.getInterior() == 1) {
-                            SendOrder sendOrder = sendOrderDao.findByLogisticsIdAndVehicleNumber(logisticsId,
-                                quantitative.getVehicleNumber());
-                            if (sendOrder == null) {
-                                sendOrder = new SendOrder();
-                                if (outerPackagingId != null) {
-                                    sendOrder.setOuterPackagingId(outerPackagingId);
-                                }
-                                sendOrder.setAudit(0);
-                                sendOrder.setCustomerId(quantitative.getCustomerId());
-                                sendOrder.setSumPackageNumber(1);
-                                sendOrder.setSendPackageNumber(1);
-                                sendOrder.setLogisticsId(logisticsId);
-                                sendOrder.setInterior(1);
-                                sendOrder.setVehicleNumber(quantitative.getVehicleNumber());
-                                sendOrder.setSendTime(quantitative.getTime());
-                                sendOrderDao.save(sendOrder);
+                            Quantitative qt = dao.findByVehicleNumber(Constants.WLSC + vehicleNumber);
+                            if(null != qt) {
+                                throw new ServiceException("上车编号已存在，请更正");
                             }
-                            quantitative.setSendOrderId(sendOrder.getId());
+                            quantitative.setVehicleNumber(Constants.WLSC + vehicleNumber);
+//                            SendOrder sendOrder = sendOrderDao.getVehicleNumber(StrUtil.sub(quantitative.getVehicleNumber(),0,16));
+//                            if (sendOrder == null) {
+//                                sendOrder = new SendOrder();
+//                                if (outerPackagingId != null) {
+//                                    sendOrder.setOuterPackagingId(outerPackagingId);
+//                                }
+//                                sendOrder.setAudit(0);
+//                                sendOrder.setCustomerId(quantitative.getCustomerId());
+//                                sendOrder.setSumPackageNumber(1);
+//                                sendOrder.setSendPackageNumber(1);
+//                                sendOrder.setLogisticsId(logisticsId);
+//                                sendOrder.setInterior(1);
+//                                sendOrder.setVehicleNumber(quantitative.getVehicleNumber());
+//                                sendOrder.setSendTime(quantitative.getTime());
+//                                sendOrderDao.save(sendOrder);
+//                            }
+//                            quantitative.setSendOrderId(sendOrder.getId());
                         } else {
                             if (quantitative.getSendOrderId() != null) {
                                 SendOrder sendOrder = sendOrderDao.findOne(quantitative.getSendOrderId());

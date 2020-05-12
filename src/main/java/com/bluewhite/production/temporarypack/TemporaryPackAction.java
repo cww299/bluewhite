@@ -522,51 +522,22 @@ public class TemporaryPackAction {
         Quantitative quantitative = quantitativeService.findOne(id);
         //通过量化单的发货时间进行查询出当前上车的编号进度
         if(quantitative.getCustomerId()!=null && quantitative.getCustomerId()==(long)363) {
-            List<Quantitative> quantitativeList =  quantitativeService.findBySendTime(DateUtil.beginOfDay(new Date()) ,DateUtil.endOfDay(new Date()));
-            compareQuantitativeNumber(quantitativeList);
+            List<Quantitative> quantitativeList =  quantitativeService.findBySendTime(DateUtil.beginOfDay(new Date()),DateUtil.endOfDay(new Date()));
+            compareVehicleNumber(quantitativeList);
             if (quantitativeList.size() > 0) {
                 int count = 0;
                 //获取最后一个上车编号
-                String vehicleNumber = StrUtil.sub(quantitativeList.get(0).getVehicleNumber(), 12, 16);
+                String vehicleNumber = StrUtil.sub(quantitativeList.get(0).getVehicleNumber(), 0, 16);
                 //获取上车发货总包数
                 long number = quantitativeList.stream().filter(Quantitative->StrUtil.sub(Quantitative.getVehicleNumber(), 12, 16).equals(vehicleNumber)).count();
                 count = Integer.valueOf(vehicleNumber);
-                quantitative.setVehicleNumber(Constants.WLSC + DateUtil.format(new Date(), "yyyyMMdd")
-                + StringUtil.get0LeftString(count, 4) + (number+1) );
+                quantitative.setVehicleNumber(count +"-"+ (number+1));
             }else {
-                quantitative.setVehicleNumber(Constants.WLSC + DateUtil.format(new Date(), "yyyyMMdd")
-                + StringUtil.get0LeftString(1, 4) + 1 );
+                quantitative.setVehicleNumber(1+"-"+1);
             }
         }
         mav.setViewName("/visitor/scanSend");
         mav.addObject("data",  clearCascadeJSONQuantitative.format(quantitativeService.findOne(id)).toJSON());
-        return mav;
-    }
-    
-    
-    @RequestMapping(value = "/temporaryPack/getVehicleNumber", method = RequestMethod.GET)
-    @ResponseBody
-    public ModelAndView  getVehicleNumber(Long id) {
-        ModelAndView mav = new ModelAndView();
-        Quantitative quantitative = quantitativeService.findOne(id);
-        //通过量化单的发货时间进行查询出当前上车的编号进度
-        if(quantitative.getCustomerId()!=null && quantitative.getCustomerId()==(long)363) {
-            List<Quantitative> quantitativeList =  quantitativeService.findBySendTime(DateUtil.beginOfDay(new Date()) ,DateUtil.endOfDay(new Date()));
-            compareQuantitativeNumber(quantitativeList);
-            if (quantitativeList.size() > 0) {
-                int count = 0;
-                //获取最后一个上车编号
-                String vehicleNumber = StrUtil.sub(quantitativeList.get(0).getVehicleNumber(), 12, 16);
-                //获取上车发货总包数
-                long number = quantitativeList.stream().filter(Quantitative->StrUtil.sub(Quantitative.getVehicleNumber(), 12, 16).equals(vehicleNumber)).count();
-                count = Integer.valueOf(vehicleNumber);
-                quantitative.setVehicleNumber(Constants.WLSC + DateUtil.format(new Date(), "yyyyMMdd")
-                + StringUtil.get0LeftString(count, 4) + (number+1) );
-            }else {
-                quantitative.setVehicleNumber(Constants.WLSC + DateUtil.format(new Date(), "yyyyMMdd")
-                + StringUtil.get0LeftString(1, 4) + 1 );
-            }
-        }
         return mav;
     }
     
@@ -575,7 +546,7 @@ public class TemporaryPackAction {
      * @param list
      * @return
      */
-    private List<Quantitative> compareQuantitativeNumber(List<Quantitative> list) {
+    private List<Quantitative> compareVehicleNumber(List<Quantitative> list) {
         Collections.sort(list, new Comparator<Quantitative>() {
             @Override
             public int compare(Quantitative q1, Quantitative q2) {
