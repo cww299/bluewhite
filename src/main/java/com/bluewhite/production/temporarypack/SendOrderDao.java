@@ -14,7 +14,7 @@ public interface SendOrderDao extends BaseRepository<SendOrder, Long>{
      * 根据物流点和上车编号查找  唯一
      */
     @Query(nativeQuery = true,
-        value = "SELECT * FROM pro_send_order p WHERE p.logistics_id = (?1) and p.logistics_number REGEXP (?2);")
-    SendOrder getLogisticsIdAndVehicleNumber(Long id ,String vehicleNumber);
+        value = "SELECT * FROM pro_send_order p WHERE p.logistics_number REGEXP (?1);")
+    SendOrder getVehicleNumber(String vehicleNumber);
 
 }

@@ -527,7 +527,7 @@ public class TemporaryPackAction {
             if (quantitativeList.size() > 0) {
                 int count = 0;
                 //获取最后一个上车编号
-                String vehicleNumber = StrUtil.sub(quantitativeList.get(0).getVehicleNumber(), 12, 16);
+                String vehicleNumber = StrUtil.sub(quantitativeList.get(0).getVehicleNumber(), 0, 16);
                 //获取上车发货总包数
                 long number = quantitativeList.stream().filter(Quantitative->StrUtil.sub(Quantitative.getVehicleNumber(), 12, 16).equals(vehicleNumber)).count();
                 count = Integer.valueOf(vehicleNumber);

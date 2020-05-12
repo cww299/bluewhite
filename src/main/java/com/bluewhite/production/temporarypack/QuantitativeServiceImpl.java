@@ -405,24 +405,23 @@ public class QuantitativeServiceImpl extends BaseServiceImpl<Quantitative, Long>
                                 throw new ServiceException("上车编号已存在，请更正");
                             }
                             quantitative.setVehicleNumber(Constants.WLSC + vehicleNumber);
-                            SendOrder sendOrder = sendOrderDao.getLogisticsIdAndVehicleNumber(logisticsId,
-                                quantitative.getVehicleNumber());
-                            if (sendOrder == null) {
-                                sendOrder = new SendOrder();
-                                if (outerPackagingId != null) {
-                                    sendOrder.setOuterPackagingId(outerPackagingId);
-                                }
-                                sendOrder.setAudit(0);
-                                sendOrder.setCustomerId(quantitative.getCustomerId());
-                                sendOrder.setSumPackageNumber(1);
-                                sendOrder.setSendPackageNumber(1);
-                                sendOrder.setLogisticsId(logisticsId);
-                                sendOrder.setInterior(1);
-                                sendOrder.setVehicleNumber(quantitative.getVehicleNumber());
-                                sendOrder.setSendTime(quantitative.getTime());
-                                sendOrderDao.save(sendOrder);
-                            }
-                            quantitative.setSendOrderId(sendOrder.getId());
+//                            SendOrder sendOrder = sendOrderDao.getVehicleNumber(StrUtil.sub(quantitative.getVehicleNumber(),0,16));
+//                            if (sendOrder == null) {
+//                                sendOrder = new SendOrder();
+//                                if (outerPackagingId != null) {
+//                                    sendOrder.setOuterPackagingId(outerPackagingId);
+//                                }
+//                                sendOrder.setAudit(0);
+//                                sendOrder.setCustomerId(quantitative.getCustomerId());
+//                                sendOrder.setSumPackageNumber(1);
+//                                sendOrder.setSendPackageNumber(1);
+//                                sendOrder.setLogisticsId(logisticsId);
+//                                sendOrder.setInterior(1);
+//                                sendOrder.setVehicleNumber(quantitative.getVehicleNumber());
+//                                sendOrder.setSendTime(quantitative.getTime());
+//                                sendOrderDao.save(sendOrder);
+//                            }
+//                            quantitative.setSendOrderId(sendOrder.getId());
                         } else {
                             if (quantitative.getSendOrderId() != null) {
                                 SendOrder sendOrder = sendOrderDao.findOne(quantitative.getSendOrderId());
