@@ -520,9 +520,14 @@ public class TemporaryPackAction {
     public ModelAndView  scanSend(Long id) {
         ModelAndView mav = new ModelAndView();
         Quantitative quantitative = quantitativeService.findOne(id);
+        if(quantitative.getFlag()==1) {
+            mav.setViewName("/visitor/scanSend");
+            mav.addObject("data",  clearCascadeJSONQuantitative.format(quantitative).toJSON());
+            return mav;
+        }
         //通过量化单的发货时间进行查询出当前上车的编号进度
         if(quantitative.getCustomerId()!=null && quantitative.getCustomerId()==(long)363) {
-            List<Quantitative> quantitativeList =  quantitativeService.findBySendTime(DateUtil.beginOfDay(new Date()),DateUtil.endOfDay(new Date()));
+            List<Quantitative> quantitativeList =  quantitativeService.findBySendTime(DateUtil.beginOfDay(new Date()),DateUtil.endOfDay(new Date()),quantitative.getWarehouseTypeId());
             compareVehicleNumber(quantitativeList);
             if (quantitativeList.size() > 0) {
                 int count = 0;
@@ -531,13 +536,13 @@ public class TemporaryPackAction {
                 //获取上车发货总包数
                 long number = quantitativeList.stream().filter(Quantitative->StrUtil.sub(Quantitative.getVehicleNumber(), 12, 16).equals(vehicleNumber)).count();
                 count = Integer.valueOf(vehicleNumber);
-                quantitative.setVehicleNumber(count +"-"+ (number+1));
+                quantitative.setVehicleNumber(count +"-"+(number+1));
             }else {
                 quantitative.setVehicleNumber(1+"-"+1);
             }
         }
         mav.setViewName("/visitor/scanSend");
-        mav.addObject("data",  clearCascadeJSONQuantitative.format(quantitativeService.findOne(id)).toJSON());
+        mav.addObject("data",  clearCascadeJSONQuantitative.format(quantitative).toJSON());
         return mav;
     }
     

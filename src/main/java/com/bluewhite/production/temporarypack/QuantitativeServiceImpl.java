@@ -400,7 +400,13 @@ public class QuantitativeServiceImpl extends BaseServiceImpl<Quantitative, Long>
                     if (flag == 1) {
                         quantitative.setSendTime(DateUtil.parse(StrUtil.sub(vehicleNumber, 0, 8)));
                         if (customer.getInterior() == 1) {
-                            Quantitative qt = dao.findByVehicleNumber(Constants.WLSC + vehicleNumber);
+//                            String num = "";
+//                            if(quantitative.getWarehouseTypeId().equals((long)274) ) {
+//                                num =Constants.WLSC;
+//                            }else {
+//                                num =Constants.WLSCE;
+//                            }
+                            Quantitative qt = dao.findByVehicleNumberAndWarehouseTypeId(Constants.WLSC + vehicleNumber,quantitative.getWarehouseTypeId());
                             if(null != qt) {
                                 throw new ServiceException("上车编号已存在，请更正");
                             }
@@ -582,7 +588,7 @@ public class QuantitativeServiceImpl extends BaseServiceImpl<Quantitative, Long>
     }
 
     @Override
-    public List<Quantitative> findBySendTime(DateTime beginOfDay, DateTime endOfDay) {
-        return dao.findBySendTimeBetweenAndCustomerId(beginOfDay, endOfDay,(long)363);
+    public List<Quantitative> findBySendTime(DateTime beginOfDay, DateTime endOfDay,long warehouseTypeId) {
+        return dao.findBySendTimeBetweenAndCustomerIdAndWarehouseTypeId(beginOfDay, endOfDay,(long)363,warehouseTypeId);
     }
 }

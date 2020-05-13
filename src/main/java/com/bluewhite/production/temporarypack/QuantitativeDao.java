@@ -55,10 +55,11 @@ public interface QuantitativeDao extends BaseRepository<Quantitative, Long> {
      * @param beginOfDay
      * @param endOfDay
      */
-    List<Quantitative> findBySendTimeBetweenAndCustomerId(Date startTime, Date endTime,long id);
+    List<Quantitative> findBySendTimeBetweenAndCustomerIdAndWarehouseTypeId(Date startTime, Date endTime,long id,long warehouseTypeId);
 
     /**根据上车编号查找
      * @param vehicleNumber
      */
-    Quantitative findByVehicleNumber(String vehicleNumber);
+    Quantitative findByVehicleNumberAndWarehouseTypeId(String vehicleNumber,Long warehouseTypeId);
+
 }
