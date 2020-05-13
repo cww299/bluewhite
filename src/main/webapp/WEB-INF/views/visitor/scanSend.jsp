@@ -65,7 +65,7 @@
 			<tr>
 				<td colspan="2">
 					<br/><br/><br/>
-					<a href="" id="scanBtn" class="layui-btn layui-btn-normal" style="width: 80%;">返回扫一扫</a>
+					<a href="http://sao315.com/w/api/saoyisao" class="layui-btn layui-btn-normal" style="width: 80%;">返回扫一扫</a>
 				</td>
 			</tr>
 		</table>
@@ -119,33 +119,33 @@ layui.config({
 		, laytpl = layui.laytpl;			//模板引擎
 		myutil.config.ctx = '${ctx}';
 		myutil.clickTr();
+		
+		
+		// https://bbs.csdn.net/topics/392405022?page=1
 		// http://localhost:8080/bluewhite/twoDimensionalCode/scanSendOrder?id=25464
-		function GetQueryString(name)
-		{
-		    var reg = new RegExp("\\b"+ name +"=([^&]*)");
-		    var r = location.href.match(reg);
-		    if (r!=null) return decodeURIComponent(r[1]);
-		}
-		var href="http://sao315.com/w/api/saoyisao?redirect_uri="+
-		window.location.host+myutil.config.ctx+"/twoDimensionalCode/scanSendOrder?id=9999999";
-		$('#scanBtn').attr('href',href);
 		var qr=GetQueryString("qrresult");
 		if(qr){
-		    location.href=qr;
-		}else{
-			var data = JSON.parse('${data}');
-			$('input[name="no"]').val(data.vehicleNumber);
-			if (location.href.indexOf("qrresult=")>-1)
-			    alert(location.href.split("qrresult=")[1]); //在您的程序中可对此数据进行处理
-			laytpl($('#printPackTpl').html()).render(data,function(h){ $('#content').html(h) });
-			if(data.flag){
-				$('span[lay-filter="sendOrderBtn"]').html("已发货");
-				$('span[lay-filter="sendOrderBtn"]').addClass("layui-btn-danger");
-			}
-			$('#logisticsSelect').append(myutil.getBaseDataSelect({ type:'logistics', }));
-			$('#outerPackagingSelect').append(myutil.getBaseDataSelect({ type:'outerPackaging', }));
-			laydate.render({ elem:'#sendTimeInput',format:'yyyyMMdd',value:new Date(), });
+		    // alert(qr);
 		}
+		function GetQueryString(name)
+		{
+		    var reg = new RegExp("\\b"+ name +"=([^&]*)");
+		    var r = location.href.match(reg);
+		    if (r!=null) return unescape(r[1]);
+		}
+		
+		var data = JSON.parse('${data}');
+		$('input[name="no"]').val(data.vehicleNumber);
+		if (location.href.indexOf("qrresult=")>-1)
+		    alert(location.href.split("qrresult=")[1]); //在您的程序中可对此数据进行处理
+		laytpl($('#printPackTpl').html()).render(data,function(h){ $('#content').html(h) });
+		if(data.flag){
+			$('span[lay-filter="sendOrderBtn"]').html("已发货");
+			$('span[lay-filter="sendOrderBtn"]').addClass("layui-btn-danger");
+		}
+		$('#logisticsSelect').append(myutil.getBaseDataSelect({ type:'logistics', }));
+		$('#outerPackagingSelect').append(myutil.getBaseDataSelect({ type:'outerPackaging', }));
+		laydate.render({ elem:'#sendTimeInput',format:'yyyyMMdd',value:new Date(), });
 		
 		form.on('submit(sendOrderBtn)',function(obj){
 			if($('span[lay-filter="sendOrderBtn"]').hasClass("layui-btn-danger")){
