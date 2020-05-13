@@ -153,5 +153,7 @@ public class Constants {
     public final static String  JHSQD = "JHSQD";
     //物流上车单
     public final static String  WLSC = "WLSC";
+   //11物流上车单
+    public final static String  WLSCE = "WLSCE";
     
 }
