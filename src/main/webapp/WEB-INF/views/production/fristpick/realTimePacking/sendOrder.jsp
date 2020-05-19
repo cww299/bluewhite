@@ -25,7 +25,7 @@
 				<td>产品名:</td>
 				<td><input type="text" name="sendOrderChild.productName_like" class="layui-input"></td>
 				<td>客户名:</td>
-				<td><input type="text" name="customer_name_like" class="layui-input"></td>
+				<td><input type="text" name="customer.name_like" class="layui-input"></td>
 				<td>物流点:</td>
 				<td style="width:150px;"><select name="logisticsId" id="logisticsIdSelect">
 						<option value="">请选择</option>
