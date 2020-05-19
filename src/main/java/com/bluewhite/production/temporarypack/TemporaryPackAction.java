@@ -27,12 +27,10 @@ import com.alibaba.excel.EasyExcel;
 import com.alibaba.excel.write.style.column.LongestMatchColumnWidthStyleStrategy;
 import com.bluewhite.basedata.entity.BaseData;
 import com.bluewhite.common.ClearCascadeJSON;
-import com.bluewhite.common.Constants;
 import com.bluewhite.common.ServiceException;
 import com.bluewhite.common.entity.CommonResponse;
 import com.bluewhite.common.entity.PageParameter;
 import com.bluewhite.common.entity.PageUtil;
-import com.bluewhite.common.utils.StringUtil;
 import com.bluewhite.common.utils.excel.ExcelListener;
 import com.bluewhite.ledger.entity.Customer;
 import com.bluewhite.ledger.entity.PackingMaterials;
@@ -92,7 +90,7 @@ public class TemporaryPackAction {
         clearCascadeJSONSendOrder = ClearCascadeJSON.get()
             .addRetainTerm(SendOrder.class, "id", "customer", "sendOrderChild", "sendTime", "sumPackageNumber",
                 "number", "sendPackageNumber", "logistics", "outerPackaging", "logisticsNumber", "tax", "singerPrice",
-                "sendPrice", "extraPrice", "logisticsPrice", "audit")
+                "sendPrice", "extraPrice", "logisticsPrice", "audit","warehouseType")
             .addRetainTerm(SendOrderChild.class, "id", "productName", "bacthNumber", "singleNumber")
             .addRetainTerm(BaseData.class, "id", "name");
     }

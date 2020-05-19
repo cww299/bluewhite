@@ -400,34 +400,32 @@ public class QuantitativeServiceImpl extends BaseServiceImpl<Quantitative, Long>
                     if (flag == 1) {
                         quantitative.setSendTime(DateUtil.parse(StrUtil.sub(vehicleNumber, 0, 8)));
                         if (customer.getInterior() == 1) {
-//                            String num = "";
-//                            if(quantitative.getWarehouseTypeId().equals((long)274) ) {
-//                                num =Constants.WLSC;
-//                            }else {
-//                                num =Constants.WLSCE;
-//                            }
-                            Quantitative qt = dao.findByVehicleNumberAndWarehouseTypeId(Constants.WLSC + vehicleNumber,quantitative.getWarehouseTypeId());
-                            if(null != qt) {
+                            Quantitative qt = dao.findByVehicleNumberAndWarehouseTypeId(Constants.WLSC + vehicleNumber,
+                                quantitative.getWarehouseTypeId());
+                            if (null != qt) {
                                 throw new ServiceException("上车编号已存在，请更正");
                             }
                             quantitative.setVehicleNumber(Constants.WLSC + vehicleNumber);
-//                            SendOrder sendOrder = sendOrderDao.getVehicleNumber(StrUtil.sub(quantitative.getVehicleNumber(),0,16));
-//                            if (sendOrder == null) {
-//                                sendOrder = new SendOrder();
-//                                if (outerPackagingId != null) {
-//                                    sendOrder.setOuterPackagingId(outerPackagingId);
-//                                }
-//                                sendOrder.setAudit(0);
-//                                sendOrder.setCustomerId(quantitative.getCustomerId());
-//                                sendOrder.setSumPackageNumber(1);
-//                                sendOrder.setSendPackageNumber(1);
-//                                sendOrder.setLogisticsId(logisticsId);
-//                                sendOrder.setInterior(1);
-//                                sendOrder.setVehicleNumber(quantitative.getVehicleNumber());
-//                                sendOrder.setSendTime(quantitative.getTime());
-//                                sendOrderDao.save(sendOrder);
-//                            }
-//                            quantitative.setSendOrderId(sendOrder.getId());
+                            // 根据物流点和上车编号查找
+                            SendOrder sendOrder = sendOrderDao.findByVehicleNumberAndWarehouseTypeId(
+                                StrUtil.sub(quantitative.getVehicleNumber(), 0, 16), quantitative.getWarehouseTypeId());
+                            if (sendOrder == null) {
+                                sendOrder = new SendOrder();
+                                if (outerPackagingId != null) {
+                                    sendOrder.setOuterPackagingId(outerPackagingId);
+                                }
+                                sendOrder.setAudit(0);
+                                sendOrder.setCustomerId(quantitative.getCustomerId());
+                                sendOrder.setSumPackageNumber(1);
+                                sendOrder.setSendPackageNumber(1);
+                                sendOrder.setLogisticsId(logisticsId);
+                                sendOrder.setInterior(1);
+                                sendOrder.setVehicleNumber(StrUtil.sub(quantitative.getVehicleNumber(), 0, 16));
+                                sendOrder.setSendTime(quantitative.getTime());
+                                sendOrder.setWarehouseTypeId(quantitative.getWarehouseTypeId());
+                                sendOrderDao.save(sendOrder);
+                            }
+                            quantitative.setSendOrderId(sendOrder.getId());
                         } else {
                             if (quantitative.getSendOrderId() != null) {
                                 SendOrder sendOrder = sendOrderDao.findOne(quantitative.getSendOrderId());
@@ -447,7 +445,7 @@ public class QuantitativeServiceImpl extends BaseServiceImpl<Quantitative, Long>
                     } else {
                         if (quantitative.getSendOrderId() != null) {
                             SendOrder ot = sendOrderDao.findOne(quantitative.getSendOrderId());
-                            if(ot != null ) {
+                            if (ot != null) {
                                 if (ot.getAudit() != null && ot.getAudit() == 1) {
                                     throw new ServiceException("财务已审核生成物流费用,无法取消发货");
                                 }
@@ -588,7 +586,8 @@ public class QuantitativeServiceImpl extends BaseServiceImpl<Quantitative, Long>
     }
 
     @Override
-    public List<Quantitative> findBySendTime(DateTime beginOfDay, DateTime endOfDay,long warehouseTypeId) {
-        return dao.findBySendTimeBetweenAndCustomerIdAndWarehouseTypeId(beginOfDay, endOfDay,(long)363,warehouseTypeId);
+    public List<Quantitative> findBySendTime(DateTime beginOfDay, DateTime endOfDay, long warehouseTypeId) {
+        return dao.findBySendTimeBetweenAndCustomerIdAndWarehouseTypeId(beginOfDay, endOfDay, (long)363,
+            warehouseTypeId);
     }
 }

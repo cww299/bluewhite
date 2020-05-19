@@ -64,6 +64,7 @@ public class SendOrderServiceImpl extends BaseServiceImpl<SendOrder, Long> imple
         sendOrder.setSumPackageNumber(quantitative.getSumPackageNumber());
         sendOrder.setLogisticsId(quantitative.getLogisticsId());
         sendOrder.setInterior(0);
+        sendOrder.setWarehouseTypeId(quantitative.getWarehouseTypeId());
         int sumNuber = 0;
         // 新增子单
         if (!StringUtils.isEmpty(quantitative.getChild())) {
