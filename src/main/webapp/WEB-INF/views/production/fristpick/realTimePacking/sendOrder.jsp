@@ -153,14 +153,14 @@ layui.config({
 		       { title:'已发货包数',    field:'sendPackageNumber', width:100,	},
 		       { title:'物流编号',   field:'logisticsNumber',width:130, edit:true,	},
 		       { title:'物流点',   field:'logistics_id', type:'select',select:{ data:allLogistics, },width:150, },
-		       { title:'外包装方式',   field:'outerPackaging_id',type:'select', select:{ data:allPackagMethod, },width:150, 	 },
-		       { title:'是否含税',    field:'tax',	 width:120, type:'select',select:{  data: isTax, },  },
+		       { title:'外包装',   field:'outerPackaging_id',type:'select', select:{ data:allPackagMethod, },width:100, 	 },
+		       { title:'是否含税',    field:'tax',	 width:100, type:'select',select:{  data: isTax, },  },
 		       { title:'单价',    field:'singerPrice',width:120,templet: getSingerPriceSelect(), },
 		       { title:'已发货费用',   field:'sendPrice',	width:100,  },
 		       { title:'额外费用',   field:'extraPrice',	width:100, edit:'number', },
 		       { title:'物流总费用',   field:'logisticsPrice',	width:120, },  
-		       { title:'发货地点',   field:'warehouseType_name',	width:120, },  
-		       { title:'是否生成',   field:'audit',	width:90,transData:true, },  
+		       { title:'发货地点',   field:'warehouseType_name',	},  
+		       { title:'生成',   field:'audit',	width:60,transData:true, },  
 		       ]],
        done:function(ret,curr, count){
 		}
