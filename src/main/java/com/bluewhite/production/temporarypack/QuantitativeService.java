@@ -102,7 +102,7 @@ public interface QuantitativeService extends BaseCRUDService<Quantitative,Long>{
      * @param beginOfDay
      * @param endOfDay
      */
-    List<Quantitative> findBySendTime(DateTime beginOfDay, DateTime endOfDay);
+    List<Quantitative> findBySendTime(DateTime beginOfDay, DateTime endOfDay,long warehouseTypeId);
 
 	
 
