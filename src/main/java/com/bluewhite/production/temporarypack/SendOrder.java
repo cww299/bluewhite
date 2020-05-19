@@ -153,9 +153,38 @@ public class SendOrder extends BaseEntity<Long> {
     @Column(name = "vehicle_number")
     private String vehicleNumber;
     
+    /**
+     * 仓库种类id
+     */
+    @Column(name = "warehouse_type_id")
+    private Long warehouseTypeId;
+
+    /**
+     * 仓库种类
+     */
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "warehouse_type_id", referencedColumnName = "id", insertable = false, updatable = false)
+    private BaseData warehouseType;
     
     
-    
+  
+
+    public Long getWarehouseTypeId() {
+        return warehouseTypeId;
+    }
+
+    public void setWarehouseTypeId(Long warehouseTypeId) {
+        this.warehouseTypeId = warehouseTypeId;
+    }
+
+    public BaseData getWarehouseType() {
+        return warehouseType;
+    }
+
+    public void setWarehouseType(BaseData warehouseType) {
+        this.warehouseType = warehouseType;
+    }
+
     public String getVehicleNumber() {
         return vehicleNumber;
     }
