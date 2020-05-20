@@ -163,7 +163,7 @@ public class ConsumptionServiceImpl extends BaseServiceImpl<Consumption, Long> i
 			if (ot.getFlag() == 1) {
 				throw new ServiceException("已放款，无法修改");
 			}
-			BeanCopyUtils.copyNotEmpty(consumption, ot, "expenseDate","paymentDate");
+			BeanCopyUtils.copyNotEmpty(consumption, ot);
 			consumption = ot;
 		}
 		switch (consumption.getType()) {
