@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
@@ -17,10 +18,15 @@ import com.bluewhite.common.BeanCopyUtils;
 import com.bluewhite.common.ServiceException;
 import com.bluewhite.common.entity.PageParameter;
 import com.bluewhite.common.entity.PageResult;
+import com.bluewhite.common.entity.PageResultStat;
+import com.bluewhite.common.utils.StringUtil;
+import com.bluewhite.common.utils.AutoSearchUtils.SearchUtils;
 import com.bluewhite.finance.consumption.entity.Consumption;
 import com.bluewhite.finance.consumption.service.ConsumptionService;
 import com.bluewhite.ledger.dao.CustomerDao;
+import com.bluewhite.ledger.dao.LogisticsCostsDao;
 import com.bluewhite.ledger.entity.Customer;
+import com.bluewhite.ledger.entity.LogisticsCosts;
 import com.bluewhite.product.product.dao.ProductDao;
 import com.bluewhite.product.product.entity.Product;
 
@@ -46,18 +52,23 @@ public class SendOrderServiceImpl extends BaseServiceImpl<SendOrder, Long> imple
     private ProductDao productDao;
     @Autowired
     private CustomerDao customerDao;
-
+    @Autowired
+    private LogisticsCostsDao logisticsCostsDao;
+    
     @Override
     @Transactional
     public Quantitative saveSendOrder(Quantitative quantitative) {
+        SendOrder sendOrder = new SendOrder();
         if (quantitative.getCustomerId() != null) {
             //内部员工发货单在发货时创建
             Customer customer = customerDao.findOne(quantitative.getCustomerId());
             if (customer.getInterior() == 1) {
                 return quantitative;
             }
+            List<LogisticsCosts> list = logisticsCostsDao.findByCustomerId(quantitative.getCustomerId());
+            sendOrder.setLogisticsId(list.get(0).getLogisticsId());
         }
-        SendOrder sendOrder = new SendOrder();
+        sendOrder.setTax(1);
         sendOrder.setAudit(0);
         sendOrder.setCustomerId(quantitative.getCustomerId());
         sendOrder.setSendPackageNumber(0);
@@ -110,7 +121,14 @@ public class SendOrderServiceImpl extends BaseServiceImpl<SendOrder, Long> imple
 
     @Override
     public PageResult<SendOrder> findPages(Map<String, Object> params, PageParameter page) {
-        return findAll(page, params);
+        Page<SendOrder> pages = baseRepository.findAll((root, query, cb) -> {
+            SearchUtils.autoBuildQuery(root, query, cb, params);
+            return null;
+        }, StringUtil.getQueryNoPageParameter());
+        PageResultStat<SendOrder> result = new PageResultStat<>(pages, page);
+        result.setAutoStateField("sendPackageNumber","sendPrice","extraPrice","logisticsPrice");
+        result.count();
+        return result;
     }
 
     @Override

@@ -31,7 +31,9 @@ import com.bluewhite.common.entity.PageResult;
 import com.bluewhite.common.utils.DatesUtil;
 import com.bluewhite.common.utils.StringUtil;
 import com.bluewhite.ledger.dao.CustomerDao;
+import com.bluewhite.ledger.dao.LogisticsCostsDao;
 import com.bluewhite.ledger.entity.Customer;
+import com.bluewhite.ledger.entity.LogisticsCosts;
 import com.bluewhite.ledger.entity.PackingMaterials;
 
 import cn.hutool.core.date.DateTime;
@@ -54,6 +56,8 @@ public class QuantitativeServiceImpl extends BaseServiceImpl<Quantitative, Long>
     private CustomerDao customerDao;
     @Autowired
     private SendOrderService sendOrderService;
+    @Autowired
+    LogisticsCostsDao logisticsCostsDao;
 
     @Override
     public PageResult<Quantitative> findPages(Quantitative param, PageParameter page) {
@@ -432,6 +436,7 @@ public class QuantitativeServiceImpl extends BaseServiceImpl<Quantitative, Long>
                                 sendOrder.setSendPackageNumber(1);
                                 sendOrder.setLogisticsId(logisticsId);
                                 sendOrder.setInterior(1);
+                                sendOrder.setTax(1);
                                 sendOrder.setVehicleNumber(StrUtil.sub(quantitative.getVehicleNumber(), 0, 16));
                                 sendOrder.setSendTime(quantitative.getSendTime());
                                 sendOrder.setWarehouseTypeId(quantitative.getWarehouseTypeId());
@@ -441,6 +446,10 @@ public class QuantitativeServiceImpl extends BaseServiceImpl<Quantitative, Long>
                         } else {
                             if (quantitative.getSendOrderId() != null) {
                                 SendOrder sendOrder = sendOrderDao.findOne(quantitative.getSendOrderId());
+                                if(quantitative.getCustomerId()!=null) {
+                                    List<LogisticsCosts> list = logisticsCostsDao.findByCustomerId(quantitative.getCustomerId());
+                                    sendOrder.setLogisticsId(list.get(0).getLogisticsId());
+                                }
                                 sendOrder.setSendPackageNumber(sendOrder.getSendPackageNumber() + 1);
                                 if (sendOrder.getSendPackageNumber() != null && sendOrder.getSingerPrice() != null
                                     && !sendOrder.getSingerPrice().equals(BigDecimal.ZERO)) {

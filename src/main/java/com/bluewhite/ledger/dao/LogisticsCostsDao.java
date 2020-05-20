@@ -19,4 +19,12 @@ public interface LogisticsCostsDao extends BaseRepository<LogisticsCosts, Long>{
      * @return
      */
     List<LogisticsCosts> findByCustomerIdAndLogisticsIdAndOuterPackagingId(Long customerId,Long logisticsId,Long outerPackagingId);
+    
+    /**
+     * 根据客户查物流点
+     * @param customerId
+     * @return
+     */
+    List<LogisticsCosts> findByCustomerId(Long customerId);
+    
 }
