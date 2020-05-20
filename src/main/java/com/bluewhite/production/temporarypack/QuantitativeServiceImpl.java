@@ -302,6 +302,9 @@ public class QuantitativeServiceImpl extends BaseServiceImpl<Quantitative, Long>
                     if (audit == 0 && quantitative.getAudit() == 0) {
                         throw new ServiceException("未审核请勿取消审核");
                     }
+                    if(audit == 0 && quantitative.getFlag()==1) {
+                        throw new ServiceException("已发货无法取消审核");
+                    }
                     int number = quantitative.getQuantitativeChilds().stream()
                         .mapToInt(QuantitativeChild -> QuantitativeChild.getSingleNumber()).sum();
                     quantitative.setNumber(number);
@@ -367,6 +370,9 @@ public class QuantitativeServiceImpl extends BaseServiceImpl<Quantitative, Long>
                             }
                         });
                         save(quantitative);
+                    }
+                    if(quantitative.getSendOrderId()!=null) {
+                        sendOrderDao.delete(quantitative.getSendOrderId());
                     }
                     dao.delete(id);
                 }
