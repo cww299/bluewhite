@@ -79,6 +79,8 @@ layui.extend({
 			{ field: "logistics_name", title: "物流点名称", },
 			{ field: "money", title: "支付金额", },
 			{ field: "expenseDate", title: "申请日期", }, 
+			{ field: "paymentDate", title: "付款日期", },
+			{ field: "paymentMoney", title: "已付款金额", },
 		],
 		[	//type:6  借款本金    loan
 			firstCols,
@@ -217,9 +219,14 @@ layui.extend({
 				price:['paymentMoney'],
 			},
 			toolbar: [
-					'<span class="layui-btn layui-btn-sm layui-btn-success" lay-event="audit">审核</span>',
-					'<span class="layui-btn layui-btn-sm layui-btn-danger" lay-event="noAudit">取消审核</span>',
-				].join(''),
+				(function(){
+					if(collect.type==5)
+						return "";
+					return 
+						'<span class="layui-btn layui-btn-sm layui-btn-success" lay-event="audit">审核</span>'+
+						'<span class="layui-btn layui-btn-sm layui-btn-danger" lay-event="noAudit">取消审核</span>';
+				})(),
+			].join(''),
 			limit:15,
 			limits:[15,20,50,100,200,],
 			curd:{

@@ -247,7 +247,9 @@ layui.extend({
 								if(notNull.indexOf(f)>=0 && isNull(val))	//如果该字段存在非空验证
 									return myutil.emsg('时间不能为空');
 								opt.autoUpdate.field[f] && ( f = opt.autoUpdate.field[f]);  //存在对应的上传值
-								if(val.split(' ').length==1)
+								if(!val)
+									val = "";
+								else if(val.split(' ').length==1)
 									val += ' 00:00:00';
 								if(opt.autoUpdate){		//开启自动修改
 									if(opt.autoUpdate.nolyUpdateField){
