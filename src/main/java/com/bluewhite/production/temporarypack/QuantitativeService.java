@@ -104,6 +104,11 @@ public interface QuantitativeService extends BaseCRUDService<Quantitative,Long>{
      */
     List<Quantitative> findBySendTime(DateTime beginOfDay, DateTime endOfDay,long warehouseTypeId);
 
-	
+    /**
+     * 对账
+     * @param ids
+     * @return
+     */
+    int reconciliationQuantitative(String ids,Integer reconciliation);
 
 }
