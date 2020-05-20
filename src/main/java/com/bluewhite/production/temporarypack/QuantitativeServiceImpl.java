@@ -190,6 +190,7 @@ public class QuantitativeServiceImpl extends BaseServiceImpl<Quantitative, Long>
             quantitative.setAudit(ot.getAudit());
             quantitative.setPrint(ot.getPrint());
             quantitative.setFlag(ot.getFlag());
+            quantitative.setReconciliation(ot.getReconciliation());
         } else {
             // 按最后一条数据编号进行新增
             List<Quantitative> list =
@@ -207,6 +208,7 @@ public class QuantitativeServiceImpl extends BaseServiceImpl<Quantitative, Long>
             quantitative.setFlag(0);
             quantitative.setOutPrice(0.2);
             quantitative.setStatus(0);
+            quantitative.setReconciliation(0);
         }
         // 新增子单
         if (!StringUtils.isEmpty(quantitative.getChild())) {
@@ -427,7 +429,7 @@ public class QuantitativeServiceImpl extends BaseServiceImpl<Quantitative, Long>
                                 sendOrder.setLogisticsId(logisticsId);
                                 sendOrder.setInterior(1);
                                 sendOrder.setVehicleNumber(StrUtil.sub(quantitative.getVehicleNumber(), 0, 16));
-                                sendOrder.setSendTime(quantitative.getTime());
+                                sendOrder.setSendTime(quantitative.getSendTime());
                                 sendOrder.setWarehouseTypeId(quantitative.getWarehouseTypeId());
                                 sendOrderDao.save(sendOrder);
                             }
@@ -595,5 +597,30 @@ public class QuantitativeServiceImpl extends BaseServiceImpl<Quantitative, Long>
     public List<Quantitative> findBySendTime(DateTime beginOfDay, DateTime endOfDay, long warehouseTypeId) {
         return dao.findBySendTimeBetweenAndCustomerIdAndWarehouseTypeId(beginOfDay, endOfDay, (long)363,
             warehouseTypeId);
+    }
+
+    @Override
+    @Transactional
+    public int reconciliationQuantitative(String ids, Integer reconciliation) {
+        int count = 0;
+        if (!StringUtils.isEmpty(ids)) {
+            String[] idArr = ids.split(",");
+            if (idArr.length > 0) {
+                for (int i = 0; i < idArr.length; i++) {
+                    Long id = Long.parseLong(idArr[i]);
+                    Quantitative quantitative = dao.findOne(id);
+                    if (reconciliation == 1 && quantitative.getReconciliation()!=null && quantitative.getReconciliation()== 1) {
+                        throw new ServiceException("已对账请勿多次对账");
+                    }
+                    if (reconciliation == 0 && quantitative.getReconciliation()!=null && quantitative.getReconciliation() == 0) {
+                        throw new ServiceException("未对账请勿取消对账");
+                    }
+                    quantitative.setReconciliation(reconciliation);
+                    dao.save(quantitative);
+                    count++;
+                }
+            }
+        }
+        return count;
     }
 }

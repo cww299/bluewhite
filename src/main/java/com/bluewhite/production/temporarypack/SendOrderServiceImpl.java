@@ -102,7 +102,7 @@ public class SendOrderServiceImpl extends BaseServiceImpl<SendOrder, Long> imple
             ot.setSendPrice(NumberUtil.mul(ot.getSendPackageNumber(), ot.getSingerPrice()));
             ot.setLogisticsPrice(NumberUtil.add(ot.getExtraPrice(), ot.getSendPrice()));
         }
-        if(!ot.getExtraPrice().equals(BigDecimal.ZERO)) {
+        if(ot.getExtraPrice()!=null && !ot.getExtraPrice().equals(BigDecimal.ZERO)) {
             ot.setLogisticsPrice(NumberUtil.add(ot.getExtraPrice(), ot.getSendPrice()));
         }
         save(ot);

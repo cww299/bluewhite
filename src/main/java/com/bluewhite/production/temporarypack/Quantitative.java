@@ -136,6 +136,12 @@ public class Quantitative extends BaseEntity<Long> {
 	@Column(name = "audit")
 	private Integer audit;
 	
+	/**
+     * 是否对账
+     */
+    @Column(name = "reconciliation")
+    private Integer reconciliation;
+	
 	
 	/****** 量化数值 *******/
 	
@@ -307,7 +313,23 @@ public class Quantitative extends BaseEntity<Long> {
 	
 	
 	
-	public Integer getWarehousing() {
+	public Integer getReconciliation() {
+        return reconciliation;
+    }
+
+    public void setReconciliation(Integer reconciliation) {
+        this.reconciliation = reconciliation;
+    }
+
+    public Integer getWarehousingTime() {
+        return warehousingTime;
+    }
+
+    public void setWarehousingTime(Integer warehousingTime) {
+        this.warehousingTime = warehousingTime;
+    }
+
+    public Integer getWarehousing() {
         return warehousing;
     }
 

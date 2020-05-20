@@ -502,7 +502,8 @@ public class DatesUtil {
     }
 
     /**
-     * 判断是冬令时还是夏令时（5.1-9.30）       
+     * 判断是冬令时还是夏令时（5.1-9.30）
+     * 目前更改成6.1-9.30       
      * 
      * @throws ParseException
      */
@@ -514,7 +515,7 @@ public class DatesUtil {
         // 设置年份
         begin.set(Calendar.YEAR, date.get(Calendar.YEAR));
         // 设置月份
-        begin.set(Calendar.MONTH, 3);
+        begin.set(Calendar.MONTH, 4);
         // 设置天
         begin.set(Calendar.DAY_OF_MONTH, 30);
         begin.set(Calendar.HOUR_OF_DAY, 23);// 设置时为0点
@@ -524,7 +525,7 @@ public class DatesUtil {
         // 设置年份
         end.set(Calendar.YEAR, date.get(Calendar.YEAR));
         // 设置月份
-        end.set(Calendar.MONTH, 8);
+        end.set(Calendar.MONTH, 9);
         // 设置天
         end.set(Calendar.DAY_OF_MONTH, 30);
         end.set(Calendar.HOUR_OF_DAY, 23);// 设置时为0点

@@ -188,6 +188,18 @@ public class TemporaryPackAction {
         cr.setMessage("审核成功");
         return cr;
     }
+    
+    /**
+     * 对账 量化单
+     */
+    @RequestMapping(value = "/temporaryPack/reconciliationQuantitative", method = RequestMethod.GET)
+    @ResponseBody
+    public CommonResponse reconciliationQuantitative(String ids, Integer reconciliation) {
+        CommonResponse cr = new CommonResponse();
+        quantitativeService.auditQuantitative(ids, reconciliation);
+        cr.setMessage("对账成功");
+        return cr;
+    }
 
     /**
      * 对 量化单 进行实际发货数字的补录
