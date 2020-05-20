@@ -196,7 +196,7 @@ public class TemporaryPackAction {
     @ResponseBody
     public CommonResponse reconciliationQuantitative(String ids, Integer reconciliation) {
         CommonResponse cr = new CommonResponse();
-        quantitativeService.auditQuantitative(ids, reconciliation);
+        quantitativeService.reconciliationQuantitative(ids, reconciliation);
         cr.setMessage("对账成功");
         return cr;
     }
