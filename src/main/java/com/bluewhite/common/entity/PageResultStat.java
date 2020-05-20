@@ -42,7 +42,7 @@ public class PageResultStat<T> extends PageResult<T> {
         setTotal(pageResult.getTotalElements());
         setTotalPages((int) Math.ceil((double) pageResult.getTotalElements() / (double)page.getSize()));
 		setPageNum(page.getPage()+2);
-        setRows(  pageResult.getContent().size() <= page.getPageSize() ? pageResult.getContent() : pageResult.getContent().subList(page.getOffset(),endPosition));
+        setRows(pageResult.getContent().size() <= page.getPageSize() ? pageResult.getContent() : pageResult.getContent().subList(page.getOffset(),endPosition));
         totalData = pageResult.getContent();
     }
 
