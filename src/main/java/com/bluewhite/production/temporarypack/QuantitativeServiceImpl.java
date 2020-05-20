@@ -97,6 +97,10 @@ public class QuantitativeServiceImpl extends BaseServiceImpl<Quantitative, Long>
             if (param.getAudit() != null) {
                 predicate.add(cb.equal(root.get("audit").as(Integer.class), param.getAudit()));
             }
+            // 是否对账
+            if (param.getReconciliation() != null) {
+                predicate.add(cb.equal(root.get("reconciliation").as(Integer.class), param.getReconciliation()));
+            }
             // 按批次
             if (!StringUtils.isEmpty(param.getBacthNumber())) {
                 Join<Quantitative, QuantitativeChild> join =
