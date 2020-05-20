@@ -1,5 +1,6 @@
 package com.bluewhite.common.entity;
 
+import java.math.BigDecimal;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -134,12 +135,21 @@ public class StatisticsUtils
 			} else
 			if (value instanceof Long)
 			{
-				if (countNowValue == null)
-					countNowValue = Long.valueOf(0L);
+				if (countNowValue == null) {
+				    countNowValue = Long.valueOf(0L);
+				}
 				countNowValue = Long.valueOf(((Long)countNowValue).longValue() + ((Long)value).longValue());
+			}else
+			 if (value instanceof BigDecimal)
+	            {
+	                if (countNowValue == null) {
+	                    countNowValue =  new BigDecimal(0);
+	                }
+	                countNowValue = ((BigDecimal)countNowValue).add((BigDecimal)value);
+	            }
+			if (countNowValue == null) {
+			    throw new ServiceException("不能为null");
 			}
-			if (countNowValue == null)
-				throw new ServiceException("不能为null");
 			countCashMap.put(field, countNowValue);
 		}
 
