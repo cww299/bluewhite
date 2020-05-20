@@ -49,6 +49,10 @@
 										<option value="0">否</option>
 										<option value="1">是</option></select></td>
 				<td>&nbsp;&nbsp;&nbsp;</td>
+				<td>是否对账:</td>
+				<td style="width:100px;"><select name="reconciliation"><option value="">请选择</option>
+										<option value="0">否</option>
+										<option value="1">是</option></select></td>
 				<td><button type="button" class="layui-btn layui-btn-" lay-submit lay-filter="search">搜索</button></td>
 			</tr>
 		</table>
@@ -103,6 +107,8 @@ stickBagStick： 刘英芹
 		<span class="layui-btn layui-btn-sm layui-btn-normal" lay-event="send">发货</span>
 		<span class="layui-btn layui-btn-sm layui-btn-danger" lay-event="cancelSend">取消发货</span>
 		<span class="layui-btn layui-btn-sm layui-btn-normal" lay-event="updateSendTime">修改发货时间</span>
+		<span class="layui-btn layui-btn-sm layui-btn-primary" lay-event="verifyBill">对账</span>
+		<span class="layui-btn layui-btn-sm layui-btn-normal" lay-event="cancelVerifyBill">取消对账</span>
 	</shiro:hasAnyRoles>
 </div>
 <script type="text/html" >
@@ -307,6 +313,18 @@ layui.config({
 							 table:'tableData',  
 							 text:'请选择信息|是否确认取消发货？',
 							 url:'/temporaryPack/sendQuantitative?flag=0',
+						})
+					}else if(obj.event=='verifyBill'){
+						myutil.deleTableIds({
+							 table:'tableData',  
+							 text:'请选择信息|是否确认对账？',
+							 url:'/temporaryPack/reconciliationQuantitative?reconciliation=1',
+						})
+					}else if(obj.event=='cancelVerifyBill'){
+						myutil.deleTableIds({
+							 table:'tableData',  
+							 text:'请选择信息|是否确认取消对账？',
+							 url:'/temporaryPack/reconciliationQuantitative?reconciliation=0',
 						})
 					}else if(obj.event=='updateSendTime'){
 						var check = layui.table.checkStatus('tableData').data;
