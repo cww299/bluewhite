@@ -164,6 +164,7 @@ layui.config({
 		       { title:'审核',   field:'audit', 	transData:true, width:60, },
 		       { title:'发货',   field:'flag', 	transData:true, width:60, },
 		       { title:'打印',   field:'print', 	transData:true, width:60, },
+		       { title:'对账',   field:'reconciliation', 	transData:true, width:70, },
 		       { title:'批次号',    field:'underGoods_bacthNumber',	minWidth:130, },
 		       { title:'产品名',    field:'underGoods_product_name', width:280,	},
 		       { title:'单包个数',   field:'singleNumber',	width:80, },
@@ -386,7 +387,7 @@ layui.config({
 			ifNull:'',
 			cols:[ cols ],
 	       autoMerge:{
-	    	 field:['quantitativeNumber','vehicleNumber','time','sendTime','audit','print','flag',
+	    	 field:['quantitativeNumber','vehicleNumber','time','sendTime','audit','print','flag','reconciliation',
 	    		 'user_userName','surplusSendNumber','surplusNumber','customer_name','0'], 
 	    	 evenColor: evenColor,
 	       },
