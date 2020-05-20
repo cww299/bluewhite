@@ -631,7 +631,8 @@ layui.extend({
 	function parseDataPage(){		//分页请求数据解析
 		return function(ret){
 			if(ret.code==0)
-				return {  msg:ret.message,  code:ret.code , data:ret.data.rows, count:ret.data.total }; 
+				return {  msg:ret.message,  code:ret.code , data:ret.data.rows, count:ret.data.total,
+							statData: ret.data.statData, }; 
 			else
 				return {  msg:ret.message,  code:ret.code , data:[], count:0 }; 
 		}

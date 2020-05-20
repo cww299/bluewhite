@@ -162,7 +162,14 @@ layui.config({
 		       { title:'发货地点',   field:'warehouseType_name',	},  
 		       { title:'生成',   field:'audit',	width:60,transData:true, },  
 		       ]],
-       done:function(ret,curr, count){
+		totalRow:["sendPackageNumber","sendPrice","extraPrice","logisticsPrice"],
+       	done:function(ret,curr, count){
+       		var totalDiv = $('div[lay-id="tableData"] .layui-table-total');
+       		var data = ret.statData;
+       		$(totalDiv).find('td[data-field="sendPackageNumber"] div').html(data.sendPackageNumber);
+       		$(totalDiv).find('td[data-field="sendPrice"] div').html(data.sendPrice);
+       		$(totalDiv).find('td[data-field="extraPrice"] div').html(data.extraPrice);
+       		$(totalDiv).find('td[data-field="logisticsPrice"] div').html(data.logisticsPrice);
 		}
 	})
 	function getSingerPriceSelect(){
