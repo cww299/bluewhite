@@ -185,7 +185,7 @@ public class TemporaryPackAction {
     public CommonResponse auditQuantitative(String ids, Integer audit) {
         CommonResponse cr = new CommonResponse();
         quantitativeService.auditQuantitative(ids, audit);
-        cr.setMessage("审核成功");
+        cr.setMessage("成功");
         return cr;
     }
     
@@ -197,7 +197,7 @@ public class TemporaryPackAction {
     public CommonResponse reconciliationQuantitative(String ids, Integer reconciliation) {
         CommonResponse cr = new CommonResponse();
         quantitativeService.reconciliationQuantitative(ids, reconciliation);
-        cr.setMessage("对账成功");
+        cr.setMessage("成功");
         return cr;
     }
 
@@ -221,7 +221,7 @@ public class TemporaryPackAction {
     public CommonResponse updateActualSingleNumber(QuantitativeChild quantitativeChild) {
         CommonResponse cr = new CommonResponse();
         quantitativeService.updateActualSingleNumber(quantitativeChild);
-        cr.setMessage("修改成功");
+        cr.setMessage("成功");
         return cr;
     }
 
