@@ -175,6 +175,7 @@ layui.config({
 		       },
 		       { title:'备注',   field:'remarks',	width:90, edit:true,},  				
 		];
+		/*
 		var colsChcek = [
 		       { type:'checkbox',},
 		       { title:'量化编号',   field:'quantitativeNumber', width:185,	},
@@ -261,6 +262,7 @@ layui.config({
 				})
 			}
 		})
+		*/
 		mytable.render({
 			elem:'#tableData',
 			size:'sm',
@@ -861,8 +863,10 @@ layui.config({
 					tableDataNoTrans = d;
 					for(var i=0,len=d.length;i<len;i++){
 						var child = d[i].quantitativeChilds;
-						if(!child)
+						if(!child || child.length==0){
+							data.push($.extend({},{singleNumber:'',actualSingleNumber:'',remarks:''},d[i])); 
 							continue;
+						}
 						for(var j=0,l=child.length;j<l;j++){
 							data.push($.extend({},child[j],{childId: child[j].id,},d[i])); 
 						}
