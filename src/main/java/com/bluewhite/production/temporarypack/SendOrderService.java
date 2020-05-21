@@ -51,4 +51,9 @@ public interface SendOrderService extends BaseCRUDService<SendOrder, Long> {
      */
     public List<Quantitative> getQuantitativeList(Long id);
 
+    /**批量修改发货单
+     * @param sendOrder
+     */
+    public int bacthUpdate(SendOrder sendOrder,String ids);
+
 }
