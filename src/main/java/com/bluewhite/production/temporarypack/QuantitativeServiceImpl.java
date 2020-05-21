@@ -448,7 +448,10 @@ public class QuantitativeServiceImpl extends BaseServiceImpl<Quantitative, Long>
                                 SendOrder sendOrder = sendOrderDao.findOne(quantitative.getSendOrderId());
                                 if(quantitative.getCustomerId()!=null) {
                                     List<LogisticsCosts> list = logisticsCostsDao.findByCustomerId(quantitative.getCustomerId());
-                                    sendOrder.setLogisticsId(list.get(0).getLogisticsId());
+                                    if(list.size()>0) {
+                                        sendOrder.setOuterPackagingId(list.get(0).getOuterPackagingId());
+                                        sendOrder.setLogisticsId(list.get(0).getLogisticsId());
+                                    }
                                 }
                                 sendOrder.setSendPackageNumber(sendOrder.getSendPackageNumber() + 1);
                                 if (sendOrder.getSendPackageNumber() != null && sendOrder.getSingerPrice() != null

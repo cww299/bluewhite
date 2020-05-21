@@ -54,19 +54,22 @@ public class SendOrderServiceImpl extends BaseServiceImpl<SendOrder, Long> imple
     private CustomerDao customerDao;
     @Autowired
     private LogisticsCostsDao logisticsCostsDao;
-    
+
     @Override
     @Transactional
     public Quantitative saveSendOrder(Quantitative quantitative) {
         SendOrder sendOrder = new SendOrder();
         if (quantitative.getCustomerId() != null) {
-            //内部员工发货单在发货时创建
+            // 内部员工发货单在发货时创建
             Customer customer = customerDao.findOne(quantitative.getCustomerId());
             if (customer.getInterior() == 1) {
                 return quantitative;
             }
             List<LogisticsCosts> list = logisticsCostsDao.findByCustomerId(quantitative.getCustomerId());
-            sendOrder.setLogisticsId(list.get(0).getLogisticsId());
+            if (list.size() > 0) {
+                sendOrder.setOuterPackagingId(list.get(0).getOuterPackagingId());
+                sendOrder.setLogisticsId(list.get(0).getLogisticsId());
+            }
         }
         sendOrder.setTax(1);
         sendOrder.setAudit(0);
@@ -105,15 +108,16 @@ public class SendOrderServiceImpl extends BaseServiceImpl<SendOrder, Long> imple
     public void updateSendOrder(SendOrder sendOrder) {
         // 通过修改单价，计算总运费价格
         SendOrder ot = findOne(sendOrder.getId());
-        if(ot.getAudit()==1) {
+        if (ot.getAudit() == 1) {
             throw new ServiceException("发货单已生成物流费用，无法修改");
         }
         BeanCopyUtils.copyNotEmpty(sendOrder, ot, "");
-        if (ot.getSendPackageNumber() != null && ot.getSingerPrice()!=null && !ot.getSingerPrice().equals(BigDecimal.ZERO)) {
+        if (ot.getSendPackageNumber() != null && ot.getSingerPrice() != null
+            && !ot.getSingerPrice().equals(BigDecimal.ZERO)) {
             ot.setSendPrice(NumberUtil.mul(ot.getSendPackageNumber(), ot.getSingerPrice()));
             ot.setLogisticsPrice(NumberUtil.add(ot.getExtraPrice(), ot.getSendPrice()));
         }
-        if(ot.getExtraPrice()!=null && !ot.getExtraPrice().equals(BigDecimal.ZERO)) {
+        if (ot.getExtraPrice() != null && !ot.getExtraPrice().equals(BigDecimal.ZERO)) {
             ot.setLogisticsPrice(NumberUtil.add(ot.getExtraPrice(), ot.getSendPrice()));
         }
         save(ot);
@@ -126,7 +130,7 @@ public class SendOrderServiceImpl extends BaseServiceImpl<SendOrder, Long> imple
             return null;
         }, StringUtil.getQueryNoPageParameter());
         PageResultStat<SendOrder> result = new PageResultStat<>(pages, page);
-        result.setAutoStateField("sendPackageNumber","sendPrice","extraPrice","logisticsPrice");
+        result.setAutoStateField("sendPackageNumber", "sendPrice", "extraPrice", "logisticsPrice");
         result.count();
         return result;
     }
@@ -192,4 +196,30 @@ public class SendOrderServiceImpl extends BaseServiceImpl<SendOrder, Long> imple
         return quantitativeDao.findBySendOrderId(id);
     }
 
+    @Override
+    public int bacthUpdate(SendOrder sendOrder, String ids) {
+        int count = 0;
+        String[] idsArr = ids.split(",");
+        if (idsArr != null) {
+            for (String id : idsArr) {
+                // 通过修改单价，计算总运费价格
+                SendOrder ot = findOne(Long.valueOf(id));
+                if (ot.getAudit() == 1) {
+                    throw new ServiceException("发货单已生成物流费用，无法修改");
+                }
+                BeanCopyUtils.copyNotEmpty(sendOrder, ot, "");
+                if (ot.getSendPackageNumber() != null && ot.getSingerPrice() != null
+                    && !ot.getSingerPrice().equals(BigDecimal.ZERO)) {
+                    ot.setSendPrice(NumberUtil.mul(ot.getSendPackageNumber(), ot.getSingerPrice()));
+                    ot.setLogisticsPrice(NumberUtil.add(ot.getExtraPrice(), ot.getSendPrice()));
+                }
+                if (ot.getExtraPrice() != null && !ot.getExtraPrice().equals(BigDecimal.ZERO)) {
+                    ot.setLogisticsPrice(NumberUtil.add(ot.getExtraPrice(), ot.getSendPrice()));
+                }
+                save(ot);
+                count++;
+            }
+        }
+        return count;
+    }
 }

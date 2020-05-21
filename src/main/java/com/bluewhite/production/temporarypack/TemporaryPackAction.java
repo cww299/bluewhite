@@ -523,6 +523,21 @@ public class TemporaryPackAction {
         return cr;
     }
     
+    /**
+     * 批量修改
+     * @param ids
+     * @param audit
+     * @return
+     */
+    @RequestMapping(value = "/temporaryPack/bacthUpdate", method = RequestMethod.GET)
+    @ResponseBody
+    public CommonResponse bacthUpdate(SendOrder sendOrder,String ids) {
+        CommonResponse cr = new CommonResponse();
+        int count = sendOrderService.bacthUpdate(sendOrder,ids);
+        cr.setMessage("成功修改"+count+"数据");
+        return cr;
+    }
+    
     /** 
      * 扫码发货页面
      */
