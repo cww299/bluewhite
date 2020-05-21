@@ -529,7 +529,7 @@ public class TemporaryPackAction {
      * @param audit
      * @return
      */
-    @RequestMapping(value = "/temporaryPack/bacthUpdate", method = RequestMethod.GET)
+    @RequestMapping(value = "/temporaryPack/bacthUpdate", method = RequestMethod.POST)
     @ResponseBody
     public CommonResponse bacthUpdate(SendOrder sendOrder,String ids) {
         CommonResponse cr = new CommonResponse();
