@@ -51,6 +51,7 @@
 	<span class="layui-btn layui-btn-sm layui-btn-warm" lay-event="audit">生成物流费用</span>
 	<span class="layui-btn layui-btn-sm layui-btn-danger" lay-event="cancelAudit">取消生成</span>
 	<span class="layui-btn layui-btn-sm layui-btn-normal" lay-event="info">贴包明细</span>
+	<span class="layui-btn layui-btn-sm layui-btn-primary" lay-event="moreEdit">批量修改</span>
 </div>
 </body>
 <script>
@@ -133,6 +134,10 @@ layui.config({
 					if(check.length!=1)
 						return myutil.emsg("无法同时查看多条数据的贴包明细");
 					openInfoWin(check[0]);
+				}else if(obj.event=="moreEdit"){
+					if(check.length==0)
+						return myutil.emsg("请选择需要修改的数据");
+					moreEdit(check);
 				}
 			},
 		},
@@ -152,8 +157,8 @@ layui.config({
 		       { title:'总个数',   field:'number',  width:80,  },
 		       { title:'已发货包数',    field:'sendPackageNumber', width:100,	},
 		       { title:'物流编号',   field:'logisticsNumber',width:130, edit:true,	},
-		       { title:'物流点',   field:'logistics_id', type:'select',select:{ data:allLogistics, },width:150, },
-		       { title:'外包装',   field:'outerPackaging_id',type:'select', select:{ data:allPackagMethod, },width:100, 	 },
+		       { title:'物流点',   field:'logistics_id', type:'select',select:{ data: allLogistics, },width:150, },
+		       { title:'外包装',   field:'outerPackaging_id',type:'select', select:{ data: allPackagMethod, },width:100, 	 },
 		       { title:'是否含税',    field:'tax',	 width:100, type:'select',select:{  data: isTax, },  },
 		       { title:'单价',    field:'singerPrice',width:120,templet: getSingerPriceSelect(), },
 		       { title:'已发货费用',   field:'sendPrice',	width:100,  },
@@ -221,6 +226,111 @@ layui.config({
 			}
 		})
 	})
+	function moreEdit(datas){
+		var ids = [],customerId = datas[0].customer.id;
+		for(var i in datas){
+			if(datas[i].customer.id != customerId)
+				return myutil.emsg("只能批量修改同一个客户数据！");
+			ids.push(datas[i].id);
+		}
+		layer.open({
+			type: 1,
+			title: '批量修改',
+			area:['500px','400px'],
+			btn:['保存','取消'],
+			btnAlign:'c',
+			content:[
+				'<div style="padding:10px;">',
+					'<div class="layui-form layui-form-pane">',
+					  '<div class="layui-form-item" pane>',
+					    '<label class="layui-form-label">物流点</label>',
+					    '<div class="layui-input-block">',
+					      '<select lay-filter="signChangeSelect" lay-search  name="logisticsId"></select>',
+					    '</div>',
+					  '</div>',
+					  '<div class="layui-form-item" pane>',
+					    '<label class="layui-form-label">外包装</label>',
+					    '<div class="layui-input-block">',
+					      '<select lay-filter="signChangeSelect" lay-search  name="outerPackagingId"></select>',
+					    '</div>',
+					  '</div>',
+					  '<div class="layui-form-item" pane>',
+					    '<label class="layui-form-label">是否含税</label>',
+					    '<div class="layui-input-block">',
+					      '<select lay-filter="signChangeSelect" name="tax">',
+					      		'<option value="1">含税</option>',
+					      		'<option value="0">不含税</option></select>',
+					    '</div>',
+					  '</div>',
+					  '<div class="layui-form-item" pane>',
+					    '<label class="layui-form-label">单价</label>',
+					    '<div class="layui-input-block">',
+					      '<select lay-search  name="singerPrice"></select>',
+					    '</div>',
+					  '</div>',
+					  '<div class="layui-form-item" pane>',
+					    '<label class="layui-form-label">额外费用</label>',
+					    '<div class="layui-input-block">',
+					      '<input type="number" class="layui-input" name="extraPrice">',
+					    '</div>',
+					    '<span lay-submit lay-filter="moreEditBtn"></span>',
+					  '</div>',
+					'</div>',
+				'</div>',
+			].join(' '),
+			success:function(layerElem,layerIndex){
+				form.render();
+				form.on('select(signChangeSelect)',function(){
+					var logisticsId = $(layerElem).find('select[name="logisticsId"]').val();
+					var outerPackagingId = $(layerElem).find('select[name="outerPackagingId"]').val();
+					var tax = $(layerElem).find('select[name="tax"]').val();
+					if(logisticsId && outerPackagingId){
+						myutil.getData({
+							url: myutil.config.ctx+'/ledger/findLogisticsCostsPrice',
+							data:{
+								customerId: customerId,
+								logisticsId: logisticsId,
+								outerPackagingId: outerPackagingId,
+								tax: tax,
+							},
+							success:function(d){
+								var option = '<option value="">请选择</option>';
+								layui.each(d,function(index,item){
+									option += "<option value='"+item+"'>￥"+item+"</option>";
+								})
+								$(layerElem).find('select[name="singerPrice"]').html(option);
+								form.render();
+							}
+						})
+					}
+				})
+				var logisticsHtml = "",packagMethodHtml = "";
+				for(var i in allLogistics){
+					logisticsHtml += '<option value="'+allLogistics[i].id+'">'+allLogistics[i].name+'</option>';
+				}
+				for(var i in allPackagMethod){
+					packagMethodHtml += '<option value="'+allPackagMethod[i].id+'">'+allPackagMethod[i].name+'</option>';
+				}
+				$(layerElem).find('select[name="logisticsId"]').append(logisticsHtml);
+				$(layerElem).find('select[name="outerPackagingId"]').append(packagMethodHtml);
+				form.render();
+				form.on('submit(moreEditBtn)',function(obj){
+					obj.field.ids = ids.join(',')
+					myutil.saveAjax({
+						url:'/temporaryPack/bacthUpdate',
+						data: obj.field,
+						success:function(){
+							layer.close(layerIndex)
+							table.reload('tableData');
+						}
+					})
+				})
+			},
+			yes:function(){
+				$('span[lay-filter="moreEditBtn"]').click();
+			}
+		})
+	}
 	var openWinIndex =[];
 	function lookoverInfo(obj){
 		if(isCompany)
