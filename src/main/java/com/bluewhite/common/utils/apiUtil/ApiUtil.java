@@ -62,6 +62,11 @@ public class ApiUtil {
      */
     public final static String userApiExtUserList = "/user/apiExtUser/list";
     
+    /**
+     * 用户详细信息
+     */
+    public final static String userApiExtUserInfo = "/user/apiExtUser/info";
+    
     /** 佣金明细
      */
     public final static String userSaleDistributionCommisionLogList = "/user/saleDistributionCommisionLog/list";
@@ -77,11 +82,43 @@ public class ApiUtil {
     public final static String userApiExtUserCashLogList = "/user/apiExtUserCashLog/list";
 
     /**
+     * 提现列表
+     */
+    public final static String userExtUserWithdrawList = "/user/extUserWithdraw/list";
+    
+    /**
+     * 提现成功
+     */
+    public final static String userExtUserPaySuccess = "/user/apiExtUserPay/success";
+    
+    /**
+     * 提现失败
+     */
+    public final static String userExtUserPayRefuse = "/user/extUserWithdraw/refuse";
+    
+    /**
      * 返回数据格式化 url 接口地址 paramMap参数
      */
     public static CommonResponse useApiCommonResponse(HashMap<String, Object> paramMap, String url) {
         CommonResponse commonResponse = new CommonResponse();
         String result = HttpRequest.post(API_URl + url).header("X-Token", loginGetToken())// 头信息，多个头信息多次调用此方法即可
+            .form(paramMap)// 表单内容
+            .execute().body();
+        JSONObject jSONObject = JSONUtil.parseObj(result);
+        commonResponse.setCode(jSONObject.getInt("code"));
+        commonResponse.setData(jSONObject.getObj("data"));
+        commonResponse.setMessage(jSONObject.getStr("msg"));
+        return commonResponse;
+    }
+    
+    /**
+     * get请求
+     * 返回数据格式化 url 
+     * 接口地址 paramMap参数
+     */
+    public static CommonResponse useApiCommonResponseGet(HashMap<String, Object> paramMap, String url) {
+        CommonResponse commonResponse = new CommonResponse();
+        String result = HttpRequest.get(API_URl + url).header("X-Token", loginGetToken())// 头信息，多个头信息多次调用此方法即可
             .form(paramMap)// 表单内容
             .execute().body();
         JSONObject jSONObject = JSONUtil.parseObj(result);

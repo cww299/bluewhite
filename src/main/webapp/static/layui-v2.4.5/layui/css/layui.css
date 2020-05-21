@@ -6,7 +6,6 @@
  
  */
 
-
 /** ≥ı ºªØ **/
 body,div,dl,dt,dd,ul,ol,li,h1,h2,h3,h4,h5,h6,input,button,textarea,p,blockquote,th,td,form,pre{margin: 0; padding: 0; -webkit-tap-highlight-color:rgba(0,0,0,0);}
 a:active,a:hover{outline:0}
@@ -1381,4 +1380,41 @@ body .layui-util-face  .layui-layer-content{padding:0; background-color:#fff; co
 }
 .searchTable td:nth-of-type(odd){
 	padding-left:10px;
+}
+
+.layui-table img {
+    height: 70px;
+    float:left;
+    margin-right: 6px;
+}
+.bigTable + div .layui-table tr{
+	height:76px;
+	padding:3px 0;
+}
+.bigTable + div .layui-table-cell {
+   	height: 70px !important;
+   	line-height: 70px !important;
+   	white-space: normal;
+}
+.bigTable + div .layui-table thead tr{
+	height: 40px !important;
+ 	line-height: 40px !important;
+}
+.bigTable + div thead .layui-table-cell {
+    height: 34px !important;
+    line-height: 34px !important;
+    font-weight: bold;
+}
+.layui-table-view .layui-table[lay-size=lg] td[data-field="productInfo"] .layui-table-cell {
+ 	line-height: 22px !important;
+}
+.layui-table-view .layui-table[lay-size=lg] td[data-field="imgName"] .layui-table-cell {
+ 	line-height: 22px !important;
+}
+.bigTable + div td[data-field^="twoRow"] .layui-table-cell {
+ 	line-height: 22px !important;
+ 	padding-top: 13px;
+}
+.bigTable + div td[data-field^="threeRow"] .layui-table-cell {
+ 	line-height: 22px !important;
 }

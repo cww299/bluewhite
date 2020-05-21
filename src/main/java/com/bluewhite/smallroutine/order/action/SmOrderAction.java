@@ -1,6 +1,8 @@
  package com.bluewhite.smallroutine.order.action;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -62,6 +64,27 @@ public class SmOrderAction {
          return ApiUtil.useApiCommonResponse(paramMap, ApiUtil.userApiExtUserList);
      }
      
+     /**
+      * 获取用户详细信息
+      * ids 用户id
+      */
+     @RequestMapping(value = "/user/apiExtUser/info", method = RequestMethod.GET)
+     @ResponseBody
+     public CommonResponse userApiExtUserList(String ids) {
+         if (ids==null || ids.isEmpty()) {
+             throw new ServiceException("参数不能为空");
+         };
+         List<Object> list = new ArrayList<Object>();
+         for(String id : ids.split(",")) {
+        	 HashMap<String, Object> paramMap = new HashMap<String,Object>();
+        	 paramMap.put("id", id);
+        	 CommonResponse cr = ApiUtil.useApiCommonResponseGet(paramMap, ApiUtil.userApiExtUserInfo);
+        	 if(cr.getCode()!=0)
+        		 return cr;
+        	 list.add(cr.getData());
+         }
+         return new CommonResponse(list);
+     }
      
      /**
       *  用户发展关系
@@ -102,5 +125,43 @@ public class SmOrderAction {
          return cr;
      }
      
+     /**
+      *  提现管理
+      */
+     @RequestMapping(value = "/user/extUserWithdraw/list", method = RequestMethod.GET)
+     @ResponseBody
+     public CommonResponse withdrawList(@RequestParam HashMap<String, Object> paramMap) {
+         if (MapUtil.isEmpty(paramMap)) {
+             throw new ServiceException("参数不能为空");
+         };
+         return ApiUtil.useApiCommonResponse(paramMap, ApiUtil.userExtUserWithdrawList);
+     }
+     
+     /**
+      *  撤回用户提现
+      *  id 记录id
+      */
+     @RequestMapping(value = "/user/extUserWithdraw/refuse", method = RequestMethod.POST)
+     @ResponseBody
+     public CommonResponse withdrawRefuse(@RequestParam HashMap<String, Object> paramMap) {
+         if (MapUtil.isEmpty(paramMap)) {
+             throw new ServiceException("参数不能为空");
+         };
+         return ApiUtil.useApiCommonResponse(paramMap, ApiUtil.userExtUserPayRefuse);
+     }
+     
+     /**
+      *  手动设置用户提现成功
+      *  id 记录id
+      *  payGateTradeId 第三方订单号
+      */
+     @RequestMapping(value = "/user/extUserWithdraw/success", method = RequestMethod.POST)
+     @ResponseBody
+     public CommonResponse withdrawSuccess(@RequestParam HashMap<String, Object> paramMap) {
+         if (MapUtil.isEmpty(paramMap)) {
+             throw new ServiceException("参数不能为空");
+         };
+         return ApiUtil.useApiCommonResponse(paramMap, ApiUtil.userExtUserPaySuccess);
+     }
 
 }
