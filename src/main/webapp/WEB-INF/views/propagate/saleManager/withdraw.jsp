@@ -89,38 +89,18 @@ layui.config({
 			}
 		})
 		function successPay(data){
-			layer.open({
-				type:1,
-				title:'请输入订单号',
-				offset:'50px',
-				content:[
-					'<div style="padding:10px;">',
-						'<input class="layui-input" id="payGateTradeId" placeholder="转账单号，可不填">',
-					'</div>',
-				].join(''),
-				area:['300px','200px'],
-				shadeClose:true,
-				btn:['确定','取消'],
-				yes:function(layerIndex){
-					layer.confirm("请确保已经手动转账给用户，设为成功后，冻结的提现金额将被扣除！",{ offset:'50px', },function(){
-						myutil.saveAjax({
-							url:'/user/extUserWithdraw/success',
-							data:{ 
-								id: data.id,
-								payGateTradeId: $('#payGateTradeId').val(),
-							},
-							success:function(){
-								table.reload('tableData');
-								layer.close(layerIndex);
-							}
-						})
-					})
-				}
+			layer.confirm("请确保已经手动转账给用户，设为成功后，冻结的提现金额将被扣除！",{ offset:'50px',icon:1 },function(){
+				myutil.saveAjax({
+					url:'/user/extUserWithdraw/success',
+					data:{ id: data.id, },
+					success:function(){
+						table.reload('tableData');
+					}
+				})
 			})
-			
 		}
 		function failPay(data){
-			layer.confirm("驳回后，冻结的提现金额将返还给用户，用户可重新发起提现申请！",{ offset:'50px', },function(){
+			layer.confirm("驳回后，冻结的提现金额将返还给用户，用户可重新发起提现申请！",{ offset:'50px',icon:2 },function(){
 				myutil.saveAjax({
 					url:'/user/extUserWithdraw/refuse',
 					data:{ id: data.id, },

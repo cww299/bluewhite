@@ -89,7 +89,7 @@ public class ApiUtil {
     /**
      * 提现成功
      */
-    public final static String userExtUserPaySuccess = "/user/apiExtUserPay/success";
+    public final static String userExtUserPaySuccess = "/user/extUserWithdraw/success";
     
     /**
      * 提现失败
