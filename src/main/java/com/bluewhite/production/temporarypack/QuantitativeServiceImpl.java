@@ -382,7 +382,10 @@ public class QuantitativeServiceImpl extends BaseServiceImpl<Quantitative, Long>
                         save(quantitative);
                     }
                     if(quantitative.getSendOrderId()!=null) {
-                        sendOrderDao.delete(quantitative.getSendOrderId());
+                        SendOrder sendOrder = sendOrderDao.findOne(quantitative.getSendOrderId());
+                        if(sendOrder!=null) {
+                            sendOrderDao.delete(sendOrder);
+                        }
                     }
                     dao.delete(id);
                 }
@@ -446,28 +449,32 @@ public class QuantitativeServiceImpl extends BaseServiceImpl<Quantitative, Long>
                         } else {
                             if (quantitative.getSendOrderId() != null) {
                                 SendOrder sendOrder = sendOrderDao.findOne(quantitative.getSendOrderId());
-                                if(quantitative.getCustomerId()!=null) {
-                                    List<LogisticsCosts> list = logisticsCostsDao.findByCustomerId(quantitative.getCustomerId());
-                                    if(list.size()>0) {
-                                        sendOrder.setOuterPackagingId(list.get(0).getOuterPackagingId());
-                                        sendOrder.setLogisticsId(list.get(0).getLogisticsId());
+                                if(sendOrder!=null) {
+                                    if(quantitative.getCustomerId()!=null) {
+                                        List<LogisticsCosts> list = logisticsCostsDao.findByCustomerId(quantitative.getCustomerId());
+                                        if(list.size()>0) {
+                                            LogisticsCosts logisticsCosts =  list.get(0);
+                                            sendOrder.setOuterPackagingId(logisticsCosts.getOuterPackagingId());
+                                            sendOrder.setLogisticsId(logisticsCosts.getLogisticsId());
+                                        }
                                     }
+                                    sendOrder.setSendPackageNumber(sendOrder.getSendPackageNumber() + 1);
+                                    if (sendOrder.getSendPackageNumber() != null && sendOrder.getSingerPrice() != null
+                                        && !sendOrder.getSingerPrice().equals(BigDecimal.ZERO)) {
+                                        sendOrder.setSendPrice(
+                                            NumberUtil.mul(sendOrder.getSendPackageNumber(), sendOrder.getSingerPrice()));
+                                        sendOrder.setLogisticsPrice(
+                                            NumberUtil.add(sendOrder.getExtraPrice(), sendOrder.getSendPrice()));
+                                    }
+                                    sendOrder.setSendTime(quantitative.getSendTime());
+                                    sendOrder.setLogisticsId(logisticsId);
+                                    sendOrderDao.save(sendOrder);
                                 }
-                                sendOrder.setSendPackageNumber(sendOrder.getSendPackageNumber() + 1);
-                                if (sendOrder.getSendPackageNumber() != null && sendOrder.getSingerPrice() != null
-                                    && !sendOrder.getSingerPrice().equals(BigDecimal.ZERO)) {
-                                    sendOrder.setSendPrice(
-                                        NumberUtil.mul(sendOrder.getSendPackageNumber(), sendOrder.getSingerPrice()));
-                                    sendOrder.setLogisticsPrice(
-                                        NumberUtil.add(sendOrder.getExtraPrice(), sendOrder.getSendPrice()));
-                                }
-                                sendOrder.setSendTime(quantitative.getSendTime());
-                                sendOrder.setLogisticsId(logisticsId);
-                                sendOrderDao.save(sendOrder);
                             }
                         }
                     } else {
-                        if (quantitative.getSendOrderId() != null) {
+                        // 内部客户取消发货，删除发货单
+                        if (customer.getInterior() == 1 && quantitative.getSendOrderId() != null) {
                             SendOrder ot = sendOrderDao.findOne(quantitative.getSendOrderId());
                             if (ot != null) {
                                 if (ot.getAudit() != null && ot.getAudit() == 1) {
@@ -476,6 +483,15 @@ public class QuantitativeServiceImpl extends BaseServiceImpl<Quantitative, Long>
                                 sendOrderDao.delete(quantitative.getSendOrderId());
                             }
                             quantitative.setSendOrderId(null);
+                        }
+                        
+                        if(customer.getInterior() != 1 && quantitative.getSendOrderId() != null) {
+                            SendOrder ot = sendOrderDao.findOne(quantitative.getSendOrderId());
+                            if (ot != null) {
+                                if (ot.getAudit() != null && ot.getAudit() == 1) {
+                                    throw new ServiceException("财务已审核生成物流费用,无法取消发货");
+                                }
+                            } 
                         }
                         quantitative.setVehicleNumber(null);
                         quantitative.setSendTime(null);
