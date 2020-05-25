@@ -175,6 +175,12 @@ public class QuantitativeServiceImpl extends BaseServiceImpl<Quantitative, Long>
             if (ot.getSendOrderId() != null) {
                 SendOrder sendOrder = sendOrderDao.findOne(ot.getSendOrderId());
                 sendOrder.setCustomerId(quantitative.getCustomerId());
+                List<LogisticsCosts> list = logisticsCostsDao.findByCustomerId(quantitative.getCustomerId());
+                if (list.size() > 0) {
+                    sendOrder.setOuterPackagingId(list.get(0).getOuterPackagingId());
+                    sendOrder.setLogisticsId(list.get(0).getLogisticsId());
+                    sendOrder.setSingerPrice(new BigDecimal(list.get(0).getTaxIncluded()));
+                }
                 sendOrderDao.save(sendOrder);
                 quantitative.setSendOrderId(ot.getSendOrderId());
             }
@@ -452,15 +458,16 @@ public class QuantitativeServiceImpl extends BaseServiceImpl<Quantitative, Long>
                                 if(sendOrder!=null) {
                                     if(quantitative.getCustomerId()!=null) {
                                         List<LogisticsCosts> list = logisticsCostsDao.findByCustomerId(quantitative.getCustomerId());
-                                        if(list.size()>0) {
-                                            LogisticsCosts logisticsCosts =  list.get(0);
-                                            sendOrder.setOuterPackagingId(logisticsCosts.getOuterPackagingId());
-                                            sendOrder.setLogisticsId(logisticsCosts.getLogisticsId());
+                                        if (list.size() > 0) {
+                                            sendOrder.setOuterPackagingId(list.get(0).getOuterPackagingId());
+                                            sendOrder.setLogisticsId(list.get(0).getLogisticsId());
+                                            sendOrder.setSingerPrice(new BigDecimal(list.get(0).getTaxIncluded()));
+                                        }else {
+                                            sendOrder.setLogisticsId(quantitative.getLogisticsId());
                                         }
                                     }
                                     sendOrder.setSendPackageNumber(sendOrder.getSendPackageNumber() + 1);
-                                    if (sendOrder.getSendPackageNumber() != null && sendOrder.getSingerPrice() != null
-                                        && !sendOrder.getSingerPrice().equals(BigDecimal.ZERO)) {
+                                    if (sendOrder.getSendPackageNumber() != null && sendOrder.getSingerPrice() != null) {
                                         sendOrder.setSendPrice(
                                             NumberUtil.mul(sendOrder.getSendPackageNumber(), sendOrder.getSingerPrice()));
                                         sendOrder.setLogisticsPrice(
