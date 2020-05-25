@@ -184,7 +184,7 @@ layui.config({
        				logisticsId: trData.logistics ? trData.logistics.id : null,
      				outerPackagingId: trData.outerPackaging ? trData.outerPackaging.id : null,
        				tax: trData.tax,
-       				singerPrice: trData.singerPrice,
+       				singerPrice: trData.singerPrice || 0,
        			}
        			var val = obj.value;
        			var field = $(obj.elem).closest('td').data('field');
@@ -195,7 +195,7 @@ layui.config({
        			case 'singerPrice': saveData.singerPrice = val; break;
        			}
        			if(field != 'singerPrice')
-       				saveData.singerPrice = null;
+       				saveData.singerPrice = 0;
        			myutil.saveAjax({
        				url:'/temporaryPack/updateSendOrder',
        				closeLoad:true,
