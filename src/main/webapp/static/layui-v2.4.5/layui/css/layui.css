@@ -1418,3 +1418,7 @@ body .layui-util-face  .layui-layer-content{padding:0; background-color:#fff; co
 .bigTable + div td[data-field^="threeRow"] .layui-table-cell {
  	line-height: 22px !important;
 }
+td[lay-event] div{
+	color: #1e9fff;
+	cursor:pointer;
+}

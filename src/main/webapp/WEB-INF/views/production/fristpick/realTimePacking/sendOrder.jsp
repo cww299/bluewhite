@@ -157,9 +157,9 @@ layui.config({
 		       { title:'总个数',   field:'number',  width:80,  },
 		       { title:'已发货包数',    field:'sendPackageNumber', width:100,	},
 		       { title:'物流编号',   field:'logisticsNumber',width:130, edit:true,	},
-		       { title:'物流点',   field:'logistics_id', type:'select',select:{ data: allLogistics, },width:150, },
-		       { title:'外包装',   field:'outerPackaging_id',type:'select', select:{ data: allPackagMethod, },width:100, 	 },
-		       { title:'是否含税',    field:'tax',	 width:100, type:'select',select:{  data: isTax, },  },
+		       { title:'物流点',   field:'logistics_id', type:'select',select:{ data: allLogistics, layFilter:'changePriceSelect', },width:150, },
+		       { title:'外包装',   field:'outerPackaging_id',type:'select', select:{ data: allPackagMethod, layFilter:'changePriceSelect', },width:100, 	 },
+		       { title:'是否含税',    field:'tax',	 width:100, type:'select',select:{  data: isTax, layFilter:'changePriceSelect', },  },
 		       { title:'单价',    field:'singerPrice',width:120,templet: getSingerPriceSelect(), },
 		       { title:'已发货费用',   field:'sendPrice',	width:100,  },
 		       { title:'额外费用',   field:'extraPrice',	width:100, edit:'number', },
@@ -175,6 +175,36 @@ layui.config({
        		$(totalDiv).find('td[data-field="sendPrice"] div').html(data.sendPrice);
        		$(totalDiv).find('td[data-field="extraPrice"] div').html(data.extraPrice);
        		$(totalDiv).find('td[data-field="logisticsPrice"] div').html(data.logisticsPrice);
+       		//覆盖mytable 下拉框修改函数
+       		form.on('select(changePriceSelect)',function(obj){
+       			var index = $(obj.elem).closest('tr').data('index');
+       			var trData = table.cache['tableData'][index];
+       			var saveData = {
+       				id: trData.id,
+       				logisticsId: trData.logistics ? trData.logistics.id : null,
+     				outerPackagingId: trData.outerPackaging ? trData.outerPackaging.id : null,
+       				tax: trData.tax,
+       				singerPrice: trData.singerPrice,
+       			}
+       			var val = obj.value;
+       			var field = $(obj.elem).closest('td').data('field');
+       			switch(field){
+       			case 'logistics_id': saveData.logisticsId = val; break;
+       			case 'outerPackaging_id': saveData.outerPackagingId = val; break;
+       			case 'tax': saveData.tax = val; break;
+       			case 'singerPrice': saveData.singerPrice = val; break;
+       			}
+       			if(field != 'singerPrice')
+       				saveData.singerPrice = null;
+       			myutil.saveAjax({
+       				url:'/temporaryPack/updateSendOrder',
+       				closeLoad:true,
+       				data: saveData,
+       				success:function(){
+       					table.reload('tableData');
+       				}
+       			})
+       		})
 		}
 	})
 	function getSingerPriceSelect(){
@@ -207,24 +237,6 @@ layui.config({
 		if(obj.event=="lookoverInfo"){
 			lookoverInfo(obj);
 		}
-	})
-	form.on('select(changePriceSelect)',function(obj){
-		var index = $(obj.elem).closest('tr').data('index');
-		var trData = table.cache['tableData'][index];
-		
-		myutil.saveAjax({
-			url:'/temporaryPack/updateSendOrder',
-			closeLoad:true,
-			data:{
-				id: trData.id,
-				singerPrice: obj.value,
-				sendPrice: obj.value*(trData.sendPackageNumber || 0),
-				logisticsPrice: obj.value*(trData.sendPackageNumber || 0)+(trData.extraPrice || 0),
-			},
-			success:function(){
-				table.reload('tableData');
-			}
-		})
 	})
 	function moreEdit(datas){
 		var ids = [],customerId = datas[0].customer.id;
