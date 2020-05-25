@@ -30,6 +30,8 @@ import com.bluewhite.ledger.entity.LogisticsCosts;
 import com.bluewhite.product.product.dao.ProductDao;
 import com.bluewhite.product.product.entity.Product;
 
+import cn.hutool.core.bean.BeanUtil;
+import cn.hutool.core.bean.copier.CopyOptions;
 import cn.hutool.core.date.DateUtil;
 import cn.hutool.core.util.NumberUtil;
 
@@ -69,6 +71,9 @@ public class SendOrderServiceImpl extends BaseServiceImpl<SendOrder, Long> imple
             if (list.size() > 0) {
                 sendOrder.setOuterPackagingId(list.get(0).getOuterPackagingId());
                 sendOrder.setLogisticsId(list.get(0).getLogisticsId());
+                sendOrder.setSingerPrice(new BigDecimal(list.get(0).getTaxIncluded()));
+            }else {
+                sendOrder.setLogisticsId(quantitative.getLogisticsId());
             }
         }
         sendOrder.setTax(1);
@@ -76,7 +81,6 @@ public class SendOrderServiceImpl extends BaseServiceImpl<SendOrder, Long> imple
         sendOrder.setCustomerId(quantitative.getCustomerId());
         sendOrder.setSendPackageNumber(0);
         sendOrder.setSumPackageNumber(quantitative.getSumPackageNumber());
-        sendOrder.setLogisticsId(quantitative.getLogisticsId());
         sendOrder.setInterior(0);
         sendOrder.setWarehouseTypeId(quantitative.getWarehouseTypeId());
         int sumNuber = 0;
@@ -111,13 +115,12 @@ public class SendOrderServiceImpl extends BaseServiceImpl<SendOrder, Long> imple
         if (ot.getAudit() == 1) {
             throw new ServiceException("发货单已生成物流费用，无法修改");
         }
-        BeanCopyUtils.copyNotEmpty(sendOrder, ot, "");
-        if (ot.getSendPackageNumber() != null && ot.getSingerPrice() != null
-            && !ot.getSingerPrice().equals(BigDecimal.ZERO)) {
+        BeanCopyUtils.copyNotEmpty(sendOrder, ot, "logisticsId","outerPackagingId","singerPrice","tax");
+        if (ot.getSendPackageNumber() != null && ot.getSingerPrice() != null) {
             ot.setSendPrice(NumberUtil.mul(ot.getSendPackageNumber(), ot.getSingerPrice()));
             ot.setLogisticsPrice(NumberUtil.add(ot.getExtraPrice(), ot.getSendPrice()));
         }
-        if (ot.getExtraPrice() != null && !ot.getExtraPrice().equals(BigDecimal.ZERO)) {
+        if (ot.getExtraPrice() != null) {
             ot.setLogisticsPrice(NumberUtil.add(ot.getExtraPrice(), ot.getSendPrice()));
         }
         save(ot);
@@ -208,12 +211,11 @@ public class SendOrderServiceImpl extends BaseServiceImpl<SendOrder, Long> imple
                     throw new ServiceException("发货单已生成物流费用，无法修改");
                 }
                 BeanCopyUtils.copyNotEmpty(sendOrder, ot, "");
-                if (ot.getSendPackageNumber() != null && ot.getSingerPrice() != null
-                    && !ot.getSingerPrice().equals(BigDecimal.ZERO)) {
+                if (ot.getSendPackageNumber() != null && ot.getSingerPrice() != null) {
                     ot.setSendPrice(NumberUtil.mul(ot.getSendPackageNumber(), ot.getSingerPrice()));
                     ot.setLogisticsPrice(NumberUtil.add(ot.getExtraPrice(), ot.getSendPrice()));
                 }
-                if (ot.getExtraPrice() != null && !ot.getExtraPrice().equals(BigDecimal.ZERO)) {
+                if (ot.getExtraPrice() != null) {
                     ot.setLogisticsPrice(NumberUtil.add(ot.getExtraPrice(), ot.getSendPrice()));
                 }
                 save(ot);

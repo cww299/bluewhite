@@ -44,6 +44,7 @@ import com.bluewhite.system.user.entity.User;
 import com.bluewhite.system.user.service.UserService;
 
 import cn.hutool.core.date.DateUtil;
+import cn.hutool.core.util.NumberUtil;
 
 @Service
 public class AttendanceTimeServiceImpl extends BaseServiceImpl<AttendanceTime, Long> implements AttendanceTimeService {
@@ -320,6 +321,18 @@ public class AttendanceTimeServiceImpl extends BaseServiceImpl<AttendanceTime, L
                             attendanceTimeList.add(attendanceTime);
                             continue;
                         }
+                    }
+                    // 当休息日有打卡记录时，不需要申请加班的人自动算加班时长
+                    if (rout) {
+                        attendanceTime.setFlag(3);
+                        if(attendanceInit.getOverTimeType() == 2) {
+                            double actualOverTime = DatesUtil.getTimeHour( attList.get(0).getTime(), attList.get(1).getTime());
+                            double actualOverTime1 = DatesUtil.getTimeHour( attList.get(2).getTime(), attList.get(3).getTime());
+                            attendanceTime.setOvertime(NumberUtil.add(actualOverTime, actualOverTime1));
+                        }
+                        attendanceTime.setOrdinaryOvertime(attendanceTime.getOvertime());
+                        attendanceTimeList.add(attendanceTime);
+                        continue;
                     }
                     AttendanceTool attendanceTool = new AttendanceTool();
                     // 进行出勤，加班，缺勤，迟到，早退的计算
@@ -705,10 +718,11 @@ public class AttendanceTimeServiceImpl extends BaseServiceImpl<AttendanceTime, L
                                 .collect(Collectors.toList());
 
                             if (oneAtList.size() > 0) {
+                                //抵消迟到
                                 if (al.getHolidayType() == 6) {
                                     // 存在迟到
                                     if (oneAtList.get(0).getBelate() == 1) {
-                                        // 当请假时间大于或等于迟到时间 或 早退时间
+                                        // 当请假时间大于或等于迟到时间 
                                         if (NumUtils.mul(time, 60) >= oneAtList.get(0).getBelateTime()) {
                                             oneAtList.get(0).setBelate(0);
                                             oneAtList.get(0).setBelateTime(0.0);
@@ -727,9 +741,14 @@ public class AttendanceTimeServiceImpl extends BaseServiceImpl<AttendanceTime, L
                                 // 变更为请假状态
                                 oneAtList.get(0).setFlag(2);
                                 oneAtList.get(0).setHolidayType(al.getHolidayType());
-                                oneAtList.get(0).setDutytime(time >= turnWorkTime ? turnWorkTime : time);
-                                oneAtList.get(0)
-                                    .setTurnWorkTime(NumUtils.sub(turnWorkTime, oneAtList.get(0).getDutytime()));
+                                //同时处理缺勤和出勤时长
+                                if(al.getHolidayType() == 6) {
+                                    oneAtList.get(0).setDutytime(NumUtils.sum(oneAtList.get(0).getDutytime(),time));
+                                    oneAtList.get(0).setTurnWorkTime(NumUtils.sub(oneAtList.get(0).getTurnWorkTime(),time));
+                                }else {
+                                    oneAtList.get(0).setDutytime(time >= turnWorkTime ? turnWorkTime : time);
+                                    oneAtList.get(0).setTurnWorkTime(NumUtils.sub(turnWorkTime, oneAtList.get(0).getDutytime()));
+                                }
                                 if (time >= turnWorkTime) {
                                     time = NumUtils.sub(time, turnWorkTime);
                                     oneAtList.get(0).setLeaveTime(turnWorkTime);

@@ -294,6 +294,8 @@ public class AttendanceTool {
         this.overTimeType = attendanceInit.getOverTimeType();
         this.earthWork = attendanceInit.isEarthWork();
 
+        //考勤开始计算时间
+        one = one.before(workTimeStrat) ? workTimeStrat : one;
         // 正常情况下：员工不可以加班后晚到岗
         if (!sign) {
             // 缺勤
@@ -307,7 +309,7 @@ public class AttendanceTool {
                     actualOverTime = DatesUtil.getTimeHour(workTimeEnd, four);
                 }
                 actualTurnWorkTime =
-                    NumberUtil.add(DatesUtil.getTimeHour(one, two), DatesUtil.getTimeHour(three, four));
+                    NumberUtil.add(DatesUtil.getTimeHour(workTimeStrat, two), DatesUtil.getTimeHour(three, workTimeEnd));
                 actualDutyTime = NumUtils.sub(turnWorkTime, actualTurnWorkTime);
                 // 实际缺勤时长分钟数
                 actualDutytimMinute = NumUtils.mul(actualDutyTime, MINUTES);
@@ -357,7 +359,7 @@ public class AttendanceTool {
                     actualOverTime = DatesUtil.getTimeHour(workTimeEnd, four);
                 }
                 actualTurnWorkTime =
-                    NumberUtil.add(DatesUtil.getTimeHour(one, two), DatesUtil.getTimeHour(three, four));
+                    NumberUtil.add(DatesUtil.getTimeHour(workTimeStrat, two), DatesUtil.getTimeHour(three, workTimeEnd));
                 actualDutyTime = NumUtils.sub(turnWorkTime, actualTurnWorkTime);
                 // 实际缺勤时长分钟数
                 actualDutytimMinute = NumUtils.mul(actualDutyTime, MINUTES);
