@@ -153,7 +153,7 @@ layui.config({
 		       { type:'checkbox',},
 		       { title:'客户名称',   field:'customer_name', event:'lookoverInfo', },
 		       { title:'发货时间',   field:'sendTime', width:110, type:'date', },
-		       { title:'总数',   field:'sumPackageNumber', width:80,	},
+		       { title:'总包数',   field:'sumPackageNumber', width:80,	},
 		       { title:'总个数',   field:'number',  width:80,  },
 		       { title:'已发货包数',    field:'sendPackageNumber', width:100,	},
 		       { title:'物流编号',   field:'logisticsNumber',width:130, edit:true,	},
@@ -185,6 +185,8 @@ layui.config({
      				outerPackagingId: trData.outerPackaging ? trData.outerPackaging.id : null,
        				tax: trData.tax,
        				singerPrice: trData.singerPrice || 0,
+       				logisticsNumber: trData.logisticsNumber,
+       				extraPrice: trData.extraPrice || 0,
        			}
        			var val = obj.value;
        			var field = $(obj.elem).closest('td').data('field');
@@ -196,6 +198,30 @@ layui.config({
        			}
        			if(field != 'singerPrice')
        				saveData.singerPrice = 0;
+       			myutil.saveAjax({
+       				url:'/temporaryPack/updateSendOrder',
+       				closeLoad:true,
+       				data: saveData,
+       				success:function(){
+       					table.reload('tableData');
+       				}
+       			})
+       		})
+       		table.on('edit(tableData)',function(obj){
+       			var trData = obj.data;
+       			var saveData = {
+       				id: trData.id,
+       				logisticsId: trData.logistics ? trData.logistics.id : null,
+     				outerPackagingId: trData.outerPackaging ? trData.outerPackaging.id : null,
+       				tax: trData.tax,
+       				singerPrice: trData.singerPrice || 0,
+       				logisticsNumber: trData.logisticsNumber,
+       				extraPrice: trData.extraPrice || 0,
+       			}
+       			if(obj.field=="logisticsNumber")
+       				saveData.logisticsNumber = obj.value;
+       			else
+       				saveData.extraPrice = obj.value;
        			myutil.saveAjax({
        				url:'/temporaryPack/updateSendOrder',
        				closeLoad:true,
