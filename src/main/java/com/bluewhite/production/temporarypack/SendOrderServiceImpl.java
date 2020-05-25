@@ -82,7 +82,7 @@ public class SendOrderServiceImpl extends BaseServiceImpl<SendOrder, Long> imple
         sendOrder.setSendPackageNumber(0);
         sendOrder.setSumPackageNumber(quantitative.getSumPackageNumber());
         sendOrder.setInterior(0);
-        sendOrder.setWarehouseTypeId(quantitative.getWarehouseTypeId());
+        
         int sumNuber = 0;
         // 新增子单
         if (!StringUtils.isEmpty(quantitative.getChild())) {
@@ -100,6 +100,7 @@ public class SendOrderServiceImpl extends BaseServiceImpl<SendOrder, Long> imple
                 sendOrderChild.setSingleNumber(jsonObject.getInteger("singleNumber"));
                 sendOrder.getSendOrderChild().add(sendOrderChild);
                 sumNuber += (sendOrderChild.getSingleNumber() * quantitative.getSumPackageNumber());
+                sendOrder.setWarehouseTypeId(underGoods.getWarehouseTypeId());
             }
         }
         sendOrder.setNumber(sumNuber);
