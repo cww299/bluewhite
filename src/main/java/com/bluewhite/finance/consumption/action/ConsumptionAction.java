@@ -69,6 +69,22 @@ public class ConsumptionAction {
 		cr.setMessage("查询成功");
 		return cr;
 	}
+	
+	/**
+     * 汇总数据按日按月分页查看
+     * 
+     * @param request
+     * @return cr
+     */
+    @RequestMapping(value = "/fince/consumptionPage", method = RequestMethod.GET)
+    @ResponseBody
+    public CommonResponse consumptionPage(PageParameter page, Consumption consumption) {
+        CommonResponse cr = new CommonResponse();
+        cr.setData(clearCascadeJSON.format(consumptionService.findPages(consumption, page)).toJSON());
+        cr.setMessage("查询成功");
+        return cr;
+    }
+	
 
 	/**
 	 * 人事部汇总报销金额

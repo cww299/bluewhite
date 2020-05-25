@@ -24,12 +24,16 @@ import com.bluewhite.common.SessionManager;
 import com.bluewhite.common.entity.CurrentUser;
 import com.bluewhite.common.entity.PageParameter;
 import com.bluewhite.common.entity.PageResult;
+import com.bluewhite.common.entity.PageResultStat;
 import com.bluewhite.common.utils.NumUtils;
 import com.bluewhite.common.utils.StringUtil;
 import com.bluewhite.common.utils.excel.ExcelListener;
 import com.bluewhite.finance.consumption.dao.ConsumptionDao;
 import com.bluewhite.finance.consumption.entity.Consumption;
 import com.bluewhite.finance.consumption.entity.ConsumptionPoi;
+import com.bluewhite.production.temporarypack.SendOrder;
+
+import cn.hutool.core.date.DateUtil;
 
 @Service
 public class ConsumptionServiceImpl extends BaseServiceImpl<Consumption, Long> implements ConsumptionService {
@@ -136,7 +140,7 @@ public class ConsumptionServiceImpl extends BaseServiceImpl<Consumption, Long> i
 			}
 
 			if (!StringUtils.isEmpty(param.getRealityDate())) {
-				// 按实际消费日期
+				// 按实际付款日期
 				if (!StringUtils.isEmpty(param.getOrderTimeBegin()) && !StringUtils.isEmpty(param.getOrderTimeEnd())) {
 					predicate.add(cb.between(root.get("realityDate").as(Date.class), param.getOrderTimeBegin(),
 							param.getOrderTimeEnd()));
@@ -149,6 +153,94 @@ public class ConsumptionServiceImpl extends BaseServiceImpl<Consumption, Long> i
 		PageResult<Consumption> result = new PageResult<>(pages, page);
 		return result;
 	}
+	
+	
+	@Override
+    public PageResult<Consumption> findPageSend(Consumption param, PageParameter page) {
+        Page<Consumption> pages = dao.findAll((root, query, cb) -> {
+            List<Predicate> predicate = new ArrayList<>();
+            // 按消费类型过滤
+            if (param.getType() != null) {
+                predicate.add(cb.equal(root.get("type").as(Integer.class), param.getType()));
+            }
+            // 按是否已付款
+            if (!StringUtils.isEmpty(param.getFlags())) {
+                String[] falg = param.getFlags().split(",");
+                List<String> list = Arrays.asList(falg);
+                if (list != null && list.size() > 0) {
+                    In<Object> in = cb.in(root.get("flag"));
+                    for (String id : list) {
+                        in.value(Integer.parseInt(id));
+                    }
+                    predicate.add(in);
+                }
+            }
+            // 按是否預算
+            if (param.getBudget() != null) {
+                predicate.add(cb.equal(root.get("budget").as(Integer.class), param.getBudget()));
+            }
+            // 按客户姓名查找
+            if (!StringUtils.isEmpty(param.getCustomerName())) {
+                predicate.add(cb.like(root.get("customer").get("name").as(String.class),
+                        "%" + param.getCustomerName() + "%"));
+            }
+            // 按物流点查找
+            if (!StringUtils.isEmpty(param.getLogisticsName())) {
+                predicate.add(
+                        cb.like(root.get("logistics").get("name").as(String.class), "%" + param.getLogisticsName() + "%"));
+            }
+            // 按金额查找
+            if (!StringUtils.isEmpty(param.getMoney())) {
+                predicate.add(cb.equal(root.get("money").as(Double.class), param.getMoney()));
+            }
+
+            if (!StringUtils.isEmpty(param.getExpenseDate())) {
+                // 按申请日期
+                if (!StringUtils.isEmpty(param.getOrderTimeBegin()) && !StringUtils.isEmpty(param.getOrderTimeEnd())) {
+                    predicate.add(cb.between(root.get("expenseDate").as(Date.class), param.getOrderTimeBegin(),
+                            param.getOrderTimeEnd()));
+                }
+            }
+            if (!StringUtils.isEmpty(param.getPaymentDate())) {
+                // 按财务付款日期
+                if (!StringUtils.isEmpty(param.getOrderTimeBegin()) && !StringUtils.isEmpty(param.getOrderTimeEnd())) {
+                    predicate.add(cb.between(root.get("paymentDate").as(Date.class), param.getOrderTimeBegin(),
+                            param.getOrderTimeEnd()));
+                }
+            }
+
+            if (!StringUtils.isEmpty(param.getRealityDate())) {
+                // 按实际付款日期
+                if (!StringUtils.isEmpty(param.getOrderTimeBegin()) && !StringUtils.isEmpty(param.getOrderTimeEnd())) {
+                    predicate.add(cb.between(root.get("realityDate").as(Date.class), param.getOrderTimeBegin(),
+                            param.getOrderTimeEnd()));
+                }
+            }
+            Predicate[] pre = new Predicate[predicate.size()];
+            query.where(predicate.toArray(pre));
+            return null;
+        }, StringUtil.getQueryNoPageParameter());
+        List<Consumption> list =  pages.getContent();
+        //按月查看
+        List<Consumption> newList = new ArrayList<Consumption>();
+        if(param.getMode()==2) {
+//            list.stream().map(cu->DateUtil.parseLocalDateTime(cu.getExpenseDate()).collect(Collectors.toList();
+          
+//          Map<Integer, List<Consumption>> groupByMonth = 
+//              list.stream().collect(Collectors.groupingBy(o -> o.getExpenseDate().getMonthValue()));
+        }
+        
+        PageResultStat<Consumption> result = new PageResultStat<>(pages, page);
+        return result;
+    }
+
+	
+	
+	
+	
+	
+	
+	
 
 	@Override
 	@Transactional
@@ -421,6 +513,11 @@ public class ConsumptionServiceImpl extends BaseServiceImpl<Consumption, Long> i
 				predicate.add(
 						cb.like(root.get("customer").get("name").as(String.class), "%" + param.getCustomerName() + "%"));
 			}
+			// 按物流点查找
+            if (!StringUtils.isEmpty(param.getLogisticsName())) {
+                predicate.add(
+                        cb.like(root.get("logistics").get("name").as(String.class), "%" + param.getLogisticsName() + "%"));
+            }
 			// 按报销內容查找
 			if (!StringUtils.isEmpty(param.getContent())) {
 				predicate.add(cb.like(root.get("content").as(String.class),
@@ -449,5 +546,13 @@ public class ConsumptionServiceImpl extends BaseServiceImpl<Consumption, Long> i
     public Consumption findByTypeAndLogisticsIdAndExpenseDateBetween(Integer type, Long id, Date beginTime,
         Date endTime) {
          return dao.findByTypeAndLogisticsIdAndExpenseDateBetween(type, id, beginTime, endTime);
+    }
+
+    /* (non-Javadoc)
+     * @see com.bluewhite.finance.consumption.service.ConsumptionService#findBySendOrderId(java.lang.Long)
+     */
+    @Override
+    public Consumption findBySendOrderId(Long id) {
+         return dao.findBySendOrderId(id);
     }
 }

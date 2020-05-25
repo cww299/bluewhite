@@ -136,7 +136,7 @@ public class SendOrder extends BaseEntity<Long> {
     private BigDecimal logisticsPrice;
     
     /**
-     * 是否生成物流费用
+     * 是否生成物流费用(0 未生成 1 生成  2 部分生成)
      */
     @Column(name = "audit")
     private Integer audit;

@@ -1,6 +1,7 @@
 package com.bluewhite.production.temporarypack;
 
 import java.math.BigDecimal;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
@@ -30,9 +31,6 @@ import com.bluewhite.ledger.entity.LogisticsCosts;
 import com.bluewhite.product.product.dao.ProductDao;
 import com.bluewhite.product.product.entity.Product;
 
-import cn.hutool.core.bean.BeanUtil;
-import cn.hutool.core.bean.copier.CopyOptions;
-import cn.hutool.core.date.DateUtil;
 import cn.hutool.core.util.NumberUtil;
 
 /**
@@ -72,7 +70,7 @@ public class SendOrderServiceImpl extends BaseServiceImpl<SendOrder, Long> imple
                 sendOrder.setOuterPackagingId(list.get(0).getOuterPackagingId());
                 sendOrder.setLogisticsId(list.get(0).getLogisticsId());
                 sendOrder.setSingerPrice(new BigDecimal(list.get(0).getTaxIncluded()));
-            }else {
+            } else {
                 sendOrder.setLogisticsId(quantitative.getLogisticsId());
             }
         }
@@ -82,7 +80,7 @@ public class SendOrderServiceImpl extends BaseServiceImpl<SendOrder, Long> imple
         sendOrder.setSendPackageNumber(0);
         sendOrder.setSumPackageNumber(quantitative.getSumPackageNumber());
         sendOrder.setInterior(0);
-        
+
         int sumNuber = 0;
         // 新增子单
         if (!StringUtils.isEmpty(quantitative.getChild())) {
@@ -116,7 +114,8 @@ public class SendOrderServiceImpl extends BaseServiceImpl<SendOrder, Long> imple
         if (ot.getAudit() == 1) {
             throw new ServiceException("发货单已生成物流费用，无法修改");
         }
-        BeanCopyUtils.copyNotEmpty(sendOrder, ot, "logisticsId","outerPackagingId","singerPrice","tax");
+        BeanCopyUtils.copyNotEmpty(sendOrder, ot, "logisticsId", "outerPackagingId", "singerPrice", "tax",
+            "logisticsNumber", "extraPrice");
         if (ot.getSendPackageNumber() != null && ot.getSingerPrice() != null) {
             ot.setSendPrice(NumberUtil.mul(ot.getSendPackageNumber(), ot.getSingerPrice()));
             ot.setLogisticsPrice(NumberUtil.add(ot.getExtraPrice(), ot.getSendPrice()));
@@ -141,7 +140,7 @@ public class SendOrderServiceImpl extends BaseServiceImpl<SendOrder, Long> imple
 
     @Override
     @Transactional
-    public int auditSendOrder(String ids, Integer audit) {
+    public int auditSendOrder(String ids, Date expenseDate, Date paymentDate) {
         int count = 0;
         if (!StringUtils.isEmpty(ids)) {
             String[] idArr = ids.split(",");
@@ -153,46 +152,49 @@ public class SendOrderServiceImpl extends BaseServiceImpl<SendOrder, Long> imple
                         || sendOrder.getOuterPackagingId() == null) {
                         throw new ServiceException("客户或物流公司或包装方式为空，无法审核发货单");
                     }
+                    if(sendOrder.getSendPackageNumber()==0) {
+                        throw new ServiceException("未发货无法生成物流费");
+                    }
+                    //当总数等于已发包数 全部审核
+                    if(sendOrder.getSumPackageNumber()==sendOrder.getSendPackageNumber()) {
+                        sendOrder.setAudit(1);
+                    }
+                    //当总数大于已发包数 部分生成
+                    if(sendOrder.getSumPackageNumber()<sendOrder.getSendPackageNumber()) {
+                        sendOrder.setAudit(2);
+                    }
                     // 根据申请时间和物流点查询是否有已存在数据
-                    Consumption consumption = consumptionService.findByTypeAndLogisticsIdAndExpenseDateBetween(5,
-                        sendOrder.getLogisticsId(), DateUtil.beginOfMonth(sendOrder.getSendTime()),
-                        DateUtil.endOfMonth(sendOrder.getSendTime()));
+                    Consumption consumption = new Consumption();
                     // 审核，进行物流费用的新增
-                    if (audit == 1) {
-                        if (sendOrder.getAudit() == 1) {
+                    Consumption ot = consumptionService.findBySendOrderId(id);
+                    if (ot != null) {
+                        // 获取已生成金额
+                        BigDecimal money = new BigDecimal(ot.getMoney().toString());
+                        // 相等表示费用全部生成
+                        if (money.compareTo(sendOrder.getLogisticsPrice()) == 0) {
                             throw new ServiceException("发货单已生成物流费用，无需多次生成");
                         }
-                        if (consumption == null) {
-                            consumption = new Consumption();
-                            consumption.setType(5);
-                            consumption.setCustomerId(sendOrder.getCustomerId());
-                            // 将发货时间赋值给申请时间
-                            consumption.setExpenseDate(sendOrder.getSendTime());
-                            consumption.setFlag(0);
-                            consumption.setMoney(sendOrder.getLogisticsPrice().doubleValue());
-                            consumption.setLogisticsId(sendOrder.getLogisticsId());
-                        } else {
-                            consumption.setMoney(
-                                NumberUtil.add(consumption.getMoney(), sendOrder.getLogisticsPrice()).doubleValue());
+                        // 小于表示有新增发货的，费用增加
+                        if (money.compareTo(sendOrder.getLogisticsPrice()) == -1) {
+                            consumption.setMoney(sendOrder.getLogisticsPrice().subtract(money).doubleValue());
                         }
                     }
-                    // 取消审核，进行物流费用的减少
-                    if (audit == 0) {
-                        if (sendOrder.getAudit() == 0) {
-                            throw new ServiceException("发货单未生成费用，无需取消");
-                        }
-                        consumption.setMoney(
-                            NumberUtil.sub(consumption.getMoney(), sendOrder.getLogisticsPrice()).doubleValue());
-                    }
+                    consumption.setSendOrderId(id);
+                    consumption.setType(5);
+                    consumption.setExpenseDate(expenseDate);
+                    consumption.setPaymentDate(paymentDate);
+                    consumption.setFlag(0);
+                    consumption.setMoney(sendOrder.getLogisticsPrice().doubleValue());
+                    consumption.setLogisticsId(sendOrder.getLogisticsId());
+                    // 无法取消审核，在物流申请中删除单据
                     consumptionService.addConsumption(consumption);
-                    sendOrder.setAudit(audit);
+                    sendOrder.setAudit(1);
                     save(sendOrder);
                 }
                 count++;
             }
         }
         return count;
-
     }
 
     @Override

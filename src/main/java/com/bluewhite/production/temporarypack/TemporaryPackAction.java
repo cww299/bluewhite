@@ -67,8 +67,8 @@ public class TemporaryPackAction {
         clearCascadeJSONQuantitative = ClearCascadeJSON.get()
             .addRetainTerm(Quantitative.class, "id", "quantitativeNumber", "time", "sumPackageNumber", "time",
                 "quantitativeChilds", "packingMaterials", "user", "flag", "print", "customer", "audit", "sendTime",
-                "vehicleNumber","packagMethod","outPrice","departmentPrice","regionalPrice","sumTaskPrice"
-                ,"sumTime","status","number","productCount","location","reservoirArea","reconciliation")
+                "vehicleNumber", "packagMethod", "outPrice", "departmentPrice", "regionalPrice", "sumTaskPrice",
+                "sumTime", "status", "number", "productCount", "location", "reservoirArea", "reconciliation")
             .addRetainTerm(Customer.class, "id", "name")
             .addRetainTerm(QuantitativeChild.class, "id", "underGoods", "sumPackageNumber", "singleNumber", "number",
                 "actualSingleNumber", "checks", "remarks")
@@ -90,7 +90,7 @@ public class TemporaryPackAction {
         clearCascadeJSONSendOrder = ClearCascadeJSON.get()
             .addRetainTerm(SendOrder.class, "id", "customer", "sendOrderChild", "sendTime", "sumPackageNumber",
                 "number", "sendPackageNumber", "logistics", "outerPackaging", "logisticsNumber", "tax", "singerPrice",
-                "sendPrice", "extraPrice", "logisticsPrice", "audit","warehouseType")
+                "sendPrice", "extraPrice", "logisticsPrice", "audit", "warehouseType")
             .addRetainTerm(SendOrderChild.class, "id", "productName", "bacthNumber", "singleNumber")
             .addRetainTerm(BaseData.class, "id", "name");
     }
@@ -166,9 +166,9 @@ public class TemporaryPackAction {
      */
     @RequestMapping(value = "/temporaryPack/saveQuantitative", method = RequestMethod.POST)
     @ResponseBody
-    public CommonResponse saveQuantitative(Quantitative quantitative,String ids) {
+    public CommonResponse saveQuantitative(Quantitative quantitative, String ids) {
         CommonResponse cr = new CommonResponse();
-        quantitativeService.saveUpdateQuantitative(quantitative,ids);
+        quantitativeService.saveUpdateQuantitative(quantitative, ids);
         if (StringUtils.isEmpty(ids)) {
             cr.setMessage("新增成功");
         } else {
@@ -188,7 +188,7 @@ public class TemporaryPackAction {
         cr.setMessage("成功");
         return cr;
     }
-    
+
     /**
      * 对账 量化单
      */
@@ -238,8 +238,7 @@ public class TemporaryPackAction {
     }
 
     /**
-     * 发货 
-     * 上车编号
+     * 发货 上车编号
      */
     @RequestMapping(value = "/temporaryPack/sendQuantitative", method = RequestMethod.GET)
     @ResponseBody
@@ -315,7 +314,7 @@ public class TemporaryPackAction {
         cr.setMessage("删除成功");
         return cr;
     }
-    
+
     /**
      * 新增下货单(导入)
      * 
@@ -373,7 +372,7 @@ public class TemporaryPackAction {
      * 删除尾数清算单
      */
     @RequestMapping(value = "/temporaryPack/deleteMantissaLiquidation", method = RequestMethod.GET)
-    @ResponseBody 
+    @ResponseBody
     public CommonResponse deleteMantissaLiquidation(String ids) {
         CommonResponse cr = new CommonResponse();
         int count = mantissaLiquidationService.delete(ids);
@@ -512,67 +511,68 @@ public class TemporaryPackAction {
      */
     @RequestMapping(value = "/temporaryPack/auditSendOrder", method = RequestMethod.GET)
     @ResponseBody
-    public CommonResponse auditSendOrder(String ids, Integer audit) {
+    public CommonResponse auditSendOrder(String ids, Date expenseDate, Date paymentDate) {
         CommonResponse cr = new CommonResponse();
-        if (audit == 1) {
-            cr.setMessage("物流费用生成成功");
-        } else {
-            cr.setMessage("物流费用取消成功");
-        }
-        sendOrderService.auditSendOrder(ids, audit);
+        sendOrderService.auditSendOrder(ids, expenseDate, paymentDate);
+        cr.setMessage("物流费用生成成功");
         return cr;
     }
-    
+
     /**
      * 批量修改
+     * 
      * @param ids
      * @param audit
      * @return
      */
     @RequestMapping(value = "/temporaryPack/bacthUpdate", method = RequestMethod.POST)
     @ResponseBody
-    public CommonResponse bacthUpdate(SendOrder sendOrder,String ids) {
+    public CommonResponse bacthUpdate(SendOrder sendOrder, String ids) {
         CommonResponse cr = new CommonResponse();
-        int count = sendOrderService.bacthUpdate(sendOrder,ids);
-        cr.setMessage("成功修改"+count+"数据");
+        int count = sendOrderService.bacthUpdate(sendOrder, ids);
+        cr.setMessage("成功修改" + count + "数据");
         return cr;
     }
-    
-    /** 
+
+    /**
      * 扫码发货页面
      */
     @RequestMapping(value = "/twoDimensionalCode/scanSendOrder", method = RequestMethod.GET)
-    public ModelAndView  scanSend(Long id) {
+    public ModelAndView scanSend(Long id) {
         ModelAndView mav = new ModelAndView();
         Quantitative quantitative = quantitativeService.findOne(id);
-        if(quantitative.getFlag()==1) {
+        if (quantitative.getFlag() == 1) {
             mav.setViewName("/visitor/scanSend");
-            mav.addObject("data",  clearCascadeJSONQuantitative.format(quantitative).toJSON());
+            mav.addObject("data", clearCascadeJSONQuantitative.format(quantitative).toJSON());
             return mav;
         }
-        //通过量化单的发货时间进行查询出当前上车的编号进度
-        if(quantitative.getCustomerId()!=null && quantitative.getCustomerId()==(long)363) {
-            List<Quantitative> quantitativeList =  quantitativeService.findBySendTime(DateUtil.beginOfDay(new Date()),DateUtil.endOfDay(new Date()),quantitative.getWarehouseTypeId());
+        // 通过量化单的发货时间进行查询出当前上车的编号进度
+        if (quantitative.getCustomerId() != null && quantitative.getCustomerId() == (long)363) {
+            List<Quantitative> quantitativeList = quantitativeService.findBySendTime(DateUtil.beginOfDay(new Date()),
+                DateUtil.endOfDay(new Date()), quantitative.getWarehouseTypeId());
             compareVehicleNumber(quantitativeList);
             if (quantitativeList.size() > 0) {
                 int count = 0;
-                //获取最后一个上车编号
+                // 获取最后一个上车编号
                 String vehicleNumber = StrUtil.sub(quantitativeList.get(0).getVehicleNumber(), 12, 16);
-                //获取上车发货总包数
-                long number = quantitativeList.stream().filter(Quantitative->StrUtil.sub(Quantitative.getVehicleNumber(), 12, 16).equals(vehicleNumber)).count();
+                // 获取上车发货总包数
+                long number = quantitativeList.stream()
+                    .filter(Quantitative -> StrUtil.sub(Quantitative.getVehicleNumber(), 12, 16).equals(vehicleNumber))
+                    .count();
                 count = Integer.valueOf(vehicleNumber);
-                quantitative.setVehicleNumber(count +"-"+(number+1));
-            }else {
-                quantitative.setVehicleNumber(1+"-"+1);
+                quantitative.setVehicleNumber(count + "-" + (number + 1));
+            } else {
+                quantitative.setVehicleNumber(1 + "-" + 1);
             }
         }
         mav.setViewName("/visitor/scanSend");
-        mav.addObject("data",  clearCascadeJSONQuantitative.format(quantitative).toJSON());
+        mav.addObject("data", clearCascadeJSONQuantitative.format(quantitative).toJSON());
         return mav;
     }
-    
+
     /**
      * 按上车重新排序
+     * 
      * @param list
      * @return
      */
@@ -587,31 +587,29 @@ public class TemporaryPackAction {
         });
         return list;
     }
-    
+
     /**
-     * 自动检测
-     * 量化单以量化时间过长为发货的进行入库
+     * 自动检测 量化单以量化时间过长为发货的进行入库
      */
     @RequestMapping(value = "/temporaryPack/checkWarehousing", method = RequestMethod.GET)
     @ResponseBody
-    public CommonResponse warehousing(int page,int size) {
+    public CommonResponse warehousing(int page, int size) {
         CommonResponse cr = new CommonResponse();
-        cr.setData(clearCascadeJSONQuantitative.format(quantitativeService.warehousing(page,size)).toJSON());
-        cr.setMessage("成功");    
+        cr.setData(clearCascadeJSONQuantitative.format(quantitativeService.warehousing(page, size)).toJSON());
+        cr.setMessage("成功");
         return cr;
     }
-    
+
     /**
      * 入库 库位库区
      */
     @RequestMapping(value = "/temporaryPack/putWarehousing", method = RequestMethod.POST)
     @ResponseBody
-    public CommonResponse putWarehousing(String ids , String location ,String reservoirArea) {
+    public CommonResponse putWarehousing(String ids, String location, String reservoirArea) {
         CommonResponse cr = new CommonResponse();
-        int count =  quantitativeService.putWarehousing(ids,location,reservoirArea); 
-        cr.setMessage("成功入库"+count+"条数据");
+        int count = quantitativeService.putWarehousing(ids, location, reservoirArea);
+        cr.setMessage("成功入库" + count + "条数据");
         return cr;
     }
-    
-    
+
 }

@@ -15,6 +15,7 @@ import com.bluewhite.basedata.entity.BaseData;
 import com.bluewhite.ledger.entity.Customer;
 import com.bluewhite.ledger.entity.OrderOutSource;
 import com.bluewhite.ledger.entity.OrderProcurement;
+import com.bluewhite.production.temporarypack.SendOrder;
 import com.bluewhite.system.user.entity.User;
 
 /**
@@ -198,6 +199,19 @@ public class Consumption extends BaseEntity<Long> {
 	private OrderOutSource orderOutSource;
 	
     /**
+     * 发货单id
+     */
+    @Column(name = "send_order_id")
+    private Long sendOrderId;
+
+    /**
+     * 发货单
+     */
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "send_order_id", referencedColumnName = "id", insertable = false, updatable = false)
+    private SendOrder sendOrder;
+	
+    /**
      * 物流点id
      */
     @Column(name = "logistics_id")
@@ -222,6 +236,12 @@ public class Consumption extends BaseEntity<Long> {
 	private String customerName;
 	
 	/**
+     * 过滤参数物流点
+     */
+    @Transient
+    private String logisticsName;
+	
+	/**
 	 * 审核过滤
 	 */
 	@Transient
@@ -244,11 +264,47 @@ public class Consumption extends BaseEntity<Long> {
 	@Transient
 	private Date orderTimeEnd;
 
+	/**
+     * 查询字段(1=按日2=按月)
+     */
+    @Transient
+    private Integer mode;
 	
 	
 	
-	
-	public Long getLogisticsId() {
+	public Integer getMode() {
+        return mode;
+    }
+
+    public void setMode(Integer mode) {
+        this.mode = mode;
+    }
+
+    public Long getSendOrderId() {
+        return sendOrderId;
+    }
+
+    public void setSendOrderId(Long sendOrderId) {
+        this.sendOrderId = sendOrderId;
+    }
+
+    public SendOrder getSendOrder() {
+        return sendOrder;
+    }
+
+    public void setSendOrder(SendOrder sendOrder) {
+        this.sendOrder = sendOrder;
+    }
+
+    public String getLogisticsName() {
+        return logisticsName;
+    }
+
+    public void setLogisticsName(String logisticsName) {
+        this.logisticsName = logisticsName;
+    }
+
+    public Long getLogisticsId() {
         return logisticsId;
     }
 
