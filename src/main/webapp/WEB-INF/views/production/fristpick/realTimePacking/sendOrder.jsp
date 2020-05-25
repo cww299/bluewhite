@@ -192,7 +192,7 @@ layui.config({
        			case 'logistics_id': saveData.logisticsId = val; break;
        			case 'outerPackaging_id': saveData.outerPackagingId = val; break;
        			case 'tax': saveData.tax = val; break;
-       			case 'singerPrice': saveData.singerPrice = val; break;
+       			case 'singerPrice': saveData.singerPrice = (val || 0); break;
        			}
        			if(field != 'singerPrice')
        				saveData.singerPrice = 0;
