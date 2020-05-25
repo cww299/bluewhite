@@ -74,7 +74,9 @@ layui.extend({
 			firstCols,
 			{ field: "logistics_name", title: "物流点名称", }, 
 			{ field: "money", title: "支付金额", }, 
-			{ field: "expenseDate", title: "申请日期", }, 
+			{ field: "expenseDate", title: "申请日期", type:'dateTime',}, 
+			{ field: "paymentDate", title: "预计付款日期",type:'dateTime',  }, 
+			{ field: "realityDate", title: "实际日期", type:'dateTime',}, 
 		],
 		[	//type:6  借款本金    loan
 			firstCols,
@@ -160,7 +162,7 @@ layui.extend({
 						case 2: text='采购单编号'; name='content'; break;
 						case 3: text='工资内容'; name='content'; break;
 						case 4: text='供应商名称'; name='customerName'; break;
-						case 5: text='物流点名称'; name='customerName'; break;
+						case 5: text='物流点名称'; name='logisticsName'; break;
 						case 6: text='借款内容'; name='content'; break;
 						case 7: text='扣税单位'; name='customerName'; break;
 						case 8: text='公司名称'; name='customerName'; break;
@@ -190,9 +192,13 @@ layui.extend({
 		myutil.clickTr();
 		form.render();
 		laydate.render({ elem:'#searchTime', range:'~', })
+		var url = '/fince/getConsumption?type='+audit.type;
+		if(audit.type==5){
+			url = '/fince/consumptionPage';
+		}
 		mytable.render({
 			elem: '#tableData',
-			url: myutil.config.ctx+'/fince/getConsumption?type='+audit.type ,
+			url: myutil.config.ctx+url,
 			where:{ flags:0 },
 			ifNull:'',
 			scrollX:true,

@@ -49,7 +49,6 @@
 </div>
 <div id="toolbarTpl" style="display:none;">
 	<span class="layui-btn layui-btn-sm layui-btn-warm" lay-event="audit">生成物流费用</span>
-	<span class="layui-btn layui-btn-sm layui-btn-danger" lay-event="cancelAudit">取消生成</span>
 	<span class="layui-btn layui-btn-sm layui-btn-normal" lay-event="info">贴包明细</span>
 	<span class="layui-btn layui-btn-sm layui-btn-primary" lay-event="moreEdit">批量修改</span>
 </div>
@@ -112,23 +111,47 @@ layui.config({
 					var ids = [],msg = "";
 					if(check.length<1)
 						return myutil.emsg('请选择需要审核得数据');
-					if(!isCompany){
-						for(var i in check){
-							if(check[i].sumPackageNumber != check[i].sendPackageNumber){
-								return myutil.emsg("当前选择的第"+(i-(-1))+"条数据有未发货，无法生成物流费用");
-							}
-						}
+					for(var i in check){
+						ids.push(check[i].id);
 					}
-					myutil.deleTableIds({
-						 table:'tableData', 
-						 text:'请选择信息|是否确认生成物流费用？',
-						 url:'/temporaryPack/auditSendOrder?audit=1',
-					})
-				}else if(obj.event=='cancelAudit'){
-					myutil.deleTableIds({
-						 table:'tableData', 
-						 text:'请选择信息|取消生成物流费用？',
-						 url:'/temporaryPack/auditSendOrder?audit=0',
+					layer.open({
+						type: 1,
+						title: '审核数据',
+						area: ['420px','240px'],
+						content: [
+							'<div style="padding:10px;">',
+								'<table style="margin: auto;"><tr>',
+										'<td>申请付款日期：</td>',
+										'<td><input id="expenseDate" style="margin-bottom: 10px;" class="layui-input"></td></tr>',
+									'<tr>',
+										'<td>预计付款日期：</td>',	
+										'<td><input id="paymentDate" class="layui-input"></td></tr>',
+								'</table>',
+							'</div>',
+						].join(''),
+						success:function(){
+							laydate.render({ elem:'#expenseDate', type:'datetime', })
+							laydate.render({ elem:'#paymentDate', type:'datetime', })
+						},
+						btn: ['确定','取消'],
+						yes:function(){
+							var expenseDate = $('#expenseDate').val();
+							var paymentDate = $('#paymentDate').val();
+							if(!paymentDate || !expenseDate)
+								return myutil.emsg("请填写完信息");
+							myutil.saveAjax({
+								 url:'/temporaryPack/auditSendOrder',
+								 data:{
+									 expenseDate: expenseDate,
+									 paymentDate: paymentDate,
+									 ids: ids.join(',')
+								 },
+								 success:function(){
+									 table.reload('tableData')
+								 }
+							})
+						}
+						
 					})
 				}else if(obj.event=="info"){
 					if(check.length!=1)

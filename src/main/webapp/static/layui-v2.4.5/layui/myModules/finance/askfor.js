@@ -75,7 +75,9 @@ layui.extend({
 			firstCols,
 			{ field: "logistics_name", title: "物流点名称",  }, 
 			{ field: "money", title: "支付金额",  }, 
-			{ field: "expenseDate", title: "预计付款日期",type:'dateTime', edit:true, }, 
+			{ field: "expenseDate", title: "申请日期", type:'dateTime',edit:true,}, 
+			{ field: "paymentDate", title: "预计付款日期",type:'dateTime', edit:true, }, 
+			{ field: "realityDate", title: "实际日期", type:'dateTime',}, 
 		],
 		[	//type:6  借款本金    loan
 			firstCols,
@@ -139,7 +141,19 @@ layui.extend({
 	askfor.render = function(opt){
 		opt = opt || {};
 		var TPL = `
-			<table class="layui-form searchTable">
+			<div class="layui-form">`+
+			(function(){
+				if(askfor.type==5)
+					return [
+						'<div style="float:right;">',
+							'<input type="radio" name="mode" value="1" title="按日查看"  checked >',
+							'<input type="radio" name="mode" value="2" title="按月查看" >',
+						'</div>',
+					].join(' ');
+				return "";
+			})()+
+		`
+			<table class="searchTable">
 				<tr>
 					<td style="width:130px;"><select class="layui-input" id="selectone">
 							<option value="expenseDate">申请日期</option>
@@ -159,7 +173,7 @@ layui.extend({
 						case 2: text='采购单编号'; name='content'; break;
 						case 3: text='工资内容'; name='content'; break;
 						case 4: text='供应商名称'; name='customerName'; break;
-						case 5: text='物流点名称'; name='customerName'; break;
+						case 5: text='物流点名称'; name='logisticsName'; break;
 						case 6: text='借款内容'; name='content'; break;
 						case 7: text='扣税单位'; name='customerName'; break;
 						case 8: text='公司名称'; name='customerName'; break;
@@ -190,6 +204,7 @@ layui.extend({
 					+`
 				</tr>
 			</table>
+			</div>
 			<table id="tableData" lay-filter="tableData"></table>
 		`;
 		$(opt.elem || '#app').html(TPL);
@@ -229,10 +244,14 @@ layui.extend({
 			allCustomer.unshift({id:'',name:'请选择'});
 			allCols[askfor.type][1].select.data = allCustomer;
 		}
+		var url = '/fince/getConsumption?type='+askfor.type;
+		if(askfor.type==5){
+			url = '/fince/consumptionPage';
+		}
 		mytable.render({
 			elem: '#tableData',
-			url: myutil.config.ctx+'/fince/getConsumption?type='+askfor.type ,
-			where:{ flags:0 },
+			url: myutil.config.ctx+url,
+			where:{ flags:0, mode:1, },
 			ifNull:'',
 			size:'lg',
 			autoUpdate:{
@@ -246,7 +265,7 @@ layui.extend({
 			},
 			limits:[10,20,50,100,200,],
 			curd:{
-				btn: askfor.type==5?[]:[1,2,3,4],
+				btn: askfor.type==5?[4]:[1,2,3,4],
 			},
 			cellMinWidth:120,
 			cols: [ allCols[askfor.type].concat(lastCols) ],
