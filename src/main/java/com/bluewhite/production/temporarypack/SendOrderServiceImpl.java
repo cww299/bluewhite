@@ -11,9 +11,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
 
-import com.alibaba.fastjson.JSON;
-import com.alibaba.fastjson.JSONArray;
-import com.alibaba.fastjson.JSONObject;
 import com.bluewhite.base.BaseServiceImpl;
 import com.bluewhite.common.BeanCopyUtils;
 import com.bluewhite.common.ServiceException;
@@ -24,12 +21,6 @@ import com.bluewhite.common.utils.StringUtil;
 import com.bluewhite.common.utils.AutoSearchUtils.SearchUtils;
 import com.bluewhite.finance.consumption.entity.Consumption;
 import com.bluewhite.finance.consumption.service.ConsumptionService;
-import com.bluewhite.ledger.dao.CustomerDao;
-import com.bluewhite.ledger.dao.LogisticsCostsDao;
-import com.bluewhite.ledger.entity.Customer;
-import com.bluewhite.ledger.entity.LogisticsCosts;
-import com.bluewhite.product.product.dao.ProductDao;
-import com.bluewhite.product.product.entity.Product;
 
 import cn.hutool.core.date.DateUtil;
 import cn.hutool.core.util.NumberUtil;
