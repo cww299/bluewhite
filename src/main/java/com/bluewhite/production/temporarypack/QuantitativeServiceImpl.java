@@ -55,8 +55,6 @@ public class QuantitativeServiceImpl extends BaseServiceImpl<Quantitative, Long>
     @Autowired
     private CustomerDao customerDao;
     @Autowired
-    private SendOrderService sendOrderService;
-    @Autowired
     LogisticsCostsDao logisticsCostsDao;
 
     @Override
@@ -318,7 +316,7 @@ public class QuantitativeServiceImpl extends BaseServiceImpl<Quantitative, Long>
                     if (audit == 0 && quantitative.getAudit() == 0) {
                         throw new ServiceException("未审核请勿取消审核");
                     }
-                    if(audit == 0 && quantitative.getFlag()==1) {
+                    if (audit == 0 && quantitative.getFlag() == 1) {
                         throw new ServiceException("已发货无法取消审核");
                     }
                     int number = quantitative.getQuantitativeChilds().stream()
@@ -387,14 +385,10 @@ public class QuantitativeServiceImpl extends BaseServiceImpl<Quantitative, Long>
                         });
                         save(quantitative);
                     }
-                    if(quantitative.getSendOrderId()!=null) {
+                    if (quantitative.getSendOrderId() != null) {
                         SendOrder sendOrder = sendOrderDao.findOne(quantitative.getSendOrderId());
-                        if(sendOrder!=null) {
-                            sendOrder.setSumPackageNumber(sendOrder.getSumPackageNumber()-1);
-                            sendOrder.setNumber(sendOrder.getNumber()-quantitative.getNumber());
-                            if(sendOrder.getSumPackageNumber()==0) {
-                                sendOrderDao.delete(sendOrder);
-                            }
+                        if (sendOrder != null) {
+                            sendOrderDao.delete(sendOrder);
                         }
                     }
                     dao.delete(id);
@@ -424,7 +418,7 @@ public class QuantitativeServiceImpl extends BaseServiceImpl<Quantitative, Long>
                     if (quantitative.getCustomerId() == null) {
                         throw new ServiceException("贴包单无客户，无法发货");
                     }
-                    // 内部客户发货时，创建发货单
+                    // 发货时，创建发货单
                     Customer customer = customerDao.findOne(quantitative.getCustomerId());
                     if (flag == 1) {
                         quantitative.setSendTime(DateUtil.parse(StrUtil.sub(vehicleNumber, 0, 8)));
@@ -445,7 +439,6 @@ public class QuantitativeServiceImpl extends BaseServiceImpl<Quantitative, Long>
                                 }
                                 sendOrder.setAudit(0);
                                 sendOrder.setCustomerId(quantitative.getCustomerId());
-                                sendOrder.setSumPackageNumber(1);
                                 sendOrder.setSendPackageNumber(1);
                                 sendOrder.setLogisticsId(logisticsId);
                                 sendOrder.setInterior(1);
@@ -457,24 +450,41 @@ public class QuantitativeServiceImpl extends BaseServiceImpl<Quantitative, Long>
                             }
                             quantitative.setSendOrderId(sendOrder.getId());
                         } else {
-                            if (quantitative.getSendOrderId() != null) {
-                                SendOrder sendOrder = sendOrderDao.findOne(quantitative.getSendOrderId());
-                                if(sendOrder!=null) {
-                                    sendOrder.setSendPackageNumber(sendOrder.getSendPackageNumber() + 1);
-                                    if (sendOrder.getSendPackageNumber() != null && sendOrder.getSingerPrice() != null) {
-                                        sendOrder.setSendPrice(
-                                            NumberUtil.mul(sendOrder.getSendPackageNumber(), sendOrder.getSingerPrice()));
-                                        sendOrder.setLogisticsPrice(
-                                            NumberUtil.add(sendOrder.getExtraPrice(), sendOrder.getSendPrice()));
-                                    }
-                                    sendOrder.setSendTime(quantitative.getSendTime());
-                                    sendOrderDao.save(sendOrder);
-                                }
+                            // 根据日期和客户查询发货单，同一天的合并发货单
+                            SendOrder sendOrder = sendOrderDao.findByCustomerIdAndSendTimeBetween(customer.getId(),
+                                DateUtil.beginOfDay(quantitative.getSendTime()),
+                                DateUtil.endOfDay(quantitative.getSendTime()));
+                            if (null == sendOrder) {
+                                sendOrder = new SendOrder();
+                                sendOrder.setSendTime(quantitative.getSendTime());
+                                sendOrder.setTax(1);
+                                sendOrder.setAudit(0);
+                                sendOrder.setCustomerId(quantitative.getCustomerId());
+                                sendOrder.setSendPackageNumber(1);
+                                sendOrder.setWarehouseTypeId(quantitative.getWarehouseTypeId());
+                                sendOrder.setInterior(0);
+                            } else {
+                                sendOrder.setSendPackageNumber(sendOrder.getSendPackageNumber() + 1);
                             }
+                            // 生成物流费用
+                            List<LogisticsCosts> list =
+                                logisticsCostsDao.findByCustomerId(quantitative.getCustomerId());
+                            if (list.size() > 0) {
+                                sendOrder.setOuterPackagingId(list.get(0).getOuterPackagingId());
+                                sendOrder.setLogisticsId(list.get(0).getLogisticsId());
+                                sendOrder.setSingerPrice(new BigDecimal(list.get(0).getTaxIncluded()));
+                            }
+                            if (sendOrder.getSendPackageNumber() != null && sendOrder.getSingerPrice() != null) {
+                                sendOrder.setSendPrice(
+                                    NumberUtil.mul(sendOrder.getSendPackageNumber(), sendOrder.getSingerPrice()));
+                                sendOrder.setLogisticsPrice(
+                                    NumberUtil.add(sendOrder.getExtraPrice(), sendOrder.getSendPrice()));
+                            }
+                            sendOrderDao.save(sendOrder);
                         }
                     } else {
-                        // 内部客户取消发货，删除发货单
-                        if (customer.getInterior() == 1 && quantitative.getSendOrderId() != null) {
+                        // 取消发货，删除发货单
+                        if (quantitative.getSendOrderId() != null) {
                             SendOrder ot = sendOrderDao.findOne(quantitative.getSendOrderId());
                             if (ot != null) {
                                 if (ot.getAudit() != null && ot.getAudit() == 1) {
@@ -482,27 +492,8 @@ public class QuantitativeServiceImpl extends BaseServiceImpl<Quantitative, Long>
                                 }
                                 sendOrderDao.delete(quantitative.getSendOrderId());
                             }
-                            quantitative.setSendOrderId(null);
                         }
-                        
-                        if(customer.getInterior() != 1 && quantitative.getSendOrderId() != null) {
-                            SendOrder sendOrder = sendOrderDao.findOne(quantitative.getSendOrderId());
-                            if (sendOrder != null) {
-                                if (sendOrder.getAudit() != null && sendOrder.getAudit() == 1) {
-                                    throw new ServiceException("财务已审核生成物流费用,无法取消发货");
-                                }
-                                // 取消发货，重新计算费用
-                                sendOrder.setSendPackageNumber(sendOrder.getSendPackageNumber() - 1);
-                                if (sendOrder.getSendPackageNumber() != null && sendOrder.getSingerPrice() != null) {
-                                    sendOrder.setSendPrice(
-                                        NumberUtil.mul(sendOrder.getSendPackageNumber(), sendOrder.getSingerPrice()));
-                                    sendOrder.setLogisticsPrice(
-                                        NumberUtil.add(sendOrder.getExtraPrice(), sendOrder.getSendPrice()));
-                                }
-                                sendOrder.setSendTime(quantitative.getSendTime());
-                                sendOrderDao.save(sendOrder);
-                            } 
-                        }
+                        quantitative.setSendOrderId(null);
                         quantitative.setVehicleNumber(null);
                         quantitative.setSendTime(null);
                     }
@@ -565,9 +556,7 @@ public class QuantitativeServiceImpl extends BaseServiceImpl<Quantitative, Long>
     @Override
     @Transactional
     public void saveUpdateQuantitative(Quantitative quantitative, String ids) {
-        // 生成贴包单时生成发货单发货单，将发货单id存入贴包单
         if (StringUtils.isEmpty(ids)) {
-            sendOrderService.saveSendOrder(quantitative);
             // 根据总包数进行多条新增
             if (quantitative.getSumPackageNumber() > 0) {
                 for (int i = 0; i < quantitative.getSumPackageNumber(); i++) {
@@ -651,10 +640,12 @@ public class QuantitativeServiceImpl extends BaseServiceImpl<Quantitative, Long>
                 for (int i = 0; i < idArr.length; i++) {
                     Long id = Long.parseLong(idArr[i]);
                     Quantitative quantitative = dao.findOne(id);
-                    if (reconciliation == 1 && quantitative.getReconciliation()!=null && quantitative.getReconciliation()== 1) {
+                    if (reconciliation == 1 && quantitative.getReconciliation() != null
+                        && quantitative.getReconciliation() == 1) {
                         throw new ServiceException("已对账请勿多次对账");
                     }
-                    if (reconciliation == 0 && quantitative.getReconciliation()!=null && quantitative.getReconciliation() == 0) {
+                    if (reconciliation == 0 && quantitative.getReconciliation() != null
+                        && quantitative.getReconciliation() == 0) {
                         throw new ServiceException("未对账请勿取消对账");
                     }
                     quantitative.setReconciliation(reconciliation);

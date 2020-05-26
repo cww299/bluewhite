@@ -274,7 +274,7 @@ public class ConsumptionServiceImpl extends BaseServiceImpl<Consumption, Long> i
                             }
                             dao.save(consumptionList);
                         } else {// 不为预算单时，当拥有父id，属于子报销单，删除同时更新父预算报销单的金额
-                            if (consumption.getParentId() != null) {
+                            if (consumption.getType()==1 && consumption.getParentId() != null) {
                                 Consumption pConsumption = dao.findOne(consumption.getParentId());
                                 pConsumption.setMoney(NumUtils.sum(pConsumption.getMoney(), consumption.getMoney()));
                                 dao.save(pConsumption);

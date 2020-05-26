@@ -91,7 +91,6 @@ public class TemporaryPackAction {
             .addRetainTerm(SendOrder.class, "id", "customer", "sendOrderChild", "sendTime", "sumPackageNumber",
                 "number", "sendPackageNumber", "logistics", "outerPackaging", "logisticsNumber", "tax", "singerPrice",
                 "sendPrice", "extraPrice", "logisticsPrice", "audit", "warehouseType")
-            .addRetainTerm(SendOrderChild.class, "id", "productName", "bacthNumber", "singleNumber")
             .addRetainTerm(BaseData.class, "id", "name");
     }
 
@@ -511,9 +510,9 @@ public class TemporaryPackAction {
      */
     @RequestMapping(value = "/temporaryPack/auditSendOrder", method = RequestMethod.POST)
     @ResponseBody
-    public CommonResponse auditSendOrder(String ids, Date expenseDate, Date paymentDate) {
+    public CommonResponse auditSendOrder(String ids, Date expenseDate, Date expectDate) {
         CommonResponse cr = new CommonResponse();
-        sendOrderService.auditSendOrder(ids, expenseDate, paymentDate);
+        sendOrderService.auditSendOrder(ids, expenseDate, expectDate);
         cr.setMessage("物流费用生成成功");
         return cr;
     }
