@@ -173,7 +173,7 @@ layui.config({
 		ifNull:'',
 		cols:[[
 		       { type:'checkbox',},
-		       { title:'客户名称',   field:'customer_name', event:'lookoverInfo', },
+		       { title:'客户名称',   field:'customer_name', },
 		       { title:'发货时间',   field:'sendTime', width:110, type:'date', },
 		       { title:'总个数',   field:'number',  width:80,  },
 		       { title:'发货包数',    field:'sendPackageNumber', width:100,	},
@@ -280,11 +280,6 @@ layui.config({
 			return '<select lay-filter="changePriceSelect" '+search+' '+disabled+'>'+option+'</select>';
 		}
 	}
-	table.on('tool(tableData)',function(obj){
-		if(obj.event=="lookoverInfo"){
-			lookoverInfo(obj);
-		}
-	})
 	function moreEdit(datas){
 		var ids = [],customerId = datas[0].customer.id;
 		for(var i in datas){
@@ -388,56 +383,6 @@ layui.config({
 			yes:function(){
 				$('span[lay-filter="moreEditBtn"]').click();
 			}
-		})
-	}
-	var openWinIndex =[];
-	function lookoverInfo(obj){
-		if(isCompany)
-			return;
-		var data = obj.data;
-		var index = $(obj.tr).data('index');
-		if(openWinIndex.indexOf(index)>-1)
-			return;
-		openWinIndex.push(index);
-		layer.open({
-			type:1,
-			offset: ['100px', (index+1)*60+250+'px'],
-			title: data.customer_name,
-			shade:0,
-			area:['500px'],
-			resize:true,
-			btn:['关闭全部','关闭'],
-			yes:function(){
-				layer.closeAll();
-				openWinIndex = [];
-			},
-			end:function(){
-				openWinIndex.splice(openWinIndex.indexOf(index),1);
-			},
-			content:[
-				'<table class="layui-table">',
-				'<colgroup><col width="120"><col><col  width="90"> </colgroup>',
-					'<thead>',
-					    '<tr>',
-					      '<th>批次号</th><th>商品名</th><th>单包数量</th>',
-					    '</tr> ',
-					'</thead>',
-					'<tbody>',
-						(function(){
-							var html ="";
-							layui.each(data.sendOrderChild,function(index,d){
-								html += "<tr>"+
-										"<td>"+d.bacthNumber+"</td>"+
-										"<td>"+d.productName+"</td>"+
-										"<td>"+d.singleNumber+"</td>"+
-									"</tr>";
-							})
-							return html;
-						})(),
-					'</tbody>',
-				'</table>',
-			].join(' '),
-			
 		})
 	}
 	function openInfoWin(data){
