@@ -509,7 +509,7 @@ public class TemporaryPackAction {
     /**
      * 生成物流费用（审核发货单之后,已经产生费用的贴包单，无法删除，同时在财务物流费用中自动生成费用） 取消审核，费用自动从物流费用中删除
      */
-    @RequestMapping(value = "/temporaryPack/auditSendOrder", method = RequestMethod.GET)
+    @RequestMapping(value = "/temporaryPack/auditSendOrder", method = RequestMethod.POST)
     @ResponseBody
     public CommonResponse auditSendOrder(String ids, Date expenseDate, Date paymentDate) {
         CommonResponse cr = new CommonResponse();

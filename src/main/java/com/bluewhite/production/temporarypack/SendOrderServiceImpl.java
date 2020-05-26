@@ -31,6 +31,7 @@ import com.bluewhite.ledger.entity.LogisticsCosts;
 import com.bluewhite.product.product.dao.ProductDao;
 import com.bluewhite.product.product.entity.Product;
 
+import cn.hutool.core.date.DateUtil;
 import cn.hutool.core.util.NumberUtil;
 
 /**
@@ -163,7 +164,18 @@ public class SendOrderServiceImpl extends BaseServiceImpl<SendOrder, Long> imple
                     if(sendOrder.getSumPackageNumber()<sendOrder.getSendPackageNumber()) {
                         sendOrder.setAudit(2);
                     }
+                    //生成当前物流当月的父类应付账单
                     // 根据申请时间和物流点查询是否有已存在数据
+                    Consumption  consumptionPrent =  consumptionService.findByTypeAndLogisticsIdAndExpenseDateBetween(5, id, DateUtil.beginOfMonth(expenseDate), DateUtil.endOfMonth(expenseDate));
+                    if(consumptionPrent!=null) {
+                        
+                    } else {
+                        
+                        
+                    }
+                    
+                    
+                   
                     Consumption consumption = new Consumption();
                     // 审核，进行物流费用的新增
                     Consumption ot = consumptionService.findBySendOrderId(id);
@@ -188,6 +200,9 @@ public class SendOrderServiceImpl extends BaseServiceImpl<SendOrder, Long> imple
                     consumption.setLogisticsId(sendOrder.getLogisticsId());
                     // 无法取消审核，在物流申请中删除单据
                     consumptionService.addConsumption(consumption);
+                    
+                    
+                    
                     sendOrder.setAudit(1);
                     save(sendOrder);
                 }

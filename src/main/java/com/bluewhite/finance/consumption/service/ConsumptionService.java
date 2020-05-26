@@ -22,15 +22,6 @@ public interface ConsumptionService extends BaseCRUDService<Consumption, Long> {
 	PageResult<Consumption> findPages(Consumption consumption, PageParameter page);
 	
 	/**
-     * 分页查看
-     * 
-     * @param expenseAccount
-     * @param page
-     * @return
-     */
-    PageResult<Consumption> findPageSend(Consumption consumption, PageParameter page);
-	
-	/**
 	 * 按条件查看
 	 * 
 	 * @param expenseAccount
