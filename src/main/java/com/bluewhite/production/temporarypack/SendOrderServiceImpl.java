@@ -165,7 +165,7 @@ public class SendOrderServiceImpl extends BaseServiceImpl<SendOrder, Long> imple
                         sendOrder.setAudit(2);
                     }
                     //生成当前物流当月的父类应付账单
-                    // 根据申请时间和物流点查询是否有已存在数据
+                    //根据申请时间和物流点查询是否有已存在数据
                     Consumption  consumptionPrent =  consumptionService.findByTypeAndLogisticsIdAndExpenseDateBetween(5, id, DateUtil.beginOfMonth(expenseDate), DateUtil.endOfMonth(expenseDate));
                     if(consumptionPrent!=null) {
                         BigDecimal money = new BigDecimal(consumptionPrent.getMoney().toString());

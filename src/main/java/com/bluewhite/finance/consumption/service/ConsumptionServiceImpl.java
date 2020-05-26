@@ -24,7 +24,6 @@ import com.bluewhite.common.SessionManager;
 import com.bluewhite.common.entity.CurrentUser;
 import com.bluewhite.common.entity.PageParameter;
 import com.bluewhite.common.entity.PageResult;
-import com.bluewhite.common.entity.PageResultStat;
 import com.bluewhite.common.utils.NumUtils;
 import com.bluewhite.common.utils.StringUtil;
 import com.bluewhite.common.utils.excel.ExcelListener;
@@ -33,8 +32,6 @@ import com.bluewhite.finance.consumption.entity.Consumption;
 import com.bluewhite.finance.consumption.entity.ConsumptionPoi;
 import com.bluewhite.production.temporarypack.SendOrder;
 import com.bluewhite.production.temporarypack.SendOrderService;
-
-import cn.hutool.core.date.DateUtil;
 
 @Service
 public class ConsumptionServiceImpl extends BaseServiceImpl<Consumption, Long> implements ConsumptionService {
@@ -78,8 +75,12 @@ public class ConsumptionServiceImpl extends BaseServiceImpl<Consumption, Long> i
             if (param.getParentId() != null) {
                 predicate.add(cb.equal(root.get("parentId").as(Long.class), param.getParentId()));
             }
-            if(param.getMode()==2) {
-                predicate.add(cb.equal(root.get("parentId").as(Long.class), 0));
+            if(param.getMode()!=null ) {
+                if(param.getMode()==2) {
+                    predicate.add(cb.equal(root.get("parentId").as(Long.class),0));
+                }else {
+                    predicate.add(cb.notEqual(root.get("parentId").as(Long.class),0));
+                }
             }
             // 按消费类型过滤
             if (param.getType() != null) {
