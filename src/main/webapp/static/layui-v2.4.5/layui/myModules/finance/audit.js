@@ -196,7 +196,7 @@ layui.extend({
 		mytable.render({
 			elem: '#tableData',
 			url: myutil.config.ctx+url+'?type='+audit.type,
-			where:{ flags:0 },
+			where:{ flags:0,mode:2 },
 			ifNull:'',
 			scrollX:true,
 			autoUpdate:{

@@ -22,8 +22,6 @@
 			<tr>
 				<td>发货时间:</td>
 				<td><input type="text" name="sendTime_be_date" class="layui-input" id="searchTime"></td>
-				<td>产品名:</td>
-				<td><input type="text" name="sendOrderChild.productName_like" class="layui-input"></td>
 				<td>客户名:</td>
 				<td><input type="text" name="customer.name_like" class="layui-input"></td>
 				<td>物流点:</td>
@@ -177,7 +175,6 @@ layui.config({
 		       { type:'checkbox',},
 		       { title:'客户名称',   field:'customer_name', event:'lookoverInfo', },
 		       { title:'发货时间',   field:'sendTime', width:110, type:'date', },
-		       { title:'总包数',   field:'sumPackageNumber', width:80,	},
 		       { title:'总个数',   field:'number',  width:80,  },
 		       { title:'已发货包数',    field:'sendPackageNumber', width:100,	},
 		       { title:'物流编号',   field:'logisticsNumber',width:130, edit:true,	},

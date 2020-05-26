@@ -211,7 +211,7 @@ layui.extend({
 		mytable.render({
 			elem: '#tableData',
 			url: myutil.config.ctx+url+'?type='+collect.type,
-			where:{ flags:'0,2', },
+			where:{ flags:'0,2',mode:2 },
 			ifNull:'',
 			scrollX:true,
 			autoUpdate:{
