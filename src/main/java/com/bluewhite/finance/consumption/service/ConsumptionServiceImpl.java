@@ -78,6 +78,9 @@ public class ConsumptionServiceImpl extends BaseServiceImpl<Consumption, Long> i
             if (param.getParentId() != null) {
                 predicate.add(cb.equal(root.get("parentId").as(Long.class), param.getParentId()));
             }
+            if(param.getMode()==2) {
+                predicate.add(cb.equal(root.get("parentId").as(Long.class), 0));
+            }
             // 按消费类型过滤
             if (param.getType() != null) {
                 predicate.add(cb.equal(root.get("type").as(Integer.class), param.getType()));
@@ -470,7 +473,7 @@ public class ConsumptionServiceImpl extends BaseServiceImpl<Consumption, Long> i
     @Override
     public Consumption findByTypeAndLogisticsIdAndExpenseDateBetween(Integer type, Long id, Date beginTime,
         Date endTime) {
-        return dao.findByTypeAndLogisticsIdAndExpenseDateBetween(type, id, beginTime, endTime);
+        return dao.findByTypeAndLogisticsIdAndParentIdAndExpenseDateBetween(type, id,(long)0,beginTime, endTime);
     }
 
     /* (non-Javadoc)

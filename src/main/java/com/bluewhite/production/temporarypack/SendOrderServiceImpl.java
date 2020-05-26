@@ -141,7 +141,7 @@ public class SendOrderServiceImpl extends BaseServiceImpl<SendOrder, Long> imple
 
     @Override
     @Transactional
-    public int auditSendOrder(String ids, Date expenseDate, Date paymentDate) {
+    public int auditSendOrder(String ids, Date expenseDate, Date expectDate) {
         int count = 0;
         if (!StringUtils.isEmpty(ids)) {
             String[] idArr = ids.split(",");
@@ -168,14 +168,20 @@ public class SendOrderServiceImpl extends BaseServiceImpl<SendOrder, Long> imple
                     // 根据申请时间和物流点查询是否有已存在数据
                     Consumption  consumptionPrent =  consumptionService.findByTypeAndLogisticsIdAndExpenseDateBetween(5, id, DateUtil.beginOfMonth(expenseDate), DateUtil.endOfMonth(expenseDate));
                     if(consumptionPrent!=null) {
-                        
+                        BigDecimal money = new BigDecimal(consumptionPrent.getMoney().toString());
+                        consumptionPrent.setMoney(money.add(sendOrder.getLogisticsPrice()).doubleValue());
                     } else {
-                        
-                        
+                        consumptionPrent = new Consumption();
+                        consumptionPrent.setParentId((long)0);
+                        consumptionPrent.setType(5);
+                        consumptionPrent.setExpenseDate(expenseDate);
+                        consumptionPrent.setPaymentDate(expectDate);
+                        consumptionPrent.setFlag(0);
+                        consumptionPrent.setMoney(sendOrder.getLogisticsPrice().doubleValue());
+                        consumptionPrent.setLogisticsId(sendOrder.getLogisticsId());
                     }
-                    
-                    
-                   
+                    consumptionService.save(consumptionPrent);
+                    // 生成子类条单据
                     Consumption consumption = new Consumption();
                     // 审核，进行物流费用的新增
                     Consumption ot = consumptionService.findBySendOrderId(id);
@@ -191,18 +197,16 @@ public class SendOrderServiceImpl extends BaseServiceImpl<SendOrder, Long> imple
                             consumption.setMoney(sendOrder.getLogisticsPrice().subtract(money).doubleValue());
                         }
                     }
+                    consumption.setParentId(consumptionPrent.getId());
                     consumption.setSendOrderId(id);
                     consumption.setType(5);
                     consumption.setExpenseDate(expenseDate);
-                    consumption.setPaymentDate(paymentDate);
+                    consumption.setPaymentDate(expectDate);
                     consumption.setFlag(0);
                     consumption.setMoney(sendOrder.getLogisticsPrice().doubleValue());
                     consumption.setLogisticsId(sendOrder.getLogisticsId());
                     // 无法取消审核，在物流申请中删除单据
                     consumptionService.addConsumption(consumption);
-                    
-                    
-                    
                     sendOrder.setAudit(1);
                     save(sendOrder);
                 }
