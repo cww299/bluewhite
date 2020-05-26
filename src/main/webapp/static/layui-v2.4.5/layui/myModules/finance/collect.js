@@ -79,8 +79,8 @@ layui.extend({
 			{ field: "logistics_name", title: "物流点名称", },
 			{ field: "money", title: "支付金额", },
 			{ field: "expenseDate", title: "申请日期", type:'dateTime',}, 
-			{ field: "paymentDate", title: "预计付款日期",type:'dateTime',  }, 
-			{ field: "realityDate", title: "实际日期", type:'dateTime',}, 
+			{ field: "expectDate", title: "预计付款日期",type:'dateTime',  }, 
+			{ field: "paymentDate", title: "实际日期", type:'dateTime',}, 
 			{ field: "paymentMoney", title: "已付款金额", },
 		],
 		[	//type:6  借款本金    loan
@@ -207,13 +207,10 @@ layui.extend({
 		form.render();
 		myutil.clickTr();
 		laydate.render({ elem:'#searchTime', range:'~', });
-		var url = '/fince/getConsumption?type='+collect.type;
-		if(collect.type==5){
-			url = '/fince/consumptionPage';
-		}
+		var url = '/fince/getConsumption';
 		mytable.render({
 			elem: '#tableData',
-			url: myutil.config.ctx+url,
+			url: myutil.config.ctx+url+'?type='+collect.type,
 			where:{ flags:'0,2', },
 			ifNull:'',
 			scrollX:true,

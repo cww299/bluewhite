@@ -75,9 +75,9 @@ layui.extend({
 			firstCols,
 			{ field: "logistics_name", title: "物流点名称",  }, 
 			{ field: "money", title: "支付金额",  }, 
-			{ field: "expenseDate", title: "申请日期", type:'dateTime',edit:true,}, 
-			{ field: "paymentDate", title: "预计付款日期",type:'dateTime', edit:true, }, 
-			{ field: "realityDate", title: "实际日期", type:'dateTime',}, 
+			{ field: "expenseDate", title: "申请日期", type:'dateTime', }, 
+			{ field: "expectDate", title: "预计付款日期",type:'dateTime', edit:true, }, 
+			{ field: "paymentDate", title: "实际日期", type:'dateTime',}, 
 		],
 		[	//type:6  借款本金    loan
 			firstCols,
@@ -146,7 +146,7 @@ layui.extend({
 				if(askfor.type==5)
 					return [
 						'<div style="float:right;">',
-							'<input type="radio" name="mode" value="1" title="按日查看"  checked >',
+							'<input type="radio" name="mode" value="" title="按条查看"  checked >',
 							'<input type="radio" name="mode" value="2" title="按月查看" >',
 						'</div>',
 					].join(' ');
@@ -157,7 +157,8 @@ layui.extend({
 				<tr>
 					<td style="width:130px;"><select class="layui-input" id="selectone">
 							<option value="expenseDate">申请日期</option>
-							<option value="paymentDate">实际付款日期</option></select></td>
+							<option value="paymentDate">预计付款日期</option>
+							<option value="realityDate">实际付款日期</option></select></td>
 					<td><input id="searchTime" name="orderTimeBegin"  class="layui-input" autocomplete="off"></td>
 					`+
 					(function(){
@@ -244,14 +245,11 @@ layui.extend({
 			allCustomer.unshift({id:'',name:'请选择'});
 			allCols[askfor.type][1].select.data = allCustomer;
 		}
-		var url = '/fince/getConsumption?type='+askfor.type;
-		if(askfor.type==5){
-			url = '/fince/consumptionPage';
-		}
+		var url = '/fince/getConsumption';
 		mytable.render({
 			elem: '#tableData',
-			url: myutil.config.ctx+url,
-			where:{ flags:0, mode:1, },
+			url: myutil.config.ctx+url+'?type='+askfor.type,
+			where:{ flags:0, },
 			ifNull:'',
 			size:'lg',
 			autoUpdate:{

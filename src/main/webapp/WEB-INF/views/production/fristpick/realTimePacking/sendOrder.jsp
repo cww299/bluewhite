@@ -125,25 +125,25 @@ layui.config({
 										'<td><input id="expenseDate" style="margin-bottom: 10px;" class="layui-input"></td></tr>',
 									'<tr>',
 										'<td>预计付款日期：</td>',	
-										'<td><input id="paymentDate" class="layui-input"></td></tr>',
+										'<td><input id="expectDate" class="layui-input"></td></tr>',
 								'</table>',
 							'</div>',
 						].join(''),
 						success:function(){
 							laydate.render({ elem:'#expenseDate', type:'datetime', })
-							laydate.render({ elem:'#paymentDate', type:'datetime', })
+							laydate.render({ elem:'#expectDate', type:'datetime', })
 						},
 						btn: ['确定','取消'],
 						yes:function(){
 							var expenseDate = $('#expenseDate').val();
-							var paymentDate = $('#paymentDate').val();
-							if(!paymentDate || !expenseDate)
+							var expectDate = $('#expectDate').val();
+							if(!expectDate || !expenseDate)
 								return myutil.emsg("请填写完信息");
 							myutil.saveAjax({
 								 url:'/temporaryPack/auditSendOrder',
 								 data:{
 									 expenseDate: expenseDate,
-									 paymentDate: paymentDate,
+									 expectDate: expectDate,
 									 ids: ids.join(',')
 								 },
 								 success:function(){
