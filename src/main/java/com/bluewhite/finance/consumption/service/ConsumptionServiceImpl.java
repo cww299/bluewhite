@@ -383,8 +383,13 @@ public class ConsumptionServiceImpl extends BaseServiceImpl<Consumption, Long> i
         List<Double> listDouble = new ArrayList<>();
         if (consumptionList.size() > 0) {
             consumptionList.stream().forEach(c -> {
-                listDouble
-                    .add(c.getPaymentMoney() != null ? NumUtils.sub(c.getMoney(), c.getPaymentMoney()) : c.getMoney());
+                if(c.getType()==5) {
+                    if(c.getParentId()!=null && c.getParentId()==0) {
+                        listDouble.add(c.getPaymentMoney() != null ? NumUtils.sub(c.getMoney(), c.getPaymentMoney()) : c.getMoney());
+                    }
+                }else {
+                    listDouble.add(c.getPaymentMoney() != null ? NumUtils.sub(c.getMoney(), c.getPaymentMoney()) : c.getMoney());
+                }
             });
             amount = NumUtils.sum(listDouble);
         }

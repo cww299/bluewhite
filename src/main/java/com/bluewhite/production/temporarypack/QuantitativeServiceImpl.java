@@ -29,6 +29,7 @@ import com.bluewhite.common.entity.CurrentUser;
 import com.bluewhite.common.entity.PageParameter;
 import com.bluewhite.common.entity.PageResult;
 import com.bluewhite.common.utils.DatesUtil;
+import com.bluewhite.common.utils.NumUtils;
 import com.bluewhite.common.utils.StringUtil;
 import com.bluewhite.ledger.dao.CustomerDao;
 import com.bluewhite.ledger.dao.LogisticsCostsDao;
@@ -74,7 +75,7 @@ public class QuantitativeServiceImpl extends BaseServiceImpl<Quantitative, Long>
             if (param.getId() != null) {
                 predicate.add(cb.equal(root.get("id").as(Long.class), param.getId()));
             }
-            // 按库区
+            // 按仓库种类
             if (param.getWarehouseTypeId() != null) {
                 predicate.add(cb.equal(root.get("warehouseTypeId").as(Long.class), param.getWarehouseTypeId()));
             }
@@ -454,6 +455,7 @@ public class QuantitativeServiceImpl extends BaseServiceImpl<Quantitative, Long>
                             SendOrder sendOrder = sendOrderDao.findByCustomerIdAndSendTimeBetween(customer.getId(),
                                 DateUtil.beginOfDay(quantitative.getSendTime()),
                                 DateUtil.endOfDay(quantitative.getSendTime()));
+                            int number = quantitative.getQuantitativeChilds().stream().mapToInt(QuantitativeChild::getSingleNumber).sum();
                             if (null == sendOrder) {
                                 sendOrder = new SendOrder();
                                 sendOrder.setSendTime(quantitative.getSendTime());
@@ -466,6 +468,7 @@ public class QuantitativeServiceImpl extends BaseServiceImpl<Quantitative, Long>
                             } else {
                                 sendOrder.setSendPackageNumber(sendOrder.getSendPackageNumber() + 1);
                             }
+                            sendOrder.setNumber(NumUtils.setzro(sendOrder.getNumber())+number);
                             // 生成物流费用
                             List<LogisticsCosts> list =
                                 logisticsCostsDao.findByCustomerId(quantitative.getCustomerId());
@@ -481,19 +484,32 @@ public class QuantitativeServiceImpl extends BaseServiceImpl<Quantitative, Long>
                                     NumberUtil.add(sendOrder.getExtraPrice(), sendOrder.getSendPrice()));
                             }
                             sendOrderDao.save(sendOrder);
+                            quantitative.setSendOrderId(sendOrder.getId());
                         }
                     } else {
                         // 取消发货，删除发货单
                         if (quantitative.getSendOrderId() != null) {
-                            SendOrder ot = sendOrderDao.findOne(quantitative.getSendOrderId());
-                            if (ot != null) {
-                                if (ot.getAudit() != null && ot.getAudit() == 1) {
+                            SendOrder sendOrder = sendOrderDao.findOne(quantitative.getSendOrderId());
+                            if (sendOrder != null) {
+                                if (sendOrder.getAudit() != null && sendOrder.getAudit() == 1) {
                                     throw new ServiceException("财务已审核生成物流费用,无法取消发货");
                                 }
-                                sendOrderDao.delete(quantitative.getSendOrderId());
+                                int number = quantitative.getQuantitativeChilds().stream().mapToInt(QuantitativeChild::getSingleNumber).sum();
+                                // 取消发货，重新计算费用
+                                sendOrder.setSendPackageNumber(sendOrder.getSendPackageNumber() - 1);
+                                sendOrder.setNumber(sendOrder.getNumber()-number);
+                                if (sendOrder.getSendPackageNumber() != null && sendOrder.getSingerPrice() != null) {
+                                    sendOrder.setSendPrice(
+                                        NumberUtil.mul(sendOrder.getSendPackageNumber(), sendOrder.getSingerPrice()));
+                                    sendOrder.setLogisticsPrice(
+                                        NumberUtil.add(sendOrder.getExtraPrice(), sendOrder.getSendPrice()));
+                                }                                
+                                if(sendOrder.getSendPackageNumber()==0) {
+                                    sendOrderDao.delete(quantitative.getSendOrderId());
+                                    quantitative.setSendOrderId(null);
+                                }
                             }
                         }
-                        quantitative.setSendOrderId(null);
                         quantitative.setVehicleNumber(null);
                         quantitative.setSendTime(null);
                     }
