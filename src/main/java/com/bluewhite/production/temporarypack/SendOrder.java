@@ -1,17 +1,13 @@
 package com.bluewhite.production.temporarypack;
 
 import java.math.BigDecimal;
-import java.util.ArrayList;
 import java.util.Date;
-import java.util.List;
 
-import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
-import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
 import com.bluewhite.base.BaseEntity;
@@ -43,23 +39,10 @@ public class SendOrder extends BaseEntity<Long> {
     private Customer customer;
 
     /**
-     * 子单list
-     */
-    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, orphanRemoval = true)
-    @JoinColumn(name = "send_order_id")
-    private List<SendOrderChild> sendOrderChild = new ArrayList<>();
-
-    /**
      * 发货时间（多包发货时取最后发货时间）
      */
     @Column(name = "send_time")
     private Date sendTime;
-
-    /**
-     * 总包数
-     */
-    @Column(name = "sum_package_number")
-    private Integer sumPackageNumber;
 
     /**
      * 总数量
@@ -136,7 +119,7 @@ public class SendOrder extends BaseEntity<Long> {
     private BigDecimal logisticsPrice;
     
     /**
-     * 是否生成物流费用(0 未生成 1 生成  2 部分生成)
+     * 是否生成物流费用(0 未生成 1 生成)
      */
     @Column(name = "audit")
     private Integer audit;
@@ -233,15 +216,6 @@ public class SendOrder extends BaseEntity<Long> {
         this.tax = tax;
     }
 
-
-    public List<SendOrderChild> getSendOrderChild() {
-        return sendOrderChild;
-    }
-
-    public void setSendOrderChild(List<SendOrderChild> sendOrderChild) {
-        this.sendOrderChild = sendOrderChild;
-    }
-
     public Integer getSendPackageNumber() {
         return sendPackageNumber;
     }
@@ -310,14 +284,6 @@ public class SendOrder extends BaseEntity<Long> {
 
     public void setSendTime(Date sendTime) {
         this.sendTime = sendTime;
-    }
-
-    public Integer getSumPackageNumber() {
-        return sumPackageNumber;
-    }
-
-    public void setSumPackageNumber(Integer sumPackageNumber) {
-        this.sumPackageNumber = sumPackageNumber;
     }
 
     public Integer getNumber() {

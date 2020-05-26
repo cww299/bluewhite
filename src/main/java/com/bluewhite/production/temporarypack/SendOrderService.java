@@ -15,13 +15,6 @@ import com.bluewhite.common.entity.PageResult;
 public interface SendOrderService extends BaseCRUDService<SendOrder, Long> {
 
     /**
-     * 新增发货单
-     * 
-     * @param quantitative
-     */
-    public Quantitative saveSendOrder(Quantitative quantitative);
-
-    /**
      * 修改发货单
      * 
      * @param sendOrder

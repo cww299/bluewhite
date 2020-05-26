@@ -43,7 +43,7 @@ public class ConsumptionAction {
 				.addRetainTerm(Consumption.class, "id", "user", "customer", "orderProcurement", "budget", "money",
 						"expenseDate", "paymentMoney", "paymentDate", "withholdReason", "remark", "withholdMoney",
 						"settleAccountsMode", "remark", "flag", "taxPoint","batchNumber", "realityDate", "deleteFlag",
-						"orgName","content","orderOutSource","logistics")
+						"orgName","content","orderOutSource","logistics","expectDate")
 				.addRetainTerm(OrderOutSource.class, "id","remark", "outsourceTask","outSourceNumber","materialRequisition")
 				.addRetainTerm(MaterialRequisition.class, "id","order")
 				.addRetainTerm(User.class, "id","userName")
