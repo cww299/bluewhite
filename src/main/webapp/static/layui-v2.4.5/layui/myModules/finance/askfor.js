@@ -146,7 +146,7 @@ layui.extend({
 				if(askfor.type==5)
 					return [
 						'<div style="float:right;">',
-							'<input type="radio" name="mode" value="" title="按条查看"  checked >',
+							'<input type="radio" name="mode" value="1" title="按条查看"  checked >',
 							'<input type="radio" name="mode" value="2" title="按月查看" >',
 						'</div>',
 					].join(' ');
@@ -249,7 +249,7 @@ layui.extend({
 		mytable.render({
 			elem: '#tableData',
 			url: myutil.config.ctx+url+'?type='+askfor.type,
-			where:{ flags:0, },
+			where:{ flags:0, mode:1,},
 			ifNull:'',
 			size:'lg',
 			autoUpdate:{
