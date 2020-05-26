@@ -146,7 +146,15 @@ layui.extend({
 				<tr>
 					<td style="width:130px;"><select class="layui-input" id="selectone">
 							<option value="expenseDate">申请日期</option>
-							<option value="paymentDate">实际付款日期</option></select></td>
+							<option value="paymentDate">实际付款日期</option>
+							`+
+							(function(){
+								if(audit.type==5)
+									return '<option value="expectDate">预计付款日期</option>';
+								return "";
+							})()
+							+`
+							</select></td>
 					<td><input id="searchTime" name="orderTimeBegin"  class="layui-input" autocomplete="off"></td>
 					`+
 					(function(){
