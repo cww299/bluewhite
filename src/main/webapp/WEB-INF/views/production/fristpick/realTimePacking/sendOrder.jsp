@@ -134,7 +134,7 @@ layui.config({
 							laydate.render({ elem:'#expectDate', type:'datetime', })
 						},
 						btn: ['确定','取消'],
-						yes:function(){
+						yes:function(layerIndex){
 							var expenseDate = $('#expenseDate').val();
 							var expectDate = $('#expectDate').val();
 							if(!expectDate || !expenseDate)
@@ -148,6 +148,7 @@ layui.config({
 								 },
 								 success:function(){
 									 table.reload('tableData')
+									 layer.close(layerIndex)
 								 }
 							})
 						}
