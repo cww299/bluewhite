@@ -37,5 +37,13 @@ public interface ConsumptionDao extends BaseRepository<Consumption, Long> {
      */
     public Consumption findByTypeAndLogisticsIdAndExpenseDateBetween(Integer type,Long id, Date beginTime,
         Date endTime);
+    
+    /**
+     * 根据发货单
+     * @param id
+     * @return
+     */
+    public Consumption findBySendOrderId(Long id);
+    
 
 }

@@ -1,5 +1,6 @@
 package com.bluewhite.production.temporarypack;
 
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
@@ -38,11 +39,12 @@ public interface SendOrderService extends BaseCRUDService<SendOrder, Long> {
 
     /**
      * 审核
-     * 
+     * expenseDate 申请付款时间
+     * paymentDate 预计付款时间
      * @param ids
      * @param audit
      */
-    public int auditSendOrder(String ids, Integer audit);
+    public int auditSendOrder(String ids, Date expenseDate ,Date paymentDate );
 
     /**
      * 查看发货单实际已发货的贴包明细

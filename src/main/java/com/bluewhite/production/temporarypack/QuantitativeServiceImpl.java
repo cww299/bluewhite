@@ -390,7 +390,11 @@ public class QuantitativeServiceImpl extends BaseServiceImpl<Quantitative, Long>
                     if(quantitative.getSendOrderId()!=null) {
                         SendOrder sendOrder = sendOrderDao.findOne(quantitative.getSendOrderId());
                         if(sendOrder!=null) {
-                            sendOrderDao.delete(sendOrder);
+                            sendOrder.setSumPackageNumber(sendOrder.getSumPackageNumber()-1);
+                            sendOrder.setNumber(sendOrder.getNumber()-quantitative.getNumber());
+                            if(sendOrder.getSumPackageNumber()==0) {
+                                sendOrderDao.delete(sendOrder);
+                            }
                         }
                     }
                     dao.delete(id);
@@ -456,16 +460,6 @@ public class QuantitativeServiceImpl extends BaseServiceImpl<Quantitative, Long>
                             if (quantitative.getSendOrderId() != null) {
                                 SendOrder sendOrder = sendOrderDao.findOne(quantitative.getSendOrderId());
                                 if(sendOrder!=null) {
-                                    if(quantitative.getCustomerId()!=null) {
-                                        List<LogisticsCosts> list = logisticsCostsDao.findByCustomerId(quantitative.getCustomerId());
-                                        if (list.size() > 0) {
-                                            sendOrder.setOuterPackagingId(list.get(0).getOuterPackagingId());
-                                            sendOrder.setLogisticsId(list.get(0).getLogisticsId());
-                                            sendOrder.setSingerPrice(new BigDecimal(list.get(0).getTaxIncluded()));
-                                        }else {
-                                            sendOrder.setLogisticsId(quantitative.getLogisticsId());
-                                        }
-                                    }
                                     sendOrder.setSendPackageNumber(sendOrder.getSendPackageNumber() + 1);
                                     if (sendOrder.getSendPackageNumber() != null && sendOrder.getSingerPrice() != null) {
                                         sendOrder.setSendPrice(
@@ -474,7 +468,6 @@ public class QuantitativeServiceImpl extends BaseServiceImpl<Quantitative, Long>
                                             NumberUtil.add(sendOrder.getExtraPrice(), sendOrder.getSendPrice()));
                                     }
                                     sendOrder.setSendTime(quantitative.getSendTime());
-                                    sendOrder.setLogisticsId(logisticsId);
                                     sendOrderDao.save(sendOrder);
                                 }
                             }
@@ -493,11 +486,21 @@ public class QuantitativeServiceImpl extends BaseServiceImpl<Quantitative, Long>
                         }
                         
                         if(customer.getInterior() != 1 && quantitative.getSendOrderId() != null) {
-                            SendOrder ot = sendOrderDao.findOne(quantitative.getSendOrderId());
-                            if (ot != null) {
-                                if (ot.getAudit() != null && ot.getAudit() == 1) {
+                            SendOrder sendOrder = sendOrderDao.findOne(quantitative.getSendOrderId());
+                            if (sendOrder != null) {
+                                if (sendOrder.getAudit() != null && sendOrder.getAudit() == 1) {
                                     throw new ServiceException("财务已审核生成物流费用,无法取消发货");
                                 }
+                                // 取消发货，重新计算费用
+                                sendOrder.setSendPackageNumber(sendOrder.getSendPackageNumber() - 1);
+                                if (sendOrder.getSendPackageNumber() != null && sendOrder.getSingerPrice() != null) {
+                                    sendOrder.setSendPrice(
+                                        NumberUtil.mul(sendOrder.getSendPackageNumber(), sendOrder.getSingerPrice()));
+                                    sendOrder.setLogisticsPrice(
+                                        NumberUtil.add(sendOrder.getExtraPrice(), sendOrder.getSendPrice()));
+                                }
+                                sendOrder.setSendTime(quantitative.getSendTime());
+                                sendOrderDao.save(sendOrder);
                             } 
                         }
                         quantitative.setVehicleNumber(null);
