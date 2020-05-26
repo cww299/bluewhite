@@ -287,13 +287,10 @@ layui.extend({
 			}else{
 				f.orderTimeEnd = '';
 			}
-			if(timeType=='expenseDate'){
-				f.expenseDate = '2019-11-20 17:18:34';
-				f.paymentDate = '';
-			}else{
-				f.expenseDate = '';
-				f.paymentDate = '2019-11-20 17:18:34';
-			}
+			f.expenseDate = '';
+			f.paymentDate = '';
+			f.expectDate = '';
+			f[timeType] = '2020-05-26 16:40:20';
 			table.reload('tableData', {
 				where: f
 			});
