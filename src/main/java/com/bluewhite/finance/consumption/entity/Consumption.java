@@ -171,6 +171,12 @@ public class Consumption extends BaseEntity<Long> {
 	private Date realityDate;
 	
 	/**
+     * 预计付款时间
+     */
+    @Column(name = "expect_date")
+    private Date expectDate;
+	
+	/**
 	 * 采购应付账单id
 	 * 
 	 */
@@ -272,7 +278,15 @@ public class Consumption extends BaseEntity<Long> {
 	
 	
 	
-	public Integer getMode() {
+	public Date getExpectDate() {
+        return expectDate;
+    }
+
+    public void setExpectDate(Date expectDate) {
+        this.expectDate = expectDate;
+    }
+
+    public Integer getMode() {
         return mode;
     }
 
