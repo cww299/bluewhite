@@ -176,7 +176,7 @@ layui.config({
 		       { title:'客户名称',   field:'customer_name', event:'lookoverInfo', },
 		       { title:'发货时间',   field:'sendTime', width:110, type:'date', },
 		       { title:'总个数',   field:'number',  width:80,  },
-		       { title:'已发货包数',    field:'sendPackageNumber', width:100,	},
+		       { title:'发货包数',    field:'sendPackageNumber', width:100,	},
 		       { title:'物流编号',   field:'logisticsNumber',width:130, edit:true,	},
 		       { title:'物流点',   field:'logistics_id', type:'select',select:{ data: allLogistics, layFilter:'changePriceSelect', },width:150, },
 		       { title:'外包装',   field:'outerPackaging_id',type:'select', select:{ data: allPackagMethod, layFilter:'changePriceSelect', },width:100, 	 },
