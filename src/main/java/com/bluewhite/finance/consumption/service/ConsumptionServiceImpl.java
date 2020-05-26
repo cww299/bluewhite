@@ -149,6 +149,14 @@ public class ConsumptionServiceImpl extends BaseServiceImpl<Consumption, Long> i
                         param.getOrderTimeEnd()));
                 }
             }
+            
+            if (!StringUtils.isEmpty(param.getExpectDate())) {
+                // 按实际付款日期
+                if (!StringUtils.isEmpty(param.getOrderTimeBegin()) && !StringUtils.isEmpty(param.getOrderTimeEnd())) {
+                    predicate.add(cb.between(root.get("expectDate").as(Date.class), param.getOrderTimeBegin(),
+                        param.getOrderTimeEnd()));
+                }
+            }
 
             if (!StringUtils.isEmpty(param.getRealityDate())) {
                 // 按实际付款日期
