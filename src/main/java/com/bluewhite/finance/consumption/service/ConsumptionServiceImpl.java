@@ -24,7 +24,6 @@ import com.bluewhite.common.SessionManager;
 import com.bluewhite.common.entity.CurrentUser;
 import com.bluewhite.common.entity.PageParameter;
 import com.bluewhite.common.entity.PageResult;
-import com.bluewhite.common.entity.PageResultStat;
 import com.bluewhite.common.utils.NumUtils;
 import com.bluewhite.common.utils.StringUtil;
 import com.bluewhite.common.utils.excel.ExcelListener;
@@ -33,8 +32,6 @@ import com.bluewhite.finance.consumption.entity.Consumption;
 import com.bluewhite.finance.consumption.entity.ConsumptionPoi;
 import com.bluewhite.production.temporarypack.SendOrder;
 import com.bluewhite.production.temporarypack.SendOrderService;
-
-import cn.hutool.core.date.DateUtil;
 
 @Service
 public class ConsumptionServiceImpl extends BaseServiceImpl<Consumption, Long> implements ConsumptionService {
@@ -77,6 +74,13 @@ public class ConsumptionServiceImpl extends BaseServiceImpl<Consumption, Long> i
             // 按父类id过滤
             if (param.getParentId() != null) {
                 predicate.add(cb.equal(root.get("parentId").as(Long.class), param.getParentId()));
+            }
+            if(param.getMode()!=null ) {
+                if(param.getMode()==2) {
+                    predicate.add(cb.equal(root.get("parentId").as(Long.class),0));
+                }else {
+                    predicate.add(cb.notEqual(root.get("parentId").as(Long.class),0));
+                }
             }
             // 按消费类型过滤
             if (param.getType() != null) {
@@ -270,7 +274,7 @@ public class ConsumptionServiceImpl extends BaseServiceImpl<Consumption, Long> i
                             }
                             dao.save(consumptionList);
                         } else {// 不为预算单时，当拥有父id，属于子报销单，删除同时更新父预算报销单的金额
-                            if (consumption.getParentId() != null) {
+                            if (consumption.getType()==1 && consumption.getParentId() != null) {
                                 Consumption pConsumption = dao.findOne(consumption.getParentId());
                                 pConsumption.setMoney(NumUtils.sum(pConsumption.getMoney(), consumption.getMoney()));
                                 dao.save(pConsumption);
@@ -379,8 +383,13 @@ public class ConsumptionServiceImpl extends BaseServiceImpl<Consumption, Long> i
         List<Double> listDouble = new ArrayList<>();
         if (consumptionList.size() > 0) {
             consumptionList.stream().forEach(c -> {
-                listDouble
-                    .add(c.getPaymentMoney() != null ? NumUtils.sub(c.getMoney(), c.getPaymentMoney()) : c.getMoney());
+                if(c.getType()==5) {
+                    if(c.getParentId()!=null && c.getParentId()==0) {
+                        listDouble.add(c.getPaymentMoney() != null ? NumUtils.sub(c.getMoney(), c.getPaymentMoney()) : c.getMoney());
+                    }
+                }else {
+                    listDouble.add(c.getPaymentMoney() != null ? NumUtils.sub(c.getMoney(), c.getPaymentMoney()) : c.getMoney());
+                }
             });
             amount = NumUtils.sum(listDouble);
         }
@@ -470,7 +479,7 @@ public class ConsumptionServiceImpl extends BaseServiceImpl<Consumption, Long> i
     @Override
     public Consumption findByTypeAndLogisticsIdAndExpenseDateBetween(Integer type, Long id, Date beginTime,
         Date endTime) {
-        return dao.findByTypeAndLogisticsIdAndExpenseDateBetween(type, id, beginTime, endTime);
+        return dao.findByTypeAndLogisticsIdAndParentIdAndExpenseDateBetween(type, id,(long)0,beginTime, endTime);
     }
 
     /* (non-Javadoc)
