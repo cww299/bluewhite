@@ -45,5 +45,12 @@ public interface ConsumptionDao extends BaseRepository<Consumption, Long> {
      */
     public Consumption findBySendOrderId(Long id);
     
+    /**
+     * 根据类型
+     * @param id
+     * @return
+     */
+    List<Consumption> findByType();
+    
 
 }

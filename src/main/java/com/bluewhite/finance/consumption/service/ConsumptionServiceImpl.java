@@ -489,12 +489,17 @@ public class ConsumptionServiceImpl extends BaseServiceImpl<Consumption, Long> i
         Date endTime) {
         return dao.findByTypeAndLogisticsIdAndParentIdAndExpenseDateBetween(type, id,(long)0,beginTime, endTime);
     }
-
-    /* (non-Javadoc)
-     * @see com.bluewhite.finance.consumption.service.ConsumptionService#findBySendOrderId(java.lang.Long)
-     */
+    
     @Override
     public Consumption findBySendOrderId(Long id) {
         return dao.findBySendOrderId(id);
+    }
+
+    @Override
+    public Object logisticsConsumption(Consumption consumption) {
+        List<Consumption> list = dao.findByType();
+        list = list.stream().filter(Consumption->Consumption.getParentId()!=0).collect(Collectors.toList());
+        
+        return null;
     }
 }

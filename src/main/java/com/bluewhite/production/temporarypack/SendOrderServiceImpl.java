@@ -118,6 +118,7 @@ public class SendOrderServiceImpl extends BaseServiceImpl<SendOrder, Long> imple
                     consumption.setFlag(0);
                     consumption.setMoney(sendOrder.getLogisticsPrice().doubleValue());
                     consumption.setLogisticsId(sendOrder.getLogisticsId());
+                    consumption.setCustomerId(sendOrder.getCustomerId());
                     // 无法取消审核，在物流申请中删除单据
                     consumptionService.addConsumption(consumption);
                     sendOrder.setAudit(1);

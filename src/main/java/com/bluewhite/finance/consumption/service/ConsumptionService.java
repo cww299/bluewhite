@@ -93,4 +93,10 @@ public interface ConsumptionService extends BaseCRUDService<Consumption, Long> {
      * @return
      */
     public Consumption findBySendOrderId(Long id);
+
+    /**按客户统计物流费用
+     * @param consumption
+     * @return
+     */
+    Object logisticsConsumption(Consumption consumption);
 }
