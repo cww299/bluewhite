@@ -98,5 +98,5 @@ public interface ConsumptionService extends BaseCRUDService<Consumption, Long> {
      * @param consumption
      * @return
      */
-    Object logisticsConsumption(Consumption consumption);
+    List<Map<String,Object>> logisticsConsumption(Consumption consumption);
 }

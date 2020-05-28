@@ -435,6 +435,7 @@ public class QuantitativeServiceImpl extends BaseServiceImpl<Quantitative, Long>
                                 StrUtil.sub(quantitative.getVehicleNumber(), 0, 16), quantitative.getWarehouseTypeId());
                             if (sendOrder == null) {
                                 sendOrder = new SendOrder();
+                                int number = quantitative.getQuantitativeChilds().stream().mapToInt(QuantitativeChild::getSingleNumber).sum();
                                 if (outerPackagingId != null) {
                                     sendOrder.setOuterPackagingId(outerPackagingId);
                                 }
@@ -447,6 +448,7 @@ public class QuantitativeServiceImpl extends BaseServiceImpl<Quantitative, Long>
                                 sendOrder.setVehicleNumber(StrUtil.sub(quantitative.getVehicleNumber(), 0, 16));
                                 sendOrder.setSendTime(quantitative.getSendTime());
                                 sendOrder.setWarehouseTypeId(quantitative.getWarehouseTypeId());
+                                sendOrder.setNumber(NumUtils.setzro(sendOrder.getNumber())+number);
                                 sendOrderDao.save(sendOrder);
                             }
                             quantitative.setSendOrderId(sendOrder.getId());

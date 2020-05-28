@@ -50,7 +50,7 @@ public interface ConsumptionDao extends BaseRepository<Consumption, Long> {
      * @param id
      * @return
      */
-    List<Consumption> findByType();
+    List<Consumption> findByType(Integer type);
     
 
 }

@@ -46,7 +46,7 @@ public class SendOrderServiceImpl extends BaseServiceImpl<SendOrder, Long> imple
             throw new ServiceException("发货单已生成物流费用，无法修改");
         }
         BeanCopyUtils.copyNotEmpty(sendOrder, ot, "logisticsId", "outerPackagingId", "singerPrice", "tax",
-            "logisticsNumber", "extraPrice");
+            "logisticsNumber", "extraPrice","remarks");
         if (ot.getSendPackageNumber() != null && ot.getSingerPrice() != null) {
             ot.setSendPrice(NumberUtil.mul(ot.getSendPackageNumber(), ot.getSingerPrice()));
             ot.setLogisticsPrice(NumberUtil.add(ot.getExtraPrice(), ot.getSendPrice()));
