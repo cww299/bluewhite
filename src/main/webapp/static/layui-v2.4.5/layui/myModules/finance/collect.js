@@ -146,7 +146,12 @@ layui.extend({
 	
 	collect.render = function(opt){
 		opt = opt || {};
-		var TPL = `
+		var TPL = 
+			(function(){
+				if(collect.type==5)
+					return '<span class="layui-btn" id="customerCollect" style="float:right;">客户汇总</span>';
+				return '';
+			})()+`
 			<table class="layui-form searchTable">
 				<tr>
 					<td style="width:130px;"><select class="layui-input" id="selectone">
@@ -269,6 +274,53 @@ layui.extend({
 			success:function(d){
 				$('#allPrice').html(d);
 			}
+		})
+		$('#customerCollect').click(function(){
+			layer.open({
+				type: 1,
+				title: '客户汇总',
+				area: ['800px','600px'],
+				content: [
+					'<div style="padding:10px;">',
+						'<table class="searchTable layui-form">',
+							'<tr>',
+								'<td>客户名：</td>',
+								'<td><input class="layui-input" name="customerName"></td>',
+								'<td>申请时间：</td>',
+								'<td><input class="layui-input" name="orderTimeBegin" id="expenseDates" autocomplete="off"></td>',
+								'<td><span class="layui-btn" lay-submit lay-filter="searchCustomer">搜索</span></td>',
+							'</tr>',
+						'</table>',
+						'<table id="customerCollectTable" lay-filter="customerCollectTable"></table>',
+					'</div>',
+				].join(' '),
+				success:function(){
+					laydate.render({ elem:'#expenseDates',range:'~' })
+					mytable.renderNoPage({
+						elem: '#customerCollectTable',
+						toolbar:' ',
+						url: myutil.config.ctx+'/fince/logisticsConsumption',
+						cols: [[
+							{ field:'name', title:'客户名', },
+							{ field:'pay', title:'总费用', },
+						]]
+					})
+					form.on('submit(searchCustomer)',function(obj){
+						var f = obj.field;
+						if(f.orderTimeBegin){
+							var time = f.orderTimeBegin.split(' ~ ');
+							f.orderTimeBegin = time[0]+' 00:00:00';
+							f.orderTimeEnd = time[1]+' 23:59:59';
+						}else{
+							f.orderTimeEnd = '';
+						}
+						f.expenseDate = "2020-05-28 16:33:00";
+						table.reload('customerCollectTable',{
+							where: f,
+						})
+					})
+				}
+			})
 		})
 		form.on('submit(searchBtn)', function(obj) {
 			var f = obj.field;
