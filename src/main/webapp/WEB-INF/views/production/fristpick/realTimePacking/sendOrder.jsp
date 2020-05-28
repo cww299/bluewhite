@@ -38,6 +38,10 @@
 						<option value="1">是</option>
 						<option value="0">否</option>
 					</select></td>
+				<td>物流编号:</td>
+				<td><input type="text" name="logisticsNumber" class="layui-input"></td>
+				<td>备注:</td>
+				<td><input type="text" name="remarks" class="layui-input"></td>
 				<td><button type="button" class="layui-btn layui-btn-" lay-submit lay-filter="search">搜索</button></td>
 				<td></td>
 			</tr>
@@ -186,7 +190,8 @@ layui.config({
 		       { title:'额外费用',   field:'extraPrice',	width:100, edit:'number', },
 		       { title:'物流总费用',   field:'logisticsPrice',	width:120, },  
 		       { title:'发货地点',   field:'warehouseType_name',	},  
-		       { title:'生成',   field:'audit',	width:60,transData:true, },  
+		       { title:'生成',   field:'audit',	width:60,transData:true, },
+		       { title:'备注',   field:'remarks',	edit: true, },  
 		       ]],
 		totalRow:["sendPackageNumber","sendPrice","extraPrice","logisticsPrice"],
        	done:function(ret,curr, count){
@@ -238,10 +243,13 @@ layui.config({
        				singerPrice: trData.singerPrice || 0,
        				logisticsNumber: trData.logisticsNumber,
        				extraPrice: trData.extraPrice || 0,
+       				remarks: trData.remarks,
        			}
        			if(obj.field=="logisticsNumber")
        				saveData.logisticsNumber = obj.value;
-       			else
+       			else if(obj.field=='remarks'){
+       				saveData.remarks = obj.value;
+       			}else
        				saveData.extraPrice = obj.value;
        			myutil.saveAjax({
        				url:'/temporaryPack/updateSendOrder',
