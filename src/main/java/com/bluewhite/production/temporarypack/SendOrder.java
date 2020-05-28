@@ -149,8 +149,21 @@ public class SendOrder extends BaseEntity<Long> {
     @JoinColumn(name = "warehouse_type_id", referencedColumnName = "id", insertable = false, updatable = false)
     private BaseData warehouseType;
     
+    /**
+     * 备注
+     */
+    @Column(name = "remarks")
+    private String remarks;
     
-  
+    
+
+    public String getRemarks() {
+        return remarks;
+    }
+
+    public void setRemarks(String remarks) {
+        this.remarks = remarks;
+    }
 
     public Long getWarehouseTypeId() {
         return warehouseTypeId;

@@ -473,11 +473,13 @@ public class MealServiceImpl extends BaseServiceImpl<Meal, Long> implements Meal
             budget6 = NumUtils.sum(twoMeals);// 中晚
         }
         // 当食材为混合用量是，根据用餐数均分费用
-        budget7 = NumUtils.mul(budget5, NumUtils.div(q, sumMealCount, 2));// 早餐钱
-        budget8 = NumUtils.mul(budget5, NumUtils.div(w, sumMealCount, 2));// 中餐钱
-        budget9 = NumUtils.mul(budget5, NumUtils.div(e, sumMealCount, 2));// 晚餐钱
-        budget10 = NumUtils.mul(budget6, NumUtils.div(w, sumMealCount, 2));// 中餐钱
-        budget11 = NumUtils.mul(budget6, NumUtils.div(e, sumMealCount, 2));// 晚餐钱
+        if(sumMealCount!=0) {
+            budget7 = NumUtils.mul(budget5, NumUtils.div(q, sumMealCount, 2));// 早餐钱
+            budget8 = NumUtils.mul(budget5, NumUtils.div(w, sumMealCount, 2));// 中餐钱
+            budget9 = NumUtils.mul(budget5, NumUtils.div(e, sumMealCount, 2));// 晚餐钱
+            budget10 = NumUtils.mul(budget6, NumUtils.div(w, sumMealCount, 2));// 中餐钱
+            budget11 = NumUtils.mul(budget6, NumUtils.div(e, sumMealCount, 2));// 晚餐钱
+        }
 
         // 早餐食材费用
         double f = NumUtils.sum(budget, budget7);

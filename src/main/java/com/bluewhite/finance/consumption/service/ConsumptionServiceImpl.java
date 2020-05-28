@@ -75,11 +75,11 @@ public class ConsumptionServiceImpl extends BaseServiceImpl<Consumption, Long> i
             if (param.getParentId() != null) {
                 predicate.add(cb.equal(root.get("parentId").as(Long.class), param.getParentId()));
             }
-            if(param.getMode()!=null ) {
-                if(param.getMode()==2) {
-                    predicate.add(cb.equal(root.get("parentId").as(Long.class),0));
-                }else {
-                    predicate.add(cb.notEqual(root.get("parentId").as(Long.class),0));
+            if (param.getMode() != null) {
+                if (param.getMode() == 2) {
+                    predicate.add(cb.equal(root.get("parentId").as(Long.class), 0));
+                } else {
+                    predicate.add(cb.notEqual(root.get("parentId").as(Long.class), 0));
                 }
             }
             // 按消费类型过滤
@@ -146,6 +146,14 @@ public class ConsumptionServiceImpl extends BaseServiceImpl<Consumption, Long> i
                 // 按财务付款日期
                 if (!StringUtils.isEmpty(param.getOrderTimeBegin()) && !StringUtils.isEmpty(param.getOrderTimeEnd())) {
                     predicate.add(cb.between(root.get("paymentDate").as(Date.class), param.getOrderTimeBegin(),
+                        param.getOrderTimeEnd()));
+                }
+            }
+
+            if (!StringUtils.isEmpty(param.getExpectDate())) {
+                // 按实际付款日期
+                if (!StringUtils.isEmpty(param.getOrderTimeBegin()) && !StringUtils.isEmpty(param.getOrderTimeEnd())) {
+                    predicate.add(cb.between(root.get("expectDate").as(Date.class), param.getOrderTimeBegin(),
                         param.getOrderTimeEnd()));
                 }
             }
@@ -261,7 +269,7 @@ public class ConsumptionServiceImpl extends BaseServiceImpl<Consumption, Long> i
                 for (int i = 0; i < idArr.length; i++) {
                     Long id = Long.parseLong(idArr[i]);
                     Consumption consumption = dao.findOne(id);
-                    if (consumption.getOrgNameId()!=null && cu.getOrgNameId() != consumption.getOrgNameId()) {
+                    if (consumption.getOrgNameId() != null && cu.getOrgNameId() != consumption.getOrgNameId()) {
                         throw new ServiceException("无权限删除");
                     }
                     if (consumption.getFlag() == 0) {
@@ -274,13 +282,13 @@ public class ConsumptionServiceImpl extends BaseServiceImpl<Consumption, Long> i
                             }
                             dao.save(consumptionList);
                         } else {// 不为预算单时，当拥有父id，属于子报销单，删除同时更新父预算报销单的金额
-                            if (consumption.getType()==1 && consumption.getParentId() != null) {
+                            if (consumption.getType() == 1 && consumption.getParentId() != null) {
                                 Consumption pConsumption = dao.findOne(consumption.getParentId());
                                 pConsumption.setMoney(NumUtils.sum(pConsumption.getMoney(), consumption.getMoney()));
                                 dao.save(pConsumption);
                             }
-                            
-                            if(consumption.getSendOrderId()!=null) {
+
+                            if (consumption.getSendOrderId() != null) {
                                 SendOrder sendOrder = sendOrderService.findOne(consumption.getSendOrderId());
                                 sendOrder.setAudit(0);
                                 sendOrderService.save(sendOrder);
@@ -383,12 +391,14 @@ public class ConsumptionServiceImpl extends BaseServiceImpl<Consumption, Long> i
         List<Double> listDouble = new ArrayList<>();
         if (consumptionList.size() > 0) {
             consumptionList.stream().forEach(c -> {
-                if(c.getType()==5) {
-                    if(c.getParentId()!=null && c.getParentId()==0) {
-                        listDouble.add(c.getPaymentMoney() != null ? NumUtils.sub(c.getMoney(), c.getPaymentMoney()) : c.getMoney());
+                if (c.getType() == 5) {
+                    if (c.getParentId() != null && c.getParentId() == 0) {
+                        listDouble.add(c.getPaymentMoney() != null ? NumUtils.sub(c.getMoney(), c.getPaymentMoney())
+                            : c.getMoney());
                     }
-                }else {
-                    listDouble.add(c.getPaymentMoney() != null ? NumUtils.sub(c.getMoney(), c.getPaymentMoney()) : c.getMoney());
+                } else {
+                    listDouble.add(
+                        c.getPaymentMoney() != null ? NumUtils.sub(c.getMoney(), c.getPaymentMoney()) : c.getMoney());
                 }
             });
             amount = NumUtils.sum(listDouble);
@@ -479,14 +489,28 @@ public class ConsumptionServiceImpl extends BaseServiceImpl<Consumption, Long> i
     @Override
     public Consumption findByTypeAndLogisticsIdAndExpenseDateBetween(Integer type, Long id, Date beginTime,
         Date endTime) {
-        return dao.findByTypeAndLogisticsIdAndParentIdAndExpenseDateBetween(type, id,(long)0,beginTime, endTime);
+        return dao.findByTypeAndLogisticsIdAndParentIdAndExpenseDateBetween(type, id, (long)0, beginTime, endTime);
     }
 
-    /* (non-Javadoc)
-     * @see com.bluewhite.finance.consumption.service.ConsumptionService#findBySendOrderId(java.lang.Long)
-     */
     @Override
     public Consumption findBySendOrderId(Long id) {
         return dao.findBySendOrderId(id);
+    }
+
+    @Override
+    public  List<Map<String,Object>> logisticsConsumption(Consumption consumption) {
+        List<Map<String,Object>> listmap = new ArrayList<>();
+        consumption.setType(5);
+        List<Consumption> list = findList(consumption);
+        list = list.stream().filter(Consumption -> Consumption.getParentId()!=null && Consumption.getParentId() != 0).collect(Collectors.toList());
+        Map<Long, List<Consumption>> mapGourp = list.stream().collect(Collectors.groupingBy(Consumption::getCustomerId));
+        for (Map.Entry<Long, List<Consumption>> entry : mapGourp.entrySet()) {
+            Map<String,Object> map  = new HashMap<String,Object>();
+            double pay = entry.getValue().stream().mapToDouble(Consumption::getMoney).sum();
+            map.put("pay", pay);
+            map.put("name", entry.getValue().get(0).getCustomer().getName());
+            listmap.add(map);
+        }
+        return listmap;
     }
 }

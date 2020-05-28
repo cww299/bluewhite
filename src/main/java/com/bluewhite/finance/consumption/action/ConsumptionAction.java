@@ -70,6 +70,21 @@ public class ConsumptionAction {
 		return cr;
 	}
 	
+   /**
+     * 按客户统计物流费用
+     * 
+     * @param request
+     * @return cr
+     */
+    @RequestMapping(value = "/fince/logisticsConsumption", method = RequestMethod.GET)
+    @ResponseBody
+    public CommonResponse logisticsConsumption(Consumption consumption) {
+        CommonResponse cr = new CommonResponse();
+        cr.setData(consumptionService.logisticsConsumption(consumption));
+        cr.setMessage("成功");
+        return cr;
+    }
+	
 
 	/**
 	 * 人事部汇总报销金额
