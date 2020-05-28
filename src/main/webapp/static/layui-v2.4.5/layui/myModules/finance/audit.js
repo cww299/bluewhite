@@ -201,10 +201,13 @@ layui.extend({
 		form.render();
 		laydate.render({ elem:'#searchTime', range:'~', })
 		var url = '/fince/getConsumption';
+		var where = { flags: 0, };
+		if(audit.type==5)
+			where.mode = 2;
 		mytable.render({
 			elem: '#tableData',
 			url: myutil.config.ctx+url+'?type='+audit.type,
-			where:{ flags:0,mode:2 },
+			where: where,
 			ifNull:'',
 			scrollX:true,
 			autoUpdate:{

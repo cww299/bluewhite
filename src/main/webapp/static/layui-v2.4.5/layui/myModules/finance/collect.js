@@ -219,11 +219,14 @@ layui.extend({
 		form.render();
 		myutil.clickTr();
 		laydate.render({ elem:'#searchTime', range:'~', });
+		var where = { flags: '0,2', };
+		if(collect.type==5)
+			where.mode = 2;
 		var url = '/fince/getConsumption';
 		mytable.render({
 			elem: '#tableData',
 			url: myutil.config.ctx+url+'?type='+collect.type,
-			where:{ flags:'0,2',mode:2 },
+			where: where,
 			ifNull:'',
 			scrollX:true,
 			autoUpdate:{

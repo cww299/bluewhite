@@ -254,10 +254,13 @@ layui.extend({
 			allCols[askfor.type][1].select.data = allCustomer;
 		}
 		var url = '/fince/getConsumption';
+		var where = { flags: 0, };
+		if(askfor.type==5)
+			where.mode = 1;
 		mytable.render({
 			elem: '#tableData',
 			url: myutil.config.ctx+url+'?type='+askfor.type,
-			where:{ flags:0, mode:1,},
+			where: where,
 			ifNull:'',
 			size:'lg',
 			autoUpdate:{
