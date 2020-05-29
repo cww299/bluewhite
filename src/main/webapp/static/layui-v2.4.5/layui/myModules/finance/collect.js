@@ -306,7 +306,8 @@ layui.extend({
 						cols: [[
 							{ field:'name', title:'客户名', },
 							{ field:'pay', title:'总费用', },
-						]]
+						]],
+						totalRow:['pay'],
 					})
 					form.on('submit(searchCustomer)',function(obj){
 						var f = obj.field;
