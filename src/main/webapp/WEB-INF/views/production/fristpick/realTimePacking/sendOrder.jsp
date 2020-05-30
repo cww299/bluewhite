@@ -419,7 +419,6 @@ layui.config({
 						where: obj.field,
 					})
 				})
-				var noMergeTableData = [];
 				mytable.renderNoPage({
 					elem:'#infoTable',
 					limit:999,
@@ -427,7 +426,6 @@ layui.config({
 						if(r.code==0){
 							var data = [];
 							var d = r.data;
-							noMergeTableData = d;
 							for(var i=0,len=d.length;i<len;i++){
 								var child = d[i].quantitativeChilds;
 								if(!child)
@@ -446,9 +444,6 @@ layui.config({
 						btn:[],
 						otherBtn: function(obj){
 							if(obj.event=='createOrder'){
-								if(noMergeTableData.length==1){
-									return myutil.emsg("仅剩一条，无法生成");
-								}
 								myutil.deleTableIds({
 									url: '/temporaryPack/reCreatSendOrder',
 									text: '请选择数据|是否确认生成发货单？',
