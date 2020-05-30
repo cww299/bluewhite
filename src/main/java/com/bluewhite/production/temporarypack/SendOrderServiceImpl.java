@@ -103,6 +103,7 @@ public class SendOrderServiceImpl extends BaseServiceImpl<SendOrder, Long> imple
                         consumptionPrent.setType(5);
                         consumptionPrent.setExpenseDate(expenseDate);
                         consumptionPrent.setExpectDate(expectDate);
+                        consumptionPrent.setOrgNameId(sendOrder.getCustomer().getUser().getOrgNameId());
                         consumptionPrent.setFlag(0);
                         consumptionPrent.setMoney(sendOrder.getLogisticsPrice().doubleValue());
                         consumptionPrent.setLogisticsId(sendOrder.getLogisticsId());
@@ -115,6 +116,7 @@ public class SendOrderServiceImpl extends BaseServiceImpl<SendOrder, Long> imple
                     consumption.setType(5);
                     consumption.setExpenseDate(expenseDate);
                     consumption.setExpectDate(expectDate);
+                    consumption.setOrgNameId(sendOrder.getCustomer().getUser().getOrgNameId());
                     consumption.setFlag(0);
                     consumption.setMoney(sendOrder.getLogisticsPrice().doubleValue());
                     consumption.setLogisticsId(sendOrder.getLogisticsId());

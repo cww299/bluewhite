@@ -242,6 +242,12 @@ public class Consumption extends BaseEntity<Long> {
 	private String customerName;
 	
 	/**
+     * 过滤参数(业务员)
+     */
+    @Transient
+    private String saleUserName;
+	
+	/**
      * 过滤参数物流点
      */
     @Transient
@@ -278,7 +284,15 @@ public class Consumption extends BaseEntity<Long> {
 	
 	
 	
-	public Date getExpectDate() {
+	public String getSaleUserName() {
+        return saleUserName;
+    }
+
+    public void setSaleUserName(String saleUserName) {
+        this.saleUserName = saleUserName;
+    }
+
+    public Date getExpectDate() {
         return expectDate;
     }
 

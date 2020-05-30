@@ -111,4 +111,9 @@ public interface QuantitativeService extends BaseCRUDService<Quantitative,Long>{
      */
     int reconciliationQuantitative(String ids,Integer reconciliation);
 
+    /**从发货明细中重新生成发货单
+     * @param ids
+     */
+    void reCreatSendOrder(String ids);
+
 }

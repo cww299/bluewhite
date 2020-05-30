@@ -19,5 +19,5 @@ public interface SendOrderDao extends BaseRepository<SendOrder, Long>{
     /**
      * 根据当天日期和客户查找发货单 一天只会生成一条
      */
-    SendOrder findByCustomerIdAndSendTimeBetween(Long id , Date startTime ,Date endTime);
+    SendOrder findByCustomerIdAndSendTimeBetweenAndWarehouseTypeId(Long id , Date startTime ,Date endTime,Long warehouseTypeId);
 }
