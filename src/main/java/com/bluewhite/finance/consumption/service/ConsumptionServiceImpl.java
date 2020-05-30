@@ -273,7 +273,7 @@ public class ConsumptionServiceImpl extends BaseServiceImpl<Consumption, Long> i
                 for (int i = 0; i < idArr.length; i++) {
                     Long id = Long.parseLong(idArr[i]);
                     Consumption consumption = dao.findOne(id);
-                    if (consumption.getOrgNameId() != null && cu.getOrgNameId() != consumption.getOrgNameId()) {
+                    if (consumption.getType()!=5 && consumption.getOrgNameId() != null && cu.getOrgNameId() != consumption.getOrgNameId()) {
                         throw new ServiceException("无权限删除");
                     }
                     if (consumption.getFlag() == 0) {
@@ -457,15 +457,16 @@ public class ConsumptionServiceImpl extends BaseServiceImpl<Consumption, Long> i
                 predicate
                     .add(cb.like(root.get("user").get("userName").as(String.class), "%" + param.getUsername() + "%"));
             }
-            // 按业务员姓名查找
+           
+            // 按客户姓名查找
             if (!StringUtils.isEmpty(param.getCustomerName())) {
                 predicate.add(
                     cb.like(root.get("customer").get("name").as(String.class), "%" + param.getCustomerName() + "%"));
             }
-            // 按客户姓名查找
-            if (!StringUtils.isEmpty(param.getCustomerName())) {
+            // 按业务员姓名查找
+            if (!StringUtils.isEmpty(param.getSaleUserName())) {
                 predicate.add(
-                    cb.like(root.get("customer").get("user").get("userName").as(String.class), "%" + param.getCustomerName() + "%"));
+                    cb.like(root.get("customer").get("user").get("userName").as(String.class), "%" + param.getSaleUserName() + "%"));
             }
             // 按物流点查找
             if (!StringUtils.isEmpty(param.getLogisticsName())) {

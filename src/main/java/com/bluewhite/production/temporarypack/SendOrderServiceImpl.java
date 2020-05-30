@@ -1,9 +1,14 @@
 package com.bluewhite.production.temporarypack;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
+
+import javax.persistence.criteria.Join;
+import javax.persistence.criteria.JoinType;
+import javax.persistence.criteria.Predicate;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -122,7 +127,7 @@ public class SendOrderServiceImpl extends BaseServiceImpl<SendOrder, Long> imple
                     consumption.setLogisticsId(sendOrder.getLogisticsId());
                     consumption.setCustomerId(sendOrder.getCustomerId());
                     // 无法取消审核，在物流申请中删除单据
-                    consumptionService.addConsumption(consumption);
+                    consumptionService.save(consumption);
                     sendOrder.setAudit(1);
                     save(sendOrder);
                 }
@@ -133,8 +138,26 @@ public class SendOrderServiceImpl extends BaseServiceImpl<SendOrder, Long> imple
     }
 
     @Override
-    public List<Quantitative> getQuantitativeList(Long id) {
-        return quantitativeDao.findBySendOrderId(id);
+    public List<Quantitative> getQuantitativeList(Long id,String productName) {
+        List<Quantitative> list = quantitativeDao.findAll((root, query, cb) -> {
+            List<Predicate> predicate = new ArrayList<>();
+            // 按商品名称过滤
+            if (!StringUtils.isEmpty(productName)) {
+                Join<Quantitative, QuantitativeChild> join =
+                    root.join(root.getModel().getList("quantitativeChilds", QuantitativeChild.class), JoinType.LEFT);
+                predicate.add(cb.like(join.get("underGoods").get("product").get("name").as(String.class),
+                    "%" + StringUtil.specialStrKeyword(productName) + "%"));
+            }
+            // 按产品编号过滤
+            if (null!=id) {
+                predicate.add(cb.equal(root.get("sendOrderId").as(Long.class), id));
+            }
+            Predicate[] pre = new Predicate[predicate.size()];
+            query.where(predicate.toArray(pre));
+            query.distinct(true);
+            return null;
+        });
+        return list;
     }
 
     @Override
