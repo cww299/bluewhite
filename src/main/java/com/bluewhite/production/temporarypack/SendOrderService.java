@@ -44,7 +44,7 @@ public interface SendOrderService extends BaseCRUDService<SendOrder, Long> {
      * 
      * @param id
      */
-    public List<Quantitative> getQuantitativeList(Long id);
+    public List<Quantitative> getQuantitativeList(Long id,String productName);
 
     /**批量修改发货单
      * @param sendOrder
