@@ -282,11 +282,17 @@ layui.extend({
 			layer.open({
 				type: 1,
 				title: '客户汇总',
-				area: ['800px','600px'],
+				area: ['1200px','600px'],
+				shadeClose: true,
 				content: [
 					'<div style="padding:10px;">',
 						'<table class="searchTable layui-form">',
 							'<tr>',
+								'<td>业务员：</td>',
+								'<td><input class="layui-input" name="username"></td>',
+								'<td>部门：</td>',
+								'<td><select name="orgNameId" id="orgNameId" lay-search>',
+									'<option value="">请选择部门</option></select></td>',
 								'<td>客户名：</td>',
 								'<td><input class="layui-input" name="customerName"></td>',
 								'<td>申请时间：</td>',
@@ -298,7 +304,9 @@ layui.extend({
 					'</div>',
 				].join(' '),
 				success:function(){
+					$('#orgNameId').append(myutil.getBaseDataSelect({ type:'orgName', }))
 					laydate.render({ elem:'#expenseDates',range:'~' })
+					form.render();
 					mytable.renderNoPage({
 						elem: '#customerCollectTable',
 						toolbar:' ',
@@ -306,6 +314,8 @@ layui.extend({
 						cols: [[
 							{ field:'name', title:'客户名', },
 							{ field:'pay', title:'总费用', },
+							{ field:'orgName', title:'部门', },
+							{ field:'username', title:'业务员', },
 						]],
 						totalRow:['pay'],
 					})

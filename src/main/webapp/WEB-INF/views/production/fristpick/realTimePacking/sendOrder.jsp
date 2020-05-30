@@ -394,44 +394,86 @@ layui.config({
 		})
 	}
 	function openInfoWin(data){
-		myutil.getDataSync({
-			url: myutil.config.ctx+'/temporaryPack/getQuantitativeList?id='+data.id,
-			success:function(d){
-				var data = [];
-				for(var i=0,len=d.length;i<len;i++){
-					var child = d[i].quantitativeChilds;
-					if(!child)
-						continue;
-					for(var j=0,l=child.length;j<l;j++){
-						data.push($.extend({},child[j],{childId: child[j].id,},d[i])); 
-					}
-				}
-				layer.open({
-					type:1,
-					title:'贴包明细',
-					area:['80%','80%'],
-					content:[
-						'<div style="padding:10px">',
-							'<table id="infoTable" lay-filter="infoTable"></table>',
-						'</div>,'
+		layer.open({
+			type:1,
+			title:'贴包明细',
+			area:['80%','80%'],
+			content:[
+				'<div style="padding:10px">',
+					"<table class='layui-form searchTable'>",
+						'<tr>',
+							'<td>产品名：</td>',
+							'<td><input class="layui-input" name="productName"></td>',
+							'<td><span class="layui-btn" lay-submit lay-filter="searchTable">搜索</span></td>',
+						'</tr>',
+					'<table>',
+					'<table id="infoTable" lay-filter="infoTable"></table>',
+				'</div>,'
+			].join(' '),
+			end: function(){
+				table.reload('tableData')
+			},
+			success:function(layerElem,layerIndex){
+				form.on('submit(searchTable)',function(obj){
+					table.reload('infoTable',{
+						where: obj.field,
+					})
+				})
+				var noMergeTableData = [];
+				mytable.renderNoPage({
+					elem:'#infoTable',
+					limit:999,
+					parseData: function(r){
+						if(r.code==0){
+							var data = [];
+							var d = r.data;
+							noMergeTableData = d;
+							for(var i=0,len=d.length;i<len;i++){
+								var child = d[i].quantitativeChilds;
+								if(!child)
+									continue;
+								for(var j=0,l=child.length;j<l;j++){
+									data.push($.extend({},child[j],{childId: child[j].id,},d[i])); 
+								}
+							}
+							return {  msg: r.message,  code: 0 , data: data, };
+						}
+						return {  msg: r.message,  code: 1500 , data: [], };
+					},
+					url: myutil.config.ctx+'/temporaryPack/getQuantitativeList?id='+data.id,
+					ifNull:'---',
+					curd: {
+						btn:[],
+						otherBtn: function(obj){
+							if(obj.event=='createOrder'){
+								if(noMergeTableData.length==1){
+									return myutil.emsg("仅剩一条，无法生成");
+								}
+								myutil.deleTableIds({
+									url: '/temporaryPack/reCreatSendOrder',
+									text: '请选择数据|是否确认生成发货单？',
+									table: 'infoTable',
+								})
+							}
+						}
+					},
+					toolbar: [
+						'<span class="layui-btn layui-btn-sm" lay-event="createOrder">生成发货单</span>',
 					].join(' '),
-					success:function(layerElem,layerIndex){
-						mytable.renderNoPage({
-							elem:'#infoTable',
-							limit:999,
-							data: data,
-							ifNull:'---',
-							cols:[[
-								{ title:'量化编号',field:'quantitativeNumber',width:175, },
-								{ title:'发货时间',field:'sendTime', type:'date',width:120,},
-								{ title:'客户',field:'customer_name', width:120,},
-								{ title:'是否发货',field:'flag', transData:true, width:100,},
-								{ title:'批次号',    field:'underGoods_bacthNumber',	minWidth:200, },
-						        { title:'产品名',    field:'underGoods_product_name', },
-						        { title:'单包个数',   field:'singleNumber',	width:100, },
-							]]
-						})
-					}
+					cols:[[
+						{ type:'checkbox', },
+						{ title:'量化编号',field:'quantitativeNumber',width:175, },
+						{ title:'发货时间',field:'sendTime', type:'date',width:120,},
+						{ title:'客户',field:'customer_name', width:120,},
+						{ title:'是否发货',field:'flag', transData:true, width:100,},
+						{ title:'批次号',    field:'underGoods_bacthNumber',	minWidth:200, },
+				        { title:'产品名',    field:'underGoods_product_name', },
+				        { title:'单包个数',   field:'singleNumber',	width:100, },
+					]],
+					autoMerge:{
+			    	 field:['quantitativeNumber','vehicleNumber','time','sendTime','audit','print','flag','reconciliation',
+			    		 'user_userName','surplusSendNumber','surplusNumber','customer_name','0'], 
+			       },
 				})
 			}
 		})
