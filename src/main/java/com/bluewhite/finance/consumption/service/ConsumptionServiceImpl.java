@@ -18,6 +18,8 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
 
 import com.bluewhite.base.BaseServiceImpl;
+import com.bluewhite.basedata.dao.BaseDataDao;
+import com.bluewhite.basedata.entity.BaseData;
 import com.bluewhite.common.BeanCopyUtils;
 import com.bluewhite.common.ServiceException;
 import com.bluewhite.common.SessionManager;
@@ -40,6 +42,8 @@ public class ConsumptionServiceImpl extends BaseServiceImpl<Consumption, Long> i
     private ConsumptionDao dao;
     @Autowired
     SendOrderService sendOrderService;
+    @Autowired
+    BaseDataDao basedataDao;
 
     @Override
     public PageResult<Consumption> findPages(Consumption param, PageParameter page) {
@@ -453,10 +457,15 @@ public class ConsumptionServiceImpl extends BaseServiceImpl<Consumption, Long> i
                 predicate
                     .add(cb.like(root.get("user").get("userName").as(String.class), "%" + param.getUsername() + "%"));
             }
-            // 按客户姓名查找
+            // 按业务员姓名查找
             if (!StringUtils.isEmpty(param.getCustomerName())) {
                 predicate.add(
                     cb.like(root.get("customer").get("name").as(String.class), "%" + param.getCustomerName() + "%"));
+            }
+            // 按客户姓名查找
+            if (!StringUtils.isEmpty(param.getCustomerName())) {
+                predicate.add(
+                    cb.like(root.get("customer").get("user").get("userName").as(String.class), "%" + param.getCustomerName() + "%"));
             }
             // 按物流点查找
             if (!StringUtils.isEmpty(param.getLogisticsName())) {
@@ -509,6 +518,9 @@ public class ConsumptionServiceImpl extends BaseServiceImpl<Consumption, Long> i
             double pay = entry.getValue().stream().mapToDouble(Consumption::getMoney).sum();
             map.put("pay", pay);
             map.put("name", entry.getValue().get(0).getCustomer().getName());
+            map.put("username", entry.getValue().get(0).getCustomer().getUser().getUserName());
+            BaseData orgName =  basedataDao.findOne(entry.getValue().get(0).getOrgNameId());            
+            map.put("orgName", orgName.getName());
             listmap.add(map);
         }
         return listmap;

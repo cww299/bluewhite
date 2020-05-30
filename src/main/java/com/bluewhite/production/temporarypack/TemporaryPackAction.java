@@ -73,7 +73,8 @@ public class TemporaryPackAction {
             .addRetainTerm(QuantitativeChild.class, "id", "underGoods", "sumPackageNumber", "singleNumber", "number",
                 "actualSingleNumber", "checks", "remarks")
             .addRetainTerm(PackingMaterials.class, "id", "packagingMaterials", "packagingCount")
-            .addRetainTerm(User.class, "id", "userName").addRetainTerm(BaseData.class, "id", "name")
+            .addRetainTerm(User.class, "id", "userName")
+            .addRetainTerm(BaseData.class, "id", "name")
             .addRetainTerm(UnderGoods.class, "id", "remarks", "product", "number", "bacthNumber", "status", "allotTime")
             .addRetainTerm(Product.class, "id", "name");
     }
@@ -91,7 +92,8 @@ public class TemporaryPackAction {
             .addRetainTerm(SendOrder.class, "id", "customer", "sendOrderChild", "sendTime", "sumPackageNumber",
                 "number", "sendPackageNumber", "logistics", "outerPackaging", "logisticsNumber", "tax", "singerPrice",
                 "sendPrice", "extraPrice", "logisticsPrice", "audit", "warehouseType","remarks")
-            .addRetainTerm(BaseData.class, "id", "name");
+            .addRetainTerm(BaseData.class, "id", "name")
+            .addRetainTerm(Customer.class, "id", "name");
     }
 
     /**
@@ -532,6 +534,20 @@ public class TemporaryPackAction {
         cr.setMessage("成功修改" + count + "数据");
         return cr;
     }
+    
+
+    /**
+     * 从发货明细中重新生成发货单
+     */
+    @RequestMapping(value = "/temporaryPack/reCreatSendOrder", method = RequestMethod.GET)
+    @ResponseBody
+    public CommonResponse putWarehousing(String ids) {
+        CommonResponse cr = new CommonResponse();
+        quantitativeService.reCreatSendOrder(ids);
+        cr.setMessage("生成成功");
+        return cr;
+    }
+    
 
     /**
      * 扫码发货页面

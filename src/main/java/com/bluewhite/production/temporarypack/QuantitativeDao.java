@@ -8,8 +8,6 @@ import org.springframework.data.repository.query.Param;
 
 import com.bluewhite.base.BaseRepository;
 
-import cn.hutool.core.date.DateTime;
-
 public interface QuantitativeDao extends BaseRepository<Quantitative, Long> {
 
     /**
@@ -61,5 +59,12 @@ public interface QuantitativeDao extends BaseRepository<Quantitative, Long> {
      * @param vehicleNumber
      */
     Quantitative findByVehicleNumberAndWarehouseTypeId(String vehicleNumber,Long warehouseTypeId);
+    
+    /**
+     * 根据ids查找量化单
+     * @param ids
+     * @return
+     */
+    List<Quantitative> findByIdIn(List<Long> ids);
 
 }
