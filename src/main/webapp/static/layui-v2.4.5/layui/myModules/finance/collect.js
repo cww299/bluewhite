@@ -289,7 +289,7 @@ layui.extend({
 						'<table class="searchTable layui-form">',
 							'<tr>',
 								'<td>业务员：</td>',
-								'<td><input class="layui-input" name="username"></td>',
+								'<td><input class="layui-input" name="saleUserName"></td>',
 								'<td>部门：</td>',
 								'<td><select name="orgNameId" id="orgNameId" lay-search>',
 									'<option value="">请选择部门</option></select></td>',
