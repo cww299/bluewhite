@@ -500,9 +500,9 @@ public class TemporaryPackAction {
      */
     @RequestMapping(value = "/temporaryPack/getQuantitativeList", method = RequestMethod.GET)
     @ResponseBody
-    public CommonResponse getQuantitativeList(Long id) {
+    public CommonResponse getQuantitativeList(Long id,String productName) {
         CommonResponse cr = new CommonResponse();
-        cr.setData(clearCascadeJSONQuantitative.format(sendOrderService.getQuantitativeList(id)).toJSON());
+        cr.setData(clearCascadeJSONQuantitative.format(sendOrderService.getQuantitativeList(id,productName)).toJSON());
         cr.setMessage("成功");
         return cr;
     }
