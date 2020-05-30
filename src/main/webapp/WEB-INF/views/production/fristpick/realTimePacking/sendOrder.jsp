@@ -485,10 +485,12 @@ layui.config({
 					var cols = table.thisTable.that.tableData.config.cols[0];
 					cols[4].hide = true;
 					cols[5].hide = true;
-					cols[6].hide = true;
+					cols[3].hide = true;
+					cols[15].hide = true;
 					table.thisTable.that.tableData.elem.find('*[data-field="number"]').addClass('layui-hide');
 					table.thisTable.that.tableData.elem.find('*[data-field="sendPackageNumber"]').addClass('layui-hide');
 					table.thisTable.that.tableData.elem.find('*[data-field="logisticsNumber"]').addClass('layui-hide');
+					table.thisTable.that.tableData.elem.find('*[data-field="remarks"]').addClass('layui-hide');
 					table.resize();
 				}
 			})
@@ -499,12 +501,14 @@ layui.config({
 				page: { curr: 1},
 				done:function(){
 					var cols = table.thisTable.that.tableData.config.cols[0];
+					cols[3].hide = false;
 					cols[4].hide = false;
 					cols[5].hide = false;
-					cols[6].hide = false;
+					cols[15].hide = false;
 					table.thisTable.that.tableData.elem.find('*[data-field="number"]').removeClass('layui-hide');
 					table.thisTable.that.tableData.elem.find('*[data-field="sendPackageNumber"]').removeClass('layui-hide');
 					table.thisTable.that.tableData.elem.find('*[data-field="logisticsNumber"]').removeClass('layui-hide');
+					table.thisTable.that.tableData.elem.find('*[data-field="remarks"]').removeClass('layui-hide');
 					table.resize();
 				}
 			})
