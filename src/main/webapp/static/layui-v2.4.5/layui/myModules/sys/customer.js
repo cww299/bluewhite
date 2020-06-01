@@ -138,8 +138,12 @@ layui.extend({
 				{ title:'业务员', field:'user_userName', },
 			]]
 		})
+		var userType = '';
+		if( opt.smallType=='xx'){	//如果是线下客户只查，电子商务部与销售部
+			userType = '&orgNameIds=35,29';
+		}
 		myutil.getData({
-			url: myutil.config.ctx+'/system/user/pages?size=999&quit=0',
+			url: myutil.config.ctx+'/system/user/pages?size=999&quit=0'+userType,
 			success:function(r){
 				layui.each(r,function(index,item){
 					allUserSelect += '<option value="'+item.id+'">'+item.userName+'</option>';
