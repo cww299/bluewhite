@@ -301,7 +301,10 @@ public class ConsumptionServiceImpl extends BaseServiceImpl<Consumption, Long> i
                                 sendOrderService.save(sendOrder);
                             }
                             if(consumption.getParentId()!=null && consumption.getParentId()!=0) {
-                                dao.delete(consumption.getParentId());
+                                Consumption consumptionPrent =  dao.findOne(consumption.getParentId());
+                                if(null != consumptionPrent) {
+                                    dao.delete(consumptionPrent);
+                                }
                             }
                         }
                         dao.delete(id);
