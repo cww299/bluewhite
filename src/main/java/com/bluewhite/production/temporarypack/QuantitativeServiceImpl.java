@@ -689,7 +689,7 @@ public class QuantitativeServiceImpl extends BaseServiceImpl<Quantitative, Long>
     public void reCreatSendOrder(String ids) {
         // 创建新的发货单
         SendOrder sendOrder = new SendOrder();
-        List<Long> idlist = Arrays.asList(ids).stream().map(id -> Long.valueOf(id)).collect(Collectors.toList());
+        List<Long> idlist = Arrays.asList(ids.split(",")).stream().map(id -> Long.valueOf(id)).collect(Collectors.toList());
         List<Quantitative> quantitativeList = dao.findByIdIn(idlist);
         if(quantitativeList.size()==1) {
             List<Quantitative> list = dao.findBySendOrderId(quantitativeList.get(0).getSendOrderId());
@@ -702,7 +702,7 @@ public class QuantitativeServiceImpl extends BaseServiceImpl<Quantitative, Long>
         sendOrder.setTax(1);
         sendOrder.setAudit(0);
         sendOrder.setCustomerId(quantitativeList.get(0).getCustomerId());
-        sendOrder.setSendPackageNumber(1);
+        sendOrder.setSendPackageNumber(quantitativeList.size());
         sendOrder.setWarehouseTypeId(quantitativeList.get(0).getWarehouseTypeId());
         sendOrder.setInterior(0);
         quantitativeList.forEach(q -> {

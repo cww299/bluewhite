@@ -291,11 +291,17 @@ public class ConsumptionServiceImpl extends BaseServiceImpl<Consumption, Long> i
                                 pConsumption.setMoney(NumUtils.sum(pConsumption.getMoney(), consumption.getMoney()));
                                 dao.save(pConsumption);
                             }
-
+                        }
+                        
+                        // 删除物流申请
+                        if(consumption.getType() == 5) {
                             if (consumption.getSendOrderId() != null) {
                                 SendOrder sendOrder = sendOrderService.findOne(consumption.getSendOrderId());
                                 sendOrder.setAudit(0);
                                 sendOrderService.save(sendOrder);
+                            }
+                            if(consumption.getParentId()!=null && consumption.getParentId()!=0) {
+                                dao.delete(consumption.getParentId());
                             }
                         }
                         dao.delete(id);
