@@ -143,7 +143,7 @@ layui.extend({
 			userType = '&orgNameIds=35,29';
 		}
 		myutil.getData({
-			url: myutil.config.ctx+'/system/user/pages?size=999&quit=0'+userType,
+			url: myutil.config.ctx+'/system/user/findUserList?quit=0'+userType,
 			success:function(r){
 				layui.each(r,function(index,item){
 					allUserSelect += '<option value="'+item.id+'">'+item.userName+'</option>';
