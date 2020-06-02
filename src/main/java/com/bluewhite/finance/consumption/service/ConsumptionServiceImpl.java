@@ -302,8 +302,11 @@ public class ConsumptionServiceImpl extends BaseServiceImpl<Consumption, Long> i
                             }
                             if(consumption.getParentId()!=null && consumption.getParentId()!=0) {
                                 Consumption consumptionPrent =  dao.findOne(consumption.getParentId());
-                                if(null != consumptionPrent) {
+                                consumptionPrent.setMoney(NumUtils.sub(consumptionPrent.getMoney(),consumption.getMoney()));
+                                if(null != consumptionPrent && consumptionPrent.getMoney()==0) {
                                     dao.delete(consumptionPrent);
+                                }else {
+                                    dao.save(consumptionPrent);
                                 }
                             }
                         }

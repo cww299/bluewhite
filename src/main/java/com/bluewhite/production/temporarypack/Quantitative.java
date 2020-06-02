@@ -32,119 +32,124 @@ import com.bluewhite.system.user.entity.User;
  *
  */
 @Entity
-@Table(name = "pro_quantitative",uniqueConstraints = {@UniqueConstraint(columnNames="quantitative_number")} )
+@Table(name = "pro_quantitative", uniqueConstraints = {@UniqueConstraint(columnNames = "quantitative_number")})
 public class Quantitative extends BaseEntity<Long> {
-	
+
     /**
      * 发货单id
      * 
      */
     @Column(name = "send_order_id")
     private Long sendOrderId;
-	
-	/**
-	 * 客户id
-	 * 
-	 */
-	@Column(name = "customer_id")
-	private Long customerId;
 
-	/**
-	 * 客户
-	 */
-	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "customer_id", referencedColumnName = "id", insertable = false, updatable = false)
-	private Customer customer;
-	
-	/**
-	 * 量化编号
-	 */
-	@Column(name = "quantitative_number")
-	private String quantitativeNumber;
-	
-	/**
+    /**
+     * 客户id
+     * 
+     */
+    @Column(name = "customer_id")
+    private Long customerId;
+
+    /**
+     * 客户
+     */
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "customer_id", referencedColumnName = "id", insertable = false, updatable = false)
+    private Customer customer;
+
+    /**
+     * 量化编号
+     */
+    @Column(name = "quantitative_number")
+    private String quantitativeNumber;
+
+    /**
      * 上车编号（上车时间+序号+_+包数）
      */
     @Column(name = "vehicle_number")
     private String vehicleNumber;
-    
-	/**
-	 * 量化包装时间
-	 */
-	@Column(name = "time")
-	private Date time;
-	
-	/**
+
+    /**
+     * 量化包装时间
+     */
+    @Column(name = "time")
+    private Date time;
+
+    /**
      * 发货时间
      */
     @Column(name = "send_time")
     private Date sendTime;
-	
-	/**
-	 * 总包数
-	 */
-	@Column(name = "sum_package_number")
-	private Integer sumPackageNumber;
-	
-	/**
-	 * 包装数量
-	 */
-	@Column(name = "number")
-	private Integer number;
-	
-	/**
-	 * 子单list
-	 */
-	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY,orphanRemoval = true)
-	@JoinColumn(name = "quantitative_id")
-	private List<QuantitativeChild> quantitativeChilds = new ArrayList<>();
-	
-	/**
-	 * 包装物list
-	 */
-	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY,orphanRemoval = true)
-	@JoinColumn(name = "quantitative_id")
-	private List<PackingMaterials> packingMaterials = new ArrayList<>();
-	
-	/**
-	 * 贴包人id
-	 */
-	@Column(name = "user_id")
-	private Long userId;
-	/**
-	 * 贴包人
-	 */
-	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "user_id", referencedColumnName = "id", insertable = false, updatable = false)
-	private User user;
-	
-	/**
-	 * 是否发货
-	 */
-	@Column(name = "flag")
-	private Integer flag;
-	
-	/**
-	 * 是否打印
-	 */
-	@Column(name = "print")
-	private Integer print;
-	
-	/**
-	 * 是否审核
-	 */
-	@Column(name = "audit")
-	private Integer audit;
-	
-	/**
+
+    /**
+     * 总包数
+     */
+    @Column(name = "sum_package_number")
+    private Integer sumPackageNumber;
+
+    /**
+     * 包装数量
+     */
+    @Column(name = "number")
+    private Integer number;
+
+    /**
+     * 子单list
+     */
+    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, orphanRemoval = true)
+    @JoinColumn(name = "quantitative_id")
+    private List<QuantitativeChild> quantitativeChilds = new ArrayList<>();
+
+    /**
+     * 包装物list
+     */
+    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, orphanRemoval = true)
+    @JoinColumn(name = "quantitative_id")
+    private List<PackingMaterials> packingMaterials = new ArrayList<>();
+
+    /**
+     * 贴包人id
+     */
+    @Column(name = "user_id")
+    private Long userId;
+    /**
+     * 贴包人
+     */
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "user_id", referencedColumnName = "id", insertable = false, updatable = false)
+    private User user;
+
+    /**
+     * 是否发货
+     */
+    @Column(name = "flag")
+    private Integer flag;
+
+    /**
+     * 是否调拨
+     */
+    @Column(name = "allocation")
+    private Integer allocation;
+
+    /**
+     * 是否打印
+     */
+    @Column(name = "print")
+    private Integer print;
+
+    /**
+     * 是否审核
+     */
+    @Column(name = "audit")
+    private Integer audit;
+
+    /**
      * 是否对账
      */
     @Column(name = "reconciliation")
     private Integer reconciliation;
-	
-	
-	/****** 量化数值 *******/
-	
+
+    /****** 量化数值 *******/
+
     /**
      * 包装方式id
      */
@@ -157,19 +162,19 @@ public class Quantitative extends BaseEntity<Long> {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "packag_method_id", referencedColumnName = "id", insertable = false, updatable = false)
     private BaseData packagMethod;
-    
+
     /**
      * 单个包装物，包装产品数量
      */
     @Column(name = "product_count")
     private Integer productCount;
-    
+
     /**
      * 备注
      */
     @Column(name = "remarks")
     private String remarks;
-    
+
     /**
      * 批次外发单价
      */
@@ -205,19 +210,19 @@ public class Quantitative extends BaseEntity<Long> {
      */
     @Column(name = "status")
     private Integer status;
-    
+
     /**
      * 完成时间
      */
     @Column(name = "status_time")
     private Date statusTime;
-	
+
     /**
      * 任务
      */
     @OneToMany(mappedBy = "quantitative", cascade = CascadeType.REMOVE, orphanRemoval = true)
     private Set<Task> tasks = new HashSet<Task>();
-    
+
     /**
      * 仓库种类id
      */
@@ -230,90 +235,95 @@ public class Quantitative extends BaseEntity<Long> {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "warehouse_type_id", referencedColumnName = "id", insertable = false, updatable = false)
     private BaseData warehouseType;
-    
-    
-    /**以量化任务长时间未发货，自动入库
-     * 是否入库
+
+    /**
+     * 以量化任务长时间未发货，自动入库 是否入库
      */
     @Column(name = "warehousing")
     private Integer warehousing;
-    
+
     /**
      * 库区
      */
     @Column(name = "reservoir_area")
     private String reservoirArea;
-    
+
     /**
      * 库位
      */
     @Column(name = "location")
     private String location;
-    
+
     /**
      * 入库时间
      */
     @Column(name = "warehousing_time")
     private Integer warehousingTime;
-    
-    
-	/**
-	 * 产品名称
-	 */
-	@Transient
-	private String productName;
 
-	/**
-	 * 产品编号
-	 */
-	@Transient
-	private String productNumber;
+    /**
+     * 产品名称
+     */
+    @Transient
+    private String productName;
 
-	/**
-	 * 查询字段
-	 */
-	@Transient
-	private Date orderTimeBegin;
-	/**
-	 * 查询字段
-	 */
-	@Transient
-	private Date orderTimeEnd;
-	
-	/**
-	 * 子单
-	 */
-	@Transient
-	private String child;
-	
-	/**
-	 * 批次号
-	 */
-	@Transient
-	private String bacthNumber;
-	
-	/**
-	 * 新增包装物json数据
-	 */
-	@Transient
-	private String packingMaterialsJson;
-	
-	/**
-	 * 客户name
-	 */
-	@Transient
-	private String customerName;
-	
+    /**
+     * 产品编号
+     */
+    @Transient
+    private String productNumber;
+
+    /**
+     * 查询字段
+     */
+    @Transient
+    private Date orderTimeBegin;
+    /**
+     * 查询字段
+     */
+    @Transient
+    private Date orderTimeEnd;
+
+    /**
+     * 子单
+     */
+    @Transient
+    private String child;
+
+    /**
+     * 批次号
+     */
+    @Transient
+    private String bacthNumber;
+
+    /**
+     * 新增包装物json数据
+     */
+    @Transient
+    private String packingMaterialsJson;
+
+    /**
+     * 客户name
+     */
+    @Transient
+    private String customerName;
+
     /**
      * 物流点id
      */
-	@Transient
+    @Transient
     private Long logisticsId;
-	
-	
-	
-	
-	public Integer getReconciliation() {
+    
+    
+
+    public Integer getAllocation() {
+        return allocation;
+    }
+
+    public void setAllocation(Integer allocation) {
+        this.allocation = allocation;
+    }
+
+    public Integer getReconciliation() {
         return reconciliation;
     }
 
@@ -448,6 +458,7 @@ public class Quantitative extends BaseEntity<Long> {
     public void setSumTaskPrice(Double sumTaskPrice) {
         this.sumTaskPrice = sumTaskPrice;
     }
+
     public Double getSumTime() {
         return sumTime;
     }
@@ -496,173 +507,172 @@ public class Quantitative extends BaseEntity<Long> {
         this.sendTime = sendTime;
     }
 
-	public Integer getAudit() {
-		return audit;
-	}
+    public Integer getAudit() {
+        return audit;
+    }
 
-	public void setAudit(Integer audit) {
-		this.audit = audit;
-	}
+    public void setAudit(Integer audit) {
+        this.audit = audit;
+    }
 
-	public String getCustomerName() {
-		return customerName;
-	}
+    public String getCustomerName() {
+        return customerName;
+    }
 
-	public void setCustomerName(String customerName) {
-		this.customerName = customerName;
-	}
+    public void setCustomerName(String customerName) {
+        this.customerName = customerName;
+    }
 
-	public Long getCustomerId() {
-		return customerId;
-	}
+    public Long getCustomerId() {
+        return customerId;
+    }
 
-	public void setCustomerId(Long customerId) {
-		this.customerId = customerId;
-	}
+    public void setCustomerId(Long customerId) {
+        this.customerId = customerId;
+    }
 
-	public Customer getCustomer() {
-		return customer;
-	}
+    public Customer getCustomer() {
+        return customer;
+    }
 
-	public void setCustomer(Customer customer) {
-		this.customer = customer;
-	}
+    public void setCustomer(Customer customer) {
+        this.customer = customer;
+    }
 
-	public Integer getSumPackageNumber() {
-		return sumPackageNumber;
-	}
+    public Integer getSumPackageNumber() {
+        return sumPackageNumber;
+    }
 
-	public void setSumPackageNumber(Integer sumPackageNumber) {
-		this.sumPackageNumber = sumPackageNumber;
-	}
+    public void setSumPackageNumber(Integer sumPackageNumber) {
+        this.sumPackageNumber = sumPackageNumber;
+    }
 
-	public Integer getNumber() {
-		return number;
-	}
+    public Integer getNumber() {
+        return number;
+    }
 
-	public void setNumber(Integer number) {
-		this.number = number;
-	}
+    public void setNumber(Integer number) {
+        this.number = number;
+    }
 
-	public Long getUserId() {
-		return userId;
-	}
+    public Long getUserId() {
+        return userId;
+    }
 
-	public void setUserId(Long userId) {
-		this.userId = userId;
-	}
+    public void setUserId(Long userId) {
+        this.userId = userId;
+    }
 
-	public User getUser() {
-		return user;
-	}
+    public User getUser() {
+        return user;
+    }
 
-	public void setUser(User user) {
-		this.user = user;
-	}
+    public void setUser(User user) {
+        this.user = user;
+    }
 
-	public Integer getFlag() {
-		return flag;
-	}
+    public Integer getFlag() {
+        return flag;
+    }
 
-	public void setFlag(Integer flag) {
-		this.flag = flag;
-	}
+    public void setFlag(Integer flag) {
+        this.flag = flag;
+    }
 
-	public Integer getPrint() {
-		return print;
-	}
+    public Integer getPrint() {
+        return print;
+    }
 
-	public void setPrint(Integer print) {
-		this.print = print;
-	}
+    public void setPrint(Integer print) {
+        this.print = print;
+    }
 
-	public String getPackingMaterialsJson() {
-		return packingMaterialsJson;
-	}
+    public String getPackingMaterialsJson() {
+        return packingMaterialsJson;
+    }
 
-	public void setPackingMaterialsJson(String packingMaterialsJson) {
-		this.packingMaterialsJson = packingMaterialsJson;
-	}
+    public void setPackingMaterialsJson(String packingMaterialsJson) {
+        this.packingMaterialsJson = packingMaterialsJson;
+    }
 
-	public List<PackingMaterials> getPackingMaterials() {
-		return packingMaterials;
-	}
+    public List<PackingMaterials> getPackingMaterials() {
+        return packingMaterials;
+    }
 
-	public void setPackingMaterials(List<PackingMaterials> packingMaterials) {
-		this.packingMaterials = packingMaterials;
-	}
+    public void setPackingMaterials(List<PackingMaterials> packingMaterials) {
+        this.packingMaterials = packingMaterials;
+    }
 
-	public String getBacthNumber() {
-		return bacthNumber;
-	}
+    public String getBacthNumber() {
+        return bacthNumber;
+    }
 
-	public void setBacthNumber(String bacthNumber) {
-		this.bacthNumber = bacthNumber;
-	}
+    public void setBacthNumber(String bacthNumber) {
+        this.bacthNumber = bacthNumber;
+    }
 
-	public List<QuantitativeChild> getQuantitativeChilds() {
-		return quantitativeChilds;
-	}
+    public List<QuantitativeChild> getQuantitativeChilds() {
+        return quantitativeChilds;
+    }
 
-	public void setQuantitativeChilds(List<QuantitativeChild> quantitativeChilds) {
-		this.quantitativeChilds = quantitativeChilds;
-	}
+    public void setQuantitativeChilds(List<QuantitativeChild> quantitativeChilds) {
+        this.quantitativeChilds = quantitativeChilds;
+    }
 
-	public String getProductName() {
-		return productName;
-	}
+    public String getProductName() {
+        return productName;
+    }
 
-	public void setProductName(String productName) {
-		this.productName = productName;
-	}
+    public void setProductName(String productName) {
+        this.productName = productName;
+    }
 
-	public String getProductNumber() {
-		return productNumber;
-	}
+    public String getProductNumber() {
+        return productNumber;
+    }
 
-	public void setProductNumber(String productNumber) {
-		this.productNumber = productNumber;
-	}
+    public void setProductNumber(String productNumber) {
+        this.productNumber = productNumber;
+    }
 
-	public Date getOrderTimeBegin() {
-		return orderTimeBegin;
-	}
+    public Date getOrderTimeBegin() {
+        return orderTimeBegin;
+    }
 
-	public void setOrderTimeBegin(Date orderTimeBegin) {
-		this.orderTimeBegin = orderTimeBegin;
-	}
+    public void setOrderTimeBegin(Date orderTimeBegin) {
+        this.orderTimeBegin = orderTimeBegin;
+    }
 
-	public Date getOrderTimeEnd() {
-		return orderTimeEnd;
-	}
+    public Date getOrderTimeEnd() {
+        return orderTimeEnd;
+    }
 
-	public void setOrderTimeEnd(Date orderTimeEnd) {
-		this.orderTimeEnd = orderTimeEnd;
-	}
+    public void setOrderTimeEnd(Date orderTimeEnd) {
+        this.orderTimeEnd = orderTimeEnd;
+    }
 
-	public String getChild() {
-		return child;
-	}
+    public String getChild() {
+        return child;
+    }
 
-	public void setChild(String child) {
-		this.child = child;
-	}
+    public void setChild(String child) {
+        this.child = child;
+    }
 
-	public String getQuantitativeNumber() {
-		return quantitativeNumber;
-	}
+    public String getQuantitativeNumber() {
+        return quantitativeNumber;
+    }
 
-	public void setQuantitativeNumber(String quantitativeNumber) {
-		this.quantitativeNumber = quantitativeNumber;
-	}
+    public void setQuantitativeNumber(String quantitativeNumber) {
+        this.quantitativeNumber = quantitativeNumber;
+    }
 
-	public Date getTime() {
-		return time;
-	}
+    public Date getTime() {
+        return time;
+    }
 
-	public void setTime(Date time) {
-		this.time = time;
-	}
-	
+    public void setTime(Date time) {
+        this.time = time;
+    }
 
 }

@@ -448,7 +448,13 @@ public class AttendanceTimeServiceImpl extends BaseServiceImpl<AttendanceTime, L
         // 1.当签到签出时间同时在休息时间之前2.当签到签出时间都在休息时间之后3.当签到签出时间（任一or全部）在休息时间之间（当出现这种情况 均不用计算休息时间）
         // 在上午同时签到签出
         if (attendanceTime.getCheckIn().compareTo(restBeginTime) != 1 && attendanceTime.getCheckOut().compareTo(restBeginTime) != 1) {
-            attendanceTime.setWorkTime(DatesUtil.getTimeHour(attendanceTime.getCheckIn(), attendanceTime.getCheckOut()));
+            boolean t = (attendanceTime.getCheckIn().compareTo(workTime) == 1 
+                && attendanceTime.getCheckIn().compareTo(DateUtil.offsetMinute(workTime, 30)) != 1) ||  attendanceTime.getCheckIn().compareTo(workTime) != 1;
+                // 实际工作时长
+                attendanceTime.setWorkTime(DatesUtil.getTimeHour(
+                    // 签入小于等于工作开始时间时，取工作开始时间计算，否则取签入时间
+                    t ? workTime : attendanceTime.getCheckIn(),
+                    attendanceTime.getCheckOut()));
         } else
         // 在下午同时签到签出
         if (attendanceTime.getCheckIn().compareTo(restEndTime) != -1 && attendanceTime.getCheckOut().compareTo(restEndTime) != -1) {

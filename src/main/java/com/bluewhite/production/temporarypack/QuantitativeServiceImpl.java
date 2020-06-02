@@ -39,6 +39,7 @@ import com.bluewhite.ledger.entity.Customer;
 import com.bluewhite.ledger.entity.LogisticsCosts;
 import com.bluewhite.ledger.entity.PackingMaterials;
 
+import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.date.DateTime;
 import cn.hutool.core.date.DateUtil;
 import cn.hutool.core.util.NumberUtil;
@@ -461,9 +462,14 @@ public class QuantitativeServiceImpl extends BaseServiceImpl<Quantitative, Long>
                             quantitative.setSendOrderId(sendOrder.getId());
                         } else {
                             // 根据日期和客户查询发货单,发货地点，同一天的合并发货单
-                            SendOrder sendOrder = sendOrderDao.findByCustomerIdAndSendTimeBetweenAndWarehouseTypeId(
-                                customer.getId(), DateUtil.beginOfDay(quantitative.getSendTime()),
-                                DateUtil.endOfDay(quantitative.getSendTime()), quantitative.getWarehouseTypeId());
+                            List<SendOrder> sendOrderList =
+                                sendOrderDao.findByCustomerIdAndSendTimeBetweenAndWarehouseTypeId(customer.getId(),
+                                    DateUtil.beginOfDay(quantitative.getSendTime()),
+                                    DateUtil.endOfDay(quantitative.getSendTime()), quantitative.getWarehouseTypeId());
+                            SendOrder sendOrder = null;
+                            if (CollUtil.isNotEmpty(sendOrderList)) {
+                                sendOrder = CollUtil.getFirst(sendOrderList);
+                            }
                             int number = quantitative.getQuantitativeChilds().stream()
                                 .mapToInt(QuantitativeChild::getSingleNumber).sum();
                             if (null == sendOrder) {
@@ -689,11 +695,12 @@ public class QuantitativeServiceImpl extends BaseServiceImpl<Quantitative, Long>
     public void reCreatSendOrder(String ids) {
         // 创建新的发货单
         SendOrder sendOrder = new SendOrder();
-        List<Long> idlist = Arrays.asList(ids.split(",")).stream().map(id -> Long.valueOf(id)).collect(Collectors.toList());
+        List<Long> idlist =
+            Arrays.asList(ids.split(",")).stream().map(id -> Long.valueOf(id)).collect(Collectors.toList());
         List<Quantitative> quantitativeList = dao.findByIdIn(idlist);
-        if(quantitativeList.size()==1) {
+        if (quantitativeList.size() == 1) {
             List<Quantitative> list = dao.findBySendOrderId(quantitativeList.get(0).getSendOrderId());
-            if(list.size()==1) {
+            if (list.size() == 1) {
                 throw new ServiceException("仅剩一条，无法发货");
             }
         }
@@ -710,7 +717,7 @@ public class QuantitativeServiceImpl extends BaseServiceImpl<Quantitative, Long>
             sendOrder.setNumber(NumUtils.setzro(sendOrder.getNumber()) + number);
         });
         sendOrderDao.save(sendOrder);
-        
+
         // 更新原始发货单
         if (quantitativeList.get(0).getSendOrderId() != null) {
             SendOrder ot = sendOrderDao.findOne(quantitativeList.get(0).getSendOrderId());
@@ -722,8 +729,8 @@ public class QuantitativeServiceImpl extends BaseServiceImpl<Quantitative, Long>
             }
             sendOrderDao.save(ot);
         }
-        
-        //更新量化单中的发货单id
+
+        // 更新量化单中的发货单id
         quantitativeList.forEach(q -> {
             q.setSendOrderId(sendOrder.getId());
         });
