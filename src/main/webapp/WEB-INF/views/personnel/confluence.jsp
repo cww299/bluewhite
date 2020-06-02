@@ -48,10 +48,10 @@
 			<div class="layui-form-item">
 				<table>
 					<tr>
+						<td>人员:</td>
+						<td><select class="layui-input"  lay-search="true" id="userId" name="userId" >  
+								<option value="">请选择</option></select></td>
 						<shiro:lacksRole name="attendanceStatistician">
-							<td>人员:</td>
-							<td><select class="layui-input"  lay-search="true" id="userId" name="userId" >  
-									<option value="">请选择</option></select></td>
 							<td>&nbsp;&nbsp;</td>
 							<td>部门:</td>
 							<td><select  id="orgNameId" class="layui-input"  lay-search="true" name="orgNameId">
@@ -132,7 +132,7 @@ layui.config({
 		//如果存在部门和人员选择下拉框
 		var isAttend = true,orgId = '';	  //是否是考情记录员,和所在部门
 		;!(function(){
-			if(document.getElementById('userId')==null){
+			if(document.getElementById('orgNameId')==null){
 				;!(function(){
 					$.ajax({
 						url:'${ctx}/getCurrentUser',		
@@ -143,6 +143,18 @@ layui.config({
 						}
 					})
 				})();
+				$.ajax({
+					url : '${ctx}/system/user/findUserList?orgNameIds='+orgId,
+					async : false,
+					success : function(result) {
+						var htmls='<option value="">请选择</option>';;
+						$(result.data).each(function(i, o) {
+							htmls += '<option value=' + o.id + '>' + o.userName + '</option>'
+						})
+						$("#userId").html(htmls);
+						form.render();
+					},
+				});
 			}else{
 				isAttend = false;
 				(function(){
@@ -280,8 +292,8 @@ layui.config({
 			var userId = $('#userId').val() || '';
 			var orgNameId = $('#orgNameId').val() || '';
 			isAttend && (orgNameId = orgId);
-			if(userId && orgNameId)
-				return myutil.emsg('无法同时选择部门与人员！');
+			if(userId)
+				orgNameId = "";
 			var orderTimeBegin = $('#startTime').val()+'-01 00:00:00';
 			var url = "${ctx}/excel/importExcel/downAttendance?userId=" + (userId || "") + "&orgNameId=" + orgNameId + "&orderTimeBegin=" + orderTimeBegin;
 			location.href = url;
@@ -292,8 +304,8 @@ layui.config({
 				return myutil.emsg('请选择部门或者相关人员')
 			}
 			isAttend && (field.orgNameId = orgId);
-			if(field.userId && field.orgNameId)
-				return myutil.emsg('无法同时选择部门与人员！');
+			if(field.userId)
+				field.orgNameId = "";
 			field.orderTimeBegin+="-01 00:00:00";
 			var postUrl='${ctx}/personnel/intAttendanceTime';
 			even(postUrl,field)
@@ -309,8 +321,8 @@ layui.config({
 					orderTimeBegin:$('#startTime').val()+'-01 00:00:00',
 			}
 			isAttend && (d.orgNameId = orgId);
-			if(d.userId && d.orgNameId)
-				return myutil.emsg('无法同时选择部门与人员！');
+			if(d.userId)
+				d.orgNameId = "";
 			var postUrl='${ctx}/personnel/addAttendanceTime'
 			even(postUrl,d)
 		})
