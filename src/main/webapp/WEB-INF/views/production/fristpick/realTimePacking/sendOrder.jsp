@@ -20,28 +20,29 @@
 			<input type="radio" name="sex" value="kh" lay-filter="tableType" title="客户" checked></span>
 		<table class=" layui-form searchTable">
 			<tr>
-				<td>发货时间:</td>
-				<td><input type="text" name="sendTime_be_date" class="layui-input" id="searchTime"></td>
-				<td>客户名:</td>
-				<td><input type="text" name="customer.name_like" class="layui-input"></td>
-				<td>物流点:</td>
+				<td></td>
+				<td><input type="text" name="sendTime_be_date" class="layui-input" id="searchTime" autocomplete="off"
+					 placeholder="发货时间"></td>
+				<td></td>
+				<td><input type="text" name="customer.name_like" class="layui-input" placeholder="客户名"></td>
+				<td></td>
 				<td style="width:150px;"><select name="logisticsId" id="logisticsIdSelect">
-						<option value="">请选择</option>
+						<option value="">物流点</option>
 					</select></td>
-				<td>包装方式:</td>
+				<td></td>
 				<td style="width:120px;"><select name="outerPackagingId" id="outerPackagingIdSelect">
-						<option value="">请选择</option>
+						<option value="">包装方式</option>
 					</select></td>
-				<td>是否生成:</td>
+				<td></td>
 				<td style="width:100px;"><select name="audit" id="">
-						<option value="">请选择</option>
+						<option value="">是否生成</option>
 						<option value="1">是</option>
 						<option value="0">否</option>
 					</select></td>
-				<td>物流编号:</td>
-				<td><input type="text" name="logisticsNumber" class="layui-input"></td>
-				<td>备注:</td>
-				<td><input type="text" name="remarks" class="layui-input"></td>
+				<td></td>
+				<td><input type="text" name="logisticsNumber" class="layui-input" placeholder="物流编号"></td>
+				<td></td>
+				<td><input type="text" name="remarks" class="layui-input" placeholder="备注"></td>
 				<td><button type="button" class="layui-btn layui-btn-" lay-submit lay-filter="search">搜索</button></td>
 				<td></td>
 			</tr>
@@ -179,7 +180,7 @@ layui.config({
 		       { type:'checkbox',},
 		       { title:'客户名称',   field:'customer_name', },
 		       { title:'发货时间',   field:'sendTime', width:110, type:'date', },
-		       { title:'总个数',   field:'number',  width:80,  },
+		       { title:'总个数',   field:'number',  width: 100,  },
 		       { title:'发货包数',    field:'sendPackageNumber', width:100,	},
 		       { title:'物流编号',   field:'logisticsNumber',width:130, edit:true,	},
 		       { title:'物流点',   field:'logistics_id', type:'select',select:{ data: allLogistics, layFilter:'changePriceSelect', },width:150, },
@@ -193,7 +194,7 @@ layui.config({
 		       { title:'生成',   field:'audit',	width:60,transData:true, },
 		       { title:'备注',   field:'remarks',	edit: true, },  
 		       ]],
-		totalRow:["sendPackageNumber","sendPrice","extraPrice","logisticsPrice"],
+		totalRow:["sendPackageNumber","sendPrice","extraPrice","logisticsPrice",'number'],
        	done:function(ret,curr, count){
        		var totalDiv = $('div[lay-id="tableData"] .layui-table-total');
        		var data = ret.statData;
@@ -298,12 +299,18 @@ layui.config({
 		layer.open({
 			type: 1,
 			title: '批量修改',
-			area:['500px','400px'],
+			area:['500px','450px'],
 			btn:['保存','取消'],
 			btnAlign:'c',
 			content:[
 				'<div style="padding:10px;">',
 					'<div class="layui-form layui-form-pane">',
+					  '<div class="layui-form-item" pane>',
+					    '<label class="layui-form-label">物流编号</label>',
+					    '<div class="layui-input-block">',
+					      '<input name="logisticsNumber" class="layui-input" value="'+datas[0].logisticsNumber+'">',
+					    '</div>',
+					  '</div>',
 					  '<div class="layui-form-item" pane>',
 					    '<label class="layui-form-label">物流点</label>',
 					    '<div class="layui-input-block">',
@@ -320,8 +327,8 @@ layui.config({
 					    '<label class="layui-form-label">是否含税</label>',
 					    '<div class="layui-input-block">',
 					      '<select lay-filter="signChangeSelect" name="tax">',
-					      		'<option value="1">含税</option>',
-					      		'<option value="0">不含税</option></select>',
+					      		'<option value="1" '+(datas[0].tax==1?"selected":"")+'>含税</option>',
+					      		'<option value="0" '+(datas[0].tax==0?"selected":"")+'>不含税</option></select>',
 					    '</div>',
 					  '</div>',
 					  '<div class="layui-form-item" pane>',
@@ -333,7 +340,7 @@ layui.config({
 					  '<div class="layui-form-item" pane>',
 					    '<label class="layui-form-label">额外费用</label>',
 					    '<div class="layui-input-block">',
-					      '<input type="number" class="layui-input" name="extraPrice">',
+					      '<input type="number" class="layui-input" name="extraPrice" value="'+datas[0].extraPrice+'">',
 					    '</div>',
 					    '<span lay-submit lay-filter="moreEditBtn"></span>',
 					  '</div>',
@@ -343,6 +350,9 @@ layui.config({
 			success:function(layerElem,layerIndex){
 				form.render();
 				form.on('select(signChangeSelect)',function(){
+					getPriceFun();
+				})
+				function getPriceFun(val){
 					var logisticsId = $(layerElem).find('select[name="logisticsId"]').val();
 					var outerPackagingId = $(layerElem).find('select[name="outerPackagingId"]').val();
 					var tax = $(layerElem).find('select[name="tax"]').val();
@@ -358,24 +368,30 @@ layui.config({
 							success:function(d){
 								var option = '<option value="">请选择</option>';
 								layui.each(d,function(index,item){
-									option += "<option value='"+item+"'>￥"+item+"</option>";
+									var selected = val==item?"selected":"";
+									option += "<option value='"+item+"' "+selected+">￥"+item+"</option>";
 								})
 								$(layerElem).find('select[name="singerPrice"]').html(option);
 								form.render();
 							}
 						})
 					}
-				})
+				}
 				var logisticsHtml = "",packagMethodHtml = "";
 				for(var i in allLogistics){
-					logisticsHtml += '<option value="'+allLogistics[i].id+'">'+allLogistics[i].name+'</option>';
+					var selected = allLogistics[i].id == datas[0].logistics.id?"selected":"";
+					logisticsHtml += '<option value="'+allLogistics[i].id+'" '+selected+'>'+
+							allLogistics[i].name+'</option>';
 				}
 				for(var i in allPackagMethod){
-					packagMethodHtml += '<option value="'+allPackagMethod[i].id+'">'+allPackagMethod[i].name+'</option>';
+					var selected = allPackagMethod[i].id == datas[0].outerPackaging.id?"selected":"";
+					packagMethodHtml += '<option value="'+allPackagMethod[i].id+'" '+selected+'>'+
+							allPackagMethod[i].name+'</option>';
 				}
 				$(layerElem).find('select[name="logisticsId"]').append(logisticsHtml);
 				$(layerElem).find('select[name="outerPackagingId"]').append(packagMethodHtml);
 				form.render();
+				getPriceFun(datas[0].singerPrice);
 				form.on('submit(moreEditBtn)',function(obj){
 					obj.field.ids = ids.join(',')
 					myutil.saveAjax({
