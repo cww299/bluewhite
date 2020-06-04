@@ -37,7 +37,7 @@ public class OfficeSuppliesAction {
 	private ClearCascadeJSON clearCascadeJSON;
 	{
 		clearCascadeJSON = ClearCascadeJSON.get()
-				.addRetainTerm(OfficeSupplies.class,"id","number", "name", "price", "unit"
+				.addRetainTerm(OfficeSupplies.class,"id","number", "name", "price", "unit", "qcCode"
 						, "inventoryNumber","location","libraryValue","createdAt","customer","singleMealConsumption")
 				.addRetainTerm(Customer.class, "id", "name")
 				.addRetainTerm(BaseData.class, "id", "name");
@@ -47,7 +47,7 @@ public class OfficeSuppliesAction {
 	{
 		clearCascadeJSONInventoryDetail = ClearCascadeJSON.get()
 				.addRetainTerm(InventoryDetail.class,"id","officeSupplies", "flag", "orgName", "user"
-						, "time","number","remark","outboundCost","mealType","status")
+						, "time","number","remark","outboundCost","mealType","status", "qcCode")
 				.addRetainTerm(OfficeSupplies.class, "id", "name","price","singleMealConsumption")
 				.addRetainTerm(BaseData.class, "id", "name")
 				.addRetainTerm(User.class, "id", "userName");
@@ -125,6 +125,25 @@ public class OfficeSuppliesAction {
 		CommonResponse cr = new CommonResponse();
 		inventoryDetailService.addInventoryDetail(onventoryDetail);
 		cr.setMessage("新增成功");
+		return cr;
+	}
+	
+	/**
+	 * 批量新增出入库记录（扫码出库）
+	 * @param order
+	 * @return
+	 */
+	@RequestMapping(value = "/personnel/addInventoryDetailMores", method = RequestMethod.POST)
+	@ResponseBody
+	public CommonResponse addInventoryDetailMores(Long userId,Long orgId,String outList,String remark) {
+		CommonResponse cr = new CommonResponse();
+		if(outList==null || outList.isEmpty()) {
+			cr.setCode(1500);
+			cr.setMessage("出库信息不能为空");
+			return cr;
+		}
+		inventoryDetailService.addInventoryDetailMores(userId,orgId,outList,remark);
+		cr.setMessage("出库成功");
 		return cr;
 	}
 	

@@ -884,7 +884,7 @@ layui.config({
 			}
 		})
 		myutil.getData({
-			url: myutil.config.ctx+'/system/user/findUserList?foreigns=0&isAdmin=false&orgNameIds=55&quit=0',
+			url: myutil.config.ctx+'/system/user/findUserList?foreigns=0&isAdmin=false&orgNameIds=529&quit=0',
 			done: function(data){
 				layui.each(data,function(index,item){
 					allUser += '<option value="'+item.id+'">'+item.userName+'</option>';

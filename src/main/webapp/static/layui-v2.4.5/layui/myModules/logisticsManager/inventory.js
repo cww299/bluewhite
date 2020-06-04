@@ -8,17 +8,51 @@
  * })
  */
 layui.extend({
-}).define(['jquery','layer','form','laytpl','laydate','mytable','table'],function(exports){
+	goodFlag: 'layui/myModules/logisticsManager/goodFlag',
+	soundTips: 'layui/myModules/util/soundTips',
+}).define(['jquery','layer','form','laytpl','laydate','mytable','table','goodFlag','soundTips'],function(exports){
 	"use strict";
 	var $ = layui.jquery,
 		form = layui.form,
 		laydate = layui.laydate,
 		layer = layui.layer,
 		laytpl = layui.laytpl,
+		soundTips = layui.soundTips,
 		table = layui.table,
 		mytable = layui.mytable,
 		myutil = layui.myutil;
-	
+	var STYLE = `
+	<style>
+		.scanInput{
+  			height: 50px;
+  			margin-bottom: 10px;
+	  	}
+	  	.scanInput.layui-input:focus{
+	    	border-color: #12aef5!important;
+		    border-width: 2px;
+		    box-shadow: 0px 0px 10px #12aef5!important;
+		}
+		.outBill{
+			padding: 10px 0;
+			color: gray;
+		}
+		.outBill p{
+			font-size: 17px;
+			padding: 5px 10px;
+		}
+		.outBill ul li{
+		
+		}
+		.outBill ul li span{
+			width: 31%;
+			display: inline-block;
+		    text-align: center;
+		    font-size: 16px;
+		    margin: 7px 0;
+		}
+	</style>
+	`;
+	$('head').append(STYLE);
 	var TPL_MAIN = `
 		<table class="layui-form searchTable">
 			<tr>
@@ -97,7 +131,7 @@ layui.extend({
 	</div>
 	`
 	var inventory = {
-		type: 1,  //默认食材
+		type: 1,  //默认办公用品
 	};
 	
 	inventory.render = function(opt){
@@ -150,7 +184,8 @@ layui.extend({
 		$(opt.elem || '#app').html(TPL_MAIN);
 		laydate.render({ elem:'#searchTime', range:'~', })
 		form.render();
-		var orgNameSelectHtml = '<option value="">请选择</option>', userSelectHtml = '<option value="">请选择</option>',
+		var orgNameSelectHtml = '<option value="">请选择部门</option>', 
+			userSelectHtml = '<option value="">请选择领取人</option>',
 			allCustomerSelectHtml = '<option value="">请选择</option>';
 		var unitData = myutil.getDataSync({ url: myutil.config.ctx+'/basedata/list?type=officeUnit' });
 		var allSingleMealConsumption =  [];
@@ -161,6 +196,7 @@ layui.extend({
 			url: myutil.config.ctx+'/personnel/getOfficeSupplies?type='+inventory.type,
 			curd:{
 				addTemp:{
+					qcCode: '',
 					type: inventory.type,
 					createdAt:myutil.getSubDay(0,'yyyy-MM-dd')+' 00:00:00',
 					location:'',name:'',price:'',inventoryNumber:'',libraryValue:'',
@@ -176,8 +212,30 @@ layui.extend({
 							table.cache['tableData'][index]['createdAt'] = val+' 00:00:00';
 						}
 					}) 
-				}, 
+				},
+				otherBtn: function(obj) {
+					if (obj.event === 'sacanOut') {
+						outScan();
+					} else if (obj.event === 'printQcCode'){
+						var check = table.checkStatus('tableData').data;
+						if(check.length==0)
+							return myutil.emsg("请选择打印数据");
+						check = check.filter(item => { return item.qcCode })
+						if(check.length==0)
+							return myutil.emsg("请选择有条形码的数据");
+						layui.goodFlag.print(check)
+					}
+				}
 			},
+			toolbar: [
+				(function(){
+					if(inventory.type==1){
+						return '<span class="layui-btn layui-btn-primary layui-btn-sm" lay-event="sacanOut">扫码出库</span>'+
+						'<span class="layui-btn layui-btn-normal layui-btn-sm" lay-event="printQcCode">打印条形码</span>';
+					}
+					return "";
+				})(),
+			].join(),
 			size:'lg',
 			ifNull:'',
 			limits:[10,50,100,200,500,1000],
@@ -190,19 +248,27 @@ layui.extend({
 			cols:[
 				(function(){
 					var cols = [
-					{ type: 'checkbox', align: 'center', fixed: 'left',},
-					{ field: "createdAt", title: "时间", type:'date',},
-					{ field: "location", title: "仓位", filter:true, edit: true, },
-					{ field: "name", title: "物品名", edit: true, },
-					{ field: "unit_id", title: "单位", type:'select', select:{data:unitData,}, },
-			       ];
+						{ type: 'checkbox', align: 'center', fixed: 'left',},
+						{ field: "createdAt", title: "时间", type:'date',},
+					];
+					if(inventory.type==1){
+						cols.push(
+							{ field: "qcCode", title: "条形码", edit: true }
+						)
+					}
+				    var c = [
+						{ field: "location", title: "仓位", filter:true, edit: true, },
+						{ field: "name", title: "物品名", edit: true, },
+						{ field: "unit_id", title: "单位", type:'select', select:{data:unitData,}, },
+			        ];
+				    cols = cols.concat(c);
 					if(inventory.type===3){
 						cols.push({
 							field: "singleMealConsumption_id", title: "材料分类",   type:'select',
 							select:{ data: allSingleMealConsumption, },
 						})
 					}
-					var c = [{ field: "price", title: "单价", edit: true, },
+					c = [{ field: "price", title: "单价", edit: true, },
 					{ field: "inventoryNumber", title: "库存数量", edit: false, },
 					{ field: "libraryValue", title: "库值", edit: false, },
 					{ field: "", title: "操作", edit: false, templet:getTpl(), },];
@@ -320,6 +386,172 @@ layui.extend({
 				},
 			})
 		}
+		
+		
+		function outScan(){
+			layer.open({
+				type:1,
+				title:'扫码出库',
+				area:['90%','90%'],
+				content:[
+					'<div style="padding:10px;">',
+						'<input class="layui-input scanInput" placeholder="扫码枪扫码时，请将光标聚集在输入框内">',
+						'<table>',
+							'<tr class="layui-form">',
+								'<td><select id="outOrgName" lay-search>'+orgNameSelectHtml+'</select></td>',
+								'<td>&nbsp;&nbsp;</td>',
+								'<td><select id="outPeople" lay-search>'+userSelectHtml+'</select></td>',
+								'<td>&nbsp;&nbsp;</td>',
+								'<td><input class="layui-input" id="remarkInput" placeholder="备注"></td>',
+								'<td>&nbsp;&nbsp;</td>',
+								'<td><span class="layui-btn layui-btn-primary" id="oneKeyOut">一键出库</span></td>',
+							'</tr>',
+						'</table>',
+						'<table id="outTable" lay-filter="outTable"></table>',
+					'</div>',
+				].join(' '),
+				success:function(){
+					form.render();
+					var outCols = [
+						{ type:'checkbox', },
+						{ field:'name', title:'物品名',  },
+						{ field:'location', title:'仓位', },
+						{ field:'inventoryNumber', title:'库存数量', },
+						{ field:'outNumber', title:'出库数量', edit:'number', style:'background:#d8ff83' },
+					];
+					var outTableData = [];
+					mytable.renderNoPage({
+						elem:'#outTable',
+						data: outTableData,
+						cols: [outCols],
+						limit:9999,
+					})
+					$('#oneKeyOut').click(function(){
+						var check = table.checkStatus('outTable').data;
+						if(check.length == 0)
+							return myutil.emsg('请勾选出库数据');
+						for(var i in check){
+							if(check[i].outNumber<=0)
+								return myutil.emsg("请正确填写出库数量");
+							if(check[i].outNumber>check[i].inventoryNumber){
+								return myutil.emsg("商品："+check[i].name+" 库位："+check[i].inventoryNumber+" 库存量不足，无法出库");
+							}
+						}
+						var orgId = $('#outOrgName').val(),
+						userId = $('#outPeople').val(),
+						remark = $('#remarkInput').val(),
+						orgName = '---', userName = '---';
+						if(orgId)
+							orgName = $('#outOrgName').find('option[value='+orgId+']').html();
+						if(userId)
+							userName = $('#outPeople').find('option[value='+userId+']').html();
+						var tplData = {
+							orgName: orgName,
+							userName: userName,
+							remark: remark || '---',
+							outData: check,
+						};
+						layer.open({
+							type: 1,
+							title: '出库详细',
+							area: ['500px','500px'],
+							content: laytpl([
+							'<div class="outBill">',
+								'<p>出库部门：   {{   d.orgName }}</p>',
+								'<p>出库人：   {{  d.userName }}</p>',
+								'<p>备注：   {{  d.remark }}</p>',
+								'<hr>',
+								'<ul>',
+									'<li><span>商品名</span><span>库位</span><span>出库数量</span></li>',
+								'{{# layui.each(d.outData,function(index,item){ }}',
+									'<li>',
+							    		'<span>{{ item.name }}</span>',
+							    		'<span>{{ item.location }}</span>',
+							    		'<span>{{ item.outNumber }}</span>',
+									'</li>',
+								'{{# }) }}',
+								'</ul>',
+								'<hr>',
+							'</div>',
+							].join(' ')).render(tplData),
+							btn: ['确认出库','取消'],
+							yes: function(layerIndex){
+								var outData = [];
+								for(var i in check)
+									outData.push({
+										id: check[i].id,
+										number: check[i].outNumber
+									})
+								myutil.saveAjax({
+									url: '/personnel/addInventoryDetailMores',
+									data: {
+										orgId: orgId,
+										userId: userId,
+										remark: remark,
+										outList: JSON.stringify(outData),
+									},
+									success: function(){
+										layer.close(layerIndex)
+										table.reload('tableData')
+										outTableData = []
+										table.reload('outTable',{
+											data: outTableData,
+										})
+										$('#outPeople').val('')
+										$('#remarkInput').val('')
+										soundTips.outSuccess();
+										form.render();
+									}
+								})
+							}
+						})
+					})
+					$('.scanInput').focus();
+					$('.scanInput').unbind().on('keypress', function(e) {
+						if (e.which == 13) {
+							var val = $(this).val();
+							if(!val)
+								return;
+							myutil.getDataSync({
+								url: myutil.config.ctx+'/personnel/getOfficeSupplies',
+								data: {
+									type: inventory.type,
+									qcCode: val,
+								},
+								success:function(d){
+									if(d!=null && d.length>0){
+										for(var i in d){
+											d[i].outNumber = 1;
+											var has = false;
+											for(var j in outTableData){
+												if(outTableData[j].id == d[i].id){
+													has = true;
+													break;
+												}
+											}
+											if(!has)
+												outTableData.push(d[i]);
+										}
+										table.reload('outTable',{
+											data: outTableData
+										});
+										soundTips.scanSuccess();
+									}else{
+										layer.msg("找不到商品："+val)
+										soundTips.noFind();
+									}
+								},
+								error: function(){
+									soundTips.error();
+								}
+							})
+							$(this).val('');
+		                }
+			        });
+				}
+			})
+		}
+		
 		
 		form.on('submit(search)',function(obj){
 			var t = $('#searchTime').val();

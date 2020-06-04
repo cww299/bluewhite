@@ -25,6 +25,12 @@ public interface InventoryDetailService  extends BaseCRUDService<InventoryDetail
 	public void addInventoryDetail(InventoryDetail onventoryDetail);
 	
 	/**
+	 * 批量新增
+	 * @param onventoryDetail
+	 */
+	public void addInventoryDetailMores(Long userId, Long orgId, String outList,String remark);
+	
+	/**
 	 * 删除
 	 * @param ids
 	 * @return
@@ -44,7 +50,5 @@ public interface InventoryDetailService  extends BaseCRUDService<InventoryDetail
 	 * @return
 	 */
 	public Map<String, Object> ingredientsStatisticalInventoryDetail(InventoryDetail onventoryDetail);
-	
-	
 
 }

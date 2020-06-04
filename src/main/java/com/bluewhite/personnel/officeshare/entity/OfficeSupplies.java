@@ -25,6 +25,12 @@ import com.bluewhite.ledger.entity.Customer;
 public class OfficeSupplies extends BaseEntity<Long> {
 
 	/**
+	 * 二维码值
+	 */
+	@Column(name = "qc_code")
+	private String qcCode;
+	
+	/**
 	 * 物品名
 	 */
 	@Column(name = "name")
@@ -225,6 +231,14 @@ public class OfficeSupplies extends BaseEntity<Long> {
 
 	public void setLocation(String location) {
 		this.location = location;
+	}
+
+	public String getQcCode() {
+		return qcCode;
+	}
+
+	public void setQcCode(String qcCode) {
+		this.qcCode = qcCode;
 	}
 
 }

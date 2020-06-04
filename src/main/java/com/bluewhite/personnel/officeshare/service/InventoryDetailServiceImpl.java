@@ -15,6 +15,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
 
+import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONArray;
+import com.alibaba.fastjson.JSONObject;
 import com.bluewhite.base.BaseServiceImpl;
 import com.bluewhite.basedata.entity.BaseData;
 import com.bluewhite.basedata.service.BaseDataService;
@@ -114,6 +117,39 @@ public class InventoryDetailServiceImpl extends BaseServiceImpl<InventoryDetail,
 
     @Override
     @Transactional
+	public void addInventoryDetailMores(Long userId, Long orgId, String outList,String remark) {
+		JSONArray arr = JSON.parseArray(outList);
+		List<InventoryDetail> idList = new ArrayList<InventoryDetail>();
+		for(int i=0; i<arr.size(); i++) {
+			JSONObject item = arr.getJSONObject(i);
+			long itemId = Long.parseLong(item.getString("id"));
+			OfficeSupplies officeSupplies = officeSuppliesDao.findOne(itemId);
+			int outNumber = item.getInteger("number");
+			if(outNumber<=0) {
+				 throw new ServiceException("出库数量为正整数！");
+			}
+			if (officeSupplies.getInventoryNumber() < outNumber) {
+                throw new ServiceException("库存不足，无法出库");
+            }
+			officeSupplies.setInventoryNumber(NumUtils.sub(officeSupplies.getInventoryNumber(), outNumber));
+			InventoryDetail inventoryDetail = new InventoryDetail();
+			inventoryDetail.setTime(new Date());
+			inventoryDetail.setFlag(0);
+			inventoryDetail.setOfficeSuppliesId(itemId);
+			inventoryDetail.setUserId(userId);
+			inventoryDetail.setOrgNameId(orgId);
+			inventoryDetail.setNumber(Double.valueOf(outNumber));
+			inventoryDetail.setOutboundCost(NumUtils.mul(outNumber, officeSupplies.getPrice()));
+			inventoryDetail.setStatus(1);
+			inventoryDetail.setRemark(remark);
+			idList.add(inventoryDetail);
+			officeSuppliesDao.save(officeSupplies);
+		}
+        save(idList);
+	}
+    
+    @Override
+    @Transactional
     public int deleteInventoryDetail(String ids) {
         int count = 0;
         if (!StringUtils.isEmpty(ids)) {
@@ -143,7 +179,7 @@ public class InventoryDetailServiceImpl extends BaseServiceImpl<InventoryDetail,
         }
         return count;
     }
-
+    
     @Override
     public List<Map<String, Object>> statisticalInventoryDetail(InventoryDetail onventoryDetail) {
         List<Map<String, Object>> mapList = new ArrayList<>();

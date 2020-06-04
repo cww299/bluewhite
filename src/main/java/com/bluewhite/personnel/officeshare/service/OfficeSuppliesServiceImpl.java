@@ -21,6 +21,8 @@ import com.bluewhite.common.utils.NumUtils;
 import com.bluewhite.personnel.officeshare.dao.OfficeSuppliesDao;
 import com.bluewhite.personnel.officeshare.entity.OfficeSupplies;
 
+import cn.hutool.core.date.DateUtil;
+
 @Service
 public class OfficeSuppliesServiceImpl extends BaseServiceImpl<OfficeSupplies, Long> implements OfficeSuppliesService {
 
@@ -57,6 +59,9 @@ public class OfficeSuppliesServiceImpl extends BaseServiceImpl<OfficeSupplies, L
                         param.getOrderTimeEnd()));
                 }
             }
+            if(param.getQcCode()!=null && !param.getQcCode().isEmpty()) {
+            	predicate.add(cb.equal(root.get("qcCode").as(String.class), param.getQcCode()));
+            }
             Predicate[] pre = new Predicate[predicate.size()];
             query.where(predicate.toArray(pre));
             return null;
@@ -87,6 +92,10 @@ public class OfficeSuppliesServiceImpl extends BaseServiceImpl<OfficeSupplies, L
                 NumUtils.mul(ot.getInventoryNumber(), NumUtils.setzro(ot.getPrice())));
             save(ot);
         } else {
+        	//新增
+        	if(officeSupplies.getQcCode()==null || officeSupplies.getQcCode().isEmpty()) {
+        		officeSupplies.setQcCode(String.valueOf(DateUtil.current(true)));
+        	}
             officeSupplies.setInventoryNumber(0.0);
             officeSupplies.setLibraryValue(
                 NumUtils.mul(officeSupplies.getInventoryNumber(), NumUtils.setzro(officeSupplies.getPrice())));
