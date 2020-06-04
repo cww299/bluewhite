@@ -56,7 +56,7 @@ layui.extend({
 						}
 					}
 				})
-				printpage(html);
+				goodFlag.printpage(html);
 			},
 			content: laytpl(TPL).render(data),
 			success: function(layerElem,layerIndex){
@@ -66,7 +66,8 @@ layui.extend({
 			}
 		})
 	}
-	function printpage(html){    
+	
+	goodFlag.printpage = function(html){    
 		var wind = window.open("",'newwindow');
 		wind.document.body.innerHTML = html;
 		wind.print();

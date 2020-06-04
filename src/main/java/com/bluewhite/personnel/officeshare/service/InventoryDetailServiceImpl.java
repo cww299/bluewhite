@@ -81,6 +81,10 @@ public class InventoryDetailServiceImpl extends BaseServiceImpl<InventoryDetail,
                 predicate.add(
                     cb.between(root.get("time").as(Date.class), param.getOrderTimeBegin(), param.getOrderTimeEnd()));
             }
+            // 按操作人员
+            if (param.getOperator()!=null && !param.getOperator().isEmpty()){
+            	predicate.add(cb.equal(root.get("operator").as(String.class), param.getOperator()));
+            }
             Predicate[] pre = new Predicate[predicate.size()];
             query.where(predicate.toArray(pre));
             return null;
@@ -117,7 +121,7 @@ public class InventoryDetailServiceImpl extends BaseServiceImpl<InventoryDetail,
 
     @Override
     @Transactional
-	public void addInventoryDetailMores(Long userId, Long orgId, String outList,String remark) {
+	public void addInventoryDetailMores(Long userId, Long orgId, String outList,String remark,String operator) {
 		JSONArray arr = JSON.parseArray(outList);
 		List<InventoryDetail> idList = new ArrayList<InventoryDetail>();
 		for(int i=0; i<arr.size(); i++) {
@@ -142,7 +146,37 @@ public class InventoryDetailServiceImpl extends BaseServiceImpl<InventoryDetail,
 			inventoryDetail.setOutboundCost(NumUtils.mul(outNumber, officeSupplies.getPrice()));
 			inventoryDetail.setStatus(1);
 			inventoryDetail.setRemark(remark);
+			inventoryDetail.setOperator(operator);
+			officeSupplies.setLibraryValue(NumUtils.mul(officeSupplies.getInventoryNumber(), officeSupplies.getPrice()));
 			idList.add(inventoryDetail);
+			officeSuppliesDao.save(officeSupplies);
+		}
+        save(idList);
+	}
+    
+    @Override
+	public void addInventoryDetailMoresIn(String inList, String operator) {
+    	JSONArray arr = JSON.parseArray(inList);
+		List<InventoryDetail> idList = new ArrayList<InventoryDetail>();
+		for(int i=0; i<arr.size(); i++) {
+			JSONObject item = arr.getJSONObject(i);
+			long itemId = Long.parseLong(item.getString("id"));
+			OfficeSupplies officeSupplies = officeSuppliesDao.findOne(itemId);
+			int inNumber = item.getInteger("number");
+			if(inNumber<=0) {
+				 throw new ServiceException("入库数量为正整数！");
+			}
+			officeSupplies.setInventoryNumber(NumUtils.sum(officeSupplies.getInventoryNumber(), inNumber));
+			InventoryDetail inventoryDetail = new InventoryDetail();
+			inventoryDetail.setTime(new Date());
+			inventoryDetail.setFlag(1);
+			inventoryDetail.setOfficeSuppliesId(itemId);
+			inventoryDetail.setNumber(Double.valueOf(inNumber));
+			inventoryDetail.setOutboundCost(NumUtils.mul(inNumber, officeSupplies.getPrice()));
+			inventoryDetail.setStatus(1);
+			inventoryDetail.setOperator(operator);
+			idList.add(inventoryDetail);
+			officeSupplies.setLibraryValue(NumUtils.mul(officeSupplies.getInventoryNumber(), officeSupplies.getPrice()));
 			officeSuppliesDao.save(officeSupplies);
 		}
         save(idList);
@@ -275,5 +309,6 @@ public class InventoryDetailServiceImpl extends BaseServiceImpl<InventoryDetail,
         sumMap.put("sum", sumCostList);
         return sumMap;
     }
+
 
 }

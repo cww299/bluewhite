@@ -216,6 +216,8 @@ layui.extend({
 				otherBtn: function(obj) {
 					if (obj.event === 'sacanOut') {
 						outScan();
+					} else if (obj.event=='sacanIn'){
+						inScan();
 					} else if (obj.event === 'printQcCode'){
 						var check = table.checkStatus('tableData').data;
 						if(check.length==0)
@@ -231,6 +233,7 @@ layui.extend({
 				(function(){
 					if(inventory.type==1){
 						return '<span class="layui-btn layui-btn-primary layui-btn-sm" lay-event="sacanOut">扫码出库</span>'+
+						'<span class="layui-btn layui-btn-warm layui-btn-sm" lay-event="sacanIn">扫码入库</span>'+
 						'<span class="layui-btn layui-btn-normal layui-btn-sm" lay-event="printQcCode">打印条形码</span>';
 					}
 					return "";
@@ -387,7 +390,173 @@ layui.extend({
 			})
 		}
 		
-		
+		function inScan(){
+			layer.open({
+				type:1,
+				title:'扫码入库',
+				area:['90%','90%'],
+				content:[
+					'<div style="padding:10px;">',
+						'<input class="layui-input scanInput" placeholder="扫码枪扫码时，请将光标聚集在输入框内">',
+						'<table>',
+							'<tr class="layui-form">',
+								'<td><input class="layui-input" id="inName" placeholder="入库人"></td>',
+								'<td>&nbsp;&nbsp;</td>',
+								'<td><span class="layui-btn layui-btn-primary" id="oneKeyIn">一键入库</span></td>',
+							'</tr>',
+						'</table>',
+						'<table id="inTable" lay-filter="inTable"></table>',
+					'</div>',
+				].join(' '),
+				success:function(){
+					form.render();
+					var outCols = [
+						{ type:'checkbox', },
+						{ field:'name', title:'物品名',  },
+						{ field:'location', title:'仓位', },
+						{ field:'price', title:'单价', },
+						{ field:'inNumber', title:'入库数量', edit:'number', style:'background:#d8ff83' },
+					];
+					var inTableData = [];
+					mytable.renderNoPage({
+						elem:'#inTable',
+						data: inTableData,
+						cols: [outCols],
+						limit:9999,
+					})
+					$('#oneKeyIn').click(function(){
+						var check = table.checkStatus('inTable').data;
+						if(check.length == 0)
+							return myutil.emsg('请勾选入库数据');
+						var allMoney = 0;
+						for(var i in check){
+							if(check[i].inNumber<=0)
+								return myutil.emsg("请正确填写入库数量");
+							allMoney += check[i].inNumber*check[i].price
+						}
+						var inName = $('#inName').val();
+						if(!inName)
+							return myutil.emsg("请填写入库人！");
+						var tplData = {
+							inName: inName,
+							outData: check,
+							allMoney: allMoney,
+						};
+						layer.open({
+							type: 1,
+							title: '入库详细',
+							area: ['700px','700px'],
+							content: laytpl([
+							'<div class="printDiv">',
+							'<style>',
+								'.outBill ul li span{',
+									'width: 19%;',
+									'display: inline-block;',
+								    'text-align: center;',
+								    'font-size: 16px;',
+								    'margin: 7px 0;',
+								'}',
+							'</style>',
+							'<div class="outBill">',
+								'<h3 style="text-align:center;">蓝白办公用品入库单</h3>',
+								'<hr><hr>',
+								'<p>入库日期：   {{   layui.myutil.getSubDay(0,"yyyy-MM-dd hh:mm:ss") }}</p>',
+								'<hr>',
+								'<ul>',
+									'<li><span>商品名</span><span>库位</span><span>单价</span><span>入库数量</span><span>价值</span></li>',
+								'{{# layui.each(d.outData,function(index,item){ }}',
+									'<li>',
+							    		'<span>{{ item.name }}</span>',
+							    		'<span>{{ item.location }}</span>',
+							    		'<span>{{ item.price }}</span>',
+							    		'<span>{{ item.inNumber }}</span>',
+							    		'<span>{{ (item.price*item.inNumber).toFixed(2) }}</span>',
+									'</li>',
+								'{{# }) }}',
+								'</ul>',
+								'<hr>',
+								'<p style="text-align:right;">总价值：   {{  d.allMoney.toFixed(2) }}</p>',
+								'<p style="text-align:right;">入库人：   {{  d.inName }}</p>',
+							'</div>',
+							'</div>',
+							].join(' ')).render(tplData),
+							btn: ['打印','确认入库','取消'],
+							yes: function(layerIndex,layero){
+								layui.goodFlag.printpage($(layero).find('.printDiv').html());
+							},
+							btn2: function(layerIndex){
+								var inData = [];
+								for(var i in check)
+									inData.push({
+										id: check[i].id,
+										number: check[i].inNumber
+									})
+								myutil.saveAjax({
+									url: '/personnel/addInventoryDetailMoresIn',
+									data: {
+										inName: inName,
+										inList: JSON.stringify(inData),
+									},
+									success: function(){
+										layer.close(layerIndex)
+										table.reload('tableData')
+										inTableData = []
+										table.reload('inTable',{
+											data: inTableData,
+										})
+										soundTips.inSuccess();
+										form.render();
+									}
+								})
+								return false
+							}
+						})
+					})
+					$('.scanInput').focus();
+					$('.scanInput').unbind().on('keypress', function(e) {
+						if (e.which == 13) {
+							var val = $(this).val();
+							if(!val)
+								return;
+							myutil.getDataSync({
+								url: myutil.config.ctx+'/personnel/getOfficeSupplies',
+								data: {
+									type: inventory.type,
+									qcCode: val,
+								},
+								success:function(d){
+									if(d!=null && d.length>0){
+										for(var i in d){
+											d[i].inNumber = 1;
+											var has = false;
+											for(var j in inTableData){
+												if(inTableData[j].id == d[i].id){
+													has = true;
+													inTableData[i].inNumber++;
+												}
+											}
+											if(!has)
+												inTableData.push(d[i]);
+										}
+										table.reload('inTable',{
+											data: inTableData
+										});
+										soundTips.scanSuccess();
+									}else{
+										layer.msg("找不到商品："+val)
+										soundTips.noFind();
+									}
+								},
+								error: function(){
+									soundTips.error();
+								}
+							})
+							$(this).val('');
+		                }
+			        });
+				}
+			})
+		}
 		function outScan(){
 			layer.open({
 				type:1,
@@ -404,6 +573,8 @@ layui.extend({
 								'<td>&nbsp;&nbsp;</td>',
 								'<td><input class="layui-input" id="remarkInput" placeholder="备注"></td>',
 								'<td>&nbsp;&nbsp;</td>',
+								'<td><input class="layui-input" id="outName" placeholder="出库人"></td>',
+								'<td>&nbsp;&nbsp;</td>',
 								'<td><span class="layui-btn layui-btn-primary" id="oneKeyOut">一键出库</span></td>',
 							'</tr>',
 						'</table>',
@@ -417,6 +588,7 @@ layui.extend({
 						{ field:'name', title:'物品名',  },
 						{ field:'location', title:'仓位', },
 						{ field:'inventoryNumber', title:'库存数量', },
+						{ field:'price', title:'单价', },
 						{ field:'outNumber', title:'出库数量', edit:'number', style:'background:#d8ff83' },
 					];
 					var outTableData = [];
@@ -430,52 +602,80 @@ layui.extend({
 						var check = table.checkStatus('outTable').data;
 						if(check.length == 0)
 							return myutil.emsg('请勾选出库数据');
+						var allMoney = 0;
 						for(var i in check){
 							if(check[i].outNumber<=0)
 								return myutil.emsg("请正确填写出库数量");
 							if(check[i].outNumber>check[i].inventoryNumber){
 								return myutil.emsg("商品："+check[i].name+" 库位："+check[i].inventoryNumber+" 库存量不足，无法出库");
 							}
+							allMoney += check[i].outNumber*check[i].price
 						}
 						var orgId = $('#outOrgName').val(),
 						userId = $('#outPeople').val(),
 						remark = $('#remarkInput').val(),
+						outName = $('#outName').val(),
 						orgName = '---', userName = '---';
+						if(!outName)
+							return myutil.emsg("请填写出库人！");
 						if(orgId)
 							orgName = $('#outOrgName').find('option[value='+orgId+']').html();
 						if(userId)
 							userName = $('#outPeople').find('option[value='+userId+']').html();
 						var tplData = {
+							outName: outName,
 							orgName: orgName,
 							userName: userName,
 							remark: remark || '---',
 							outData: check,
+							allMoney: allMoney,
 						};
 						layer.open({
 							type: 1,
 							title: '出库详细',
-							area: ['500px','500px'],
+							area: ['700px','700px'],
 							content: laytpl([
+							'<div class="printDiv">',
+							'<style>',
+								'.outBill ul li span{',
+									'width: 19%;',
+									'display: inline-block;',
+								    'text-align: center;',
+								    'font-size: 16px;',
+								    'margin: 7px 0;',
+								'}',
+							'</style>',
 							'<div class="outBill">',
-								'<p>出库部门：   {{   d.orgName }}</p>',
-								'<p>出库人：   {{  d.userName }}</p>',
+								'<h3 style="text-align:center;">蓝白办公用品出库单</h3>',
+								'<hr><hr>',
+								'<p>领取日期：   {{   layui.myutil.getSubDay(0,"yyyy-MM-dd hh:mm:ss") }}</p>',
+								'<p>领取部门：   {{   d.orgName }}</p>',
+								'<p>领取人：   {{  d.userName }}</p>',
 								'<p>备注：   {{  d.remark }}</p>',
 								'<hr>',
 								'<ul>',
-									'<li><span>商品名</span><span>库位</span><span>出库数量</span></li>',
+									'<li><span>商品名</span><span>库位</span><span>单价</span><span>出库数量</span><span>价值</span></li>',
 								'{{# layui.each(d.outData,function(index,item){ }}',
 									'<li>',
 							    		'<span>{{ item.name }}</span>',
 							    		'<span>{{ item.location }}</span>',
+							    		'<span>{{ item.price }}</span>',
 							    		'<span>{{ item.outNumber }}</span>',
+							    		'<span>{{ (item.price*item.outNumber).toFixed(2) }}</span>',
 									'</li>',
 								'{{# }) }}',
 								'</ul>',
 								'<hr>',
+								'<p style="text-align:right;">总价值：   {{  d.allMoney.toFixed(2) }}</p>',
+								'<p style="text-align:right;">出库人：   {{  d.outName }}</p>',
+							'</div>',
 							'</div>',
 							].join(' ')).render(tplData),
-							btn: ['确认出库','取消'],
-							yes: function(layerIndex){
+							btn: ['打印','确认出库','取消'],
+							yes: function(layerIndex,layero){
+								layui.goodFlag.printpage($(layero).find('.printDiv').html());
+							},
+							btn2: function(layerIndex){
 								var outData = [];
 								for(var i in check)
 									outData.push({
@@ -488,6 +688,7 @@ layui.extend({
 										orgId: orgId,
 										userId: userId,
 										remark: remark,
+										operator: outName,
 										outList: JSON.stringify(outData),
 									},
 									success: function(){
@@ -503,6 +704,7 @@ layui.extend({
 										form.render();
 									}
 								})
+								return false
 							}
 						})
 					})
@@ -526,7 +728,7 @@ layui.extend({
 											for(var j in outTableData){
 												if(outTableData[j].id == d[i].id){
 													has = true;
-													break;
+													outTableData[i].outNumber++;
 												}
 											}
 											if(!has)

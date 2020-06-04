@@ -129,21 +129,40 @@ public class OfficeSuppliesAction {
 	}
 	
 	/**
-	 * 批量新增出入库记录（扫码出库）
+	 * 批量新增出库记录（扫码出库）
 	 * @param order
 	 * @return
 	 */
 	@RequestMapping(value = "/personnel/addInventoryDetailMores", method = RequestMethod.POST)
 	@ResponseBody
-	public CommonResponse addInventoryDetailMores(Long userId,Long orgId,String outList,String remark) {
+	public CommonResponse addInventoryDetailMores(Long userId,Long orgId,String outList,String remark,String operator) {
 		CommonResponse cr = new CommonResponse();
 		if(outList==null || outList.isEmpty()) {
 			cr.setCode(1500);
 			cr.setMessage("出库信息不能为空");
 			return cr;
 		}
-		inventoryDetailService.addInventoryDetailMores(userId,orgId,outList,remark);
+		inventoryDetailService.addInventoryDetailMores(userId,orgId,outList,remark,operator);
 		cr.setMessage("出库成功");
+		return cr;
+	}
+	
+	/**
+	 * 批量新增入库记录（扫码入库）
+	 * @param order
+	 * @return
+	 */
+	@RequestMapping(value = "/personnel/addInventoryDetailMoresIn", method = RequestMethod.POST)
+	@ResponseBody
+	public CommonResponse addInventoryDetailMoresIn(String inList,String operator) {
+		CommonResponse cr = new CommonResponse();
+		if(inList==null || inList.isEmpty()) {
+			cr.setCode(1500);
+			cr.setMessage("入库信息不能为空");
+			return cr;
+		}
+		inventoryDetailService.addInventoryDetailMoresIn(inList,operator);
+		cr.setMessage("入库成功");
 		return cr;
 	}
 	

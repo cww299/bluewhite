@@ -57,6 +57,12 @@ public class InventoryDetail extends BaseEntity<Long> {
 	private BaseData orgName;
 
 	/**
+	 * 操作人
+	 */
+	@Column(name = "operator")
+	private String operator;
+	
+	/**
 	 * 领取人id
 	 */
 	@Column(name = "user_id")
@@ -280,4 +286,12 @@ public class InventoryDetail extends BaseEntity<Long> {
 		this.user = user;
 	}
 
+	public String getOperator() {
+		return operator;
+	}
+
+	public void setOperator(String operator) {
+		this.operator = operator;
+	}
+	
 }

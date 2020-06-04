@@ -12,7 +12,7 @@ layui.define(['jquery','layer','table','myutil',],function(exports){
 	var BASE_URL = '/upload/sound/';
 	
 	var NO_FIND = 'no_find',OUT_SUCCESS = 'out_success',SCAN_SUCCESS = 'scan_success',SYS_ERROR = 'sys_error',
-		EXT = '.mp3';
+		IN_SUCCESS = 'in_success',EXT = '.mp3';
 	
 	$('head style').append(STY);
 	var isNull = "---";
@@ -22,6 +22,9 @@ layui.define(['jquery','layer','table','myutil',],function(exports){
 	
 	soundTips.outSuccess = function(){
 		soundTips.play(OUT_SUCCESS);
+	}
+	soundTips.inSuccess = function(){
+		soundTips.play(IN_SUCCESS);
 	}
 	soundTips.noFind = function(){
 		soundTips.play(NO_FIND);
