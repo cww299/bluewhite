@@ -335,8 +335,10 @@ public class ApplicationLeaveServiceImpl extends BaseServiceImpl<ApplicationLeav
                 }
                 // 加班申请
                 if (applicationLeave.isApplyOvertime()) {
-                    if (attendanceTime.getCheckIn() != null && attendanceTime.getCheckOut() != null  && actualOverTime < Double.valueOf(time)) {
-                        throw new ServiceException("根据" + date + "的签到时间该员工加班时间为" + actualOverTime + "小时，加班申请时间有误请重新核对");
+                    if(applicationLeave.getOvertimeType() != 3) {
+                        if (attendanceTime.getCheckIn() != null && attendanceTime.getCheckOut() != null  && actualOverTime < Double.valueOf(time)) {
+                            throw new ServiceException("根据" + date + "的签到时间该员工加班时间为" + actualOverTime + "小时，加班申请时间有误请重新核对");
+                        }
                     }
                     String overString = "";
                     switch (applicationLeave.getOvertimeType()) {

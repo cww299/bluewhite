@@ -31,7 +31,7 @@ public interface SendOrderService extends BaseCRUDService<SendOrder, Long> {
     public PageResult<SendOrder> findPages(Map<String, Object> params, PageParameter page);
 
     /**
-     * 审核
+     * 生成物流费用
      * expenseDate 申请付款时间
      * paymentDate 预计付款时间
      * @param ids
