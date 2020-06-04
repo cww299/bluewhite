@@ -70,7 +70,7 @@ public class SendOrderServiceImpl extends BaseServiceImpl<SendOrder, Long> imple
             return null;
         }, StringUtil.getQueryNoPageParameter());
         PageResultStat<SendOrder> result = new PageResultStat<>(pages, page);
-        result.setAutoStateField("sendPackageNumber", "sendPrice", "extraPrice", "logisticsPrice");
+        result.setAutoStateField("number","sendPackageNumber", "sendPrice", "extraPrice", "logisticsPrice");
         result.count();
         return result;
     }

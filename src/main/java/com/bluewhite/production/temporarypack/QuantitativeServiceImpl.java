@@ -39,6 +39,7 @@ import com.bluewhite.ledger.entity.Customer;
 import com.bluewhite.ledger.entity.LogisticsCosts;
 import com.bluewhite.ledger.entity.PackingMaterials;
 
+import cn.hutool.core.bean.BeanUtil;
 import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.date.DateTime;
 import cn.hutool.core.date.DateUtil;
@@ -417,6 +418,21 @@ public class QuantitativeServiceImpl extends BaseServiceImpl<Quantitative, Long>
                 for (int i = 0; i < idArr.length; i++) {
                     Long id = Long.parseLong(idArr[i]);
                     Quantitative quantitative = dao.findOne(id);
+                    //当是调拨单的情况，不计算物流费用，向调拨仓库生成量化单
+//                    if(quantitative.getAllocation()==1) {
+//                        if(quantitative.getAllocationWarehousId()==null) {
+//                            throw new ServiceException("调拨仓库不能为null");
+//                        }
+//                        Quantitative quantitativeNew = new Quantitative();
+//                        BeanUtil.copyProperties(quantitative, quantitativeNew);
+//                        quantitativeNew.setWarehouseTypeId(quantitative.getAllocationWarehousId());
+//                        quantitativeNew.setAllocation(null);
+//                        quantitativeNew.setAllocationWarehousId(null);
+//                        dao.save(quantitativeNew);
+//                        quantitative.setFlag(flag);
+//                        dao.save(quantitative);
+//                        continue;
+//                    }
                     if (flag == 1 && quantitative.getFlag() == 1) {
                         throw new ServiceException("已发货请勿多次发货");
                     }

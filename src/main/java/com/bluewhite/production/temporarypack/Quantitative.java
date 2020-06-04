@@ -129,6 +129,12 @@ public class Quantitative extends BaseEntity<Long> {
      */
     @Column(name = "allocation")
     private Integer allocation;
+    
+    /**
+     * 调拨仓库id
+     */
+    @Column(name = "allocation_warehous_id")
+    private Long allocationWarehousId;
 
     /**
      * 是否打印
@@ -314,6 +320,14 @@ public class Quantitative extends BaseEntity<Long> {
     private Long logisticsId;
     
     
+
+    public Long getAllocationWarehousId() {
+        return allocationWarehousId;
+    }
+
+    public void setAllocationWarehousId(Long allocationWarehousId) {
+        this.allocationWarehousId = allocationWarehousId;
+    }
 
     public Integer getAllocation() {
         return allocation;
