@@ -26,6 +26,7 @@ import com.bluewhite.common.utils.StringUtil;
 import com.bluewhite.common.utils.AutoSearchUtils.SearchUtils;
 import com.bluewhite.finance.consumption.entity.Consumption;
 import com.bluewhite.finance.consumption.service.ConsumptionService;
+import com.bluewhite.system.user.entity.User;
 
 import cn.hutool.core.date.DateUtil;
 import cn.hutool.core.util.NumberUtil;
@@ -69,7 +70,7 @@ public class SendOrderServiceImpl extends BaseServiceImpl<SendOrder, Long> imple
             return null;
         }, StringUtil.getQueryNoPageParameter());
         PageResultStat<SendOrder> result = new PageResultStat<>(pages, page);
-        result.setAutoStateField("sendPackageNumber", "sendPrice", "extraPrice", "logisticsPrice");
+        result.setAutoStateField("number","sendPackageNumber", "sendPrice", "extraPrice", "logisticsPrice");
         result.count();
         return result;
     }
@@ -94,6 +95,10 @@ public class SendOrderServiceImpl extends BaseServiceImpl<SendOrder, Long> imple
                     if(sendOrder.getAudit()==1) {
                         throw new ServiceException("发货单已生成物流费用，无需多次生成");
                     }
+                    User user = sendOrder.getCustomer().getUser();
+                    if(null == user) {
+                        throw new ServiceException("无业务员,无法生成");
+                    }
                     // 生成当前物流当月的父类应付账单
                     // 根据申请时间和物流点查询是否有已存在数据
                     Consumption consumptionPrent =
@@ -108,7 +113,7 @@ public class SendOrderServiceImpl extends BaseServiceImpl<SendOrder, Long> imple
                         consumptionPrent.setType(5);
                         consumptionPrent.setExpenseDate(expenseDate);
                         consumptionPrent.setExpectDate(expectDate);
-                        consumptionPrent.setOrgNameId(sendOrder.getCustomer().getUser().getOrgNameId());
+                        consumptionPrent.setOrgNameId(user.getOrgNameId());
                         consumptionPrent.setFlag(0);
                         consumptionPrent.setMoney(sendOrder.getLogisticsPrice().doubleValue());
                         consumptionPrent.setLogisticsId(sendOrder.getLogisticsId());
@@ -121,7 +126,7 @@ public class SendOrderServiceImpl extends BaseServiceImpl<SendOrder, Long> imple
                     consumption.setType(5);
                     consumption.setExpenseDate(expenseDate);
                     consumption.setExpectDate(expectDate);
-                    consumption.setOrgNameId(sendOrder.getCustomer().getUser().getOrgNameId());
+                    consumption.setOrgNameId(user.getOrgNameId());
                     consumption.setFlag(0);
                     consumption.setMoney(sendOrder.getLogisticsPrice().doubleValue());
                     consumption.setLogisticsId(sendOrder.getLogisticsId());

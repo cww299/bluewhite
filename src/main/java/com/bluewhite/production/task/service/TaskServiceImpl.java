@@ -755,6 +755,7 @@ public class TaskServiceImpl extends BaseServiceImpl<Task, Long> implements Task
                 newTask.setAllotTime(task.getAllotTime());
                 // 默认是包装
                 newTask.setType(2);
+                newTask.setFlag(0);
                 newTask.setProcessesId(id);
                 newTask.setQuantitativeId(task.getQuantitativeId());
                 newTask.setNumber(task.getNumber());

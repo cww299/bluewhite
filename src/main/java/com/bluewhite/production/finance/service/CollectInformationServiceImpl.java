@@ -52,7 +52,7 @@ public class CollectInformationServiceImpl extends BaseServiceImpl<CollectInform
 		collectInformation.setRegionalPrice(NumUtils.round(regionalPrice,4));
 		//全表加工费  汇总
 		List<Task> taskList = taskService.findByTypeAndAllotTimeBetween(collectInformation.getType(),collectInformation.getOrderTimeBegin(),collectInformation.getOrderTimeEnd());
-		double sumTask = taskList.stream().filter(Task->Task.getFlag()==0).mapToDouble(Task::getTaskPrice).sum();
+		double sumTask = taskList.stream().filter(Task->Task.getFlag()!=null && Task.getFlag()==0).mapToDouble(Task::getTaskPrice).sum();
 		collectInformation.setSumTask(NumUtils.round(sumTask,4));
 		//外发价值
 		double sumOutPrice = bacthList.stream().filter(Bacth->Bacth.getSumOutPrice()!=null).mapToDouble(Bacth::getSumOutPrice).sum();
@@ -69,11 +69,8 @@ public class CollectInformationServiceImpl extends BaseServiceImpl<CollectInform
 		collectInformation.setPriceCollect(priceCollect);
 		//不予给付汇总占比
 		double proportion = 0;
-		//我们的表和小关的表差价不予给付
-		double priceDifferences = 0;
 		if(sumTask!=0){
 			proportion = NumUtils.div(regionalPrice,sumTask,3);
-			priceDifferences = NumUtils.mul( NumUtils.sub(sumTask,regionalPrice) , NumUtils.div(regionalPrice,sumTask,3));
 		}
 		collectInformation.setProportion(proportion);
 	 

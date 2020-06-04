@@ -1,6 +1,7 @@
  package com.bluewhite.production.temporarypack;
 
 import java.util.Date;
+import java.util.List;
 
 import com.bluewhite.base.BaseRepository;
 
@@ -17,7 +18,7 @@ public interface SendOrderDao extends BaseRepository<SendOrder, Long>{
     
     
     /**
-     * 根据当天日期和客户查找发货单 一天只会生成一条
+     * 根据当天日期和客户查找发货单
      */
-    SendOrder findByCustomerIdAndSendTimeBetweenAndWarehouseTypeId(Long id , Date startTime ,Date endTime,Long warehouseTypeId);
+    List<SendOrder> findByCustomerIdAndSendTimeBetweenAndWarehouseTypeId(Long id , Date startTime ,Date endTime,Long warehouseTypeId);
 }
