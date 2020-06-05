@@ -532,7 +532,7 @@ layui.extend({
 											for(var j in inTableData){
 												if(inTableData[j].id == d[i].id){
 													has = true;
-													inTableData[i].inNumber++;
+													inTableData[j].inNumber++;
 												}
 											}
 											if(!has)
@@ -728,7 +728,7 @@ layui.extend({
 											for(var j in outTableData){
 												if(outTableData[j].id == d[i].id){
 													has = true;
-													outTableData[i].outNumber++;
+													outTableData[j].outNumber++;
 												}
 											}
 											if(!has)
