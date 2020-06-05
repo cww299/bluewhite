@@ -16,28 +16,45 @@ layui.extend({
 			'.flagsDiv{',
 				'margin-right:5px;margin-top:5px;',
 			'}',
+			'.hiddenPrint{',
+				'display:none;',
+			'}',
 		'</style>',
 	].join('');
 	
 	$('head').append(STYLE);
 	
 	var TPL = [
-	'<div style="padding:10px;">',
-	'{{# ',
-		'layui.each(d,function(index,item){ }}',
-			'<input type="number" class="layui-input" placeholder="打印张数"  value="{{ item.inventoryNumber }}" style="float: right;',
-	    			'width: 200px;margin-top: 150px;">',
-	    	'<div class="flagsDiv">',
-				'<div style="border: 1px solid gray;width: 320px;',
-		    			'height:240px;page-break-after:always;display: flex;">',
-		    		'<div style="align-self: center;text-align: center;">',
-						'<p style="text-align: center;margin: 0px;line-height: 20px;width: 300px;">{{ item.name || "---"}}</p>',
-						'<img id="id{{ item.id }}"/>',
+		'<div style="padding:10px;">',
+		'{{# ',
+			'layui.each(d,function(index,item){ }}',
+				'<input type="number" class="layui-input" placeholder="打印张数"  value="{{ item.inventoryNumber }}" style="float: right;',
+		    			'width: 200px;margin-top: 150px;">',
+    			'<div style="page-break-after:always;" class="hiddenPrint">',
+	    			'<p style="font-size: 10px;width: 100px;margin: auto; overflow: hidden;white-space: nowrap;">{{ item.name }}</p>',
+	    			'<img class="id{{ item.id }}" style="width:100px;height:30px;"/>',
+	    			'<p style="margin: 0px; font-size: 10px;">{{ item.qcCode }}</p>',
+    			'</div>',
+		    	'<div>',
+					'<div style="border: 1px solid gray; padding: 10px;margin-right:5px;margin-top:5px;width: 320px;',
+			    			'height:240px;display: flex;">',
+			    		'<div style="align-self: center;text-align: center;">',
+							'<p style="margin: 0px;line-height: 20px;width: 300px;">{{ item.name || "---"}}</p>',
+							'<img class="id{{ item.id }}" />',
+							'<p style="margin: 0px; ">{{ item.qcCode }}</p>',
+						'</div>',
 					'</div>',
 				'</div>',
-			'</div>',
+		'{{# }) }}',
+		'</div>',
+	].join(' ');
+	
+	var PRINT_TPL = [
+	'<style>body{text-align:center;}</style>',
+	'{{# ',
+		'layui.each(d,function(index,item){ }}',
+	    	
 	'{{# }) }}',
-	'</div>',
 	].join(' ');
 	
 	var goodFlag = {
@@ -51,12 +68,12 @@ layui.extend({
 			title: '打印商品标签',
 			btn: ['打印','取消'],
 			yes: function(layIndex,layerElem){
-				var html = '';
+				var html = '<style>body{ margin:0px;text-align:center;}</style>';
 				layui.each($(layerElem).find('input'),function(index,item){
 					var val = $(item).val();
 					if(val){
 						for(var i=0;i<val;i++){
-							html += $(item).next('div').html();
+							html += $(item).next('.hiddenPrint').html();
 						}
 					}
 				})
@@ -65,7 +82,10 @@ layui.extend({
 			content: laytpl(TPL).render(data),
 			success: function(layerElem,layerIndex){
 				for(var i in data){
-					JsBarcode("#id"+data[i].id, data[i].qcCode);
+					JsBarcode(".id"+data[i].id, data[i].qcCode,{
+						displayValue: false,
+						margin: 0,
+					});
 				}
 			}
 		})
