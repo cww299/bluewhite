@@ -110,8 +110,6 @@ public class AttendanceTool {
             if (flag) {
                 actualTurnWorkTime = NumUtils.sum(attendanceTime.getWorkTime(), DatesUtil.getTimeHour(minute));
                 actualDutyTime = NumUtils.sub(turnWorkTime, actualTurnWorkTime);
-                // 实际缺勤时长分钟数
-                actualDutytimMinute += DatesUtil.getTime(attendanceTime.getCheckOut(), workTimeEnd);
                 flag = false;
                 attendanceTime.setFlag(1);
             }
@@ -200,8 +198,6 @@ public class AttendanceTool {
             if (flag) {
                 actualTurnWorkTime = attendanceTime.getWorkTime();
                 actualDutyTime = NumUtils.sub(turnWorkTime, actualTurnWorkTime);
-                // 实际缺勤时长分钟数
-                actualDutytimMinute += DatesUtil.getTime(attendanceTime.getCheckOut(), workTimeEnd);
                 flag = false;
                 attendanceTime.setFlag(1);
             }

@@ -400,6 +400,7 @@ public class UserServiceImpl extends BaseServiceImpl<User, Long> implements User
 		List<BaseData> baseDataList = baseDataDao.findByType("orgName");
 		User user = new User();
 		user.setIsAdmin(false);
+		user.setQuit(0);
 		List<User> userList = findUserList(user);
 		for (BaseData baseData : baseDataList) {
 			List<User> users = userList.stream()
