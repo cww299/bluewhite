@@ -12,7 +12,11 @@ layui.extend({
 	,laytpl = layui.laytpl
 	,layer = layui.layer;
 	var STYLE = [
-		
+		'<style>',
+			'.flagsDiv{',
+				'margin-right:5px;margin-top:5px;',
+			'}',
+		'</style>',
 	].join('');
 	
 	$('head').append(STYLE);
@@ -23,8 +27,8 @@ layui.extend({
 		'layui.each(d,function(index,item){ }}',
 			'<input type="number" class="layui-input" placeholder="打印张数"  value="{{ item.inventoryNumber }}" style="float: right;',
 	    			'width: 200px;margin-top: 150px;">',
-	    	'<div>',
-				'<div style="border: 1px solid gray; padding: 10px;margin-right:5px;margin-top:5px;width: 320px;',
+	    	'<div class="flagsDiv">',
+				'<div style="border: 1px solid gray;width: 320px;',
 		    			'height:240px;page-break-after:always;display: flex;">',
 		    		'<div style="align-self: center;text-align: center;">',
 						'<p style="text-align: center;margin: 0px;line-height: 20px;width: 300px;">{{ item.name || "---"}}</p>',

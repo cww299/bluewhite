@@ -41,6 +41,7 @@
 			<li style="display: inline;"><i class="fa fa-circle" style="color: #13a8bd"></i>产假</li>
 			<li style="display: inline;"><i class="fa fa-circle" style="color: #1211e2"></i>护理假</li>
 			<li style="display: inline;"><i class="fa fa-circle" style="color: #ff5b00"></i>抵消迟到</li>
+			<li style="display: inline;"><i class="fa fa-circle" style="color: #12b119"></i>哺乳假</li>
 		</ul>
 	</div>
 	<div class="layui-card-body">
@@ -470,6 +471,8 @@ layui.config({
 											colo='#1211e2';
 										if(d.attendanceTimeData[i].holidayType==6)
 											colo='#ff5b00';
+										if(d.attendanceTimeData[i].holidayType==7)
+											colo='#12b119';
 									return '<div style="background-color:'+colo+';color: #fff">'+d.attendanceTimeData[i].dutytime+'</div>';
 						 	}
 						 }

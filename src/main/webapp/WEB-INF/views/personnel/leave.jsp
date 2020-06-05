@@ -115,7 +115,8 @@
 						<option value="3">婚假</option>
 						<option value="4">产假</option>
 						<option value="5">护理假</option>
-						<option value="6">抵消迟到</option></select>
+						<option value="6">抵消迟到</option>
+						<option value="7">哺乳假</option></select>
 				</div>
 			</div>
 			<div class="layui-form-item">
