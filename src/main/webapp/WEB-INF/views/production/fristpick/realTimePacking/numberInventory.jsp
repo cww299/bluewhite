@@ -7,7 +7,7 @@
 	<script src="${ctx }/static/layui-v2.4.5/layui/layui.js"></script>
 	<link rel="stylesheet" href="${ctx }/static/layui-v2.4.5/layui/css/layui.css" media="all">
 	<meta charset="utf-8">
-	<title>位数丢失记录</title>
+	<title>位数库存</title>
 	<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
 </head>
 <body>

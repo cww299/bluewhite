@@ -206,6 +206,7 @@ layui.extend({
 			where.mode = 2;
 		mytable.render({
 			elem: '#tableData',
+			totalRow:['money'],
 			url: myutil.config.ctx+url+'?type='+audit.type,
 			where: where,
 			ifNull:'',

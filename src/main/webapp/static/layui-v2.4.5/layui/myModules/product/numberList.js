@@ -85,6 +85,7 @@ layui.config({
 					return '';
 				})(),
 			].join(' '),
+			totalRow:['number'],
 			curd:{
 				btn:[4],
 				otherBtn:function(obj){

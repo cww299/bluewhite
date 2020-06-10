@@ -262,6 +262,7 @@ layui.extend({
 			url: myutil.config.ctx+url+'?type='+askfor.type,
 			where: where,
 			ifNull:'',
+			totalRow:['money'],
 			size:'lg',
 			autoUpdate:{
 				saveUrl:'/fince/addConsumption?type='+askfor.type,
