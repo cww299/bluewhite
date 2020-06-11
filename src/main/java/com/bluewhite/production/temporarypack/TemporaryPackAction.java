@@ -556,6 +556,9 @@ public class TemporaryPackAction {
     public ModelAndView scanSend(Long id) {
         ModelAndView mav = new ModelAndView();
         Quantitative quantitative = quantitativeService.findOne(id);
+        if(null==quantitative) {
+            throw new ServiceException("单据不存在！");
+        }
         if (quantitative.getFlag() == 1) {
             mav.setViewName("/visitor/scanSend");
             mav.addObject("data", clearCascadeJSONQuantitative.format(quantitative).toJSON());
