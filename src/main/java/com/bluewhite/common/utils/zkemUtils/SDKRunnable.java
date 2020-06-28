@@ -66,7 +66,6 @@ public class SDKRunnable implements Runnable {
 					log.error(address + "考勤机设备异常，重连中-------");
 					//	判断是否重连成功，重联成功则去除之前的定时任务
 					regEvent();
-					
 				}
 			}
 		}, time, 60000);//	 这里设定将延时每隔一分钟执行一次

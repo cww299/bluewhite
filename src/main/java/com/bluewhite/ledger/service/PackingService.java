@@ -39,6 +39,13 @@ public interface PackingService extends BaseCRUDService<Packing, Long>{
 	public int sendPacking(String ids,Date time);
 	
 	/**
+     * 一键发货(发货时，加上版权和调拨批次)
+     * @param ids
+     * @return
+     */
+    public int addSale(String ids);
+	
+	/**
 	 * 查看实际发货单
 	 * @param packingChild
 	 * @param page

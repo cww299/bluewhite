@@ -39,7 +39,6 @@ import com.bluewhite.ledger.entity.Customer;
 import com.bluewhite.ledger.entity.LogisticsCosts;
 import com.bluewhite.ledger.entity.PackingMaterials;
 
-import cn.hutool.core.bean.BeanUtil;
 import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.date.DateTime;
 import cn.hutool.core.date.DateUtil;
@@ -103,6 +102,10 @@ public class QuantitativeServiceImpl extends BaseServiceImpl<Quantitative, Long>
             // 是否审核
             if (param.getAudit() != null) {
                 predicate.add(cb.equal(root.get("audit").as(Integer.class), param.getAudit()));
+            }
+            // 是否审核
+            if (param.getSale() != null) {
+                predicate.add(cb.equal(root.get("sale").as(Integer.class), param.getSale()));
             }
             // 是否对账
             if (param.getReconciliation() != null) {
