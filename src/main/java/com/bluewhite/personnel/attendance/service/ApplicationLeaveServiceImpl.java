@@ -205,6 +205,9 @@ public class ApplicationLeaveServiceImpl extends BaseServiceImpl<ApplicationLeav
                     case 6:
                         detail = "抵消迟到";
                         break;
+                    case 7:
+                        detail = "哺乳假";
+                        break;
                 }
                 holidayDetail = holidayDetail.equals("") ? (date + detail + time + "小时")
                     : (holidayDetail + "," + date + detail + time + "小时");

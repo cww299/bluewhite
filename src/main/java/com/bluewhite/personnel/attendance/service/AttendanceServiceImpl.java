@@ -296,7 +296,6 @@ public class AttendanceServiceImpl extends BaseServiceImpl<Attendance, Long> imp
 		int count = 0;
 		if (StringUtils.isEmpty(address)) {
 			List<Attendance> list = allAttendance(Constants.THREE_FLOOR, startTime, endTime, userId);
-//			allAttendance(Constants.TWO_FLOOR, startTime, endTime, userId);
 			List<Attendance> list1 = allAttendance(Constants.ONE_FLOOR, startTime, endTime, userId);
 			List<Attendance> list2 = allAttendance(Constants.EIGHT_WAREHOUSE, startTime, endTime, userId);
 			List<Attendance> list3 = allAttendance(Constants.NEW_IGHT_WAREHOUSE, startTime, endTime, userId);

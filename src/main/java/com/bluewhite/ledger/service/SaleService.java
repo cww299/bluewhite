@@ -6,7 +6,6 @@ import com.bluewhite.base.BaseCRUDService;
 import com.bluewhite.common.entity.PageParameter;
 import com.bluewhite.common.entity.PageResult;
 import com.bluewhite.ledger.entity.Bill;
-import com.bluewhite.ledger.entity.PackingChild;
 import com.bluewhite.ledger.entity.Sale;
 
 public interface SaleService  extends BaseCRUDService<Sale,Long>{

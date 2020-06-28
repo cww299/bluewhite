@@ -192,7 +192,7 @@ public class BacthServiceImpl extends BaseServiceImpl<Bacth, Long> implements Ba
                         if (taskList.size() == 0) {
                             if (procedure.size() > 0) {
                                 Task task = new Task();
-                                String[] pro = new String[] {String.valueOf(procedure.get(0).getId())};
+                                String[] pro = {String.valueOf(procedure.get(0).getId())};
                                 String userIds = attendancePayList.stream().map(u -> String.valueOf(u.getUserId()))
                                     .collect(Collectors.joining(","));
                                 String attendancePayIds = attendancePayList.stream().map(u -> String.valueOf(u.getId()))

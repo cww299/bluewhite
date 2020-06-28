@@ -34,6 +34,7 @@ import com.bluewhite.common.entity.PageUtil;
 import com.bluewhite.common.utils.excel.ExcelListener;
 import com.bluewhite.ledger.entity.Customer;
 import com.bluewhite.ledger.entity.PackingMaterials;
+import com.bluewhite.ledger.service.PackingService;
 import com.bluewhite.product.product.entity.Product;
 import com.bluewhite.system.user.entity.User;
 
@@ -54,6 +55,8 @@ public class TemporaryPackAction {
     private MantissaLiquidationService mantissaLiquidationService;
     @Autowired
     private SendOrderService sendOrderService;
+    @Autowired
+    private PackingService packingService;
 
     private ClearCascadeJSON clearCascadeJSON;
     {
@@ -556,6 +559,9 @@ public class TemporaryPackAction {
     public ModelAndView scanSend(Long id) {
         ModelAndView mav = new ModelAndView();
         Quantitative quantitative = quantitativeService.findOne(id);
+        if(null==quantitative) {
+            throw new ServiceException("单据不存在！");
+        }
         if (quantitative.getFlag() == 1) {
             mav.setViewName("/visitor/scanSend");
             mav.addObject("data", clearCascadeJSONQuantitative.format(quantitative).toJSON());
@@ -624,6 +630,18 @@ public class TemporaryPackAction {
         CommonResponse cr = new CommonResponse();
         int count = quantitativeService.putWarehousing(ids, location, reservoirArea);
         cr.setMessage("成功入库" + count + "条数据");
+        return cr;
+    }
+    
+    /**
+     * 生成销售单
+     */
+    @RequestMapping(value = "/temporaryPack/addSale", method = RequestMethod.GET)
+    @ResponseBody
+    public CommonResponse addSale(String ids) {
+        CommonResponse cr = new CommonResponse();
+        int count = packingService.addSale(ids);
+        cr.setMessage("成功生成" + count + "条数据");
         return cr;
     }
 

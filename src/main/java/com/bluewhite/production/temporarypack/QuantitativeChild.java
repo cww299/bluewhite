@@ -56,8 +56,6 @@ public class QuantitativeChild  extends BaseEntity<Long> {
 	@Column(name = "remarks")
 	private String remarks;
 	
-	
-	
 	public String getRemarks() {
 		return remarks;
 	}

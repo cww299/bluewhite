@@ -20,7 +20,6 @@
 <body>
 	<section id="main-wrapper" class="theme-default">
 
-		<%@include file="../../decorator/leftbar.jsp"%>
 
 		<!--main content start-->
 
