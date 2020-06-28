@@ -233,6 +233,7 @@ public class QuantitativeServiceImpl extends BaseServiceImpl<Quantitative, Long>
             quantitative.setOutPrice(0.2);
             quantitative.setStatus(0);
             quantitative.setReconciliation(0);
+            quantitative.setSale(0);
         }
         // 新增子单
         if (!StringUtils.isEmpty(quantitative.getChild())) {
