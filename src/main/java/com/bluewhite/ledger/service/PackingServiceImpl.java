@@ -652,7 +652,7 @@ public class PackingServiceImpl extends BaseServiceImpl<Packing, Long> implement
             for (String id : idStrings) {
                 Long idLong = Long.valueOf(id);
                 Quantitative packing = quantitativeDao.findOne(idLong);
-                if(null!=packing.getSale() && 0 == packing.getSale()) {
+                if(null!=packing.getSale() && 1 == packing.getSale()) {
                     throw new ServiceException("贴包单已生成销售单，请勿重复生成");
                 }
                 packing.setSale(1);
