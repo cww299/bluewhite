@@ -7,7 +7,7 @@
 	<link rel="stylesheet" href="${ctx }/static/layui-v2.4.5/layui/css/layui.css" media="all">
 	<script src="${ctx}/static/layui-v2.4.5/layui/layui.js"></script>
 	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-	<title>发货管理</title>
+	<title>销售单</title>
 </head>
 <body>
 <div class="layui-card">
@@ -50,15 +50,15 @@
 layui.config({
 	base : '${ctx}/static/layui-v2.4.5/'
 }).extend({
-	tablePlug : 'tablePlug/tablePlug',
-	myutil: 'layui/myModules/myutil',
+	mytable: 'layui/myModules/mytable',
 }).define(
-	['tablePlug','myutil','laydate'],
+	['mytable','myutil','laydate'],
 	function(){
 		var $ = layui.jquery
 		, layer = layui.layer 				
 		, form = layui.form			 		
 		, table = layui.table
+		, mytable = layui.mytable
 		, laydate = layui.laydate
 		, myutil = layui.myutil
 		, tablePlug = layui.tablePlug;
@@ -70,29 +70,28 @@ layui.config({
 			elem:'#searchTime',range:'~'
 		})
 		var sty = "background-color: #5FB878;color: #fff;";
-		table.render({
+		var bg = "background-color: #ecf7b8;";
+		mytable.render({
 			elem:'#tableData',
 			url:'${ctx}/ledger/salePage',
 			where: { audit: 0,deliveryStatus:0 },
-			page:true,
 			toolbar: '#tableToolbar',
-			request:{ pageName:'page', limitName:'size' },
-			parseData:function(ret){ return { data:ret.data.rows, count:ret.data.total, msg:ret.message, code:ret.code } },
+			ifNull: '',
 			cols:[[
-			       {align:'center', type:'checkbox', fixed:'left',},
-			       {align:'center', title:'销售编号',	width:'6%', field:'saleNumber',   fixed:'left', style:sty },
-			       {align:'center', title:'发货日期',   	width:'7%',	field:'sendDate', 	  fixed:'left', style:sty, templet:'<span>{{ d.sendDate?d.sendDate.split(" ")[0]:""}}</span>' },
-			       {align:'center', title:'业务员',   	width:'8%',	field:'user',	 templet:'<span>{{ d.customer?d.customer.user.userName:""}}</span>'},
-			       {align:'center', title:'客户',   		width:'8%',	field:'custom',	 templet:'<span>{{ d.customer?d.customer.name:""}}</span>'},
-			       {align:'center', title:'批次号',   	width:'8%',	field:'bacthNumber',	},
-			       {align:'center', title:'产品名',   	width:'15%',field:'productName',	templet:'<span>{{ d.product?d.product.name:""}}</span>'},
-			       {align:'center', title:'离岸数量',   	width:'6%',	field:'count',	},
-			       {align:'center', title:'总价',   		width:'6%',	field:'sumPrice',	},
-			       {align:'center', title:'到岸数量',   	width:'6%',	field:'deliveryNumber',	edit:'text', },
-			       {align:'center', title:'到岸日期',   	width:'7%',	field:'deliveryDate',	templet:'<span>{{ d.deliveryDate?d.deliveryDate.split(" ")[0]:""}}</span>', },
-			       {align:'center', title:'争议数量',   	width:'6%',	field:'disputeNumber',	edit:'text', },
-			       {align:'center', title:'争议备注',   	field:'disputeRemark',	edit:'text', },
-			       {align:'center', title:'是否确认',   	width:'6%',	field:'deliveryStatus',	templet:'<span>{{ d.deliveryStatus==1?"确认":"未确认"}}</span>', fixed:'right', style:sty },
+			       { type:'checkbox', fixed:'left',},
+			       { title:'销售编号',	width: 157, field:'saleNumber',   fixed:'left', style:sty },
+			       { title:'发货日期',   	width:'7%',	field:'sendDate', fixed:'left', style:sty, type: 'date' },
+			       { title:'业务员',   	width:'8%',	field:'customer_user_userName', },
+			       { title:'客户',   		width:'8%',	field:'customer_name',	},
+			       { title:'批次号',   	width:'8%',	field:'bacthNumber',	},
+			       { title:'产品名',   	width:'15%',field:'product_name',},
+			       { title:'离岸数量',   	width:'6%',	field:'count',	},
+			       { title:'总价',   		width:'6%',	field:'sumPrice',	},
+			       { title:'到岸数量',   	width:'6%',	field:'deliveryNumber',	edit:'text', style: bg },
+			       { title:'到岸日期',   	width:'7%',	field:'deliveryDate',	style: bg,  type: 'date' },
+			       { title:'争议数量',   	width:'6%',	field:'disputeNumber',	edit:'text', style: bg },
+			       { title:'争议备注',   	field:'disputeRemark',	edit:'text', style: bg },
+			       { title:'是否确认',   	width:'6%',	field:'deliveryStatus',	templet:'<span>{{ d.deliveryStatus==1?"确认":"未确认"}}</span>', fixed:'right', style:sty },
 			       ]],
 	        done:function(){
 	        	layui.each($('td[data-field="deliveryDate"]'),function(index,item){

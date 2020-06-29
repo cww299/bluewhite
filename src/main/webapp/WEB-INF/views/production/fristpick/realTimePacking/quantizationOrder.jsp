@@ -388,12 +388,12 @@ layui.config({
 			parseData: parseData(),
 			ifNull:'',
 			cols:[ cols ],
-	       autoMerge:{
+	        autoMerge:{
 	    	 field:['quantitativeNumber','vehicleNumber','time','sendTime','audit','print','flag','reconciliation',
 	    		 'user_userName','surplusSendNumber','surplusNumber','customer_name','0'], 
 	    	 evenColor: evenColor,
-	       },
-	       done:function(ret,curr, count){
+	        },
+	        done:function(ret,curr, count){
 	    	    form.render();
 				table.on('edit(tableData)',function(obj){
 					var data = obj.data; 

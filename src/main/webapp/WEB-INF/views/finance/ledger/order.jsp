@@ -12,32 +12,29 @@
 <body>
 <div class="layui-card">
 	<div class="layui-card-body">
-		<table class="layui-form">
+		<table class="layui-form searchTable">
 			<tr>
 				<td>发货日期：</td>
 				<td><input type="text" class="layui-input" id="searchTime"></td>
-				<td>&nbsp;&nbsp;</td>
 				<td>是否审核：</td>
-				<td style="width:150px;"><select name="audit"><option value="">是否审核</option>
-															 <option value="1">审核</option>
-															 <option value="0" selected>未审核</option></select></td>
-				<td>&nbsp;&nbsp;</td>
+				<td style="width:150px;"><select name="audit">
+									 <option value="">是否审核</option>
+									 <option value="1">审核</option>
+									 <option value="0" selected>未审核</option></select></td>
 				<td>是否版权：</td>
-				<td style="width:150px;"><select name="copyright"><option value="">是否版权</option>
-															 <option value="1">是</option>
-															 <option value="0">否</option></select></td>
-				<td>&nbsp;&nbsp;</td>
+				<td style="width:150px;"><select name="copyright">
+									 <option value="">是否版权</option>
+									 <option value="1">是</option>
+									 <option value="0">否</option></select></td>
 				<td>是否借调：</td>
-				<td style="width:150px;"><select name="newBacth"><option value="">是否借调</option>
-															 <option value="1">借调</option>
-															 <option value="0">非借调</option></select></td>
-				<td>&nbsp;&nbsp;</td>
+				<td style="width:150px;"><select name="newBacth">
+									 <option value="">是否借调</option>
+									 <option value="1">借调</option>
+									 <option value="0">非借调</option></select></td>
 				<td>客户名：</td>
 				<td><input type="text" class="layui-input" name="customerName"></td>
-				<td>&nbsp;&nbsp;</td>
 				<td>批次号：</td>
 				<td><input type="text" class="layui-input" name="bacthNumber"></td>
-				<td>&nbsp;&nbsp;</td>
 				<td><button type="button" class="layui-btn layui-btn-sm" lay-submit lay-filter="search">搜索</button></td>
 			</tr>
 		</table>
@@ -49,20 +46,21 @@
 <div>
 	<span class="layui-btn layui-btn-sm" lay-event="onekeyAudit">一键审核</span>
 	<span class="layui-btn layui-btn-sm layui-btn-danger" lay-event="unAudit">取消审核</span>
+	<span class="layui-btn layui-btn-sm layui-btn-nromal" lay-event="addSale">生成销售单</span>
 </div>
 </script>
 <script>
 layui.config({
 	base : '${ctx}/static/layui-v2.4.5/'
 }).extend({
-	tablePlug : 'tablePlug/tablePlug',
-	myutil: 'layui/myModules/myutil',
+	mytable: 'layui/myModules/mytable',
 }).define(
-	['tablePlug','myutil','laydate'],
+	['laydate','mytable','myutil'],
 	function(){
 		var $ = layui.jquery
 		, layer = layui.layer 				
-		, form = layui.form			 		
+		, form = layui.form		
+		, mytable = layui.mytable
 		, table = layui.table
 		, laydate = layui.laydate
 		, myutil = layui.myutil
@@ -76,13 +74,12 @@ layui.config({
 		})
 		var sty = "background-color: #5FB878;color: #fff;";
 		var bg = "background-color: #ecf7b8;";
-		table.render({
+		mytable.render({
 			elem:'#tableData',
 			url:'${ctx}/ledger/salePage',
 			where: { audit: 0 },
-			page:true,
 			toolbar: '#tableToolbar',
-			request:{ pageName:'page', limitName:'size' },
+			ifNull: '---',
 			parseData:function(ret){ 
 				layui.each(ret.data.rows,function(index,item){
 					if(item.deliveryStatus==0){
@@ -97,25 +94,25 @@ layui.config({
 			limits:[15,30,50,100],
 			limit:15,
 			cols:[[
-			       {align:'center', type:'checkbox', fixed:'left',},
-			       {align:'center', title:'销售编号',	width:'11%',field:'saleNumber',   fixed:'left', style: sty },
-			       {align:'center', title:'发货日期',   	width:'7%',	field:'sendDate',templet:'<span>{{ d.sendDate?d.sendDate.split(" ")[0]:""}}</span>',  fixed:'left', style:sty },
-			       {align:'center', title:'业务员',   	width:'8%',	field:'user',	 templet:'<span>{{ d.customer?d.customer.user.userName:""}}</span>'},
-			       {align:'center', title:'客户',   		width:'8%',	field:'custom',	 templet:'<span>{{ d.customer?d.customer.name:""}}</span>'},
-			       {align:'center', title:'批次号',   	width:'8%',	field:'bacthNumber',	},
-			       {align:'center', title:'是否借调',   	width:'6%',	field:'newBacth', templet:'<span>{{ d.newBacth==1?"借调":"非借调"}}</span>'	},
-			       {align:'center', title:'产品名',   	width:'15%',field:'productName',	templet:'<span>{{ d.product?d.product.name:""}}</span>'},
-			       {align:'center', title:'离岸数量',   	width:'6%',	field:'count',	},
-			       {align:'center', title:'总价',   		width:'5%',	field:'sumPrice',	},
-			       {align:'center', title:'单价',   		width:'5%',	field:'price', 	edit: 'text', 	style: bg },
-			       {align:'center', title:'备注',   		width:'8%',	field:'remark', edit: 'text', 	style: bg },
-			       {align:'center', title:'到岸数量',   	width:'6%',	field:'deliveryNumber',	},
-			       {align:'center', title:'到岸日期',   	width:'7%',	field:'deliveryDate',templet:'<span>{{ d.deliveryDate?d.deliveryDate.split(" ")[0]:""}}</span>',	},
-			       {align:'center', title:'争议数量',   	width:'6%',	field:'disputeNumber',	},
-			       {align:'center', title:'争议备注',   	width:'8%',	field:'disputeRemark',	},
-			       {align:'center', title:'预计结款日期',width:'8%',	field:'deliveryCollectionDate',	},
-			       {align:'center', title:'版权',   		width:'6%',	field:'copyright', 	fixed:'right',	templet:'<span>{{ d.copyright?"是":"否"}}</span>', style:sty},
-			       {align:'center', title:'是否审核', 	width:'6%',	field:'audit',		fixed:'right', 	templet:'<span>{{ d.audit==1?"是":"否"}}</span>',style:sty},
+			       { type:'checkbox', fixed:'left',},
+			       { title:'销售编号',	width:'11%',field:'saleNumber',   fixed:'left', style: sty },
+			       { title:'发货日期',   	width:'7%',	field:'sendDate',templet:'<span>{{ d.sendDate?d.sendDate.split(" ")[0]:""}}</span>',  fixed:'left', style:sty },
+			       { title:'业务员',   	width:'8%',	field:'customer_user_userName'},
+			       { title:'客户',   		width:'8%',	field:'customer_name', },
+			       { title:'批次号',   	width:'8%',	field:'bacthNumber',	},
+			       { title:'是否借调',   	width:'6%',	field:'newBacth', templet:'<span>{{ d.newBacth==1?"借调":"非借调"}}</span>'	},
+			       { title:'产品名',   	width:'15%',field:'product_name',},
+			       { title:'离岸数量',   	width:'6%',	field:'count',	},
+			       { title:'总价',   		width:'5%',	field:'sumPrice',	},
+			       { title:'单价',   		width:'5%',	field:'price', 	edit: 'text', 	style: bg },
+			       { title:'备注',   		width:'8%',	field:'remark', edit: 'text', 	style: bg },
+			       { title:'到岸数量',   	width:'6%',	field:'deliveryNumber',	},
+			       { title:'到岸日期',   	width:'7%',	field:'deliveryDate',templet:'<span>{{ d.deliveryDate?d.deliveryDate.split(" ")[0]:""}}</span>',	},
+			       { title:'争议数量',   	width:'6%',	field:'disputeNumber',	},
+			       { title:'争议备注',   	width:'8%',	field:'disputeRemark',	},
+			       { title:'预计结款日期',  width:'8%',	field:'deliveryCollectionDate',	},
+			       { title:'版权',   		width:'6%',	field:'copyright', 	fixed:'right',	templet:'<span>{{ d.copyright?"是":"否"}}</span>', style:sty},
+			       { title:'是否审核', 	width:'6%',	field:'audit',		fixed:'right', 	templet:'<span>{{ d.audit==1?"是":"否"}}</span>',style:sty},
 			       ]],
 	       done:function(){
 				var isDouble=0;
@@ -173,6 +170,7 @@ layui.config({
 			switch(obj.event){
 			case 'onekeyAudit': onekeyAudit(1); break;
 			case 'unAudit': onekeyAudit(0); break;
+			case 'addSale': addSale(); break;
 			}
 		})
 		function onekeyAudit(isAudit){
@@ -209,6 +207,137 @@ layui.config({
 			layer.close(tipWin);
 			table.reload('tableData');
 		})
+		var evenColor = 'rgb(133, 219, 245)';
+		function addSale(){
+			layer.open({
+				type: 1,
+				title: '生成销售单',
+				area: ['90%','90%'],
+				content: [
+					'<div style="padding:10px;">',
+						'<table class="layui-form searchTable">',
+						'<tr>',
+							'<td style="width:100px;"><select class="layui-input" id="selectone">',
+										'<option value="sendTime">发货时间</option></select></td>',
+							'<td><input type="text" name="orderTimeBegin" id="orderTimeBegin" placeholder="请输入时间" class="layui-input"></td>',
+							'<td>产品名:</td>',
+							'<td><input type="text" name="productName" class="layui-input"></td>',
+							'<td>客户名:</td>',
+							'<td><input type="text" name="customerName" class="layui-input"></td>',
+							'<td><button type="button" class="layui-btn layui-btn-" lay-submit lay-filter="searchAdd">搜索</button></td>',
+						'</tr>',
+						'</table>',
+						'<table id="addTable" lay-filter="addTable"></table>',
+					'</div>',
+				].join(''),
+				success: function(layerElem,layerIndex){
+					laydate.render({
+						elem: '#orderTimeBegin', range: '~',
+					})
+					form.on('submit(searchAdd)',function(obj){
+						var field = obj.field;
+						if(field.orderTimeBegin){
+							var t = field.orderTimeBegin.split(' ~ ');
+							field.orderTimeBegin = t[0]+' 00:00:00';
+							field.orderTimeEnd = t[1]+' 23:59:59';
+						}else
+							field.orderTimeEnd = '';
+						var a="";
+						var b="";
+						if($("#selectone").val()=="time"){
+							a="2019-05-08 00:00:00"
+						}else{
+							b="2019-05-08 00:00:00"
+						}
+						field.time = a;
+						field.sendTime = b;
+						table.reload('addTable',{
+							where: field,
+							page:{ curr:1 },
+						})
+					})
+					var cols = [
+				       { type:'checkbox',},
+				       { title:'发货时间',   field:'sendTime',  width:110,type:'date',  },
+				       { title:'贴包人',    field:'user_userName', width:100,	},
+				       { title:'客户',     field:'customer_name',	},
+				       { title:'批次号',    field:'underGoods_bacthNumber', minWidth:130, },
+				       { title:'产品名',    field:'underGoods_product_name', width:280,	},
+				       { title:'单包个数',   field:'singleNumber',	width:80, },
+					];
+					mytable.render({
+						elem:'#addTable',
+						size:'sm',
+						url:'${ctx}/temporaryPack/findPagesQuantitative?flag=1&sale=0',
+						toolbar: [
+							'<span class="layui-btn layui-btn-sm" lay-event="add">生成销售单</span>'
+						].join(''),
+						even:true,
+						limits:[10,50,200,500,1000],
+						curd:{
+							btn: [],
+							otherBtn:function(obj){
+								if(obj.event=='add') {
+									myutil.deleTableIds({
+										url: '/temporaryPack/addSale',
+										text: '请选择信息|是否确认生成销售单',
+										table:'addTable',
+										success: function(){
+											table.reload('tableData')
+											layer.close(layerIndex)
+										}
+									})
+								}
+							},
+						},
+						autoUpdate:{},
+						parseData: parseData(),
+						ifNull:'',
+						cols:[ cols ],
+				        autoMerge:{
+				    	  field:['sendTime','user_userName','customer_name','0'], 
+				    	  evenColor: evenColor,
+				        },
+				        done:function(ret,curr, count){
+				    	    form.render();
+							renderTableColor('#addTable');
+							form.render();
+						}
+					})
+				}
+			})
+		}
+		function renderTableColor(tableId){
+			var whiteTd = ['0','sendTime','user_userName','customer_name'];
+			layui.each(whiteTd,function(index,item){
+				$(tableId).next().find('td[data-field="'+item+'"]').css('background','white');
+			})
+			var blueTd = ['underGoods_bacthNumber','underGoods_product_name','singleNumber'];
+			layui.each(blueTd,function(index,item){
+				$(tableId).next().find('tr:nth-child(even) td[data-field="'+item+'"]').css('background',evenColor);
+			})
+		}
+		function parseData(){
+			return function(ret){
+				if(ret.code==0){
+					var data = [],d = ret.data.rows;
+					tableDataNoTrans = d;
+					for(var i=0,len=d.length;i<len;i++){
+						var child = d[i].quantitativeChilds;
+						if(!child || child.length==0){
+							data.push($.extend({},{singleNumber:'',actualSingleNumber:'',remarks:''},d[i])); 
+							continue;
+						}
+						for(var j=0,l=child.length;j<l;j++){
+							data.push($.extend({},child[j],{childId: child[j].id,},d[i])); 
+						}
+					}
+					return {  msg:ret.message,  code:ret.code , data: data, count:ret.data.total }; 
+				}
+				else
+					return {  msg:ret.message,  code:ret.code , data:[], count:0 }; 
+			}
+		}
 		form.on('submit(search)',function(obj){
 			var val = $('#searchTime').val(), beg='',end='';
 			if(val!=''){
