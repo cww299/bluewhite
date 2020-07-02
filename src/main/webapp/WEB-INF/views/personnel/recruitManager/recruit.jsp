@@ -1710,11 +1710,11 @@ layui.config({
 		        },
 				yes:function(){
 					form.on('submit(addRole)', function(data) {
-						var load = layer.load(1);
 						data.field.id=id;
 						if(!(/^1[3456789]\d{9}$/.test(data.field.phone))){ 
 							return layer.msg("手机号码有误,请重新填写",{icon: 2}) 
 					    }
+						var load = layer.load(1);
 						data.field.recruitName=$('#recruitId option:selected').text();
 						data.field.time += $("#tplTime").val();
 			        	mainJs.fAdd(data.field)
