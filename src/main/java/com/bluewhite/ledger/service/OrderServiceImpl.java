@@ -128,10 +128,10 @@ public class OrderServiceImpl extends BaseServiceImpl<Order, Long> implements Or
 	@Override
 	@Transactional
 	public void addOrder(Order order) {
-		Order oldOrder = dao.findByBacthNumber(order.getBacthNumber());
-		if (oldOrder != null) {
-			throw new ServiceException("系统已有" + order.getBacthNumber() + "批次号下单合同，请不要重复添加");
-		}
+//		Order oldOrder = dao.findByBacthNumber(order.getBacthNumber());
+//		if (oldOrder != null) {
+//			throw new ServiceException("系统已有" + order.getBacthNumber() + "批次号下单合同，请不要重复添加");
+//		}
 		order.setPrepareEnough(0);
 		order.setAudit(0);
 		// 新增子单

@@ -51,7 +51,7 @@ public class TailorServiceImpl extends BaseServiceImpl<Tailor, Long> implements 
 		//裁剪方式
 		OrdinaryLaser prams = new OrdinaryLaser();
 		prams.setTailorTypeId(tailor.getTailorTypeId());
-		if(prams.getTailorTypeId()!=null){
+		if(tailor.getOrdinaryLaserId()!=null){
 			prams = ordinaryLaserDao.findOne(tailor.getOrdinaryLaserId());
 		}
 		NumUtils.setzro(prams);

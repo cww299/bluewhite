@@ -71,10 +71,13 @@ public class CutPartsServiceImpl  extends BaseServiceImpl<CutParts, Long> implem
 		tailor.setTailorNumber(cutParts.getCutPartsNumber());
 		//面料
 		Materiel materiel  =  materielDao.findOne(cutParts.getMaterielId());
+		Materiel complexMateriel  = new Materiel();
 		//复合物
-		Materiel complexMateriel  =  materielDao.findOne(cutParts.getComplexMaterielId());
+		if(cutParts.getComplexMaterielId()!=null) {
+		       complexMateriel  =  materielDao.findOne(cutParts.getComplexMaterielId());
+		}
 		//物料压价,通过cc裁片填写中该裁片该面料和复合物的价值 得到（原表格公式为批次数值，先取单一片数计算）
-		tailor.setPriceDown(NumUtils.sum(materiel.getPrice(),complexMateriel.getPrice()));
+		tailor.setPriceDown(NumUtils.sum(materiel.getPrice(),NumUtils.setzro(complexMateriel.getPrice())));
 		//选择价格来源，默认选择得到理论(市场反馈）含管理价值
 		tailor.setCostPriceSelect(1);
 		tailorService.saveTailor(tailor);
