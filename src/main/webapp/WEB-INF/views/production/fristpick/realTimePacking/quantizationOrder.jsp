@@ -106,10 +106,11 @@ stickBagStick： 刘英芹
 		<span class="layui-btn layui-btn-sm layui-btn-primary" lay-event="print" id="stickBagStickBtn">打印</span>
 		<span class="layui-btn layui-btn-sm layui-btn-normal" lay-event="send">发货</span>
 		<span class="layui-btn layui-btn-sm layui-btn-danger" lay-event="cancelSend">取消发货</span>
-		<span class="layui-btn layui-btn-sm layui-btn-normal" lay-event="updateSendTime">修改发货时间</span>
+		
 		<span class="layui-btn layui-btn-sm layui-btn-primary" lay-event="verifyBill">对账</span>
 		<span class="layui-btn layui-btn-sm layui-btn-normal" lay-event="cancelVerifyBill">取消对账</span>
 	</shiro:hasAnyRoles>
+	<!-- <span class="layui-btn layui-btn-sm layui-btn-normal" lay-event="updateSendTime">修改发货时间</span>  -->
 </div>
 <script type="text/html" >
 </script>
