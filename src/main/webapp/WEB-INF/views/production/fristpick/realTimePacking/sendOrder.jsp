@@ -379,12 +379,16 @@ layui.config({
 				}
 				var logisticsHtml = "",packagMethodHtml = "";
 				for(var i in allLogistics){
-					var selected = allLogistics[i].id == datas[0].logistics.id?"selected":"";
+					var selected = datas[0].logistics ? 
+							allLogistics[i].id == datas[0].logistics.id?"selected":""
+							: '';
 					logisticsHtml += '<option value="'+allLogistics[i].id+'" '+selected+'>'+
 							allLogistics[i].name+'</option>';
 				}
 				for(var i in allPackagMethod){
-					var selected = allPackagMethod[i].id == datas[0].outerPackaging.id?"selected":"";
+					var selected = datas[0].outerPackaging ? 
+							allPackagMethod[i].id == datas[0].outerPackaging.id?"selected":""
+							: '';
 					packagMethodHtml += '<option value="'+allPackagMethod[i].id+'" '+selected+'>'+
 							allPackagMethod[i].name+'</option>';
 				}
