@@ -661,6 +661,7 @@ public class PackingServiceImpl extends BaseServiceImpl<Packing, Long> implement
                 for (QuantitativeChild pc : packingChildList) {
                     // 生成财务销售单
                     Sale sale = new Sale();
+                    sale.setCount(pc.getSingleNumber());
                     sale.setProductId(pc.getUnderGoods().getProductId());
                     sale.setCustomerId(packing.getCustomerId());
                     sale.setBacthNumber(pc.getUnderGoods().getBacthNumber());

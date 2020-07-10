@@ -1,48 +1,35 @@
 package com.bluewhite.product.primecost.machinist.action;
 
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import javax.servlet.http.HttpServletRequest;
-
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.propertyeditors.CustomDateEditor;
 import org.springframework.stereotype.Controller;
 import org.springframework.util.StringUtils;
-import org.springframework.web.bind.WebDataBinder;
-import org.springframework.web.bind.annotation.InitBinder;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.multipart.support.ByteArrayMultipartFileEditor;
 
 import com.bluewhite.common.BeanCopyUtils;
 import com.bluewhite.common.ClearCascadeJSON;
-import com.bluewhite.common.DateTimePattern;
-import com.bluewhite.common.Log;
 import com.bluewhite.common.entity.CommonResponse;
 import com.bluewhite.common.entity.ErrorCode;
 import com.bluewhite.common.entity.PageParameter;
 import com.bluewhite.common.entity.PageResult;
-import com.bluewhite.product.primecost.cutparts.entity.CutParts;
 import com.bluewhite.product.primecost.machinist.entity.Machinist;
 import com.bluewhite.product.primecost.machinist.service.MachinistService;
 import com.bluewhite.product.primecost.materials.entity.ProductMaterials;
-import com.bluewhite.product.primecost.primecost.entity.PrimeCost;
 import com.bluewhite.product.primecost.tailor.entity.Tailor;
 import com.bluewhite.product.primecost.tailor.service.TailorService;
 import com.bluewhite.product.primecostbasedata.entity.BaseFour;
 import com.bluewhite.product.primecostbasedata.entity.BaseOne;
 import com.bluewhite.product.primecostbasedata.entity.Materiel;
-import com.bluewhite.product.product.service.ProductService;
 
 @Controller
 public class MachinistAction {
 
-	private final static Log log = Log.getLog(MachinistAction.class);
 
 	@Autowired
 	private MachinistService machinistService;
@@ -50,8 +37,7 @@ public class MachinistAction {
 	@Autowired
 	private TailorService tailorService;
 
-	@Autowired
-	private ProductService productService;
+
 
 	private ClearCascadeJSON clearCascadeJSON;
 	{
