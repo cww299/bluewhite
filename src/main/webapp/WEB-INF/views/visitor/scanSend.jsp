@@ -157,10 +157,10 @@ layui.config({
 			}
 			if(f.no.indexOf('-')>-1){
 				var last = f.no.split('-')[1];
-				f.no = PrefixInteger(f.no.split('-')[0],4);
-				f.no += ('-'+last);
+				f.no = PrefixInteger(f.no.split('-')[0].trim(),4);
+				f.no += ('-'+last.trim());
 			}else
-				f.no = PrefixInteger(f.no,4);
+				f.no = PrefixInteger(f.no.trim(),4);
 			var vn = f.time+ f.no;
 			var lid = f.logisticsId;
 			myutil.deleteAjax({
