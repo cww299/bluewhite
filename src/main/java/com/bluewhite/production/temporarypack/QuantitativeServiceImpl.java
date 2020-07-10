@@ -483,15 +483,14 @@ public class QuantitativeServiceImpl extends BaseServiceImpl<Quantitative, Long>
                         } else {
                             // 根据日期和客户查询发货单,发货地点，同一天的合并发货单
                             List<SendOrder> sendOrderList =
-                                sendOrderDao.findByCustomerIdAndSendTimeBetweenAndWarehouseTypeId(customer.getId(),
+                                sendOrderDao.findByCustomerIdAndSendTimeBetweenAndWarehouseTypeIdAndAudit(customer.getId(),
                                     DateUtil.beginOfDay(quantitative.getSendTime()),
-                                    DateUtil.endOfDay(quantitative.getSendTime()), quantitative.getWarehouseTypeId());
+                                    DateUtil.endOfDay(quantitative.getSendTime()), quantitative.getWarehouseTypeId(),0);
                             SendOrder sendOrder = null;
                             if (CollUtil.isNotEmpty(sendOrderList)) {
                                 sendOrder = CollUtil.getFirst(sendOrderList);
                             }
-                            int number = quantitative.getQuantitativeChilds().stream()
-                                .mapToInt(QuantitativeChild::getSingleNumber).sum();
+                            int number = quantitative.getQuantitativeChilds().stream().mapToInt(QuantitativeChild::getSingleNumber).sum();
                             if (null == sendOrder) {
                                 sendOrder = new SendOrder();
                                 sendOrder.setSendTime(quantitative.getSendTime());
@@ -550,8 +549,15 @@ public class QuantitativeServiceImpl extends BaseServiceImpl<Quantitative, Long>
                         quantitative.setVehicleNumber(null);
                         quantitative.setSendTime(null);
                     }
+                    
+                    if(flag==1) {
+                        if(quantitative.getSendOrderId()==null) {
+                            throw new ServiceException("发货失败,请重新发货");
+                        }
+                    }
                     quantitative.setFlag(flag);
                     dao.save(quantitative);
+                    
                 }
             }
         }
