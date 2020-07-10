@@ -54,7 +54,9 @@
 				<td>
 				   <input type="text" class="layui-input" id="sendTimeInput" name="time" readonly></td>
 				<td>
-				   <input type="text" class="layui-input" name="no" placeholder="上车编号" >
+				   <input type="text" class="layui-input" name="no" placeholder="上车编号"
+				   	onkeyup="value=value.replace(/[^\d-]/g,'') " 
+					onbeforepaste="clipboardData.setData('text',clipboardData.getData('text').replace(/[^\d-]/g,''))" />
 				</td>
 			</tr>
 			<tr>
@@ -157,10 +159,10 @@ layui.config({
 			}
 			if(f.no.indexOf('-')>-1){
 				var last = f.no.split('-')[1];
-				f.no = PrefixInteger(f.no.split('-')[0].trim(),4);
-				f.no += ('-'+last.trim());
+				f.no = PrefixInteger(f.no.split('-')[0],4);
+				f.no += ('-'+last);
 			}else
-				f.no = PrefixInteger(f.no.trim(),4);
+				f.no = PrefixInteger(f.no,4);
 			var vn = f.time+ f.no;
 			var lid = f.logisticsId;
 			myutil.deleteAjax({
