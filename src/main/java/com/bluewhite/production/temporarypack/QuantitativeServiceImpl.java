@@ -542,10 +542,10 @@ public class QuantitativeServiceImpl extends BaseServiceImpl<Quantitative, Long>
                                 }
                                 if (sendOrder.getSendPackageNumber() == 0) {
                                     sendOrderDao.delete(quantitative.getSendOrderId());
-                                    quantitative.setSendOrderId(null);
                                 }
                             }
                         }
+                        quantitative.setSendOrderId(null);
                         quantitative.setVehicleNumber(null);
                         quantitative.setSendTime(null);
                     }
