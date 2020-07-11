@@ -164,7 +164,7 @@ layui.define(['mytable'],function(exports){
 					unitId: allUnit[0].id,
 					scaleMaterial:'',
 					addMaterial:'',
-					manualLoss:'',
+					manualLoss: 0.03,
 					compositeManualLoss:0.03,
 					doubleComposite:0,
 					overstockId:allOverstock[0].id,
@@ -177,9 +177,11 @@ layui.define(['mytable'],function(exports){
 						myutil.saveAjax({
 							url: '/product/addCutParts', 
 							data: data[i],
+							success: function(){
+								table.reload(tableId);
+							}
 						})
 					}
-					table.reload(tableId);
 				},
 			},
 			verify:{ 

@@ -63,8 +63,8 @@ layui.config({
 			ifNull:'',
 			scrollX:true,
 			toolbar: [
-					'<span class="layui-btn layui-btn-sm layui-btn-success" lay-event="audit">审核</span>',
-					'<span class="layui-btn layui-btn-sm layui-btn-danger" lay-event="noAudit">取消审核</span>',
+					// '<span class="layui-btn layui-btn-sm layui-btn-success" lay-event="audit">审核</span>',
+					// '<span class="layui-btn layui-btn-sm layui-btn-danger" lay-event="noAudit">取消审核</span>',
 				].join(''),
 			curd:{
 				btn:[],

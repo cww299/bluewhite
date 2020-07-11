@@ -179,7 +179,9 @@ layui.config({
 											}
 									},
 									colsWidth:[0,0,7,13,7,13,],
-									toolbar:'<span class="layui-btn layui-btn-sm" lay-event="onekeyUpdate">一键更新订单数量</span>',
+									toolbar:
+										'<span class="layui-btn layui-btn-sm" style="margin-right:10px;" lay-event="onekeyUpdate">一键更新订单数量'+
+											'</span><span class="layui-badge">提示：采购单出入不符时，可进行修正采购单数量</span>',
 									cols:[[
 									       { type:'checkbox' },
 									       { title:'采购单编号', field:'orderProcurementNumber' },

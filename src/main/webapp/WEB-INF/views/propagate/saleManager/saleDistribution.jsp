@@ -86,8 +86,64 @@ layui.config({
 					}
 					return "<span class='layui-badge layui-bg-"+color+"'>"+text+"</span>";
 				}},
+				{ title:'团队总人数', field:'sumPeople', templet: getLoad(), },
+				{ title:'总销售额', field:'sumSale',templet: getLoad(), },
+				{ title:'总佣金', field:'sumCommission',templet: getLoad(), },
 				{ title:'操作', field:'', templet: getBtn(), },
-			]]
+			]],
+			done:function(r){
+				var sumNum = r.data.length;
+				var tvElem = $('div[lay-id="tableData"]');
+				getData(0);
+				function getData(index){
+					if(index>=sumNum)
+						return;
+					var id = r.data[index].id;
+					$.ajax({
+						url: myutil.config.ctx+'/user/apiExtUserInviter/list',
+						data:{
+							pageSize:1,
+							page:1,
+							uidm: id ,
+						},
+						success:function(d){
+							var trElem = $(tvElem).find('tr[data-index="'+index+'"]');
+							if(d.code==0){
+								$(trElem).find('td[data-field="sumPeople"] div').html(d.data.totalRow);
+							}else
+								$(trElem).find('td[data-field="sumPeople"] div').html(0);
+							$.ajax({
+								url: myutil.config.ctx+'/user/saleDistributionCommisionLog/list',
+								data:{
+									pageSize:1,
+									page:1,
+									uidm: id ,
+								},
+								success:function(d){
+									var trElem = $(tvElem).find('tr[data-index="'+index+'"]');
+									if(d.code==0){
+										var bill = 0;
+										var money = 0;
+										var m = d.userMapS || d.userMaps;
+										var r = d.result;
+										for(var i in d.data.result){
+											var sum = d.data.result[i];
+											bill += sum.bili;
+											money += sum.money;
+										}
+										$(trElem).find('td[data-field="sumSale"] div').html(bill);
+										$(trElem).find('td[data-field="sumCommission"] div').html(money);
+									}else{
+										$(trElem).find('td[data-field="sumSale"] div').html(0);
+										$(trElem).find('td[data-field="sumCommission"] div').html(0);
+									}
+									getData(++index);
+								},
+							})
+						},
+					})
+				}
+			}
 		})
 		function getBtn(){
 			return function(d){
@@ -267,6 +323,12 @@ layui.config({
 				else
 					return {  msg:ret.message,  code:ret.code , data:[], count:0 }; 
 			};
+		}
+		function getLoad(){
+			return '<div><span>'+
+			'<i style="font-size: 30px;" '+
+			'class="layui-icon layui-icon-loading layui-icon layui-anim layui-anim-rotate layui-anim-loop">'+
+			'</i></span><b style="color:gray;"></b></div>';
 		}
 		searchTable('searchBtn','tableData');
 		

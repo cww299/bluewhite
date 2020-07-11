@@ -105,18 +105,20 @@
             </a>
           </li> -->
           
-           <!-- 广宣部门查看预警按钮 -->
+           <!-- 广宣部门查看预警按钮 
           <shiro:hasAnyRoles name="superAdmin,propagateManager">
 	          <li class="layui-nav-item layui-hide-xs" lay-unselect>
 	            <a href="javascript:;" id='lookoverWarn' >仓库预警<span class="layui-badge layui-badge-number" id='warnNumber'>0</span></a>
 	          </li>
           </shiro:hasAnyRoles> 
-           <!-- 考勤预警按钮 -->
+          -->
+           <!-- 考勤预警按钮 
           <shiro:hasAnyRoles name="superAdmin,personnel,productEightTailor,productTwoMachinist,productTwoDeedle,productFristPack,productFristQuality">
 	          <li class="layui-nav-item layui-hide-xs" lay-unselect>
 	            <a href="javascript:;" id='confluenceWarn' >错误考勤<span class="layui-badge layui-badge-number" id='warnConfluenceNumber'>0</span></a>
 	          </li>
           </shiro:hasAnyRoles> 
+          -->
           
           
           <!-- <li class="layui-nav-item layui-hide-xs" lay-unselect>
@@ -305,10 +307,11 @@ layui.use(['form','element','layer','jquery','table'],function(){
 		});
     	//-------------------------广宣预警弹窗-------------------------
     	var currUser = null; //当前登录用户
-    	$('#lookoverWarn').on('click',warn);
-    	$('#confluenceWarn').on('click',confluenceWarn);
-    	confluenceWarn();
-    	warn();
+    	// $('#lookoverWarn').on('click',warn);
+    	// $('#confluenceWarn').on('click',confluenceWarn);
+    	// confluenceWarn();
+    	// warn();
+    	/*
     	function confluenceWarn(){
 			if(document.getElementById('warningConfluenceDiv')!=null){
 				if(!currUser)
@@ -396,6 +399,8 @@ layui.use(['form','element','layer','jquery','table'],function(){
 				})
 			}
     	}
+    	*/
+    	/*
     	function warn(){
 			if(document.getElementById("warningDiv")!=null){
 				table.render({
@@ -439,6 +444,8 @@ layui.use(['form','element','layer','jquery','table'],function(){
 				})
 			}
 		}
+    	*/
+    	
     	//--------------------广宣预警弹窗结束--------------------
     	$.ajax({
 			url:"${ctx}/getTreeMenuPage",
