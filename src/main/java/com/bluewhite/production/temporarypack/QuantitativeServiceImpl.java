@@ -103,7 +103,7 @@ public class QuantitativeServiceImpl extends BaseServiceImpl<Quantitative, Long>
             if (param.getAudit() != null) {
                 predicate.add(cb.equal(root.get("audit").as(Integer.class), param.getAudit()));
             }
-            // 是否审核
+            // 是否生成销售单
             if (param.getSale() != null) {
                 predicate.add(cb.equal(root.get("sale").as(Integer.class), param.getSale()));
             }

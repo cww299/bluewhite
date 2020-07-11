@@ -5,6 +5,7 @@ import java.util.List;
 import com.bluewhite.base.BaseCRUDService;
 import com.bluewhite.common.entity.PageParameter;
 import com.bluewhite.common.entity.PageResult;
+import com.bluewhite.common.utils.excel.ExcelListener;
 import com.bluewhite.ledger.entity.Bill;
 import com.bluewhite.ledger.entity.Sale;
 
@@ -68,5 +69,9 @@ public interface SaleService  extends BaseCRUDService<Sale,Long>{
 	 * @return
 	 */
 	public List<Sale> getSalePrice(Sale sale);
+
+	public int deleteSale(String ids);
+
+	public int excelAddSale(ExcelListener excelListener);
 
 }

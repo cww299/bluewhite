@@ -73,8 +73,10 @@ layui.config({
 		})
 		var sty = "background-color: #5FB878;color: #fff;";
 		var bg = "background-color: #ecf7b8;";
+		layui.tablePlug.smartReload.enable(true);
 		mytable.render({
 			elem:'#tableData',
+			smartReloadModel:true,
 			url:'${ctx}/ledger/salePage?deliveryStatus=1',
 			where: { audit: 0 },
 			toolbar: '#tableToolbar',
@@ -128,15 +130,21 @@ layui.config({
 							done: function(data){
 								var html = '无以往价格';
 								if(data.length!=0){
-									html='';
+									html='<div style="overflow: auto; max-height: 170px;">';
 									layui.each(data,function(index,item){
 										html += '<span style="margin:5px;" class="layui-badge layui-bg-green" data-price="'+item.price+'" data-id="'+trData.id+'">发货日期：'+
 										item.sendDate.split(' ')[0]+' -- ￥'+item.price+'</span><br>';
 									})
+									html += "</div>"
 								}
 								tipWin = layer.tips(html, elem, {
 									  tips: [4, '#78BA32'],
 					                  time:0,
+					                  success: function(layerElem){
+					                	 var left = Number.parseInt($(layerElem).css('left'))
+					                	 $(layerElem).css('left', (left-30)+'px')
+					                	 $(layerElem).css('width','230px')
+					                  }
 					            });
 								$('.layui-layer-tips .layui-badge').unbind().on('click',function(event){
 									layui.stope(event)
@@ -201,10 +209,12 @@ layui.config({
 					data: {
 						id: obj.data.id,
 						price: val
+					},
+					success:function(){
+						layer.close(tipWin);
+						table.reload('tableData');
 					}
 				}) 
-			layer.close(tipWin);
-			table.reload('tableData');
 		})
 		form.on('submit(search)',function(obj){
 			var val = $('#searchTime').val(), beg='',end='';

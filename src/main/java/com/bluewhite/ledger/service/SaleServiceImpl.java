@@ -1,5 +1,6 @@
 package com.bluewhite.ledger.service;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -7,6 +8,7 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 import javax.persistence.criteria.Predicate;
+import javax.transaction.Transactional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -15,15 +17,26 @@ import org.springframework.util.StringUtils;
 
 import com.bluewhite.base.BaseServiceImpl;
 import com.bluewhite.common.BeanCopyUtils;
+import com.bluewhite.common.Constants;
 import com.bluewhite.common.ServiceException;
 import com.bluewhite.common.entity.PageParameter;
 import com.bluewhite.common.entity.PageResult;
+import com.bluewhite.common.utils.DatesUtil;
 import com.bluewhite.common.utils.NumUtils;
+import com.bluewhite.common.utils.StringUtil;
+import com.bluewhite.common.utils.excel.ExcelListener;
+import com.bluewhite.ledger.dao.CustomerDao;
 import com.bluewhite.ledger.dao.SaleDao;
 import com.bluewhite.ledger.entity.Bill;
+import com.bluewhite.ledger.entity.Customer;
 import com.bluewhite.ledger.entity.Mixed;
 import com.bluewhite.ledger.entity.ReceivedMoney;
 import com.bluewhite.ledger.entity.Sale;
+import com.bluewhite.ledger.entity.poi.SalePoi;
+import com.bluewhite.product.product.dao.ProductDao;
+import com.bluewhite.product.product.entity.Product;
+import com.bluewhite.production.temporarypack.Quantitative;
+import com.bluewhite.production.temporarypack.QuantitativeService;
 @Service
 public class SaleServiceImpl extends BaseServiceImpl<Sale, Long> implements SaleService  {
 	
@@ -33,6 +46,12 @@ public class SaleServiceImpl extends BaseServiceImpl<Sale, Long> implements Sale
 	private MixedService mixedService;
 	@Autowired
 	private ReceivedMoneyService receivedMoneyService;
+	@Autowired
+	private QuantitativeService quantitativeService;
+	@Autowired
+	private ProductDao productDao;
+	@Autowired
+	private CustomerDao customerDao;
 	
 	@Override
 	public PageResult<Sale> findSalePage(Sale param, PageParameter page) {
@@ -249,10 +268,6 @@ public class SaleServiceImpl extends BaseServiceImpl<Sale, Long> implements Sale
 			if (param.getCustomerId() != null) {
 				predicate.add(cb.equal(root.get("customerId").as(Long.class), param.getCustomerId()));
 			}
-			// 是否发货
-			if (param.getFlag() != null) {
-				predicate.add(cb.equal(root.get("flag").as(Integer.class), param.getFlag()));
-			}
 			// 是否审核
 			if (param.getAudit() != null) {
 				predicate.add(cb.equal(root.get("audit").as(Integer.class), param.getAudit()));
@@ -273,5 +288,95 @@ public class SaleServiceImpl extends BaseServiceImpl<Sale, Long> implements Sale
 	public List<Sale> getSalePrice(Sale sale) {
 		return dao.findByProductIdAndCustomerIdAndAudit(sale.getProductId(),
 				sale.getCustomerId(), 1);
+	}
+
+	@Override
+	@Transactional
+	public int deleteSale(String ids) {
+		int count = 0;
+		if (!StringUtils.isEmpty(ids)) {
+			List<Quantitative> quanList = new ArrayList<Quantitative>();
+			List<Sale> saleList = new ArrayList<Sale>();
+            String[] idStrings = ids.split(",");
+            for(String id : idStrings) {
+            	Sale sale = dao.findOne(Long.parseLong(id));
+            	if(sale.getDeliveryStatus()!=0) {
+            		throw new ServiceException("销售单："+sale.getSaleNumber() + "已确认到货无法删除，请先取消确认");
+            	}
+            	saleList.add(sale);
+            	if(sale.getQuantitativeId()!=null) {
+            		Quantitative quantitative = quantitativeService.findOne(sale.getQuantitativeId());
+            		if(quantitative != null) {
+            			quantitative.setSale(0);
+            			quanList.add(quantitative);
+            		}
+            	}
+            }
+            count = saleList.size();
+            dao.delete(saleList);
+            quantitativeService.save(quanList);
+		}
+		return count;
+	}
+
+	@Override
+	@Transactional
+	public int excelAddSale(ExcelListener excelListener) {
+		int count = 0;
+	    SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd");
+        // 获取导入的销售单
+        List<Object> excelListenerList = excelListener.getData();
+        for (Object object : excelListenerList) {
+        	SalePoi poi = (SalePoi)object;
+        	Sale sale = new Sale();
+        	if(poi.getProductName()== null || poi.getProductName().isEmpty() || poi.getSendDate() == null ||
+        	   poi.getCustomerName()== null || poi.getCustomerName().isEmpty() || poi.getBacthNumber() == null ||
+        	   poi.getBacthNumber().isEmpty() || poi.getCount() == null) {
+        		throw new ServiceException("导入的数据第 " + (excelListenerList.indexOf(object) + 1) + "行存在空数据，请检查");
+        	}
+        	List<Product> pList = productDao.findByName(poi.getProductName());
+        	if(pList.size() == 0) {
+        		throw new ServiceException("商品：" + poi.getProductName() + "不存在，请确认是否有误！");
+        	}
+        	Customer customer = customerDao.findByName(poi.getCustomerName());
+        	if(customer == null || customer.getId() == null) {
+        		throw new ServiceException("客户：" + poi.getCustomerName() + "不存在，请确认是否有误！");
+        	}
+        	Date time = poi.getSendDate();
+        	int saleOrderSize = dao.findBySendDateBetween(time, DatesUtil.getLastDayOftime(time)).size() + 1;
+        	// 发货日期
+        	sale.setSendDate(poi.getSendDate());
+        	// 实际数量
+        	sale.setCount(poi.getCount());
+        	// 批次号
+        	sale.setBacthNumber(poi.getBacthNumber());
+        	// 产品id
+        	sale.setProductId(pList.get(0).getId());
+        	// 客户
+        	sale.setCustomerId(customer.getId());
+        	 // 生成销售编号
+            sale.setSaleNumber(Constants.XS + "-" + sdf.format(time) + "-" + StringUtil.get0LeftString(saleOrderSize++, 4));
+            // 未审核
+            sale.setAudit(0);
+            // 未拥有版权
+            sale.setCopyright(0);
+            // 未收货
+            sale.setDelivery(1);
+            // 业务员未确认数据
+            sale.setDeliveryStatus(0);
+            // 价格
+            sale.setPrice(0.0);
+            // 判定是否拥有版权
+            String name = poi.getProductName();
+            if (name.contains(Constants.LX)  || name.contains(Constants.KT)
+                || name.contains(Constants.MW) || name.contains(Constants.BM)
+                || name.contains(Constants.LP) || name.contains(Constants.AB)
+                || name.contains(Constants.ZMJ) || name.contains(Constants.XXYJN)) {
+                sale.setCopyright(1);
+            }
+            dao.save(sale);
+            count++;
+        }
+        return count;
 	}
 }

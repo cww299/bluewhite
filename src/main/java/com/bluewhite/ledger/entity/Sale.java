@@ -24,6 +24,12 @@ import com.bluewhite.product.product.entity.Product;
 public class Sale extends BaseEntity<Long>{
 	
 	/**
+	 * 发货日期
+	 */
+	@Column(name = "send_date")
+	private Date sendDate;
+	
+	/**
 	 * 客户id
 	 * 
 	 */
@@ -173,6 +179,12 @@ public class Sale extends BaseEntity<Long>{
 	private Double disputePay;
 	
 	/**
+	 * 量化单id
+	 */
+	@Column(name="quantitative_id")
+	private Long quantitativeId;
+	
+	/**
 	 * 产品name
 	 */
 	@Transient
@@ -196,7 +208,13 @@ public class Sale extends BaseEntity<Long>{
 	@Transient
 	private Date orderTimeEnd;
 	
-	
+	public Date getSendDate() {
+		return sendDate;
+	}
+
+	public void setSendDate(Date sendDate) {
+		this.sendDate = sendDate;
+	}
 
 	public String getProductName() {
 		return productName;
@@ -421,10 +439,13 @@ public class Sale extends BaseEntity<Long>{
 	public void setDisputePay(Double disputePay) {
 		this.disputePay = disputePay;
 	}
-	
-	
-	
-	
 
+	public Long getQuantitativeId() {
+		return quantitativeId;
+	}
 
+	public void setQuantitativeId(Long quantitativeId) {
+		this.quantitativeId = quantitativeId;
+	}
+	
 }

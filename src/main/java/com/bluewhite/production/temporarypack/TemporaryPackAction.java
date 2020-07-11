@@ -34,7 +34,9 @@ import com.bluewhite.common.entity.PageUtil;
 import com.bluewhite.common.utils.excel.ExcelListener;
 import com.bluewhite.ledger.entity.Customer;
 import com.bluewhite.ledger.entity.PackingMaterials;
+import com.bluewhite.ledger.entity.poi.SalePoi;
 import com.bluewhite.ledger.service.PackingService;
+import com.bluewhite.ledger.service.SaleService;
 import com.bluewhite.product.product.entity.Product;
 import com.bluewhite.system.user.entity.User;
 
@@ -57,7 +59,9 @@ public class TemporaryPackAction {
     private SendOrderService sendOrderService;
     @Autowired
     private PackingService packingService;
-
+    @Autowired
+    private SaleService saleService;
+    
     private ClearCascadeJSON clearCascadeJSON;
     {
         clearCascadeJSON = ClearCascadeJSON.get()
@@ -644,5 +648,34 @@ public class TemporaryPackAction {
         cr.setMessage("成功生成" + count + "条数据");
         return cr;
     }
+    
+    /**
+     * 删除销售单
+     */
+    @RequestMapping(value = "/temporaryPack/deleteSale", method = RequestMethod.GET)
+    @ResponseBody
+    public CommonResponse deleteSale(String ids) {
+        CommonResponse cr = new CommonResponse();
+        int count = saleService.deleteSale(ids);
+        cr.setMessage("成功删除" + count + "条数据");
+        return cr;
+    }
+    
+    /**
+	 * 导入销售单
+	 * 
+	 */
+	@RequestMapping(value = "/temporaryPack/uploadSale", method = RequestMethod.POST)
+	@ResponseBody
+	public CommonResponse importSale(@RequestParam(value = "file", required = false) MultipartFile file) throws IOException {
+		CommonResponse cr = new CommonResponse();
+		InputStream inputStream = file.getInputStream();
+		ExcelListener excelListener = new ExcelListener();
+		EasyExcel.read(inputStream, SalePoi.class, excelListener).sheet().doRead();
+		int count = saleService.excelAddSale(excelListener);
+		inputStream.close();
+		cr.setMessage("成功导入" + count + "条数据");
+		return cr;
+	}
 
 }

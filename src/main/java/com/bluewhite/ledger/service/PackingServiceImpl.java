@@ -651,23 +651,24 @@ public class PackingServiceImpl extends BaseServiceImpl<Packing, Long> implement
             String[] idStrings = ids.split(",");
             for (String id : idStrings) {
                 Long idLong = Long.valueOf(id);
-                Quantitative packing = quantitativeDao.findOne(idLong);
-                if(null!=packing.getSale() && 1 == packing.getSale()) {
+                Quantitative quantitive = quantitativeDao.findOne(idLong);
+                if(null!=quantitive.getSale() && 1 == quantitive.getSale()) {
                     throw new ServiceException("贴包单已生成销售单，请勿重复生成");
                 }
-                packing.setSale(1);
-                Date time = packing.getSendTime();
-                List<QuantitativeChild> packingChildList = packing.getQuantitativeChilds();
+                quantitive.setSale(1);
+                Date time = quantitive.getSendTime();
+                List<QuantitativeChild> packingChildList = quantitive.getQuantitativeChilds();
+                int saleOrderSize = saleDao.findBySendDateBetween(time, DatesUtil.getLastDayOftime(time)).size() + 1;
                 for (QuantitativeChild pc : packingChildList) {
                     // 生成财务销售单
                     Sale sale = new Sale();
                     sale.setCount(pc.getSingleNumber());
                     sale.setProductId(pc.getUnderGoods().getProductId());
-                    sale.setCustomerId(packing.getCustomerId());
+                    sale.setCustomerId(quantitive.getCustomerId());
                     sale.setBacthNumber(pc.getUnderGoods().getBacthNumber());
                     // 生成销售编号
-                    sale.setSaleNumber(Constants.XS + "-" + sdf.format(time) + "-" + StringUtil.get0LeftString(
-                            packingChildDao.findBySendDateBetween(time, DatesUtil.getLastDayOftime(time)).size(), 4));
+                    sale.setSaleNumber(Constants.XS + "-" + sdf.format(time) + "-" + 
+                    			StringUtil.get0LeftString(saleOrderSize++, 4));
                     // 未审核
                     sale.setAudit(0);
                     // 未拥有版权
@@ -678,6 +679,10 @@ public class PackingServiceImpl extends BaseServiceImpl<Packing, Long> implement
                     sale.setDeliveryStatus(0);
                     // 价格
                     sale.setPrice(0.0);
+                    // 发货日期
+                    sale.setSendDate(time);
+                    // 量化单id，删除时回滚量化单装换状态
+                    sale.setQuantitativeId(quantitive.getId());
                     // 判定是否拥有版权
                     if (pc.getUnderGoods().getProduct().getName().contains(Constants.LX)
                             || pc.getUnderGoods().getProduct().getName().contains(Constants.KT)
@@ -692,6 +697,7 @@ public class PackingServiceImpl extends BaseServiceImpl<Packing, Long> implement
                     saleDao.save(sale);
                 }
                 count++;
+                quantitativeDao.save(quantitive);
             }
         }
         return count;

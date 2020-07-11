@@ -44,6 +44,9 @@
 <div>
 	<span class="layui-btn layui-btn-sm" lay-event="sure">确认</span>
 	<span class="layui-btn layui-btn-sm layui-btn-danger" lay-event="unsure">取消确认</span>
+	<span class="layui-btn layui-btn-sm layui-btn-nromal" lay-event="addSale">生成销售单</span>
+	<span class="layui-btn layui-btn-sm layui-btn-danger" lay-event="deleteSale">删除销售单</span>
+	<span class="layui-btn layui-btn-sm layui-btn-warm" id="uploadSale" lay-event="">导入销售单</span>
 </div>
 </script>
 <script>
@@ -52,7 +55,7 @@ layui.config({
 }).extend({
 	mytable: 'layui/myModules/mytable',
 }).define(
-	['mytable','myutil','laydate'],
+	['mytable','myutil','laydate','upload'],
 	function(){
 		var $ = layui.jquery
 		, layer = layui.layer 				
@@ -60,6 +63,7 @@ layui.config({
 		, table = layui.table
 		, mytable = layui.mytable
 		, laydate = layui.laydate
+		, upload = layui.upload
 		, myutil = layui.myutil
 		, tablePlug = layui.tablePlug;
 		myutil.config.ctx = '${ctx}';
@@ -71,26 +75,29 @@ layui.config({
 		})
 		var sty = "background-color: #5FB878;color: #fff;";
 		var bg = "background-color: #ecf7b8;";
+		layui.tablePlug.smartReload.enable(true);
 		mytable.render({
 			elem:'#tableData',
+			smartReloadModel:true,
 			url:'${ctx}/ledger/salePage',
 			where: { audit: 0,deliveryStatus:0 },
 			toolbar: '#tableToolbar',
 			ifNull: '',
+			scrollX: true,
 			cols:[[
 			       { type:'checkbox', fixed:'left',},
 			       { title:'销售编号',	width: 157, field:'saleNumber',   fixed:'left', style:sty },
 			       { title:'发货日期',   	width:'7%',	field:'sendDate', fixed:'left', style:sty, type: 'date' },
 			       { title:'业务员',   	width:'8%',	field:'customer_user_userName', },
 			       { title:'客户',   		width:'8%',	field:'customer_name',	},
-			       { title:'批次号',   	width:'8%',	field:'bacthNumber',	},
+			       { title:'批次号',   	width: 156,	field:'bacthNumber',	},
 			       { title:'产品名',   	width:'15%',field:'product_name',},
 			       { title:'离岸数量',   	width:'6%',	field:'count',	},
 			       { title:'总价',   		width:'6%',	field:'sumPrice',	},
 			       { title:'到岸数量',   	width:'6%',	field:'deliveryNumber',	edit:'text', style: bg },
 			       { title:'到岸日期',   	width:'7%',	field:'deliveryDate',	style: bg,  type: 'date' },
 			       { title:'争议数量',   	width:'6%',	field:'disputeNumber',	edit:'text', style: bg },
-			       { title:'争议备注',   	field:'disputeRemark',	edit:'text', style: bg },
+			       { title:'争议备注',   	width: 110, field:'disputeRemark',	edit:'text', style: bg },
 			       { title:'是否确认',   	width:'6%',	field:'deliveryStatus',	templet:'<span>{{ d.deliveryStatus==1?"确认":"未确认"}}</span>', fixed:'right', style:sty },
 			       ]],
 	        done:function(){
@@ -111,14 +118,177 @@ layui.config({
 						}
 					}) 
 	        	})
+	        	var load;
+	        	upload.render({
+	        		elem: '#uploadSale',
+	        		url: '${ctx}/temporaryPack/uploadSale',
+	        		before: function(){
+	        			load = layer.load(1,{ shade: 0.5 })
+	        		},
+    				done: function(res, index, upload){ //上传后的回调
+    					var tips = 'emsg'
+    					if(res.code == 0){
+    						tips = 'smsg';
+    						table.reload('tableData')
+    					}
+   				    	myutil[tips](res.message)
+   				    	layer.close(load)
+    				},
+    				error: function(){
+    					layer.close(load)
+    					myutil.esmg("接口出现异常，请联系管理员")
+    				},
+    				accept: 'file',
+    				exts: 'xls|xlsx',
+	        	})
 			}
 		})
 		table.on('toolbar(tableData)',function(obj){
 			switch(obj.event){
 			case 'sure': sure(1); break;
 			case 'unsure': sure(0); break;
+			case 'addSale': addSale(); break;
+			case 'deleteSale': deleteSale(); break;
 			}
 		})
+		function deleteSale(){
+			myutil.deleTableIds({
+				url: '/temporaryPack/deleteSale',
+				text: '请选择删除数据|是否确认删除？',
+				table: 'tableData',
+			})
+		}
+		var evenColor = 'rgb(133, 219, 245)';
+		function addSale(){
+			layer.open({
+				type: 1,
+				title: '生成销售单',
+				area: ['90%','90%'],
+				content: [
+					'<div style="padding:10px;">',
+						'<table class="layui-form searchTable">',
+						'<tr>',
+							'<td style="width:100px;"><select class="layui-input" id="selectone">',
+										'<option value="sendTime">发货时间</option></select></td>',
+							'<td><input type="text" name="orderTimeBegin" id="orderTimeBegin" placeholder="请输入时间" class="layui-input"></td>',
+							'<td>产品名:</td>',
+							'<td><input type="text" name="productName" class="layui-input"></td>',
+							'<td>客户名:</td>',
+							'<td><input type="text" name="customerName" class="layui-input"></td>',
+							'<td><button type="button" class="layui-btn layui-btn-" lay-submit lay-filter="searchAdd">搜索</button></td>',
+						'</tr>',
+						'</table>',
+						'<table id="addTable" lay-filter="addTable"></table>',
+					'</div>',
+				].join(''),
+				success: function(layerElem,layerIndex){
+					laydate.render({
+						elem: '#orderTimeBegin', range: '~',
+					})
+					form.on('submit(searchAdd)',function(obj){
+						var field = obj.field;
+						if(field.orderTimeBegin){
+							var t = field.orderTimeBegin.split(' ~ ');
+							field.orderTimeBegin = t[0]+' 00:00:00';
+							field.orderTimeEnd = t[1]+' 23:59:59';
+						}else
+							field.orderTimeEnd = '';
+						var a="";
+						var b="";
+						if($("#selectone").val()=="time"){
+							a="2019-05-08 00:00:00"
+						}else{
+							b="2019-05-08 00:00:00"
+						}
+						field.time = a;
+						field.sendTime = b;
+						table.reload('addTable',{
+							where: field,
+							page:{ curr:1 },
+						})
+					})
+					var cols = [
+				       { type:'checkbox',},
+				       { title:'发货时间',   field:'sendTime',  width:110,type:'date',  },
+				       { title:'贴包人',    field:'user_userName', width:100,	},
+				       { title:'客户',     field:'customer_name',	},
+				       { title:'批次号',    field:'underGoods_bacthNumber', minWidth:130, },
+				       { title:'产品名',    field:'underGoods_product_name', width:280,	},
+				       { title:'单包个数',   field:'singleNumber',	width:80, },
+					];
+					mytable.render({
+						elem:'#addTable',
+						size:'sm',
+						url:'${ctx}/temporaryPack/findPagesQuantitative?flag=1&sale=0',
+						toolbar: [
+							'<span class="layui-btn layui-btn-sm" lay-event="add">生成销售单</span>'
+						].join(''),
+						even:true,
+						limits:[10,50,200,500,1000],
+						curd:{
+							btn: [],
+							otherBtn:function(obj){
+								if(obj.event=='add') {
+									myutil.deleTableIds({
+										url: '/temporaryPack/addSale',
+										text: '请选择信息|是否确认生成销售单',
+										table:'addTable',
+										success: function(){
+											table.reload('tableData')
+											layer.close(layerIndex)
+										}
+									})
+								}
+							},
+						},
+						autoUpdate:{},
+						parseData: parseData(),
+						ifNull:'',
+						cols:[ cols ],
+				        autoMerge:{
+				    	  field:['sendTime','user_userName','customer_name','0'], 
+				    	  evenColor: evenColor,
+				        },
+				        done:function(ret,curr, count){
+				    	    form.render();
+							renderTableColor('#addTable');
+							form.render();
+						}
+					})
+				}
+			})
+		}
+		function parseData(){
+			return function(ret){
+				if(ret.code==0){
+					var data = [],d = ret.data.rows;
+					tableDataNoTrans = d;
+					for(var i=0,len=d.length;i<len;i++){
+						var child = d[i].quantitativeChilds;
+						if(!child || child.length==0){
+							data.push($.extend({},{singleNumber:'',actualSingleNumber:'',remarks:''},d[i])); 
+							continue;
+						}
+						for(var j=0,l=child.length;j<l;j++){
+							data.push($.extend({},child[j],{childId: child[j].id,},d[i])); 
+						}
+					}
+					return {  msg:ret.message,  code:ret.code , data: data, count:ret.data.total }; 
+				}
+				else
+					return {  msg:ret.message,  code:ret.code , data:[], count:0 }; 
+			}
+		}
+		function renderTableColor(tableId){
+			var whiteTd = ['0','sendTime','user_userName','customer_name'];
+			layui.each(whiteTd,function(index,item){
+				$(tableId).next().find('td[data-field="'+item+'"]').css('background','white');
+			})
+			var blueTd = ['underGoods_bacthNumber','underGoods_product_name','singleNumber'];
+			layui.each(blueTd,function(index,item){
+				$(tableId).next().find('tr:nth-child(even) td[data-field="'+item+'"]').css('background',evenColor);
+			})
+		}
 		function sure(issure){
 			var choosed = layui.table.checkStatus('tableData').data;
 			if(choosed.length==0)
@@ -155,10 +325,12 @@ layui.config({
 				data[field] = val
 				myutil.saveAjax({
 					url:'/ledger/updateUserSale',
-					data: data
+					data: data,
+					success:function(){
+						table.reload('tableData');
+					}
 				}) 
 			}
-			table.reload('tableData');
 		})
 		form.on('submit(search)',function(obj){
 			var val = $('#searchTime').val(), beg='',end='';
@@ -177,5 +349,4 @@ layui.config({
 	}//end define function
 )//endedefine
 </script>
-
 </html>
