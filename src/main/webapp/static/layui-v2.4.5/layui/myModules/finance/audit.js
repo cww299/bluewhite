@@ -64,8 +64,8 @@ layui.extend({
 		[	//type:4 税点报销 tax
 			firstCols,
 			{ field: "customer_name", title: "供应商名称", }, 
-			{ field: "money", title: "票面金额", },
-			{ field: "taxPoint", title: "税点", },
+			{ field: "taxPoint", title: "票面金额", },
+			{ field: "money", title: "税点", },
 			{ field: "expenseDate", title: "申请日期", }, 
 			{ field: "withholdReason", title: "扣款事由", }, 
 			{ field: "withholdMoney", title: "扣款金额", }, 
