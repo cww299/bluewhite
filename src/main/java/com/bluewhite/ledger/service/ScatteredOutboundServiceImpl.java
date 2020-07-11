@@ -205,13 +205,13 @@ public class ScatteredOutboundServiceImpl extends BaseServiceImpl<ScatteredOutbo
 						if (ot.getAudit() == 1) {
 							throw new ServiceException("第" + (j + 1) + "条领料单已审核，请勿多次审核");
 						}
-						if (ot.getOrderProcurement().getArrival() == 0) {
-							throw new ServiceException("第" + (j + 1) + "条领料单生成的采购单物料未到货，无法审核");
-						}
-						if (ot.getOrderProcurement().getInOutError() == 1) {
-							throw new ServiceException(ot.getOrderProcurement().getOrderProcurementNumber()
-									+ "采购单实际数量和下单数量不相符，无法审核，请先修正数量");
-						}
+//						if (ot.getOrderProcurement().getArrival() == 0) {
+//							throw new ServiceException("第" + (j + 1) + "条领料单生成的采购单物料未到货，无法审核");
+//						}
+//						if (ot.getOrderProcurement().getInOutError() == 1) {
+//							throw new ServiceException(ot.getOrderProcurement().getOrderProcurementNumber()
+//									+ "采购单实际数量和下单数量不相符，无法审核，请先修正数量");
+//						}
 						if (time != null) {
 							ot.setAuditTime(time);
 						}

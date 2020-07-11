@@ -26,7 +26,6 @@ import com.bluewhite.ledger.dao.MaterialPutStorageDao;
 import com.bluewhite.ledger.dao.OrderMaterialDao;
 import com.bluewhite.ledger.dao.OrderProcurementDao;
 import com.bluewhite.ledger.dao.ScatteredOutboundDao;
-import com.bluewhite.ledger.entity.MaterialOutStorage;
 import com.bluewhite.ledger.entity.MaterialPutStorage;
 import com.bluewhite.ledger.entity.OrderMaterial;
 import com.bluewhite.ledger.entity.OrderProcurement;
@@ -102,28 +101,28 @@ public class OrderProcurementServiceImpl extends BaseServiceImpl<OrderProcuremen
 			return null;
 		}, page);
 		PageResult<OrderProcurement> result = new PageResult<>(pages, page);
-		result.getRows().forEach(o->{
-		    // 获取到货数量
-	        List<MaterialPutStorage> materialPutStorageList = materialPutStorageDao.findByOrderProcurementId(o.getId());
-	        double warehousingNumber = materialPutStorageList.stream().mapToDouble(MaterialPutStorage::getArrivalNumber).sum();
-	        // 计算退货总数
-	        List<MaterialOutStorage> list = new ArrayList<>();
-	        materialPutStorageList.stream().forEach(m -> {
-	            List<Long> longList = materialOutStorageDao.findMaterialPutStorageId(m.getId());
-	            List<MaterialOutStorage> listMaterialOutStorage =  materialOutStorageDao.findAll(longList);
-	            if(listMaterialOutStorage.size()>0) {
-	                List<MaterialOutStorage>  mList = listMaterialOutStorage.stream().filter(MaterialOutStorage->MaterialOutStorage.getOutStatus()==4).collect(Collectors.toList());
-	                list.addAll(mList);
-	            }
-	        });
-	        double returnNumber = list.stream().mapToDouble(MaterialOutStorage::getArrivalNumber).sum();
-	        o.setReturnNumber(returnNumber);
-	        //获取已入库数量
-	        o.setWarehousingNumber(NumUtils.sub(warehousingNumber,returnNumber));
-	        if(returnNumber>0) {
-	            o.setReplenishment(1);
-	        }
-		});
+//		result.getRows().forEach(o->{
+//		    // 获取到货数量
+//	        List<MaterialPutStorage> materialPutStorageList = materialPutStorageDao.findByOrderProcurementId(o.getId());
+//	        double warehousingNumber = materialPutStorageList.stream().mapToDouble(MaterialPutStorage::getArrivalNumber).sum();
+//	        // 计算退货总数
+//	        List<MaterialOutStorage> list = new ArrayList<>();
+//	        materialPutStorageList.stream().forEach(m -> {
+//	            List<Long> longList = materialOutStorageDao.findMaterialPutStorageId(m.getId());
+//	            List<MaterialOutStorage> listMaterialOutStorage =  materialOutStorageDao.findAll(longList);
+//	            if(listMaterialOutStorage.size()>0) {
+//	                List<MaterialOutStorage>  mList = listMaterialOutStorage.stream().filter(MaterialOutStorage->MaterialOutStorage.getOutStatus()==4).collect(Collectors.toList());
+//	                list.addAll(mList);
+//	            }
+//	        });
+//	        double returnNumber = list.stream().mapToDouble(MaterialOutStorage::getArrivalNumber).sum();
+//	        o.setReturnNumber(returnNumber);
+//	        //获取已入库数量
+//	        o.setWarehousingNumber(NumUtils.sub(warehousingNumber,returnNumber));
+//	        if(returnNumber>0) {
+//	            o.setReplenishment(1);
+//	        }
+//		});
 		return result;
 	}
 

@@ -112,6 +112,10 @@ public class OrderServiceImpl extends BaseServiceImpl<Order, Long> implements Or
 				for (int i = 0; i < idArr.length; i++) {
 					Long id = Long.parseLong(idArr[i]);
 					Order order = dao.findOne(id);
+					if(order.getAudit()==1) {
+					    throw new ServiceException("批次号：" + order.getBacthNumber() + "产品名："
+                            + order.getProduct().getName() + "的下单合同已审核，无法删除");
+					}
 					Procurement procurement = procurementDao.findByOrderId(id);
 					if (procurement != null) {
 						throw new ServiceException("批次号：" + order.getBacthNumber() + "产品名："

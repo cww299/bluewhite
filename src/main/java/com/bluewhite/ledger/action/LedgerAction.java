@@ -1558,6 +1558,21 @@ public class LedgerAction {
 		cr.setMessage("成功审核" + count + "条销售单");
 		return cr;
 	}
+	
+	/**
+     * 导入销售单(财务)
+     * 
+     * @return cr
+     */
+    @RequestMapping(value = "/ledger/importSale", method = RequestMethod.GET)
+    @ResponseBody
+    public CommonResponse importSale() {
+        CommonResponse cr = new CommonResponse();
+        
+        
+        cr.setMessage("成功审核条销售单");
+        return cr;
+    }
 
 	/**
 	 * 分页查看杂支

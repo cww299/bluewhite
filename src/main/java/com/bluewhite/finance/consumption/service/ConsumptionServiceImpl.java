@@ -273,7 +273,8 @@ public class ConsumptionServiceImpl extends BaseServiceImpl<Consumption, Long> i
                 for (int i = 0; i < idArr.length; i++) {
                     Long id = Long.parseLong(idArr[i]);
                     Consumption consumption = dao.findOne(id);
-                    if (consumption.getType()!=5 && consumption.getOrgNameId() != null && cu.getOrgNameId() != consumption.getOrgNameId()) {
+                    if (consumption.getType() != 5 && consumption.getOrgNameId() != null
+                        && cu.getOrgNameId() != consumption.getOrgNameId()) {
                         throw new ServiceException("无权限删除");
                     }
                     if (consumption.getFlag() == 0) {
@@ -292,20 +293,21 @@ public class ConsumptionServiceImpl extends BaseServiceImpl<Consumption, Long> i
                                 dao.save(pConsumption);
                             }
                         }
-                        
+
                         // 删除物流申请
-                        if(consumption.getType() == 5) {
+                        if (consumption.getType() == 5) {
                             if (consumption.getSendOrderId() != null) {
                                 SendOrder sendOrder = sendOrderService.findOne(consumption.getSendOrderId());
                                 sendOrder.setAudit(0);
                                 sendOrderService.save(sendOrder);
                             }
-                            if(consumption.getParentId()!=null && consumption.getParentId()!=0) {
-                                Consumption consumptionPrent =  dao.findOne(consumption.getParentId());
-                                consumptionPrent.setMoney(NumUtils.sub(consumptionPrent.getMoney(),consumption.getMoney()));
-                                if(null != consumptionPrent && consumptionPrent.getMoney()==0) {
+                            if (consumption.getParentId() != null && consumption.getParentId() != 0) {
+                                Consumption consumptionPrent = dao.findOne(consumption.getParentId());
+                                consumptionPrent
+                                    .setMoney(NumUtils.sub(consumptionPrent.getMoney(), consumption.getMoney()));
+                                if (null != consumptionPrent && consumptionPrent.getMoney() == 0) {
                                     dao.delete(consumptionPrent);
-                                }else {
+                                } else {
                                     dao.save(consumptionPrent);
                                 }
                             }
@@ -335,7 +337,7 @@ public class ConsumptionServiceImpl extends BaseServiceImpl<Consumption, Long> i
                         throw new ServiceException("放款金额或放款时间不能为空或者为0");
                     }
                     if (flag == 1) {
-                        if ((consumption.getType() == 1 || consumption.getType() == 5)
+                        if ((consumption.getType() == 1 || consumption.getType() == 4 || consumption.getType() == 5)
                             && (consumption.getPaymentMoney() < consumption.getMoney())) {
                             flag = 2;
                         }
@@ -409,12 +411,30 @@ public class ConsumptionServiceImpl extends BaseServiceImpl<Consumption, Long> i
             consumptionList.stream().forEach(c -> {
                 if (c.getType() == 5) {
                     if (c.getParentId() != null && c.getParentId() == 0) {
-                        listDouble.add(c.getPaymentMoney() != null ? NumUtils.sub(c.getMoney(), c.getPaymentMoney())
-                            : c.getMoney());
+                        double money = 0;
+                        if (c.getFlag() == 0) {
+                            money = c.getMoney();
+                        }
+                        if (c.getFlag() == 1) {
+                            money = 0;
+                        }
+                        if (c.getFlag() == 2) {
+                            money = NumUtils.sub(c.getMoney(), c.getPaymentMoney());
+                        }
+                        listDouble.add(money);
                     }
                 } else {
-                    listDouble.add(
-                        c.getPaymentMoney() != null ? NumUtils.sub(c.getMoney(), c.getPaymentMoney()) : c.getMoney());
+                    double money = 0;
+                    if (c.getFlag() == 0) {
+                        money = c.getMoney();
+                    }
+                    if (c.getFlag() == 1) {
+                        money = 0;
+                    }
+                    if (c.getFlag() == 2) {
+                        money = NumUtils.sub(c.getMoney(), c.getPaymentMoney());
+                    }
+                    listDouble.add(money);
                 }
             });
             amount = NumUtils.sum(listDouble);
@@ -469,7 +489,7 @@ public class ConsumptionServiceImpl extends BaseServiceImpl<Consumption, Long> i
                 predicate
                     .add(cb.like(root.get("user").get("userName").as(String.class), "%" + param.getUsername() + "%"));
             }
-           
+
             // 按客户姓名查找
             if (!StringUtils.isEmpty(param.getCustomerName())) {
                 predicate.add(
@@ -477,8 +497,8 @@ public class ConsumptionServiceImpl extends BaseServiceImpl<Consumption, Long> i
             }
             // 按业务员姓名查找
             if (!StringUtils.isEmpty(param.getSaleUserName())) {
-                predicate.add(
-                    cb.like(root.get("customer").get("user").get("userName").as(String.class), "%" + param.getSaleUserName() + "%"));
+                predicate.add(cb.like(root.get("customer").get("user").get("userName").as(String.class),
+                    "%" + param.getSaleUserName() + "%"));
             }
             // 按物流点查找
             if (!StringUtils.isEmpty(param.getLogisticsName())) {
@@ -520,19 +540,21 @@ public class ConsumptionServiceImpl extends BaseServiceImpl<Consumption, Long> i
     }
 
     @Override
-    public  List<Map<String,Object>> logisticsConsumption(Consumption consumption) {
-        List<Map<String,Object>> listmap = new ArrayList<>();
+    public List<Map<String, Object>> logisticsConsumption(Consumption consumption) {
+        List<Map<String, Object>> listmap = new ArrayList<>();
         consumption.setType(5);
         List<Consumption> list = findList(consumption);
-        list = list.stream().filter(Consumption -> Consumption.getParentId()!=null && Consumption.getParentId() != 0).collect(Collectors.toList());
-        Map<Long, List<Consumption>> mapGourp = list.stream().collect(Collectors.groupingBy(Consumption::getCustomerId));
+        list = list.stream().filter(Consumption -> Consumption.getParentId() != null && Consumption.getParentId() != 0)
+            .collect(Collectors.toList());
+        Map<Long, List<Consumption>> mapGourp =
+            list.stream().collect(Collectors.groupingBy(Consumption::getCustomerId));
         for (Map.Entry<Long, List<Consumption>> entry : mapGourp.entrySet()) {
-            Map<String,Object> map  = new HashMap<String,Object>();
+            Map<String, Object> map = new HashMap<String, Object>();
             double pay = entry.getValue().stream().mapToDouble(Consumption::getMoney).sum();
             map.put("pay", pay);
             map.put("name", entry.getValue().get(0).getCustomer().getName());
             map.put("username", entry.getValue().get(0).getCustomer().getUser().getUserName());
-            BaseData orgName =  basedataDao.findOne(entry.getValue().get(0).getOrgNameId());            
+            BaseData orgName = basedataDao.findOne(entry.getValue().get(0).getOrgNameId());
             map.put("orgName", orgName.getName());
             listmap.add(map);
         }
