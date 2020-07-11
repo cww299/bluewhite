@@ -503,41 +503,43 @@ public class DatesUtil {
 
     /**
      * 判断是冬令时还是夏令时（5.1-9.30）
-     * 目前更改成6.1-9.30       
+     * 目前默认冬令时 
      * 
      * @throws ParseException
      */
     public static boolean belongCalendar(Date nowTime) {
-        Calendar date = Calendar.getInstance();
-        date.setTime(nowTime);
-
-        Calendar begin = Calendar.getInstance();
-        // 设置年份
-        begin.set(Calendar.YEAR, date.get(Calendar.YEAR));
-        // 设置月份
-        begin.set(Calendar.MONTH, 5);
-        // 设置天
-        begin.set(Calendar.DAY_OF_MONTH, 30);
-        begin.set(Calendar.HOUR_OF_DAY, 23);// 设置时为0点
-        begin.set(Calendar.MINUTE, 59);// 设置分钟为0分
-        begin.set(Calendar.SECOND, 59);// 设置秒为0秒
-        Calendar end = Calendar.getInstance();
-        // 设置年份
-        end.set(Calendar.YEAR, date.get(Calendar.YEAR));
-        // 设置月份
-        end.set(Calendar.MONTH, 9);
-        // 设置天
-        end.set(Calendar.DAY_OF_MONTH, 30);
-        end.set(Calendar.HOUR_OF_DAY, 23);// 设置时为0点
-        end.set(Calendar.MINUTE, 59);// 设置分钟为0分
-        end.set(Calendar.SECOND, 59);// 设置秒为0秒
-        if (date.after(begin) && date.before(end)) {
-            return true;
-        } else if (nowTime.compareTo(begin.getTime()) == 0 || nowTime.compareTo(end.getTime()) == 0) {
-            return true;
-        } else {
-            return false;
-        }
+          return false;
+//        Calendar date = Calendar.getInstance();
+//        date.setTime(nowTime);
+//
+//        Calendar begin = Calendar.getInstance();
+//        // 设置年份
+//        begin.set(Calendar.YEAR, date.get(Calendar.YEAR));
+//        // 设置月份
+//        begin.set(Calendar.MONTH, 4);
+//        // 设置天
+//        begin.set(Calendar.DAY_OF_MONTH, 30);
+//        begin.set(Calendar.HOUR_OF_DAY, 23);// 设置时为0点
+//        begin.set(Calendar.MINUTE, 59);// 设置分钟为0分
+//        begin.set(Calendar.SECOND, 59);// 设置秒为0秒
+//        Calendar end = Calendar.getInstance();
+//        // 设置年份
+//        end.set(Calendar.YEAR, date.get(Calendar.YEAR));
+//        // 设置月份
+//        end.set(Calendar.MONTH, 9);
+//        // 设置天
+//        end.set(Calendar.DAY_OF_MONTH, 30);
+//        end.set(Calendar.HOUR_OF_DAY, 23);// 设置时为0点
+//        end.set(Calendar.MINUTE, 59);// 设置分钟为0分
+//        end.set(Calendar.SECOND, 59);// 设置秒为0秒
+//        
+//        if (date.after(begin) && date.before(end)) {
+//            return true;
+//        } else if (nowTime.compareTo(begin.getTime()) == 0 || nowTime.compareTo(end.getTime()) == 0) {
+//            return true;
+//        } else {
+//            return false;
+//        }
     }
 
     /**
