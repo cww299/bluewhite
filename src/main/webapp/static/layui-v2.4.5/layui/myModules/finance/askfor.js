@@ -65,8 +65,8 @@ layui.extend({
 		[	//type:4 税点应付申请 tax
 			firstCols,
 			{ field: "customer_id", title: "供应商名称", type:'select',select:{data:[],},}, 
-			{ field: "money", title: "票面金额", edit:'number',},
-			{ field: "taxPoint", title: "税点", edit:true,},
+			{ field: "taxPoint", title: "票面金额", edit:'number',},
+			{ field: "money", title: "税点", edit: 'number',},
 			{ field: "expenseDate", title: "申请日期", edit:true,type:'dateTime', }, 
 			{ field: "withholdReason", title: "扣款事由",edit:true, }, 
 			{ field: "withholdMoney", title: "扣款金额", edit:true,}, 
@@ -270,8 +270,9 @@ layui.extend({
 				field:{ customer_id:'customerId',user_id:'userId',contact_id:'contactId' },
 			},
 			verify:{
-				price: askfor.type === 4 ? ['withholdMoney'] : ['money','withholdMoney'],
-				notNull:['content','expenseDate','money','customer_id','user_id','contact_id'],
+				price: ['money','withholdMoney'],
+				notNull:['content','expenseDate',(function(){ return askfor.type==4?"":'money'})(),
+					'customer_id','user_id','contact_id'],
 			},
 			limits:[10,20,50,100,200,],
 			curd:{
