@@ -268,9 +268,9 @@ public class OrderProcurementServiceImpl extends BaseServiceImpl<OrderProcuremen
 					Long id = Long.parseLong(idArr[i]);
 					OrderProcurement orderProcurement = dao.findOne(id);
 					if (orderProcurement != null) {
-						if (orderProcurement.getArrival() == 1) {
-							throw new ServiceException(orderProcurement.getOrderProcurementNumber()+"采购单已成功审核，请不要多次审核");
-						}
+//						if (orderProcurement.getArrival() == 1) {
+//							throw new ServiceException(orderProcurement.getOrderProcurementNumber()+"采购单已成功审核，请不要多次审核");
+//						}
 						// 判断是否有入库单
 						List<MaterialPutStorage>  materialPutStorageList =  materialPutStorageService.findByOrderProcurementId(id);
 						if(materialPutStorageList.size()==0){
@@ -285,6 +285,8 @@ public class OrderProcurementServiceImpl extends BaseServiceImpl<OrderProcuremen
 						//不相同时则标记出
 						if(orderProcurement.getPlaceOrderNumber()!=arrivalNumber){
 							orderProcurement.setInOutError(1);
+						}else {
+						    orderProcurement.setInOutError(0);
 						}
 						//缺克重价值
 						double gramPrice = materialPutStorageList.stream().filter(MaterialPutStorage->MaterialPutStorage.getGramPrice()!=null).mapToDouble(MaterialPutStorage->MaterialPutStorage.getGramPrice()).sum();

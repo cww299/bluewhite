@@ -20,5 +20,5 @@ public interface SendOrderDao extends BaseRepository<SendOrder, Long>{
     /**
      * 根据当天日期和客户查找发货单
      */
-    List<SendOrder> findByCustomerIdAndSendTimeBetweenAndWarehouseTypeId(Long id , Date startTime ,Date endTime,Long warehouseTypeId);
+    List<SendOrder> findByCustomerIdAndSendTimeBetweenAndWarehouseTypeIdAndAudit(Long id , Date startTime ,Date endTime,Long warehouseTypeId,Integer audit);
 }

@@ -9,6 +9,7 @@ import javax.persistence.criteria.Predicate;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
@@ -139,7 +140,7 @@ public class UnderGoodsServiceImpl extends BaseServiceImpl<UnderGoods, Long> imp
         if(cu.getRole().contains("packScene") || cu.getRole().contains("elevenSend")) {
             param.setWarehouseTypeId((long)275);
         }
-        PageParameter page = new PageParameter(0, 50);
+        PageParameter page = new PageParameter(0, 50,new Sort(Sort.Direction.DESC, "id"));
         Page<UnderGoods> pages = dao.findAll((root, query, cb) -> {
             List<Predicate> predicate = new ArrayList<>();
             // 按id过滤

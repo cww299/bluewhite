@@ -354,38 +354,49 @@ public class AttendanceTimeServiceImpl extends BaseServiceImpl<AttendanceTime, L
                     if (rout) {
                         attendanceTime.setFlag(3);
                         if (attendanceInit.getOverTimeType() == 2 && attendanceTime.getCheckIn() != null && attendanceTime.getCheckOut() != null) {
-                            if (attendanceInit.getRestTimeWork() == 3) {
-                                attendanceTime.setOvertime(DatesUtil.getTimeHour(attendanceTime.getCheckIn().before(workTime)
-                                        ? workTime : attendanceTime.getCheckIn(), attendanceTime.getCheckOut()));
-                            } else {
-                                attendanceTime.setOvertime(NumUtils.sub(
-                                    DatesUtil.getTimeHour(attendanceTime.getCheckIn().before(workTime) ? workTime
-                                        : attendanceTime.getCheckIn(), attendanceTime.getCheckOut()),   
-                                    attendanceTime.getCheckOut().after(restEndTime) ? restTime : 0));
-                            } 
-                            if (attendanceInit.isEarthWork() && DatesUtil.getTime(attendanceTime.getCheckIn(), workTime) >= 20) {
-                                attendanceTime.setOvertime(NumUtils.sum(attendanceTime.getOvertime(),DatesUtil.getTimeHour(attendanceTime.getCheckIn(), workTime)));
+//                            if (attendanceInit.getRestTimeWork() == 3) {
+//                                attendanceTime.setOvertime(DatesUtil.getTimeHour(attendanceTime.getCheckIn().before(workTime)
+//                                        ? workTime : attendanceTime.getCheckIn(), attendanceTime.getCheckOut()));
+//                            } else {
+//                                attendanceTime.setOvertime(NumUtils.sub(
+//                                    DatesUtil.getTimeHour(attendanceTime.getCheckIn().before(workTime) ? workTime
+//                                        : attendanceTime.getCheckIn(), attendanceTime.getCheckOut()),   
+//                                    attendanceTime.getCheckOut().after(restEndTime) ? restTime : 0));
+//                            } 
+//                            if (attendanceInit.isEarthWork() && DatesUtil.getTime(attendanceTime.getCheckIn(), workTime) >= 20) {
+//                                attendanceTime.setOvertime(NumUtils.sum(attendanceTime.getOvertime(),DatesUtil.getTimeHour(attendanceTime.getCheckIn(), workTime)));
+//                            }
+//                            
+//                            if(us.getOrgNameId()==84) {
+//                                attendanceTime.setOvertime(DatesUtil.getTimeHour(attendanceTime.getCheckIn().before(workTime)
+//                                    ? workTime : attendanceTime.getCheckIn(), attendanceTime.getCheckOut()));
+//                            }
+//
+//                            // 设定加班后可以晚到岗加班时间
+//                            if (sign) {
+//                                if (attendanceTime.getCheckIn().compareTo(DatesUtil.getDaySum(workTime, minute)) != 1) {
+//                                    attendanceTime.setOvertime(attendanceInit.getRestTimeWork() == 3
+//                                        ? DatesUtil.getTimeHour(workTime, attendanceTime.getCheckOut())
+//                                        : NumUtils.sub(DatesUtil.getTimeHour(workTime, attendanceTime.getCheckOut()),
+//                                            attendanceTime.getCheckOut().after(restEndTime) ? restTime : 0));
+//                                }
+//                            }
+                            double workTime1 = attendanceTime.getWorkTime();
+                            if(attendanceInit.isEarthWork() && DatesUtil.getTime(attendanceTime.getCheckIn(), workTime) >= 20) {
+                                workTime1 = NumUtils.sum(workTime1,DatesUtil.getTimeHour(attendanceTime.getCheckIn(), workTime));
                             }
                             
-                            if(us.getOrgNameId()==84) {
-                                attendanceTime.setOvertime(DatesUtil.getTimeHour(attendanceTime.getCheckIn().before(workTime)
-                                    ? workTime : attendanceTime.getCheckIn(), attendanceTime.getCheckOut()));
+                            if(attendanceTime.getCheckOut().compareTo(workTimeEnd)==1) {
+                                workTime1 = NumUtils.sum(workTime1,DatesUtil.getTimeHour(workTimeEnd,attendanceTime.getCheckOut() ));
                             }
-
-                            // 设定加班后可以晚到岗加班时间
-                            if (sign) {
-                                if (attendanceTime.getCheckIn().compareTo(DatesUtil.getDaySum(workTime, minute)) != 1) {
-                                    attendanceTime.setOvertime(attendanceInit.getRestTimeWork() == 3
-                                        ? DatesUtil.getTimeHour(workTime, attendanceTime.getCheckOut())
-                                        : NumUtils.sub(DatesUtil.getTimeHour(workTime, attendanceTime.getCheckOut()),
-                                            attendanceTime.getCheckOut().after(restEndTime) ? restTime : 0));
-                                }
-                            }
+                            attendanceTime.setOvertime(workTime1);
                             attendanceTime.setOrdinaryOvertime(attendanceTime.getOvertime());
                         }
                         attendanceTimeList.add(attendanceTime);
                         continue;
                     }
+                    
+                    
 
                     // 当外协部或者物流部有打卡记录时，按打卡记录核算考勤
                     if (us.getOrgNameId() != null && us.getOrgNameId() != 45 && us.getOrgNameId() != 23) {
