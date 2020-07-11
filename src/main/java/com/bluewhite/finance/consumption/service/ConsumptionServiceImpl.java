@@ -335,7 +335,7 @@ public class ConsumptionServiceImpl extends BaseServiceImpl<Consumption, Long> i
                         throw new ServiceException("放款金额或放款时间不能为空或者为0");
                     }
                     if (flag == 1) {
-                        if ((consumption.getType() == 1 || consumption.getType() == 5)
+                        if ((consumption.getType() == 1 || consumption.getType() == 4 || consumption.getType() == 5)
                             && (consumption.getPaymentMoney() < consumption.getMoney())) {
                             flag = 2;
                         }
