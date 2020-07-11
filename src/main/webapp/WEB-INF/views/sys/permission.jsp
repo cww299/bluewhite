@@ -347,7 +347,7 @@ layui.config({
 						}
 				})  
 			}
-			layer.msg("成功删除"+choosed.length+'天记录',{icon:1});
+			layer.msg("成功删除"+choosed.length+'条记录',{icon:1});
 			choosed=[];
 			table.reload('userRoleTable');
 			layer.close(load);

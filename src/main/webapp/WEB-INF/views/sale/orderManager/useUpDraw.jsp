@@ -101,7 +101,7 @@ layui.config({
 		
 		var allUserSelect,allCustomSelect;
 		myutil.getData({
-			url:'${ctx}/system/user/findUserList',
+			url:'${ctx}/system/user/findUserList?quit=0',
 			success:function(d){
 				for(var i=0,len=d.length;i<len;i++){
 					allUserSelect += '<option value="'+d[i].id+'">'+d[i].userName+'</option>';

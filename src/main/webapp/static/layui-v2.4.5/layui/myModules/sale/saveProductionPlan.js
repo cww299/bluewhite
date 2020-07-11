@@ -23,31 +23,33 @@ layui.extend({
 		`<div style="padding:10px;">
 			<table class="layui-form">
 				<tr>
-					<td>商品选择：</td>
-					<td><input readonly placeholder="点击选择商品" class="layui-input" id="chooseProductInput"  lay-verify="required"
-							value="{{ d.product?d.product.name : ""}}">
+					<td><b class="red">*</b>商品选择：</td>
+					<td><input readonly placeholder="点击选择商品" class="layui-input" id="chooseProductInput" 
+							lay-verify="required" value="{{ d.product?d.product.name : ""}}">
 						<input type="hidden" name="productId" id="productIdHidden" value="{{ d.product?d.product.id:"" }}">
 						<input type="hidden" name="id" value="{{ d.id || "" }}">
 						</td>
 					<td>&nbsp;&nbsp;</td>
-					<td>订单类型：</td>
+					<td><b class="red">*</b>订单类型：</td>
 					<td style="width:100px;"><select id="orderTypeSelect" name="orderTypeId" data-value="{{d.orderType?d.orderType.id:"" }}" 
 							lay-verify="required">
 							<option value="">请选择</option></select></td>
 					<td>&nbsp;&nbsp;</td>
-					<td>订单时间：</td>
+					<td><b class="red">*</b>订单时间：</td>
 					<td><input type="text" name="orderDate" id="orderDate" class="layui-input" 
-							value="{{ d.orderDate || "" }}" lay-verify="required"></td>
+							value="{{ d.orderDate || "" }}" autocomplete="off" lay-verify="required"></td>
 					<td>&nbsp;&nbsp;</td>
-					<td>批次号：</td>
-					<td><input type="text" name="bacthNumber" class="layui-input" value="{{ d.bacthNumber || ""}}" lay-verify="required"></td>
+					<td><b class="red">*</b>批次号：</td>
+					<td><input type="text" name="bacthNumber" class="layui-input" value="{{ d.bacthNumber || ""}}" 
+							lay-verify="required"></td>
 					<td>&nbsp;&nbsp;</td>
 					<td>订单备注：</td>
 					<td><input type="text" name="remark" class="layui-input" value="{{ d.remark || ""}}"></td>
 					<td>&nbsp;&nbsp;</td>
-					<td>订单数量：</td>
+					<td><b class="red">*</b>订单数量：</td>
 					<td style="width:80px;">
-						<input type="text" id="orderNumber" readonly class="layui-input" name="number" value="{{d.number || 0}}">
+						<input type="number" id="orderNumber" readonly class="layui-input" name="number" 
+							value="{{d.number || 0}}" lay-verify="required">
 						</td>
 					<td>&nbsp;&nbsp;</td>
 					<td><span lay-submit lay-filter="saveProductPlan" class="layui-btn">保存</span></td>
@@ -104,7 +106,8 @@ layui.extend({
 		layui.each(opt.data.orderChilds,function(index,item){
 			d.push({
 				id:item.id,
-				userId: item.user.id,
+				user: item.user,
+				userId: item.user ? item.user.id : '',
 				customerId: item.customer.id,
 				name: item.customer.name,
 				remark: item.childRemark,
@@ -180,15 +183,16 @@ layui.extend({
 					toolbar: addTableToolbar,
 					size:'lg',
 					data: customerList,
+					ifNull: '',
 					cols:[[
 							{ type:'checkbox',},
 							{ title:'客户',   	field:'name', 	},
-							{ title:'下单人',    field:'userName',    
-								/*下单人不可能为空！
-								 * type:'select', select:{data:allUser,name:'userName',isDisabled:true,unsearch:true,}*/
+							{ title:'下单人',    field:'user_userName',    
+							/*下单人不可能为空！
+							 * type:'select', select:{data:allUser,name:'userName',isDisabled:true,unsearch:true,}*/
 							},
-							{ title:'数量',   	field:'number',  	edit:true, },
-							{ title:'备注',   	field:'remark',	edit:true, },
+							{ title:'数量',   	field:'number',  	edit: 'number', },
+							{ title:'备注',   	field:'remark',	edit: true, },
 					       ]],
 					done:function(){
 						table.on('edit(addTable)',function(obj){
@@ -226,10 +230,7 @@ layui.extend({
 							childRemark: item.remark,
 							id: item.id || "",
 						})
-						if(item.userId=='' || item.numbe==""){
-							return msg = '数量、跟单人不能为空!';
-						}
-						if(isNaN(item.number)|| item.number<=0)
+						if(!item.number || isNaN(item.number)|| item.number<=0)
 							return msg = '请正确填写数量!';
 					})	
 					orderChild.length==0 && (msg = '请选择客户');
@@ -272,12 +273,13 @@ layui.extend({
 					mytable.render({
 						elem: '#choosedCustomerTable',
 						url: myutil.config.ctx+'/ledger/customerPage?customerTypeId=459', //type=1
+						ifNull: '---',
 						cols:[[
 								{ type:'checkbox',},
 								{ title:'客户编号',	field:'id',	},
 								{ title:'客户名称',	field:'name',	},
 								{ title:'业务员',	field:'user_userName',	},
-						       ]],
+					       ]],
 						done: function(res){		//回显复选框选中
 							for(var i=0;i< res.data.length;i++){
 		                         for (var j = 0; j < customerList.length; j++) {
@@ -354,9 +356,9 @@ layui.extend({
 							myutil.emsg('客户:'+item1.name+' 已存在请勿重复添加客户');
 						}
 					newCus.push({
-						userId: item1.user.id,	//业务员不可能为空！
-						userName: item1.user.userName,
-						name:item1.name,
+						userId: item1.user ? item1.user.id : "",
+						user: item1.user || null,
+						name: item1.name,
 						remark: '',
 						number: 0,
 						customerId: item1.id,

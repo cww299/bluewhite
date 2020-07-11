@@ -270,7 +270,7 @@ layui.extend({
 				field:{ customer_id:'customerId',user_id:'userId',contact_id:'contactId' },
 			},
 			verify:{
-				price:['money','withholdMoney'],
+				price: askfor.type === 4 ? ['withholdMoney'] : ['money','withholdMoney'],
 				notNull:['content','expenseDate','money','customer_id','user_id','contact_id'],
 			},
 			limits:[10,20,50,100,200,],

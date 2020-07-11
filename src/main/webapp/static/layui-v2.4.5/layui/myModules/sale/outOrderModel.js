@@ -200,7 +200,7 @@ layui.extend({
 	
 	outOrderModel.init = function(){
 		myutil.getData({	//获取部门、生产、外协部人员
-			url: myutil.config.ctx+'/system/user/findUserList?orgNameIds=20,23',
+			url: myutil.config.ctx+'/system/user/findUserList?quit=0&orgNameIds=20,23',
 			success:function(d){
 				for(var i=0,len=d.length;i<len;i++){
 					allOrgUser += '<option value="'+d[i].id+'">'+d[i].userName+'</option>';

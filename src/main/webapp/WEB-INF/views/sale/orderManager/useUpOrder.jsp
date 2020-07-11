@@ -48,20 +48,20 @@
 	  <input type="hidden" name="orderMaterialId" id="orderMaterialId">
 	  <input type="hidden" name="id" id="addEditId">
 	  <div class="layui-form-item" pane>
-	    <label class="layui-form-label">下单日期：</label>
+	    <label class="layui-form-label"><b class="red">*</b>下单日期：</label>
 	    <div class="layui-input-block">
 	      <input type="text" name="placeOrderTime" class="layui-input" id="placeOrderTime" lay-verify="required">
 	    </div>
 	  </div>
 	  <div class="layui-form-item" pane>
-	    <label class="layui-form-label">供应商：</label>
+	    <label class="layui-form-label"><b class="red">*</b>供应商：</label>
 	    <div class="layui-input-block">
 	      <select name="customerId" lay-search id="supplierSelect" lay-filter="supplierSelect" lay-verify="required">
 	      		<option value="">请选择</option></select>
 	    </div>
 	  </div>
 	  <div class="layui-form-item" pane>
-	    <label class="layui-form-label">订货数量：</label>
+	    <label class="layui-form-label"><b class="red">*</b>订货数量：</label>
 	    <div class="layui-input-block">
 	      <input type="text" name="placeOrderNumber" id="placeOrderNumber" class="layui-input" lay-verify="number">
 	    </div>
@@ -73,7 +73,7 @@
 	    </div>
 	  </div>
 	  <div class="layui-form-item" pane>
-	    <label class="layui-form-label">订料人：</label>
+	    <label class="layui-form-label"><b class="red">*</b>订料人：</label>
 	    <div class="layui-input-block">
 	      <select name="userId" lay-search id="userIdSelect" lay-verify="required">
 	      		<option value="">请选择</option></select>
@@ -86,21 +86,23 @@
 	    </div>
 	  </div>
 	  <div class="layui-form-item" pane>
-	    <label class="layui-form-label">生成编号：</label>
+	    <label class="layui-form-label"><b class="red">*</b>生成编号：</label>
 	    <div class="layui-input-block">
 	      <input type="text" name="newCode" class="layui-input" id="autoNumber" disabled lay-verify="required">
 	    </div>
 	  </div>
 	  <div class="layui-form-item" pane>
-	    <label class="layui-form-label">到库日期：</label>
+	    <label class="layui-form-label"><b class="red">*</b>到库日期：</label>
 	    <div class="layui-input-block">
-	      <input type="text" name="expectArrivalTime" class="layui-input" id="comeDate" lay-verify="required">
+	      <input type="text" name="expectArrivalTime" autocomplete="off" class="layui-input"
+	      	 id="comeDate" lay-verify="required">
 	    </div>
 	  </div>
 	  <div class="layui-form-item" pane>
-	    <label class="layui-form-label">付款日期：</label>
+	    <label class="layui-form-label"><b class="red">*</b>付款日期：</label>
 	    <div class="layui-input-block">
-	      <input type="text" name="expectPaymentTime" class="layui-input" id="exceptDate" lay-verify="required">
+	      <input type="text" name="expectPaymentTime" autocomplete="off" class="layui-input"
+	      	 id="exceptDate" lay-verify="required">
 	    </div>
 	  </div>
 	  <span style="display:none;" lay-filter="sureAdd" id="sureAdd" lay-submit>确定</span>
@@ -453,6 +455,7 @@ layui.config({
 						success:function(){
 							mytable.render({
 								elem: '#allTable',
+								ifNull: '---',
 								url: '${ctx}/ledger/getOrderProcurement?orderId='+orderId,
 								toolbar:['<span class="layui-btn layui-btn-sm" lay-event="updateProcurement">修改采购单</span>',
 										 '<span class="layui-btn layui-btn-sm" lay-event="auditProcurement">审核</span>'].join(''),
@@ -511,7 +514,7 @@ layui.config({
 						area:['30%','20'],
 						btn:['确定','取消'],
 						content:['<div style="padding:20px;">',
-									'<p>审核时间:</p>',
+									'<p>审核时间:（<b class="red">请确认仓库已到货</b>）</p>',
 						         	'<input type="text" id="auditTime" class="layui-input">',
 						         '</div>',
 						         ].join(' '),
