@@ -72,6 +72,6 @@ public interface SaleService  extends BaseCRUDService<Sale,Long>{
 
 	public int deleteSale(String ids);
 
-	public int excelAddSale(ExcelListener excelListener);
+	int excelAddSale(ExcelListener excelListener, Long customerType);
 
 }

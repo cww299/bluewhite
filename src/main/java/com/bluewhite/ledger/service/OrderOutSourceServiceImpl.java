@@ -86,7 +86,7 @@ public class OrderOutSourceServiceImpl extends BaseServiceImpl<OrderOutSource, L
                     newOrderOutSource.setAudit(0);
                     newOrderOutSource.setChargeOff(0);
                     String outSourceNumber = (newOrderOutSource.getOutsource() == 0 ? Constants.JGD : Constants.WFJGD)
-                        + StringUtil.getDate() + StringUtil.get0LeftString((int)(dao.count() + 1), 8);
+                        + StringUtil.getDate() + StringUtil.get0LeftString((int)(dao.count() + 1), 4);
                     newOrderOutSource.setOutSourceNumber(outSourceNumber);
                     newOrderOutSource.getOutsourceTask().add(bd);
                     save(newOrderOutSource);
@@ -384,6 +384,9 @@ public class OrderOutSourceServiceImpl extends BaseServiceImpl<OrderOutSource, L
         OrderOutSource ot = dao.findOne(orderOutSource.getId());
         if (ot.getChargeOff() == 1) {
             throw new ServiceException("外发加工对账单已生成，请勿多次申请");
+        }
+        if (ot.getAudit() == 0) {
+        	throw new ServiceException("外发加工单未审核，无法生成对账单");
         }
         consumption.setOrderOutSourceId(orderOutSource.getId());
         // 外发加工对账单

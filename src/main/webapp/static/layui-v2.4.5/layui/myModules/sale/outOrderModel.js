@@ -21,24 +21,24 @@ layui.extend({
 	var TPL = ['<div class="layui-form layui-form-pane" style="padding:20px;">',
 				'<p style="display:none;"><button lay-submit lay-filter="sureAddOutOrder" id="sureAddOutOrder">确定</button></p>',
 				'<div class="layui-item" pane>',
-					'<label class="layui-form-label">开单时间</label>',
+					'<label class="layui-form-label"><b class="red">*</b>开单时间</label>',
 					'<div class="layui-input-block">',
 						'<input class="layui-input" lay-verify="required" name="openOrderTime" id="openOrderTime" value="{{ d.openOrderTime?d.openOrderTime:"" }}">',
 					'</div>',
 				'</div>',
 				'<div class="layui-item" pane>',
-					'<label class="layui-form-label">外发工序</label>',
+					'<label class="layui-form-label"><b class="red">*</b>外发工序</label>',
 					'<div class="layui-input-block">',
 						'<select id="processSelect" lay-search name="outsourceTaskIds" xm-select="processSelect"',
-						   'xm-select-show-count="5">',
+						   ' lay-verify="required" xm-select-show-count="5">',
 							'<option value="">请选择</option>',
 						'</select>',
 					'</div>',
 				'</div>',
 				'<div class="layui-item" pane>',
-					'<label class="layui-form-label">外发数量</label>',
+					'<label class="layui-form-label"><b class="red">*</b>外发数量</label>',
 					'<div class="layui-input-block">',
-						'<input class="layui-input" lay-verify="required" name="processNumber" ',
+						'<input class="layui-input" lay-verify="number" name="processNumber" ',
 							'value="{{ d.processNumber?d.processNumber:"" }}">',
 					'</div>',
 				'</div>',
@@ -55,7 +55,7 @@ layui.extend({
 					'</div>',
 				'</div>',
 				'<div class="layui-item" pane>',
-					'<label class="layui-form-label">克重</label>',
+					'<label class="layui-form-label"><b class="red">*</b>克重</label>',
 					'<div class="layui-input-block">',
 						'<input class="layui-input" id="gWeight" lay-verify="number" name="gramWeight"', 
 							'value="{{ d.gramWeight?d.gramWeight:'+'""'+' }}">',
@@ -104,7 +104,8 @@ layui.extend({
 			url: myutil.config.ctx+'/ledger/getProcessNumber?id='+data.materialRequisition.id,
 			success:function(d){
 				for(var i=0,len=d.length;i<len;i++){
-					allProcess += '<option value="'+d[i].id+'">'+d[i].name+':'+d[i].number+'</option>';
+					var dis = d[i].number == 0 ? 'disabled' : ''
+					allProcess += '<option value="'+d[i].id+'" '+dis+'>'+d[i].name+':'+d[i].number+'</option>';
 				}
 			}
 		})

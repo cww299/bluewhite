@@ -667,12 +667,18 @@ public class TemporaryPackAction {
 	 */
 	@RequestMapping(value = "/temporaryPack/uploadSale", method = RequestMethod.POST)
 	@ResponseBody
-	public CommonResponse importSale(@RequestParam(value = "file", required = false) MultipartFile file) throws IOException {
+	public CommonResponse importSale(@RequestParam(value = "file", required = false) MultipartFile file,
+			Long customerType) throws IOException {
 		CommonResponse cr = new CommonResponse();
+		if(customerType==null) {
+			cr.setMessage("请选择客户类型");
+			cr.setCode(1500);
+			return cr;
+		}
 		InputStream inputStream = file.getInputStream();
 		ExcelListener excelListener = new ExcelListener();
 		EasyExcel.read(inputStream, SalePoi.class, excelListener).sheet().doRead();
-		int count = saleService.excelAddSale(excelListener);
+		int count = saleService.excelAddSale(excelListener,customerType);
 		inputStream.close();
 		cr.setMessage("成功导入" + count + "条数据");
 		return cr;

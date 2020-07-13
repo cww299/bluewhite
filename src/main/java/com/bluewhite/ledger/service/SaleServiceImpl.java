@@ -321,7 +321,7 @@ public class SaleServiceImpl extends BaseServiceImpl<Sale, Long> implements Sale
 
 	@Override
 	@Transactional
-	public int excelAddSale(ExcelListener excelListener) {
+	public int excelAddSale(ExcelListener excelListener, Long customerType) {
 		int count = 0;
 	    SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd");
         // 获取导入的销售单
@@ -338,9 +338,17 @@ public class SaleServiceImpl extends BaseServiceImpl<Sale, Long> implements Sale
         	if(pList.size() == 0) {
         		throw new ServiceException("商品：" + poi.getProductName() + "不存在，请确认是否有误！");
         	}
-        	Customer customer = customerDao.findByName(poi.getCustomerName());
+        	// 457=电商  459=线下
+        	Customer customer = customerDao.findByNameAndCustomerTypeId(poi.getCustomerName(), customerType);
         	if(customer == null || customer.getId() == null) {
-        		throw new ServiceException("客户：" + poi.getCustomerName() + "不存在，请确认是否有误！");
+        		if(customerType==459)
+        			throw new ServiceException("客户：" + poi.getCustomerName() + "不存在，请确认是否有误！");
+        		else {
+        			customer = new Customer();
+        			customer.setName(poi.getCustomerName());
+        			customer.setCustomerTypeId(customerType);
+        			customer = customerDao.save(customer);
+        		}
         	}
         	Date time = poi.getSendDate();
         	int saleOrderSize = dao.findBySendDateBetween(time, DatesUtil.getLastDayOftime(time)).size() + 1;

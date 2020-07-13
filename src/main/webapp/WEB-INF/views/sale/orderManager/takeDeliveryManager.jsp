@@ -33,7 +33,8 @@
 				<td>批次号：</td>
 				<td><input type="text" class="layui-input" name="bacthNumber"></td>
 				<td>&nbsp;&nbsp;</td>
-				<td><button type="button" class="layui-btn layui-btn-sm" lay-submit lay-filter="search">搜索</button></td>
+				<td><button type="button" class="layui-btn layui-btn-sm" lay-submit lay-filter="search">搜索</button>
+					<span style="display:none;" id="uploadSale">导入销售单</span></td>
 			</tr>
 		</table>
 		<table id="tableData" lay-filter="tableData"></table>
@@ -46,7 +47,7 @@
 	<span class="layui-btn layui-btn-sm layui-btn-danger" lay-event="unsure">取消确认</span>
 	<span class="layui-btn layui-btn-sm layui-btn-nromal" lay-event="addSale">生成销售单</span>
 	<span class="layui-btn layui-btn-sm layui-btn-danger" lay-event="deleteSale">删除销售单</span>
-	<span class="layui-btn layui-btn-sm layui-btn-warm" id="uploadSale" lay-event="">导入销售单</span>
+	<span class="layui-btn layui-btn-sm layui-btn-warm" lay-event="uploadSale">导入销售单</span>
 </div>
 </script>
 <script>
@@ -113,34 +114,15 @@ layui.config({
 								data: {
 									id: trData.id,
 									deliveryDate: val+' 00:00:00'
+								},
+								success: function(){
+									table.reload('tableData')
 								}
 							}) 
 						}
 					}) 
 	        	})
-	        	var load;
-	        	upload.render({
-	        		elem: '#uploadSale',
-	        		url: '${ctx}/temporaryPack/uploadSale',
-	        		before: function(){
-	        			load = layer.load(1,{ shade: 0.5 })
-	        		},
-    				done: function(res, index, upload){ //上传后的回调
-    					var tips = 'emsg'
-    					if(res.code == 0){
-    						tips = 'smsg';
-    						table.reload('tableData')
-    					}
-   				    	myutil[tips](res.message)
-   				    	layer.close(load)
-    				},
-    				error: function(){
-    					layer.close(load)
-    					myutil.esmg("接口出现异常，请联系管理员")
-    				},
-    				accept: 'file',
-    				exts: 'xls|xlsx',
-	        	})
+	        	
 			}
 		})
 		table.on('toolbar(tableData)',function(obj){
@@ -149,8 +131,69 @@ layui.config({
 			case 'unsure': sure(0); break;
 			case 'addSale': addSale(); break;
 			case 'deleteSale': deleteSale(); break;
+			case 'uploadSale': uploadSale(); break;
 			}
 		})
+		const uploadData = {
+			customerType: null,
+		}
+		var load, customerTypeWin;
+    	upload.render({
+    		elem: '#uploadSale',
+    		url: '${ctx}/temporaryPack/uploadSale',
+    		data: uploadData,
+    		before: function(){
+    			load = layer.load(1,{ shade: 0.5 })
+    		},
+			done: function(res, index, upload){ //上传后的回调
+				var tips = 'emsg'
+				if(res.code == 0){
+					tips = 'smsg';
+					table.reload('tableData')
+					layer.close(customerTypeWin);
+				}
+			    	myutil[tips](res.message)
+			    	layer.close(load)
+			},
+			error: function(){
+				layer.close(load)
+				myutil.esmg("接口出现异常，请联系管理员")
+			},
+			accept: 'file',
+			exts: 'xls|xlsx',
+    	})
+		function uploadSale(){
+			layer.open({
+				type: 1,
+				title: '请选择导入的客户类型',
+				btn: ['确定','取消'],
+				area: ['330px','160px'],
+				offset: '50px',
+				content: [
+					'<div style="padding:10px;">',
+						'<table class="layui-form"><tr>',
+							'<td><b class="red">*</b>客户类型：</td>',
+							'<td><select name="customerType" lay-verify="required">',
+							// 457=电商  459=线下
+									'<option value="457">电商</option>',
+									'<option value="459">线下</option></select>',
+									'<span lay-filter="uploadBtn" lay-submit></span></td>',
+						'</tr></table>',
+					'</div>',
+				].join(' '),
+				success: function(layerElem, layerIndex){
+					customerTypeWin = layerIndex
+					form.render();
+					form.on('submit(uploadBtn)',function(obj){
+						uploadData.customerType = obj.field.customerType
+						$('#uploadSale').click();
+					})
+				},
+				yes: function(){
+					$('span[lay-filter="uploadBtn"]').click();
+				}
+			})
+		}
 		function deleteSale(){
 			myutil.deleTableIds({
 				url: '/temporaryPack/deleteSale',
@@ -297,6 +340,8 @@ layui.config({
 			for(var i=0;i<choosed.length;i++){
 				if( issure==1 &&(choosed[i].deliveryNumber==null || choosed[i].deliveryNumber==''))
 					return myutil.emsg('请填写到岸数量后再进行确认')
+				if( issure==1 &&(choosed[i].deliveryDate==null || choosed[i].deliveryDate==''))
+					return myutil.emsg('请填写到岸日期后再进行确认')
 				ids.push(choosed[i].id);
 			}
 			myutil.saveAjax({
