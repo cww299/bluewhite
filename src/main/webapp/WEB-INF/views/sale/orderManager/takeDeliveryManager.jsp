@@ -28,8 +28,8 @@
 				<td>批次号：</td>
 				<td><input type="text" class="layui-input" name="bacthNumber"></td>
 				<td>&nbsp;&nbsp;</td>
-				<!--<td><button type="button" class="layui-btn layui-btn-sm" lay-submit lay-filter="search">搜索</button>
-					<span style="display:none;" id="uploadSale">导入销售单</span></td>-->
+				<td><button type="button" class="layui-btn" lay-submit lay-filter="search">搜索</button>
+					</td><!-- <span style="display:none;" id="uploadSale">导入销售单</span> -->
 			</tr>
 		</table>
 		<table id="tableData" lay-filter="tableData"></table>

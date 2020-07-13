@@ -150,9 +150,6 @@ public class SaleServiceImpl extends BaseServiceImpl<Sale, Long> implements Sale
 				for (int i = 0; i < idArr.length; i++) {
 					Long id = Long.parseLong(idArr[i]);
 					Sale sale = dao.findOne(id);
-					if (sale.getDeliveryStatus() == 0) {
-						throw new ServiceException("业务员未确认到货数量，无法审核");
-					}
 					if (audit == 1 && sale.getAudit() == 1) {
 						throw new ServiceException("发货单已审核，请勿多次审核");
 					}
