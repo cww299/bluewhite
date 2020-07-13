@@ -28,8 +28,8 @@
 				<td>批次号：</td>
 				<td><input type="text" class="layui-input" name="bacthNumber"></td>
 				<td>&nbsp;&nbsp;</td>
-				<td><button type="button" class="layui-btn layui-btn-sm" lay-submit lay-filter="search">搜索</button>
-					<span style="display:none;" id="uploadSale">导入销售单</span></td>
+				<!--<td><button type="button" class="layui-btn layui-btn-sm" lay-submit lay-filter="search">搜索</button>
+					<span style="display:none;" id="uploadSale">导入销售单</span></td>-->
 			</tr>
 		</table>
 		<table id="tableData" lay-filter="tableData"></table>
@@ -40,9 +40,11 @@
 <div>
 	<span class="layui-btn layui-btn-sm" lay-event="sure">确认</span>
 	<span class="layui-btn layui-btn-sm layui-btn-danger" lay-event="unsure">取消确认</span>
+<!--
 	<span class="layui-btn layui-btn-sm layui-btn-nromal" lay-event="addSale">生成销售单</span>
 	<span class="layui-btn layui-btn-sm layui-btn-danger" lay-event="deleteSale">删除销售单</span>
 	<span class="layui-btn layui-btn-sm layui-btn-warm" lay-event="uploadSale">导入销售单</span>
+-->
 </div>
 </script>
 <script>
@@ -69,6 +71,7 @@ layui.config({
 		laydate.render({
 			elem:'#searchTime',range:'~'
 		})
+		var tipWin = '';
 		var sty = "background-color: #5FB878;color: #fff;";
 		var bg = "background-color: #ecf7b8;";
 		layui.tablePlug.smartReload.enable(true);
@@ -90,6 +93,7 @@ layui.config({
 			       { title:'产品名',   	width:'15%',field:'product_name',},
 			       { title:'离岸数量',   	width:'6%',	field:'count',	},
 			       { title:'总价',   		width:'6%',	field:'sumPrice',	},
+			       { title:'单价',   		width:'5%',	field:'price', 	style: bg },
 			       { title:'到岸数量',   	width:'6%',	field:'deliveryNumber',	edit:'text', style: bg },
 			       { title:'到岸日期',   	width:'7%',	field:'deliveryDate',	style: bg,  type: 'date' },
 			       { title:'争议数量',   	width:'6%',	field:'disputeNumber',	edit:'text', style: bg },
@@ -117,19 +121,67 @@ layui.config({
 						}
 					}) 
 	        	})
-	        	
+	        	var isDouble=0;
+				$('td[data-field="price"]').on('click',function(obj){
+					var elem = this;
+					var index = $(elem).closest('tr').attr('data-index');
+					var trData = table.cache['tableData'][index];
+					myutil.getData({
+						url:'${ctx}/ledger/getSalePrice?customerId='+trData.customer.id+'&productId='+trData.product.id,
+						done: function(data){
+							var html = '无以往价格';
+							if(data.length!=0){
+								html='<div style="overflow: auto; max-height: 170px;">';
+								layui.each(data,function(index,item){
+									html += '<span style="margin:5px;" class="layui-badge layui-bg-green" data-price="'+item.price+'" data-id="'+trData.id+'">发货日期：'+
+									item.sendDate.split(' ')[0]+' -- ￥'+item.price+'</span><br>';
+								})
+								html += "</div>"
+							}
+							tipWin = layer.tips(html, elem, {
+								  tips: [3, '#78BA32'],
+				                  time:0,
+				                  success: function(layerElem){
+				                	 $(layerElem).css('width','230px')
+				                  }
+				            });
+							$('.layui-layer-tips .layui-badge').unbind().on('click',function(event){
+								layui.stope(event)
+								myutil.saveAjax({
+									url:'/ledger/updateFinanceSale',
+									data: {
+										id: $(this).data('id'),
+										price: $(this).data('price')
+									},
+									success:function(){ 
+										layer.close(tipWin); 
+										table.reload('tableData'); 
+									}
+								}) 
+							}).mouseover(function(){
+					    		$(this).css("cursor","pointer");								
+					    	}).mouseout(function (){  
+					    		$(this).css("cursor","default");
+					        });
+						}
+					})
+				})
 			}
 		})
+		$(document).on('mousedown', '', function (event) { 
+			if($('.layui-layer-tips').length>0)
+				layer.close(tipWin);
+		});
 		table.on('toolbar(tableData)',function(obj){
 			switch(obj.event){
 			case 'sure': sure(1); break;
 			case 'unsure': sure(0); break;
-			case 'addSale': addSale(); break;
-			case 'deleteSale': deleteSale(); break;
-			case 'uploadSale': uploadSale(); break;
+			//case 'addSale': addSale(); break;
+			//case 'deleteSale': deleteSale(); break;
+			//case 'uploadSale': uploadSale(); break;
 			}
 		})
-		const uploadData = {
+		/* const uploadData = {
 			customerType: null,
 		}
 		var load, customerTypeWin;
@@ -195,7 +247,7 @@ layui.config({
 				text: '请选择删除数据|是否确认删除？',
 				table: 'tableData',
 			})
-		}
+		} 
 		var evenColor = 'rgb(133, 219, 245)';
 		function addSale(){
 			layer.open({
@@ -327,6 +379,7 @@ layui.config({
 				$(tableId).next().find('tr:nth-child(even) td[data-field="'+item+'"]').css('background',evenColor);
 			})
 		}
+		*/
 		function sure(issure){
 			var choosed = layui.table.checkStatus('tableData').data;
 			if(choosed.length==0)

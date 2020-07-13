@@ -35,7 +35,8 @@
 				<td><input type="text" class="layui-input" name="customerName"></td>
 				<td>批次号：</td>
 				<td><input type="text" class="layui-input" name="bacthNumber"></td>
-				<td><button type="button" class="layui-btn layui-btn-sm" lay-submit lay-filter="search">搜索</button></td>
+				<td><button type="button" class="layui-btn" lay-submit lay-filter="search">搜索</button>
+					<span style="display:none;" id="uploadSale">导入销售单</span></td>
 			</tr>
 		</table>
 		<table id="tableData" lay-filter="tableData"></table>
@@ -46,6 +47,9 @@
 <div>
 	<span class="layui-btn layui-btn-sm" lay-event="onekeyAudit">一键审核</span>
 	<span class="layui-btn layui-btn-sm layui-btn-danger" lay-event="unAudit">取消审核</span>
+	<span class="layui-btn layui-btn-sm layui-btn-nromal" lay-event="addSale">生成销售单</span>
+	<span class="layui-btn layui-btn-sm layui-btn-danger" lay-event="deleteSale">删除销售单</span>
+	<span class="layui-btn layui-btn-sm layui-btn-warm" lay-event="uploadSale">导入销售单</span>
 </div>
 </script>
 <script>
@@ -54,7 +58,7 @@ layui.config({
 }).extend({
 	mytable: 'layui/myModules/mytable',
 }).define(
-	['laydate','mytable','myutil'],
+	['laydate','mytable','myutil','upload'],
 	function(){
 		var $ = layui.jquery
 		, layer = layui.layer 				
@@ -62,6 +66,7 @@ layui.config({
 		, mytable = layui.mytable
 		, table = layui.table
 		, laydate = layui.laydate
+		, upload = layui.upload
 		, myutil = layui.myutil
 		, tablePlug = layui.tablePlug;
 		myutil.config.ctx = '${ctx}';
@@ -77,7 +82,7 @@ layui.config({
 		mytable.render({
 			elem:'#tableData',
 			smartReloadModel:true,
-			url:'${ctx}/ledger/salePage?deliveryStatus=1',
+			url:'${ctx}/ledger/salePage?',	//deliveryStatus=1
 			where: { audit: 0 },
 			toolbar: '#tableToolbar',
 			ifNull: '---',
@@ -178,8 +183,209 @@ layui.config({
 			switch(obj.event){
 			case 'onekeyAudit': onekeyAudit(1); break;
 			case 'unAudit': onekeyAudit(0); break;
+			case 'addSale': addSale(); break;
+			case 'deleteSale': deleteSale(); break;
+			case 'uploadSale': uploadSale(); break;
 			}
 		})
+		const uploadData = {
+			customerType: null,
+		}
+		var load, customerTypeWin;
+    	upload.render({
+    		elem: '#uploadSale',
+    		url: '${ctx}/temporaryPack/uploadSale',
+    		data: uploadData,
+    		before: function(){
+    			load = layer.load(1,{ shade: 0.5 })
+    		},
+			done: function(res, index, upload){ //上传后的回调
+				var tips = 'emsg'
+				if(res.code == 0){
+					tips = 'smsg';
+					table.reload('tableData')
+					layer.close(customerTypeWin);
+				}
+			    	myutil[tips](res.message)
+			    	layer.close(load)
+			},
+			error: function(){
+				layer.close(load)
+				myutil.esmg("接口出现异常，请联系管理员")
+			},
+			accept: 'file',
+			exts: 'xls|xlsx',
+    	})
+		function uploadSale(){
+			layer.open({
+				type: 1,
+				title: '请选择导入的客户类型',
+				btn: ['确定','取消'],
+				area: ['330px','160px'],
+				offset: '50px',
+				content: [
+					'<div style="padding:10px;">',
+						'<table class="layui-form"><tr>',
+							'<td><b class="red">*</b>客户类型：</td>',
+							'<td><select name="customerType" lay-verify="required">',
+							// 457=电商  459=线下
+									'<option value="457">电商</option>',
+									'<option value="459">线下</option></select>',
+									'<span lay-filter="uploadBtn" lay-submit></span></td>',
+						'</tr></table>',
+					'</div>',
+				].join(' '),
+				success: function(layerElem, layerIndex){
+					customerTypeWin = layerIndex
+					form.render();
+					form.on('submit(uploadBtn)',function(obj){
+						uploadData.customerType = obj.field.customerType
+						$('#uploadSale').click();
+					})
+				},
+				yes: function(){
+					$('span[lay-filter="uploadBtn"]').click();
+				}
+			})
+		}
+    	var evenColor = 'rgb(133, 219, 245)';
+		function addSale(){
+			layer.open({
+				type: 1,
+				title: '生成销售单',
+				area: ['90%','90%'],
+				content: [
+					'<div style="padding:10px;">',
+						'<table class="layui-form searchTable">',
+						'<tr>',
+							'<td style="width:100px;"><select class="layui-input" id="selectone">',
+										'<option value="sendTime">发货时间</option></select></td>',
+							'<td><input type="text" name="orderTimeBegin" id="orderTimeBegin" placeholder="请输入时间" class="layui-input"></td>',
+							'<td>产品名:</td>',
+							'<td><input type="text" name="productName" class="layui-input"></td>',
+							'<td>客户名:</td>',
+							'<td><input type="text" name="customerName" class="layui-input"></td>',
+							'<td><button type="button" class="layui-btn layui-btn-" lay-submit lay-filter="searchAdd">搜索</button></td>',
+						'</tr>',
+						'</table>',
+						'<table id="addTable" lay-filter="addTable"></table>',
+					'</div>',
+				].join(''),
+				success: function(layerElem,layerIndex){
+					laydate.render({
+						elem: '#orderTimeBegin', range: '~',
+					})
+					form.on('submit(searchAdd)',function(obj){
+						var field = obj.field;
+						if(field.orderTimeBegin){
+							var t = field.orderTimeBegin.split(' ~ ');
+							field.orderTimeBegin = t[0]+' 00:00:00';
+							field.orderTimeEnd = t[1]+' 23:59:59';
+						}else
+							field.orderTimeEnd = '';
+						var a="";
+						var b="";
+						if($("#selectone").val()=="time"){
+							a="2019-05-08 00:00:00"
+						}else{
+							b="2019-05-08 00:00:00"
+						}
+						field.time = a;
+						field.sendTime = b;
+						table.reload('addTable',{
+							where: field,
+							page:{ curr:1 },
+						})
+					})
+					var cols = [
+				       { type:'checkbox',},
+				       { title:'发货时间',   field:'sendTime',  width:110,type:'date',  },
+				       { title:'贴包人',    field:'user_userName', width:100,	},
+				       { title:'客户',     field:'customer_name',	},
+				       { title:'批次号',    field:'underGoods_bacthNumber', minWidth:130, },
+				       { title:'产品名',    field:'underGoods_product_name', width:280,	},
+				       { title:'单包个数',   field:'singleNumber',	width:80, },
+					];
+					mytable.render({
+						elem:'#addTable',
+						size:'sm',
+						url:'${ctx}/temporaryPack/findPagesQuantitative?flag=1&sale=0',
+						toolbar: [
+							'<span class="layui-btn layui-btn-sm" lay-event="add">生成销售单</span>'
+						].join(''),
+						even:true,
+						limits:[10,50,200,500,1000],
+						curd:{
+							btn: [],
+							otherBtn:function(obj){
+								if(obj.event=='add') {
+									myutil.deleTableIds({
+										url: '/temporaryPack/addSale',
+										text: '请选择信息|是否确认生成销售单',
+										table:'addTable',
+										success: function(){
+											table.reload('tableData')
+											layer.close(layerIndex)
+										}
+									})
+								}
+							},
+						},
+						autoUpdate:{},
+						parseData: parseData(),
+						ifNull:'',
+						cols:[ cols ],
+				        autoMerge:{
+				    	  field:['sendTime','user_userName','customer_name','0'], 
+				    	  evenColor: evenColor,
+				        },
+				        done:function(ret,curr, count){
+				    	    form.render();
+							renderTableColor('#addTable');
+							form.render();
+						}
+					})
+				}
+			})
+		}
+		function parseData(){
+			return function(ret){
+				if(ret.code==0){
+					var data = [],d = ret.data.rows;
+					tableDataNoTrans = d;
+					for(var i=0,len=d.length;i<len;i++){
+						var child = d[i].quantitativeChilds;
+						if(!child || child.length==0){
+							data.push($.extend({},{singleNumber:'',actualSingleNumber:'',remarks:''},d[i])); 
+							continue;
+						}
+						for(var j=0,l=child.length;j<l;j++){
+							data.push($.extend({},child[j],{childId: child[j].id,},d[i])); 
+						}
+					}
+					return {  msg:ret.message,  code:ret.code , data: data, count:ret.data.total }; 
+				}
+				else
+					return {  msg:ret.message,  code:ret.code , data:[], count:0 }; 
+			}
+		}
+		function renderTableColor(tableId){
+			var whiteTd = ['0','sendTime','user_userName','customer_name'];
+			layui.each(whiteTd,function(index,item){
+				$(tableId).next().find('td[data-field="'+item+'"]').css('background','white');
+			})
+			var blueTd = ['underGoods_bacthNumber','underGoods_product_name','singleNumber'];
+			layui.each(blueTd,function(index,item){
+				$(tableId).next().find('tr:nth-child(even) td[data-field="'+item+'"]').css('background',evenColor);
+			})
+		}
+		function deleteSale(){
+			myutil.deleTableIds({
+				url: '/temporaryPack/deleteSale',
+				text: '请选择删除数据|是否确认删除？',
+				table: 'tableData',
+			})
+		}
 		function onekeyAudit(isAudit){
 			var choosed = layui.table.checkStatus('tableData').data;
 			if(choosed.length==0)
