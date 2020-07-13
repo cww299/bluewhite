@@ -138,11 +138,11 @@ layui.config({
 									html += "</div>"
 								}
 								tipWin = layer.tips(html, elem, {
-									  tips: [4, '#78BA32'],
+									  tips: [3, '#78BA32'],
 					                  time:0,
 					                  success: function(layerElem){
-					                	 var left = Number.parseInt($(layerElem).css('left'))
-					                	 $(layerElem).css('left', (left-30)+'px')
+					                	 // var left = Number.parseInt($(layerElem).css('left'))
+					                	 // $(layerElem).css('left', (left-30)+'px')
 					                	 $(layerElem).css('width','230px')
 					                  }
 					            });

@@ -17,11 +17,6 @@
 				<td>发货日期：</td>
 				<td><input type="text" class="layui-input" id="searchTime"></td>
 				<td>&nbsp;&nbsp;</td>
-				<td>是否审核：</td>
-				<td style="width:150px;"><select name="audit"><option value="">是否审核</option>
-															 <option value="1">审核</option>
-															 <option value="0" selected>未审核</option></select></td>
-															 <td>&nbsp;&nbsp;</td>
 				<td>是否确认：</td>
 				<td style="width:150px;"><select name="deliveryStatus"><option value="">是否确认</option>
 															 <option value="1">确认</option>
