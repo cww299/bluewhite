@@ -1,6 +1,7 @@
 package com.bluewhite.ledger.action;
 
 import java.util.Date;
+import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -8,6 +9,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import com.alibaba.fastjson.JSON;
 import com.bluewhite.basedata.entity.BaseData;
 import com.bluewhite.common.ClearCascadeJSON;
 import com.bluewhite.common.entity.CommonResponse;
@@ -1663,6 +1665,24 @@ public class LedgerAction {
 		return cr;
 	}
 
+	/**
+	 * 批量新增货款
+	 */
+	@RequestMapping(value = "/ledger/saveReceivedMoneyList", method = RequestMethod.POST)
+	@ResponseBody
+	public CommonResponse saveReceivedMoneyList(String jsonList) {
+		CommonResponse cr = new CommonResponse();
+		if (jsonList == null || jsonList.isEmpty()) {
+			cr.setMessage("参数错误");
+			cr.setCode(1500);
+		} else {
+			List<ReceivedMoney> list = JSON.parseArray(jsonList, ReceivedMoney.class);
+			receivedMoneyService.save(list);
+			cr.setMessage("新增成功:" + list.size() + "条信息");
+		}
+		return cr;
+	}
+	
 	/**
 	 * 删除货款
 	 * 
