@@ -207,6 +207,8 @@ public class Sale extends BaseEntity<Long>{
 	 */
 	@Transient
 	private Date orderTimeEnd;
+	@Transient
+	private Integer interior;
 	
 	public Date getSendDate() {
 		return sendDate;
@@ -446,6 +448,14 @@ public class Sale extends BaseEntity<Long>{
 
 	public void setQuantitativeId(Long quantitativeId) {
 		this.quantitativeId = quantitativeId;
+	}
+
+	public Integer getInterior() {
+		return interior;
+	}
+
+	public void setInterior(Integer interior) {
+		this.interior = interior;
 	}
 	
 }

@@ -72,6 +72,11 @@ public class SaleServiceImpl extends BaseServiceImpl<Sale, Long> implements Sale
 				predicate.add(cb.equal(root.get("audit").as(Integer.class), param.getAudit()));
 			}
 			
+			// 是否内部
+			if (param.getInterior() != null) {
+				predicate.add(cb.equal(root.get("customer").get("interior").as(Integer.class), param.getInterior()));
+			}
+			
 			// 是否有版权
 			if (param.getCopyright() != null) {
 				predicate.add(cb.equal(root.get("copyright").as(Integer.class), param.getCopyright()));
@@ -156,12 +161,17 @@ public class SaleServiceImpl extends BaseServiceImpl<Sale, Long> implements Sale
 					if (audit == 0 && sale.getAudit() == 0) {
 						throw new ServiceException("发货单未审核，无需取消审核");
 					}
+					if (audit == 1) {
+						if (sale.getPrice()==null) {
+							throw new ServiceException("单只价格未填写，无法审核");
+						}
+					}
 					// 审核成功后,生成账单
 					if (audit == 1) {
 						// 货款总值
 						sale.setOffshorePay(NumUtils.mul(sale.getCount(), sale.getPrice()));
 						// 客户认可货款
-						sale.setAcceptPay(NumUtils.mul(sale.getDeliveryNumber(), sale.getPrice()));
+						sale.setAcceptPay(NumUtils.mul(NumUtils.setzro(sale.getDeliveryNumber()), sale.getPrice()));
 						// 争议货款
 						sale.setDisputePay(
 								NumUtils.sub(sale.getOffshorePay(), sale.getAcceptPay()));
