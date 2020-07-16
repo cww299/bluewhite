@@ -56,6 +56,12 @@ public class QuantitativeChild  extends BaseEntity<Long> {
 	@Column(name = "remarks")
 	private String remarks;
 	
+	/**
+	 * 生成得销售单id
+	 */
+	@Column(name = "sale_id")
+	private Long saleId;
+	
 	public String getRemarks() {
 		return remarks;
 	}
@@ -104,6 +110,13 @@ public class QuantitativeChild  extends BaseEntity<Long> {
 		this.singleNumber = singleNumber;
 	}
 
+	public Long getSaleId() {
+		return saleId;
+	}
+
+	public void setSaleId(Long saleId) {
+		this.saleId = saleId;
+	}
 	
 	
 }

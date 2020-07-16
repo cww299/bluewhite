@@ -360,6 +360,8 @@ layui.config({
 							continue;
 						}
 						for(var j=0,l=child.length;j<l;j++){
+							if(child[j].saleId)
+								continue;
 							data.push($.extend({},child[j],{childId: child[j].id,},d[i])); 
 						}
 					}

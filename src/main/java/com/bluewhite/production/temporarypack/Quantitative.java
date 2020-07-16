@@ -267,13 +267,6 @@ public class Quantitative extends BaseEntity<Long> {
     private Integer warehousingTime;
     
     /**
-     * 是否生成销售单
-     * 
-     */
-    @Column(name = "sale")
-    private Integer sale;
-
-    /**
      * 产品名称
      */
     @Transient
@@ -326,16 +319,6 @@ public class Quantitative extends BaseEntity<Long> {
     @Transient
     private Long logisticsId;
     
-    
-
-    public Integer getSale() {
-        return sale;
-    }
-
-    public void setSale(Integer sale) {
-        this.sale = sale;
-    }
-
     public Long getAllocationWarehousId() {
         return allocationWarehousId;
     }

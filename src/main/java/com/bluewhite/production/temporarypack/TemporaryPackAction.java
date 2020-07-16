@@ -78,7 +78,7 @@ public class TemporaryPackAction {
                 "sumTime", "status", "number", "productCount", "location", "reservoirArea", "reconciliation","allocation")
             .addRetainTerm(Customer.class, "id", "name")
             .addRetainTerm(QuantitativeChild.class, "id", "underGoods", "sumPackageNumber", "singleNumber", "number",
-                "actualSingleNumber", "checks", "remarks")
+                "actualSingleNumber", "checks", "remarks", "saleId")
             .addRetainTerm(PackingMaterials.class, "id", "packagingMaterials", "packagingCount")
             .addRetainTerm(User.class, "id", "userName")
             .addRetainTerm(BaseData.class, "id", "name")

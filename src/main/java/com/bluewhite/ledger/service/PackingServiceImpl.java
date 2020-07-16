@@ -43,6 +43,7 @@ import com.bluewhite.ledger.entity.Sale;
 import com.bluewhite.ledger.entity.SendGoods;
 import com.bluewhite.production.temporarypack.Quantitative;
 import com.bluewhite.production.temporarypack.QuantitativeChild;
+import com.bluewhite.production.temporarypack.QuantitativeChildDao;
 import com.bluewhite.production.temporarypack.QuantitativeDao;
 
 @Service
@@ -60,6 +61,8 @@ public class PackingServiceImpl extends BaseServiceImpl<Packing, Long> implement
 	private SaleDao saleDao;
 	@Autowired
 	private QuantitativeDao quantitativeDao;
+	@Autowired
+	private QuantitativeChildDao quantitativeChildDao;
 
 	@Override
 	public PageResult<Packing> findPages(Packing param, PageParameter page) {
@@ -652,49 +655,57 @@ public class PackingServiceImpl extends BaseServiceImpl<Packing, Long> implement
             for (String id : idStrings) {
                 Long idLong = Long.valueOf(id);
                 Quantitative quantitive = quantitativeDao.findOne(idLong);
-                if(null!=quantitive.getSale() && 1 == quantitive.getSale()) {
-                    throw new ServiceException("贴包单已生成销售单，请勿重复生成");
-                }
-                quantitive.setSale(1);
                 Date time = quantitive.getSendTime();
                 List<QuantitativeChild> packingChildList = quantitive.getQuantitativeChilds();
                 int saleOrderSize = saleDao.findBySendDateBetween(time, DatesUtil.getLastDayOftime(time)).size() + 1;
                 for (QuantitativeChild pc : packingChildList) {
-                    // 生成财务销售单
-                    Sale sale = new Sale();
-                    sale.setCount(pc.getSingleNumber());
-                    sale.setProductId(pc.getUnderGoods().getProductId());
-                    sale.setCustomerId(quantitive.getCustomerId());
-                    sale.setBacthNumber(pc.getUnderGoods().getBacthNumber());
-                    // 生成销售编号
-                    sale.setSaleNumber(Constants.XS + "-" + sdf.format(time) + "-" + 
-                    			StringUtil.get0LeftString(saleOrderSize++, 4));
-                    // 未审核
-                    sale.setAudit(0);
-                    // 未拥有版权
-                    sale.setCopyright(0);
-                    // 未收货
-                    sale.setDelivery(1);
-                    // 业务员未确认数据
-                    sale.setDeliveryStatus(0);
-                    // 价格
-                    sale.setPrice(0.0);
-                    // 发货日期
-                    sale.setSendDate(time);
-                    // 量化单id，删除时回滚量化单装换状态
-                    sale.setQuantitativeId(quantitive.getId());
-                    // 判定是否拥有版权
-                    if (pc.getUnderGoods().getProduct().getName().contains(Constants.LX)
-                            || pc.getUnderGoods().getProduct().getName().contains(Constants.KT)
-                            || pc.getUnderGoods().getProduct().getName().contains(Constants.MW)
-                            || pc.getUnderGoods().getProduct().getName().contains(Constants.BM)
-                            || pc.getUnderGoods().getProduct().getName().contains(Constants.LP)
-                            || pc.getUnderGoods().getProduct().getName().contains(Constants.AB)
-                            || pc.getUnderGoods().getProduct().getName().contains(Constants.ZMJ)
-                            || pc.getUnderGoods().getProduct().getName().contains(Constants.XXYJN)) {
-                        sale.setCopyright(1);
-                    }
+                	if(pc.getSaleId() != null) {
+                		continue;
+                	}
+                	Long pid = pc.getUnderGoods().getProductId();
+                	Long cid = quantitive.getCustomerId();
+                	// 查找是否存在相同日期，相同产品，相同客户 合并成一条销售单
+                	Sale sale = saleDao.findByproductIdAndCustomerIdAndSendDate(pid,cid,time);
+                	if(sale != null && sale.getId() != null) {
+                		sale.setCount(sale.getCount() + pc.getSingleNumber());
+                	} else {
+                		sale = new Sale();
+                		// 生成财务销售单
+                		sale.setCount(pc.getSingleNumber());
+                		sale.setProductId(pid);
+                		sale.setCustomerId(cid);
+                		sale.setBacthNumber(pc.getUnderGoods().getBacthNumber());
+                		// 生成销售编号
+                		sale.setSaleNumber(Constants.XS + "-" + sdf.format(time) + "-" + 
+                				StringUtil.get0LeftString(saleOrderSize++, 4));
+                		// 未审核
+                		sale.setAudit(0);
+                		// 未拥有版权
+                		sale.setCopyright(0);
+                		// 未收货
+                		sale.setDelivery(1);
+                		// 业务员未确认数据
+                		sale.setDeliveryStatus(0);
+                		// 价格
+                		sale.setPrice(0.0);
+                		// 发货日期
+                		sale.setSendDate(time);
+                		// 判定是否拥有版权
+                		if (pc.getUnderGoods().getProduct().getName().contains(Constants.LX)
+                				|| pc.getUnderGoods().getProduct().getName().contains(Constants.KT)
+                				|| pc.getUnderGoods().getProduct().getName().contains(Constants.MW)
+                				|| pc.getUnderGoods().getProduct().getName().contains(Constants.BM)
+                				|| pc.getUnderGoods().getProduct().getName().contains(Constants.LP)
+                				|| pc.getUnderGoods().getProduct().getName().contains(Constants.AB)
+                				|| pc.getUnderGoods().getProduct().getName().contains(Constants.ZMJ)
+                				|| pc.getUnderGoods().getProduct().getName().contains(Constants.XXYJN)) {
+                			sale.setCopyright(1);
+                		}
+                	}
                     saleDao.save(sale);
+                    // 子单放入销售单id，销售单删除时，回滚子单生成销售单状态
+                    pc.setSaleId(sale.getId());
+                    quantitativeChildDao.save(pc);
                 }
                 count++;
                 quantitativeDao.save(quantitive);

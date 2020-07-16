@@ -35,8 +35,8 @@ import com.bluewhite.ledger.entity.Sale;
 import com.bluewhite.ledger.entity.poi.SalePoi;
 import com.bluewhite.product.product.dao.ProductDao;
 import com.bluewhite.product.product.entity.Product;
-import com.bluewhite.production.temporarypack.Quantitative;
-import com.bluewhite.production.temporarypack.QuantitativeService;
+import com.bluewhite.production.temporarypack.QuantitativeChild;
+import com.bluewhite.production.temporarypack.QuantitativeChildDao;
 @Service
 public class SaleServiceImpl extends BaseServiceImpl<Sale, Long> implements SaleService  {
 	
@@ -47,7 +47,7 @@ public class SaleServiceImpl extends BaseServiceImpl<Sale, Long> implements Sale
 	@Autowired
 	private ReceivedMoneyService receivedMoneyService;
 	@Autowired
-	private QuantitativeService quantitativeService;
+	private QuantitativeChildDao quantitativeChildDao;
 	@Autowired
 	private ProductDao productDao;
 	@Autowired
@@ -302,7 +302,7 @@ public class SaleServiceImpl extends BaseServiceImpl<Sale, Long> implements Sale
 	public int deleteSale(String ids) {
 		int count = 0;
 		if (!StringUtils.isEmpty(ids)) {
-			List<Quantitative> quanList = new ArrayList<Quantitative>();
+			List<QuantitativeChild> childList = new ArrayList<QuantitativeChild>();
 			List<Sale> saleList = new ArrayList<Sale>();
             String[] idStrings = ids.split(",");
             for(String id : idStrings) {
@@ -311,17 +311,18 @@ public class SaleServiceImpl extends BaseServiceImpl<Sale, Long> implements Sale
             		throw new ServiceException("销售单："+sale.getSaleNumber() + "已确认到货无法删除，请先取消确认");
             	}
             	saleList.add(sale);
-            	if(sale.getQuantitativeId()!=null) {
-            		Quantitative quantitative = quantitativeService.findOne(sale.getQuantitativeId());
-            		if(quantitative != null) {
-            			quantitative.setSale(0);
-            			quanList.add(quantitative);
-            		}
+            	List<QuantitativeChild> childs = quantitativeChildDao.findBySaleId(sale.getId());
+            	if(childs != null && childs.size() > 0) {
+            		childs.forEach(c -> {
+            			c.setSaleId(null);
+            			childList.add(c);
+            		});
             	}
             }
             count = saleList.size();
             dao.delete(saleList);
-            quantitativeService.save(quanList);
+            if(childList.size() > 0)
+            	quantitativeChildDao.save(childList);
 		}
 		return count;
 	}
@@ -335,7 +336,6 @@ public class SaleServiceImpl extends BaseServiceImpl<Sale, Long> implements Sale
         List<Object> excelListenerList = excelListener.getData();
         for (Object object : excelListenerList) {
         	SalePoi poi = (SalePoi)object;
-        	Sale sale = new Sale();
         	if(poi.getProductName()== null || poi.getProductName().isEmpty() || poi.getSendDate() == null ||
         	   poi.getCustomerName()== null || poi.getCustomerName().isEmpty() || poi.getBacthNumber() == null ||
         	   poi.getBacthNumber().isEmpty() || poi.getCount() == null) {
@@ -359,36 +359,43 @@ public class SaleServiceImpl extends BaseServiceImpl<Sale, Long> implements Sale
         	}
         	Date time = poi.getSendDate();
         	int saleOrderSize = dao.findBySendDateBetween(time, DatesUtil.getLastDayOftime(time)).size() + 1;
-        	// 发货日期
-        	sale.setSendDate(poi.getSendDate());
-        	// 实际数量
-        	sale.setCount(poi.getCount());
-        	// 批次号
-        	sale.setBacthNumber(poi.getBacthNumber());
-        	// 产品id
-        	sale.setProductId(pList.get(0).getId());
-        	// 客户
-        	sale.setCustomerId(customer.getId());
-        	 // 生成销售编号
-            sale.setSaleNumber(Constants.XS + "-" + sdf.format(time) + "-" + StringUtil.get0LeftString(saleOrderSize++, 4));
-            // 未审核
-            sale.setAudit(0);
-            // 未拥有版权
-            sale.setCopyright(0);
-            // 未收货
-            sale.setDelivery(1);
-            // 业务员未确认数据
-            sale.setDeliveryStatus(0);
-            // 价格
-            sale.setPrice(0.0);
-            // 判定是否拥有版权
-            String name = poi.getProductName();
-            if (name.contains(Constants.LX)  || name.contains(Constants.KT)
-                || name.contains(Constants.MW) || name.contains(Constants.BM)
-                || name.contains(Constants.LP) || name.contains(Constants.AB)
-                || name.contains(Constants.ZMJ) || name.contains(Constants.XXYJN)) {
-                sale.setCopyright(1);
-            }
+        	Long pid = pList.get(0).getId();
+        	Long cid = customer.getId();
+        	Sale sale = dao.findByproductIdAndCustomerIdAndSendDate(pid,cid,time);
+        	if(sale != null && sale.getId() != null) {
+        		sale.setCount(sale.getCount() + poi.getCount());
+        	} else {
+        		// 发货日期
+        		sale.setSendDate(poi.getSendDate());
+        		// 实际数量
+        		sale.setCount(poi.getCount());
+        		// 批次号
+        		sale.setBacthNumber(poi.getBacthNumber());
+        		// 产品id
+        		sale.setProductId(pid);
+        		// 客户
+        		sale.setCustomerId(cid);
+        		// 生成销售编号
+        		sale.setSaleNumber(Constants.XS + "-" + sdf.format(time) + "-" + StringUtil.get0LeftString(saleOrderSize++, 4));
+        		// 未审核
+        		sale.setAudit(0);
+        		// 未拥有版权
+        		sale.setCopyright(0);
+        		// 未收货
+        		sale.setDelivery(1);
+        		// 业务员未确认数据
+        		sale.setDeliveryStatus(0);
+        		// 价格
+        		sale.setPrice(0.0);
+        		// 判定是否拥有版权
+        		String name = poi.getProductName();
+        		if (name.contains(Constants.LX)  || name.contains(Constants.KT)
+        				|| name.contains(Constants.MW) || name.contains(Constants.BM)
+        				|| name.contains(Constants.LP) || name.contains(Constants.AB)
+        				|| name.contains(Constants.ZMJ) || name.contains(Constants.XXYJN)) {
+        			sale.setCopyright(1);
+        		}
+        	}
             dao.save(sale);
             count++;
         }

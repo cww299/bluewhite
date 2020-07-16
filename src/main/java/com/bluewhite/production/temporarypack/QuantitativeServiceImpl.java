@@ -103,10 +103,6 @@ public class QuantitativeServiceImpl extends BaseServiceImpl<Quantitative, Long>
             if (param.getAudit() != null) {
                 predicate.add(cb.equal(root.get("audit").as(Integer.class), param.getAudit()));
             }
-            // 是否生成销售单
-            if (param.getSale() != null) {
-                predicate.add(cb.equal(root.get("sale").as(Integer.class), param.getSale()));
-            }
             // 是否对账
             if (param.getReconciliation() != null) {
                 predicate.add(cb.equal(root.get("reconciliation").as(Integer.class), param.getReconciliation()));
@@ -157,6 +153,13 @@ public class QuantitativeServiceImpl extends BaseServiceImpl<Quantitative, Long>
                 predicate.add(cb.between(root.get("sendTime").as(Date.class), param.getOrderTimeBegin(),
                     param.getOrderTimeEnd()));
             }
+            
+            Join<Quantitative, QuantitativeChild> join = root
+            	      .join(root.getModel().getList("quantitativeChilds", QuantitativeChild.class), JoinType.LEFT);
+    	    predicate.add(cb.isNull(join.get("saleId").as(Long.class)));
+    	    
+    	    
+    	    
             Predicate[] pre = new Predicate[predicate.size()];
             query.where(predicate.toArray(pre));
             query.distinct(true);
@@ -233,7 +236,6 @@ public class QuantitativeServiceImpl extends BaseServiceImpl<Quantitative, Long>
             quantitative.setOutPrice(0.2);
             quantitative.setStatus(0);
             quantitative.setReconciliation(0);
-            quantitative.setSale(0);
         }
         // 新增子单
         if (!StringUtils.isEmpty(quantitative.getChild())) {

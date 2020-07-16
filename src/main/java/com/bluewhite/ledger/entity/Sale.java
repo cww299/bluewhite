@@ -179,12 +179,6 @@ public class Sale extends BaseEntity<Long>{
 	private Double disputePay;
 	
 	/**
-	 * 量化单id
-	 */
-	@Column(name="quantitative_id")
-	private Long quantitativeId;
-	
-	/**
 	 * 产品name
 	 */
 	@Transient
@@ -440,14 +434,6 @@ public class Sale extends BaseEntity<Long>{
 
 	public void setDisputePay(Double disputePay) {
 		this.disputePay = disputePay;
-	}
-
-	public Long getQuantitativeId() {
-		return quantitativeId;
-	}
-
-	public void setQuantitativeId(Long quantitativeId) {
-		this.quantitativeId = quantitativeId;
 	}
 
 	public Integer getInterior() {

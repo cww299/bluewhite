@@ -16,4 +16,6 @@ public interface SaleDao  extends BaseRepository<Sale, Long>{
 
 	JSONArray findBySendDateBetween(Date time, Date lastDayOftime);
 
+	Sale findByproductIdAndCustomerIdAndSendDate(Long pid, Long cid, Date time);
+
 }

@@ -27,4 +27,6 @@ public interface QuantitativeChildDao  extends BaseRepository<QuantitativeChild,
 	 */
 	List<QuantitativeChild> findByIdIn(List<Long> ids);
 
+	List<QuantitativeChild> findBySaleId(Long saleId);
+
 }
