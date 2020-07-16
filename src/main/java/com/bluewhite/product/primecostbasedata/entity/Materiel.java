@@ -58,7 +58,7 @@ public class Materiel extends BaseEntity<Long>{
 	 */
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "unit_id", referencedColumnName = "id", insertable = false, updatable = false)
-	private BaseOne unit;
+	private BaseData unit;
 	
 	
 	/**
@@ -112,7 +112,7 @@ public class Materiel extends BaseEntity<Long>{
 	 */
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "convert_unit_id", referencedColumnName = "id", insertable = false, updatable = false)
-	private BaseOne convertUnit;
+	private BaseData convertUnit;
 	
 	/**
 	 * 换算之后的单位的价格
@@ -195,9 +195,6 @@ public class Materiel extends BaseEntity<Long>{
 		this.materielType = materielType;
 	}
 
-	public BaseOne getConvertUnit() {
-		return convertUnit;
-	}
 
 	public Integer getConvertChange() {
 		return convertChange;
@@ -215,9 +212,6 @@ public class Materiel extends BaseEntity<Long>{
 		this.convertUnitId = convertUnitId;
 	}
 
-	public void setConvertUnit(BaseOne convertUnit) {
-		this.convertUnit = convertUnit;
-	}
 
 	public Long getUnitId() {
 		return unitId;
@@ -227,13 +221,6 @@ public class Materiel extends BaseEntity<Long>{
 		this.unitId = unitId;
 	}
 
-	public BaseOne getUnit() {
-		return unit;
-	}
-
-	public void setUnit(BaseOne unit) {
-		this.unit = unit;
-	}
 
 	public Double getInventoryNumber() {
 		return inventoryNumber;
@@ -283,6 +270,21 @@ public class Materiel extends BaseEntity<Long>{
 		this.count = count;
 	}
 
+	public BaseData getUnit() {
+		return unit;
+	}
+
+	public void setUnit(BaseData unit) {
+		this.unit = unit;
+	}
+
+	public BaseData getConvertUnit() {
+		return convertUnit;
+	}
+
+	public void setConvertUnit(BaseData convertUnit) {
+		this.convertUnit = convertUnit;
+	}
 
 	public String getNumber() {
 		return number;

@@ -203,6 +203,18 @@ public class BaseOneAction {
         cr.setMessage("成功");
         return cr;
     }
+    
+    /**
+     * 删除物料产品基础数据
+     */
+    @RequestMapping(value = "/product/deleteMateriel", method = RequestMethod.GET)
+    @ResponseBody
+    public CommonResponse addMateriel(String ids) {
+        CommonResponse cr = new CommonResponse();
+        cr.setMessage("成功删除" + materielService.delete(ids) + "条数据");
+        return cr;
+    }
+
 
     /**
      * 修改 裁剪页面的基础系数
