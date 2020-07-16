@@ -288,6 +288,12 @@ public class Quantitative extends BaseEntity<Long> {
      */
     @Transient
     private Date orderTimeEnd;
+    
+    /**
+     * 是否过滤掉已经生成销售单
+     */
+    @Transient
+    private Integer isSale = 0;
 
     /**
      * 子单
@@ -687,4 +693,13 @@ public class Quantitative extends BaseEntity<Long> {
         this.time = time;
     }
 
+	public Integer getIsSale() {
+		return isSale;
+	}
+
+	public void setIsSale(Integer isSale) {
+		this.isSale = isSale;
+	}
+
+    
 }

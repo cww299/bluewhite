@@ -309,7 +309,7 @@ layui.config({
 					mytable.render({
 						elem:'#addTable',
 						size:'sm',
-						url:'${ctx}/temporaryPack/findPagesQuantitative?flag=1&sale=0&interior=0',
+						url:'${ctx}/temporaryPack/findPagesQuantitative?flag=1&sale=0&interior=0&isSale=1',
 						toolbar: [
 							'<span class="layui-btn layui-btn-sm" lay-event="add">生成销售单</span>'
 						].join(''),

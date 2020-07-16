@@ -153,13 +153,12 @@ public class QuantitativeServiceImpl extends BaseServiceImpl<Quantitative, Long>
                 predicate.add(cb.between(root.get("sendTime").as(Date.class), param.getOrderTimeBegin(),
                     param.getOrderTimeEnd()));
             }
-            
-            Join<Quantitative, QuantitativeChild> join = root
-            	      .join(root.getModel().getList("quantitativeChilds", QuantitativeChild.class), JoinType.LEFT);
-    	    predicate.add(cb.isNull(join.get("saleId").as(Long.class)));
-    	    
-    	    
-    	    
+            // 是否过滤掉生成销售单
+            if(param.getIsSale() == 1) {
+            	Join<Quantitative, QuantitativeChild> join = root
+            			.join(root.getModel().getList("quantitativeChilds", QuantitativeChild.class), JoinType.LEFT);
+            	predicate.add(cb.isNull(join.get("saleId").as(Long.class)));
+            }
             Predicate[] pre = new Predicate[predicate.size()];
             query.where(predicate.toArray(pre));
             query.distinct(true);
