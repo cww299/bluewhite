@@ -179,6 +179,12 @@ public class Sale extends BaseEntity<Long>{
 	private Double disputePay;
 	
 	/**
+	 * 量化单id
+	 */
+	@Column(name="quantitative_id")
+	private Long quantitativeId;
+	
+	/**
 	 * 产品name
 	 */
 	@Transient
@@ -201,8 +207,7 @@ public class Sale extends BaseEntity<Long>{
 	 */
 	@Transient
 	private Date orderTimeEnd;
-	@Transient
-	private Integer interior;
+
 	
 	public Date getSendDate() {
 		return sendDate;
@@ -436,12 +441,5 @@ public class Sale extends BaseEntity<Long>{
 		this.disputePay = disputePay;
 	}
 
-	public Integer getInterior() {
-		return interior;
-	}
 
-	public void setInterior(Integer interior) {
-		this.interior = interior;
-	}
-	
 }

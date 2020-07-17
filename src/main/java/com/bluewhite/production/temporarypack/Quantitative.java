@@ -325,6 +325,20 @@ public class Quantitative extends BaseEntity<Long> {
     @Transient
     private Long logisticsId;
     
+    @Transient
+    private Integer interior;
+    
+    
+    
+    
+    public Integer getInterior() {
+        return interior;
+    }
+
+    public void setInterior(Integer interior) {
+        this.interior = interior;
+    }
+
     public Long getAllocationWarehousId() {
         return allocationWarehousId;
     }
