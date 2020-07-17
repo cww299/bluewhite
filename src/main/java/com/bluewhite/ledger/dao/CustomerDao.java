@@ -4,6 +4,7 @@ package com.bluewhite.ledger.dao;
 import com.bluewhite.base.BaseRepository;
 import com.bluewhite.ledger.entity.Customer;
 import java.lang.String;
+import java.util.List;
 
 public interface CustomerDao extends BaseRepository<Customer, Long>{
 	
@@ -12,4 +13,6 @@ public interface CustomerDao extends BaseRepository<Customer, Long>{
 	Customer findByName(String name);
 
 	Customer findByNameAndCustomerTypeId(String customerName, Long customerType);
+
+	List<Customer> findByCustomerTypeIdIn(List<Long> types);
 }

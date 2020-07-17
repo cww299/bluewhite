@@ -145,4 +145,13 @@ public class CustomerServiceImpl extends BaseServiceImpl<Customer, Long> impleme
 		return result;
 	}
 
+	@Override
+	public List<Customer> findByType(String typeIds) {
+		List<Long> types = new ArrayList<Long>();
+		for(String id : typeIds.split(",")) {
+			types.add(Long.parseLong(id));
+		}
+		return dao.findByCustomerTypeIdIn(types);
+	}
+
 }

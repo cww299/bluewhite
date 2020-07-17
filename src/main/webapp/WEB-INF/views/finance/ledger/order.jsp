@@ -100,7 +100,8 @@ layui.config({
 			},
 			verify:{ notNull:['price' ], price:[ 'price' ] },
 			autoUpdate: {
-				saveUrl: '/ledger/updateFinanceSale'
+				saveUrl: '/ledger/updateFinanceSale',
+				isReload: true,
 			},
 			limits:[15,30,50,100],
 			limit:15,

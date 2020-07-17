@@ -14,7 +14,8 @@
  * 								nolyUpdateField:[],		//自动修改的字段，用于过滤可修改但需要点击保存的字段
  * 								closeMsg:关闭保存成功提示
  * 								closeLoad:关闭遮罩
- * 								field:{ 虚拟字段:'对应的上传值' },isReload：修改成功是否重载表格 ,success:成功后的回调 },   如：customer_id 对应的上传值customerId
+ * 								field:{ 虚拟字段:'对应的上传值' },
+ * 								isReload：修改成功是否重载表格 ,success:成功后的回调 },   如：customer_id 对应的上传值customerId
  * 增加自动curd工具模板：curd: {
  * 							btn:[1,2,3,4],  需要显示的按钮，按顺序，默认全显
  *							addTemp:{ },  新增一行给定的默认值。不给的时候、默认为空值

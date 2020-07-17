@@ -65,9 +65,13 @@ public class CustomerAction {
 	 */
 	@RequestMapping(value = "/ledger/allCustomer", method = RequestMethod.GET)
 	@ResponseBody
-	public CommonResponse allCustomer() {
+	public CommonResponse allCustomer(String typeIds) {
 		CommonResponse cr = new CommonResponse();
-		cr.setData(clearCascadeJSON.format(customrService.findAll()).toJSON());
+		if(typeIds == null || typeIds.isEmpty()) {
+			cr.setData(clearCascadeJSON.format(customrService.findAll()).toJSON());
+		} else {
+			cr.setData(clearCascadeJSON.format(customrService.findByType(typeIds)).toJSON());
+		}
 		cr.setMessage("查询成功");
 		return cr;
 	}

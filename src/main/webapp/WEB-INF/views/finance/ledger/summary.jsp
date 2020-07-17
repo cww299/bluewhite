@@ -155,7 +155,7 @@ function() {
        ]]
 	});
 	myutil.getSelectHtml({
-		url:'/ledger/allCustomer',
+		url:'/ledger/allCustomer?typeIds=457,459',
 		value: 'id',
 		title: 'name',
 		tips: '请选择客户',

@@ -36,4 +36,11 @@ public interface CustomerService extends BaseCRUDService<Customer, Long> {
 	 * @return
 	 */
 	public List<Customer> getCustomer(Customer Customr);
+
+	/**
+	 * 根据客户类型查找客户
+	 * @param typeIds
+	 * @return
+	 */
+	public List<Customer> findByType(String typeIds);
 }
