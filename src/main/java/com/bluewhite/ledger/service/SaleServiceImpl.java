@@ -72,10 +72,6 @@ public class SaleServiceImpl extends BaseServiceImpl<Sale, Long> implements Sale
 				predicate.add(cb.equal(root.get("audit").as(Integer.class), param.getAudit()));
 			}
 			
-			// 是否内部
-			if (param.getInterior() != null) {
-				predicate.add(cb.equal(root.get("customer").get("interior").as(Integer.class), param.getInterior()));
-			}
 			
 			// 是否有版权
 			if (param.getCopyright() != null) {
