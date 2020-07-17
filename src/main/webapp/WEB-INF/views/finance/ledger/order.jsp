@@ -98,6 +98,10 @@ layui.config({
 				})
 				return { data:ret.data.rows, count:ret.data.total, msg:ret.message, code:ret.code } 
 			},
+			verify:{ notNull:['price' ], price:[ 'price' ] },
+			autoUpdate: {
+				saveUrl: '/ledger/updateFinanceSale'
+			},
 			limits:[15,30,50,100],
 			limit:15,
 			cols:[[
@@ -405,13 +409,14 @@ layui.config({
 				}
 			})
 		}
+		/*
 		table.on('edit(tableData)',function(obj){
 			var val = obj.value, msg='';
 			isNaN(val) && (msg="请正确输入单价");
 			val<0 && (msg="单价不能小于0");
 			if(msg!='')
 				myutil.emsg(msg);
-			else
+			else {
 				myutil.saveAjax({
 					url:'/ledger/updateFinanceSale',
 					data: {
@@ -423,7 +428,9 @@ layui.config({
 						table.reload('tableData');
 					}
 				}) 
+			}
 		})
+		*/
 		form.on('submit(search)',function(obj){
 			var val = $('#searchTime').val(), beg='',end='';
 			if(val!=''){
