@@ -34,11 +34,12 @@ layui.define(['mytable','form'],function(exports){
 			
 	};
 	myutil.getData({ 
-		url: myutil.config.ctx+'/product/getMateriel?materielTypeId=322',
+		url: myutil.config.ctx+'/product/getMateriel?materielTypeIds=322,323,324,325,326',
 		success:function(data){
 			layui.each(data,function(index,item){
 				allMaterielSelect += '<dd data-value="'+item.id+'" data-convertPrice="'+item.convertPrice+'" data-convertUnit="'+item.convertPrice+'">'+
-						item.number+' ~ '+item.name+' ~ ￥'+item.price+' ~ '+(item.unit && item.unit.name )+'</dd>';
+						item.number+' ~ '+item.name+' ~ ￥'+item.price+' ~ '+ (item.unit && item.unit.name) +
+						' ~ '+ (item.customer ? item.customer.name : "---") + '</dd>';
 			})
 		}
 	});
@@ -92,14 +93,14 @@ layui.define(['mytable','form'],function(exports){
 	}
 	function getSearchMateriael(name){	//根据输入的内容进行搜索、填充选择项
 		name = name.split('~')[1]?name.split('~')[1].trim():name.trim();
-		var html = '';
+		var html = '<dd data-value="" style="color: gray;">请选择</dd>';
 		if(!name){
-			html = allMaterielSelect;
+			html += allMaterielSelect;
 			renderHtml();
 		}
 		else
 			myutil.getData({
-				url: myutil.config.ctx+'/product/getMateriel?materielTypeId=322',
+				url: myutil.config.ctx+'/product/getMateriel',
 				data:{ name: name },
 				success:function(data){
 					if(data.length==0)
@@ -109,7 +110,8 @@ layui.define(['mytable','form'],function(exports){
 						if(trMateriel[trIndex] && trMateriel[trIndex].id == item.id)
 							sty= 'style="background-color:#5fb878;"';
 						html += '<dd data-value="'+item.id+'" data-convertPrice="'+item.convertPrice+'" '+sty+' data-convertUnit="'+item.convertUnit+'" >'+
-								item.number+' ~ '+item.name+' ~ ￥'+item.price+' ~ '+(item.unit && item.unit.name )+'</dd>';
+								item.number+' ~ '+item.name+' ~ ￥'+item.price+' ~ '+(item.unit && item.unit.name )+
+								(item.customer ? item.customer.name : "---") + '</dd>';
 					})
 					renderHtml();
 				}
@@ -117,11 +119,12 @@ layui.define(['mytable','form'],function(exports){
 		function renderHtml(){
 			$('#searchTipDiv').html(html);
 			$('#searchTipDiv').find('dd').on('click',function(obj){		//监听选择事件、如果选中某一个选项
-				var text = $(this).html().split('~');
+				var html = $(this).html() == "请选择" ? ' ~  ~ ￥ ~  ' : $(this).html()
+				var text = html.split('~');
 				var val = $(this).data('value');
-				var convertPrice = $(this).data('convertprice');
-				var convertUnit = $(this).data('convertunit');
-				if(!val)
+				var convertPrice = $(this).data('convertprice') || "";
+				var convertUnit = $(this).data('convertunit') || "";
+				if(text.length < 4)
 					return;
 				trMateriel[trIndex] = {	//记录更新当行的materiel实体
 					id: val,
@@ -171,7 +174,7 @@ layui.define(['mytable','form'],function(exports){
 					materielId: '',
 					convertUnit:0,
 					oneMaterial: '',
-					manualLoss: '',
+					manualLoss: 0.03,
 					batchMaterial: '',
 					batchMaterialPrice: '',
 					overstockId: allOverstock[0].id,

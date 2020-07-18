@@ -147,6 +147,7 @@ public class OrderServiceImpl extends BaseServiceImpl<Order, Long> implements Or
 				orderChild.setCustomerId(jsonObject.getLong("customerId"));
 				orderChild.setUserId(jsonObject.getLong("userId"));
 				orderChild.setChildNumber(jsonObject.getInteger("childNumber"));
+				orderChild.setChildPutNumber(jsonObject.getInteger("childPutNumber"));
 				orderChild.setChildRemark(jsonObject.getString("childRemark"));
 				order.getOrderChilds().add(orderChild);
 			}
@@ -218,6 +219,7 @@ public class OrderServiceImpl extends BaseServiceImpl<Order, Long> implements Or
 				orderChild.setCustomerId(jsonObject.getLong("customerId"));
 				orderChild.setUserId(jsonObject.getLong("userId"));
 				orderChild.setChildNumber(jsonObject.getInteger("childNumber"));
+				orderChild.setChildPutNumber(jsonObject.getInteger("childPutNumber"));
 				orderChild.setChildRemark(jsonObject.getString("childRemark"));
 				orderChild.setOrderId(order.getId());
 				orderChildDao.save(orderChild);

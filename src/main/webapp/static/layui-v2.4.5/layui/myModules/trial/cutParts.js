@@ -25,7 +25,8 @@ layui.define(['mytable'],function(exports){
 			success:function(data){
 				var allSelect = '';
 				layui.each(data,function(index,item){
-					allSelect += '<dd data-value="'+item.id+'">'+item.number+' ~ '+item.name+' ~ ￥'+item.price+' ~ '+(item.unit && item.unit.name)+'</dd>';
+					allSelect += '<dd data-value="'+item.id+'">'+item.number+' ~ '+item.name+' ~ ￥'+item.price+' ~ '+
+					(item.unit && item.unit.name)+' ~ '+ (item.customer ? item.customer.name : "---") +'</dd>';
 				})
 				if(type==321)
 					allMaterielSelect = allSelect;
@@ -80,12 +81,12 @@ layui.define(['mytable'],function(exports){
 		}
 		function getSearchMateriael(name,type){	//根据输入的内容进行搜索、填充选择项
 			name=name.trim();
-			var html = '';
+			var html = '<dd data-value="" style="color: gray;">请选择</dd>';
 			if(!name){
 				if(type=='materiel')
-					html = allMaterielSelect;
+					html += allMaterielSelect;
 				else
-					html = allReuniteSelect;
+					html += allReuniteSelect;
 				renderHtml();
 			}
 			else{
@@ -107,7 +108,8 @@ layui.define(['mytable'],function(exports){
 							html = noneHtml;
 						layui.each(data,function(index,item){
 							//var sty='style="background-color:#5fb878;"';
-							html += '<dd data-value="'+item.id+'">'+item.number+' ~ '+item.name+' ~ ￥'+item.price+' ~ '+(item.unit && item.unit.name)+'</dd>';
+							html += '<dd data-value="'+item.id+'">'+item.number+' ~ '+item.name+' ~ ￥'+item.price+' ~ '+
+							(item.unit && item.unit.name) + ' ~ '+ (item.customer ? item.customer.name : "---") +'</dd>';
 						})
 						renderHtml();
 					}
@@ -119,8 +121,8 @@ layui.define(['mytable'],function(exports){
 					layui.stope(obj);
 					var text = $(this).html();
 					var val = $(this).data('value');
-					if(!val)
-						return;
+					// if(!val)
+					//	return;
 					$('#searchTipDiv').hide();
 					$(inputElem).closest('.layui-form-select').removeClass('layui-form-selected');
 					$(inputElem).val(text);	 	//修改下拉框显示的值、缓存值

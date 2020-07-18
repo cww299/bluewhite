@@ -16,6 +16,7 @@ import javax.persistence.Transient;
 import com.bluewhite.base.BaseEntity;
 import com.bluewhite.basedata.entity.BaseData;
 import com.bluewhite.common.utils.excel.Poi;
+import com.bluewhite.ledger.entity.Customer;
 import com.bluewhite.ledger.entity.OrderProcurement;
 /**
  * 面辅料库存
@@ -148,11 +149,27 @@ public class Materiel extends BaseEntity<Long>{
 	private Set<OrderProcurement> orderProcurements = new HashSet<OrderProcurement>();
 	
 	/**
+	 * 供应商id
+	 */
+	@Column(name = "customer_id")
+	private Long customerId;
+	
+	/**
+	 * 供应商
+	 */
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "customer_id", referencedColumnName = "id", insertable = false, updatable = false)
+	private Customer customer;
+	
+	
+	/**
 	 * 库存数量
 	 * 
 	 */
 	@Transient
 	private Double inventoryNumber;
+	@Transient
+	private String materielTypeIds;
 	
 	
 	public Long getMaterialQualitativeId() {
@@ -309,4 +326,29 @@ public class Materiel extends BaseEntity<Long>{
 	public void setPrice(Double price) {
 		this.price = price;
 	}
+
+	public String getMaterielTypeIds() {
+		return materielTypeIds;
+	}
+
+	public void setMaterielTypeIds(String materielTypeIds) {
+		this.materielTypeIds = materielTypeIds;
+	}
+
+	public Long getCustomerId() {
+		return customerId;
+	}
+
+	public void setCustomerId(Long customerId) {
+		this.customerId = customerId;
+	}
+
+	public Customer getCustomer() {
+		return customer;
+	}
+
+	public void setCustomer(Customer customer) {
+		this.customer = customer;
+	}
+	
 }

@@ -18,6 +18,7 @@ import com.bluewhite.common.ClearCascadeJSON;
 import com.bluewhite.common.annotation.SysLogAspectAnnotation;
 import com.bluewhite.common.entity.CommonResponse;
 import com.bluewhite.common.entity.PageParameter;
+import com.bluewhite.ledger.entity.Customer;
 import com.bluewhite.ledger.entity.OrderProcurement;
 import com.bluewhite.product.primecost.cutparts.entity.CutParts;
 import com.bluewhite.product.primecost.cutparts.service.CutPartsService;
@@ -152,8 +153,10 @@ public class BaseOneAction {
         CommonResponse cr = new CommonResponse();
         cr.setData(ClearCascadeJSON.get()
             .addRetainTerm(Materiel.class, "id", "number", "name", "price", "materielType", "unit", "changePrice",
-                "count", "convertUnit", "convertPrice")
-            .addRetainTerm(BaseOne.class, "id", "name").addRetainTerm(BaseData.class, "id", "name")
+                "count", "convertUnit", "convertPrice", "customer")
+            .addRetainTerm(BaseOne.class, "id", "name")
+            .addRetainTerm(BaseData.class, "id", "name")
+            .addRetainTerm(Customer.class, "id", "name")
             .format(materielService.findList(materiel)).toJSON());
         cr.setMessage("成功");
         return cr;
@@ -170,8 +173,9 @@ public class BaseOneAction {
     public CommonResponse getMaterielPage(Materiel materiel, PageParameter page) {
         CommonResponse cr = new CommonResponse();
         cr.setData(ClearCascadeJSON.get()
-            .addRetainTerm(Materiel.class, "id", "number", "name", "price", "type", "unit", "materielType", "count",
-                "convertUnit", "convertPrice", "convertNumber", "inventoryNumber", "warehouseType", "orderProcurements")
+            .addRetainTerm(Materiel.class, "id", "number", "name", "price", "type", "unit", "materielType", "count", "customer",
+                "customerId", "convertUnit", "convertPrice", "convertNumber", "inventoryNumber", "warehouseType", "orderProcurements")
+            .addRetainTerm(Customer.class, "id", "name")
             .addRetainTerm(OrderProcurement.class, "id", "orderProcurementNumber", "placeOrderNumber", "arrivalNumber",
                 "placeOrderTime", "expectArrivalTime", "arrivalTime", "customer", "user", "materielLocation", "price",
                 "squareGram")

@@ -67,6 +67,13 @@ public class OrderChild extends BaseEntity<Long> {
 	 */
 	@Column(name = "child_number")
 	private Integer childNumber;
+	
+	/**
+	 * 子单放数数量
+	 * 
+	 */
+	@Column(name = "child_put_number")
+	private Integer childPutNumber;
 
 	/**
 	 * 子单备注
@@ -139,7 +146,12 @@ public class OrderChild extends BaseEntity<Long> {
 		this.childRemark = childRemark;
 	}
 
+	public Integer getChildPutNumber() {
+		return childPutNumber;
+	}
 
+	public void setChildPutNumber(Integer childPutNumber) {
+		this.childPutNumber = childPutNumber;
+	}
 	
-
 }

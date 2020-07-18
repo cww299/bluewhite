@@ -1,5 +1,6 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
+<%@ taglib prefix="shiro" uri="http://shiro.apache.org/tags"%>
 <c:set var="ctx" value="${pageContext.request.contextPath }" />
 <!DOCTYPE html>
 <html>
@@ -29,19 +30,27 @@
 				<td>产品编号：</td>
 				<td><input type="text" class="layui-input" name="productNumber"></td>
 				<td>&nbsp;&nbsp;&nbsp;</td>
-				<td><button type="button" class="layui-btn layui-btn-sm" lay-submit lay-filter="search">搜索</button></td>
+				<td><button type="button" class="layui-btn" lay-submit lay-filter="search">搜索</button></td>
 			</tr>
 		</table>
 		<table id="tableAgreement" lay-filter="tableAgreement"></table>
 	</div>
 </div>
-</body>
-<script id="toolbar" type="text/html">
-<div>
-	<span lay-event="productUseup" class="layui-btn layui-btn-sm" >生成耗料单</span>
-	<span lay-event="lookoverUseup" class="layui-btn layui-btn-sm layui-btn-normal" >查看耗料单</span>
+<!-- 
+trialProduce 试制部，生成，审核
+salesManagement 生产计划部  查看
+ -->
+<div id="toolbar" style="display:none;">
+	<div>
+		<shiro:hasAnyRoles name="trialProduce" >
+			<span lay-event="productUseup" class="layui-btn layui-btn-sm" id="isTrialProduce">生成耗料单</span>
+		</shiro:hasAnyRoles>
+		<shiro:hasAnyRoles name="superAdmin,salesManagement">
+		</shiro:hasAnyRoles>
+		<span lay-event="lookoverUseup" class="layui-btn layui-btn-sm layui-btn-normal" >查看耗料单</span>
+	</div>
 </div>
-</script>
+</body>
 <script>
 layui.config({
 	base : '${ctx}/static/layui-v2.4.5/'
@@ -63,6 +72,7 @@ layui.config({
 		myutil.clickTr();
 		myutil.config.msgOffset = '250px';
 		
+		var isTrialProduce = $('#isTrialProduce').length > 0;
 		var allUserSelectHtml = '<option value="">请选择</option>';
 		myutil.getData({
 			url:'${ctx}/system/user/findUserList',
@@ -83,6 +93,7 @@ layui.config({
 			       { title:'产品编号',	field:'product_number',  		},
 			       { title:'产品名称',	field:'product_name', },
 			       { title:'数量',   field:'number',	 },
+			       { title:'放数数量',   field:'putNumber',	 },
 			       { title:'备注',   field:'remark',	 },
 			       { title:'生成耗料单',   field:'',   templet:getTpl(),	 },
 			       { title:'备料充足',   field:'prepareEnough', transData:{data:['否','是']}},
@@ -143,14 +154,14 @@ layui.config({
 				success:function(){
 					mytable.render({
 						elem:'#lookoverTable',
-						url:'${ctx}/ledger/getOrderMaterial?orderId='+checked[0].id,
-						toolbar:'<span class="layui-btn layui-btn-sm" lay-event="onekey">一键审核</span>',
+						url:'${ctx}/ledger/getOrderMaterial?orderId='+checked[0].id + (isTrialProduce? "" : "&audit=1"),
+						toolbar: isTrialProduce ? '<span class="layui-btn layui-btn-sm" lay-event="onekey">一键审核</span>' : "",
 						size:'lg',
 						limit:15,
 						limits:[10,15,20,50,],
 						colsWidth:[0,0,10,10,20,10],
 						curd:{
-							btn:[4],
+							btn: [], // [4],
 							otherBtn:function(obj){
 								if(obj.event=="onekey"){
 									myutil.deleTableIds({

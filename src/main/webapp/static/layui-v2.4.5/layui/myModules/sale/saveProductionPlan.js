@@ -112,6 +112,7 @@ layui.extend({
 				name: item.customer.name,
 				remark: item.childRemark,
 				number: item.childNumber,
+				putNumber: item.childPutNumber,
 			})
 		})
 		saveProductionPlan.add({
@@ -192,6 +193,7 @@ layui.extend({
 							 * type:'select', select:{data:allUser,name:'userName',isDisabled:true,unsearch:true,}*/
 							},
 							{ title:'数量',   	field:'number',  	edit: 'number', },
+							{ title:'放数数量',   	field:'putNumber',  	edit: 'number', },
 							{ title:'备注',   	field:'remark',	edit: true, },
 					       ]],
 					done:function(){
@@ -207,13 +209,16 @@ layui.extend({
 									return myutil.emsg('请确证填写数量！');
 								}
 								var val = parseInt(number);
-								cache['number'] = val;	
+								cache['number'] = val;
+								var putNumber = parseInt(val * 0.01)
+								cache['putNumber'] = putNumber || 1;
 								$(this).val(val);   
 								var sum = 0;
 								for(var i in allCache){
 									sum -= -allCache[i].number;
 								}
 								$('#orderNumber').val(sum);
+								table.reload('addTable',{ data: allCache })
 							}
 						})
 						form.render();
@@ -221,10 +226,11 @@ layui.extend({
 				})
 				form.on('submit(saveProductPlan)',function(obj){
 					var orderChild = [];
-					var msg = '';
+					var msg = '', allPutNumber = 0;
 					layui.each(table.cache['addTable'],function(index,item){
 						orderChild.push({
 							childNumber: item.number,
+							childPutNumber: item.putNumber,
 							userId: item.userId,
 							customerId: item.customerId,
 							childRemark: item.remark,
@@ -232,12 +238,14 @@ layui.extend({
 						})
 						if(!item.number || isNaN(item.number)|| item.number<=0)
 							return msg = '请正确填写数量!';
+						allPutNumber -= (-item.putNumber)
 					})	
 					orderChild.length==0 && (msg = '请选择客户');
 					if(msg!='')
 						return myutil.emsg(msg);
+					obj.field.putNumber = allPutNumber;
 					obj.field.orderChild = JSON.stringify(orderChild);
-					obj.field.orderNumber = obj.field.bacthNumber+$('#chooseProductInput').val();
+					obj.field.orderNumber = obj.field.bacthNumber + $('#chooseProductInput').val();
 					var url = '/ledger/addOrder';
 					if(data.id){
 						url = '/ledger/updateOrder';
@@ -361,6 +369,7 @@ layui.extend({
 						name: item1.name,
 						remark: '',
 						number: 0,
+						putNumber: 0,
 						customerId: item1.id,
 					})
 				})

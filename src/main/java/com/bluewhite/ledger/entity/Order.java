@@ -85,6 +85,12 @@ public class Order extends BaseEntity<Long> {
 	 */
 	@Column(name = "number")
 	private Integer number;
+	
+	/**
+	 * 合同总放数数量
+	 */
+	@Column(name = "putNumber")
+	private Integer putNumber;
 
 	/**
 	 * 备注
@@ -413,4 +419,13 @@ public class Order extends BaseEntity<Long> {
 		this.remark = remark;
 	}
 
+	public Integer getPutNumber() {
+		return putNumber;
+	}
+
+	public void setPutNumber(Integer putNumber) {
+		this.putNumber = putNumber;
+	}
+
+	
 }

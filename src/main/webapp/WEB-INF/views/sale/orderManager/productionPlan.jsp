@@ -82,7 +82,6 @@ layui.config({
 			url:'${ctx}/ledger/orderPage',
 			toolbar: $('#toolbar').html(),
 			height:'750',
-			colsWidth:[0,10,7,8,0,6,0,5,8,8,8,8,],
 			parseData:function(ret){
 				if(ret.code==0){
 					var data = [],d = ret.data.rows;
@@ -95,11 +94,13 @@ layui.config({
 								bacthNumber: d[i].bacthNumber,
 								audit: d[i].audit,
 								number: d[i].number,
+								putNumber: d[i].putNumber,
 								orderDate: d[i].orderDate,
 								remark: d[i].remark,
 								product: d[i].product,
 								childCustome: child[j].customer,
 								childNumber: child[j].childNumber,
+								childPutNumber: child[j].childPutNumber,
 								childRemark: child[j].childRemark,
 								childUser: child[j].user,
 							})
@@ -111,6 +112,7 @@ layui.config({
 					return {  msg:ret.message,  code:ret.code , data:[], count:0 }; 
 			},
 			ifNull:'---',
+			colsWidth:[0,10,7,8,0,6,0,5,8,8,8,8,8,],
 			cols:[[
 			       { type:'checkbox',},
 			       { title:'批次号',   	field:'bacthNumber', 	},
@@ -118,15 +120,17 @@ layui.config({
 			       { title:'产品编号',	field:'product_number', 	},
 			       { title:'产品名称',	field:'product_name',	},
 			       { title:'总数量',   field:'number',	 },
+			       { title:'总放数',   field:'putNumber',	 },
 			       { title:'备注',   field:'remark',	 },
 			       { title:'审核',   field:'audit',	 transData:{ data:['否','是'],}},
 			       { title:'客户',   field:'childCustome_name',	},
 			       { title:'数量',   field:'childNumber',	},
+			       { title:'放数数量',   field:'childPutNumber',	},
 			       { title:'备注',   field:'childRemark',	},
 			       { title:'跟单人',   field:'childUser_userName',	},
 			       ]],
 	       autoMerge:{
-		    	 field:['bacthNumber','orderDate','product_number','product_name','number','remark',
+		    	 field:['bacthNumber','orderDate','product_number','product_name','number','putNumber', 'remark',
 		    		 'audit','0'],  
 		   },
 		})
