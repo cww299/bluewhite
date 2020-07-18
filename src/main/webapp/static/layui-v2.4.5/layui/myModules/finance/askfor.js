@@ -234,9 +234,9 @@ layui.extend({
 			        }
 			    }
 			});
-		}else if(askfor.type==4 || askfor.type==8){	//如果是税点应付申请或者材料管理、获取供应商
+		}else if(askfor.type==4 || askfor.type==8){	//如果是税点应付申请或者材料管理、获取加工点
 			var allCustomer = myutil.getDataSync({
-				url:myutil.config.ctx+'/ledger/getCustomer?customerAttributionId=449&customerTypeId=456',
+				url:myutil.config.ctx+'/ledger/getCustomer?customerAttributionId=449&customerTypeId=460',
 			});
 			allCustomer.unshift({id:'',name:'请选择'});
 			allCols[askfor.type][1].select.data = allCustomer;
