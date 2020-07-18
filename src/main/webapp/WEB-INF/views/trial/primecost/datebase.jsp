@@ -20,8 +20,6 @@
 				<td><input type="text" name="number" class="layui-input" placeholder="物料编号"></td>
 				<td></td>
 				<td><select name="materielTypeId" id="materielTypeIdSelect"><option value="">物料类型</option></select></td>
-				<td></td>
-				<td><select name="customerId" id="customerIdSelect"><option value="">供应商</option></select></td>
 				<td><button type="button" class="layui-btn" lay-submit lay-filter="search">搜索</button></td>
 			</tr>
 		</table>
@@ -48,12 +46,6 @@
 	    <label class="layui-form-label"><b class="red">*</b>物料类型</label>
 	    <div class="layui-input-block">
 		    <select name="materielTypeId" lay-verify="required" id="materielTypeSelect"></select>
-		</div>
-	</div>
-	<div class="layui-form-item" pane>
-	    <label class="layui-form-label">供应商</label>
-	    <div class="layui-input-block">
-		    <select name="customerId" id="customerIdSelects"><option value="">请选择</option></select>
 		</div>
 	</div>
 	<div class="layui-form-item" pane>
@@ -88,18 +80,6 @@ layui.config({
 		myutil.clickTr();
 		
 		$('#materielTypeIdSelect').append(myutil.getBaseDataSelect({ type: 'materielType'}));
-		
-		var customerSelect = '';
-		myutil.getData({
-			url: '${ctx}/ledger/allCustomer?typeIds=456',
-			success: function(data) {
-				for(var i in data)
-					customerSelect += "<option value='" + data[i].id + "'>" + data[i].name + "</option>"
-				$('#customerIdSelect').append(customerSelect);
-				form.render();
-			}
-		})
-		
 		form.render();
 		mytable.render({
 			elem:'#tableData',
@@ -129,7 +109,6 @@ layui.config({
 		       { title:'物料编号',   field:'number',	},
 		       { title:'物料名',   field:'name',   },
 		       { title:'单位',   field:'unit_name', 	},
-		       { title:'供应商',   field:'customer_name', 	},
 		       { title:'物料类型',   field:'materielType_name',	},
             ]]
 		})
@@ -142,8 +121,6 @@ layui.config({
 				area: ['30%', '60%'],
 				btn: ['保存', '返回'],
 				success: function(layerElem, layIndex) {
-					$('#customerIdSelects').append(customerSelect);
-					$('#customerIdSelects').val(data.customerId || "")
 					$('#unitSelect').html(myutil.getBaseDataSelect({ 
 						type: 'officeUnit', id: data.unit ? data.unit.id : ""}))
 					$('#materielTypeSelect').html(myutil.getBaseDataSelect({ 
