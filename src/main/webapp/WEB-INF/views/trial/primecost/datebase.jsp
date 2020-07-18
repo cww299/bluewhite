@@ -27,31 +27,71 @@
 	</div>
 </div>
 </body>
-<!-- 表格工具栏模板 -->
+<!-- 表格工具栏模板
+	商品名： 类型-颜色-门幅-蓝白:色号-厂家-色号
+ -->
 <script type="text/html" id="addEditTpl">
 <div style="padding:10px;" class="layui-form layui-form-pane">
+	<div class="layui-form-item" pane>
+	    <label class="layui-form-label"><b class="red">*</b>物料类型</label>
+	    <div class="layui-input-block">
+		    <select name="materielTypeId" lay-verify="required" id="materielTypeSelect" 
+				lay-filter="materielTypeSelect"></select>
+		</div>
+	</div>
+	<div class="layui-form-item" pane>
+	    <label class="layui-form-label"><b class="red">*</b>颜色</label>
+	    <div class="layui-input-block">
+		    <input value="{{ d.color || "" }}" lay-verify="required" class="layui-input changeName">
+		</div>
+	</div>
+	<div class="layui-form-item" pane>
+	    <label class="layui-form-label"><b class="red">*</b>门幅</label>
+	    <div class="layui-input-block">
+		    <input value="{{ d.door || "" }}" lay-verify="required" class="layui-input changeName">
+		</div>
+	</div>
+	<div class="layui-form-item" pane>
+	    <label class="layui-form-label"><b class="red">*</b>蓝白色号</label>
+	    <div class="layui-input-block">
+			<input value="{{ d.colorNumber || "" }}" lay-verify="required" class="layui-input changeName color">
+		</div>
+	</div>
+	<div class="layui-form-item" pane>
+	    <label class="layui-form-label">厂家</label>
+	    <div class="layui-input-block">
+			<input value="{{ d.factory || "" }}" class="layui-input changeName">
+		</div>
+	</div>
+	<div class="layui-form-item" pane>
+	    <label class="layui-form-label">厂家色号</label>
+	    <div class="layui-input-block">
+			<input value="{{ d.factoryNumber || "" }}" class="layui-input changeName ">
+		</div>
+	</div>
+    <div class="layui-form-item" pane>
+	    <label class="layui-form-label"><b class="red">*</b>物料名</label>
+	    <div class="layui-input-block">
+		    <input name="name" lay-verify="required" value="{{ d.name || "" }}" class="layui-input" disabled id="metaName">
+		</div>
+	</div>
 	<div class="layui-form-item" pane>
 	    <label class="layui-form-label"><b class="red">*</b>物料编号</label> 
 	    <div class="layui-input-block">
 		    <input name="number" value="{{ d.number || "" }}" class="layui-input" lay-verify="required">
 		</div>
 	</div>
-    <div class="layui-form-item" pane>
-	    <label class="layui-form-label"><b class="red">*</b>物料名</label>
-	    <div class="layui-input-block">
-		    <input name="name" lay-verify="required" value="{{ d.name || "" }}" class="layui-input">
-		</div>
-	</div>
-	<div class="layui-form-item" pane>
-	    <label class="layui-form-label"><b class="red">*</b>物料类型</label>
-	    <div class="layui-input-block">
-		    <select name="materielTypeId" lay-verify="required" id="materielTypeSelect"></select>
-		</div>
-	</div>
 	<div class="layui-form-item" pane>
 	    <label class="layui-form-label"><b class="red">*</b>单位</label>
 	    <div class="layui-input-block">
 		    <select name="unitId" lay-verify="required" id="unitSelect"></select>
+		</div>
+	</div>
+	<div class="layui-form-item" pane>
+	    <label class="layui-form-label">物料定性</label>
+	    <div class="layui-input-block">
+		    <select name="materialQualitativeId" id="materialQualitativeSelect">
+				<option value="">请选择</option></select>
 		</div>
 	</div>
 	<p style="display:none;">
@@ -110,32 +150,67 @@ layui.config({
 		       { title:'物料名',   field:'name',   },
 		       { title:'单位',   field:'unit_name', 	},
 		       { title:'物料类型',   field:'materielType_name',	},
+		       { title:'物料定性',   field:'materialQualitative_name',	},
             ]]
 		})
 		
 		function addEdit(data = {}) {
+			if(data.name) {
+				var text = data.name.split('-')
+				if(text.length >= 4) {
+					data.color = text[1]
+					data.door = text[2]
+					data.colorNumber = text[3]
+					if(text[4]) {
+						data.factory = text[4]
+						data.factoryNumber = text[5]
+					}
+				}
+			}
 			layer.open({
 				type: 1,
 				title: '物料信息',
 				content: laytpl($('#addEditTpl').html()).render(data),
-				area: ['30%', '60%'],
+				area: ['30%', '680px'],
 				btn: ['保存', '返回'],
 				success: function(layerElem, layIndex) {
 					$('#unitSelect').html(myutil.getBaseDataSelect({ 
 						type: 'officeUnit', id: data.unit ? data.unit.id : ""}))
 					$('#materielTypeSelect').html(myutil.getBaseDataSelect({ 
 						type: 'materielType', id: data.materielType ? data.materielType.id : ""}));
+					$('#materialQualitativeSelect').append(myutil.getBaseDataSelect({ 
+						type: 'materialQualitative', id: data.materialQualitative ? data.materialQualitative.id : ""}))
 					form.render();
 					form.on('submit(sureAddEdit)', function(obj) {
 						myutil.saveAjax({
 							url: '/product/addMateriel',
 							data: obj.field,
-							success: function(){
-								table.reload('tableData')
+							success: function() {
+								table.reload('tableData');
 								layer.close(layIndex)
 							}
 						})
 					})
+					$('.changeName').change(function(){
+						changeName();
+					})
+					form.on('select(materielTypeSelect)',function(obj) {
+						changeName();
+					})
+					function changeName() {
+						var selectId = $('#materielTypeSelect').val();
+						var selectName = $('#materielTypeSelect').find('option[value="'+ selectId +'"]').html()
+						var name = [ selectName ];
+						layui.each($('.changeName'), function(index, item) {
+							var val = $(item).val();
+							if(val) {
+								if($(item).hasClass('color') && val.indexOf('蓝白') < 0)
+									val = "蓝白:" + val;
+								name.push(val)
+							}
+						})
+						$('#metaName').val(name.join('-'));
+					}
 				},
 				yes: function(){
 					$('[lay-filter="sureAddEdit"]').click();
