@@ -179,15 +179,24 @@ layui.config({
 						},
 						cols:[[
 							   { type:'checkbox', },
-						       { title:'物料名',   field:'materiel_name', },
+						       { title:'物料名',   field:'materiel_name', templet: getName(), },
 						       { title:'单位',   field:'unit_name',  },
 						       { title:'领取用量',   field:'dosage', 	},
 						       { title:'领取模式',   field:'receiveMode_id',	type:'select', select:{data:mode}, },
 						       { title:'审核状态', field:'audit', transData:{ data:['未审核','审核'] }},
-						       ]],
+					       ]],
 					})
 				},
 			})
+		}
+		function getName(){
+			return function(d){
+				var html = d.materiel.name
+				if(d.cutPartsName) {
+					html = '(<b class="red">'+ d.cutPartsName +'</b>)&nbsp;&nbsp;&nbsp;&nbsp;' + html
+				}
+				return html
+			}
 		}
 		function productUseup(){
 			myutil.deleTableIds({

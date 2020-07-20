@@ -7,7 +7,7 @@
 	<link rel="stylesheet" href="${ctx }/static/layui-v2.4.5/layui/css/layui.css" media="all">
 	<script src="${ctx}/static/layui-v2.4.5/layui/layui.js"></script>
 	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-	<title>耗料订单</title>
+	<title>耗料采买</title>
 	<style>
 		.tipProcurement{
 		}
@@ -325,7 +325,7 @@ layui.config({
 			cols:[[
 			       { type:'checkbox',},
 			       { title:'用料编号', field:'materiel_number', },
-			       { title:'物料',   field:'materiel_name',   },
+			       { title:'物料',   field:'materiel_name', templet: getName()  },
 			       { title:'领取模式',   field:'receiveMode_name',	},
 			       { title:'单位',   field:'unit_name',	},
 			       { title:'用量',   field:'dosage',	},
@@ -407,6 +407,15 @@ layui.config({
 				}) */
 			}
 		})
+		function getName(){
+			return function(d){
+				var html = d.materiel.name
+				if(d.cutPartsName) {
+					html = '(<b class="red">'+ d.cutPartsName +'</b>)&nbsp;&nbsp;&nbsp;&nbsp;' + html
+				}
+				return html
+			}
+		}
 		function getOther(){
 			return function(obj){
 				var checked = layui.table.checkStatus('tableData').data;
