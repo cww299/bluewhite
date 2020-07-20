@@ -103,14 +103,14 @@ public class CutPartsServiceImpl  extends BaseServiceImpl<CutParts, Long> implem
 		if(cutParts.getComposite()==0){
 			cutParts.setBatchMaterial(NumUtils.mul(cutParts.getAddMaterial(), NumUtils.sum(cutParts.getManualLoss(),1),(double)cutParts.getNumber()));
 			//当批各单片价格
-			cutParts.setBatchMaterialPrice(NumUtils.mul(cutParts.getBatchMaterial(),materiel.getPrice()));
+			cutParts.setBatchMaterialPrice(NumUtils.mul(cutParts.getBatchMaterial(),NumUtils.setzro(materiel.getPrice())));
 		}
 		if(cutParts.getComposite()==1){
 			Materiel complexMateriel  =  materielDao.findOne(cutParts.getComplexMaterielId());
 			cutParts.setComplexBatchMaterial(NumUtils.mul(cutParts.getAddMaterial(), 
 					NumUtils.sum(cutParts.getCompositeManualLoss(),1),(double)cutParts.getNumber()));
-			cutParts.setBatchComplexMaterialPrice(NumUtils.mul(cutParts.getComplexBatchMaterial(),materiel.getPrice()));
-			cutParts.setBatchComplexAddPrice(NumUtils.mul(cutParts.getComplexBatchMaterial(),complexMateriel.getPrice()));
+			cutParts.setBatchComplexMaterialPrice(NumUtils.mul(cutParts.getComplexBatchMaterial(),NumUtils.setzro(materiel.getPrice())));
+			cutParts.setBatchComplexAddPrice(NumUtils.mul(cutParts.getComplexBatchMaterial(),NumUtils.setzro(complexMateriel.getPrice())));
 		}
 		return cutParts;
 	}
