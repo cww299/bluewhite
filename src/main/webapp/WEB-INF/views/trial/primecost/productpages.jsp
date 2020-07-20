@@ -24,31 +24,24 @@
 .btnDiv button{
 	margin:2px 0px;
 }
-#searchTipDiv{	/*  搜索提示框样式、在其他模块中直接使用的是该元素的id、请勿修改该元素的id值  */
-	position: fixed;
-	display:none;
-	border: 1px;
-	border: 1px solid #d2d2d2;
-	padding: 5px 0;
-	border-radius: 2px;
-	background-color: white;
-	text-align:center;
-	line-height:28px;
-	box-shadow: 0 2px 4px rgba(0, 0, 0, .12);
-	max-height: 300px;
-	overflow-y: auto;
-	z-index: 999999999999;
+.choose{
+	padding-right: 28px;
+	cursor: pointer;
 }
-#searchTipDiv dd{
-	padding: 0 10px;
-    line-height: 36px;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
+.choose:hover + i{
+    display: block;
 }
-#searchTipDiv dd:hover{
-	background-color: #8080803d;
-	cursor:pointer;
+.choose + i:hover {
+	display: block;
+}
+.choose + i{
+    position: absolute;
+    right: 23px;
+    top: -3%;
+    cursor: pointer;
+    transform: rotate(45deg);
+    color: #808080bf;
+    display: none;
 }
 </style>
 </head>
@@ -62,7 +55,7 @@
 						<td>产品名：</td>
 						<td><input type="text" class="layui-input" name="name"></td>
 						<td>&nbsp;&nbsp;</td>
-						<td><button type="button" class="layui-btn layui-btn-sm" lay-submit lay-filter="searchBtn">搜索</button></td>
+						<td><button type="button" class="layui-btn" lay-submit lay-filter="searchBtn">搜索</button></td>
 					</tr>
 				</table>
 				<table id="productTable" lay-filter="productTable"></table>
@@ -89,17 +82,14 @@
 		</div>
 	</div>
 </div>
-<!-- 搜索提示框 -->
-<div id="searchTipDiv" class="layui-form">
-	<dd style="color:#999;">....</dd>
-</div>
 </body>
 <script>
 layui.config({
 	base : '${ctx}/static/layui-v2.4.5/'
 }).extend({
 	mytable: 'layui/myModules/mytable',
-}).use(['mytable','form'],function(){
+	chooseMate: 'layui/myModules/trial/chooseMate',
+}).use(['mytable','form', 'chooseMate'],function(){
 	var $ = layui.jquery,
 		form = layui.form
 		myutil = layui.myutil,
@@ -111,6 +101,8 @@ layui.config({
 	mytable.render({		//产品表格
 		elem:'#productTable',
 		url:'${ctx}/productPages',
+		limit: 15,
+		limits: [10,15,20,30,50,100,200],
 		cols:[[
 		       { type:'checkbox',},
 		       { title:'产品编号',   	field:'number',	},
@@ -141,12 +133,13 @@ layui.config({
 		cutParts : 'layui/myModules/trial/cutParts',			//裁片
 		materials: 'layui/myModules/trial/materials',			//dd除裁片
 		tailor: 'layui/myModules/trial/tailor', 			 	//裁剪
+		
 		machinist: 'layui/myModules/trial/machinist',			//机工
 		embroidery : 'layui/myModules/trial/embroidery',		//绣花
 		needlework: 'layui/myModules/trial/needlework',			//针工
 		pack: 'layui/myModules/trial/pack',						//包装
 	}).define(
-		['cutParts','materials','tailor','machinist','embroidery','needlework','pack'],
+		['cutParts','materials','tailor',],  // 'machinist','embroidery','needlework','pack'
 		function(){
 			var cutParts = layui.cutParts
 			, materials = layui.materials

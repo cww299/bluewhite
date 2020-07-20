@@ -97,6 +97,9 @@ public class Materiel extends BaseEntity<Long>{
 	@OneToMany(mappedBy = "materiel",cascade = CascadeType.ALL, orphanRemoval = true)
 	private Set<OrderProcurement> orderProcurements = new HashSet<OrderProcurement>();
 		
+	@Column(name = "price")
+	private Double price = 0.0;
+	
 	/**
 	 * 库存数量
 	 * 
@@ -206,7 +209,13 @@ public class Materiel extends BaseEntity<Long>{
 		this.name = name;
 	}
 
+	public Double getPrice() {
+		return price;
+	}
 
+	public void setPrice(Double price) {
+		this.price = price;
+	}
 
 	public String getMaterielTypeIds() {
 		return materielTypeIds;

@@ -34,13 +34,15 @@ public class ProductMaterialsServiceImpl extends BaseServiceImpl<ProductMaterial
         NumUtils.setzro(productMaterials);
         countComposite(productMaterials);
         Materiel materiel = materielDao.findOne(productMaterials.getMaterielId());
+        productMaterials
+        .setBatchMaterialPrice(NumUtils.mul(productMaterials.getBatchMaterial(),NumUtils.setzro(materiel.getPrice())));
+        /*
         if (productMaterials.getConvertUnit() == 0) {
-            productMaterials
-                .setBatchMaterialPrice(NumUtils.mul(productMaterials.getBatchMaterial(), materiel.getPrice()));
         } else {
             productMaterials
                 .setBatchMaterialPrice(NumUtils.mul(productMaterials.getBatchMaterial(), materiel.getConvertPrice()));
         }
+        */
         return dao.save(productMaterials);
     }
 
