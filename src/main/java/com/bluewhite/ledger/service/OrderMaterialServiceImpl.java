@@ -115,9 +115,10 @@ public class OrderMaterialServiceImpl extends BaseServiceImpl<OrderMaterial, Lon
 						List<CutParts> cutPartsList = cutPartsService.findByProductId(order.getProductId());
 						if (cutPartsList.size() > 0) {
 							cutPartsList.stream().forEach(c -> {
-								c.setNumber(order.getNumber() + order.getPutNumber());
+								c.setNumber(order.getNumber());
 								cutPartsService.countComposite(c);
 								OrderMaterial orderMaterial = new OrderMaterial();
+								orderMaterial.setCutPartsName(c.getCutPartsName());
 								orderMaterial.setOrderId(id);
 								orderMaterial.setAudit(0);
 								orderMaterial.setOutbound(0);
