@@ -42,7 +42,7 @@ salesManagement 生产计划部  查看
  -->
 <div id="toolbar" style="display:none;">
 	<div>
-		<shiro:hasAnyRoles name="trialProduce" >
+		<shiro:hasAnyRoles name="superAdmin,trialProduce" >
 			<span lay-event="productUseup" class="layui-btn layui-btn-sm" id="isTrialProduce">生成耗料单</span>
 		</shiro:hasAnyRoles>
 		<shiro:hasAnyRoles name="superAdmin,salesManagement">
@@ -161,7 +161,7 @@ layui.config({
 						limits:[10,15,20,50,],
 						colsWidth:[0,0,10,10,20,10],
 						curd:{
-							btn: [], // [4],
+							btn: isTrialProduce ? [4] : [],
 							otherBtn:function(obj){
 								if(obj.event=="onekey"){
 									myutil.deleTableIds({
