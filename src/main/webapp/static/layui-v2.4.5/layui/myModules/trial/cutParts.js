@@ -74,6 +74,7 @@ layui.define(['mytable', 'chooseMate'],function(exports){
 				notNull:['cutPartsName','materiel','perimeter','oneMaterial','manualLoss','cutPartsNumber',],
 			},
 			colsWidth:[0,6,6,6,5,30,6,6,6,6,6,30,7,7,10],
+			totalRow: ['allPerimeter', 'addMaterial'],
 			cols:[[
 			       { type:'checkbox', 		fixed:'left'},
 			       { title:'裁片名字',   	field:'cutPartsName',	edit:true, fixed:'left'},
