@@ -1,7 +1,5 @@
 package com.bluewhite.product.primecostbasedata.dao;
 
-import java.util.List;
-
 import com.bluewhite.base.BaseRepository;
 import com.bluewhite.product.primecostbasedata.entity.Materiel;
 

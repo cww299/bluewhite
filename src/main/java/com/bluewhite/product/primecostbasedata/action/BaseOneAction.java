@@ -152,8 +152,7 @@ public class BaseOneAction {
     public CommonResponse getMateriel(Materiel materiel) {
         CommonResponse cr = new CommonResponse();
         cr.setData(ClearCascadeJSON.get()
-            .addRetainTerm(Materiel.class, "id", "number", "name", "price", "materielType", "unit", "changePrice",
-                "count", "convertUnit", "convertPrice", "customer")
+            .addRetainTerm(Materiel.class, "id", "number", "name", "materielType", "unit")
             .addRetainTerm(BaseOne.class, "id", "name")
             .addRetainTerm(BaseData.class, "id", "name")
             .addRetainTerm(Customer.class, "id", "name")
@@ -173,8 +172,8 @@ public class BaseOneAction {
     public CommonResponse getMaterielPage(Materiel materiel, PageParameter page) {
         CommonResponse cr = new CommonResponse();
         cr.setData(ClearCascadeJSON.get()
-            .addRetainTerm(Materiel.class, "id", "number", "name", "price", "type", "unit", "materielType", "count", "customer",
-                "customerId", "convertUnit", "convertPrice", "convertNumber", "inventoryNumber", "warehouseType", "orderProcurements")
+            .addRetainTerm(Materiel.class, "id", "number", "name","type", "unit", "materielType","materialQualitative",
+                "inventoryNumber", "warehouseType", "orderProcurements")
             .addRetainTerm(Customer.class, "id", "name")
             .addRetainTerm(OrderProcurement.class, "id", "orderProcurementNumber", "placeOrderNumber", "arrivalNumber",
                 "placeOrderTime", "expectArrivalTime", "arrivalTime", "customer", "user", "materielLocation", "price",
