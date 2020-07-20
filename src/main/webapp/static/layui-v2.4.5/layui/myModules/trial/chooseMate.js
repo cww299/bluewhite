@@ -78,7 +78,7 @@ layui.define(['mytable'],function(exports){
 					       { title:'物料定性',   field:'materialQualitative_name',	},
 			            ]]
 					})
-					table.on('row(' + tableId + ')', function(obj){
+					table.on('rowDouble(' + tableId + ')', function(obj){
 						resolve(obj.data)
 						layer.close(layerIndex)
 					});

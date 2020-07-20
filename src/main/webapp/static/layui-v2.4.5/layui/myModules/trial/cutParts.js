@@ -31,6 +31,7 @@ layui.define(['mytable', 'chooseMate'],function(exports){
 			size:'lg',
 			scrollX : true,
 			autoUpdate:{
+				isReload: true,
 				saveUrl:'/product/updateCutParts',
 				deleUrl:'/product/deleteCutParts',
 				field:{ unit_id:'unitId', materiel:'materielId',complexMateriel:'complexMaterielId',overstock_id:'overstockId' }
@@ -96,7 +97,7 @@ layui.define(['mytable', 'chooseMate'],function(exports){
 		})
 		
 		function renderChoose() {
-			$('div[lay-id="'+ tableId +'"] .choose').click(function(){
+			$('div[lay-id="'+ tableId +'"] .choose').unbind().on('click', function(){
 				 var index = $(this).closest('tr').data("index")
 				 var field = $(this).closest('td').data("field")
 				 var isMate = $(this).data('ismate') 
@@ -114,7 +115,7 @@ layui.define(['mytable', 'chooseMate'],function(exports){
 					 })
 				 })
 			 })
-			 $('div[lay-id="'+ tableId +'"] .closeChoose').click(function(){
+			 $('div[lay-id="'+ tableId +'"] .closeChoose').unbind().on('click', function(){
 				 var index = $(this).closest('tr').data("index")
 				 var field = $(this).closest('td').data("field")
 				 var trData = table.cache[tableId][index]

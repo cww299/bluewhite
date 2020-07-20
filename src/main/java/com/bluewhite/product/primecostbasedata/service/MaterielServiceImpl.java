@@ -168,7 +168,7 @@ public class MaterielServiceImpl extends BaseServiceImpl<Materiel, Long> impleme
 			}
 			// 按产品名称过滤
 			if (!StringUtils.isEmpty(materiel.getName())) {
-				predicate.add(cb.like(root.get("name").as(String.class), "%" + materiel.getName() + "%"));
+				predicate.add(cb.like(root.get("name").as(String.class), "%" + StringUtil.specialStrKeyword(materiel.getName()) + "%"));
 			}
 			 // 查找多个类型
             if(!StringUtils.isEmpty(materiel.getMaterielTypeIds())) {
