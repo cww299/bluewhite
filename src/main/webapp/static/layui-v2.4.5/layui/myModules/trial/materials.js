@@ -42,6 +42,7 @@ layui.define(['mytable','form','chooseMate'],function(exports){
 			data:[],
 			size:'lg',
 			autoUpdate:{
+				isReload: true,
 				saveUrl:'/product/updateProductMaterials',
 				deleUrl:'/product/deleteProductMaterials',
 				field: { materiel:'materielId', overstock_id:'overstockId',unit_id:'unitId'},
@@ -90,7 +91,7 @@ layui.define(['mytable','form','chooseMate'],function(exports){
 		})
 		
 		function renderChoose() {
-			$('div[lay-id="'+ tableId +'"] .choose').click(function(){
+			$('div[lay-id="'+ tableId +'"] .choose').unbind().on('click', function(){
 				 var index = $(this).closest('tr').data("index")
 				 var field = $(this).closest('td').data("field")
 				 var isMate = $(this).data('ismate') 
@@ -103,12 +104,12 @@ layui.define(['mytable','form','chooseMate'],function(exports){
 					 var data = { id: trData.id }
 					 data[field] = d.id
 					 myutil.saveAjax({
-						 url:'/product/updateCutParts',
+						 url:'/product/updateProductMaterials',
 						 data: data,
 					 })
 				 })
 			 })
-			 $('div[lay-id="'+ tableId +'"] .closeChoose').click(function(){
+			 $('div[lay-id="'+ tableId +'"] .closeChoose').unbind().on('click', function(){
 				 var index = $(this).closest('tr').data("index")
 				 var field = $(this).closest('td').data("field")
 				 var trData = table.cache[tableId][index]
