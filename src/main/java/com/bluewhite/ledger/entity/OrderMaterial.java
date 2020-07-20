@@ -29,6 +29,12 @@ public class OrderMaterial extends BaseEntity<Long> {
 	 */
 	@Column(name = "order_material_number")
 	private String orderMaterialNumber;
+	
+	/**
+     * 选择该样品的裁片名字
+     */
+    @Column(name = "cutparts_name")
+    private String cutPartsName;
 
 	/**
 	 * 订单id
@@ -141,7 +147,15 @@ public class OrderMaterial extends BaseEntity<Long> {
 	
 	
 	 
-	public Integer getOutAudit() {
+	public String getCutPartsName() {
+        return cutPartsName;
+    }
+
+    public void setCutPartsName(String cutPartsName) {
+        this.cutPartsName = cutPartsName;
+    }
+
+    public Integer getOutAudit() {
 		return outAudit;
 	}
 
