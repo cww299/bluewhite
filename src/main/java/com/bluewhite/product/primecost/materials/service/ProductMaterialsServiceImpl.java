@@ -55,8 +55,9 @@ public class ProductMaterialsServiceImpl extends BaseServiceImpl<ProductMaterial
 
     @Override
     public ProductMaterials countComposite(ProductMaterials productMaterials) {
-        productMaterials.setBatchMaterial(NumUtils.mul(productMaterials.getManualLoss(),
-            productMaterials.getOneMaterial(), (double)productMaterials.getNumber()));
+        productMaterials.setBatchMaterial(NumUtils.mul(
+        		NumUtils.sum(productMaterials.getManualLoss(), productMaterials.getOneMaterial()), 
+        		(double)productMaterials.getNumber()));
         return productMaterials;
     }
 

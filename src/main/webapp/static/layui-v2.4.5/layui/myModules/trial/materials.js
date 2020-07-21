@@ -119,12 +119,13 @@ layui.define(['mytable','form','chooseMate', 'upload'],function(exports){
 				notNull: ['materielId'],
 				price:['oneMaterial','manualLoss','batchMaterial','batchMaterialPrice'] 
 			},
-			colsWidth:[0,0,6,6,8,15],
+			colsWidth:[0,0,6,6,8,8,15],
 			cols:[[
 			       { type:'checkbox',},
 			       { title:'物料编号/名称/价格/单位',   	field:'materielId',	templet: getSelectHtml(), edit:false, },
 			       { title:'单位',   		field:'unit_id',		 type:'select', select:{ data: allUnit }  },
 			       { title:'单只用料',   	field:'oneMaterial',	edit:true, },
+			       { title:'转换单位用量',   	field:'',	edit: false, templet: getConvert(), },
 			       { title:'手动损耗', 		field:'manualLoss',  	edit:true, },
 			       { title:'压货环节',   	field:'overstock_id', type:'select', select:{ data: allOverstock } ,},
 			       ]],
@@ -132,6 +133,21 @@ layui.define(['mytable','form','chooseMate', 'upload'],function(exports){
 	        	renderChoose()
 			}
 		})
+		
+		function getConvert() {
+			return function(d) {
+				var html = '---'
+				const mate = d.materiel
+				if(mate.convertUnit) {
+					if(d.unit.id == mate.unit.id) {	// 如果当前单位是转化前的单位，这里输出转化后的单位
+						html = (d.oneMaterial * mate.converts).toFixed(2) + '/' + mate.convertUnit.name
+					} else if(d.unit.id == mate.convertUnit.id) {
+						html = (d.oneMaterial / mate.converts).toFixed(2) + '/' + mate.unit.name
+					}
+				}
+				return html
+			}
+		}
 		
 		function renderChoose() {
 			$('div[lay-id="'+ tableId +'"] .choose').unbind().on('click', function(){

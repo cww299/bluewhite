@@ -8,6 +8,11 @@
 	<script src="${ctx}/static/layui-v2.4.5/layui/layui.js"></script>
 	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 	<title>基础数据表</title>
+	<style>
+	.layui-form-item {
+    	margin-bottom: 5px;
+    }
+	</style>
 </head>
 <body>
 <div class="layui-card">
@@ -40,21 +45,21 @@
 		</div>
 	</div>
 	<div class="layui-form-item" pane>
-	    <label class="layui-form-label"><b class="red">*</b>颜色</label>
+	    <label class="layui-form-label"><b class="red"></b>颜色</label>
 	    <div class="layui-input-block">
-		    <input value="{{ d.color || "" }}" lay-verify="required" class="layui-input changeName">
+		    <input value="{{ d.color || "" }}" lay-verify="" class="layui-input changeName">
 		</div>
 	</div>
 	<div class="layui-form-item" pane>
-	    <label class="layui-form-label"><b class="red">*</b>门幅</label>
+	    <label class="layui-form-label"><b class="red"></b>门幅</label>
 	    <div class="layui-input-block">
-		    <input value="{{ d.door || "" }}" lay-verify="required" class="layui-input changeName">
+		    <input value="{{ d.door || "" }}" lay-verify="" class="layui-input changeName">
 		</div>
 	</div>
 	<div class="layui-form-item" pane>
-	    <label class="layui-form-label"><b class="red">*</b>蓝白色号</label>
+	    <label class="layui-form-label"><b class="red"></b>蓝白色号</label>
 	    <div class="layui-input-block">
-			<input value="{{ d.colorNumber || "" }}" lay-verify="required" class="layui-input changeName color">
+			<input value="{{ d.colorNumber || "" }}" lay-verify="" class="layui-input changeName color">
 		</div>
 	</div>
 	<div class="layui-form-item" pane>
@@ -84,7 +89,7 @@
 	<div class="layui-form-item" pane>
 	    <label class="layui-form-label"><b class="red">*</b>单位</label>
 	    <div class="layui-input-block">
-		    <select name="unitId" lay-verify="required" id="unitSelect"></select>
+		    <select name="unitId" lay-verify="required" id="unitSelect" lay-search></select>
 		</div>
 	</div>
 	<div class="layui-form-item" pane>
@@ -92,6 +97,19 @@
 	    <div class="layui-input-block">
 		    <select name="materialQualitativeId" id="materialQualitativeSelect">
 				<option value="">请选择</option></select>
+		</div>
+	</div>
+	<div class="layui-form-item" pane>
+	    <label class="layui-form-label">转换单位</label>
+	    <div class="layui-input-block">
+		    <select name="convertUnitId" id="convertUnitSelect" lay-search>
+				<option value="">请选择</option></select>
+		</div>
+	</div>
+	<div class="layui-form-item" pane>
+	    <label class="layui-form-label">转换比</label>
+	    <div class="layui-input-block">
+		    <input name="converts" value="{{ d.converts || "" }}" type="number" class="layui-input">
 		</div>
 	</div>
 	<p style="display:none;">
@@ -120,10 +138,22 @@ layui.config({
 		myutil.clickTr();
 		
 		$('#materielTypeIdSelect').append(myutil.getBaseDataSelect({ type: 'materielType'}));
+		
+		var unitHtml = ''
+		myutil.getData({
+			url: myutil.config.ctx+'/product/getBaseOne?type=unit',
+			success: function(d){
+				d.forEach(unit => {
+					unitHtml += "<option value='" + unit.id + "'>" + unit.name + "</option>"
+				})
+			}
+		});
+		
 		form.render();
 		mytable.render({
 			elem:'#tableData',
 			url:'${ctx}/product/getMaterielPage',
+			ifNull: '---',
 			autoUpdate:{
 				deleUrl: '/product/deleteMateriel'
 			},
@@ -149,11 +179,20 @@ layui.config({
 		       { title:'物料编号',   field:'number',	},
 		       { title:'物料名',   field:'name',   },
 		       { title:'单位',   field:'unit_name', 	},
+		       { title:'转换单位',   field:'convertUnit_name', 	templet: getConvert(), },
 		       { title:'物料类型',   field:'materielType_name',	},
 		       { title:'物料定性',   field:'materialQualitative_name',	},
             ]]
 		})
-		
+		function getConvert() {
+			return function(d) {
+				var html = '---'
+				if(d.convertUnit){
+					html = ("1 " + d.unit.name + " = " + d.converts + " " + d.convertUnit.name)
+				}
+				return html
+			}
+		}
 		function addEdit(data = {}) {
 			if(data.name) {
 				var text = data.name.split('-')
@@ -174,8 +213,10 @@ layui.config({
 				area: ['30%', '680px'],
 				btn: ['保存', '返回'],
 				success: function(layerElem, layIndex) {
-					$('#unitSelect').html(myutil.getBaseDataSelect({ 
-						type: 'officeUnit', id: data.unit ? data.unit.id : ""}))
+					$('#convertUnitSelect').append(unitHtml);
+					$('#unitSelect').html(unitHtml)
+					$('#unitSelect').val(data.unit ? data.unit.id : "");
+					$('#convertUnitSelect').val(data.convertUnit ? data.convertUnit.id : "");
 					$('#materielTypeSelect').html(myutil.getBaseDataSelect({ 
 						type: 'materielType', id: data.materielType ? data.materielType.id : ""}));
 					$('#materialQualitativeSelect').append(myutil.getBaseDataSelect({ 

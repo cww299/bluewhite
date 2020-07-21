@@ -65,6 +65,7 @@ layui.define(['mytable'],function(exports){
 					form.render()
 					mytable.render({
 						elem:'#' + tableId,
+						ifNull: '---',
 						url: myutil.config.ctx + '/product/getMaterielPage',
 						where: {
 							materielTypeIds: chooseMate.isMate ? chooseMate.mateId : chooseMate.others

@@ -8,7 +8,7 @@
 	<link rel="stylesheet" href="${ctx }/static/layui-v2.4.5/layui/css/layui.css" media="all">
 	<script src="${ctx}/static/layui-v2.4.5/layui/layui.js"></script>
 	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-	<title>生产下单</title>
+	<title>耗料明细</title>
 </head>
 <body>
 <div class="layui-card">
@@ -180,14 +180,29 @@ layui.config({
 						cols:[[
 							   { type:'checkbox', },
 						       { title:'物料名',   field:'materiel_name', templet: getName(), },
-						       { title:'单位',   field:'unit_name',  },
-						       { title:'领取用量',   field:'dosage', 	},
+						       { title:'领取用量',   field:'', templet: function(d) { return d.dosage + '/' +d.unit.name }	},
+						       { title:'转换用量',   field:'', templet: getConvert()	},
 						       { title:'领取模式',   field:'receiveMode_id',	type:'select', select:{data:mode}, },
 						       { title:'审核状态', field:'audit', transData:{ data:['未审核','审核'] }},
 					       ]],
 					})
+					
 				},
 			})
+		}
+		function getConvert() {
+			return function(d) {
+				var html = '---'
+				const mate = d.materiel
+				if(mate.convertUnit) {
+					if(d.unit.id == mate.unit.id) {	// 如果当前单位是转化前的单位，这里输出转化后的单位
+						html = (d.dosage * mate.converts).toFixed(2) + '/' + mate.convertUnit.name
+					} else if(d.unit.id == mate.convertUnit.id) {
+						html = (d.dosage / mate.converts).toFixed(2) + '/' + mate.unit.name
+					}
+				}
+				return html
+			}
 		}
 		function getName(){
 			return function(d){

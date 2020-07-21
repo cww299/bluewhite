@@ -173,7 +173,7 @@ public class BaseOneAction {
         CommonResponse cr = new CommonResponse();
         cr.setData(ClearCascadeJSON.get()
             .addRetainTerm(Materiel.class, "id", "number", "name","type", "unit", "materielType","materialQualitative",
-                "inventoryNumber", "warehouseType", "orderProcurements")
+                "inventoryNumber", "warehouseType", "orderProcurements", "convertUnit", "converts")
             .addRetainTerm(Customer.class, "id", "name")
             .addRetainTerm(OrderProcurement.class, "id", "orderProcurementNumber", "placeOrderNumber", "arrivalNumber",
                 "placeOrderTime", "expectArrivalTime", "arrivalTime", "customer", "user", "materielLocation", "price",
