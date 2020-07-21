@@ -12,19 +12,24 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
 
 import com.bluewhite.base.BaseServiceImpl;
+import com.bluewhite.common.ServiceException;
 import com.bluewhite.common.entity.PageParameter;
 import com.bluewhite.common.entity.PageResult;
 import com.bluewhite.common.entity.PageResultStat;
 import com.bluewhite.common.utils.NumUtils;
 import com.bluewhite.common.utils.StringUtil;
+import com.bluewhite.common.utils.excel.ExcelListener;
 import com.bluewhite.product.primecost.cutparts.dao.CutPartsDao;
 import com.bluewhite.product.primecost.cutparts.entity.CutParts;
+import com.bluewhite.product.primecost.cutparts.entity.poi.CutPartsPoi;
 import com.bluewhite.product.primecost.tailor.dao.OrdinaryLaserDao;
 import com.bluewhite.product.primecost.tailor.dao.TailorDao;
 import com.bluewhite.product.primecost.tailor.entity.OrdinaryLaser;
 import com.bluewhite.product.primecost.tailor.entity.Tailor;
 import com.bluewhite.product.primecost.tailor.service.TailorService;
+import com.bluewhite.product.primecostbasedata.dao.BaseOneDao;
 import com.bluewhite.product.primecostbasedata.dao.MaterielDao;
+import com.bluewhite.product.primecostbasedata.entity.BaseOne;
 import com.bluewhite.product.primecostbasedata.entity.Materiel;
 
 @Service
@@ -40,6 +45,8 @@ public class CutPartsServiceImpl  extends BaseServiceImpl<CutParts, Long> implem
 	private OrdinaryLaserDao ordinaryLaserDao;
 	@Autowired
 	private MaterielDao materielDao;
+	@Autowired
+	private BaseOneDao baseOneDao;
 	
 	
 	@Override
@@ -185,6 +192,63 @@ public class CutPartsServiceImpl  extends BaseServiceImpl<CutParts, Long> implem
 	@Override
 	public List<CutParts> findByProductIdAndOverstockId(Long productId, Long id) {
 		return dao.findByProductIdAndOverstockId( productId, id);
+	}
+
+	@Override
+	@Transactional
+	public int uploadCutParts(ExcelListener excelListener, Long productId) {
+		int count = 0;
+        // 获取导入的裁片
+        List<Object> excelListenerList = excelListener.getData();
+        List<BaseOne> unitList = baseOneDao.findByType("unit");
+        for (Object object : excelListenerList) {
+        	CutPartsPoi poi = (CutPartsPoi) object;
+        	if(poi.getCutPartsName() == null || poi.getCutPartsName().isEmpty() || poi.getCutPartsNumber() == null ||
+        	   poi.getPerimeter() == null || poi.getMaterialNumber() == null || poi.getMaterialNumber().isEmpty() || 
+        	   poi.getOneMaterial() == null || poi.getUnitName() == null || poi.getUnitName().isEmpty() ||
+        	   poi.getManualLoss() == null) {
+        		throw new ServiceException("导入的数据第 " + (excelListenerList.indexOf(object) + 1) + "行存在空数据，请检查");
+        	}
+        	CutParts cut = new CutParts();
+        	// 根据面料编号查找面类，321 为面料类型id
+        	Materiel mate = materielDao.findByNumberAndMaterielTypeId(poi.getMaterialNumber(), 321L);
+        	if(mate == null || mate.getId() == null) {
+        		throw new ServiceException("导入的数据第 " + (excelListenerList.indexOf(object) + 1) + "行找不到面料：" + poi.getMaterialNumber());
+        	}
+        	// 查找复合物id
+        	if(poi.getComplexMaterielNumber() != null && !poi.getComplexMaterielNumber().isEmpty()) {
+        		Materiel complex = materielDao.findByNumber(poi.getComplexMaterielNumber());
+        		if(complex == null || complex.getId() == null) {
+            		throw new ServiceException("导入的数据第 " + (excelListenerList.indexOf(object) + 1) + "行找不到复合物：" + poi.getComplexMaterielNumber());
+            	}
+        		cut.setComplexMaterielId(complex.getId());
+        	}
+        	// 查找单位
+        	unitList.forEach(unit -> {
+        		if(unit.getName().equals(poi.getUnitName())) {
+        			// 单位id
+                	cut.setUnitId(unit.getId());
+        		}
+        	});
+        	if(cut.getUnitId() == null) {
+        		throw new ServiceException("导入的数据第 " + (excelListenerList.indexOf(object) + 1) + "行找不到单位：" + poi.getUnitName());
+        	}
+        	// 产品id
+        	cut.setProductId(productId);
+        	// 物料id
+        	cut.setMaterielId(mate.getId());
+        	cut.setCutPartsName(poi.getCutPartsName());
+        	cut.setCutPartsNumber(poi.getCutPartsNumber());
+        	cut.setPerimeter(poi.getPerimeter());
+        	cut.setOneMaterial(poi.getOneMaterial());
+        	cut.setDoubleComposite(poi.getDoubleComposite().equals("是") ? 1 : 0);
+        	cut.setManualLoss(poi.getManualLoss());
+        	cut.setCompositeManualLoss(poi.getCompositeManualLoss());
+        	cut.setOverstockId(poi.getOverstockId());
+        	saveCutParts(cut);
+            count++;
+        }
+        return count;
 	}
 
 }

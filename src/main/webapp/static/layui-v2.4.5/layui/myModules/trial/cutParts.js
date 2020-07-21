@@ -2,14 +2,16 @@
  * 2019/8/28   试制模块：裁片
  * cutParts.render({ elem:'给定的元素。填充真正的内容', btn:'绑定的按钮' })
  */
-layui.define(['mytable', 'chooseMate'],function(exports){
+layui.define(['mytable', 'chooseMate', 'upload'],function(exports){
 	var $ = layui.jquery,
 		mytable = layui.mytable,
+		upload = layui.upload,
 		chooseMate = layui.chooseMate,
 		table = layui.table,
 		myutil = layui.myutil;
 	var html = [
-	            '<table id="cutPartTable" lay-filter="cutPartTable"></table>'
+				'<span style="display:none;" id="uploadCut">导入</span>',
+	            '<table id="cutPartTable" lay-filter="cutPartTable"></table>',
 	            ].join(' ');
 	var allUnit = myutil.getDataSync({ url: myutil.config.ctx+'/product/getBaseOne?type=unit', });		//获取所有单位
 	var allOverstock = myutil.getDataSync({ url: myutil.config.ctx+'/product/getBaseOne?type=overstock', }); //获取所有压货
@@ -18,11 +20,40 @@ layui.define(['mytable', 'chooseMate'],function(exports){
 	};
 	//Id:321为面料、322为辅料 、323为填充物、 324为复合样、325人工、326设计
 	
+	const tableId = 'cutPartTable';
+	
+	const uploadData = {
+		productId: null,
+	}
+	var load;
 	cutParts.render = function(opt){
 		var elem = opt.elem,
 			btn = opt.btn;
 		$('#'+elem).html(html);	//填充真正的html内容
-		var tableId = 'cutPartTable';
+		
+		upload.render({
+			elem: '#uploadCut',
+			url: myutil.config.ctx + '/product/uploadCutParts',
+    		data: uploadData,
+    		before: function(){
+    			load = layer.load(1,{ shade: 0.5 })
+    		},
+			done: function(res, index, upload){ //上传后的回调
+				var tips = 'emsg'
+				if(res.code == 0){
+					tips = 'smsg';
+					table.reload(tableId)
+				}
+		    	myutil[tips](res.message)
+		    	layer.close(load)
+			},
+			error: function(){
+				layer.close(load)
+				myutil.esmg("接口出现异常，请联系管理员")
+			},
+			accept: 'file',
+			exts: 'xls|xlsx',
+		})
 		
 		var sty = "background-color:#FF9800;";
 		mytable.render({			//裁片表格
@@ -36,27 +67,39 @@ layui.define(['mytable', 'chooseMate'],function(exports){
 				deleUrl:'/product/deleteCutParts',
 				field:{ unit_id:'unitId', materiel:'materielId',complexMateriel:'complexMaterielId',overstock_id:'overstockId' }
 			}, 
+			toolbar: [
+				'<span class="layui-btn layui-btn-sm layui-btn" lay-event="upload">导入数据</span>'
+			].join(' '),
 			curd:{
+				otherBtn: function(obj) {
+					if(obj.event == 'upload') {
+						var check = table.checkStatus('productTable').data;
+						uploadData.productId = check[0].id;
+						$('#uploadCut').click();
+					}
+				},
 				addTemp:{
 					id:'',
 					cutPartsName: '',
 					cutPartsNumber: 1,
 					perimeter: '',
-					allPerimeter:'',
 					materielId: '',
 					oneMaterial: '',
+					allPerimeter:'',
 					scaleMaterial: '',
 					addMaterial: '',
 					doubleComposite: 0,
 					manualLoss: 0.03,
 					compositeManualLoss: 0.03,
-					unitId: allUnit[0].id,
+					unit: { id: 154, },
+					unitId: 154,  // allUnit[0].id,
 					overstockId: allOverstock[0].id,
 				},
 				saveFun:function(data){
 					for(var i=0;i<data.length;i++){
 						var check = table.checkStatus('productTable').data;
 						data[i]['productId'] = check[0].id;		//添加产品id参数
+						delete data[i].unit
 						myutil.saveAjax({
 							url: '/product/addCutParts', 
 							data: data[i],
@@ -71,7 +114,7 @@ layui.define(['mytable', 'chooseMate'],function(exports){
 			verify:{ 
 				count:['cutPartsNumber',], 
 				price:['perimeter','oneMaterial','manualLoss','compositeManualLoss',], 
-				notNull:['cutPartsName','materiel','perimeter','oneMaterial','manualLoss','cutPartsNumber',],
+				notNull:['cutPartsName','materielId','perimeter','oneMaterial','manualLoss','cutPartsNumber',],
 			},
 			colsWidth:[0,6,6,6,5,30,6,6,6,6,6,30,7,7,10],
 			totalRow: ['allPerimeter', 'addMaterial'],

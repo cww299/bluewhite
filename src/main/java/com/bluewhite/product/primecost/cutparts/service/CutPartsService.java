@@ -7,6 +7,7 @@ import org.springframework.stereotype.Service;
 import com.bluewhite.base.BaseCRUDService;
 import com.bluewhite.common.entity.PageParameter;
 import com.bluewhite.common.entity.PageResult;
+import com.bluewhite.common.utils.excel.ExcelListener;
 import com.bluewhite.product.primecost.cutparts.entity.CutParts;
 
 @Service
@@ -56,4 +57,6 @@ public interface CutPartsService extends BaseCRUDService<CutParts, Long> {
      * 计算当批耗料
      */
     public CutParts countComposite(CutParts cutParts);
+
+	public int uploadCutParts(ExcelListener excelListener, Long productId);
 }

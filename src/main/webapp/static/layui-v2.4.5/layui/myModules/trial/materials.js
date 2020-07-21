@@ -2,11 +2,12 @@
  * 2019/8/29   试制模块：dd除裁片、生产用料
  * materials.render({ elem:'给定的元素。填充真正的内容', btn:'绑定的按钮' })
  */
-layui.define(['mytable','form','chooseMate'],function(exports){
+layui.define(['mytable','form','chooseMate', 'upload'],function(exports){
 	var $ = layui.jquery,
 		chooseMate = layui.chooseMate,
 		mytable = layui.mytable,
 		table = layui.table,
+		upload = layui.upload,
 		form = layui.form,
 		myutil = layui.myutil;
 	var html = [
@@ -23,6 +24,7 @@ layui.define(['mytable','form','chooseMate'],function(exports){
 	            	'<td><button type="button" class="layui-btn" lay-submit lay-filter="">查找</button></td>',
 	            	'<td>&nbsp;&nbsp;</td>',
 	            '</tr></table>',
+	            '<span style="display:none;" id="uploadMater">导入</span>',
 	            '<table id="materialsTable" lay-filter="materialsTable"></table>'
 	            ].join(' ');
 	var allUnit = myutil.getDataSync({ url: myutil.config.ctx+'/product/getBaseOne?type=unit', });		//获取所有单位
@@ -31,12 +33,42 @@ layui.define(['mytable','form','chooseMate'],function(exports){
 	var materials = {	//模块
 			
 	};
-	var tableId = 'materialsTable';
+	const tableId = 'materialsTable';
+	
+	const uploadData = {
+		productId: null,
+	}
+	var load;
 	
 	materials.render = function(opt){
 		var elem = opt.elem,
 			btn = opt.btn;
 		$('#'+elem).html(html);	//填充真正的html内容
+		
+		upload.render({
+			elem: '#uploadMater',
+			url: myutil.config.ctx + '/product/uploadProductMaterials',
+    		data: uploadData,
+    		before: function(){
+    			load = layer.load(1,{ shade: 0.5 })
+    		},
+			done: function(res, index, upload){ //上传后的回调
+				var tips = 'emsg'
+				if(res.code == 0){
+					tips = 'smsg';
+					table.reload(tableId)
+				}
+		    	myutil[tips](res.message)
+		    	layer.close(load)
+			},
+			error: function(){
+				layer.close(load)
+				myutil.esmg("接口出现异常，请联系管理员")
+			},
+			accept: 'file',
+			exts: 'xls|xlsx',
+		})
+		
 		mytable.render({			//生产用料表格
 			elem:'#'+tableId,
 			data:[],
@@ -48,7 +80,17 @@ layui.define(['mytable','form','chooseMate'],function(exports){
 				field: { materiel:'materielId', overstock_id:'overstockId',unit_id:'unitId'},
 			}, 
 			scrollX : true,
+			toolbar: [
+				'<span class="layui-btn layui-btn-sm layui-btn" lay-event="upload">导入数据</span>'
+			].join(' '),
 			curd:{
+				otherBtn: function(obj) {
+					if(obj.event == 'upload') {
+						var check = table.checkStatus('productTable').data;
+						uploadData.productId = check[0].id;
+						$('#uploadMater').click();
+					}
+				},
 				addTemp:{
 					materielId: '',
 					oneMaterial: '',

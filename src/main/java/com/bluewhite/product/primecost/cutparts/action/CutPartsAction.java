@@ -1,18 +1,26 @@
 package com.bluewhite.product.primecost.cutparts.action;
 
+import java.io.IOException;
+import java.io.InputStream;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.multipart.MultipartFile;
 
+import com.alibaba.excel.EasyExcel;
 import com.bluewhite.common.BeanCopyUtils;
 import com.bluewhite.common.ClearCascadeJSON;
 import com.bluewhite.common.entity.CommonResponse;
 import com.bluewhite.common.entity.ErrorCode;
 import com.bluewhite.common.entity.PageParameter;
+import com.bluewhite.common.utils.excel.ExcelListener;
 import com.bluewhite.product.primecost.cutparts.entity.CutParts;
+import com.bluewhite.product.primecost.cutparts.entity.poi.CutPartsPoi;
 import com.bluewhite.product.primecost.cutparts.service.CutPartsService;
 import com.bluewhite.product.primecostbasedata.entity.BaseOne;
 import com.bluewhite.product.primecostbasedata.entity.Materiel;
@@ -51,6 +59,30 @@ public class CutPartsAction {
             cr.setMessage("添加成功");
         }
         return cr;
+    }
+    
+    /**
+     * 裁片导入
+     * @throws IOException 
+     * 
+     */
+    @RequestMapping(value = "/product/uploadCutParts", method = RequestMethod.POST)
+    @ResponseBody
+    public CommonResponse uploadCutParts(@RequestParam(value = "file", required = false) MultipartFile file,
+    		Long productId) throws IOException {
+        CommonResponse cr = new CommonResponse();
+        if(productId == null) {
+        	cr.setCode(1500);
+        	cr.setMessage("商品id不能为空");
+    		return cr;
+        }
+        InputStream inputStream = file.getInputStream();
+		ExcelListener excelListener = new ExcelListener();
+		EasyExcel.read(inputStream, CutPartsPoi.class, excelListener).sheet().doRead();
+		int count = cutPartsService.uploadCutParts(excelListener, productId);
+		inputStream.close();
+		cr.setMessage("成功导入" + count + "条数据");
+		return cr;
     }
 
     /**
