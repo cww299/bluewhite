@@ -56,10 +56,11 @@ layui.define(['mytable', 'chooseMate', 'upload'],function(exports){
 		})
 		
 		var sty = "background-color:#FF9800;";
-		mytable.render({			//裁片表格
+		mytable.render({		//裁片表格
 			elem:'#'+tableId,
 			data:[],
 			size:'lg',
+			totalRowToFixed: 4,
 			scrollX : true,
 			autoUpdate:{
 				isReload: true,
@@ -135,8 +136,9 @@ layui.define(['mytable', 'chooseMate', 'upload'],function(exports){
 			       { title:'手动耗损',   field:'compositeManualLoss',			edit:true, },
 			       { title:'压货环节',   	field:'overstock_id', type:'select', 		select:{ data: allOverstock } ,},
 			       ]],
-			 done:function(){
+			 done:function(r, data){
 				 renderChoose()
+				 console.log(r.data)
 			 }
 		})
 		
