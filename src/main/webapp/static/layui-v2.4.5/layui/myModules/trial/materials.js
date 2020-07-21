@@ -56,6 +56,7 @@ layui.define(['mytable','form','chooseMate'],function(exports){
 					batchMaterial: '',
 					batchMaterialPrice: '',
 					overstockId: allOverstock[0].id,
+					unitId: allUnit[0].id,
 				},
 				saveFun:function(data){
 					for(var i=0;i<data.length;i++){
