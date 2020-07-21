@@ -49,7 +49,7 @@ public class Materiel extends BaseEntity<Long>{
 	 */
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "unit_id", referencedColumnName = "id", insertable = false, updatable = false)
-	private BaseData unit;
+	private BaseOne unit;
 	
 	
 	/**
@@ -185,11 +185,11 @@ public class Materiel extends BaseEntity<Long>{
 	}
 
 
-	public BaseData getUnit() {
+	public BaseOne getUnit() {
 		return unit;
 	}
 
-	public void setUnit(BaseData unit) {
+	public void setUnit(BaseOne unit) {
 		this.unit = unit;
 	}
 
