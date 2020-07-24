@@ -361,6 +361,7 @@ public class SaleServiceImpl extends BaseServiceImpl<Sale, Long> implements Sale
         	if(sale != null && sale.getId() != null) {
         		sale.setCount(sale.getCount() + poi.getCount());
         	} else {
+        		sale = new Sale();
         		// 发货日期
         		sale.setSendDate(poi.getSendDate());
         		// 实际数量
