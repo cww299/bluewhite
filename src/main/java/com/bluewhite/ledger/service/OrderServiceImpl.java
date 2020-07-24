@@ -74,7 +74,7 @@ public class OrderServiceImpl extends BaseServiceImpl<Order, Long> implements Or
 			}
 			// 按产品name过滤
 			if (!StringUtils.isEmpty(param.getProductName())) {
-				predicate.add(cb.equal(root.get("product").get("name").as(String.class),
+				predicate.add(cb.like(root.get("product").get("name").as(String.class),
 						"%" + StringUtil.specialStrKeyword(param.getProductName()) + "%"));
 			}
 			// 按业务员id
