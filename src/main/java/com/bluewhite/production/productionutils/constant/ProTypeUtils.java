@@ -64,13 +64,17 @@ public class ProTypeUtils {
 	private final static double FRIST_PACK = 0.00646875;
 	/**
 	 * 当部门预计生产价格计算系数 3=二楼针工
+	 * 12*1.08*1.25*1.38/3600
 	 */
 	private final static double TOW_DEEDLE = 0.00621;
 
 	/**
 	 * 当部门预计生产价格计算系数 4=二楼机工
+	 * 
+	 * 12*1.08*1.25*1.38/3600
+	 * 
 	 */
-	private final static double TOW_MACHINIST = 0.005175;
+	private final static double TOW_MACHINIST = 0.00621;
 
 	/**
 	 * 当部门预计生产价格计算系数 5=八号裁剪
@@ -392,6 +396,8 @@ public class ProTypeUtils {
 		CurrentUser cu = SessionManager.getUserSession();
 		Integer type = null;
 		// 生产部一楼质检
+		
+		
 		if (cu.getRole().contains(Constants.PRODUCT_FRIST_QUALITY)) {
 			type = 1;
 		}
