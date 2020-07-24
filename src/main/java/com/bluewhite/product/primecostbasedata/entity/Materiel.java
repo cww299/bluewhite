@@ -202,7 +202,13 @@ public class Materiel extends BaseEntity<Long>{
 	}
 
 
+	public BaseOne getUnit() {
+		return unit;
+	}
 
+	public void setUnit(BaseOne unit) {
+		this.unit = unit;
+	}
 
 	public String getNumber() {
 		return number;
