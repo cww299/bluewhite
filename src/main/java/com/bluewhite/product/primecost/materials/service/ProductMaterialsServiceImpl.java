@@ -11,12 +11,17 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.bluewhite.base.BaseServiceImpl;
+import com.bluewhite.common.ServiceException;
 import com.bluewhite.common.entity.PageParameter;
 import com.bluewhite.common.entity.PageResult;
 import com.bluewhite.common.utils.NumUtils;
+import com.bluewhite.common.utils.excel.ExcelListener;
 import com.bluewhite.product.primecost.materials.dao.ProductMaterialsDao;
 import com.bluewhite.product.primecost.materials.entity.ProductMaterials;
+import com.bluewhite.product.primecost.materials.entity.poi.ProductMaterialsPoi;
+import com.bluewhite.product.primecostbasedata.dao.BaseOneDao;
 import com.bluewhite.product.primecostbasedata.dao.MaterielDao;
+import com.bluewhite.product.primecostbasedata.entity.BaseOne;
 import com.bluewhite.product.primecostbasedata.entity.Materiel;
 
 @Service
@@ -27,6 +32,8 @@ public class ProductMaterialsServiceImpl extends BaseServiceImpl<ProductMaterial
     private ProductMaterialsDao dao;
     @Autowired
     private MaterielDao materielDao;
+    @Autowired
+	private BaseOneDao baseOneDao;
 
     @Override
     @Transactional
@@ -48,8 +55,9 @@ public class ProductMaterialsServiceImpl extends BaseServiceImpl<ProductMaterial
 
     @Override
     public ProductMaterials countComposite(ProductMaterials productMaterials) {
-        productMaterials.setBatchMaterial(NumUtils.mul(productMaterials.getManualLoss(),
-            productMaterials.getOneMaterial(), (double)productMaterials.getNumber()));
+        productMaterials.setBatchMaterial(NumUtils.mul(
+        		NumUtils.sum(productMaterials.getManualLoss(), productMaterials.getOneMaterial()), 
+        		(double)productMaterials.getNumber()));
         return productMaterials;
     }
 
@@ -92,5 +100,48 @@ public class ProductMaterialsServiceImpl extends BaseServiceImpl<ProductMaterial
     public List<ProductMaterials> findByProductId(Long productId) {
         return dao.findByProductId(productId);
     }
+
+	@Override
+	@Transactional
+	public int uploadProductMateruals(ExcelListener excelListener, Long productId) {
+		int count = 0;
+        // 获取导入的裁片
+        List<Object> excelListenerList = excelListener.getData();
+        List<BaseOne> unitList = baseOneDao.findByType("unit");
+        for (Object object : excelListenerList) {
+        	ProductMaterialsPoi poi = (ProductMaterialsPoi) object;
+        	if( poi.getMaterialNumber() == null || poi.getMaterialNumber().isEmpty() ||
+			    poi.getUnitName() == null || poi.getUnitName().isEmpty() ||
+			    poi.getOneMaterial() == null ||  poi.getManualLoss() == null) {
+        		throw new ServiceException("导入的数据第 " + (excelListenerList.indexOf(object) + 1) + "行存在空数据，请检查");
+        	}
+        	ProductMaterials productMate = new ProductMaterials();
+        	// 根据面料编号查找面类，321 为面料类型id
+        	Materiel mate = materielDao.findByNumber(poi.getMaterialNumber());
+        	if(mate == null || mate.getId() == null) {
+        		throw new ServiceException("导入的数据第 " + (excelListenerList.indexOf(object) + 1) + "行找不到面料：" + poi.getMaterialNumber());
+        	}
+        	// 查找单位
+        	unitList.forEach(unit -> {
+        		if(unit.getName().equals(poi.getUnitName())) {
+        			// 单位id
+        			productMate.setUnitId(unit.getId());
+        		}
+        	});
+        	if(productMate.getUnitId() == null) {
+        		throw new ServiceException("导入的数据第 " + (excelListenerList.indexOf(object) + 1) + "行找不到单位：" + poi.getUnitName());
+        	}
+        	// 产品id
+        	productMate.setProductId(productId);
+        	// 物料id
+        	productMate.setMaterielId(mate.getId());
+        	productMate.setOneMaterial(poi.getOneMaterial());
+        	productMate.setManualLoss(poi.getManualLoss());
+        	productMate.setOverstockId(poi.getOverstockId());
+        	saveProductMaterials(productMate);
+            count++;
+        }
+        return count;
+	}
 
 }

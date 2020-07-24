@@ -24,4 +24,6 @@ public interface MaterielDao extends BaseRepository<Materiel, Long>{
 	 */
 	Materiel findByNumber(String number);
 
+	Materiel findByNumberAndMaterielTypeId(String materialNumber, long l);
+
 }

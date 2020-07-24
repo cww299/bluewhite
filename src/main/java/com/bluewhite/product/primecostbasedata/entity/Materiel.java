@@ -37,7 +37,6 @@ public class Materiel extends BaseEntity<Long>{
 	@Column(name = "name")
     private String name;
 	
-	
 	/**
 	 * 单位id
 	 */
@@ -51,6 +50,24 @@ public class Materiel extends BaseEntity<Long>{
 	@JoinColumn(name = "unit_id", referencedColumnName = "id", insertable = false, updatable = false)
 	private BaseOne unit;
 	
+	/**
+	 * 转换单位id
+	 */
+	@Column(name = "convert_unit_id")
+	private Long convertUnitId;
+	
+	/**
+	 * 转换单位
+	 */
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "convert_unit_id", referencedColumnName = "id", insertable = false, updatable = false)
+	private BaseOne convertUnit;
+	
+	/**
+	 * 转换比
+	 */
+	@Column(name = "converts")
+	private Double converts = 1.0;
 	
 	/**
 	 * 物料类型id
@@ -223,6 +240,38 @@ public class Materiel extends BaseEntity<Long>{
 
 	public void setMaterielTypeIds(String materielTypeIds) {
 		this.materielTypeIds = materielTypeIds;
+	}
+
+	public Long getConvertUnitId() {
+		return convertUnitId;
+	}
+
+	public void setConvertUnitId(Long convertUnitId) {
+		this.convertUnitId = convertUnitId;
+	}
+
+	public BaseOne getUnit() {
+		return unit;
+	}
+
+	public void setUnit(BaseOne unit) {
+		this.unit = unit;
+	}
+
+	public BaseOne getConvertUnit() {
+		return convertUnit;
+	}
+
+	public void setConvertUnit(BaseOne convertUnit) {
+		this.convertUnit = convertUnit;
+	}
+
+	public Double getConverts() {
+		return converts;
+	}
+
+	public void setConverts(Double converts) {
+		this.converts = converts;
 	}
 
 	

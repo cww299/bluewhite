@@ -935,7 +935,8 @@ layui.define(['laytpl', 'laypage', 'layer', 'form', 'util'], function(exports){
           : (str + ' laytable-cell-' + item3.type);
         }() +'">' + function(){
           var text = item3.totalRowText || '';
-          return item3.totalRow ? (parseFloat(totalNums[field]).toFixed(2) || text) : text;
+          var fixed = options.totalRowToFixed || 2;
+          return item3.totalRow ? (parseFloat(totalNums[field]).toFixed(fixed) || text) : text;
         }()
       ,'</div></td>'].join('');
       

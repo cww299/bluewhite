@@ -7,6 +7,7 @@ import org.springframework.stereotype.Service;
 import com.bluewhite.base.BaseCRUDService;
 import com.bluewhite.common.entity.PageParameter;
 import com.bluewhite.common.entity.PageResult;
+import com.bluewhite.common.utils.excel.ExcelListener;
 import com.bluewhite.product.primecost.materials.entity.ProductMaterials;
 
 @Service
@@ -58,5 +59,7 @@ public interface ProductMaterialsService extends BaseCRUDService<ProductMaterial
      * 计算当批耗料
      */
     public ProductMaterials countComposite(ProductMaterials productMaterials);
+
+	public int uploadProductMateruals(ExcelListener excelListener, Long productId);
 
 }
