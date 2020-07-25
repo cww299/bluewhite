@@ -198,6 +198,12 @@ public class Sale extends BaseEntity<Long>{
 	private String customerName;
 	
 	/**
+	 * 业务员
+	 */
+	@Transient
+	private String userName;
+	
+	/**
 	 * 查询字段
 	 */
 	@Transient
@@ -439,6 +445,22 @@ public class Sale extends BaseEntity<Long>{
 
 	public void setDisputePay(Double disputePay) {
 		this.disputePay = disputePay;
+	}
+
+	public Long getQuantitativeId() {
+		return quantitativeId;
+	}
+
+	public void setQuantitativeId(Long quantitativeId) {
+		this.quantitativeId = quantitativeId;
+	}
+
+	public String getUserName() {
+		return userName;
+	}
+
+	public void setUserName(String userName) {
+		this.userName = userName;
 	}
 
 

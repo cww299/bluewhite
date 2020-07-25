@@ -35,6 +35,24 @@ public class SalePoi {
 	 */
 	@ExcelProperty(index = 4)
 	private String customerName;
+	
+	/**
+	 * 总价
+	 */
+	@ExcelProperty(index = 5)
+	private Double sumPrice;
+	
+	/**
+	 * 单价
+	 */
+	@ExcelProperty(index = 6)
+	private Double price;
+
+	/**
+	 * 业务员
+	 */
+	@ExcelProperty(index = 7)
+	private String userName;
 
 	public Date getSendDate() {
 		return sendDate;
@@ -74,6 +92,30 @@ public class SalePoi {
 
 	public void setCustomerName(String customerName) {
 		this.customerName = customerName;
+	}
+
+	public Double getSumPrice() {
+		return sumPrice;
+	}
+
+	public void setSumPrice(Double sumPrice) {
+		this.sumPrice = sumPrice;
+	}
+
+	public Double getPrice() {
+		return price;
+	}
+
+	public void setPrice(Double price) {
+		this.price = price;
+	}
+
+	public String getUserName() {
+		return userName;
+	}
+
+	public void setUserName(String userName) {
+		this.userName = userName;
 	}
 	
 }

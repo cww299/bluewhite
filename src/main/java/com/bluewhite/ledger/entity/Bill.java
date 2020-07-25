@@ -80,7 +80,10 @@ public class Bill {
 	 */
 	private Integer audit;
 	
-	
+	/**
+	 * 业务员
+	 */
+	private String userName;
 
 	public Integer getFlag() {
 		return flag;
@@ -192,6 +195,14 @@ public class Bill {
 
 	public void setOverpaymentPay(Double overpaymentPay) {
 		this.overpaymentPay = overpaymentPay;
+	}
+
+	public String getUserName() {
+		return userName;
+	}
+
+	public void setUserName(String userName) {
+		this.userName = userName;
 	}
 
 

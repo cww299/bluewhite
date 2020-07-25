@@ -38,6 +38,8 @@ import com.bluewhite.product.product.dao.ProductDao;
 import com.bluewhite.product.product.entity.Product;
 import com.bluewhite.production.temporarypack.QuantitativeChild;
 import com.bluewhite.production.temporarypack.QuantitativeChildDao;
+import com.bluewhite.system.user.dao.UserDao;
+import com.bluewhite.system.user.entity.User;
 @Service
 public class SaleServiceImpl extends BaseServiceImpl<Sale, Long> implements SaleService  {
 	
@@ -53,6 +55,8 @@ public class SaleServiceImpl extends BaseServiceImpl<Sale, Long> implements Sale
 	private ProductDao productDao;
 	@Autowired
 	private CustomerDao customerDao;
+	@Autowired
+	private UserDao userDao;
 	
 	@Override
 	public PageResult<Sale> findSalePage(Sale param, PageParameter page) {
@@ -67,7 +71,11 @@ public class SaleServiceImpl extends BaseServiceImpl<Sale, Long> implements Sale
 				predicate.add(cb.like(root.get("customer").get("name").as(String.class),
 						"%" + param.getCustomerName() + "%"));
 			}
-
+			// 按业务员
+			if (!StringUtils.isEmpty(param.getUserName())) {
+				predicate.add(cb.like(root.get("customer").get("user").get("userName").as(String.class),
+						"%" + param.getUserName() + "%"));
+			}
 			// 是否审核
 			if (param.getAudit() != null) {
 				predicate.add(cb.equal(root.get("audit").as(Integer.class), param.getAudit()));
@@ -276,6 +284,10 @@ public class SaleServiceImpl extends BaseServiceImpl<Sale, Long> implements Sale
 			if (param.getAudit() != null) {
 				predicate.add(cb.equal(root.get("audit").as(Integer.class), param.getAudit()));
 			}
+			// 按业务员
+            if (param.getUserName() != null && !param.getUserName().isEmpty()) {
+            	predicate.add(cb.like(root.get("customer").get("user").get("userName").as(String.class), "%" + param.getUserName() + "%"));
+            }
 			// 按发货日期
 			if (!StringUtils.isEmpty(param.getOrderTimeBegin()) && !StringUtils.isEmpty(param.getOrderTimeEnd())) {
 				predicate.add(cb.between(root.get("sendDate").as(Date.class), param.getOrderTimeBegin(),
@@ -327,10 +339,13 @@ public class SaleServiceImpl extends BaseServiceImpl<Sale, Long> implements Sale
 	@Override
 	@Transactional
 	public CommonResponse excelAddSale(ExcelListener excelListener, Long customerType) {
+		// 457=电商  459=线下
+		boolean isDs = customerType == 457;
 		int count = 0;
 		String isNull = "";
 		String noProduct = "";
 		String noCustomer = "";
+		String noUser = "";
 	    SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd");
         // 获取导入的销售单
         List<Object> excelListenerList = excelListener.getData();
@@ -342,28 +357,42 @@ public class SaleServiceImpl extends BaseServiceImpl<Sale, Long> implements Sale
         	   poi.getBacthNumber().isEmpty() || poi.getCount() == null) {
         		isNull += row + "存在空数据<br>";
         		continue;
-        		// throw new ServiceException("导入的数据第 " + (excelListenerList.indexOf(object) + 1) + "行存在空数据，请检查");
         	}
+        	// 如果导入的是电商
+        	if(isDs) {
+        		if(poi.getUserName() == null || poi.getUserName().isEmpty() || poi.getSumPrice() == null || 
+        			poi.getPrice() == null) {
+        			isNull += row + "存在空数据<br>";
+        			continue;
+        		}
+        	}
+        	// 查找导入的商品
         	List<Product> pList = productDao.findByName(poi.getProductName());
         	if(pList.size() == 0) {
         		noProduct += row + "商品：" + poi.getProductName() + "<br>";
         		continue;
-        		// throw new ServiceException("商品：" + poi.getProductName() + "不存在，请确认是否有误！");
         	}
-        	// 457=电商  459=线下
+        	// 查找导入的客户，如果是电商客户不存在则新增、否则报错
         	Customer customer = customerDao.findByNameAndCustomerTypeId(poi.getCustomerName(), customerType);
         	if(customer == null || customer.getId() == null) {
-        		if(customerType==459) {
-        			noCustomer += row + "客户：" + poi.getProductName() + "不存在<br>";
-        			continue;
-        			// throw new ServiceException("客户：" + poi.getCustomerName() + "不存在，请确认是否有误！");
-        		}
-        		else {
+        		if(isDs) {
         			customer = new Customer();
         			customer.setName(poi.getCustomerName());
         			customer.setCustomerTypeId(customerType);
-        			customer = customerDao.save(customer);
+        		} else {
+        			noCustomer += row + "客户：" + poi.getCustomerName() + "不存在<br>";
+        			continue;
         		}
+        	}
+        	// 如果是电商，且客户没有业务员，则将该客户的业务员设置为当前导入业务员
+        	if(isDs && customer.getUserId() == null) {
+        		User user = userDao.findByUserName(poi.getUserName());
+        		if(user == null || user.getId() == null) {
+        			noUser += row + "业务员：" + poi.getUserName() + "不存在<br>";
+        			continue;
+        		}
+        		customer.setUserId(user.getId());
+        		customer = customerDao.save(customer);
         	}
         	Date time = poi.getSendDate();
         	int saleOrderSize = dao.findBySendDateBetween(time, DatesUtil.getLastDayOftime(time)).size() + 1;
@@ -404,12 +433,17 @@ public class SaleServiceImpl extends BaseServiceImpl<Sale, Long> implements Sale
         				|| name.contains(Constants.ZMJ) || name.contains(Constants.XXYJN)) {
         			sale.setCopyright(1);
         		}
+        		// 如果是电商
+        		if(isDs) {
+        			sale.setPrice(poi.getPrice());
+        			sale.setSumPrice(poi.getSumPrice());
+        		}
         	}
             dao.save(sale);
             count++;
         }
         CommonResponse cr = new CommonResponse();
-        if(!isNull.isEmpty() || !noProduct.isEmpty() || !noCustomer.isEmpty()) {
+        if(!isNull.isEmpty() || !noProduct.isEmpty() || !noCustomer.isEmpty() || !noUser.isEmpty()) {
         	String msg = "";
         	if(!isNull.isEmpty())
         		msg += "空数据：<br>" + isNull;
@@ -417,6 +451,8 @@ public class SaleServiceImpl extends BaseServiceImpl<Sale, Long> implements Sale
         		msg += "找不到商品：<br>" + noProduct;
         	if(!noCustomer.isEmpty())
         		msg += "找不到客户：<br>" + noCustomer;
+        	if(!noUser.isEmpty())
+        		msg += "找不到业务员：<br>" + noUser;
         	throw new ServiceException(msg);
         }
         cr.setMessage("成功导入：" + count + "条数据");

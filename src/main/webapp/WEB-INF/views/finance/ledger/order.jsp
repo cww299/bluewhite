@@ -14,27 +14,29 @@
 	<div class="layui-card-body">
 		<table class="layui-form searchTable">
 			<tr>
-				<td>发货日期：</td>
-				<td><input type="text" class="layui-input" id="searchTime"></td>
-				<td>是否审核：</td>
+				<td></td>
+				<td><input type="text" class="layui-input" id="searchTime" placeholder="发货日期"></td>
+				<td></td>
 				<td style="width:150px;"><select name="audit">
 									 <option value="">是否审核</option>
 									 <option value="1">审核</option>
 									 <option value="0" selected>未审核</option></select></td>
-				<td>是否版权：</td>
+				<td></td>
 				<td style="width:150px;"><select name="copyright">
 									 <option value="">是否版权</option>
-									 <option value="1">是</option>
-									 <option value="0">否</option></select></td>
-				<td>是否借调：</td>
+									 <option value="1">有版权</option>
+									 <option value="0">无版权</option></select></td>
+				<td></td>
 				<td style="width:150px;"><select name="newBacth">
 									 <option value="">是否借调</option>
 									 <option value="1">借调</option>
 									 <option value="0">非借调</option></select></td>
-				<td>客户名：</td>
-				<td><input type="text" class="layui-input" name="customerName"></td>
-				<td>批次号：</td>
-				<td><input type="text" class="layui-input" name="bacthNumber"></td>
+				<td></td>
+				<td><input type="text" class="layui-input" name="customerName" placeholder="客户名"></td>
+				<td></td>
+				<td><input type="text" class="layui-input" name="userName" placeholder="业务员"></td>
+				<td></td>
+				<td><input type="text" class="layui-input" name="bacthNumber" placeholder="批次号"></td>
 				<td><button type="button" class="layui-btn" lay-submit lay-filter="search">搜索</button>
 					<span style="display:none;" id="uploadSale">导入销售单</span></td>
 			</tr>
@@ -103,8 +105,9 @@ layui.config({
 				saveUrl: '/ledger/updateFinanceSale',
 				isReload: true,
 			},
-			limits:[15,30,50,100],
+			limits:[15,30,50,100,200,500,2000],
 			limit:15,
+			totalRow: ['count', 'sumPrice'],
 			cols:[[
 			       { type:'checkbox', fixed:'left',},
 			       { title:'销售编号',	width:'11%',field:'saleNumber',   fixed:'left', style: sty },
