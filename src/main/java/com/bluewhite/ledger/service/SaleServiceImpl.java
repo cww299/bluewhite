@@ -19,6 +19,7 @@ import com.bluewhite.base.BaseServiceImpl;
 import com.bluewhite.common.BeanCopyUtils;
 import com.bluewhite.common.Constants;
 import com.bluewhite.common.ServiceException;
+import com.bluewhite.common.entity.CommonResponse;
 import com.bluewhite.common.entity.PageParameter;
 import com.bluewhite.common.entity.PageResult;
 import com.bluewhite.common.utils.DatesUtil;
@@ -325,27 +326,38 @@ public class SaleServiceImpl extends BaseServiceImpl<Sale, Long> implements Sale
 
 	@Override
 	@Transactional
-	public int excelAddSale(ExcelListener excelListener, Long customerType) {
+	public CommonResponse excelAddSale(ExcelListener excelListener, Long customerType) {
 		int count = 0;
+		String isNull = "";
+		String noProduct = "";
+		String noCustomer = "";
 	    SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd");
         // 获取导入的销售单
         List<Object> excelListenerList = excelListener.getData();
         for (Object object : excelListenerList) {
+        	String row = "第 " + (excelListenerList.indexOf(object) + 1) + "行";
         	SalePoi poi = (SalePoi)object;
         	if(poi.getProductName()== null || poi.getProductName().isEmpty() || poi.getSendDate() == null ||
         	   poi.getCustomerName()== null || poi.getCustomerName().isEmpty() || poi.getBacthNumber() == null ||
         	   poi.getBacthNumber().isEmpty() || poi.getCount() == null) {
-        		throw new ServiceException("导入的数据第 " + (excelListenerList.indexOf(object) + 1) + "行存在空数据，请检查");
+        		isNull += row + "存在空数据<br>";
+        		continue;
+        		// throw new ServiceException("导入的数据第 " + (excelListenerList.indexOf(object) + 1) + "行存在空数据，请检查");
         	}
         	List<Product> pList = productDao.findByName(poi.getProductName());
         	if(pList.size() == 0) {
-        		throw new ServiceException("商品：" + poi.getProductName() + "不存在，请确认是否有误！");
+        		noProduct += row + "商品：" + poi.getProductName() + "<br>";
+        		continue;
+        		// throw new ServiceException("商品：" + poi.getProductName() + "不存在，请确认是否有误！");
         	}
         	// 457=电商  459=线下
         	Customer customer = customerDao.findByNameAndCustomerTypeId(poi.getCustomerName(), customerType);
         	if(customer == null || customer.getId() == null) {
-        		if(customerType==459)
-        			throw new ServiceException("客户：" + poi.getCustomerName() + "不存在，请确认是否有误！");
+        		if(customerType==459) {
+        			noCustomer += row + "客户：" + poi.getProductName() + "不存在<br>";
+        			continue;
+        			// throw new ServiceException("客户：" + poi.getCustomerName() + "不存在，请确认是否有误！");
+        		}
         		else {
         			customer = new Customer();
         			customer.setName(poi.getCustomerName());
@@ -396,6 +408,18 @@ public class SaleServiceImpl extends BaseServiceImpl<Sale, Long> implements Sale
             dao.save(sale);
             count++;
         }
-        return count;
+        CommonResponse cr = new CommonResponse();
+        if(!isNull.isEmpty() || !noProduct.isEmpty() || !noCustomer.isEmpty()) {
+        	String msg = "";
+        	if(!isNull.isEmpty())
+        		msg += "空数据：<br>" + isNull;
+        	if(!noProduct.isEmpty())
+        		msg += "找不到商品：<br>" + noProduct;
+        	if(!noCustomer.isEmpty())
+        		msg += "找不到客户：<br>" + noCustomer;
+        	throw new ServiceException(msg);
+        }
+        cr.setMessage("成功导入：" + count + "条数据");
+        return cr;
 	}
 }

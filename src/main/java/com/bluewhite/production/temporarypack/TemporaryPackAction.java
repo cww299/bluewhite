@@ -678,10 +678,7 @@ public class TemporaryPackAction {
 		InputStream inputStream = file.getInputStream();
 		ExcelListener excelListener = new ExcelListener();
 		EasyExcel.read(inputStream, SalePoi.class, excelListener).sheet().doRead();
-		int count = saleService.excelAddSale(excelListener,customerType);
-		inputStream.close();
-		cr.setMessage("成功导入" + count + "条数据");
-		return cr;
+		return saleService.excelAddSale(excelListener,customerType);
 	}
 
 }
