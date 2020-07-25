@@ -32,6 +32,11 @@
 									 <option value="1">借调</option>
 									 <option value="0">非借调</option></select></td>
 				<td></td>
+				<td style="width:150px;"><select name="customerType">
+									 <option value="">是否电商</option>
+									 <option value="457">电商</option>
+									 <option value="459">线下</option></select></td>
+				<td></td>
 				<td><input type="text" class="layui-input" name="customerName" placeholder="客户名"></td>
 				<td></td>
 				<td><input type="text" class="layui-input" name="userName" placeholder="业务员"></td>

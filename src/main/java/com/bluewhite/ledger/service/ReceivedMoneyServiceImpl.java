@@ -38,6 +38,10 @@ public class ReceivedMoneyServiceImpl extends BaseServiceImpl<ReceivedMoney, Lon
             if (param.getUserName() != null && !param.getUserName().isEmpty()) {
             	predicate.add(cb.like(root.get("customer").get("user").get("userName").as(String.class), "%" + param.getUserName() + "%"));
             }
+            // 按客户类型
+            if (param.getCustomerType() != null ) {
+            	predicate.add(cb.equal(root.get("customer").get("customerTypeId").as(Long.class), param.getCustomerType()));
+            }
             // 按合同签订日期
             if (!StringUtils.isEmpty(param.getOrderTimeBegin()) && !StringUtils.isEmpty(param.getOrderTimeEnd())) {
                 predicate.add(cb.between(root.get("receivedMoneyDate").as(Date.class), param.getOrderTimeBegin(),

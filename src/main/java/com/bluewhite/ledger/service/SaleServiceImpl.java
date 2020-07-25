@@ -284,6 +284,10 @@ public class SaleServiceImpl extends BaseServiceImpl<Sale, Long> implements Sale
 			if (param.getAudit() != null) {
 				predicate.add(cb.equal(root.get("audit").as(Integer.class), param.getAudit()));
 			}
+			// 是否电商
+			if (param.getCustomerType() != null) {
+				predicate.add(cb.equal(root.get("customer").get("customerTypeId").as(Long.class), param.getCustomerType()));
+			}
 			// 按业务员
             if (param.getUserName() != null && !param.getUserName().isEmpty()) {
             	predicate.add(cb.like(root.get("customer").get("user").get("userName").as(String.class), "%" + param.getUserName() + "%"));
@@ -401,6 +405,9 @@ public class SaleServiceImpl extends BaseServiceImpl<Sale, Long> implements Sale
         	Sale sale = dao.findByproductIdAndCustomerIdAndSendDate(pid,cid,time);
         	if(sale != null && sale.getId() != null) {
         		sale.setCount(sale.getCount() + poi.getCount());
+        		if(isDs) {
+        			sale.setSumPrice(NumUtils.sum(sale.getSumPrice(), poi.getSumPrice()));
+        		}
         	} else {
         		sale = new Sale();
         		// 发货日期

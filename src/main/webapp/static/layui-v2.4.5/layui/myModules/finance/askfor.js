@@ -174,6 +174,11 @@ layui.extend({
 							+`
 							</select></td>
 					<td><input id="searchTime" name="orderTimeBegin"  class="layui-input" autocomplete="off"></td>
+					`+(function(){
+						if(askfor.type==5)
+							return '<td>物流编号：</td><td><input name="logisticsNumber"  class="layui-input"></td>';
+					})()
+					+`
 					`+
 					(function(){
 						var otherHtml = '';
