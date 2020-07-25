@@ -133,7 +133,11 @@ public class ConsumptionServiceImpl extends BaseServiceImpl<Consumption, Long> i
                 predicate.add(cb.like(root.get("content").as(String.class),
                     "%" + StringUtil.specialStrKeyword(param.getContent()) + "%"));
             }
-
+            // 物流编号搜索
+            if (!StringUtils.isEmpty(param.getLogisticsNumber())) {
+                predicate.add(cb.like(root.get("logisticsNumber").as(String.class),
+                    "%" + param.getLogisticsNumber() + "%"));
+            }
             // 按报销金额查找
             if (!StringUtils.isEmpty(param.getMoney())) {
                 predicate.add(cb.equal(root.get("money").as(Double.class), param.getMoney()));
@@ -238,6 +242,11 @@ public class ConsumptionServiceImpl extends BaseServiceImpl<Consumption, Long> i
             case 4:
                 break;
             case 5:
+            	if(originalMoney != null) {
+            		Consumption parent = dao.findOne(consumption.getParentId());
+            		parent.setMoney(NumUtils.sum(parent.getMoney(), -money, originalMoney));
+        		    dao.save(parent);
+            	}
                 break;
             case 6:
                 break;

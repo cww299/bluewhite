@@ -153,12 +153,6 @@ public class Consumption extends BaseEntity<Long> {
 	private Integer settleAccountsMode;
 
 	/**
-	 * 备注
-	 */
-	@Column(name = "remark")
-	private String remark;
-
-	/**
 	 * 是否已付款（0=否，1=是，2，部分付款）
 	 */
 	@Column(name = "flag")
@@ -229,6 +223,25 @@ public class Consumption extends BaseEntity<Long> {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "logistics_id", referencedColumnName = "id", insertable = false, updatable = false)
     private BaseData logistics;
+    
+    /**
+     * 物流申请预算金额
+     */
+    @Column(name = "budget_money")
+    private Double budgetMoney;
+    
+    /**
+     * 物流申请物流编号
+     */
+    @Column(name = "logistics_number")
+    private String logisticsNumber;
+    
+    /**
+     * 备注
+     */
+    @Column(name = "remark")
+    private String remark;
+    
 	/**
 	 * 过滤参数(报销人姓名)
 	 */
@@ -604,6 +617,22 @@ public class Consumption extends BaseEntity<Long> {
 
 	public void setRemark(String remark) {
 		this.remark = remark;
+	}
+
+	public Double getBudgetMoney() {
+		return budgetMoney;
+	}
+
+	public void setBudgetMoney(Double budgetMoney) {
+		this.budgetMoney = budgetMoney;
+	}
+
+	public String getLogisticsNumber() {
+		return logisticsNumber;
+	}
+
+	public void setLogisticsNumber(String logisticsNumber) {
+		this.logisticsNumber = logisticsNumber;
 	}
 
 }

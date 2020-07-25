@@ -116,6 +116,8 @@ public class SendOrderServiceImpl extends BaseServiceImpl<SendOrder, Long> imple
                         consumptionPrent.setOrgNameId(user.getOrgNameId());
                         consumptionPrent.setFlag(0);
                         consumptionPrent.setMoney(sendOrder.getLogisticsPrice().doubleValue());
+                        consumptionPrent.setBudgetMoney(sendOrder.getLogisticsPrice().doubleValue());
+                        consumptionPrent.setLogisticsNumber(sendOrder.getLogisticsNumber());
                         consumptionPrent.setLogisticsId(sendOrder.getLogisticsId());
                     }
                     consumptionService.save(consumptionPrent);
