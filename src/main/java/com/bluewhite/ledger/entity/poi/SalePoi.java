@@ -3,12 +3,14 @@ package com.bluewhite.ledger.entity.poi;
 import java.util.Date;
 
 import com.alibaba.excel.annotation.ExcelProperty;
+import com.fasterxml.jackson.annotation.JsonFormat;
 
 public class SalePoi {
 
 	/**
 	 * 发货日期
 	 */
+	@JsonFormat(pattern = "yyyy-MM-dd hh:mm:ss")
 	@ExcelProperty(index = 0)
 	private Date sendDate;
 
@@ -53,6 +55,16 @@ public class SalePoi {
 	 */
 	@ExcelProperty(index = 7)
 	private String userName;
+	
+	/**
+	 * 所在行
+	 */
+	private Integer row;
+	
+	/**
+	 * 错误原因
+	 */
+	private String errorInfo;
 
 	public Date getSendDate() {
 		return sendDate;
@@ -116,6 +128,22 @@ public class SalePoi {
 
 	public void setUserName(String userName) {
 		this.userName = userName;
+	}
+
+	public Integer getRow() {
+		return row;
+	}
+
+	public void setRow(Integer row) {
+		this.row = row;
+	}
+
+	public String getErrorInfo() {
+		return errorInfo;
+	}
+
+	public void setErrorInfo(String errorInfo) {
+		this.errorInfo = errorInfo;
 	}
 	
 }

@@ -346,34 +346,35 @@ public class SaleServiceImpl extends BaseServiceImpl<Sale, Long> implements Sale
 		// 457=电商  459=线下
 		boolean isDs = customerType == 457;
 		int count = 0;
-		String isNull = "";
-		String noProduct = "";
-		String noCustomer = "";
-		String noUser = "";
 	    SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd");
         // 获取导入的销售单
+	    List<SalePoi> errorList = new ArrayList<>();
         List<Object> excelListenerList = excelListener.getData();
         for (Object object : excelListenerList) {
-        	String row = "第 " + (excelListenerList.indexOf(object) + 1) + "行";
+        	Integer row = (excelListenerList.indexOf(object) + 1);
         	SalePoi poi = (SalePoi)object;
+        	poi.setRow(row);
         	if(poi.getProductName()== null || poi.getProductName().isEmpty() || poi.getSendDate() == null ||
-        	   poi.getCustomerName()== null || poi.getCustomerName().isEmpty() || poi.getBacthNumber() == null ||
-        	   poi.getBacthNumber().isEmpty() || poi.getCount() == null) {
-        		isNull += row + "存在空数据<br>";
+        	    poi.getCustomerName()== null || poi.getCustomerName().isEmpty() || poi.getBacthNumber() == null ||
+        	    poi.getBacthNumber().isEmpty() || poi.getCount() == null) {
+        		poi.setErrorInfo("存在空数据");
+        		errorList.add(poi);
         		continue;
         	}
         	// 如果导入的是电商
         	if(isDs) {
         		if(poi.getUserName() == null || poi.getUserName().isEmpty() || poi.getSumPrice() == null || 
         			poi.getPrice() == null) {
-        			isNull += row + "存在空数据<br>";
+        			poi.setErrorInfo("存在空数据");
+            		errorList.add(poi);
         			continue;
         		}
         	}
         	// 查找导入的商品
         	List<Product> pList = productDao.findByName(poi.getProductName());
         	if(pList.size() == 0) {
-        		noProduct += row + "商品：" + poi.getProductName() + "<br>";
+        		poi.setErrorInfo("商品名不存在");
+        		errorList.add(poi);
         		continue;
         	}
         	// 查找导入的客户，如果是电商客户不存在则新增、否则报错
@@ -384,7 +385,8 @@ public class SaleServiceImpl extends BaseServiceImpl<Sale, Long> implements Sale
         			customer.setName(poi.getCustomerName());
         			customer.setCustomerTypeId(customerType);
         		} else {
-        			noCustomer += row + "客户：" + poi.getCustomerName() + "不存在<br>";
+        			poi.setErrorInfo("客户名不存在");
+            		errorList.add(poi);
         			continue;
         		}
         	}
@@ -392,7 +394,8 @@ public class SaleServiceImpl extends BaseServiceImpl<Sale, Long> implements Sale
         	if(isDs && customer.getUserId() == null) {
         		User user = userDao.findByUserName(poi.getUserName());
         		if(user == null || user.getId() == null) {
-        			noUser += row + "业务员：" + poi.getUserName() + "不存在<br>";
+        			poi.setErrorInfo("业务员不存在");
+            		errorList.add(poi);
         			continue;
         		}
         		customer.setUserId(user.getId());
@@ -450,18 +453,7 @@ public class SaleServiceImpl extends BaseServiceImpl<Sale, Long> implements Sale
             count++;
         }
         CommonResponse cr = new CommonResponse();
-        if(!isNull.isEmpty() || !noProduct.isEmpty() || !noCustomer.isEmpty() || !noUser.isEmpty()) {
-        	String msg = "";
-        	if(!isNull.isEmpty())
-        		msg += "空数据：<br>" + isNull;
-        	if(!noProduct.isEmpty())
-        		msg += "找不到商品：<br>" + noProduct;
-        	if(!noCustomer.isEmpty())
-        		msg += "找不到客户：<br>" + noCustomer;
-        	if(!noUser.isEmpty())
-        		msg += "找不到业务员：<br>" + noUser;
-        	throw new ServiceException(msg);
-        }
+        cr.setData(errorList);
         cr.setMessage("成功导入：" + count + "条数据");
         return cr;
 	}

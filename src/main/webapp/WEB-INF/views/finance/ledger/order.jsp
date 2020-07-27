@@ -216,11 +216,55 @@ layui.config({
 				var tips = 'emsg'
 				if(res.code == 0){
 					tips = 'smsg';
+					if(res.data && res.data.length > 0) {
+						layer.open({
+							type: 1,
+							title: '导入异常',
+							content: [
+								'<span id="msg"></span>&nbsp;&nbsp;&nbsp;&nbsp;其中以下数据存在错误！',
+								'<table id="uploadTable" lay-filter="uploadTable"></table>',
+							].join(' '),
+							offset: '50px',
+							area: ['1200px', '600px'],
+							success: function() {
+								$('#msg').html(res.message);
+								mytable.renderNoPage({
+									elem: '#uploadTable',
+									data: res.data,
+									limit: 9999,
+									height: '500px',
+									curd: {
+										btn: [],
+									},
+									cols: [(function(){
+										var cols = [
+											{ title: '行数', field: 'row', width: 70, },
+											{ title: '错误', field: 'errorInfo', width: 150, },
+											{ title: '发货日期', field: 'sendDate', },
+											{ title: '批次号', field: 'bacthNumber', },
+											{ title: '产品名', field: 'productName', },
+											{ title: '数量', field: 'count', width: 70, },
+											{ title: '客户', field: 'customerName', },
+										]
+										var dsCols = [
+											{ title: '总价', field: 'sumPrice', width: 70, },
+											{ title: '单价', field: 'price', width: 70, },
+											{ title: '业务员', field: 'userName', },
+										];
+										if(uploadData.customerType == 457) {
+											cols = cols.concat(dsCols)
+										}
+										return cols
+									})()]
+								})
+							}
+						})
+					}
 					table.reload('tableData')
 					layer.close(customerTypeWin);
 				}
-			    	myutil[tips](res.message)
-			    	layer.close(load)
+		    	layer.close(load)
+		    	myutil[tips](res.message)
 			},
 			error: function(){
 				layer.close(load)
