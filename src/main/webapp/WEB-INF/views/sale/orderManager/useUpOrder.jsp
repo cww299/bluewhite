@@ -228,7 +228,7 @@ layui.config({
 			}
 		})
 		myutil.getData({
-			url: '${ctx}/system/user/findUserList?orgNameIds=25',
+			url: '${ctx}/system/user/findUserList?orgNameIds=25&quit=0',
 			success:function(d){
 				var html = '';
 				allUser = d;
@@ -327,8 +327,10 @@ layui.config({
 			       { title:'用料编号', field:'materiel_number', },
 			       { title:'物料',   field:'materiel_name', templet: getName()  },
 			       { title:'领取模式',   field:'receiveMode_name',	},
-			       { title:'单位',   field:'unit_name',	},
-			       { title:'用量',   field:'dosage',	},
+			       // { title:'单位',   field:'unit_name',	},
+			       // { title:'用量',   field:'dosage',	},
+			       { title:'领取用量',   field:'', templet: function(d) { return d.dosage + '/' +d.unit.name }	},
+			       { title:'转换用量',   field:'', templet: getConvert()	},
 			       { title:'库存状态',   field:'state', transData:{ data:['已出库','库存充足','无库存','有库存量不足'],text:'未知' },	},
 			       { title:'库存数量',   field:'inventoryTotal',	},
 			       { title:'是否审核出库', field:'outAudit', transData:{ data:['未审核','审核'],text:'否'}},
@@ -340,29 +342,29 @@ layui.config({
 						var index = elem.closest('tr').data('index');
 						var trData = table.cache['tableData'][index];
 						var html = [
-						            '<div class="tipProcurement">',
-						            	(function(){
-						            		var html = '';
-						            		var d = trData.materiel.orderProcurements;
-						            		if(d.length==0)
-						            			html= '<p>无库存详情</p>';
-					            			else{
-					            				 for(var i in d){
-								            		   if(i!=0)
-								            			   html+='<p class="fenge"></p>';
-								            		   html+=['<p>下单日期：'+d[i].placeOrderTime+'</p>',
-									            		      '<p>采购编号：'+d[i].orderProcurementNumber+'</p>',
-								            		          '<p>剩余数量：'+d[i].residueNumber+'</p>',
-								            		          '<p>约定价格：'+d[i].price+'</p>',
-								            		          '<p>订购人：'+d[i].user.userName+'</p>',
-									            		      '<p>供应商：'+d[i].customer.name+'</p>',
-								            		    ].join('');
-								            	   }
-					            			}
-						            		return html;
-						            	})(),
-						            '</div>',
-						            ].join('');
+				            '<div class="tipProcurement">',
+				            	(function(){
+				            		var html = '';
+				            		var d = trData.materiel.orderProcurements;
+				            		if(d.length==0)
+				            			html= '<p>无库存详情</p>';
+			            			else{
+			            				 for(var i in d){
+						            		   if(i!=0)
+						            			   html+='<p class="fenge"></p>';
+						            		   html+=['<p>下单日期：'+d[i].placeOrderTime+'</p>',
+							            		      '<p>采购编号：'+d[i].orderProcurementNumber+'</p>',
+						            		          '<p>剩余数量：'+d[i].residueNumber+'</p>',
+						            		          '<p>约定价格：'+d[i].price+'</p>',
+						            		          '<p>订购人：'+d[i].user.userName+'</p>',
+							            		      '<p>供应商：'+d[i].customer.name+'</p>',
+						            		    ].join('');
+						            	   }
+			            			}
+				            		return html;
+				            	})(),
+				            '</div>',
+			            ].join('');
 						layer.close(tipProcurement)
 						tipInventory = layer.tips(html, elem,{
 							time:0,
@@ -407,6 +409,20 @@ layui.config({
 				}) */
 			}
 		})
+		function getConvert() {
+			return function(d) {
+				var html = '---'
+				const mate = d.materiel
+				if(mate.convertUnit) {
+					if(d.unit.id == mate.unit.id) {	// 如果当前单位是转化前的单位，这里输出转化后的单位
+						html = (d.dosage * mate.converts).toFixed(2) + '/' + mate.convertUnit.name
+					} else if(d.unit.id == mate.convertUnit.id) {
+						html = (d.dosage / mate.converts).toFixed(2) + '/' + mate.unit.name
+					}
+				}
+				return html
+			}
+		}
 		function getName(){
 			return function(d){
 				var html = d.materiel.name
