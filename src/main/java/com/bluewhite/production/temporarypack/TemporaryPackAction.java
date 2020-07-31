@@ -652,7 +652,7 @@ public class TemporaryPackAction {
     /**
      * 删除销售单
      */
-    @RequestMapping(value = "/temporaryPack/deleteSale", method = RequestMethod.GET)
+    @RequestMapping(value = "/temporaryPack/deleteSale", method = RequestMethod.POST)
     @ResponseBody
     public CommonResponse deleteSale(String ids) {
         CommonResponse cr = new CommonResponse();

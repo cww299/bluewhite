@@ -76,6 +76,11 @@ public class SaleServiceImpl extends BaseServiceImpl<Sale, Long> implements Sale
 				predicate.add(cb.like(root.get("customer").get("user").get("userName").as(String.class),
 						"%" + param.getUserName() + "%"));
 			}
+			// 按客户类型
+			if (param.getCustomerType() != null) {
+				predicate.add(cb.equal(root.get("customer").get("customerTypeId").as(Long.class),
+						param.getCustomerType()));
+			}
 			// 是否审核
 			if (param.getAudit() != null) {
 				predicate.add(cb.equal(root.get("audit").as(Integer.class), param.getAudit()));
@@ -105,6 +110,10 @@ public class SaleServiceImpl extends BaseServiceImpl<Sale, Long> implements Sale
 			if (!StringUtils.isEmpty(param.getOrderTimeBegin()) && !StringUtils.isEmpty(param.getOrderTimeEnd())) {
 				predicate.add(cb.between(root.get("sendDate").as(Date.class), param.getOrderTimeBegin(),
 						param.getOrderTimeEnd()));
+			}
+			// 按单价异常
+			if (param.getPriceError() != null) {
+				predicate.add(cb.equal(root.get("priceError").as(Integer.class), param.getPriceError()));
 			}
 			Predicate[] pre = new Predicate[predicate.size()];
 			query.where(predicate.toArray(pre));
@@ -270,6 +279,23 @@ public class SaleServiceImpl extends BaseServiceImpl<Sale, Long> implements Sale
 		return count;
 	}
 
+	@Override
+	public int priceError(String ids, Integer priceError) {
+		int count = 0;
+		List<Long> allId = new ArrayList<Long>();
+		if (!StringUtils.isEmpty(ids)) {
+			for(String id :  ids.split(",")) {
+				allId.add(Long.parseLong(id));
+			}
+			List<Sale> list = dao.findByIdIn(allId);
+			for(Sale sale : list) {
+				sale.setPriceError(priceError);
+			}
+			dao.save(list);
+			count = list.size();
+		}
+		return count;
+	}
 	
 
 	@Override
@@ -405,49 +431,61 @@ public class SaleServiceImpl extends BaseServiceImpl<Sale, Long> implements Sale
         	int saleOrderSize = dao.findBySendDateBetween(time, DatesUtil.getLastDayOftime(time)).size() + 1;
         	Long pid = pList.get(0).getId();
         	Long cid = customer.getId();
-        	Sale sale = dao.findByproductIdAndCustomerIdAndSendDate(pid,cid,time);
+        	Sale sale = new Sale(); 
+        	/*
+        	dao.findByproductIdAndCustomerIdAndSendDate(pid,cid,time);
         	if(sale != null && sale.getId() != null) {
         		poi.setErrorInfo("存在相同订单");
         		errorList.add(poi);
         		continue;
         	} else {
         		sale = new Sale();
-        		// 发货日期
-        		sale.setSendDate(poi.getSendDate());
-        		// 实际数量
-        		sale.setCount(poi.getCount());
-        		// 批次号
-        		sale.setBacthNumber(poi.getBacthNumber());
-        		// 产品id
-        		sale.setProductId(pid);
-        		// 客户
-        		sale.setCustomerId(cid);
-        		// 生成销售编号
-        		sale.setSaleNumber(Constants.XS + "-" + sdf.format(time) + "-" + StringUtil.get0LeftString(saleOrderSize++, 4));
-        		// 未审核
-        		sale.setAudit(0);
-        		// 未拥有版权
-        		sale.setCopyright(0);
-        		// 未收货
-        		sale.setDelivery(1);
-        		// 业务员未确认数据
-        		sale.setDeliveryStatus(0);
-        		// 价格
-        		sale.setPrice(0.0);
-        		// 判定是否拥有版权
-        		String name = poi.getProductName();
-        		if (name.contains(Constants.LX)  || name.contains(Constants.KT)
-        				|| name.contains(Constants.MW) || name.contains(Constants.BM)
-        				|| name.contains(Constants.LP) || name.contains(Constants.AB)
-        				|| name.contains(Constants.ZMJ) || name.contains(Constants.XXYJN)) {
-        			sale.setCopyright(1);
-        		}
-        		// 如果是电商
-        		if(isDs) {
-        			sale.setPrice(poi.getPrice());
-        			sale.setSumPrice(poi.getSumPrice());
-        		}
-        	}
+    		}
+        	*/
+        	
+    		// 发货日期
+    		sale.setSendDate(poi.getSendDate());
+    		// 实际数量
+    		sale.setCount(poi.getCount());
+    		// 批次号
+    		sale.setBacthNumber(poi.getBacthNumber());
+    		// 产品id
+    		sale.setProductId(pid);
+    		// 客户
+    		sale.setCustomerId(cid);
+    		// 生成销售编号
+    		sale.setSaleNumber(Constants.XS + "-" + sdf.format(time) + "-" + StringUtil.get0LeftString(saleOrderSize++, 4));
+    		// 未审核
+    		sale.setAudit(0);
+    		// 未拥有版权
+    		sale.setCopyright(0);
+    		// 未收货
+    		sale.setDelivery(1);
+    		// 业务员未确认数据
+    		sale.setDeliveryStatus(0);
+    		// 价格
+    		sale.setPrice(0.0);
+    		// 判定是否拥有版权
+    		String name = poi.getProductName();
+    		if (name.contains(Constants.LX)  || name.contains(Constants.KT)
+    				|| name.contains(Constants.MW) || name.contains(Constants.BM)
+    				|| name.contains(Constants.LP) || name.contains(Constants.AB)
+    				|| name.contains(Constants.ZMJ) || name.contains(Constants.XXYJN)) {
+    			sale.setCopyright(1);
+    		}
+    		sale.setPriceError(0);
+    		// 如果是电商
+    		if(isDs) {
+    			sale.setPrice(poi.getPrice());
+    			sale.setSumPrice(poi.getSumPrice());
+    			// 查找以往价格、按正序排序
+            	List<Sale> salePrice = dao.findByProductIdAndCustomerIdAndAuditOrderBySendDateDesc(pid,cid,1);
+            	if(salePrice != null && salePrice.size() > 0) {
+            		if(salePrice.get(0).getPrice() != poi.getPrice()) {
+            			sale.setPriceError(1);
+            		}
+            	}
+    		}
             dao.save(sale);
             count++;
         }
@@ -456,4 +494,6 @@ public class SaleServiceImpl extends BaseServiceImpl<Sale, Long> implements Sale
         cr.setMessage("成功导入：" + count + "条数据");
         return cr;
 	}
+
+	
 }

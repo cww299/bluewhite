@@ -75,4 +75,12 @@ public interface SaleService  extends BaseCRUDService<Sale,Long>{
 
 	CommonResponse excelAddSale(ExcelListener excelListener, Long customerType);
 
+	/**
+	 * 标记销售单单价异常
+	 * @param ids
+	 * @param priceError
+	 * @return
+	 */
+	public int priceError(String ids, Integer priceError);
+
 }

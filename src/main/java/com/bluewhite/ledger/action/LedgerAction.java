@@ -132,7 +132,7 @@ public class LedgerAction {
 						"newBacth", "saleNumber", "sendDate", "flag", "customer", "remark", "audit", "delivery",
 						"deliveryNumber", "deliveryDate", "disputeNumber", "disputeRemark", "deliveryCollectionDate",
 						"offshorePay", "acceptPay", "disputePay", "deliveryStatus", "warehouse", "warehouseType",
-						"confirm", "confirmNumber")
+						"confirm", "confirmNumber","priceError")
 				.addRetainTerm(BaseData.class, "id", "name")
 				.addRetainTerm(Customer.class, "id", "name", "user")
 				.addRetainTerm(User.class, "id", "userName")
@@ -1529,6 +1529,18 @@ public class LedgerAction {
 		CommonResponse cr = new CommonResponse();
 		int count = saleService.auditUserSale(ids, deliveryStatus);
 		cr.setMessage("成功确认" + count + "条销售单");
+		return cr;
+	}
+	
+	/**
+	 * 标记取消销售单单价异常
+	 */
+	@RequestMapping(value = "/ledger/priceError", method = RequestMethod.GET)
+	@ResponseBody
+	public CommonResponse priceError(String ids, Integer priceError) {
+		CommonResponse cr = new CommonResponse();
+		int count = saleService.priceError(ids, priceError);
+		cr.setMessage("成功标记" + count + "条销售单");
 		return cr;
 	}
 

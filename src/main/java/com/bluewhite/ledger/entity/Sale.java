@@ -185,6 +185,12 @@ public class Sale extends BaseEntity<Long>{
 	private Long quantitativeId;
 	
 	/**
+	 * 订单单价是否异常
+	 */
+	@Column(name="price_error")
+	private Integer priceError;
+	
+	/**
 	 * 产品name
 	 */
 	@Transient
@@ -213,6 +219,11 @@ public class Sale extends BaseEntity<Long>{
 	 */
 	@Transient
 	private Date orderTimeEnd;
+	/**
+	 * 查询字段，客户类型
+	 */
+	@Transient
+	private Long customerType;
 
 	
 	public Date getSendDate() {
@@ -461,6 +472,22 @@ public class Sale extends BaseEntity<Long>{
 
 	public void setUserName(String userName) {
 		this.userName = userName;
+	}
+
+	public Integer getPriceError() {
+		return priceError;
+	}
+
+	public void setPriceError(Integer priceError) {
+		this.priceError = priceError;
+	}
+
+	public Long getCustomerType() {
+		return customerType;
+	}
+
+	public void setCustomerType(Long customerType) {
+		this.customerType = customerType;
 	}
 
 
