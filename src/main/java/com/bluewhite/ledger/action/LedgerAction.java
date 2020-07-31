@@ -1553,7 +1553,7 @@ public class LedgerAction {
 	 * 
 	 * @return cr
 	 */
-	@RequestMapping(value = "/ledger/auditSale", method = RequestMethod.GET)
+	@RequestMapping(value = "/ledger/auditSale", method = RequestMethod.POST)
 	@ResponseBody
 	public CommonResponse auditSale(String ids, Integer audit) {
 		CommonResponse cr = new CommonResponse();

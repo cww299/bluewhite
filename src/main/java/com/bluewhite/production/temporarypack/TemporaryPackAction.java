@@ -640,7 +640,7 @@ public class TemporaryPackAction {
     /**
      * 生成销售单
      */
-    @RequestMapping(value = "/temporaryPack/addSale", method = RequestMethod.GET)
+    @RequestMapping(value = "/temporaryPack/addSale", method = RequestMethod.POST)
     @ResponseBody
     public CommonResponse addSale(String ids) {
         CommonResponse cr = new CommonResponse();

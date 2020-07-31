@@ -407,10 +407,9 @@ public class SaleServiceImpl extends BaseServiceImpl<Sale, Long> implements Sale
         	Long cid = customer.getId();
         	Sale sale = dao.findByproductIdAndCustomerIdAndSendDate(pid,cid,time);
         	if(sale != null && sale.getId() != null) {
-        		sale.setCount(sale.getCount() + poi.getCount());
-        		if(isDs) {
-        			sale.setSumPrice(NumUtils.sum(sale.getSumPrice(), poi.getSumPrice()));
-        		}
+        		poi.setErrorInfo("存在相同订单");
+        		errorList.add(poi);
+        		continue;
         	} else {
         		sale = new Sale();
         		// 发货日期

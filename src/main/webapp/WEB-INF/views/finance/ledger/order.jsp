@@ -379,6 +379,7 @@ layui.config({
 									myutil.deleTableIds({
 										url: '/temporaryPack/addSale',
 										text: '请选择信息|是否确认生成销售单',
+										type: 'post',
 										table:'addTable',
 										success: function(){
 											table.reload('tableData')
@@ -455,7 +456,6 @@ layui.config({
 			})
 			myutil.saveAjax({
 				url:'/ledger/auditSale?audit='+isAudit,
-				type: 'get',
 				data: { ids:ids.join(',') },
 				success: function(){
 					table.reload('tableData');
