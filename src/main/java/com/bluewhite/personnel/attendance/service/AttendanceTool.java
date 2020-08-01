@@ -314,7 +314,7 @@ public class AttendanceTool {
                 if (overTimeType == 2) {
                     actualOverTime = DatesUtil.getTimeHour(workTimeEnd, four);
                 }
-                actualTurnWorkTime = actualTurnWorkTime +
+                actualTurnWorkTime += 
                     NumberUtil.add(DatesUtil.getTimeHour(workTimeStrat, two), DatesUtil.getTimeHour(three, workTimeEnd));
                 actualDutyTime = NumUtils.sub(turnWorkTime, actualTurnWorkTime);
                 // 实际缺勤时长分钟数
@@ -331,7 +331,7 @@ public class AttendanceTool {
                 if (overTimeType == 2) {
                     actualOverTime = DatesUtil.getTimeHour(three, four);
                 }
-                actualTurnWorkTime = DatesUtil.getTimeHour(oneRe, two);
+                actualTurnWorkTime += DatesUtil.getTimeHour(oneRe, two);
                 actualDutyTime = NumUtils.sub(turnWorkTime, actualTurnWorkTime);
                 // 实际缺勤时长分钟数
                 actualDutytimMinute = NumUtils.mul(actualDutyTime, MINUTES);
