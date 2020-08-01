@@ -14,27 +14,39 @@
 	<div class="layui-card-body">
 		<table class="layui-form searchTable">
 			<tr>
-				<td>发货日期：</td>
-				<td><input type="text" class="layui-input" id="searchTime"></td>
-				<td>是否审核：</td>
+				<td></td>
+				<td><input type="text" class="layui-input" id="searchTime" placeholder="发货日期"></td>
+				<td></td>
 				<td style="width:150px;"><select name="audit">
 									 <option value="">是否审核</option>
 									 <option value="1">审核</option>
 									 <option value="0" selected>未审核</option></select></td>
-				<td>是否版权：</td>
+				<td></td>
 				<td style="width:150px;"><select name="copyright">
 									 <option value="">是否版权</option>
-									 <option value="1">是</option>
-									 <option value="0">否</option></select></td>
-				<td>是否借调：</td>
+									 <option value="1">有版权</option>
+									 <option value="0">无版权</option></select></td>
+				<td></td>
 				<td style="width:150px;"><select name="newBacth">
 									 <option value="">是否借调</option>
 									 <option value="1">借调</option>
 									 <option value="0">非借调</option></select></td>
-				<td>客户名：</td>
-				<td><input type="text" class="layui-input" name="customerName"></td>
-				<td>批次号：</td>
-				<td><input type="text" class="layui-input" name="bacthNumber"></td>
+				<td></td>
+				<td style="width:150px;"><select name="customerType">
+									 <option value="">是否电商</option>
+									 <option value="457">电商</option>
+									 <option value="459">线下</option></select></td>
+				<td style="width:120px;"><select name="priceError">
+									 <option value="">单价异常</option>
+									 <option value="1">异常</option>
+									 <option value="0">正常</option></select></td>
+				<td></td>
+				<td><input type="text" class="layui-input" name="customerName" placeholder="客户名"></td>
+				<td></td>
+				<td><input type="text" class="layui-input" name="userName" placeholder="业务员"></td>
+				<td></td>
+				<td><input type="text" class="layui-input" name="bacthNumber" placeholder="批次号"></td>
+				<td></td>
 				<td><button type="button" class="layui-btn" lay-submit lay-filter="search">搜索</button>
 					<span style="display:none;" id="uploadSale">导入销售单</span></td>
 			</tr>
@@ -49,6 +61,8 @@
 	<span class="layui-btn layui-btn-sm layui-btn-danger" lay-event="unAudit">取消审核</span>
 	<span class="layui-btn layui-btn-sm layui-btn-nromal" lay-event="addSale">生成销售单</span>
 	<span class="layui-btn layui-btn-sm layui-btn-danger" lay-event="deleteSale">删除销售单</span>
+	<span class="layui-btn layui-btn-sm layui-btn-danger" lay-event="priceError">单价异常</span>
+	<span class="layui-btn layui-btn-sm layui-btn-primary" lay-event="cancelPriceError">取消异常</span>
 	<span class="layui-btn layui-btn-sm layui-btn-warm" lay-event="uploadSale">导入销售单</span>
 </div>
 </script>
@@ -86,7 +100,7 @@ layui.config({
 			where: { audit: 0 },
 			toolbar: '#tableToolbar',
 			ifNull: '---',
-			scrollX: true,
+			// scrollX: true,
 			parseData:function(ret){ 
 				layui.each(ret.data.rows,function(index,item){
 					if(item.deliveryStatus==0){
@@ -103,8 +117,9 @@ layui.config({
 				saveUrl: '/ledger/updateFinanceSale',
 				isReload: true,
 			},
-			limits:[15,30,50,100],
+			limits:[15,30,50,100,200,500,1000,2000],
 			limit:15,
+			totalRow: ['count', 'sumPrice'],
 			cols:[[
 			       { type:'checkbox', fixed:'left',},
 			       { title:'销售编号',	width:'11%',field:'saleNumber',   fixed:'left', style: sty },
@@ -115,7 +130,7 @@ layui.config({
 			       { title:'是否借调',   	width:'6%',	field:'newBacth', templet:'<span>{{ d.newBacth==1?"借调":"非借调"}}</span>'	},
 			       { title:'产品名',   	width:'15%',field:'product_name',},
 			       { title:'离岸数量',   	width:'6%',	field:'count',	},
-			       { title:'总价',   		width:'5%',	field:'sumPrice',	},
+			       { title:'总价',   		width:'7%',	field:'sumPrice',	},
 			       { title:'单价',   		width:'5%',	field:'price', 	edit: 'text', 	style: bg },
 			       { title:'备注',   		width:'8%',	field:'remark', edit: 'text', 	style: bg },
 			       { title:'到岸数量',   	width:'6%',	field:'deliveryNumber',	},
@@ -123,6 +138,14 @@ layui.config({
 			       { title:'争议数量',   	width:'6%',	field:'disputeNumber',	},
 			       { title:'争议备注',   	width:'8%',	field:'disputeRemark',	},
 			       { title:'预计结款日期',  width:'8%',	field:'deliveryCollectionDate',	},
+			       { title:'单价异常',  width:'6%',	field:'', templet:function(d){
+			    	   return [
+			    		   '<span>',
+			    		   		d.priceError ? "<b class='red'>是</b>" : "否",
+			    		   '</span>',
+			    	   ].join(' ')
+			       		},
+			    	   fixed:'right', style:sty	},
 			       { title:'版权',   		width:'6%',	field:'copyright', 	fixed:'right',	templet:'<span>{{ d.copyright?"是":"否"}}</span>', style:sty},
 			       { title:'是否审核', 	width:'6%',	field:'audit',		fixed:'right', 	templet:'<span>{{ d.audit==1?"是":"否"}}</span>',style:sty},
 			       ]],
@@ -136,13 +159,23 @@ layui.config({
 						var index = $(elem).closest('tr').attr('data-index');
 						var trData = table.cache['tableData'][index];
 						myutil.getData({
-							url:'${ctx}/ledger/getSalePrice?customerId='+trData.customer.id+'&productId='+trData.product.id,
+							url:'${ctx}/ledger/getSalePrice',
+							data: {
+								customerId: trData.customer.id,
+								productId: trData.product.id,
+								bacthNumber: trData.bacthNumber,
+								customerType: trData.customer.customerTypeId,
+							},
 							done: function(data){
 								var html = '无以往价格';
 								if(data.length!=0){
 									html='<div style="overflow: auto; max-height: 170px;">';
+									data.sort((item1,item2) => {
+										return new Date(item2.sendDate).getTime() - new Date(item1.sendDate).getTime()
+									})
 									layui.each(data,function(index,item){
-										html += '<span style="margin:5px;" class="layui-badge layui-bg-green" data-price="'+item.price+'" data-id="'+trData.id+'">发货日期：'+
+										html += '<span style="margin:5px;" class="layui-badge layui-bg-green" data-price="'+
+										item.price+'" data-id="'+trData.id+'">日期：'+
 										item.sendDate.split(' ')[0]+' -- ￥'+item.price+'</span><br>';
 									})
 									html += "</div>"
@@ -153,7 +186,7 @@ layui.config({
 					                  success: function(layerElem){
 					                	 // var left = Number.parseInt($(layerElem).css('left'))
 					                	 // $(layerElem).css('left', (left-30)+'px')
-					                	 $(layerElem).css('width','230px')
+					                	 $(layerElem).css('width','255px')
 					                  }
 					            });
 								$('.layui-layer-tips .layui-badge').unbind().on('click',function(event){
@@ -191,8 +224,17 @@ layui.config({
 			case 'addSale': addSale(); break;
 			case 'deleteSale': deleteSale(); break;
 			case 'uploadSale': uploadSale(); break;
+			case 'priceError': priceError(1); break;
+			case 'cancelPriceError': priceError(0); break;
 			}
 		})
+		function priceError(priceError) {
+			myutil.deleTableIds({
+				url: '/ledger/priceError?priceError=' + priceError,
+				table: 'tableData',
+				text: '请选择数据|是否确认标记'
+			})
+		}
 		const uploadData = {
 			customerType: null,
 		}
@@ -208,11 +250,55 @@ layui.config({
 				var tips = 'emsg'
 				if(res.code == 0){
 					tips = 'smsg';
+					if(res.data && res.data.length > 0) {
+						layer.open({
+							type: 1,
+							title: '导入异常',
+							content: [
+								'<span id="msg"></span>&nbsp;&nbsp;&nbsp;&nbsp;其中以下数据存在错误！',
+								'<table id="uploadTable" lay-filter="uploadTable"></table>',
+							].join(' '),
+							offset: '50px',
+							area: ['1200px', '600px'],
+							success: function() {
+								$('#msg').html(res.message);
+								mytable.renderNoPage({
+									elem: '#uploadTable',
+									data: res.data,
+									limit: 9999,
+									height: '500px',
+									curd: {
+										btn: [],
+									},
+									cols: [(function(){
+										var cols = [
+											{ title: '行数', field: 'row', width: 70, },
+											{ title: '错误', field: 'errorInfo', width: 150, },
+											{ title: '发货日期', field: 'sendDate', },
+											{ title: '批次号', field: 'bacthNumber', },
+											{ title: '产品名', field: 'productName', },
+											{ title: '数量', field: 'count', width: 70, },
+											{ title: '客户', field: 'customerName', },
+										]
+										var dsCols = [
+											{ title: '总价', field: 'sumPrice', width: 70, },
+											{ title: '单价', field: 'price', width: 70, },
+											{ title: '业务员', field: 'userName', },
+										];
+										if(uploadData.customerType == 457) {
+											cols = cols.concat(dsCols)
+										}
+										return cols
+									})()]
+								})
+							}
+						})
+					}
 					table.reload('tableData')
 					layer.close(customerTypeWin);
 				}
-			    	myutil[tips](res.message)
-			    	layer.close(load)
+		    	layer.close(load)
+		    	myutil[tips](res.message)
 			},
 			error: function(){
 				layer.close(load)
@@ -327,6 +413,7 @@ layui.config({
 									myutil.deleTableIds({
 										url: '/temporaryPack/addSale',
 										text: '请选择信息|是否确认生成销售单',
+										type: 'post',
 										table:'addTable',
 										success: function(){
 											table.reload('tableData')
@@ -390,6 +477,7 @@ layui.config({
 			myutil.deleTableIds({
 				url: '/temporaryPack/deleteSale',
 				text: '请选择删除数据|是否确认删除？',
+				type: 'post',
 				table: 'tableData',
 			})
 		}
@@ -403,7 +491,6 @@ layui.config({
 			})
 			myutil.saveAjax({
 				url:'/ledger/auditSale?audit='+isAudit,
-				type: 'get',
 				data: { ids:ids.join(',') },
 				success: function(){
 					table.reload('tableData');

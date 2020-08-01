@@ -80,8 +80,16 @@ public class Bill {
 	 */
 	private Integer audit;
 	
+	/**
+	 * 业务员
+	 */
+	private String userName;
 	
-
+	/**
+	 * 是否电商客户
+	 */
+	private Long customerType;
+	
 	public Integer getFlag() {
 		return flag;
 	}
@@ -194,5 +202,20 @@ public class Bill {
 		this.overpaymentPay = overpaymentPay;
 	}
 
+	public String getUserName() {
+		return userName;
+	}
+
+	public void setUserName(String userName) {
+		this.userName = userName;
+	}
+
+	public Long getCustomerType() {
+		return customerType;
+	}
+
+	public void setCustomerType(Long customerType) {
+		this.customerType = customerType;
+	}
 
 }

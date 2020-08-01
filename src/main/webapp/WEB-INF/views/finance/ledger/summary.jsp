@@ -35,6 +35,15 @@
 				<td>客户：</td>
 				<td><select name="customerId" id="searchCustomer" lay-search><option value="">请选择</option></select></td>
 				<td>&nbsp;&nbsp;</td>
+				<td>业务员：</td>
+				<td><input name="userName" placeholder="业务员名称" class="layui-input"></td>
+				<td>&nbsp;&nbsp;</td>
+				<td>是否电商：</td>
+				<td style="width:150px;"><select name="customerType">
+									 <option value="">是否电商</option>
+									 <option value="457">电商</option>
+									 <option value="459">线下</option></select></td>
+				<td>&nbsp;&nbsp;</td>
 				<td><button type="button" class="layui-btn" lay-submit lay-filter="searchTable">统计</button></td>
 			</tr>
 		</table>

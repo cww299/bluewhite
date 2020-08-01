@@ -106,7 +106,9 @@ public class SendOrderServiceImpl extends BaseServiceImpl<SendOrder, Long> imple
                             DateUtil.beginOfMonth(expenseDate), DateUtil.endOfMonth(expenseDate));
                     if (consumptionPrent != null) {
                         BigDecimal money = new BigDecimal(consumptionPrent.getMoney().toString());
+                        BigDecimal budgetMoney = new BigDecimal(consumptionPrent.getBudgetMoney().toString());
                         consumptionPrent.setMoney(money.add(sendOrder.getLogisticsPrice()).doubleValue());
+                        consumptionPrent.setBudgetMoney(budgetMoney.add(sendOrder.getLogisticsPrice()).doubleValue());
                     } else {
                         consumptionPrent = new Consumption();
                         consumptionPrent.setParentId((long)0);
@@ -115,8 +117,9 @@ public class SendOrderServiceImpl extends BaseServiceImpl<SendOrder, Long> imple
                         consumptionPrent.setExpectDate(expectDate);
                         consumptionPrent.setOrgNameId(user.getOrgNameId());
                         consumptionPrent.setFlag(0);
-                        consumptionPrent.setMoney(sendOrder.getLogisticsPrice().doubleValue());
                         consumptionPrent.setLogisticsId(sendOrder.getLogisticsId());
+                        consumptionPrent.setMoney(sendOrder.getLogisticsPrice().doubleValue());
+                        consumptionPrent.setBudgetMoney(sendOrder.getLogisticsPrice().doubleValue());
                     }
                     consumptionService.save(consumptionPrent);
                     // 生成子类条单据
@@ -131,6 +134,8 @@ public class SendOrderServiceImpl extends BaseServiceImpl<SendOrder, Long> imple
                     consumption.setMoney(sendOrder.getLogisticsPrice().doubleValue());
                     consumption.setLogisticsId(sendOrder.getLogisticsId());
                     consumption.setCustomerId(sendOrder.getCustomerId());
+                    consumption.setBudgetMoney(sendOrder.getLogisticsPrice().doubleValue());
+                    consumption.setLogisticsNumber(sendOrder.getLogisticsNumber());
                     // 无法取消审核，在物流申请中删除单据
                     consumptionService.save(consumption);
                     sendOrder.setAudit(1);

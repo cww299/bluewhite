@@ -132,9 +132,9 @@ public class LedgerAction {
 						"newBacth", "saleNumber", "sendDate", "flag", "customer", "remark", "audit", "delivery",
 						"deliveryNumber", "deliveryDate", "disputeNumber", "disputeRemark", "deliveryCollectionDate",
 						"offshorePay", "acceptPay", "disputePay", "deliveryStatus", "warehouse", "warehouseType",
-						"confirm", "confirmNumber")
+						"confirm", "confirmNumber","priceError")
 				.addRetainTerm(BaseData.class, "id", "name")
-				.addRetainTerm(Customer.class, "id", "name", "user")
+				.addRetainTerm(Customer.class, "id", "name", "user", "customerTypeId")
 				.addRetainTerm(User.class, "id", "userName")
 				.addRetainTerm(Product.class, "id", "name", "number");
 	}
@@ -1531,6 +1531,18 @@ public class LedgerAction {
 		cr.setMessage("成功确认" + count + "条销售单");
 		return cr;
 	}
+	
+	/**
+	 * 标记取消销售单单价异常
+	 */
+	@RequestMapping(value = "/ledger/priceError", method = RequestMethod.GET)
+	@ResponseBody
+	public CommonResponse priceError(String ids, Integer priceError) {
+		CommonResponse cr = new CommonResponse();
+		int count = saleService.priceError(ids, priceError);
+		cr.setMessage("成功标记" + count + "条销售单");
+		return cr;
+	}
 
 	/**
 	 * 根据产品和客户查找以往价格
@@ -1553,7 +1565,7 @@ public class LedgerAction {
 	 * 
 	 * @return cr
 	 */
-	@RequestMapping(value = "/ledger/auditSale", method = RequestMethod.GET)
+	@RequestMapping(value = "/ledger/auditSale", method = RequestMethod.POST)
 	@ResponseBody
 	public CommonResponse auditSale(String ids, Integer audit) {
 		CommonResponse cr = new CommonResponse();

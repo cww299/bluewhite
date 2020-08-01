@@ -3,12 +3,14 @@ package com.bluewhite.ledger.entity.poi;
 import java.util.Date;
 
 import com.alibaba.excel.annotation.ExcelProperty;
+import com.fasterxml.jackson.annotation.JsonFormat;
 
 public class SalePoi {
 
 	/**
 	 * 发货日期
 	 */
+	@JsonFormat(pattern = "yyyy-MM-dd hh:mm:ss")
 	@ExcelProperty(index = 0)
 	private Date sendDate;
 
@@ -35,6 +37,34 @@ public class SalePoi {
 	 */
 	@ExcelProperty(index = 4)
 	private String customerName;
+	
+	/**
+	 * 总价
+	 */
+	@ExcelProperty(index = 5)
+	private Double sumPrice;
+	
+	/**
+	 * 单价
+	 */
+	@ExcelProperty(index = 6)
+	private Double price;
+
+	/**
+	 * 业务员
+	 */
+	@ExcelProperty(index = 7)
+	private String userName;
+	
+	/**
+	 * 所在行
+	 */
+	private Integer row;
+	
+	/**
+	 * 错误原因
+	 */
+	private String errorInfo;
 
 	public Date getSendDate() {
 		return sendDate;
@@ -74,6 +104,46 @@ public class SalePoi {
 
 	public void setCustomerName(String customerName) {
 		this.customerName = customerName;
+	}
+
+	public Double getSumPrice() {
+		return sumPrice;
+	}
+
+	public void setSumPrice(Double sumPrice) {
+		this.sumPrice = sumPrice;
+	}
+
+	public Double getPrice() {
+		return price;
+	}
+
+	public void setPrice(Double price) {
+		this.price = price;
+	}
+
+	public String getUserName() {
+		return userName;
+	}
+
+	public void setUserName(String userName) {
+		this.userName = userName;
+	}
+
+	public Integer getRow() {
+		return row;
+	}
+
+	public void setRow(Integer row) {
+		this.row = row;
+	}
+
+	public String getErrorInfo() {
+		return errorInfo;
+	}
+
+	public void setErrorInfo(String errorInfo) {
+		this.errorInfo = errorInfo;
 	}
 	
 }

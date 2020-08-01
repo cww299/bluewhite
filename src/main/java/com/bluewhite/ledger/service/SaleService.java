@@ -3,6 +3,7 @@ package com.bluewhite.ledger.service;
 import java.util.List;
 
 import com.bluewhite.base.BaseCRUDService;
+import com.bluewhite.common.entity.CommonResponse;
 import com.bluewhite.common.entity.PageParameter;
 import com.bluewhite.common.entity.PageResult;
 import com.bluewhite.common.utils.excel.ExcelListener;
@@ -72,6 +73,14 @@ public interface SaleService  extends BaseCRUDService<Sale,Long>{
 
 	public int deleteSale(String ids);
 
-	int excelAddSale(ExcelListener excelListener, Long customerType);
+	CommonResponse excelAddSale(ExcelListener excelListener, Long customerType);
+
+	/**
+	 * 标记销售单单价异常
+	 * @param ids
+	 * @param priceError
+	 * @return
+	 */
+	public int priceError(String ids, Integer priceError);
 
 }

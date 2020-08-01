@@ -640,7 +640,7 @@ public class TemporaryPackAction {
     /**
      * 生成销售单
      */
-    @RequestMapping(value = "/temporaryPack/addSale", method = RequestMethod.GET)
+    @RequestMapping(value = "/temporaryPack/addSale", method = RequestMethod.POST)
     @ResponseBody
     public CommonResponse addSale(String ids) {
         CommonResponse cr = new CommonResponse();
@@ -652,7 +652,7 @@ public class TemporaryPackAction {
     /**
      * 删除销售单
      */
-    @RequestMapping(value = "/temporaryPack/deleteSale", method = RequestMethod.GET)
+    @RequestMapping(value = "/temporaryPack/deleteSale", method = RequestMethod.POST)
     @ResponseBody
     public CommonResponse deleteSale(String ids) {
         CommonResponse cr = new CommonResponse();
@@ -678,10 +678,7 @@ public class TemporaryPackAction {
 		InputStream inputStream = file.getInputStream();
 		ExcelListener excelListener = new ExcelListener();
 		EasyExcel.read(inputStream, SalePoi.class, excelListener).sheet().doRead();
-		int count = saleService.excelAddSale(excelListener,customerType);
-		inputStream.close();
-		cr.setMessage("成功导入" + count + "条数据");
-		return cr;
+		return saleService.excelAddSale(excelListener,customerType);
 	}
 
 }

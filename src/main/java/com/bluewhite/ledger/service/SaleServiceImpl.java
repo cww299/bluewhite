@@ -19,6 +19,7 @@ import com.bluewhite.base.BaseServiceImpl;
 import com.bluewhite.common.BeanCopyUtils;
 import com.bluewhite.common.Constants;
 import com.bluewhite.common.ServiceException;
+import com.bluewhite.common.entity.CommonResponse;
 import com.bluewhite.common.entity.PageParameter;
 import com.bluewhite.common.entity.PageResult;
 import com.bluewhite.common.utils.DatesUtil;
@@ -37,6 +38,8 @@ import com.bluewhite.product.product.dao.ProductDao;
 import com.bluewhite.product.product.entity.Product;
 import com.bluewhite.production.temporarypack.QuantitativeChild;
 import com.bluewhite.production.temporarypack.QuantitativeChildDao;
+import com.bluewhite.system.user.dao.UserDao;
+import com.bluewhite.system.user.entity.User;
 @Service
 public class SaleServiceImpl extends BaseServiceImpl<Sale, Long> implements SaleService  {
 	
@@ -52,6 +55,8 @@ public class SaleServiceImpl extends BaseServiceImpl<Sale, Long> implements Sale
 	private ProductDao productDao;
 	@Autowired
 	private CustomerDao customerDao;
+	@Autowired
+	private UserDao userDao;
 	
 	@Override
 	public PageResult<Sale> findSalePage(Sale param, PageParameter page) {
@@ -66,7 +71,16 @@ public class SaleServiceImpl extends BaseServiceImpl<Sale, Long> implements Sale
 				predicate.add(cb.like(root.get("customer").get("name").as(String.class),
 						"%" + param.getCustomerName() + "%"));
 			}
-
+			// 按业务员
+			if (!StringUtils.isEmpty(param.getUserName())) {
+				predicate.add(cb.like(root.get("customer").get("user").get("userName").as(String.class),
+						"%" + param.getUserName() + "%"));
+			}
+			// 按客户类型
+			if (param.getCustomerType() != null) {
+				predicate.add(cb.equal(root.get("customer").get("customerTypeId").as(Long.class),
+						param.getCustomerType()));
+			}
 			// 是否审核
 			if (param.getAudit() != null) {
 				predicate.add(cb.equal(root.get("audit").as(Integer.class), param.getAudit()));
@@ -96,6 +110,10 @@ public class SaleServiceImpl extends BaseServiceImpl<Sale, Long> implements Sale
 			if (!StringUtils.isEmpty(param.getOrderTimeBegin()) && !StringUtils.isEmpty(param.getOrderTimeEnd())) {
 				predicate.add(cb.between(root.get("sendDate").as(Date.class), param.getOrderTimeBegin(),
 						param.getOrderTimeEnd()));
+			}
+			// 按单价异常
+			if (param.getPriceError() != null) {
+				predicate.add(cb.equal(root.get("priceError").as(Integer.class), param.getPriceError()));
 			}
 			Predicate[] pre = new Predicate[predicate.size()];
 			query.where(predicate.toArray(pre));
@@ -261,6 +279,23 @@ public class SaleServiceImpl extends BaseServiceImpl<Sale, Long> implements Sale
 		return count;
 	}
 
+	@Override
+	public int priceError(String ids, Integer priceError) {
+		int count = 0;
+		List<Long> allId = new ArrayList<Long>();
+		if (!StringUtils.isEmpty(ids)) {
+			for(String id :  ids.split(",")) {
+				allId.add(Long.parseLong(id));
+			}
+			List<Sale> list = dao.findByIdIn(allId);
+			for(Sale sale : list) {
+				sale.setPriceError(priceError);
+			}
+			dao.save(list);
+			count = list.size();
+		}
+		return count;
+	}
 	
 
 	@Override
@@ -275,6 +310,14 @@ public class SaleServiceImpl extends BaseServiceImpl<Sale, Long> implements Sale
 			if (param.getAudit() != null) {
 				predicate.add(cb.equal(root.get("audit").as(Integer.class), param.getAudit()));
 			}
+			// 是否电商
+			if (param.getCustomerType() != null) {
+				predicate.add(cb.equal(root.get("customer").get("customerTypeId").as(Long.class), param.getCustomerType()));
+			}
+			// 按业务员
+            if (param.getUserName() != null && !param.getUserName().isEmpty()) {
+            	predicate.add(cb.like(root.get("customer").get("user").get("userName").as(String.class), "%" + param.getUserName() + "%"));
+            }
 			// 按发货日期
 			if (!StringUtils.isEmpty(param.getOrderTimeBegin()) && !StringUtils.isEmpty(param.getOrderTimeEnd())) {
 				predicate.add(cb.between(root.get("sendDate").as(Date.class), param.getOrderTimeBegin(),
@@ -289,6 +332,11 @@ public class SaleServiceImpl extends BaseServiceImpl<Sale, Long> implements Sale
 
 	@Override
 	public List<Sale> getSalePrice(Sale sale) {
+		// 457=电商  459=线下
+		if(sale.getCustomerType().equals(457L)) {
+			return dao.findByProductIdAndBacthNumberAndAuditOrderBySendDateDesc(sale.getProductId(), 
+					sale.getBacthNumber(), 1);
+		}
 		return dao.findByProductIdAndCustomerIdAndAudit(sale.getProductId(),
 				sale.getCustomerId(), 1);
 	}
@@ -325,76 +373,132 @@ public class SaleServiceImpl extends BaseServiceImpl<Sale, Long> implements Sale
 
 	@Override
 	@Transactional
-	public int excelAddSale(ExcelListener excelListener, Long customerType) {
+	public CommonResponse excelAddSale(ExcelListener excelListener, Long customerType) {
+		// 457=电商  459=线下
+		boolean isDs = customerType == 457;
 		int count = 0;
 	    SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd");
         // 获取导入的销售单
+	    List<SalePoi> errorList = new ArrayList<>();
         List<Object> excelListenerList = excelListener.getData();
         for (Object object : excelListenerList) {
+        	Integer row = (excelListenerList.indexOf(object) + 1);
         	SalePoi poi = (SalePoi)object;
+        	poi.setRow(row);
         	if(poi.getProductName()== null || poi.getProductName().isEmpty() || poi.getSendDate() == null ||
-        	   poi.getCustomerName()== null || poi.getCustomerName().isEmpty() || poi.getBacthNumber() == null ||
-        	   poi.getBacthNumber().isEmpty() || poi.getCount() == null) {
-        		throw new ServiceException("导入的数据第 " + (excelListenerList.indexOf(object) + 1) + "行存在空数据，请检查");
+        	    poi.getCustomerName()== null || poi.getCustomerName().isEmpty() || poi.getBacthNumber() == null ||
+        	    poi.getBacthNumber().isEmpty() || poi.getCount() == null) {
+        		poi.setErrorInfo("存在空数据");
+        		errorList.add(poi);
+        		continue;
         	}
+        	// 如果导入的是电商
+        	if(isDs) {
+        		if(poi.getUserName() == null || poi.getUserName().isEmpty() || poi.getSumPrice() == null || 
+        			poi.getPrice() == null) {
+        			poi.setErrorInfo("存在空数据");
+            		errorList.add(poi);
+        			continue;
+        		}
+        	}
+        	// 查找导入的商品
         	List<Product> pList = productDao.findByName(poi.getProductName());
         	if(pList.size() == 0) {
-        		throw new ServiceException("商品：" + poi.getProductName() + "不存在，请确认是否有误！");
+        		poi.setErrorInfo("商品名不存在");
+        		errorList.add(poi);
+        		continue;
         	}
-        	// 457=电商  459=线下
+        	// 查找导入的客户，如果是电商客户不存在则新增、否则报错
         	Customer customer = customerDao.findByNameAndCustomerTypeId(poi.getCustomerName(), customerType);
         	if(customer == null || customer.getId() == null) {
-        		if(customerType==459)
-        			throw new ServiceException("客户：" + poi.getCustomerName() + "不存在，请确认是否有误！");
-        		else {
+        		if(isDs) {
         			customer = new Customer();
         			customer.setName(poi.getCustomerName());
         			customer.setCustomerTypeId(customerType);
-        			customer = customerDao.save(customer);
+        		} else {
+        			poi.setErrorInfo("客户名不存在");
+            		errorList.add(poi);
+        			continue;
         		}
+        	}
+        	// 如果是电商，且客户没有业务员，则将该客户的业务员设置为当前导入业务员
+        	if(isDs && customer.getUserId() == null) {
+        		User user = userDao.findByUserName(poi.getUserName());
+        		if(user == null || user.getId() == null) {
+        			poi.setErrorInfo("业务员不存在");
+            		errorList.add(poi);
+        			continue;
+        		}
+        		customer.setUserId(user.getId());
+        		customer = customerDao.save(customer);
         	}
         	Date time = poi.getSendDate();
         	int saleOrderSize = dao.findBySendDateBetween(time, DatesUtil.getLastDayOftime(time)).size() + 1;
         	Long pid = pList.get(0).getId();
         	Long cid = customer.getId();
-        	Sale sale = dao.findByproductIdAndCustomerIdAndSendDate(pid,cid,time);
+        	Sale sale = new Sale(); 
+        	/*
+        	dao.findByproductIdAndCustomerIdAndSendDate(pid,cid,time);
         	if(sale != null && sale.getId() != null) {
-        		sale.setCount(sale.getCount() + poi.getCount());
+        		poi.setErrorInfo("存在相同订单");
+        		errorList.add(poi);
+        		continue;
         	} else {
-        		// 发货日期
-        		sale.setSendDate(poi.getSendDate());
-        		// 实际数量
-        		sale.setCount(poi.getCount());
-        		// 批次号
-        		sale.setBacthNumber(poi.getBacthNumber());
-        		// 产品id
-        		sale.setProductId(pid);
-        		// 客户
-        		sale.setCustomerId(cid);
-        		// 生成销售编号
-        		sale.setSaleNumber(Constants.XS + "-" + sdf.format(time) + "-" + StringUtil.get0LeftString(saleOrderSize++, 4));
-        		// 未审核
-        		sale.setAudit(0);
-        		// 未拥有版权
-        		sale.setCopyright(0);
-        		// 未收货
-        		sale.setDelivery(1);
-        		// 业务员未确认数据
-        		sale.setDeliveryStatus(0);
-        		// 价格
-        		sale.setPrice(0.0);
-        		// 判定是否拥有版权
-        		String name = poi.getProductName();
-        		if (name.contains(Constants.LX)  || name.contains(Constants.KT)
-        				|| name.contains(Constants.MW) || name.contains(Constants.BM)
-        				|| name.contains(Constants.LP) || name.contains(Constants.AB)
-        				|| name.contains(Constants.ZMJ) || name.contains(Constants.XXYJN)) {
-        			sale.setCopyright(1);
-        		}
-        	}
+        		sale = new Sale();
+    		}
+        	*/
+        	
+    		// 发货日期
+    		sale.setSendDate(poi.getSendDate());
+    		// 实际数量
+    		sale.setCount(poi.getCount());
+    		// 批次号
+    		sale.setBacthNumber(poi.getBacthNumber());
+    		// 产品id
+    		sale.setProductId(pid);
+    		// 客户
+    		sale.setCustomerId(cid);
+    		// 生成销售编号
+    		sale.setSaleNumber(Constants.XS + "-" + sdf.format(time) + "-" + StringUtil.get0LeftString(saleOrderSize++, 4));
+    		// 未审核
+    		sale.setAudit(0);
+    		// 未拥有版权
+    		sale.setCopyright(0);
+    		// 未收货
+    		sale.setDelivery(1);
+    		// 业务员未确认数据
+    		sale.setDeliveryStatus(0);
+    		// 价格
+    		sale.setPrice(0.0);
+    		// 判定是否拥有版权
+    		String name = poi.getProductName();
+    		if (name.contains(Constants.LX)  || name.contains(Constants.KT)
+    				|| name.contains(Constants.MW) || name.contains(Constants.BM)
+    				|| name.contains(Constants.LP) || name.contains(Constants.AB)
+    				|| name.contains(Constants.ZMJ) || name.contains(Constants.XXYJN)) {
+    			sale.setCopyright(1);
+    		}
+    		sale.setPriceError(0);
+    		// 如果是电商
+    		if(isDs) {
+    			sale.setPrice(poi.getPrice());
+    			sale.setSumPrice(poi.getSumPrice());
+    			// 查找以往价格、按正序排序
+            	List<Sale> salePrice = dao.findByProductIdAndBacthNumberAndAuditOrderBySendDateDesc(pid,poi.getBacthNumber(),1);
+            	if(salePrice != null && salePrice.size() > 0) {
+            		if(salePrice.get(0).getPrice().compareTo(poi.getPrice()) != 0) {
+            			sale.setPriceError(1);
+            		}
+            	}
+    		}
             dao.save(sale);
             count++;
         }
-        return count;
+        CommonResponse cr = new CommonResponse();
+        cr.setData(errorList);
+        cr.setMessage("成功导入：" + count + "条数据");
+        return cr;
 	}
+
+	
 }
