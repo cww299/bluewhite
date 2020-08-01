@@ -22,4 +22,6 @@ public interface SaleDao  extends BaseRepository<Sale, Long>{
 
 	List<Sale> findByProductIdAndCustomerIdAndAuditOrderBySendDateDesc(Long pid, Long cid, int i);
 
+	List<Sale> findByProductIdAndBacthNumberAndAuditOrderBySendDateDesc(Long pid, String bacthNumber, int i);
+
 }

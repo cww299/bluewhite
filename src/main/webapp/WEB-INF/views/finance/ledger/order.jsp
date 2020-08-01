@@ -159,7 +159,13 @@ layui.config({
 						var index = $(elem).closest('tr').attr('data-index');
 						var trData = table.cache['tableData'][index];
 						myutil.getData({
-							url:'${ctx}/ledger/getSalePrice?customerId='+trData.customer.id+'&productId='+trData.product.id,
+							url:'${ctx}/ledger/getSalePrice',
+							data: {
+								customerId: trData.customer.id,
+								productId: trData.product.id,
+								bacthNumber: trData.bacthNumber,
+								customerType: trData.customer.customerTypeId,
+							},
 							done: function(data){
 								var html = '无以往价格';
 								if(data.length!=0){

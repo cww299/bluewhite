@@ -134,7 +134,7 @@ public class LedgerAction {
 						"offshorePay", "acceptPay", "disputePay", "deliveryStatus", "warehouse", "warehouseType",
 						"confirm", "confirmNumber","priceError")
 				.addRetainTerm(BaseData.class, "id", "name")
-				.addRetainTerm(Customer.class, "id", "name", "user")
+				.addRetainTerm(Customer.class, "id", "name", "user", "customerTypeId")
 				.addRetainTerm(User.class, "id", "userName")
 				.addRetainTerm(Product.class, "id", "name", "number");
 	}

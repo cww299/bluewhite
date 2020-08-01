@@ -332,6 +332,11 @@ public class SaleServiceImpl extends BaseServiceImpl<Sale, Long> implements Sale
 
 	@Override
 	public List<Sale> getSalePrice(Sale sale) {
+		// 457=电商  459=线下
+		if(sale.getCustomerType().equals(457L)) {
+			return dao.findByProductIdAndBacthNumberAndAuditOrderBySendDateDesc(sale.getProductId(), 
+					sale.getBacthNumber(), 1);
+		}
 		return dao.findByProductIdAndCustomerIdAndAudit(sale.getProductId(),
 				sale.getCustomerId(), 1);
 	}
@@ -479,9 +484,9 @@ public class SaleServiceImpl extends BaseServiceImpl<Sale, Long> implements Sale
     			sale.setPrice(poi.getPrice());
     			sale.setSumPrice(poi.getSumPrice());
     			// 查找以往价格、按正序排序
-            	List<Sale> salePrice = dao.findByProductIdAndCustomerIdAndAuditOrderBySendDateDesc(pid,cid,1);
+            	List<Sale> salePrice = dao.findByProductIdAndBacthNumberAndAuditOrderBySendDateDesc(pid,poi.getBacthNumber(),1);
             	if(salePrice != null && salePrice.size() > 0) {
-            		if(salePrice.get(0).getPrice() != poi.getPrice()) {
+            		if(salePrice.get(0).getPrice().compareTo(poi.getPrice()) != 0) {
             			sale.setPriceError(1);
             		}
             	}
