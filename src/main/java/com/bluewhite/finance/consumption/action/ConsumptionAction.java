@@ -44,7 +44,7 @@ public class ConsumptionAction {
 						"expenseDate", "paymentMoney", "paymentDate", "withholdReason", "remark", "withholdMoney",
 						"settleAccountsMode", "remark", "flag", "taxPoint","batchNumber", "realityDate", "deleteFlag",
 						"orgName","content","orderOutSource","logistics","expectDate","budgetMoney", 
-						"logisticsNumber")
+						"logisticsNumber", "sendOrderId", "sendOrder")
 				.addRetainTerm(OrderOutSource.class, "id","remark", "outsourceTask","outSourceNumber","materialRequisition")
 				.addRetainTerm(MaterialRequisition.class, "id","order")
 				.addRetainTerm(User.class, "id","userName")
