@@ -1,5 +1,6 @@
 package com.bluewhite.finance.consumption.service;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
@@ -242,10 +243,20 @@ public class ConsumptionServiceImpl extends BaseServiceImpl<Consumption, Long> i
             case 4:
                 break;
             case 5:
+            	// 修改父订单差额
             	if(originalMoney != null) {
             		Consumption parent = dao.findOne(consumption.getParentId());
             		parent.setMoney(NumUtils.sum(parent.getMoney(), -money, originalMoney));
         		    dao.save(parent);
+            	}
+            	// 修改物流编号，更新发货单物流编号、额外费用、总物流费用
+            	SendOrder sendOrder = consumption.getSendOrder();
+            	if(sendOrder != null) {
+            		sendOrder.setLogisticsNumber(consumption.getLogisticsNumber());
+            		sendOrder.setLogisticsPrice(BigDecimal.valueOf(consumption.getMoney()));
+            		sendOrder.setExtraPrice(BigDecimal.valueOf(
+            				NumUtils.sub(consumption.getMoney(), consumption.getBudgetMoney())));
+            		sendOrderService.save(sendOrder);
             	}
                 break;
             case 6:
