@@ -78,7 +78,7 @@ layui.extend({
 			{ field: "budgetMoney", title: "预算金额",  }, 
 			{ field: "diffMoney", title: "差额",  templet: function(d) {
 				return ((d.money || 0.0) - (d.budgetMoney || 0.0)).toFixed(2)
-			}}, 
+			}},
 			{ field: "logisticsNumber", title: "物流编号", edit: true, }, 
 			{ field: "remark", title: "备注",  edit: true, }, 
 			{ field: "expenseDate", title: "申请日期", type:'dateTime', }, 
