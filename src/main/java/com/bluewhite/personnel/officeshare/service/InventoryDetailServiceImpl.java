@@ -246,13 +246,18 @@ public class InventoryDetailServiceImpl extends BaseServiceImpl<InventoryDetail,
         for (BaseData bData : baseDatas) {
             if (mapAttendance.size() > 0) {
                 Map<String, Object> map = new HashMap<>();
+                long size = onventoryDetailList.stream().filter(InventoryDetail -> InventoryDetail.getOrgNameId() != null
+                    && InventoryDetail.getOrgNameId().equals(bData.getId())).count();
+                if(size==0) {
+                    continue;
+                }
                 List<InventoryDetail> psList = onventoryDetailList.stream()
                     .filter(InventoryDetail -> InventoryDetail.getOrgNameId() != null
                         && InventoryDetail.getOrgNameId().equals(bData.getId())
                         && InventoryDetail.getOfficeSupplies().getType().equals(onventoryDetail.getType()))
                     .collect(Collectors.toList());
                 double sumCost = psList.stream().mapToDouble(InventoryDetail::getOutboundCost).sum();
-                sumCost = NumUtils.sum(sumCost, !bData.getId().equals((long)60) ? averageLogisticsCost : 0);
+                sumCost = bData.getId().equals((long)60) ? averageLogisticsCost : NumUtils.sum(sumCost,averageLogisticsCost);
                 map.put("orgName", bData.getName());
                 map.put("sumCost", NumUtils.round(sumCost, 2));
                 map.put("accounted", NumUtils.mul(NumUtils.div(sumCost, sumCostList, 4), 100) + "%");
