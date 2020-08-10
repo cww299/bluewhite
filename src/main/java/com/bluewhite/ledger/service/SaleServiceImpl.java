@@ -487,6 +487,9 @@ public class SaleServiceImpl extends BaseServiceImpl<Sale, Long> implements Sale
             	List<Sale> salePrice = dao.findByProductIdAndBacthNumberAndAuditOrderBySendDateDesc(pid,poi.getBacthNumber(),1);
             	if(salePrice != null && salePrice.size() > 0) {
             		if(salePrice.get(0).getPrice().compareTo(poi.getPrice()) != 0) {
+            		double sub = NumUtils.sub(salePrice.get(0).getPrice(),poi.getPrice());
+            		if(salePrice.get(0).getPrice().compareTo(poi.getPrice()) != 0 && 
+            				(sub > 0.005 || sub < -0.05 )) {
             			sale.setPriceError(1);
             		}
             	}

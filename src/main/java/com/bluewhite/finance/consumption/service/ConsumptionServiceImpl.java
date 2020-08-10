@@ -1,5 +1,6 @@
 package com.bluewhite.finance.consumption.service;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
@@ -242,10 +243,20 @@ public class ConsumptionServiceImpl extends BaseServiceImpl<Consumption, Long> i
             case 4:
                 break;
             case 5:
+            	// 修改父订单差额
             	if(originalMoney != null) {
             		Consumption parent = dao.findOne(consumption.getParentId());
             		parent.setMoney(NumUtils.sum(parent.getMoney(), -money, originalMoney));
         		    dao.save(parent);
+            	}
+            	// 修改物流编号，更新发货单物流编号、额外费用、总物流费用
+            	SendOrder sendOrder = consumption.getSendOrder();
+            	if(sendOrder != null) {
+            		sendOrder.setLogisticsNumber(consumption.getLogisticsNumber());
+            		sendOrder.setLogisticsPrice(BigDecimal.valueOf(consumption.getMoney()));
+            		sendOrder.setExtraPrice(BigDecimal.valueOf(
+            				NumUtils.sub(consumption.getMoney(), consumption.getBudgetMoney())));
+            		sendOrderService.save(sendOrder);
             	}
                 break;
             case 6:
@@ -295,7 +306,8 @@ public class ConsumptionServiceImpl extends BaseServiceImpl<Consumption, Long> i
                                 consumptionList.stream().forEach(co -> co.setParentId(null));
                             }
                             dao.save(consumptionList);
-                        } else {// 不为预算单时，当拥有父id，属于子报销单，删除同时更新父预算报销单的金额
+                        } else {
+                        	// 不为预算单时，当拥有父id，属于子报销单，删除同时更新父预算报销单的金额
                             if (consumption.getType() == 1 && consumption.getParentId() != null) {
                                 Consumption pConsumption = dao.findOne(consumption.getParentId());
                                 pConsumption.setMoney(NumUtils.sum(pConsumption.getMoney(), consumption.getMoney()));
@@ -311,9 +323,12 @@ public class ConsumptionServiceImpl extends BaseServiceImpl<Consumption, Long> i
                                 sendOrderService.save(sendOrder);
                             }
                             if (consumption.getParentId() != null && consumption.getParentId() != 0) {
+                            	// 修改父订单信息
                                 Consumption consumptionPrent = dao.findOne(consumption.getParentId());
                                 consumptionPrent
                                     .setMoney(NumUtils.sub(consumptionPrent.getMoney(), consumption.getMoney()));
+                                consumptionPrent
+                                	.setBudgetMoney(NumUtils.sub(consumptionPrent.getBudgetMoney(), consumption.getBudgetMoney()));
                                 if (null != consumptionPrent && consumptionPrent.getMoney() == 0) {
                                     dao.delete(consumptionPrent);
                                 } else {

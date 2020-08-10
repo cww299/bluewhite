@@ -188,7 +188,7 @@ layui.config({
 		       { title:'是否含税',    field:'tax',	 width:100, type:'select',select:{  data: isTax, layFilter:'changePriceSelect', },  },
 		       { title:'单价',    field:'singerPrice',width:120,templet: getSingerPriceSelect(), },
 		       { title:'已发货费用',   field:'sendPrice',	width:100,  },
-		       { title:'额外费用',   field:'extraPrice',	width:100, edit:'number', },
+		       { title:'额外费用',   field:'extraPrice',	width:100,  },
 		       { title:'物流总费用',   field:'logisticsPrice',	width:120, },  
 		       { title:'发货地点',   field:'warehouseType_name',	},  
 		       { title:'生成',   field:'audit',	width:60,transData:true, },
@@ -299,7 +299,7 @@ layui.config({
 		layer.open({
 			type: 1,
 			title: '批量修改',
-			area:['500px','450px'],
+			area:['500px','400px'],
 			btn:['保存','取消'],
 			btnAlign:'c',
 			content:[
@@ -337,6 +337,7 @@ layui.config({
 					      '<select lay-search  name="singerPrice"></select>',
 					    '</div>',
 					  '</div>',
+					  /*
 					  '<div class="layui-form-item" pane>',
 					    '<label class="layui-form-label">额外费用</label>',
 					    '<div class="layui-input-block">',
@@ -344,6 +345,7 @@ layui.config({
 					    '</div>',
 					    '<span lay-submit lay-filter="moreEditBtn"></span>',
 					  '</div>',
+					  */
 					'</div>',
 				'</div>',
 			].join(' '),

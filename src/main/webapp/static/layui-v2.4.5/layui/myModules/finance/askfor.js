@@ -78,8 +78,8 @@ layui.extend({
 			{ field: "budgetMoney", title: "预算金额",  }, 
 			{ field: "diffMoney", title: "差额",  templet: function(d) {
 				return ((d.money || 0.0) - (d.budgetMoney || 0.0)).toFixed(2)
-			}}, 
-			{ field: "logisticsNumber", title: "物流编号",  }, 
+			}},
+			{ field: "logisticsNumber", title: "物流编号", edit: true, }, 
 			{ field: "remark", title: "备注",  edit: true, }, 
 			{ field: "expenseDate", title: "申请日期", type:'dateTime', }, 
 			{ field: "expectDate", title: "预计付款日期",type:'dateTime', edit:true, }, 
@@ -279,6 +279,7 @@ layui.extend({
 				saveUrl:'/fince/addConsumption?type='+askfor.type,
 				deleUrl:'/fince/deleteConsumption',
 				field:{ customer_id:'customerId',user_id:'userId',contact_id:'contactId' },
+				isReload: true,
 			},
 			verify:{
 				price: ['money','withholdMoney'],
@@ -286,13 +287,136 @@ layui.extend({
 					'customer_id','user_id','contact_id'],
 			},
 			limits:[10,20,50,100,200,],
+			toolbar: askfor.type != 5 ? '' : [
+					'<span class="layui-btn layui-btn-sm" lay-event="lookoverSendOrder">查看发货单</span>'
+				].join(' '),
 			curd:{
 				btn: askfor.type==5?[4]:[1,2,3,4],
+				otherBtn: function(obj) {
+					if(obj.event == 'lookoverSendOrder') {
+						var check = table.checkStatus('tableData').data
+						var datas = []
+						check.forEach(c => {
+							datas.push(c.sendOrder)
+						})
+						if(datas.length == 0)
+							return myutil.emsg("请选择查看的数据")
+						layer.open({
+							type: 1,
+							title: '查看发货单',
+							area: ['80%', '70%'],
+							shadeClose: true,
+							content: [
+								'<div style="padding:10px;">',
+									'<table id="lookTable" lay-filter="lookTable"></table>',
+								'</div>',
+							].join(''),
+							success: function(){
+								mytable.render({
+									elem: '#lookTable',
+									data: datas,
+									scrollX : true,
+									toolbar: [
+										'<div><span lay-event="info" class="layui-btn layui-btn-sm">贴包明细</span></div>'
+									].join(' '),
+									cols: [[
+										 { type:'checkbox',},
+									       { title:'客户名称',   field:'customer_name', width: 150, },
+									       { title:'发货时间',   field:'sendTime', width:110, type:'date', },
+									       { title:'总个数',   field:'number',  width: 100,  },
+									       { title:'发货包数',    field:'sendPackageNumber', width:100,	},
+									       { title:'物流编号',   field:'logisticsNumber',width:130, 	},
+									       { title:'物流点',   field:'logistics_id', width:150, },
+									       { title:'外包装',   field:'outerPackaging_id',width:100, 	 },
+									       { title:'是否含税',    field:'tax',	 width:100,   },
+									       { title:'单价',    field:'singerPrice',width:120 },
+									       { title:'已发货费用',   field:'sendPrice',	width:100,  },
+									       { title:'额外费用',   field:'extraPrice',	width:100, },
+									       { title:'物流总费用',   field:'logisticsPrice',	width:120, },  
+									       { title:'发货地点',   field:'warehouseType_name', width: 150, },  
+									       { title:'备注',   field:'remarks',	 width: 100, },  
+									]]
+								})
+								table.on('toolbar(lookTable)',function(obj) {
+									if(obj.event=='info') {
+										var check = table.checkStatus('lookTable').data
+										if(check.length!=1)
+											return myutil.emsg("请选择一条数据查看贴包明细");
+										openInfoWin(check[0]);
+									}
+								})
+							}
+						})
+					}
+				}
 			},
 			cellMinWidth:120,
 			cols: [ allCols[askfor.type].concat(lastCols) ],
 		});
 		
+		function openInfoWin(data){
+			layer.open({
+				type:1,
+				title:'贴包明细',
+				area:['80%','70%'],
+				shadeClose: true,
+				content:[
+					'<div style="padding:10px">',
+						"<table class='layui-form searchTable'>",
+							'<tr>',
+								'<td>产品名：</td>',
+								'<td><input class="layui-input" name="productName"></td>',
+								'<td><span class="layui-btn" lay-submit lay-filter="searchTable">搜索</span></td>',
+							'</tr>',
+						'<table>',
+						'<table id="infoTable" lay-filter="infoTable"></table>',
+					'</div>,'
+				].join(' '),
+				success:function(layerElem,layerIndex){
+					form.on('submit(searchTable)',function(obj){
+						table.reload('infoTable',{
+							where: obj.field,
+						})
+					})
+					mytable.renderNoPage({
+						elem:'#infoTable',
+						limit:999,
+						parseData: function(r){
+							if(r.code==0){
+								var data = [];
+								var d = r.data;
+								for(var i=0,len=d.length;i<len;i++){
+									var child = d[i].quantitativeChilds;
+									if(!child)
+										continue;
+									for(var j=0,l=child.length;j<l;j++){
+										data.push($.extend({},child[j],{childId: child[j].id,},d[i])); 
+									}
+								}
+								return {  msg: r.message,  code: 0 , data: data, };
+							}
+							return {  msg: r.message,  code: 1500 , data: [], };
+						},
+						url: myutil.config.ctx+'/temporaryPack/getQuantitativeList?id='+data.id,
+						ifNull:'---',
+						cols:[[
+							{ type:'checkbox', },
+							{ title:'量化编号',field:'quantitativeNumber',width:175, },
+							{ title:'发货时间',field:'sendTime', type:'date',width:120,},
+							{ title:'客户',field:'customer_name', width:120,},
+							{ title:'是否发货',field:'flag', transData:true, width:100,},
+							{ title:'批次号',    field:'underGoods_bacthNumber',	minWidth:200, },
+					        { title:'产品名',    field:'underGoods_product_name', },
+					        { title:'单包个数',   field:'singleNumber',	width:100, },
+						]],
+						autoMerge:{
+				    	 field:['quantitativeNumber','vehicleNumber','time','sendTime','audit','print','flag','reconciliation',
+				    		 'user_userName','surplusSendNumber','surplusNumber','customer_name','0'], 
+				       },
+					})
+				}
+			})
+		}
 		form.on('submit(searchBtn)', function(obj) {
 			var f = obj.field;
 			var timeType = $('#selectone').val();
