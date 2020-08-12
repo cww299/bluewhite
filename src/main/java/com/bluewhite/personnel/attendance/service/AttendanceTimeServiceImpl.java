@@ -762,11 +762,12 @@ public class AttendanceTimeServiceImpl extends BaseServiceImpl<AttendanceTime, L
                                 if(al.getHolidayType() == 6) {
                                     oneAtList.get(0).setDutytime(NumUtils.sum(oneAtList.get(0).getDutytime(),time));
                                     oneAtList.get(0).setTurnWorkTime(NumUtils.sub(oneAtList.get(0).getTurnWorkTime(),time));
+                                } else {
+                                    
+                                    oneAtList.get(0).setDutytime(oneAtList.get(0).getDutytime() != 0.0 ?oneAtList.get(0).getDutytime() : time >= turnWorkTime ? turnWorkTime : time);
+                                    oneAtList.get(0).setTurnWorkTime(NumUtils.sub(turnWorkTime, oneAtList.get(0).getDutytime()));
+                                  
                                 }
-//                                else {
-//                                    oneAtList.get(0).setDutytime(time >= turnWorkTime ? turnWorkTime : time);
-//                                    oneAtList.get(0).setTurnWorkTime(NumUtils.sub(turnWorkTime, oneAtList.get(0).getDutytime()));
-//                                }
                                 if (time >= turnWorkTime) {
                                     time = NumUtils.sub(time, turnWorkTime);
                                     oneAtList.get(0).setLeaveTime(turnWorkTime);
