@@ -333,12 +333,19 @@ public class SaleServiceImpl extends BaseServiceImpl<Sale, Long> implements Sale
 	@Override
 	public List<Sale> getSalePrice(Sale sale) {
 		// 457=电商  459=线下
+		List<Sale> list = null;
 		if(sale.getCustomerType().equals(457L)) {
-			return dao.findByProductIdAndBacthNumberAndAuditOrderBySendDateDesc(sale.getProductId(), 
+			list = dao.findByProductIdAndBacthNumberAndAuditOrderBySendDateDesc(sale.getProductId(), 
 					sale.getBacthNumber(), 1);
+		} else {
+			list = dao.findByProductIdAndCustomerIdAndAudit(sale.getProductId(),
+					sale.getCustomerId(), 1);
 		}
-		return dao.findByProductIdAndCustomerIdAndAudit(sale.getProductId(),
-				sale.getCustomerId(), 1);
+		if(list != null && list.size() > 0) {
+			list = list.stream().filter(s -> s.getCustomer().getCustomerTypeId().equals(sale.getCustomerType()))
+					.collect(Collectors.toList());
+		}
+		return list;
 	}
 
 	@Override
@@ -485,6 +492,8 @@ public class SaleServiceImpl extends BaseServiceImpl<Sale, Long> implements Sale
     			sale.setSumPrice(poi.getSumPrice());
     			// 查找以往价格、按正序排序
             	List<Sale> salePrice = dao.findByProductIdAndBacthNumberAndAuditOrderBySendDateDesc(pid,poi.getBacthNumber(),1);
+            	salePrice = salePrice.stream().filter(s -> s.getCustomer().getCustomerTypeId().equals(customerType))
+            			.collect(Collectors.toList());
             	if(salePrice != null && salePrice.size() > 0) {
             		if(salePrice.get(0).getPrice().compareTo(poi.getPrice()) != 0) {
 	            		double sub = NumUtils.sub(salePrice.get(0).getPrice(),poi.getPrice());

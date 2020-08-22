@@ -250,14 +250,6 @@ public class Materiel extends BaseEntity<Long>{
 		this.convertUnitId = convertUnitId;
 	}
 
-	public BaseOne getUnit() {
-		return unit;
-	}
-
-	public void setUnit(BaseOne unit) {
-		this.unit = unit;
-	}
-
 	public BaseOne getConvertUnit() {
 		return convertUnit;
 	}
