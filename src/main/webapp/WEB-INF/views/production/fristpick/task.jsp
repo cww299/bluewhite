@@ -318,8 +318,8 @@
 								  			orderTimeBegin:orderTime[0],
 								  			orderTimeEnd:orderTime[1],  
 								  			flag:$('.selectchoice').val(),
+								  			quantitativeNumber: $('#quantitativeNumber').val(),
 								  	}
-						        
 						            self.loadPagination(_data);
 							     }
 					      }
@@ -367,6 +367,7 @@
 								  			orderTimeBegin:orderTime[0],
 								  			orderTimeEnd:orderTime[1], 
 								  			flag:$('.selectchoice').val(),
+								  			quantitativeNumber: $('#quantitativeNumber').val(),
 								  	}
 									self.loadPagination(_data);
 									layer.close(index);
@@ -442,6 +443,7 @@
 								  			orderTimeBegin:orderTime[0],
 								  			orderTimeEnd:orderTime[1], 
 								  			flag:$('.selectchoice').val(),
+								  			quantitativeNumber: $('#quantitativeNumber').val(),
 								  	}
 									self.loadPagination(_data);
 									layer.close(index);
@@ -620,6 +622,7 @@
 								  			orderTimeBegin:orderTime[0],
 								  			orderTimeEnd:orderTime[1], 
 								  			flag:$('.selectchoice').val(),
+								  			quantitativeNumber: $('#quantitativeNumber').val(),
 								  	}
 									self.loadPagination(_data);
 									layer.close(index);
@@ -857,6 +860,7 @@
 										  			orderTimeBegin:orderTime[0],
 										  			orderTimeEnd:orderTime[1], 
 										  			flag:$('.selectchoice').val(),
+										  			quantitativeNumber: $('#quantitativeNumber').val(),
 										  	}
 											self.loadPagination(_data);
 										}else{
