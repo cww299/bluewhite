@@ -226,7 +226,7 @@ layui.config({
 		if(opt.type==4){	//二楼机工增加针工价格
 			col = [
 		           { type:'checkbox' },
-			       { title:'批次号', 	field:'bacthNumber', },
+			       { title:'批次号', 	field:'bacthNumber', edit: true, },
 			       { title:'时间', 	field:'allotTime', type:'date', edit:true, },
 			       { title:'产品名', 	field:'product_name', },
 			       { title:'数量', 	field:'number',edit:true, },
