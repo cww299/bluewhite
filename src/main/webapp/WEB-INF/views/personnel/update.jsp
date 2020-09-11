@@ -46,11 +46,11 @@
 			<div class="layui-form-item">
 				<table>
 					<tr>
+						<td>部门:</td>
+						<td><select id="orgNameId" lay-filter="orgNameId" class="form-control search-query name" lay-search="true" name="orgNameId"><option value="">请选择</option></select></td>
+						<td>&nbsp;&nbsp;</td>
 						<td>人员:</td>
 						<td><select id="userId" class="form-control search-query name"  lay-search="true" name="userId"></select></td>
-						<td>&nbsp;&nbsp;</td>
-						<td>部门:</td>
-						<td><select id="orgNameId" class="form-control search-query name" lay-search="true" name="orgNameId"><option value="">请选择</option></select></td>
 						<td>&nbsp;&nbsp;</td>
 						<td>考勤汇总月份:</td>
 						<td><input name="orderTimeBegin" autocomplete="off" id="startTime" style="width: 200px;" placeholder="请输入考勤汇总月份" lay-verify="required" class="layui-input laydate-icon"></td>
@@ -106,6 +106,23 @@ layui.config({
 		, laydate = layui.laydate
 		, tablePlug = layui.tablePlug
 		, element = layui.element;
+		
+		form.on('select(orgNameId)', function(obj){
+			$.ajax({
+				url: '${ctx}/system/user/findUserList?foreigns=0&isAdmin=false&orgNameIds='+obj.value,
+				success: function(result) {
+					var htmls = '<option value="">请选择</option>';
+					$(result.data).each(function(i, o) {
+						htmls += '<option value=' + o.id + '>' + o.userName + '</option>'
+					})
+					$('#userId').val('');
+					$('#userId').html(htmls);
+					form.render('select');
+				},
+			});
+		});
+		
+		
 		laydate.render({
 			elem : '#startTime',
 			type : 'month',

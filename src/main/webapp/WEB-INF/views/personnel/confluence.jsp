@@ -49,15 +49,15 @@
 			<div class="layui-form-item">
 				<table>
 					<tr>
-						<td>人员:</td>
-						<td><select class="layui-input"  lay-search="true" id="userId" name="userId" >  
-								<option value="">请选择</option></select></td>
 						<shiro:lacksRole name="attendanceStatistician">
 							<td>&nbsp;&nbsp;</td>
 							<td>部门:</td>
-							<td><select  id="orgNameId" class="layui-input"  lay-search="true" name="orgNameId">
+							<td><select  id="orgNameId" lay-filter="orgNameId" class="layui-input" lay-search="true" name="orgNameId">
 									<option value="">请选择</option></select></td>
 						</shiro:lacksRole>
+						<td>人员:</td>
+						<td><select class="layui-input"  lay-search="true" id="userId" name="userId" >  
+								<option value="">请选择</option></select></td>
 						<td>&nbsp;&nbsp;</td>
 						<td>考勤汇总月份:</td>
 						<td><input name="orderTimeBegin" id="startTime" lay-verify="required" style="width: 200px;" placeholder="请输入考勤汇总月份" class="layui-input">
@@ -104,6 +104,23 @@ layui.config({
 		, myutil = layui.myutil
 		, tablePlug = layui.tablePlug 
 		, element = layui.element;
+		
+		if(document.getElementById('orgNameId')!=null){
+			form.on('select(orgNameId)', function(obj){
+				$.ajax({
+					url: '${ctx}/system/user/findUserList?foreigns=0&isAdmin=false&orgNameIds='+obj.value,
+					success: function(result) {
+						var htmls = '<option value="">请选择</option>';
+						$(result.data).each(function(i, o) {
+							htmls += '<option value=' + o.id + '>' + o.userName + '</option>'
+						})
+						$('#userId').val('');
+						$('#userId').html(htmls);
+						form.render('select');
+					},
+				});
+			})
+		}
 		
 		var bgColorCol = []; 		//记录变色的列
 		var bgColorRow = [];

@@ -18,6 +18,13 @@
 		<div class="layui-card-body">
 			<table class="layui-form" style="margin:10px 0px;">
 				<tr>
+					<shiro:lacksRole name="attendanceStatistician">
+						<td>部门:</td>
+						<td style="width:120px;">
+							<select name="orgNameId" lay-filter="orgNameId" id="department" lay-search>
+								<option value="">请选择</option></select></td>
+						<td>&nbsp;&nbsp;</td>
+					</shiro:lacksRole>
 					<td>&nbsp;&nbsp;</td>
 					<td>姓名:</td>
 					<td style="width:120px;"><select id="userId" name="userId" lay-search><option value="">请选择</option></select></td>
@@ -25,11 +32,6 @@
 					<td>编号:</td>
 					<td><input type="text" id="number" name="number" class="layui-input" /></td>
 					<td>&nbsp;&nbsp;</td>
-					<shiro:lacksRole name="attendanceStatistician">
-						<td>部门:</td>
-						<td style="width:120px;"><select name="orgNameId" id="department" lay-search><option value="">请选择</option></select></td>
-						<td>&nbsp;&nbsp;</td>
-					</shiro:lacksRole>
 					<td>时间:</td>
 					<td><input id="startTime" placeholder="请输入查找时间" class="layui-input" ></td>
 					<td>&nbsp;&nbsp;</td>
@@ -78,6 +80,23 @@ layui.config({
 		elem:'#startTime',
 		range:'~',
 	})
+	
+	if(document.getElementById('department')!=null) {
+		form.on('select(orgNameId)', function(obj){
+			$.ajax({
+				url: '${ctx}/system/user/findUserList?foreigns=0&isAdmin=false&orgNameIds='+obj.value,
+				success: function(result) {
+					var htmls = '<option value="">请选择</option>';
+					$(result.data).each(function(i, o) {
+						htmls += '<option value=' + o.id + '>' + o.userName + '</option>'
+					})
+					$('#userId').val('');
+					$('#userId').html(htmls);
+					form.render('select');
+				},
+			});
+		})
+	}
 	
 	var isAttend = true,orgId = '';	  //是否是考情记录员,和所在部门
 	;!(function(){

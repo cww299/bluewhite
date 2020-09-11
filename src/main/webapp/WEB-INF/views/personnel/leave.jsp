@@ -44,15 +44,15 @@
 			<div class="layui-form-item">
 				<table>
 					<tr>
-						<td>申请人:</td>
-						<td><select id="userId" class="layui-input " lay-search="true" name="userId"></select></td>
-						<td>&nbsp;&nbsp;</td>
 						<shiro:lacksRole name="attendanceStatistician">
 							<td>部门:</td>
-							<td><select id="orgNameId" class="layui-input "  lay-search="true" name="orgNameId">
+							<td><select id="orgNameId" lay-filter="orgNameId" class="layui-input "  lay-search="true" name="orgNameId">
 									<option value=""></option></select></td>
 							<td>&nbsp;&nbsp;</td>
 						</shiro:lacksRole>
+						<td>申请人:</td>
+						<td><select id="userId" class="layui-input " lay-search="true" name="userId"></select></td>
+						<td>&nbsp;&nbsp;</td>
 						<td>申请时间:</td>
 						<td><input id="startTime" name="orderTimeBegin" style="width: 310px;" placeholder="请输入开始时间" class="layui-input laydate-icon"></td>
 						<td>&nbsp;&nbsp;</td>
@@ -276,6 +276,23 @@
 				range : '~',
 			});
 			var moren = true;
+			
+			if(document.getElementById('orgNameId')!=null) {
+				form.on('select(orgNameId)', function(obj){
+					$.ajax({
+						url: '${ctx}/system/user/findUserList?foreigns=0&isAdmin=false&orgNameIds='+obj.value,
+						success: function(result) {
+							var htmls = '<option value="">请选择</option>';
+							$(result.data).each(function(i, o) {
+								htmls += '<option value=' + o.id + '>' + o.userName + '</option>'
+							})
+							$('#userId').val('');
+							$('#userId').html(htmls);
+							form.render('select');
+						},
+					});
+				})
+			}
 			
 			var isAttend = true,orgId = '';	  //是否是考情记录员,和所在部门
 			;!(function(){

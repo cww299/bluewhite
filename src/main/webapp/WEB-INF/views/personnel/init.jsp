@@ -48,12 +48,12 @@
 			<div class="layui-form-item">
 				<table>
 					<tr>
+						<td>部门:</td>
+						<td><select  id="orgNameId" lay-filter="orgNameId" class="layui-input" lay-search="true" name="orgNameId">
+							<option value="">请选择</option></select></td>
 						<td>人员:</td>
 						<td><select id="userId" class="layui-input"  lay-search="true" name="userId"></select></td>
 						<td>&nbsp;&nbsp;</td>
-						<td>部门:</td>
-						<td><select  id="orgNameId" class="layui-input" lay-search="true" name="orgNameId">
-							<option value="">请选择</option></select></td>
 						<td>&nbsp;&nbsp;</td>
 						<td>在离职状态:</td>
 						<td><select  id="quit" class="layui-input" lay-search="true" name="quit">
@@ -317,8 +317,23 @@ layui.config({
 			menuTree = layui.menuTree,
 			tablePlug = layui.tablePlug,
 			element = layui.element;
+		form.on('select(orgNameId)', function(obj){
+			$.ajax({
+				url: '${ctx}/system/user/findUserList?foreigns=0&isAdmin=false&orgNameIds='+obj.value,
+				success: function(result) {
+					var htmls = '<option value="">请选择</option>';
+					$(result.data).each(function(i, o) {
+						htmls += '<option value=' + o.id + '>' + o.userName + '</option>'
+					})
+					$('#userId').val('');
+					$('#userId').html(htmls);
+					form.render('select');
+				},
+			});
+		});
+		
 		//新增约定休息时间初始设定
-		(function(){
+		;!(function(){
 			laydate.render({
 				elem:'#agreedSetTime',
 				type:'date',
