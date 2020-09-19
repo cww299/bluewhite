@@ -91,6 +91,11 @@ public class ConsumptionServiceImpl extends BaseServiceImpl<Consumption, Long> i
             if (param.getType() != null) {
                 predicate.add(cb.equal(root.get("type").as(Integer.class), param.getType()));
             }
+            // 采购单号
+            if (!StringUtils.isEmpty(param.getPurchaseNumber())) {
+                predicate
+                    .add(cb.like(root.get("purchaseNumber").as(String.class), "%" + param.getPurchaseNumber() + "%"));
+            }
 
             // 按报销类型过滤
             if (param.getDeleteFlag() != null) {

@@ -318,7 +318,7 @@ layui.config({
 			},
 			toolbar: toolbar.join(' '),
             limit:'14',
-            limits:[10,14,20,50],
+            limits:[10,14,50,100,500,1000],
 			cols:[col],
 			done:function(){
 				$('.layui-table-total').find('td[data-field="number"]').find('div').html(statData.number);

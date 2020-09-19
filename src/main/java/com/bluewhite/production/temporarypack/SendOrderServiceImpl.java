@@ -124,6 +124,7 @@ public class SendOrderServiceImpl extends BaseServiceImpl<SendOrder, Long> imple
                     consumptionService.save(consumptionPrent);
                     // 生成子类条单据
                     Consumption consumption = new Consumption();
+                    consumption.setPurchaseNumber(sendOrder.getPurchaseNumber());
                     consumption.setParentId(consumptionPrent.getId());
                     consumption.setSendOrderId(id);
                     consumption.setType(5);

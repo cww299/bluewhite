@@ -82,6 +82,7 @@ layui.extend({
 			{ field: "logisticsNumber", title: "物流编号", edit: true, }, 
 			{ field: "remark", title: "备注",  edit: true, }, 
 			{ field: "expenseDate", title: "申请日期", type:'dateTime', }, 
+			{ field:'purchaseNumber', title:'采购编号',    width:130, edit:true,	},
 			{ field: "expectDate", title: "预计付款日期",type:'dateTime', edit:true, }, 
 			{ field: "paymentDate", title: "实际日期", type:'dateTime',}, 
 		],
@@ -176,7 +177,8 @@ layui.extend({
 					<td><input id="searchTime" name="orderTimeBegin"  class="layui-input" autocomplete="off"></td>
 					`+(function(){
 						if(askfor.type==5)
-							return '<td>物流编号：</td><td><input name="logisticsNumber"  class="layui-input"></td>';
+							return '<td>物流编号：</td><td><input name="logisticsNumber"  class="layui-input"></td>' + 
+									'<td>采购编号：</td><td><input name="purchaseNumber"  class="layui-input"></td>';
 					})()
 					+`
 					`+

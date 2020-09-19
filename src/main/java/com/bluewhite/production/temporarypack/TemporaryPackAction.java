@@ -98,7 +98,7 @@ public class TemporaryPackAction {
         clearCascadeJSONSendOrder = ClearCascadeJSON.get()
             .addRetainTerm(SendOrder.class, "id", "customer", "sendOrderChild", "sendTime", "sumPackageNumber",
                 "number", "sendPackageNumber", "logistics", "outerPackaging", "logisticsNumber", "tax", "singerPrice",
-                "sendPrice", "extraPrice", "logisticsPrice", "audit", "warehouseType","remarks")
+                "sendPrice", "extraPrice", "logisticsPrice", "audit", "warehouseType","remarks","purchaseNumber")
             .addRetainTerm(BaseData.class, "id", "name")
             .addRetainTerm(Customer.class, "id", "name");
     }

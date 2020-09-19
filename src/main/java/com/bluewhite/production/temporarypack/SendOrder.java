@@ -155,6 +155,11 @@ public class SendOrder extends BaseEntity<Long> {
     @Column(name = "remarks")
     private String remarks;
     
+    /**
+     * 采购单号
+     */
+    @Column(name = "purchase_number")
+    private String purchaseNumber;
     
 
     public String getRemarks() {
@@ -326,5 +331,13 @@ public class SendOrder extends BaseEntity<Long> {
     public String getLogisticsNumber() {
         return logisticsNumber;
     }
+
+	public String getPurchaseNumber() {
+		return purchaseNumber;
+	}
+
+	public void setPurchaseNumber(String purchaseNumber) {
+		this.purchaseNumber = purchaseNumber;
+	}
 
 }

@@ -242,6 +242,12 @@ public class Consumption extends BaseEntity<Long> {
     @Column(name = "remark")
     private String remark;
     
+    /**
+     *物流 采购单号
+     */
+    @Column(name = "purchase_number")
+    private String purchaseNumber;
+    
 	/**
 	 * 过滤参数(报销人姓名)
 	 */
@@ -633,6 +639,14 @@ public class Consumption extends BaseEntity<Long> {
 
 	public void setLogisticsNumber(String logisticsNumber) {
 		this.logisticsNumber = logisticsNumber;
+	}
+
+	public String getPurchaseNumber() {
+		return purchaseNumber;
+	}
+
+	public void setPurchaseNumber(String purchaseNumber) {
+		this.purchaseNumber = purchaseNumber;
 	}
 
 }

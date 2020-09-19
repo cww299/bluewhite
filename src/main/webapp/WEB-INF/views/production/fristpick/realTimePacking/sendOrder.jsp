@@ -40,6 +40,8 @@
 						<option value="0">否</option>
 					</select></td>
 				<td></td>
+				<td><input name="purchaseNumber"  class="layui-input" placeholder="采购编号"></td>
+				<td></td>
 				<td><input type="text" name="logisticsNumber" class="layui-input" placeholder="物流编号"></td>
 				<td></td>
 				<td><input type="text" name="remarks" class="layui-input" placeholder="备注"></td>
@@ -184,11 +186,12 @@ layui.config({
 		       { title:'发货包数',    field:'sendPackageNumber', width:100,	},
 		       { title:'物流编号',   field:'logisticsNumber',width:130, edit:true,	},
 		       { title:'物流点',   field:'logistics_id', type:'select',select:{ data: allLogistics, layFilter:'changePriceSelect', },width:150, },
+		       { title:'采购编号',    field:'purchaseNumber', width:130, edit:true,	},
 		       { title:'外包装',   field:'outerPackaging_id',type:'select', select:{ data: allPackagMethod, layFilter:'changePriceSelect', },width:100, 	 },
 		       { title:'是否含税',    field:'tax',	 width:100, type:'select',select:{  data: isTax, layFilter:'changePriceSelect', },  },
 		       { title:'单价',    field:'singerPrice',width:120,templet: getSingerPriceSelect(), },
 		       { title:'已发货费用',   field:'sendPrice',	width:100,  },
-		       { title:'额外费用',   field:'extraPrice',	width:100,  },
+		       // { title:'额外费用',   field:'extraPrice',	width:100,  },
 		       { title:'物流总费用',   field:'logisticsPrice',	width:120, },  
 		       { title:'发货地点',   field:'warehouseType_name',	},  
 		       { title:'生成',   field:'audit',	width:60,transData:true, },
@@ -200,7 +203,7 @@ layui.config({
        		var data = ret.statData;
        		$(totalDiv).find('td[data-field="sendPackageNumber"] div').html(data.sendPackageNumber);
        		$(totalDiv).find('td[data-field="sendPrice"] div').html(data.sendPrice);
-       		$(totalDiv).find('td[data-field="extraPrice"] div').html(data.extraPrice);
+       		// $(totalDiv).find('td[data-field="extraPrice"] div').html(data.extraPrice);
        		$(totalDiv).find('td[data-field="logisticsPrice"] div').html(data.logisticsPrice);
        		//覆盖mytable 下拉框修改函数
        		form.on('select(changePriceSelect)',function(obj){
@@ -243,15 +246,19 @@ layui.config({
        				tax: trData.tax,
        				singerPrice: trData.singerPrice || 0,
        				logisticsNumber: trData.logisticsNumber,
-       				extraPrice: trData.extraPrice || 0,
+       				purchaseNumber: trData.purchaseNumber,
+       				// extraPrice: trData.extraPrice || 0,
        				remarks: trData.remarks,
        			}
        			if(obj.field=="logisticsNumber")
        				saveData.logisticsNumber = obj.value;
        			else if(obj.field=='remarks'){
        				saveData.remarks = obj.value;
-       			}else
+       			}else if(obj.field=='purchaseNumber'){
+       				saveData.purchaseNumber = obj.value;
+       			}else if(obj.field=='extraPrice'){
        				saveData.extraPrice = obj.value;
+       			}
        			myutil.saveAjax({
        				url:'/temporaryPack/updateSendOrder',
        				closeLoad:true,
