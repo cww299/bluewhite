@@ -231,7 +231,8 @@ public class FarragoTaskAction {
 	public CommonResponse allTask(FarragoTask farragoTask, PageParameter page) {
 		CommonResponse cr = new CommonResponse();
 		CurrentUser cu = SessionManager.getUserSession();
-		if (!cu.getRole().contains("superAdmin") && !cu.getRole().contains("personnel")) {
+		if (!cu.getRole().contains("superAdmin") && !cu.getRole().contains("personnel")
+			&& !cu.getRole().contains("lookManager")) {
 			farragoTask.setUserId(cu.getId());
 		}
 		cr.setData(clearCascadeJSON.format(farragoTaskService.findPages(farragoTask, page)).toJSON());
