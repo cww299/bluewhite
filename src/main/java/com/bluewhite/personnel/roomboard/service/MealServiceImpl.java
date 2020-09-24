@@ -49,6 +49,9 @@ import com.bluewhite.system.user.entity.User;
 import com.bluewhite.system.user.service.TemporaryUserService;
 import com.bluewhite.system.user.service.UserService;
 
+import cn.hutool.core.date.DateUtil;
+import cn.hutool.core.lang.Assert;
+
 @Service
 public class MealServiceImpl extends BaseServiceImpl<Meal, Long> implements MealService {
     @Autowired
@@ -109,9 +112,6 @@ public class MealServiceImpl extends BaseServiceImpl<Meal, Long> implements Meal
         return result;
     }
 
-    /*
-     * 去除分页查询
-     */
     @Override
     public List<Meal> findMeal(Meal param) {
         List<Meal> list = dao.findAll((root, query, cb) -> {
@@ -205,28 +205,22 @@ public class MealServiceImpl extends BaseServiceImpl<Meal, Long> implements Meal
      */
     @Override
     public List<Map<String, Object>> findMealSummary(Meal meal) {
-        Calendar cal = Calendar.getInstance();
-        cal.setTime(meal.getOrderTimeBegin());
-        int month = cal.get(Calendar.MONTH);
-        cal.setTime(meal.getOrderTimeEnd());
-        int month2 = cal.get(Calendar.MONTH);
-        if (month != month2) {
-            throw new ServiceException("请选择同一月份时间");
-        }
         List<Map<String, Object>> allList = new ArrayList<>();
         Map<String, Object> allMap = null;
         double sum1 = 0;// 水费汇总
         double sum2 = 0;// 电费汇总
         double sum3 = 0;// 房租汇总
         double sum4 = 0;// 煤气汇总
-        double sum5 = 0;// 上个月煤气汇总
-        double sum6 = 0;// 上个月面料主食等汇总
-        double sum9 = 0;// 人工工资总和
-        double sum10 = 0;// 当月所有的报销物料
         Long day = DatesUtil.getDaySub(DatesUtil.getFirstDayOfMonth(meal.getOrderTimeBegin()),
             DatesUtil.getLastDayOfMonth(meal.getOrderTimeBegin()));// 当月天数
-        // 蓝白总部
-        Long siteTypeId = (long)288;
+
+        Long siteTypeId = null;
+        if(meal.getSite()==1) {
+            siteTypeId = 288L;
+        } else {
+            siteTypeId = 285L;
+        }
+
         // 当月开始日期
         Date timeBegin = DatesUtil.getFirstDayOfMonth(meal.getOrderTimeBegin());
         // 当月结束日期
@@ -234,124 +228,41 @@ public class MealServiceImpl extends BaseServiceImpl<Meal, Long> implements Meal
         // 水费
         CostLiving costLivingWater = costLivingDao.findByCostTypeIdAndSiteTypeIdAndBeginTimeAndEndTime((long)290,
             siteTypeId, timeBegin, timeEnd);
-        if (costLivingWater != null) {
-            sum1 = NumUtils.mul(costLivingWater.getAverageCost(), day);
-        } else {
-            throw new ServiceException("未查询到当月水费，请先添加");
-        }
+        Assert.notNull(costLivingWater, "未查询到当月水费，请先添加");
+        sum1 = NumUtils.mul(costLivingWater.getAverageCost(), day);
+
         // 电费
         CostLiving costLivingElectricity = costLivingDao.findByCostTypeIdAndSiteTypeIdAndBeginTimeAndEndTime((long)291,
             siteTypeId, timeBegin, timeEnd);
-        if (costLivingElectricity != null) {
-            sum2 = NumUtils.mul(costLivingElectricity.getAverageCost(), day);
-        } else {
-            throw new ServiceException("未查询到当月电费，请先添加");
-        }
+        Assert.notNull(costLivingElectricity, "未查询到当月电费，请先添加");
+
         // 房租
         CostLiving costLiving = costLivingDao.findByCostTypeIdAndSiteTypeIdAndBeginTimeAndEndTime((long)289, siteTypeId,
             timeBegin, timeEnd);
-        if (costLiving != null) {
-            // 总费用
-            sum3 = NumUtils.mul(costLiving.getAverageCost(), day);
-        } else {
-            throw new ServiceException("未查询到当月房租，请先添加");
-        }
+        Assert.notNull(costLiving, "未查询到当月房租，请先添加");
+
         // 当月煤气
         CostLiving costLivingGas = costLivingDao.findByCostTypeIdAndSiteTypeIdAndBeginTimeAndEndTime((long)292,
             siteTypeId, timeBegin, timeEnd);
-        if (costLivingGas != null) {
-            sum4 = NumUtils.mul(costLivingGas.getAverageCost(), day);
-        } else {
-            throw new ServiceException("未查询到当月煤气费，请先添加");
-        }
-        // 上月煤气
-        CostLiving costLivingGasLast = costLivingDao.findByCostTypeIdAndSiteTypeIdAndBeginTimeAndEndTime((long)292,
-            siteTypeId, DatesUtil.getFristDayOfLastMonth(timeBegin), DatesUtil.getLastDayOLastMonth(timeEnd));
-        if (costLivingGasLast != null) {
-            sum5 = NumUtils.mul(costLivingGasLast.getAverageCost(), day);
-        } else {
-            throw new ServiceException("未查询到上月煤气费，请先添加");
-        }
-
-        List<SingleMeal> listSingleMeal =
-            singleMealDao.findByTimeBetween(DatesUtil.getFristDayOfLastMonth(meal.getOrderTimeBegin()),
-                DatesUtil.getLastDayOLastMonth(meal.getOrderTimeBegin()));// 上个月面料主食等汇总
-        if (listSingleMeal.size() > 0) {
-            for (SingleMeal singleMeal : listSingleMeal) {
-                sum6 = sum6 + singleMeal.getPrice();
-            }
-        }
-        double sum7 = NumUtils.sum(sum6, sum5);// 上个月煤气汇总 +上个月面料主食等汇总
-        PersonVariable personVariable1 = personVariableDao.findByType(6);
-        double valA = NumUtils.mul(sum7, Double.parseDouble(personVariable1.getKeyValue()));// 采购员收入A
-        List<SingleMeal> singleMeals =
-            singleMealDao.findByTimeBetween(DatesUtil.getFirstDayOfMonth(meal.getOrderTimeBegin()),
-                DatesUtil.getLastDayOfMonth(meal.getOrderTimeBegin()));// 当月所有报销物料
-        if (singleMeals.size() > 0) {
-            for (SingleMeal singleMeal : singleMeals) {
-                sum10 = sum10 + singleMeal.getPrice();
-            }
-        }
-        double valB = NumUtils.mul(sum10, Double.parseDouble(personVariable1.getKeyValue()));// 采购员收入B
-        double valday = NumUtils.div((valA > valB ? valA : valB), day, 2);// 采购员当天收入
-        PersonVariable personVariable2 = personVariableDao.findByType(5);
-        double valPrice = NumUtils.mul(valday, Double.parseDouble(personVariable2.getKeyValue()));// 第一个含管理采购收入
-        List<Wage> wage = wageDao.findByTypeAndTimeBetween((long)281, timeBegin, timeEnd);
-        if (wage.size() == 0) {
-            throw new ServiceException("当月数据员工资未查询到");
-        }
-        boolean flag = DatesUtil.belongCalendar(meal.getOrderTimeBegin());// 判断时冬令时 还是夏令时
-        AttendanceInit init = attendanceInitDao.findByUserId(wage.get(0).getUserId());
-        if (init == null) {
-            throw new ServiceException("该员工未设定考勤初始化数据");
-        }
-        // 出勤时长
-        double turnWorkTime = flag ? init.getTurnWorkTimeSummer() : init.getTurnWorkTimeWinter();
-
-        double valwage = 0;// 物料跟进人员的工资
-        if (wage.size() > 0) {
-            valwage = wage.get(0).getWage();
-        }
-        double valPrice2 = NumUtils.mul(NumUtils.div(valwage, NumUtils.mul(turnWorkTime, 25), 2),
-            Double.parseDouble(personVariable1.getKeyValueThree()));// 第二个含管理收入
-        double valPrice3 = NumUtils.mul(NumUtils.sum(valPrice, valPrice2), day);// 每月
-
-        // 食堂人员工资
-        List<Wage> wages =
-            wageDao.findByTypeAndTimeBetween((long)282, DatesUtil.getFristDayOfLastMonth(meal.getOrderTimeBegin()),
-                DatesUtil.getLastDayOLastMonth(meal.getOrderTimeBegin()));
-        if (wages.size() == 0) {
-            throw new ServiceException("上月食堂人员工资未查询到");
-        }
-        if (wages.size() > 0) {
-            List<Double> listDouble = new ArrayList<>();
-            wages.forEach(w -> {
-                listDouble.add(w.getWage());
-            });
-            sum9 = NumUtils.sum(listDouble);
-        }
+        Assert.notNull(costLivingGas, "未查询到当月煤气费，请先添加");
 
         // 用餐次数
-        List<Meal> mealCount = dao.findByTradeDaysTimeBetween(DatesUtil.getFirstDayOfMonth(meal.getOrderTimeBegin()),
-            DatesUtil.getLastDayOfMonth(meal.getOrderTimeBegin()));
+        List<Meal> mealCount = dao.findByTradeDaysTimeBetween(timeBegin,timeEnd);
         if (mealCount.size() == 0) {
             throw new ServiceException("当月用餐次数未统计");
         }
-        // 人工比
-        double than = NumUtils.div(sum9, mealCount.size(), 2);
         // 选择时间内的餐数
-        List<Meal> meals = dao.findByTradeDaysTimeBetween(meal.getOrderTimeBegin(), meal.getOrderTimeEnd());
+        List<Meal> meals = dao.findByTradeDaysTimeBetween(timeBegin, timeEnd);
         if (meals.size() == 0) {
             throw new ServiceException("选择时间内,没有用餐次数");
         }
-        // 人工绩效
-        double merits = NumUtils.mul((double)meals.size(), than, 0.5);
+
         PersonVariable restType = personVariableDao.findByType(5);
         double water = NumUtils.mul(sum1, Double.parseDouble(restType.getKeyValue()));// 每月水费
         double electric = NumUtils.mul(sum2, Double.parseDouble(restType.getKeyValueTwo()));// 每月电费
         double rent = NumUtils.mul(sum3, Double.parseDouble(restType.getKeyValueThree()));// 每月房租费
         double coal = NumUtils.mul(sum4, Double.parseDouble(restType.getKeyValueThree()));// 每月煤气费
-        double sumd = NumUtils.sum(water, electric, rent, coal, valPrice3, valwage, merits);// 所有费用汇总
+        double sumd = NumUtils.sum(water, electric, rent, coal);// 所有费用汇总
 
         // 是否为总经办数据
         boolean sign = meal.getOrgNameId() != null && meal.getOrgNameId().equals((long)1);
@@ -399,15 +310,24 @@ public class MealServiceImpl extends BaseServiceImpl<Meal, Long> implements Meal
         if (sign) {
             // 总经办食材出库记录
             inventoryDetailList = inventoryDetailDao.findByFlagAndStatusAndTimeBetweenAndOrgNameId(0, 1,
-                meal.getOrderTimeBegin(), meal.getOrderTimeEnd(), (long)1);
-            inventoryDetailList = inventoryDetailList.stream().filter(i -> i.getOfficeSupplies().getType()==3)
-            .collect(Collectors.toList());
+                timeBegin, timeEnd, (long)1);
+            inventoryDetailList = inventoryDetailList.stream().filter(i -> i.getOfficeSupplies().getType() == 3)
+                .collect(Collectors.toList());
         } else {
             // 食材出库记录
-            inventoryDetailList = inventoryDetailDao.findByFlagAndStatusAndTimeBetween(0, 1, meal.getOrderTimeBegin(),
-                meal.getOrderTimeEnd());
-            inventoryDetailList = inventoryDetailList.stream().filter(i -> i.getOrgNameId() == null && i.getOfficeSupplies().getType()==3)
+            inventoryDetailList = inventoryDetailDao.findByFlagAndStatusAndTimeBetween(0, 1, timeBegin, timeEnd);
+            inventoryDetailList = inventoryDetailList.stream()
+                .filter(i -> i.getOrgNameId() == null && i.getOfficeSupplies().getType() == 3)
                 .collect(Collectors.toList());
+            // 蓝白
+            if (meal.getSite() == 1) {
+                inventoryDetailList = inventoryDetailList.stream().
+                    filter(inventoryDetail->inventoryDetail.getRemark().equals(null) || inventoryDetail.getRemark().equals("")).collect(Collectors.toList());               
+            } else {
+            // 九号
+                inventoryDetailList = inventoryDetailList.stream().
+                    filter(inventoryDetail->inventoryDetail.getRemark().contains("9号食堂")).collect(Collectors.toList());
+            }
         }
         if (inventoryDetailList.size() == 0) {
             throw new ServiceException("选择时间内，没有添食材出库记录");
@@ -473,7 +393,7 @@ public class MealServiceImpl extends BaseServiceImpl<Meal, Long> implements Meal
             budget6 = NumUtils.sum(twoMeals);// 中晚
         }
         // 当食材为混合用量是，根据用餐数均分费用
-        if(sumMealCount!=0) {
+        if (sumMealCount != 0) {
             budget7 = NumUtils.mul(budget5, NumUtils.div(q, sumMealCount, 2));// 早餐钱
             budget8 = NumUtils.mul(budget5, NumUtils.div(w, sumMealCount, 2));// 中餐钱
             budget9 = NumUtils.mul(budget5, NumUtils.div(e, sumMealCount, 2));// 晚餐钱
