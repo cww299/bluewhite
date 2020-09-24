@@ -55,11 +55,15 @@ public class ContractServiceImpl extends BaseServiceImpl<Contract, Long> impleme
             	contract.setCode(getContractCode());
             }
         } else {
-            if (new Date().after(contract.getEndTime())) {
-                contract.setFlag(0);
-            } else {
-                contract.setFlag(1);
-            }
+        	if(contract.getFlag() == 0 ) { // 如果修改为无效，则以修改的为准
+        		
+        	} else { // 若没有修改，则自动判断是否过期
+        		if (new Date().after(contract.getEndTime())) {
+        			contract.setFlag(0);
+        		} else {
+        			contract.setFlag(1);
+        		}
+        	}
             if(contract.getIsRenew()==1) {	//如果修改操作为续签
             	renewContract(contract);
             	return;
