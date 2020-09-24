@@ -24,15 +24,22 @@
 				<div class="layui-form-item">
 					<table>
 						<tr>
+							<td><b class="red">*</b>日期:</td>
+							<td><input id="startTime" name="orderTimeBegin" placeholder="请输入开始时间" 
+									autocomplete="off" class="layui-input laydate-icon">
+							</td>
+							<td>&nbsp;&nbsp;</td>
 							<td>姓名:</td>
 							<td><select class="form-control" id="selectUserId" lay-search="true" name="userId"></select></td>
 							<td>&nbsp;&nbsp;</td>
-							<td>日期:</td>
-							<td><input id="startTime" style="width: 300px;" name="orderTimeBegin" placeholder="请输入开始时间" class="layui-input laydate-icon">
-							</td>
-							<td>&nbsp;&nbsp;</td>
 							<td>部门:</td>
 							<td ><select class="form-control" name="orgNameId" lay-search="true" id="orgName"></select></td>
+							<td>&nbsp;&nbsp;</td>
+							<td>地点:</td>
+							<td ><select class="form-control" name="site">
+									<option value="">请选择</option>
+									<option value="1">蓝白</option>
+									<option value="2">9号食堂</option></select></td>
 							<td>&nbsp;&nbsp;</td>
 							<td>
 								<div class="layui-inline">
@@ -120,8 +127,7 @@
 					
 					laydate.render({
 						elem: '#startTime',
-						type: 'datetime',
-						range: '~',
+						type: 'month'
 					});
 					laydate.render({
 						elem: '#monthDate9',
@@ -380,9 +386,10 @@
 					//监听搜索
 					form.on('submit(LAY-search)', function(obj) {		
 						var field = obj.field;
-						var orderTime=field.orderTimeBegin.split('~');
-						field.orderTimeBegin=orderTime[0];
-						field.orderTimeEnd=orderTime[1].split(' ')[1]+' 23:59:59';
+						if(!field.orderTimeBegin) {
+							return layer.msg('日期不能为空！', { icon : 2 });
+						}
+						field.orderTimeBegin = field.orderTimeBegin + '-01 00:00:00';
 						even(field)
 					});
 				}
