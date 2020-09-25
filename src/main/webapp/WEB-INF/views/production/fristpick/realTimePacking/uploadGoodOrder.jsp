@@ -54,6 +54,12 @@ var TPL = [
 			'</div>',
 		'</div>',
 		'<div class="layui-form-item" pane>',
+			'<label class="layui-form-label">线下客户</label>',
+			'<div class="layui-input-block">',
+				'<select name="customerId" id="cusetomerSelect"></select>',
+			'</div>',
+		'</div>',
+		'<div class="layui-form-item" pane>',
 			'<label class="layui-form-label">批次号</label>',
 			'<div class="layui-input-block">',
 				'<input class="layui-input" name="bacthNumber" value="{{ d.bacthNumber || "" }}">',
@@ -242,12 +248,17 @@ layui.config({
 				page:{ curr:1 },
 			})
 		});
+		var allCustomer = '<option value="">请选择</option>';
+		myutil.getData({
+			url: myutil.config.ctx+'/ledger/getCustomer?customerTypeId=459',
+			done: function(data){
+				layui.each(data,function(index,item){
+					allCustomer += '<option value="'+item.id+'">'+item.name+'</option>';
+				})
+			}
+		})
 		function addEdit(type,data){
 			var title = '新增下货单'
-			var html = '';
-			laytpl(TPL).render(data,function(h){
-				html = h;
-			})
 			if(data.id){
 				title = '修改下货单';
 			}
@@ -255,7 +266,7 @@ layui.config({
 				type:1,
 				area:['500px','500px'],
 				title: title,
-				content: html,
+				content: laytpl(TPL).render(data),
 				btn:['保存','取消'],
 				success:function(){
 					laydate.render({ elem:'#allotTime', type:'datetime', value: data.allotTime || new Date(), });
@@ -289,6 +300,10 @@ layui.config({
 							}
 						})
 					})
+					$('#cusetomerSelect').html(allCustomer);
+					if(data.customerId) {
+						$('#cusetomerSelect').val(data.customerId);
+					}
 					form.on('submit(sureAddOrder)',function(obj){
 						if(obj.field.number<1)
 							return myutil.emsg('清正确填写批次数量！');

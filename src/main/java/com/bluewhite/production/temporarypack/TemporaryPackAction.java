@@ -66,8 +66,9 @@ public class TemporaryPackAction {
     {
         clearCascadeJSON = ClearCascadeJSON.get()
             .addRetainTerm(UnderGoods.class, "id", "remarks", "product", "number", "bacthNumber", "status", "allotTime",
-                "surplusStickNumber", "surplusSendNumber", "internal", "productName")
-            .addRetainTerm(Product.class, "id", "name");
+                "surplusStickNumber", "surplusSendNumber", "internal", "productName","customerId", "customer")
+            .addRetainTerm(Product.class, "id", "name")
+            .addRetainTerm(Customer.class, "id", "name");
     }
     private ClearCascadeJSON clearCascadeJSONQuantitative;
     {

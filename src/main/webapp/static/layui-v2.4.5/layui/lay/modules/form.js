@@ -373,14 +373,15 @@ layui.define('layer', function(exports){
                   						dl.find('dd[lay-value="'+item[onlineSelect.showId]+'"]').removeClass('layui-hide');
                   						continue;
                   					}
+                  					var name = showName(item);
                   					searchOnlineResultDl.push([
-                  						'<dd lay-value="'+item[onlineSelect.showId]+'">', 
-                  							showName(item),
+                  						'<dd lay-value="'+item[onlineSelect.showId]+'" title="'+name+'">', 
+                  							name,
                   						'</dd>',
                   					].join(''))
                   					searchOnlineResultOrigin.push([
                   						'<option value="'+item[onlineSelect.showId]+'">', 
-              								showName(item),
+                  							name,
               							'</option>',
               						].join(''));
                   				}
@@ -395,7 +396,16 @@ layui.define('layer', function(exports){
                   				function showName(data){
                   					var showName = [];
                   					layui.each(onlineSelect.showName.split('|'),function(index,item){
-                  						showName.push(data[item]);
+                  						if(item.indexOf('_') > -1) {
+                  							var aplit = item.split('_');
+                  							var val = data[aplit[0]] || '';
+                  							if(val) {
+                  								val = val[aplit[1]] || '';
+                  							}
+                  							showName.push(val);
+                  						} else {
+                  							showName.push(data[item]);
+                  						}
                   					})
                   					return showName.join(' ~ ');
                   				}
@@ -510,11 +520,11 @@ layui.define('layer', function(exports){
               var arr = [];
               layui.each(options, function(index, item){
                 if(index === 0 && !item.value){
-                  arr.push('<dd lay-value="" class="layui-select-tips">'+ (item.innerHTML || TIPS) +'</dd>');
+                  arr.push('<dd lay-value="" class="layui-select-tips" title="'+(item.innerHTML || TIPS)+'">'+ (item.innerHTML || TIPS) +'</dd>');
                 } else if(item.tagName.toLowerCase() === 'optgroup'){
                   arr.push('<dt>'+ item.label +'</dt>'); 
                 } else {
-                  arr.push('<dd lay-value="'+ item.value +'" class="'+ (value === item.value ?  THIS : '') + (item.disabled ? (' '+DISABLED) : '') +'">'+ item.innerHTML +'</dd>');
+                  arr.push('<dd lay-value="'+ item.value +'" class="'+ (value === item.value ?  THIS : '') + (item.disabled ? (' '+DISABLED) : '') +'" title="'+(item.innerHTML)+'">'+ item.innerHTML +'</dd>');
                 }
               });
               arr.length === 0 && arr.push('<dd lay-value="" class="'+ DISABLED +'">没有选项</dd>');

@@ -746,7 +746,7 @@ layui.config({
 						cols:[(function(){
 							var cols = [
 								{ type:'checkbox',},
-								{ title:'下货单~批次号~剩余数量', field:'underGoods_id', edit:false,
+								{ title:'下货单~批次号~剩余数量~客户', field:'underGoods_id', edit:false,
 									/* type:'select',
 									select:{data: allUoloadOrder, name:['product_name','bacthNumber','surplusStickNumber'],} */  
 									templet: getTableSelect(),
@@ -791,7 +791,7 @@ layui.config({
 						return function(d){
 							return ['<select lay-filter="tableSelect" lay-search '+
 								'lay-url="${ctx}/temporaryPack/findUnderGoods" lay-searchName="productName"'+
-								' lay-name="productName|bacthNumber|surplusStickNumber">',
+								' lay-name="productName|bacthNumber|surplusStickNumber|customer_name">',
 									'<option value="">请选择</option>',
 									(function(){
 										if(d.id){
@@ -800,7 +800,7 @@ layui.config({
 											})
 											var number = getData.surplusStickNumber || 0;
 											return '<option value="'+d.id+'" selected>'+d.underGoods.product.name+' ~ '+
-											d.underGoods.bacthNumber+' ~ '+number+'</option>';
+											d.underGoods.bacthNumber+' ~ '+number + ' ~ ' + (d.customer ? d.customer.name : '')+ '</option>';
 										}
 										return "";
 									})(),

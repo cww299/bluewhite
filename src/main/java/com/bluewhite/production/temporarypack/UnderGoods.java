@@ -12,6 +12,7 @@ import javax.persistence.Transient;
 
 import com.bluewhite.base.BaseEntity;
 import com.bluewhite.basedata.entity.BaseData;
+import com.bluewhite.ledger.entity.Customer;
 import com.bluewhite.product.product.entity.Product;
 
 /**
@@ -57,6 +58,20 @@ public class UnderGoods extends BaseEntity<Long> {
      */
     @Column(name = "remarks")
     private String remarks;
+    
+    /**
+     * 线下客户id
+     * 
+     */
+    @Column(name = "customer_id")
+    private Long customerId;
+
+    /**
+     * 线下客户
+     */
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "customer_id", referencedColumnName = "id", insertable = false, updatable = false)
+    private Customer customer;
 
     /**
      * 状态(是否已经完成)
@@ -261,5 +276,21 @@ public class UnderGoods extends BaseEntity<Long> {
     public void setStatus(Integer status) {
         this.status = status;
     }
+
+	public Long getCustomerId() {
+		return customerId;
+	}
+
+	public void setCustomerId(Long customerId) {
+		this.customerId = customerId;
+	}
+
+	public Customer getCustomer() {
+		return customer;
+	}
+
+	public void setCustomer(Customer customer) {
+		this.customer = customer;
+	}
 
 }
