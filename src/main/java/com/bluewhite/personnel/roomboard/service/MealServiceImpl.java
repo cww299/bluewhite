@@ -49,6 +49,7 @@ import com.bluewhite.system.user.entity.User;
 import com.bluewhite.system.user.service.TemporaryUserService;
 import com.bluewhite.system.user.service.UserService;
 
+import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.date.DateUtil;
 import cn.hutool.core.lang.Assert;
 
@@ -215,9 +216,9 @@ public class MealServiceImpl extends BaseServiceImpl<Meal, Long> implements Meal
             DatesUtil.getLastDayOfMonth(meal.getOrderTimeBegin()));// 当月天数
 
         Long siteTypeId = null;
-        if(meal.getSite()==1) {
+        if (meal.getSite() == 1) {
             siteTypeId = 288L;
-        } else {
+        } else if (meal.getSite() == 2) {
             siteTypeId = 285L;
         }
 
@@ -246,17 +247,6 @@ public class MealServiceImpl extends BaseServiceImpl<Meal, Long> implements Meal
             siteTypeId, timeBegin, timeEnd);
         Assert.notNull(costLivingGas, "未查询到当月煤气费，请先添加");
 
-        // 用餐次数
-        List<Meal> mealCount = dao.findByTradeDaysTimeBetween(timeBegin,timeEnd);
-        if (mealCount.size() == 0) {
-            throw new ServiceException("当月用餐次数未统计");
-        }
-        // 选择时间内的餐数
-        List<Meal> meals = dao.findByTradeDaysTimeBetween(timeBegin, timeEnd);
-        if (meals.size() == 0) {
-            throw new ServiceException("选择时间内,没有用餐次数");
-        }
-
         PersonVariable restType = personVariableDao.findByType(5);
         double water = NumUtils.mul(sum1, Double.parseDouble(restType.getKeyValue()));// 每月水费
         double electric = NumUtils.mul(sum2, Double.parseDouble(restType.getKeyValueTwo()));// 每月电费
@@ -264,151 +254,131 @@ public class MealServiceImpl extends BaseServiceImpl<Meal, Long> implements Meal
         double coal = NumUtils.mul(sum4, Double.parseDouble(restType.getKeyValueThree()));// 每月煤气费
         double sumd = NumUtils.sum(water, electric, rent, coal);// 所有费用汇总
 
-        // 是否为总经办数据
-        boolean sign = meal.getOrgNameId() != null && meal.getOrgNameId().equals((long)1);
+        // 选择时间内的餐数
+        List<Meal> meals = dao.findByTradeDaysTimeBetween(timeBegin, timeEnd);
+        Assert.notEmpty(meals, "选择时间内,没有用餐次数");
+
+        
+        // 餐费统计不需要关注人员和部门，将餐费统计来源分成三个部分。1.蓝白食堂，2.9号食堂，3.总经办
+        // 1.蓝白食堂，需要统计出蓝白食堂下的水电煤气房租食材明细费用。和蓝白员工的用餐次数，排除总经办，电子商务部、内容组、成品仓库9号
+        // 2.9号食堂 电子商务部、内容组、成品仓库9号
+        // 3.总经办
+
+        List<Long> deptIds = new ArrayList<>();
+        if (meal.getSite() == 1) {
+            deptIds.add(1L);
+            deptIds.add(35L);
+            deptIds.add(151L);
+            deptIds.add(526L);    
+        }
+        if(meal.getSite() == 2) {
+            deptIds.add(35L);
+            deptIds.add(151L);
+            deptIds.add(526L); 
+        }
+        if(meal.getSite() == 3) {
+            deptIds.add(1L);
+        }
+        
+        meals = meals.stream().filter(m -> {
+            if (m.getMode() != null) {
+                if(meal.getSite() == 2 || meal.getSite() == 3) {
+                    if(deptIds.contains(m.getOrgNameId())) {
+                        return true;
+                    }
+                }else {
+                    if(!deptIds.contains(m.getOrgNameId())) {
+                        return true;
+                    }               
+                }
+            }
+            return false;
+        }).collect(Collectors.toList());
+
         // 普通员工用餐数
         // 早餐数
-        long q = sign
-            ? meals.stream()
-                .filter(Meal -> Meal.getMode() != null && Meal.getMode().equals(1) && Meal.getUserId() != null
-                    && Meal.getOrgNameId().equals((long)1))
-                .count()
-            : meals.stream()
-                .filter(
-                    Meal -> Meal.getMode() != null && Meal.getMode().equals(1) && !Meal.getOrgNameId().equals((long)1))
-                .count();
+        long q = meals.stream().filter(Meal -> Meal.getMode().equals(1)).count();
         // 中餐数
-        long w = sign
-            ? meals.stream()
-                .filter(Meal -> Meal.getMode() != null && Meal.getMode().equals(2) && Meal.getUserId() != null
-                    && Meal.getOrgNameId().equals((long)1))
-                .count()
-            : meals.stream()
-                .filter(
-                    Meal -> Meal.getMode() != null && Meal.getMode().equals(2) && !Meal.getOrgNameId().equals((long)1))
-                .count();
+        long w = meals.stream().filter(Meal -> Meal.getMode().equals(2)).count();
         // 晚餐数
-        long e = sign
-            ? meals.stream()
-                .filter(Meal -> Meal.getMode() != null && Meal.getMode().equals(3) && Meal.getUserId() != null
-                    && Meal.getOrgNameId().equals((long)1))
-                .count()
-            : meals.stream()
-                .filter(
-                    Meal -> Meal.getMode() != null && Meal.getMode().equals(3) && !Meal.getOrgNameId().equals((long)1))
-                .count();
+        long e = meals.stream().filter( Meal -> Meal.getMode().equals(3)).count();
         // 夜宵数
-        long r =
-            sign ? 0
-                : meals.stream().filter(
-                    Meal -> Meal.getMode() != null && Meal.getMode().equals(4) && !Meal.getOrgNameId().equals((long)1))
-                    .count();
+        long r = meals.stream().filter(Meal -> Meal.getMode().equals(4)).count();
         long sumMealCount = q + w + e + r;
 
         // 食材费用
-        List<InventoryDetail> inventoryDetailList = null;
-        if (sign) {
-            // 总经办食材出库记录
-            inventoryDetailList = inventoryDetailDao.findByFlagAndStatusAndTimeBetweenAndOrgNameId(0, 1,
-                timeBegin, timeEnd, (long)1);
-            inventoryDetailList = inventoryDetailList.stream().filter(i -> i.getOfficeSupplies().getType() == 3)
-                .collect(Collectors.toList());
-        } else {
-            // 食材出库记录
-            inventoryDetailList = inventoryDetailDao.findByFlagAndStatusAndTimeBetween(0, 1, timeBegin, timeEnd);
-            inventoryDetailList = inventoryDetailList.stream()
-                .filter(i -> i.getOrgNameId() == null && i.getOfficeSupplies().getType() == 3)
-                .collect(Collectors.toList());
-            // 蓝白
-            if (meal.getSite() == 1) {
-                inventoryDetailList = inventoryDetailList.stream().
-                    filter(inventoryDetail->inventoryDetail.getRemark().equals(null) || inventoryDetail.getRemark().equals("")).collect(Collectors.toList());               
-            } else {
-            // 九号
-                inventoryDetailList = inventoryDetailList.stream().
-                    filter(inventoryDetail->inventoryDetail.getRemark().contains("9号食堂")).collect(Collectors.toList());
-            }
+        List<InventoryDetail> inventoryDetailList = inventoryDetailDao.findByFlagAndStatusAndTimeBetween(0, 1, timeBegin, timeEnd);
+        if (meal.getSite() == 1) {         
+            inventoryDetailList =
+                inventoryDetailList.stream().filter(inventoryDetail -> inventoryDetail.getOfficeSupplies().getType() == 3 
+                && !inventoryDetail.getRemark().contains("9号食堂") && inventoryDetail.getOrgNameId() == null)
+                .collect(Collectors.toList());  
         }
+    
+        if (meal.getSite() == 2) {                    
+            inventoryDetailList = inventoryDetailList.stream().filter(inventoryDetail -> 
+            inventoryDetail.getOfficeSupplies().getType() == 3 
+                && inventoryDetail.getRemark().contains("9号食堂"))
+                    .collect(Collectors.toList());
+        }
+        
+        if (meal.getSite() == 3) {
+            inventoryDetailList = inventoryDetailList.stream().filter(i -> i.getOfficeSupplies().getType() == 3 
+                && i.getOrgNameId() != null && i.getOrgNameId().equals(1L))
+                .collect(Collectors.toList());
+        }
+   
         if (inventoryDetailList.size() == 0) {
             throw new ServiceException("选择时间内，没有添食材出库记录");
         }
 
-        // 早餐食材费用
-        List<Double> breakfast = new ArrayList<>();
-        // 午餐食材费用
-        List<Double> lunch = new ArrayList<>();
-        // 晚餐食材费用
-        List<Double> dinner = new ArrayList<>();
-        // 夜宵食材费用
-        List<Double> midnight = new ArrayList<>();
-        // 早中晚食材费用
-        List<Double> threeMeals = new ArrayList<>();
-        // 中晚食材费用
-        List<Double> twoMeals = new ArrayList<>();
-        double budget = 0;
-        double budget2 = 0;
-        double budget3 = 0;
-        double budget4 = 0;
-        double budget5 = 0;
-        double budget6 = 0;
         double budget7 = 0;
         double budget8 = 0;
         double budget9 = 0;
         double budget10 = 0;
         double budget11 = 0;
-        inventoryDetailList.stream().filter(i -> i.getMealType() != null && i.getMealType().equals(1)).forEach(c -> {
-            breakfast.add(c.getOutboundCost());
-        });
-        if (breakfast.size() > 0) {
-            budget = NumUtils.sum(breakfast);
-        }
-        inventoryDetailList.stream().filter(i -> i.getMealType() != null && i.getMealType().equals(2)).forEach(c -> {
-            lunch.add(c.getOutboundCost());
-        });
-        if (lunch.size() > 0) {
-            budget2 = NumUtils.sum(lunch);// 午餐
-        }
-        inventoryDetailList.stream().filter(i -> i.getMealType() != null && i.getMealType().equals(3)).forEach(c -> {
-            dinner.add(c.getOutboundCost());
-        });
-        if (dinner.size() > 0) {
-            budget3 = NumUtils.sum(dinner);// 晚餐
-        }
-        inventoryDetailList.stream().filter(i -> i.getMealType() != null && i.getMealType().equals(4)).forEach(c -> {
-            midnight.add(c.getOutboundCost());
-        });
-        if (midnight.size() > 0) {
-            budget4 = NumUtils.sum(midnight);// 夜宵
-        }
-        inventoryDetailList.stream().filter(i -> i.getMealType() != null && i.getMealType().equals(5)).forEach(c -> {
-            threeMeals.add(c.getOutboundCost());
-        });
-        if (threeMeals.size() > 0) {
-            budget5 = NumUtils.sum(threeMeals);// 早中晚
-        }
-        inventoryDetailList.stream().filter(i -> i.getMealType() != null && i.getMealType().equals(6)).forEach(c -> {
-            twoMeals.add(c.getOutboundCost());
-        });
-        if (twoMeals.size() > 0) {
-            budget6 = NumUtils.sum(twoMeals);// 中晚
-        }
+        // 早餐食材费用
+        double breakfast = NumUtils
+            .roundTwo(inventoryDetailList.stream().filter(i -> i.getMealType() != null && i.getMealType().equals(1))
+                .mapToDouble(InventoryDetail::getOutboundCost).sum());
+        // 午餐食材费用
+        double lunch = NumUtils
+            .roundTwo(inventoryDetailList.stream().filter(i -> i.getMealType() != null && i.getMealType().equals(2))
+                .mapToDouble(InventoryDetail::getOutboundCost).sum());
+        // 晚餐食材费用
+        double dinner = NumUtils
+            .roundTwo(inventoryDetailList.stream().filter(i -> i.getMealType() != null && i.getMealType().equals(3))
+                .mapToDouble(InventoryDetail::getOutboundCost).sum());
+        // 夜宵食材费用
+        double midnight = NumUtils
+            .roundTwo(inventoryDetailList.stream().filter(i -> i.getMealType() != null && i.getMealType().equals(4))
+                .mapToDouble(InventoryDetail::getOutboundCost).sum());
+        // 早中晚食材费用
+        double threeMeals = NumUtils
+            .roundTwo(inventoryDetailList.stream().filter(i -> i.getMealType() != null && i.getMealType().equals(5))
+                .mapToDouble(InventoryDetail::getOutboundCost).sum());
+        // 中晚食材费用
+        double twoMeals = NumUtils
+            .roundTwo(inventoryDetailList.stream().filter(i -> i.getMealType() != null && i.getMealType().equals(6))
+                .mapToDouble(InventoryDetail::getOutboundCost).sum());
+
         // 当食材为混合用量是，根据用餐数均分费用
         if (sumMealCount != 0) {
-            budget7 = NumUtils.mul(budget5, NumUtils.div(q, sumMealCount, 2));// 早餐钱
-            budget8 = NumUtils.mul(budget5, NumUtils.div(w, sumMealCount, 2));// 中餐钱
-            budget9 = NumUtils.mul(budget5, NumUtils.div(e, sumMealCount, 2));// 晚餐钱
-            budget10 = NumUtils.mul(budget6, NumUtils.div(w, sumMealCount, 2));// 中餐钱
-            budget11 = NumUtils.mul(budget6, NumUtils.div(e, sumMealCount, 2));// 晚餐钱
+            budget7 = NumUtils.mul(threeMeals, NumUtils.div(q, sumMealCount, 2));// 早餐钱
+            budget8 = NumUtils.mul(threeMeals, NumUtils.div(w, sumMealCount, 2));// 中餐钱
+            budget9 = NumUtils.mul(threeMeals, NumUtils.div(e, sumMealCount, 2));// 晚餐钱
+            budget10 = NumUtils.mul(twoMeals, NumUtils.div(w, sumMealCount, 2));// 中餐钱
+            budget11 = NumUtils.mul(twoMeals, NumUtils.div(e, sumMealCount, 2));// 晚餐钱
         }
 
         // 早餐食材费用
-        double f = NumUtils.sum(budget, budget7);
+        double f = NumUtils.sum(breakfast, budget7);
         // 午餐食材费用
-        double z = NumUtils.sum(budget2, budget8, budget10);
+        double z = NumUtils.sum(lunch, budget8, budget10);
         // 晚餐食材费用
-        double x = NumUtils.sum(budget3, budget9, budget11);
+        double x = NumUtils.sum(dinner, budget9, budget11);
         // 夜宵食材费用
-        double c = NumUtils.sum(budget4);
+        double c = NumUtils.sum(midnight);
         // 水电早餐的平均价格
         double q1 = NumUtils.div(sumd, meals.size(), 2);
         double g = NumUtils.sum(NumUtils.division(NumUtils.div(f, q == 0 ? 1 : q, 2)), q1); // 早餐平均
@@ -417,8 +387,8 @@ public class MealServiceImpl extends BaseServiceImpl<Meal, Long> implements Meal
         double h = NumUtils.sum(NumUtils.division(NumUtils.div(c, r == 0 ? 1 : r, 2)), q1);// 夜宵平均
 
         // 获取用餐记录
-        List<Meal> mealsList = findMeal(meal);
-        Map<Long, List<Meal>> mealMap = mealsList.stream().filter(Meal -> Meal.getUserId() != null)
+        meal.setOrderTimeEnd(timeEnd);      
+        Map<Long, List<Meal>> mealMap = meals.stream().filter(Meal -> Meal.getUserId() != null)
             .collect(Collectors.groupingBy(Meal::getUserId, Collectors.toList()));
         for (Long ps1 : mealMap.keySet()) {
             allMap = new HashMap<>();
@@ -452,7 +422,7 @@ public class MealServiceImpl extends BaseServiceImpl<Meal, Long> implements Meal
             allList.add(allMap);
         }
 
-        Map<Long, List<Meal>> mealMapUser = mealsList.stream().filter(Meal -> Meal.getTemporaryUserId() != null)
+        Map<Long, List<Meal>> mealMapUser = meals.stream().filter(Meal -> Meal.getTemporaryUserId() != null)
             .collect(Collectors.groupingBy(Meal::getTemporaryUserId, Collectors.toList()));
         for (Long ps1 : mealMapUser.keySet()) {
             allMap = new HashMap<>();
