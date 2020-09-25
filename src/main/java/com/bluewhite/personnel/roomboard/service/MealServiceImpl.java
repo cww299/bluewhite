@@ -216,7 +216,7 @@ public class MealServiceImpl extends BaseServiceImpl<Meal, Long> implements Meal
             DatesUtil.getLastDayOfMonth(meal.getOrderTimeBegin()));// 当月天数
 
         Long siteTypeId = null;
-        if (meal.getSite() == 1) {
+        if (meal.getSite() == 1 || meal.getSite() == 3) {
             siteTypeId = 288L;
         } else if (meal.getSite() == 2) {
             siteTypeId = 285L;
@@ -256,15 +256,14 @@ public class MealServiceImpl extends BaseServiceImpl<Meal, Long> implements Meal
 
         // 选择时间内的餐数
         List<Meal> meals = dao.findByTradeDaysTimeBetween(timeBegin, timeEnd);
-        Assert.notEmpty(meals, "选择时间内,没有用餐次数");
-
-        
+              
         // 餐费统计不需要关注人员和部门，将餐费统计来源分成三个部分。1.蓝白食堂，2.9号食堂，3.总经办
         // 1.蓝白食堂，需要统计出蓝白食堂下的水电煤气房租食材明细费用。和蓝白员工的用餐次数，排除总经办，电子商务部、内容组、成品仓库9号
         // 2.9号食堂 电子商务部、内容组、成品仓库9号
         // 3.总经办
 
         List<Long> deptIds = new ArrayList<>();
+        int mealNumber = meals.size();
         if (meal.getSite() == 1) {
             deptIds.add(1L);
             deptIds.add(35L);
@@ -294,6 +293,16 @@ public class MealServiceImpl extends BaseServiceImpl<Meal, Long> implements Meal
             }
             return false;
         }).collect(Collectors.toList());
+       
+        
+        if(meal.getSite() == 1 || meal.getSite() == 2) {
+            mealNumber = meals.size();
+        }
+        
+        // 水电早餐的平均价格
+        double q1 = NumUtils.div(sumd, mealNumber, 2);
+        
+        Assert.notEmpty(meals, "选择时间内,没有用餐次数");
 
         // 普通员工用餐数
         // 早餐数
@@ -379,8 +388,7 @@ public class MealServiceImpl extends BaseServiceImpl<Meal, Long> implements Meal
         double x = NumUtils.sum(dinner, budget9, budget11);
         // 夜宵食材费用
         double c = NumUtils.sum(midnight);
-        // 水电早餐的平均价格
-        double q1 = NumUtils.div(sumd, meals.size(), 2);
+
         double g = NumUtils.sum(NumUtils.division(NumUtils.div(f, q == 0 ? 1 : q, 2)), q1); // 早餐平均
         double i = NumUtils.sum(NumUtils.division(NumUtils.div(z, w == 0 ? 1 : w, 2)), q1);// 中餐平均
         double n = NumUtils.sum(NumUtils.division(NumUtils.div(x, e == 0 ? 1 : e, 2)), q1);// 晚餐平均
