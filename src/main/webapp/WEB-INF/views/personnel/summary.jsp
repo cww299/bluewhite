@@ -33,15 +33,17 @@
 							<td>姓名:</td>
 							<td><select class="form-control" id="selectUserId" lay-search="true" name="userId"></select></td>
 							<td>&nbsp;&nbsp;</td>
-							 -->
+							
 							<td>部门:</td>
 							<td ><select class="form-control" name="orgNameId" lay-search="true" id="orgName"></select></td>
 							<td>&nbsp;&nbsp;</td>
-							<td>地点:</td>
+							 -->
+							<td>餐费来源:</td>
 							<td ><select class="form-control" name="site">
 									<option value="">请选择</option>
 									<option value="1">蓝白</option>
-									<option value="2">9号食堂</option></select></td>
+									<option value="2">9号食堂</option>
+									<option value="3">总经办</option></select></td>
 							<td>&nbsp;&nbsp;</td>
 							<td>
 								<div class="layui-inline">
@@ -158,7 +160,7 @@
 							layer.close(index);
 						}
 					});
-					*/
+					
 					
 					var getdataa={type:"orgName",}
 					var htmlfrn= '<option value="">请选择</option>';
@@ -181,6 +183,7 @@
 			      			layer.close(indextwo);
 					      }
 					  });
+				    */
 				   	tablePlug.smartReload.enable(true); 
 				   	var data="";
 					table.render({
