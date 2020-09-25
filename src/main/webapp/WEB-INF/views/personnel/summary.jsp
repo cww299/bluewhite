@@ -29,9 +29,11 @@
 									autocomplete="off" class="layui-input laydate-icon">
 							</td>
 							<td>&nbsp;&nbsp;</td>
+							<!-- 
 							<td>姓名:</td>
 							<td><select class="form-control" id="selectUserId" lay-search="true" name="userId"></select></td>
 							<td>&nbsp;&nbsp;</td>
+							 -->
 							<td>部门:</td>
 							<td ><select class="form-control" name="orgNameId" lay-search="true" id="orgName"></select></td>
 							<td>&nbsp;&nbsp;</td>
@@ -133,6 +135,7 @@
 						elem: '#monthDate9',
 						type : 'month',
 					}); 
+					/*
 					$.ajax({
 						url: '${ctx}/system/user/findUserList',
 						type: "GET",
@@ -155,6 +158,7 @@
 							layer.close(index);
 						}
 					});
+					*/
 					
 					var getdataa={type:"orgName",}
 					var htmlfrn= '<option value="">请选择</option>';
