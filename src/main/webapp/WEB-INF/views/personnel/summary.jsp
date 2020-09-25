@@ -125,9 +125,7 @@
 				  	}
 					//select全局变量
 					var htmls = '<option value="">请选择</option>';
-					var index = layer.load(1, {
-						shade: [0.1, '#fff'] //0.1透明度的白色背景
-					});
+					
 					
 					laydate.render({
 						elem: '#startTime',
@@ -138,6 +136,9 @@
 						type : 'month',
 					}); 
 					/*
+					var index = layer.load(1, {
+						shade: [0.1, '#fff'] //0.1透明度的白色背景
+					});
 					$.ajax({
 						url: '${ctx}/system/user/findUserList',
 						type: "GET",
