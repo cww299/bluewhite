@@ -41,7 +41,7 @@
 							<td>餐费来源:</td>
 							<td ><select class="form-control" name="site">
 									<option value="">请选择</option>
-									<option value="1">蓝白</option>
+									<option value="1">蓝白食堂</option>
 									<option value="2">9号食堂</option>
 									<option value="3">总经办</option></select></td>
 							<td>&nbsp;&nbsp;</td>
