@@ -56,7 +56,7 @@ var TPL = [
 		'<div class="layui-form-item" pane>',
 			'<label class="layui-form-label">线下客户</label>',
 			'<div class="layui-input-block">',
-				'<select name="customerId" id="cusetomerSelect"></select>',
+				'<select name="customerId" id="cusetomerSelect" lay-search></select>',
 			'</div>',
 		'</div>',
 		'<div class="layui-form-item" pane>',
