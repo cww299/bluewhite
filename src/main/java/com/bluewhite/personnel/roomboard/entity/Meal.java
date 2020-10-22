@@ -132,10 +132,25 @@ public class Meal extends BaseEntity<Long> {
 	 */
 	@Transient
 	private String orgName;
+    
+    /**
+     * 蓝白或者9号食堂
+     */
+    @Transient
+    private Integer site;
+	
 
 	
 
-	public Long getTemporaryUserId() {
+    public Integer getSite() {
+        return site;
+    }
+
+    public void setSite(Integer site) {
+        this.site = site;
+    }
+
+    public Long getTemporaryUserId() {
 		return temporaryUserId;
 	}
 

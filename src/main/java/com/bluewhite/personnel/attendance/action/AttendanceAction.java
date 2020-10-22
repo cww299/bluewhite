@@ -36,6 +36,11 @@ import com.bluewhite.personnel.attendance.service.PersonVariableService;
 import com.bluewhite.system.user.entity.User;
 import com.bluewhite.system.user.service.UserService;
 
+import cn.hutool.core.date.DateUnit;
+import cn.hutool.core.date.DateUtil;
+import cn.hutool.core.util.RandomUtil;
+import cn.hutool.core.util.StrUtil;
+
 @Controller
 public class AttendanceAction {
 
@@ -652,5 +657,27 @@ public class AttendanceAction {
 	}
 	
 	
-
+    @RequestMapping(value = "/test", method = RequestMethod.GET)
+    @ResponseBody
+    public void test() {                             
+        for (int i = 10; i <= 31; i++) {
+            String dates = "2020-08-{} 08:25:00";
+            String dateString = StrUtil.format(dates, i);
+            Date date = DateUtil.parse(dateString);
+            Attendance attendance = new Attendance();
+            attendance.setInOutMode(3);
+            attendance.setUserName("张良");
+            attendance.setUserId(473L);
+            attendance.setVerifyMode(1);
+            attendance.setSourceMachine("THREE_FLOOR");
+            attendance.setNumber("617");
+            int number = RandomUtil.randomInt(-300,300);
+            date = DateUtil.offsetSecond(date,number);      
+            attendance.setTime(date);
+            date = DateUtil.offsetDay(date, 1);
+            System.out.println(attendance);
+            attendanceService.save(attendance);
+        }
+    }
+    
 }

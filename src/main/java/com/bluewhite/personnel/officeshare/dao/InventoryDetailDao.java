@@ -16,6 +16,7 @@ public interface InventoryDetailDao extends BaseRepository<InventoryDetail, Long
 	 * @return
 	 */
 	List<InventoryDetail> findByFlagAndStatusAndTimeBetween(Integer flag ,Integer status, Date startTime, Date endTime);
+	
 	/**
 	 * 按出庫时间 部门查询
 	 * 

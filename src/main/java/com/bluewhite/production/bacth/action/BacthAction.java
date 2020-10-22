@@ -58,7 +58,6 @@ public class BacthAction {
 		if (bacth.getId() != null) {
 			Bacth oldBacth = bacthService.findOne(bacth.getId());
 			BeanCopyUtils.copyNullProperties(oldBacth, bacth);
-			bacth.setCreatedAt(oldBacth.getCreatedAt());
 			if (bacth.getFlag() == 0 && bacth.getRegionalPrice() != null) {
 				bacth.setRegionalPrice(NumUtils.round(ProTypeUtils.sumRegionalPrice(bacth.getSumTaskPrice(),bacth.getBacthHairPrice(),bacth.getBacthDepartmentPrice()), null));
 			}
