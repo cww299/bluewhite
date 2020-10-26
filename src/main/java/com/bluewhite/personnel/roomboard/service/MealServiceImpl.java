@@ -236,16 +236,18 @@ public class MealServiceImpl extends BaseServiceImpl<Meal, Long> implements Meal
         CostLiving costLivingElectricity = costLivingDao.findByCostTypeIdAndSiteTypeIdAndBeginTimeAndEndTime((long)291,
             siteTypeId, timeBegin, timeEnd);
         Assert.notNull(costLivingElectricity, "未查询到当月电费，请先添加");
+        sum2 = NumUtils.mul(costLivingElectricity.getAverageCost(), day);
 
         // 房租
         CostLiving costLiving = costLivingDao.findByCostTypeIdAndSiteTypeIdAndBeginTimeAndEndTime((long)289, siteTypeId,
             timeBegin, timeEnd);
         Assert.notNull(costLiving, "未查询到当月房租，请先添加");
-
+        sum3 = NumUtils.mul(costLiving.getAverageCost(), day);
         // 当月煤气
         CostLiving costLivingGas = costLivingDao.findByCostTypeIdAndSiteTypeIdAndBeginTimeAndEndTime((long)292,
             siteTypeId, timeBegin, timeEnd);
         Assert.notNull(costLivingGas, "未查询到当月煤气费，请先添加");
+        sum4 = NumUtils.mul(costLivingGas.getAverageCost(), day);
 
         PersonVariable restType = personVariableDao.findByType(5);
         double water = NumUtils.mul(sum1, Double.parseDouble(restType.getKeyValue()));// 每月水费

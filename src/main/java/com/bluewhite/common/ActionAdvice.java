@@ -58,6 +58,7 @@ public class ActionAdvice{
 			responseInfo.setMessage(exception.getCause().getMessage());
 		}else if(exception instanceof IllegalArgumentException){   
 		    responseInfo.setMessage(exception.getMessage());
+		    log.error("系统异常",exception);
 		} else {
 			log.error("系统异常",exception);
 			responseInfo.setMessage("抱歉,服务器异常了,详情 [" + (exception == null ? "未知" : exception.getClass().getSimpleName().replace("Exception", "")) + "]");
