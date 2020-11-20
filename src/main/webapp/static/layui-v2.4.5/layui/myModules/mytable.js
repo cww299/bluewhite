@@ -439,7 +439,7 @@ layui.extend({
 						else{
 							if(data.length==0)
 								return myutil.emsg('无临时数据可保存！');
-							for(var i=0;i<data.length;i++)
+							for(var i=0;i<data.length;i++) {
 								myutil.saveAjax({
 									url: opt.autoUpdate.saveUrl,
 									data: data[i],
@@ -453,6 +453,8 @@ layui.extend({
 										}
 									}
 								})
+							}
+							table.cleanTemp(tableId);
 						}
 					}
 					function deleteSome(){
