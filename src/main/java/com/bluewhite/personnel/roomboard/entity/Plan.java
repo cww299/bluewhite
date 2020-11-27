@@ -14,7 +14,7 @@ import com.bluewhite.base.BaseEntity;
 import com.bluewhite.basedata.entity.BaseData;
 
 /**
- * 招聘记录
+ * 招聘计划
  * 
  * @author qiyong
  *
