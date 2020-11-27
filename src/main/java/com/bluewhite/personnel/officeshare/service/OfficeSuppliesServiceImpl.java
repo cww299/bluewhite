@@ -59,8 +59,13 @@ public class OfficeSuppliesServiceImpl extends BaseServiceImpl<OfficeSupplies, L
                         param.getOrderTimeEnd()));
                 }
             }
+            // 编码
             if(param.getQcCode()!=null && !param.getQcCode().isEmpty()) {
             	predicate.add(cb.equal(root.get("qcCode").as(String.class), param.getQcCode()));
+            }
+            // 食材材料
+            if(param.getSingleMealConsumptionId() != null ) {
+            	predicate.add(cb.equal(root.get("singleMealConsumptionId").as(Long.class), param.getSingleMealConsumptionId()));
             }
             Predicate[] pre = new Predicate[predicate.size()];
             query.where(predicate.toArray(pre));

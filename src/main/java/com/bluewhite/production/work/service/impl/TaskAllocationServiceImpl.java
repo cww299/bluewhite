@@ -203,8 +203,8 @@ public class TaskAllocationServiceImpl extends BaseServiceImpl<TaskAllocation, L
 		TaskProcess process = getProcess(allocation, remark, TaskConstant.PROCESS_RETURN);
 		process.setNumber(number);
 		// 操作人员
-		CurrentUser cu = SessionManager.getUserSession();
-		process.setUserNames(cu.getUserName());
+		// CurrentUser cu = SessionManager.getUserSession();cu.getUserName()
+		process.setUserNames(allocation.getUserNames());
 		isEnd(allocation);
 		save(allocation);
 		processService.save(process);

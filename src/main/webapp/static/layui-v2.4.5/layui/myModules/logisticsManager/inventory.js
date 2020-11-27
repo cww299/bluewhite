@@ -53,23 +53,7 @@ layui.extend({
 	</style>
 	`;
 	$('head').append(STYLE);
-	var TPL_MAIN = `
-		<table class="layui-form searchTable">
-			<tr>
-				<td>物品名:</td>
-				<td><input type="text" name="name" class="layui-input"></td>
-				<td>仓位:</td>
-				<td><input type="text" name="location" class="layui-input"></td>
-				<td>时间:</td>
-				<td><input type="text" name="" class="layui-input" id="searchTime"></td>
-				<td>库存数量:</td>
-				<td><input type="number" name="inventoryNumber" class="layui-input"></td>
-				<td></td>
-				<td><button type="button" class="layui-btn layui-btn-" lay-submit lay-filter="search">搜索</button></td>
-			</tr>
-		</table>
-		<table id="tableData" lay-filter="tableData"></table>
-	`;
+	
 	var OUT_TPL = `
 	<div style="text-align:center;">
 		<div class="layui-form layui-form-pane" style="padding:10px;">
@@ -135,6 +119,29 @@ layui.extend({
 	};
 	
 	inventory.render = function(opt){
+		var TPL_MAIN = `
+			<table class="layui-form searchTable">
+				<tr>
+					<td>物品名:</td>
+					<td><input type="text" name="name" class="layui-input"></td>
+					<td>仓位:</td>
+					<td><input type="text" name="location" class="layui-input"></td>
+					<td>时间:</td>
+					<td><input type="text" name="" class="layui-input" id="searchTime"></td>
+					<td>库存数量:</td>
+					<td><input type="number" name="inventoryNumber" class="layui-input"></td>
+		`+(function() {
+			if (inventory.type==3) {
+				return `<td>材料:</td><td><select id="mealConsumptionSelect" name="singleMealConsumptionId"></select></td>`;
+			}
+			return '';
+		})() +`
+					<td></td>
+					<td><button type="button" class="layui-btn layui-btn-" lay-submit lay-filter="search">搜索</button></td>
+				</tr>
+			</table>
+			<table id="tableData" lay-filter="tableData"></table>
+		`;
 		var INPUT_TPL = `
 			<div style="text-align:center;">
 				<div class="layui-form layui-form-pane" style="padding:10px;">
@@ -189,8 +196,17 @@ layui.extend({
 			allCustomerSelectHtml = '<option value="">请选择</option>';
 		var unitData = myutil.getDataSync({ url: myutil.config.ctx+'/basedata/list?type=officeUnit' });
 		var allSingleMealConsumption =  [];
-		if(inventory.type==3)
-			allSingleMealConsumption =myutil.getDataSync({ url: myutil.config.ctx+'/basedata/list?type=singleMealConsumption' });
+		if(inventory.type==3) {
+			allSingleMealConsumption = 
+				myutil.getDataSync({ url: myutil.config.ctx+'/basedata/list?type=singleMealConsumption' });
+			
+			var html = '<option value="">请选择</option>';
+			(allSingleMealConsumption || []).forEach(sign => {
+				html += "<option value='"+sign.id+"'>"+sign.name+"</option>"
+			})
+			$('#mealConsumptionSelect').append(html);
+			form.render();
+		}
 		mytable.render({
 			elem:'#tableData',
 			url: myutil.config.ctx+'/personnel/getOfficeSupplies?type='+inventory.type,
