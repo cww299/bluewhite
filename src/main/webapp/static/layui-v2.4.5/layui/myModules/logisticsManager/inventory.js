@@ -1,7 +1,7 @@
 /**2019/12/13
  * author: 299
  * 后勤库存信息模块 inventory
- * type: 1、办公用品  2、机械配件  3、食材库存
+ * type: 1、办公用品  2、机械配件  3、食材库存  4、小卖部
  * elem: '', 容器
  * inventory.render({
  * 		type: 1,
@@ -215,7 +215,7 @@ layui.extend({
 					qcCode: '',
 					type: inventory.type,
 					createdAt:myutil.getSubDay(0,'yyyy-MM-dd')+' 00:00:00',
-					location:'',name:'',price:'',inventoryNumber:'',libraryValue:'',
+					location:'',name:'',price:'',salePrice:'',inventoryNumber:'',libraryValue:'',
 					unitId: unitData[0].id,
 					singleMealConsumptionId: allSingleMealConsumption[0]?allSingleMealConsumption[0].id : "",
 				},
@@ -247,7 +247,7 @@ layui.extend({
 			},
 			toolbar: [
 				(function(){
-					if(inventory.type==1){
+					if(inventory.type==1 || inventory.type==4){
 						return '<span class="layui-btn layui-btn-primary layui-btn-sm" lay-event="sacanOut">扫码出库</span>'+
 						'<span class="layui-btn layui-btn-warm layui-btn-sm" lay-event="sacanIn">扫码入库</span>'+
 						'<span class="layui-btn layui-btn-normal layui-btn-sm" lay-event="printQcCode">打印条形码</span>';
@@ -270,7 +270,7 @@ layui.extend({
 						{ type: 'checkbox', align: 'center', fixed: 'left',},
 						{ field: "createdAt", title: "时间", type:'date',},
 					];
-					if(inventory.type==1){
+					if(inventory.type==1 || inventory.type==4){
 						cols.push(
 							{ field: "qcCode", title: "条形码", edit: true }
 						)
@@ -287,7 +287,11 @@ layui.extend({
 							select:{ data: allSingleMealConsumption, },
 						})
 					}
-					c = [{ field: "price", title: "单价", edit: true, },
+					cols.push({ field: "price", title: "单价", edit: true, });
+					if(inventory.type===4){
+						cols.push({ field: "salePrice", title: "售价", edit: true, })
+					}
+					c = [
 					{ field: "inventoryNumber", title: "库存数量", edit: false, },
 					{ field: "libraryValue", title: "库值", edit: false, },
 					{ field: "", title: "操作", edit: false, templet:getTpl(), },];

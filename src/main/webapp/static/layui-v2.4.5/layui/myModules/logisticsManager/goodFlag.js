@@ -1,7 +1,6 @@
 /**
  * 商品标签
- */
-/**@author:299
+ * @author:299
  */
 layui.extend({
 	jsBarcode: 'layui/myModules/util/jsBarcode',
@@ -31,7 +30,8 @@ layui.extend({
 				'<input type="number" class="layui-input" placeholder="打印张数"  value="{{ item.inventoryNumber }}" style="float: right;',
 		    			'width: 200px;margin-top: 150px;">',
     			'<div style="page-break-after:always;" class="hiddenPrint">',
-	    			'<p style="font-size: 10px;width: 100px;margin: auto; overflow: hidden;white-space: nowrap;">{{ item.name }}</p>',
+	    			'<p style="font-size: 10px;width: 100px;margin: auto; overflow: hidden;white-space: nowrap;">',
+	    				 '{{ item.salePrice ? ("￥" + item.salePrice) : "" }}{{ item.name }}</p>',
 	    			'<img class="id{{ item.id }}" style="width:100px;height:30px;"/>',
 	    			'<p style="margin: 0px; font-size: 10px;">{{ item.qcCode }}</p>',
     			'</div>',
@@ -39,7 +39,8 @@ layui.extend({
 					'<div style="border: 1px solid gray; padding: 10px;margin-right:5px;margin-top:5px;width: 320px;',
 			    			'height:240px;display: flex;">',
 			    		'<div style="align-self: center;text-align: center;">',
-							'<p style="margin: 0px;line-height: 20px;width: 300px;">{{ item.name || "---"}}</p>',
+							'<p style="margin: 0px;line-height: 20px;width: 300px;">',
+								'{{ item.salePrice ? ( "￥" + item.salePrice) : "" }}{{ item.name || "---"}}</p>',
 							'<img class="id{{ item.id }}" />',
 							'<p style="margin: 0px; ">{{ item.qcCode }}</p>',
 						'</div>',

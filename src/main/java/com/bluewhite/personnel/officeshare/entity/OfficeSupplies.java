@@ -41,6 +41,12 @@ public class OfficeSupplies extends BaseEntity<Long> {
 	 */
 	@Column(name = "price")
 	private Double price;
+	
+	/**
+	 * 价格
+	 */
+	@Column(name = "sale_price")
+	private Double salePrice;
 
 	/**
 	 * 单位id
@@ -83,7 +89,7 @@ public class OfficeSupplies extends BaseEntity<Long> {
 	private Customer customer;
 
 	/**
-	 * 类型(1.办公用品，2.机械配件,3.食材)
+	 * 类型(1.办公用品，2.机械配件,3.食材,4小卖部)
 	 */
 	@Column(name = "type")
 	private Integer type;
@@ -239,6 +245,14 @@ public class OfficeSupplies extends BaseEntity<Long> {
 
 	public void setQcCode(String qcCode) {
 		this.qcCode = qcCode;
+	}
+
+	public Double getSalePrice() {
+		return salePrice;
+	}
+
+	public void setSalePrice(Double salePrice) {
+		this.salePrice = salePrice;
 	}
 
 }

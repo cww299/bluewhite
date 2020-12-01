@@ -37,7 +37,7 @@ public class OfficeSuppliesAction {
 	private ClearCascadeJSON clearCascadeJSON;
 	{
 		clearCascadeJSON = ClearCascadeJSON.get()
-				.addRetainTerm(OfficeSupplies.class,"id","number", "name", "price", "unit", "qcCode"
+				.addRetainTerm(OfficeSupplies.class,"id","number", "name", "price", "salePrice", "unit", "qcCode"
 						, "inventoryNumber","location","libraryValue","createdAt","customer","singleMealConsumption")
 				.addRetainTerm(Customer.class, "id", "name")
 				.addRetainTerm(BaseData.class, "id", "name");
