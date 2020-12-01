@@ -1,6 +1,5 @@
 package com.bluewhite.personnel.roomboard.action;
 
-import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.List;
 import java.util.Map;
@@ -24,15 +23,12 @@ import com.bluewhite.common.DateTimePattern;
 import com.bluewhite.common.entity.CommonResponse;
 import com.bluewhite.common.entity.PageParameter;
 import com.bluewhite.common.entity.PageResult;
-import com.bluewhite.personnel.roomboard.dao.AdvertisementDao;
-import com.bluewhite.personnel.roomboard.dao.RewardDao;
 import com.bluewhite.personnel.roomboard.entity.Recruit;
 import com.bluewhite.personnel.roomboard.service.RecruitService;
 import com.bluewhite.production.group.entity.Group;
 import com.bluewhite.system.user.entity.Role;
 import com.bluewhite.system.user.entity.User;
 import com.bluewhite.system.user.entity.UserContract;
-import com.bluewhite.system.user.service.UserService;
 
 @Controller
 public class RecruitAction {
