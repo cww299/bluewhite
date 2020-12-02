@@ -115,7 +115,7 @@ public class RecruitServiceImpl extends BaseServiceImpl<Recruit, Long> implement
         if (recruit.getPhone() != null) {
             User user = userService.findByPhone(recruit.getPhone());
             if (user != null && user.getQuit().equals(0)) {
-                throw new ServiceException(recruit.getName()+"员工花名册中已入职，无法多次新增");
+                throw new ServiceException(recruit.getName() + "员工花名册中已入职，无法多次新增");
             }
         }
         return dao.save(recruit);
@@ -519,18 +519,20 @@ public class RecruitServiceImpl extends BaseServiceImpl<Recruit, Long> implement
                 Long id = Long.parseLong(ids[i]);
                 Recruit recruit = dao.findOne(id);
                 if (state == 1) {
-                    User user = userService.findByPhone(recruit.getPhone());
+                    User user = new User();
                     user.setQuit(0);
                     user.setEntry(recruit.getTestTime());
                     user.setOrgNameId(recruit.getOrgNameId());
                     user.setPositionId(recruit.getPositionId());
-                    if (user == null) {
-                        user = new User();
-                        user.setUserName(recruit.getName());
-                        user.setPhone(recruit.getPhone());
-                        userService.addUser(user);
-                    } else {
+                    user.setUserName(recruit.getName());
+                    user.setPhone(recruit.getPhone());
+                    user.setGender(recruit.getGender());
+                    User oldUser = userService.findByPhone(recruit.getPhone());
+                    if (oldUser != null) {
+                        user.setId(oldUser.getId());
                         userService.save(user);
+                    } else {
+                        userService.addUser(user);
                     }
                     recruit.setUserId(user.getId());
                     recruit.setState(state);

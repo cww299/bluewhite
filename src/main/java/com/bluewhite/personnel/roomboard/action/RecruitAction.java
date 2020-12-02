@@ -130,9 +130,8 @@ public class RecruitAction {
     }
 
     /**
-     * 审核
+     * 一键入职
      *
-     * @param request 请求
      * @return cr
      * @throws Exception
      */
