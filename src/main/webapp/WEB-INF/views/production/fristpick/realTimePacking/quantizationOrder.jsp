@@ -26,33 +26,34 @@
 							<option value="time">包装时间</option>
 							<option value="sendTime">发货时间</option></select></td>
 				<td><input type="text" name="orderTimeBegin" id="orderTimeBegin" placeholder="请输入时间" class="layui-input"></td>
-				<td>&nbsp;&nbsp;&nbsp;</td>
-				<td>产品名:</td>
-				<td><input type="text" name="productName" class="layui-input"></td>
-				<td>&nbsp;&nbsp;&nbsp;</td>
-				<td>客户名:</td>
-				<td><input type="text" name="customerName" class="layui-input"></td>
-				<td>&nbsp;&nbsp;&nbsp;</td>
-				<td>上车编号:</td>
-				<td><input type="text" name="vehicleNumber" class="layui-input"></td>
-				<td>&nbsp;&nbsp;&nbsp;</td>
+				<td>&nbsp;&nbsp;</td>
+				<td></td>
+				<td><input type="text" name="productName" placeholder="产品名" class="layui-input"></td>
+				<td>&nbsp;&nbsp;</td>
+				<td></td>
+				<td><input type="text" name="customerName" placeholder="客户名称" class="layui-input"></td>
+				<td>&nbsp;&nbsp;</td>
+				<td></td>
+				<td><input type="text" name="vehicleNumber" placeholder="上车编号" class="layui-input"></td>
+				<td>&nbsp;&nbsp;</td>
 				<td id="isAuditSearchTextTd"></td>
 				<td id="isAuditSearchTd"></td>
-				<td>&nbsp;&nbsp;&nbsp;</td>
-				<td>是否打印:</td>
-				<td style="width:100px;"><select name="print"><option value="">请选择</option>
-										<option value="0">否</option>
-										<option value="1">是</option></select></td>
-				<td>&nbsp;&nbsp;&nbsp;</td>
-				<td>是否发货:</td>
-				<td style="width:100px;"><select name="flag"><option value="">请选择</option>
-										<option value="0">否</option>
-										<option value="1">是</option></select></td>
-				<td>&nbsp;&nbsp;&nbsp;</td>
-				<td>是否对账:</td>
-				<td style="width:100px;"><select name="reconciliation"><option value="">请选择</option>
-										<option value="0">否</option>
-										<option value="1">是</option></select></td>
+				<td>&nbsp;&nbsp;</td>
+				<td></td>
+				<td style="width:100px;"><select name="print"><option value="">是否打印</option>
+										<option value="0">未打印</option>
+										<option value="1">已打印</option></select></td>
+				<td>&nbsp;&nbsp;</td>
+				<td></td>
+				<td style="width:100px;"><select name="flag"><option value="">是否发货</option>
+										<option value="0">未发货</option>
+										<option value="1">已发货</option></select></td>
+				<td>&nbsp;&nbsp;</td>
+				<td></td>
+				<td style="width:100px;"><select name="reconciliation"><option value="">是否对账</option>
+										<option value="0">未对账</option>
+										<option value="1">已对账</option></select></td>
+				<td>&nbsp;&nbsp;</td>
 				<td><button type="button" class="layui-btn layui-btn-" lay-submit lay-filter="search">搜索</button></td>
 			</tr>
 		</table>
@@ -142,12 +143,11 @@ layui.config({
 		var isStickBagAccount = $('#stickBagAccountBtn').length>0;
 		if(isStickBagAccount){
 			$('#isAuditSearchTd').html([
-				'<select name="audit"><option value="">请选择</option>',
-				'<option value="0">否</option>',
-				'<option value="1">是</option></select>',
+				'<select name="audit"><option value="">是否审核</option>',
+				'<option value="0">未审核</option>',
+				'<option value="1">已审核</option></select>',
 			].join(''));
 			$('#isAuditSearchTd').css('width','100px');
-			$('#isAuditSearchTextTd').html('是否审核:');
 			form.render();
 		}
 		var allMaterials = [];
@@ -550,6 +550,26 @@ layui.config({
 			var tpl = $('#printPackTpl').html(), html='<div id="printDiv">';
 			var allId = [];
 			layui.each(printData,function(index,item){
+				var item = JSON.parse(JSON.stringify(item));
+				var childs = item.quantitativeChilds;
+				var mergeChild = [];
+				for(var i in childs) {
+					var c = childs[i];
+					var has = false;
+					for(var j in mergeChild) {
+						var merge = mergeChild[j];
+						if (merge.underGoods.bacthNumber == c.underGoods.bacthNumber &&
+							merge.underGoods.product.name == c.underGoods.product.name) {
+							merge.singleNumber += c.singleNumber;
+							has = true;
+							break;
+						}
+					}
+					if (!has) {
+						mergeChild.push(c);
+					}
+				}
+				item.quantitativeChilds = mergeChild;
 				allId.push(item.id);
 				laytpl(tpl).render(item,function(h){ html += h; })
 			})
