@@ -224,7 +224,8 @@ public class TaskAllocationServiceImpl extends BaseServiceImpl<TaskAllocation, L
 		TaskWork task = allocation.getTask();
 		task.setFinishNumber(task.getFinishNumber() + number);
 		task.setCurrTimeMin(task.getCurrTimeMin() + timeMin);
-		if (task.getSurplusNumber() == 0) {
+		// 如果已完成数量 等于 任务数量，则该任务结束
+		if (task.getFinishNumber() == task.getNumber()) {
 			task.setStatus(TaskConstant.TASK_END);
 		}
 		// 任务进度
