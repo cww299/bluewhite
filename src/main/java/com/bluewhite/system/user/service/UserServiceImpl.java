@@ -216,6 +216,11 @@ public class UserServiceImpl extends BaseServiceImpl<User, Long> implements User
 					predicate.add(cb.between(root.get("actua").as(Date.class), user.getOrderTimeBegin(),
 							user.getOrderTimeEnd()));
 				}
+				// 按社保缴纳时间
+				if (!StringUtils.isEmpty(user.getSocialSecurity())) {
+					predicate.add(cb.between(root.get("socialSecurity").as(Date.class), user.getOrderTimeBegin(),
+							user.getOrderTimeEnd()));
+				}
 			}
 			Predicate[] pre = new Predicate[predicate.size()];
 			query.where(predicate.toArray(pre));

@@ -99,7 +99,8 @@
 						<option value="">请选择</option>
 						<option value="entry">入职时间</option>
 						<option value="actua">实际转正时间</option>
-						<option value="estimate">预计转正时间</option></select></td>
+						<option value="estimate">预计转正时间</option>
+						<option value="socialSecurity">社保缴纳时间</option></select></td>
 				<td>&nbsp;&nbsp;</td>
 				<td>输入时间:</td>
 				<td><input id="startTime" placeholder="请输入时间"  class="layui-input laydate-icon" autocomplete="off" style="width:160px;">
@@ -1209,6 +1210,7 @@ layui.config({
 	 		var entry="";
   			var estimate="";
   			var actua="";
+  			var socialSecurity = "";
 			if($("#timesss").val()=="entry"){
 				entry="2018-10-08 00:00:00"
 			}
@@ -1218,12 +1220,16 @@ layui.config({
 			if($("#timesss").val()=="actua"){
 				actua="2018-10-08 00:00:00"
 			}
+			if($("#timesss").val()=="socialSecurity"){
+				socialSecurity = "2018-10-08 00:00:00";
+			}
 			if(field.retire!="" && field.gender==""){
 				return layer.msg("筛选退休返聘 请先选择性别",{icon:2});
 			}
 			field.entry=entry;
 			field.estimate=estimate;
 			field.actua=actua;
+			field.socialSecurity = socialSecurity;
 			var orderTime=$("#startTime").val().split('~');
 			if($("#startTime").val()!=""){
 			field.orderTimeBegin=orderTime[0]+' '+'00:00:00';
