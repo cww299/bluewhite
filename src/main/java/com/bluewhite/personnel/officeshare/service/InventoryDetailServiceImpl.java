@@ -237,20 +237,19 @@ public class InventoryDetailServiceImpl extends BaseServiceImpl<InventoryDetail,
             .mapToDouble(InventoryDetail::getOutboundCost).sum();
         // 均分费用
         double averageLogisticsCost = 0;
-        if (mapAttendance.size() != 0) {
-            averageLogisticsCost = NumUtils.div(logisticsCost, mapAttendance.size(), 2);
-        }
-
         // 查询出所有的部门
         List<BaseData> baseDatas = baseDataService.getBaseDataTreeByType("orgName");
+        if (mapAttendance.size() != 0) {
+            averageLogisticsCost = NumUtils.div(logisticsCost, baseDatas.size(), 2);
+        }
         for (BaseData bData : baseDatas) {
             if (mapAttendance.size() > 0) {
                 Map<String, Object> map = new HashMap<>();
-                long size = onventoryDetailList.stream().filter(InventoryDetail -> InventoryDetail.getOrgNameId() != null
-                    && InventoryDetail.getOrgNameId().equals(bData.getId())).count();
-                if(size==0) {
-                    continue;
-                }
+//                long size = onventoryDetailList.stream().filter(InventoryDetail -> InventoryDetail.getOrgNameId() != null
+//                    && InventoryDetail.getOrgNameId().equals(bData.getId())).count();
+//                if(size==0) {
+//                    continue;
+//                }
                 List<InventoryDetail> psList = onventoryDetailList.stream()
                     .filter(InventoryDetail -> InventoryDetail.getOrgNameId() != null
                         && InventoryDetail.getOrgNameId().equals(bData.getId())
