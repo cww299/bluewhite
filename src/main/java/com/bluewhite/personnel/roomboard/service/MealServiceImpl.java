@@ -322,14 +322,14 @@ public class MealServiceImpl extends BaseServiceImpl<Meal, Long> implements Meal
         if (meal.getSite() == 1) {         
             inventoryDetailList =
                 inventoryDetailList.stream().filter(inventoryDetail -> inventoryDetail.getOfficeSupplies().getType() == 3 
-                && !inventoryDetail.getRemark().contains("9号食堂") && inventoryDetail.getOrgNameId() == null)
+                && !inventoryDetail.getRemark().contains("9号") && inventoryDetail.getOrgNameId() == null)
                 .collect(Collectors.toList());  
         }
     
         if (meal.getSite() == 2) {                    
             inventoryDetailList = inventoryDetailList.stream().filter(inventoryDetail -> 
             inventoryDetail.getOfficeSupplies().getType() == 3 
-                && inventoryDetail.getRemark().contains("9号食堂"))
+                && inventoryDetail.getRemark().contains("9号"))
                     .collect(Collectors.toList());
         }
         
@@ -338,7 +338,7 @@ public class MealServiceImpl extends BaseServiceImpl<Meal, Long> implements Meal
                 && i.getOrgNameId() != null && i.getOrgNameId().equals(1L))
                 .collect(Collectors.toList());
         }
-   
+    
         if (inventoryDetailList.size() == 0) {
             throw new ServiceException("选择时间内，没有添食材出库记录");
         }
