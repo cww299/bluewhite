@@ -383,7 +383,7 @@ public class TaskAllocationServiceImpl extends BaseServiceImpl<TaskAllocation, L
 			// 查找至上一次完成 或者 分配点
 			if (type == TaskConstant.PROCESS_ALLOCATION || type == TaskConstant.PROCESS_FINISH) {
 				// 上一次为分配、完成，则以该次为起点，计算当前耗时
-				Date time = DateUtil.parseDateTime("2020-12-23 15:30:49"); // new Date();
+				Date time = new Date();
 				int min = (int) DateUtil.between(process.getCreatedAt(), time, DateUnit.MINUTE);
 				allTime += min;
 				break;
