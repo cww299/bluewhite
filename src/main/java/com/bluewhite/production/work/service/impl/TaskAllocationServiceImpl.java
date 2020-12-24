@@ -258,7 +258,7 @@ public class TaskAllocationServiceImpl extends BaseServiceImpl<TaskAllocation, L
 			TaskWork task = allocation.getTask();
 			task.setFinishNumber(task.getFinishNumber() + number);
 			task.setCurrTimeMin(task.getCurrTimeMin() + timeMin);
-			if (task.getSurplusNumber() == 0) {
+			if (task.getFinishNumber() == task.getNumber()) {
 				task.setStatus(TaskConstant.TASK_END);
 			}
 			// 任务进度
@@ -376,42 +376,21 @@ public class TaskAllocationServiceImpl extends BaseServiceImpl<TaskAllocation, L
 		int allTime = 0;
 		// 上一次开始时间
 		List<TaskProcess> processList = processService.getAll(null, allocation.getId());
-		// 本次耗时
+		// 当前任务正在进行中
 		for (int i = 0; i < processList.size(); i++ ) {
 			TaskProcess process = processList.get(i);
 			int type = process.getType();
+			// 查找至上一次完成 或者 分配点
 			if (type == TaskConstant.PROCESS_ALLOCATION || type == TaskConstant.PROCESS_FINISH) {
-				// 上一次为开始、分配、完成，则以该次为起点，计算当前耗时
-				int min = (int) DateUtil.between(process.getCreatedAt(), new Date(), DateUnit.MINUTE);
+				// 上一次为分配、完成，则以该次为起点，计算当前耗时
+				Date time = DateUtil.parseDateTime("2020-12-23 15:30:49"); // new Date();
+				int min = (int) DateUtil.between(process.getCreatedAt(), time, DateUnit.MINUTE);
 				allTime += min;
-				break;
-			}
-			if (type == TaskConstant.PROCESS_PAUSE) {
-				// 如果上一次是暂停，本次耗时为0
 				break;
 			}
 			if (type == TaskConstant.PROCESS_START) {
-				int min = (int) DateUtil.between(process.getCreatedAt(), new Date(), DateUnit.MINUTE);
-				allTime += min;
-				allTime += process.getTimeMin();
-				// 如果上一次是开始，计算暂停时长
-				for (int j = i+1; j < processList.size(); j++) {
-					TaskProcess lastProcess = processList.get(j);
-					int lastType = lastProcess.getType();
-					if (lastType == TaskConstant.PROCESS_ALLOCATION || lastType == TaskConstant.PROCESS_FINISH) {
-						// 本次开始距离上一次分配或完成
-						break;
-					}
-					if (type == TaskConstant.PROCESS_START) {
-						// 如果是开始时间，减去暂停时长
-						allTime -= process.getTimeMin();
-					}
-					if (type == TaskConstant.PROCESS_PAUSE) {
-						// 如果是暂停，加上之前的
-						allTime += process.getTimeMin();
-					}
-				}
-				break;
+				// 计算总暂停时间
+				allTime -= process.getTimeMin();
 			}
 		}
 		return allTime;
