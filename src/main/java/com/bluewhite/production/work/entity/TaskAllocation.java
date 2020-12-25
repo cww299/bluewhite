@@ -25,7 +25,7 @@ public class TaskAllocation extends BaseEntity<Long> {
 	@Column(name = "task_id")
 	private Long taskId;
 	
-	@ManyToOne(fetch = FetchType.LAZY)
+	@ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "task_id", referencedColumnName = "id", insertable = false, updatable = false)
 	private TaskWork task;
 	
