@@ -215,7 +215,7 @@ public class TaskAllocationServiceImpl extends BaseServiceImpl<TaskAllocation, L
 	@Transactional
 	public void finish(Long allocationId, int number) {
 		TaskAllocation allocation = findOne(allocationId);
-		// checkFinal(allocation, number);
+		checkFinal(allocation, number);
 		if (number > allocation.getSurplusNumber()) {
 			throw new ServiceException("完成数量不能大于剩余数量");
 		}
