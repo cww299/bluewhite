@@ -138,7 +138,7 @@ layui.define(['mytable','form','chooseMate', 'upload'],function(exports){
 			return function(d) {
 				var html = '---'
 				const mate = d.materiel
-				if(mate.convertUnit) {
+				if(mate && mate.convertUnit) {
 					if(d.unit.id == mate.unit.id) {	// 如果当前单位是转化前的单位，这里输出转化后的单位
 						html = (d.oneMaterial * mate.converts).toFixed(2) + '/' + mate.convertUnit.name
 					} else if(d.unit.id == mate.convertUnit.id) {
