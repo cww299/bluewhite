@@ -232,7 +232,8 @@ public class RecruitServiceImpl extends BaseServiceImpl<Recruit, Long> implement
                 .filter(Recruit -> 
             		Recruit.getUserId() != null &&
             		Recruit.getUser().getQuit().equals(1) &&
-            		DateUtil.isIn(Recruit.getUser().getQuitDate(), recruit.getOrderTimeBegin(), recruit.getOrderTimeEnd())
+            		DatesUtil.getDaySub(Recruit.getUser().getEntry(), Recruit.getUser().getQuitDate()) < 32
+            		// DateUtil.isIn(Recruit.getUser().getQuitDate(), recruit.getOrderTimeBegin(), recruit.getOrderTimeEnd())
                 )
                 .collect(Collectors.toList());
         //  && DatesUtil.getDaySub(date, Recruit.getUser().getQuitDate()) < 32
