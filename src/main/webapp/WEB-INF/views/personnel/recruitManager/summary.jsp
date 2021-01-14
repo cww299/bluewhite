@@ -102,7 +102,8 @@
 					<table>
 						<tr>
 							<td>查询月份:</td>
-							<td><input id="monthDate4" style="width: 180px;" name="time" placeholder="请输入开始时间" class="layui-input laydate-icon">
+							<td><input id="monthDate4" autocomplete="off" lay-verify="required"
+								name="orderTimeBegin" placeholder="请输入搜索时间" class="layui-input laydate-icon">
 							</td>
 							<td>&nbsp;&nbsp;</td>
 							<td>
@@ -268,7 +269,8 @@
 					}); 
 				 	laydate.render({
 						elem: '#monthDate4',
-						type : 'month',
+						type : 'date',
+						range: '~'
 					}); 
 				 	laydate.render({
 						elem: '#monthDate5',
@@ -686,8 +688,11 @@
 					
 					
 					form.on('submit(LAY-search7)', function(obj) {
-						onlyField=obj.field;
-						onlyField.time=onlyField.time+'-01 00:00:00';
+						onlyField = obj.field;
+						var time = onlyField.orderTimeBegin.split(' ~ ');
+						onlyField.orderTimeBegin = time[0] + ' 00:00:00';
+						onlyField.orderTimeEnd = time[1] + ' 23:59:59'
+						// onlyField.time = onlyField.time+'-01 00:00:00';
 						eventd2(onlyField);
 						
 					})
@@ -1115,76 +1120,44 @@
 						elem: '#layuiShare6',
 						data:[],
 						where:data,
-						request:{
-							pageName: 'page' ,//页码的参数名称，默认：page
-							limitName: 'size' //每页数据量的参数名，默认：limit
-						},
-						//开启分页
+						request:{ pageName: 'page' , limitName: 'size'  },
 						loading: true,
 						toolbar: '#toolbar5', //开启工具栏，此处显示默认图标，可以自定义模板，详见文档
-						totalRow: true,		 //开启合计行 */
 						cellMinWidth: 90,
-						colFilterRecord: true,
 						smartReloadModel: true,// 开启智能重载
 						parseData: function(ret) {
+							var tableDataTemp = []
+							if (ret.code == 0) {
+								for(var i = 0; i < ret.data.length; i++) {
+									var tableItemData = ret.data[i];
+									tableItemData.orgNameText = tableItemData.orgName.name;
+									tableItemData.positionText = tableItemData.position.name;
+									tableItemData.entryText = tableItemData.user.entry;	
+									tableItemData.quitDateText = tableItemData.user.quitDate;
+									if (tableItemData.user.quitType != null) {
+										tableItemData.reasonText = "("+tableItemData.user.quitType.name+")"
+											+ tableItemData.user.reason
+									} else {
+										tableItemData.reasonTex = tableItemData.user.reason;
+									}
+									tableDataTemp.push(tableItemData);
+								}
+							}
 							return {
 								code: ret.code,
 								msg: ret.message,
-								data: ret.data
+								data: tableDataTemp
 							}
 						},
 						cols: [
-							[{
-								field: "name",
-								title: "姓名",
-								align: 'center',
-								totalRowText: '合计'
-							},{
-								field: "orgName",
-								title: "部门",
-								align: 'center',
-								templet:  function(d){ 
-									return d.orgName.name	
-								}
-							},{
-								field: "position",
-								title: "职位",
-								align: 'center',
-								templet:  function(d){ 
-									if(d.user!=null){
-									return d.position.name		
-									}
-								}
-							},{
-								field: "entry",
-								title: "入职时间",
-								align: 'center',
-								templet:  function(d){ 
-									return d.user.entry		
-								}
-							},{
-								field: "quitDate",
-								title: "离职时间",
-								align: 'center',
-								templet:  function(d){ 
-									return d.user.quitDate		
-								}
-							},{
-								field: "reason",
-								title: "离职原因",
-								align: 'center',
-								templet:  function(d){
-										if(d.user.quitType!=null){
-										 return "("+d.user.quitType.name+")"+d.user.reason
-										}else{
-											return d.user.reason		
-										}
-								}
-							}
-							]
-						],
-					
-								});
+						[{ field: "name", title: "姓名", align: 'center', },
+						 { field: "orgNameText", title: "部门", align: 'center', },
+						 { field: "positionText", title: "职位", align: 'center', },
+						 { field: "entryText", title: "入职时间", align: 'center', },
+						 { field: "quitDateText", title: "离职时间", align: 'center', },
+						 { field: "reasonText", title: "离职原因", align: 'center', }
+						]],
+					});
 					
 					var eventd3=function(data){
 						table.reload("layuiSharequit1", {

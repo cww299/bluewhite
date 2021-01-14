@@ -23,7 +23,6 @@ import com.bluewhite.common.entity.PageParameter;
 import com.bluewhite.common.entity.PageResult;
 import com.bluewhite.common.utils.DatesUtil;
 import com.bluewhite.common.utils.NumUtils;
-import com.bluewhite.common.utils.StringUtil;
 import com.bluewhite.personnel.roomboard.dao.AdvertisementDao;
 import com.bluewhite.personnel.roomboard.dao.RecruitDao;
 import com.bluewhite.personnel.roomboard.dao.RewardDao;
@@ -33,6 +32,8 @@ import com.bluewhite.personnel.roomboard.entity.Reward;
 import com.bluewhite.system.user.dao.UserDao;
 import com.bluewhite.system.user.entity.User;
 import com.bluewhite.system.user.service.UserService;
+
+import cn.hutool.core.date.DateUtil;
 
 @Service
 public class RecruitServiceImpl extends BaseServiceImpl<Recruit, Long> implements RecruitService {
@@ -221,13 +222,21 @@ public class RecruitServiceImpl extends BaseServiceImpl<Recruit, Long> implement
 
     @Override
     public List<Recruit> soon(Recruit recruit) {
-        Date date = new Date();
-        List<Recruit> list = dao.findByTestTimeBetween(DatesUtil.getFirstDayOfMonth(recruit.getTime()),
-                DatesUtil.getLastDayOfMonth(recruit.getTime()));
+        // Date date = new Date();
+        if (recruit.getOrderTimeBegin() == null || recruit.getOrderTimeEnd() == null) {
+        	throw new ServiceException("请输入查找的时间范围");
+        }
+        List<Recruit> list = dao.findByTestTimeBetween(recruit.getOrderTimeBegin(),
+        		recruit.getOrderTimeEnd());
         List<Recruit> recruits = list.stream()
-                .filter(Recruit -> Recruit.getUserId() != null && Recruit.getUser().getQuit().equals(1)
-                        && DatesUtil.getDaySub(date, Recruit.getUser().getQuitDate()) < 32)
+                .filter(Recruit -> 
+            		Recruit.getUserId() != null &&
+            		Recruit.getUser().getQuit().equals(1) &&
+            		DatesUtil.getDaySub(Recruit.getUser().getEntry(), Recruit.getUser().getQuitDate()) < 32
+            		// DateUtil.isIn(Recruit.getUser().getQuitDate(), recruit.getOrderTimeBegin(), recruit.getOrderTimeEnd())
+                )
                 .collect(Collectors.toList());
+        //  && DatesUtil.getDaySub(date, Recruit.getUser().getQuitDate()) < 32
         return recruits;
     }
 

@@ -212,20 +212,23 @@ public class TaskAllocationServiceImpl extends BaseServiceImpl<TaskAllocation, L
 	}
 	
 	@Override
+	@Transactional
 	public void finish(Long allocationId, int number) {
-		TaskAllocation allocation = checkFinal(allocationId, number);
+		TaskAllocation allocation = findOne(allocationId);
+		checkFinal(allocation, number);
 		if (number > allocation.getSurplusNumber()) {
 			throw new ServiceException("完成数量不能大于剩余数量");
 		}
 		allocation.setFinishNumber(allocation.getFinishNumber() + number);
-		isEnd(allocation);
 		// 当前耗时
 		int timeMin = getFinishTime(allocation);
-		TaskWork task = allocation.getTask();
+		// 当前任务是否结束，计算耗时的时候会判断当前任务状态，因此需要在计算后再进行判断
+		isEnd(allocation);
+		TaskWork task = allocation.getTask(); // taskService.findOne(allocation.getTaskId());
 		task.setFinishNumber(task.getFinishNumber() + number);
 		task.setCurrTimeMin(task.getCurrTimeMin() + timeMin);
 		// 如果已完成数量 等于 任务数量，则该任务结束
-		if (task.getFinishNumber() == task.getNumber()) {
+		if (task.getFinishNumber().equals(task.getNumber())) {
 			task.setStatus(TaskConstant.TASK_END);
 		}
 		// 任务进度
@@ -247,18 +250,20 @@ public class TaskAllocationServiceImpl extends BaseServiceImpl<TaskAllocation, L
 		for (int i = 0; i < arrIds.length; i++) {
 			Long id = Long.parseLong(arrIds[i]);
 			// 任务分配、当前任务
-			TaskAllocation allocation = checkFinal(id, null);
+			TaskAllocation allocation = findOne(id);
+			checkFinal(allocation, null);
 			// 完成数量
 			int number = allocation.getSurplusNumber();
 			// 加上完成数量
 			allocation.setFinishNumber(allocation.getFinishNumber() + number);
-			isEnd(allocation);
 			// 完成耗时
 			int timeMin = getFinishTime(allocation);
+			// 任务是否完成，计算耗时的时候会判断当前任务状态，因此需要在计算后再进行判断
+			isEnd(allocation);
 			TaskWork task = allocation.getTask();
 			task.setFinishNumber(task.getFinishNumber() + number);
 			task.setCurrTimeMin(task.getCurrTimeMin() + timeMin);
-			if (task.getSurplusNumber() == 0) {
+			if (task.getFinishNumber() == task.getNumber()) {
 				task.setStatus(TaskConstant.TASK_END);
 			}
 			// 任务进度
@@ -297,8 +302,7 @@ public class TaskAllocationServiceImpl extends BaseServiceImpl<TaskAllocation, L
 	 * @param number 完成数量，当为null时，表示全部完成
 	 * @return
 	 */
-	public TaskAllocation checkFinal(Long allocationId, Integer number) {
-		TaskAllocation allocation = findOne(allocationId);
+	public void checkFinal(TaskAllocation allocation, Integer number) {
 		String taskNumber = allocation.getTask().getTaskNumber();
 		if (number == null) {
 			number = allocation.getSurplusNumber();
@@ -315,7 +319,6 @@ public class TaskAllocationServiceImpl extends BaseServiceImpl<TaskAllocation, L
 		if (allocation.getStatus() == TaskConstant.ALLOCATION_END) {
 			throw new ServiceException(StrUtil.format("任务：{} 已结束，无法完成", taskNumber));
 		}
-		return allocation;
 	}
 	
 	/**
@@ -374,45 +377,41 @@ public class TaskAllocationServiceImpl extends BaseServiceImpl<TaskAllocation, L
 	public int getFinishTime(TaskAllocation allocation) {
 		// 耗时总时长
 		int allTime = 0;
+		// 总暂时
+		int allPause = 0;
+		// 当前时间
+		Date time = new Date();
 		// 上一次开始时间
 		List<TaskProcess> processList = processService.getAll(null, allocation.getId());
-		// 本次耗时
 		for (int i = 0; i < processList.size(); i++ ) {
 			TaskProcess process = processList.get(i);
 			int type = process.getType();
+			// 查找至上一次完成 或者 分配点，以该起点至今算总耗时
 			if (type == TaskConstant.PROCESS_ALLOCATION || type == TaskConstant.PROCESS_FINISH) {
-				// 上一次为开始、分配、完成，则以该次为起点，计算当前耗时
-				int min = (int) DateUtil.between(process.getCreatedAt(), new Date(), DateUnit.MINUTE);
-				allTime += min;
+				allTime += (int) DateUtil.between(process.getCreatedAt(), time, DateUnit.MINUTE);
 				break;
 			}
-			if (type == TaskConstant.PROCESS_PAUSE) {
-				// 如果上一次是暂停，本次耗时为0
-				break;
-			}
+			// 计算总暂停时间
 			if (type == TaskConstant.PROCESS_START) {
-				int min = (int) DateUtil.between(process.getCreatedAt(), new Date(), DateUnit.MINUTE);
-				allTime += min;
-				allTime += process.getTimeMin();
-				// 如果上一次是开始，计算暂停时长
-				for (int j = i+1; j < processList.size(); j++) {
-					TaskProcess lastProcess = processList.get(j);
-					int lastType = lastProcess.getType();
-					if (lastType == TaskConstant.PROCESS_ALLOCATION || lastType == TaskConstant.PROCESS_FINISH) {
-						// 本次开始距离上一次分配或完成
-						break;
-					}
-					if (type == TaskConstant.PROCESS_START) {
-						// 如果是开始时间，减去暂停时长
-						allTime -= process.getTimeMin();
-					}
-					if (type == TaskConstant.PROCESS_PAUSE) {
-						// 如果是暂停，加上之前的
-						allTime += process.getTimeMin();
-					}
-				}
-				break;
+				allPause += process.getTimeMin();
 			}
+		}
+		// 若当前任务是暂停状态，则耗时应减去本次暂停时长
+		if (allocation.getStatus() == TaskConstant.ALLOCATION_PAUSE) {
+			for (int i = 0; i < processList.size(); i++ ) {
+				TaskProcess process = processList.get(i);
+				// 找到最近一次暂停时间
+				if (process.getType() == TaskConstant.PROCESS_PAUSE) {
+					// 本次暂停时长
+					allPause += (int) DateUtil.between(process.getCreatedAt(), new Date(), DateUnit.MINUTE);
+					break;
+				}
+			}
+		}
+		// 总耗时 = 当前至最近一次耗时 - 总暂停 - 本次暂停
+		allTime = allTime - allPause;
+		if (allTime < 0) {
+			allTime = 0;
 		}
 		return allTime;
 	}

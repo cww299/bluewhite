@@ -155,7 +155,9 @@ layui.config({
 					mytable.render({
 						elem:'#lookoverTable',
 						url:'${ctx}/ledger/getOrderMaterial?orderId='+checked[0].id + (isTrialProduce? "" : "&audit=1"),
-						toolbar: isTrialProduce ? '<span class="layui-btn layui-btn-sm" lay-event="onekey">一键审核</span>' : "",
+						toolbar: isTrialProduce ? 
+								'<span class="layui-btn layui-btn-sm" lay-event="onekey">一键审核</span>' +
+								'<span class="layui-btn layui-btn-sm layui-btn-danger" lay-event="cancel">取消审核</span>': "",
 						size:'lg',
 						limit:15,
 						limits:[10,15,20,50,],
@@ -169,6 +171,13 @@ layui.config({
 										table:'lookoverTable',
 										text:'请选择相关信息|是否确认？',
 									})
+								} else if (obj.event == 'cancel') {
+									myutil.deleTableIds({
+										url:'/ledger/cancelAuditOrderMaterial',
+										table:'lookoverTable',
+										text:'请选择相关信息|是否确认？',
+									})
+									
 								}
 							}
 						},

@@ -42,6 +42,6 @@ public interface OrderMaterialService extends BaseCRUDService<OrderMaterial, Lon
 	 * @param ids
 	 * @return
 	 */
-	public int auditOrderMaterial(String ids);
+	public int auditOrderMaterial(String ids, Integer state);
 
 }
