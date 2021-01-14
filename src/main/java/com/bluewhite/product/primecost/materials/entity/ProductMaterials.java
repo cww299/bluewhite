@@ -81,7 +81,7 @@ public class ProductMaterials extends BaseEntity<Long>{
 	 * 手动损耗选择(默认 = 1)
 	 */
 	@Column(name = "manual_loss")
-    private Double manualLoss = 1.0;
+    private Double manualLoss = 0.0;
 	
 	
 	/**

@@ -510,8 +510,23 @@ public class LedgerAction {
 	@ResponseBody
 	public CommonResponse auditOrderMaterial(String ids) {
 		CommonResponse cr = new CommonResponse();
-		int count = orderMaterialService.auditOrderMaterial(ids);
+		int count = orderMaterialService.auditOrderMaterial(ids, 1);
 		cr.setMessage("成功审核" + count + "条耗料表");
+		return cr; 
+	}
+	
+	/**
+	 * 	(生产计划部)取消审核耗料表
+	 * 
+	 * @param order
+	 * @return
+	 */
+	@RequestMapping(value = "/ledger/cancelAuditOrderMaterial", method = RequestMethod.GET)
+	@ResponseBody
+	public CommonResponse cancelAuditOrderMaterial(String ids) {
+		CommonResponse cr = new CommonResponse();
+		int count = orderMaterialService.auditOrderMaterial(ids, 0);
+		cr.setMessage("成功取消审核" + count + "条耗料表");
 		return cr; 
 	}
 

@@ -203,7 +203,7 @@ public class OrderMaterialServiceImpl extends BaseServiceImpl<OrderMaterial, Lon
 
 	@Override
 	@Transactional
-	public int auditOrderMaterial(String ids) {
+	public int auditOrderMaterial(String ids, Integer state) {
 		int count = 0;
 		if (!StringUtils.isEmpty(ids)) {
 			String[] idArr = ids.split(",");
@@ -211,10 +211,10 @@ public class OrderMaterialServiceImpl extends BaseServiceImpl<OrderMaterial, Lon
 				for (int i = 0; i < idArr.length; i++) {
 					Long id = Long.parseLong(idArr[i]);
 					OrderMaterial ot = findOne(id);
-					if (ot.getAudit() == 1) {
+					if (state == 1 && ot.getAudit() == 1) {
 						throw new ServiceException("第" + (i + 1) + "条耗料已审核，请勿重复审核");
 					}
-					ot.setAudit(1);
+					ot.setAudit(state);
 					save(ot);
 					count++;
 				}
