@@ -76,7 +76,7 @@ public class CutParts extends BaseEntity<Long> {
 	 * 手填单个使用片数，不填默认1片
 	 */
 	@Column(name = "cutparts_number")
-	private Integer cutPartsNumber = 1;
+	private Integer cutPartsNumber;
 
 	/**
 	 * 单片周长
