@@ -108,11 +108,9 @@ public class CutPartsServiceImpl extends BaseServiceImpl<CutParts, Long> impleme
     public CutParts countComposite(CutParts cutParts) {
         Materiel materiel = materielDao.findOne(cutParts.getMaterielId());
         //当批各单片用料
-        if (cutParts.getComposite() == 0) {
-            cutParts.setBatchMaterial(NumUtils.mul(cutParts.getAddMaterial(), NumUtils.sum(cutParts.getManualLoss(), 1), (double) cutParts.getNumber()));
-            //当批各单片价格
-            cutParts.setBatchMaterialPrice(NumUtils.mul(cutParts.getBatchMaterial(), NumUtils.setzro(materiel.getPrice())));
-        }
+        cutParts.setBatchMaterial(NumUtils.mul(cutParts.getAddMaterial(), NumUtils.sum(cutParts.getManualLoss(), 1), (double) cutParts.getNumber()));
+        //当批各单片价格
+        cutParts.setBatchMaterialPrice(NumUtils.mul(cutParts.getBatchMaterial(), NumUtils.setzro(materiel.getPrice())));
         if (cutParts.getComposite() == 1) {
             Materiel complexMateriel = materielDao.findOne(cutParts.getComplexMaterielId());
             cutParts.setComplexBatchMaterial(NumUtils.mul(cutParts.getAddMaterial(),
