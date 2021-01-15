@@ -76,7 +76,8 @@
 					<table>
 						<tr>
 							<td>查询月份:</td>
-							<td><input id="monthDate5" style="width: 180px;" name="time" placeholder="请输入开始时间" class="layui-input laydate-icon">
+							<td><input id="monthDate5" name="orderTimeBegin" lay-verify="required"
+								 placeholder="请输入时间" class="layui-input laydate-icon">
 							</td>
 							<td>&nbsp;&nbsp;</td>
 							<td>
@@ -274,7 +275,7 @@
 					}); 
 				 	laydate.render({
 						elem: '#monthDate5',
-						type : 'month',
+						range: '~'
 					}); 
 				 	laydate.render({
 						elem: '#monthDate6',
@@ -680,10 +681,16 @@
 					});
 					
 					form.on('submit(layuiSharequit2)', function(obj) {
-						onlyField=obj.field;
-						onlyField.time=onlyField.time+'-01 00:00:00';
-						eventd3(onlyField);
 						
+						onlyField=obj.field;
+						
+						if (!onlyField.orderTimeBegin) {
+							return
+						}
+						var time = onlyField.orderTimeBegin.split(' ~ ');
+						onlyField.orderTimeBegin = time[0] + ' 00:00:00';
+						onlyField.orderTimeEnd = time[1] + ' 23:59:59';
+						eventd3(onlyField);
 					})
 					
 					
@@ -1186,10 +1193,22 @@
 						colFilterRecord: true,
 						smartReloadModel: true,// 开启智能重载
 						parseData: function(ret) {
+							var tableData = []
+							if (ret.code == 0) {
+								for(var i in ret.data.StringUser) {
+									var d = ret.data.StringUser[i];
+									d.quitText = "";
+									if(d.quitType!=null){ 
+										d.quitText += "("+d.quitType+")"
+									}
+									d.quitText += d.reason;
+								}
+								tableData = ret.data.StringUser;
+							}
 							return {
 								code: ret.code,
 								msg: ret.message,
-								data: ret.data.StringUser
+								data: tableData
 							}
 						},
 						cols: [
@@ -1214,16 +1233,9 @@
 								title: "离职时间",
 								align: 'center',
 							},{
-								field: "reason",
+								field: "quitText",
 								title: "离职原因",
 								align: 'center',
-								templet:function(d){
-									if(d.quitType!=null){
-										return "("+d.quitType+")"+d.reason
-									}else{
-									return d.reason
-									}
-								}
 							}
 							]
 						],
