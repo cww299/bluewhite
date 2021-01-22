@@ -299,7 +299,7 @@ public class BacthServiceImpl extends BaseServiceImpl<Bacth, Long> implements Ba
     @Override
     public int importBacths(ExcelListener excelListener) {
         List<Object> excelListenerList = excelListener.getData();
-        List<Bacth> bacthList = new ArrayList<>();
+        int count = 0;
         for (int i = 0; i < excelListenerList.size(); i++) {
             Bacth bacth = new Bacth();
             bacth.setType(3);
@@ -324,10 +324,9 @@ public class BacthServiceImpl extends BaseServiceImpl<Bacth, Long> implements Ba
             bacth.setBacthNumber(cPoi.getBacthNumber());
             bacth.setRemarks(cPoi.getRemarks());
             bacth.setAllotTime(cPoi.getAllotTime());
-            bacthList.add(bacth);
+            this.saveBacth(bacth);
         }
-        dao.save(bacthList);
-        return bacthList.size();
+        return count;
     }
 
 }
