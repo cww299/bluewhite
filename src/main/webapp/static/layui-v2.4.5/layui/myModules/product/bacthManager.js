@@ -302,9 +302,14 @@ layui.config({
 				elem: '#importsBtn',
 				url: opt.ctx+'/bacth/importBacths',
 				accept: 'file',
-				done: function() {
-					table.reload('tableData')
-				}
+				done: function(res){
+			        if(res.code==0){
+			    	    table.reload("tableData")
+			    	    return myutil.smsg(res.message);
+			        }else{
+			    	    return myutil.emsg('导入失败');
+			        }
+			    }
 			})
 		}
 		mytable.render({
