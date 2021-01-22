@@ -116,9 +116,8 @@ public class NumUtils {
     
     /** 
      * 多个 double 相加 
-     * @param d1 
-     * @param d2 
-     * @return 
+     * @param properties
+     * @return
      */ 
     public static double sum(Double...properties){ 
     	List<Double> ignoreList = reTypeList(properties);
@@ -127,22 +126,21 @@ public class NumUtils {
     		 BigDecimal bd1 = new BigDecimal(Double.toString(d)); 
     		 bigDecimalList.add(bd1);
     	}
-		return bigDecimalList.stream().reduce((a,b)->a.add(b)).get().doubleValue();
+		return bigDecimalList.stream().reduce(BigDecimal::add).get().doubleValue();
     }
     
     /** 
      * List double 相加 
-     * @param d1 
-     * @param d2 
+     * @param numList
      * @return 
      */ 
-    public static double sum(List<Double> ignoreList){ 
+    public static double sum(List<Double> numList){
     	List<BigDecimal> bigDecimalList = new ArrayList<>();
-    	for(Double d : ignoreList){
+    	for(Double d : numList){
     		 BigDecimal bd1 = new BigDecimal(Double.toString(d)); 
     		 bigDecimalList.add(bd1);
     	}
-		return bigDecimalList.stream().reduce((a,b)->a.add(b)).get().doubleValue();
+		return bigDecimalList.stream().reduce(BigDecimal::add).get().doubleValue();
     }
     
   

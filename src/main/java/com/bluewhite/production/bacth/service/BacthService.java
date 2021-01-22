@@ -5,6 +5,7 @@ import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 
+import com.bluewhite.common.utils.excel.ExcelListener;
 import org.springframework.stereotype.Service;
 
 import com.bluewhite.base.BaseCRUDService;
@@ -57,4 +58,12 @@ public interface BacthService extends BaseCRUDService<Bacth,Long>{
 	 */
 	List<Bacth> findByTypeAndAllotTimeBetween(Integer type,Date startTime,Date endTime);
 
+	/**
+	 * 针工导入bacth
+	 * @param excelListener
+	 * @return: {@link int}
+	 * @author zhangliang
+	 * @date: 2021/1/22 17:06
+	 */
+    int importBacths(ExcelListener excelListener);
 }

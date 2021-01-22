@@ -70,8 +70,6 @@ public class OfficeSuppliesAction {
 	
 	/**
 	 * 新增修改办公用品
-	 * @param order
-	 * @return
 	 */
 	@RequestMapping(value = "/personnel/addOfficeSupplies", method = RequestMethod.POST)
 	@ResponseBody
@@ -116,8 +114,6 @@ public class OfficeSuppliesAction {
 	
 	/**
 	 * 新增出入库记录
-	 * @param order
-	 * @return
 	 */
 	@RequestMapping(value = "/personnel/addInventoryDetail", method = RequestMethod.POST)
 	@ResponseBody
@@ -130,8 +126,6 @@ public class OfficeSuppliesAction {
 	
 	/**
 	 * 批量新增出库记录（扫码出库）
-	 * @param order
-	 * @return
 	 */
 	@RequestMapping(value = "/personnel/addInventoryDetailMores", method = RequestMethod.POST)
 	@ResponseBody
@@ -149,8 +143,6 @@ public class OfficeSuppliesAction {
 	
 	/**
 	 * 批量新增入库记录（扫码入库）
-	 * @param order
-	 * @return
 	 */
 	@RequestMapping(value = "/personnel/addInventoryDetailMoresIn", method = RequestMethod.POST)
 	@ResponseBody
@@ -181,8 +173,6 @@ public class OfficeSuppliesAction {
 	
 	/**
 	 * 统计部门分摊费用
-	 * @param ids
-	 * @return
 	 */
 	@RequestMapping(value = "/personnel/statisticalInventoryDetail", method = RequestMethod.GET)
 	@ResponseBody
@@ -195,8 +185,6 @@ public class OfficeSuppliesAction {
 	
 	/**
 	 * 食材出库记录统计
-	 * @param ids
-	 * @return
 	 */
 	@RequestMapping(value = "/personnel/ingredientsStatisticalInventoryDetail", method = RequestMethod.GET)
 	@ResponseBody

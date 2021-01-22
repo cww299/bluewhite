@@ -332,8 +332,7 @@ public class TemporaryPackAction {
      */
     @RequestMapping(value = "/temporaryPack/import/excelUnderGoods", method = RequestMethod.POST)
     @ResponseBody
-    public CommonResponse excelOutProcurement(@RequestParam(value = "file", required = false) MultipartFile file,
-        Long userId, Long warehouseId) throws IOException {
+    public CommonResponse excelOutProcurement(@RequestParam(value = "file", required = false) MultipartFile file) throws IOException {
         CommonResponse cr = new CommonResponse();
         InputStream inputStream = file.getInputStream();
         ExcelListener excelListener = new ExcelListener();

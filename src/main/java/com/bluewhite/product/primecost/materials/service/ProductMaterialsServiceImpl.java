@@ -102,7 +102,7 @@ public class ProductMaterialsServiceImpl extends BaseServiceImpl<ProductMaterial
     }
 
 	@Override
-	@Transactional
+	@Transactional(rollbackFor = Exception.class)
 	public int uploadProductMateruals(ExcelListener excelListener, Long productId) {
 		int count = 0;
         // 获取导入的裁片

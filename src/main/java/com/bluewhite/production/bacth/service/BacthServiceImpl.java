@@ -9,6 +9,14 @@ import java.util.stream.Collectors;
 import javax.persistence.criteria.Predicate;
 import javax.servlet.http.HttpServletRequest;
 
+import cn.hutool.core.util.StrUtil;
+import com.bluewhite.common.Constants;
+import com.bluewhite.common.utils.excel.ExcelListener;
+import com.bluewhite.product.product.dao.ProductDao;
+import com.bluewhite.product.product.entity.Product;
+import com.bluewhite.production.bacth.entity.BacthPoi;
+import com.bluewhite.production.temporarypack.UnderGoods;
+import com.bluewhite.production.temporarypack.UnderGoodsPoi;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
@@ -54,6 +62,8 @@ public class BacthServiceImpl extends BaseServiceImpl<Bacth, Long> implements Ba
     private TaskService taskService;
     @Autowired
     private AttendancePayDao attendancePayDao;
+    @Autowired
+    private ProductDao productDao;
 
     private static String GROUP = "返工组";
 
@@ -284,6 +294,40 @@ public class BacthServiceImpl extends BaseServiceImpl<Bacth, Long> implements Ba
     @Override
     public List<Bacth> findByTypeAndAllotTimeBetween(Integer type, Date startTime, Date endTime) {
         return dao.findByTypeAndAllotTimeBetween(type, startTime, endTime);
+    }
+
+    @Override
+    public int importBacths(ExcelListener excelListener) {
+        List<Object> excelListenerList = excelListener.getData();
+        List<Bacth> bacthList = new ArrayList<>();
+        for (int i = 0; i < excelListenerList.size(); i++) {
+            Bacth bacth = new Bacth();
+            bacth.setType(3);
+            BacthPoi cPoi = (BacthPoi)excelListenerList.get(i);
+            if ("end".equals(cPoi.getName())) {
+                break;
+            }
+            List<Product> productList = productDao.findByName(cPoi.getName());
+            if (productList.size() > 0) {
+                productList.forEach(p -> {
+                    if (StrUtil.isNotBlank(p.getNumber()) || (StrUtil.isNotBlank(p.getOriginDepartment()) && p.getOriginDepartment().equals(Constants.PRODUCT_TWO_DEEDLE))) {
+                        bacth.setProductId(p.getId());
+                    }
+                });
+            } else {
+                throw new ServiceException("当前导入excel第" + (i + 1) + "条商品不存在，请先添加");
+            }
+            if (cPoi.getNumber() == null) {
+                throw new ServiceException("当前导入excel第" + (i + 1) + "条商品的数量不存在，请先添加");
+            }
+            bacth.setNumber(cPoi.getNumber());
+            bacth.setBacthNumber(cPoi.getBacthNumber());
+            bacth.setRemarks(cPoi.getRemarks());
+            bacth.setAllotTime(cPoi.getAllotTime());
+            bacthList.add(bacth);
+        }
+        dao.save(bacthList);
+        return bacthList.size();
     }
 
 }
