@@ -94,7 +94,7 @@ public class BacthAction {
      */
     @RequestMapping(value = "/bacth/allBacth", method = RequestMethod.GET)
     @ResponseBody
-    public CommonResponse allBacth(HttpServletRequest request, Bacth bacth, PageParameter page) {
+    public CommonResponse allBacth(Bacth bacth, PageParameter page) {
         CommonResponse cr = new CommonResponse();
         cr.setData(clearCascadeJSON.format(bacthService.findPages(bacth, page)).toJSON());
         cr.setMessage("查询成功");

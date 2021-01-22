@@ -71,12 +71,12 @@ public class BacthServiceImpl extends BaseServiceImpl<Bacth, Long> implements Ba
     public PageResult<Bacth> findPages(Bacth param, PageParameter page) {
         CurrentUser cu = SessionManager.getUserSession();
         //蓝白仓库
-        if(cu.getRole().contains("stickBagAccount") || cu.getRole().contains("stickBagStick") ) {
-            param.setWarehouseTypeId((long)274);
+        if (cu.getRole().contains("stickBagAccount") || cu.getRole().contains("stickBagStick")) {
+            param.setWarehouseTypeId((long) 274);
         }
         //11号仓库
-        if(cu.getRole().contains("packScene") || cu.getRole().contains("elevenSend")) {
-            param.setWarehouseTypeId((long)275);
+        if (cu.getRole().contains("packScene") || cu.getRole().contains("elevenSend")) {
+            param.setWarehouseTypeId((long) 275);
         }
         Page<Bacth> pages = dao.findAll((root, query, cb) -> {
             List<Predicate> predicate = new ArrayList<>();
@@ -91,12 +91,12 @@ public class BacthServiceImpl extends BaseServiceImpl<Bacth, Long> implements Ba
             // 按产品名称
             if (!StringUtils.isEmpty(param.getName())) {
                 predicate.add(cb.like(root.get("product").get("name").as(String.class),
-                    "%" + StringUtil.specialStrKeyword(param.getName()) + "%"));
+                        "%" + StringUtil.specialStrKeyword(param.getName()) + "%"));
             }
             // 按产品编号
             if (!StringUtils.isEmpty(param.getProductNumber())) {
                 predicate.add(
-                    cb.like(root.get("product").get("number").as(String.class), "%" + param.getProductNumber() + "%"));
+                        cb.like(root.get("product").get("number").as(String.class), "%" + param.getProductNumber() + "%"));
             }
             // 按批次
             if (!StringUtils.isEmpty(param.getBacthNumber())) {
@@ -124,14 +124,14 @@ public class BacthServiceImpl extends BaseServiceImpl<Bacth, Long> implements Ba
                 // 按完成时间过滤
                 if (!StringUtils.isEmpty(param.getOrderTimeBegin()) && !StringUtils.isEmpty(param.getOrderTimeEnd())) {
                     predicate.add(cb.between(root.get("statusTime").as(Date.class), param.getOrderTimeBegin(),
-                        param.getOrderTimeEnd()));
+                            param.getOrderTimeEnd()));
                 }
             }
 
             // 按生成时间过滤
             if (!StringUtils.isEmpty(param.getOrderTimeBegin()) && !StringUtils.isEmpty(param.getOrderTimeEnd())) {
                 predicate.add(cb.between(root.get("allotTime").as(Date.class), param.getOrderTimeBegin(),
-                    param.getOrderTimeEnd()));
+                        param.getOrderTimeEnd()));
             }
 
             Predicate[] pre = new Predicate[predicate.size()];
@@ -159,7 +159,8 @@ public class BacthServiceImpl extends BaseServiceImpl<Bacth, Long> implements Ba
                         List<PayB> payB = payBDao.findByTaskId(task.getId());
                         // 删除该任务的所有B工资
                         payBDao.deleteInBatch(payB);
-                    } ;
+                    }
+                    ;
                     count++;
                     dao.delete(id);
                 }
@@ -192,21 +193,21 @@ public class BacthServiceImpl extends BaseServiceImpl<Bacth, Long> implements Ba
                         Date orderTimeEnd = DatesUtil.getLastDayOftime(time);
                         Group group = groupDao.findByNameAndType(GROUP, bacth.getType());
                         List<AttendancePay> attendancePayList =
-                            attendancePayDao.findByGroupIdAndTypeAndAllotTimeBetween(group.getId(), group.getType(),
-                                orderTimeBegin, orderTimeEnd);
+                                attendancePayDao.findByGroupIdAndTypeAndAllotTimeBetween(group.getId(), group.getType(),
+                                        orderTimeBegin, orderTimeEnd);
                         List<Procedure> procedure = procedureDao
-                            .findByProductIdAndProcedureTypeIdAndType(bacth.getProductId(), (long)101, bacth.getType());
+                                .findByProductIdAndProcedureTypeIdAndType(bacth.getProductId(), (long) 101, bacth.getType());
                         List<Task> taskList = bacth.getTasks().stream()
-                            .filter(Task -> Task.getProcedureId().equals(procedure.get(0).getId()))
-                            .collect(Collectors.toList());
+                                .filter(Task -> Task.getProcedureId().equals(procedure.get(0).getId()))
+                                .collect(Collectors.toList());
                         if (taskList.size() == 0) {
                             if (procedure.size() > 0) {
                                 Task task = new Task();
                                 String[] pro = {String.valueOf(procedure.get(0).getId())};
                                 String userIds = attendancePayList.stream().map(u -> String.valueOf(u.getUserId()))
-                                    .collect(Collectors.joining(","));
+                                        .collect(Collectors.joining(","));
                                 String attendancePayIds = attendancePayList.stream().map(u -> String.valueOf(u.getId()))
-                                    .collect(Collectors.joining(","));
+                                        .collect(Collectors.joining(","));
                                 task.setUserIds(userIds);
                                 task.setIds(attendancePayIds);
                                 task.setNumber(bacth.getNumber());
@@ -244,13 +245,13 @@ public class BacthServiceImpl extends BaseServiceImpl<Bacth, Long> implements Ba
                     dao.save(oldBacth);
                     bacth.setProductId(oldBacth.getProductId());
                     List<Procedure> procedureList =
-                        procedureDao.findByProductIdAndTypeAndFlag(oldBacth.getProductId(), 2, 0);
+                            procedureDao.findByProductIdAndTypeAndFlag(oldBacth.getProductId(), 2, 0);
                     if (procedureList != null && procedureList.size() > 0) {
                         bacth.setBacthHairPrice(procedureList.get(0).getHairPrice());
                         bacth.setBacthDepartmentPrice(procedureList.get(0).getDepartmentPrice());
                     } else {
                         throw new ServiceException(
-                            "产品序号为" + oldBacth.getProductId() + oldBacth.getProduct().getName() + "未添加工序，无法接受，请先添加工序");
+                                "产品序号为" + oldBacth.getProductId() + oldBacth.getProduct().getName() + "未添加工序，无法接受，请先添加工序");
                     }
                     bacth.setBacthNumber(oldBacth.getBacthNumber());
                     bacth.setAllotTime(oldBacth.getAllotTime());
@@ -270,18 +271,18 @@ public class BacthServiceImpl extends BaseServiceImpl<Bacth, Long> implements Ba
     public Bacth saveBacth(Bacth bacth) {
         CurrentUser cu = SessionManager.getUserSession();
         //蓝白仓库
-        if(cu.getRole().contains("stickBagAccount")) {
-            bacth.setWarehouseTypeId((long)274);
+        if (cu.getRole().contains("stickBagAccount")) {
+            bacth.setWarehouseTypeId((long) 274);
         }
         //11号仓库
-        if(cu.getRole().contains("packScene")) {
-            bacth.setWarehouseTypeId((long)275);
+        if (cu.getRole().contains("packScene")) {
+            bacth.setWarehouseTypeId((long) 275);
         }
         bacth.setAllotTime(ProTypeUtils.countAllotTime(bacth.getAllotTime()));
         bacth.setStatus(0);
         bacth.setReceive(0);
         List<Procedure> procedureList =
-            procedureDao.findByProductIdAndTypeAndFlag(bacth.getProductId(), bacth.getType(), bacth.getFlag());
+                procedureDao.findByProductIdAndTypeAndFlag(bacth.getProductId(), bacth.getType(), bacth.getFlag());
         double time = procedureList.stream().mapToDouble(Procedure::getWorkingTime).sum();
         if (procedureList != null && procedureList.size() > 0) {
             bacth.setTime(NumUtils.div(NumUtils.mul(time, bacth.getNumber()), 60, 3));
@@ -303,16 +304,14 @@ public class BacthServiceImpl extends BaseServiceImpl<Bacth, Long> implements Ba
         for (int i = 0; i < excelListenerList.size(); i++) {
             Bacth bacth = new Bacth();
             bacth.setType(3);
-            BacthPoi cPoi = (BacthPoi)excelListenerList.get(i);
+            BacthPoi cPoi = (BacthPoi) excelListenerList.get(i);
             if ("end".equals(cPoi.getName())) {
                 break;
             }
             List<Product> productList = productDao.findByName(cPoi.getName());
             if (productList.size() > 0) {
                 productList.forEach(p -> {
-                    if (StrUtil.isNotBlank(p.getNumber()) || (StrUtil.isNotBlank(p.getOriginDepartment()) && p.getOriginDepartment().equals(Constants.PRODUCT_TWO_DEEDLE))) {
-                        bacth.setProductId(p.getId());
-                    }
+                    bacth.setProductId(p.getId());
                 });
             } else {
                 throw new ServiceException("当前导入excel第" + (i + 1) + "条商品不存在，请先添加");
@@ -320,11 +319,18 @@ public class BacthServiceImpl extends BaseServiceImpl<Bacth, Long> implements Ba
             if (cPoi.getNumber() == null) {
                 throw new ServiceException("当前导入excel第" + (i + 1) + "条商品的数量不存在，请先添加");
             }
+            List<Procedure> procedureList = procedureDao.findByProductIdAndTypeAndFlag(bacth.getProductId(), 3,
+                    0);
+            bacth.setBacthHairPrice(procedureList.get(0).getHairPrice());
+            bacth.setBacthDepartmentPrice(procedureList.get(0).getDepartmentPrice());
+            bacth.setBacthDeedlePrice(procedureList.get(0).getDeedlePrice());
             bacth.setNumber(cPoi.getNumber());
             bacth.setBacthNumber(cPoi.getBacthNumber());
             bacth.setRemarks(cPoi.getRemarks());
             bacth.setAllotTime(cPoi.getAllotTime());
+            bacth.setFlag(0);
             this.saveBacth(bacth);
+            count++;
         }
         return count;
     }
