@@ -16,7 +16,7 @@ layui.config({
 }).extend({
 	mytable: 'layui/myModules/mytable',
 	menuTree : 'layui/myModules/menuTree',
-}).define(['jquery','table','form','mytable','laytpl','laydate','layer','menuTree'],function(exports){
+}).define(['jquery','table','form','mytable','laytpl','laydate','layer','menuTree','upload'],function(exports){
 	"use strict"
 	var $ = layui.jquery
 	, table = layui.table 
@@ -24,6 +24,7 @@ layui.config({
 	, myutil = layui.myutil
 	, laytpl = layui.laytpl
 	, laydate = layui.laydate
+	, upload = layui.upload
 	, mytable = layui.mytable
 	, menuTree = layui.menuTree
 	, MODNAME = 'bacthManager'
@@ -58,6 +59,7 @@ layui.config({
 			           '<td>&nbsp;&nbsp;</td>',
 			           '<td><span class="layui-btn layui-btn-sm" lay-submit lay-filter="search">查找</span></td>',
 			           '<td>&nbsp;&nbsp;</td>',
+			           '<td style="display:none;"><span id="importsBtn">导入</span></td>',
 		           '</tr>',
 	           '</table>',
 	           '<table id="tableData" lay-filter="tableData"></table>',
@@ -291,6 +293,19 @@ layui.config({
 			toolbar.push(
 				'<span class="layui-btn layui-btn-sm" lay-event="export">导出工序</span>'
 			)
+		}
+		if (opt.type==3) { // 二楼针工
+			toolbar.push(
+					'<span class="layui-btn layui-btn-sm layui-btn-normal" lay-event="imports">导入</span>'
+				)
+			upload.render({
+				elem: '#importsBtn',
+				url: opt.ctx+'/bacth/importBacths',
+				accept: 'file',
+				done: function() {
+					table.reload('tableData')
+				}
+			})
 		}
 		mytable.render({
 			elem:'#tableData',
@@ -612,6 +627,10 @@ layui.config({
 				case 'lookover': lookover(); break;
 				case 'export' : exportProcedure(); break;
 				case 'copy' : copy(); break;
+				case 'imports': imports(); break;
+				}
+				function imports() {
+					$('#importsBtn').click();
 				}
 				function copy(){
 					var check = table.checkStatus('tableData').data;

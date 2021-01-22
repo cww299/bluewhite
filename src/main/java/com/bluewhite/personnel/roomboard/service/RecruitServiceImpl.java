@@ -33,8 +33,6 @@ import com.bluewhite.system.user.dao.UserDao;
 import com.bluewhite.system.user.entity.User;
 import com.bluewhite.system.user.service.UserService;
 
-import cn.hutool.core.date.DateUtil;
-
 @Service
 public class RecruitServiceImpl extends BaseServiceImpl<Recruit, Long> implements RecruitService {
     @Autowired
@@ -247,9 +245,14 @@ public class RecruitServiceImpl extends BaseServiceImpl<Recruit, Long> implement
         List<Map<String, Object>> allList = new ArrayList<>();
         List<Map<String, Object>> countList = new ArrayList<>();
         Map<String, List<Map<String, Object>>> allMapList = new HashMap<>();
-        List<User> list = userDao.findByQuitDateBetween(DatesUtil.getFirstDayOfMonth(recruit.getTime()),
-                DatesUtil.getLastDayOfMonth(recruit.getTime()));
-        List<User> list2 = list.stream().filter(User -> User.getQuit().equals(1)).collect(Collectors.toList());
+        List<User> list = userDao.findByQuitDateBetween(recruit.getOrderTimeBegin(),
+        		recruit.getOrderTimeEnd());
+        // 过滤掉短期离职人
+        List<User> list2 = list.stream().filter(user -> {
+        	return user.getQuit().equals(1) && user.getEntry() != null &&
+        			DatesUtil.getDaySub(user.getEntry(), user.getQuitDate()) > 31;
+    	}).collect(Collectors.toList());
+        
         for (User user : list2) {
             allMap = new HashMap<>();
             String userName = user.getUserName();
@@ -278,8 +281,9 @@ public class RecruitServiceImpl extends BaseServiceImpl<Recruit, Long> implement
             allList.add(allMap);
         }
 
-        List<User> list3 = userDao.findByQuitDateBetween(DatesUtil.getFirstDayOfMonth(recruit.getTime()),
-                DatesUtil.getLastDayOfMonth(recruit.getTime()));
+        List<User> list3 = list2;
+//        		userDao.findByQuitDateBetween(recruit.getOrderTimeBegin(),
+//        		recruit.getOrderTimeEnd());
         Map<Long, List<User>> map2 = list3.stream().filter(User -> User.getOrgNameId() != null)
                 .collect(Collectors.groupingBy(User::getOrgNameId, Collectors.toList()));
         for (Long ps2 : map2.keySet()) {
