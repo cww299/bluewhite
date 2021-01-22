@@ -21,7 +21,6 @@ public interface UnderGoodsService extends BaseCRUDService<UnderGoods,Long>{
 	/**
      * 分页查询
      * @param underGoods
-     * @param page
      * @return
      */
     public PageResult<UnderGoods> findList(UnderGoods underGoods);
@@ -35,16 +34,12 @@ public interface UnderGoodsService extends BaseCRUDService<UnderGoods,Long>{
 	/**
 	 * 批量导入
 	 * @param excelListener
-	 * @param userId
-	 * @param warehouseId
 	 * @return
 	 */
 	public int excelUnderGoods(ExcelListener excelListener);
 	
 	/**
 	 * 条件查询
-	 * @param underGoods
-	 * @param page
 	 * @return
 	 */
 	public List<UnderGoods> getAll();

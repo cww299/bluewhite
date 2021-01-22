@@ -317,8 +317,6 @@ public class AttendanceAction {
 	/**
 	 * 查看考勤汇总（打印）
 	 * 
-	 * @param request
-	 *            请求
 	 * @return cr
 	 */
 	@RequestMapping(value = "/personnel/findAttendanceCollect", method = RequestMethod.POST)
@@ -337,13 +335,11 @@ public class AttendanceAction {
 	/**
 	 * 修改考勤汇总（打印）
 	 * 
-	 * @param request
-	 *            请求
 	 * @return cr
 	 */
 	@RequestMapping(value = "/personnel/updateAttendanceCollect", method = RequestMethod.POST)
 	@ResponseBody
-	public CommonResponse updateAttendanceCollect(HttpServletRequest request, AttendanceCollect attendanceCollect) {
+	public CommonResponse updateAttendanceCollect(AttendanceCollect attendanceCollect) {
 		CommonResponse cr = new CommonResponse();
 		AttendanceCollect ot = null;
 		if (attendanceCollect.getId() != null) {
@@ -357,8 +353,6 @@ public class AttendanceAction {
 	/**
 	 * 存档考勤汇总
 	 * 
-	 * @param request
-	 *            请求
 	 * @return cr
 	 */
 	@RequestMapping(value = "/personnel/sealAttendanceCollect", method = RequestMethod.POST)
@@ -373,7 +367,6 @@ public class AttendanceAction {
 	/**
 	 * 车间人员根据填写考勤情况和打卡考勤汇总进行对比
 	 * 
-	 * @param attendanceCollect
 	 * @return
 	 * @  
 	 */
@@ -389,8 +382,6 @@ public class AttendanceAction {
 	/**
 	 * 新增修改请假事项
 	 * 
-	 * @param request
-	 *            请求
 	 * @return cr
 	 * @ 
 	 */
@@ -447,14 +438,12 @@ public class AttendanceAction {
 	/**
 	 * 默认补签
 	 * 
-	 * @param request
-	 * @param ids
 	 * @return
 	 * @ 
 	 */
 	@RequestMapping(value = "/personnel/defaultRetroactive", method = RequestMethod.GET)
 	@ResponseBody
-	public CommonResponse defaultRetroactive(HttpServletRequest request, ApplicationLeave applicationLeave)
+	public CommonResponse defaultRetroactive(ApplicationLeave applicationLeave)
 			  {
 		CommonResponse cr = new CommonResponse();
 		applicationLeaveService.defaultRetroactive(applicationLeave);
@@ -465,8 +454,6 @@ public class AttendanceAction {
 	/**
 	 * 分页查看请假事项
 	 * 
-	 * @param request
-	 *            请求
 	 * @return cr
 	 */
 	@RequestMapping(value = "/personnel/getApplicationLeavePage", method = RequestMethod.GET)
@@ -660,8 +647,8 @@ public class AttendanceAction {
     @RequestMapping(value = "/test", method = RequestMethod.GET)
     @ResponseBody
     public void test() {                             
-        for (int i = 10; i <= 31; i++) {
-            String dates = "2020-08-{} 08:25:00";
+        for (int i = 1; i <= 9; i++) {
+            String dates = "2020-12-0{} 08:25:00";
             String dateString = StrUtil.format(dates, i);
             Date date = DateUtil.parse(dateString);
             Attendance attendance = new Attendance();
