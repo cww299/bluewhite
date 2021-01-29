@@ -49,13 +49,14 @@ public class TaskAction {
     private BacthService bacthService;
 
     private ClearCascadeJSON clearCascadeJSON;
+
     {
         clearCascadeJSON = ClearCascadeJSON.get()
-            .addRetainTerm(Task.class, "id", "remark", "userNames", "bacthNumber", "allotTime", "productName",
-                "userIds", "procedure", "procedureName", "number", "status", "expectTime", "expectTaskPrice",
-                "taskTime", "payB", "taskPrice", "taskActualTime", "type", "createdAt", "performance",
-                "performanceNumber", "performancePrice", "flag", "quantitativeNumber", "processesId", "singleTime")
-            .addRetainTerm(Procedure.class, "id", "procedureTypeId");
+                .addRetainTerm(Task.class, "id", "remark", "userNames", "bacthNumber", "allotTime", "productName",
+                        "userIds", "procedure", "procedureName", "number", "status", "expectTime", "expectTaskPrice",
+                        "taskTime", "payB", "taskPrice", "taskActualTime", "type", "createdAt", "performance",
+                        "performanceNumber", "performancePrice", "flag", "quantitativeNumber", "processesId", "singleTime")
+                .addRetainTerm(Procedure.class, "id", "procedureTypeId");
     }
 
     /**
@@ -73,7 +74,6 @@ public class TaskAction {
 
     /**
      * 给批次添加任务
-     * 
      */
     @RequestMapping(value = "/task/addTask", method = RequestMethod.POST)
     @ResponseBody
@@ -89,8 +89,8 @@ public class TaskAction {
                         int num = i;
                         // 获取该工序的已分配的任务数量
                         int count = bacth.getTasks().stream()
-                            .filter(Task -> Task.getProcedureId().equals(task.getProcedureIds()[num]))
-                            .mapToInt(Task::getNumber).sum();
+                                .filter(Task -> Task.getProcedureId().equals(task.getProcedureIds()[num]))
+                                .mapToInt(Task::getNumber).sum();
                         // 当前分配数量加已分配数量大于批次总数量则不通过
                         if ((task.getNumber() + count) > bacth.getNumber()) {
                             cr.setCode(ErrorCode.ILLEGAL_ARGUMENT.getCode());
@@ -113,24 +113,22 @@ public class TaskAction {
     /**
      * 量化单分配任务
      * 批量分配
-     * 
+     *
      * @param request
-     * @param task
-     *            任务
-     * @param processes
-     *            工序json数据
+     * @param task      任务
+     * @param processes 工序json数据
      * @return
      */
     @RequestMapping(value = "/task/addTaskPack", method = RequestMethod.POST)
     @ResponseBody
     public CommonResponse addTaskPack(HttpServletRequest request, Task task, String processesJson, int productCount,
-        long packagMethodId ,String quantitativeIds) {
+                                      long packagMethodId, String quantitativeIds) {
         CommonResponse cr = new CommonResponse();
         if (StringUtils.isEmpty(task.getIds()) && StringUtils.isEmpty(task.getTemporaryIds()) && StringUtils.isEmpty(task.getLoanIds())) {
             cr.setCode(ErrorCode.ILLEGAL_ARGUMENT.getCode());
             cr.setMessage("领取人不能为空");
-        }else {
-            taskService.addTaskPackBatch(task, UnUtil.isFromMobile(request), processesJson, productCount, packagMethodId,quantitativeIds);
+        } else {
+            taskService.addTaskPackBatch(task, UnUtil.isFromMobile(request), processesJson, productCount, packagMethodId, quantitativeIds);
             cr.setMessage("任务分配成功");
         }
         return cr;
@@ -170,7 +168,6 @@ public class TaskAction {
 
     /**
      * 分页查询所有任务
-     * 
      */
     @RequestMapping(value = "/task/allTask", method = RequestMethod.GET)
     @ResponseBody
@@ -183,7 +180,7 @@ public class TaskAction {
 
     /**
      * 删除任务
-     * 
+     *
      * @param request
      * @return
      */
@@ -203,7 +200,7 @@ public class TaskAction {
 
     /**
      * 查询该任务的所有领取人
-     * 
+     *
      * @param request
      * @return
      */
@@ -253,7 +250,7 @@ public class TaskAction {
 
     /**
      * 查询该任务的所有领取人 通过查询考勤记录查询人员
-     * 
+     *
      * @param request
      * @return
      */
@@ -264,9 +261,9 @@ public class TaskAction {
         List<Map<String, Object>> list = new ArrayList<>();
         if (taskId != null) {
             List<PayB> listPayB = payBDao.findByTaskId(taskId);
-            listPayB.forEach(p->{
+            listPayB.forEach(p -> {
                 Map<String, Object> userMap = new HashMap<>();
-                userMap.put("id", p.getUserId());
+                userMap.put("id", p.getUserId() == null ? p.getTemporaryUserId() : p.getUserId());
                 userMap.put("userName", p.getUserName());
                 list.add(userMap);
             });
@@ -303,9 +300,9 @@ public class TaskAction {
                 });
             }
             if (name.indexOf("大包堆放原打包位") != -1 || name.indexOf("压包") != -1 || name.indexOf("点数") != -1
-                || name.indexOf("绞口") != -1 || name.indexOf("套袋") != -1 || name.indexOf("封箱") != -1
-                || name.indexOf("封空箱") != -1 || name.indexOf("原打包位") != -1 || name.indexOf("推箱") != -1
-                || name.indexOf("码包") != -1) {
+                    || name.indexOf("绞口") != -1 || name.indexOf("套袋") != -1 || name.indexOf("封箱") != -1
+                    || name.indexOf("封空箱") != -1 || name.indexOf("原打包位") != -1 || name.indexOf("推箱") != -1
+                    || name.indexOf("码包") != -1) {
                 mapList.stream().forEach(m -> {
                     if (String.valueOf(m.get("name")).equals("装箱装包工序")) {
                         m.put("checked", 1);
@@ -331,7 +328,7 @@ public class TaskAction {
     @RequestMapping(value = "/task/giveTaskPerformance", method = RequestMethod.POST)
     @ResponseBody
     public CommonResponse giveTaskPerformance(String[] taskIds, String[] ids, String[] performance,
-        Double[] performanceNumber, Integer update) {
+                                              Double[] performanceNumber, Integer update) {
         CommonResponse cr = new CommonResponse();
         taskService.giveTaskPerformance(taskIds, ids, performance, performanceNumber, update);
         cr.setMessage("添加成功");
@@ -340,7 +337,6 @@ public class TaskAction {
 
     /**
      * 通过任务id，获取人员的加绩工资
-     * 
      */
     @RequestMapping(value = "/task/getUserPerformance", method = RequestMethod.GET)
     @ResponseBody
@@ -350,7 +346,7 @@ public class TaskAction {
         List<Map<String, Object>> listMap = new ArrayList<Map<String, Object>>();
         Map<String, Object> map = null;
         Map<Object, List<PayB>> mapPayB = payBList.stream().filter(PayB -> PayB.getPerformance() != null)
-            .collect(Collectors.groupingBy(PayB::getPerformance, Collectors.toList()));
+                .collect(Collectors.groupingBy(PayB::getPerformance, Collectors.toList()));
         for (Object ps : mapPayB.keySet()) {
             map = new HashMap<String, Object>();
             List<PayB> psList = mapPayB.get(ps);
@@ -371,7 +367,6 @@ public class TaskAction {
 
     /**
      * 添加返工任务任务
-     * 
      */
     @RequestMapping(value = "/task/addReTask", method = RequestMethod.POST)
     @ResponseBody
@@ -400,7 +395,7 @@ public class TaskAction {
 
     /**
      * 删除技工返工任务
-     * 
+     *
      * @param request
      * @return
      */
