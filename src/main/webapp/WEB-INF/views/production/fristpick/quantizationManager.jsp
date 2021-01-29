@@ -466,13 +466,15 @@ function(){
 							};
 							if(groupPeople.temporarilyUser && groupPeople.temporarilyUser.length>0){
 								var t = groupPeople.temporarilyUser;
-								for(var k in t)
-									if(t[k].status==1)
+								for(var k in t) {
+									if(t[k].status==1) {
 										var type = 'l';
 										data.children.push({
 											id: type+'~'+t[k].userId,
 											name: t[k].name+' ---- <span class="layui-badge">临</span>',
 										});
+									}
+								}
 							}
 							if(groupPeople.userList && groupPeople.userList.length>0){
 								//  secondment =0 借调, secondment = 1 正式

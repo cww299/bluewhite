@@ -307,7 +307,7 @@ layui.config({
 			    	    table.reload("tableData")
 			    	    return myutil.smsg(res.message);
 			        }else{
-			    	    return myutil.emsg('导入失败');
+			        	return myutil.emsg(res.message);
 			        }
 			    }
 			})
