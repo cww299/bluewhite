@@ -41,7 +41,6 @@ layui.config({
 		, mytable = layui.mytable;
 		myutil.config.ctx = '${ctx}';
 		myutil.clickTr();
-		
 		mytable.render({
 			elem:'#tableData',
 			url: myutil.config.ctx+'/ledger/dispatch/applyVoucherPage',
