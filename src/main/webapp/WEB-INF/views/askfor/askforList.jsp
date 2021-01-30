@@ -28,7 +28,7 @@
 layui.config({
 	base : '${ctx}/static/layui-v2.4.5/'
 }).extend({
-	mytable : 'layui/myModules/mytable' ,
+	mytable : 'layui/myModules/mytable',
 }).define(
 	['mytable'],
 	function(){
