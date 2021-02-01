@@ -61,52 +61,58 @@ public class TemporaryPackAction {
     private PackingService packingService;
     @Autowired
     private SaleService saleService;
-    
+
     private ClearCascadeJSON clearCascadeJSON;
+
     {
         clearCascadeJSON = ClearCascadeJSON.get()
-            .addRetainTerm(UnderGoods.class, "id", "remarks", "product", "number", "bacthNumber", "status", "allotTime",
-                "surplusStickNumber", "surplusSendNumber", "internal", "productName","customerId", "customer")
-            .addRetainTerm(Product.class, "id", "name")
-            .addRetainTerm(Customer.class, "id", "name");
+                .addRetainTerm(UnderGoods.class, "id", "remarks", "product", "number", "bacthNumber", "status", "allotTime",
+                        "surplusStickNumber", "surplusSendNumber", "internal", "productName", "customerId", "customer")
+                .addRetainTerm(Product.class, "id", "name")
+                .addRetainTerm(Customer.class, "id", "name");
     }
+
     private ClearCascadeJSON clearCascadeJSONQuantitative;
+
     {
         clearCascadeJSONQuantitative = ClearCascadeJSON.get()
-            .addRetainTerm(Quantitative.class, "id", "quantitativeNumber", "time", "sumPackageNumber", "time",
-                "quantitativeChilds", "packingMaterials", "user", "flag", "print", "customer", "audit", "sendTime",
-                "vehicleNumber", "packagMethod", "outPrice", "departmentPrice", "regionalPrice", "sumTaskPrice",
-                "sumTime", "status", "number", "productCount", "location", "reservoirArea", "reconciliation","allocation")
-            .addRetainTerm(Customer.class, "id", "name")
-            .addRetainTerm(QuantitativeChild.class, "id", "underGoods", "sumPackageNumber", "singleNumber", "number",
-                "actualSingleNumber", "checks", "remarks", "saleId")
-            .addRetainTerm(PackingMaterials.class, "id", "packagingMaterials", "packagingCount")
-            .addRetainTerm(User.class, "id", "userName")
-            .addRetainTerm(BaseData.class, "id", "name")
-            .addRetainTerm(UnderGoods.class, "id", "remarks", "product", "number", "bacthNumber", "status", "allotTime")
-            .addRetainTerm(Product.class, "id", "name");
+                .addRetainTerm(Quantitative.class, "id", "quantitativeNumber", "time", "sumPackageNumber", "time",
+                        "quantitativeChilds", "packingMaterials", "user", "flag", "print", "customer", "audit", "sendTime",
+                        "vehicleNumber", "packagMethod", "outPrice", "departmentPrice", "regionalPrice", "sumTaskPrice",
+                        "sumTime", "status", "number", "productCount", "location", "reservoirArea", "reconciliation", "allocation")
+                .addRetainTerm(Customer.class, "id", "name")
+                .addRetainTerm(QuantitativeChild.class, "id", "underGoods", "sumPackageNumber", "singleNumber", "number",
+                        "actualSingleNumber", "checks", "remarks", "saleId")
+                .addRetainTerm(PackingMaterials.class, "id", "packagingMaterials", "packagingCount")
+                .addRetainTerm(User.class, "id", "userName")
+                .addRetainTerm(BaseData.class, "id", "name")
+                .addRetainTerm(UnderGoods.class, "id", "remarks", "product", "number", "bacthNumber", "status", "allotTime")
+                .addRetainTerm(Product.class, "id", "name");
     }
+
     private ClearCascadeJSON clearCascadeJSONMantissaLiquidation;
+
     {
         clearCascadeJSONMantissaLiquidation = ClearCascadeJSON.get()
-            .addRetainTerm(MantissaLiquidation.class, "id", "underGoods", "mantissaNumber", "number", "time", "remarks",
-                "type", "surplusNumber")
-            .addRetainTerm(UnderGoods.class, "id", "remarks", "product", "number", "bacthNumber", "status",
-                "allotTime");
+                .addRetainTerm(MantissaLiquidation.class, "id", "underGoods", "mantissaNumber", "number", "time", "remarks",
+                        "type", "surplusNumber")
+                .addRetainTerm(UnderGoods.class, "id", "remarks", "product", "number", "bacthNumber", "status",
+                        "allotTime");
     }
+
     private ClearCascadeJSON clearCascadeJSONSendOrder;
+
     {
         clearCascadeJSONSendOrder = ClearCascadeJSON.get()
-            .addRetainTerm(SendOrder.class, "id", "customer", "sendOrderChild", "sendTime", "sumPackageNumber",
-                "number", "sendPackageNumber", "logistics", "outerPackaging", "logisticsNumber", "tax", "singerPrice",
-                "sendPrice", "extraPrice", "logisticsPrice", "audit", "warehouseType","remarks","purchaseNumber")
-            .addRetainTerm(BaseData.class, "id", "name")
-            .addRetainTerm(Customer.class, "id", "name");
+                .addRetainTerm(SendOrder.class, "id", "customer", "sendOrderChild", "sendTime", "sumPackageNumber",
+                        "number", "sendPackageNumber", "logistics", "outerPackaging", "logisticsNumber", "tax", "singerPrice",
+                        "sendPrice", "extraPrice", "logisticsPrice", "audit", "warehouseType", "remarks", "purchaseNumber")
+                .addRetainTerm(BaseData.class, "id", "name")
+                .addRetainTerm(Customer.class, "id", "name");
     }
 
     /**
      * 新增下货单
-     * 
      */
     @RequestMapping(value = "/temporaryPack/saveUnderGoods", method = RequestMethod.POST)
     @ResponseBody
@@ -187,6 +193,19 @@ public class TemporaryPackAction {
     }
 
     /**
+     * 批量修改量化子单备注
+     */
+    @RequestMapping(value = "/temporaryPack/updateQuantitativeChildRemark", method = RequestMethod.POST)
+    @ResponseBody
+    public CommonResponse updateQuantitativeChildRemark(String ids, String remark) {
+        CommonResponse cr = new CommonResponse();
+        quantitativeService.updateQuantitativeChildRemark(remark, ids);
+        cr.setMessage("修改成功");
+        return cr;
+    }
+
+
+    /**
      * 审核 量化单
      */
     @RequestMapping(value = "/temporaryPack/auditQuantitative", method = RequestMethod.GET)
@@ -252,7 +271,7 @@ public class TemporaryPackAction {
     @RequestMapping(value = "/temporaryPack/sendQuantitative", method = RequestMethod.GET)
     @ResponseBody
     public CommonResponse sendQuantitative(String ids, Integer flag, String vehicleNumber, Long logisticsId,
-        Long outerPackagingId) {
+                                           Long outerPackagingId) {
         CommonResponse cr = new CommonResponse();
         quantitativeService.sendQuantitative(ids, flag, vehicleNumber, logisticsId, outerPackagingId);
         if (flag == 0) {
@@ -289,7 +308,6 @@ public class TemporaryPackAction {
 
     /**
      * 查询量化单
-     * 
      */
     @RequestMapping(value = "/temporaryPack/findPagesQuantitative", method = RequestMethod.GET)
     @ResponseBody
@@ -326,7 +344,7 @@ public class TemporaryPackAction {
 
     /**
      * 新增下货单(导入)
-     * 
+     *
      * @return
      * @throws IOException
      */
@@ -368,10 +386,11 @@ public class TemporaryPackAction {
         CommonResponse cr = new CommonResponse();
         if (MapUtil.isEmpty(params)) {
             throw new ServiceException("参数不能为空");
-        } ;
+        }
+        ;
         PageParameter page = PageUtil.mapToPage(params);
         cr.setData(
-            clearCascadeJSONMantissaLiquidation.format(mantissaLiquidationService.findPages(params, page)).toJSON());
+                clearCascadeJSONMantissaLiquidation.format(mantissaLiquidationService.findPages(params, page)).toJSON());
         cr.setMessage("查询成功");
         return cr;
     }
@@ -402,7 +421,7 @@ public class TemporaryPackAction {
 
     /**
      * 发货单(导出)
-     * 
+     *
      * @return
      * @throws IOException
      */
@@ -415,17 +434,17 @@ public class TemporaryPackAction {
         List<QuantitativePoi> quantitativePoiList = structureQuantitativeList(quantitative);
         // 按合并策略 合并单元格
         AutoMergeStrategy autoMergeStrategy =
-            new AutoMergeStrategy(quantitativePoiList, getGroupData(quantitativePoiList));
+                new AutoMergeStrategy(quantitativePoiList, getGroupData(quantitativePoiList));
         // 这里 需要指定写用哪个class去写，然后写到第一个sheet，名字为模板 然后文件流会自动关闭
         EasyExcel.write(response.getOutputStream(), QuantitativePoi.class)
-            .registerWriteHandler(new LongestMatchColumnWidthStyleStrategy()).registerWriteHandler(autoMergeStrategy)
-            .sheet("发货单").doWrite(quantitativePoiList);
+                .registerWriteHandler(new LongestMatchColumnWidthStyleStrategy()).registerWriteHandler(autoMergeStrategy)
+                .sheet("发货单").doWrite(quantitativePoiList);
     }
 
     private List<Integer> getGroupData(List<QuantitativePoi> quantitativePoiList) {
         List<Integer> integerList = new ArrayList<Integer>();
         LinkedHashMap<Long, List<QuantitativePoi>> mapList = quantitativePoiList.stream()
-            .collect(Collectors.groupingBy(QuantitativePoi::getId, LinkedHashMap::new, Collectors.toList()));
+                .collect(Collectors.groupingBy(QuantitativePoi::getId, LinkedHashMap::new, Collectors.toList()));
         for (Long ps : mapList.keySet()) {
             List<QuantitativePoi> quantitativeList = mapList.get(ps);
             integerList.add(quantitativeList.size());
@@ -435,14 +454,14 @@ public class TemporaryPackAction {
 
     /**
      * 构建实际发货单
-     * 
+     *
      * @param quantitative
      * @return
      */
     private List<QuantitativePoi> structureQuantitativeList(Quantitative quantitative) {
         List<QuantitativePoi> quantitativePoiList = new ArrayList<QuantitativePoi>();
         List<Quantitative> quantitativeList =
-            quantitativeService.findPages(quantitative, new PageParameter(0, Integer.MAX_VALUE)).getRows();
+                quantitativeService.findPages(quantitative, new PageParameter(0, Integer.MAX_VALUE)).getRows();
         quantitativeList.stream().forEach(q -> {
             q.getQuantitativeChilds().forEach(c -> {
                 QuantitativePoi quantitativePoi = new QuantitativePoi();
@@ -474,7 +493,7 @@ public class TemporaryPackAction {
     /***************************** 发货单 ***************************/
     /**
      * 分页查看发货单
-     * 
+     *
      * @return cr
      */
     @RequestMapping(value = "/ledger/sendOrderPage", method = RequestMethod.GET)
@@ -483,7 +502,8 @@ public class TemporaryPackAction {
         CommonResponse cr = new CommonResponse();
         if (MapUtil.isEmpty(params)) {
             throw new ServiceException("参数不能为空");
-        } ;
+        }
+        ;
         PageParameter page = PageUtil.mapToPage(params);
         cr.setData(clearCascadeJSONSendOrder.format(sendOrderService.findPages(params, page)).toJSON());
         cr.setMessage("查询成功");
@@ -507,9 +527,9 @@ public class TemporaryPackAction {
      */
     @RequestMapping(value = "/temporaryPack/getQuantitativeList", method = RequestMethod.GET)
     @ResponseBody
-    public CommonResponse getQuantitativeList(Long id,String productName) {
+    public CommonResponse getQuantitativeList(Long id, String productName) {
         CommonResponse cr = new CommonResponse();
-        cr.setData(clearCascadeJSONQuantitative.format(sendOrderService.getQuantitativeList(id,productName)).toJSON());
+        cr.setData(clearCascadeJSONQuantitative.format(sendOrderService.getQuantitativeList(id, productName)).toJSON());
         cr.setMessage("成功");
         return cr;
     }
@@ -528,7 +548,7 @@ public class TemporaryPackAction {
 
     /**
      * 批量修改
-     * 
+     *
      * @param ids
      * @param audit
      * @return
@@ -541,7 +561,7 @@ public class TemporaryPackAction {
         cr.setMessage("成功修改" + count + "数据");
         return cr;
     }
-    
+
 
     /**
      * 从发货明细中重新生成发货单
@@ -554,7 +574,7 @@ public class TemporaryPackAction {
         cr.setMessage("生成成功");
         return cr;
     }
-    
+
 
     /**
      * 扫码发货页面
@@ -563,7 +583,7 @@ public class TemporaryPackAction {
     public ModelAndView scanSend(Long id) {
         ModelAndView mav = new ModelAndView();
         Quantitative quantitative = quantitativeService.findOne(id);
-        if(null==quantitative) {
+        if (null == quantitative) {
             throw new ServiceException("单据不存在！");
         }
         if (quantitative.getFlag() == 1) {
@@ -572,9 +592,9 @@ public class TemporaryPackAction {
             return mav;
         }
         // 通过量化单的发货时间进行查询出当前上车的编号进度
-        if (quantitative.getCustomerId() != null && quantitative.getCustomerId() == (long)363) {
+        if (quantitative.getCustomerId() != null && quantitative.getCustomerId() == (long) 363) {
             List<Quantitative> quantitativeList = quantitativeService.findBySendTime(DateUtil.beginOfDay(new Date()),
-                DateUtil.endOfDay(new Date()), quantitative.getWarehouseTypeId());
+                    DateUtil.endOfDay(new Date()), quantitative.getWarehouseTypeId());
             compareVehicleNumber(quantitativeList);
             if (quantitativeList.size() > 0) {
                 int count = 0;
@@ -582,8 +602,8 @@ public class TemporaryPackAction {
                 String vehicleNumber = StrUtil.sub(quantitativeList.get(0).getVehicleNumber(), 12, 16);
                 // 获取上车发货总包数
                 long number = quantitativeList.stream()
-                    .filter(Quantitative -> StrUtil.sub(Quantitative.getVehicleNumber(), 12, 16).equals(vehicleNumber))
-                    .count();
+                        .filter(Quantitative -> StrUtil.sub(Quantitative.getVehicleNumber(), 12, 16).equals(vehicleNumber))
+                        .count();
                 count = Integer.valueOf(vehicleNumber);
                 quantitative.setVehicleNumber(count + "-" + (number + 1));
             } else {
@@ -597,7 +617,7 @@ public class TemporaryPackAction {
 
     /**
      * 按上车重新排序
-     * 
+     *
      * @param list
      * @return
      */
@@ -636,7 +656,7 @@ public class TemporaryPackAction {
         cr.setMessage("成功入库" + count + "条数据");
         return cr;
     }
-    
+
     /**
      * 生成销售单
      */
@@ -648,7 +668,7 @@ public class TemporaryPackAction {
         cr.setMessage("成功生成" + count + "条数据");
         return cr;
     }
-    
+
     /**
      * 删除销售单
      */
@@ -660,25 +680,24 @@ public class TemporaryPackAction {
         cr.setMessage("成功删除" + count + "条数据");
         return cr;
     }
-    
+
     /**
-	 * 导入销售单
-	 * 
-	 */
-	@RequestMapping(value = "/temporaryPack/uploadSale", method = RequestMethod.POST)
-	@ResponseBody
-	public CommonResponse importSale(@RequestParam(value = "file", required = false) MultipartFile file,
-			Long customerType) throws IOException {
-		CommonResponse cr = new CommonResponse();
-		if(customerType==null) {
-			cr.setMessage("请选择客户类型");
-			cr.setCode(1500);
-			return cr;
-		}
-		InputStream inputStream = file.getInputStream();
-		ExcelListener excelListener = new ExcelListener();
-		EasyExcel.read(inputStream, SalePoi.class, excelListener).sheet().doRead();
-		return saleService.excelAddSale(excelListener,customerType);
-	}
+     * 导入销售单
+     */
+    @RequestMapping(value = "/temporaryPack/uploadSale", method = RequestMethod.POST)
+    @ResponseBody
+    public CommonResponse importSale(@RequestParam(value = "file", required = false) MultipartFile file,
+                                     Long customerType) throws IOException {
+        CommonResponse cr = new CommonResponse();
+        if (customerType == null) {
+            cr.setMessage("请选择客户类型");
+            cr.setCode(1500);
+            return cr;
+        }
+        InputStream inputStream = file.getInputStream();
+        ExcelListener excelListener = new ExcelListener();
+        EasyExcel.read(inputStream, SalePoi.class, excelListener).sheet().doRead();
+        return saleService.excelAddSale(excelListener, customerType);
+    }
 
 }

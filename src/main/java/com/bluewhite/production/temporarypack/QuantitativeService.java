@@ -116,4 +116,13 @@ public interface QuantitativeService extends BaseCRUDService<Quantitative,Long>{
      */
     void reCreatSendOrder(String ids);
 
+    /**
+     * 批量修改子单备注
+     * @param remark
+     * @param ids
+     * @return:
+     * @author zhangliang
+     * @date: 2021/2/1 17:51
+     */
+	void updateQuantitativeChildRemark(String remark, String ids);
 }
