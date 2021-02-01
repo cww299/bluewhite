@@ -110,6 +110,7 @@ stickBagStick： 刘英芹
 		
 		<span class="layui-btn layui-btn-sm layui-btn-primary" lay-event="verifyBill">对账</span>
 		<span class="layui-btn layui-btn-sm layui-btn-normal" lay-event="cancelVerifyBill">取消对账</span>
+		<span class="layui-btn layui-btn-sm layui-btn-warm" lay-event="batchUpdate">批量修改备注</span>
 	</shiro:hasAnyRoles>
 	<!-- <span class="layui-btn layui-btn-sm layui-btn-normal" lay-event="updateSendTime">修改发货时间</span>  -->
 </div>
@@ -330,6 +331,15 @@ layui.config({
 							 text:'请选择信息|是否确认取消对账？',
 							 url:'/temporaryPack/reconciliationQuantitative?reconciliation=0',
 						})
+					}else if (obj.event == 'batchUpdate') {
+						var check = layui.table.checkStatus('tableData').data;
+						if(check.length<1)
+							return myutil.emsg('请选择编辑数据');
+						var ids = []
+						for(var i in check) {
+							ids.push(check[i].id)
+						}
+						batchUpdate(ids.join())
 					}else if(obj.event=='updateSendTime'){
 						var check = layui.table.checkStatus('tableData').data;
 						if(check.length==0)
@@ -450,6 +460,43 @@ layui.config({
 			}
 			
 		})
+		
+		function batchUpdate(ids) {
+			layer.open({
+				type: 1,
+				title:'修改备注',
+				offset:'50px',
+				area: ['500px', '250px'],
+				content:[
+					'<div class="layui-form" style="padding:25px;">',
+						'<textarea class="layui-textarea" name="remark"></textarea/>',
+						'<span style="display:none;" lay-submit lay-filter="sureUpdateBtn">',
+					'</div>',
+				].join(' '),
+				btn: ['确定','取消'],
+				btnAlign:'c',
+				success:function(layerElem,layerIndex){
+					form.render();
+					form.on('submit(sureUpdateBtn)',function(obj){
+						var f = obj.field;
+						myutil.saveAjax({
+							url: '/temporaryPack/updateQuantitativeChildRemark',
+							data: {
+								ids: ids,
+								remark: f.remark
+							},
+							success: function() {
+								layer.close(layerIndex);
+								table.reload('tableData');
+							}
+						})
+					})
+				},
+				yes:function(){
+					$('span[lay-filter="sureUpdateBtn"]').click();
+				}
+			})
+		}
 		var allLogistics = '';
 		myutil.getData({
 			url:myutil.config.ctx+'/basedata/list?type=logistics',
