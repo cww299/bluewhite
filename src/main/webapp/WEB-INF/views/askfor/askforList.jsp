@@ -28,7 +28,7 @@
 layui.config({
 	base : '${ctx}/static/layui-v2.4.5/'
 }).extend({
-	mytable : 'layui/myModules/mytable' ,
+	mytable : 'layui/myModules/mytable',
 }).define(
 	['mytable'],
 	function(){
@@ -41,7 +41,6 @@ layui.config({
 		, mytable = layui.mytable;
 		myutil.config.ctx = '${ctx}';
 		myutil.clickTr();
-		
 		mytable.render({
 			elem:'#tableData',
 			url: myutil.config.ctx+'/ledger/dispatch/applyVoucherPage',
